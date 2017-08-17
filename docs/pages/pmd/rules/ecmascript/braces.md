@@ -5,6 +5,7 @@ permalink: pmd_rules_ecmascript_braces.html
 folder: pmd/rules/ecmascript
 sidebaractiveurl: /pmd_rules_ecmascript.html
 editmepath: ../pmd-javascript/src/main/resources/rulesets/ecmascript/braces.xml
+keywords: Braces, IfStmtsMustUseBraces, IfElseStmtsMustUseBraces, WhileLoopsMustUseBraces, ForLoopsMustUseBraces
 ---
 ## ForLoopsMustUseBraces
 
@@ -17,20 +18,20 @@ Avoid using 'for' statements without using curly braces.
 ```
 //ForLoop[not(child::Scope)]
 |
-	//ForInLoop[not(child::Scope)]
+//ForInLoop[not(child::Scope)]
 ```
 
 **Example(s):**
 
-```
+``` javascript
 // Ok
 for (var i = 0; i < 42; i++) {
-   foo();
+    foo();
 }
 
 // Bad
 for (var i = 0; i < 42; i++)
-   foo();
+    foo();
 ```
 
 ## IfElseStmtsMustUseBraces
@@ -49,19 +50,19 @@ Avoid using if..else statements without using curly braces.
 
 **Example(s):**
 
-```
+``` javascript
 // Ok
 if (foo) {
-   x++;
+    x++;
 } else {
-   y++;
+    y++;
 }
 
 // Bad
 if (foo)
-   x++;
+    x++;
 else
-   y++;
+    y++;
 ```
 
 ## IfStmtsMustUseBraces
@@ -78,15 +79,15 @@ Avoid using if statements without using curly braces.
 
 **Example(s):**
 
-```
+``` javascript
 // Ok
 if (foo) {
-   x++;
+    x++;
 }
 
 // Bad
 if (foo)
-   x++;
+    x++;
 ```
 
 ## WhileLoopsMustUseBraces
@@ -103,14 +104,14 @@ Avoid using 'while' statements without using curly braces.
 
 **Example(s):**
 
-```
+``` javascript
 // Ok
 while (true) {
-   x++;
+    x++;
 }
 
 // Bad
 while (true)
-   x++;
+    x++;
 ```
 

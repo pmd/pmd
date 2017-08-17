@@ -5,6 +5,7 @@ permalink: pmd_rules_ecmascript_basic.html
 folder: pmd/rules/ecmascript
 sidebaractiveurl: /pmd_rules_ecmascript.html
 editmepath: ../pmd-javascript/src/main/resources/rulesets/ecmascript/basic.xml
+keywords: Basic Ecmascript, AssignmentInOperand, UnreachableCode, InnaccurateNumericLiteral, ConsistentReturn, ScopeForInVariable, EqualComparison, GlobalVariable, AvoidTrailingComma, UseBaseWithParseInt
 ---
 ## AssignmentInOperand
 
@@ -18,11 +19,11 @@ indicative of the bug where the assignment operator '=' was used instead of the 
 ```
 //IfStatement[$allowIf = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
 |
-	//WhileLoop[$allowWhile = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+    //WhileLoop[$allowWhile = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
 |
-	//DoLoop[$allowWhile = "false"]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+    //DoLoop[$allowWhile = "false"]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
 |
-	//ForLoop[$allowFor = "false"]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+    //ForLoop[$allowFor = "false"]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
 |
    //ConditionalExpression[$allowTernary = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
 |
@@ -31,15 +32,15 @@ indicative of the bug where the assignment operator '=' was used instead of the 
 
 **Example(s):**
 
-```
+``` javascript
 var x = 2;
 // Bad
 if ((x = getX()) == 3) {
-   alert('3!');
+    alert('3!');
 }
 
 function getX() {
-  return 3;
+    return 3;
 }
 ```
 
@@ -65,18 +66,18 @@ This rule helps improve code portability due to differences in browser treatment
 ```
 //ObjectLiteral[$allowObjectLiteral = "false" and @TrailingComma = 'true']
 |
-	//ArrayLiteral[$allowArrayLiteral = "false" and @TrailingComma = 'true']
+//ArrayLiteral[$allowArrayLiteral = "false" and @TrailingComma = 'true']
 ```
 
 **Example(s):**
 
-```
+``` javascript
 function(arg) {
-    var obj1 = { a : 1 }; // Ok
-    var arr1 = [ 1, 2 ]; // Ok
+    var obj1 = { a : 1 };   // Ok
+    var arr1 = [ 1, 2 ];    // Ok
 
-    var obj2 = { a : 1, }; // Syntax error in some browsers!
-    var arr2 = [ 1, 2, ]; // Length 2 or 3 depending on the browser!
+    var obj2 = { a : 1, };  // Syntax error in some browsers!
+    var arr2 = [ 1, 2, ];   // Length 2 or 3 depending on the browser!
 }
 ```
 
@@ -101,21 +102,21 @@ usage is likely a bug, or at best poor style.
 
 **Example(s):**
 
-```
+``` javascript
 // Ok
 function foo() {
-   if (condition1) {
-      return true;
-   }
-   return false;
+    if (condition1) {
+        return true;
+    }
+    return false;
 }
 
 // Bad
 function bar() {
-   if (condition1) {
-      return;
-   }
-   return false;
+    if (condition1) {
+        return;
+    }
+    return false;
 }
 ```
 
@@ -134,7 +135,7 @@ function bar() {
 **Priority:** Medium (3)
 
 Using == in condition may lead to unexpected results, as the variables are automatically casted to be of the
-      same type. The === operator avoids the casting.
+same type. The === operator avoids the casting.
 
 ```
 //InfixExpression[(@Image = "==" or @Image = "!=")
@@ -147,7 +148,7 @@ Using == in condition may lead to unexpected results, as the variables are autom
 
 **Example(s):**
 
-```
+``` javascript
 // Ok
 if (someVar === true) {
   ...
@@ -181,13 +182,13 @@ Global variables can lead to side-effects that are hard to debug.
 
 **Example(s):**
 
-```
+``` javascript
 function(arg) {
-    notDeclaredVariable = 1; // this will create a global variable and trigger the rule
+    notDeclaredVariable = 1;    // this will create a global variable and trigger the rule
 
-    var someVar = 1; // this is a local variable, that's ok
+    var someVar = 1;            // this is a local variable, that's ok
 
-    window.otherGlobal = 2; // this will not trigger the rule, although it is a global variable.
+    window.otherGlobal = 2;     // this will not trigger the rule, although it is a global variable.
 }
 ```
 
@@ -202,15 +203,15 @@ precision in a floating point number.  This may result in numeric calculations b
 
 ```
 //NumberLiteral[
-	@Image != @Number
-	and translate(@Image, "e", "E") != @Number
-	and concat(@Image, ".0") != @Number
-	and @Image != substring-before(translate(@Number, ".", ""), "E")]
+    @Image != @Number
+    and translate(@Image, "e", "E") != @Number
+    and concat(@Image, ".0") != @Number
+    and @Image != substring-before(translate(@Number, ".", ""), "E")]
 ```
 
 **Example(s):**
 
-```
+``` javascript
 var a = 9; // Ok
 var b = 999999999999999; // Ok
 var c = 999999999999999999999; // Not good
@@ -239,32 +240,32 @@ is better to explicitly scope the variable name to the nearest enclosing scope w
 
 **Example(s):**
 
-```
+``` javascript
 // Ok
 function foo() {
-   var p = 'clean';
-   function() {
-	   var obj = { dirty: 'dirty' };
-	   for (var p in obj) { // Use 'var' here.
-	     obj[p] = obj[p];
-	   }
-	   return x;
-   }();
+    var p = 'clean';
+    function() {
+        var obj = { dirty: 'dirty' };
+        for (var p in obj) { // Use 'var' here.
+            obj[p] = obj[p];
+        }
+        return x;
+    }();
 
-   // 'p' still has value of 'clean'.
+    // 'p' still has value of 'clean'.
 }
 // Bad
 function bar() {
-   var p = 'clean';
-   function() {
-	   var obj = { dirty: 'dirty' };
-	   for (p in obj) { // Oh no, missing 'var' here!
-	     obj[p] = obj[p];
-	   }
-	   return x;
-   }();
+    var p = 'clean';
+    function() {
+        var obj = { dirty: 'dirty' };
+        for (p in obj) { // Oh no, missing 'var' here!
+            obj[p] = obj[p];
+        }
+        return x;
+    }();
 
-   // 'p' is trashed and has value of 'dirty'!
+    // 'p' is trashed and has value of 'dirty'!
 }
 ```
 
@@ -280,16 +281,16 @@ will never execute.  This is a bug, or extremely poor style.
 ```
 //ReturnStatement[following-sibling::node()]
 |
-	//ContinueStatement[following-sibling::node()]
+    //ContinueStatement[following-sibling::node()]
 |
-	//BreakStatement[following-sibling::node()]
+    //BreakStatement[following-sibling::node()]
 |
-	//ThrowStatement[following-sibling::node()]
+    //ThrowStatement[following-sibling::node()]
 ```
 
 **Example(s):**
 
-```
+``` javascript
 // Ok
 function foo() {
    return 1;
@@ -308,7 +309,11 @@ function bar() {
 
 **Priority:** High (1)
 
-TODO
+This rule checks for usages of parseInt. While the second parameter is optional and usually defaults
+to 10 (base/radix is 10 for a decimal number), different implementations may behave differently.
+It also improves readability, if the base is given.
+
+See also: [parseInt()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt)
 
 ```
 //FunctionCall/Name[
@@ -320,7 +325,9 @@ TODO
 
 **Example(s):**
 
-```
-parseInt("10",base);
+``` javascript
+parseInt("010");    // unclear, could be interpreted as 10 or 7 (with a base of 7)
+
+parseInt("10", 10); // good
 ```
 

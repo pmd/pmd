@@ -5,6 +5,7 @@ permalink: pmd_rules_java_controversial.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/controversial.xml
+keywords: Controversial, UnnecessaryConstructor, NullAssignment, OnlyOneReturn, AssignmentInOperand, AtLeastOneConstructor, DontImportSun, SuspiciousOctalEscape, CallSuperInConstructor, UnnecessaryParentheses, DefaultPackage, DataflowAnomalyAnalysis, AvoidFinalLocalVariable, AvoidUsingShortType, AvoidUsingVolatile, AvoidUsingNativeCode, AvoidAccessibilityAlteration, DoNotCallGarbageCollectionExplicitly, OneDeclarationPerLine, AvoidPrefixingMethodParameters, AvoidLiteralsInIfCondition, UseObjectForClearerAPI, UseConcurrentHashMap
 ---
 ## AssignmentInOperand
 
@@ -18,7 +19,7 @@ Avoid assignments in operands; this can make code more complicated and harder to
 
 **Example(s):**
 
-```
+``` java
 public void bar() {
     int x = 2;
     if ((x = getX()) == 3) {
@@ -57,7 +58,7 @@ Each class should declare at least one constructor.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
    // missing constructor
   public void doSomething() { ... }
@@ -102,7 +103,7 @@ method visibility, even if they are private. This violates the principle of enca
 
 **Example(s):**
 
-```
+``` java
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
 import java.security.PrivilegedAction;
@@ -155,7 +156,7 @@ Avoid using final local variables, turn them into fields.
 
 **Example(s):**
 
-```
+``` java
 public class MyClass {
     public void foo() {
         final String finalLocalVariable;
@@ -182,7 +183,7 @@ More exceptions can be defined with the property "ignoreMagicNumbers".
 
 **Example(s):**
 
-```
+``` java
 private static final int MAX_NUMBER_OF_REQUESTS = 10;
 
 public void checkRequests() {
@@ -227,7 +228,7 @@ behavior with Javadoc.
 
 **Example(s):**
 
-```
+``` java
 // Not really clear
 public class Foo {
   public void bar(
@@ -238,7 +239,7 @@ public class Foo {
 }
 ```
 
-```
+``` java
 // Far more useful
 public class Foo {
   /**
@@ -269,7 +270,7 @@ and increases the maintenance burden.
 
 **Example(s):**
 
-```
+``` java
 public class SomeJNIClass {
 
      public SomeJNIClass() {
@@ -278,7 +279,7 @@ public class SomeJNIClass {
 
      static {
          System.loadLibrary("nativelib");
-         }
+     }
 
      public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
          System.loadLibrary("nativelib");
@@ -303,7 +304,7 @@ adverse impacts on performance.
 
 **Example(s):**
 
-```
+``` java
 public class UsingShort {
    private short doNotUseShort = 0;
 
@@ -325,17 +326,15 @@ a good expertise of the Java Memory Model. Moreover, its range of action is some
 the volatile keyword should not be used for maintenance purpose and portability.
 
 ```
-//FieldDeclaration[
-                                contains(@Volatile,'true')
-                        ]
+//FieldDeclaration[contains(@Volatile,'true')]
 ```
 
 **Example(s):**
 
-```
+``` java
 public class ThrDeux {
-  private volatile String var1;	// not suggested
-  private          String var2;	// preferred
+  private volatile String var1; // not suggested
+  private          String var2; // preferred
 }
 ```
 
@@ -357,7 +356,7 @@ another constructor (such as an overloaded constructor) is called, this rule wil
 
 **Example(s):**
 
-```
+``` java
 public class Foo extends Bar{
   public Foo() {
    // call the constructor of Bar
@@ -388,7 +387,7 @@ From those informations there can be found various problems.
 
 **Example(s):**
 
-```
+``` java
 public void foo() {
   int buz = 5;
   buz = 6; // redefinition of buz -> dd-anomaly
@@ -449,7 +448,7 @@ starts-with(@Image,'Runtime.getRuntime') and
 
 **Example(s):**
 
-```
+``` java
 public class GCCall {
     public GCCall() {
         // Explicit gc call !
@@ -485,7 +484,7 @@ Avoid importing anything from the 'sun.*' packages.  These packages are not port
 
 **Example(s):**
 
-```
+``` java
 import sun.misc.foo;
 public class Foo {}
 ```
@@ -505,7 +504,7 @@ NOTE: This sort of assignment may used in some cases to dereference objects and 
 
 **Example(s):**
 
-```
+``` java
 public void bar() {
   Object x = null; // this is OK
   x = new Object();
@@ -532,7 +531,7 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 
 **Example(s):**
 
-```
+``` java
 String name;            // separate declarations
 String lastname;
 
@@ -561,7 +560,7 @@ A method should have only one exit point, and that should be the last statement 
 
 **Example(s):**
 
-```
+``` java
 public class OneReturnOnly1 {
   public void foo(int x) {
     if (x > 0) {
@@ -583,7 +582,7 @@ The Java language specification (section 3.10.6) says an octal
 escape sequence inside a literal String shall consist of a backslash
 followed by:
 
-   OctalDigit | OctalDigit OctalDigit | ZeroToThree OctalDigit OctalDigit
+    OctalDigit | OctalDigit OctalDigit | ZeroToThree OctalDigit OctalDigit
 
 Any octal escape sequence followed by non-octal digits can be confusing,
 e.g. "\038" is interpreted as the octal escape sequence "\03" followed by
@@ -593,7 +592,7 @@ the literal character "8".
 
 **Example(s):**
 
-```
+``` java
 public void foo() {
   // interpreted as octal 12, followed by character '8'
   System.out.println("suspicious: \128");
@@ -607,7 +606,7 @@ public void foo() {
 **Priority:** Medium (3)
 
 This rule detects when a constructor is not necessary; i.e., when there is only one constructor,
-its public, has an empty body, and takes no arguments.
+it's public, has an empty body, and takes no arguments.
 
 ```
 //ClassOrInterfaceBody[count(ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)=1]
@@ -621,9 +620,94 @@ its public, has an empty body, and takes no arguments.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
   public Foo() {}
+}
+```
+
+## UnnecessaryParentheses
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [UselessParentheses](pmd_rules_java_unnecessary.html#uselessparentheses)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+**Since:** PMD 5.0
+
+**Priority:** Medium Low (4)
+
+Useless parentheses should be removed.
+
+```
+//Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)>1]
+  /PrimaryPrefix/Expression
+    [not(./CastExpression)]
+    [not(./ConditionalExpression[@Ternary='true'])]
+    [not(./AdditiveExpression[//Literal[@StringLiteral='true']])]
+|
+//Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)=1]
+  /PrimaryPrefix/Expression
+|
+//Expression/ConditionalAndExpression/PrimaryExpression/PrimaryPrefix/Expression[
+    count(*)=1 and
+    count(./CastExpression)=0 and
+    count(./EqualityExpression/MultiplicativeExpression)=0 and
+    count(./ConditionalExpression[@Ternary='true'])=0 and
+    count(./ConditionalOrExpression)=0]
+|
+//Expression/ConditionalOrExpression/PrimaryExpression/PrimaryPrefix/Expression[
+    count(*)=1 and
+    not(./CastExpression) and
+    not(./ConditionalExpression[@Ternary='true']) and
+    not(./EqualityExpression/MultiplicativeExpression)]
+|
+//Expression/ConditionalExpression/PrimaryExpression/PrimaryPrefix/Expression[
+    count(*)=1 and
+    not(./CastExpression) and
+    not(./EqualityExpression)]
+|
+//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])]
+  /PrimaryExpression[1]/PrimaryPrefix/Expression[
+    count(*)=1 and
+    not(./CastExpression) and
+    not(./AdditiveExpression[@Image = '-']) and
+    not(./ShiftExpression) and
+    not(./RelationalExpression) and
+    not(./InstanceOfExpression) and
+    not(./EqualityExpression) and
+    not(./AndExpression) and
+    not(./ExclusiveOrExpression) and
+    not(./InclusiveOrExpression) and
+    not(./ConditionalAndExpression) and
+    not(./ConditionalOrExpression) and
+    not(./ConditionalExpression)]
+|
+//Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Expression[
+    count(*)=1 and
+    not(./CastExpression) and
+    not(./AndExpression) and
+    not(./InclusiveOrExpression) and
+    not(./ExclusiveOrExpression) and
+    not(./ConditionalExpression) and
+    not(./ConditionalAndExpression) and
+    not(./ConditionalOrExpression) and
+    not(./EqualityExpression)]
+```
+
+**Example(s):**
+
+``` java
+public class Foo {
+
+    private int _bar1;
+    private Integer _bar2;
+
+    public void setBar(int n) {
+        _bar1 = Integer.valueOf((n)); // here
+        _bar2 = (n); // and here
+    }
 }
 ```
 
@@ -643,11 +727,11 @@ perform efficient map reads without blocking other threads.
 
 **Example(s):**
 
-```
+``` java
 public class ConcurrentApp {
   public void getMyInstance() {
-    Map map1 = new HashMap(); 	// fine for single-threaded access
-    Map map2 = new ConcurrentHashMap();  // preferred for use with multiple threads
+    Map map1 = new HashMap();           // fine for single-threaded access
+    Map map2 = new ConcurrentHashMap(); // preferred for use with multiple threads
 
     // the following case will be ignored by this rule
     Map map3 = someModule.methodThatReturnMap(); // might be OK, if the returned map is already thread-safe
@@ -676,19 +760,19 @@ your API.
 
 **Example(s):**
 
-```
+``` java
 public class MyClass {
-  public void connect(String username,
-    String pssd,
-    String databaseName,
-    String databaseAdress)
-    // Instead of those parameters object
-    // would ensure a cleaner API and permit
-    // to add extra data transparently (no code change):
-    // void connect(UserData data);
+    public void connect(String username,
+        String pssd,
+        String databaseName,
+        String databaseAdress)
+        // Instead of those parameters object
+        // would ensure a cleaner API and permit
+        // to add extra data transparently (no code change):
+        // void connect(UserData data);
     {
 
-  }
+    }
 }
 ```
 

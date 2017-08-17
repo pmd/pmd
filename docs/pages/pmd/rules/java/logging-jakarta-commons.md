@@ -5,6 +5,7 @@ permalink: pmd_rules_java_logging-jakarta-commons.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/logging-jakarta-commons.xml
+keywords: Jakarta Commons Logging, UseCorrectExceptionLogging, ProperLogger, GuardDebugLogging, GuardLogStatement
 ---
 ## GuardDebugLogging
 
@@ -13,13 +14,13 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/logging-jakarta-commons
 **Priority:** Medium (3)
 
 When log messages are composed by concatenating strings, the whole section should be guarded
-            by a isDebugEnabled() check to avoid performance and memory issues.
+by a isDebugEnabled() check to avoid performance and memory issues.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.logging.GuardDebugLoggingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/logging/GuardDebugLoggingRule.java)
 
 **Example(s):**
 
-```
+``` java
 public class Test {
     private static final Log __log = LogFactory.getLog(Test.class);
     public void test() {
@@ -63,7 +64,7 @@ otherwise skip the associate String creation and manipulation.
 
 **Example(s):**
 
-```
+``` java
 // Add this for performance
     if (log.isDebugEnabled() { ...
         log.debug("log something" + " and " + "concat strings");
@@ -100,12 +101,12 @@ with the restriction that the logger needs to be passed into the constructor.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
 
-   private static final Log LOG = LogFactory.getLog(Foo.class);	   // proper way
+    private static final Log LOG = LogFactory.getLog(Foo.class);    // proper way
 
-   protected Log LOG = LogFactory.getLog(Testclass.class);			// wrong approach
+    protected Log LOG = LogFactory.getLog(Testclass.class);         // wrong approach
 }
 ```
 
@@ -135,17 +136,17 @@ concat(ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfa
 
 **Example(s):**
 
-```
+``` java
 public class Main {
-   private static final Log _LOG = LogFactory.getLog( Main.class );
-   void bar() {
-     try {
-     } catch( Exception e ) {
-      _LOG.error( e ); //Wrong!
-     } catch( OtherException oe ) {
-      _LOG.error( oe.getMessage(), oe ); //Correct
-     }
-   }
+    private static final Log _LOG = LogFactory.getLog( Main.class );
+    void bar() {
+        try {
+        } catch( Exception e ) {
+            _LOG.error( e ); //Wrong!
+        } catch( OtherException oe ) {
+            _LOG.error( oe.getMessage(), oe ); //Correct
+        }
+    }
 }
 ```
 

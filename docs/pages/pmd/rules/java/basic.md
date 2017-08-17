@@ -5,6 +5,7 @@ permalink: pmd_rules_java_basic.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/basic.xml
+keywords: Basic, JumbledIncrementer, ForLoopShouldBeWhileLoop, OverrideBothEqualsAndHashcode, DoubleCheckedLocking, ReturnFromFinallyBlock, UnconditionalIfStatement, BooleanInstantiation, CollapsibleIfStatements, ClassCastExceptionWithToArray, AvoidDecimalLiteralsInBigDecimalConstructor, MisplacedNullCheck, AvoidThreadGroup, BrokenNullCheck, BigIntegerInstantiation, AvoidUsingOctalValues, AvoidUsingHardCodedIP, CheckResultSet, AvoidMultipleUnaryOperators, ExtendsObject, CheckSkipResult, AvoidBranchingStatementAsLastInLoop, DontCallThreadRun, DontUseFloatTypeForLoopIndices, SimplifiedTernary
 ---
 ## AvoidBranchingStatementAsLastInLoop
 
@@ -19,20 +20,20 @@ Ensure that the usage is not a bug, or consider using another approach.
 
 **Example(s):**
 
-```
+``` java
 // unusual use of branching statement in a loop
 for (int i = 0; i < 10; i++) {
-	if (i*i <= 25) {
-		continue;
-	}
-	break;
+    if (i*i <= 25) {
+        continue;
+    }
+    break;
 }
 
   // this makes more sense...
 for (int i = 0; i < 10; i++) {
-	if (i*i > 25) {
-		break;
-	}
+    if (i*i > 25) {
+        break;
+    }
 }
 ```
 
@@ -84,12 +85,12 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
 
 **Example(s):**
 
-```
-BigDecimal bd = new BigDecimal(1.123);		// loss of precision, this would trigger the rule
+``` java
+BigDecimal bd = new BigDecimal(1.123);       // loss of precision, this would trigger the rule
 
-BigDecimal bd = new BigDecimal("1.123");   	// preferred approach
+BigDecimal bd = new BigDecimal("1.123");     // preferred approach
 
-BigDecimal bd = new BigDecimal(12);     	// preferred approach, ok for integer values
+BigDecimal bd = new BigDecimal(12);          // preferred approach, ok for integer values
 ```
 
 ## AvoidMultipleUnaryOperators
@@ -105,7 +106,7 @@ Ensure that the intended usage is not a bug, or consider simplifying the express
 
 **Example(s):**
 
-```
+``` java
 // These are typo bugs, or at best needlessly complex and confusing:
 int i = - -1;
 int j = + - +1;
@@ -141,14 +142,14 @@ it contains methods that are not thread-safe.
 
 **Example(s):**
 
-```
+``` java
 public class Bar {
-	void buz() {
-		ThreadGroup tg = new ThreadGroup("My threadgroup") ;
-		tg = new ThreadGroup(tg, "my thread group");
-		tg = Thread.currentThread().getThreadGroup();
-		tg = System.getSecurityManager().getThreadGroup();
-	}
+    void buz() {
+        ThreadGroup tg = new ThreadGroup("My threadgroup");
+        tg = new ThreadGroup(tg, "my thread group");
+        tg = Thread.currentThread().getThreadGroup();
+        tg = System.getSecurityManager().getThreadGroup();
+    }
 }
 ```
 
@@ -165,9 +166,9 @@ Externalizing IP adresses is preferable.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	private String ip = "127.0.0.1"; 	// not recommended
+    private String ip = "127.0.0.1";     // not recommended
 }
 ```
 
@@ -191,10 +192,10 @@ interpreted as an octal value.
 
 **Example(s):**
 
-```
-int i = 012;	// set i with 10 not 12
-int j = 010;	// set j with 8 not 10
-k = i * j;		// set k with 80 not 120
+``` java
+int i = 012;    // set i with 10 not 12
+int j = 010;    // set j with 8 not 10
+k = i * j;      // set k with 80 not 120
 ```
 
 **This rule has the following properties:**
@@ -216,12 +217,12 @@ for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal
 
 **Example(s):**
 
-```
-BigInteger bi = new BigInteger(1);		// reference BigInteger.ONE instead
-BigInteger bi2 = new BigInteger("0");	// reference BigInteger.ZERO instead
-BigInteger bi3 = new BigInteger(0.0);	// reference BigInteger.ZERO instead
+``` java
+BigInteger bi = new BigInteger(1);       // reference BigInteger.ONE instead
+BigInteger bi2 = new BigInteger("0");    // reference BigInteger.ZERO instead
+BigInteger bi3 = new BigInteger(0.0);    // reference BigInteger.ZERO instead
 BigInteger bi4;
-bi4 = new BigInteger(0);				// reference BigInteger.ZERO instead
+bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
 ```
 
 ## BooleanInstantiation
@@ -236,9 +237,9 @@ Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FAL
 
 **Example(s):**
 
-```
-Boolean bar = new Boolean("true");		// unnecessary creation, just reference Boolean.TRUE;
-Boolean buz = Boolean.valueOf(false);	// ...., just reference Boolean.FALSE;
+``` java
+Boolean bar = new Boolean("true");        // unnecessary creation, just reference Boolean.TRUE;
+Boolean buz = Boolean.valueOf(false);    // ...., just reference Boolean.FALSE;
 ```
 
 ## BrokenNullCheck
@@ -254,14 +255,14 @@ It is likely that you used || instead of && or vice versa.
 
 **Example(s):**
 
-```
+``` java
 public String bar(String string) {
   // should be &&
-	if (string!=null || !string.equals(""))
-		return string;
+    if (string!=null || !string.equals(""))
+        return string;
   // should be ||
-	if (string==null && string.equals(""))
-		return string;
+    if (string==null && string.equals(""))
+        return string;
 }
 ```
 
@@ -278,18 +279,18 @@ If the value return is 'false', it should be handled properly.
 
 **Example(s):**
 
-```
+``` java
 Statement stat = conn.createStatement();
 ResultSet rst = stat.executeQuery("SELECT name FROM person");
-rst.next(); 	// what if it returns false? bad form
+rst.next();     // what if it returns false? bad form
 String firstName = rst.getString(1);
 
 Statement stat = conn.createStatement();
 ResultSet rst = stat.executeQuery("SELECT name FROM person");
-if (rst.next()) {	// result is properly examined and used
+if (rst.next()) {    // result is properly examined and used
     String firstName = rst.getString(1);
-	} else  {
-		// handle missing data
+    } else  {
+        // handle missing data
 }
 ```
 
@@ -305,7 +306,7 @@ The skip() method may skip a smaller number of bytes than requested. Check the r
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
 
    private FileInputStream _s = new FileInputStream("file");
@@ -348,7 +349,7 @@ count(PrimarySuffix) = 1
 
 **Example(s):**
 
-```
+``` java
 Collection c = new ArrayList();
 Integer obj = new Integer(1);
 c.add(obj);
@@ -379,19 +380,19 @@ Sometimes two consecutive 'if' statements can be consolidated by separating thei
 
 **Example(s):**
 
-```
+``` java
 void bar() {
-	if (x) {			// original implementation
-		if (y) {
-			// do stuff
-		}
-	}
+    if (x) {            // original implementation
+        if (y) {
+            // do stuff
+        }
+    }
 }
 
 void bar() {
-	if (x && y) {		// optimized implementation
-		// do stuff
-	}
+    if (x && y) {        // optimized implementation
+        // do stuff
+    }
 }
 ```
 
@@ -420,7 +421,7 @@ Explicitly calling Thread.run() method will execute in the caller's thread of co
 
 **Example(s):**
 
-```
+``` java
 Thread t = new Thread();
 t.run();            // use t.start() instead
 new Thread().run(); // same violation
@@ -443,7 +444,7 @@ performance need (space or time).
 
 **Example(s):**
 
-```
+``` java
 public class Count {
   public static void main(String[] args) {
     final int START = 2000000000;
@@ -469,26 +470,26 @@ reference points to.
 
 Note: With Java 5, you can make Double checked locking work, if you declare the variable to be `volatile`.
 
-For more details refer to: http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html
-or http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html
+For more details refer to: <http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html>
+or <http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html>
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.DoubleCheckedLockingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/DoubleCheckedLockingRule.java)
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	/*volatile */ Object baz = null; // fix for Java5 and later: volatile
-	Object bar() {
-		if (baz == null) { // baz may be non-null yet not fully created
-			synchronized(this) {
-				if (baz == null) {
-					baz = new Object();
-        		}
-      		}
-    	}
-		return baz;
-	}
+    /*volatile */ Object baz = null; // fix for Java5 and later: volatile
+    Object bar() {
+        if (baz == null) { // baz may be non-null yet not fully created
+            synchronized(this) {
+                if (baz == null) {
+                    baz = new Object();
+                }
+              }
+        }
+        return baz;
+    }
 }
 ```
 
@@ -506,8 +507,8 @@ No need to explicitly extend Object.
 
 **Example(s):**
 
-```
-public class Foo extends Object { 	// not required
+``` java
+public class Foo extends Object {     // not required
 }
 ```
 
@@ -521,20 +522,20 @@ Some for loops can be simplified to while loops, this makes them more concise.
 
 ```
 //ForStatement
- [count(*) > 1]
- [not(LocalVariableDeclaration)]
- [not(ForInit)]
- [not(ForUpdate)]
- [not(Type and Expression and Statement)]
+  [count(*) > 1]
+  [not(LocalVariableDeclaration)]
+  [not(ForInit)]
+  [not(ForUpdate)]
+  [not(Type and Expression and Statement)]
 ```
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	void bar() {
-		for (;true;) true; // No Init or Update part, may as well be: while (true)
-	}
+    void bar() {
+        for (;true;) true; // No Init or Update part, may as well be: while (true)
+    }
 }
 ```
 
@@ -548,16 +549,16 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 
 ```
 //ForStatement
- [
-  ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
-  =
-  ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
- ]
+  [
+    ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
+    =
+    ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
+  ]
 ```
 
 **Example(s):**
 
-```
+``` java
 public class JumbledIncrementerRule1 {
     public void foo() {
         for (int i = 0; i < 10; i++) {          // only references 'i'
@@ -600,19 +601,19 @@ Either the check is useless (the variable will never be "null") or it is incorre
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	void bar() {
-		if (a.equals(baz) && a != null) {}
-		}
+    void bar() {
+        if (a.equals(baz) && a != null) {}
+        }
 }
 ```
 
-```
+``` java
 public class Foo {
-	void bar() {
-		if (a.equals(baz) || a == null) {}
-	}
+    void bar() {
+        if (a.equals(baz) || a == null) {}
+    }
 }
 ```
 
@@ -628,26 +629,26 @@ Override both public boolean Object.equals(Object other), and public int Object.
 
 **Example(s):**
 
-```
-public class Bar {		// poor, missing a hashcode() method
-	public boolean equals(Object o) {
+``` java
+public class Bar {        // poor, missing a hashcode() method
+    public boolean equals(Object o) {
       // do some comparison
-	}
+    }
 }
 
-public class Baz {		// poor, missing an equals() method
-	public int hashCode() {
+public class Baz {        // poor, missing an equals() method
+    public int hashCode() {
       // return some hash value
-	}
+    }
 }
 
-public class Foo {		// perfect, both methods provided
-	public boolean equals(Object other) {
+public class Foo {        // perfect, both methods provided
+    public boolean equals(Object other) {
       // do some comparison
-	}
-	public int hashCode() {
+    }
+    public int hashCode() {
       // return some hash value
-	}
+    }
 }
 ```
 
@@ -665,17 +666,17 @@ Avoid returning from a finally block, this can discard exceptions.
 
 **Example(s):**
 
-```
+``` java
 public class Bar {
-	public String foo() {
-		try {
-			throw new Exception( "My Exception" );
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			return "A. O. K."; // return not recommended here
-		}
-	}
+    public String foo() {
+        try {
+            throw new Exception( "My Exception" );
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            return "A. O. K."; // return not recommended here
+        }
+    }
 }
 ```
 
@@ -703,7 +704,7 @@ or
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
     public boolean test() {
         return condition ? true : something(); // can be as simple as return condition || something();
@@ -739,13 +740,13 @@ Do not use "if" statements whose conditionals are always true or always false.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	public void close() {
-		if (true) {		// fixed conditional, not recommended
-			// ...
-		}
-	}
+    public void close() {
+        if (true) {        // fixed conditional, not recommended
+            // ...
+        }
+    }
 }
 ```
 

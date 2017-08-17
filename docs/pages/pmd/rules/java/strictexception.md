@@ -5,6 +5,7 @@ permalink: pmd_rules_java_strictexception.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/strictexception.xml
+keywords: Strict Exceptions, AvoidCatchingThrowable, SignatureDeclareThrowsException, ExceptionAsFlowControl, AvoidCatchingNPE, AvoidThrowingRawExceptionTypes, AvoidThrowingNullPointerException, AvoidRethrowingException, DoNotExtendJavaLangError, DoNotThrowExceptionInFinally, AvoidThrowingNewInstanceOfSameException, AvoidCatchingGenericException, AvoidLosingExceptionInformation
 ---
 ## AvoidCatchingGenericException
 
@@ -16,29 +17,29 @@ Avoid catching generic exceptions such as NullPointerException, RuntimeException
 
 ```
 //CatchStatement/FormalParameter/Type/ReferenceType/ClassOrInterfaceType[
-          @Image='NullPointerException' or
-          @Image='Exception' or
-          @Image='RuntimeException']
+    @Image='NullPointerException' or
+    @Image='Exception' or
+    @Image='RuntimeException']
 ```
 
 **Example(s):**
 
-```
+``` java
 package com.igate.primitive;
-    
+
 public class PrimitiveType {
-    
-  public void downCastPrimitiveType() {
-    try {
-      System.out.println(" i [" + i + "]");
-    } catch(Exception e) {
-      e.printStackTrace();
-    } catch(RuntimeException e) {
-      e.printStackTrace();
-    } catch(NullPointerException e) {
-      e.printStackTrace();
+
+    public void downCastPrimitiveType() {
+        try {
+            System.out.println(" i [" + i + "]");
+        } catch(Exception e) {
+            e.printStackTrace();
+        } catch(RuntimeException e) {
+            e.printStackTrace();
+        } catch(NullPointerException e) {
+            e.printStackTrace();
+        }
     }
-  } 
 }
 ```
 
@@ -58,14 +59,14 @@ original error, causing other, more subtle problems later on.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-  void bar() {
-    try {
-      // do something
-      }  catch (NullPointerException npe) {
+    void bar() {
+        try {
+            // do something
+        } catch (NullPointerException npe) {
+        }
     }
-  }
 }
 ```
 
@@ -82,14 +83,14 @@ OutOfMemoryError that should be exposed and managed separately.
 
 **Example(s):**
 
-```
+``` java
 public void bar() {
-	try {
-     // do something
+    try {
+        // do something
     } catch (Throwable th) {  // should not catch Throwable
-		th.printStackTrace();
+        th.printStackTrace();
     }
-  }
+}
 ```
 
 ## AvoidLosingExceptionInformation
@@ -118,13 +119,13 @@ only add to code size.  Either remove the invocation, or use the return result.
 
 **Example(s):**
 
-```
+``` java
 public void bar() {
-	try {
-		// do something
-	} catch (SomeException se) {
-		se.getMessage();
-	}
+    try {
+        // do something
+    } catch (SomeException se) {
+        se.getMessage();
+    }
 }
 ```
 
@@ -145,10 +146,10 @@ Catch blocks that merely rethrow a caught exception only add to code size and ru
 
 **Example(s):**
 
-```
+``` java
 public void bar() {
     try {
-    // do something
+        // do something
     }  catch (SomeException se) {
        throw se;
     }
@@ -178,14 +179,14 @@ code size and runtime complexity.
 
 **Example(s):**
 
-```
+``` java
 public void bar() {
-      try {
-       // do something
-      }  catch (SomeException se) {
-         // harmless comment      
-           throw new SomeException(se);
-      }
+    try {
+        // do something
+    } catch (SomeException se) {
+        // harmless comment
+        throw new SomeException(se);
+    }
 }
 ```
 
@@ -205,11 +206,11 @@ clearly seen as a programmer-initiated exception.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-  void bar() {
-    throw new NullPointerException();
-  }
+    void bar() {
+        throw new NullPointerException();
+    }
 }
 ```
 
@@ -237,11 +238,11 @@ or
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-  public void bar() throws Exception {
-    throw new Exception();
-   }
+    public void bar() throws Exception {
+        throw new Exception();
+    }
 }
 ```
 
@@ -260,7 +261,7 @@ Errors are system exceptions. Do not extend them.
 
 **Example(s):**
 
-```
+``` java
 public class Foo extends Error { }
 ```
 
@@ -280,18 +281,18 @@ Note: This is a PMD implementation of the Lint4j rule "A throw in a finally bloc
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	public void bar() {
-		try {
-			// Here do some stuff
-		} catch( Exception e) {
-			// Handling the issue
-		} finally {
-			// is this really a good idea ?
-			throw new Exception();
-		}
-	}
+    public void bar() {
+        try {
+            // Here do some stuff
+        } catch( Exception e) {
+            // Handling the issue
+        } finally {
+            // is this really a good idea ?
+            throw new Exception();
+        }
+    }
 }
 ```
 
@@ -308,18 +309,18 @@ Either add the necessary validation or use an alternate control structure.
 
 **Example(s):**
 
-```
+``` java
 public void bar() {
     try {
-      try {
-      } catch (Exception e) {
-        throw new WrapperException(e);
-       // this is essentially a GOTO to the WrapperException catch block
-       }
-     } catch (WrapperException e) {
-     // do some more stuff
+        try {
+        } catch (Exception e) {
+            throw new WrapperException(e);
+            // this is essentially a GOTO to the WrapperException catch block
+        }
+    } catch (WrapperException e) {
+        // do some more stuff
     }
-  }
+}
 ```
 
 ## SignatureDeclareThrowsException
@@ -335,7 +336,7 @@ failure modes are unclear. Use a class derived from RuntimeException or a more s
 
 **Example(s):**
 
-```
+``` java
 public void foo() throws Exception {
 }
 ```

@@ -5,6 +5,7 @@ permalink: pmd_rules_java_coupling.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/coupling.xml
+keywords: Coupling, CouplingBetweenObjects, ExcessiveImports, LooseCoupling, LoosePackageCoupling, LawOfDemeter
 ---
 ## CouplingBetweenObjects
 
@@ -19,22 +20,22 @@ A number higher than the specified threshold can indicate a high degree of coupl
 
 **Example(s):**
 
-```
+``` java
 import com.Blah;
 import org.Bar;
 import org.Bardo;
 
 public class Foo {
-   private Blah var1;
-   private Bar var2;
- 
- 	//followed by many imports of unique objects
-   void ObjectC doWork() {
-     Bardo var55;
-     ObjectA var44;
-     ObjectZ var93;
-     return something;
-   }
+    private Blah var1;
+    private Bar var2;
+
+    //followed by many imports of unique objects
+    void ObjectC doWork() {
+        Bardo var55;
+        ObjectA var44;
+        ObjectZ var93;
+        return something;
+    }
 }
 ```
 
@@ -58,12 +59,12 @@ user-specified threshold.
 
 **Example(s):**
 
-```
+``` java
 import blah.blah.Baz;
 import blah.blah.Bif;
 // 18 others from the same package elided
 public class Foo {
- public void doWork() {}
+    public void doWork() {}
 }
 ```
 
@@ -81,18 +82,21 @@ public class Foo {
 
 **Priority:** Medium (3)
 
-The Law of Demeter is a simple rule, that says "only talk to friends". It helps to reduce coupling between classes or objects. 
+The Law of Demeter is a simple rule, that says "only talk to friends". It helps to reduce coupling between classes
+or objects.
+
 See also the references:
-Andrew Hunt, David Thomas, and Ward Cunningham. The Pragmatic Programmer. From Journeyman to Master. Addison-Wesley Longman, Amsterdam, October 1999.;
-K.J. Lieberherr and I.M. Holland. Assuring good style for object-oriented programs. Software, IEEE, 6(5):38–48, 1989.;
-http://www.ccs.neu.edu/home/lieber/LoD.html;
-http://en.wikipedia.org/wiki/Law_of_Demeter
+
+*   Andrew Hunt, David Thomas, and Ward Cunningham. The Pragmatic Programmer. From Journeyman to Master. Addison-Wesley Longman, Amsterdam, October 1999.;
+*   K.J. Lieberherr and I.M. Holland. Assuring good style for object-oriented programs. Software, IEEE, 6(5):38–48, 1989.;
+*   <http://www.ccs.neu.edu/home/lieber/LoD.html>
+*   <http://en.wikipedia.org/wiki/Law_of_Demeter>
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.coupling.LawOfDemeterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/coupling/LawOfDemeterRule.java)
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
     /**
      * This example will result in two violations.
@@ -100,14 +104,14 @@ public class Foo {
     public void example(Bar b) {
         // this method call is ok, as b is a parameter of "example"
         C c = b.getC();
-        
+
         // this method call is a violation, as we are using c, which we got from B.
         // We should ask b directly instead, e.g. "b.doItOnC();"
         c.doIt();
-        
+
         // this is also a violation, just expressed differently as a method chain without temporary variables.
         b.getC().doIt();
-        
+
         // a constructor call, not a method call.
         D d = new D();
         // this method call is ok, because we have create the new instance of D locally.
@@ -130,19 +134,19 @@ by their interface types provides much more flexibility.
 
 **Example(s):**
 
-```
+``` java
 // sub-optimal approach
-private ArrayList list = new ArrayList();
+private ArrayList<SomeType> list = new ArrayList<>();
 
-public HashSet getFoo() {
-	return new HashSet();
+public HashSet<SomeType> getFoo() {
+    return new HashSet<SomeType>();
 }
 
-	// preferred approach
-private List list = new ArrayList();
+// preferred approach
+private List<SomeType> list = new ArrayList<>();
 
-public Set getFoo() {
-	return new HashSet();
+public Set<SomeType> getFoo() {
+    return new HashSet<SomeType>();
 }
 ```
 
@@ -159,13 +163,13 @@ except when using one of the configured allowed classes.
 
 **Example(s):**
 
-```
+``` java
 package some.package;
 
 import some.other.package.subpackage.subsubpackage.DontUseThisClass;
 
 public class Bar {
-   DontUseThisClass boo = new DontUseThisClass();
+    DontUseThisClass boo = new DontUseThisClass();
 }
 ```
 

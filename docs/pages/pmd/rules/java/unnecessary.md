@@ -5,6 +5,7 @@ permalink: pmd_rules_java_unnecessary.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/unnecessary.xml
+keywords: Unnecessary, UnnecessaryConversionTemporary, UnnecessaryReturn, UnnecessaryFinalModifier, UselessOverridingMethod, UselessOperationOnImmutable, UnusedNullCheckInEquals, UselessParentheses, UselessQualifiedThis, UnnecessaryModifier
 ---
 ## UnnecessaryConversionTemporary
 
@@ -19,11 +20,11 @@ on the wrapper classes instead.
 
 **Example(s):**
 
-```
+``` java
 public String convert(int x) {
-	String foo = new Integer(x).toString();	// this wastes an object
-	
-	return Integer.toString(x);				// preferred approach
+    String foo = new Integer(x).toString(); // this wastes an object
+
+    return Integer.toString(x);             // preferred approach
 }
 ```
 
@@ -49,7 +50,7 @@ methods of enum instance) do not need to be tagged either.
 
 **Example(s):**
 
-```
+``` java
 public final class Foo {
     // This final modifier is not necessary, since the class is final
     // and thus, all methods are final
@@ -74,24 +75,24 @@ For historical reasons, modifiers which are implied by the context are accepted 
 
 **Example(s):**
 
-```
+``` java
 public @interface Annotation {
-  public abstract void bar(); 		// both abstract and public are ignored by the compiler
-  public static final int X = 0; 	// public, static, and final all ignored
-  public static class Bar {} 		// public, static ignored
-  public static interface Baz {} 	// ditto
+    public abstract void bar();     // both abstract and public are ignored by the compiler
+    public static final int X = 0;  // public, static, and final all ignored
+    public static class Bar {}      // public, static ignored
+    public static interface Baz {}  // ditto
 }
 public interface Foo {
-  public abstract void bar(); 		// both abstract and public are ignored by the compiler
-  public static final int X = 0; 	// public, static, and final all ignored
-  public static class Bar {} 		// public, static ignored
-  public static interface Baz {} 	// ditto
+    public abstract void bar();     // both abstract and public are ignored by the compiler
+    public static final int X = 0;  // public, static, and final all ignored
+    public static class Bar {}      // public, static ignored
+    public static interface Baz {}  // ditto
 }
 public class Bar {
-  public static interface Baz {} // static ignored
-  public static enum FoorBar { // static ignored
-    FOO;
-  }
+    public static interface Baz {}  // static ignored
+    public static enum FoorBar {    // static ignored
+        FOO;
+    }
 }
 ```
 
@@ -107,12 +108,12 @@ Avoid the use of unnecessary return statements.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-  public void bar() {
-    int x = 42;
-    return;
-  }
+    public void bar() {
+        int x = 42;
+        return;
+    }
 }
 ```
 
@@ -136,41 +137,41 @@ After checking an object reference for null, you should invoke equals() on that 
 
 **Example(s):**
 
-```
+``` java
 public class Test {
 
-  public String method1() { return "ok";}
-  public String method2() { return null;}
+    public String method1() { return "ok";}
+    public String method2() { return null;}
 
-  public void method(String a) {
-    String b;
-	// I don't know it method1() can be "null"
-	// but I know "a" is not null..
-	// I'd better write a.equals(method1())
-	
-	if (a!=null && method1().equals(a)) { // will trigger the rule
-	//whatever
-	}
-	
-	if (method1().equals(a) && a != null) { // won't trigger the rule
-	//whatever
-	}
-	
-	if (a!=null && method1().equals(b)) { // won't trigger the rule
-	//whatever
-	}
-	
-	if (a!=null && "LITERAL".equals(a)) { // won't trigger the rule
-	//whatever
-	}
-	
-	if (a!=null && !a.equals("go")) { // won't trigger the rule
-	a=method2();
-	if (method1().equals(a)) {
-	//whatever
-	}
-  }
-}
+    public void method(String a) {
+        String b;
+        // I don't know it method1() can be "null"
+        // but I know "a" is not null..
+        // I'd better write a.equals(method1())
+
+        if (a!=null && method1().equals(a)) { // will trigger the rule
+            //whatever
+        }
+
+        if (method1().equals(a) && a != null) { // won't trigger the rule
+            //whatever
+        }
+
+        if (a!=null && method1().equals(b)) { // won't trigger the rule
+            //whatever
+        }
+
+        if (a!=null && "LITERAL".equals(a)) { // won't trigger the rule
+            //whatever
+        }
+
+        if (a!=null && !a.equals("go")) { // won't trigger the rule
+            a=method2();
+            if (method1().equals(a)) {
+                //whatever
+            }
+        }
+    }
 }
 ```
 
@@ -187,18 +188,18 @@ since the result of the operation is a new object. Therefore, ignoring the opera
 
 **Example(s):**
 
-```
+``` java
 import java.math.*;
 
 class Test {
-  void method1() {
-    BigDecimal bd=new BigDecimal(10);
-    bd.add(new BigDecimal(5)); 		// this will trigger the rule
-  }
-  void method2() {
-    BigDecimal bd=new BigDecimal(10);
-    bd = bd.add(new BigDecimal(5)); // this won't trigger the rule
-  }
+    void method1() {
+        BigDecimal bd=new BigDecimal(10);
+        bd.add(new BigDecimal(5));      // this will trigger the rule
+    }
+    void method2() {
+        BigDecimal bd=new BigDecimal(10);
+        bd = bd.add(new BigDecimal(5)); // this won't trigger the rule
+    }
 }
 ```
 
@@ -214,18 +215,18 @@ The overriding method merely calls the same method defined in a superclass.
 
 **Example(s):**
 
-```
+``` java
 public void foo(String bar) {
-  super.foo(bar);      // why bother overriding?
+    super.foo(bar);      // why bother overriding?
 }
 
 public String foo() {
-	return super.foo();  // why bother overriding?
+    return super.foo();  // why bother overriding?
 }
 
 @Id
 public Long getId() {
-  return super.getId();  // OK if 'ignoreAnnotations' is false, which is the default behavior
+    return super.getId();  // OK if 'ignoreAnnotations' is false, which is the default behavior
 }
 ```
 
@@ -246,9 +247,9 @@ Useless parentheses should be removed.
 ```
 //Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)>1]
   /PrimaryPrefix/Expression
-	[not(./CastExpression)]
-	[not(./ConditionalExpression[@Ternary='true'])]
-	[not(./AdditiveExpression[//Literal[@StringLiteral='true']])]
+    [not(./CastExpression)]
+    [not(./ConditionalExpression[@Ternary='true'])]
+    [not(./AdditiveExpression[//Literal[@StringLiteral='true']])]
 |
 //Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)=1]
   /PrimaryPrefix/Expression
@@ -301,17 +302,16 @@ Useless parentheses should be removed.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
 
-   private int _bar1;
-   private Integer _bar2;
+    private int _bar1;
+    private Integer _bar2;
 
-   public void setBar(int n) {
-      _bar1 = Integer.valueOf((n)); // here
-      _bar2 = (n); // and here
-   }
-
+    public void setBar(int n) {
+        _bar1 = Integer.valueOf((n)); // here
+        _bar2 = (n); // and here
+    }
 }
 ```
 
@@ -334,7 +334,7 @@ Look for qualified this usages in the same class.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
     final Foo otherFoo = Foo.this;  // use "this" directly
 

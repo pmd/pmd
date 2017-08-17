@@ -5,6 +5,7 @@ permalink: pmd_rules_java_j2ee.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/j2ee.xml
+keywords: J2EE, UseProperClassLoader, MDBAndSessionBeanNamingConvention, RemoteSessionInterfaceNamingConvention, LocalInterfaceSessionNamingConvention, LocalHomeNamingConvention, RemoteInterfaceNamingConvention, DoNotCallSystemExit, StaticEJBFieldShouldBeFinal, DoNotUseThreads
 ---
 ## DoNotCallSystemExit
 
@@ -25,7 +26,7 @@ application server should stop the JVM. This rule also checks for the equivalent
 
 **Example(s):**
 
-```
+``` java
 public void bar() {
     System.exit(0);                 // never call this when running in an application server!
 }
@@ -48,17 +49,18 @@ The J2EE specification explicitly forbids the use of threads.
 
 **Example(s):**
 
-```
+``` java
 // This is not allowed
 public class UsingThread extends Thread {
 
- }
-	// Neither this,
+}
+
+// Neither this,
 public class OtherThread implements Runnable {
-	// Nor this ...
-	public void methode() {
-			Runnable thread = new Thread(); thread.run();
-	}
+    // Nor this ...
+    public void methode() {
+        Runnable thread = new Thread(); thread.run();
+    }
 }
 ```
 
@@ -86,10 +88,10 @@ The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
 
 **Example(s):**
 
-```
-public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {}// proper name
+``` java
+public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {} // proper name
 
- public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}	// non-standard name
+public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}  // non-standard name
 ```
 
 ## LocalInterfaceSessionNamingConvention
@@ -116,10 +118,10 @@ The Local Interface of a Session EJB should be suffixed by 'Local'.
 
 **Example(s):**
 
-```
-public interface MyLocal extends javax.ejb.EJBLocalObject {}				// proper name
+``` java
+public interface MyLocal extends javax.ejb.EJBLocalObject {}                // proper name
 
- public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}	// non-standard name
+public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}    // non-standard name
 ```
 
 ## MDBAndSessionBeanNamingConvention
@@ -148,10 +150,10 @@ The EJB Specification states that any MessageDrivenBean or SessionBean should be
 
 **Example(s):**
 
-```
-public class SomeBean implements SessionBean{}					// proper name
+``` java
+public class SomeBean implements SessionBean{}                  // proper name
 
-public class MissingTheProperSuffix implements SessionBean {}  	// non-standard name
+public class MissingTheProperSuffix implements SessionBean {}   // non-standard name
 ```
 
 ## RemoteInterfaceNamingConvention
@@ -181,15 +183,15 @@ Remote Interface of a Session EJB should not have a suffix.
 
 **Example(s):**
 
-```
+``` java
 /* Poor Session suffix */
- public interface BadSuffixSession extends javax.ejb.EJBObject {}
+public interface BadSuffixSession extends javax.ejb.EJBObject {}
 
- /* Poor EJB suffix */
- public interface BadSuffixEJB extends javax.ejb.EJBObject {}
+/* Poor EJB suffix */
+public interface BadSuffixEJB extends javax.ejb.EJBObject {}
 
- /* Poor Bean suffix */
- public interface BadSuffixBean extends javax.ejb.EJBObject {}
+/* Poor Bean suffix */
+public interface BadSuffixBean extends javax.ejb.EJBObject {}
 ```
 
 ## RemoteSessionInterfaceNamingConvention
@@ -216,10 +218,10 @@ A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
 
 **Example(s):**
 
-```
-public interface MyBeautifulHome extends javax.ejb.EJBHome {}		// proper name
+``` java
+public interface MyBeautifulHome extends javax.ejb.EJBHome {}       // proper name
 
-public interface MissingProperSuffix extends javax.ejb.EJBHome {}	// non-standard name
+public interface MissingProperSuffix extends javax.ejb.EJBHome {}   // non-standard name
 ```
 
 ## StaticEJBFieldShouldBeFinal
@@ -256,12 +258,12 @@ behavior especially when instances are distributed by the container on several J
 
 **Example(s):**
 
-```
+``` java
 public class SomeEJB extends EJBObject implements EJBLocalHome {
 
-	private static int CountA;			// poor, field can be edited
+    private static int CountA;          // poor, field can be edited
 
-	private static final int CountB;	// preferred, read-only access
+    private static final int CountB;    // preferred, read-only access
 }
 ```
 
@@ -280,9 +282,9 @@ Thread.currentThread().getContextClassLoader() instead.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
- ClassLoader cl = Bar.class.getClassLoader();
+    ClassLoader cl = Bar.class.getClassLoader();
 }
 ```
 

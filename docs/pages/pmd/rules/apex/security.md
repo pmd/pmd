@@ -5,6 +5,7 @@ permalink: pmd_rules_apex_security.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/security.xml
+keywords: Security, ApexSharingViolations, ApexOpenRedirect, ApexInsecureEndpoint, ApexXSSFromURLParam, ApexXSSFromEscapeFalse, ApexBadCrypto, ApexCSRF, ApexSOQLInjection, ApexCRUDViolation, ApexDangerousMethods, ApexSuggestUsingNamedCred
 ---
 ## ApexBadCrypto
 
@@ -19,7 +20,7 @@ Hard-wiring these values greatly compromises the security of encrypted data.
 
 **Example(s):**
 
-```
+``` java
 public without sharing class Foo {
     Blob hardCodedIV = Blob.valueOf('Hardcoded IV 123');
     Blob hardCodedKey = Blob.valueOf('0000000000000000');
@@ -50,7 +51,7 @@ privilege and may produce runtime errors. This check forces you to handle such s
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
     public Contact foo(String status, String ID) {
         Contact c = [SELECT Status__c FROM Contact WHERE Id=:ID];
@@ -88,7 +89,7 @@ modification of the database just by accessing a page.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
     public init() {
         insert data;
@@ -127,7 +128,7 @@ of private data.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
     public Foo() {
         Configuration.disableTriggerCRUDSecurity();
@@ -156,7 +157,7 @@ Checks against accessing endpoints under plain **http**. You should always use
 
 **Example(s):**
 
-```
+``` java
 public without sharing class Foo {
     void foo() {
         HttpRequest req = new HttpRequest();
@@ -186,7 +187,7 @@ redirecting users to phishing sites.
 
 **Example(s):**
 
-```
+``` java
 public without sharing class Foo {
     String unsafeLocation = ApexPage.getCurrentPage().getParameters.get('url_param');
     PageReference page() {
@@ -216,9 +217,9 @@ forces the developer to take access restrictions into account before modifying o
 
 **Example(s):**
 
-```
+``` java
 public without sharing class Foo {
-// DML operation here
+    // DML operation here
 }
 ```
 
@@ -242,7 +243,7 @@ Detects the usage of untrusted / unescaped variables in DML queries.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
     public void test1(String t1) {
         Database.query('SELECT Id FROM Account' + t1);
@@ -282,7 +283,7 @@ For more information, you can check [this](https://developer.salesforce.com/docs
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
     public void foo(String username, String password) {
         Blob headerValue = Blob.valueOf(username + ':' + password);
@@ -314,7 +315,7 @@ attacks if unescaped.
 
 **Example(s):**
 
-```
+``` java
 public without sharing class Foo {
     Trigger.new[0].addError(vulnerableHTMLGoesHere, false);
 }
@@ -341,7 +342,7 @@ to avoid XSS attacks.
 
 **Example(s):**
 
-```
+``` java
 public without sharing class Foo {
     String unescapedstring = ApexPage.getCurrentPage().getParameters.get('url_param');
     String usedLater = unescapedstring;

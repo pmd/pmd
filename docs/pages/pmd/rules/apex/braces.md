@@ -5,6 +5,7 @@ permalink: pmd_rules_apex_braces.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/braces.xml
+keywords: Braces, IfStmtsMustUseBraces, WhileLoopsMustUseBraces, IfElseStmtsMustUseBraces, ForLoopsMustUseBraces
 ---
 ## ForLoopsMustUseBraces
 
@@ -24,7 +25,7 @@ from the rest.
 
 **Example(s):**
 
-```
+``` java
 for (int i = 0; i < 42; i++) // not recommended
     foo();
 
@@ -59,15 +60,15 @@ from the rest.
 
 **Example(s):**
 
-```
+``` java
 // this is OK
 if (foo) x++;
 
-   // but this is not
+// but this is not
 if (foo)
-       x = x+1;
-   else
-       x = x-1;
+    x = x+1;
+else
+    x = x-1;
 ```
 
 **This rule has the following properties:**
@@ -94,12 +95,12 @@ controlled from the rest.
 
 **Example(s):**
 
-```
-if (foo)	// not recommended
-	x++;
+``` java
+if (foo)    // not recommended
+    x++;
 
-if (foo) {	// preferred approach
-	x++;
+if (foo) {  // preferred approach
+    x++;
 }
 ```
 
@@ -127,12 +128,12 @@ controlled from the rest.
 
 **Example(s):**
 
-```
-while (true)	// not recommended
-      x++;
+``` java
+while (true)    // not recommended
+    x++;
 
-while (true) {	// preferred approach
-      x++;
+while (true) {  // preferred approach
+    x++;
 }
 ```
 

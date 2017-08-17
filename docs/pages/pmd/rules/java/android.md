@@ -5,6 +5,7 @@ permalink: pmd_rules_java_android.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/android.xml
+keywords: Android, CallSuperFirst, CallSuperLast, DoNotHardCodeSDCard
 ---
 ## CallSuperFirst
 
@@ -36,12 +37,12 @@ Super should be called at the start of the method
 
 **Example(s):**
 
-```
+``` java
 public class DummyActivity extends Activity {
-	public void onCreate(Bundle bundle) {
-     // missing call to super.onCreate(bundle)
-		foo();
-	}
+    public void onCreate(Bundle bundle) {
+        // missing call to super.onCreate(bundle)
+        foo();
+    }
 }
 ```
 
@@ -73,12 +74,12 @@ Super should be called at the end of the method
 
 **Example(s):**
 
-```
+``` java
 public class DummyActivity extends Activity {
-	public void onPause() {
-		foo();
-		// missing call to super.onPause()
-	}
+    public void onPause() {
+        foo();
+        // missing call to super.onPause()
+    }
 }
 ```
 
@@ -96,13 +97,13 @@ Use Environment.getExternalStorageDirectory() instead of "/sdcard"
 
 **Example(s):**
 
-```
+``` java
 public class MyActivity extends Activity {
-	protected void foo() {
-		String storageLocation = "/sdcard/mypackage";	// hard-coded, poor approach
+    protected void foo() {
+        String storageLocation = "/sdcard/mypackage";   // hard-coded, poor approach
 
-		storageLocation = Environment.getExternalStorageDirectory() + "/mypackage"; // preferred approach
-	}
+       storageLocation = Environment.getExternalStorageDirectory() + "/mypackage"; // preferred approach
+    }
 }
 ```
 

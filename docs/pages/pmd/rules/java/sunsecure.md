@@ -5,6 +5,7 @@ permalink: pmd_rules_java_sunsecure.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/sunsecure.xml
+keywords: Security Code Guidelines, MethodReturnsInternalArray, ArrayIsStoredDirectly
 ---
 ## ArrayIsStoredDirectly
 
@@ -19,12 +20,12 @@ This prevents future changes from the user from affecting the original array.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-  private String [] x;
-    public void foo (String [] param) {
-      // Don't do this, make a copy of the array at least
-      this.x=param;
+    private String [] x;
+        public void foo (String [] param) {
+        // Don't do this, make a copy of the array at least
+        this.x=param;
     }
 }
 ```
@@ -42,13 +43,13 @@ removed or replaced outside of the object that owns it. It is safer to return a 
 
 **Example(s):**
 
-```
+``` java
 public class SecureSystem {
-  UserData [] ud;
-  public UserData [] getUserData() {
-      // Don't return directly the internal array, return a copy
-      return ud;
-  }
+    UserData [] ud;
+    public UserData [] getUserData() {
+        // Don't return directly the internal array, return a copy
+        return ud;
+    }
 }
 ```
 

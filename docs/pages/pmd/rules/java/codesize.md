@@ -5,6 +5,7 @@ permalink: pmd_rules_java_codesize.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/codesize.xml
+keywords: Code Size, NPathComplexity, ExcessiveMethodLength, ExcessiveParameterList, ExcessiveClassLength, CyclomaticComplexity, StdCyclomaticComplexity, ModifiedCyclomaticComplexity, ExcessivePublicCount, TooManyFields, NcssMethodCount, NcssTypeCount, NcssConstructorCount, TooManyMethods
 ---
 ## CyclomaticComplexity
 
@@ -23,8 +24,8 @@ high complexity, and 11+ is very high complexity.
 
 **Example(s):**
 
-```
-public class Foo {		// This has a Cyclomatic Complexity = 12
+``` java
+public class Foo {      // This has a Cyclomatic Complexity = 12
 1   public void example()  {
 2       if (a == b)  {
 3           if (a1 == b1) {
@@ -78,28 +79,27 @@ public class Foo {		// This has a Cyclomatic Complexity = 12
 
 Excessive class file lengths are usually indications that the class may be burdened with excessive 
 responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
+apart the code becomes more manageable and ripe for reuse.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveClassLengthRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/ExcessiveClassLengthRule.java)
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	public void bar1() {
-    // 1000 lines of code
-	}
-	public void bar2() {
-    // 1000 lines of code
-	}
+    public void bar1() {
+        // 1000 lines of code
+    }
+    public void bar2() {
+        // 1000 lines of code
+    }
     public void bar3() {
-    // 1000 lines of code
-	}
-	
-	
+        // 1000 lines of code
+    }
+
     public void barN() {
-    // 1000 lines of code
-	}
+        // 1000 lines of code
+    }
 }
 ```
 
@@ -126,11 +126,11 @@ Try to reduce the method length by creating helper methods and removing any copy
 
 **Example(s):**
 
-```
+``` java
 public void doSomething() {
-	System.out.println("Hello world!");
-	System.out.println("Hello world!");
-		// 98 copies omitted for brevity.
+    System.out.println("Hello world!");
+    System.out.println("Hello world!");
+    // 98 copies omitted for brevity.
 }
 ```
 
@@ -155,17 +155,17 @@ same datatype. These situations usually denote the need for new objects to wrap 
 
 **Example(s):**
 
-```
-public void addPerson(		// too many arguments liable to be mixed up
-	int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
+``` java
+public void addPerson(      // too many arguments liable to be mixed up
+    int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
 
-	. . . .
+    . . . .
 }
  
-public void addPerson(		// preferred approach
-	Date birthdate, BodyMeasurements measurements, int ssn) {
+public void addPerson(      // preferred approach
+    Date birthdate, BodyMeasurements measurements, int ssn) {
 
-	. . . .
+    . . . .
 }
 ```
 
@@ -192,17 +192,17 @@ developed easily.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	public String value;
-	public Bar something;
-	public Variable var;
- // [... more more public attributes ...]
- 
-	public void doWork() {}
-	public void doMoreWork() {}
-	public void doWorkAgain() {}
- // [... more more public methods ...]
+    public String value;
+    public Bar something;
+    public Variable var;
+    // [... more more public attributes ...]
+
+    public void doWork() {}
+    public void doMoreWork() {}
+    public void doWorkAgain() {}
+    // [... more more public methods ...]
 }
 ```
 
@@ -232,7 +232,7 @@ decision point.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {    // This has a Cyclomatic Complexity = 9
 1   public void example()  {
 2       if (a == b)  {
@@ -293,18 +293,18 @@ lines of code that are split are counted as one.
 
 **Example(s):**
 
-```
+``` java
 public class Foo extends Bar {
- public Foo() {
-     super();
+    public Foo() {
+        super();
 
 
 
 
 
- //this constructor only has 1 NCSS lines
-      super.foo();
- }
+        //this constructor only has 1 NCSS lines
+        super.foo();
+    }
 }
 ```
 
@@ -330,18 +330,17 @@ lines of code that are split are counted as one.
 
 **Example(s):**
 
-```
+``` java
 public class Foo extends Bar {
- public int methd() {
-     super.methd();
+    public int methd() {
+        super.methd();
 
 
 
 
-
- //this method only has 1 NCSS lines
-      return 1;
- }
+        //this method only has 1 NCSS lines
+        return 1;
+    }
 }
 ```
 
@@ -367,18 +366,18 @@ lines of code that are split are counted as one.
 
 **Example(s):**
 
-```
+``` java
 public class Foo extends Bar {
- public Foo() {
- //this class only has 6 NCSS lines
-     super();
+    public Foo() {
+        //this class only has 6 NCSS lines
+        super();
 
 
 
 
 
-      super.foo();
- }
+        super.foo();
+    }
 }
 ```
 
@@ -404,34 +403,33 @@ complexity and increase readability.
 
 **Example(s):**
 
-```
-void bar() {	// this is something more complex than it needs to be,
-	if (y) {	// it should be broken down into smaller methods or functions
-		for (j = 0; j < m; j++) {
-			if (j > r) {
-				doSomething();
-				while (f < 5 ) {
-					anotherThing();
-					f -= 27;
-					}
-				} else {
-					tryThis();
-				}
-			}
-		}
-		if ( r - n > 45) {
-		   while (doMagic()) {
-		      findRabbits();
-		   }
-		}
-		try {
-			doSomethingDangerous();
-		} catch (Exception ex) {
-			makeAmends();
-			} finally {
-				dontDoItAgain();
-				}
-	}
+``` java
+void bar() {    // this is something more complex than it needs to be,
+    if (y) {   // it should be broken down into smaller methods or functions
+        for (j = 0; j < m; j++) {
+            if (j > r) {
+                doSomething();
+                while (f < 5 ) {
+                    anotherThing();
+                    f -= 27;
+                }
+            } else {
+                tryThis();
+            }
+        }
+    }
+    if ( r - n > 45) {
+       while (doMagic()) {
+          findRabbits();
+       }
+    }
+    try {
+        doSomethingDangerous();
+    } catch (Exception ex) {
+        makeAmends();
+    } finally {
+        dontDoItAgain();
+    }
 }
 ```
 
@@ -460,7 +458,7 @@ high complexity, and 11+ is very high complexity.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {    // This has a Cyclomatic Complexity = 12
 1   public void example()  {
 2       if (a == b || (c == d && e == f))  { // Only one
@@ -521,8 +519,8 @@ city/state/zip fields could park them within a single Address field.
 
 **Example(s):**
 
-```
-public class Person {	// too many separate fields
+``` java
+public class Person {   // too many separate fields
    int birthYear;
    int birthMonth;
    int birthDate;
@@ -530,7 +528,7 @@ public class Person {	// too many separate fields
    float weight;
 }
 
-public class Person {	// this is more manageable
+public class Person {   // this is more manageable
    Date birthDate;
    BodyMeasurements measurements;
 }
@@ -548,8 +546,8 @@ public class Person {	// this is more manageable
 
 **Priority:** Medium (3)
 
-A class with too many methods is probably a good suspect for refactoring, in order to reduce its complexity and find a way to
-have more fine grained objects.
+A class with too many methods is probably a good suspect for refactoring, in order to reduce its
+complexity and find a way to have more fine grained objects.
 
 ```
 //ClassOrInterfaceDeclaration/ClassOrInterfaceBody

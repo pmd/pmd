@@ -5,6 +5,7 @@ permalink: pmd_rules_jsp_basic.html
 folder: pmd/rules/jsp
 sidebaractiveurl: /pmd_rules_jsp.html
 editmepath: ../pmd-jsp/src/main/resources/rulesets/jsp/basic.xml
+keywords: Basic JSP, NoLongScripts, NoScriptlets, NoInlineStyleInformation, NoClassAttribute, NoJspForward, IframeMissingSrcAttribute, NoHtmlComments, DuplicateJspImports, JspEncoding, NoInlineScript, NoUnsanitizedJSPExpression
 ---
 ## DuplicateJspImports
 
@@ -18,7 +19,7 @@ Avoid duplicate import statements inside JSP's.
 
 **Example(s):**
 
-```
+``` jsp
 <%@ page import=\"com.foo.MyClass,com.foo.MyClass\"%><html><body><b><img src=\"<%=Some.get()%>/foo\">xx</img>text</b></body></html>
 ```
 
@@ -37,7 +38,7 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 
 **Example(s):**
 
-```
+``` jsp
 <HTML><title>bad example><BODY>
 <iframe></iframe>
 </BODY> </HTML>
@@ -67,12 +68,12 @@ and
 
 **Example(s):**
 
-```
+``` jsp
 Most browsers should be able to interpret the following headers:
-                
-                <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-                    
-                <meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
+
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
 ```
 
 ## NoClassAttribute
@@ -89,7 +90,7 @@ Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
 
 **Example(s):**
 
-```
+``` jsp
 <HTML> <BODY>
 <P class="MajorHeading">Some text</P>
 </BODY> </HTML>
@@ -102,8 +103,8 @@ Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
 **Priority:** Medium High (2)
 
 In a production system, HTML comments increase the payload
-			between the application server to the client, and serve
-			little other purpose. Consider switching to JSP comments.
+between the application server to the client, and serve
+little other purpose. Consider switching to JSP comments.
 
 ```
 //CommentTag
@@ -111,7 +112,7 @@ In a production system, HTML comments increase the payload
 
 **Example(s):**
 
-```
+``` jsp
 <HTML><title>bad example><BODY>
 <!-- HTML comment -->
 </BODY> </HTML>
@@ -136,12 +137,12 @@ Externalized script could be reused between pages.  Browsers can also cache the 
 
 **Example(s):**
 
-```
+``` jsp
 Most browsers should be able to interpret the following headers:
-                
-                <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-                    
-                <meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
+
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
 ```
 
 ## NoInlineStyleInformation
@@ -150,13 +151,14 @@ Most browsers should be able to interpret the following headers:
 
 **Priority:** Medium (3)
 
-Style information should be put in CSS files, not in JSPs. Therefore, don't use &lt;B> or &lt;FONT> tags, or attributes like "align='center'".
+Style information should be put in CSS files, not in JSPs. Therefore, don't use <B> or <FONT>
+tags, or attributes like "align='center'".
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.jsp.rule.basic.NoInlineStyleInformationRule](https://github.com/pmd/pmd/blob/master/pmd-jsp/src/main/java/net/sourceforge/pmd/lang/jsp/rule/basic/NoInlineStyleInformationRule.java)
 
 **Example(s):**
 
-```
+``` jsp
 <html><body><p align='center'><b>text</b></p></body></html>
 ```
 
@@ -174,7 +176,7 @@ Do not do a forward from within a JSP file.
 
 **Example(s):**
 
-```
+``` jsp
 <jsp:forward page='UnderConstruction.jsp'/>
 ```
 
@@ -187,12 +189,12 @@ Do not do a forward from within a JSP file.
 Scripts should be part of Tag Libraries, rather than part of JSP pages.
 
 ```
-// HtmlScript [ (@EndLine - @BeginLine > 10) ]
+//HtmlScript[(@EndLine - @BeginLine > 10)]
 ```
 
 **Example(s):**
 
-```
+``` jsp
 <HTML>
 <BODY>
 <!--Java Script-->
@@ -226,22 +228,22 @@ Scriptlets should be factored into Tag Libraries or JSP	declarations, rather tha
 
 ```
 //JspScriptlet
-					|
-					//Element[ upper-case(@Name)="JSP:SCRIPTLET" ]
+|
+//Element[ upper-case(@Name)="JSP:SCRIPTLET" ]
 ```
 
 **Example(s):**
 
-```
+``` jsp
 <HTML>
 <HEAD>
 <%
 response.setHeader("Pragma", "No-cache");
 %>
 </HEAD>
-	<BODY>
-		<jsp:scriptlet>String title = "Hello world!";</jsp:scriptlet>
-	</BODY>
+    <BODY>
+        <jsp:scriptlet>String title = "Hello world!";</jsp:scriptlet>
+    </BODY>
 </HTML>
 ```
 
@@ -258,7 +260,7 @@ would be interpreted by the browser directly (e.g. "<script>alert('hello');</scr
 
 **Example(s):**
 
-```
+``` jsp
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 ${expression}                    <!-- don't use this -->

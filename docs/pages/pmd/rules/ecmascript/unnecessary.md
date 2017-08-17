@@ -5,6 +5,7 @@ permalink: pmd_rules_ecmascript_unnecessary.html
 folder: pmd/rules/ecmascript
 sidebaractiveurl: /pmd_rules_ecmascript.html
 editmepath: ../pmd-javascript/src/main/resources/rulesets/ecmascript/unnecessary.xml
+keywords: Unnecessary, UnnecessaryParentheses, UnnecessaryBlock, NoElseReturn
 ---
 ## NoElseReturn
 
@@ -13,9 +14,9 @@ editmepath: ../pmd-javascript/src/main/resources/rulesets/ecmascript/unnecessary
 **Priority:** Medium (3)
 
 The else block in a if-else-construct is unnecessary if the `if` block contains a return.
-    Then the content of the else block can be put outside.
-    
-    See also: http://eslint.org/docs/rules/no-else-return
+Then the content of the else block can be put outside.
+
+See also: <http://eslint.org/docs/rules/no-else-return>
 
 ```
 //IfStatement[@Else="true"][Scope[1]/ReturnStatement]
@@ -23,17 +24,17 @@ The else block in a if-else-construct is unnecessary if the `if` block contains 
 
 **Example(s):**
 
-```
+``` javascript
 // Bad:
 if (x) {
-  return y;
+    return y;
 } else {
-  return z;
+    return z;
 }
 
 // Good:
 if (x) {
-  return y;
+    return y;
 }
 return z;
 ```
@@ -45,27 +46,27 @@ return z;
 **Priority:** Medium (3)
 
 An unnecessary Block is present.  Such Blocks are often used in other languages to
-    introduce a new variable scope.  Blocks do not behave like this in ECMAScipt, and using them can
-    be misleading.  Considering removing this unnecessary Block.
+introduce a new variable scope.  Blocks do not behave like this in ECMAScipt, and using them can
+be misleading.  Considering removing this unnecessary Block.
 
 ```
 //Block[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
-			or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
+    or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
 |
-	//Scope[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
-			or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
+//Scope[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
+    or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
 ```
 
 **Example(s):**
 
-```
+``` javascript
 if (foo) {
-   // Ok
+    // Ok
 }
 if (bar) {
-   {
-      // Bad
-   }
+    {
+        // Bad
+    }
 }
 ```
 
@@ -83,7 +84,7 @@ Unnecessary parentheses should be removed.
 
 **Example(s):**
 
-```
+``` javascript
 var x = 1; // Ok
 var y = (1 + 1); // Ok
 var z = ((1 + 1)); // Bad

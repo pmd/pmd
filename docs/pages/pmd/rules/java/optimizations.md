@@ -5,6 +5,7 @@ permalink: pmd_rules_java_optimizations.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/optimizations.xml
+keywords: Optimization, LocalVariableCouldBeFinal, MethodArgumentCouldBeFinal, AvoidInstantiatingObjectsInLoops, UseArrayListInsteadOfVector, SimplifyStartsWith, UseStringBufferForStringAppends, UseArraysAsList, AvoidArrayLoops, UnnecessaryWrapperObjectCreation, AddEmptyString, RedundantFieldInitializer, PrematureDeclaration
 ---
 ## AddEmptyString
 
@@ -21,9 +22,9 @@ It is much better to use one of the type-specific toString() methods instead.
 
 **Example(s):**
 
-```
-String s = "" + 123; 				// inefficient 
-String t = Integer.toString(456); 	// preferred approach
+``` java
+String s = "" + 123;                // inefficient
+String t = Integer.toString(456);   // preferred approach
 ```
 
 ## AvoidArrayLoops
@@ -55,22 +56,21 @@ or AdditiveExpression) and count(.//PrimaryPrefix/Name)=1]
 
 **Example(s):**
 
-```
+``` java
 public class Test {
-  public void bar() {
-    int[] a = new int[10];
-    int[] b = new int[10];
-    for (int i=0;i<10;i++) {
-      b[i]=a[i];
-    }
-  }
-}
-     // this will trigger the rule
-     for (int i=0;i<10;i++) {
-       b[i]=a[c[i]];
-     }
+    public void bar() {
+        int[] a = new int[10];
+        int[] b = new int[10];
+        for (int i=0;i<10;i++) {
+            b[i]=a[i];
+        }
 
-  }
+        int[] c = new int[10];
+        // this will trigger the rule
+        for (int i=0;i<10;i++) {
+            b[i]=a[c[i]];
+        }
+    }
 }
 ```
 
@@ -86,13 +86,13 @@ New objects created within loops should be checked to see if they can created ou
 
 **Example(s):**
 
-```
+``` java
 public class Something {
-	public static void main( String as[] ) {  
-		for (int i = 0; i < 10; i++) {
-		    Foo f = new Foo(); // Avoid this whenever you can it's really expensive
-		}
-	}
+    public static void main( String as[] ) {
+        for (int i = 0; i < 10; i++) {
+            Foo f = new Foo(); // Avoid this whenever you can it's really expensive
+        }
+    }
 }
 ```
 
@@ -108,12 +108,12 @@ A local variable assigned only once can be declared final.
 
 **Example(s):**
 
-```
+``` java
 public class Bar {
-	public void foo () {
-		String txtA = "a"; 		// if txtA will not be assigned again it is better to do this:
-		final String txtB = "b";
-	}
+    public void foo () {
+    String txtA = "a";          // if txtA will not be assigned again it is better to do this:
+    final String txtB = "b";
+    }
 }
 ```
 
@@ -129,13 +129,13 @@ A method argument that is never re-assigned within the method can be declared fi
 
 **Example(s):**
 
-```
-public void foo1 (String param) {	// do stuff with param never assigning it
-  
+``` java
+public void foo1 (String param) {       // do stuff with param never assigning it
+
 }
 
-public void foo2 (final String param) {	// better, do stuff with param never assigning it
-  
+public void foo2 (final String param) { // better, do stuff with param never assigning it
+
 }
 ```
 
@@ -151,18 +151,18 @@ Checks for variables that are defined before they might be used. A reference is 
 
 **Example(s):**
 
-```
+``` java
 public int getLength(String[] strings) {
-  
-  int length = 0;	// declared prematurely
 
-  if (strings == null || strings.length == 0) return 0;
-  
-  for (String str : strings) {
-    length += str.length();
+    int length = 0; // declared prematurely
+
+    if (strings == null || strings.length == 0) return 0;
+
+    for (String str : strings) {
+        length += str.length();
     }
 
-  return length;
+    return length;
 }
 ```
 
@@ -179,25 +179,25 @@ is redundant and results in a larger class file (approximately three additional 
 
 **Example(s):**
 
-```
+``` java
 public class C {
-	boolean b	= false;	// examples of redundant initializers
-	byte by		= 0;
-	short s		= 0;
-	char c		= 0;
-	int i		= 0;
-	long l		= 0;
-	
-	float f		= .0f;    // all possible float literals
-	doable d	= 0d;     // all possible double literals
-	Object o	= null;
-	
-	MyClass mca[] = null;
-	int i1 = 0, ia1[] = null;
-	
-	class Nested {
-		boolean b = false;
-	}
+    boolean b   = false;    // examples of redundant initializers
+    byte by     = 0;
+    short s     = 0;
+    char c      = 0;
+    int i       = 0;
+    long l      = 0;
+
+    float f     = .0f;    // all possible float literals
+    doable d    = 0d;     // all possible double literals
+    Object o    = null;
+
+    MyClass mca[] = null;
+    int i1 = 0, ia1[] = null;
+
+    class Nested {
+        boolean b = false;
+    }
 }
 ```
 
@@ -225,16 +225,16 @@ at the expense of some readability.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
 
-	boolean checkIt(String x) {
-		return x.startsWith("a");	// suboptimal
-	}
-  
-	boolean fasterCheckIt(String x) {
-		return x.charAt(0) == 'a';	//	faster approach
-	}
+    boolean checkIt(String x) {
+        return x.startsWith("a");   // suboptimal
+    }
+
+    boolean fasterCheckIt(String x) {
+        return x.charAt(0) == 'a';  // faster approach
+    }
 }
 ```
 
@@ -252,20 +252,20 @@ garbage-collected later.
 
 **Example(s):**
 
-```
+``` java
 public int convert(String s) {
-  int i, i2;
+    int i, i2;
 
-  i = Integer.valueOf(s).intValue(); // this wastes an object
-  i = Integer.parseInt(s); 			 // this is better
+    i = Integer.valueOf(s).intValue();  // this wastes an object
+    i = Integer.parseInt(s);            // this is better
 
-  i2 = Integer.valueOf(i).intValue(); // this wastes an object
-  i2 = i; // this is better
+    i2 = Integer.valueOf(i).intValue(); // this wastes an object
+    i2 = i;                             // this is better
 
-  String s3 = Integer.valueOf(i2).toString(); // this wastes an object
-  s3 = Integer.toString(i2); 		// this is better
+    String s3 = Integer.valueOf(i2).toString(); // this wastes an object
+    s3 = Integer.toString(i2);                  // this is better
 
-  return i2;
+    return i2;
 }
 ```
 
@@ -285,12 +285,12 @@ ArrayList is a much better Collection implementation than Vector if thread-safe 
 
 **Example(s):**
 
-```
+``` java
 public class SimpleTest extends TestCase {
-	public void testX() {
-		Collection c1 = new Vector();		
-		Collection c2 = new ArrayList();	// achieves the same with much better performance
-	}
+    public void testX() {
+    Collection c1 = new Vector();
+    Collection c2 = new ArrayList();    // achieves the same with much better performance
+    }
 }
 ```
 
@@ -337,18 +337,18 @@ an array of objects. It is faster than executing a loop to copy all the elements
 
 **Example(s):**
 
-```
+``` java
 public class Test {
-  public void foo(Integer[] ints) {
-    // could just use Arrays.asList(ints)
-     List l= new ArrayList(10);
-     for (int i=0; i< 100; i++) {
-       l.add(ints[i]);
-     }
-     for (int i=0; i< 100; i++) {
-       l.add(a[i].toString()); // won't trigger the rule
-     }
-  }
+    public void foo(Integer[] ints) {
+        // could just use Arrays.asList(ints)
+        List l= new ArrayList(10);
+        for (int i=0; i< 100; i++) {
+            l.add(ints[i]);
+        }
+        for (int i=0; i< 100; i++) {
+            l.add(a[i].toString()); // won't trigger the rule
+        }
+    }
 }
 ```
 
@@ -366,16 +366,16 @@ threadsafe StringBuffer is recommended to avoid this.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-  void bar() {
-    String a;
-    a = "foo";
-    a += " bar";
-   // better would be:
-   // StringBuilder a = new StringBuilder("foo");
-   // a.append(" bar);
-  }
+    void bar() {
+        String a;
+        a = "foo";
+        a += " bar";
+        // better would be:
+        // StringBuilder a = new StringBuilder("foo");
+        // a.append(" bar);
+    }
 }
 ```
 

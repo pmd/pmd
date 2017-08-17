@@ -5,6 +5,7 @@ permalink: pmd_rules_java_empty.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/empty.xml
+keywords: Empty Code, EmptyCatchBlock, EmptyIfStmt, EmptyWhileStmt, EmptyTryBlock, EmptyFinallyBlock, EmptySwitchStatements, EmptySynchronizedBlock, EmptyStatementNotInLoop, EmptyInitializer, EmptyStatementBlock, EmptyStaticInitializer
 ---
 ## EmptyCatchBlock
 
@@ -27,13 +28,13 @@ or reported.
 
 **Example(s):**
 
-```
+``` java
 public void doSomething() {
-  try {
-    FileInputStream fis = new FileInputStream("/tmp/bugger");
-  } catch (IOException ioe) {
-      // not good
-  }
+    try {
+        FileInputStream fis = new FileInputStream("/tmp/bugger");
+    } catch (IOException ioe) {
+        // not good
+    }
 }
 ```
 
@@ -58,15 +59,15 @@ Empty finally blocks serve no purpose and should be removed.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
- public void bar() {
-  try {
-    int x=2;
-   } finally {
-    // empty!
-   }
- }
+    public void bar() {
+        try {
+            int x=2;
+        } finally {
+            // empty!
+        }
+    }
 }
 ```
 
@@ -85,7 +86,7 @@ Empty If Statement finds instances where a condition is checked but nothing is d
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
  void bar(int x) {
   if (x == 0) {
@@ -109,7 +110,7 @@ Empty initializers serve no purpose and should be removed.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
 
    static {} // Why ?
@@ -133,7 +134,7 @@ Empty block statements serve no purpose and should be removed.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
 
    private int _bar;
@@ -171,7 +172,7 @@ and should be removed.
 
 **Example(s):**
 
-```
+``` java
 public void doit() {
       // this is probably not what you meant to do
       ;
@@ -194,11 +195,11 @@ An empty static initializer serve no purpose and should be removed.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	static {
-	// empty
-	}
+    static {
+        // empty
+    }
 }
 ```
 
@@ -216,13 +217,13 @@ Empty switch statements serve no purpose and should be removed.
 
 **Example(s):**
 
-```
+``` java
 public void bar() {
-	int x = 2;
-	switch (x) {
-	// once there was code here
-	// but it's been commented out or something
-	}
+    int x = 2;
+    switch (x) {
+        // once there was code here
+        // but it's been commented out or something
+    }
 }
 ```
 
@@ -240,13 +241,13 @@ Empty synchronized blocks serve no purpose and should be removed.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
- public void bar() {
-  synchronized (this) {
-   // empty!
-  }
- }
+    public void bar() {
+        synchronized (this) {
+            // empty!
+        }
+    }
 }
 ```
 
@@ -264,14 +265,14 @@ Avoid empty try blocks - what's the point?
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
- public void bar() {
-  try {
-  } catch (Exception e) {
-    e.printStackTrace();
-  }
- }
+    public void bar() {
+        try {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
 ```
 
@@ -291,11 +292,11 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
 
 **Example(s):**
 
-```
+``` java
 void bar(int a, int b) {
-	while (a == b) {
-	// empty!
-	}
+    while (a == b) {
+        // empty!
+    }
 }
 ```
 

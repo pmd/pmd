@@ -5,6 +5,7 @@ permalink: pmd_rules_plsql_codesize.html
 folder: pmd/rules/plsql
 sidebaractiveurl: /pmd_rules_plsql.html
 editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/codesize.xml
+keywords: Code Size, NPathComplexity, ExcessiveMethodLength, ExcessiveParameterList, ExcessiveObjectLength, ExcessiveTypeLength, ExcessivePackageBodyLength, ExcessivePackageSpecificationLength, CyclomaticComplexity, TooManyFields, NcssMethodCount, NcssObjectCount, TooManyMethods
 ---
 ## CyclomaticComplexity
 
@@ -21,120 +22,120 @@ high complexity, and 11+ is very high complexity.
 
 **Example(s):**
 
-```
+``` sql
 -- Cyclomatic Complexity of 25 
-CREATE OR REPLACE PACKAGE BODY pkg_pmd_working_sequence  AS 
+CREATE OR REPLACE PACKAGE BODY pkg_pmd_working_sequence  AS
 1 PROCEDURE ty_logger  IS BEGIN
 2        IF true
          THEN
-              DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
-3		 IF true
-		 THEN
-		      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
-4			 IF true
-			 THEN
-			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
-5			 ELSIF false
-			 THEN
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 ELSE
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 END IF;
-6		 ELSIF false
-		 THEN
-			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-7			 IF true
-			 THEN
-			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
-8			 ELSIF false
-			 THEN
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 ELSE
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 END IF;
-		 ELSE
-			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-9			 IF true
-			 THEN
-			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
-10			 ELSIF false
-			 THEN
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 ELSE
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 END IF;
-		 END IF;
+              DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+3        IF true
+         THEN
+              DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+4            IF true
+             THEN
+                  DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+5            ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+6        ELSIF false
+         THEN
+            DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+7            IF true
+             THEN
+                  DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+8            ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+         ELSE
+            DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+9            IF true
+             THEN
+                  DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+10           ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+         END IF;
 11         ELSIF false
          THEN
-		DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-12		 IF true
-		 THEN
-		      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
-13			 IF true
-			 THEN
-			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
-14			 ELSIF false
-			 THEN
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 ELSE
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 END IF;
-15		 ELSIF false
-		 THEN
-16			 IF true
-			 THEN
-			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
-17			 ELSIF false
-			 THEN
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 ELSE
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 END IF;
-			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-		 ELSE
-			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-		 END IF;
-	 ELSE
-		DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-18		 IF true
-		 THEN
-		      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
-19			 IF true
-			 THEN
-			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
-20			 ELSIF false
-			 THEN
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 ELSE
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 END IF;
-21		 ELSIF false
-		 THEN
-			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-22			 IF true
-			 THEN
-			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
-23			 ELSIF false
-			 THEN
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 ELSE
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 END IF;
-		 ELSE
-			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-24			 IF true
-			 THEN
-			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
-25			 ELSIF false
-			 THEN
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 ELSE
-				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
-			 END IF;
-		 END IF;
-	 END IF;
-END;								
-						
+            DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+12       IF true
+         THEN
+              DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+13           IF true
+             THEN
+                  DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+14           ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+15       ELSIF false
+         THEN
+16           IF true
+             THEN
+                  DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+17           ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+             DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+         ELSE
+             DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+         END IF;
+     ELSE
+        DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+18       IF true
+         THEN
+              DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+19           IF true
+             THEN
+                  DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+20           ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+21       ELSIF false
+         THEN
+            DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+22           IF true
+             THEN
+                DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+23           ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+             ELSE
+             DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+24           IF true
+             THEN
+                  DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+25           ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+         END IF;
+     END IF;
+END;
+
 END;
 ```
 
@@ -161,12 +162,12 @@ Try to reduce the method length by creating helper methods and removing any copy
 
 **Example(s):**
 
-```
+``` sql
 CREATE OR REPLACE
 PROCEDURE doSomething BEGIN
-	DBMS_OUTPUT.PUT_LINE("Hello world!");
-	DBMS_OUTPUT.PUT_LINE("Hello world!");
-		-- 98 copies omitted for brevity.
+    DBMS_OUTPUT.PUT_LINE("Hello world!");
+    DBMS_OUTPUT.PUT_LINE("Hello world!");
+        -- 98 copies omitted for brevity.
 END;
 ```
 
@@ -192,23 +193,23 @@ apart the code becomes more managable and ripe for reuse.
 
 **Example(s):**
 
-```
+``` sql
 CREATE OR REPLACE
 PACKAGE BODY Foo AS
-	PROCEDURE bar1 IS BEGIN
+    PROCEDURE bar1 IS BEGIN
     -- 1000 lines of code
-	END bar1;
-	PROCEDURE bar2 IS BEGIN
+    END bar1;
+    PROCEDURE bar2 IS BEGIN
     -- 1000 lines of code
-	END bar2;
+    END bar2;
     PROCEDURE bar3 IS BEGIN
     -- 1000 lines of code
-	END bar3;
-	
-	
+    END bar3;
+
+
     PROCEDURE barN IS BEGIN
     -- 1000 lines of code
-	END barn;
+    END barn;
 END;
 ```
 
@@ -234,23 +235,23 @@ apart the code becomes more managable and ripe for reuse.
 
 **Example(s):**
 
-```
+``` sql
 CREATE OR REPLACE
 PACKAGE BODY Foo AS
-	PROCEDURE bar1 IS BEGIN
+    PROCEDURE bar1 IS BEGIN
     -- 1000 lines of code
-	END bar1;
-	PROCEDURE bar2 IS BEGIN
+    END bar1;
+    PROCEDURE bar2 IS BEGIN
     -- 1000 lines of code
-	END bar2;
+    END bar2;
     PROCEDURE bar3 IS BEGIN
     -- 1000 lines of code
-	END bar3;
-	
-	
+    END bar3;
+
+
     PROCEDURE barN IS BEGIN
     -- 1000 lines of code
-	END barn;
+    END barn;
 END;
 ```
 
@@ -276,16 +277,16 @@ apart the code becomes more managable and ripe for reuse.
 
 **Example(s):**
 
-```
+``` sql
 CREATE OR REPLACE
 PACKAGE Foo AS
-	PROCEDURE bar1 ;
-	PROCEDURE bar2 ;
-        PROCEDURE bar3 ;
-	
-    ..
-	
-        PROCEDURE barN ;
+    PROCEDURE bar1;
+    PROCEDURE bar2;
+    PROCEDURE bar3;
+
+    ...
+
+    PROCEDURE barN;
 END;
 ```
 
@@ -310,19 +311,19 @@ same datatype. These situations usually denote the need for new objects to wrap 
 
 **Example(s):**
 
-```
+``` sql
 CREATE OR REPLACE
-PROCEDURE addPerson(		-- too many arguments liable to be mixed up
-	birthYear pls_integer, birthMonth pls_integer, birthDate pls_integer, height pls_integer, weight pls_integer, ssn pls_integer) {
+PROCEDURE addPerson(        -- too many arguments liable to be mixed up
+    birthYear pls_integer, birthMonth pls_integer, birthDate pls_integer, height pls_integer, weight pls_integer, ssn pls_integer) {
 
-	. . . .
+    . . . .
 END ADDPERSON;
- 
-CREATE OR REPLACE
-PROCEDURE addPerson(		-- preferred approach
-	birthdate DATE, measurements BodyMeasurements , ssn INTEGER) BEGIN
 
-	. . . .
+CREATE OR REPLACE
+PROCEDURE addPerson(        -- preferred approach
+    birthdate DATE, measurements BodyMeasurements , ssn INTEGER) BEGIN
+
+    . . . .
 END;
 ```
 
@@ -348,23 +349,23 @@ apart the code becomes more managable and ripe for reuse.
 
 **Example(s):**
 
-```
+``` sql
 CREATE OR REPLACE
 TYPE BODY Foo AS
-	 MEMBER PROCEDURE bar1 IS BEGIN
+    MEMBER PROCEDURE bar1 IS BEGIN
     -- 1000 lines of code
-	END bar1;
-	 MEMBER PROCEDURE bar2 IS BEGIN
+    END bar1;
+    MEMBER PROCEDURE bar2 IS BEGIN
     -- 1000 lines of code
-	END bar2;
-     MEMBER PROCEDURE bar3 IS BEGIN
+    END bar2;
+    MEMBER PROCEDURE bar3 IS BEGIN
     -- 1000 lines of code
-	END bar3;
-	
-	
-     MEMBER PROCEDURE barN IS BEGIN
+    END bar3;
+
+
+    MEMBER PROCEDURE barN IS BEGIN
     -- 1000 lines of code
-	END barn;
+    END barn;
 END;
 ```
 
@@ -390,7 +391,7 @@ lines of code that are split are counted as one.
 
 **Example(s):**
 
-```
+``` sql
 CREATE OR REPLACE PACKAGE BODY AS
  FUNCTION methd RETURN INTEGER IS
  BEGIN
@@ -421,7 +422,7 @@ lines of code that are split are counted as one.
 
 **Example(s):**
 
-```
+``` sql
 CREATE OR REPLACE PACKAGE pkg_
  PROCEDURE Foo IS
  BEGIN
@@ -454,38 +455,38 @@ complexity and increase readability.
 
 **Example(s):**
 
-```
+``` sql
 CREATE OR REPLACE
-PROCEDURE bar AS BEGIN	-- this is something more complex than it needs to be,
-	if (y) THEN	-- it should be broken down into smaller methods or functions
-		for j IN 0 .. j-1 LOOP
-			if (j > r) THEN
-				doSomething;
-				while (f < 5 ) LOOP
-					anotherThing;
-					f := f - 27;
-					END LOOP;
-			else
-					tryThis();
-			END IF;
-		END LOOP;
-	END IF;
-	if ( r - n > 45) THEN
-		while (doMagic) LOOP
-			findRabbits;
-		END LOOP;
-	END IF;
-	BEGIN
-		doSomethingDangerous();
-	EXCEPTION WHEN FooException THEN
-		makeAmends;
-		BEGIN
-			dontDoItAgain;
-		EXCEPTION
-		WHEN OTHERS THEN
-				log_problem;
-		END;
-	END;
+PROCEDURE bar AS BEGIN  -- this is something more complex than it needs to be,
+    if (y) THEN -- it should be broken down into smaller methods or functions
+        for j IN 0 .. j-1 LOOP
+            if (j > r) THEN
+                doSomething;
+                while (f < 5 ) LOOP
+                    anotherThing;
+                    f := f - 27;
+                    END LOOP;
+            else
+                tryThis();
+            END IF;
+        END LOOP;
+    END IF;
+    if ( r - n > 45) THEN
+        while (doMagic) LOOP
+            findRabbits;
+        END LOOP;
+    END IF;
+    BEGIN
+        doSomethingDangerous();
+    EXCEPTION WHEN FooException THEN
+        makeAmends;
+        BEGIN
+            dontDoItAgain;
+        EXCEPTION
+        WHEN OTHERS THEN
+            log_problem;
+        END;
+    END;
 END;
 ```
 
@@ -511,7 +512,7 @@ city/state/zip fields could park them within a single Address field.
 
 **Example(s):**
 
-```
+``` sql
 CREATE OR REPLACE PACKAGE pkg_too_many_fields AS
     C_CHAR_A CONSTANT CHAR(1 CHAR) := 'A';
     C_CHAR_B CONSTANT CHAR(1 CHAR) := 'B';
