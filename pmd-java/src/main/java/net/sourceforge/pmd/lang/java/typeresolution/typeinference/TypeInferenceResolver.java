@@ -37,9 +37,8 @@ public final class TypeInferenceResolver {
 
         List<Bound> newBounds = new ArrayList<>();
         while (!constraints.isEmpty()) {
-            List<BoundOrConstraint> reduceResult = constraints.get(constraints.size() - 1).reduce();
-            constraints.remove(constraints.size() - 1);
-            
+            List<BoundOrConstraint> reduceResult = constraints.remove(constraints.size() - 1).reduce();
+
             for (BoundOrConstraint boundOrConstraint : reduceResult) {
                 if (boundOrConstraint instanceof Bound) {
                     newBounds.add((Bound) boundOrConstraint);
