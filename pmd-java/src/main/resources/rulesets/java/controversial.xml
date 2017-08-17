@@ -237,6 +237,9 @@ public class Foo extends Bar{
       </example>
     </rule>
 
+    <!-- The rule UnnecessaryParentheses has been merged into unnecessary.xml/UselessParentheses -->
+    <rule name="UnnecessaryParentheses" deprecated="true" ref="rulesets/java/unnecessary.xml/UselessParentheses" />
+
     <rule name="DefaultPackage"
           language="java"
           since="3.4"
