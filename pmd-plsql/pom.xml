@@ -97,11 +97,6 @@
                     <suppressionsLocation>pmd-plsql-checkstyle-suppressions.xml</suppressionsLocation>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>net.sourceforge.pmd</groupId>
-                <artifactId>pmd-build-tools-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
     <dependencies>

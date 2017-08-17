@@ -10,87 +10,87 @@ Contains rules about migrating from one JDK version to another.  Don't use these
 rather, use a wrapper ruleset such as migrating_to_13.xml.
   </description>
 
-<rule name="ReplaceVectorWithList"
-   		language="java"
-  since="3.4"
-  message="Consider replacing this Vector with the newer java.util.List"
-  class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#ReplaceVectorWithList">
-  <description>
+  <rule name="ReplaceVectorWithList"
+        language="java"
+        since="3.4"
+        message="Consider replacing this Vector with the newer java.util.List"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#replacevectorwithlist">
+    <description>
 Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required.
-  </description>
-  <priority>3</priority>
-  <properties>
-    <property name="xpath">
-    <value>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
 <![CDATA[
 //Type/ReferenceType/ClassOrInterfaceType[@Image='Vector']
- ]]>
-    </value>
-    </property>
-  </properties>
-  <example>
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
 public class Foo {
- void bar() {
-    Vector v = new Vector();
- }
+    void bar() {
+        Vector v = new Vector();
+    }
 }
 ]]>
   </example>
 </rule>
 
-    <rule name="ReplaceHashtableWithMap"
-   		language="java"
-      since="3.4"
-      message="Consider replacing this Hashtable with the newer java.util.Map"
-      class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#ReplaceHashtableWithMap">
-      <description>
+  <rule name="ReplaceHashtableWithMap"
+        language="java"
+        since="3.4"
+        message="Consider replacing this Hashtable with the newer java.util.Map"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#replacehashtablewithmap">
+    <description>
 Consider replacing Hashtable usage with the newer java.util.Map if thread safety is not required.
-      </description>
-      <priority>3</priority>
-      <properties>
+    </description>
+    <priority>3</priority>
+    <properties>
         <property name="xpath">
-        <value>
+            <value>
     <![CDATA[
 //Type/ReferenceType/ClassOrInterfaceType[@Image='Hashtable']
      ]]>
-        </value>
+            </value>
         </property>
-      </properties>
-      <example>
+    </properties>
+    <example>
     <![CDATA[
 public class Foo {
-	void bar() {
-		Hashtable h = new Hashtable();
-	}
+    void bar() {
+        Hashtable h = new Hashtable();
+    }
 }
     ]]>
-      </example>
-    </rule>
+    </example>
+  </rule>
 
-    <rule name="ReplaceEnumerationWithIterator"
-   		language="java"
-      since="3.4"
-      message="Consider replacing this Enumeration with the newer java.util.Iterator"
-      class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#ReplaceEnumerationWithIterator">
-      <description>
+  <rule name="ReplaceEnumerationWithIterator"
+        language="java"
+        since="3.4"
+        message="Consider replacing this Enumeration with the newer java.util.Iterator"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#replaceenumerationwithiterator">
+    <description>
 Consider replacing Enumeration usages with the newer java.util.Iterator
-      </description>
-      <priority>3</priority>
-      <properties>
+    </description>
+    <priority>3</priority>
+    <properties>
         <property name="xpath">
-        <value>
-    <![CDATA[
+            <value>
+<![CDATA[
 //ImplementsList/ClassOrInterfaceType[@Image='Enumeration']
-     ]]>
-        </value>
+]]>
+            </value>
         </property>
-      </properties>
-      <example>
-    <![CDATA[
+    </properties>
+    <example>
+<![CDATA[
 public class Foo implements Enumeration {
     private int x = 42;
     public boolean hasMoreElements() {
@@ -100,148 +100,149 @@ public class Foo implements Enumeration {
         return String.valueOf(i++);
     }
 }
-    ]]>
-      </example>
-    </rule>
+]]>
+    </example>
+  </rule>
 
-    <rule name="AvoidEnumAsIdentifier"
-   		language="java"
-          since="3.4"
-          message="Avoid using enum as an identifier; it's a reserved word in JDK 1.5"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#AvoidEnumAsIdentifier">
-      <description>
+  <rule name="AvoidEnumAsIdentifier"
+        language="java"
+        since="3.4"
+        message="Avoid using enum as an identifier; it's a reserved word in JDK 1.5"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#avoidenumasidentifier">
+    <description>
 Use of the term 'enum' will conflict with newer versions of Java since it is a reserved word.
-	</description>
-      <priority>2</priority>
-      <properties>
-          <property name="xpath">
-              <value>
-                  <![CDATA[
+    </description>
+    <priority>2</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
 //VariableDeclaratorId[@Image='enum']
-                  ]]>
-              </value>
-          </property>
-      </properties>
-      <example>
-  <![CDATA[
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+<![CDATA[
 public class A {
-	public  class foo {
-		String enum = "foo";
-	}
+    public class Foo {
+        String enum = "foo";
+    }
 }
-  ]]>
-      </example>
-    </rule>
+]]>
+    </example>
+  </rule>
 
-    <rule name="AvoidAssertAsIdentifier"
-   		language="java"
-          since="3.4"
-          message="Avoid using assert as an identifier; it became a reserved word in JDK 1.4"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#AvoidAssertAsIdentifier">
-      <description>
+  <rule name="AvoidAssertAsIdentifier"
+        language="java"
+        since="3.4"
+        message="Avoid using assert as an identifier; it became a reserved word in JDK 1.4"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#avoidassertasidentifier">
+    <description>
 Use of the term 'assert' will conflict with newer versions of Java since it is a reserved word.
-	</description>
-      <priority>2</priority>
-      <properties>
-          <property name="xpath">
-              <value>
-                  <![CDATA[
+    </description>
+    <priority>2</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
 //VariableDeclaratorId[@Image='assert']
-                  ]]>
-              </value>
-          </property>
-      </properties>
-      <example>
-  <![CDATA[
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+<![CDATA[
 public class A {
-	public  class foo {
-		String assert = "foo";
-	}
+    public class Foo {
+        String assert = "foo";
+    }
 }
-  ]]>
-      </example>
-    </rule>
+]]>
+    </example>
+  </rule>
 
-    <rule name="IntegerInstantiation"
-   		language="java"
-          since="3.5"
-          message="Avoid instantiating Integer objects. Call Integer.valueOf() instead."
-	  class="net.sourceforge.pmd.lang.rule.XPathRule"
-      externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#IntegerInstantiation">
-      <description>
+  <rule name="IntegerInstantiation"
+        language="java"
+        since="3.5"
+        message="Avoid instantiating Integer objects. Call Integer.valueOf() instead."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#integerinstantiation">
+    <description>
 Calling new Integer() causes memory allocation that can be avoided by the static Integer.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
-	</description>
-      <priority>2</priority>
-      <properties>
-          <property name="xpath">
-              <value>
-                  <![CDATA[
+    </description>
+    <priority>2</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
 //PrimaryPrefix
  /AllocationExpression
   [not (ArrayDimsAndInits)
    and (ClassOrInterfaceType/@Image='Integer'
     or ClassOrInterfaceType/@Image='java.lang.Integer')]
-                  ]]>
-              </value>
-          </property>
-      </properties>
-      <example>
-  <![CDATA[
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+<![CDATA[
 public class Foo {
-	private Integer i = new Integer(0); // change to Integer i = Integer.valueOf(0);
+    private Integer i = new Integer(0); // change to Integer i = Integer.valueOf(0);
 }
-   ]]>
-      </example>
-    </rule>
-	<rule name="ByteInstantiation"
-   		language="java"
-	       since="4.0"
-          message="Avoid instantiating Byte objects. Call Byte.valueOf() instead"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#ByteInstantiation">
-          <description>
+]]>
+    </example>
+  </rule>
+
+  <rule name="ByteInstantiation"
+        language="java"
+        since="4.0"
+        message="Avoid instantiating Byte objects. Call Byte.valueOf() instead"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#byteinstantiation">
+    <description>
 Calling new Byte() causes memory allocation that can be avoided by the static Byte.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
-          </description>
-          <priority>2</priority>
-      <properties>
-          <property name="xpath">
-          <value>
-          <![CDATA[
+    </description>
+    <priority>2</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
 //PrimaryPrefix/AllocationExpression
 [not (ArrayDimsAndInits)
 and (ClassOrInterfaceType/@Image='Byte'
 or ClassOrInterfaceType/@Image='java.lang.Byte')]
-          ]]>
-          </value>
+]]>
+            </value>
         </property>
-     </properties>
-     <example>
+    </properties>
+    <example>
 <![CDATA[
 public class Foo {
-	private Byte i = new Byte(0); // change to Byte i =	Byte.valueOf(0);
+    private Byte i = new Byte(0); // change to Byte i = Byte.valueOf(0);
 }
 ]]>
-     </example>
-</rule>
+    </example>
+  </rule>
 
-    <rule name="ShortInstantiation"
-   		language="java"
-          since="4.0"
-          message="Avoid instantiating Short objects. Call Short.valueOf() instead"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#ShortInstantiation">
-          <description>
+  <rule name="ShortInstantiation"
+        language="java"
+        since="4.0"
+        message="Avoid instantiating Short objects. Call Short.valueOf() instead"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#shortinstantiation">
+    <description>
 Calling new Short() causes memory allocation that can be avoided by the static Short.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
-          </description>
-          <priority>2</priority>
-          <properties>
-              <property name="xpath">
-          <value>
+    </description>
+    <priority>2</priority>
+    <properties>
+        <property name="xpath">
+            <value>
 <![CDATA[
 //PrimaryPrefix
 /AllocationExpression
@@ -249,32 +250,32 @@ It makes use of an internal cache that recycles earlier instances making it more
 and (ClassOrInterfaceType/@Image='Short'
 or ClassOrInterfaceType/@Image='java.lang.Short')]
 ]]>
-          </value>
-              </property>
-          </properties>
-          <example>
+            </value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
 public class Foo {
-	private Short i = new Short(0); // change to Short i = Short.valueOf(0);
+    private Short i = new Short(0); // change to Short i = Short.valueOf(0);
 }
 ]]>
-          </example>
-</rule>
+    </example>
+  </rule>
 
-<rule name="LongInstantiation"
-   		language="java"
-   since="4.0"
-	message="Avoid instantiating Long objects.Call Long.valueOf() instead"
-    class="net.sourceforge.pmd.lang.rule.XPathRule"
-	externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#LongInstantiation">
+  <rule name="LongInstantiation"
+        language="java"
+        since="4.0"
+        message="Avoid instantiating Long objects.Call Long.valueOf() instead"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#longinstantiation">
     <description>
 Calling new Long() causes memory allocation that can be avoided by the static Long.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
-</description>
+    </description>
     <priority>2</priority>
     <properties>
-    <property name="xpath">
-    <value>
+        <property name="xpath">
+            <value>
 <![CDATA[
 //PrimaryPrefix
 /AllocationExpression
@@ -282,42 +283,42 @@ It makes use of an internal cache that recycles earlier instances making it more
 and (ClassOrInterfaceType/@Image='Long'
 or ClassOrInterfaceType/@Image='java.lang.Long')]
 ]]>
-    </value>
-    </property>
+            </value>
+        </property>
     </properties>
     <example>
 <![CDATA[
 public class Foo {
-	private Long i = new Long(0); // change to Long i = Long.valueOf(0);
+    private Long i = new Long(0); // change to Long i = Long.valueOf(0);
 }
 ]]>
     </example>
   </rule>
 
 
-    <rule name="JUnit4TestShouldUseBeforeAnnotation"
-   		language="java"
-          since="4.0"
-          message="JUnit 4 tests that set up tests should use the @Before annotation"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#JUnit4TestShouldUseBeforeAnnotation">
-      <description>
+  <rule name="JUnit4TestShouldUseBeforeAnnotation"
+        language="java"
+        since="4.0"
+        message="JUnit 4 tests that set up tests should use the @Before annotation"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#junit4testshouldusebeforeannotation">
+    <description>
 In JUnit 3, the setUp method was used to set up all data entities required in running tests. 
 JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests
-      </description>
-      <priority>3</priority>
-      <properties>
-          <property name="xpath">
-              <value>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
 <![CDATA[
 //CompilationUnit[not(ImportDeclaration/Name[starts-with(@Image, "org.testng")])]
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='setUp']]
 [count(Annotation//Name[@Image='Before'])=0]
 ]]>
-              </value>
-          </property>
-      </properties>
-      <example>
+            </value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
 public class MyTest {
     public void setUp() {
@@ -330,31 +331,32 @@ public class MyTest2 {
     }
 }
 ]]>
-      </example>
-    </rule>
-    <rule name="JUnit4TestShouldUseAfterAnnotation"
-   		language="java"
-          since="4.0"
-          message="JUnit 4 tests that clean up tests should use the @After annotation"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#JUnit4TestShouldUseAfterAnnotation">
-      <description>
+    </example>
+  </rule>
+
+  <rule name="JUnit4TestShouldUseAfterAnnotation"
+        language="java"
+        since="4.0"
+        message="JUnit 4 tests that clean up tests should use the @After annotation"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#junit4testshoulduseafterannotation">
+    <description>
 In JUnit 3, the tearDown method was used to clean up all data entities required in running tests. 
 JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test
-      </description>
-      <priority>3</priority>
-      <properties>
-          <property name="xpath">
-              <value>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
 <![CDATA[
 //CompilationUnit[not(ImportDeclaration/Name[starts-with(@Image, "org.testng")])]
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='tearDown']]
 [count(Annotation//Name[@Image='After'])=0]
 ]]>
-              </value>
-          </property>
-      </properties>
-      <example>
+            </value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
 public class MyTest {
     public void tearDown() {
@@ -367,72 +369,74 @@ public class MyTest2 {
     }
 }
 ]]>
-      </example>
-    </rule>
-    <rule name="JUnit4TestShouldUseTestAnnotation"
-   		language="java"
-          since="4.0"
-          message="JUnit 4 tests that execute tests should use the @Test annotation"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#JUnit4TestShouldUseTestAnnotation">
-      <description>
+    </example>
+  </rule>
+
+  <rule name="JUnit4TestShouldUseTestAnnotation"
+        language="java"
+        since="4.0"
+        message="JUnit 4 tests that execute tests should use the @Test annotation"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#junit4testshouldusetestannotation">
+    <description>
 In JUnit 3, the framework executed all methods which started with the word test as a unit test. 
 In JUnit 4, only methods annotated with the @Test annotation are executed.
-      </description>
-      <priority>3</priority>
-      <properties>
-          <property name="xpath">
-              <value>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
 <![CDATA[
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public='true']/MethodDeclarator[starts-with(@Image,'test')]]
 [count(Annotation//Name[@Image='Test'])=0]
 ]]>
-              </value>
-          </property>
-      </properties>
-      <example>
+            </value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
 public class MyTest {
     public void testBad() {
         doSomething();
     }
 
-	@Test
+    @Test
     public void testGood() {
         doSomething();
     }
 }
 ]]>
-      </example>
-    </rule>
-    <rule name="JUnit4SuitesShouldUseSuiteAnnotation"
-   		language="java"
-          since="4.0"
-          message="JUnit 4 indicates test suites via annotations, not the suite method."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#JUnit4SuitesShouldUseSuiteAnnotation">
-      <description>
+    </example>
+  </rule>
+
+  <rule name="JUnit4SuitesShouldUseSuiteAnnotation"
+        language="java"
+        since="4.0"
+        message="JUnit 4 indicates test suites via annotations, not the suite method."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#junit4suitesshouldusesuiteannotation">
+    <description>
 In JUnit 3, test suites are indicated by the suite() method. In JUnit 4, suites are indicated
 through the @RunWith(Suite.class) annotation.
-      </description>
-      <priority>3</priority>
-      <properties>
-          <property name="xpath">
-              <value>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
 <![CDATA[
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='suite']]
 [MethodDeclaration/ResultType/Type/ReferenceType/ClassOrInterfaceType[@Image='Test' or @Image = 'junit.framework.Test']]
 [not(MethodDeclaration/Block//ClassOrInterfaceType[@Image='JUnit4TestAdapter'])]
 ]]>
-              </value>
-          </property>
-      </properties>
-      <example>
+            </value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
 public class BadExample extends TestCase{
 
     public static Test suite(){
-    	return new Suite();
+        return new Suite();
     }
 }
 
@@ -440,22 +444,22 @@ public class BadExample extends TestCase{
 @SuiteClasses( { TestOne.class, TestTwo.class })
 public class GoodTest {
 }]]>
-      </example>
-    </rule>
-    
-    <rule name="JUnitUseExpected"
-          since="4.0"
-          message="In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions"
-          class="net.sourceforge.pmd.lang.java.rule.migrating.JUnitUseExpectedRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#JUnitUseExpected">
-      <description>
+    </example>
+  </rule>
+
+  <rule name="JUnitUseExpected"
+        since="4.0"
+        message="In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions"
+        class="net.sourceforge.pmd.lang.java.rule.migrating.JUnitUseExpectedRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#junituseexpected">
+    <description>
 In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions.
-      </description>
-        <priority>3</priority>
-      <example>
+    </description>
+    <priority>3</priority>
+    <example>
 <![CDATA[
 public class MyTest {
-	@Test
+    @Test
     public void testBad() {
         try {
             doSomething();
@@ -464,13 +468,13 @@ public class MyTest {
         }
     }
 
-	@Test(expected=Exception.class)
+    @Test(expected=Exception.class)
     public void testGood() {
         doSomething();
     }
 }
 ]]>
-      </example>
-    </rule>
+    </example>
+  </rule>
 
 </ruleset>

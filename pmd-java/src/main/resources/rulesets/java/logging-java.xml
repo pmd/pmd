@@ -9,16 +9,16 @@
 The Java Logging ruleset contains a collection of rules that find questionable usages of the logger.
   </description>
 
-    <rule name="MoreThanOneLogger"
-    	   since="2.0"
-         message="Class contains more than one logger."
-         class="net.sourceforge.pmd.lang.java.rule.logging.MoreThanOneLoggerRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#MoreThanOneLogger">
-     <description>
+  <rule name="MoreThanOneLogger"
+        since="2.0"
+        message="Class contains more than one logger."
+        class="net.sourceforge.pmd.lang.java.rule.logging.MoreThanOneLoggerRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_logging-java.html#morethanonelogger">
+    <description>
 Normally only one logger is used in each class.
-     </description>
-        <priority>2</priority>
-     <example>
+    </description>
+    <priority>2</priority>
+    <example>
  <![CDATA[
 public class Foo {
     Logger log = Logger.getLogger(Foo.class.getName());
@@ -27,15 +27,15 @@ public class Foo {
     Logger log2= Logger.getLogger(Foo.class.getName());
 }
 ]]>
-     </example>
-     </rule>
+    </example>
+  </rule>
 
-     <rule name="LoggerIsNotStaticFinal"
-   		language="java"
-     		since="2.0"
-         message="The Logger variable declaration does not contain the static and final modifiers"
-         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#LoggerIsNotStaticFinal">
+  <rule name="LoggerIsNotStaticFinal"
+        language="java"
+        since="2.0"
+        message="The Logger variable declaration does not contain the static and final modifiers"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_logging-java.html#loggerisnotstaticfinal">
      <description>
 In most cases, the Logger reference can be declared as static and final.
      </description>
@@ -57,20 +57,20 @@ In most cases, the Logger reference can be declared as static and final.
      <example>
  <![CDATA[
 public class Foo{
-    Logger log = Logger.getLogger(Foo.class.getName());					// not recommended
+    Logger log = Logger.getLogger(Foo.class.getName());                 // not recommended
 
-    static final Logger log = Logger.getLogger(Foo.class.getName());	// preferred approach
+    static final Logger log = Logger.getLogger(Foo.class.getName());    // preferred approach
 }
 ]]>
-     </example>
-   </rule>
+    </example>
+  </rule>
 
-    <rule name="SystemPrintln"
-   		language="java"
-    		since="2.1"
-         message="{0} is used"
-         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#SystemPrintln">
+  <rule name="SystemPrintln"
+        language="java"
+        since="2.1"
+        message="{0} is used"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_logging-java.html#systemprintln">
      <description>
 References to System.(out|err).print are usually intended for debugging purposes and can remain in
 the codebase even in production code. By using a logger one can enable/disable this behaviour at
@@ -101,81 +101,84 @@ class Foo{
     }
 }
 ]]>
-     </example>
-     </rule>
+    </example>
+  </rule>
 
-    <rule  name="AvoidPrintStackTrace"
-   		language="java"
-    		  since="3.2"
-           message="Avoid printStackTrace(); use a logger call instead."
-           class="net.sourceforge.pmd.lang.rule.XPathRule"
-		   externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#AvoidPrintStackTrace">
-           <description>
+  <rule name="AvoidPrintStackTrace"
+        language="java"
+        since="3.2"
+        message="Avoid printStackTrace(); use a logger call instead."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_logging-java.html#avoidprintstacktrace">
+    <description>
 Avoid printStackTrace(); use a logger call instead.
-           </description>
-           <priority>3</priority>
-           <properties>
-             <property name="xpath">
-             <value>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
 <![CDATA[
 //PrimaryExpression
  [PrimaryPrefix/Name[contains(@Image,'printStackTrace')]]
  [PrimarySuffix[not(boolean(Arguments/ArgumentList/Expression))]]
 ]]>
-             </value>
-             </property>
-           </properties>
-           <example>
+            </value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
 class Foo {
-  void bar() {
-    try {
-     // do something
-    } catch (Exception e) {
-     e.printStackTrace();
-     }
-   }
+    void bar() {
+        try {
+            // do something
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
 ]]>
-           </example>
-    </rule>
+    </example>
+  </rule>
 
-   <rule name="GuardLogStatementJavaUtil"
-         language="java"
-         since="5.1.0"
-         message="There is log block not surrounded by if"
-         class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementJavaUtilRule"
-         externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#GuardLogStatementJavaUtil">
-     <description>
+  <rule name="GuardLogStatementJavaUtil"
+        language="java"
+        since="5.1.0"
+        message="There is log block not surrounded by if"
+        class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementJavaUtilRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_logging-java.html#guardlogstatementjavautil">
+    <description>
 Whenever using a log level, one should check if the loglevel is actually enabled, or
 otherwise skip the associate String creation and manipulation.
-     </description>
-     <priority>2</priority>
-     <example>
+    </description>
+    <priority>2</priority>
+    <example>
  <![CDATA[
- 	// Add this for performance
-	if (log.isLoggable(Level.FINE)) { ...
- 	    log.fine("log something" + " and " + "concat strings");
+//...
+// Add this for performance
+if (log.isLoggable(Level.FINE)) {
+    log.fine("log something" + " and " + "concat strings");
+}
 ]]>
-     </example>
-   </rule>
+    </example>
+  </rule>
 
-    <rule name="InvalidSlf4jMessageFormat"
-        language="java"
-        since="5.5.0"
-        message="Invalid message format"
-        class="net.sourceforge.pmd.lang.java.rule.logging.InvalidSlf4jMessageFormatRule"
-        externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#InvalidSlf4jMessageFormat">
-            <description>
+   <rule name="InvalidSlf4jMessageFormat"
+         language="java"
+         since="5.5.0"
+         message="Invalid message format"
+         class="net.sourceforge.pmd.lang.java.rule.logging.InvalidSlf4jMessageFormatRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_logging-java.html#invalidslf4jmessageformat">
+    <description>
 Check for messages in slf4j loggers with non matching number of arguments and placeholders.
-            </description>
-            <priority>5</priority>
-            <example>
-                <![CDATA[
+    </description>
+    <priority>5</priority>
+    <example>
+<![CDATA[
 LOGGER.error("forget the arg {}");
 LOGGER.error("too many args {}", "arg1", "arg2");
 LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The exception is shown separately, so is correct.
 ]]>
-     </example>
-   </rule>
+    </example>
+  </rule>
+
 </ruleset>

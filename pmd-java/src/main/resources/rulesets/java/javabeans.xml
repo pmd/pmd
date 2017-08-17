@@ -11,17 +11,17 @@ The JavaBeans Ruleset catches instances of bean rules not being followed.
 
 
   <rule name="BeanMembersShouldSerialize"
-  		  since="1.1"
+        since="1.1"
         message="Found non-transient, non-static member. Please mark as transient or provide accessors."
         class="net.sourceforge.pmd.lang.java.rule.javabeans.BeanMembersShouldSerializeRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/javabeans.html#BeanMembersShouldSerialize">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_javabeans.html#beanmembersshouldserialize">
     <description>
 If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable. 
 Member variables need to be marked as transient, static, or have accessor methods in the class. Marking 
 variables as transient is the safest and easiest modification. Accessor methods should follow the Java 
 naming conventions, i.e. for a variable named foo, getFoo() and setFoo() accessor methods should be provided.
     </description>
-      <priority>3</priority>
+    <priority>3</priority>
     <example>
 <![CDATA[
 private transient int someFoo;  // good, it's transient
@@ -41,12 +41,12 @@ private int getMoreFoo(){
     </example>
   </rule>
 
-    <rule name="MissingSerialVersionUID"
-   		language="java"
-    		 since="3.0"
-          message="Classes implementing Serializable should set a serialVersionUID"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/javabeans.html#MissingSerialVersionUID">
+  <rule name="MissingSerialVersionUID"
+        language="java"
+        since="3.0"
+        message="Classes implementing Serializable should set a serialVersionUID"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_javabeans.html#missingserialversionuid">
       <description>
 Serializable classes should provide a serialVersionUID field.
       </description>
@@ -73,13 +73,12 @@ and
       <example>
 <![CDATA[
 public class Foo implements java.io.Serializable {
- String name;
- // Define serialization id to avoid serialization related bugs
- // i.e., public static final long serialVersionUID = 4328743;
+    String name;
+    // Define serialization id to avoid serialization related bugs
+    // i.e., public static final long serialVersionUID = 4328743;
 }
-
 ]]>
-          </example>
-    </rule>
+      </example>
+  </rule>
 
 </ruleset>

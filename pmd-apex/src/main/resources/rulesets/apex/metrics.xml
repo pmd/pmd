@@ -14,7 +14,7 @@
           since="6.0.0"
           class="net.sourceforge.pmd.lang.apex.metrics.rule.CyclomaticComplexityRule"
           metrics="true"
-          externalInfoUrl="${pmd.website.baseurl}/rules/apex/metrics.html#CyclomaticComplexity">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_metrics.html#cyclomaticcomplexity">
         <description>
             <![CDATA[
 The complexity of methods directly affects maintenance costs and readability. Concentrating too much decisional logic

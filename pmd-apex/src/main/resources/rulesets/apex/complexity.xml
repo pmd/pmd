@@ -1,262 +1,268 @@
 <?xml version="1.0"?>
 
 <ruleset name="Complexity" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
-	<description>
+  <description>
 The Complexity ruleset contains rules that find problems related to code size or complexity.
   </description>
 
-	<rule name="AvoidDeeplyNestedIfStmts"
+  <rule name="AvoidDeeplyNestedIfStmts"
         since="5.5.0"
-		message="Deeply nested if..then statements are hard to read"
-		class="net.sourceforge.pmd.lang.apex.rule.complexity.AvoidDeeplyNestedIfStmtsRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#AvoidDeeplyNestedIfStmts">
-		<description>
+        message="Deeply nested if..then statements are hard to read"
+        class="net.sourceforge.pmd.lang.apex.rule.complexity.AvoidDeeplyNestedIfStmtsRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_complexity.html#avoiddeeplynestedifstmts">
+    <description>
 Avoid creating deeply nested if-then statements since they are harder to read and error-prone to maintain.
     </description>
-		<priority>3</priority>
-		<example>
-<![CDATA[public class Foo {
-	public void bar(Integer x, Integer y, Integer z) {
-		if (x>y) {
-			if (y>z) {
-				if (z==x) {
-					// !! too deep
-				}
-			}
-		}
-	}
+    <priority>3</priority>
+    <example>
+<![CDATA[
+public class Foo {
+    public void bar(Integer x, Integer y, Integer z) {
+        if (x>y) {
+            if (y>z) {
+                if (z==x) {
+                    // !! too deep
+                }
+            }
+        }
+    }
 }
 ]]>
     </example>
-	</rule>
+  </rule>
 
-	<rule name="ExcessiveParameterList"
+  <rule name="ExcessiveParameterList"
         since="5.5.0"
         message="Avoid long parameter lists."
-		class="net.sourceforge.pmd.lang.apex.rule.complexity.ExcessiveParameterListRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#ExcessiveParameterList">
-		<description>
+        class="net.sourceforge.pmd.lang.apex.rule.complexity.ExcessiveParameterListRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_complexity.html#excessiveparameterlist">
+    <description>
 Methods with numerous parameters are a challenge to maintain, especially if most of them share the
 same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
-   </description>
-		<priority>3</priority>
-		<example>
-<![CDATA[// too many arguments liable to be mixed up
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
+// too many arguments liable to be mixed up
 public void addPerson(int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
-	...
+    // ...
 }
 // preferred approach 
 public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
-	...
+    // ...
 }
 ]]>
-   </example>
-	</rule>
-	
-	<rule name="ExcessiveClassLength"
-       since="5.5.0"
-       message="Avoid really long classes."
-       class="net.sourceforge.pmd.lang.apex.rule.complexity.ExcessiveClassLengthRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#ExcessiveClassLength">
-   <description>
+    </example>
+  </rule>
+
+  <rule name="ExcessiveClassLength"
+        since="5.5.0"
+        message="Avoid really long classes."
+        class="net.sourceforge.pmd.lang.apex.rule.complexity.ExcessiveClassLengthRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_complexity.html#excessiveclasslength">
+    <description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive 
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more managable and ripe for reuse.
-   </description>
-     <priority>3</priority>
-   <example>
-<![CDATA[public class Foo {
-	public void bar1() {
-		// 1000 lines of code
-	}
-	public void bar2() {
-		// 1000 lines of code
-	}
-	public void bar3() {
-		// 1000 lines of code
-	}
-	public void barN() {
-		// 1000 lines of code
-	}
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
+public class Foo {
+    public void bar1() {
+        // 1000 lines of code
+    }
+    public void bar2() {
+        // 1000 lines of code
+    }
+    public void bar3() {
+        // 1000 lines of code
+    }
+    public void barN() {
+        // 1000 lines of code
+    }
 }
 ]]>
-   </example>
- </rule>
+    </example>
+  </rule>
 
-<rule name="NcssMethodCount"
-   since="5.5.0"
-   message="The method ''{0}()'' has an NCSS line count of {1}"
-   class="net.sourceforge.pmd.lang.apex.rule.complexity.NcssMethodCountRule"
-   externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#NcssMethodCount">
+  <rule name="NcssMethodCount"
+        since="5.5.0"
+        message="The method ''{0}()'' has an NCSS line count of {1}"
+        class="net.sourceforge.pmd.lang.apex.rule.complexity.NcssMethodCountRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_complexity.html#ncssmethodcount">
     <description>
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
     </description>
     <priority>3</priority>
-   <example>
-<![CDATA[public class Foo extends Bar {
-	//this method only has 1 NCSS lines
-	public Integer methd() {
-		super.methd();
-		
-		
-		
-		return 1;
-	}
+    <example>
+<![CDATA[
+public class Foo extends Bar {
+    //this method only has 1 NCSS lines
+    public Integer methd() {
+        super.methd();
+
+
+
+        return 1;
+    }
 }
 ]]>
-   </example>
-   </rule>
+    </example>
+  </rule>
 
-<rule name="NcssTypeCount"
-   since="5.5.0"
-   message="The type has an NCSS line count of {0}"
-   class="net.sourceforge.pmd.lang.apex.rule.complexity.NcssTypeCountRule"
-   externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#NcssTypeCount">
+  <rule name="NcssTypeCount"
+        since="5.5.0"
+        message="The type has an NCSS line count of {0}"
+        class="net.sourceforge.pmd.lang.apex.rule.complexity.NcssTypeCountRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_complexity.html#ncsstypecount">
     <description>
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
     </description>
     <priority>3</priority>
-   <example>
-<![CDATA[//this class only has 6 NCSS lines
+    <example>
+<![CDATA[
+//this class only has 6 NCSS lines
 public class Foo extends Bar {
-	public Foo() {
-		super();
-		
-		
-		
-		
-		
-		super.foo();
-	}
+    public Foo() {
+        super();
+
+
+
+
+
+        super.foo();
+    }
 }
 ]]>
-   </example></rule>
+    </example>
+  </rule>
 
-<rule name="NcssConstructorCount"
-   since="5.5.0"
-   message="The constructor has an NCSS line count of {0}"
-   class="net.sourceforge.pmd.lang.apex.rule.complexity.NcssConstructorCountRule"
-   externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#NcssConstructorCount">
+  <rule name="NcssConstructorCount"
+        since="5.5.0"
+        message="The constructor has an NCSS line count of {0}"
+        class="net.sourceforge.pmd.lang.apex.rule.complexity.NcssConstructorCountRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_complexity.html#ncssconstructorcount">
     <description>
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
     </description>
     <priority>3</priority>
-   <example>
-<![CDATA[public class Foo extends Bar {
-	//this constructor only has 1 NCSS lines
-	public Foo() {
-		super();
-		
-		
-		
-		
-		super.foo();
-	}
+    <example>
+<![CDATA[
+public class Foo extends Bar {
+    //this constructor only has 1 NCSS lines
+    public Foo() {
+        super();
+
+
+
+
+        super.foo();
+}
 }
 ]]>
-   </example>
-</rule>
- 
-	<rule name="StdCyclomaticComplexity"
+    </example>
+  </rule>
+
+  <rule name="StdCyclomaticComplexity"
         since="5.5.0"
-		message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
-		class="net.sourceforge.pmd.lang.apex.rule.complexity.StdCyclomaticComplexityRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#StdCyclomaticComplexity">
-		<description>
-      <![CDATA[
+        message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
+        class="net.sourceforge.pmd.lang.apex.rule.complexity.StdCyclomaticComplexityRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_complexity.html#stdcyclomaticcomplexity">
+    <description>
 Complexity directly affects maintenance costs is determined by the number of decision points in a method 
 plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity.
-    ]]>
-   </description>
-		<priority>3</priority>
-		<example>
-<![CDATA[// This has a Cyclomatic Complexity = 12
-	public class Foo {
-1		public void example() {
-2			if (a == b || (c == d && e == f)) {
-3				if (a1 == b1) {
-					fiddle();
-4				} else if a2 == b2) {
-					fiddle();
-				}  else {
-					fiddle();
-				}
-5			} else if (c == d) {
-6				while (c == d) {
-					fiddle();
-				}
-7			} else if (e == f) {
-8				for (int n = 0; n < h; n++) {
-					fiddle();
-				}
-			} else {
-				switch (z) {
-9					case 1:
-						fiddle();
-						break;
-10					case 2:
-						fiddle();
-						break;
-11					case 3:
-						fiddle();
-						break;
-12					default:
-						fiddle();
-						break;
-				}
-			}
-		}
-	}
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
+// This has a Cyclomatic Complexity = 12
+public class Foo {
+1   public void example() {
+2   if (a == b || (c == d && e == f)) {
+3       if (a1 == b1) {
+            fiddle();
+4       } else if a2 == b2) {
+            fiddle();
+        }  else {
+            fiddle();
+        }
+5   } else if (c == d) {
+6       while (c == d) {
+            fiddle();
+        }
+7   } else if (e == f) {
+8       for (int n = 0; n < h; n++) {
+            fiddle();
+        }
+    } else {
+        switch (z) {
+9           case 1:
+                fiddle();
+                break;
+10          case 2:
+                fiddle();
+                break;
+11          case 3:
+                fiddle();
+                break;
+12          default:
+                fiddle();
+                break;
+        }
+    }
+}
 ]]>
-   </example>
-	</rule>
+    </example>
+  </rule>
 
-	<rule name="TooManyFields"
+  <rule name="TooManyFields"
         since="5.5.0"
         message="Too many fields"
-		class="net.sourceforge.pmd.lang.apex.rule.complexity.TooManyFieldsRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#TooManyFields">
-		<description>
+        class="net.sourceforge.pmd.lang.apex.rule.complexity.TooManyFieldsRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_complexity.html#toomanyfields">
+    <description>
 Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
 possibly through grouping related fields in new objects.  For example, a class with individual 
 city/state/zip fields could park them within a single Address field.
-      </description>
-		<priority>3</priority>
-		<example>
-<![CDATA[public class Person {
-	// too many separate fields
-	int birthYear;
-	int birthMonth;
-	int birthDate;
-	float height;
-	float weight;
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
+public class Person {
+    // too many separate fields
+    int birthYear;
+    int birthMonth;
+    int birthDate;
+    float height;
+    float weight;
 }
 
 public class Person {
-	// this is more manageable
-	Date birthDate;
-	BodyMeasurements measurements;
+    // this is more manageable
+    Date birthDate;
+    BodyMeasurements measurements;
 }
 ]]>
-      </example>
-	</rule>
-	
-	<rule name="ExcessivePublicCount"
-    since="5.5.0"
-    message="This class has a bunch of public methods and attributes"
-    class="net.sourceforge.pmd.lang.apex.rule.complexity.ExcessivePublicCountRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#ExcessivePublicCount">
+    </example>
+  </rule>
+
+  <rule name="ExcessivePublicCount"
+        since="5.5.0"
+        message="This class has a bunch of public methods and attributes"
+        class="net.sourceforge.pmd.lang.apex.rule.complexity.ExcessivePublicCountRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_complexity.html#excessivepubliccount">
     <description>
 Classes with large numbers of public methods and attributes require disproportionate testing efforts
 since combinational side effects grow rapidly and increase risk. Refactoring these classes into
@@ -265,19 +271,20 @@ developed easily.
     </description>
     <priority>3</priority>
     <example>
-<![CDATA[public class Foo {
-	public String value;
-	public Bar something;
-	public Variable var;
-	// [... more more public attributes ...]
-	
-	public void doWork() {}
-	public void doMoreWork() {}
-	public void doWorkAgain() {}
-	// [... more more public methods ...]
+<![CDATA[
+public class Foo {
+    public String value;
+    public Bar something;
+    public Variable var;
+    // [... more more public attributes ...]
+
+    public void doWork() {}
+    public void doMoreWork() {}
+    public void doWorkAgain() {}
+    // [... more more public methods ...]
 }
 ]]>
     </example>
-    </rule>
+  </rule>
 
 </ruleset>

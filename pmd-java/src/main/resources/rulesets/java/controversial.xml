@@ -11,14 +11,14 @@ They are held here to allow people to include them as they see fit within their 
   </description>
 
     <rule name="UnnecessaryConstructor"
-       language="java"
-         since="1.0"
+          language="java"
+          since="1.0"
           message="Avoid unnecessary constructors - the compiler will generate these for you"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#UnnecessaryConstructor">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#unnecessaryconstructor">
       <description>
 This rule detects when a constructor is not necessary; i.e., when there is only one constructor,
-its public, has an empty body, and takes no arguments.
+it's public, has an empty body, and takes no arguments.
       </description>
       <priority>3</priority>
         <properties>
@@ -46,10 +46,10 @@ public class Foo {
     </rule>
 
     <rule name="NullAssignment"
-         since="1.02"
+          since="1.02"
           message="Assigning an Object to null is a code smell.  Consider refactoring."
           class="net.sourceforge.pmd.lang.java.rule.controversial.NullAssignmentRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#NullAssignment">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#nullassignment">
       <description>
 Assigning a "null" to a variable (outside of its declaration) is usually bad form.  Sometimes, this type
 of assignment is an indication that the programmer doesn't completely understand what is going on in the code.
@@ -72,10 +72,10 @@ public void bar() {
     </rule>
 
     <rule name="OnlyOneReturn"
-        since="1.0"
-         message="A method should have only one exit point, and that should be the last statement in the method"
-         class="net.sourceforge.pmd.lang.java.rule.controversial.OnlyOneReturnRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#OnlyOneReturn">
+          since="1.0"
+          message="A method should have only one exit point, and that should be the last statement in the method"
+          class="net.sourceforge.pmd.lang.java.rule.controversial.OnlyOneReturnRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#onlyonereturn">
      <description>
 A method should have only one exit point, and that should be the last statement in the method.
      </description>
@@ -95,10 +95,10 @@ public class OneReturnOnly1 {
      </rule>
 
     <rule name="AssignmentInOperand"
-      since="1.03"
-      message="Avoid assignments in operands"
-      class="net.sourceforge.pmd.lang.java.rule.controversial.AssignmentInOperandRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#AssignmentInOperand">
+          since="1.03"
+          message="Avoid assignments in operands"
+          class="net.sourceforge.pmd.lang.java.rule.controversial.AssignmentInOperandRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#assignmentinoperand">
   <description>
 Avoid assignments in operands; this can make code more complicated and harder to read.
   </description>
@@ -116,11 +116,11 @@ public void bar() {
 </rule>
 
     <rule name="AtLeastOneConstructor"
-       language="java"
-      since="1.04"
-      message="Each class should declare at least one constructor"
-      class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#AtLeastOneConstructor">
+          language="java"
+          since="1.04"
+          message="Each class should declare at least one constructor"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#atleastoneconstructor">
   <description>
 Each class should declare at least one constructor.
   </description>
@@ -153,10 +153,10 @@ public class Foo {
 </rule>
 
     <rule name="DontImportSun"
-       since="1.5"
-       message="Avoid importing anything from the 'sun.*' packages"
-       class="net.sourceforge.pmd.lang.java.rule.controversial.DontImportSunRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#DontImportSun">
+          since="1.5"
+          message="Avoid importing anything from the 'sun.*' packages"
+          class="net.sourceforge.pmd.lang.java.rule.controversial.DontImportSunRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#dontimportsun">
        <description>
 Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.
        </description>
@@ -170,17 +170,17 @@ public class Foo {}
     </rule>
 
     <rule name="SuspiciousOctalEscape"
-       since="1.5"
-       message="Suspicious decimal characters following octal escape in string literal"
+          since="1.5"
+          message="Suspicious decimal characters following octal escape in string literal"
           class="net.sourceforge.pmd.lang.java.rule.controversial.SuspiciousOctalEscapeRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#SuspiciousOctalEscape">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#suspiciousoctalescape">
       <description>
 A suspicious octal escape sequence was found inside a String literal.
 The Java language specification (section 3.10.6) says an octal
 escape sequence inside a literal String shall consist of a backslash
 followed by:
 
-   OctalDigit | OctalDigit OctalDigit | ZeroToThree OctalDigit OctalDigit
+    OctalDigit | OctalDigit OctalDigit | ZeroToThree OctalDigit OctalDigit
 
 Any octal escape sequence followed by non-octal digits can be confusing,
 e.g. "\038" is interpreted as the octal escape sequence "\03" followed by
@@ -198,11 +198,11 @@ public void foo() {
     </rule>
 
     <rule name="CallSuperInConstructor"
-       language="java"
-         since="3.0"
+          language="java"
+          since="3.0"
           message="It is a good practice to call super() in a constructor"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#CallSuperInConstructor">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#callsuperinconstructor">
       <description>
 It is a good practice to call super() in a constructor. If super() is not called but
 another constructor (such as an overloaded constructor) is called, this rule will not report it.
@@ -237,12 +237,15 @@ public class Foo extends Bar{
       </example>
     </rule>
 
+    <!-- The rule UnnecessaryParentheses has been merged into unnecessary.xml/UselessParentheses -->
+    <rule name="UnnecessaryParentheses" deprecated="true" ref="rulesets/java/unnecessary.xml/UselessParentheses" />
+
     <rule name="DefaultPackage"
-       language="java"
-        since="3.4"
-        message="Use explicit scoping instead of the default package private level"
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#DefaultPackage">
+          language="java"
+          since="3.4"
+          message="Use explicit scoping instead of the default package private level"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#defaultpackage">
         <description>
 Use explicit scoping instead of accidental usage of default package private level.
 The rule allows methods and fields annotated with Guava's @VisibleForTesting.
@@ -266,11 +269,11 @@ or MethodDeclaration[@PackagePrivate='true']
 
     <rule name="DataflowAnomalyAnalysis"
           since="3.9"
-              message="Found ''{0}''-anomaly for variable ''{1}'' (lines ''{2}''-''{3}'')."
-              class="net.sourceforge.pmd.lang.java.rule.controversial.DataflowAnomalyAnalysisRule"
-              dfa="true"
-              externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#DataflowAnomalyAnalysis">
-          <description>The dataflow analysis tracks local definitions, undefinitions and references to variables on different paths on the data flow.
+          message="Found ''{0}''-anomaly for variable ''{1}'' (lines ''{2}''-''{3}'')."
+          class="net.sourceforge.pmd.lang.java.rule.controversial.DataflowAnomalyAnalysisRule"
+          dfa="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#dataflowanomalyanalysis">
+      <description>The dataflow analysis tracks local definitions, undefinitions and references to variables on different paths on the data flow.
 From those informations there can be found various problems.
 
 1. UR - Anomaly: There is a reference to a variable that was not defined before. This is a bug and leads to an error.
@@ -290,16 +293,14 @@ public void foo() {
           </example>
         </rule>
 
-  <rule 	name="AvoidFinalLocalVariable"
-       language="java"
-        since="4.1"
+    <rule name="AvoidFinalLocalVariable"
+          language="java"
+          since="4.1"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           message="Avoid using final local variables, turn them into fields"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#AvoidFinalLocalVariable">
-          <description><![CDATA[
-Avoid using final local variables, turn them into fields.
-         ]]></description>
-            <priority>3</priority>
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#avoidfinallocalvariable">
+          <description>Avoid using final local variables, turn them into fields.</description>
+          <priority>3</priority>
           <properties>
               <property name="xpath">
                   <value><![CDATA[
@@ -325,27 +326,24 @@ public class MyClass {
        ]]></example>
     </rule>
 
-  <rule
-        name="AvoidUsingShortType"
-       language="java"
-        since="4.1"
-        message="Do not use the short type"
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
-      externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#AvoidUsingShortType">
+    <rule name="AvoidUsingShortType"
+          language="java"
+          since="4.1"
+          message="Do not use the short type"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#avoidusingshorttype">
         <description>
-            <![CDATA[
 Java uses the 'short' type to reduce memory usage, not to optimize calculation. In fact, the JVM does not have any
 arithmetic capabilities for the short type: the JVM must convert the short into an int, do the proper calculation
 and convert the int back to a short. Thus any storage gains found through use of the 'short' type may be offset by
 adverse impacts on performance.
-            ]]>
         </description>
         <priority>1</priority>
         <properties>
             <property name="xpath">
                 <value>
                     <![CDATA[
-            //PrimitiveType[@Image = 'short'][name(../..) != 'CastExpression']
+//PrimitiveType[@Image = 'short'][name(../..) != 'CastExpression']
                     ]]>
                 </value>
             </property>
@@ -364,29 +362,23 @@ public class UsingShort {
      </example>
    </rule>
 
-  <rule
-        name="AvoidUsingVolatile"
-       language="java"
-        since="4.1"
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
-        message="Use of modifier volatile is not recommended."
-      externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#AvoidUsingVolatile">
-
+    <rule name="AvoidUsingVolatile"
+          language="java"
+          since="4.1"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          message="Use of modifier volatile is not recommended."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#avoidusingvolatile">
         <description>
-            <![CDATA[
 Use of the keyword 'volatile' is generally used to fine tune a Java application, and therefore, requires
 a good expertise of the Java Memory Model. Moreover, its range of action is somewhat misknown. Therefore,
 the volatile keyword should not be used for maintenance purpose and portability.
-            ]]>
         </description>
         <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value>
                     <![CDATA[
-                        //FieldDeclaration[
-                                contains(@Volatile,'true')
-                        ]
+//FieldDeclaration[contains(@Volatile,'true')]
                     ]]>
                 </value>
             </property>
@@ -394,33 +386,30 @@ the volatile keyword should not be used for maintenance purpose and portability.
     <example>
       <![CDATA[
 public class ThrDeux {
-  private volatile String var1;	// not suggested
-  private          String var2;	// preferred
+  private volatile String var1; // not suggested
+  private          String var2; // preferred
 }
       ]]>
     </example>
   </rule>
 
 
-  <rule
-    name="AvoidUsingNativeCode"
-       language="java"
-      since="4.1"
-        message="The use of native code is not recommended."
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#AvoidUsingNativeCode">
+    <rule name="AvoidUsingNativeCode"
+          language="java"
+          since="4.1"
+          message="The use of native code is not recommended."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#avoidusingnativecode">
         <description>
-            <![CDATA[
 Unnecessary reliance on Java Native Interface (JNI) calls directly reduces application portability
 and increases the maintenance burden.
-            ]]>
         </description>
         <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value>
                     <![CDATA[
-                        //Name[starts-with(@Image,'System.loadLibrary')]
+//Name[starts-with(@Image,'System.loadLibrary')]
                     ]]>
                 </value>
             </property>
@@ -435,7 +424,7 @@ public class SomeJNIClass {
 
      static {
          System.loadLibrary("nativelib");
-         }
+     }
 
      public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
          System.loadLibrary("nativelib");
@@ -445,13 +434,12 @@ public class SomeJNIClass {
         </example>
     </rule>
 
-  <rule
-    name="AvoidAccessibilityAlteration"
-       language="java"
-      since="4.1"
-        message="You should modify visibility of class or methods using getDeclaredConstructors(), getDeclaredConstructor(Class[]), setAccessible() or PrivilegedAction."
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#AvoidAccessibilityAlteration">
+    <rule name="AvoidAccessibilityAlteration"
+          language="java"
+          since="4.1"
+          message="You should modify visibility of class or methods using getDeclaredConstructors(), getDeclaredConstructor(Class[]), setAccessible() or PrivilegedAction."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#avoidaccessibilityalteration">
         <description>
             <![CDATA[
 Methods such as getDeclaredConstructors(), getDeclaredConstructor(Class[]) and setAccessible(),
@@ -524,19 +512,17 @@ public class Violation {
       </example>
     </rule>
 
-    <rule	name="DoNotCallGarbageCollectionExplicitly"
-       language="java"
+    <rule name="DoNotCallGarbageCollectionExplicitly"
+          language="java"
           since="4.2"
-            message="Do not explicitly trigger a garbage collection."
-            class="net.sourceforge.pmd.lang.rule.XPathRule"
-            externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#DoNotCallGarbageCollectionExplicitly">
+          message="Do not explicitly trigger a garbage collection."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#donotcallgarbagecollectionexplicitly">
         <description>
-          <![CDATA[
 Calls to System.gc(), Runtime.getRuntime().gc(), and System.runFinalization() are not advised. Code should have the
 same behavior whether the garbage collection is disabled using the option -Xdisableexplicitgc or not.
 Moreover, "modern" jvms do a very good job handling garbage collections. If memory usage issues unrelated to memory
 leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
-      ]]>
         </description>
         <priority>2</priority>
         <properties>
@@ -583,18 +569,15 @@ public class GCCall {
     </example>
   </rule>
 
-  <rule
-        name="OneDeclarationPerLine"
-       language="java"
+  <rule name="OneDeclarationPerLine"
+        language="java"
         since="5.0"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Use one line for each declaration, it enhances code readability."
-        externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#OneDeclarationPerLine">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#onedeclarationperline">
         <description>
-            <![CDATA[
 Java allows the use of several variables declaration of the same type on one line. However, it
 can lead to quite messy code. This rule looks for several declarations on the same line.
-            ]]>
         </description>
        <priority>4</priority>
        <properties>
@@ -625,13 +608,12 @@ String name,
         </example>
   </rule>
 
-  <rule
-        name="AvoidPrefixingMethodParameters"
-       language="java"
+  <rule name="AvoidPrefixingMethodParameters"
+        language="java"
         since="5.0"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Avoid prefixing parameters by in, out or inOut. Uses Javadoc to document this behavior."
-        externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#AvoidPrefixingMethodParameters">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#avoidprefixingmethodparameters">
         <description>
             <![CDATA[
 Prefixing parameters by 'in' or 'out' pollutes the name of the parameters and reduces code readability.
@@ -678,11 +660,12 @@ public class Foo {
         ]]></example>
   </rule>
 
-  <rule  name="AvoidLiteralsInIfCondition"
-      language="java" since="4.2.6"
-      message="Avoid using Literals in Conditional Statements"
-      class="net.sourceforge.pmd.lang.rule.XPathRule"
-      externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#AvoidLiteralsInIfCondition">
+    <rule name="AvoidLiteralsInIfCondition"
+          language="java"
+          since="4.2.6"
+          message="Avoid using Literals in Conditional Statements"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#avoidliteralsinifcondition">
     <description>
 Avoid using hard-coded literals in conditional statements. By declaring them as static variables
 or private members with descriptive names maintainability is enhanced. By default, the literals "-1" and "0" are ignored.
@@ -728,11 +711,12 @@ public void checkRequests() {
     </example>
   </rule>
 
-  <rule  name="UseObjectForClearerAPI"
-         language="java" since="4.2.6"
-         message="Rather than using a lot of String arguments, consider using a container object for those values."
-         class="net.sourceforge.pmd.lang.rule.XPathRule"
-         externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#UseObjectForClearerAPI">
+    <rule name="UseObjectForClearerAPI"
+          language="java"
+          since="4.2.6"
+          message="Rather than using a lot of String arguments, consider using a container object for those values."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#useobjectforclearerapi">
     <description>
 When you write a public method, you should be thinking in terms of an API. If your method is public, it means other class
 will use it, therefore, you want (or need) to offer a comprehensive and evolutive API. If you pass a lot of information
@@ -756,17 +740,17 @@ your API.
     <example>
 <![CDATA[
 public class MyClass {
-  public void connect(String username,
-    String pssd,
-    String databaseName,
-    String databaseAdress)
-    // Instead of those parameters object
-    // would ensure a cleaner API and permit
-    // to add extra data transparently (no code change):
-    // void connect(UserData data);
+    public void connect(String username,
+        String pssd,
+        String databaseName,
+        String databaseAdress)
+        // Instead of those parameters object
+        // would ensure a cleaner API and permit
+        // to add extra data transparently (no code change):
+        // void connect(UserData data);
     {
 
-  }
+    }
 }
 ]]>
     </example>
@@ -778,7 +762,7 @@ public class MyClass {
          since="4.2.6"
          message="If you run in Java5 or newer and have concurrent access, you should use the ConcurrentHashMap implementation"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
-         externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#UseConcurrentHashMap">
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#useconcurrenthashmap">
     <description>
 Since Java5 brought a new implementation of the Map designed for multi-threaded access, you can
 perform efficient map reads without blocking other threads.
@@ -798,8 +782,8 @@ perform efficient map reads without blocking other threads.
 <![CDATA[
 public class ConcurrentApp {
   public void getMyInstance() {
-    Map map1 = new HashMap(); 	// fine for single-threaded access
-    Map map2 = new ConcurrentHashMap();  // preferred for use with multiple threads
+    Map map1 = new HashMap();           // fine for single-threaded access
+    Map map2 = new ConcurrentHashMap(); // preferred for use with multiple threads
 
     // the following case will be ignored by this rule
     Map map3 = someModule.methodThatReturnMap(); // might be OK, if the returned map is already thread-safe

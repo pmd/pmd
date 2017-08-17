@@ -10,10 +10,10 @@ These rules deal with different problems that can occur with import statements.
   </description>
 
   <rule name="DuplicateImports"
-  		  since="0.5"
+        since="0.5"
         message="Avoid duplicate imports such as ''{0}''"
         class="net.sourceforge.pmd.lang.java.rule.imports.DuplicateImportsRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/imports.html#DuplicateImports">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_imports.html#duplicateimports">
     <description>
 Duplicate or overlapping import statements should be avoided.
     </description>
@@ -28,23 +28,23 @@ public class Foo {}
     </rule>
 
   <rule name="DontImportJavaLang"
-  		  since="0.5"
+        since="0.5"
         message="Avoid importing anything from the package 'java.lang'"
         class="net.sourceforge.pmd.lang.java.rule.imports.DontImportJavaLangRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/imports.html#DontImportJavaLang">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_imports.html#dontimportjavalang">
     <description>
 Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
     </description>
       <priority>4</priority>
     <example>
 <![CDATA[
-import java.lang.String;	// this is unnecessary
+import java.lang.String;    // this is unnecessary
 
 public class Foo {}
 
 // --- in another source code file...
 
-import java.lang.*;	// this is bad
+import java.lang.*;         // this is bad
 
 public class Foo {}
 ]]>
@@ -52,10 +52,10 @@ public class Foo {}
     </rule>
 
   <rule name="UnusedImports"
-  		  since="1.0"
+        since="1.0"
         message="Avoid unused imports such as ''{0}''"
         class="net.sourceforge.pmd.lang.java.rule.imports.UnusedImportsRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/imports.html#UnusedImports">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_imports.html#unusedimports">
     <description>
 Avoid the use of unused import statements to prevent unwanted dependencies.
     </description>
@@ -69,77 +69,77 @@ public class Foo {}
     </example>
     </rule>
 
-    <rule name="ImportFromSamePackage"
-    		since="1.02"
-         message="No need to import a type that lives in the same package"
-         class="net.sourceforge.pmd.lang.java.rule.imports.ImportFromSamePackageRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/imports.html#ImportFromSamePackage">
+  <rule name="ImportFromSamePackage"
+        since="1.02"
+        message="No need to import a type that lives in the same package"
+        class="net.sourceforge.pmd.lang.java.rule.imports.ImportFromSamePackageRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_imports.html#importfromsamepackage">
      <description>
 There is no need to import a type that lives in the same package.
      </description>
         <priority>3</priority>
      <example>
  <![CDATA[
- package foo;
- 
- import foo.Buz; // no need for this
- import foo.*; // or this
- 
- public class Bar{}
- ]]>
+package foo;
+
+import foo.Buz;     // no need for this
+import foo.*;       // or this
+
+public class Bar{}
+]]>
      </example>
      </rule>
 
-	<rule	name="TooManyStaticImports"
-   		language="java"
-	      since="4.1"
-        	class="net.sourceforge.pmd.lang.rule.XPathRule"
-        	message="Too many static imports may lead to messy code"
-       		externalInfoUrl="${pmd.website.baseurl}/rules/java/imports.html#TooManyStaticImports">
-       		<description><![CDATA[
+  <rule name="TooManyStaticImports"
+        language="java"
+        since="4.1"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        message="Too many static imports may lead to messy code"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_imports.html#toomanystaticimports">
+    <description>
 If you overuse the static import feature, it can make your program unreadable and 
 unmaintainable, polluting its namespace with all the static members you import. 
 Readers of your code (including you, a few months after you wrote it) will not know 
 which class a static member comes from (Sun 1.5 Language Guide).
-		 ]]></description>
-			<priority>3</priority>
-       		<properties>
-	            <property name="maximumStaticImports" type="Integer" 
-	            description="All static imports can be disallowed by setting this to 0" min="0" max="100" value="4"/>
-	            <property name="xpath">
-	                <value><![CDATA[
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="maximumStaticImports" type="Integer" 
+            description="All static imports can be disallowed by setting this to 0" min="0" max="100" value="4"/>
+        <property name="xpath">
+            <value><![CDATA[
 .[count(ImportDeclaration[@Static = 'true']) > $maximumStaticImports]
-	             ]]></value>
-	            </property>
-	        </properties>
-    	 	<example><![CDATA[
+]]></value>
+        </property>
+    </properties>
+    <example><![CDATA[
 import static Lennon;
 import static Ringo;
 import static George;
 import static Paul;
 import static Yoko; // Too much !
-		  ]]></example>
-    </rule>
-    
-	<rule	name="UnnecessaryFullyQualifiedName"
-   		language="java"
-	      since="5.0"
-        	class="net.sourceforge.pmd.lang.java.rule.imports.UnnecessaryFullyQualifiedNameRule"
-        	message="Unnecessary use of fully qualified name ''{0}'' due to existing {2}import ''{1}''"
-       		externalInfoUrl="${pmd.website.baseurl}/rules/java/imports.html#UnnecessaryFullyQualifiedName">
-       		<description><![CDATA[
+]]></example>
+  </rule>
+
+  <rule name="UnnecessaryFullyQualifiedName"
+        language="java"
+        since="5.0"
+        class="net.sourceforge.pmd.lang.java.rule.imports.UnnecessaryFullyQualifiedNameRule"
+        message="Unnecessary use of fully qualified name ''{0}'' due to existing {2}import ''{1}''"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_imports.html#unnecessaryfullyqualifiedname">
+    <description>
 Import statements allow the use of non-fully qualified names.  The use of a fully qualified name
 which is covered by an import statement is redundant.  Consider using the non-fully qualified name.
-		 ]]></description>
-			<priority>4</priority>
-    	 	<example><![CDATA[
+    </description>
+    <priority>4</priority>
+    <example><![CDATA[
 import java.util.List;
 
 public class Foo {
-   private java.util.List list1; // Unnecessary FQN
-   private List list2; // More appropriate given import of 'java.util.List'
+    private java.util.List list1;   // Unnecessary FQN
+    private List list2;             // More appropriate given import of 'java.util.List'
 }
-		  ]]></example>
-    </rule>
+]]></example>
+  </rule>
 
 </ruleset>

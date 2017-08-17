@@ -18,7 +18,7 @@ curl -H "Accept: application/json" -X PUT -d "default=windows&default=mac&defaul
 # Assumes, the release has already been created by travis github releases provider
 RELEASE_ID=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" https://api.github.com/repos/pmd/pmd/releases/tags/pmd_releases/${RELEASE_VERSION}|jq ".id")
 RELEASE_NAME="PMD ${RELEASE_VERSION} ($(date -u +%d-%B-%Y))"
-RELEASE_BODY=$(tail -n +3 src/site/markdown/overview/changelog.md) # skips the first 2 lines - the heading 'PMD Release Notes'
+RELEASE_BODY=$(tail -n +6 docs/pages/release_notes.md) # skips the first 6 lines - the heading 'PMD Release Notes'
 RELEASE_BODY="${RELEASE_BODY//'\'/\\\\}"
 RELEASE_BODY="${RELEASE_BODY//$'\r'/}"
 RELEASE_BODY="${RELEASE_BODY//$'\n'/\\r\\n}"

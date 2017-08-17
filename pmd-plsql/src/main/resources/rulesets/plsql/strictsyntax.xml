@@ -8,12 +8,12 @@
 The Strict Syntax ruleset contains rules that highlight invalid plsql syntax, which works, but should be avoided.
   </description>
 
-<rule name="MisplacedPragma"
-      language="plsql"
-      since="5.5.2"
-      message="Pragma should be used only inside the declaration block before 'BEGIN'."
-      class="net.sourceforge.pmd.lang.rule.XPathRule"
-      externalInfoUrl="${pmd.website.baseurl}/rules/plsql/strictsyntax.html#MisplacedPragma">
+  <rule name="MisplacedPragma"
+        language="plsql"
+        since="5.5.2"
+        message="Pragma should be used only inside the declaration block before 'BEGIN'."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_strictsyntax.html#misplacedpragma">
     <description>
 Oracle states that the PRAQMA AUTONOMOUS_TRANSACTION must be in the declaration block,
 but the code does not complain, when being compiled on the 11g DB.
@@ -22,12 +22,15 @@ https://docs.oracle.com/cd/B28359_01/appdev.111/b28370/static.htm#BABIIHBJ
     <priority>3</priority>
     <properties>
         <property name="xpath">
-            <value><![CDATA[
+            <value>
+<![CDATA[
 //ProgramUnit/Pragma
-            ]]></value>
+]]>
+            </value>
         </property>
     </properties>
-    <example><![CDATA[
+    <example>
+<![CDATA[
 create or replace package inline_pragma_error is
 
 end;
@@ -44,8 +47,8 @@ create or replace package body inline_pragma_error is
 
 end inline_pragma_error;
 /
-
-    ]]></example>
-</rule>
+]]>
+    </example>
+  </rule>
 
 </ruleset>

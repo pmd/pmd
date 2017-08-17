@@ -5,6 +5,7 @@ permalink: pmd_rules_java_sample.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../rulesets/ruledoctest/sample.xml
+keywords: Sample, OverrideBothEqualsAndHashcode, JumbledIncrementer, DeprecatedSample, RenamedRule, MovedRule
 ---
 ## DeprecatedSample
 
@@ -39,7 +40,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 
 **Example(s):**
 
-```
+``` java
 public class JumbledIncrementerRule1 {
     public void foo() {
         for (int i = 0; i < 10; i++) {          // only references 'i'
@@ -71,16 +72,16 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 
 ```
 //ForStatement
- [
-  ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
-  =
-  ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
- ]
+  [
+    ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
+    =
+    ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
+  ]
 ```
 
 **Example(s):**
 
-```
+``` java
 public class JumbledIncrementerRule1 {
     public void foo() {
         for (int i = 0; i < 10; i++) {          // only references 'i'
@@ -108,7 +109,7 @@ delegating to your superclass.
 
 **Example(s):**
 
-```
+``` java
 public class Bar {      // poor, missing a hashcode() method
     public boolean equals(Object o) {
       // do some comparison
@@ -154,7 +155,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 
 **Example(s):**
 
-```
+``` java
 public class JumbledIncrementerRule1 {
     public void foo() {
         for (int i = 0; i < 10; i++) {          // only references 'i'

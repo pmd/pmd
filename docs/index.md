@@ -7,7 +7,7 @@ permalink: index.html
 summary: Welcome to PMD, an extensible cross-language static code analyzer.
 ---
 
-![PMD Logo](images/pmd-logo-big.png)
+{% include image.html file="pmd-logo-big.png" alt="PMD Logo" %}
 
 # Welcome to PMD
 

@@ -29,7 +29,7 @@ Make sure code is up to date and everything is committed and pushed with git:
 At a very minimum, the current date must be noted in the release notes. Also, the version
 must be adjusted. E.g. by removing "-SNAPSHOT".
 
-You can find the release notes here: `src/site/markdown/overview/changelog.md`.
+You can find the release notes here: `docs/pages/release_notes.md`.
 
 The release notes usual mention any new rules that have been added since the last release.
 Please double check the file `pmd-core/src/main/resources/rulesets/releases/<version>.xml`, so
@@ -121,32 +121,37 @@ the following template:
 
 ### Prepare the new release notes
 
-*   Move version/release info from **src/site/markdown/overview/changelog.md** to **src/site/markdown/overview/changelog-old.md**.
-*   Update version/release info in **src/site/markdown/overview/changelog.md**. Use the following template:
+*   Move version/release info from **docs/pages/release_notes.md** to **docs/pages/release_notes_old.md**.
+*   Update version/release info in **docs/pages/release_notes.md**. Use the following template:
 
 ```
-    # PMD Release Notes
+---
+title: PMD Release Notes
+permalink: pmd_release_notes.html
+keywords: changelog, release notes
+---
 
-    ## ????? - ${DEVELOPMENT_VERSION}
+## ????? - ${DEVELOPMENT_VERSION}
 
-    The PMD team is pleased to announce PMD ${DEVELOPMENT_VERSION%-SNAPSHOT}.
+The PMD team is pleased to announce PMD ${DEVELOPMENT_VERSION%-SNAPSHOT}.
 
-    This is a bug fixing release.
+This is a bug fixing release.
 
-    ### Table Of Contents
+### Table Of Contents
 
-    *   [New and noteworthy](#New_and_noteworthy)
-    *   [Fixed Issues](#Fixed_Issues)
-    *   [API Changes](#API_Changes)
-    *   [External Contributions](#External_Contributions)
+* [New and noteworthy](#new-and-noteworthy)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+* [External Contributions](#external-contributions)
 
-    ### New and noteworthy
+### New and noteworthy
 
-    ### Fixed Issues
+### Fixed Issues
 
-    ### API Changes
+### API Changes
 
-    ### External Contributions
+### External Contributions
+
 ```
 
 Commit and push
