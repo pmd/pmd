@@ -83,9 +83,9 @@ public class MetricOptions {
 
     @Override
     public String toString() {
-        return "MetricOptions{" +
-            "options=" + options +
-            '}';
+        return "MetricOptions{"
+            + "options=" + options
+            + '}';
     }
 
 
@@ -97,9 +97,6 @@ public class MetricOptions {
     public static MetricOptions emptyOptions() {
         return EMPTY_OPTIONS;
     }
-
-
-
 
 
     /**
@@ -123,19 +120,5 @@ public class MetricOptions {
 
         return POOL.get(version);
     }
-
-
-    /**
-     * Gets an array of options from a version.
-     *
-     * @param version The version to decompose
-     *
-     * @return An array of options
-     */
-    public static MetricOption[] toOptions(MetricOptions version) {
-        Set<MetricOption> options = version.getOptions();
-        return options.toArray(new MetricOption[options.size()]);
-    }
-
 
 }

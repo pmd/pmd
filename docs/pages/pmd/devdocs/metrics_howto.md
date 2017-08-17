@@ -72,10 +72,15 @@ public Object visit(ASTMethodDeclaration node, Object data) {
 }
 ```
 
-### Metric versions
+### Metric options
 
-{%include important.html content="Metric versions are about to be revamped into options that can be combined 
-together." %}
+Some metrics define options that can be used to slightly modify the computation. You'll typically see these options 
+gathered inside an enum in the implementation class of the metric, for example `CycloMetric.CycloOptions`. They're 
+also documented on the [index of metrics](/pmd_java_metrics_index.html).
+
+To use options with a metric, you must first bundle them into a `MetricOptions`. 
+
+
 
 
 ### Result options

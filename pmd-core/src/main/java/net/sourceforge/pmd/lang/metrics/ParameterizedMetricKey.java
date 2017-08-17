@@ -10,7 +10,7 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * Represents a key parameterized with its version. Used to index memoization maps.
+ * Represents a key parameterized with its options. Used to index memoization maps.
  *
  * @param <N> Type of node on which the memoized metric can be computed
  *
@@ -22,20 +22,20 @@ public final class ParameterizedMetricKey<N extends Node> {
 
     /** The metric key. */
     public final MetricKey<N> key;
-    /** The version of the metric. */
-    public final MetricOptions version;
+    /** The options of the metric. */
+    public final MetricOptions options;
 
 
     /** Used internally by the pooler. */
-    private ParameterizedMetricKey(MetricKey<N> key, MetricOptions version) {
+    private ParameterizedMetricKey(MetricKey<N> key, MetricOptions options) {
         this.key = key;
-        this.version = version;
+        this.options = options;
     }
 
 
     @Override
     public String toString() {
-        return "ParameterizedMetricKey{key=" + key.name() + ", version=" + version + '}';
+        return "ParameterizedMetricKey{key=" + key.name() + ", version=" + options + '}';
     }
 
 
@@ -43,13 +43,13 @@ public final class ParameterizedMetricKey<N extends Node> {
     public boolean equals(Object o) {
         return o instanceof ParameterizedMetricKey
             && ((ParameterizedMetricKey) o).key.equals(key)
-            && ((ParameterizedMetricKey) o).version.equals(version);
+            && ((ParameterizedMetricKey) o).options.equals(options);
     }
 
 
     @Override
     public int hashCode() {
-        return 31 * key.hashCode() + version.hashCode();
+        return 31 * key.hashCode() + options.hashCode();
     }
 
 
@@ -57,13 +57,13 @@ public final class ParameterizedMetricKey<N extends Node> {
      * Builds a parameterized metric key.
      *
      * @param key     The key
-     * @param version The version
-     * @param <N>     The type of node of the metrickey
+     * @param options The options
+     * @param <N>     The type of node of the metric key
      *
      * @return An instance of parameterized metric key corresponding to the parameters
      */
-    public static <N extends Node> ParameterizedMetricKey<N> getInstance(MetricKey<N> key, MetricOptions version) {
-        ParameterizedMetricKey<N> tmp = new ParameterizedMetricKey<>(key, version);
+    public static <N extends Node> ParameterizedMetricKey<N> getInstance(MetricKey<N> key, MetricOptions options) {
+        ParameterizedMetricKey<N> tmp = new ParameterizedMetricKey<>(key, options);
         if (!POOL.containsKey(tmp)) {
             POOL.put(tmp, tmp);
         }

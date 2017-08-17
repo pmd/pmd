@@ -107,7 +107,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
 
 
     /**
-     * Mappings of labels to versions for use in the version property.
+     * Mappings of labels to versions for use in the options property.
      *
      * @return A map of labels to versions
      */

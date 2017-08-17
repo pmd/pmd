@@ -73,7 +73,7 @@ public class ParameterizedMetricKeyTest {
         for (JavaClassMetricKey key : JavaClassMetricKey.values()) {
             ParameterizedMetricKey key1 = ParameterizedMetricKey.getInstance(key, DUMMY_VERSION_1);
             assertTrue(key1.toString().contains(key1.key.name()));
-            assertTrue(key1.toString().contains(key1.version.toString()));
+            assertTrue(key1.toString().contains(key1.options.toString()));
         }
     }
 
@@ -92,7 +92,7 @@ public class ParameterizedMetricKeyTest {
         assertTrue(key1 == key2);
         assertEquals(key1, key2);
         assertTrue(key1.toString().contains(key1.key.name()));
-        assertTrue(key1.toString().contains(key1.version.toString()));
+        assertTrue(key1.toString().contains(key1.options.toString()));
 
     }
 
