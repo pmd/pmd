@@ -18,7 +18,7 @@ import java.util.Set;
  */
 public class MetricOptions {
 
-    private static final Map<MetricOptions, MetricOptions> POOL = new HashMap<>();
+    static final Map<MetricOptions, MetricOptions> POOL = new HashMap<>();
     private static final MetricOptions EMPTY_OPTIONS;
     private Set<MetricOption> options;
 
@@ -34,7 +34,7 @@ public class MetricOptions {
     }
 
 
-    private MetricOptions(Set<MetricOption> opts) {
+    private MetricOptions(Set<? extends MetricOption> opts) {
 
         switch (opts.size()) {
         case 0:
@@ -94,31 +94,81 @@ public class MetricOptions {
      *
      * @return An empty options bundle
      */
+
     public static MetricOptions emptyOptions() {
         return EMPTY_OPTIONS;
     }
 
 
     /**
-     * Gets an options bundle from a list of options.
+     * Gets an options bundle from a collection of options.
      *
-     * @param opts The options to build the bundle from
+     * @param options The options to build the bundle from
      *
      * @return An options bundle
      */
-    public static MetricOptions ofOptions(Collection<MetricOption> opts) {
-        MetricOptions version;
-        if (opts instanceof Set) {
-            version = new MetricOptions((Set<MetricOption>) opts);
-        } else {
-            version = new MetricOptions(new HashSet<>(opts));
-        }
-
-        if (!POOL.containsKey(version)) {
-            POOL.put(version, version);
-        }
-
-        return POOL.get(version);
+    public static MetricOptions ofOptions(Collection<? extends MetricOption> options) {
+        MetricOptionsBuilder builder = new MetricOptionsBuilder();
+        builder.addAll(options);
+        return builder.build();
     }
 
+
+    /**
+     * Gets an options bundle from options.
+     *
+     * @param option  Mandatory first argument
+     * @param options Rest of the options
+     *
+     * @return An options bundle
+     */
+    public static MetricOptions ofOptions(MetricOption option, MetricOption... options) {
+        MetricOptionsBuilder builder = new MetricOptionsBuilder();
+
+        builder.add(option);
+
+        for (MetricOption opt : options) {
+            builder.add(opt);
+        }
+
+        return builder.build();
+    }
+
+
+    private static class MetricOptionsBuilder {
+
+
+        private Set<MetricOption> opts = new HashSet<>();
+
+
+        void add(MetricOption option) {
+            if (option != null) {
+                opts.add(option);
+            }
+        }
+
+
+        void addAll(Collection<? extends MetricOption> options) {
+            if (options != null) {
+                this.opts.addAll(options);
+                opts.remove(null);
+            }
+        }
+
+
+        MetricOptions build() {
+            if (opts.size() == 0) {
+                return emptyOptions();
+            }
+
+            MetricOptions result = new MetricOptions(opts);
+
+            if (!POOL.containsKey(result)) {
+                POOL.put(result, result);
+            }
+
+            return POOL.get(result);
+        }
+
+    }
 }

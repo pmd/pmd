@@ -45,7 +45,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     }
 
 
-    private static final EnumeratedMultiProperty<MetricOption> CYCLO_VERSION_DESCRIPTOR = new EnumeratedMultiProperty<>(
+    private static final EnumeratedMultiProperty<MetricOption> CYCLO_OPTIONS_DESCRIPTOR = new EnumeratedMultiProperty<>(
         "cycloOptions", "Choose options for the computation of Cyclo",
         VERSION_MAP, Collections.<MetricOption>emptyList(), MetricOption.class, 3.0f);
 
@@ -57,7 +57,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     public CyclomaticComplexityRule() {
         definePropertyDescriptor(CLASS_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(METHOD_LEVEL_DESCRIPTOR);
-        definePropertyDescriptor(CYCLO_VERSION_DESCRIPTOR);
+        definePropertyDescriptor(CYCLO_OPTIONS_DESCRIPTOR);
     }
 
 
@@ -66,7 +66,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
         methodReportLevel = getProperty(METHOD_LEVEL_DESCRIPTOR);
         classReportLevel = getProperty(CLASS_LEVEL_DESCRIPTOR);
         if (cycloOptions == null) {
-            cycloOptions = MetricOptions.ofOptions(getProperty(CYCLO_VERSION_DESCRIPTOR));
+            cycloOptions = MetricOptions.ofOptions(getProperty(CYCLO_OPTIONS_DESCRIPTOR));
         }
 
         super.visit(node, data);

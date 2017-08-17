@@ -78,7 +78,18 @@ Some metrics define options that can be used to slightly modify the computation.
 gathered inside an enum in the implementation class of the metric, for example `CycloMetric.CycloOptions`. They're 
 also documented on the [index of metrics](/pmd_java_metrics_index.html).
 
-To use options with a metric, you must first bundle them into a `MetricOptions`. 
+To use options with a metric, you must first bundle them into a `MetricOptions` object. `MetricOptions` provides the 
+utility method `toOptions(Collection<? extends MetricOption>)` to get a `MetricOptions`  bundle. You can then pass 
+this bundle as a parameter to `JavaMetrics.get`:
+```java
+public Object visit(ASTMethodDeclaration node, Object data) {
+  int cyclo = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, MetricOptions.toOptions());
+  if (cyclo > 10) {
+      // add violation
+  }
+    return data;
+}
+```
 
 
 

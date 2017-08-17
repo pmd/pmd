@@ -29,8 +29,8 @@ import net.sourceforge.pmd.lang.metrics.ParameterizedMetricKey;
  */
 public class ParameterizedMetricKeyTest {
 
-    private static final MetricOptions DUMMY_VERSION_1 = MetricOptions.ofOptions(Arrays.<MetricOption>asList(Options.DUMMY1, Options.DUMMY2));
-    private static final MetricOptions DUMMY_VERSION_2 = MetricOptions.ofOptions(Collections.<MetricOption>singleton(Options.DUMMY2));
+    private static final MetricOptions DUMMY_VERSION_1 = MetricOptions.ofOptions(Options.DUMMY1, Options.DUMMY2);
+    private static final MetricOptions DUMMY_VERSION_2 = MetricOptions.ofOptions(Options.DUMMY2);
 
     @Test
     public void testIdentity() {
