@@ -627,33 +627,6 @@ public class Foo {
 }
 ```
 
-## UnnecessaryParentheses
-
-**Since:** PMD 3.1
-
-**Priority:** Medium (3)
-
-Sometimes expressions are wrapped in unnecessary parentheses, making them look like function calls.
-
-```
-//Expression
-           /PrimaryExpression
-            /PrimaryPrefix
-             /Expression[count(*)=1]
-              /PrimaryExpression
-              /PrimaryPrefix
-```
-
-**Example(s):**
-
-```
-public class Foo {
-   boolean bar() {
-      return (true);
-      }
-}
-```
-
 ## UseConcurrentHashMap
 
 **Since:** PMD 4.2.6

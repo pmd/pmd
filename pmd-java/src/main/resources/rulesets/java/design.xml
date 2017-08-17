@@ -1396,6 +1396,7 @@ public void doSomething() {
         since="3.4"
         message="Document empty constructor"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
+        typeResolution="true"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#uncommentedemptyconstructor">
       <description>
 Uncommented Empty Constructor finds instances where a constructor does not
@@ -1408,8 +1409,10 @@ and unintentional empty constructors.
           <property name="xpath">
               <value>
     <![CDATA[
-//ConstructorDeclaration[@Private='false'][count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
- ]]>
+//ConstructorDeclaration[@Private='false']
+                        [count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
+                        [not(../Annotation/MarkerAnnotation/Name[typeof(@Image, 'javax.inject.Inject', 'Inject')])]
+]]>
              </value>
           </property>
           <property name="ignoreExplicitConstructorInvocation" type="Boolean" description="Ignore explicit constructor invocation when deciding whether constructor is empty or not" value="false"/>

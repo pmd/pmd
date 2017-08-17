@@ -167,4 +167,62 @@ public abstract class BoundOrConstraint {
     public Variable getRightMentionedVariable() {
         return rightTypeVariable;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!this.getClass().isInstance(obj)) {
+            return false;
+        }
+
+        BoundOrConstraint other = (BoundOrConstraint) obj;
+
+        if (leftProperType != null && other.leftProperType != null) {
+            if (!leftProperType.equals(other.leftProperType)) {
+                return false;
+            }
+        } else if (leftTypeVariable != null && other.leftTypeVariable != null) {
+            if (!leftTypeVariable.equals(other.leftTypeVariable)) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        if (rightProperType != null && other.rightProperType != null) {
+            if (!rightProperType.equals(other.rightProperType)) {
+                return false;
+            }
+        } else if (rightTypeVariable != null && other.rightTypeVariable != null) {
+            if (!rightTypeVariable.equals(other.rightTypeVariable)) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 31;
+
+        if (leftProperType != null) {
+            result *= leftProperType.hashCode();
+        } else {
+            result *= leftTypeVariable.hashCode();
+        }
+
+        if (rightProperType != null) {
+            result *= rightProperType.hashCode();
+        } else {
+            result *= rightTypeVariable.hashCode();
+        }
+
+        return result;
+    }
 }

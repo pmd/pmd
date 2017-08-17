@@ -237,40 +237,6 @@ public class Foo extends Bar{
       </example>
     </rule>
 
-    <rule name="UnnecessaryParentheses"
-          language="java"
-          since="3.1"
-          message="This statement may have some unnecessary parentheses"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_controversial.html#unnecessaryparentheses">
-      <description>
-Sometimes expressions are wrapped in unnecessary parentheses, making them look like function calls.
-      </description>
-      <priority>3</priority>
-      <properties>
-          <property name="xpath">
-              <value>
-                  <![CDATA[
-          //Expression
-           /PrimaryExpression
-            /PrimaryPrefix
-             /Expression[count(*)=1]
-              /PrimaryExpression
-              /PrimaryPrefix]]>
-              </value>
-          </property>
-      </properties>
-      <example>
-  <![CDATA[
-public class Foo {
-   boolean bar() {
-      return (true);
-   }
-}
-  ]]>
-      </example>
-    </rule>
-
     <rule name="DefaultPackage"
           language="java"
           since="3.4"

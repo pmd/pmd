@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.metrics.api;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric.AtfdClassMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.LocMetric.LocClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.WmcMetric;
@@ -30,13 +29,6 @@ public enum JavaClassMetricKey implements MetricKey<ASTAnyTypeDeclaration> {
      * @see WmcMetric
      */
     WMC(new WmcMetric()),
-
-    /**
-     * Cyclomatic complexity.
-     *
-     * @see net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric
-     */
-    CYCLO(new CycloClassMetric()),
 
     /**
      * Non Commenting Source Statements.
