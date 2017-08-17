@@ -10,6 +10,9 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -18,7 +21,7 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKeyUtil;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ParameterizedMetricKey;
 
 /**
@@ -26,8 +29,8 @@ import net.sourceforge.pmd.lang.metrics.ParameterizedMetricKey;
  */
 public class ParameterizedMetricKeyTest {
 
-    private static final MetricVersion DUMMY_VERSION_1 = MetricVersion.ofOptions(Options.DUMMY1, Options.DUMMY2);
-    private static final MetricVersion DUMMY_VERSION_2 = MetricVersion.ofOptions(Options.DUMMY2);
+    private static final MetricOptions DUMMY_VERSION_1 = MetricOptions.ofOptions(Arrays.<MetricOption>asList(Options.DUMMY1, Options.DUMMY2));
+    private static final MetricOptions DUMMY_VERSION_2 = MetricOptions.ofOptions(Collections.<MetricOption>singleton(Options.DUMMY2));
 
     @Test
     public void testIdentity() {

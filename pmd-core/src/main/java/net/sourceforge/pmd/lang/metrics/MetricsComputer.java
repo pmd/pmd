@@ -25,13 +25,13 @@ public interface MetricsComputer<T extends QualifiableNode, O extends Qualifiabl
      * @param key      The class metric to compute
      * @param node     The AST node of the class
      * @param force    Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version  The version of the metric to compute
+     * @param options  The options of the metric to compute
      * @param memoizer The object memoizing the results
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
     double computeForType(MetricKey<T> key, T node, boolean force,
-                          MetricVersion version, MetricMemoizer<T> memoizer);
+                          MetricOptions options, MetricMemoizer<T> memoizer);
 
 
     /**
@@ -40,13 +40,13 @@ public interface MetricsComputer<T extends QualifiableNode, O extends Qualifiabl
      * @param key      The operation metric to compute
      * @param node     The AST node of the operation
      * @param force    Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version  The version of the metric to compute
+     * @param options  The options of the metric to compute
      * @param memoizer The object memoizing the results
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
     double computeForOperation(MetricKey<O> key, O node, boolean force,
-                               MetricVersion version, MetricMemoizer<O> memoizer);
+                               MetricOptions options, MetricMemoizer<O> memoizer);
 
 
     /**
@@ -55,13 +55,13 @@ public interface MetricsComputer<T extends QualifiableNode, O extends Qualifiabl
      * @param key     The class metric to compute
      * @param node    The AST node of the class
      * @param force   Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version The version of the metric
+     * @param options The options of the metric
      * @param option  The type of result to compute
      * @param stats   The ClassStats storing info about the class
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
-    double computeWithResultOption(MetricKey<O> key, T node, boolean force, MetricVersion version,
+    double computeWithResultOption(MetricKey<O> key, T node, boolean force, MetricOptions options,
                                    ResultOption option, ProjectMemoizer<T, O> stats);
 
 

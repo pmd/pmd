@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKeyUtil;
 import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
  * @author Clément Fournier
@@ -72,7 +72,7 @@ public class ProjectMemoizerTest {
             public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
                 MetricMemoizer<ASTMethodOrConstructorDeclaration> op = toplevel.getOperationMemoizer(node.getQualifiedName());
                 result.add((int) JavaMetricsComputer.INSTANCE.computeForOperation(opMetricKey, node, force,
-                                                                                  MetricVersion.ofOptions(), op));
+                                                                                  MetricOptions.emptyOptions(), op));
                 return super.visit(node, data);
             }
 
@@ -81,7 +81,7 @@ public class ProjectMemoizerTest {
             public Object visit(ASTAnyTypeDeclaration node, Object data) {
                 MetricMemoizer<ASTAnyTypeDeclaration> clazz = toplevel.getClassMemoizer(node.getQualifiedName());
                 result.add((int) JavaMetricsComputer.INSTANCE.computeForType(classMetricKey, node, force,
-                                                                             MetricVersion.ofOptions(), clazz));
+                                                                             MetricOptions.emptyOptions(), clazz));
                 return super.visit(node, data);
             }
         }, null);
@@ -96,7 +96,7 @@ public class ProjectMemoizerTest {
 
 
         @Override
-        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
             return random.nextInt();
         }
     }
@@ -107,7 +107,7 @@ public class ProjectMemoizerTest {
 
 
         @Override
-        public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
+        public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
             return random.nextInt();
         }
     }

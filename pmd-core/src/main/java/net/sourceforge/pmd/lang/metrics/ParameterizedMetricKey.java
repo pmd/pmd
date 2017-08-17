@@ -23,11 +23,11 @@ public final class ParameterizedMetricKey<N extends Node> {
     /** The metric key. */
     public final MetricKey<N> key;
     /** The version of the metric. */
-    public final MetricVersion version;
+    public final MetricOptions version;
 
 
     /** Used internally by the pooler. */
-    private ParameterizedMetricKey(MetricKey<N> key, MetricVersion version) {
+    private ParameterizedMetricKey(MetricKey<N> key, MetricOptions version) {
         this.key = key;
         this.version = version;
     }
@@ -62,7 +62,7 @@ public final class ParameterizedMetricKey<N extends Node> {
      *
      * @return An instance of parameterized metric key corresponding to the parameters
      */
-    public static <N extends Node> ParameterizedMetricKey<N> getInstance(MetricKey<N> key, MetricVersion version) {
+    public static <N extends Node> ParameterizedMetricKey<N> getInstance(MetricKey<N> key, MetricOptions version) {
         ParameterizedMetricKey<N> tmp = new ParameterizedMetricKey<>(key, version);
         if (!POOL.containsKey(tmp)) {
             POOL.put(tmp, tmp);

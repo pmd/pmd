@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.metrics.Metric.Version;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKeyUtil;
 import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
 
@@ -109,7 +109,7 @@ public class ApexProjectMirrorTest {
 
 
         @Override
-        public double computeFor(ASTMethod node, MetricVersion version) {
+        public double computeFor(ASTMethod node, MetricOptions options) {
             return random.nextInt();
         }
     }
@@ -120,7 +120,7 @@ public class ApexProjectMirrorTest {
 
 
         @Override
-        public double computeFor(ASTUserClassOrInterface<?> node, MetricVersion version) {
+        public double computeFor(ASTUserClassOrInterface<?> node, MetricOptions options) {
             return random.nextInt();
         }
     }

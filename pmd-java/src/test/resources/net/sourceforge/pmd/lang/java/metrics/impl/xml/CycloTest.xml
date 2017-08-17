@@ -77,7 +77,7 @@
     <test-code>
         <description>Complicated method - Ignore boolean path version</description>
         <expected-problems>2</expected-problems>
-        <rule-property name="metricVersion">ignoreBooleanPaths</rule-property>
+        <rule-property name="metricOptions">ignoreBooleanPaths</rule-property>
         <expected-messages>
             <message>'.Complicated#exception()' has value 4.</message>
             <message>'.Complicated#example()' has value 14.</message>

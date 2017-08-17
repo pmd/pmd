@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOptions;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
@@ -50,7 +51,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
     private int methodReportLevel;
     private int classReportLevel;
-    private MetricOption[] cycloOptions;
+    private MetricOptions cycloOptions;
 
 
     public CyclomaticComplexityRule() {
@@ -64,7 +65,9 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         methodReportLevel = getProperty(METHOD_LEVEL_DESCRIPTOR);
         classReportLevel = getProperty(CLASS_LEVEL_DESCRIPTOR);
-        cycloOptions = getProperty(CYCLO_VERSION_DESCRIPTOR).toArray(new MetricOption[0]);
+        if (cycloOptions == null) {
+            cycloOptions = MetricOptions.ofOptions(getProperty(CYCLO_VERSION_DESCRIPTOR));
+        }
 
         super.visit(node, data);
         return data;
@@ -80,7 +83,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
             int classWmc = (int) JavaMetrics.get(JavaClassMetricKey.WMC, node, cycloOptions);
 
             if (classWmc >= classReportLevel) {
-                int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, ResultOption.HIGHEST, cycloOptions);
+                int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloOptions, ResultOption.HIGHEST);
 
                 String[] messageParams = {node.getTypeKind().name().toLowerCase(),
                                           node.getImage(),

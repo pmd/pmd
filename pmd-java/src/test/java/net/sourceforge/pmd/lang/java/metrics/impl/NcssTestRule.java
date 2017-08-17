@@ -8,8 +8,8 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOption;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOptions;
+import net.sourceforge.pmd.lang.metrics.MetricOption;
 
 /**
  * @author Clément Fournier
@@ -35,9 +35,9 @@ public class NcssTestRule extends AbstractMetricTestRule {
 
 
     @Override
-    protected Map<String, MetricVersion> optionMappings() {
-        Map<String, MetricVersion> mappings = super.optionMappings();
-        mappings.put("javaNcss", NcssOption.COUNT_IMPORTS);
+    protected Map<String, MetricOption> optionMappings() {
+        Map<String, MetricOption> mappings = super.optionMappings();
+        mappings.put("javaNcss", NcssOptions.COUNT_IMPORTS);
         return mappings;
     }
 }

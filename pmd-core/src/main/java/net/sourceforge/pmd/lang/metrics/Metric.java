@@ -31,10 +31,10 @@ public interface Metric<N extends Node> {
      * Actually computes the value of a metric for an AST node.
      *
      * @param node    The node
-     * @param version The version of the metric
+     * @param options The options of the metric
      *
      * @return The value of the metric, or {@code Double.NaN} if it could not be computed.
      */
-    double computeFor(N node, MetricVersion version);
+    double computeFor(N node, MetricOptions options);
 
 }

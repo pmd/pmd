@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
  * Lines of Code. Equates the length in lines of code of the measured entity, counting everything including blank lines
@@ -29,7 +29,7 @@ public final class LocMetric {
 
 
         @Override
-        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
             return 1 + node.getEndLine() - node.getBeginLine();
         }
     }
@@ -43,7 +43,7 @@ public final class LocMetric {
 
 
         @Override
-        public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
+        public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
             return 1 + node.getEndLine() - node.getBeginLine();
         }
 

@@ -38,7 +38,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
 
     /**
      * Computes a metric identified by its code on a class AST node, possibly selecting a variant with the {@code
-     * MetricVersion} parameter.
+     * MetricOptions} parameter.
      *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
@@ -46,7 +46,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public double computeForType(MetricKey<T> key, T node, MetricOption... options) {
+    public double computeForType(MetricKey<T> key, T node, MetricOptions options) {
 
         Objects.requireNonNull(key, "The metric key must not be null");
 
@@ -54,12 +54,12 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
             return Double.NaN;
         }
 
-        MetricVersion version = MetricVersion.ofOptions(options);
+        MetricOptions safeOptions = options == null ? MetricOptions.emptyOptions() : options;
         MetricMemoizer<T> memoizer = getLanguageSpecificProjectMemoizer().getClassMemoizer(node.getQualifiedName());
 
         return memoizer == null ? Double.NaN
                                 : getLanguageSpecificComputer().computeForType(key, node, false,
-                                                                               version, memoizer);
+                                                                               safeOptions, memoizer);
     }
 
 
@@ -72,7 +72,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public double computeForOperation(MetricKey<O> key, O node, MetricOption... options) {
+    public double computeForOperation(MetricKey<O> key, O node, MetricOptions options) {
 
         Objects.requireNonNull(key, "The metric key must not be null");
 
@@ -80,12 +80,12 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
             return Double.NaN;
         }
 
-        MetricVersion version = MetricVersion.ofOptions(options);
+        MetricOptions safeOptions = options == null ? MetricOptions.emptyOptions() : options;
         MetricMemoizer<O> memoizer = getLanguageSpecificProjectMemoizer().getOperationMemoizer(node.getQualifiedName());
 
         return memoizer == null ? Double.NaN
                                 : getLanguageSpecificComputer().computeForOperation(key, node, false,
-                                                                                    version, memoizer);
+                                                                                    safeOptions, memoizer);
 
     }
 
@@ -103,14 +103,14 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
      * is {@code null}
      */
     public double computeWithResultOption(MetricKey<O> key, T node,
-                                          ResultOption resultOption, MetricOption... options) {
+                                          MetricOptions options, ResultOption resultOption) {
 
         Objects.requireNonNull(key, "The metric key must not be null");
         Objects.requireNonNull(resultOption, "The result option must not be null");
 
-        MetricVersion version = MetricVersion.ofOptions(options);
+        MetricOptions safeOptions = options == null ? MetricOptions.emptyOptions() : options;
 
-        return getLanguageSpecificComputer().computeWithResultOption(key, node, false, version,
+        return getLanguageSpecificComputer().computeWithResultOption(key, node, false, safeOptions,
                                                                      resultOption, getLanguageSpecificProjectMemoizer());
     }
 }

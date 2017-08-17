@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOptions;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 
 /**
@@ -26,8 +26,8 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
 public final class WmcMetric extends AbstractJavaClassMetric {
 
     @Override
-    public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
-        return JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, ResultOption.SUM, MetricVersion.toOptions(version));
+    public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
+        return JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, options, ResultOption.SUM);
     }
 
 }

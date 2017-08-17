@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.metrics;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
-import net.sourceforge.pmd.lang.metrics.MetricOption;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 
 
@@ -52,13 +52,13 @@ public final class JavaMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node) {
-        return FACADE.computeForType(key, node);
+        return FACADE.computeForType(key, node, MetricOptions.emptyOptions());
     }
 
 
     /**
      * Computes a metric identified by its code on a class AST node, possibly selecting a variant with the {@code
-     * MetricVersion} parameter.
+     * MetricOptions} parameter.
      *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
@@ -66,7 +66,7 @@ public final class JavaMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, MetricOption... options) {
+    public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, MetricOptions options) {
         return FACADE.computeForType(key, node, options);
     }
 
@@ -80,7 +80,7 @@ public final class JavaMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node) {
-        return FACADE.computeForOperation(key, node);
+        return FACADE.computeForOperation(key, node, MetricOptions.emptyOptions());
     }
 
 
@@ -94,7 +94,7 @@ public final class JavaMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node,
-                             MetricOption... options) {
+                             MetricOptions options) {
         return FACADE.computeForOperation(key, node, options);
     }
 
@@ -111,7 +111,7 @@ public final class JavaMetrics {
      * {@code null}
      */
     public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node, ResultOption resultOption) {
-        return FACADE.computeWithResultOption(key, node, resultOption);
+        return FACADE.computeWithResultOption(key, node, MetricOptions.emptyOptions(), resultOption);
     }
 
 
@@ -128,8 +128,8 @@ public final class JavaMetrics {
      * {@code null}
      */
     public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node,
-                             ResultOption resultOption, MetricOption... options) {
-        return FACADE.computeWithResultOption(key, node, resultOption, options);
+                             MetricOptions options, ResultOption resultOption) {
+        return FACADE.computeWithResultOption(key, node, options, resultOption);
     }
 
 }

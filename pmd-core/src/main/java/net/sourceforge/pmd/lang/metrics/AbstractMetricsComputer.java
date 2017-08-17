@@ -22,16 +22,16 @@ public abstract class AbstractMetricsComputer<T extends QualifiableNode, O exten
 
     @Override
     public double computeForType(MetricKey<T> key, T node, boolean force,
-                                 MetricVersion version, MetricMemoizer<T> memoizer) {
+                                 MetricOptions options, MetricMemoizer<T> memoizer) {
 
-        ParameterizedMetricKey<T> paramKey = ParameterizedMetricKey.getInstance(key, version);
+        ParameterizedMetricKey<T> paramKey = ParameterizedMetricKey.getInstance(key, options);
         // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
         Double prev = memoizer.getMemo(paramKey);
         if (!force && prev != null) {
             return prev;
         }
 
-        double val = key.getCalculator().computeFor(node, version);
+        double val = key.getCalculator().computeFor(node, options);
         memoizer.memoize(paramKey, val);
 
         return val;
@@ -40,22 +40,22 @@ public abstract class AbstractMetricsComputer<T extends QualifiableNode, O exten
 
     @Override
     public double computeForOperation(MetricKey<O> key, O node, boolean force,
-                                      MetricVersion version, MetricMemoizer<O> memoizer) {
+                                      MetricOptions options, MetricMemoizer<O> memoizer) {
 
-        ParameterizedMetricKey<O> paramKey = ParameterizedMetricKey.getInstance(key, version);
+        ParameterizedMetricKey<O> paramKey = ParameterizedMetricKey.getInstance(key, options);
         Double prev = memoizer.getMemo(paramKey);
         if (!force && prev != null) {
             return prev;
         }
 
-        double val = key.getCalculator().computeFor(node, version);
+        double val = key.getCalculator().computeFor(node, options);
         memoizer.memoize(paramKey, val);
         return val;
     }
 
 
     @Override
-    public double computeWithResultOption(MetricKey<O> key, T node, boolean force, MetricVersion version,
+    public double computeWithResultOption(MetricKey<O> key, T node, boolean force, MetricOptions options,
                                           ResultOption option, ProjectMemoizer<T, O> stats) {
 
         List<O> ops = findOperations(node);
@@ -64,7 +64,7 @@ public abstract class AbstractMetricsComputer<T extends QualifiableNode, O exten
         for (O op : ops) {
             if (key.supports(op)) {
                 MetricMemoizer<O> opStats = stats.getOperationMemoizer(op.getQualifiedName());
-                double val = this.computeForOperation(key, op, force, version, opStats);
+                double val = this.computeForOperation(key, op, force, options, opStats);
                 if (val != Double.NaN) {
                     values.add(val);
                 }

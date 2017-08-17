@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.metrics;
 
-import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,24 +12,29 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Gathers a set of options to pass to a metric. Metrics may use these options as they see fit. That's used internally
- * to pass all options at once to a metric.
+ * Bundles a set of options to pass to a metric. Metrics may use these options as they see fit.
  *
  * @author Clément Fournier
  */
-public class MetricVersion {
+public class MetricOptions {
 
-    private static final Map<MetricVersion, MetricVersion> POOL = new HashMap<>();
+    private static final Map<MetricOptions, MetricOptions> POOL = new HashMap<>();
+    private static final MetricOptions EMPTY_OPTIONS;
     private Set<MetricOption> options;
 
 
     static {
-        MetricVersion emptyVersion = new MetricVersion();
-        POOL.put(emptyVersion, emptyVersion);
+        EMPTY_OPTIONS = new MetricOptions();
+        POOL.put(EMPTY_OPTIONS, EMPTY_OPTIONS);
     }
 
 
-    private MetricVersion(Set<MetricOption> opts) {
+    private MetricOptions() {
+        options = Collections.emptySet();
+    }
+
+
+    private MetricOptions(Set<MetricOption> opts) {
 
         switch (opts.size()) {
         case 0:
@@ -55,7 +59,7 @@ public class MetricVersion {
             return false;
         }
 
-        MetricVersion version = (MetricVersion) o;
+        MetricOptions version = (MetricOptions) o;
 
         return options.equals(version.options);
     }
@@ -79,25 +83,40 @@ public class MetricVersion {
 
     @Override
     public String toString() {
-        return "MetricVersion{" +
+        return "MetricOptions{" +
             "options=" + options +
             '}';
     }
 
 
     /**
-     * Gets a version from a list of options.
+     * Returns an empty options bundle.
      *
-     * @param opts The options to build the version from
-     *
-     * @return A metric version
+     * @return An empty options bundle
      */
-    public static MetricVersion ofOptions(MetricOption... opts) {
-
+    public static MetricOptions emptyOptions() {
+        return EMPTY_OPTIONS;
     }
 
-    public static MetricVersion ofOptions(Collection<MetricOption> opts) {
-        MetricVersion version = new MetricVersion(new HashSet<>(opts));
+
+
+
+
+    /**
+     * Gets an options bundle from a list of options.
+     *
+     * @param opts The options to build the bundle from
+     *
+     * @return An options bundle
+     */
+    public static MetricOptions ofOptions(Collection<MetricOption> opts) {
+        MetricOptions version;
+        if (opts instanceof Set) {
+            version = new MetricOptions((Set<MetricOption>) opts);
+        } else {
+            version = new MetricOptions(new HashSet<>(opts));
+        }
+
         if (!POOL.containsKey(version)) {
             POOL.put(version, version);
         }
@@ -113,7 +132,7 @@ public class MetricVersion {
      *
      * @return An array of options
      */
-    public static MetricOption[] toOptions(MetricVersion version) {
+    public static MetricOption[] toOptions(MetricOptions version) {
         Set<MetricOption> options = version.getOptions();
         return options.toArray(new MetricOption[options.size()]);
     }

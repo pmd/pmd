@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloPathAwareDecorator;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloBaseVisitor;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 
 /**
@@ -59,11 +59,11 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
 
 
     @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
-        Set<MetricOption> options = version.getOptions();
+    public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
+        Set<MetricOption> opts = options.getOptions();
         JavaParserVisitor visitor = new CycloBaseVisitor();
 
-        if (!options.contains(CycloOptions.IGNORE_BOOLEAN_PATHS)) {
+        if (!opts.contains(CycloOptions.IGNORE_BOOLEAN_PATHS)) {
             visitor = new CycloPathAwareDecorator(visitor);
         }
 

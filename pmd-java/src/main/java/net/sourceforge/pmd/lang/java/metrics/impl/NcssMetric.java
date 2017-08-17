@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NcssBaseVisitor;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NcssCountImportsDecorator;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
  * Non Commenting Source Statements. Similar to LOC but only counts statements, which is roughly equivalent to counting
@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.metrics.MetricVersion;
  * <p>The standard version's precise rules for counting statements comply with <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS
  * rules</a>. The only difference is that import and package statements are not counted.
  *
- * <p>Option {@link NcssOption#COUNT_IMPORTS}: Import and package statements are counted. Using that alone makes the
+ * <p>Option {@link NcssOptions#COUNT_IMPORTS}: Import and package statements are counted. Using that alone makes the
  * metric fully comply with JavaNcss rules.
  *
  * @author Clément Fournier
@@ -34,7 +34,7 @@ public final class NcssMetric {
 
 
     /** Variants of NCSS. */
-    public enum NcssOption implements MetricOption {
+    public enum NcssOptions implements MetricOption {
         /** Counts import and package statement. This makes the metric JavaNCSS compliant. */
         COUNT_IMPORTS
     }
@@ -48,11 +48,11 @@ public final class NcssMetric {
 
 
         @Override
-        public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
+        public double computeFor(ASTAnyTypeDeclaration node, MetricOptions version) {
             Set<MetricOption> options = version.getOptions();
             JavaParserVisitor visitor = new NcssBaseVisitor();
 
-            if (options.contains(NcssOption.COUNT_IMPORTS)) {
+            if (options.contains(NcssOptions.COUNT_IMPORTS)) {
                 visitor = new NcssCountImportsDecorator(visitor);
             }
 
@@ -73,11 +73,11 @@ public final class NcssMetric {
 
 
         @Override
-        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions version) {
             Set<MetricOption> options = version.getOptions();
             JavaParserVisitor visitor = new NcssBaseVisitor();
 
-            if (options.contains(NcssOption.COUNT_IMPORTS)) {
+            if (options.contains(NcssOptions.COUNT_IMPORTS)) {
                 visitor = new NcssCountImportsDecorator(visitor);
             }
 

@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
  * Access to Foreign Data. Quantifies the number of foreign fields accessed directly or via accessors.
@@ -25,7 +25,7 @@ public final class AtfdMetric {
     public static final class AtfdOperationMetric extends AbstractJavaOperationMetric {
 
         @Override // TODO:cf
-        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
 
             JavaOperationSigMask targetOps = new JavaOperationSigMask();
             targetOps.restrictVisibilitiesTo(Visibility.PUBLIC);
@@ -46,7 +46,7 @@ public final class AtfdMetric {
     public static final class AtfdClassMetric extends AbstractJavaClassMetric {
 
         @Override
-        public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
+        public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
             // TODO:cf
             return 0;
         }

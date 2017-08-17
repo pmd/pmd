@@ -15,9 +15,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOption;
+import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOptions;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
@@ -41,24 +42,24 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
 
     static {
         OPTION_MAP = new HashMap<>();
-        OPTION_MAP.put("javaNcss", NcssOption.COUNT_IMPORTS);
+        OPTION_MAP.put("javaNcss", NcssOptions.COUNT_IMPORTS);
     }
 
 
-    private static final EnumeratedMultiProperty<MetricOption> NCSS_VERSION_DESCRIPTOR = new EnumeratedMultiProperty<>(
+    private static final EnumeratedMultiProperty<MetricOption> NCSS_OPTIONS_DESCRIPTOR = new EnumeratedMultiProperty<>(
         "ncssOptions", "Choose options for the calculation of Ncss",
         OPTION_MAP, Collections.<MetricOption>emptyList(), MetricOption.class, 3.0f);
 
 
     private int methodReportLevel;
     private int classReportLevel;
-    private MetricOption[] ncssOptions;
+    private MetricOptions ncssOptions;
 
 
     public NcssCountRule() {
         definePropertyDescriptor(METHOD_REPORT_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(CLASS_REPORT_LEVEL_DESCRIPTOR);
-        definePropertyDescriptor(NCSS_VERSION_DESCRIPTOR);
+        definePropertyDescriptor(NCSS_OPTIONS_DESCRIPTOR);
     }
 
 
@@ -66,7 +67,9 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         methodReportLevel = getProperty(METHOD_REPORT_LEVEL_DESCRIPTOR);
         classReportLevel = getProperty(CLASS_REPORT_LEVEL_DESCRIPTOR);
-        ncssOptions = getProperty(NCSS_VERSION_DESCRIPTOR).toArray(new MetricOption[0]);
+        if (ncssOptions == null) {
+            ncssOptions = MetricOptions.ofOptions(getProperty(NCSS_OPTIONS_DESCRIPTOR));
+        }
 
         super.visit(node, data);
         return data;
@@ -80,7 +83,7 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
 
         if (JavaClassMetricKey.NCSS.supports(node)) {
             int classSize = (int) JavaMetrics.get(JavaClassMetricKey.NCSS, node, ncssOptions);
-            int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.NCSS, node, ResultOption.HIGHEST, ncssOptions);
+            int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.NCSS, node, ncssOptions, ResultOption.HIGHEST);
 
             if (classSize >= classReportLevel) {
                 String[] messageParams = {node.getTypeKind().name().toLowerCase(),
