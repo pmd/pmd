@@ -46,8 +46,8 @@
     </test-code>
 
     <test-code>
-        <description>TODO Subclass of List</description>
-        <expected-problems>0</expected-problems>
+        <description>Subclass of List</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
         public class MyClass {
           void loop(ArrayList<String> l) {
@@ -134,7 +134,7 @@
     </test-code>
 
     <test-code>
-        <description>TODO Consider iterators</description>
+        <description>Consider iterators</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
         class Foo {

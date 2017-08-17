@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
@@ -57,9 +58,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
         }
 
 
-        if (index == null || occurrences == null
-            || !"int".equals(index.getTypeImage())
-            || !indexStartsAtZero(index)) {
+        if (occurrences == null || !"int".equals(index.getTypeImage()) || !indexStartsAtZero(index)) {
             return super.visit(node, data);
         }
 
@@ -81,7 +80,8 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
         if (iterableDeclaration.isArray() && isReplaceableArrayLoop(node, occurrences, iterableDeclaration)) {
             addViolation(data, node);
-        } else if ("List".equals(iterableDeclaration.getTypeImage())
+        } else if (iterableDeclaration.getTypeImage() != null && iterableDeclaration.getTypeImage()
+                                                                                    .matches("List|ArrayList|LinkedList")
             && isReplaceableListLoop(node, occurrences, iterableDeclaration)) {
             addViolation(data, node);
         }
