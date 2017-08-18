@@ -46,9 +46,11 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
     /** Instance. */
     public static final NcssBaseVisitor INSTANCE = new NcssBaseVisitor();
 
+
     protected NcssBaseVisitor() {
 
     }
+
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
@@ -56,11 +58,13 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
         return super.visit(node, data);
     }
 
+
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
         ((MutableInt) data).increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
@@ -68,11 +72,13 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
         return super.visit(node, data);
     }
 
+
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
         ((MutableInt) data).increment();
         return data;
     }
+
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
@@ -80,11 +86,13 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
         return super.visit(node, data);
     }
 
+
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         ((MutableInt) data).increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
@@ -96,6 +104,7 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
         return data;
     }
 
+
     @Override
     public Object visit(ASTIfStatement node, Object data) {
         ((MutableInt) data).increment();
@@ -106,17 +115,20 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
         return super.visit(node, data);
     }
 
+
     @Override
     public Object visit(ASTWhileStatement node, Object data) {
         ((MutableInt) data).increment();
         return super.visit(node, data);
     }
 
+
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
         ((MutableInt) data).increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Object visit(ASTStatementExpression node, Object data) {
@@ -126,11 +138,13 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
         return data;
     }
 
+
     @Override
     public Object visit(ASTExplicitConstructorInvocation node, Object data) {
         ((MutableInt) data).increment();
         return data;
     }
+
 
     @Override
     public Object visit(ASTContinueStatement node, Object data) {
@@ -138,11 +152,13 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
         return data;
     }
 
+
     @Override
     public Object visit(ASTBreakStatement node, Object data) {
         ((MutableInt) data).increment();
         return data;
     }
+
 
     @Override
     public Object visit(ASTReturnStatement node, Object data) {
@@ -150,11 +166,13 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
         return data;
     }
 
+
     @Override
     public Object visit(ASTDoStatement node, Object data) {
         ((MutableInt) data).increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Object visit(ASTForStatement node, Object data) {
@@ -162,11 +180,13 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
         return super.visit(node, data);
     }
 
+
     @Override
     public Object visit(ASTSynchronizedStatement node, Object data) {
         ((MutableInt) data).increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Object visit(ASTCatchStatement node, Object data) {
@@ -174,11 +194,13 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
         return super.visit(node, data);
     }
 
+
     @Override
     public Object visit(ASTThrowStatement node, Object data) {
         ((MutableInt) data).increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Object visit(ASTFinallyStatement node, Object data) {
@@ -186,11 +208,13 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
         return super.visit(node, data);
     }
 
+
     @Override
     public Object visit(ASTLabeledStatement node, Object data) {
         ((MutableInt) data).increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Object visit(ASTSwitchLabel node, Object data) {
@@ -198,11 +222,13 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
         return super.visit(node, data);
     }
 
+
     @Override
     public Object visit(ASTInitializer node, Object data) {
         ((MutableInt) data).increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Object visit(ASTAssertStatement node, Object data) {
