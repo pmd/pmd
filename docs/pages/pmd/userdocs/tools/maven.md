@@ -2,6 +2,10 @@
 title: Maven PMD Plugin
 permalink: /pmd_userdocs_tools_maven.html
 last_updated: August 2017
+author: >
+    Miguel Griffa <mikkey@users.sourceforge.net>,
+    Romain PELISSE <belaran@gmail.com>,
+    Andreas Dangel <andreas.dangel@adangel.org>
 ---
 
 ## Maven 2 and 3

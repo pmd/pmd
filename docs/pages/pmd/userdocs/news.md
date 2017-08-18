@@ -1,8 +1,7 @@
 ---
 title: PMD in the press
-sidebar: pmd_sidebar
 permalink: pmd_userdocs_news.html
-folder: pmd/userdocs
+author: Tom Copeland <tom@infoether.org>
 ---
 
 ## Sites/Articles about PMD

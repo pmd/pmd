@@ -1,8 +1,7 @@
 ---
 title: Getting Started
 permalink: pmd_userdocs_getting_started.html
-sidebar: pmd_sidebar
-folder: pmd/userdocs
+author: Tom Copeland <tom@infoether.com>, Xavier Le Vourch <xlv@users.sourceforge.net>
 ---
 
 ## How to install PMD and CPD

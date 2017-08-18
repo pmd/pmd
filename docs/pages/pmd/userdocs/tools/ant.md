@@ -1,6 +1,10 @@
 ---
 title: Ant Task Usage
 permalink: pmd_userdocs_tools_ant.html
+author: >
+    David Dixon-Peugh <dpeugh@users.sourceforge.net>,
+    Tom Copeland <tom@infoether.com>,
+    Xavier Le Vourch <xlv@users.sourceforge.net>
 ---
 
 ## PMD

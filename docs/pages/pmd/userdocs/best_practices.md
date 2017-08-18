@@ -1,8 +1,7 @@
 ---
 title: Best Practices
-sidebar: pmd_sidebar
 permalink: pmd_userdocs_best_practices.html
-folder: pmd/userdocs
+author: Tom Copeland <tom@infoether.com>
 ---
 
 ## Choose the rules that are right for you

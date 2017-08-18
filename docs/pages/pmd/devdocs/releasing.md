@@ -1,8 +1,7 @@
 ---
 title: Releasing
-sidebar: pmd_sidebar
 permalink: pmd_devdocs_releasing.html
-folder: pmd/devdocs
+author: Romain Pelisse <rpelisse@users.sourceforge.net>, Andreas Dangel <adangel@users.sourceforge.net>
 ---
 
 This page describes the current status of the release process.

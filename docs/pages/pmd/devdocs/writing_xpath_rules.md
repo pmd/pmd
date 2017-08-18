@@ -3,9 +3,8 @@ title:  PMD Writing XPath Rules
 tags: [customizing]
 summary: "Writing XPath rules for PMD"
 last_updated: July 3, 2016
-sidebar: pmd_sidebar
 permalink: pmd_devdocs_writing_xpath_rules.html
-folder: pmd/devdocs
+author: Miguel Griffa <mikkey@users.sourceforge.net>
 ---
 
 # XPath Rule tutorial

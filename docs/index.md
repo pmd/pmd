@@ -9,6 +9,7 @@ summary: >
     It finds common programming flaws like unused variables, empty catch blocks, unnecessary object creation,
     and so forth. Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code.
 last_updated: August 2017
+author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel.org>
 ---
 
 {% include image.html file="pmd-logo-big.png" alt="PMD Logo" %}

@@ -4,9 +4,8 @@ short_title: Info for Developers
 tags: [customizing]
 summary: Info for PMD Developers
 last_updated: July 3, 2016
-sidebar: pmd_sidebar
 permalink: pmd_devdocs_info_for_developers.html
-folder: pmd/devdocs
+author: Hooper Bloob <hooperbloob@users.sourceforge.net>, Romain Pelisse <rpelisse@users.sourceforge.net>
 ---
 
 # Information for PMD Developers

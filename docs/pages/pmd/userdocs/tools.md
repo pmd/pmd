@@ -1,8 +1,7 @@
 ---
 title: Tools / Integrations
-sidebar: pmd_sidebar
 permalink: pmd_userdocs_tools.html
-folder: pmd/userdocs
+author: David Dixon-Peugh <dpeugh@users.sourceforge.net>
 ---
 
 * IDE plugins
