@@ -126,16 +126,25 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     }
 
 
+    /** Cuts the decimals off the string representation of a double if they're too small. */
+    private String cutDouble(double val) {
+        if (val - (int) val > .1) {
+            return String.valueOf(val);
+        } else {
+            return String.valueOf((int) val);
+        }
+    }
+
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         if (classKey != null && reportClasses && classKey.supports(node)) {
-            int classValue = (int) JavaMetrics.get(classKey, node, metricOptions);
+            double classValue = JavaMetrics.get(classKey, node, metricOptions);
 
-            String valueReport = String.valueOf(classValue);
+            String valueReport = cutDouble(classValue);
 
             if (opKey != null) {
-                int highest = (int) JavaMetrics.get(opKey, node, metricOptions, ResultOption.HIGHEST);
-                valueReport += " highest " + highest;
+                double highest = JavaMetrics.get(opKey, node, metricOptions, ResultOption.HIGHEST);
+                valueReport += " highest " + cutDouble(highest);
             }
             if (classValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getQualifiedName().toString(), valueReport, });
@@ -148,9 +157,9 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         if (opKey != null && reportMethods && opKey.supports(node)) {
-            int methodValue = (int) JavaMetrics.get(opKey, node, metricOptions);
+            double methodValue = JavaMetrics.get(opKey, node, metricOptions);
             if (methodValue >= reportLevel) {
-                addViolation(data, node, new String[] {node.getQualifiedName().toString(), "" + methodValue, });
+                addViolation(data, node, new String[] {node.getQualifiedName().toString(), "" + cutDouble(methodValue), });
             }
         }
         return data;
