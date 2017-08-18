@@ -18,8 +18,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class JavaTypeDefinition implements TypeDefinition {
-    // contains TypeDefs where only the clazz field is used
-    private static final Map<Class<?>, JavaTypeDefinition> CLASS_TYPE_DEF_CACHE = new HashMap<>();
+    // contains non-generic and raw EXACT types
+    private static final Map<Class<?>, JavaTypeDefinition> CLASS_EXACT_TYPE_DEF_CACHE = new HashMap<>();
+
+    // contains non-generic and raw UPPER_BOUND types, does not contain compound types
+    private static final Map<Class<?>, JavaTypeDefinition> CLASS_UPPER_BOUND_TYPE_DEF_CACHE = new HashMap<>();
 
     private final Class<?> clazz;
     private final List<JavaTypeDefinition> genericArgs;
@@ -27,10 +30,17 @@ public class JavaTypeDefinition implements TypeDefinition {
     private final int typeParameterCount;
     private final boolean isGeneric;
     private final JavaTypeDefinition enclosingClass;
+    private final TypeDefinitionType definitionType;
 
-    private JavaTypeDefinition(final Class<?> clazz) {
+
+    public enum TypeDefinitionType {
+        EXACT, UPPER_BOUND
+    }
+
+    private JavaTypeDefinition(final Class<?> clazz, TypeDefinitionType definitionType) {
         this.clazz = clazz;
         this.typeParameterCount = clazz.getTypeParameters().length;
+        this.definitionType = definitionType;
 
         final TypeVariable<?>[] typeParameters;
         // the anonymous class can't have generics, but we may be binding generics from super classes
@@ -57,30 +67,55 @@ public class JavaTypeDefinition implements TypeDefinition {
     }
 
     public static JavaTypeDefinition forClass(final Class<?> clazz) {
+        return forClass(clazz, TypeDefinitionType.EXACT);
+    }
+
+    public static JavaTypeDefinition forClass(final Class<?> clazz, TypeDefinitionType definitionType) {
         if (clazz == null) {
             return null;
         }
 
-        final JavaTypeDefinition typeDef = CLASS_TYPE_DEF_CACHE.get(clazz);
+        if (definitionType == TypeDefinitionType.EXACT) {
+            final JavaTypeDefinition typeDef = CLASS_EXACT_TYPE_DEF_CACHE.get(clazz);
 
-        if (typeDef != null) {
-            return typeDef;
+            if (typeDef != null) {
+                return typeDef;
+            }
+
+            final JavaTypeDefinition newDef = new JavaTypeDefinition(clazz, definitionType);
+
+            CLASS_EXACT_TYPE_DEF_CACHE.put(clazz, newDef);
+
+            return newDef;
+        } else if (definitionType == TypeDefinitionType.UPPER_BOUND) {
+            final JavaTypeDefinition typeDef = CLASS_UPPER_BOUND_TYPE_DEF_CACHE.get(clazz);
+
+            if (typeDef != null) {
+                return typeDef;
+            }
+
+            final JavaTypeDefinition newDef = new JavaTypeDefinition(clazz, definitionType);
+
+            CLASS_UPPER_BOUND_TYPE_DEF_CACHE.put(clazz, newDef);
+
+            return newDef;
         }
 
-        final JavaTypeDefinition newDef = new JavaTypeDefinition(clazz);
-
-        CLASS_TYPE_DEF_CACHE.put(clazz, newDef);
-
-        return newDef;
+        throw new IllegalStateException("");
     }
 
     public static JavaTypeDefinition forClass(final Class<?> clazz, final JavaTypeDefinition... boundGenerics) {
+        return forClass(clazz, TypeDefinitionType.EXACT, boundGenerics);
+    }
+
+    public static JavaTypeDefinition forClass(final Class<?> clazz, final TypeDefinitionType definitionType,
+                                              final JavaTypeDefinition... boundGenerics) {
         if (clazz == null) {
             return null;
         }
 
         // With generics there is no cache
-        final JavaTypeDefinition typeDef = new JavaTypeDefinition(clazz);
+        final JavaTypeDefinition typeDef = new JavaTypeDefinition(clazz, definitionType);
 
         Collections.addAll(typeDef.genericArgs, boundGenerics);
 
@@ -340,7 +375,7 @@ public class JavaTypeDefinition implements TypeDefinition {
      * @return true if clazz is generic and had not been parameterized
      */
     public boolean isRawType() {
-        return isGeneric() && CLASS_TYPE_DEF_CACHE.containsKey(getType());
+        return isGeneric() && CLASS_EXACT_TYPE_DEF_CACHE.containsKey(getType());
     }
 
     public JavaTypeDefinition getAsSuper(Class<?> superClazz) {
@@ -355,5 +390,17 @@ public class JavaTypeDefinition implements TypeDefinition {
         }
 
         return null;
+    }
+
+    public boolean isExactType() {
+        return definitionType == TypeDefinitionType.EXACT;
+    }
+
+    public boolean isUpperBound() {
+        return definitionType == TypeDefinitionType.UPPER_BOUND;
+    }
+
+    public TypeDefinitionType getDefinitionType() {
+        return definitionType;
     }
 }
