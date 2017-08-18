@@ -124,6 +124,33 @@ the report to html source files, and the file encoding:
         </configuration>
     </plugin>
 
+#### Upgrading the PMD version at runtime
+
+The Maven PMD plugin comes with a specific PMD version, which is documented on the
+[plugin project page](https://maven.apache.org/plugins/maven-pmd-plugin/index.html).
+
+Given that the newer PMD version is compatible, you can override the PMD version, that the
+Maven plugin will use and benefit from the latest bugfixes and enhancements:
+
+``` xml
+<plugin>
+   <groupId>org.apache.maven.plugins</groupId>
+   <artifactId>maven-pmd-plugin</artifactId>
+   <dependencies>
+       <dependency>
+           <groupId>net.sourceforge.pmd</groupId>
+           <artifactId>pmd-core</artifactId>
+           <version>...choose your version...</version>
+       </dependency>
+       <dependency>
+           <groupId>net.sourceforge.pmd</groupId>
+           <artifactId>pmd-java</artifactId>
+           <version>...choose your version...</version>
+       </dependency>
+     </dependencies>
+</plugin>
+```
+
 ### Reference
 
 For more information, please see the well documented PMD plugin project page here:
