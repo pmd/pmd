@@ -55,8 +55,8 @@ mkdir pmd.github.io
 (
     cd pmd.github.io
     git init
-    git config user.email "adangel+pmd-bot@users.sourceforge.net"
-    git config user.name "Andreas Dangel (PMD Releases)"
+    git config user.name "Travis CI (pmd-bot)"
+    git config user.email "andreas.dangel+pmd-bot@adangel.org"
     git config core.sparsecheckout true
     git remote add origin git@github.com:pmd/pmd.github.io.git
     echo "latest/" > .git/info/sparse-checkout
