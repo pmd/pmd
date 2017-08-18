@@ -9,9 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
- * Lines of Code. Equates the length in lines of code of the measured entity, counting everything including blank lines
- * and comments from the class declaration to the last closing brace. Import statements are not counted, for nested
- * classes to be comparable to outer ones.
+ * Lines of Code. See the <a href="https://{pmd.website.baseurl}/pmd_java_metrics_index.html">documentation site</a>.
  *
  * @author Clément Fournier
  * @see NcssMetric

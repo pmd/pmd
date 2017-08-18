@@ -10,8 +10,7 @@ import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NpathBaseVisitor;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
- * NPath complexity is a measurement of the acyclic execution paths through a function. See Nejmeh, Communications of
- * the ACM Feb 1988 pp 188-200.
+ * NPath complexity. See the <a href="https://{pmd.website.baseurl}/pmd_java_metrics_index.html">documentation site</a>.
  *
  * @author Clément Fournier
  */

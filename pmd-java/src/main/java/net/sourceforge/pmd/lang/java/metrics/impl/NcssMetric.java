@@ -17,14 +17,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
- * Non Commenting Source Statements. Similar to LOC but only counts statements, which is roughly equivalent to counting
- * the number of semicolons and opening braces in the program.
- *
- * <p>The standard version's precise rules for counting statements comply with <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS
- * rules</a>. The only difference is that import and package statements are not counted.
- *
- * <p>Option {@link NcssOption#COUNT_IMPORTS}: Import and package statements are counted. Using that alone makes the
- * metric fully comply with JavaNcss rules.
+ * Non-commenting source statements. See the <a href="https://{pmd.website.baseurl}/pmd_java_metrics_index.html">documentation site</a>.
  *
  * @author Clément Fournier
  * @see LocMetric
