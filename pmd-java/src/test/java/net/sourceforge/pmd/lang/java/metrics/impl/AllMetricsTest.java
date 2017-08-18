@@ -34,6 +34,7 @@ public class AllMetricsTest extends SimpleAggregatorTst {
         addRule(RULESET, "LocTest");
         addRule(RULESET, "NPathTest");
         addRule(RULESET, "NopaTest");
+        addRule(RULESET, "NoamTest");
     }
 
 }

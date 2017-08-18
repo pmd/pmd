@@ -45,4 +45,10 @@
           metrics="true">
     </rule>
 
+    <rule name="NoamTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NoamTestRule"
+          metrics="true">
+    </rule>
+
 </ruleset>

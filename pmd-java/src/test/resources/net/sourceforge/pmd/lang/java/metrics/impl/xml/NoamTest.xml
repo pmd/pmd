@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+
+    <code-fragment id="full-example"><![CDATA[
+public class Foo {
+  private int value;
+  private double speed;
+  private MutableInt mutX;
+  private boolean bool;
+
+  public int getValue() {
+        return value;
+  }
+
+  public boolean isBool() {
+    return bool;
+  }
+
+  public int value() {
+    return value;
+  }
+
+  protected int getValue() {
+    return value;
+  }
+
+  boolean isBool() {
+    return bool;
+  }
+
+  private int value() {
+    return value;
+  }
+}
+     ]]></code-fragment>
+
+
+    <test-code>
+        <description>Full example</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'.Foo' has value 3.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Test no fields</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'.Foo' has value 0.</message>
+        </expected-messages>
+        <code><![CDATA[
+        public class Foo {
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NOPA doesn't support enums, interfaces or annotations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public interface Foo {
+
+           public final int h;
+
+           enum Bar{
+             FOO;
+             public int bel = 0;
+           }
+
+           @interface Tag {
+              public static final int num = 0;
+           }
+        }
+        ]]></code>
+    </test-code>
+
+</test-data>
