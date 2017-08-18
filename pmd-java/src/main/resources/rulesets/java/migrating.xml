@@ -482,7 +482,7 @@ public class MyTest {
           since="6.0"
           message="This 'for' loop can be replaced by a 'foreach' loop"
           class="net.sourceforge.pmd.lang.java.rule.migrating.ForLoopCanBeForeachRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/migrating.html#ForLoopCanBeForeach">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#forloopcanbeforeach">
         <description><![CDATA[
             Reports loops that can be safely replaced with the foreach syntax. The rule considers loops over
             lists, arrays and iterators. A loop is safe to replace if it only uses the index variable to
