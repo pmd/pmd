@@ -79,7 +79,9 @@ class Foo {
   nor are empty fall-through cases in `switch` statements. You can use this 
   option to get results similar to those of the old `StdCyclomaticComplexityRule`, 
   which is to be replaced.
- 
+* Option `CycloVersion#CONSIDER_ASSERTS`: Assert statements are counted as if 
+  they were `if (..) throw new AssertionError(..)`. Compatible with 
+  `IGNORE_BOOLEAN_PATHS`.
  
 ## Lines of Code (LoC)
 
