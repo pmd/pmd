@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
@@ -36,10 +34,10 @@ public class WocMetric extends AbstractJavaClassMetric {
 
         int functionalMethods = countMatchingOpSigs(node, mask);
 
-        double nopa = JavaMetrics.get(JavaClassMetricKey.NOPA, node);
-        double noam = JavaMetrics.get(JavaClassMetricKey.NOAM, node);
+        mask.coverAllRoles();
 
+        int totalPublicMethods = countMatchingOpSigs(node, mask);
 
-        return 100 * functionalMethods / (nopa + noam);
+        return PROPORTION_SCALING_FACTOR * functionalMethods / (totalPublicMethods + 1);
     }
 }

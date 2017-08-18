@@ -35,6 +35,7 @@ public class AllMetricsTest extends SimpleAggregatorTst {
         addRule(RULESET, "NPathTest");
         addRule(RULESET, "NopaTest");
         addRule(RULESET, "NoamTest");
+        addRule(RULESET, "WocTest");
     }
 
 }

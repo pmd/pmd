@@ -23,12 +23,30 @@ import net.sourceforge.pmd.lang.metrics.Metric;
  */
 public abstract class AbstractJavaMetric<N extends Node> implements Metric<N> {
 
+    /**
+     *  Proportion metrics are scaled to this factor. 100 turns them into percentages. // TODO maybe automate that
+     */
+    public static final int PROPORTION_SCALING_FACTOR = 100;
+
+
     protected List<JavaQualifiedName> findAllCalls(ASTMethodOrConstructorDeclaration node) {
         List<JavaQualifiedName> result = new ArrayList<>();
         // TODO:cf findAllCalls
         // Needs TypeRes
         // Find the qualified names of all methods called in that method's block
         return result;
+    }
+
+
+    @Override
+    public final boolean equals(Object o) {
+        return o != null && o.getClass() == this.getClass();
+    }
+
+
+    @Override
+    public final int hashCode() {
+        return getClass().hashCode();
     }
 
 
@@ -39,16 +57,6 @@ public abstract class AbstractJavaMetric<N extends Node> implements Metric<N> {
      */
     protected static JavaSignatureMatcher getSignatureMatcher() {
         return JavaMetrics.getFacade().getTopLevelPackageStats();
-    }
-
-    @Override
-    public final boolean equals(Object o) {
-        return o != null && o.getClass() == this.getClass();
-    }
-
-    @Override
-    public final int hashCode() {
-        return getClass().hashCode();
     }
 
 }

@@ -126,12 +126,13 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     }
 
 
-    /** Cuts the decimals off the string representation of a double if they're too small. */
-    private String cutDouble(double val) {
-        if (val - (int) val > .1) {
-            return String.valueOf(val);
+    /** Gets a string representation rounded to the nearest half. */
+    private String roundedString(double val) {
+        double cpy = 0.5 * Math.round(2 * val);
+        if (cpy - (int) cpy == 0) {
+            return String.valueOf((int) cpy);
         } else {
-            return String.valueOf((int) val);
+            return String.valueOf(cpy);
         }
     }
 
@@ -140,11 +141,11 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
         if (classKey != null && reportClasses && classKey.supports(node)) {
             double classValue = JavaMetrics.get(classKey, node, metricOptions);
 
-            String valueReport = cutDouble(classValue);
+            String valueReport = roundedString(classValue);
 
             if (opKey != null) {
                 double highest = JavaMetrics.get(opKey, node, metricOptions, ResultOption.HIGHEST);
-                valueReport += " highest " + cutDouble(highest);
+                valueReport += " highest " + roundedString(highest);
             }
             if (classValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getQualifiedName().toString(), valueReport, });
@@ -159,7 +160,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
         if (opKey != null && reportMethods && opKey.supports(node)) {
             double methodValue = JavaMetrics.get(opKey, node, metricOptions);
             if (methodValue >= reportLevel) {
-                addViolation(data, node, new String[] {node.getQualifiedName().toString(), "" + cutDouble(methodValue), });
+                addViolation(data, node, new String[] {node.getQualifiedName().toString(), "" + roundedString(methodValue), });
             }
         }
         return data;

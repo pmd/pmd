@@ -45,7 +45,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Test no fields</description>
+        <description>Test empty class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'.Foo' has value 0.</message>

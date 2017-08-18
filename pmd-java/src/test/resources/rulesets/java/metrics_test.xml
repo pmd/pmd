@@ -51,4 +51,10 @@
           metrics="true">
     </rule>
 
+    <rule name="WocTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.WocTestRule"
+          metrics="true">
+    </rule>
+
 </ruleset>
