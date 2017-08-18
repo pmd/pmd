@@ -25,20 +25,25 @@ toc:
 ### Description
 
 Number of independent paths through a block of code \[[Lanza05](#Lanza05)\]. 
-Formally, given that the control flow graph of the block has n vertices, e edges and p connected components, the 
-cyclomatic complexity of the block is given by `CYCLO = e - n + 2p` \[[McCabe76](#McCabe76)\]. In practice it can be 
-calculated by counting control flow statements following the standard rules given below.
+Formally, given that the control flow graph of the block has `n` vertices, `e` 
+edges and `p` connected components, the cyclomatic complexity of the block is 
+given by `CYCLO = e - n + 2p` \[[McCabe76](#McCabe76)\]. In practice it can be 
+calculated by counting control flow statements following the standard rules given 
+below.
 
 The standard version of the metric complies with McCabe's original definition:
 
 * Methods have a base complexity of 1.
-* +1 for every control flow statement (`if`, `case`, `catch`, `throw`, `do`, `while`, `for`, `break`, `continue`) and 
-  conditional expression (`?:`) \[[Sonarqube](#Sonarqube)\]. Notice switch cases count as one, but not the switch 
-  itself: the point is that a switch should have the same complexity value as the equivalent series of `if` statements.
+* +1 for every control flow statement (`if`, `case`, `catch`, `throw`, `do`, 
+  `while`, `for`, `break`, `continue`) and conditional expression (`?:`) 
+  \[[Sonarqube](#Sonarqube)\]. Notice switch cases count as one, but not the 
+  switch itself: the point is that a switch should have the same complexity 
+  value as the equivalent series of `if` statements. 
 * `else`, `finally` and `default` don't count;
-* +1 for every boolean operator (`&&`, `||`) in the guard condition of a control flow statement. That's because
-  Java has short-circuit evaluation semantics for boolean operators, which makes every boolean operator kind of a 
-  control flow statement in itself.
+* +1 for every boolean operator (`&&`, `||`) in the guard condition of a control 
+  flow statement. That's because Java has short-circuit evaluation semantics for 
+  boolean operators, which makes every boolean operator kind of a control flow 
+  statement in itself.
 
 ### Code examples
 
@@ -68,11 +73,12 @@ class Foo {
   }     
 }
 ```
-### Versions
+### Options
 
-* Version `CycloVersion#IGNORE_BOOLEAN_PATHS`: Boolean operators are not counted, nor are empty
-  fall-through cases in `switch` statements. You can use this version to get results 
-  similar to those of the old `StdCyclomaticComplexityRule`, which is to be replaced.
+* Option `CycloVersion#IGNORE_BOOLEAN_PATHS`: Boolean operators are not counted,
+  nor are empty fall-through cases in `switch` statements. You can use this 
+  option to get results similar to those of the old `StdCyclomaticComplexityRule`, 
+  which is to be replaced.
  
  
 ## Lines of Code (LoC)
@@ -81,8 +87,9 @@ class Foo {
 
 ### Description
 
-Simply counts the number of lines of code the operation or class takes up in the source. This metric doesn't discount
-comments or blank lines. See also [NCSS](#non-commenting-source-statements-ncss).
+Simply counts the number of lines of code the operation or class takes up in 
+the source. This metric doesn't discount comments or blank lines. See also 
+[NCSS](#non-commenting-source-statements-ncss).
 
 
 ## Non-commenting source statements (NCSS)
@@ -91,22 +98,28 @@ comments or blank lines. See also [NCSS](#non-commenting-source-statements-ncss)
 
 ### Description
 
-Number of statements in a class or operation. That's roughly equivalent to counting the number of semicolons and 
-opening braces in the program. Comments and blank lines are ignored, and statements spread on multiple lines count as
- only one (e.g. `int\n a;` counts a single statement). 
+Number of statements in a class or operation. That's roughly equivalent to 
+counting the number of semicolons and opening braces in the program. Comments 
+and blank lines are ignored, and statements spread on multiple lines count as 
+only one (e.g. `int\n a;` counts a single statement). 
 
-The standard version of the metric is based off JavaNCSS's version  \[[JavaNcss](#JavaNcss)\]:
+The standard version of the metric is based off JavaNCSS's version  
+\[[JavaNcss](#JavaNcss)\]:
 
-* +1 for any of the following statements: `if`, `else`, `while`, `do`, `for`, `switch`, `break`, `continue`, `return`, 
-  `throw`, `synchronized`, `catch`, `finally`.
-* +1 for each assignment, variable declaration (except `for` loop initializers) or statement expression. We count 
-  variables  declared on the same line (e.g. `int a, b, c;`) as a single statement. 
-* Contrary to Sonarqube, but as JavaNCSS, we count type declarations (class, interface, enum, annotation),  
-  and method and field declarations \[[Sonarqube](#Sonarqube)\].
-* Contrary to JavaNCSS, but as Sonarqube, we do not count package declaration and import declarations as statements. 
-  This makes it easier to compare nested classes to outer classes. Besides, it makes for class metric results that 
-  actually represent the size of the class and not of the file. If you don't like that behaviour, use the `JAVANCSS` 
-  version.
+* +1 for any of the following statements: `if`, `else`, `while`, `do`, `for`, 
+  `switch`, `break`, `continue`, `return`, `throw`, `synchronized`, `catch`, 
+  `finally`.
+* +1 for each assignment, variable declaration (except `for` loop initializers) 
+  or statement expression. We count variables  declared on the same line (e.g. 
+  `int a, b, c;`) as a single statement. 
+* Contrary to Sonarqube, but as JavaNCSS, we count type declarations (class, 
+  interface, enum, annotation), and method and field declarations 
+  \[[Sonarqube](#Sonarqube)\].
+* Contrary to JavaNCSS, but as Sonarqube, we do not count package declaration 
+  and import declarations as statements. This makes it easier to compare nested 
+  classes to outer classes. Besides, it makes for class metric results that 
+  actually represent the size of the class and not of the file. If you don't 
+  like that behaviour, use the `COUNT_IMPORTS` option.
 
 ### Code example
 ```java
@@ -138,10 +151,10 @@ class Foo {                         // +1, total Ncss = 12
 ```
 
 
-### Versions
+### Options
 
-* Version `NcssVersion#JAVANCSS`: Import and package statements are counted as well. This version fully complies with
- JavaNCSS.
+* Option `NcssVersion#COUNT_IMPORTS`: Import and package statements are counted 
+  as well. This version fully complies with JavaNCSS.
 
 ## NPath complexity (NPath)
 
@@ -149,30 +162,38 @@ class Foo {                         // +1, total Ncss = 12
 
 ### Description
 
-Number of acyclic execution paths through a piece of code. This is related to cyclomatic complexity, but the two 
-metrics don't count the same thing: NPath counts the number of distinct *full* paths from the beginning to the end of 
-the method, while Cyclo only counts the number of decision points. NPath is not computed as simply as Cyclo. With 
-NPath, two decision points appearing sequentially have their complexity multiplied. 
+Number of acyclic execution paths through a piece of code. This is related to 
+cyclomatic complexity, but the two metrics don't count the same thing: NPath 
+counts the number of distinct *full* paths from the beginning to the end of the 
+method, while Cyclo only counts the number of decision points. NPath is not 
+computed as simply as Cyclo. With NPath, two decision points appearing sequentially 
+have their complexity multiplied. 
 
-The fact that NPath multiplies the complexity of statements makes it grow exponentially: 10 `if` - `else` statements in 
-a row would give an NPath of 1024, while Cyclo would evaluate to 20. Methods with an NPath complexity over 200 are 
+The fact that NPath multiplies the complexity of statements makes it grow 
+exponentially: 10 `if` - `else` statements in a row would give an NPath of 1024, 
+while Cyclo would evaluate to 20. Methods with an NPath complexity over 200 are 
 generally considered too complex.
 
 We compute NPath recursively, with the following set of rules:
 * An empty block has a complexity of 1.
-* The complexity of a block is the product of the NPath complexity of its statements, calculated as follows:
-  * The complexity of `for`, `do` and `while` statements is 1, plus the complexity of the block, plus the complexity of 
-    the guard condition.
-  * The complexity of a cascading `if` statement (`if .. else if ..`) is the number of `if` statements in the chain, 
-    plus the complexity of their guard condition, plus the complexity of the unguarded `else` block (or 1 if there is 
-    none).
-  * The complexity of a `switch` statement is the number of cases, plus the complexity of each `case` block. It's 
-    equivalent to the complexity of the equivalent cascade of `if` statements.
-  * The complexity of a ternary expression (`?:`) is the complexity of the guard condition, plus the 
-    complexity of both expressions. It's equivalent to the complexity of the equivalent `if .. else` construct.
-  * The complexity of a `try .. catch` statement is the complexity of the `try` block, plus the complexity of each 
-    catch block.
-  * The complexity of a `return` statement is the complexity of the expression (or 1 if there is none).
+* The complexity of a block is the product of the NPath complexity of its 
+  statements, calculated as follows:
+  * The complexity of `for`, `do` and `while` statements is 1, plus the 
+    complexity of the block, plus the complexity of the guard condition.
+  * The complexity of a cascading `if` statement (`if .. else if ..`) is the 
+    number of `if` statements in the chain, plus the complexity of their guard 
+    condition, plus the complexity of the unguarded `else` block (or 1 if there 
+    is none).
+  * The complexity of a `switch` statement is the number of cases, plus the 
+    complexity of each `case` block. It's equivalent to the complexity of the 
+    equivalent cascade of `if` statements.
+  * The complexity of a ternary expression (`?:`) is the complexity of the guard
+    condition, plus the complexity of both expressions. It's equivalent to the 
+    complexity of the equivalent `if .. else` construct.
+  * The complexity of a `try .. catch` statement is the complexity of the `try` 
+    block, plus the complexity of each catch block.
+  * The complexity of a `return` statement is the complexity of the expression 
+    (or 1 if there is none).
   * All other statements have a complexity of 1 and are discarded from the product.
    
 ### Code example
@@ -199,10 +220,11 @@ void fun(boolean a, boolean b, boolean c) { // NPath = 6
   // block #6
 }
 ```
-After block 0, the control flow can either execute block 1 or 2 before jumping to block 3. From block three, the 
-control flow will again have the choice between blocks 4 and 5 before jumping to block 6. The first `if` offers 2 
-choices, the second offers 3, so the cyclomatic complexity of this method is 2 + 3 = 5. NPath, however, sees 2 * 3 = 
-6 full paths from the beginning to the end.
+After block 0, the control flow can either execute block 1 or 2 before jumping 
+to block 3. From block three, the control flow will again have the choice 
+between blocks 4 and 5 before jumping to block 6. The first `if` offers 2 
+choices, the second offers 3, so the cyclomatic complexity of this method is 
+2 + 3 = 5. NPath, however, sees 2 * 3 = 6 full paths from the beginning to the end.
  
 ## Weighted Method Count (WMC)
 
@@ -210,12 +232,14 @@ choices, the second offers 3, so the cyclomatic complexity of this method is 2 +
 
 ### Description
 
-Sum of the statistical complexity of the operations in the class. We use [CYCLO](#cyclomatic-complexity-cyclo) to 
-quantify the complexity of an operation \[[Lanza05](#Lanza05)\].
+Sum of the statistical complexity of the operations in the class. We use 
+[CYCLO](#cyclomatic-complexity-cyclo) to quantify the complexity of an operation 
+\[[Lanza05](#Lanza05)\].
 
-### Versions
+### Options
 
-WMC uses the same versions as CYCLO, which have the effect of summing that version of CYCLO to calculate the metric.
+WMC uses the same options as CYCLO, which are provided to CYCLO when 
+computing it.
 
 # References
 
