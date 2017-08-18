@@ -24,6 +24,9 @@ public class JavaTypeDefinition implements TypeDefinition {
     // contains non-generic and raw UPPER_BOUND types, does not contain compound types
     private static final Map<Class<?>, JavaTypeDefinition> CLASS_UPPER_BOUND_TYPE_DEF_CACHE = new HashMap<>();
 
+    // contains non-generic and raw LOWER_BOUND types, does not contain compound types
+    private static final Map<Class<?>, JavaTypeDefinition> CLASS_LOWER_BOUND_TYPE_DEF_CACHE = new HashMap<>();
+
     private final Class<?> clazz;
     private final List<JavaTypeDefinition> genericArgs;
     // cached because calling clazz.getTypeParameters().length create a new array every time
@@ -32,15 +35,20 @@ public class JavaTypeDefinition implements TypeDefinition {
     private final JavaTypeDefinition enclosingClass;
     private final TypeDefinitionType definitionType;
 
+    // only used when definitionType == LOWER_BOUND
+    private final JavaTypeDefinition lowerBound;
+
 
     public enum TypeDefinitionType {
-        EXACT, UPPER_BOUND
+        EXACT, UPPER_BOUND, LOWER_BOUND
     }
 
-    private JavaTypeDefinition(final Class<?> clazz, TypeDefinitionType definitionType) {
+    private JavaTypeDefinition(final Class<?> clazz, TypeDefinitionType definitionType,
+                               JavaTypeDefinition lowerBound) {
         this.clazz = clazz;
         this.typeParameterCount = clazz.getTypeParameters().length;
         this.definitionType = definitionType;
+        this.lowerBound = lowerBound;
 
         final TypeVariable<?>[] typeParameters;
         // the anonymous class can't have generics, but we may be binding generics from super classes
@@ -75,33 +83,50 @@ public class JavaTypeDefinition implements TypeDefinition {
             return null;
         }
 
-        if (definitionType == TypeDefinitionType.EXACT) {
-            final JavaTypeDefinition typeDef = CLASS_EXACT_TYPE_DEF_CACHE.get(clazz);
+        switch (definitionType) {
+            case EXACT: {
+                final JavaTypeDefinition typeDef = CLASS_EXACT_TYPE_DEF_CACHE.get(clazz);
 
-            if (typeDef != null) {
-                return typeDef;
+                if (typeDef != null) {
+                    return typeDef;
+                }
+
+                final JavaTypeDefinition newDef = new JavaTypeDefinition(clazz, definitionType, null);
+
+                CLASS_EXACT_TYPE_DEF_CACHE.put(clazz, newDef);
+
+                return newDef;
             }
+            case UPPER_BOUND: {
+                final JavaTypeDefinition typeDef = CLASS_UPPER_BOUND_TYPE_DEF_CACHE.get(clazz);
 
-            final JavaTypeDefinition newDef = new JavaTypeDefinition(clazz, definitionType);
+                if (typeDef != null) {
+                    return typeDef;
+                }
 
-            CLASS_EXACT_TYPE_DEF_CACHE.put(clazz, newDef);
+                final JavaTypeDefinition newDef = new JavaTypeDefinition(clazz, definitionType, null);
 
-            return newDef;
-        } else if (definitionType == TypeDefinitionType.UPPER_BOUND) {
-            final JavaTypeDefinition typeDef = CLASS_UPPER_BOUND_TYPE_DEF_CACHE.get(clazz);
+                CLASS_UPPER_BOUND_TYPE_DEF_CACHE.put(clazz, newDef);
 
-            if (typeDef != null) {
-                return typeDef;
+                return newDef;
             }
+            case LOWER_BOUND: {
+                final JavaTypeDefinition typeDef = CLASS_LOWER_BOUND_TYPE_DEF_CACHE.get(clazz);
 
-            final JavaTypeDefinition newDef = new JavaTypeDefinition(clazz, definitionType);
+                if (typeDef != null) {
+                    return typeDef;
+                }
 
-            CLASS_UPPER_BOUND_TYPE_DEF_CACHE.put(clazz, newDef);
+                final JavaTypeDefinition newDef = new JavaTypeDefinition(Object.class, definitionType,
+                                                                         JavaTypeDefinition.forClass(clazz));
 
-            return newDef;
+                CLASS_LOWER_BOUND_TYPE_DEF_CACHE.put(clazz, newDef);
+
+                return newDef;
+            }
+            default:
+                throw new IllegalStateException("Unknown definition type");
         }
-
-        throw new IllegalStateException("");
     }
 
     public static JavaTypeDefinition forClass(final Class<?> clazz, final JavaTypeDefinition... boundGenerics) {
@@ -114,9 +139,14 @@ public class JavaTypeDefinition implements TypeDefinition {
             return null;
         }
 
-        // With generics there is no cache
-        final JavaTypeDefinition typeDef = new JavaTypeDefinition(clazz, definitionType);
+        if (definitionType == TypeDefinitionType.LOWER_BOUND) {
+            // With generics there is no cache
+            return new JavaTypeDefinition(Object.class, definitionType, forClass(clazz, boundGenerics));
+        }
 
+        // With generics there is no cache
+        final JavaTypeDefinition typeDef = new JavaTypeDefinition(clazz, definitionType, null);
+        ;
         Collections.addAll(typeDef.genericArgs, boundGenerics);
 
         return typeDef;
@@ -282,8 +312,10 @@ public class JavaTypeDefinition implements TypeDefinition {
     @Override
     public String toString() {
         return new StringBuilder("JavaTypeDefinition [clazz=").append(clazz)
+                .append(", definitionType=").append(definitionType)
                 .append(", genericArgs=").append(genericArgs)
                 .append(", isGeneric=").append(isGeneric)
+                .append(", lowerBound=").append(lowerBound)
                 .append(']').toString();
 
     }
@@ -302,10 +334,10 @@ public class JavaTypeDefinition implements TypeDefinition {
 
         JavaTypeDefinition otherTypeDef = (JavaTypeDefinition) obj;
 
-        if (clazz != otherTypeDef.clazz) {
+        if (clazz != otherTypeDef.clazz
+                || definitionType != otherTypeDef.definitionType) {
             return false;
         }
-
 
         // This should cover
         // raw vs proper
@@ -318,10 +350,15 @@ public class JavaTypeDefinition implements TypeDefinition {
         // Stuff<List<Stuff>> c;
         // all of the above should be equal
 
-        for (int i = 0; i < getTypeParameterCount(); ++i) {
-            // Note: we assume that cycles can only exist because of raw types
-            if (!getGenericType(i).equals(otherTypeDef.getGenericType(i))) {
-                return false;
+
+        if(isLowerBound() && !lowerBound.equals(otherTypeDef.lowerBound)) {
+            return false;
+        } else {
+            for (int i = 0; i < getTypeParameterCount(); ++i) {
+                // Note: we assume that cycles can only exist because of raw types
+                if (!getGenericType(i).equals(otherTypeDef.getGenericType(i))) {
+                    return false;
+                }
             }
         }
 
@@ -400,7 +437,19 @@ public class JavaTypeDefinition implements TypeDefinition {
         return definitionType == TypeDefinitionType.UPPER_BOUND;
     }
 
+    public boolean isLowerBound() {
+        return definitionType == TypeDefinitionType.LOWER_BOUND;
+    }
+
     public TypeDefinitionType getDefinitionType() {
         return definitionType;
+    }
+
+    public JavaTypeDefinition getLowerBound() {
+        if (definitionType != TypeDefinitionType.LOWER_BOUND) {
+            throw new IllegalStateException("Not a lower bound type: " + toString());
+        }
+
+        return lowerBound;
     }
 }
