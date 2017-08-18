@@ -23,11 +23,6 @@ import net.sourceforge.pmd.lang.metrics.Metric;
  */
 public abstract class AbstractJavaMetric<N extends Node> implements Metric<N> {
 
-    /**
-     *  Proportion metrics are scaled to this factor. 100 turns them into percentages. // TODO maybe automate that
-     */
-    public static final int PROPORTION_SCALING_FACTOR = 100;
-
 
     protected List<JavaQualifiedName> findAllCalls(ASTMethodOrConstructorDeclaration node) {
         List<JavaQualifiedName> result = new ArrayList<>();

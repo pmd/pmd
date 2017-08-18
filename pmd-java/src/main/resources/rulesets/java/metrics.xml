@@ -163,4 +163,22 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="DataClass"
+          since="6.0"
+          message="The class ''{0}'' is suspected to be a Data Class"
+          class="net.sourceforge.pmd.lang.java.metrics.rule.DataClassRule"
+          metrics="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_metrics.html#DataClass">
+        <description>
+            TODO
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+TODO
+ ]]>
+        </example>
+    </rule>
+
+
 </ruleset>

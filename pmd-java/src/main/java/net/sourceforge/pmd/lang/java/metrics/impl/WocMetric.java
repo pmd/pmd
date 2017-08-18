@@ -38,6 +38,6 @@ public class WocMetric extends AbstractJavaClassMetric {
 
         int totalPublicMethods = countMatchingOpSigs(node, mask);
 
-        return PROPORTION_SCALING_FACTOR * functionalMethods / (totalPublicMethods + 1);
+        return functionalMethods / (totalPublicMethods + 1);
     }
 }
