@@ -36,7 +36,20 @@ public final class NcssMetric {
     /** Variants of NCSS. */
     public enum NcssOption implements MetricOption {
         /** Counts import and package statement. This makes the metric JavaNCSS compliant. */
-        COUNT_IMPORTS
+        COUNT_IMPORTS("countImports");
+
+        private final String vName;
+
+
+        NcssOption(String valueName) {
+            this.vName = valueName;
+        }
+
+
+        @Override
+        public String valueName() {
+            return vName;
+        }
     }
 
     public static final class NcssClassMetric extends AbstractJavaClassMetric {

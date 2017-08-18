@@ -17,9 +17,17 @@ package net.sourceforge.pmd.lang.metrics;
 public interface MetricOption {
 
     /**
-     * Returns the name of the option.
+     * Returns the name of the option constant.
+     *
+     * @return The name of the option constant.
+     */
+    String name();
+
+    /**
+     * Returns the name of the option as it should be used in properties.
      *
      * @return The name of the option.
      */
-    String name();
+    String valueName();
+
 }

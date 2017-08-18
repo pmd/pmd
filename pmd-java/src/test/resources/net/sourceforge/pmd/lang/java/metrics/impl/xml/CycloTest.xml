@@ -31,6 +31,7 @@
                 x = 2;
               }
             } else if (c && d) {
+              assert a : "fail";
               while (z < y) {
                 x = 2;
               }
@@ -39,6 +40,7 @@
                 x = 2;
               }
             } else if (b) {
+              assert b || a : "fail";
               do {
                 x++;
                 y--;
@@ -65,7 +67,7 @@
     </code-fragment>
 
     <test-code>
-        <description>Complicated method - Standard</description>
+        <description>Full example - No options</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
             <message>'.Complicated#exception()' has value 4.</message>
@@ -75,12 +77,34 @@
     </test-code>
 
     <test-code>
-        <description>Complicated method - Ignore boolean path version</description>
+        <description>Full example - Ignore boolean path option</description>
         <expected-problems>2</expected-problems>
         <rule-property name="metricOptions">ignoreBooleanPaths</rule-property>
         <expected-messages>
             <message>'.Complicated#exception()' has value 4.</message>
             <message>'.Complicated#example()' has value 14.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Full example - Consider assert option</description>
+        <expected-problems>2</expected-problems>
+        <rule-property name="metricOptions">considerAssert</rule-property>
+        <expected-messages>
+            <message>'.Complicated#exception()' has value 4.</message>
+            <message>'.Complicated#example()' has value 28.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Full example - considerAssert + ignoreBooleanPaths</description>
+        <expected-problems>2</expected-problems>
+        <rule-property name="metricOptions">ignoreBooleanPaths|considerAssert</rule-property>
+        <expected-messages>
+            <message>'.Complicated#exception()' has value 4.</message>
+            <message>'.Complicated#example()' has value 18.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -194,6 +218,25 @@
               void bar() {
                 boolean a, b;
                 boolean c = (a || b) ? a : b;
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Test consider assert option with ternary</description>
+        <rule-property name="metricOptions">considerAssert</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'.Foo#bar()' has value 5.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              void bar() {
+                boolean a, b;
+                assert a : b ? "foo" : "bar";
               }
             }
             ]]>

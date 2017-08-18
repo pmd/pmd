@@ -40,7 +40,8 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
     static {
         VERSION_MAP = new HashMap<>();
-        VERSION_MAP.put("ignoreBooleanPaths", CycloOption.IGNORE_BOOLEAN_PATHS);
+        VERSION_MAP.put(CycloOption.IGNORE_BOOLEAN_PATHS.valueName(), CycloOption.IGNORE_BOOLEAN_PATHS);
+        VERSION_MAP.put(CycloOption.CONSIDER_ASSERT.valueName(), CycloOption.CONSIDER_ASSERT);
     }
 
 

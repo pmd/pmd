@@ -37,7 +37,7 @@ public class NcssTestRule extends AbstractMetricTestRule {
     @Override
     protected Map<String, MetricOption> optionMappings() {
         Map<String, MetricOption> mappings = super.optionMappings();
-        mappings.put("javaNcss", NcssOption.COUNT_IMPORTS);
+        mappings.put(NcssOption.COUNT_IMPORTS.valueName(), NcssOption.COUNT_IMPORTS);
         return mappings;
     }
 }

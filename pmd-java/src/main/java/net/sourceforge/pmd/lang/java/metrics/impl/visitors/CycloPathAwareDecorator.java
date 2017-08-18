@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.impl.visitors;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -95,6 +96,20 @@ public class CycloPathAwareDecorator extends JavaParserVisitorDecorator {
         if (node.isTernary()) {
             int boolCompTern = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
             ((MutableInt) data).add(1 + boolCompTern);
+        }
+        return data;
+    }
+
+
+    @Override
+    public Object visit(ASTAssertStatement node, Object data) {
+        int base = ((MutableInt) data).getValue();
+        super.visit(node, data);
+        boolean isAssertAware = base < ((MutableInt) data).getValue();
+
+        if (isAssertAware) {
+            int boolCompAssert = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+            ((MutableInt) data).add(boolCompAssert);
         }
         return data;
     }

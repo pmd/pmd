@@ -41,7 +41,7 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
 
     static {
         OPTION_MAP = new HashMap<>();
-        OPTION_MAP.put("countImports", NcssOption.COUNT_IMPORTS);
+        OPTION_MAP.put(NcssOption.COUNT_IMPORTS.valueName(), NcssOption.COUNT_IMPORTS);
     }
 
 

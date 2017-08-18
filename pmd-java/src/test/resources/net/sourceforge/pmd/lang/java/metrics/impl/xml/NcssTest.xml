@@ -138,7 +138,7 @@
     <test-code>
         <description>Full example - JavaNcss version</description>
         <rule-property name="reportClasses">true</rule-property>
-        <rule-property name="metricOptions">javaNcss</rule-property>
+        <rule-property name="metricOptions">countImports</rule-property>
         <expected-problems>5</expected-problems>
         <expected-messages>
             <message>'com.company.money.Foo' has value 69 highest 21.</message>

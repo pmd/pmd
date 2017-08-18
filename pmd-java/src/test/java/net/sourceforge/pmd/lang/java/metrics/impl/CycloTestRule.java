@@ -33,7 +33,8 @@ public class CycloTestRule extends AbstractMetricTestRule {
     @Override
     protected Map<String, MetricOption> optionMappings() {
         Map<String, MetricOption> mappings = super.optionMappings();
-        mappings.put("ignoreBooleanPaths", CycloOption.IGNORE_BOOLEAN_PATHS);
+        mappings.put(CycloOption.IGNORE_BOOLEAN_PATHS.valueName(), CycloOption.IGNORE_BOOLEAN_PATHS);
+        mappings.put(CycloOption.CONSIDER_ASSERT.valueName(), CycloOption.CONSIDER_ASSERT);
         return mappings;
     }
 }
