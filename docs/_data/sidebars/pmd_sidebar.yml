@@ -123,6 +123,9 @@ entries:
     - title: Developer Resources
       url: /pmd_devdocs_development.html
       output: web, pdf
+    - title: Writing Documentation
+      url: /pmd_devdocs_writing_documentation.html
+      output: web, pdf
     - title: Code Style
       url: /pmd_devdocs_codestyle.html
       output: web, pdf
