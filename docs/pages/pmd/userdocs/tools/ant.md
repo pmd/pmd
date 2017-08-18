@@ -1,8 +1,6 @@
 ---
 title: Ant Task Usage
-sidebar: pmd_sidebar
-permalink: pmd_userdocs_ant.html
-folder: pmd/userdocs
+permalink: pmd_userdocs_tools_ant.html
 ---
 
 ## PMD

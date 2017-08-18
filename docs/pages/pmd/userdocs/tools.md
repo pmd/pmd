@@ -6,8 +6,6 @@ folder: pmd/userdocs
 ---
 
 * IDE plugins
-* build tool plugins
-    *   [Ant Task Usage](/pmd_userdocs_ant.html)
 * [Continuous Integrations plugins](/pmd_userdocs_ci.html)
 * GUIs
 
@@ -121,20 +119,6 @@ folder: pmd/userdocs
         <td><a href="http://plugins.jedit.org/plugins/?PMDPlugin">jEdit - PMD Plugin</a></td>
         <td><a href="https://sourceforge.net/p/jedit/PMDPlugin/ci/master/tree/">sourceforge: jedit/PMDPlugin</a></td>
         <td>Jiger Patel, Dale Anson</td>
-    </tr>
-
-    <tr>
-        <td><a href="#maven">Maven</a></td>
-        <td></td>
-        <td>N/A</td>
-        <td>N/A</td>
-    </tr>
-
-    <tr>
-        <td><a href="#maven-2-and-3">Maven 2 and 3</a></td>
-        <td></td>
-        <td>N/A</td>
-        <td><a href="http://maven.apache.org/plugins/maven-pmd-plugin/">apache.org / maven</a></td>
     </tr>
 
     <tr>
@@ -383,145 +367,6 @@ The way I use the JEdit plugin is:
 Note that you can select individual rules by going to Utilities->Global Options->Plugin Options->PMD.
 Also, you can change the plugin to prompt you for a directory to check by going to that same menu and
 selecting the "Ask for Directory" checkbox.
-
-
-### Maven
-
-This section is about the maven 1 PMD plugin. The maven 2 PMD plugin page is available
-[below](#Maven_2_and_3).
-
-#### Running the pmd plugin
-
-##### report
-
-To include the Maven report in the project reports section add the following line under
-the reports element in your project.xml:
-
-    <report>maven-pmd-plugin</report>
-
-This will add an entry to the 'project reports' section with the PMD report.
-
-##### manual
-
-To run PMD on a Maven project without adding it as a report, simply run
-
-    maven pmd xdoc
-
-The PMD plugin writes the report in XML which will then be formatted into more readable HTML.
-
-#### Customization
-
-##### Changing rulesets
-
-To specify a set of official, built-in rulesets to be used set them in the property
-<em>maven.pmd.rulesets</em>.  You can include this setting in your project.properties file.
-
-A clean strategy for customizing which rules to use for a project is to write a ruleset file.
-In this file you can define which rules to use, add custom rules, and
-customizing which rules to include/exclude from official rulesets. More information on
-writing a ruleset can be found [here](/pmd_userdocs_understanding_rulesets.html).
-
-Add to the root of your Maven project a pmd.xml file which contains the ruleset mentioned in
-the previous paragraph. Add the following property to your project now:
-
-    maven.pmd.rulesetfiles = ${basedir}/pmd.xml
-
-#### Reference
-
-See the PMD plugin project page here:
-<http://maven.apache.org/maven-1.x/plugins/pmd/>
-
-
-### Maven 2 and 3
-
-#### Running the pmd plugin
-
-##### report
-
-To include the mvn report in the project reports section add the following lines under
-the reports element in your pom.xml:
-
-
-    <project>
-        ...
-        <reporting>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-pmd-plugin</artifactId>
-                </plugin>
-            </plugins>
-        </reporting>
-        ...
-    </project>
-
-This will add an entry to the 'project reports' section with the PMD report.
-
-
-##### manual
-
-To run PMD on a Maven project without adding it as a report, simply run
-
-    mvn pmd:pmd
-
-The PMD plugin writes the report in XML which will then be formatted into more readable HTML.
-
-#### Customization
-
-##### Changing rulesets
-
-To specify a ruleset, simply edit the previous configuration:
-
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <configuration>
-                    <rulesets>
-                        <ruleset>/rulesets/java/braces.xml</ruleset>
-                        <ruleset>/rulesets/java/naming.xml</ruleset>
-                        <ruleset>d:\rulesets\strings.xml</ruleset>
-                        <ruleset>http://localhost/design.xml</ruleset>
-                    </rulesets>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
-
-The value of the 'ruleset' value can either be a relative address, an absolute address or even an url.
-
-A clean strategy for customizing which rules to use for a project is to write a ruleset file.
-In this file you can define which rules to use, add custom rules, and
-customizing which rules to include/exclude from official rulesets. More information on
-writing a ruleset can be found [here](/pmd_userdocs_understanding_rulesets.html).
-Note that if you include other rulesets in your own rulesets, you have to be sure that the plugin
-will be able to resolve those other ruleset references.
-
-##### Other configurations
-
-The Maven 2 PMD plugin allows you to configure CPD, targetJDK, and the use of XRef to link
-the report to html source files, and the file encoding:
-
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <configuration>
-            <linkXRef>true</linkXRef>
-            <sourceEncoding>ISO-8859-1</sourceEncoding>
-            <minimumTokens>30</minimumTokens>
-            <targetJdk>1.4</targetJdk>
-        </configuration>
-    </plugin>
-
-#### Reference
-
-For more data, please see the well documented PMD plugin project page here:
-<http://maven.apache.org/plugins/maven-pmd-plugin/index.html>
-Also, the bug tracker for this plugin is [here](http://jira.codehaus.org/browse/MPMD).
-
-
 
 
 ### NetBeans

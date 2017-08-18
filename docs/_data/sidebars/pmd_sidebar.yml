@@ -45,9 +45,20 @@ entries:
     - title: Suppressing
       url: /pmd_userdocs_suppressing.html
       output: web, pdf
-    - title: Tools / Integrations
-      url: /pmd_userdocs_tools.html
-      output: web, pdf
+      subfolders:
+      - title: Tools / Integrations
+        output: web, pdf
+        subfolderitems:
+        - title: Maven PMD Plugin
+          output: web, pdf
+          url: /pmd_userdocs_tools_maven.html
+        - title: Ant
+          output: web, pdf
+          url: /pmd_userdocs_tools_ant.html
+        - title: Other Tools / Integrations
+          output: web, pdf
+          url: /pmd_userdocs_tools.html
+
     - title: FAQ
       url: /pmd_userdocs_faq.html
       output: web, pdf
