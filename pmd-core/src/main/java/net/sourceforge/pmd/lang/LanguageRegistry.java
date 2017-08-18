@@ -26,11 +26,9 @@ public final class LanguageRegistry {
     private LanguageRegistry() {
         List<Language> languagesList = new ArrayList<>();
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class);
-        Iterator<Language> iterator = languageLoader.iterator();
-        while (iterator.hasNext()) {
+        for (Language aLanguageLoader : languageLoader) {
             try {
-                Language language = iterator.next();
-                languagesList.add(language);
+                languagesList.add(aLanguageLoader);
             } catch (UnsupportedClassVersionError e) {
                 // Some languages require java8 and are therefore only available
                 // if java8 or later is used as runtime.
@@ -120,9 +118,7 @@ public final class LanguageRegistry {
     public static List<LanguageVersion> findAllVersions() {
         List<LanguageVersion> versions = new ArrayList<>();
         for (Language language : getLanguages()) {
-            for (LanguageVersion languageVersion : language.getVersions()) {
-                versions.add(languageVersion);
-            }
+            versions.addAll(language.getVersions());
         }
         return versions;
     }

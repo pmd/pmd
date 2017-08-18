@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.fxdesigner.fxdesigner;
 
 import java.io.StringReader;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -22,19 +23,23 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
 
 /**
  * @author Clément Fournier
  */
-class DesignerController implements Initializable {
+public class DesignerController implements Initializable {
+
+    @FXML
+    public TextArea codeEditorArea;
 
     @FXML
     private Menu languageMenu;
 
 
     private LanguageVersion selectedLanguageVersion;
-    private Map<LanguageVersion, RadioMenuItem> languageRadioMenuMap;
+    private Map<LanguageVersion, RadioMenuItem> languageRadioMenuMap = new HashMap<>();
 
 
     @Override
@@ -47,13 +52,11 @@ class DesignerController implements Initializable {
     private void initializeLanguageVersionMenu() {
         LanguageVersion[] supported = DesignerUtil.getSupportedLanguageVersions();
         ObservableList<MenuItem> items = languageMenu.getItems();
-        assert items.size() == 0;
-
-        System.out.println(supported);
         ToggleGroup group = new ToggleGroup();
 
         for (LanguageVersion version : supported) {
             RadioMenuItem item = new RadioMenuItem(version.getShortName());
+            item.setToggleGroup(group);
             items.add(item);
             languageRadioMenuMap.put(version, item);
         }
@@ -68,52 +71,15 @@ class DesignerController implements Initializable {
 
     private Node getCompilationUnit() {
         LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
-        return getCompilationUnit(languageVersionHandler);
+        return getCompilationUnit(languageVersionHandler, codeEditorArea.getText());
     }
-
-
-    private Node getCompilationUnit(LanguageVersionHandler languageVersionHandler) {
-        return null; //getCompilationUnit(languageVersionHandler, codeEditorPane.getText());
-    }
-
-
-    private LanguageVersion getLanguageVersion() {
-        return DesignerUtil.getSupportedLanguageVersions()[selectedLanguageVersionIndex()];
-    }
-
-
-    private void setLanguageVersion(LanguageVersion languageVersion) {
-        if (languageVersion != null) {
-            LanguageVersion[] versions = DesignerUtil.getSupportedLanguageVersions();
-            for (int i = 0; i < versions.length; i++) {
-                LanguageVersion version = versions[i];
-                if (languageVersion.equals(version)) {
-                    //        languageVersionMenuItems[i].setSelected(true);
-                    break;
-                }
-            }
-        }
-    }
-
-
-    private int selectedLanguageVersionIndex() {
-        /*  for (int i = 0; i < languageVersionMenuItems.length; i++) {
-            if (languageVersionMenuItems[i].isSelected()) {
-                return i;
-            }
-        }
-        */
-        throw new RuntimeException("Initial default language version not specified");
-    }
-
 
     LanguageVersionHandler getLanguageVersionHandler() {
-        LanguageVersion languageVersion = getLanguageVersion();
-        return languageVersion.getLanguageVersionHandler();
+        return selectedLanguageVersion.getLanguageVersionHandler();
     }
 
 
-    static Node getCompilationUnit(LanguageVersionHandler languageVersionHandler, String code) {
+    private static Node getCompilationUnit(LanguageVersionHandler languageVersionHandler, String code) {
         Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
         Node node = parser.parse(null, new StringReader(code));
         languageVersionHandler.getSymbolFacade().start(node);
