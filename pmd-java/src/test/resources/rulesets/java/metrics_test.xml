@@ -39,4 +39,10 @@
           metrics="true">
     </rule>
 
+    <rule name="NopaTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NopaTestRule"
+          metrics="true">
+    </rule>
+
 </ruleset>

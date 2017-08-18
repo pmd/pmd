@@ -40,6 +40,6 @@ public class WocMetric extends AbstractJavaClassMetric {
         double noam = JavaMetrics.get(JavaClassMetricKey.NOAM, node);
 
 
-        return functionalMethods / (nopa + noam);
+        return 100 * functionalMethods / (nopa + noam);
     }
 }
