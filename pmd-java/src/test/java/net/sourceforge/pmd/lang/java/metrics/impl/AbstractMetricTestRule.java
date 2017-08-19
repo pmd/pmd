@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Abstract test rule for a metric. Tests of metrics use the standard framework for rule testing, using one dummy rule
@@ -126,26 +127,14 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     }
 
 
-    /** Gets a string representation rounded to the nearest half. */
-    private String presentableString(double val) {
-        boolean isInt = Math.floor(val) == val;
+    /** Gets a nice string representation of a double. */
+    public String niceDoubleString(double val) {
+        int numDecimalPlaces = 2;
 
-        if (!isInt && val >= 0 && val <= 1) { // percentage
-            return roundedString(100 * val) + "%";
-        } else if (!isInt) {
-            return String.valueOf(roundedString(val));
+        if (val > 0 && val < 1) { // percentage
+            return StringUtil.percentageString(val, numDecimalPlaces, true);
         } else {
-            return String.valueOf((int) val);
-        }
-    }
-
-
-    private String roundedString(double val) {
-        double truncated = Math.floor(100 * val) / 100;
-        if (truncated == Math.floor(truncated)) {
-            return String.valueOf((int) truncated);
-        } else {
-            return String.valueOf(truncated);
+            return String.valueOf(StringUtil.truncateDouble(val, numDecimalPlaces, true));
         }
     }
 
@@ -155,11 +144,11 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
         if (classKey != null && reportClasses && classKey.supports(node)) {
             double classValue = JavaMetrics.get(classKey, node, metricOptions);
 
-            String valueReport = presentableString(classValue);
+            String valueReport = niceDoubleString(classValue);
 
             if (opKey != null) {
                 double highest = JavaMetrics.get(opKey, node, metricOptions, ResultOption.HIGHEST);
-                valueReport += " highest " + presentableString(highest);
+                valueReport += " highest " + niceDoubleString(highest);
             }
             if (classValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getQualifiedName().toString(), valueReport, });
@@ -175,7 +164,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
             double methodValue = JavaMetrics.get(opKey, node, metricOptions);
             if (methodValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getQualifiedName().toString(),
-                                                       "" + presentableString(methodValue), });
+                                                       "" + niceDoubleString(methodValue), });
             }
         }
         return data;
