@@ -4,14 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.ParserTst;
 
-public class ASTAnnotationTest extends ParserTst {
+public class ASTAnnotationTest {
 
     @Test
     public void testAnnotationSucceedsWithDefaultMode() {

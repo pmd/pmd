@@ -4,19 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getOrderedNodes;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava17;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.ParserTst;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -29,14 +27,13 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
 import net.sourceforge.pmd.lang.java.metrics.testdata.GetterDetection;
 import net.sourceforge.pmd.lang.java.metrics.testdata.SetterDetection;
-import net.sourceforge.pmd.typeresolution.ClassTypeResolverTest;
 
 /**
  * Test class for {@link JavaSignature} and its subclasses.
  *
  * @author Clément Fournier
  */
-public class SignatureTest extends ParserTst {
+public class SignatureTest {
 
     // common to operation and field signatures
     @Test
@@ -106,7 +103,7 @@ public class SignatureTest extends ParserTst {
 
     @Test
     public void testGetterDetection() {
-        ASTCompilationUnit compilationUnit = parseClass(GetterDetection.class);
+        ASTCompilationUnit compilationUnit = parseJava17(GetterDetection.class);
 
         compilationUnit.jjtAccept(new JavaParserVisitorAdapter() {
             @Override
@@ -119,7 +116,7 @@ public class SignatureTest extends ParserTst {
 
     @Test
     public void testSetterDetection() {
-        ASTCompilationUnit compilationUnit = parseClass(SetterDetection.class);
+        ASTCompilationUnit compilationUnit = parseJava17(SetterDetection.class);
 
         compilationUnit.jjtAccept(new JavaParserVisitorAdapter() {
             @Override
@@ -269,22 +266,5 @@ public class SignatureTest extends ParserTst {
             assertTrue(sigs2.get(i) == sigs2.get(i + 1));
         }
     }
-
-    private ASTCompilationUnit parseClass(Class<?> clazz) {
-        String sourceFile = clazz.getName().replace('.', '/') + ".java";
-        InputStream is = ClassTypeResolverTest.class.getClassLoader().getResourceAsStream(sourceFile);
-        if (is == null) {
-            throw new IllegalArgumentException(
-                "Unable to find source file " + sourceFile + " for " + clazz);
-        }
-        String source;
-        try {
-            source = IOUtils.toString(is);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return parseJava17(source);
-    }
-
 
 }

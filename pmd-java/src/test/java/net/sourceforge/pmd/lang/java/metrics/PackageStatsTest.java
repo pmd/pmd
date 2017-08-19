@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getOrderedNodes;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -12,7 +13,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.ParserTst;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
  *
  * @author Clément Fournier
  */
-public class PackageStatsTest extends ParserTst {
+public class PackageStatsTest {
 
     private PackageStats pack;
 
