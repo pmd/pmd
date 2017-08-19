@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava14;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava15;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava17;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava18;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -16,9 +20,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ParserTst;
 
-public class ParserCornersTest extends ParserTst {
+public class ParserCornersTest {
 
     /**
      * #1107 PMD 5.0.4 couldn't parse call of parent outer java class method

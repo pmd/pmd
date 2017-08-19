@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Set;
@@ -11,9 +12,8 @@ import java.util.Set;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ParserTst;
 
-public class ASTPackageDeclarationTest extends ParserTst {
+public class ASTPackageDeclarationTest {
 
     private static final String PACKAGE_INFO_ANNOTATED = "@Deprecated" + PMD.EOL + "package net.sourceforge.pmd.foobar;"
             + PMD.EOL;

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -12,25 +13,24 @@ import java.util.Set;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ParserTst;
 
-public class ASTAssignmentOperatorTest extends ParserTst {
+public class ASTAssignmentOperatorTest {
 
     @Test
     public void testSimpleAssignmentRecognized() {
-        Set<ASTAssignmentOperator> ops = super.getNodes(ASTAssignmentOperator.class, TEST1);
+        Set<ASTAssignmentOperator> ops = getNodes(ASTAssignmentOperator.class, TEST1);
         assertFalse((ops.iterator().next()).isCompound());
     }
 
     @Test
     public void testCompoundAssignmentPlusRecognized() {
-        Set<ASTAssignmentOperator> ops = super.getNodes(ASTAssignmentOperator.class, TEST2);
+        Set<ASTAssignmentOperator> ops = getNodes(ASTAssignmentOperator.class, TEST2);
         assertTrue((ops.iterator().next()).isCompound());
     }
 
     @Test
     public void testCompoundAssignmentMultRecognized() {
-        Set<ASTAssignmentOperator> ops = super.getNodes(ASTAssignmentOperator.class, TEST3);
+        Set<ASTAssignmentOperator> ops = getNodes(ASTAssignmentOperator.class, TEST3);
         assertTrue((ops.iterator().next()).isCompound());
     }
 
