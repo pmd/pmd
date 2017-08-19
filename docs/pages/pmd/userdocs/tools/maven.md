@@ -137,22 +137,46 @@ Given that the newer PMD version is compatible, you can override the PMD version
 Maven plugin will use and benefit from the latest bugfixes and enhancements:
 
 ``` xml
-<plugin>
-   <groupId>org.apache.maven.plugins</groupId>
-   <artifactId>maven-pmd-plugin</artifactId>
-   <dependencies>
-       <dependency>
-           <groupId>net.sourceforge.pmd</groupId>
-           <artifactId>pmd-core</artifactId>
-           <version>...choose your version...</version>
-       </dependency>
-       <dependency>
-           <groupId>net.sourceforge.pmd</groupId>
-           <artifactId>pmd-java</artifactId>
-           <version>...choose your version...</version>
-       </dependency>
-     </dependencies>
-</plugin>
+<project>
+    <properties>
+        <pmdVersion>...choose your version...</version>
+    </properties>
+...
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <version>3.8</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-core</artifactId>
+                            <version>${pmdVersion}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-java</artifactId>
+                            <version>${pmdVersion}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-javascript</artifactId>
+                            <version>${pmdVersion}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-jsp</artifactId>
+                            <version>${pmdVersion}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+...
+</project>
 ```
 
 ### Reference
