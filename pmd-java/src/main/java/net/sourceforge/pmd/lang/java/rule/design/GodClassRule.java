@@ -13,13 +13,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
@@ -27,8 +21,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
-import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
@@ -67,8 +61,6 @@ public class GodClassRule extends AbstractJavaRule {
      */
     private static final double ONE_THIRD_THRESHOLD = 1.0 / 3.0;
 
-    /** The Weighted Method Count metric. */
-    private int wmcCounter;
     /** The Access To Foreign Data metric. */
     private int atfdCounter;
 
@@ -86,8 +78,9 @@ public class GodClassRule extends AbstractJavaRule {
      * visited. Afterwards the metrics are evaluated against fixed thresholds.
      */
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
-        wmcCounter = 0;
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        int wmc = (int) JavaMetrics.get(JavaClassMetricKey.WMC, node);
+
         atfdCounter = 0;
         methodAttributeAccess = new HashMap<>();
 
@@ -103,14 +96,13 @@ public class GodClassRule extends AbstractJavaRule {
         // .append("TCC=").append(tcc);
         // System.out.println(debug.toString());
 
-        if (wmcCounter >= WMC_VERY_HIGH && atfdCounter > FEW_THRESHOLD && tcc < ONE_THIRD_THRESHOLD) {
+        if (wmc >= WMC_VERY_HIGH && atfdCounter > FEW_THRESHOLD && tcc < ONE_THIRD_THRESHOLD) {
 
-            StringBuilder sb = new StringBuilder();
-            sb.append(getMessage()).append(" (").append("WMC=").append(wmcCounter).append(", ").append("ATFD=")
-                    .append(atfdCounter).append(", ").append("TCC=").append(tcc).append(')');
+            String sb = getMessage() + " (" + "WMC=" + wmc + ", " + "ATFD="
+                + atfdCounter + ", " + "TCC=" + tcc + ')';
 
             RuleContext ctx = (RuleContext) data;
-            ctx.getReport().addRuleViolation(new JavaRuleViolation(this, ctx, node, sb.toString()));
+            ctx.getReport().addRuleViolation(new JavaRuleViolation(this, ctx, node, sb));
         }
         return result;
     }
@@ -137,11 +129,10 @@ public class GodClassRule extends AbstractJavaRule {
      * 
      * @return
      */
-    private double calculateTotalMethodPairs() {
+    private int calculateTotalMethodPairs() {
         int methodCount = methodAttributeAccess.size();
         int n = methodCount - 1;
-        double totalMethodPairs = n * (n + 1) / 2.0;
-        return totalMethodPairs;
+        return n * (n + 1) / 2;
     }
 
     /**
@@ -303,8 +294,6 @@ public class GodClassRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        wmcCounter++;
-
         currentMethodName = node.getFirstChildOfType(ASTMethodDeclarator.class).getImage();
         methodAttributeAccess.put(currentMethodName, new HashSet<String>());
 
@@ -313,56 +302,6 @@ public class GodClassRule extends AbstractJavaRule {
         currentMethodName = null;
 
         return result;
-    }
-
-    @Override
-    public Object visit(ASTConditionalOrExpression node, Object data) {
-        wmcCounter++;
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTConditionalAndExpression node, Object data) {
-        wmcCounter++;
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTIfStatement node, Object data) {
-        wmcCounter++;
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTWhileStatement node, Object data) {
-        wmcCounter++;
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTForStatement node, Object data) {
-        wmcCounter++;
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTSwitchLabel node, Object data) {
-        wmcCounter++;
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTCatchStatement node, Object data) {
-        wmcCounter++;
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTConditionalExpression node, Object data) {
-        if (node.isTernary()) {
-            wmcCounter++;
-        }
-        return super.visit(node, data);
     }
 
 }
