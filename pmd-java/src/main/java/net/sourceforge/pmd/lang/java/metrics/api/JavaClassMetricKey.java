@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.metrics.impl.LocMetric.LocClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.NoamMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.NopaMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.TccMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.WmcMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.WocMetric;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
@@ -60,13 +61,20 @@ public enum JavaClassMetricKey implements MetricKey<ASTAnyTypeDeclaration> {
      * @see NopaMetric
      */
     NOAM(new NoamMetric()),
-    
+
     /**
      * Weight of class.
      *
      * @see WocMetric
      */
-    WOC(new WocMetric());
+    WOC(new WocMetric()),
+
+    /**
+     * Tight Class Cohesion.
+     *
+     * @see TccMetric
+     */
+    TCC(new TccMetric());
 
 
     private final JavaClassMetric calculator;
