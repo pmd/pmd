@@ -59,9 +59,9 @@ public class MetricOptions {
             return false;
         }
 
-        MetricOptions version = (MetricOptions) o;
+        MetricOptions other = (MetricOptions) o;
 
-        return options.equals(version.options);
+        return options.equals(other.options);
     }
 
 

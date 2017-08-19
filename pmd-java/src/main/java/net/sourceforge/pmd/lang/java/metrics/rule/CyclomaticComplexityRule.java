@@ -35,19 +35,19 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     private static final IntegerProperty METHOD_LEVEL_DESCRIPTOR = new IntegerProperty(
         "methodReportLevel", "Cyclomatic complexity reporting threshold", 1, 50, 10, 1.0f);
 
-    private static final Map<String, CycloOption> VERSION_MAP;
+    private static final Map<String, CycloOption> OPTION_MAP;
 
 
     static {
-        VERSION_MAP = new HashMap<>();
-        VERSION_MAP.put(CycloOption.IGNORE_BOOLEAN_PATHS.valueName(), CycloOption.IGNORE_BOOLEAN_PATHS);
-        VERSION_MAP.put(CycloOption.CONSIDER_ASSERT.valueName(), CycloOption.CONSIDER_ASSERT);
+        OPTION_MAP = new HashMap<>();
+        OPTION_MAP.put(CycloOption.IGNORE_BOOLEAN_PATHS.valueName(), CycloOption.IGNORE_BOOLEAN_PATHS);
+        OPTION_MAP.put(CycloOption.CONSIDER_ASSERT.valueName(), CycloOption.CONSIDER_ASSERT);
     }
 
 
     private static final EnumeratedMultiProperty<CycloOption> CYCLO_OPTIONS_DESCRIPTOR = new EnumeratedMultiProperty<>(
         "cycloOptions", "Choose options for the computation of Cyclo",
-        VERSION_MAP, Collections.<CycloOption>emptyList(), CycloOption.class, 3.0f);
+        OPTION_MAP, Collections.<CycloOption>emptyList(), CycloOption.class, 3.0f);
 
     private int methodReportLevel;
     private int classReportLevel;
@@ -65,9 +65,8 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         methodReportLevel = getProperty(METHOD_LEVEL_DESCRIPTOR);
         classReportLevel = getProperty(CLASS_LEVEL_DESCRIPTOR);
-        if (cycloOptions == null) {
-            cycloOptions = MetricOptions.ofOptions(getProperty(CYCLO_OPTIONS_DESCRIPTOR));
-        }
+        cycloOptions = MetricOptions.ofOptions(getProperty(CYCLO_OPTIONS_DESCRIPTOR));
+
 
         super.visit(node, data);
         return data;

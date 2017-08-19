@@ -62,7 +62,7 @@ public final class ApexMetrics {
      *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
-     * @param options The version of the metric
+     * @param options The options of the metric
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
@@ -90,7 +90,7 @@ public final class ApexMetrics {
      *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
-     * @param options The version of the metric
+     * @param options The options of the metric
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
@@ -121,7 +121,7 @@ public final class ApexMetrics {
      *
      * @param key          The key identifying the metric to be computed
      * @param node         The node on which to compute the metric
-     * @param options      The version of the metric
+     * @param options      The options of the metric
      * @param resultOption The result option to use
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed or {@code option} is

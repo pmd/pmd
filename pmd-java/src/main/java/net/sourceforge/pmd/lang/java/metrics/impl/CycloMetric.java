@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 
 /**
- * Cyclomatic Complexity. See the <a href="https://{pmd.website.baseurl}/pmd_java_metrics_index.html">documentation site</a>.
+ * Cyclomatic Complexity. See the <a href="https://pmd.github.io/latest/pmd_java_metrics_index.html">documentation site</a>.
  *
  * @author Clément Fournier
  * @since June 2017

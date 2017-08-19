@@ -5,9 +5,7 @@ summary: "PMD was recently enhanced with the ability to compute code metrics on 
 Metrics Framework). This framework provides developers with a straightforward interface to use code metrics in their 
 rules, and to extend the framework with their own custom metrics."
 last_updated: July 20, 2017
-sidebar: pmd_sidebar
 permalink: pmd_devdocs_metrics_howto.html
-folder: pmd/devdocs
 ---
 # Using code metrics in custom rules
 
@@ -79,7 +77,7 @@ public Object visit(ASTMethodDeclaration method, Object data) {
 
 Some metrics define options that can be used to slightly modify the computation. You'll typically see these options 
 gathered inside an enum in the implementation class of the metric, for example `CycloMetric.CycloOptions`. They're 
-also documented on the [index of metrics](/pmd_java_metrics_index.html).
+also documented on the [index of metrics](pmd_java_metrics_index.html).
 
 To use options with a metric, you must first bundle them into a `MetricOptions` object. `MetricOptions` provides the 
 utility method `ofOptions` to get a `MetricOptions` bundle from a collection or with varargs parameters. You can then 

@@ -35,7 +35,7 @@ public final class ParameterizedMetricKey<N extends Node> {
 
     @Override
     public String toString() {
-        return "ParameterizedMetricKey{key=" + key.name() + ", version=" + options + '}';
+        return "ParameterizedMetricKey{key=" + key.name() + ", options=" + options + '}';
     }
 
 

@@ -97,7 +97,7 @@ public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
     /**
      * Mappings of labels to options for use in the options property.
      *
-     * @return A map of labels to options&
+     * @return A map of labels to options
      */
     protected Map<String, MetricOption> optionMappings() {
         return new HashMap<>();

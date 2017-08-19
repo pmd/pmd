@@ -66,9 +66,7 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         methodReportLevel = getProperty(METHOD_REPORT_LEVEL_DESCRIPTOR);
         classReportLevel = getProperty(CLASS_REPORT_LEVEL_DESCRIPTOR);
-        if (ncssOptions == null) {
-            ncssOptions = MetricOptions.ofOptions(getProperty(NCSS_OPTIONS_DESCRIPTOR));
-        }
+        ncssOptions = MetricOptions.ofOptions(getProperty(NCSS_OPTIONS_DESCRIPTOR));
 
         super.visit(node, data);
         return data;

@@ -3,9 +3,7 @@ title:  Index of code metrics
 tags: [customizing]
 summary: "Index of the code metrics available out of the box to Java rule developers."
 last_updated: July 20, 2017
-sidebar: pmd_sidebar
 permalink: pmd_java_metrics_index.html
-folder: pmd/languages
 toc:
   minimumHeaders: 8
 ---
