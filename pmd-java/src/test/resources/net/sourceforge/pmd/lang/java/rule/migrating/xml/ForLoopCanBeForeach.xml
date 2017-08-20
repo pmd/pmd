@@ -139,6 +139,7 @@
         <code><![CDATA[
         class Foo {
           void loop() {
+            Iterable<DataFlowNode> path = null;
             for (Iterator<DataFlowNode> i = path.iterator(); i.hasNext();) {
               DataFlowNode inode = i.next();
               if (inode.getVariableAccess() == null) {
@@ -224,5 +225,43 @@
         }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Consider iterators only if safe</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class Foo {
+          void loop() {
+            Iterable<DataFlowNode> path = null;
+
+            for (Iterator<DataFlowNode> i = path.iterator(); i.hasNext();) {
+              DataFlowNode inode = i.next();
+              path.remove(inode); // throws ConcurrentModificationException if it were a foreach
+              if (inode.getVariableAccess() == null) {
+                continue;
+              }
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do not report iterator loop if we can't find iterator decl</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class Foo {
+          void loop() {
+            for (Iterator<DataFlowNode> i = path.iterator(); i.hasNext();) {
+              DataFlowNode inode = i.next();
+              if (inode.getVariableAccess() == null) {
+                continue;
+              }
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
 
 </test-data>

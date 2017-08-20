@@ -481,6 +481,8 @@ public class MyTest {
           language="java"
           since="6.0"
           message="This 'for' loop can be replaced by a 'foreach' loop"
+          typeResolution="true"
+          minimumLanguageVersion="1.5"
           class="net.sourceforge.pmd.lang.java.rule.migrating.ForLoopCanBeForeachRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_migrating.html#forloopcanbeforeach">
         <description><![CDATA[

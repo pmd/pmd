@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.migrating;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,8 +22,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -53,8 +56,13 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
         List<NameOccurrence> occurrences = indexDecl.getValue();
         VariableNameDeclaration index = indexDecl.getKey();
 
-        if ("Iterator".equals(index.getTypeImage()) && isReplaceableIteratorLoop(indexDecl, guardCondition, update)) {
-            addViolation(data, node);
+        if (TypeHelper.isA(index, Iterator.class)) {
+            Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo = getIterableDeclOfIteratorLoop(index, node.getScope());
+
+            if (iterableInfo != null && isReplaceableIteratorLoop(indexDecl, guardCondition, iterableInfo, node)) {
+                addViolation(data, node);
+            }
+            return data;
         }
 
 
@@ -224,6 +232,26 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     }
 
 
+    private Entry<VariableNameDeclaration, List<NameOccurrence>> getIterableDeclOfIteratorLoop(VariableNameDeclaration indexDecl, Scope scope) {
+        Node initializer = indexDecl.getNode().getFirstParentOfType(ASTVariableDeclarator.class)
+                                    .getFirstChildOfType(ASTVariableInitializer.class);
+
+        if (initializer == null) {
+            return null;
+        }
+
+        String name = initializer.getFirstDescendantOfType(ASTName.class)
+                                 .getImage();
+        int dotIndex = name.indexOf('.');
+
+        if (dotIndex > 0) {
+            name = name.substring(0, dotIndex);
+        }
+
+        return findDeclaration(name, scope);
+    }
+
+
     private boolean isReplaceableArrayLoop(ASTForStatement stmt, List<NameOccurrence> occurrences,
                                            VariableNameDeclaration arrayDeclaration) {
         String arrayName = arrayDeclaration.getName();
@@ -321,7 +349,14 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
 
     private boolean isReplaceableIteratorLoop(Entry<VariableNameDeclaration, List<NameOccurrence>> indexInfo,
-                                              ASTExpression guardCondition, ASTForUpdate update) {
+                                              ASTExpression guardCondition,
+                                              Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo,
+                                              ASTForStatement stmt) {
+
+        if (isIterableModifiedInsideLoop(iterableInfo, stmt)) {
+            return false;
+        }
+
 
         String indexName = indexInfo.getKey().getName();
 
@@ -350,6 +385,23 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             return false;
         }
         return true;
+    }
+
+    private boolean isIterableModifiedInsideLoop(Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo,
+                                                 ASTForStatement stmt) {
+
+        String iterableName = iterableInfo.getKey().getName();
+        for (NameOccurrence occ : iterableInfo.getValue()) {
+            ASTForStatement forParent = occ.getLocation().getFirstParentOfType(ASTForStatement.class);
+            if (forParent == stmt) {
+                String image = occ.getLocation().getImage();
+                if (image.startsWith(iterableName + ".remove")) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 
