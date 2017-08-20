@@ -226,9 +226,15 @@ between blocks 4 and 5 before jumping to block 6. The first `if` offers 2
 choices, the second offers 3, so the cyclomatic complexity of this method is 
 2 + 3 = 5. NPath, however, sees 2 * 3 = 6 full paths from the beginning to the end.
  
+## Number Of Public Attributes (NOPA)
+*Class metric.* Can be computed on classes.
+
+## Number Of Accessor Methods (NOAM)
+*Class metric.* Can be computed on classes.
+ 
 ## Weighted Method Count (WMC)
 
-*Class metric.* Can be computed on classes and enums
+*Class metric.* Can be computed on classes and enums.
 
 ### Description
 
@@ -240,6 +246,25 @@ Sum of the statistical complexity of the operations in the class. We use
 
 WMC uses the same options as CYCLO, which are provided to CYCLO when 
 computing it.
+
+## Weight Of Class (WOC)
+
+*Class metric.* Can be computed on classes.
+
+### Description
+
+Number of "functional" public methods divided by the total number of
+public methods. Our definition of "functional method" excludes
+constructors, getters, and setters.
+
+This metric tries to quantify whether the measured class' interface reveals
+more data than behaviour. Low values (less than 30%) indicate that the class
+reveals much more data than behaviour, which is a sign of poor encapsulation.
+
+This metric is used to detect Data Classes, in conjunction with [WMC](#weighted-method-count-wmc),
+[NOPA](#number-of-public-attributes-nopa) and [NOAM](#number-of-accessor-methods-noam).
+
+
 
 # References
 

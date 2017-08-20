@@ -15,12 +15,12 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
  */
 public class DataClassRule extends AbstractJavaMetricsRule {
 
-
-    private static int accessorOrFieldFewLevel = 3;
-    private static int accessorOrFieldManyLevel = 6;
-    private static int wocLevel = 33;
-    private static int wmcHighLevel = 31;
-    private static int wmcVeryHighLevel = 47;
+    // probably not worth using properties
+    private static final int ACCESSOR_OR_FIELD_FEW_LEVEL = 3;
+    private static final int ACCESSOR_OR_FIELD_MANY_LEVEL = 5;
+    private static final int WOC_LEVEL = 33;
+    private static final int WMC_HIGH_LEVEL = 31;
+    private static final int WMC_VERY_HIGH_LEVEL = 47;
 
 
     @Override
@@ -38,8 +38,7 @@ public class DataClassRule extends AbstractJavaMetricsRule {
 
     private boolean interfaceRevealsData(ASTAnyTypeDeclaration node) {
         double woc = JavaMetrics.get(JavaClassMetricKey.WOC, node);
-
-        return woc < wocLevel; // TODO parameterize
+        return woc < WOC_LEVEL;
     }
 
 
@@ -48,8 +47,8 @@ public class DataClassRule extends AbstractJavaMetricsRule {
         int noam = (int) JavaMetrics.get(JavaClassMetricKey.NOAM, node);
         int wmc = (int) JavaMetrics.get(JavaClassMetricKey.WMC, node);
 
-        return nopa + noam > accessorOrFieldFewLevel && wmc < wmcHighLevel
-            || nopa + noam > accessorOrFieldManyLevel && wmc < wmcVeryHighLevel;
+        return nopa + noam > ACCESSOR_OR_FIELD_FEW_LEVEL && wmc < WMC_HIGH_LEVEL
+            || nopa + noam > ACCESSOR_OR_FIELD_MANY_LEVEL && wmc < WMC_VERY_HIGH_LEVEL;
     }
 
 }

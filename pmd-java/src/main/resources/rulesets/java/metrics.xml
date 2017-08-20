@@ -170,23 +170,32 @@ public class Foo {
           metrics="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_metrics.html#DataClass">
         <description>
-            Data Classes are "dumb" data holders without complex functionality but other
-            classes strongly rely on them. The lack of functionally relevant methods may
-            indicate that related data and behavior are not kept in one place; this is a
-            sign of a non-object-oriented design. Data Classes are the manifestation of
-            a lacking encapsulation of data, and of a poor data-functionality proximity.
+            Data Classes are simple data holders, which reveal most of their state, and
+            without complex functionality. The lack of functionality may indicate that
+            their behaviour is defined elsewhere, which is a sign of poor data-behaviour
+            proximity. By directly exposing their internals, Data Classes break encapsulation,
+            and therefore reduce the system's maintainability and understandability. Moreover,
+            classes tend to strongly rely on their data representation, which makes for a brittle
+            design.
 
-            The basic idea of any refactoring action on a Data Class is to put Refactoring
-            together in the same class the data and the operations defined on
-            that data, and to provide proper services to the former clients of the
-            public data, instead of the direct access to this data.
-
-            // TODO that's copy-paste from a copyrighted document
+            Refactoring a Data Class should focus on restoring a good data-behaviour proximity. In
+            most cases, that means moving the operations defined on the data back into the class.
+            In some other cases it may make sense to remove entirely the class and move the data
+            into the former client classes.
         </description>
         <priority>3</priority>
         <example>
             <![CDATA[
-TODO
+public class DataClass {
+
+  public int bar = 0;
+  public int na = 0;
+  private int bee = 0;
+
+  public void setBee(int n) {
+    bee = n;
+  }
+}
  ]]>
         </example>
     </rule>
