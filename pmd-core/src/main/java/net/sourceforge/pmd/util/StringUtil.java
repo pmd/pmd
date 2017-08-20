@@ -61,7 +61,7 @@ public final class StringUtil {
     public static String truncateDouble(double val, int numDecimals, boolean truncateInt) {
         int factor = (int) Math.pow(10, numDecimals);
         double truncated = Math.floor(factor * val) / factor;
-        
+
         if (truncateInt && truncated == Math.floor(truncated)) {
             return String.valueOf((int) truncated);
         } else {

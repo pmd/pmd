@@ -1856,7 +1856,7 @@ public class HelloWorldBean {
   <rule name="GodClass"
         language="java"
         since="5.0"
-        message="Possible God class"
+        message="Possible God Class (WMC={0}, ATFD={2}, TCC={1})"
         metrics="true"
         class="net.sourceforge.pmd.lang.java.rule.design.GodClassRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#godclass">
