@@ -327,28 +327,6 @@ public class PMD {
     }
 
     /**
-     * A callback that would be implemented by IDEs keeping track of PMD's
-     * progress as it evaluates a set of files.
-     *
-     * @author Brian Remedios
-     */
-    public interface ProgressMonitor {
-        /**
-         * A status update reporting on current progress. Implementers will
-         * return true if it is to continue, false otherwise.
-         *
-         * @param total
-         *            total number of files to be analyzed
-         * @param totalDone
-         *            number of files, that have been done analyzing.
-         * @return <code>true</code> if the execution of PMD should continue,
-         *         <code>false</code> if the execution should be
-         *         cancelled/terminated.
-         */
-        boolean status(int total, int totalDone);
-    }
-
-    /**
      * Run PMD on a list of files using multiple threads - if more than one is
      * available
      *
