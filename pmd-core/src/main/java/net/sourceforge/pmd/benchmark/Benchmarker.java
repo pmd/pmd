@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
@@ -32,7 +33,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.util.FileUtil;
-import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -116,7 +116,7 @@ public class Benchmarker {
             }
             Set<RuleDuration> results = new TreeSet<>();
             RuleSetFactory factory = new RuleSetFactory();
-            if (StringUtil.isNotEmpty(ruleset)) {
+            if (StringUtils.isNotBlank(ruleset)) {
                 stress(languageVersion, factory.createRuleSet(ruleset), dataSources, results, debug);
             } else {
                 Iterator<RuleSet> i = factory.getRegisteredRuleSets();

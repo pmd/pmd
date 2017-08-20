@@ -156,6 +156,41 @@ All existing rules have been updated to reflect these changes. If you have custo
     respectively. This is to comply with the naming convention, that each rule class should be suffixed with "Rule".
     This change has no impact on custom rulesets, since the rule names themselves didn't change.
 
+*   All APIs deprecated in older versions are now removed. This includes:
+    *    `Renderer.getPropertyDefinitions`
+    *    `AbstractRenderer.defineProperty(String, String)`
+    *    `AbstractRenderer.propertyDefinitions`
+    *    `ReportListener`
+    *    `Report.addListener(ReportListener)`
+    *    `SynchronizedReportListener`
+    *    `CPDConfiguration.CPDConfiguration(int, Language, String)`
+    *    `CPDConfiguration.getRendererFromString(String)`
+    *    `StreamUtil`
+    *    `StringUtil.appendXmlEscaped(StringBuilder, String)`
+    *    `StringUtil.htmlEncode(String)`
+
+*   Several methods in `net.sourceforge.pmd.util.CollectionUtil` have been deprecated and will be removed in PMD 7.0.0. In particular:
+    *    `CollectionUtil.addWithoutDuplicates(T[], T)`
+    *    `CollectionUtil.addWithoutDuplicates(T[], T[])`
+    *    `CollectionUtil.areSemanticEquals(T[], T[])`
+    *    `CollectionUtil.areEqual(Object, Object)`
+    *    `CollectionUtil.arraysAreEqual(Object, Object)`
+    *    `CollectionUtil.valuesAreTransitivelyEqual(Object[], Object[])`
+
+*   Several methods in `net.sourceforge.pmd.util.StringUtil` have been deprecated and will be removed in PMD 7.0.0. In particular:
+    *    `StringUtil.startsWithAny(String, String[])`
+    *    `StringUtil.isNotEmpty(String)`
+    *    `StringUtil.isEmpty(String)`
+    *    `StringUtil.isMissing(String)`
+    *    `StringUtil.areSemanticEquals(String, String)`
+    *    `StringUtil.replaceString(String, String, String)`
+    *    `StringUtil.replaceString(String, char, String)`
+    *    `StringUtil.substringsOf(String, char)`
+    *    `StringUtil.substringsOf(String, String)`
+    *    `StringUtil.asStringOn(StringBuffer, Iterator, String)`
+    *    `StringUtil.asStringOn(StringBuilder, Object[], String)`
+    *    `StringUtil.lpad(String, int)`
+
 ### External Contributions
 
 *   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements - [Clément Fournier](https://github.com/oowekyala)

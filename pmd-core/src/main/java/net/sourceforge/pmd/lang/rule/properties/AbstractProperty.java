@@ -11,9 +11,10 @@ import static net.sourceforge.pmd.PropertyDescriptorField.NAME;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Abstract class for properties.
@@ -53,7 +54,7 @@ import net.sourceforge.pmd.util.StringUtil;
 
 
     private static String checkNotEmpty(String arg, PropertyDescriptorField argId) throws IllegalArgumentException {
-        if (StringUtil.isEmpty(arg)) {
+        if (StringUtils.isBlank(arg)) {
             throw new IllegalArgumentException("Property attribute '" + argId + "' cannot be null or blank");
         }
         return arg;

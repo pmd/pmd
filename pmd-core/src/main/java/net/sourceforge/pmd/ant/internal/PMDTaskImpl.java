@@ -16,6 +16,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -42,7 +43,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.log.AntLogHandler;
@@ -107,7 +107,7 @@ public class PMDTaskImpl {
         try {
             // This is just used to validate and display rules. Each thread will create its own ruleset
             String ruleSets = configuration.getRuleSets();
-            if (StringUtil.isNotEmpty(ruleSets)) {
+            if (StringUtils.isNotBlank(ruleSets)) {
                 // Substitute env variables/properties
                 configuration.setRuleSets(project.replaceProperties(ruleSets));
             }
@@ -222,7 +222,7 @@ public class PMDTaskImpl {
             project.log(strWriter.toString(), Project.MSG_VERBOSE);
             IOUtils.closeQuietly(printWriter);
 
-            if (StringUtil.isNotEmpty(cause.getMessage())) {
+            if (StringUtils.isNotBlank(cause.getMessage())) {
                 project.log(cause.getMessage(), Project.MSG_VERBOSE);
             }
         }

@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -347,31 +346,6 @@ public class PMD {
          *         cancelled/terminated.
          */
         boolean status(int total, int totalDone);
-    }
-
-    /**
-     * An entry point that would typically be used by IDEs intent on providing
-     * ongoing feedback and the ability to terminate it at will.
-     *
-     * @param configuration
-     *            the PMD configuration to use
-     * @param ruleSetFactory
-     *            ruleset factory
-     * @param files
-     *            the files to analyze
-     * @param ctx
-     *            the rule context to use for the execution
-     * @param monitor
-     *            PMD informs about the progress through this progress monitor.
-     *            It provides also the ability to terminate/cancel the
-     *            execution.
-     */
-    public static void processFiles(PMDConfiguration configuration, RuleSetFactory ruleSetFactory,
-            Collection<File> files, RuleContext ctx, ProgressMonitor monitor) {
-
-        // TODO
-        // call the main processFiles with just the new monitor and a single
-        // logRenderer
     }
 
     /**

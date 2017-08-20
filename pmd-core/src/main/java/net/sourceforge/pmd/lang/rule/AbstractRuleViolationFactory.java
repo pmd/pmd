@@ -6,11 +6,12 @@ package net.sourceforge.pmd.lang.rule;
 
 import java.text.MessageFormat;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.StringUtil;
 
 public abstract class AbstractRuleViolationFactory implements RuleViolationFactory {
 
@@ -21,7 +22,7 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
         if (message != null) {
             // Escape PMD specific variable message format, specifically the {
             // in the ${, so MessageFormat doesn't bitch.
-            final String escapedMessage = StringUtil.replaceString(message, "${", "$'{'");
+            final String escapedMessage = StringUtils.replace(message, "${", "$'{'");
             return MessageFormat.format(escapedMessage, args != null ? args : NO_ARGS);
         } else {
             return message;
