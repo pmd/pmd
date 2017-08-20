@@ -16,8 +16,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * This class is responsible for creating the contentpanel for the Create Rule
@@ -116,7 +117,7 @@ public class CreateXMLRulePanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent exception) {
 
-        boolean hasXPathQuery = StringUtil.isNotEmpty(xpathQueryArea.getText());
+        boolean hasXPathQuery = StringUtils.isNotBlank(xpathQueryArea.getText());
 
         StringBuilder buffer = new StringBuilder(200);
         appendLn(buffer, "<rule  name=\"" + rulenameField.getText() + '\"');

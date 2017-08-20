@@ -136,13 +136,6 @@ public class CPDConfiguration extends AbstractConfiguration {
     public CPDConfiguration() {
     }
 
-    @Deprecated
-    public CPDConfiguration(int minimumTileSize, Language language, String encoding) {
-        setMinimumTileSize(minimumTileSize);
-        setLanguage(language);
-        setEncoding(encoding);
-    }
-
     @Parameter(names = "--encoding", description = "Character encoding to use when processing files", required = false)
     public void setEncoding(String encoding) {
         this.encoding = encoding;
@@ -167,19 +160,6 @@ public class CPDConfiguration extends AbstractConfiguration {
         if (this.getRenderer() == null) {
             this.setRenderer(getRendererFromString(getRendererName(), this.getEncoding()));
         }
-    }
-
-    /**
-     * Gets a renderer with the platform's default encoding.
-     *
-     * @param name
-     *            renderer name
-     * @return a fresh renderer instance
-     * @deprecated use {@link #getRendererFromString(String, String)} instead
-     */
-    @Deprecated
-    public static Renderer getRendererFromString(String name) {
-        return getRendererFromString(name, System.getProperty("file.encoding"));
     }
 
     static {

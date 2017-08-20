@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule.imports;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
-import net.sourceforge.pmd.util.StringUtil;
 
 public class ImportFromSamePackageRule extends AbstractJavaRule {
 
@@ -19,7 +20,7 @@ public class ImportFromSamePackageRule extends AbstractJavaRule {
         }
 
         // special case
-        if (packageName == null && StringUtil.isEmpty(importDecl.getPackageName())) {
+        if (packageName == null && StringUtils.isBlank(importDecl.getPackageName())) {
             addViolation(data, importDecl);
         }
         return data;

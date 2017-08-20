@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
@@ -35,7 +37,6 @@ import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * The God Class Rule detects a the God Class design flaw using metrics. A god
@@ -206,7 +207,7 @@ public class GodClassRule extends AbstractJavaRule {
 
         String methodOrAttributeName = getMethodOrAttributeName(node);
 
-        return methodOrAttributeName != null && StringUtil.startsWithAny(methodOrAttributeName, "get", "is", "set");
+        return methodOrAttributeName != null && StringUtils.startsWithAny(methodOrAttributeName, "get", "is", "set");
     }
 
     private boolean isMethodCall(ASTPrimaryExpression node) {
