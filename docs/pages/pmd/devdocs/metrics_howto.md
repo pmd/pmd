@@ -14,8 +14,8 @@ permalink: pmd_devdocs_metrics_howto.html
 {%include note.html content="Using the metrics framework is for now restricted to Java rules (with plans to support 
 XPath rules later)." %}
 
-To use the metrics framework in a custom rule, the first thing to do would be to enable metrics by adding the 
-`metrics="true"` attribute to your rule's XML element.
+To use the metrics framework in a custom rule, the first thing to do would be to **enable metrics by adding the
+`metrics="true"` attribute** to your rule's XML element.
 
 {%include note.html content="The following explains how to use the Java metrics framework. The Apex framework 
 differs only by the name of its classes." %}
@@ -25,7 +25,7 @@ a numeric result. In the Java framework, metrics can be computed on operation de
 method declaration), and type declaration nodes (class, interface, enum, and annotation declarations). A metric 
 object in the framework can only handle either types or operations, but not both.
 
-The framework provides a library of already implemented metrics. These metrics are referenced by `MetricKey` objects,
+PMD ships with a library of already implemented metrics. These metrics are referenced by `MetricKey` objects,
 which are listed in two public enums: `JavaClassMetricKey` and `JavaOperationMetricKey`. Metric keys wrap a metric, and
 know which type of node their metric can be computed on. That way, you cannot compute an operation metric on a class 
 declaration node. Metrics that can be computed on operation and type declarations (e.g. NCSS) have one metric key in 
@@ -52,8 +52,10 @@ public Object visit(ASTMethodDeclaration method, Object data) {
 The same goes for class metrics: you select one among `JavaClassMetricKey`'s constants and pass it along with the node
  to `JavaMetrics.get`.
  
- {%include tip.html content="A new visitor adapter (`JavaParserVisitorReducedAdapter`) exists to e.g. check 
- constructors and method nodes completely alike. This comes in handy for metrics, as they usually don't make the distinction" %}
+ {%include tip.html
+           content="A specific base rule class (`AbstractJavaMetricsRule`) exists
+           to e.g. check constructors and method nodes completely alike. This comes
+           in handy for metrics, as they usually don't make the distinction" %}
  
 ### Capability checking
 
@@ -119,7 +121,94 @@ option too.
 
 ## Writing custom metrics
 
+You can use the framework to customize the existing metrics at will, or define
+new ones quite easily. Here's some info to get you started. Again, the examples are for
+the Java framework but it's symmetrical in the Apex framework.
+
+### The really short guide
+
+1. Determine whether your metric is an operation metric or a class metric and
+   **extend the correct base class** (`AbstractJavaClassMetric` or
+   `AbstractJavaOperationMetric`)
+1. You're immediately prompted by your IDE to **implement the `computeFor` method**.
+   This method takes a node of the type you want to handle, a bundle of options,
+   and returns the result of the metric.
+1. Optionally specify a predicate to check if a node can be handled by **overriding
+   the `supports` method**.
+1. Optionally define options (implementing [`MetricOption`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/metrics/MetricOption.java))
+   and handle them as you see fit in your `computeFor` method
+1. **Create a metric key** using `MetricKeyUtil`'s `of` method, specifying a name
+   for your metric and an instance of your metric. You're done and can use your
+   metric key as if it were a standard one.
+
+### Best practices
+
+* **Metrics should be stateless**. In any case, instances of the same metric class
+  are considered `equals`. The same instance of your metric will be used to
+  compute the metric on the AST of different nodes so it should really be
+  "functionnally pure". That rule also makes you keep it simple and understandable
+  which is nice.
+* **Implementation patterns:** You can implement your `computeFor` method as you
+  like it. But most metrics in our library are implemented following a few
+  patterns you may want to look at:
+  * *Visitor metrics:* Those metrics use one or more AST visitor to compute their
+    value. That's especially good to implement metrics that count some kind of node,
+    e.g. [NPath complexity](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NpathMetric.java)
+    or [NCSS](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NcssMetric.java).
+    Additionnally, it makes your metric more easily generalisable to other node types.
+
+    {%include tip.html
+              content="All visitor metrics shipped with PMD define their visitor
+              publicly, so that you may extend it to override its behaviour
+              easily. You can find them in the package `n.s.pmd.lang.<name>.metrics.impl.visitors`." %}
+
+  * *Signature matching metrics:* That's even more straightforward when you want
+    to count the number of methods or fields that match a specific signature, e.g.
+    public static final fields. Basically a signature is an object that describes
+    a field or method, with info about its modifers and other node-specific info.
+     `AbstractJavaClassMetric` has a few methods that allow you to count signatures
+      directly, see e.g. the metrics [NOPA](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NopaMetric.java)
+      and [WOC](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/WocMetric.java).
 
 
+### Capability checking
 
-{%include warning.html content="WIP" %}
+You may have noticed that when you extend e.g. `AbstractJavaClassMetric`, the
+`computeFor` method you're prompted to implement takes a node of type
+`ASTAnyTypeDeclaration` as a parameter. That's not a concrete node type, but
+an interface, implemented by several concrete node types. Basically that's done
+so that class metrics are given the ability to be computed on any type
+declaration, and operation metrics on constructors and methods. Here are the
+concrete node types you can target with class and operation metrics, by language:
+
+
+Language   | Java | Apex |
+-----------|------|------|
+Operation declaration|`ASTMethodOrConstructorDeclaration`<br/>>: `ASTMethodDeclaration`, `ASTConstructorDeclaration`| `ASTMethod`
+Type declaration|`ASTAnyTypeDeclaration` >: `ASTEnumDeclaration`, <br> `ASTAnnotationDeclaration`, `ASTClassOrInterfaceDeclaration`| `ASTUserClassOrInterface` >: `ASTUserClass`, `ASTUserInterface`
+
+
+What if you don't want such a generalisation? The `supports` method lets you
+define a predicate to check that the node is supported by your metric. For example,
+if your metric can only be computed on classes, you may override the default behaviour
+like so:
+```java
+@Override
+public boolean supports(ASTAnyTypeDeclaration node) {
+  return node.getTypeKind() == TypeKind.CLASS;
+}
+```
+
+{%include tip.html
+  content="You can be sure that if your `supports` method returns `false` on a node, then
+           that node will never be passed as a parameter to `computeFor`. That allows you
+           to write your `computeFor` method without worrying about unsupported nodes." %}
+
+The `supports` method already has a default implementation in the abstract base
+classes. Here's the default behaviour by language and type of metric:
+
+Language   | Java | Apex |
+-----------|------|------|
+Operation metrics| supports constructors and non abstract methods| supports any non abstract method except `<init>`, `<clinit>`, and `clone`
+Type declaration|supports classes and enums|supports classes
+
