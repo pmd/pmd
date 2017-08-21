@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.apex.metrics.impl;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 
 /**
@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
 public class WmcMetric extends AbstractApexClassMetric {
 
     @Override
-    public double computeFor(ASTUserClassOrInterface<?> node, MetricVersion version) {
+    public double computeFor(ASTUserClassOrInterface<?> node, MetricOptions options) {
         return ApexMetrics.get(ApexOperationMetricKey.CYCLO, node, ResultOption.SUM);
     }
 }

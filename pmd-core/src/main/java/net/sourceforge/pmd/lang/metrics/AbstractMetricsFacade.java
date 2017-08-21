@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.metrics;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
-import net.sourceforge.pmd.lang.metrics.Metric.Version;
 
 /**
  * Base class for a façade that can compute metrics for types, operations and compute aggregate results with a result
@@ -19,6 +18,10 @@ import net.sourceforge.pmd.lang.metrics.Metric.Version;
  * @author Clément Fournier
  */
 public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends QualifiableNode> {
+
+    private static final String NULL_KEY_MESSAGE = "The metric key must not be null";
+    private static final String NULL_OPTIONS_MESSAGE = "The metric options must not be null";
+    private static final String NULL_NODE_MESSAGE = "The node must not be null";
 
 
     /**
@@ -39,27 +42,29 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
 
     /**
      * Computes a metric identified by its code on a class AST node, possibly selecting a variant with the {@code
-     * MetricVersion} parameter.
+     * MetricOptions} parameter.
      *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
-     * @param version The version of the metric
+     * @param options The options of the metric
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public double computeForType(MetricKey<T> key, T node, MetricVersion version) {
+    public double computeForType(MetricKey<T> key, T node, MetricOptions options) {
 
-        Objects.requireNonNull(key, "The metric key must not be null");
+        Objects.requireNonNull(key, NULL_KEY_MESSAGE);
+        Objects.requireNonNull(options, NULL_OPTIONS_MESSAGE);
+        Objects.requireNonNull(node, NULL_NODE_MESSAGE);
 
         if (!key.supports(node)) {
             return Double.NaN;
         }
 
-        MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
         MetricMemoizer<T> memoizer = getLanguageSpecificProjectMemoizer().getClassMemoizer(node.getQualifiedName());
 
         return memoizer == null ? Double.NaN
-                                : getLanguageSpecificComputer().computeForType(key, node, false, safeVersion, memoizer);
+                                : getLanguageSpecificComputer().computeForType(key, node, false,
+                                                                               options, memoizer);
     }
 
 
@@ -68,25 +73,26 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
      *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
-     * @param version The version of the metric
+     * @param options The options of the metric
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public double computeForOperation(MetricKey<O> key, O node,
-                                      MetricVersion version) {
+    public double computeForOperation(MetricKey<O> key, O node, MetricOptions options) {
 
-        Objects.requireNonNull(key, "The metric key must not be null");
+        Objects.requireNonNull(key, NULL_KEY_MESSAGE);
+        Objects.requireNonNull(options, NULL_OPTIONS_MESSAGE);
+        Objects.requireNonNull(node, NULL_NODE_MESSAGE);
+
 
         if (!key.supports(node)) {
             return Double.NaN;
         }
 
-        MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
         MetricMemoizer<O> memoizer = getLanguageSpecificProjectMemoizer().getOperationMemoizer(node.getQualifiedName());
 
         return memoizer == null ? Double.NaN
                                 : getLanguageSpecificComputer().computeForOperation(key, node, false,
-                                                                                    safeVersion, memoizer);
+                                                                                    options, memoizer);
 
     }
 
@@ -95,23 +101,23 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
      * Compute the sum, average, or highest value of the operation metric on all operations of the class node. The type
      * of operation is specified by the {@link ResultOption} parameter.
      *
-     * @param key     The key identifying the metric to be computed
-     * @param node    The node on which to compute the metric
-     * @param version The version of the metric
-     * @param option  The result option to use
+     * @param key          The key identifying the metric to be computed
+     * @param node         The node on which to compute the metric
+     * @param resultOption The result option to use
+     * @param options      The options of the metric
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
-     * {@code null}
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed or {@code resultOption}
+     * is {@code null}
      */
     public double computeWithResultOption(MetricKey<O> key, T node,
-                                          MetricVersion version, ResultOption option) {
+                                          MetricOptions options, ResultOption resultOption) {
 
-        Objects.requireNonNull(key, "The metric key must not be null");
-        Objects.requireNonNull(option, "The result option must not be null");
+        Objects.requireNonNull(key, NULL_KEY_MESSAGE);
+        Objects.requireNonNull(options, NULL_OPTIONS_MESSAGE);
+        Objects.requireNonNull(node, NULL_NODE_MESSAGE);
+        Objects.requireNonNull(resultOption, "The result option must not be null");
 
-        MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
-
-        return getLanguageSpecificComputer().computeWithResultOption(key, node, false, safeVersion,
-                                                                     option, getLanguageSpecificProjectMemoizer());
+        return getLanguageSpecificComputer().computeWithResultOption(key, node, false, options,
+                                                                     resultOption, getLanguageSpecificProjectMemoizer());
     }
 }

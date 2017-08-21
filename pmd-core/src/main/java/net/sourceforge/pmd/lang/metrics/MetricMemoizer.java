@@ -18,9 +18,9 @@ public interface MetricMemoizer<N extends Node> {
 
 
     /**
-     * Fetch a memoized result for a metric and version.
+     * Fetch a memoized result for a metric and options.
      *
-     * @param key The metric key parameterized with its version
+     * @param key The metric key parameterized with its options
      *
      * @return The memoized result, or null if it wasn't found
      */
@@ -28,9 +28,9 @@ public interface MetricMemoizer<N extends Node> {
 
 
     /**
-     * Memoizes a result for a metric and version.
+     * Memoizes a result for a metric and options.
      *
-     * @param key   The metric key parameterized with its version
+     * @param key   The metric key parameterized with its options
      * @param value The value to store
      */
     void memoize(ParameterizedMetricKey<N> key, double value);

@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTStandardCondition;
 import net.sourceforge.pmd.lang.apex.metrics.impl.visitors.StandardCycloVisitor;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 import apex.jorje.data.ast.BooleanOp;
 
@@ -26,7 +26,7 @@ public class CycloMetric extends AbstractApexOperationMetric {
 
 
     @Override
-    public double computeFor(ASTMethod node, MetricVersion version) {
+    public double computeFor(ASTMethod node, MetricOptions options) {
         return ((MutableInt) node.jjtAccept(new StandardCycloVisitor(), new MutableInt(1))).doubleValue();
     }
     
