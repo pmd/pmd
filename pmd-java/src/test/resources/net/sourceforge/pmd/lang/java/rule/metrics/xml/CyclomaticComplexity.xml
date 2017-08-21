@@ -86,7 +86,7 @@
 
     <test-code>
         <description>Complicated method (ignoreBooleanPath)</description>
-        <rule-property name="cycloVersion">ignoreBooleanPaths</rule-property>
+        <rule-property name="cycloOptions">ignoreBooleanPaths</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>The method 'example()' has a cyclomatic complexity of 10.</message>
@@ -205,7 +205,7 @@
 
     <test-code>
         <description>IgnoreBooleanPaths Cyclo should not count empty switch labels</description>
-        <rule-property name="cycloVersion">ignoreBooleanPaths</rule-property>
+        <rule-property name="cycloOptions">ignoreBooleanPaths</rule-property>
         <rule-property name="methodReportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
@@ -243,7 +243,7 @@
 
     <test-code>
         <description>IgnoreBooleanPaths Cyclo should not count boolean paths</description>
-        <rule-property name="cycloVersion">ignoreBooleanPaths</rule-property>
+        <rule-property name="cycloOptions">ignoreBooleanPaths</rule-property>
         <rule-property name="methodReportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>

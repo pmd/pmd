@@ -4,24 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
+import java.util.Set;
+
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.DefaultNcssVisitor;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.JavaNcssVisitor;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.java.ast.JavaParserDecoratedVisitor;
+import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NcssBaseVisitor;
+import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NcssCountImportsDecorator;
+import net.sourceforge.pmd.lang.metrics.MetricOption;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
- * Non Commenting Source Statements. Similar to LOC but only counts statements, which is roughly equivalent to counting
- * the number of semicolons and opening braces in the program.
- *
- * <p>The standard version's precise rules for counting statements comply with <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS
- * rules</a>. The only difference is that import and package statements are not counted.
- *
- * <p>Version {@link NcssVersion#JAVANCSS}: Import and package statements are counted. This version fully complies with
- * JavaNcss rules.
+ * Non-commenting source statements. See the <a href="https://{pmd.website.baseurl}/pmd_java_metrics_index.html">documentation site</a>.
  *
  * @author Clément Fournier
  * @see LocMetric
@@ -31,9 +27,22 @@ public final class NcssMetric {
 
 
     /** Variants of NCSS. */
-    public enum NcssVersion implements MetricVersion {
-        /** JavaNCSS compliant cyclo visitor. */
-        JAVANCSS
+    public enum NcssOption implements MetricOption {
+        /** Counts import and package statement. This makes the metric JavaNCSS compliant. */
+        COUNT_IMPORTS("countImports");
+
+        private final String vName;
+
+
+        NcssOption(String valueName) {
+            this.vName = valueName;
+        }
+
+
+        @Override
+        public String valueName() {
+            return vName;
+        }
     }
 
     public static final class NcssClassMetric extends AbstractJavaClassMetric {
@@ -45,10 +54,15 @@ public final class NcssMetric {
 
 
         @Override
-        public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
-            JavaParserVisitor visitor = (NcssVersion.JAVANCSS == version)
-                                        ? new JavaNcssVisitor()
-                                        : new DefaultNcssVisitor();
+        public double computeFor(ASTAnyTypeDeclaration node, MetricOptions version) {
+            Set<MetricOption> options = version.getOptions();
+            JavaParserDecoratedVisitor visitor = new JavaParserDecoratedVisitor(NcssBaseVisitor.INSTANCE);
+
+            if (options.contains(NcssOption.COUNT_IMPORTS)) {
+                visitor.decorateWith(new NcssCountImportsDecorator());
+            }
+
+            // decorate
 
             MutableInt ncss = (MutableInt) node.jjtAccept(visitor, new MutableInt(0));
             return (double) ncss.getValue();
@@ -65,10 +79,13 @@ public final class NcssMetric {
 
 
         @Override
-        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
-            JavaParserVisitor visitor = (NcssVersion.JAVANCSS.equals(version))
-                                        ? new JavaNcssVisitor()
-                                        : new DefaultNcssVisitor();
+        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions version) {
+            Set<MetricOption> options = version.getOptions();
+            JavaParserDecoratedVisitor visitor = new JavaParserDecoratedVisitor(NcssBaseVisitor.INSTANCE);
+
+            if (options.contains(NcssOption.COUNT_IMPORTS)) {
+                visitor.decorateWith(new NcssCountImportsDecorator());
+            }
 
             MutableInt ncss = (MutableInt) node.jjtAccept(visitor, new MutableInt(0));
             return (double) ncss.getValue();

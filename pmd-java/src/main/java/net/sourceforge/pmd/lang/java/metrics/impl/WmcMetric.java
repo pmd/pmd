@@ -7,18 +7,12 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloVersion;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 
 /**
- * Weighed Method Count. It is the sum of the statical complexity of all operations of a class. We use {@link
- * CycloMetric} to quantify the complexity of a metric. [1]
- *
- * <p>The versions that can be used of this metric are defined in {@link CycloVersion}. They have the effect of using
- * that version of Cyclo to calculate Wmc.
- *
- * <p>[1] Lanza. Object-Oriented Metrics in Practice.
+ * Weighed Method count. See the <a href="https://{pmd.website.baseurl}/pmd_java_metrics_index.html">documentation
+ * site</a>.
  *
  * @author Clément Fournier
  * @since June 2017
@@ -26,8 +20,8 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
 public final class WmcMetric extends AbstractJavaClassMetric {
 
     @Override
-    public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
-        return JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, version, ResultOption.SUM);
+    public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
+        return JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, options, ResultOption.SUM);
     }
 
 }
