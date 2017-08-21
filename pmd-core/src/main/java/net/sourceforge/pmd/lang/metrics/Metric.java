@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @param <N> Type of nodes the metric can be computed on
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public interface Metric<N extends Node> {
 
