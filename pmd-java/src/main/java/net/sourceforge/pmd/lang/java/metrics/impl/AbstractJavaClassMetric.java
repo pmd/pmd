@@ -62,12 +62,12 @@ public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyT
 
 
     /**
-     * Counts the operations matching the signature mask in this class.
+     * Counts the fields matching the signature mask in this class.
      *
      * @param classNode The class on which to count
      * @param mask      The mask
      *
-     * @return The number of operations matching the signature mask
+     * @return The number of fields matching the signature mask
      */
     protected int countMatchingFieldSigs(ASTAnyTypeDeclaration classNode, JavaFieldSigMask mask) {
         int count = 0;
