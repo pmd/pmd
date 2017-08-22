@@ -171,7 +171,7 @@ Maybe there are some milestones on sourceforge, too: <https://sourceforge.net/p/
 ### Merging
 
 If the release was done on a maintenance branch, such as `pmd/5.4.x`, then this branch should be
-merge into the next "higher" branches, such as `pmd/5.5.x` and `master`.
+merged into the next "higher" branches, such as `pmd/5.5.x` and `master`.
 
 This ensures, that all fixes done on the maintenance branch, finally end up in the other branches.
 In theory, the fixes should already be there, but you never now.
@@ -179,7 +179,7 @@ In theory, the fixes should already be there, but you never now.
 
 ### Multiple releases
 
-If releases from multiple branches are being done, the order matters. You should start from the "oldes" branch,
+If releases from multiple branches are being done, the order matters. You should start from the "oldest" branch,
 e.g. `pmd/5.4.x`, release from there. Then merge (see above) into the next branch, e.g. `pmd/5.5.x` and release
 from there. Then merge into the `master` branch and release from there. This way, the last release done, becomes
 automatically the latest release on <https://pmd.github.io/latest/> and on sourceforge.
