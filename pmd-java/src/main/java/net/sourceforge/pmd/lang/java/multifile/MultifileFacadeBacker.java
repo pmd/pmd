@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.multifile;
 /**
  * @author Clément Fournier
  */
-class MultifileFacadeBacker {
+final class MultifileFacadeBacker {
 
 
     private final PackageStats topLevelPackageStats = new PackageStats();

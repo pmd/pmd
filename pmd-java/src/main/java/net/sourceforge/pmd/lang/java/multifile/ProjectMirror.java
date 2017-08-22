@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
  *
  * @author Clément Fournier
  */
-public interface ProjectMirror {
+interface ProjectMirror {
 
     /**
      * Returns true if the signature of the operation designated by the qualified name is covered by the mask.

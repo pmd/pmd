@@ -10,11 +10,9 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 /**
  * Represents a class for signature matching.
  *
- * TODO:cf count signatures
- *
  * @author Clément Fournier
  */
-public interface ClassMirror {
+interface ClassMirror {
 
     /**
      * Returns true if the signature of the operation designated by the qualified name is covered by the mask.
@@ -24,7 +22,7 @@ public interface ClassMirror {
      *
      * @return True if the signature of the operation designated by the qualified name is covered by the mask
      */
-    boolean hasMatchingSig(String opName, JavaOperationSigMask sigMask);
+    boolean hasMatchingOpSig(String opName, JavaOperationSigMask sigMask);
 
 
     /**
@@ -36,7 +34,7 @@ public interface ClassMirror {
      *
      * @return True if the signature of the field is covered by the mask
      */
-    boolean hasMatchingSig(String fieldName, JavaFieldSigMask sigMask);
+    boolean hasMatchingFieldSig(String fieldName, JavaFieldSigMask sigMask);
 
 
     /**

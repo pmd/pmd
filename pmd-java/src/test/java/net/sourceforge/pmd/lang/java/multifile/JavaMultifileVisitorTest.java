@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.multifile;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -17,10 +16,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
-import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaSignature.Visibility;
 import net.sourceforge.pmd.lang.java.multifile.testdata.MultifileVisitorTestData;
 
@@ -34,7 +31,7 @@ public class JavaMultifileVisitorTest {
 
     @Test
     public void testPackageStatsNotNull() {
-        assertNotNull(MultifileFacade.getProjectMirror());
+        assertNotNull(MultifileFacade.getTopLevelPackageStats());
     }
 
 
@@ -48,7 +45,7 @@ public class JavaMultifileVisitorTest {
     public void testOperationsAreThere() {
         ASTCompilationUnit acu = parseAndVisitForClass(MultifileVisitorTestData.class);
 
-        final ProjectMirror toplevel = MultifileFacade.getProjectMirror();
+        final ProjectMirror toplevel = MultifileFacade.getTopLevelPackageStats();
 
         final JavaOperationSigMask opMask = new JavaOperationSigMask();
 
@@ -67,7 +64,7 @@ public class JavaMultifileVisitorTest {
     public void testFieldsAreThere() {
         parseAndVisitForClass(MultifileVisitorTestData.class);
 
-        final ProjectMirror toplevel = MultifileFacade.getProjectMirror();
+        final ProjectMirror toplevel = MultifileFacade.getTopLevelPackageStats();
 
         final JavaFieldSigMask fieldSigMask = new JavaFieldSigMask();
 

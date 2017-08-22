@@ -33,7 +33,7 @@ public class ClassStatsTest {
 
         JavaMultifileVisitorTest.parseAndVisitForClass(SignatureCountTestData.class);
 
-        final ProjectMirror toplevel = MultifileFacade.getProjectMirror();
+        final ProjectMirror toplevel = MultifileFacade.getTopLevelPackageStats();
 
         final ClassMirror classMirror = toplevel.getClassMirror(JavaQualifiedName.ofClass(SignatureCountTestData.class));
 

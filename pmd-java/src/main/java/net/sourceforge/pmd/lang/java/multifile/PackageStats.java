@@ -114,7 +114,7 @@ final class PackageStats implements ProjectMirror {
     public boolean hasMatchingSig(JavaQualifiedName qname, JavaOperationSigMask sigMask) {
         ClassStats clazz = getClassStats(qname, false);
 
-        return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
+        return clazz != null && clazz.hasMatchingOpSig(qname.getOperation(), sigMask);
     }
 
 
@@ -122,7 +122,7 @@ final class PackageStats implements ProjectMirror {
     public boolean hasMatchingSig(JavaQualifiedName qname, String fieldName, JavaFieldSigMask sigMask) {
         ClassStats clazz = getClassStats(qname, false);
 
-        return clazz != null && clazz.hasMatchingSig(fieldName, sigMask);
+        return clazz != null && clazz.hasMatchingFieldSig(fieldName, sigMask);
     }
 
 

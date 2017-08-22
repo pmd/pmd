@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 /**
  * @author Clément Fournier
  */
-public class MultifileVisitorFacade extends JavaParserVisitorAdapter {
+public final class MultifileVisitorFacade extends JavaParserVisitorAdapter {
 
     public void initializeWith(ASTCompilationUnit rootNode) {
         PackageStats projectMirror = MultifileFacade.getTopLevelPackageStats();
