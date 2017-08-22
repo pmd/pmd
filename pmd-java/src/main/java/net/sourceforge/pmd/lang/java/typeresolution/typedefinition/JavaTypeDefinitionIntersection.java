@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.java.typeresolution.typedefinition;
 
 import java.lang.reflect.Method;
@@ -7,14 +11,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition.TypeDefinitionType
-        .INTERSECTION;
-
 public class JavaTypeDefinitionIntersection extends JavaTypeDefinition {
     private List<JavaTypeDefinition> intersectionTypes;
 
-    protected JavaTypeDefinitionIntersection(List<JavaTypeDefinition> intersectionTypes) {
-        super(INTERSECTION);
+    protected JavaTypeDefinitionIntersection(TypeDefinitionType defType, List<JavaTypeDefinition> intersectionTypes) {
+        super(defType);
 
         if (intersectionTypes.isEmpty()) {
             throw new IllegalArgumentException("Intersection type list can't be empty");
@@ -30,73 +31,76 @@ public class JavaTypeDefinitionIntersection extends JavaTypeDefinition {
 
     @Override
     public JavaTypeDefinition getEnclosingClass() {
-        throw new UnsupportedOperationException();
+        return intersectionTypes.get(0).getEnclosingClass();
     }
 
     @Override
     public boolean isGeneric() {
-        throw new UnsupportedOperationException();
+        return intersectionTypes.get(0).isGeneric();
     }
 
     @Override
     public JavaTypeDefinition getGenericType(String parameterName) {
-        throw new UnsupportedOperationException();
+        return intersectionTypes.get(0).getGenericType(parameterName);
     }
 
     @Override
     public JavaTypeDefinition getGenericType(int index) {
-        throw new UnsupportedOperationException();
+        return intersectionTypes.get(0).getGenericType(index);
     }
 
     @Override
     public JavaTypeDefinition resolveTypeDefinition(Type type) {
-        throw new UnsupportedOperationException();
+        return intersectionTypes.get(0).resolveTypeDefinition(type);
     }
 
     @Override
     public JavaTypeDefinition resolveTypeDefinition(Type type, Method method, List<JavaTypeDefinition> methodTypeArgs) {
-        throw new UnsupportedOperationException();
+        return intersectionTypes.get(0).resolveTypeDefinition(type, method, methodTypeArgs);
     }
 
     @Override
     public JavaTypeDefinition getComponentType() {
-        throw new UnsupportedOperationException();
+        return intersectionTypes.get(0).getComponentType();
     }
 
     @Override
     public boolean isClassOrInterface() {
-        throw new UnsupportedOperationException();
+        return intersectionTypes.get(0).isClassOrInterface();
     }
 
     @Override
     public boolean isNullType() {
-        throw new UnsupportedOperationException();
+        return intersectionTypes.get(0).isNullType();
     }
 
     @Override
     public boolean isPrimitive() {
-        throw new UnsupportedOperationException();
+        return intersectionTypes.get(0).isPrimitive();
     }
 
     @Override
     public boolean hasSameErasureAs(JavaTypeDefinition def) {
-        throw new UnsupportedOperationException();
+        return intersectionTypes.get(0).hasSameErasureAs(def);
     }
 
     @Override
     public int getTypeParameterCount() {
-        throw new UnsupportedOperationException();
+        return intersectionTypes.get(0).getTypeParameterCount();
     }
 
     @Override
     public boolean isArrayType() {
-        throw new UnsupportedOperationException();
+        return intersectionTypes.get(0).isArrayType();
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("Intersection type [");
-        builder.append(intersectionTypes.get(0));
+        StringBuilder builder = new StringBuilder()
+                .append("JavaTypeDefinition ")
+                .append(getDefinitionType().toString())
+                .append(" [")
+                .append(intersectionTypes.get(0));
         for (int index = 1; index < intersectionTypes.size(); ++index) {
             builder.append(" && ");
             builder.append(intersectionTypes.get(index));
@@ -116,11 +120,10 @@ public class JavaTypeDefinitionIntersection extends JavaTypeDefinition {
 
         JavaTypeDefinitionIntersection otherTypeDef = (JavaTypeDefinitionIntersection) obj;
 
-        if(otherTypeDef.getIntersectionTypeCount() != getIntersectionTypeCount()) {
+        if (otherTypeDef.getJavaTypeCount() != getJavaTypeCount()
+                || getDefinitionType() != otherTypeDef.getDefinitionType()) {
             return false;
         }
-
-
 
         // we assume that the intersectionTypes list cannot contain duplicates, then indeed, this will prove equality
         outer:
@@ -150,41 +153,31 @@ public class JavaTypeDefinitionIntersection extends JavaTypeDefinition {
 
     @Override
     public Set<JavaTypeDefinition> getSuperTypeSet() {
-        throw new UnsupportedOperationException("");
+        return intersectionTypes.get(0).getSuperTypeSet();
     }
 
     @Override
     protected Set<JavaTypeDefinition> getSuperTypeSet(Set<JavaTypeDefinition> destinationSet) {
-        throw new UnsupportedOperationException("");
+        return intersectionTypes.get(0).getSuperTypeSet(destinationSet);
     }
 
     @Override
     public Set<Class<?>> getErasedSuperTypeSet() {
-        throw new UnsupportedOperationException("");
-    }
-
-    @Override
-    public boolean isRawType() {
-        throw new UnsupportedOperationException("");
+        return intersectionTypes.get(0).getErasedSuperTypeSet();
     }
 
     @Override
     public JavaTypeDefinition getAsSuper(Class<?> superClazz) {
-        throw new UnsupportedOperationException("");
+        return intersectionTypes.get(0).getAsSuper(superClazz);
     }
 
     @Override
-    public JavaTypeDefinition getIntersectionType(int index) {
-        return intersectionTypes.get(index);
+    public JavaTypeDefinition getJavaType(int index) {
+        return intersectionTypes.get(0);
     }
 
     @Override
-    public int getIntersectionTypeCount() {
+    public int getJavaTypeCount() {
         return intersectionTypes.size();
-    }
-
-    @Override
-    public JavaTypeDefinition getLowerBound() {
-        throw new UnsupportedOperationException("Not a lower bound");
     }
 }

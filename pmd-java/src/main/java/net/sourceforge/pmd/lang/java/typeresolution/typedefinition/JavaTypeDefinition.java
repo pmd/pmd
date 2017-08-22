@@ -5,14 +5,9 @@
 package net.sourceforge.pmd.lang.java.typeresolution.typedefinition;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,69 +16,31 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
     // contains non-generic and raw EXACT types
     private static final Map<Class<?>, JavaTypeDefinition> CLASS_EXACT_TYPE_DEF_CACHE = new HashMap<>();
 
-    // contains non-generic and raw UPPER_BOUND types, does not contain intersection types
-    private static final Map<Class<?>, JavaTypeDefinition> CLASS_UPPER_BOUND_TYPE_DEF_CACHE = new HashMap<>();
-
-    // contains non-generic and raw LOWER_BOUND types, does not contain intersection types
-    private static final Map<Class<?>, JavaTypeDefinition> CLASS_LOWER_BOUND_TYPE_DEF_CACHE = new HashMap<>();
-
     private final TypeDefinitionType definitionType;
 
     public enum TypeDefinitionType {
-        EXACT, UPPER_BOUND, LOWER_BOUND, INTERSECTION
+        EXACT, UPPER_BOUND, UPPER_WILDCARD, LOWER_WILDCARD
     }
 
     protected JavaTypeDefinition(TypeDefinitionType definitionType) {
         this.definitionType = definitionType;
     }
 
-    public static JavaTypeDefinition forClassIntersetion(List<JavaTypeDefinition> intersectionTypes) {
-        return new JavaTypeDefinitionIntersection(intersectionTypes);
-    }
-
-    public static JavaTypeDefinition forClassLower(JavaTypeDefinition lowerBound) {
-        if(lowerBound == null) {
-            return null;
+    public static JavaTypeDefinition forClass(TypeDefinitionType type, List<JavaTypeDefinition> intersectionTypes) {
+        switch (type) {
+        case EXACT:
+            if (intersectionTypes.size() == 1) {
+                return intersectionTypes.get(0);
+            } else {
+                throw new IllegalArgumentException("Exact intersection types do not exist!");
+            }
+        case UPPER_BOUND:
+        case UPPER_WILDCARD:
+        case LOWER_WILDCARD:
+            return new JavaTypeDefinitionIntersection(type, intersectionTypes);
+        default:
+            throw new IllegalStateException("Unknow type");
         }
-
-        if (!lowerBound.isGeneric() || lowerBound.isRawType()) {
-            return new JavaTypeDefinitionSimple(lowerBound);
-        }
-
-        final JavaTypeDefinition typeDef = CLASS_LOWER_BOUND_TYPE_DEF_CACHE.get(lowerBound.getType());
-
-        if (typeDef != null) {
-            return typeDef;
-        }
-
-        final JavaTypeDefinition newDef = new JavaTypeDefinitionSimple(lowerBound);
-
-        CLASS_LOWER_BOUND_TYPE_DEF_CACHE.put(lowerBound.getType(), newDef);
-
-        return newDef;
-    }
-
-    public static JavaTypeDefinition forClassUpper(Class<?> clazz, JavaTypeDefinition... boundGenerics) {
-        if (clazz == null) {
-            return null;
-        }
-
-        if (boundGenerics.length != 0) {
-            // no caching with generics
-            return new JavaTypeDefinitionSimple(TypeDefinitionType.UPPER_BOUND, clazz, boundGenerics);
-        }
-
-        final JavaTypeDefinition typeDef = CLASS_UPPER_BOUND_TYPE_DEF_CACHE.get(clazz);
-
-        if (typeDef != null) {
-            return typeDef;
-        }
-
-        final JavaTypeDefinition newDef = new JavaTypeDefinitionSimple(TypeDefinitionType.UPPER_BOUND, clazz);
-
-        CLASS_UPPER_BOUND_TYPE_DEF_CACHE.put(clazz, newDef);
-
-        return newDef;
     }
 
     public static JavaTypeDefinition forClass(final Class<?> clazz, JavaTypeDefinition... boundGenerics) {
@@ -94,7 +51,7 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
         // deal with generic types
         if (boundGenerics.length != 0) {
             // With generics there is no cache
-            return new JavaTypeDefinitionSimple(TypeDefinitionType.EXACT, clazz, boundGenerics);
+            return new JavaTypeDefinitionSimple(clazz, boundGenerics);
         }
 
         final JavaTypeDefinition typeDef = CLASS_EXACT_TYPE_DEF_CACHE.get(clazz);
@@ -103,7 +60,7 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
             return typeDef;
         }
 
-        final JavaTypeDefinition newDef = new JavaTypeDefinitionSimple(TypeDefinitionType.EXACT, clazz);
+        final JavaTypeDefinition newDef = new JavaTypeDefinitionSimple(clazz);
 
         CLASS_EXACT_TYPE_DEF_CACHE.put(clazz, newDef);
 
@@ -127,13 +84,13 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
         return -1;
     }
 
-    public abstract JavaTypeDefinition getGenericType(final String parameterName);
+    public abstract JavaTypeDefinition getGenericType(String parameterName);
 
-    public abstract JavaTypeDefinition getGenericType(final int index);
+    public abstract JavaTypeDefinition getGenericType(int index);
 
-    public abstract JavaTypeDefinition resolveTypeDefinition(final Type type);
+    public abstract JavaTypeDefinition resolveTypeDefinition(Type type);
 
-    public abstract JavaTypeDefinition resolveTypeDefinition(final Type type, Method method,
+    public abstract JavaTypeDefinition resolveTypeDefinition(Type type, Method method,
                                                              List<JavaTypeDefinition> methodTypeArgs);
 
     public abstract JavaTypeDefinition getComponentType();
@@ -168,37 +125,39 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
     /**
      * @return true if clazz is generic and had not been parameterized
      */
-    public boolean isRawType() {
-        return isGeneric() && CLASS_EXACT_TYPE_DEF_CACHE.containsKey(getType());
+    public final boolean isRawType() {
+        return !isIntersectionType() && isGeneric() && CLASS_EXACT_TYPE_DEF_CACHE.containsKey(getType());
     }
 
     public abstract JavaTypeDefinition getAsSuper(Class<?> superClazz);
 
-    public boolean isExactType() {
+    public final boolean isExactType() {
         return definitionType == TypeDefinitionType.EXACT;
     }
 
-    public boolean isUpperBound() {
+    public final boolean isUpperBound() {
         return definitionType == TypeDefinitionType.UPPER_BOUND
-                // intersection types can only be upper bounds in java
-                || definitionType == TypeDefinitionType.INTERSECTION;
+                || definitionType == TypeDefinitionType.UPPER_WILDCARD;
     }
 
-    public boolean isLowerBound() {
-        return definitionType == TypeDefinitionType.LOWER_BOUND;
+    public final boolean isLowerBound() {
+        return definitionType == TypeDefinitionType.LOWER_WILDCARD;
     }
 
-    public boolean isIntersectionType() {
-        return definitionType == TypeDefinitionType.INTERSECTION;
+    public final boolean isIntersectionType() {
+        return getJavaTypeCount() != 1;
     }
 
-    public TypeDefinitionType getDefinitionType() {
+    public final boolean isWildcard() {
+        return definitionType == TypeDefinitionType.LOWER_WILDCARD
+                || definitionType == TypeDefinitionType.UPPER_WILDCARD;
+    }
+
+    public final TypeDefinitionType getDefinitionType() {
         return definitionType;
     }
 
-    public abstract JavaTypeDefinition getIntersectionType(int index);
+    public abstract JavaTypeDefinition getJavaType(int index);
 
-    public abstract int getIntersectionTypeCount();
-
-    public abstract JavaTypeDefinition getLowerBound();
+    public abstract int getJavaTypeCount();
 }
