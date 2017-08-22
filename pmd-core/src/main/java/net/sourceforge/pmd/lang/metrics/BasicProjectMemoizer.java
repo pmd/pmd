@@ -31,27 +31,22 @@ public abstract class BasicProjectMemoizer<T extends QualifiableNode, O extends 
         operations.clear();
     }
 
-
-    @Override
-    public void addClassMemoizer(QualifiedName qname) {
-        classes.put(qname, new BasicMetricMemoizer<T>());
-    }
-
-
-    @Override
-    public void addOperationMemoizer(QualifiedName qname) {
-        operations.put(qname, new BasicMetricMemoizer<O>());
-    }
-
-
     @Override
     public MetricMemoizer<O> getOperationMemoizer(QualifiedName qname) {
+        if (!operations.containsKey(qname)) {
+            operations.put(qname, new BasicMetricMemoizer<O>());
+        }
+
         return operations.get(qname);
     }
 
 
     @Override
     public MetricMemoizer<T> getClassMemoizer(QualifiedName qname) {
+        if (!classes.containsKey(qname)) {
+            classes.put(qname, new BasicMetricMemoizer<T>());
+        }
+
         return classes.get(qname);
     }
 }

@@ -17,14 +17,13 @@ public enum Benchmark {
     SymbolTable(5, "Symbol table"),
     DFA(6, "DFA"),
     TypeResolution(7, "Type resolution"),
-    Multifile(8, "Multifile analysis"),
-    MetricsVisitor(9, "Metrics"),
-    RuleChainVisit(10, "RuleChain visit"),
-    Reporting(11, "Reporting"),
-    RuleTotal(12, "Rule total"),
-    RuleChainTotal(13, "Rule chain rule total"),
-    MeasuredTotal(14, "Measured total"),
-    NonMeasuredTotal(15, "Non-measured total"),
+    RuleChainVisit(8, "RuleChain visit"),
+    Multifile(9, "Multifile analysis"),
+    Reporting(10, "Reporting"),
+    RuleTotal(11, "Rule total"),
+    RuleChainTotal(12, "Rule chain rule total"),
+    MeasuredTotal(13, "Measured total"),
+    NonMeasuredTotal(14, "Non-measured total"),
     TotalPMD(16, "Total PMD");
 
     public final int index;

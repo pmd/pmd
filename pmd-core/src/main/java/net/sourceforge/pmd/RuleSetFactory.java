@@ -576,8 +576,8 @@ public class RuleSetFactory {
             rule.setUsesTypeResolution();
         }
 
-        if (hasAttributeSetTrue(ruleElement, "metrics")) {
-            rule.setUsesMetrics();
+        if (hasAttributeSetTrue(ruleElement, "multifile")) {
+            rule.setUsesMultifile();
         }
 
         final NodeList nodeList = ruleElement.getChildNodes();

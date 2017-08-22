@@ -37,21 +37,4 @@ public interface ProjectMemoizer<T extends QualifiableNode, O extends Qualifiabl
      */
     MetricMemoizer<T> getClassMemoizer(QualifiedName qname);
 
-
-    /**
-     * Adds a memoizer for the class identified by this qualified name.
-     *
-     * @param qname The qualified name of the class
-     */
-    void addClassMemoizer(QualifiedName qname);
-
-
-    /**
-     * Adds a memoizer for the operation identified by this qualified name.
-     *
-     * @param qname The qualified name of the operations
-     */
-    void addOperationMemoizer(QualifiedName qname);
-
-
 }

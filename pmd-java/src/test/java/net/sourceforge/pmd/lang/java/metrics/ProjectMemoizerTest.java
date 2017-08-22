@@ -38,7 +38,7 @@ public class ProjectMemoizerTest {
 
     @Test
     public void memoizationTest() {
-        ASTCompilationUnit acu = parseAndVisitForClass(MetricsVisitorTestData.class);
+        ASTCompilationUnit acu = ParserTstUtil.parseJavaDefaultVersion(MetricsVisitorTestData.class);
 
         List<Integer> expected = visitWith(acu, true);
         List<Integer> real = visitWith(acu, false);
@@ -50,7 +50,7 @@ public class ProjectMemoizerTest {
     @Test
     public void forceMemoizationTest() {
 
-        ASTCompilationUnit acu = parseAndVisitForClass(MetricsVisitorTestData.class);
+        ASTCompilationUnit acu = ParserTstUtil.parseJavaDefaultVersion(MetricsVisitorTestData.class);
 
         List<Integer> reference = visitWith(acu, true);
         List<Integer> real = visitWith(acu, true);
@@ -91,12 +91,6 @@ public class ProjectMemoizerTest {
         return result;
     }
 
-
-    static ASTCompilationUnit parseAndVisitForClass(Class<?> clazz) {
-        ASTCompilationUnit acu = ParserTstUtil.parseJavaDefaultVersion(clazz);
-        ParserTstUtil.getDefaultLanguageVersionHandler().getMetricsVisitorFacade().start(acu);
-        return acu;
-    }
 
     private class RandomOperationMetric extends AbstractJavaOperationMetric {
 

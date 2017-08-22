@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.metrics;
 
-import static net.sourceforge.pmd.lang.apex.metrics.ApexMetricsVisitorTest.parseAndVisitForString;
+import static net.sourceforge.pmd.lang.apex.metrics.ApexMultifileVisitorTest.parseAndVisitForString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -43,7 +43,7 @@ public class ApexProjectMirrorTest {
     static {
         try {
             acu = parseAndVisitForString(
-                IOUtils.toString(ApexMetricsVisitorTest.class.getResourceAsStream("MetadataDeployController.cls")));
+                IOUtils.toString(ApexMultifileVisitorTest.class.getResourceAsStream("MetadataDeployController.cls")));
         } catch (IOException ioe) {
             // Should definitely not happen
         }

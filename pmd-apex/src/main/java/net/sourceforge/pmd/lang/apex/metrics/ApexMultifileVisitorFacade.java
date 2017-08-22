@@ -8,15 +8,14 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
 
 /**
+ * TODO: move that out!
  * @author Clément Fournier
  */
-public class ApexMetricsVisitorFacade extends ApexParserVisitorAdapter {
-
+public class ApexMultifileVisitorFacade extends ApexParserVisitorAdapter {
 
     public void initializeWith(ApexNode<?> rootNode) {
         ApexMetricsFacade facade = ApexMetrics.getFacade();
-        ApexMetricsVisitor visitor = new ApexMetricsVisitor(facade.getLanguageSpecificProjectMemoizer(),
-                                                            facade.getProjectMirror());
+        ApexMultifileVisitor visitor = new ApexMultifileVisitor(facade.getProjectMirror());
         rootNode.jjtAccept(visitor, null);
     }
 

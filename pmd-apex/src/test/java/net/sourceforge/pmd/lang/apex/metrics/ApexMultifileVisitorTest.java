@@ -27,7 +27,7 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 /**
  * @author Clément Fournier
  */
-public class ApexMetricsVisitorTest extends ApexParserTest {
+public class ApexMultifileVisitorTest extends ApexParserTest {
 
     @Test
     public void testProjectMirrorNotNull() {
@@ -38,7 +38,7 @@ public class ApexMetricsVisitorTest extends ApexParserTest {
     @Test
     public void testOperationsAreThere() throws IOException {
         ApexNode<Compilation> acu = parseAndVisitForString(
-            IOUtils.toString(ApexMetricsVisitorTest.class.getResourceAsStream("MetadataDeployController.cls")));
+            IOUtils.toString(ApexMultifileVisitorTest.class.getResourceAsStream("MetadataDeployController.cls")));
 
         final ApexSignatureMatcher toplevel = ApexMetrics.getFacade().getProjectMirror();
 
@@ -63,7 +63,6 @@ public class ApexMetricsVisitorTest extends ApexParserTest {
                                                                         .getDefaultVersion().getLanguageVersionHandler();
         ApexNode<Compilation> acu = ApexParserTestHelpers.parse(source);
         languageVersionHandler.getSymbolFacade().start(acu);
-        languageVersionHandler.getMetricsVisitorFacade().start(acu);
         return acu;
     }
 }
