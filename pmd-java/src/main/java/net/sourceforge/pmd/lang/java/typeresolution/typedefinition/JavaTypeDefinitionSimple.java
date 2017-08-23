@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution.typedefinition;
 
+
+import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.EXACT;
+import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.LOWER_WILDCARD;
+import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_WILDCARD;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -15,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 /* default */ class JavaTypeDefinitionSimple extends JavaTypeDefinition {
     private final Class<?> clazz;
     private final List<JavaTypeDefinition> genericArgs;
@@ -25,7 +31,7 @@ import java.util.Set;
     private final JavaTypeDefinition enclosingClass;
 
     protected JavaTypeDefinitionSimple(Class<?> clazz, JavaTypeDefinition... boundGenerics) {
-        super(TypeDefinitionType.EXACT);
+        super(EXACT);
         this.clazz = clazz;
 
         final TypeVariable<?>[] typeParameters;
@@ -166,11 +172,13 @@ import java.util.Set;
         } else if (type instanceof TypeVariable) {
             return getGenericType(((TypeVariable<?>) type).getName(), method, methodTypeArgs);
         } else if (type instanceof WildcardType) {
-            final Type[] wildcardUpperBounds = ((WildcardType) type).getUpperBounds();
-            if (wildcardUpperBounds.length != 0) { // upper bound wildcard
-                return resolveTypeDefinition(wildcardUpperBounds[0], method, methodTypeArgs);
-            } else { // lower bound wildcard
-                return forClass(Object.class);
+            final Type[] wildcardLowerBounds = ((WildcardType) type).getLowerBounds();
+
+            if (wildcardLowerBounds.length != 0) { // lower bound wildcard
+                return forClass(LOWER_WILDCARD, resolveTypeDefinition(wildcardLowerBounds[0], method, methodTypeArgs));
+            } else { // upper bound wildcard
+                final Type[] wildcardUpperBounds = ((WildcardType) type).getUpperBounds();
+                return forClass(UPPER_WILDCARD, resolveTypeDefinition(wildcardUpperBounds[0], method, methodTypeArgs));
             }
         }
 

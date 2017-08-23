@@ -6,34 +6,46 @@ package net.sourceforge.pmd.lang.java.typeresolution.typedefinition;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-/* default */ class JavaTypeDefinitionSpecial extends JavaTypeDefinition {
-    private List<JavaTypeDefinition> typeList;
 
-    protected JavaTypeDefinitionSpecial(TypeDefinitionType defType, List<JavaTypeDefinition> typeList) {
+/* default */ class JavaTypeDefinitionSpecial extends JavaTypeDefinition {
+    private final JavaTypeDefinition[] typeList;
+
+    protected JavaTypeDefinitionSpecial(TypeDefinitionType defType, JavaTypeDefinition... typeList) {
         super(defType);
 
-        if (typeList.isEmpty()) {
+        if (typeList.length == 0) {
             throw new IllegalArgumentException("Intersection type list can't be empty");
         }
 
-        this.typeList = Collections.unmodifiableList(new ArrayList<>(typeList));
+        // this is to preserve compatibility, lower bounds are really just Objects
+        if (defType == TypeDefinitionType.LOWER_WILDCARD) {
+            this.typeList = new JavaTypeDefinition[typeList.length + 1];
+            this.typeList[0] = forClass(Object.class);
+            System.arraycopy(typeList, 0, this.typeList, 1, typeList.length);
+        } else {
+            this.typeList = typeList;
+        }
     }
+
 
     /**
      * All the calls to this method are to delegate JavaTypeDefinition method calls to the first
      * JavaTypeDefinition in the 'typeList' list.
      */
     private JavaTypeDefinition firstJavaType() {
-        return typeList.get(0);
+        return typeList[0];
     }
 
     @Override
     public Class<?> getType() {
+        if (firstJavaType() == null) {
+            return null;
+        }
+
+
         return firstJavaType().getType();
     }
 
@@ -108,10 +120,10 @@ import java.util.Set;
                 .append("JavaTypeDefinition ")
                 .append(getDefinitionType().toString())
                 .append(" [")
-                .append(firstJavaType());
-        for (int index = 1; index < typeList.size(); ++index) {
+                .append(typeList[0]);
+        for (int index = 1; index < typeList.length; ++index) {
             builder.append(" && ");
-            builder.append(typeList.get(index));
+            builder.append(typeList[index]);
         }
         return builder.append("]").toString();
     }
@@ -186,16 +198,27 @@ import java.util.Set;
 
     @Override
     public int getJavaTypeCount() {
-        return typeList.size();
+        return typeList.length;
     }
 
     @Override
     public boolean isRawType() {
-        return typeList.size() == 1 && firstJavaType().isRawType();
+        if (isLowerBound()) {
+            // The reason for this is that with lower bounds, there is always a dummy Object.class at typeList[0]
+            // This is to be able to delegate to it.
+            return typeList.length == 2 && typeList[1].isRawType();
+        } else {
+            return typeList.length == 1 && firstJavaType().isRawType();
+        }
     }
 
     @Override
     public boolean isIntersectionType() {
-        return typeList.size() != 1;
+        if (isLowerBound()) {
+            // with lower bound types, there is always a dummy Object.class at typeList[0]
+            return typeList.length > 2;
+        } else {
+            return typeList.length > 1;
+        }
     }
 }

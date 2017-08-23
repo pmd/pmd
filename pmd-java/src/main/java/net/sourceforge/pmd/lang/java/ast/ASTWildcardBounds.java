@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTWildcardBounds extends AbstractJavaNode {
+public class ASTWildcardBounds extends AbstractJavaTypeNode {
     public ASTWildcardBounds(int id) {
         super(id);
     }
