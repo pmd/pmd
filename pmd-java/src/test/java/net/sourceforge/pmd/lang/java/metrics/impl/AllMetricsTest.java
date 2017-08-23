@@ -33,6 +33,9 @@ public class AllMetricsTest extends SimpleAggregatorTst {
         addRule(RULESET, "WmcTest");
         addRule(RULESET, "LocTest");
         addRule(RULESET, "NPathTest");
+        addRule(RULESET, "NopaTest");
+        addRule(RULESET, "NoamTest");
+        addRule(RULESET, "WocTest");
     }
 
 }

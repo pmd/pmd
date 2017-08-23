@@ -126,16 +126,40 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     }
 
 
+    /** Gets a string representation rounded to the nearest half. */
+    private String presentableString(double val) {
+        boolean isInt = Math.floor(val) == val;
+
+        if (!isInt && val >= 0 && val <= 1) { // percentage
+            return roundedString(100 * val) + "%";
+        } else if (!isInt) {
+            return String.valueOf(roundedString(val));
+        } else {
+            return String.valueOf((int) val);
+        }
+    }
+
+
+    private String roundedString(double val) {
+        double truncated = Math.floor(100 * val) / 100;
+        if (truncated == Math.floor(truncated)) {
+            return String.valueOf((int) truncated);
+        } else {
+            return String.valueOf(truncated);
+        }
+    }
+
+
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         if (classKey != null && reportClasses && classKey.supports(node)) {
-            int classValue = (int) JavaMetrics.get(classKey, node, metricOptions);
+            double classValue = JavaMetrics.get(classKey, node, metricOptions);
 
-            String valueReport = String.valueOf(classValue);
+            String valueReport = presentableString(classValue);
 
             if (opKey != null) {
-                int highest = (int) JavaMetrics.get(opKey, node, metricOptions, ResultOption.HIGHEST);
-                valueReport += " highest " + highest;
+                double highest = JavaMetrics.get(opKey, node, metricOptions, ResultOption.HIGHEST);
+                valueReport += " highest " + presentableString(highest);
             }
             if (classValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getQualifiedName().toString(), valueReport, });
@@ -148,9 +172,10 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         if (opKey != null && reportMethods && opKey.supports(node)) {
-            int methodValue = (int) JavaMetrics.get(opKey, node, metricOptions);
+            double methodValue = JavaMetrics.get(opKey, node, metricOptions);
             if (methodValue >= reportLevel) {
-                addViolation(data, node, new String[] {node.getQualifiedName().toString(), "" + methodValue, });
+                addViolation(data, node, new String[] {node.getQualifiedName().toString(),
+                                                       "" + presentableString(methodValue), });
             }
         }
         return data;

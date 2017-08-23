@@ -28,5 +28,6 @@ public class MetricsRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "CyclomaticComplexity");
         addRule(RULESET, "NcssCount");
         addRule(RULESET, "NPathComplexity");
+        addRule(RULESET, "DataClass");
     }
 }

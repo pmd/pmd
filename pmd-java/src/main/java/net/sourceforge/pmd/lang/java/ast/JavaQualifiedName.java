@@ -55,7 +55,7 @@ public final class JavaQualifiedName implements QualifiedName {
      * @return The qualified name of the node
      */
     /* default */ static JavaQualifiedName ofOperation(ASTConstructorDeclaration node) {
-        ASTClassOrInterfaceDeclaration parent = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        ASTAnyTypeDeclaration parent = node.getFirstParentOfType(ASTAnyTypeDeclaration.class);
 
         return ofOperation(parent.getQualifiedName(),
                            parent.getImage(),

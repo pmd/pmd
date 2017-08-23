@@ -8,7 +8,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric.AtfdClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.LocMetric.LocClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssClassMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.NoamMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.NopaMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.WmcMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.WocMetric;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 
 /**
@@ -42,7 +45,29 @@ public enum JavaClassMetricKey implements MetricKey<ASTAnyTypeDeclaration> {
      *
      * @see net.sourceforge.pmd.lang.java.metrics.impl.LocMetric
      */
-    LOC(new LocClassMetric());
+    LOC(new LocClassMetric()),
+
+    /**
+     * Number of Public Attributes.
+     *
+     * @see NopaMetric
+     */
+    NOPA(new NopaMetric()),
+
+    /**
+     * Number of Accessor Methods.
+     *
+     * @see NopaMetric
+     */
+    NOAM(new NoamMetric()),
+    
+    /**
+     * Weight of class.
+     *
+     * @see WocMetric
+     */
+    WOC(new WocMetric());
+
 
     private final JavaClassMetric calculator;
 
