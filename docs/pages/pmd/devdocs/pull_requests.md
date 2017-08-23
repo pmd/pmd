@@ -27,9 +27,8 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
     then we'll either need to rebase or ask for rebasing before merging.
 
     ```
-    git checkout master && git pull origin master # make sure, you have the latest code
-    git checkout -b pr-123                        # creates a new temporary branch
-    git pull https://github.com/otheruser/pmd.git branchname
+    git checkout master && git pull origin master                    # make sure, you have the latest code
+    git fetch origin pull/123/head:pr-123 && git checkout pr-123     # creates a new temporary branch
     ```
 
     {% include note.html content="You can get the pull command from github. Use the \"command line instructions\" link." %}
@@ -51,16 +50,23 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
     updating the release notes: `Update release notes, refs #123, fixes #issue-number`.
     This will automatically close the github issue." %}
 
-4.  Just to be sure, run complete build: `./mvnw clean verify`
-
-    {% include note.html content="This will execute all the unit tests and the checkstyle tests. It ensures,
-    that the complete project can be build and is functioning on top of the current master." %}
-
-5.  If the build finished successful, switch back to the master branch and merge this temporary branch and push:
+4.  Now merge the pull request into the master branch:
 
     ```
     git checkout master
     git merge --no-ff pr-123
+    ```
+
+    {%include note.html content="If there are merge conflicts, you'll need to deal with them here." %}
+
+5.  Run the complete build: `./mvnw clean verify`
+
+    {% include note.html content="This will execute all the unit tests and the checkstyle tests. It ensures,
+    that the complete project can be build and is functioning on top of the current master." %}
+
+6.  If the build was successful, you are ready to push:
+
+    ```
     git push origin master
     ```
 

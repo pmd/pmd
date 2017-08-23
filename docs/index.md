@@ -14,6 +14,8 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
 
 {% include image.html file="pmd-logo-big.png" alt="PMD Logo" %}
 
+<br>
+
 **PMD** scans source code in Java and other languages and looks for potential problems like:
 
 *   Possible bugs - empty try/catch/finally/switch statements

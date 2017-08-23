@@ -54,6 +54,8 @@ Just go to http://localhost:4005.
 If a page is modified, the documentation will automatically be rendered again and
 all you need to do, is refreshing the page in your browser.
 
+See also the script [pmd-jekyll.sh](https://gist.github.com/oowekyala/ee6f8801138861072c59ce683bdf737b).
+It starts the jekyll server in the background and doesn't block the current shell.
 
 ## The sidebar
 
@@ -99,7 +101,7 @@ See [Alerts](http://idratherbewriting.com/documentation-theme-jekyll/mydoc_alert
 
 For example, a info-box can be created like this:
 
-    {% include note.html content="This is a note." %}
+    {%raw%}{% include note.html content="This is a note." %}{%endraw%}
 
 It renders as:
 
@@ -115,7 +117,7 @@ Other available types are:
 
 A callout is created like this:
 
-    {% include callout.html content="This is a callout of type default.<br/><br/>There are the following types available: danger, default, primary, success, info, and warning." type="default" %}
+    {%raw%}{% include callout.html content="This is a callout of type default.<br/><br/>There are the following types available: danger, default, primary, success, info, and warning." type="default" %}{%endraw%}
 
 It renders as:
 

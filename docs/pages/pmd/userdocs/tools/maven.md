@@ -12,9 +12,9 @@ author: >
 
 ### Running the pmd plugin
 
-#### report
+#### Generating a project report
 
-To include the mvn report in the project reports section add the following lines under
+To include the PMD report in the project reports section add the following lines under
 the reports element in your pom.xml:
 
 ``` xml
@@ -35,7 +35,7 @@ the reports element in your pom.xml:
 This will add an entry to the 'project reports' section with the PMD report when you build the maven site.
 
 
-#### manual
+#### Executing PMD manually
 
 To run PMD on a Maven project without adding it as a report, simply run
 
@@ -103,7 +103,7 @@ To specify a ruleset, simply edit the previous configuration:
         </plugins>
     </reporting>
 
-The value of the 'ruleset' value can either be a relative address, an absolute address or even an url.
+The value of the 'ruleset' element can either be a relative address, an absolute address or even an url.
 
 A clean strategy for customizing which rules to use for a project is to write a ruleset file.
 In this file you can define which rules to use, add custom rules, and
@@ -194,16 +194,16 @@ This section is about the maven 1 PMD plugin.
 
 ### Running the pmd plugin
 
-#### report
+#### Generating a project report
 
-To include the Maven report in the project reports section add the following line under
+To include the PMD report in the project reports section add the following line under
 the reports element in your project.xml:
 
     <report>maven-pmd-plugin</report>
 
 This will add an entry to the 'project reports' section with the PMD report.
 
-##### manual
+#### Executing PMD manually
 
 To run PMD on a Maven project without adding it as a report, simply run
 
@@ -211,9 +211,9 @@ To run PMD on a Maven project without adding it as a report, simply run
 
 The PMD plugin writes the report in XML which will then be formatted into more readable HTML.
 
-#### Customization
+### Customization
 
-##### Changing rulesets
+#### Changing rulesets
 
 To specify a set of official, built-in rulesets to be used set them in the property
 <em>maven.pmd.rulesets</em>.  You can include this setting in your project.properties file.
@@ -228,7 +228,7 @@ the previous paragraph. Add the following property to your project now:
 
     maven.pmd.rulesetfiles = ${basedir}/pmd.xml
 
-#### Reference
+### Reference
 
 See the PMD plugin project page here:
 <http://maven.apache.org/maven-1.x/plugins/pmd/>
