@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -128,13 +129,11 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
 
 
     /** Gets a nice string representation of a double. */
-    public String niceDoubleString(double val) {
-        int numDecimalPlaces = 2;
-
-        if (val > 0 && val < 1) { // percentage
-            return StringUtil.percentageString(val, numDecimalPlaces, true);
+    private String niceDoubleString(double val) {
+        if (val == (int) val) {
+            return String.valueOf((int) val);
         } else {
-            return String.valueOf(StringUtil.truncateDouble(val, numDecimalPlaces, true));
+            return String.format(Locale.ROOT, "%." + 4 + "f", val);
         }
     }
 

@@ -31,7 +31,7 @@ public class GodClassRule extends AbstractJavaRule {
     /**
      * Few means between 2 and 5. See: Lanza. Object-Oriented Metrics in Practice. Page 18.
      */
-    private static final int FEW_ATFD_THRESHOLD = 6;
+    private static final int FEW_ATFD_THRESHOLD = 5;
 
     /**
      * One third is a low value. See: Lanza. Object-Oriented Metrics in Practice. Page 17.
@@ -50,7 +50,7 @@ public class GodClassRule extends AbstractJavaRule {
         if (wmc >= WMC_VERY_HIGH && atfd > FEW_ATFD_THRESHOLD && tcc < TCC_THRESHOLD) {
 
             addViolation(data, node, new Object[] {wmc,
-                                                   StringUtil.percentageString(tcc, 3, true),
+                                                   StringUtil.percentageString(tcc, 3),
                                                    atfd, });
         }
         return data;

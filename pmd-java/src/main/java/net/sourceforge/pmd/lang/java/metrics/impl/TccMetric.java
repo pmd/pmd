@@ -48,7 +48,7 @@ public class TccMetric extends AbstractJavaClassMetric {
         int pairs = 0;
 
         if (methodCount > 1) {
-            for (int i = 0; i < methodCount; i++) {
+            for (int i = 0; i < methodCount - 1; i++) {
                 for (int j = i + 1; j < methodCount; j++) {
                     String firstMethodName = methods.get(i);
                     String secondMethodName = methods.get(j);

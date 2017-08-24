@@ -36,7 +36,7 @@ public class DataClassRule extends AbstractJavaMetricsRule {
             int wmc = (int) JavaMetrics.get(JavaClassMetricKey.WMC, node);
 
             addViolation(data, node, new Object[] {node.getImage(),
-                                                   StringUtil.percentageString(woc, 3, true),
+                                                   StringUtil.percentageString(woc, 3),
                                                    nopa, noam, wmc, });
         }
 

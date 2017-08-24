@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,42 +30,19 @@ public final class StringUtil {
      *
      * @param val         a double value between 0 and 1
      * @param numDecimals The number of decimal places to keep
-     * @param truncateInt Whether to truncate the string to an int if possible (if this is set, then 10.0% will be
-     *                    represented as "10%")
      *
      * @return A formatted string
      *
      * @throws IllegalArgumentException if the double to format is not between 0 and 1
      */
-    public static String percentageString(double val, int numDecimals, boolean truncateInt) {
+    public static String percentageString(double val, int numDecimals) {
         if (val < 0 || val > 1) {
             throw new IllegalArgumentException("Expected a number between 0 and 1");
         }
 
-        return truncateDouble(100 * val, numDecimals, truncateInt) + "%";
+        return String.format(Locale.ROOT, "%." + numDecimals + "f%%", 100 * val);
     }
 
-
-    /**
-     * Returns a string representation of the double {@code val}, truncated to {@code numDecimal} decimal places.
-     *
-     * @param val         The value to present
-     * @param numDecimals The number of decimal places to keep
-     * @param truncateInt Whether to truncate the string to an int if possible (if this is set, then 10.0 will be
-     *                    represented as "10")
-     *
-     * @return A string representation of the double number
-     */
-    public static String truncateDouble(double val, int numDecimals, boolean truncateInt) {
-        int factor = (int) Math.pow(10, numDecimals);
-        double truncated = Math.floor(factor * val) / factor;
-
-        if (truncateInt && truncated == Math.floor(truncated)) {
-            return String.valueOf((int) truncated);
-        } else {
-            return String.valueOf(truncated);
-        }
-    }
 
     /**
      * Return whether the non-null text arg starts with any of the prefix
