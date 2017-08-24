@@ -123,25 +123,32 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
 
     <test-code>
-        <description>Full example</description>
-        <expected-problems>1</expected-problems>
+        <description>Full example</description> <!-- TODO issues w/ that-->
+        <expected-problems>7</expected-problems>
         <expected-messages>
-            <message>'.StatementAndBraceFinder' has value 10.</message>
+            <message>'.StatementAndBraceFinder' has value 10 highest 6.</message>
+            <message>'.StatementAndBraceFinder#buildDataFlowFor(JavaNode)' has value 6.</message>
+            <message>'.StatementAndBraceFinder#tryToLog(String, NodeType, Node)' has value 4.</message>
+            <message>'.StatementAndBraceFinder#tryToLog(NodeType, Node)' has value 0.</message>
+            <message>'.StatementAndBraceFinder#visit(ASTStatementExpression, Object)' has value 4.</message>
+            <message>'.StatementAndBraceFinder#visit(ASTVariableDeclarator, Object)' has value 4.</message>
+            <message>'.StatementAndBraceFinder#visit(ASTExpression, Object)' has value 18.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
 
     <test-code>
-        <description>Test empty class</description>
+        <description>TODO: known limitation, should report 1</description>
         <expected-problems>1</expected-problems>
         <rule-property name="reportClasses">false</rule-property>
         <expected-messages>
-            <message>'.Foo' has value 0.</message>
+            <message>'.Foo#bar()' has value 0.</message>
         </expected-messages>
         <code><![CDATA[
         public class Foo {
+          Type a;
           void bar() {
-            a.foo();
+            a.b.foo();
           }
         }
         ]]></code>
@@ -152,7 +159,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo' has value 0.</message>
+            <message>'.Foo' has value 0 highest 0.</message>
         </expected-messages>
         <code><![CDATA[
         public class Foo {
@@ -164,17 +171,12 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     </test-code>
 
     <test-code>
-        <description>NOPA doesn't support enums, interfaces or annotations</description>
+        <description>ATFD doesn't support interfaces or annotations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
         public interface Foo {
 
            public final int h;
-
-           enum Bar{
-             FOO;
-             public int bel = 0;
-           }
 
            @interface Tag {
               public static final int num = 0;

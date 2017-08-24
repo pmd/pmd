@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
@@ -23,6 +24,12 @@ public final class AtfdMetric {
 
 
     public static final class AtfdOperationMetric extends AbstractJavaOperationMetric {
+
+        @Override
+        public boolean supports(ASTMethodOrConstructorDeclaration node) {
+            return node instanceof ASTMethodDeclaration && super.supports(node);
+        }
+
 
         @Override
         public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {

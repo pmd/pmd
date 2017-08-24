@@ -37,7 +37,7 @@ public class DataClassRule extends AbstractJavaMetricsRule {
 
             addViolation(data, node, new Object[] {node.getImage(),
                                                    StringUtil.percentageString(woc, 3, true),
-                                                   nopa, noam, wmc});
+                                                   nopa, noam, wmc, });
         }
 
         return super.visit(node, data);
