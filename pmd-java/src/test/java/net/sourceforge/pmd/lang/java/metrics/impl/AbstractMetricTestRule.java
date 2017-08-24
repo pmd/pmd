@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Abstract test rule for a metric. Tests of metrics use the standard framework for rule testing, using one dummy rule
