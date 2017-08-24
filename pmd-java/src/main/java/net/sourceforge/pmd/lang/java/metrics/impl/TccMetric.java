@@ -31,9 +31,7 @@ public class TccMetric extends AbstractJavaClassMetric {
         int numPairs = numMethodsRelatedByAttributeAccess(usagesByMethod);
         int maxPairs = maxMethodPairs(usagesByMethod.size());
 
-        double tcc = maxPairs == 0 ? 0. : numPairs / (double) maxPairs;
-
-        return tcc;
+        return numPairs / (double) maxPairs;
     }
 
 

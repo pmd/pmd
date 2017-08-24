@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * @author Clément Fournier
@@ -29,7 +30,14 @@ public class DataClassRule extends AbstractJavaMetricsRule {
         boolean isDataClass = interfaceRevealsData(node) && classRevealsDataAndLacksComplexity(node);
 
         if (isDataClass) {
-            addViolation(data, node, new String[] {node.getImage()});
+            double woc = JavaMetrics.get(JavaClassMetricKey.WOC, node);
+            int nopa = (int) JavaMetrics.get(JavaClassMetricKey.NOPA, node);
+            int noam = (int) JavaMetrics.get(JavaClassMetricKey.NOAM, node);
+            int wmc = (int) JavaMetrics.get(JavaClassMetricKey.WMC, node);
+
+            addViolation(data, node, new Object[] {node.getImage(),
+                                                   StringUtil.percentageString(woc, 3, true),
+                                                   nopa, noam, wmc});
         }
 
         return super.visit(node, data);
