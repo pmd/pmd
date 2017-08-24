@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava14;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava15;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -11,9 +13,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ParserTst;
 
-public class ASTFieldDeclarationTest extends ParserTst {
+public class ASTFieldDeclarationTest {
 
     @Test
     public void testIsArray() {

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getOrderedNodes;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -11,7 +12,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.ParserTst;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.metrics.SigMask;
 /**
  * @author Clément Fournier
  */
-public class SigMaskTest extends ParserTst {
+public class SigMaskTest {
 
     private static final String TEST_FIELDS = "class Bzaz{"
         + "public String x;"

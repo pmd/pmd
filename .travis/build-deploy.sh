@@ -11,7 +11,7 @@ function push_docs() {
 
         if [ "$TRAVIS_BRANCH" == "master" ]; then
             git config user.name "Travis CI (pmd-bot)"
-            git config user.email "adangel+pmd-bot@users.sourceforge.net"
+            git config user.email "andreas.dangel+pmd-bot@adangel.org"
             git add -A docs
             git commit -m "Update documentation"
             git push git@github.com:pmd/pmd.git HEAD:master

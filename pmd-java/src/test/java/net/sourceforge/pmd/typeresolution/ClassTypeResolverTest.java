@@ -12,8 +12,6 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -23,10 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-
-import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,6 +29,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.ParserTstUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
@@ -1672,18 +1668,7 @@ public class ClassTypeResolverTest {
     // directly in the classpath, only
     // the output directories are in the classpath.
     private ASTCompilationUnit parseAndTypeResolveForClass(Class<?> clazz, String version) {
-        String sourceFile = clazz.getName().replace('.', '/') + ".java";
-        InputStream is = ClassTypeResolverTest.class.getClassLoader().getResourceAsStream(sourceFile);
-        if (is == null) {
-            throw new IllegalArgumentException("Unable to find source file " + sourceFile + " for " + clazz);
-        }
-        String source;
-        try {
-            source = IOUtils.toString(is);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return parseAndTypeResolveForString(source, version);
+        return parseAndTypeResolveForString(ParserTstUtil.getSourceFromClass(clazz), version);
     }
 
     private ASTCompilationUnit parseAndTypeResolveForString(String source, String version) {

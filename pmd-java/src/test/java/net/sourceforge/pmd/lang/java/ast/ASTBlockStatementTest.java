@@ -9,9 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.ParserTst;
-
-public class ASTBlockStatementTest extends ParserTst {
+public class ASTBlockStatementTest {
 
     @Test
     public void testIsAllocation() {

@@ -10,6 +10,8 @@ import static net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery.XPATH_2_0;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -18,7 +20,6 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Rule that tries to match an XPath expression against a DOM view of an AST.
@@ -111,8 +112,7 @@ public class XPathRule extends AbstractRule {
     }
 
     public boolean hasXPathExpression() {
-        String xPath = getProperty(XPATH_DESCRIPTOR);
-        return StringUtil.isNotEmpty(xPath);
+        return StringUtils.isNotBlank(getProperty(XPATH_DESCRIPTOR));
     }
 
     /**

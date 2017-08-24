@@ -13,7 +13,7 @@ import net.sourceforge.pmd.stat.Metric;
  * Thread-safety is required only for concurrently notifying about different files.
  * Same file violations are guaranteed to be reported serially.
  */
-public interface ThreadSafeReportListener extends ReportListener {
+public interface ThreadSafeReportListener {
     /**
      * A new violation has been found.
      *

@@ -383,17 +383,6 @@ public abstract class AbstractNode implements Node {
 
 
     @Override
-    public <T extends Node> List<T> findChildNodesWithXPathChecked(Class<T> clazz, String xpathString) throws JaxenException {
-        List<Node> found = findChildNodesWithXPath(xpathString);
-        List<T> result = new ArrayList<>();
-        for (Node n : found) {
-            result.add(clazz.cast(n));
-        }
-        return result;
-    }
-
-
-    @Override
     public boolean hasDescendantMatchingXPath(String xpathString) {
         try {
             return !findChildNodesWithXPath(xpathString).isEmpty();

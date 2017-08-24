@@ -4,16 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.util.StringUtil;
 
+
 /**
- * The God Class Rule detects the God Class design flaw using metrics. A god class does too many things, is very big
- * and complex. It should be split apart to be more object-oriented. The rule uses the detection strategy described in
- * [1]. The violations are reported against the entire class.
+ * The God Class Rule detects the God Class design flaw using metrics. A god class does too many things, is very big and
+ * complex. It should be split apart to be more object-oriented. The rule uses the detection strategy described in [1].
+ * The violations are reported against the entire class.
  *
  * <p>[1] Lanza. Object-Oriented Metrics in Practice. Page 80.
  *

@@ -18,7 +18,7 @@ public class DataClassRule extends AbstractJavaMetricsRule {
     // probably not worth using properties
     private static final int ACCESSOR_OR_FIELD_FEW_LEVEL = 3;
     private static final int ACCESSOR_OR_FIELD_MANY_LEVEL = 5;
-    private static final int WOC_LEVEL = 33;
+    private static final double WOC_LEVEL = 1. / 3.;
     private static final int WMC_HIGH_LEVEL = 31;
     private static final int WMC_VERY_HIGH_LEVEL = 47;
 

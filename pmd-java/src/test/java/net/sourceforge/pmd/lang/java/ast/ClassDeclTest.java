@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Set;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.ParserTst;
-
-public class ClassDeclTest extends ParserTst {
+public class ClassDeclTest {
 
     @Test
     public void testPublic() {

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
-import static net.sourceforge.pmd.lang.java.metrics.JavaMetricsVisitorTest.parseAndVisitForClass15;
+import static net.sourceforge.pmd.lang.java.metrics.JavaMetricsVisitorTest.parseAndVisitForClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -37,7 +37,7 @@ public class ProjectMemoizerTest {
 
     @Test
     public void memoizationTest() {
-        ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
+        ASTCompilationUnit acu = parseAndVisitForClass(MetricsVisitorTestData.class);
 
         List<Integer> expected = visitWith(acu, true);
         List<Integer> real = visitWith(acu, false);
@@ -48,7 +48,7 @@ public class ProjectMemoizerTest {
 
     @Test
     public void forceMemoizationTest() {
-        ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
+        ASTCompilationUnit acu = parseAndVisitForClass(MetricsVisitorTestData.class);
 
         List<Integer> reference = visitWith(acu, true);
         List<Integer> real = visitWith(acu, true);

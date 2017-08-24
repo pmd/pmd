@@ -4,19 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ParserTst;
 
 /**
  * Created on Jan 19, 2005 
  * @author mgriffa
  */
-public class ASTThrowStatementTest extends ParserTst {
+public class ASTThrowStatementTest {
 
     @Test
     public final void testGetFirstASTNameImageNull() {

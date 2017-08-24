@@ -156,6 +156,45 @@ All existing rules have been updated to reflect these changes. If you have custo
     respectively. This is to comply with the naming convention, that each rule class should be suffixed with "Rule".
     This change has no impact on custom rulesets, since the rule names themselves didn't change.
 
+*   The never implemented method `PMD.processFiles(PMDConfiguration, RuleSetFactory, Collection<File>, RuleContext, ProgressMonitor)` along with the interface `ProgressMonitor` has been removed.
+
+*   All APIs deprecated in older versions are now removed. This includes:
+    *    `Renderer.getPropertyDefinitions`
+    *    `AbstractRenderer.defineProperty(String, String)`
+    *    `AbstractRenderer.propertyDefinitions`
+    *    `ReportListener`
+    *    `Report.addListener(ReportListener)`
+    *    `SynchronizedReportListener`
+    *    `CPDConfiguration.CPDConfiguration(int, Language, String)`
+    *    `CPDConfiguration.getRendererFromString(String)`
+    *    `StreamUtil`
+    *    `StringUtil.appendXmlEscaped(StringBuilder, String)`
+    *    `StringUtil.htmlEncode(String)`
+
+
+*   Several methods in `net.sourceforge.pmd.util.CollectionUtil` have been deprecated and will be removed in PMD 7.0.0. In particular:
+    *    `CollectionUtil.addWithoutDuplicates(T[], T)`
+    *    `CollectionUtil.addWithoutDuplicates(T[], T[])`
+    *    `CollectionUtil.areSemanticEquals(T[], T[])`
+    *    `CollectionUtil.areEqual(Object, Object)`
+    *    `CollectionUtil.arraysAreEqual(Object, Object)`
+    *    `CollectionUtil.valuesAreTransitivelyEqual(Object[], Object[])`
+
+
+*   Several methods in `net.sourceforge.pmd.util.StringUtil` have been deprecated and will be removed in PMD 7.0.0. In particular:
+    *    `StringUtil.startsWithAny(String, String[])`
+    *    `StringUtil.isNotEmpty(String)`
+    *    `StringUtil.isEmpty(String)`
+    *    `StringUtil.isMissing(String)`
+    *    `StringUtil.areSemanticEquals(String, String)`
+    *    `StringUtil.replaceString(String, String, String)`
+    *    `StringUtil.replaceString(String, char, String)`
+    *    `StringUtil.substringsOf(String, char)`
+    *    `StringUtil.substringsOf(String, String)`
+    *    `StringUtil.asStringOn(StringBuffer, Iterator, String)`
+    *    `StringUtil.asStringOn(StringBuilder, Object[], String)`
+    *    `StringUtil.lpad(String, int)`
+
 ### External Contributions
 
 *   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements - [Clément Fournier](https://github.com/oowekyala)
@@ -186,9 +225,12 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#545](https://github.com/pmd/pmd/pull/545): \[apex] Apex metrics framework - [Clément Fournier](https://github.com/oowekyala)
 *   [#548](https://github.com/pmd/pmd/pull/548): \[java] Metrics documentation - [Clément Fournier](https://github.com/oowekyala)
 *   [#550](https://github.com/pmd/pmd/pull/550): \[java] Add basic resolution to type inference - [Bendegúz Nagy](https://github.com/WinterGrascph)
+*   [#553](https://github.com/pmd/pmd/pull/553): \[java] Refactored ParserTst into a static utility class + add getSourceFromClass - [Clément Fournier](https://github.com/oowekyala)
 *   [#554](https://github.com/pmd/pmd/pull/554): \[java] Fix #537: UnnecessaryParentheses fails to detect obvious scenario - [Clément Fournier](https://github.com/oowekyala)
 *   [#555](https://github.com/pmd/pmd/pull/555): \[java] Changed metrics/CyclomaticComplexityRule to use WMC when reporting classes - [Clément Fournier](https://github.com/oowekyala)
 *   [#556](https://github.com/pmd/pmd/pull/556): \[java] Fix #357: UncommentedEmptyConstructor consider annotations on Constructor - [Clément Fournier](https://github.com/oowekyala)
 *   [#557](https://github.com/pmd/pmd/pull/557): \[java] Fix NPath metric not counting ternaries correctly - [Clément Fournier](https://github.com/oowekyala)
 *   [#563](https://github.com/pmd/pmd/pull/563): \[java] Add support for basic method type inference for strict invocation - [Bendegúz Nagy](https://github.com/WinterGrascph)
-
+*   [#567](https://github.com/pmd/pmd/pull/567): \[java] Last API change for metrics (metric options) - [Clément Fournier](https://github.com/oowekyala)
+*   [#573](https://github.com/pmd/pmd/pull/573): \[java] Data class rule - [Clément Fournier](https://github.com/oowekyala)
+*   [#576](https://github.com/pmd/pmd/pull/576): \[doc][java] Add hint for Guava users in InefficientEmptyStringCheck - [mmoehring](https://github.com/mmoehring)

@@ -229,20 +229,6 @@ public interface Node {
     List<? extends Node> findChildNodesWithXPath(String xpathString) throws JaxenException;
 
     /**
-     * Returns all the nodes matching the xpath expression and casts the nodes to a specific type.
-     *
-     * @param clazz
-     *            the class of the result component type
-     * @param xpathString
-     *            the expression to check
-     * @return List of all matching nodes. Returns an empty list if none found.
-     *
-     * @throws JaxenException if the xpath is incorrect or fails altogether
-     * @throws ClassCastException if the nodes found with the xpath exception cannot be cast.
-     */
-    <T extends Node> List<T> findChildNodesWithXPathChecked(Class<T> clazz, String xpathString) throws JaxenException;
-
-    /**
      * Checks whether at least one descendant matches the xpath expression.
      *
      * @param xpathString

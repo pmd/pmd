@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Parameter;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
-import net.sourceforge.pmd.util.StringUtil;
 
 public class Formatter {
 
@@ -152,7 +152,7 @@ public class Formatter {
 
     // FIXME - hm, what about this consoleRenderer thing... need a test for this
     Renderer createRenderer() {
-        if (StringUtil.isEmpty(type)) {
+        if (StringUtils.isBlank(type)) {
             throw new BuildException(unknownRendererMessage("<unspecified>"));
         }
 

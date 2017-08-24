@@ -11,12 +11,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.renderers.ColumnDescriptor.Accessor;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Renderer the results to a comma-delimited text format. All available columns
@@ -66,7 +67,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
         }), new ColumnDescriptor<>("desc", "Description", new Accessor<RuleViolation>() {
             @Override
             public String get(int idx, RuleViolation rv, String cr) {
-                return StringUtil.replaceString(rv.getDescription(), '\"', "'");
+                return StringUtils.replaceChars(rv.getDescription(), '\"', '\'');
             }
         }), new ColumnDescriptor<>("ruleSet", "Rule set", new Accessor<RuleViolation>() {
             @Override

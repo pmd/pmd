@@ -66,17 +66,14 @@ return _name.compareTo(((Property) o)._name);
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Property' has value 10%.</message>
+            <message>'.Property' has value 11.11%.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
 
     <test-code>
         <description>Test empty class</description>
-        <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message>'.Foo' has value 0.</message>
-        </expected-messages>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
         public class Foo {
         }

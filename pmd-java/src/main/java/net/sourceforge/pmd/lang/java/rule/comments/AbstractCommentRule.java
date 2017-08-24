@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -26,7 +28,6 @@ import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.MultiLineComment;
 import net.sourceforge.pmd.lang.java.ast.SingleLineComment;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * 
@@ -86,7 +87,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 
         StringBuilder sb = new StringBuilder();
         for (String line : lines) {
-            if (StringUtil.isEmpty(line)) {
+            if (StringUtils.isBlank(line)) {
                 continue;
             }
             sb.append(line).append('\n');

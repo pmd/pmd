@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava18;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -11,9 +13,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ParserTst;
 
-public class ASTVariableDeclaratorIdTest extends ParserTst {
+public class ASTVariableDeclaratorIdTest {
 
     @Test
     public void testIsExceptionBlockParameter() {
@@ -27,7 +28,7 @@ public class ASTVariableDeclaratorIdTest extends ParserTst {
 
     @Test
     public void testTypeNameNode() {
-        ASTCompilationUnit acu = super.getNodes(ASTCompilationUnit.class, TYPE_NAME_NODE).iterator().next();
+        ASTCompilationUnit acu = getNodes(ASTCompilationUnit.class, TYPE_NAME_NODE).iterator().next();
         ASTVariableDeclaratorId id = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
 
         ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode().jjtGetChild(0);
@@ -36,7 +37,7 @@ public class ASTVariableDeclaratorIdTest extends ParserTst {
 
     @Test
     public void testAnnotations() {
-        ASTCompilationUnit acu = super.getNodes(ASTCompilationUnit.class, TEST_ANNOTATIONS).iterator().next();
+        ASTCompilationUnit acu = getNodes(ASTCompilationUnit.class, TEST_ANNOTATIONS).iterator().next();
         ASTVariableDeclaratorId id = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
 
         ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode().jjtGetChild(0);

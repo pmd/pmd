@@ -29,7 +29,7 @@ public class WocMetric extends AbstractJavaClassMetric {
     public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
 
         JavaOperationSigMask mask = new JavaOperationSigMask();
-        mask.restrictRolesTo(Role.METHOD, Role.STATIC);
+        mask.forbid(Role.CONSTRUCTOR, Role.GETTER_OR_SETTER);
         mask.restrictVisibilitiesTo(Visibility.PUBLIC);
 
         int functionalMethods = countMatchingOpSigs(node, mask);
@@ -38,6 +38,6 @@ public class WocMetric extends AbstractJavaClassMetric {
 
         int totalPublicMethods = countMatchingOpSigs(node, mask);
 
-        return functionalMethods / (totalPublicMethods + 1.);
+        return functionalMethods / (double) totalPublicMethods;
     }
 }

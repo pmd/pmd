@@ -14,13 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.dfa.report.ReportTree;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.DateTimeUtil;
 import net.sourceforge.pmd.util.EmptyIterator;
 import net.sourceforge.pmd.util.NumericConstants;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A {@link Report} collects all informations during a PMD execution. This
@@ -233,7 +234,7 @@ public class Report implements Iterable<RuleViolation> {
 
     private static String keyFor(RuleViolation rv) {
 
-        return StringUtil.isNotEmpty(rv.getPackageName()) ? rv.getPackageName() + '.' + rv.getClassName() : "";
+        return StringUtils.isNotBlank(rv.getPackageName()) ? rv.getPackageName() + '.' + rv.getClassName() : "";
     }
 
     /**
@@ -272,18 +273,6 @@ public class Report implements Iterable<RuleViolation> {
             summary.put(name, count + 1);
         }
         return summary;
-    }
-
-    /**
-     * Registers a report listener
-     *
-     * @param listener
-     *            the listener
-     * @deprecated Use {@link #addListener(ThreadSafeReportListener)}
-     */
-    @Deprecated
-    public void addListener(ReportListener listener) {
-        listeners.add(new SynchronizedReportListener(listener));
     }
 
     /**
