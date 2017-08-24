@@ -7,8 +7,17 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
 
 ## Contributing via pull requests
 
-**TODO:** basically what we have in <https://github.com/pmd/pmd/blob/master/CONTRIBUTING.md>.
+First off, thanks for taking the time to contribute!
 
+*   Please create your pull request against the `master` branch. We will rebase/merge it to the maintenance
+    branches, if necessary. Just fork the [pmd repo](https://github.com/pmd/pmd/) and
+    create a [pull request](https://github.com/pmd/pmd/pulls).
+
+*   We are using [checkstyle](http://checkstyle.sourceforge.net/) to enforce a common code style.
+    The check is integrated into the default build - so, make sure, you can [build PMD](pmd_devdocs_building.html)
+    without errors.
+
+    See [code style](pmd_devdocs_codestyle.html) for more info.
 
 ## Merging pull requests
 
@@ -30,8 +39,6 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
     git checkout master && git pull origin master                    # make sure, you have the latest code
     git fetch origin pull/123/head:pr-123 && git checkout pr-123     # creates a new temporary branch
     ```
-
-    {% include note.html content="You can get the pull command from github. Use the \"command line instructions\" link." %}
 
 3.  Update the [release notes](https://github.com/pmd/pmd/blob/master/docs/pages/release_notes.md):
 
@@ -79,18 +86,88 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
 We ask, to create every pull request against master, to make it easier to contribute.
 But if a pull request is intended to fix a bug in an older version of PMD, then we need to backport this pull request.
 
-For older versions, we have maintenance branches, like `pmd/5.8.x`.
+#### Creating a maintenance branch
 
-**TODO:**
+For older versions, we use maintenance branches, like `pmd/5.8.x`. If there is no maintenance branch for
+the specific version, then we'll have to create it first. Let's say, we want a maintenance branch for
+PMD version 5.8.0, so that we can create a bugfix release 5.8.1.
 
-*   create maintenance branch, if needed
-*   create temp branch, pull in pr, git rebase master --onto pmd/5.8.x
-*   continue with step 3 above (update release notes)
-*   merge the maintenance branch into the next higher branch and eventually into master
+1.  We'll simply create a new branch off of the release tag:
 
-Note: not using cherry-picking, so that each fix is represented by a single commit. Cherry-picking would
-duplicate the commit and you can't see in the log, on which branches the fix has been made
-(e.g. gitk and github show the branches, on which the specific commit is contained).
+    ```
+    git branch pmd/5.8.x pmd_releases/5.8.0 && git checkout pmd/5.8.x
+    ```
+
+2.  Now we'll need to adjust the version, since it's currently the same as the release version.
+    We'll change the version to the next patch version: "5.8.1-SNAPSHOT".
+
+    ```
+    ./mvnw versions:set -DnewVersion=5.8.1-SNAPSHOT
+    git add pom.xml \*/pom.xml
+    git commit -m "prepare next version 5.8.1-SNAPSHOT"
+    ```
+
+#### Merging the PR
+
+1.  As above: Review the PR
+
+2.  Fetch the PR and rebase it onto the maintenance branch:
+
+    ```
+    git fetch origin pull/124/head:pr-124 && git checkout pr-124     # creates a new temporary branch
+    git rebase master --onto pmd/5.8.x
+    ./mvnw clean verify                                # make sure, everything works after the rebase
+    ```
+
+    {%include note.html content="You might need to fix conflicts / backport the commits for the older
+    PMD version." %}
+
+3.  Update the release notes. See above for details.
+
+4.  Now merge the pull request into the maintenance branch:
+
+    ```
+    git checkout pmd/5.8.x
+    git merge --no-ff pr-124
+    ```
+
+5.  Just to be sure, run the complete build again: `./mvnw clean verify`.
+
+6.  If the build was successful, you are ready to push:
+
+    ```
+    git push origin pmd/5.8.x
+    ```
+
+7.  Since we have rebased the pull request, it won't appear as merged on github.
+    You need to manually close the pull request. Leave a comment, that it has been
+    rebased onto the maintenance branch.
+
+#### Merging into master
+
+Now the PR has been merged into the maintenance branch, but it is missing in any later version of PMD.
+Therefore, we merge first into the next minor version maintenance branch (if existing):
+
+    git checkout pmd/5.9.x
+    git merge pmd/5.8.x
+
+After that, we merge the changes into the master branch:
+
+    git checkout master
+    git merge pmd/5.9.x
+
+{%include note.html content="This ensures, that every change on the maintenance branch eventually ends
+up in the master branch and therefore in any future version of PMD.<br>
+The downside is however, that there are inevitable merge conflicts for the maven `pom.xml` files, since
+every branch changed the version number differently.<br>
+We could avoid this by merging only the temporary branch \"pr-124\" into each maintenance branch and
+eventually into master, with the risk of missing single commits in a maintenance branch, that have been
+done outside the temporary branch." %}
+
+#### Merging vs. Cherry-Picking
+
+We are not using cherry-picking, so that each fix is represented by a single commit.
+Cherry-picking would duplicate the commit and you can't see in the log, on which branches the fix has been
+integrated (e.g. gitk and github show the branches, from which the specific commit is reachable).
+
 The downside is a more complex history - the maintenance branches and master branch are "connected" and not separate.
-
-Note: merging maintenance branches after a release will produce merge conflicts in `pom.xml` files.
