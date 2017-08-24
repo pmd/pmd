@@ -37,7 +37,7 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
         case UPPER_BOUND:
         case UPPER_WILDCARD:
         case LOWER_WILDCARD:
-            return new JavaTypeDefinitionIntersection(type, intersectionTypes);
+            return new JavaTypeDefinitionSpecial(type, intersectionTypes);
         default:
             throw new IllegalStateException("Unknow type");
         }
@@ -125,9 +125,7 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
     /**
      * @return true if clazz is generic and had not been parameterized
      */
-    public final boolean isRawType() {
-        return !isIntersectionType() && isGeneric() && CLASS_EXACT_TYPE_DEF_CACHE.containsKey(getType());
-    }
+    public abstract boolean isRawType();
 
     public abstract JavaTypeDefinition getAsSuper(Class<?> superClazz);
 
@@ -144,9 +142,7 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
         return definitionType == TypeDefinitionType.LOWER_WILDCARD;
     }
 
-    public final boolean isIntersectionType() {
-        return getJavaTypeCount() != 1;
-    }
+    public abstract boolean isIntersectionType();
 
     public final boolean isWildcard() {
         return definitionType == TypeDefinitionType.LOWER_WILDCARD

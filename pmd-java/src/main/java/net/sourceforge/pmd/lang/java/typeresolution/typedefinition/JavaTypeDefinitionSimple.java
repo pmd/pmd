@@ -21,6 +21,7 @@ import java.util.Set;
     // cached because calling clazz.getTypeParameters().length create a new array every time
     private final int typeParameterCount;
     private final boolean isGeneric;
+    private final boolean isRawType;
     private final JavaTypeDefinition enclosingClass;
 
     protected JavaTypeDefinitionSimple(Class<?> clazz, JavaTypeDefinition... boundGenerics) {
@@ -42,6 +43,7 @@ import java.util.Set;
 
         typeParameterCount = typeParameters.length;
         isGeneric = typeParameters.length != 0;
+        isRawType = isGeneric && boundGenerics.length == 0;
 
         if (isGeneric) {
             // Generics will be lazily loaded
@@ -329,5 +331,15 @@ import java.util.Set;
     @Override
     public int getJavaTypeCount() {
         return 1;
+    }
+
+    @Override
+    public boolean isRawType() {
+        return isRawType;
+    }
+
+    @Override
+    public boolean isIntersectionType() {
+        return false;
     }
 }
