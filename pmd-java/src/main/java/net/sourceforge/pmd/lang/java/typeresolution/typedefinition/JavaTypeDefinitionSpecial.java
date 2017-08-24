@@ -196,6 +196,6 @@ import java.util.Set;
 
     @Override
     public boolean isIntersectionType() {
-        return typeList.size() == 1;
+        return typeList.size() != 1;
     }
 }
