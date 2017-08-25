@@ -89,6 +89,9 @@ and include them to such reports.
 *   The rule `UncommentedEmptyConstructor` (ruleset `java-design`) will now ignore empty constructors annotated with
     `javax.inject.Inject`.
 
+*   The rule `AbstractClassWithoutAnyMethod` (ruleset `java-design`)  will now ignore classes annotated with
+    `com.google.auto.value.AutoValue`.
+
 #### Removed Rules
 
 *   The deprecated rule `UseSingleton` has been removed from the ruleset `java-design`. The rule has been renamed
@@ -135,6 +138,7 @@ All existing rules have been updated to reflect these changes. If you have custo
     *   [#537](https://github.com/pmd/pmd/issues/537): \[java] UnnecessaryParentheses fails to detect obvious scenario
 *   java-design
     *   [#357](https://github.com/pmd/pmd/issues/357): \[java] UncommentedEmptyConstructor consider annotations on Constructor
+    *   [#438](https://github.com/pmd/pmd/issues/438): \[java] Relax AbstractClassWithoutAnyMethod when class is annotated by @AutoValue
 *   java-sunsecure
     *   [#468](https://github.com/pmd/pmd/issues/468): \[java] ArrayIsStoredDirectly false positive
 *   java-unusedcode
@@ -235,4 +239,5 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#570](https://github.com/pmd/pmd/pull/570): \[java] Model lower, upper and intersection types - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#573](https://github.com/pmd/pmd/pull/573): \[java] Data class rule - [Clément Fournier](https://github.com/oowekyala)
 *   [#576](https://github.com/pmd/pmd/pull/576): \[doc][java] Add hint for Guava users in InefficientEmptyStringCheck - [mmoehring](https://github.com/mmoehring)
+*   [#581](https://github.com/pmd/pmd/pull/581): \[java] Relax AbstractClassWithoutAnyMethod when class is annotated by @AutoValue - [Niklas Baudy](https://github.com/vanniktech)
 
