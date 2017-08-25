@@ -1669,6 +1669,7 @@ public class Example {
         language="java"
         since="4.2"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
+        typeResolution="true"
         message="No abstract method which means that the keyword is most likely used to prevent instantiation. Use a private or protected constructor instead."
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#abstractclasswithoutanymethod">
         <description>
@@ -1684,6 +1685,7 @@ protected constructor in order to prevent instantiation than make the class misl
 //ClassOrInterfaceDeclaration
     [@Abstract = 'true']
     [count(//MethodDeclaration) + count(//ConstructorDeclaration) = 0]
+    [not(../Annotation/MarkerAnnotation/Name[typeof(@Image, 'com.google.auto.value.AutoValue', 'AutoValue')])]
                     ]]>
                 </value>
             </property>
