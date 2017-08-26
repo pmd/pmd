@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import java.util.List;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.java.metrics.impl.visitors.AtfdBaseVisitor;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
+import net.sourceforge.pmd.lang.metrics.ResultOption;
 
 /**
  * Access to Foreign Data. Quantifies the number of foreign fields accessed directly or via accessors.
@@ -24,31 +25,25 @@ public final class AtfdMetric {
 
     public static final class AtfdOperationMetric extends AbstractJavaOperationMetric {
 
-        @Override // TODO:cf
-        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
-
-            JavaOperationSigMask targetOps = new JavaOperationSigMask();
-            targetOps.restrictVisibilitiesTo(Visibility.PUBLIC);
-            targetOps.restrictRolesTo(Role.GETTER_OR_SETTER);
-
-            List<JavaQualifiedName> callQNames = findAllCalls(node);
-            int foreignCalls = 0;
-            for (JavaQualifiedName name : callQNames) {
-                if (getSignatureMatcher().hasMatchingSig(name, targetOps)) {
-                    foreignCalls++;
-                }
-            }
-
-            return foreignCalls / callQNames.size();
+        @Override
+        public boolean supports(ASTMethodOrConstructorDeclaration node) {
+            return node instanceof ASTMethodDeclaration && super.supports(node);
         }
+
+
+        @Override
+        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
+            return ((MutableInt) node.jjtAccept(new AtfdBaseVisitor(), new MutableInt(0))).getValue();
+        }
+
     }
 
     public static final class AtfdClassMetric extends AbstractJavaClassMetric {
 
         @Override
         public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
-            // TODO:cf
-            return 0;
+            // TODO maybe consider code outside methods
+            return JavaMetrics.get(JavaOperationMetricKey.ATFD, node, options, ResultOption.SUM);
         }
 
 

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -126,26 +127,12 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     }
 
 
-    /** Gets a string representation rounded to the nearest half. */
-    private String presentableString(double val) {
-        boolean isInt = Math.floor(val) == val;
-
-        if (!isInt && val >= 0 && val <= 1) { // percentage
-            return roundedString(100 * val) + "%";
-        } else if (!isInt) {
-            return String.valueOf(roundedString(val));
-        } else {
+    /** Gets a nice string representation of a double. */
+    private String niceDoubleString(double val) {
+        if (val == (int) val) {
             return String.valueOf((int) val);
-        }
-    }
-
-
-    private String roundedString(double val) {
-        double truncated = Math.floor(100 * val) / 100;
-        if (truncated == Math.floor(truncated)) {
-            return String.valueOf((int) truncated);
         } else {
-            return String.valueOf(truncated);
+            return String.format(Locale.ROOT, "%." + 4 + "f", val);
         }
     }
 
@@ -155,11 +142,11 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
         if (classKey != null && reportClasses && classKey.supports(node)) {
             double classValue = JavaMetrics.get(classKey, node, metricOptions);
 
-            String valueReport = presentableString(classValue);
+            String valueReport = niceDoubleString(classValue);
 
             if (opKey != null) {
                 double highest = JavaMetrics.get(opKey, node, metricOptions, ResultOption.HIGHEST);
-                valueReport += " highest " + presentableString(highest);
+                valueReport += " highest " + niceDoubleString(highest);
             }
             if (classValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getQualifiedName().toString(), valueReport, });
@@ -175,7 +162,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
             double methodValue = JavaMetrics.get(opKey, node, metricOptions);
             if (methodValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getQualifiedName().toString(),
-                                                       "" + presentableString(methodValue), });
+                                                       "" + niceDoubleString(methodValue), });
             }
         }
         return data;

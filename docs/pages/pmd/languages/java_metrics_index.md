@@ -11,9 +11,17 @@ toc:
 
 ## Access to Foreign Data (ATFD)
 
-*Operation metric, class metric.*
+*Operation metric, class metric.* Can be computed on classes, enums and 
+concrete operations.
 
 ### Description
+
+Number of usages of foreign attributes, both directly and through accessors. 
+High values of ATFD (> 3 for an operation) may suggest that the class or operation
+breaks encapsulation by relying on the internal representation of the classes
+it uses instead of the services they provide.
+ 
+ATFD can be used to detect God Classes and Feature Envy. \[[Lanza05](#Lanza05)\]
 
 
 ## Cyclomatic Complexity (CYCLO) 
@@ -226,11 +234,30 @@ between blocks 4 and 5 before jumping to block 6. The first `if` offers 2
 choices, the second offers 3, so the cyclomatic complexity of this method is 
 2 + 3 = 5. NPath, however, sees 2 * 3 = 6 full paths from the beginning to the end.
  
+
 ## Number Of Public Attributes (NOPA)
 *Class metric.* Can be computed on classes.
 
 ## Number Of Accessor Methods (NOAM)
 *Class metric.* Can be computed on classes.
+
+## Tight Class Cohesion (TCC)
+
+*Class metric.* Can be computed on classes and enums.
+
+### Description
+
+The relative number of method pairs of a class that access in common at
+least one attribute of the measured class. TCC only counts
+direct attribute accesses, that is, only those attributes that are accessed in
+the body of the method \[[BK95](#BK95)\].
+
+TCC is taken to be a reliable cohesion metric for a class. High values (>70%)
+indicate a class with one basic function, which is hard to break into subcomponents.
+On the other hand, low values (<50%) may indicate that the class tries to do too much and
+defines several unrelated services, which is undesirable.
+
+TCC can be used to detect God Classes and Brain Classes \[[Lanza05](#Lanza05)\].
  
 ## Weighted Method Count (WMC)
 
@@ -267,6 +294,10 @@ This metric is used to detect Data Classes, in conjunction with [WMC](#weighted-
 
 
 # References
+
+
+<a name="BK95">BK95:</a> Bieman, Kang; Cohesion and reuse in an object-oriented system. 
+In Proceedings ACM Symposium on Software Reusability, 1995.
 
 <a name="Lanza05">Lanza05:</a> Lanza, Marinescu; Object-Oriented Metrics in Practice, 2005.
 

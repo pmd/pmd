@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,6 +24,25 @@ public final class StringUtil {
 
     private StringUtil() {
     }
+
+    /**
+     * Formats a double to a percentage, keeping {@code numDecimal} decimal places.
+     *
+     * @param val         a double value between 0 and 1
+     * @param numDecimals The number of decimal places to keep
+     *
+     * @return A formatted string
+     *
+     * @throws IllegalArgumentException if the double to format is not between 0 and 1
+     */
+    public static String percentageString(double val, int numDecimals) {
+        if (val < 0 || val > 1) {
+            throw new IllegalArgumentException("Expected a number between 0 and 1");
+        }
+
+        return String.format(Locale.ROOT, "%." + numDecimals + "f%%", 100 * val);
+    }
+
 
     /**
      * Return whether the non-null text arg starts with any of the prefix

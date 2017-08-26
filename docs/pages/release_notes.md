@@ -92,6 +92,8 @@ and include them to such reports.
 *   The rule `AbstractClassWithoutAnyMethod` (ruleset `java-design`)  will now ignore classes annotated with
     `com.google.auto.value.AutoValue`.
 
+*   The rule `GodClass` (ruleset `java-design`) has been revamped to use the new metrics framework.
+
 #### Removed Rules
 
 *   The deprecated rule `UseSingleton` has been removed from the ruleset `java-design`. The rule has been renamed
@@ -238,6 +240,6 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#567](https://github.com/pmd/pmd/pull/567): \[java] Last API change for metrics (metric options) - [Clément Fournier](https://github.com/oowekyala)
 *   [#570](https://github.com/pmd/pmd/pull/570): \[java] Model lower, upper and intersection types - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#573](https://github.com/pmd/pmd/pull/573): \[java] Data class rule - [Clément Fournier](https://github.com/oowekyala)
-*   [#576](https://github.com/pmd/pmd/pull/576): \[doc][java] Add hint for Guava users in InefficientEmptyStringCheck - [mmoehring](https://github.com/mmoehring)
+*   [#576](https://github.com/pmd/pmd/pull/576): \[doc]\[java] Add hint for Guava users in InefficientEmptyStringCheck - [mmoehring](https://github.com/mmoehring)
+*   [#578](https://github.com/pmd/pmd/pull/578): \[java] Refactored god class rule - [Clément Fournier](https://github.com/oowekyala)
 *   [#581](https://github.com/pmd/pmd/pull/581): \[java] Relax AbstractClassWithoutAnyMethod when class is annotated by @AutoValue - [Niklas Baudy](https://github.com/vanniktech)
-

@@ -165,7 +165,7 @@ public class Foo {
 
     <rule name="DataClass"
           since="6.0"
-          message="The class ''{0}'' is suspected to be a Data Class"
+          message="The class ''{0}'' is suspected to be a Data Class (WOC={1}, NOPA={2}, NOAM={3}, WMC={4})"
           class="net.sourceforge.pmd.lang.java.metrics.rule.DataClassRule"
           metrics="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_metrics.html#DataClass">

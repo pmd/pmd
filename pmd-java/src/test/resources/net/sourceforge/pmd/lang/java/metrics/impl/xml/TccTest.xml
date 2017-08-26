@@ -58,7 +58,6 @@ public int compareTo(Object o) {
 return _name.compareTo(((Property) o)._name);
 }
 }
-
      ]]></code-fragment>
 
 
@@ -66,7 +65,7 @@ return _name.compareTo(((Property) o)._name);
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Property' has value 0.1111.</message>
+            <message>'.Property' has value 0.0952.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -81,17 +80,12 @@ return _name.compareTo(((Property) o)._name);
     </test-code>
 
     <test-code>
-        <description>NOPA doesn't support enums, interfaces or annotations</description>
+        <description>TCC doesn't support interfaces or annotations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
         public interface Foo {
 
            public final int h;
-
-           enum Bar{
-             FOO;
-             public int bel = 0;
-           }
 
            @interface Tag {
               public static final int num = 0;
