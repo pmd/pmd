@@ -89,6 +89,8 @@ and include them to such reports.
 *   The rule `UncommentedEmptyConstructor` (ruleset `java-design`) will now ignore empty constructors annotated with
     `javax.inject.Inject`.
 
+*   The rule `GodClass` (ruleset `java-design`) has been revamped to use the new metrics framework.
+
 #### Removed Rules
 
 *   The deprecated rule `UseSingleton` has been removed from the ruleset `java-design`. The rule has been renamed
@@ -233,4 +235,5 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#563](https://github.com/pmd/pmd/pull/563): \[java] Add support for basic method type inference for strict invocation - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#567](https://github.com/pmd/pmd/pull/567): \[java] Last API change for metrics (metric options) - [Clément Fournier](https://github.com/oowekyala)
 *   [#573](https://github.com/pmd/pmd/pull/573): \[java] Data class rule - [Clément Fournier](https://github.com/oowekyala)
-*   [#576](https://github.com/pmd/pmd/pull/576): \[doc][java] Add hint for Guava users in InefficientEmptyStringCheck - [mmoehring](https://github.com/mmoehring)
+*   [#576](https://github.com/pmd/pmd/pull/576): \[doc]\[java] Add hint for Guava users in InefficientEmptyStringCheck - [mmoehring](https://github.com/mmoehring)
+*   [#578](https://github.com/pmd/pmd/pull/578): \[java] Refactored god class rule - [Clément Fournier](https://github.com/oowekyala)
