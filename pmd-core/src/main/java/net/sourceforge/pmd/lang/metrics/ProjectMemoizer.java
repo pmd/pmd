@@ -11,6 +11,9 @@ import net.sourceforge.pmd.lang.ast.QualifiedName;
  * Object storing the memoizers of the analysed project. This object should ideally be kept separate from the
  * SignatureMatcher if there is one. A base implementation is available, see {@link BasicProjectMemoizer}.
  *
+ * <p>Memoizers need not be all kept, in fact, only those who refer to operations or classes defined in
+ * the analysed file are still relevant.
+ *
  * @param <T> Type of type declaration nodes of the language
  * @param <O> Type of operation declaration nodes of the language
  *
