@@ -30,7 +30,7 @@ which are listed in two public enums: `JavaClassMetricKey` and `JavaOperationMet
 know which type of node their metric can be computed on. That way, you cannot compute an operation metric on a class 
 declaration node. Metrics that can be computed on operation and type declarations (e.g. NCSS) have one metric key in 
 each enum.
- 
+
 The static façade class `JavaMetrics` is the single entry point to compute metrics in the Java framework. 
 This class provides the method `get` and its overloads. The following sections describes the interface of this class.
 
@@ -97,7 +97,8 @@ public Object visit(ASTMethodDeclaration method, Object data) {
 
 The version of `MetricOptions.ofOptions` using a collection is useful when you're building a `MetricOptions` from eg 
 the value of an `EnumeratedMultiProperty`, which gives users control of the options they use. See 
-[CyclomaticComplexityRule](to_be_moved) for an example usage.
+[CyclomaticComplexityRule]( https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/rule/CyclomaticComplexityRule.java)
+for an example usage.
 
 ### Result options
 
@@ -117,6 +118,62 @@ public Object visit(ASTClassOrInterfaceDeclaration clazz, Object data) {
 Notice that **we use an operation metric and a class node**. The `ResultOption` parameter controls what result will be 
 computed: you can choose among `HIGHEST`, `SUM` and `AVERAGE`. You can use metric options together with a result 
 option too.
+
+### Complete use case
+
+The following is a sample code for a rule reporting methods with a cyclomatic
+complexity over 10 and classes with a total cyclo over 50. A metric option can be
+user-configured with a rule property. More complete examples can be found in
+[CyclomaticComplexityRule]( https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/rule/CyclomaticComplexityRule.java)
+or [NcssCountRule]( https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/rule/NcssCountRule.java).
+
+
+```java
+public class CycloRule extends AbstractJavaMetricsRule {
+
+  public static final BooleanProperty countBooleanPaths
+      = new BooleanProperty("countBooleanPaths", "Count boolean paths",
+                            true, 0f);
+
+  private static final MetricOptions options;
+
+  @Override
+  public Object visit(ASTCompilationUnit node, Object data) {
+    options = getProperty(COUNT_BOOLEAN_PATHS)
+              ? MetricOptions.ofOptions(CycloOptions.IGNORE_BOOLEAN_PATHS)
+              : MetricOptions.emptyOptions;
+  }
+
+  @Override
+  public Object visit(ASTAnyTypeDeclaration clazz, Object data) {
+    int total = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, clazz,
+                                      options, ResultOption.SUM);
+
+    if (total > 50) {
+     // add violation
+    }
+
+    return data;
+  }
+
+  @Override
+  public Object visit(ASTMethodDeclaration method, Object data) {
+    int cyclo = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, method,
+                                      options);
+    if (cyclo > 10) { // this is safe if the node is not supported, as (Double.NaN > 10) == false
+      // add violation
+    }
+    return data;
+  }
+}
+```
+
+## Available metrics
+
+There are already many metrics ready to use. We maintain the following documentation
+pages to describe them all, including their usage and options:
+* [Java metrics](pmd_java_metrics_index.html)
+* [Apex metrics](pmd_apex_metrics_index.html)
 
 
 ## Writing custom metrics
