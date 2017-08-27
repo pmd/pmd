@@ -10,6 +10,8 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
 
 public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements Dimensionable, SignedNode<ASTFieldDeclaration> {
 
+    private JavaFieldSignature signature;
+
 
     public ASTFieldDeclaration(int id) {
         super(id);
@@ -145,6 +147,10 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     @Override
     public JavaFieldSignature getSignature() {
-        return JavaFieldSignature.buildFor(this);
+        if (signature == null) {
+            signature = JavaFieldSignature.buildFor(this);
+        }
+
+        return signature;
     }
 }
