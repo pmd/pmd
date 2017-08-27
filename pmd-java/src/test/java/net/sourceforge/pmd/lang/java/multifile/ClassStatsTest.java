@@ -37,16 +37,18 @@ public class ClassStatsTest {
 
         final ClassMirror classMirror = toplevel.getClassMirror(JavaQualifiedName.ofClass(SignatureCountTestData.class));
 
-        final JavaOperationSigMask opSigMask = new JavaOperationSigMask().coverAbstract();
+        final FluentOperationSigMask opSigMask = new FluentOperationSigMask();
+
+        opSigMask.mask.coverAbstract();
         opSigMask.restrictRolesTo(Role.STATIC);
 
-        assertEquals(4, classMirror.countMatchingOpSigs(opSigMask));
+        assertEquals(4, classMirror.countMatchingOpSigs(opSigMask.mask));
         assertEquals(2, classMirror.countMatchingOpSigs(opSigMask.restrictVisibilitiesTo(Visibility.PRIVATE)));
         assertEquals(2, classMirror.countMatchingOpSigs(opSigMask.restrictVisibilitiesTo(Visibility.PUBLIC)));
 
         opSigMask.restrictRolesTo(Role.METHOD).coverAllVisibilities();
 
-        assertEquals(6, classMirror.countMatchingOpSigs(opSigMask));
+        assertEquals(6, classMirror.countMatchingOpSigs(opSigMask.mask));
         assertEquals(1, classMirror.countMatchingOpSigs(opSigMask.restrictVisibilitiesTo(Visibility.PUBLIC)));
         assertEquals(1, classMirror.countMatchingOpSigs(opSigMask.restrictVisibilitiesTo(Visibility.PRIVATE)));
         assertEquals(4, classMirror.countMatchingOpSigs(opSigMask.restrictVisibilitiesTo(Visibility.PROTECTED)));
@@ -54,25 +56,63 @@ public class ClassStatsTest {
 
         opSigMask.restrictRolesTo(Role.GETTER_OR_SETTER).coverAllVisibilities();
 
-        assertEquals(8, classMirror.countMatchingOpSigs(opSigMask));
+        assertEquals(8, classMirror.countMatchingOpSigs(opSigMask.mask));
         assertEquals(4, classMirror.countMatchingOpSigs(opSigMask.restrictVisibilitiesTo(Visibility.PACKAGE)));
         assertEquals(4, classMirror.countMatchingOpSigs(opSigMask.restrictVisibilitiesTo(Visibility.PUBLIC)));
 
         opSigMask.restrictRolesTo(Role.CONSTRUCTOR).coverAllVisibilities();
 
-        assertEquals(3, classMirror.countMatchingOpSigs(opSigMask));
+        assertEquals(3, classMirror.countMatchingOpSigs(opSigMask.mask));
         assertEquals(3, classMirror.countMatchingOpSigs(opSigMask.restrictVisibilitiesTo(Visibility.PUBLIC)));
 
 
-        JavaFieldSigMask fieldSigMask = new JavaFieldSigMask();
+        FluentFieldSigMask fieldSigMask = new FluentFieldSigMask();
 
-        assertEquals(6, classMirror.countMatchingFieldSigs(fieldSigMask));
+        assertEquals(6, classMirror.countMatchingFieldSigs(fieldSigMask.mask));
         assertEquals(3, classMirror.countMatchingFieldSigs(fieldSigMask.restrictVisibilitiesTo(Visibility.PUBLIC)));
         assertEquals(1, classMirror.countMatchingFieldSigs(fieldSigMask.restrictVisibilitiesTo(Visibility.PROTECTED)));
         assertEquals(2, classMirror.countMatchingFieldSigs(fieldSigMask.restrictVisibilitiesTo(Visibility.PRIVATE)));
-        assertEquals(0, classMirror.countMatchingFieldSigs(fieldSigMask.restrictVisibilitiesTo(Visibility.PRIVATE).forbidFinal()));
+
+        fieldSigMask.mask.forbidFinal();
+
+        assertEquals(0, classMirror.countMatchingFieldSigs(fieldSigMask.restrictVisibilitiesTo(Visibility.PRIVATE)));
 
 
+    }
+
+    // Containers to clear up tests
+    private class FluentOperationSigMask {
+
+        JavaOperationSigMask mask = new JavaOperationSigMask();
+
+
+        JavaOperationSigMask forbidAbstract() {
+            mask.coverAbstract(false);
+            return mask;
+        }
+
+
+        JavaOperationSigMask restrictVisibilitiesTo(Visibility... visibilities) {
+            mask.restrictVisibilitiesTo(visibilities);
+            return mask;
+        }
+
+
+        JavaOperationSigMask restrictRolesTo(Role... roles) {
+            mask.restrictRolesTo(roles);
+            return mask;
+        }
+    }
+
+    private class FluentFieldSigMask {
+
+        JavaFieldSigMask mask = new JavaFieldSigMask();
+
+
+        JavaFieldSigMask restrictVisibilitiesTo(Visibility... visibilities) {
+            mask.restrictVisibilitiesTo(visibilities);
+            return mask;
+        }
     }
 
 

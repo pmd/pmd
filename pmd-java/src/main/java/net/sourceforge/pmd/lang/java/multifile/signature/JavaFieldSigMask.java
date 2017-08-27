@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.multifile.signature;
 
-import net.sourceforge.pmd.lang.java.multifile.signature.JavaSignature.Visibility;
-
 /**
  * Signature mask for a field. Newly created masks cover any field.
  *
@@ -17,76 +15,40 @@ public final class JavaFieldSigMask extends JavaSigMask<JavaFieldSignature> {
     private boolean coverStatic = true;
 
 
-    /**
-     * Creates a field mask covering any field.
-     */
     public JavaFieldSigMask() {
-        // everything's initialized
+        super();
     }
 
 
-    /**
-     * Sets the mask to cover final fields.
-     *
-     * @return this
-     */
-    public JavaFieldSigMask coverFinal() {
+    /** Include final fields?. */
+    public void coverFinal(boolean coverFinal) {
+        this.coverFinal = coverFinal;
+    }
+
+
+    public void coverFinal() {
         this.coverFinal = true;
-        return this;
     }
 
 
-    /**
-     * Forbid final fields.
-     *
-     * @return this
-     */
-    public JavaFieldSigMask forbidFinal() {
-        coverFinal = false;
-        return this;
+    public void forbidFinal() {
+        this.coverFinal = false;
     }
 
 
-    /**
-     * Sets the mask to cover static fields.
-     *
-     * @return this
-     */
-    public JavaFieldSigMask coverStatic() {
+    /** Include static fields?. */
+    public void coverStatic(boolean coverStatic) {
+        this.coverStatic = coverStatic;
+    }
+
+
+    public void coverStatic() {
         this.coverStatic = true;
-        return this;
     }
 
 
-    /**
-     * Forbid abstract operations.
-     *
-     * @return this
-     */
-    public JavaFieldSigMask forbidStatic() {
-        coverStatic = false;
-        return this;
-    }
-
-
-    @Override
-    public JavaFieldSigMask coverAllVisibilities() {
-        super.coverAllVisibilities();
-        return this;
-    }
-
-
-    @Override
-    public JavaFieldSigMask restrictVisibilitiesTo(Visibility... visibilities) {
-        super.restrictVisibilitiesTo(visibilities);
-        return this;
-    }
-
-
-    @Override
-    public JavaFieldSigMask forbid(Visibility... visibilities) {
-        super.forbid(visibilities);
-        return this;
+    public void forbidStatic() {
+        this.coverStatic = false;
     }
 
 

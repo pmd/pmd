@@ -24,19 +24,11 @@ public abstract class JavaSigMask<T extends JavaSignature<?>> implements SigMask
     private Set<JavaSignature.Visibility> visMask = EnumSet.allOf(Visibility.class);
 
 
-    protected JavaSigMask() {
-
-    }
-
-
     /**
      * Sets the mask to cover all visibilities.
-     *
-     * @return this
      */
-    public JavaSigMask<T> coverAllVisibilities() {
+    public void coverAllVisibilities() {
         visMask.addAll(Arrays.asList(JavaSignature.Visibility.values()));
-        return this;
     }
 
 
@@ -44,13 +36,10 @@ public abstract class JavaSigMask<T extends JavaSignature<?>> implements SigMask
      * Restricts the visibilities covered by the mask to the parameters.
      *
      * @param visibilities The visibilities to cover
-     *
-     * @return this
      */
-    public JavaSigMask<T> restrictVisibilitiesTo(JavaSignature.Visibility... visibilities) {
+    public void restrictVisibilitiesTo(JavaSignature.Visibility... visibilities) {
         visMask.clear();
         visMask.addAll(Arrays.asList(visibilities));
-        return this;
     }
 
 
@@ -58,12 +47,9 @@ public abstract class JavaSigMask<T extends JavaSignature<?>> implements SigMask
      * Forbid all mentioned visibilities.
      *
      * @param visibilities The visibilities to forbid
-     *
-     * @return this
      */
-    public JavaSigMask<T> forbid(JavaSignature.Visibility... visibilities) {
+    public void forbid(JavaSignature.Visibility... visibilities) {
         visMask.removeAll(Arrays.asList(visibilities));
-        return this;
     }
 
 
