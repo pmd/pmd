@@ -20,14 +20,7 @@ import java.util.Set;
             throw new IllegalArgumentException("Intersection type list can't be empty");
         }
 
-        // this is to preserve compatibility, lower bounds are really just Objects
-        if (defType == TypeDefinitionType.LOWER_WILDCARD) {
-            this.typeList = new JavaTypeDefinition[typeList.length + 1];
-            this.typeList[0] = forClass(Object.class);
-            System.arraycopy(typeList, 0, this.typeList, 1, typeList.length);
-        } else {
-            this.typeList = typeList;
-        }
+        this.typeList = typeList;
     }
 
 
@@ -35,7 +28,7 @@ import java.util.Set;
      * All the calls to this method are to delegate JavaTypeDefinition method calls to the first
      * JavaTypeDefinition in the 'typeList' list.
      */
-    private JavaTypeDefinition firstJavaType() {
+    protected JavaTypeDefinition firstJavaType() {
         return typeList[0];
     }
 
@@ -130,12 +123,12 @@ import java.util.Set;
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof JavaTypeDefinitionSpecial)) {
-            return false;
-        }
-
         if (this == obj) {
             return true;
+        }
+
+        if (obj == null || !this.getClass().isInstance(obj)) {
+            return false;
         }
 
         JavaTypeDefinitionSpecial otherTypeDef = (JavaTypeDefinitionSpecial) obj;
@@ -203,22 +196,13 @@ import java.util.Set;
 
     @Override
     public boolean isRawType() {
-        if (isLowerBound()) {
-            // The reason for this is that with lower bounds, there is always a dummy Object.class at typeList[0]
-            // This is to be able to delegate to it.
-            return typeList.length == 2 && typeList[1].isRawType();
-        } else {
-            return typeList.length == 1 && firstJavaType().isRawType();
-        }
+        // with lower bounds the second part would always eval true,
+        // because with lower bounds firstJavaType is Object.class
+        return typeList.length == 1 && firstJavaType().isRawType();
     }
 
     @Override
     public boolean isIntersectionType() {
-        if (isLowerBound()) {
-            // with lower bound types, there is always a dummy Object.class at typeList[0]
-            return typeList.length > 2;
-        } else {
-            return typeList.length > 1;
-        }
+        return typeList.length > 1;
     }
 }

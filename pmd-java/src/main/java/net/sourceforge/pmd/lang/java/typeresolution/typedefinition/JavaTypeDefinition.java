@@ -37,8 +37,9 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
             }
         case UPPER_BOUND:
         case UPPER_WILDCARD:
-        case LOWER_WILDCARD:
             return new JavaTypeDefinitionSpecial(type, intersectionTypes);
+        case LOWER_WILDCARD:
+            return new JavaTypeDefinitionLower(intersectionTypes);
         default:
             throw new IllegalStateException("Unknow type");
         }
