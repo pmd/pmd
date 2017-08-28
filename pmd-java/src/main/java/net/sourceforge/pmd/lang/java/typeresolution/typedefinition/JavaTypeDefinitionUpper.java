@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Set;
 
 
-/* default */ class JavaTypeDefinitionSpecial extends JavaTypeDefinition {
+/* default */ class JavaTypeDefinitionUpper extends JavaTypeDefinition {
     private final JavaTypeDefinition[] typeList;
 
-    protected JavaTypeDefinitionSpecial(TypeDefinitionType defType, JavaTypeDefinition... typeList) {
+    protected JavaTypeDefinitionUpper(TypeDefinitionType defType, JavaTypeDefinition... typeList) {
         super(defType);
 
         if (typeList.length == 0) {
@@ -131,7 +131,7 @@ import java.util.Set;
             return false;
         }
 
-        JavaTypeDefinitionSpecial otherTypeDef = (JavaTypeDefinitionSpecial) obj;
+        JavaTypeDefinitionUpper otherTypeDef = (JavaTypeDefinitionUpper) obj;
 
         if (otherTypeDef.getJavaTypeCount() != getJavaTypeCount()
                 || getDefinitionType() != otherTypeDef.getDefinitionType()) {
