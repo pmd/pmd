@@ -261,7 +261,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <pmd.plugin.version>3.8</pmd.plugin.version>
         <java.version>1.7</java.version>
         <ant.version>1.9.6</ant.version>
-        <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
+        <javadoc.plugin.version>3.0.0-M1</javadoc.plugin.version>
         <antlr.version>4.5.2-1</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -904,7 +904,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <profile>
             <id>jdk8-modules</id>
             <activation>
-                <jdk>1.8</jdk>
+                <jdk>[1.8,</jdk>
             </activation>
             <modules>
                 <module>pmd-apex</module>
@@ -921,6 +921,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             </activation>
             <modules>
                 <!--
+                    https://github.com/scala/scala-dev/issues/139
                     https://issues.scala-lang.org/browse/SI-9103
                     https://sourceforge.net/p/pmd/bugs/1314/
                  -->
