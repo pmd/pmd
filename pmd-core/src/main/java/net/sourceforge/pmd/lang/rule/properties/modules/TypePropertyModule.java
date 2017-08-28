@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.rule.properties.modules;
 import java.util.List;
 
 /**
+ * Factorises common functionality for type properties.
+ *
  * @author Clément Fournier
  */
 public class TypePropertyModule extends PackagedPropertyModule<Class> {
