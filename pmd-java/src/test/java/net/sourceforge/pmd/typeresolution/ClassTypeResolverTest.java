@@ -5,6 +5,9 @@
 package net.sourceforge.pmd.typeresolution;
 
 import static junit.framework.TestCase.assertTrue;
+import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition.forClass;
+import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.LOWER_WILDCARD;
+import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_WILDCARD;
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.LOOSE_INVOCATION;
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.SUBTYPE;
 import static org.junit.Assert.assertEquals;
@@ -917,29 +920,29 @@ public class ClassTypeResolverTest {
 
         int index = 0;
 
-        // superGeneric.first = ""; // Object
-        assertEquals(Object.class, expressions.get(index).getType());
-        assertEquals(Object.class, getChildType(expressions.get(index++), 0));
+        // superGeneric.first = ""; // ? super String
+        assertEquals(forClass(LOWER_WILDCARD, String.class), expressions.get(index).getTypeDefinition());
+        assertEquals(forClass(LOWER_WILDCARD, String.class), getChildTypeDef(expressions.get(index++), 0));
 
-        // superGeneric.second = null; // Object
-        assertEquals(Object.class, expressions.get(index).getType());
-        assertEquals(Object.class, getChildType(expressions.get(index++), 0));
+        // superGeneric.second = null; // ?
+        assertEquals(forClass(UPPER_WILDCARD, Object.class), expressions.get(index).getTypeDefinition());
+        assertEquals(forClass(UPPER_WILDCARD, Object.class), getChildTypeDef(expressions.get(index++), 0));
 
-        // inheritedSuperGeneric.first = ""; // Object
-        assertEquals(Object.class, expressions.get(index).getType());
-        assertEquals(Object.class, getChildType(expressions.get(index++), 0));
+        // inheritedSuperGeneric.first = ""; // ? super String
+        assertEquals(forClass(LOWER_WILDCARD, String.class), expressions.get(index).getTypeDefinition());
+        assertEquals(forClass(LOWER_WILDCARD, String.class), getChildTypeDef(expressions.get(index++), 0));
 
-        // inheritedSuperGeneric.second = null; // Object
-        assertEquals(Object.class, expressions.get(index).getType());
-        assertEquals(Object.class, getChildType(expressions.get(index++), 0));
+        // inheritedSuperGeneric.second = null; // ?
+        assertEquals(forClass(UPPER_WILDCARD, Object.class), expressions.get(index).getTypeDefinition());
+        assertEquals(forClass(UPPER_WILDCARD, Object.class), getChildTypeDef(expressions.get(index++), 0));
 
-        // upperBound.first = null; // Number
-        assertEquals(Number.class, expressions.get(index).getType());
-        assertEquals(Number.class, getChildType(expressions.get(index++), 0));
+        // upperBound.first = null; // ? extends Number
+        assertEquals(forClass(UPPER_WILDCARD, Number.class), expressions.get(index).getTypeDefinition());
+        assertEquals(forClass(UPPER_WILDCARD, Number.class), getChildTypeDef(expressions.get(index++), 0));
 
-        // inheritedUpperBound.first = null; // String
-        assertEquals(String.class, expressions.get(index).getType());
-        assertEquals(String.class, getChildType(expressions.get(index++), 0));
+        // inheritedUpperBound.first = null; // ? extends String
+        assertEquals(forClass(UPPER_WILDCARD, String.class), expressions.get(index).getTypeDefinition());
+        assertEquals(forClass(UPPER_WILDCARD, String.class), getChildTypeDef(expressions.get(index++), 0));
 
 
         // Make sure we got them all
@@ -1509,50 +1512,50 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testJavaTypeDefinitionEquals() {
-        JavaTypeDefinition a = JavaTypeDefinition.forClass(Integer.class);
-        JavaTypeDefinition b = JavaTypeDefinition.forClass(Integer.class);
+        JavaTypeDefinition a = forClass(Integer.class);
+        JavaTypeDefinition b = forClass(Integer.class);
 
         // test non-generic types
         assertEquals(a, b);
         assertNotEquals(a, null);
 
         // test generic arg equality
-        b = JavaTypeDefinition.forClass(List.class, a);
-        a = JavaTypeDefinition.forClass(List.class, a);
+        b = forClass(List.class, a);
+        a = forClass(List.class, a);
 
         assertEquals(a, b);
-        a = JavaTypeDefinition.forClass(List.class, JavaTypeDefinition.forClass(String.class));
+        a = forClass(List.class, forClass(String.class));
         assertNotEquals(a, b);
         assertNotEquals(b, a);
 
 
         // test raw vs proper, proper vs raw
-        a = JavaTypeDefinition.forClass(JavaTypeDefinitionEquals.class);
-        b = JavaTypeDefinition.forClass(JavaTypeDefinitionEquals.class,
-                                        JavaTypeDefinition.forClass(List.class, a));
+        a = forClass(JavaTypeDefinitionEquals.class);
+        b = forClass(JavaTypeDefinitionEquals.class,
+                                        forClass(List.class, a));
         assertEquals(a, b);
         assertEquals(b, a);
     }
 
     @Test
     public void testJavaTypeDefinitionGetSuperTypeSet() {
-        JavaTypeDefinition originalTypeDef = JavaTypeDefinition.forClass(List.class,
-                                                                         JavaTypeDefinition.forClass(Integer.class));
+        JavaTypeDefinition originalTypeDef = forClass(List.class,
+                                                                         forClass(Integer.class));
         Set<JavaTypeDefinition> set = originalTypeDef.getSuperTypeSet();
 
         assertEquals(set.size(), 4);
-        assertTrue(set.contains(JavaTypeDefinition.forClass(Object.class)));
+        assertTrue(set.contains(forClass(Object.class)));
         assertTrue(set.contains(originalTypeDef));
-        assertTrue(set.contains(JavaTypeDefinition.forClass(Collection.class,
-                                                            JavaTypeDefinition.forClass(Integer.class))));
-        assertTrue(set.contains(JavaTypeDefinition.forClass(Iterable.class,
-                                                            JavaTypeDefinition.forClass(Integer.class))));
+        assertTrue(set.contains(forClass(Collection.class,
+                                         forClass(Integer.class))));
+        assertTrue(set.contains(forClass(Iterable.class,
+                                         forClass(Integer.class))));
     }
 
     @Test
     public void testJavaTypeDefinitionGetErasedSuperTypeSet() {
-        JavaTypeDefinition originalTypeDef = JavaTypeDefinition.forClass(List.class,
-                                                                         JavaTypeDefinition.forClass(Integer.class));
+        JavaTypeDefinition originalTypeDef = forClass(List.class,
+                                                                         forClass(Integer.class));
         Set<Class<?>> set = originalTypeDef.getErasedSuperTypeSet();
         assertEquals(set.size(), 4);
         assertTrue(set.contains(Object.class));
@@ -1563,8 +1566,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodInitialBounds() throws NoSuchMethodException {
-        JavaTypeDefinition context = JavaTypeDefinition.forClass(GenericMethodsImplicit.class,
-                                                                 JavaTypeDefinition.forClass(Thread.class));
+        JavaTypeDefinition context = forClass(GenericMethodsImplicit.class,
+                                                                 forClass(Thread.class));
         List<Variable> variables = new ArrayList<>();
         List<Bound> initialBounds = new ArrayList<>();
         Method method = GenericMethodsImplicit.class.getMethod("foo");
@@ -1573,19 +1576,19 @@ public class ClassTypeResolverTest {
         assertEquals(initialBounds.size(), 6);
         // A
         assertTrue(initialBounds.contains(new Bound(variables.get(0),
-                                                    JavaTypeDefinition.forClass(Object.class), SUBTYPE)));
+                                                    forClass(Object.class), SUBTYPE)));
         // B
         assertTrue(initialBounds.contains(new Bound(variables.get(1),
-                                                    JavaTypeDefinition.forClass(Number.class), SUBTYPE)));
+                                                    forClass(Number.class), SUBTYPE)));
         assertTrue(initialBounds.contains(new Bound(variables.get(1),
-                                                    JavaTypeDefinition.forClass(Runnable.class), SUBTYPE)));
+                                                    forClass(Runnable.class), SUBTYPE)));
         // C
         assertTrue(initialBounds.contains(new Bound(variables.get(2), variables.get(3), SUBTYPE)));
         assertTrue(initialBounds.contains(new Bound(variables.get(2),
-                                                    JavaTypeDefinition.forClass(Object.class), SUBTYPE)));
+                                                    forClass(Object.class), SUBTYPE)));
         // D
         assertTrue(initialBounds.contains(new Bound(variables.get(3),
-                                                    JavaTypeDefinition.forClass(Thread.class), SUBTYPE)));
+                                                    forClass(Thread.class), SUBTYPE)));
     }
 
     @Test
@@ -1608,13 +1611,13 @@ public class ClassTypeResolverTest {
 
         assertEquals(constraints.size(), 3);
         // A
-        assertTrue(constraints.contains(new Constraint(JavaTypeDefinition.forClass(SuperClassA.class),
+        assertTrue(constraints.contains(new Constraint(forClass(SuperClassA.class),
                                                        variables.get(0), LOOSE_INVOCATION)));
-        assertTrue(constraints.contains(new Constraint(JavaTypeDefinition.forClass(SuperClassAOther.class),
+        assertTrue(constraints.contains(new Constraint(forClass(SuperClassAOther.class),
                                                        variables.get(0),
                                                        LOOSE_INVOCATION)));
         // B
-        assertTrue(constraints.contains(new Constraint(JavaTypeDefinition.forClass(SuperClassAOther2.class),
+        assertTrue(constraints.contains(new Constraint(forClass(SuperClassAOther2.class),
                                                        variables.get(1),
                                                        LOOSE_INVOCATION)));
     }
@@ -1627,8 +1630,8 @@ public class ClassTypeResolverTest {
                 acu.findChildNodesWithXPath("//ArgumentList"),
                 AbstractJavaNode.class);
 
-        JavaTypeDefinition context = JavaTypeDefinition.forClass(GenericMethodsImplicit.class,
-                                                                 JavaTypeDefinition.forClass(Thread.class));
+        JavaTypeDefinition context = forClass(GenericMethodsImplicit.class,
+                                                                 forClass(Thread.class));
         Method method = GenericMethodsImplicit.class.getMethod("bar", Object.class, Object.class,
                                                                Integer.class, Object.class);
         ASTArgumentList argList = (ASTArgumentList) expressions.get(0);
@@ -1636,15 +1639,19 @@ public class ClassTypeResolverTest {
         MethodType inferedMethod = MethodTypeResolution.parameterizeInvocation(context, method, argList);
 
         assertEquals(inferedMethod.getParameterTypes().get(0),
-                     JavaTypeDefinition.forClass(SuperClassA2.class));
+                     forClass(SuperClassA2.class));
         assertEquals(inferedMethod.getParameterTypes().get(1),
-                     JavaTypeDefinition.forClass(SuperClassA2.class));
+                     forClass(SuperClassA2.class));
         assertEquals(inferedMethod.getParameterTypes().get(2),
-                     JavaTypeDefinition.forClass(Integer.class));
+                     forClass(Integer.class));
         assertEquals(inferedMethod.getParameterTypes().get(3),
-                     JavaTypeDefinition.forClass(SuperClassAOther2.class));
+                     forClass(SuperClassAOther2.class));
     }
 
+
+    private JavaTypeDefinition getChildTypeDef(Node node, int childIndex) {
+        return ((TypeNode) node.jjtGetChild(childIndex)).getTypeDefinition();
+    }
 
     private Class<?> getChildType(Node node, int childIndex) {
         return ((TypeNode) node.jjtGetChild(childIndex)).getType();
