@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ast.SignedNode;
  * @param <N> The type of node this signature signs
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public interface Signature<N extends SignedNode<N>> {
 }

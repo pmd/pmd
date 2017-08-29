@@ -1,5 +1,5 @@
 ---
-title:  Index of code metrics
+title:  Index of Java code metrics
 tags: [customizing]
 summary: "Index of the code metrics available out of the box to Java rule developers."
 last_updated: July 20, 2017

@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.QualifiedName;
  * @param <O> Type of operation declaration nodes of the language
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public interface ProjectMemoizer<T extends QualifiableNode, O extends QualifiableNode> {
 

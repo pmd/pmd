@@ -15,6 +15,7 @@ import java.util.Set;
  * Bundles a set of options to pass to a metric. Metrics may use these options as they see fit.
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public class MetricOptions {
 

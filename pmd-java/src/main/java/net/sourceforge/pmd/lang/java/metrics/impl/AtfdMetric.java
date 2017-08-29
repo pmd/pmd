@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
  * Access to Foreign Data. Quantifies the number of foreign fields accessed directly or via accessors.
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public final class AtfdMetric {
 
