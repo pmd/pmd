@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.ValueParser.FLOAT_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParsers.FLOAT_PARSER;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +12,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 
 /**
  * Multi-valued float property.
@@ -30,7 +29,7 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
                                                  boolean isDefinedExternally) {
                 String[] minMax = minMaxFrom(valuesById);
                 char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Float> defaultValues = Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, FLOAT_PARSER);
+                List<Float> defaultValues = ValueParsers.parsePrimitives(defaultValueIn(valuesById), delimiter, FLOAT_PARSER);
                 return new FloatMultiProperty(nameIn(valuesById),
                                               descriptionIn(valuesById),
                                               FLOAT_PARSER.valueOf(minMax[0]),

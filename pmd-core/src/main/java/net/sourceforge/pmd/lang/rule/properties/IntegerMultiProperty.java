@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.ValueParser.INTEGER_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParsers.INTEGER_PARSER;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +12,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 
 /**
  * Multi-valued integer property.
@@ -30,7 +29,7 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
                 isDefinedExternally) {
                 String[] minMax = minMaxFrom(valuesById);
                 char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Integer> defaultValues = Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, INTEGER_PARSER);
+                List<Integer> defaultValues = ValueParsers.parsePrimitives(defaultValueIn(valuesById), delimiter, INTEGER_PARSER);
                 return new IntegerMultiProperty(nameIn(valuesById),
                                                 descriptionIn(valuesById),
                                                 INTEGER_PARSER.valueOf(minMax[0]),

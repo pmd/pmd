@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.ValueParser.STRING_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParsers.STRING_PARSER;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 
 /**
  * Defines a datatype that supports multiple String values. Note that all
@@ -39,7 +38,7 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
                 char delimiter = delimiterIn(valuesById);
                 return new StringMultiProperty(nameIn(valuesById),
                                                descriptionIn(valuesById),
-                                               Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, STRING_PARSER),
+                                               ValueParsers.parsePrimitives(defaultValueIn(valuesById), delimiter, STRING_PARSER),
                                                0.0f,
                                                delimiter,
                                                isDefinedExternally);

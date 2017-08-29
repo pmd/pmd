@@ -29,7 +29,7 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
                 char delimiter = delimiterIn(valuesById);
                 return new TypeProperty(nameIn(valuesById),
                                         descriptionIn(valuesById),
-                                        ValueParser.CLASS_PARSER.valueOf(defaultValueIn(valuesById)),
+                                        ValueParsers.CLASS_PARSER.valueOf(defaultValueIn(valuesById)),
                                         legalPackageNamesIn(valuesById, delimiter),
                                         0f,
                                         isDefinedExternally);
@@ -51,7 +51,7 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
      */
     public TypeProperty(String theName, String theDescription, String defaultTypeStr, String[] legalPackageNames,
                         float theUIOrder) {
-        this(theName, theDescription, ValueParser.CLASS_PARSER.valueOf(defaultTypeStr), legalPackageNames, theUIOrder, false);
+        this(theName, theDescription, ValueParsers.CLASS_PARSER.valueOf(defaultTypeStr), legalPackageNames, theUIOrder, false);
     }
 
 
@@ -92,6 +92,6 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
 
     @Override
     public Class<?> createFrom(String valueString) {
-        return ValueParser.CLASS_PARSER.valueOf(valueString);
+        return ValueParsers.CLASS_PARSER.valueOf(valueString);
     }
 }
