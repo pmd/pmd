@@ -124,24 +124,29 @@ option too.
 The following is a sample code for a rule reporting methods with a cyclomatic
 complexity over 10 and classes with a total cyclo over 50. A metric option can be
 user-configured with a rule property. More complete examples can be found in
-[CyclomaticComplexityRule]( https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/rule/CyclomaticComplexityRule.java)
-or [NcssCountRule]( https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/rule/NcssCountRule.java).
+[CyclomaticComplexityRule]( https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/rule/CyclomaticComplexityRule.java),
+[NcssCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/rule/NcssCountRule.java),
+or [GodClassRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/GodClassRule.java).
 
 
 ```java
 public class CycloRule extends AbstractJavaMetricsRule {
 
-  public static final BooleanProperty countBooleanPaths
+  public static final BooleanProperty COUNT_BOOLEAN_PATHS
       = new BooleanProperty("countBooleanPaths", "Count boolean paths",
                             true, 0f);
 
   private static final MetricOptions options;
 
+  public CycloRule() {
+    definePropertyDescriptor(COUNT_BOOLEAN_PATHS);
+  }
+
   @Override
   public Object visit(ASTCompilationUnit node, Object data) {
     options = getProperty(COUNT_BOOLEAN_PATHS)
               ? MetricOptions.ofOptions(CycloOptions.IGNORE_BOOLEAN_PATHS)
-              : MetricOptions.emptyOptions;
+              : MetricOptions.emptyOptions();
   }
 
   @Override
