@@ -4,8 +4,14 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import java.util.Collections;
 
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 
 /**
@@ -24,6 +30,18 @@ public class ASTTreeItem extends TreeItem<Node> {
 
     void expandAll() {
         expandAllHelper(this);
+    }
+
+
+    public ObservableList<String> getAttributes() {
+        ObservableList<String> result = FXCollections.observableArrayList();
+        AttributeAxisIterator attributeAxisIterator = new AttributeAxisIterator(getValue());
+        while (attributeAxisIterator.hasNext()) {
+            Attribute attribute = attributeAxisIterator.next();
+            result.add(attribute.getName() + " = " + attribute.getStringValue());
+        }
+        Collections.sort(result);
+        return result;
     }
 
 

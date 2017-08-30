@@ -29,7 +29,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeView;
 
@@ -40,10 +42,8 @@ public class DesignerController implements Initializable {
 
     @FXML
     public TextArea codeEditorArea;
-
     @FXML
     private Menu languageMenu;
-
     @FXML
     private Button refreshASTButton;
     @FXML
@@ -51,9 +51,15 @@ public class DesignerController implements Initializable {
     @FXML
     private ListView<Node> xpathResultListView;
     @FXML
+    private ListView<String> xpathAttributesListView;
+    @FXML
     private Label xpathResultLabel;
     @FXML
     private TreeView<Node> astTreeView;
+    @FXML
+    private TitledPane xpathTitlePane;
+    @FXML
+    private SplitPane mainHorizontalSplitPane;
 
 
     private LanguageVersion selectedLanguageVersion;
@@ -62,10 +68,28 @@ public class DesignerController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ASTTreeNode.initialize(this);
         initializeLanguageVersionMenu();
-        astTreeView.setCellFactory(param -> new ASTTreeCell());
+        initializeASTTreeView();
 
+        // ensure main horizontal divider is never under 50%
+        mainHorizontalSplitPane.getDividers()
+                               .get(0)
+                               .positionProperty()
+                               .addListener((observable, oldValue, newValue) -> {
+                                   if (newValue.doubleValue() < .5) {
+                                       mainHorizontalSplitPane.setDividerPosition(0, .5);
+                                   }
+                               });
+    }
+
+
+    private void initializeASTTreeView() {
+        astTreeView.setCellFactory(param -> new ASTTreeCell());
+        astTreeView.getSelectionModel()
+                   .selectedItemProperty()
+                   .addListener((observable, oldValue, newValue) ->
+                                    xpathAttributesListView.setItems(((ASTTreeItem) newValue).getAttributes())
+                   );
     }
 
 
