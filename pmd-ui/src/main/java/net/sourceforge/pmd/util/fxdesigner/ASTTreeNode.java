@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.fxdesigner.fxdesigner;
+package net.sourceforge.pmd.util.fxdesigner;
 
 import java.io.StringWriter;
 import java.util.Enumeration;
