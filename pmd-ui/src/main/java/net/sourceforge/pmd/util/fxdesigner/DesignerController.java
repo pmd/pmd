@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -31,6 +29,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.TreeView;
 
 /**
  * @author Clément Fournier
@@ -46,8 +45,10 @@ public class DesignerController implements Initializable {
     @FXML
     private Button refreshASTButton;
 
+    @FXML
+    private TreeView<Node> astTreeView;
 
-    private Node compilationUnit;
+
     private LanguageVersion selectedLanguageVersion;
     private Map<LanguageVersion, RadioMenuItem> languageRadioMenuMap = new HashMap<>();
 
@@ -56,6 +57,7 @@ public class DesignerController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         ASTTreeNode.initialize(this);
         initializeLanguageVersionMenu();
+
     }
 
 
@@ -90,14 +92,27 @@ public class DesignerController implements Initializable {
     }
 
 
+    /**
+     * Refresh the AST view with the updated code.
+     *
+     * @param event ActionEvent
+     */
+    @FXML
     public void onRefreshASTClicked(ActionEvent event) {
+        Node n = null;
         try {
-            compilationUnit = getCompilationUnit();
+            n = getCompilationUnit();
         } catch (Exception e) {
             Alert errorAlert = new Alert(AlertType.ERROR);
             errorAlert.setHeaderText("An exception occurred:");
             errorAlert.setContentText(e.getMessage());
             errorAlert.showAndWait();
+        }
+
+        if (n != null) {
+            ASTTreeItem root = ASTTreeItem.getRoot(n);
+            root.expandAll();
+            astTreeView.setRoot(root);
         }
     }
 
