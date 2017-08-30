@@ -2,5 +2,11 @@
 
 .code {
     -fx-font-family: "monospace";
-    -fx-font-size: 12pt;
+    -fx-font-size: 11pt;
+}
+
+.label {
+    -fx-font-family: "Lucida Sans";
+    -fx-font-weight: bold;
+    -fx-font-size: 110%;
 }

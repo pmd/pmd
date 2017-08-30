@@ -24,14 +24,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeView;
-import javafx.util.Callback;
 
 /**
  * @author Clément Fournier
@@ -46,7 +46,12 @@ public class DesignerController implements Initializable {
 
     @FXML
     private Button refreshASTButton;
-
+    @FXML
+    private TextArea xpathExpressionArea;
+    @FXML
+    private ListView<Node> xpathResultListView;
+    @FXML
+    private Label xpathResultLabel;
     @FXML
     private TreeView<Node> astTreeView;
 
