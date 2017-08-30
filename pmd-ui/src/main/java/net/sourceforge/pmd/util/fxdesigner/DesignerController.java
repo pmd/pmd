@@ -29,7 +29,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeView;
+import javafx.util.Callback;
 
 /**
  * @author Clément Fournier
@@ -57,6 +59,7 @@ public class DesignerController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         ASTTreeNode.initialize(this);
         initializeLanguageVersionMenu();
+        astTreeView.setCellFactory(param -> new ASTTreeCell());
 
     }
 

@@ -9,6 +9,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 import javafx.scene.control.TreeItem;
 
 /**
+ * Represents a tree item (data, not UI) in the ast TreeView.
+ *
  * @author Clément Fournier
  * @since 6.0.0
  */
@@ -25,16 +27,7 @@ public class ASTTreeItem extends TreeItem<Node> {
     }
 
 
-    @Override
-    public String toString() {
-        String s = getValue().toString();
-        if (getValue().getImage() != null) {
-            s += " \"" + getValue().getImage() + "\"";
-        }
-        return s;
-    }
-
-
+    /** Builds an ASTTreeItem recursively from a node. */
     static ASTTreeItem getRoot(Node n) {
         ASTTreeItem item = new ASTTreeItem(n);
         if (n.jjtGetNumChildren() > 0) {
