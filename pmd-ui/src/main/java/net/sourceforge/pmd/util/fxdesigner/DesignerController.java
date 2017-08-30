@@ -6,17 +6,30 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import java.io.StringReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang3.StringUtils;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
+
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.designer.Designer;
 
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,6 +46,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
 /**
@@ -41,7 +55,7 @@ import javafx.scene.control.TreeView;
 public class DesignerController implements Initializable {
 
     @FXML
-    public TextArea codeEditorArea;
+    public CodeArea codeEditorArea;
     @FXML
     private Menu languageMenu;
     @FXML
@@ -70,6 +84,7 @@ public class DesignerController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initializeLanguageVersionMenu();
         initializeASTTreeView();
+        codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
 
         // ensure main horizontal divider is never under 50%
         mainHorizontalSplitPane.getDividers()
@@ -80,16 +95,24 @@ public class DesignerController implements Initializable {
                                        mainHorizontalSplitPane.setDividerPosition(0, .5);
                                    }
                                });
+
+        xpathResultListView.setCellFactory(param -> new XpathViolationListCell());
+
     }
 
 
     private void initializeASTTreeView() {
         astTreeView.setCellFactory(param -> new ASTTreeCell());
-        astTreeView.getSelectionModel()
-                   .selectedItemProperty()
-                   .addListener((observable, oldValue, newValue) ->
-                                    xpathAttributesListView.setItems(((ASTTreeItem) newValue).getAttributes())
-                   );
+
+        ReadOnlyObjectProperty<TreeItem<Node>> selectedItemProperty = astTreeView.getSelectionModel()
+                                                                                 .selectedItemProperty();
+
+        selectedItemProperty.addListener((observable, oldValue, newValue)
+                                             -> {
+            if (newValue != null) {
+                xpathAttributesListView.setItems(((ASTTreeItem) newValue).getAttributes());
+            }
+        });
     }
 
 
@@ -113,7 +136,7 @@ public class DesignerController implements Initializable {
     }
 
 
-    private Node getCompilationUnit() throws Exception {
+    private Node getCompilationUnit() {
         LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
         return getCompilationUnit(languageVersionHandler, codeEditorArea.getText());
     }
@@ -131,6 +154,12 @@ public class DesignerController implements Initializable {
      */
     @FXML
     public void onRefreshASTClicked(ActionEvent event) {
+        refreshAST();
+        evaluateXPath();
+    }
+
+
+    private void refreshAST() {
         Node n = null;
         try {
             n = getCompilationUnit();
@@ -149,8 +178,47 @@ public class DesignerController implements Initializable {
     }
 
 
-    private static Node getCompilationUnit(LanguageVersionHandler languageVersionHandler, String code)
-        throws Exception {
+    /** Evaluate XPath expression, print results on the ListView. */
+    private void evaluateXPath() {
+        ObservableList<Node> xpathResults = xpathResultListView.getItems();
+        xpathResults.clear();
+        if (StringUtils.isBlank(xpathExpressionArea.getText())) {
+            return;
+        }
+        Node c = getCompilationUnit();
+        try {
+            XPathRule xpathRule = new XPathRule() {
+                @Override
+                public void addViolation(Object data, Node node, String arg) {
+                    xpathResults.add(node);
+                }
+            };
+            xpathRule.setMessage("");
+            xpathRule.setLanguage(selectedLanguageVersion.getLanguage());
+            xpathRule.setXPath(xpathExpressionArea.getText());
+            // xpathRule.setVersion(xpathVersionButtonGroup.getSelection().);
+
+            final RuleSet ruleSet = new RuleSetFactory().createSingleRuleRuleSet(xpathRule);
+
+            RuleSets ruleSets = new RuleSets(ruleSet);
+
+            RuleContext ruleContext = new RuleContext();
+            ruleContext.setLanguageVersion(selectedLanguageVersion);
+
+            List<Node> nodes = new ArrayList<>();
+            nodes.add(c);
+            ruleSets.apply(nodes, ruleContext, xpathRule.getLanguage());
+
+
+        } catch (ParseException pe) {
+            // xpathResults.addElement(pe.fillInStackTrace().getMessage());
+        }
+        xpathResultListView.refresh();
+        xpathExpressionArea.requestFocus();
+    }
+
+
+    private static Node getCompilationUnit(LanguageVersionHandler languageVersionHandler, String code) {
         Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
         Node node = parser.parse(null, new StringReader(code));
         languageVersionHandler.getSymbolFacade().start(node);
