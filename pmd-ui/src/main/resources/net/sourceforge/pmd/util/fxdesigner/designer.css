@@ -11,7 +11,13 @@
 }
 
 .node-highlight {
-    -fx-background: lightblue;
+    /* Doesn't work right now */
+    -fx-background-color: lightblue;
     -fx-font-weight: bold;
-    -fx-fill: green;
+    -fx-fill: darkblue;
+}
+
+.lineno {
+    -fx-font-size: 80%;
+    -fx-font-weight: normal;
 }

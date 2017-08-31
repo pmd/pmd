@@ -25,8 +25,8 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.util.designer.Designer;
 
 import javafx.collections.ObservableList;
@@ -72,6 +72,8 @@ public class DesignerController implements Initializable {
     private TitledPane xpathTitlePane;
     @FXML
     private SplitPane mainHorizontalSplitPane;
+    @FXML
+    private ToggleGroup xpathVersionToggleGroup;
 
 
     private LanguageVersion selectedLanguageVersion;
@@ -98,6 +100,11 @@ public class DesignerController implements Initializable {
 
 
     private void initializeXPathResultsListView() {
+
+        xpathVersionToggleGroup.getToggles().get(0).setUserData(XPathRuleQuery.XPATH_1_0);
+        xpathVersionToggleGroup.getToggles().get(1).setUserData(XPathRuleQuery.XPATH_1_0_COMPATIBILITY);
+        xpathVersionToggleGroup.getToggles().get(2).setUserData(XPathRuleQuery.XPATH_2_0);
+
         xpathResultListView.setCellFactory(param -> new XpathViolationListCell());
         xpathResultListView.getSelectionModel()
                            .selectedItemProperty()
@@ -190,7 +197,7 @@ public class DesignerController implements Initializable {
             xpathRule.setMessage("");
             xpathRule.setLanguage(selectedLanguageVersion.getLanguage());
             xpathRule.setXPath(xpathExpressionArea.getText());
-            // xpathRule.setVersion(xpathVersionButtonGroup.getSelection().);
+            xpathRule.setVersion(xpathVersionToggleGroup.getSelectedToggle().getUserData().toString());
 
             final RuleSet ruleSet = new RuleSetFactory().createSingleRuleRuleSet(xpathRule);
 
@@ -204,9 +211,11 @@ public class DesignerController implements Initializable {
             ruleSets.apply(nodes, ruleContext, xpathRule.getLanguage());
 
 
-        } catch (ParseException pe) {
-            // xpathResults.addElement(pe.fillInStackTrace().getMessage());
+        } catch (RuntimeException e) {
+            xpathResultLabel.setText("Matches:\t (error)");
+            return;
         }
+        xpathResultLabel.setText("Matches:\t" + xpathResults.size());
         xpathResultListView.refresh();
         xpathExpressionArea.requestFocus();
     }
