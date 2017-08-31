@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import org.fxmisc.richtext.CodeArea?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="@designer.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.DesignerController">
+<AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@designer.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.DesignerController">
     <children>
         <BorderPane prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>

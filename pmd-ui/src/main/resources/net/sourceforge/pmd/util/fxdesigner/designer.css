@@ -6,12 +6,12 @@
 }
 
 .label {
-    -fx-font-family: "Lucida Sans";
     -fx-font-weight: bold;
     -fx-font-size: 110%;
 }
 
 .node-highlight {
-    -rtfx-background-color: #99ccff;
+    -fx-background: lightblue;
     -fx-font-weight: bold;
+    -fx-fill: green;
 }

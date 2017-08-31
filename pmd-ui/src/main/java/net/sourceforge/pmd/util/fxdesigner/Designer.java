@@ -29,7 +29,7 @@ public class Designer extends Application {
     public void start(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("designer.fxml"));
 
-        Scene scene = new Scene(root, 900, 600);
+        Scene scene = new Scene(root);
 
         stage.setTitle("PMD Rule Designer (v " + PMD.VERSION + ')');
         setIcons(stage);

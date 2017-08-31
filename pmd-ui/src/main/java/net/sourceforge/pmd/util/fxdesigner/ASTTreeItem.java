@@ -33,18 +33,6 @@ public class ASTTreeItem extends TreeItem<Node> {
     }
 
 
-    public ObservableList<String> getAttributes() {
-        ObservableList<String> result = FXCollections.observableArrayList();
-        AttributeAxisIterator attributeAxisIterator = new AttributeAxisIterator(getValue());
-        while (attributeAxisIterator.hasNext()) {
-            Attribute attribute = attributeAxisIterator.next();
-            result.add(attribute.getName() + " = " + attribute.getStringValue());
-        }
-        Collections.sort(result);
-        return result;
-    }
-
-
     /** Builds an ASTTreeItem recursively from a node. */
     static ASTTreeItem getRoot(Node n) {
         ASTTreeItem item = new ASTTreeItem(n);

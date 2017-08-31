@@ -29,7 +29,6 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.designer.Designer;
 
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -46,7 +45,6 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
 /**
@@ -84,6 +82,7 @@ public class DesignerController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initializeLanguageVersionMenu();
         initializeASTTreeView();
+        initializeXPathResultsListView();
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
 
         // ensure main horizontal divider is never under 50%
@@ -95,29 +94,30 @@ public class DesignerController implements Initializable {
                                        mainHorizontalSplitPane.setDividerPosition(0, .5);
                                    }
                                });
+    }
 
+
+    private void initializeXPathResultsListView() {
         xpathResultListView.setCellFactory(param -> new XpathViolationListCell());
-        xpathResultListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                DesignerUtil.highlightNode(codeEditorArea, newValue);
-            }
-        });
-
+        xpathResultListView.getSelectionModel()
+                           .selectedItemProperty()
+                           .addListener((observable, oldValue, newValue) -> onNodeItemSelected(newValue));
     }
 
 
     private void initializeASTTreeView() {
         astTreeView.setCellFactory(param -> new ASTTreeCell());
+        astTreeView.getSelectionModel()
+                   .selectedItemProperty()
+                   .addListener((observable, oldValue, newValue) -> onNodeItemSelected(newValue.getValue()));
+    }
 
-        ReadOnlyObjectProperty<TreeItem<Node>> selectedItemProperty = astTreeView.getSelectionModel()
-                                                                                 .selectedItemProperty();
 
-        selectedItemProperty.addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                xpathAttributesListView.setItems(((ASTTreeItem) newValue).getAttributes());
-                DesignerUtil.highlightNode(codeEditorArea, newValue.getValue());
-            }
-        });
+    private void onNodeItemSelected(Node selectedValue) {
+        if (selectedValue != null) {
+            xpathAttributesListView.setItems(DesignerUtil.getAttributes(selectedValue));
+            DesignerUtil.highlightNode(codeEditorArea, selectedValue);
+        }
     }
 
 
@@ -138,17 +138,6 @@ public class DesignerController implements Initializable {
 
         languageMenu.show();
 
-    }
-
-
-    private Node getCompilationUnit() {
-        LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
-        return getCompilationUnit(languageVersionHandler, codeEditorArea.getText());
-    }
-
-
-    LanguageVersionHandler getLanguageVersionHandler() {
-        return selectedLanguageVersion.getLanguageVersionHandler();
     }
 
 
@@ -220,6 +209,17 @@ public class DesignerController implements Initializable {
         }
         xpathResultListView.refresh();
         xpathExpressionArea.requestFocus();
+    }
+
+
+    private Node getCompilationUnit() {
+        LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
+        return getCompilationUnit(languageVersionHandler, codeEditorArea.getText());
+    }
+
+
+    LanguageVersionHandler getLanguageVersionHandler() {
+        return selectedLanguageVersion.getLanguageVersionHandler();
     }
 
 
