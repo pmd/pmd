@@ -97,6 +97,11 @@ public class DesignerController implements Initializable {
                                });
 
         xpathResultListView.setCellFactory(param -> new XpathViolationListCell());
+        xpathResultListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                DesignerUtil.highlightNode(codeEditorArea, newValue);
+            }
+        });
 
     }
 
@@ -107,10 +112,10 @@ public class DesignerController implements Initializable {
         ReadOnlyObjectProperty<TreeItem<Node>> selectedItemProperty = astTreeView.getSelectionModel()
                                                                                  .selectedItemProperty();
 
-        selectedItemProperty.addListener((observable, oldValue, newValue)
-                                             -> {
+        selectedItemProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 xpathAttributesListView.setItems(((ASTTreeItem) newValue).getAttributes());
+                DesignerUtil.highlightNode(codeEditorArea, newValue.getValue());
             }
         });
     }

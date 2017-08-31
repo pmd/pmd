@@ -10,3 +10,8 @@
     -fx-font-weight: bold;
     -fx-font-size: 110%;
 }
+
+.node-highlight {
+    -rtfx-background-color: #99ccff;
+    -fx-font-weight: bold;
+}
