@@ -14,120 +14,77 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import org.fxmisc.richtext.CodeArea?>
-<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="@designer.css" xmlns="http://javafx.com/javafx/8"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.DesignerController">
+
+<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="@designer.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.DesignerController">
     <children>
-        <BorderPane prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <BorderPane prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
                 <MenuBar BorderPane.alignment="CENTER">
                     <menus>
-                        <Menu fx:id="languageMenu" mnemonicParsing="false" text="Language"/>
+                        <Menu fx:id="languageMenu" mnemonicParsing="false" text="Language" />
                         <Menu mnemonicParsing="false" text="Edit">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Delete"/>
+                                <MenuItem mnemonicParsing="false" text="Delete" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="About"/>
+                                <MenuItem mnemonicParsing="false" text="About" />
                             </items>
                         </Menu>
                     </menus>
                 </MenuBar>
             </top>
             <center>
-                <SplitPane fx:id="mainHorizontalSplitPane" dividerPositions="0.6414762741652021" orientation="VERTICAL"
-                           BorderPane.alignment="BOTTOM_CENTER">
+                <SplitPane fx:id="mainHorizontalSplitPane" dividerPositions="0.6414762741652021" orientation="VERTICAL" BorderPane.alignment="BOTTOM_CENTER">
                     <items>
                         <SplitPane dividerPositions="0.5" BorderPane.alignment="CENTER">
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                     <children>
-                                        <CodeArea fx:id="codeEditorArea" layoutX="-13.0" layoutY="-31.0"
-                                                  prefHeight="346.0" prefWidth="445.0"
-                                                  styleClass="code" AnchorPane.bottomAnchor="23.0"
-                                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                                  AnchorPane.topAnchor="0.0"/>
-                                        <Button fx:id="refreshASTButton" layoutX="178.0" layoutY="343.0"
-                                                mnemonicParsing="false" onAction="#onRefreshASTClicked"
-                                                text="Refresh AST" AnchorPane.bottomAnchor="0.0"
-                                                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
+                                        <CodeArea fx:id="codeEditorArea" layoutX="-13.0" layoutY="-31.0" prefHeight="346.0" prefWidth="445.0" styleClass="code" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                        <Button fx:id="refreshASTButton" layoutX="178.0" layoutY="343.0" mnemonicParsing="false" onAction="#onRefreshASTClicked" text="Refresh AST" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                     <children>
-                                        <TreeView fx:id="astTreeView" layoutX="57.0" layoutY="38.0" prefHeight="200.0"
-                                                  prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
-                                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                                  AnchorPane.topAnchor="0.0"/>
+                                        <TreeView fx:id="astTreeView" layoutX="57.0" layoutY="38.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </children>
                                 </AnchorPane>
                             </items>
                         </SplitPane>
                         <AnchorPane>
                             <children>
-                                <TitledPane alignment="BOTTOM_LEFT" prefHeight="220.0" prefWidth="898.0" text="XPath"
-                                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"
-                                            fx:id="xpathTitlePane">
+                                <TitledPane alignment="BOTTOM_LEFT" prefHeight="220.0" prefWidth="898.0" text="XPath" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="xpathTitlePane">
                                     <content>
-                                        <SplitPane dividerPositions="0.3169642857142857, 0.6026785714285714">
+                                        <SplitPane dividerPositions="0.5, 0.7712">
                                             <items>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
-                                                            prefWidth="100.0">
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                     <children>
-                                                        <TextArea layoutX="42.0" layoutY="-46.0" prefHeight="200.0"
-                                                                  prefWidth="200.0" promptText="XPath expression..."
-                                                                  styleClass="code" AnchorPane.bottomAnchor="0.0"
-                                                                  AnchorPane.leftAnchor="0.0"
-                                                                  AnchorPane.rightAnchor="0.0"
-                                                                  AnchorPane.topAnchor="20.0"
-                                                                  fx:id="xpathExpressionArea"/>
-                                                        <Label layoutX="150.0" layoutY="7.0" prefHeight="20.0"
-                                                               prefWidth="355.0" text="Expression:"
-                                                               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                                               AnchorPane.topAnchor="0.0">
+                                                        <TextArea layoutX="42.0" layoutY="-46.0" prefHeight="200.0" prefWidth="200.0" promptText="XPath expression..." styleClass="code" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" fx:id="xpathExpressionArea" />
+                                                        <Label layoutX="150.0" layoutY="7.0" prefHeight="20.0" prefWidth="355.0" text="Expression:" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <padding>
-                                                                <Insets left="10.0"/>
+                                                                <Insets left="10.0" />
                                                             </padding>
                                                         </Label>
                                                     </children>
                                                 </AnchorPane>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
-                                                            prefWidth="100.0">
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                     <children>
-                                                        <ListView layoutX="34.0" layoutY="24.0" prefHeight="200.0"
-                                                                  prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
-                                                                  AnchorPane.leftAnchor="0.0"
-                                                                  AnchorPane.rightAnchor="0.0"
-                                                                  AnchorPane.topAnchor="20.0"
-                                                                  fx:id="xpathResultListView"/>
-                                                        <Label layoutX="129.0" layoutY="7.0" prefHeight="20.0"
-                                                               prefWidth="292.0" text="Matches:"
-                                                               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                                               AnchorPane.topAnchor="0.0" fx:id="xpathResultLabel">
+                                                        <ListView layoutX="34.0" layoutY="24.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" fx:id="xpathResultListView" />
+                                                        <Label layoutX="129.0" layoutY="7.0" prefHeight="20.0" prefWidth="292.0" text="Matches:" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="xpathResultLabel">
                                                             <padding>
-                                                                <Insets left="10.0"/>
+                                                                <Insets left="10.0" />
                                                             </padding>
                                                         </Label>
                                                     </children>
                                                 </AnchorPane>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
-                                                            prefWidth="100.0">
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                     <children>
-                                                        <ListView layoutX="-9.0" layoutY="-35.0" prefHeight="200.0"
-                                                                  prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
-                                                                  AnchorPane.leftAnchor="0.0"
-                                                                  AnchorPane.rightAnchor="0.0"
-                                                                  AnchorPane.topAnchor="20.0"
-                                                                  fx:id="xpathAttributesListView"/>
-                                                        <Label layoutX="67.0" layoutY="7.0" prefHeight="21.0"
-                                                               prefWidth="262.0" text="XPath attributes:"
-                                                               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                                               AnchorPane.topAnchor="0.0">
+                                                        <ListView layoutX="-9.0" layoutY="-35.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" fx:id="xpathAttributesListView" />
+                                                        <Label layoutX="67.0" layoutY="7.0" prefHeight="21.0" prefWidth="262.0" text="XPath attributes:" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <padding>
-                                                                <Insets left="10.0"/>
+                                                                <Insets left="10.0" />
                                                             </padding>
                                                         </Label>
                                                     </children>
