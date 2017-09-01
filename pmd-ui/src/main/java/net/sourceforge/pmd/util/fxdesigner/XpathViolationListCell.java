@@ -26,4 +26,5 @@ public class XpathViolationListCell extends ListCell<Node> {
             setText(item.toString() + " (l. " + item.getBeginLine() + ", c. " + item.getBeginColumn() + ")");
         }
     }
+
 }

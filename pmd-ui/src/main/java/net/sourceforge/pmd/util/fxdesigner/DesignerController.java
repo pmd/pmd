@@ -27,15 +27,18 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
-import net.sourceforge.pmd.util.designer.Designer;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
@@ -45,7 +48,10 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Popup;
 
 /**
  * @author Clément Fournier
@@ -74,6 +80,8 @@ public class DesignerController implements Initializable {
     private SplitPane mainHorizontalSplitPane;
     @FXML
     private ToggleGroup xpathVersionToggleGroup;
+
+    private ListView<String> xpathAttributesFloatingLV;
 
 
     private LanguageVersion selectedLanguageVersion;
@@ -122,8 +130,53 @@ public class DesignerController implements Initializable {
 
     private void onNodeItemSelected(Node selectedValue) {
         if (selectedValue != null) {
-            xpathAttributesListView.setItems(DesignerUtil.getAttributes(selectedValue));
+            ObservableList<String> atts = DesignerUtil.getAttributes(selectedValue);
+            xpathAttributesListView.setItems(atts);
+            if (xpathAttributesFloatingLV != null) {
+                xpathAttributesFloatingLV.setItems(atts);
+            }
             DesignerUtil.highlightNode(codeEditorArea, selectedValue);
+        }
+    }
+
+
+    private void createFloatingAttributesLV(double posX, double posY) {
+        if (xpathAttributesFloatingLV == null) {
+
+            Label header = new Label("XPath attributes");
+            xpathAttributesFloatingLV = new ListView<>();
+            BorderPane bp = new BorderPane();
+            bp.setTop(header);
+            bp.setCenter(xpathAttributesFloatingLV);
+            bp.setPrefHeight(100);
+            bp.getStylesheets().add(getClass().getResource("designer.css").toString());
+
+            Popup popup = new Popup();
+            popup.getScene().setRoot(bp);
+            popup.setHideOnEscape(true);
+
+            ObjectProperty<Point2D> mouseLocation = new SimpleObjectProperty<>();
+
+            bp.setOnMousePressed(event -> mouseLocation.setValue(new Point2D(event.getScreenX(), event.getScreenY())));
+
+            bp.setOnMouseDragged((event -> {
+                if (mouseLocation.get() != null) {
+                    double x = event.getScreenX();
+                    double y = event.getScreenY();
+                    double dX = x - mouseLocation.get().getX();
+                    double dY = y - mouseLocation.get().getY();
+                    popup.setX(popup.getX() + dX);
+                    popup.setY(popup.getY() + dY);
+                    mouseLocation.setValue(new Point2D(x, y));
+                }
+            }));
+
+            bp.setOnMouseReleased(event -> mouseLocation.setValue(null));
+
+            popup.show(Designer.getPrimaryStage()//,
+                       //  posX,
+                       //  posY,
+            );
         }
     }
 
@@ -239,5 +292,46 @@ public class DesignerController implements Initializable {
         languageVersionHandler.getTypeResolutionFacade(Designer.class.getClassLoader()).start(node);
         return node;
     }
+
+
+    /**
+     * Formats the cell for AST nodes in the TreeView.
+     *
+     * @author Clément Fournier
+     * @since 6.0.0
+     */
+    public class ASTTreeCell extends TreeCell<Node> {
+
+        @Override
+        protected void updateItem(Node item, boolean empty) {
+            super.updateItem(item, empty);
+
+            if (empty || item == null) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                setContextMenu(getTheContextMenu(item));
+                setText(item.toString() + (item.getImage() == null ? "" : " \"" + item.getImage() + "\""));
+            }
+        }
+
+
+        private ContextMenu getTheContextMenu(Node node) {
+            ContextMenu contextMenu = new ContextMenu();
+
+            MenuItem item = new MenuItem("Show XPath attributes");
+            item.setOnAction(event -> {
+                if (xpathAttributesFloatingLV == null) {
+                    createFloatingAttributesLV(Designer.getPrimaryStage().getX() + 20,
+                                               Designer.getPrimaryStage().getY() / 2);
+                }
+                xpathAttributesFloatingLV.setItems(DesignerUtil.getAttributes(node));
+            });
+
+            contextMenu.getItems().add(item);
+            return contextMenu;
+        }
+    }
+
 
 }

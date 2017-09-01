@@ -25,8 +25,12 @@ import javafx.stage.Stage;
  */
 public class Designer extends Application {
 
+    private static Stage primaryStage;
+
+
     @Override
     public void start(Stage stage) throws IOException {
+        primaryStage = stage;
         Parent root = FXMLLoader.load(getClass().getResource("designer.fxml"));
 
         Scene scene = new Scene(root);
@@ -36,6 +40,10 @@ public class Designer extends Application {
 
         stage.setScene(scene);
         stage.show();
+    }
+
+    static Stage getPrimaryStage() {
+        return primaryStage;
     }
 
 
