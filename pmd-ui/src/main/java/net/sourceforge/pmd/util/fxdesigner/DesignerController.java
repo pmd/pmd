@@ -7,12 +7,11 @@ package net.sourceforge.pmd.util.fxdesigner;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 
@@ -32,6 +31,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -49,6 +49,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 
 /**
@@ -84,10 +85,14 @@ public class DesignerController implements Initializable {
     private TitledPane xpathAttributesTitledPane;
     @FXML
     private Accordion nodeInfoAccordion;
+    @FXML
+    private BorderPane mainEditorBorderPane;
+    @FXML
+    private TitledPane astTitledPane;
 
-    private double defaultMainHorizontalSplitPaneDividerPos;
-    private LanguageVersion selectedLanguageVersion;
-    private Map<LanguageVersion, RadioMenuItem> languageRadioMenuMap = new HashMap<>();
+
+    private double defaultMainHorizontalSplitPaneDividerPosition;
+    private ToggleGroup languageVersionToggleGroup;
 
 
     @Override
@@ -96,18 +101,19 @@ public class DesignerController implements Initializable {
         initializeASTTreeView();
         initializeXPathResultsListView();
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
-
         nodeInfoAccordion.setExpandedPane(xpathAttributesTitledPane);
 
-        defaultMainHorizontalSplitPaneDividerPos = mainHorizontalSplitPane.getDividerPositions()[0];
 
+        defaultMainHorizontalSplitPaneDividerPosition = mainHorizontalSplitPane.getDividerPositions()[0];
+
+        // Fold xpath panel
         xpathEditorTitledPane.expandedProperty().addListener((observable, wasExpanded, isNowExpanded) -> {
             KeyValue keyValue = null;
             DoubleProperty divPosition = mainHorizontalSplitPane.getDividers().get(0).positionProperty();
             if (wasExpanded && !isNowExpanded) {
                 keyValue = new KeyValue(divPosition, 1);
             } else if (!wasExpanded && isNowExpanded) {
-                keyValue = new KeyValue(divPosition, defaultMainHorizontalSplitPaneDividerPos);
+                keyValue = new KeyValue(divPosition, defaultMainHorizontalSplitPaneDividerPosition);
             }
 
             if (keyValue != null) {
@@ -115,6 +121,8 @@ public class DesignerController implements Initializable {
                 timeline.play();
             }
         });
+
+        codeEditorArea.textProperty().addListener((observable, oldValue, newValue) -> notifyOutdatedAST());
 
         // ensure main horizontal divider is never under 50%
         mainHorizontalSplitPane.getDividers()
@@ -169,20 +177,27 @@ public class DesignerController implements Initializable {
     private void initializeLanguageVersionMenu() {
         LanguageVersion[] supported = DesignerUtil.getSupportedLanguageVersions();
         ObservableList<MenuItem> items = languageMenu.getItems();
-        ToggleGroup group = new ToggleGroup();
+        languageVersionToggleGroup = new ToggleGroup();
+
+        LanguageVersion defaultLangVersion = LanguageRegistry.getLanguage("Java").getDefaultVersion();
 
         for (LanguageVersion version : supported) {
             RadioMenuItem item = new RadioMenuItem(version.getShortName());
-            item.setToggleGroup(group);
+            item.setToggleGroup(languageVersionToggleGroup);
+            item.setUserData(version);
             items.add(item);
-            languageRadioMenuMap.put(version, item);
+            if (version.equals(defaultLangVersion)) {
+                item.setSelected(true);
+            }
         }
-
-        selectedLanguageVersion = LanguageRegistry.getLanguage("Java").getDefaultVersion();
-        languageRadioMenuMap.get(selectedLanguageVersion).setSelected(true);
 
         languageMenu.show();
 
+    }
+
+
+    private LanguageVersion getSelectedLanguageVersion() {
+        return (LanguageVersion) languageVersionToggleGroup.getSelectedToggle().getUserData();
     }
 
 
@@ -191,6 +206,8 @@ public class DesignerController implements Initializable {
         refreshAST();
         if (refreshXPathToggle.isSelected()) {
             evaluateXPath();
+        } else {
+            xpathResultListView.setItems(FXCollections.emptyObservableList());
         }
     }
 
@@ -201,17 +218,23 @@ public class DesignerController implements Initializable {
         try {
             n = getCompilationUnit();
         } catch (Exception e) {
-            Alert errorAlert = new Alert(AlertType.ERROR);
-            errorAlert.setHeaderText("An exception occurred:");
-            errorAlert.setContentText(e.getMessage());
-            errorAlert.showAndWait();
+            notifyLexicalError(e);
         }
 
         if (n != null) {
+            acknowledgeUpdatedAST();
             ASTTreeItem root = ASTTreeItem.getRoot(n);
             root.expandAll();
             astTreeView.setRoot(root);
         }
+    }
+
+
+    private void notifyLexicalError(Exception e) {
+        Alert errorAlert = new Alert(AlertType.ERROR);
+        errorAlert.setHeaderText("An exception occurred:");
+        errorAlert.setContentText(ExceptionUtils.getStackTrace(e));
+        errorAlert.showAndWait();
     }
 
 
@@ -230,6 +253,9 @@ public class DesignerController implements Initializable {
                     xpathResults.add(node);
                 }
             };
+
+            LanguageVersion selectedLanguageVersion = getSelectedLanguageVersion();
+
             xpathRule.setMessage("");
             xpathRule.setLanguage(selectedLanguageVersion.getLanguage());
             xpathRule.setXPath(xpathExpressionArea.getText());
@@ -264,7 +290,17 @@ public class DesignerController implements Initializable {
 
 
     LanguageVersionHandler getLanguageVersionHandler() {
-        return selectedLanguageVersion.getLanguageVersionHandler();
+        return getSelectedLanguageVersion().getLanguageVersionHandler();
+    }
+
+
+    private void notifyOutdatedAST() {
+        astTitledPane.setText("Abstract syntax tree (outdated)");
+    }
+
+
+    private void acknowledgeUpdatedAST() {
+        astTitledPane.setText("Abstract syntax tree");
     }
 
 

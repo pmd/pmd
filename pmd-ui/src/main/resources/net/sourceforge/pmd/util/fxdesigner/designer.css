@@ -1,21 +1,29 @@
 
-
 .code {
     -fx-font-family: "monospace";
     -fx-font-size: 11pt;
 }
 
-.label {
+
+
+.titled-pane > .title {
+    -fx-pref-height: 28.0;
 }
 
+.accordion > .titled-pane > .title {
+    -fx-font-size: 9pt;
+    -fx-pref-height: 24.0;
+}
+
+
 .styled-text-area {
-    -fx-border-color:  -fx-outer-border, -fx-text-box-border;
+    -fx-border-color: -fx-outer-border, -fx-text-box-border;
     -fx-border-insets: -4 -4 -6 -5, -2 -2 -5 -3;
 }
 
 .node-highlight {
     -fx-font-weight: bolder;
-    -fx-fill: blue;
+    -fx-fill: royalblue;
 }
 
 .lineno {

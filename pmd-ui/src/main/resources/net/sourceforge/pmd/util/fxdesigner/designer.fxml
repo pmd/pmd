@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.*?>
+<?import javafx.scene.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -8,22 +8,25 @@
 <?import org.fxmisc.richtext.*?>
 <?import org.fxmisc.richtext.CodeArea?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioMenuItem?>
-<?import javafx.scene.control.SplitMenuButton?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@designer.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.DesignerController">
     <children>
@@ -52,22 +55,26 @@
                      <children>
                         <VBox layoutX="84.0" layoutY="14.0" prefHeight="200.0" prefWidth="100.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Pane prefHeight="200.0" prefWidth="200.0" />
-                              <Accordion fx:id="nodeInfoAccordion" prefHeight="298.0" prefWidth="236.0">
-                                <panes>
-                                    <TitledPane animated="false" prefHeight="234.0" prefWidth="236.0" text="XPath attributes" fx:id="xpathAttributesTitledPane">
-                                      <content>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                             <children>
-                                                              <ListView layoutX="21.0" layoutY="23.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="xpathAttributesListView" />
-                                             </children>
-                                          </AnchorPane>
-                                      </content>
-                                    </TitledPane>
-                                  <TitledPane animated="false" expanded="false" text="Symbol table" />
-                                </panes>
-                              </Accordion>
-                              <TitledPane fx:id="violationsTitledPane" animated="false" collapsible="false" prefHeight="232.0" prefWidth="236.0" text="Violations">
+                              <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                              <TitledPane collapsible="false" prefHeight="300.0" prefWidth="200.0" text="Node information">
+                                 <content>
+                                    <Accordion fx:id="nodeInfoAccordion" prefHeight="300.0" prefWidth="236.0">
+                                      <panes>
+                                          <TitledPane animated="false" prefHeight="234.0" prefWidth="236.0" text="XPath attributes" fx:id="xpathAttributesTitledPane">
+                                            <content>
+                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                   <children>
+                                                                    <ListView layoutX="21.0" layoutY="23.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="xpathAttributesListView" />
+                                                   </children>
+                                                </AnchorPane>
+                                            </content>
+                                          </TitledPane>
+                                        <TitledPane animated="false" expanded="false" text="Symbol table" />
+                                      </panes>
+                                    </Accordion>
+                                 </content>
+                              </TitledPane>
+                              <TitledPane fx:id="violationsTitledPane" animated="false" collapsible="false" prefHeight="232.0" prefWidth="236.0" text="Matched nodes">
                                  <content>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                     <children>
@@ -82,18 +89,26 @@
                   </AnchorPane>
                       <SplitPane fx:id="mainHorizontalSplitPane" dividerPositions="0.6703755215577191" orientation="VERTICAL" BorderPane.alignment="BOTTOM_CENTER">
                           <items>
-                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                        <BorderPane fx:id="mainEditorBorderPane" prefHeight="200.0" prefWidth="200.0">
                            <center>
                                     <SplitPane dividerPositions="0.5" BorderPane.alignment="CENTER">
                                         <items>
                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                 <children>
-                                                    <CodeArea fx:id="codeEditorArea" layoutX="-13.0" layoutY="-31.0" prefHeight="346.0" prefWidth="445.0" styleClass="code" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <TitledPane collapsible="false" prefHeight="200.0" prefWidth="200.0" text="Source code" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <content>
+                                                          <CodeArea fx:id="codeEditorArea" prefHeight="346.0" prefWidth="445.0" styleClass="code" />
+                                             </content>
+                                          </TitledPane>
                                                 </children>
                                             </AnchorPane>
                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                 <children>
-                                                    <TreeView fx:id="astTreeView" layoutX="57.0" layoutY="38.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <TitledPane fx:id="astTitledPane" collapsible="false" prefHeight="200.0" prefWidth="200.0" text="Abstract syntax tree" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <content>
+                                                          <TreeView fx:id="astTreeView" prefHeight="200.0" prefWidth="200.0" />
+                                             </content>
+                                          </TitledPane>
                                                 </children>
                                             </AnchorPane>
                                         </items>
