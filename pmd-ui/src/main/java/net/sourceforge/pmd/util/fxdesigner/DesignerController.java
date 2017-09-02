@@ -28,30 +28,28 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.beans.property.DoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Point2D;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SplitPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeView;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Popup;
+import javafx.util.Duration;
 
 /**
  * @author Clément Fournier
@@ -65,25 +63,29 @@ public class DesignerController implements Initializable {
     @FXML
     private Button refreshASTButton;
     @FXML
-    private TextArea xpathExpressionArea;
+    private CodeArea xpathExpressionArea;
     @FXML
     private ListView<Node> xpathResultListView;
     @FXML
     private ListView<String> xpathAttributesListView;
     @FXML
-    private Label xpathResultLabel;
+    private TitledPane violationsTitledPane;
     @FXML
     private TreeView<Node> astTreeView;
     @FXML
-    private TitledPane xpathTitlePane;
+    private TitledPane xpathEditorTitledPane;
     @FXML
     private SplitPane mainHorizontalSplitPane;
     @FXML
     private ToggleGroup xpathVersionToggleGroup;
+    @FXML
+    private ToggleButton refreshXPathToggle;
+    @FXML
+    private TitledPane xpathAttributesTitledPane;
+    @FXML
+    private Accordion nodeInfoAccordion;
 
-    private ListView<String> xpathAttributesFloatingLV;
-
-
+    private double defaultMainHorizontalSplitPaneDividerPos;
     private LanguageVersion selectedLanguageVersion;
     private Map<LanguageVersion, RadioMenuItem> languageRadioMenuMap = new HashMap<>();
 
@@ -94,6 +96,25 @@ public class DesignerController implements Initializable {
         initializeASTTreeView();
         initializeXPathResultsListView();
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
+
+        nodeInfoAccordion.setExpandedPane(xpathAttributesTitledPane);
+
+        defaultMainHorizontalSplitPaneDividerPos = mainHorizontalSplitPane.getDividerPositions()[0];
+
+        xpathEditorTitledPane.expandedProperty().addListener((observable, wasExpanded, isNowExpanded) -> {
+            KeyValue keyValue = null;
+            DoubleProperty divPosition = mainHorizontalSplitPane.getDividers().get(0).positionProperty();
+            if (wasExpanded && !isNowExpanded) {
+                keyValue = new KeyValue(divPosition, 1);
+            } else if (!wasExpanded && isNowExpanded) {
+                keyValue = new KeyValue(divPosition, defaultMainHorizontalSplitPaneDividerPos);
+            }
+
+            if (keyValue != null) {
+                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(350), keyValue));
+                timeline.play();
+            }
+        });
 
         // ensure main horizontal divider is never under 50%
         mainHorizontalSplitPane.getDividers()
@@ -116,7 +137,11 @@ public class DesignerController implements Initializable {
         xpathResultListView.setCellFactory(param -> new XpathViolationListCell());
         xpathResultListView.getSelectionModel()
                            .selectedItemProperty()
-                           .addListener((observable, oldValue, newValue) -> onNodeItemSelected(newValue));
+                           .addListener((observable, oldValue, newValue) -> {
+                               if (newValue != null) {
+                                   onNodeItemSelected(newValue);
+                               }
+                           });
     }
 
 
@@ -124,7 +149,11 @@ public class DesignerController implements Initializable {
         astTreeView.setCellFactory(param -> new ASTTreeCell());
         astTreeView.getSelectionModel()
                    .selectedItemProperty()
-                   .addListener((observable, oldValue, newValue) -> onNodeItemSelected(newValue.getValue()));
+                   .addListener((observable, oldValue, newValue) -> {
+                       if (newValue != null) {
+                           onNodeItemSelected(newValue.getValue());
+                       }
+                   });
     }
 
 
@@ -132,51 +161,7 @@ public class DesignerController implements Initializable {
         if (selectedValue != null) {
             ObservableList<String> atts = DesignerUtil.getAttributes(selectedValue);
             xpathAttributesListView.setItems(atts);
-            if (xpathAttributesFloatingLV != null) {
-                xpathAttributesFloatingLV.setItems(atts);
-            }
             DesignerUtil.highlightNode(codeEditorArea, selectedValue);
-        }
-    }
-
-
-    private void createFloatingAttributesLV(double posX, double posY) {
-        if (xpathAttributesFloatingLV == null) {
-
-            Label header = new Label("XPath attributes");
-            xpathAttributesFloatingLV = new ListView<>();
-            BorderPane bp = new BorderPane();
-            bp.setTop(header);
-            bp.setCenter(xpathAttributesFloatingLV);
-            bp.setPrefHeight(100);
-            bp.getStylesheets().add(getClass().getResource("designer.css").toString());
-
-            Popup popup = new Popup();
-            popup.getScene().setRoot(bp);
-            popup.setHideOnEscape(true);
-
-            ObjectProperty<Point2D> mouseLocation = new SimpleObjectProperty<>();
-
-            bp.setOnMousePressed(event -> mouseLocation.setValue(new Point2D(event.getScreenX(), event.getScreenY())));
-
-            bp.setOnMouseDragged((event -> {
-                if (mouseLocation.get() != null) {
-                    double x = event.getScreenX();
-                    double y = event.getScreenY();
-                    double dX = x - mouseLocation.get().getX();
-                    double dY = y - mouseLocation.get().getY();
-                    popup.setX(popup.getX() + dX);
-                    popup.setY(popup.getY() + dY);
-                    mouseLocation.setValue(new Point2D(x, y));
-                }
-            }));
-
-            bp.setOnMouseReleased(event -> mouseLocation.setValue(null));
-
-            popup.show(Designer.getPrimaryStage()//,
-                       //  posX,
-                       //  posY,
-            );
         }
     }
 
@@ -201,18 +186,16 @@ public class DesignerController implements Initializable {
     }
 
 
-    /**
-     * Refresh the AST view with the updated code.
-     *
-     * @param event ActionEvent
-     */
     @FXML
     public void onRefreshASTClicked(ActionEvent event) {
         refreshAST();
-        evaluateXPath();
+        if (refreshXPathToggle.isSelected()) {
+            evaluateXPath();
+        }
     }
 
 
+    /** Refresh the AST view with the updated code. */
     private void refreshAST() {
         Node n = null;
         try {
@@ -265,10 +248,10 @@ public class DesignerController implements Initializable {
 
 
         } catch (RuntimeException e) {
-            xpathResultLabel.setText("Matches:\t (error)");
+            violationsTitledPane.setText("Matched nodes\t(error)");
             return;
         }
-        xpathResultLabel.setText("Matches:\t" + xpathResults.size());
+        violationsTitledPane.setText("Matched nodes\t(" + xpathResults.size() + ")");
         xpathResultListView.refresh();
         xpathExpressionArea.requestFocus();
     }
@@ -291,46 +274,6 @@ public class DesignerController implements Initializable {
         languageVersionHandler.getSymbolFacade().start(node);
         languageVersionHandler.getTypeResolutionFacade(Designer.class.getClassLoader()).start(node);
         return node;
-    }
-
-
-    /**
-     * Formats the cell for AST nodes in the TreeView.
-     *
-     * @author Clément Fournier
-     * @since 6.0.0
-     */
-    public class ASTTreeCell extends TreeCell<Node> {
-
-        @Override
-        protected void updateItem(Node item, boolean empty) {
-            super.updateItem(item, empty);
-
-            if (empty || item == null) {
-                setText(null);
-                setGraphic(null);
-            } else {
-                setContextMenu(getTheContextMenu(item));
-                setText(item.toString() + (item.getImage() == null ? "" : " \"" + item.getImage() + "\""));
-            }
-        }
-
-
-        private ContextMenu getTheContextMenu(Node node) {
-            ContextMenu contextMenu = new ContextMenu();
-
-            MenuItem item = new MenuItem("Show XPath attributes");
-            item.setOnAction(event -> {
-                if (xpathAttributesFloatingLV == null) {
-                    createFloatingAttributesLV(Designer.getPrimaryStage().getX() + 20,
-                                               Designer.getPrimaryStage().getY() / 2);
-                }
-                xpathAttributesFloatingLV.setItems(DesignerUtil.getAttributes(node));
-            });
-
-            contextMenu.getItems().add(item);
-            return contextMenu;
-        }
     }
 
 

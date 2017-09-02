@@ -6,15 +6,16 @@
 }
 
 .label {
-    -fx-font-weight: bold;
-    -fx-font-size: 110%;
+}
+
+.styled-text-area {
+    -fx-border-color:  -fx-outer-border, -fx-text-box-border;
+    -fx-border-insets: -4 -4 -6 -5, -2 -2 -5 -3;
 }
 
 .node-highlight {
-    /* Doesn't work right now */
-    -fx-background-color: lightblue;
-    -fx-font-weight: bold;
-    -fx-fill: darkblue;
+    -fx-font-weight: bolder;
+    -fx-fill: blue;
 }
 
 .lineno {

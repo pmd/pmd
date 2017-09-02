@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,7 +46,12 @@ public class DesignerUtil {
         AttributeAxisIterator attributeAxisIterator = new AttributeAxisIterator(node);
         while (attributeAxisIterator.hasNext()) {
             Attribute attribute = attributeAxisIterator.next();
-            result.add(attribute.getName() + " = " + attribute.getStringValue());
+            result.add(attribute.getName() + " = "
+                           + ((attribute.getValue() != null) ? attribute.getStringValue() : "null"));
+        }
+
+        if (node instanceof TypeNode) {
+            result.add("typeof() = " + ((TypeNode) node).getType());
         }
         Collections.sort(result);
         return result;
