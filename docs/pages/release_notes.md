@@ -16,7 +16,7 @@ This is a major release.
     *   [Revamped Apex CPD](#revamped-apex-cpd)
     *   [Java Type Resolution](#java-type-resolution)
     *   [Metrics Framework](#metrics-framework)
-    *   [Configuration Error Reporting](#configuration-error-reporting)
+    *   [Error Reporting](#error-reporting)
     *   [Java Symbol Table](#java-symbol-table)
     *   [Apex Parser Update](#apex-parser-update)
     *   [Modified Rules](#modified-rules)
@@ -57,7 +57,24 @@ Based on those metrics, rules like "GodClass" detection can be implemented more 
 The Metrics framework has been abstracted and is available in `pmd-core` for other languages. With this
 PMD release, the metrics framework is supported for both Java and Apex.
 
-#### Configuration Error Reporting
+#### Error Reporting
+
+A number of improvements on error reporting have taken place, meaning changes to some of the report formats.
+
+##### Processing Errors
+
+Processing errors can now provide not only the message previously included on some reports, but also a full stacktrace.
+This will allow better error reports when providing feedback to the PMD team and help in debugging issues.
+
+The report formats providing full stacktrace of errors are:
+
+*   html
+*   summaryhtml
+*   textcolor
+*   vbhtml
+*   xml
+
+##### Configuration Errors
 
 For a long time reports have been notified of configuration errors on rules, but they have remained hidden.
 On a push to make these more evident to users, and help them get the best results out of PMD, we have started
@@ -230,6 +247,7 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#528](https://github.com/pmd/pmd/pull/528): \[core] Fix typo - [Ayoub Kaanich](https://github.com/kayoub5)
 *   [#529](https://github.com/pmd/pmd/pull/529): \[java] Abstracted the Java metrics framework - [Clément Fournier](https://github.com/oowekyala)
 *   [#530](https://github.com/pmd/pmd/pull/530): \[java] Fix issue #527: Lombok getter annotation on enum is not recognized correctly - [Clément Fournier](https://github.com/oowekyala)
+*   [#533](https://github.com/pmd/pmd/pull/533): \[core] improve error message - [Dennis Kieselhorst](https://github.com/deki)
 *   [#535](https://github.com/pmd/pmd/pull/535): \[apex] Fix broken Apex visitor adapter - [Clément Fournier](https://github.com/oowekyala)
 *   [#542](https://github.com/pmd/pmd/pull/542): \[java] Metrics abstraction - [Clément Fournier](https://github.com/oowekyala)
 *   [#545](https://github.com/pmd/pmd/pull/545): \[apex] Apex metrics framework - [Clément Fournier](https://github.com/oowekyala)
