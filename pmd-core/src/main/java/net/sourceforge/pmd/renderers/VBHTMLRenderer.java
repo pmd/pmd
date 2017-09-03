@@ -111,7 +111,7 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
                 }
                 colorize = !colorize;
                 sb.append("<td><font class=body>").append(error.getFile()).append("</font></td>");
-                sb.append("<td><font class=body>").append(error.getMsg()).append("</font></td></tr>");
+                sb.append("<td><font class=body><pre>").append(error.getDetail()).append("</pre></font></td></tr>");
             }
             sb.append("</table>");
             writer.write(sb.toString());

@@ -5,6 +5,9 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -156,11 +159,19 @@ public class Report implements Iterable<RuleViolation> {
         }
 
         public String getMsg() {
-            if (error != null) {
-                return error.getMessage();
-            } else {
-                return null;
+            return error.getMessage();
+        }
+        
+        public String getDetail() {
+            try (StringWriter stringWriter = new StringWriter();
+                    PrintWriter writer = new PrintWriter(stringWriter)) {
+                error.printStackTrace(writer);
+                return stringWriter.toString();
+            } catch (IOException e) {
+                // can never happen when using StringWriter
             }
+            
+            return null;
         }
 
         public String getFile() {
