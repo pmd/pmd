@@ -167,7 +167,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             colorize = !colorize;
             buf.append("> " + PMD.EOL);
             buf.append("<td>" + pe.getFile() + "</td>" + PMD.EOL);
-            buf.append("<td>" + pe.getMsg() + "</td>" + PMD.EOL);
+            buf.append("<td><pre>" + pe.getDetail() + "</pre></td>" + PMD.EOL);
             buf.append("</tr>" + PMD.EOL);
             writer.write(buf.toString());
         }

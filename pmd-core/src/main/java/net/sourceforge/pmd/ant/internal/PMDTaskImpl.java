@@ -230,7 +230,7 @@ public class PMDTaskImpl {
         if (failOnError) {
             throw new BuildException(pmde);
         }
-        errorReport.addError(new Report.ProcessingError(pmde.getMessage(), ctx.getSourceCodeFilename()));
+        errorReport.addError(new Report.ProcessingError(pmde, ctx.getSourceCodeFilename()));
     }
 
     private void setupClassLoader() {

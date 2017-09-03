@@ -132,7 +132,9 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             StringUtil.appendXmlEscaped(buf, pe.getFile(), useUTF8);
             buf.append("\" msg=\"");
             StringUtil.appendXmlEscaped(buf, pe.getMsg(), useUTF8);
-            buf.append("\"/>").append(PMD.EOL);
+            buf.append("\">").append(PMD.EOL);
+            buf.append("<![CDATA[").append(pe.getDetail()).append("]]>").append(PMD.EOL);
+            buf.append("</error>").append(PMD.EOL);
             writer.write(buf.toString());
         }
 

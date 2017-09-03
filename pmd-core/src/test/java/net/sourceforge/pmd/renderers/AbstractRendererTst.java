@@ -122,7 +122,7 @@ public abstract class AbstractRendererTst {
     @Test
     public void testError() throws Exception {
         Report rep = new Report();
-        Report.ProcessingError err = new Report.ProcessingError("Error", "file");
+        Report.ProcessingError err = new Report.ProcessingError(new RuntimeException("Error"), "file");
         rep.addError(err);
         String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(filter(getExpectedError(err)), filter(actual));
