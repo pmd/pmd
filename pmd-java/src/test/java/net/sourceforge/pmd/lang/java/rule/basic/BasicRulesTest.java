@@ -40,6 +40,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "DontUseFloatTypeForLoopIndices");
         addRule(RULESET, "SimplifiedTernary");
     }
+
     // Used by DontCallThreadRun test cases
     public static class TestThread extends Thread {
         @Override
