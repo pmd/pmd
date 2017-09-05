@@ -3,6 +3,7 @@ title: Writing Documentation
 last_update: August 2017
 permalink: pmd_devdocs_writing_documentation.html
 keywords: documentation, jekyll, markdown
+author: Andreas Dangel <andreas.dangel@adangel.org>
 ---
 
 PMD's documentation uses [Jekyll](https://jekyllrb.com/) with
