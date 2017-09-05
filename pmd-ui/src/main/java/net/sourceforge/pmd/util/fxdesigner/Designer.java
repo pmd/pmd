@@ -42,10 +42,6 @@ public class Designer extends Application {
         stage.show();
     }
 
-    static Stage getPrimaryStage() {
-        return primaryStage;
-    }
-
 
     private void setIcons(Stage primaryStage) {
         ObservableList<Image> icons = primaryStage.getIcons();
@@ -64,6 +60,11 @@ public class Designer extends Application {
 
 
         icons.addAll(images);
+    }
+
+
+    static Stage getPrimaryStage() {
+        return primaryStage;
     }
 
 
