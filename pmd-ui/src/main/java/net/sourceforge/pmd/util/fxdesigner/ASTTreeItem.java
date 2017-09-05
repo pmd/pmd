@@ -22,6 +22,7 @@ public class ASTTreeItem extends TreeItem<Node> {
     }
 
 
+    /** Sets this item and all its children to the expanded state. */
     void expandAll() {
         expandAllHelper(this);
     }

@@ -58,6 +58,8 @@ public class DesignerUtil {
         return result;
     }
 
+    // TODO move highlight logic to a custom UI control
+
 
     /**
      * Styles the text corresponding to the node on the textarea with style class {@literal .node-highlight}.

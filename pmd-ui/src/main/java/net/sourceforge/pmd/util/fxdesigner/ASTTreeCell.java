@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import javafx.scene.control.TreeCell;
 
 /**
- * Formats the cell for AST nodes in the TreeView.
+ * Formats the cell for AST nodes in the main AST TreeView.
  *
  * @author Clément Fournier
  * @since 6.0.0

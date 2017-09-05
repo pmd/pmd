@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
+import java.util.Arrays;
+
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
@@ -110,6 +112,23 @@ enum DesignerWindowSettings {
             boolean b = Boolean.parseBoolean(value);
             presenter.view.getRefreshXPathToggle().setSelected(b);
         }
+    },
+
+    /**
+     * Whether the xpath bottom pane is expanded.
+     */
+    IS_XPATH_PANEL_EXPANDED("isXPathPanelExpanded") {
+        @Override
+        String getValueFrom(DesignerWindowPresenter presenter) {
+            return Boolean.toString(presenter.view.getXpathEditorTitledPane().isExpanded());
+        }
+
+
+        @Override
+        void setValueIn(DesignerWindowPresenter presenter, String value) {
+            boolean b = Boolean.parseBoolean(value);
+            presenter.view.getXpathEditorTitledPane().setExpanded(b);
+        }
     };
 
     public final String keyName;
@@ -137,5 +156,14 @@ enum DesignerWindowSettings {
      * @param value     The value of the setting
      */
     abstract void setValueIn(DesignerWindowPresenter presenter, String value);
+
+
+    /** Get the setting from the name of its key. */
+    static DesignerWindowSettings ofKeyName(String key) {
+        return Arrays.stream(DesignerWindowSettings.values())
+                     .filter(cst -> cst.keyName.equals(key))
+                     .findAny()
+                     .get();
+    }
 
 }

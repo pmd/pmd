@@ -21,17 +21,19 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
+ * Main class for the designer.
+ *
  * @author Clément Fournier
  * @since 6.0.0
  */
 public class Designer extends Application {
 
-    private static Stage primaryStage;
+    private static Stage mainStage;
 
 
     @Override
     public void start(Stage stage) throws IOException {
-        primaryStage = stage;
+        mainStage = stage;
         Parent root = FXMLLoader.load(getClass().getResource("designer.fxml"));
 
         Scene scene = new Scene(root);
@@ -52,6 +54,8 @@ public class Designer extends Application {
                                                 "pmd-logo_tiny.png",
                                                 "pmd-logo_big.png");
 
+        // TODO make new icons
+
         List<Image> images = imageNames.stream()
                                        .map(s -> dirPrefix + s)
                                        .map(s -> getClass().getResourceAsStream(s))
@@ -59,13 +63,12 @@ public class Designer extends Application {
                                        .map(Image::new)
                                        .collect(Collectors.toList());
 
-
         icons.addAll(images);
     }
 
 
-    static Stage getPrimaryStage() {
-        return primaryStage;
+    static Stage getMainStage() {
+        return mainStage;
     }
 
 

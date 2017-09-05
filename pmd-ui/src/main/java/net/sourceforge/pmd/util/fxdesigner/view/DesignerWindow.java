@@ -41,7 +41,6 @@ import javafx.util.Duration;
  */
 public class DesignerWindow implements Initializable {
 
-
     @FXML
     private CodeArea codeEditorArea;
     @FXML
@@ -137,6 +136,17 @@ public class DesignerWindow implements Initializable {
     }
 
 
+    public void displayXPathResultsSize(int size) {
+        violationsTitledPane.setText("Matched nodes\t(" + size + ")");
+    }
+
+
+    public void displayXPathError(Throwable t) {
+        // Currently dismisses the exception
+        violationsTitledPane.setText("Matched nodes\t(error)");
+    }
+
+
     public CodeArea getCodeEditorArea() {
         return codeEditorArea;
     }
@@ -200,4 +210,11 @@ public class DesignerWindow implements Initializable {
     public TitledPane getAstTitledPane() {
         return astTitledPane;
     }
+
+
+    public TitledPane getXpathEditorTitledPane() {
+        return xpathEditorTitledPane;
+    }
+
+
 }

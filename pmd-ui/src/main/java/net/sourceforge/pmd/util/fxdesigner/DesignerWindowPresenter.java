@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.fxdesigner;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -33,6 +34,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeView;
 
@@ -71,7 +74,7 @@ public class DesignerWindowPresenter {
             // no big deal
         }
 
-        Designer.getPrimaryStage().setOnCloseRequest(event -> {
+        Designer.getMainStage().setOnCloseRequest(event -> {
             try {
                 saveSettings();
             } catch (IOException e) {
@@ -86,6 +89,7 @@ public class DesignerWindowPresenter {
     }
 
 
+    /** Creates direct bindings from model properties to UI properties. */
     private void bindModelToView() {
         ObjectBinding<LanguageVersion> langVersionBinding
             = Bindings.createObjectBinding(() -> (LanguageVersion) languageVersionToggleGroup.getSelectedToggle().getUserData(),
@@ -201,26 +205,31 @@ public class DesignerWindowPresenter {
     }
 
 
+    // not very elegant
     private void notifyParseTimeException(Exception e) {
         Alert errorAlert = new Alert(AlertType.ERROR);
-        errorAlert.setHeaderText("An exception occurred:");
-        errorAlert.setContentText(ExceptionUtils.getStackTrace(e));
+        errorAlert.setWidth(1.5 * errorAlert.getWidth());
+        errorAlert.setHeaderText("An exception occurred during parsing:");
+
+        ScrollPane scroll = new ScrollPane();
+        scroll.setContent(new TextArea(ExceptionUtils.getStackTrace(e)));
+        errorAlert.getDialogPane().setContent(scroll);
         errorAlert.showAndWait();
     }
 
 
     /** Evaluate XPath expression, print results on the ListView. */
     private void evaluateXPath() {
-        ObservableList<Node> results;
+
         try {
-            results = model.evaluateXPath(view.getXpathExpressionArea().getText());
+            ObservableList<Node> results = model.evaluateXPath(view.getXpathExpressionArea().getText());
             view.getXpathResultListView().setItems(results);
+            view.displayXPathResultsSize(results.size());
         } catch (XPathEvaluationException e) {
-            // Currently dismisses the exception
-            view.getViolationsTitledPane().setText("Matched nodes\t(error)");
+            view.displayXPathError(e);
             return;
         }
-        view.getViolationsTitledPane().setText("Matched nodes\t(" + results.size() + ")");
+
         view.getXpathResultListView().refresh();
         view.getXpathExpressionArea().requestFocus();
     }
@@ -237,20 +246,17 @@ public class DesignerWindowPresenter {
     }
 
 
-    // Must be called after initialization!
+    // Must only be called *after* initialization
     private void loadSettings() throws IOException {
-        XMLSettingsLoader loader = new XMLSettingsLoader(SETTINGS_FILE_NAME,
-                                                         Arrays.stream(DesignerWindowSettings.values())
-                                                               .map(e -> e.keyName)
-                                                               .collect(Collectors.toSet()));
+
+        Set<String> keyNames = Arrays.stream(DesignerWindowSettings.values())
+                                     .map(e -> e.keyName)
+                                     .collect(Collectors.toSet());
+
+        XMLSettingsLoader loader = new XMLSettingsLoader(SETTINGS_FILE_NAME, keyNames);
 
         for (Entry<String, String> e : loader.loadSettings().entrySet()) {
-            String key = e.getKey();
-            DesignerWindowSettings setting = Arrays.stream(DesignerWindowSettings.values())
-                                                   .filter(cst -> cst.keyName.equals(key))
-                                                   .findAny()
-                                                   .get();
-
+            DesignerWindowSettings setting = DesignerWindowSettings.ofKeyName(e.getKey());
             setting.setValueIn(this, e.getValue());
         }
     }
