@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.fxdesigner;
+package net.sourceforge.pmd.util.fxdesigner.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +28,7 @@ import javafx.collections.ObservableList;
 
 /**
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public class DesignerUtil {
 

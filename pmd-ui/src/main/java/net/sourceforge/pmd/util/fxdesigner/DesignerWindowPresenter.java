@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -13,6 +18,9 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseTimeException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
+import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
+import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsLoader;
+import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsSaver;
 import net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow;
 
 import javafx.beans.binding.Bindings;
@@ -32,14 +40,16 @@ import javafx.scene.control.TreeView;
  * Presenter of the designer window.
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public class DesignerWindowPresenter {
 
-    private DesignerWindow view;
-    private ASTManager model;
+    private static final String SETTINGS_FILE_NAME = System.getProperty("user.home")
+        + System.getProperty("file.separator") + ".pmd_designer.xml";
 
-
-    private ToggleGroup languageVersionToggleGroup;
+    DesignerWindow view;
+    ASTManager model;
+    ToggleGroup languageVersionToggleGroup;
 
 
     public DesignerWindowPresenter(DesignerWindow designerWindow) {
@@ -53,6 +63,22 @@ public class DesignerWindowPresenter {
         initializeASTTreeView();
         initializeXPath();
         bindModelToView();
+
+        try {
+            loadSettings();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            // no big deal
+        }
+
+        Designer.getPrimaryStage().setOnCloseRequest(event -> {
+            try {
+                saveSettings();
+            } catch (IOException e) {
+                e.printStackTrace();
+                // no big deal
+            }
+        });
 
         view.getRefreshASTButton().setOnAction(this::onRefreshASTClicked);
         view.sourceCodeProperty().addListener((observable, oldValue, newValue) -> view.notifyOutdatedAST());
@@ -138,6 +164,7 @@ public class DesignerWindowPresenter {
             item.setToggleGroup(languageVersionToggleGroup);
             item.setUserData(version);
             items.add(item);
+
             if (version.equals(defaultLangVersion)) {
                 item.setSelected(true);
             }
@@ -196,6 +223,36 @@ public class DesignerWindowPresenter {
         view.getViolationsTitledPane().setText("Matched nodes\t(" + results.size() + ")");
         view.getXpathResultListView().refresh();
         view.getXpathExpressionArea().requestFocus();
+    }
+
+
+    private void saveSettings() throws IOException {
+        XMLSettingsSaver saver = XMLSettingsSaver.forFile(SETTINGS_FILE_NAME);
+
+        for (DesignerWindowSettings setting : DesignerWindowSettings.values()) {
+            saver.put(setting.keyName, setting.getValueFrom(this));
+        }
+
+        saver.save();
+    }
+
+
+    // Must be called after initialization!
+    private void loadSettings() throws IOException {
+        XMLSettingsLoader loader = new XMLSettingsLoader(SETTINGS_FILE_NAME,
+                                                         Arrays.stream(DesignerWindowSettings.values())
+                                                               .map(e -> e.keyName)
+                                                               .collect(Collectors.toSet()));
+
+        for (Entry<String, String> e : loader.loadSettings().entrySet()) {
+            String key = e.getKey();
+            DesignerWindowSettings setting = Arrays.stream(DesignerWindowSettings.values())
+                                                   .filter(cst -> cst.keyName.equals(key))
+                                                   .findAny()
+                                                   .get();
+
+            setting.setValueIn(this, e.getValue());
+        }
     }
 
 

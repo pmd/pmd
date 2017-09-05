@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 
 /**
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public class Designer extends Application {
 
