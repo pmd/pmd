@@ -453,7 +453,7 @@ public class Foo extends Bar {
 
     <rule name="NcssCount"
           message="The {0} ''{1}'' has a NCSS line count of {2}."
-          since="3.9"
+          since="6.0"
           class="net.sourceforge.pmd.lang.java.rule.codesize.NcssCountRule"
           metrics="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codesize.html#ncsscount">

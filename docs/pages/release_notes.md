@@ -19,7 +19,9 @@ This is a major release.
     *   [Configuration Error Reporting](#configuration-error-reporting)
     *   [Java Symbol Table](#java-symbol-table)
     *   [Apex Parser Update](#apex-parser-update)
+    *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
+    *   [Deprecated Rules](#deprecated-rules)
     *   [Removed Rules](#removed-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
@@ -77,6 +79,12 @@ providing configuration error reporting are:
 As we move forward we will be able to detect and report more configuration errors (ie: incomplete `auxclasspath`)
 and include them to such reports.
 
+#### New Rules
+
+*   The rule `NcssCount` (ruleset `java-codesize`) replaces the three rules "NcssConstructorCount", "NcssMethodCount",
+    and "NcssTypeCount". The new rule uses the metrics framework to achieve the same. It has two properties, to
+    define the report level for method and class sizes separately. Constructors and methods are considered the same.
+
 #### Modified Rules
 
 *   The rule `UnnecessaryFinalModifier` (ruleset `java-unnecessarycode`) has been revamped to detect more cases.
@@ -93,6 +101,11 @@ and include them to such reports.
     `com.google.auto.value.AutoValue`.
 
 *   The rule `GodClass` (ruleset `java-design`) has been revamped to use the new metrics framework.
+
+#### Deprecated Rules
+
+*   The rules `NcssConstructorCount`, `NcssMethodCount`, and `NcssTypeCount` (ruleset `java-codesize`) have been
+    deprecated. They will be replaced by the new rule `NcssCount` in the same ruleset.
 
 #### Removed Rules
 
@@ -249,4 +262,4 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#579](https://github.com/pmd/pmd/pull/579): \[java] Update parsing to produce upper and lower bounds - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#580](https://github.com/pmd/pmd/pull/580): \[core] Add AbstractMetric to topple the class hierarchy of metrics - [Clément Fournier](https://github.com/oowekyala)
 *   [#581](https://github.com/pmd/pmd/pull/581): \[java] Relax AbstractClassWithoutAnyMethod when class is annotated by @AutoValue - [Niklas Baudy](https://github.com/vanniktech)
-
+*   [#585](https://github.com/pmd/pmd/pull/585): \[java] Moved NcssCountRule to codesize.xml - [Clément Fournier](https://github.com/oowekyala)
