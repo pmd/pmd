@@ -23,7 +23,7 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
 *   Suboptimal code - wasteful String/StringBuffer usage
 *   Overcomplicated expressions - unnecessary if statements, for loops that could be while loops
 
-**CPD**, the copy-pase-detector, finds duplicated code in many languages:
+**CPD**, the copy-paste-detector, finds duplicated code in many languages:
 
 *   Duplicate code is often just copied and pasted. This means, the bugs are also copied and pasted. Fixing
     them means, fix all duplicated code locations.

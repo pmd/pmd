@@ -2,7 +2,7 @@
 title: Understanding Rulesets
 permalink: pmd_userdocs_understanding_rulesets.html
 summary: Rulesets are collections of rules
-last_updated: August 2017
+last_updated: September 2017
 ---
 
 There are two major use cases:
