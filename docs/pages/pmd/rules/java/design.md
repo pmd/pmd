@@ -877,41 +877,26 @@ A class that has private constructors and does not have any static methods or fi
 //ClassOrInterfaceDeclaration[@Nested='false']
 [
   (
-    count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)>0
+    ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration
     and
     count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private='true'])
   )
   and
-  count(.//MethodDeclaration[@Static='true'])=0
+  not(.//MethodDeclaration[@Static='true'])
   and
-  count(.//FieldDeclaration[@Private='false'][@Static='true'])=0
+  not(.//FieldDeclaration[@Private='false'][@Static='true'])
   and
-  count(.//ClassOrInterfaceDeclaration[@Nested='true']
+  not(.//ClassOrInterfaceDeclaration[@Nested='true']
            [@Public='true']
            [@Static='true']
-           [count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public='true']) > 0]
-           [count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
-                    [@Public='true']
-                    [./ResultType/Type/ReferenceType/ClassOrInterfaceType
-                        [@Image = //ClassOrInterfaceDeclaration[@Nested='false']/@Image]
-                    ]
-            ) > 0]
-        ) = 0
-  and
-  count(//ClassOrInterfaceDeclaration
-            [@Nested='true']
-            [@Static='true']
-            [@Public='true']
-            [.//MethodDeclaration
-              [@Public='true']
-              [.//ReturnStatement//AllocationExpression
-                [ClassOrInterfaceType
-                    [@Image = //ClassOrInterfaceDeclaration/@Image]
+           [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) or ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public='true']]
+           [./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
+                [@Public='true']
+                [./ResultType/Type/ReferenceType/ClassOrInterfaceType
+                    [@Image = //ClassOrInterfaceDeclaration[@Nested='false']/@Image]
                 ]
-                [./Arguments//PrimaryPrefix/@ThisModifier='true']
-              ]
             ]
-       ) = 0
+        )
 ]
 ```
 
