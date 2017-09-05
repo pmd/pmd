@@ -51,4 +51,26 @@ public abstract class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+#438 An abstract AutoValue class with no methods, no violation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.google.auto.value.AutoValue;
+
+@AutoValue public abstract class Something implements Some {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+#438 An abstract AutoValue class with no methods and fully qualified annotation, no violation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@com.google.auto.value.AutoValue public abstract class Something implements Some {
+}
+     ]]></code>
+    </test-code>
 </test-data>

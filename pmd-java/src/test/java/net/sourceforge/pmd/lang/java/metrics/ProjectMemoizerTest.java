@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
-import static net.sourceforge.pmd.lang.java.metrics.JavaMetricsVisitorTest.parseAndVisitForClass15;
+import static net.sourceforge.pmd.lang.java.metrics.JavaMetricsVisitorTest.parseAndVisitForClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -21,24 +21,23 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
-import net.sourceforge.pmd.lang.metrics.Metric.Version;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKeyUtil;
 import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
  * @author Clément Fournier
  */
 public class ProjectMemoizerTest {
 
-    private MetricKey<ASTAnyTypeDeclaration> classMetricKey = MetricKeyUtil.of(new RandomClassMetric(), null);
-    private MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = MetricKeyUtil.of(new RandomOperationMetric(), null);
+    private MetricKey<ASTAnyTypeDeclaration> classMetricKey = MetricKeyUtil.of(null, new RandomClassMetric());
+    private MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = MetricKeyUtil.of(null, new RandomOperationMetric());
 
 
     @Test
     public void memoizationTest() {
-        ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
+        ASTCompilationUnit acu = parseAndVisitForClass(MetricsVisitorTestData.class);
 
         List<Integer> expected = visitWith(acu, true);
         List<Integer> real = visitWith(acu, false);
@@ -49,7 +48,7 @@ public class ProjectMemoizerTest {
 
     @Test
     public void forceMemoizationTest() {
-        ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
+        ASTCompilationUnit acu = parseAndVisitForClass(MetricsVisitorTestData.class);
 
         List<Integer> reference = visitWith(acu, true);
         List<Integer> real = visitWith(acu, true);
@@ -72,7 +71,8 @@ public class ProjectMemoizerTest {
             @Override
             public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
                 MetricMemoizer<ASTMethodOrConstructorDeclaration> op = toplevel.getOperationMemoizer(node.getQualifiedName());
-                result.add((int) JavaMetricsComputer.INSTANCE.computeForOperation(opMetricKey, node, force, Version.STANDARD, op));
+                result.add((int) JavaMetricsComputer.INSTANCE.computeForOperation(opMetricKey, node, force,
+                                                                                  MetricOptions.emptyOptions(), op));
                 return super.visit(node, data);
             }
 
@@ -80,7 +80,8 @@ public class ProjectMemoizerTest {
             @Override
             public Object visit(ASTAnyTypeDeclaration node, Object data) {
                 MetricMemoizer<ASTAnyTypeDeclaration> clazz = toplevel.getClassMemoizer(node.getQualifiedName());
-                result.add((int) JavaMetricsComputer.INSTANCE.computeForType(classMetricKey, node, force, Version.STANDARD, clazz));
+                result.add((int) JavaMetricsComputer.INSTANCE.computeForType(classMetricKey, node, force,
+                                                                             MetricOptions.emptyOptions(), clazz));
                 return super.visit(node, data);
             }
         }, null);
@@ -95,7 +96,7 @@ public class ProjectMemoizerTest {
 
 
         @Override
-        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
             return random.nextInt();
         }
     }
@@ -106,7 +107,7 @@ public class ProjectMemoizerTest {
 
 
         @Override
-        public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
+        public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
             return random.nextInt();
         }
     }

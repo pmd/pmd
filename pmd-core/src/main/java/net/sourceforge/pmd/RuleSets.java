@@ -36,6 +36,16 @@ public class RuleSets {
      */
     public RuleSets() {
     }
+    
+    /**
+     * Copy constructor. Deep copies RuleSets.
+     * @param ruleSets The RuleSets to copy.
+     */
+    public RuleSets(final RuleSets ruleSets) {
+        for (final RuleSet rs : ruleSets.ruleSets) {
+            addRuleSet(new RuleSet(rs));
+        }
+    }
 
     /**
      * Public constructor. Add the given rule set.

@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.rule.comments;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
@@ -32,7 +34,7 @@ public class CommentSizeRule extends AbstractCommentRule {
 
     private static boolean hasRealText(String line) {
 
-        if (StringUtil.isEmpty(line)) {
+        if (StringUtils.isBlank(line)) {
             return false;
         }
 

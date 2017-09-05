@@ -39,4 +39,34 @@
           metrics="true">
     </rule>
 
+    <rule name="NopaTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NopaTestRule"
+          metrics="true">
+    </rule>
+
+    <rule name="NoamTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NoamTestRule"
+          metrics="true">
+    </rule>
+
+    <rule name="WocTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.WocTestRule"
+          metrics="true">
+    </rule>
+
+    <rule name="TccTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.TccTestRule"
+          metrics="true">
+    </rule>
+
+    <rule name="AtfdTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.AtfdTestRule"
+          metrics="true">
+    </rule>
+
 </ruleset>

@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -79,6 +81,8 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
     public enum Role {
         GETTER_OR_SETTER, CONSTRUCTOR, METHOD, STATIC;
 
+        private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("(?:m_|_)?(\\w+)");
+
 
         public static Role get(ASTMethodOrConstructorDeclaration node) {
             return node instanceof ASTConstructorDeclaration ? CONSTRUCTOR : get((ASTMethodDeclaration) node);
@@ -110,7 +114,11 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
                                                 .getNode()
                                                 .getFirstParentOfType(ASTFieldDeclaration.class);
 
-                fieldNames.put(field.getVariableName(), field.getFirstChildOfType(ASTType.class).getTypeImage());
+
+                Matcher matcher = FIELD_NAME_PATTERN.matcher(field.getVariableName());
+                String varName = matcher.find() ? matcher.group(1) : field.getVariableName();
+
+                fieldNames.put(varName, field.getFirstChildOfType(ASTType.class).getTypeImage());
             }
 
             return isGetter(node, fieldNames) || isSetter(node, fieldNames);

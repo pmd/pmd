@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.dfa;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.buildDFA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -13,11 +14,10 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
-import net.sourceforge.pmd.lang.java.ParserTst;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 
-public class GeneralFiddlingTest extends ParserTst {
+public class GeneralFiddlingTest {
 
     /**
      * Unit test for https://sourceforge.net/p/pmd/bugs/1325/

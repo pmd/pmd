@@ -5,6 +5,9 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,13 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.dfa.report.ReportTree;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.DateTimeUtil;
 import net.sourceforge.pmd.util.EmptyIterator;
 import net.sourceforge.pmd.util.NumericConstants;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A {@link Report} collects all informations during a PMD execution. This
@@ -139,28 +143,44 @@ public class Report implements Iterable<RuleViolation> {
      * Represents a processing error, such as a parse error.
      */
     public static class ProcessingError {
-        private final String msg;
+        private final Throwable error;
         private final String file;
 
         /**
          * Creates a new processing error
          *
-         * @param msg
-         *            the error message
+         * @param error
+         *            the error
          * @param file
          *            the file during which the error occurred
          */
-        public ProcessingError(String msg, String file) {
-            this.msg = msg;
+        public ProcessingError(Throwable error, String file) {
+            this.error = error;
             this.file = file;
         }
 
         public String getMsg() {
-            return msg;
+            return error.getMessage();
+        }
+        
+        public String getDetail() {
+            try (StringWriter stringWriter = new StringWriter();
+                    PrintWriter writer = new PrintWriter(stringWriter)) {
+                error.printStackTrace(writer);
+                return stringWriter.toString();
+            } catch (IOException e) {
+                // can never happen when using StringWriter
+            }
+            
+            return null;
         }
 
         public String getFile() {
             return file;
+        }
+
+        public Throwable getError() {
+            return error;
         }
     }
 
@@ -233,7 +253,7 @@ public class Report implements Iterable<RuleViolation> {
 
     private static String keyFor(RuleViolation rv) {
 
-        return StringUtil.isNotEmpty(rv.getPackageName()) ? rv.getPackageName() + '.' + rv.getClassName() : "";
+        return StringUtils.isNotBlank(rv.getPackageName()) ? rv.getPackageName() + '.' + rv.getClassName() : "";
     }
 
     /**
@@ -272,18 +292,6 @@ public class Report implements Iterable<RuleViolation> {
             summary.put(name, count + 1);
         }
         return summary;
-    }
-
-    /**
-     * Registers a report listener
-     *
-     * @param listener
-     *            the listener
-     * @deprecated Use {@link #addListener(ThreadSafeReportListener)}
-     */
-    @Deprecated
-    public void addListener(ReportListener listener) {
-        listeners.add(new SynchronizedReportListener(listener));
     }
 
     /**

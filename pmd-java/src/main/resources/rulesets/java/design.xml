@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <ruleset name="Design"
-    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns="http://pmd.sourceforge.net/ruleset/3.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/3.0.0 http://pmd.sourceforge.net/ruleset_3_0_0.xsd">
 
   <description>
 The Design ruleset contains rules that flag suboptimal code implementations. Alternate approaches
@@ -1669,6 +1669,7 @@ public class Example {
         language="java"
         since="4.2"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
+        typeResolution="true"
         message="No abstract method which means that the keyword is most likely used to prevent instantiation. Use a private or protected constructor instead."
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#abstractclasswithoutanymethod">
         <description>
@@ -1684,6 +1685,7 @@ protected constructor in order to prevent instantiation than make the class misl
 //ClassOrInterfaceDeclaration
     [@Abstract = 'true']
     [count(//MethodDeclaration) + count(//ConstructorDeclaration) = 0]
+    [not(../Annotation/MarkerAnnotation/Name[typeof(@Image, 'com.google.auto.value.AutoValue', 'AutoValue')])]
                     ]]>
                 </value>
             </property>
@@ -1856,7 +1858,8 @@ public class HelloWorldBean {
   <rule name="GodClass"
         language="java"
         since="5.0"
-        message="Possible God class"
+        message="Possible God Class (WMC={0}, ATFD={2}, TCC={1})"
+        metrics="true"
         class="net.sourceforge.pmd.lang.java.rule.design.GodClassRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#godclass">
         <description>

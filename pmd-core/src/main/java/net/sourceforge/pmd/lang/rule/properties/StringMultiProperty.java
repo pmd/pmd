@@ -15,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Defines a datatype that supports multiple String values. Note that all
@@ -123,7 +122,7 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
 
     @Override
     public List<String> valueFrom(String valueString) {
-        return Arrays.asList(StringUtil.substringsOf(valueString, multiValueDelimiter()));
+        return Arrays.asList(StringUtils.split(valueString, multiValueDelimiter()));
     }
 
 

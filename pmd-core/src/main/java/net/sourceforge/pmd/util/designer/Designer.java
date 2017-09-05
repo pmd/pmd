@@ -94,6 +94,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -122,7 +123,6 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 import net.sourceforge.pmd.lang.xpath.Initializer;
-import net.sourceforge.pmd.util.StringUtil;
 
 public class Designer implements ClipboardOwner {
 
@@ -272,7 +272,7 @@ public class Designer implements ClipboardOwner {
         private void createKids() {
 
             String message = ((ParseException) item).getMessage();
-            String[] lines = StringUtil.substringsOf(message, PMD.EOL);
+            String[] lines = StringUtils.split(message, PMD.EOL);
 
             kids = new ExceptionNode[lines.length];
             for (int i = 0; i < lines.length; i++) {
@@ -594,7 +594,7 @@ public class Designer implements ClipboardOwner {
         @Override
         public void actionPerformed(ActionEvent ae) {
             xpathResults.clear();
-            if (StringUtil.isEmpty(xpathQueryArea.getText())) {
+            if (StringUtils.isBlank(xpathQueryArea.getText())) {
                 xpathResults.addElement("XPath query field is empty.");
                 xpathResultList.repaint();
                 codeEditorPane.requestFocus();

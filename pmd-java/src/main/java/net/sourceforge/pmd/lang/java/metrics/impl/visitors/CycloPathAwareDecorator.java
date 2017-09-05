@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.impl.visitors;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -15,16 +16,18 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorDecorator;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
 import net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule;
 
 /**
- * Calculates CYCLO following the standard definition.
+ * Decorator which counts the complexity of boolean expressions for Cyclo.
  *
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric
  */
-public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
+public class CycloPathAwareDecorator extends JavaParserVisitorDecorator {
+
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
@@ -93,6 +96,20 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
         if (node.isTernary()) {
             int boolCompTern = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
             ((MutableInt) data).add(1 + boolCompTern);
+        }
+        return data;
+    }
+
+
+    @Override
+    public Object visit(ASTAssertStatement node, Object data) {
+        int base = ((MutableInt) data).getValue();
+        super.visit(node, data);
+        boolean isAssertAware = base < ((MutableInt) data).getValue();
+
+        if (isAssertAware) {
+            int boolCompAssert = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+            ((MutableInt) data).add(boolCompAssert);
         }
         return data;
     }

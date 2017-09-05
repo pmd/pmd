@@ -14,10 +14,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
+ * Factorises common functionality for packaged properties.
+ *
  * @author Clément Fournier
  */
 public abstract class PackagedPropertyModule<T> {
@@ -62,8 +65,8 @@ public abstract class PackagedPropertyModule<T> {
 
 
     /**
-     * Evaluates the names of the items against the allowable name prefixes. If
-     * one or more do not have valid prefixes then an exception will be thrown.
+     * Evaluates the names of the items against the allowable name prefixes. If one or more do not have valid prefixes
+     * then an exception will be thrown.
      *
      * @param items             Items to check
      * @param legalNamePrefixes Legal name prefixes
@@ -170,8 +173,7 @@ public abstract class PackagedPropertyModule<T> {
 
 
     public String[] packageNamesIn(Map<PropertyDescriptorField, String> params) {
-        String[] packageNames = StringUtil.substringsOf(params.get(LEGAL_PACKAGES), PACKAGE_NAME_DELIMITER);
-        return packageNames;
+        return StringUtils.split(params.get(LEGAL_PACKAGES), PACKAGE_NAME_DELIMITER);
     }
 
 }

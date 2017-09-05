@@ -11,6 +11,8 @@ import java.util.Map;
 import net.sourceforge.pmd.util.ClassUtil;
 
 /**
+ * Factorises common functionality for method properties.
+ *
  * @author Clément Fournier
  */
 public class MethodPropertyModule extends PackagedPropertyModule<Method> {
@@ -45,15 +47,14 @@ public class MethodPropertyModule extends PackagedPropertyModule<Method> {
 
 
     /**
-     * Return the value of `method' as a string that can be easily recognized
-     * and parsed when we see it again.
+     * Return the value of `method' as a string that can be easily recognized and parsed when we see it again.
      *
      * @param method the method to convert
      *
      * @return the string value
      */
-    private static String asStringFor(Method method) { // TODO:cf we could replace that with a QualifiedName's toString
-        StringBuilder sb = new StringBuilder();       // once it can parse Class and Method
+    private static String asStringFor(Method method) {
+        StringBuilder sb = new StringBuilder();
         asStringOn(method, sb);
         return sb.toString();
     }

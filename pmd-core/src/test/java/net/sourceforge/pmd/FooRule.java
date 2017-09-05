@@ -17,16 +17,12 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 public class FooRule extends AbstractRule {
     public FooRule() {
         setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        setName("Foo");
     }
 
     @Override
     public String getMessage() {
         return "blah";
-    }
-
-    @Override
-    public String getName() {
-        return "Foo";
     }
 
     @Override

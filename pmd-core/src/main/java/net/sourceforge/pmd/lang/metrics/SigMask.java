@@ -10,6 +10,7 @@ package net.sourceforge.pmd.lang.metrics;
  * @param <T> Type of signature this mask handles
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public interface SigMask<T extends Signature<?>> {
 

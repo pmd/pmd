@@ -8,16 +8,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.ParserTstUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
@@ -27,7 +21,6 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
-import net.sourceforge.pmd.typeresolution.ClassTypeResolverTest;
 
 /**
  * Tests of the metrics visitor.
@@ -45,7 +38,7 @@ public class JavaMetricsVisitorTest {
 
     @Test
     public void testOperationsAreThere() {
-        ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
+        ASTCompilationUnit acu = parseAndVisitForClass(MetricsVisitorTestData.class);
 
         final JavaSignatureMatcher toplevel = JavaMetrics.getFacade().getTopLevelPackageStats();
 
@@ -64,7 +57,7 @@ public class JavaMetricsVisitorTest {
 
     @Test
     public void testFieldsAreThere() {
-        parseAndVisitForClass15(MetricsVisitorTestData.class);
+        parseAndVisitForClass(MetricsVisitorTestData.class);
 
 
         final JavaSignatureMatcher toplevel = JavaMetrics.getFacade().getTopLevelPackageStats();
@@ -88,7 +81,7 @@ public class JavaMetricsVisitorTest {
     // problem
     @Test
     public void testStaticOperationsSig() {
-        parseAndVisitForClass15(MetricsVisitorTestData.class);
+        parseAndVisitForClass(MetricsVisitorTestData.class);
 
         final JavaSignatureMatcher toplevel = JavaMetrics.getFacade().getTopLevelPackageStats();
 
@@ -108,42 +101,11 @@ public class JavaMetricsVisitorTest {
     }
 
 
-    /* default */
-    static ASTCompilationUnit parseAndVisitForClass15(Class<?> clazz) {
-        return parseAndVisitForClass(clazz, "1.5");
-    }
-
-
-    // Note: If you're using Eclipse or some other IDE to run this test, you
-    // _must_ have the src/test/java folder in
-    // the classpath. Normally the IDE doesn't put source directories themselves
-    // directly in the classpath, only
-    // the output directories are in the classpath.
-    private static ASTCompilationUnit parseAndVisitForClass(Class<?> clazz, String version) {
-        String sourceFile = clazz.getName().replace('.', '/') + ".java";
-        InputStream is = ClassTypeResolverTest.class.getClassLoader().getResourceAsStream(sourceFile);
-        if (is == null) {
-            throw new IllegalArgumentException(
-                "Unable to find source file " + sourceFile + " for " + clazz);
-        }
-        String source;
-        try {
-            source = IOUtils.toString(is);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return parseAndVisitForString(source, version);
-    }
-
-
-    private static ASTCompilationUnit parseAndVisitForString(String source, String version) {
-        LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
-                                                                        .getVersion(version).getLanguageVersionHandler();
-        ASTCompilationUnit acu = (ASTCompilationUnit) languageVersionHandler
-            .getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(source));
-        languageVersionHandler.getSymbolFacade().start(acu);
-        languageVersionHandler.getTypeResolutionFacade(JavaMetricsVisitorTest.class.getClassLoader()).start(acu);
-        languageVersionHandler.getMetricsVisitorFacade().start(acu);
+    static ASTCompilationUnit parseAndVisitForClass(Class<?> clazz) {
+        ASTCompilationUnit acu = ParserTstUtil.parseJavaDefaultVersion(clazz);
+        LanguageVersionHandler handler = ParserTstUtil.getDefaultLanguageVersionHandler();
+        handler.getTypeResolutionFacade(JavaMetricsVisitorTest.class.getClassLoader()).start(acu);
+        handler.getMetricsVisitorFacade().start(acu);
         return acu;
     }
 }

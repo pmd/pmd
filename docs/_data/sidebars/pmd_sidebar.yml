@@ -128,6 +128,9 @@ entries:
     - title: Java code metrics
       url: /pmd_java_metrics_index.html
       output: web, pdf
+    - title: Apex code metrics
+      url: /pmd_apex_metrics_index.html
+      output: web, pdf
   - title: Developer Documentation
     output: web, pdf
     folderitems:

@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetric;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractApexOperationMetric extends AbstractApexMetric implements ApexOperationMetric {
+public abstract class AbstractApexOperationMetric extends AbstractApexMetric<ASTMethod> implements ApexOperationMetric {
 
     /**
      * Checks if the metric can be computed on the node. For now, we filter out {@literal <clinit>, <init> and clone},

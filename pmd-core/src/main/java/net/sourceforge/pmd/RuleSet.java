@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -35,7 +35,6 @@ import net.sourceforge.pmd.util.filter.Filters;
  *
  * @see Rule
  */
-// FUTURE Implement Cloneable and clone()
 public class RuleSet implements ChecksumAware {
 
     private static final Logger LOG = Logger.getLogger(RuleSet.class.getName());
@@ -77,6 +76,22 @@ public class RuleSet implements ChecksumAware {
 
         final Filter<String> regexFilter = Filters.buildRegexFilterIncludeOverExclude(includePatterns, excludePatterns);
         filter = Filters.toNormalizedFileFilter(regexFilter);
+    }
+    
+    public RuleSet(final RuleSet rs) {
+        checksum = rs.checksum;
+        fileName = rs.fileName;
+        name = rs.name;
+        description = rs.description;
+        
+        rules = new ArrayList<>(rs.rules.size());
+        for (final Rule rule : rs.rules) {
+            rules.add(rule.deepCopy());
+        }
+        
+        excludePatterns = rs.excludePatterns; // we can share immutable lists of immutable elements
+        includePatterns = rs.includePatterns;
+        filter = rs.filter; // filters are immutable, can be shared
     }
 
     /* package */ static class RuleSetBuilder {
@@ -191,8 +206,7 @@ public class RuleSet implements ChecksumAware {
             if (rule instanceof RuleReference) {
                 ruleReference = (RuleReference) rule;
             } else {
-                final RuleSetReference ruleSetReference = new RuleSetReference();
-                ruleSetReference.setRuleSetFileName(ruleSetFileName);
+                final RuleSetReference ruleSetReference = new RuleSetReference(ruleSetFileName);
                 ruleReference = new RuleReference();
                 ruleReference.setRule(rule);
                 ruleReference.setRuleSetReference(ruleSetReference);
@@ -251,11 +265,13 @@ public class RuleSet implements ChecksumAware {
                 throw new RuntimeException(
                         "Adding a rule by reference is not allowed with an empty rule set file name.");
             }
-            final RuleSetReference ruleSetReference = new RuleSetReference(ruleSet.getFileName());
-            ruleSetReference.setAllRules(allRules);
-            if (excludes != null) {
-                ruleSetReference.setExcludes(new HashSet<>(Arrays.asList(excludes)));
+            final RuleSetReference ruleSetReference;
+            if (excludes == null) {
+                ruleSetReference = new RuleSetReference(ruleSet.getFileName(), allRules);
+            } else {
+                ruleSetReference = new RuleSetReference(ruleSet.getFileName(), allRules, new LinkedHashSet<>(Arrays.asList(excludes)));
             }
+
             for (final Rule rule : ruleSet.getRules()) {
                 final RuleReference ruleReference = new RuleReference(rule, ruleSetReference);
                 rules.add(ruleReference);

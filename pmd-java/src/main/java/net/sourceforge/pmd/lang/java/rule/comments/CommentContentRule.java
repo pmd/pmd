@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
@@ -18,7 +20,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A rule that checks for illegal words in the comment text.
@@ -100,7 +101,7 @@ public class CommentContentRule extends AbstractCommentRule {
         }
 
         String commentText = filteredCommentIn(comment);
-        if (StringUtil.isEmpty(commentText)) {
+        if (StringUtils.isBlank(commentText)) {
             return Collections.emptyList();
         }
 

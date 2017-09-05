@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,11 +21,26 @@ import org.apache.commons.lang3.StringUtils;
 public final class StringUtil {
 
     private static final String[] EMPTY_STRINGS = new String[0];
-    private static final boolean SUPPORTS_UTF8 = "yes"
-        .equals(System.getProperty("net.sourceforge.pmd.supportUTF8", "no"));
-
 
     private StringUtil() {
+    }
+
+    /**
+     * Formats a double to a percentage, keeping {@code numDecimal} decimal places.
+     *
+     * @param val         a double value between 0 and 1
+     * @param numDecimals The number of decimal places to keep
+     *
+     * @return A formatted string
+     *
+     * @throws IllegalArgumentException if the double to format is not between 0 and 1
+     */
+    public static String percentageString(double val, int numDecimals) {
+        if (val < 0 || val > 1) {
+            throw new IllegalArgumentException("Expected a number between 0 and 1");
+        }
+
+        return String.format(Locale.ROOT, "%." + numDecimals + "f%%", 100 * val);
     }
 
 
@@ -35,7 +52,9 @@ public final class StringUtil {
      * @param prefixes
      *
      * @return boolean
+     * @deprecated {@see StringUtils#startsWithAny(CharSequence, CharSequence...)}
      */
+    @Deprecated
     public static boolean startsWithAny(String text, String... prefixes) {
 
         for (String prefix : prefixes) {
@@ -93,7 +112,9 @@ public final class StringUtil {
      * @param value String
      *
      * @return boolean
+     * @deprecated {@see StringUtils#isNotBlank(CharSequence)}
      */
+    @Deprecated
     public static boolean isNotEmpty(String value) {
         return !isEmpty(value);
     }
@@ -107,7 +128,9 @@ public final class StringUtil {
      * @param value String to test
      *
      * @return <code>true</code> if the value is empty, <code>false</code> otherwise.
+     * @deprecated {@see StringUtils#isBlank(CharSequence)}
      */
+    @Deprecated
     public static boolean isEmpty(String value) {
         return StringUtils.isBlank(value);
     }
@@ -119,7 +142,9 @@ public final class StringUtil {
      * @param value String to test
      *
      * @return True if the argument is null or the empty string
+     * @deprecated {@see StringUtils#isEmpty(CharSequence)}
      */
+    @Deprecated
     public static boolean isMissing(String value) {
         return StringUtils.isEmpty(value);
     }
@@ -134,6 +159,7 @@ public final class StringUtil {
      *
      * @return boolean
      */
+    @Deprecated
     public static boolean areSemanticEquals(String a, String b) {
 
         if (a == null) {
@@ -153,7 +179,9 @@ public final class StringUtil {
      * @param newString String
      *
      * @return String
+     * @deprecated {@see StringUtils#replace(String, String, String)}
      */
+    @Deprecated
     public static String replaceString(final String original, final String oldString, final String newString) {
         int index = original.indexOf(oldString);
         if (index < 0) {
@@ -172,22 +200,6 @@ public final class StringUtil {
             return buf.toString();
         }
     }
-
-
-    /**
-     * Appends to a StringBuilder the String src where non-ASCII and XML special
-     * chars are escaped.
-     *
-     * @param buf The destination XML stream
-     * @param src The String to append to the stream
-     *
-     * @deprecated use {@link #appendXmlEscaped(StringBuilder, String, boolean)} instead
-     */
-    @Deprecated
-    public static void appendXmlEscaped(StringBuilder buf, String src) {
-        appendXmlEscaped(buf, src, SUPPORTS_UTF8);
-    }
-
 
     /**
      * @param buf
@@ -249,29 +261,15 @@ public final class StringUtil {
         return s;
     }
 
-
-    /**
-     * @param string String
-     *
-     * @return String
-     *
-     * @deprecated Use StringEscapeUtils#escapeHtml4 instead
-     */
-    @Deprecated
-    public static String htmlEncode(String string) {
-        String encoded = replaceString(string, '&', "&amp;");
-        encoded = replaceString(encoded, '<', "&lt;");
-        return replaceString(encoded, '>', "&gt;");
-    }
-
-
     /**
      * @param original  String
      * @param oldChar   char
      * @param newString String
      *
      * @return String
+     * @deprecated {@see StringUtils#replace(String, String, String)} or {@see StringUtils#replaceChars(String, char, char)}
      */
+    @Deprecated
     public static String replaceString(final String original, char oldChar, final String newString) {
         int index = original.indexOf(oldChar);
         if (index < 0) {
@@ -298,13 +296,13 @@ public final class StringUtil {
      * and serves as a replacement for String.split() for JDK1.3 that doesn't
      * have it.
      *
-     * FIXME - we're on JDK 1.4 now, can we replace this with String.split?
-     *
      * @param source    String
      * @param delimiter char
      *
      * @return String[]
+     * @deprecated {@see StringUtils#split(String, char)}
      */
+    @Deprecated
     public static String[] substringsOf(String source, char delimiter) {
 
         if (source == null || source.length() == 0) {
@@ -350,7 +348,9 @@ public final class StringUtil {
      * @param separator char
      *
      * @return String[]
+     * @deprecated {@see StringUtils#split(String, String)}
      */
+    @Deprecated
     public static String[] substringsOf(String str, String separator) {
 
         if (str == null || str.length() == 0) {
@@ -382,7 +382,9 @@ public final class StringUtil {
      * @param sb        StringBuffer
      * @param iter      Iterator
      * @param separator String
+     * @deprecated {@see StringUtils#join(Iterator, String)}
      */
+    @Deprecated
     public static void asStringOn(StringBuffer sb, Iterator<?> iter, String separator) {
 
         if (!iter.hasNext()) {
@@ -405,7 +407,9 @@ public final class StringUtil {
      * @param sb        StringBuilder
      * @param items     Object[]
      * @param separator String
+     * @deprecated {@see StringUtils#join(Iterable, String)}
      */
+    @Deprecated
     public static void asStringOn(StringBuilder sb, Object[] items, String separator) {
 
         if (items == null || items.length == 0) {
@@ -515,12 +519,14 @@ public final class StringUtil {
      * @param length The desired minimum length of the resulting padded String
      *
      * @return The resulting left padded String
+     * @deprecated {@see StringUtils#leftPad(String, int)}
      */
+    @Deprecated
     public static String lpad(String s, int length) {
         String res = s;
         if (length - s.length() > 0) {
             char[] arr = new char[length - s.length()];
-            java.util.Arrays.fill(arr, ' ');
+            Arrays.fill(arr, ' ');
             res = new StringBuilder(length).append(arr).append(s).toString();
         }
         return res;
