@@ -181,7 +181,7 @@ public class Foo {
     </test-code>
 
     <code-fragment id="complicated-method"><![CDATA[
-public class Foo {
+public class Boo {
   public static void main(String args[]) {
     Random r = new Random();
     label: for (int j = -12; i < z; i++) {
