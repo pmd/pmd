@@ -337,4 +337,13 @@ public class DesignerWindowPresenter {
         boolean b = Boolean.parseBoolean(bool);
         view.getXpathEditorTitledPane().setExpanded(b);
     }
+
+
+    String getLeftToolbarDividerPosition() {
+        return String.valueOf(view.getMainVerticalSplitPane().getDividerPositions()[0]);
+    }
+
+    void setLeftToolbarDividerPosition(String pos) {
+        view.getMainVerticalSplitPane().setDividerPosition(0, Double.parseDouble(pos));
+    }
 }

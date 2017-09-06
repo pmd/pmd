@@ -39,7 +39,12 @@ enum DesignerWindowSettings {
     /** Whether the xpath bottom pane is expanded. */
     IS_XPATH_PANEL_EXPANDED("isXPathPanelExpanded",
                             DesignerWindowPresenter::isXPathPanelExpanded,
-                            DesignerWindowPresenter::setIsXPathPanelExpanded);
+                            DesignerWindowPresenter::setIsXPathPanelExpanded),
+
+    /** Position of the divider for the left toolbar (information). */
+    LEFT_TOOLBAR_DIVIDER_POSITION("leftToolBarDividerPosition",
+                                  DesignerWindowPresenter::getLeftToolbarDividerPosition,
+                                  DesignerWindowPresenter::setLeftToolbarDividerPosition);
 
 
     public final String keyName;

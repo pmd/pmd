@@ -59,7 +59,7 @@ public class DesignerWindow implements Initializable {
     @FXML
     private TitledPane xpathEditorTitledPane;
     @FXML
-    private SplitPane mainHorizontalSplitPane;
+    private SplitPane editorPanelHorizontalSplitPane;
     @FXML
     private ToggleGroup xpathVersionToggleGroup;
     @FXML
@@ -67,9 +67,11 @@ public class DesignerWindow implements Initializable {
     @FXML
     private Accordion nodeInfoAccordion;
     @FXML
-    private BorderPane mainEditorBorderPane;
+    private BorderPane editorAndASTBorderPane;
     @FXML
     private TitledPane astTitledPane;
+    @FXML
+    private SplitPane mainVerticalSplitPane;
     /* */
     private StringProperty sourceCodeProperty;
 
@@ -91,13 +93,13 @@ public class DesignerWindow implements Initializable {
         nodeInfoAccordion.setExpandedPane(xpathAttributesTitledPane);
 
 
-        double defaultMainHorizontalSplitPaneDividerPosition = mainHorizontalSplitPane.getDividerPositions()[0];
+        double defaultMainHorizontalSplitPaneDividerPosition = editorPanelHorizontalSplitPane.getDividerPositions()[0];
 
 
         // Fold xpath panel
         xpathEditorTitledPane.expandedProperty().addListener((observable, wasExpanded, isNowExpanded) -> {
             KeyValue keyValue = null;
-            DoubleProperty divPosition = mainHorizontalSplitPane.getDividers().get(0).positionProperty();
+            DoubleProperty divPosition = editorPanelHorizontalSplitPane.getDividers().get(0).positionProperty();
             if (wasExpanded && !isNowExpanded) {
                 keyValue = new KeyValue(divPosition, 1);
             } else if (!wasExpanded && isNowExpanded) {
@@ -112,14 +114,14 @@ public class DesignerWindow implements Initializable {
 
 
         // ensure main horizontal divider is never under 50%
-        mainHorizontalSplitPane.getDividers()
-                               .get(0)
-                               .positionProperty()
-                               .addListener((observable, oldValue, newValue) -> {
-                                   if (newValue.doubleValue() < .5) {
-                                       mainHorizontalSplitPane.setDividerPosition(0, .5);
-                                   }
-                               });
+        editorPanelHorizontalSplitPane.getDividers()
+                                      .get(0)
+                                      .positionProperty()
+                                      .addListener((observable, oldValue, newValue) -> {
+                                          if (newValue.doubleValue() < .5) {
+                                              editorPanelHorizontalSplitPane.setDividerPosition(0, .5);
+                                          }
+                                      });
     }
 
 
@@ -195,7 +197,7 @@ public class DesignerWindow implements Initializable {
 
 
     public BorderPane getMainEditorBorderPane() {
-        return mainEditorBorderPane;
+        return editorAndASTBorderPane;
     }
 
 
@@ -209,4 +211,7 @@ public class DesignerWindow implements Initializable {
     }
 
 
+    public SplitPane getMainVerticalSplitPane() {
+        return mainVerticalSplitPane;
+    }
 }

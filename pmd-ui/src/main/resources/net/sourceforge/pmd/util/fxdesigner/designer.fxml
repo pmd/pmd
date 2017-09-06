@@ -44,7 +44,7 @@
                 </MenuBar>
             </top>
             <center>
-                <SplitPane dividerPositions="0.2">
+                <SplitPane fx:id="mainVerticalSplitPane" dividerPositions="0.2295492487479132">
                     <items>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                             <children>
@@ -105,10 +105,10 @@
                                 </VBox>
                             </children>
                         </AnchorPane>
-                        <SplitPane fx:id="mainHorizontalSplitPane" dividerPositions="0.6703755215577191"
+                        <SplitPane fx:id="editorPanelHorizontalSplitPane" dividerPositions="0.6703755215577191"
                                    orientation="VERTICAL" BorderPane.alignment="BOTTOM_CENTER">
                             <items>
-                                <BorderPane fx:id="mainEditorBorderPane" prefHeight="200.0" prefWidth="200.0">
+                                <BorderPane fx:id="editorAndASTBorderPane" prefHeight="200.0" prefWidth="200.0">
                                     <center>
                                         <SplitPane dividerPositions="0.5" BorderPane.alignment="CENTER">
                                             <items>
