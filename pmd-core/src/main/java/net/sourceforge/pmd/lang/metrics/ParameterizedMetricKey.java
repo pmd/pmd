@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @param <N> Type of node on which the memoized metric can be computed
  *
  * @author Clément Fournier
+ * @since 5.8.0
  */
 public final class ParameterizedMetricKey<N extends Node> {
 

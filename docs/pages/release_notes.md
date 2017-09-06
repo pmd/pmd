@@ -16,10 +16,12 @@ This is a major release.
     *   [Revamped Apex CPD](#revamped-apex-cpd)
     *   [Java Type Resolution](#java-type-resolution)
     *   [Metrics Framework](#metrics-framework)
-    *   [Configuration Error Reporting](#configuration-error-reporting)
+    *   [Error Reporting](#error-reporting)
     *   [Java Symbol Table](#java-symbol-table)
     *   [Apex Parser Update](#apex-parser-update)
+    *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
+    *   [Deprecated Rules](#deprecated-rules)
     *   [Removed Rules](#removed-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
@@ -57,7 +59,24 @@ Based on those metrics, rules like "GodClass" detection can be implemented more 
 The Metrics framework has been abstracted and is available in `pmd-core` for other languages. With this
 PMD release, the metrics framework is supported for both Java and Apex.
 
-#### Configuration Error Reporting
+#### Error Reporting
+
+A number of improvements on error reporting have taken place, meaning changes to some of the report formats.
+
+##### Processing Errors
+
+Processing errors can now provide not only the message previously included on some reports, but also a full stacktrace.
+This will allow better error reports when providing feedback to the PMD team and help in debugging issues.
+
+The report formats providing full stacktrace of errors are:
+
+*   html
+*   summaryhtml
+*   textcolor
+*   vbhtml
+*   xml
+
+##### Configuration Errors
 
 For a long time reports have been notified of configuration errors on rules, but they have remained hidden.
 On a push to make these more evident to users, and help them get the best results out of PMD, we have started
@@ -77,6 +96,12 @@ providing configuration error reporting are:
 As we move forward we will be able to detect and report more configuration errors (ie: incomplete `auxclasspath`)
 and include them to such reports.
 
+#### New Rules
+
+*   The rule `NcssCount` (ruleset `java-codesize`) replaces the three rules "NcssConstructorCount", "NcssMethodCount",
+    and "NcssTypeCount". The new rule uses the metrics framework to achieve the same. It has two properties, to
+    define the report level for method and class sizes separately. Constructors and methods are considered the same.
+
 #### Modified Rules
 
 *   The rule `UnnecessaryFinalModifier` (ruleset `java-unnecessarycode`) has been revamped to detect more cases.
@@ -93,6 +118,11 @@ and include them to such reports.
     `com.google.auto.value.AutoValue`.
 
 *   The rule `GodClass` (ruleset `java-design`) has been revamped to use the new metrics framework.
+
+#### Deprecated Rules
+
+*   The rules `NcssConstructorCount`, `NcssMethodCount`, and `NcssTypeCount` (ruleset `java-codesize`) have been
+    deprecated. They will be replaced by the new rule `NcssCount` in the same ruleset.
 
 #### Removed Rules
 
@@ -141,6 +171,7 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   java-design
     *   [#357](https://github.com/pmd/pmd/issues/357): \[java] UncommentedEmptyConstructor consider annotations on Constructor
     *   [#438](https://github.com/pmd/pmd/issues/438): \[java] Relax AbstractClassWithoutAnyMethod when class is annotated by @AutoValue
+    *   [#590](https://github.com/pmd/pmd/issues/590): \[java] False positive on MissingStaticMethodInNonInstantiatableClass
 *   java-sunsecure
     *   [#468](https://github.com/pmd/pmd/issues/468): \[java] ArrayIsStoredDirectly false positive
 *   java-unusedcode
@@ -230,6 +261,7 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#528](https://github.com/pmd/pmd/pull/528): \[core] Fix typo - [Ayoub Kaanich](https://github.com/kayoub5)
 *   [#529](https://github.com/pmd/pmd/pull/529): \[java] Abstracted the Java metrics framework - [Clément Fournier](https://github.com/oowekyala)
 *   [#530](https://github.com/pmd/pmd/pull/530): \[java] Fix issue #527: Lombok getter annotation on enum is not recognized correctly - [Clément Fournier](https://github.com/oowekyala)
+*   [#533](https://github.com/pmd/pmd/pull/533): \[core] improve error message - [Dennis Kieselhorst](https://github.com/deki)
 *   [#535](https://github.com/pmd/pmd/pull/535): \[apex] Fix broken Apex visitor adapter - [Clément Fournier](https://github.com/oowekyala)
 *   [#542](https://github.com/pmd/pmd/pull/542): \[java] Metrics abstraction - [Clément Fournier](https://github.com/oowekyala)
 *   [#545](https://github.com/pmd/pmd/pull/545): \[apex] Apex metrics framework - [Clément Fournier](https://github.com/oowekyala)
@@ -249,4 +281,5 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#579](https://github.com/pmd/pmd/pull/579): \[java] Update parsing to produce upper and lower bounds - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#580](https://github.com/pmd/pmd/pull/580): \[core] Add AbstractMetric to topple the class hierarchy of metrics - [Clément Fournier](https://github.com/oowekyala)
 *   [#581](https://github.com/pmd/pmd/pull/581): \[java] Relax AbstractClassWithoutAnyMethod when class is annotated by @AutoValue - [Niklas Baudy](https://github.com/vanniktech)
-
+*   [#583](https://github.com/pmd/pmd/pull/583): \[java] Documentation about writing metrics - [Clément Fournier](https://github.com/oowekyala)
+*   [#585](https://github.com/pmd/pmd/pull/585): \[java] Moved NcssCountRule to codesize.xml - [Clément Fournier](https://github.com/oowekyala)

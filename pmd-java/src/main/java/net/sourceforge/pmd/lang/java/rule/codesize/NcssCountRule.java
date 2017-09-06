@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.rule;
+package net.sourceforge.pmd.lang.java.rule.codesize;
 
 import java.util.Collections;
 import java.util.HashMap;
