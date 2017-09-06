@@ -5,11 +5,7 @@
 package net.sourceforge.pmd.util.fxdesigner;
 
 import java.util.Arrays;
-
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
-
-import javafx.scene.control.RadioMenuItem;
+import java.util.function.Function;
 
 /**
  * Enumerates the settings that are persisted from session to session.
@@ -21,121 +17,46 @@ import javafx.scene.control.RadioMenuItem;
  */
 enum DesignerWindowSettings {
 
-    /**
-     * Language version.
-     */
-    LANGUAGE_VERSION("langVersion") {
-        @Override
-        public String getValueFrom(DesignerWindowPresenter presenter) {
-            return presenter.model.getLanguageVersion().getTerseName();
-        }
+    /** Language version. */
+    LANGUAGE_VERSION("langVersion",
+                     DesignerWindowPresenter::getLanguageVersionTerseName,
+                     DesignerWindowPresenter::setLanguageVersionFromTerseName),
 
+    /** Code from the main editor area. */
+    SOURCE_CODE("code",
+                DesignerWindowPresenter::getSourceCode,
+                DesignerWindowPresenter::setSourceCode),
+    /** Version of the XPath parser. */
+    XPATH_VERSION("xpathVersion",
+                  DesignerWindowPresenter::getXPathVersion,
+                  DesignerWindowPresenter::setXPathVersion),
 
-        @Override
-        void setValueIn(DesignerWindowPresenter presenter, String value) {
-            LanguageVersion version = LanguageRegistry.findLanguageVersionByTerseName(value);
-            presenter.languageVersionToggleGroup.getToggles()
-                                                .stream()
-                                                .filter(toggle -> toggle.getUserData().equals(version))
-                                                .findAny()
-                                                .orElse(new RadioMenuItem()) // discard
-                                                .setSelected(true);
-        }
-    },
+    /** Code of the XPath expression. */
+    XPATH_CODE("xpathCode",
+               DesignerWindowPresenter::getXPathCode,
+               DesignerWindowPresenter::setXPathCode),
 
-    /**
-     * Code from the main editor area.
-     */
-    SOURCE_CODE("code") {
-        @Override
-        public String getValueFrom(DesignerWindowPresenter presenter) {
-            return presenter.model.getSourceCode();
-        }
+    /** Whether to refresh XPath results when updating the AST. */
+    IS_REFRESH_XPATH("isRefreshXPath",
+                     DesignerWindowPresenter::isRefreshXPath,
+                     DesignerWindowPresenter::setIsRefreshXPath),
 
+    /** Whether the xpath bottom pane is expanded. */
+    IS_XPATH_PANEL_EXPANDED("isXPathPanelExpanded",
+                            DesignerWindowPresenter::isXPathPanelExpanded,
+                            DesignerWindowPresenter::setIsXPathPanelExpanded);
 
-        @Override
-        void setValueIn(DesignerWindowPresenter presenter, String value) {
-            presenter.view.getCodeEditorArea().replaceText(value);
-        }
-    },
-
-    /**
-     * Version of the XPath parser.
-     */
-    XPATH_VERSION("xpathVersion") {
-        @Override
-        public String getValueFrom(DesignerWindowPresenter presenter) {
-            return presenter.model.getXPathVersion();
-        }
-
-
-        @Override
-        void setValueIn(DesignerWindowPresenter presenter, String value) {
-            presenter.view.getXpathVersionToggleGroup()
-                          .getToggles()
-                          .stream()
-                          .filter(toggle -> toggle.getUserData().equals(value))
-                          .findFirst()
-                          .orElse(new RadioMenuItem()) // discard
-                          .setSelected(true);
-        }
-    },
-
-    /**
-     * Code of the XPath expression.
-     */
-    XPATH_CODE("xpathCode") {
-        @Override
-        public String getValueFrom(DesignerWindowPresenter presenter) {
-            return presenter.view.getXpathExpressionArea().getText();
-        }
-
-
-        @Override
-        void setValueIn(DesignerWindowPresenter presenter, String value) {
-            presenter.view.getXpathExpressionArea().replaceText(value);
-        }
-    },
-
-    /**
-     * Whether to refresh XPath results when updating the AST.
-     */
-    IS_REFRESH_XPATH("isRefreshXPath") {
-        @Override
-        String getValueFrom(DesignerWindowPresenter presenter) {
-            return Boolean.toString(presenter.view.getRefreshXPathToggle().isSelected());
-        }
-
-
-        @Override
-        void setValueIn(DesignerWindowPresenter presenter, String value) {
-            boolean b = Boolean.parseBoolean(value);
-            presenter.view.getRefreshXPathToggle().setSelected(b);
-        }
-    },
-
-    /**
-     * Whether the xpath bottom pane is expanded.
-     */
-    IS_XPATH_PANEL_EXPANDED("isXPathPanelExpanded") {
-        @Override
-        String getValueFrom(DesignerWindowPresenter presenter) {
-            return Boolean.toString(presenter.view.getXpathEditorTitledPane().isExpanded());
-        }
-
-
-        @Override
-        void setValueIn(DesignerWindowPresenter presenter, String value) {
-            boolean b = Boolean.parseBoolean(value);
-            presenter.view.getXpathEditorTitledPane().setExpanded(b);
-        }
-    };
 
     public final String keyName;
+    private final Function<DesignerWindowPresenter, String> getValueFunction;
+    private final PresenterSettingSetter setValueFunction;
 
 
-    DesignerWindowSettings(String keyName) {
+    DesignerWindowSettings(String keyName, Function<DesignerWindowPresenter, String> getValueFunction,
+                           PresenterSettingSetter setValueFunction) {
         this.keyName = keyName;
+        this.getValueFunction = getValueFunction;
+        this.setValueFunction = setValueFunction;
     }
 
 
@@ -146,7 +67,9 @@ enum DesignerWindowSettings {
      *
      * @return The value obtained from the presenter
      */
-    abstract String getValueFrom(DesignerWindowPresenter presenter);
+    String getValueFrom(DesignerWindowPresenter presenter) {
+        return getValueFunction.apply(presenter);
+    }
 
 
     /**
@@ -155,7 +78,9 @@ enum DesignerWindowSettings {
      * @param presenter The presenter
      * @param value     The value of the setting
      */
-    abstract void setValueIn(DesignerWindowPresenter presenter, String value);
+    void setValueIn(DesignerWindowPresenter presenter, String value) {
+        setValueFunction.set(presenter, value);
+    }
 
 
     /** Get the setting from the name of its key. */
@@ -164,6 +89,13 @@ enum DesignerWindowSettings {
                      .filter(cst -> cst.keyName.equals(key))
                      .findAny()
                      .get();
+    }
+
+
+    @FunctionalInterface
+    private interface PresenterSettingSetter {
+
+        void set(DesignerWindowPresenter presenter, String value);
     }
 
 }

@@ -51,9 +51,9 @@ public class DesignerWindowPresenter {
     private static final String SETTINGS_FILE_NAME = System.getProperty("user.home")
         + System.getProperty("file.separator") + ".pmd_designer.xml";
 
-    DesignerWindow view;
-    ASTManager model;
-    ToggleGroup languageVersionToggleGroup;
+    private DesignerWindow view;
+    private ASTManager model;
+    private ToggleGroup languageVersionToggleGroup;
 
 
     public DesignerWindowPresenter(DesignerWindow designerWindow) {
@@ -269,5 +269,81 @@ public class DesignerWindowPresenter {
         }
     }
 
+    /********************************/
+    /* SETTINGS LOAD/STORE ROUTINES */
+    /********************************/
 
+
+    String getLanguageVersionTerseName() {
+        return model.getLanguageVersion().getTerseName();
+    }
+
+
+    void setLanguageVersionFromTerseName(String name) {
+        LanguageVersion version = LanguageRegistry.findLanguageVersionByTerseName(name);
+        languageVersionToggleGroup.getToggles()
+                                  .stream()
+                                  .filter(toggle -> toggle.getUserData().equals(version))
+                                  .findAny()
+                                  .orElse(new RadioMenuItem()) // discard
+                                  .setSelected(true);
+    }
+
+
+    String getSourceCode() {
+        return model.getSourceCode();
+    }
+
+
+    void setSourceCode(String code) {
+        view.getCodeEditorArea().replaceText(code);
+    }
+
+
+    String getXPathVersion() {
+        return model.getXPathVersion();
+    }
+
+
+    void setXPathVersion(String version) {
+        view.getXpathVersionToggleGroup()
+            .getToggles()
+            .stream()
+            .filter(toggle -> toggle.getUserData().equals(version))
+            .findFirst()
+            .orElse(new RadioMenuItem()) // discard
+            .setSelected(true);
+    }
+
+
+    String getXPathCode() {
+        return view.getXpathExpressionArea().getText();
+    }
+
+
+    void setXPathCode(String code) {
+        view.getXpathExpressionArea().replaceText(code);
+    }
+
+
+    String isRefreshXPath() {
+        return Boolean.toString(view.getRefreshXPathToggle().isSelected());
+    }
+
+
+    void setIsRefreshXPath(String bool) {
+        boolean b = Boolean.parseBoolean(bool);
+        view.getRefreshXPathToggle().setSelected(b);
+    }
+
+
+    String isXPathPanelExpanded() {
+        return Boolean.toString(view.getXpathEditorTitledPane().isExpanded());
+    }
+
+
+    void setIsXPathPanelExpanded(String bool) {
+        boolean b = Boolean.parseBoolean(bool);
+        view.getXpathEditorTitledPane().setExpanded(b);
+    }
 }
