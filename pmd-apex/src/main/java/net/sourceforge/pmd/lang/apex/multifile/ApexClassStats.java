@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.metrics;
+package net.sourceforge.pmd.lang.apex.multifile;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -2,12 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.metrics;
+package net.sourceforge.pmd.lang.apex.multifile;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.apex.ast.ApexQualifiedName;
+import net.sourceforge.pmd.lang.apex.metrics.ApexSignatureMatcher;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSigMask;
 
 /**
@@ -16,6 +17,8 @@ import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSigMask;
  * @author Clément Fournier
  */
 public class ApexProjectMirror implements ApexSignatureMatcher {
+
+    static final ApexProjectMirror INSTANCE = new ApexProjectMirror();
 
     private final Map<ApexQualifiedName, ApexClassStats> classes = new HashMap<>();
 

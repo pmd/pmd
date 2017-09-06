@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.metrics;
+package net.sourceforge.pmd.lang.apex.multifile;
 
 import java.util.Stack;
 
@@ -11,8 +11,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorReducedAdapter;
 
 /**
- * TODO move that out!
- *
  * @author Clément Fournier
  */
 public class ApexMultifileVisitor extends ApexParserVisitorReducedAdapter {
@@ -26,6 +24,7 @@ public class ApexMultifileVisitor extends ApexParserVisitorReducedAdapter {
         this.mirror = mirror;
     }
 
+
     @Override
     public Object visit(ASTUserClassOrInterface<?> node, Object data) {
         stack.push(mirror.getClassStats(node.getQualifiedName(), true));
@@ -34,8 +33,6 @@ public class ApexMultifileVisitor extends ApexParserVisitorReducedAdapter {
 
         return data;
     }
-
-
 
 
     @Override
