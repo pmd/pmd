@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -183,6 +184,8 @@ public class DesignerWindowPresenter {
         refreshAST();
         if (view.getRefreshXPathToggle().isSelected()) {
             evaluateXPath();
+        } else {
+            view.getXpathResultListView().getItems().clear();
         }
     }
 
@@ -222,12 +225,17 @@ public class DesignerWindowPresenter {
     private void evaluateXPath() {
 
         try {
-            ObservableList<Node> results = model.evaluateXPath(view.getXpathExpressionArea().getText());
+            String xpath = view.getXpathExpressionArea().getText();
+
+            if (StringUtils.isBlank(xpath)) {
+                return;
+            }
+
+            ObservableList<Node> results = model.evaluateXPath(xpath);
             view.getXpathResultListView().setItems(results);
             view.displayXPathResultsSize(results.size());
         } catch (XPathEvaluationException e) {
             view.displayXPathError(e);
-            return;
         }
 
         view.getXpathResultListView().refresh();
