@@ -12,7 +12,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 
 /**
+ * Fills the PackageStats.
+ *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public class MultifileVisitor extends JavaParserVisitorReducedAdapter {
 

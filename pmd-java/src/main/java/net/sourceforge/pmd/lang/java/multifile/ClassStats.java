@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
  * QualifiedNames anymore, only Strings.
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 final class ClassStats implements ClassMirror {
 

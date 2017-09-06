@@ -24,7 +24,7 @@ public class ClassStatsTest {
 
     @Before
     public void resetMultifile() {
-        MultifileFacade.reset();
+        PackageStats.INSTANCE.reset();
     }
 
 
@@ -33,7 +33,7 @@ public class ClassStatsTest {
 
         JavaMultifileVisitorTest.parseAndVisitForClass(SignatureCountTestData.class);
 
-        final ProjectMirror toplevel = MultifileFacade.getTopLevelPackageStats();
+        final ProjectMirror toplevel = PackageStats.INSTANCE;
 
         final ClassMirror classMirror = toplevel.getClassMirror(JavaQualifiedName.ofClass(SignatureCountTestData.class));
 

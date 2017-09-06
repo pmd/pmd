@@ -31,13 +31,13 @@ public class JavaMultifileVisitorTest {
 
     @Test
     public void testPackageStatsNotNull() {
-        assertNotNull(MultifileFacade.getTopLevelPackageStats());
+        assertNotNull(PackageStats.INSTANCE);
     }
 
 
     @After
     public void resetMultifile() {
-        MultifileFacade.reset();
+        PackageStats.INSTANCE.reset();
     }
 
 
@@ -45,7 +45,7 @@ public class JavaMultifileVisitorTest {
     public void testOperationsAreThere() {
         ASTCompilationUnit acu = parseAndVisitForClass(MultifileVisitorTestData.class);
 
-        final ProjectMirror toplevel = MultifileFacade.getTopLevelPackageStats();
+        final ProjectMirror toplevel = PackageStats.INSTANCE;
 
         final JavaOperationSigMask opMask = new JavaOperationSigMask();
 
@@ -64,7 +64,7 @@ public class JavaMultifileVisitorTest {
     public void testFieldsAreThere() {
         parseAndVisitForClass(MultifileVisitorTestData.class);
 
-        final ProjectMirror toplevel = MultifileFacade.getTopLevelPackageStats();
+        final ProjectMirror toplevel = PackageStats.INSTANCE;
 
         final JavaFieldSigMask fieldSigMask = new JavaFieldSigMask();
 

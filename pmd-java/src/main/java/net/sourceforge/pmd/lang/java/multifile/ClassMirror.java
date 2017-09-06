@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
  * Represents a class for signature matching.
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 interface ClassMirror {
 

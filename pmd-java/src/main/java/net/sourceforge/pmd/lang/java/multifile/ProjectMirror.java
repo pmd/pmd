@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
  * Represents the analysed project to provide all rules with info about other classes.
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 interface ProjectMirror {
 

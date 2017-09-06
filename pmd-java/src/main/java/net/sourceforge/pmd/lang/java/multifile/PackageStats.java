@@ -19,8 +19,11 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
  *
  * @author Clément Fournier
  * @see ClassStats
+ * @since 6.0.0
  */
 final class PackageStats implements ProjectMirror {
+
+    static final PackageStats INSTANCE = new PackageStats();
 
     private final Map<String, PackageStats> subPackages = new HashMap<>();
     private final Map<String, ClassStats> classes = new HashMap<>();
