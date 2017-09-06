@@ -27,7 +27,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
@@ -63,8 +62,6 @@ public class DesignerWindow implements Initializable {
     private SplitPane mainHorizontalSplitPane;
     @FXML
     private ToggleGroup xpathVersionToggleGroup;
-    @FXML
-    private ToggleButton refreshXPathToggle;
     @FXML
     private TitledPane xpathAttributesTitledPane;
     @FXML
@@ -194,11 +191,6 @@ public class DesignerWindow implements Initializable {
 
     public TreeView<Node> getAstTreeView() {
         return astTreeView;
-    }
-
-
-    public ToggleButton getRefreshXPathToggle() {
-        return refreshXPathToggle;
     }
 
 

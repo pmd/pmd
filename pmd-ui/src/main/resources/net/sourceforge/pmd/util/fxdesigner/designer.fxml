@@ -12,9 +12,9 @@
 <?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -78,7 +78,9 @@
                                                             </content>
                                                         </TitledPane>
                                                         <TitledPane animated="false" expanded="false"
-                                                                    text="Symbol table"/>
+                                                                    text="Scope hierarchy"/>
+                                                        <TitledPane prefHeight="200.0" prefWidth="200.0"
+                                                                    text="Metrics"/>
                                                     </panes>
                                                 </Accordion>
                                             </content>
@@ -150,9 +152,12 @@
                                         <ToolBar prefHeight="35.0" prefWidth="954.0" BorderPane.alignment="CENTER">
                                             <items>
                                                 <Button fx:id="refreshASTButton" mnemonicParsing="false"
-                                                        prefHeight="10.0" prefWidth="200.0" text="Refresh AST"/>
-                                                <ToggleButton fx:id="refreshXPathToggle" mnemonicParsing="false"
-                                                              selected="true" text="Refresh XPath"/>
+                                                        prefHeight="25.0" prefWidth="289.0" text="Refresh AST">
+                                                    <tooltip>
+                                                        <Tooltip
+                                                                text="Refresh the AST, and XPath results if there's an expression to evaluate"/>
+                                                    </tooltip>
+                                                </Button>
                                                 <MenuButton mnemonicParsing="false" text="XPath version">
                                                     <items>
                                                         <RadioMenuItem mnemonicParsing="false" text="XPath 1.0">

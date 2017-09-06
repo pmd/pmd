@@ -13,6 +13,7 @@
 .accordion > .titled-pane > .title {
     -fx-font-size: 9pt;
     -fx-pref-height: 24.0;
+    -fx-background-color: derive(-fx-base, -10%);
 }
 
 

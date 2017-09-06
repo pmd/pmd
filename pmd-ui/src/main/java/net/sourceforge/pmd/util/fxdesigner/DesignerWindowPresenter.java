@@ -182,7 +182,7 @@ public class DesignerWindowPresenter {
 
     private void onRefreshASTClicked(ActionEvent event) {
         refreshAST();
-        if (view.getRefreshXPathToggle().isSelected()) {
+        if (StringUtils.isNotBlank(view.getXpathExpressionArea().getText())) {
             evaluateXPath();
         } else {
             view.getXpathResultListView().getItems().clear();
@@ -271,6 +271,8 @@ public class DesignerWindowPresenter {
 
     /********************************/
     /* SETTINGS LOAD/STORE ROUTINES */
+
+
     /********************************/
 
 
@@ -323,17 +325,6 @@ public class DesignerWindowPresenter {
 
     void setXPathCode(String code) {
         view.getXpathExpressionArea().replaceText(code);
-    }
-
-
-    String isRefreshXPath() {
-        return Boolean.toString(view.getRefreshXPathToggle().isSelected());
-    }
-
-
-    void setIsRefreshXPath(String bool) {
-        boolean b = Boolean.parseBoolean(bool);
-        view.getRefreshXPathToggle().setSelected(b);
     }
 
 

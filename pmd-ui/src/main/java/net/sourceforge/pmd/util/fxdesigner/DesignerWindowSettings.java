@@ -36,11 +36,6 @@ enum DesignerWindowSettings {
                DesignerWindowPresenter::getXPathCode,
                DesignerWindowPresenter::setXPathCode),
 
-    /** Whether to refresh XPath results when updating the AST. */
-    IS_REFRESH_XPATH("isRefreshXPath",
-                     DesignerWindowPresenter::isRefreshXPath,
-                     DesignerWindowPresenter::setIsRefreshXPath),
-
     /** Whether the xpath bottom pane is expanded. */
     IS_XPATH_PANEL_EXPANDED("isXPathPanelExpanded",
                             DesignerWindowPresenter::isXPathPanelExpanded,
