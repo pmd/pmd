@@ -56,7 +56,8 @@ public class PapariTextRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpectedError(ProcessingError error) {
-        return PMD.EOL + PMD.EOL + "Summary:" + PMD.EOL + PMD.EOL + "    err:  Error" + PMD.EOL + PMD.EOL
+        return PMD.EOL + PMD.EOL + "Summary:" + PMD.EOL + PMD.EOL + "    err:  Error" + PMD.EOL
+                + error.getDetail() + PMD.EOL + PMD.EOL
                 + "* errors:   1" + PMD.EOL + "* warnings: 0" + PMD.EOL;
     }
 

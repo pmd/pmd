@@ -18,26 +18,28 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
 
     private final TypeDefinitionType definitionType;
 
-    public enum TypeDefinitionType {
-        EXACT, UPPER_BOUND, UPPER_WILDCARD, LOWER_WILDCARD
-    }
-
     protected JavaTypeDefinition(TypeDefinitionType definitionType) {
         this.definitionType = definitionType;
     }
 
-    public static JavaTypeDefinition forClass(TypeDefinitionType type, List<JavaTypeDefinition> intersectionTypes) {
+    public static JavaTypeDefinition forClass(TypeDefinitionType type, Class<?> clazz,
+                                              JavaTypeDefinition... boundGenerics) {
+        return forClass(type, forClass(clazz, boundGenerics));
+    }
+
+    public static JavaTypeDefinition forClass(TypeDefinitionType type, JavaTypeDefinition... intersectionTypes) {
         switch (type) {
         case EXACT:
-            if (intersectionTypes.size() == 1) {
-                return intersectionTypes.get(0);
+            if (intersectionTypes.length == 1) {
+                return intersectionTypes[0];
             } else {
                 throw new IllegalArgumentException("Exact intersection types do not exist!");
             }
         case UPPER_BOUND:
         case UPPER_WILDCARD:
+            return new JavaTypeDefinitionUpper(type, intersectionTypes);
         case LOWER_WILDCARD:
-            return new JavaTypeDefinitionSpecial(type, intersectionTypes);
+            return new JavaTypeDefinitionLower(intersectionTypes);
         default:
             throw new IllegalStateException("Unknow type");
         }

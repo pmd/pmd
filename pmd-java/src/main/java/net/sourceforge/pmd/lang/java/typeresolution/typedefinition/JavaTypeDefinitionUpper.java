@@ -6,34 +6,39 @@ package net.sourceforge.pmd.lang.java.typeresolution.typedefinition;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-/* default */ class JavaTypeDefinitionSpecial extends JavaTypeDefinition {
-    private List<JavaTypeDefinition> typeList;
 
-    protected JavaTypeDefinitionSpecial(TypeDefinitionType defType, List<JavaTypeDefinition> typeList) {
+/* default */ class JavaTypeDefinitionUpper extends JavaTypeDefinition {
+    private final JavaTypeDefinition[] typeList;
+
+    protected JavaTypeDefinitionUpper(TypeDefinitionType defType, JavaTypeDefinition... typeList) {
         super(defType);
 
-        if (typeList.isEmpty()) {
+        if (typeList.length == 0) {
             throw new IllegalArgumentException("Intersection type list can't be empty");
         }
 
-        this.typeList = Collections.unmodifiableList(new ArrayList<>(typeList));
+        this.typeList = typeList;
     }
+
 
     /**
      * All the calls to this method are to delegate JavaTypeDefinition method calls to the first
      * JavaTypeDefinition in the 'typeList' list.
      */
-    private JavaTypeDefinition firstJavaType() {
-        return typeList.get(0);
+    protected JavaTypeDefinition firstJavaType() {
+        return typeList[0];
     }
 
     @Override
     public Class<?> getType() {
+        if (firstJavaType() == null) {
+            return null;
+        }
+
+
         return firstJavaType().getType();
     }
 
@@ -108,25 +113,25 @@ import java.util.Set;
                 .append("JavaTypeDefinition ")
                 .append(getDefinitionType().toString())
                 .append(" [")
-                .append(firstJavaType());
-        for (int index = 1; index < typeList.size(); ++index) {
+                .append(typeList[0]);
+        for (int index = 1; index < typeList.length; ++index) {
             builder.append(" && ");
-            builder.append(typeList.get(index));
+            builder.append(typeList[index]);
         }
         return builder.append("]").toString();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof JavaTypeDefinitionSpecial)) {
-            return false;
-        }
-
         if (this == obj) {
             return true;
         }
 
-        JavaTypeDefinitionSpecial otherTypeDef = (JavaTypeDefinitionSpecial) obj;
+        if (obj == null || !this.getClass().isInstance(obj)) {
+            return false;
+        }
+
+        JavaTypeDefinitionUpper otherTypeDef = (JavaTypeDefinitionUpper) obj;
 
         if (otherTypeDef.getJavaTypeCount() != getJavaTypeCount()
                 || getDefinitionType() != otherTypeDef.getDefinitionType()) {
@@ -186,16 +191,18 @@ import java.util.Set;
 
     @Override
     public int getJavaTypeCount() {
-        return typeList.size();
+        return typeList.length;
     }
 
     @Override
     public boolean isRawType() {
-        return typeList.size() == 1 && firstJavaType().isRawType();
+        // with lower bounds the second part would always eval true,
+        // because with lower bounds firstJavaType is Object.class
+        return typeList.length == 1 && firstJavaType().isRawType();
     }
 
     @Override
     public boolean isIntersectionType() {
-        return typeList.size() != 1;
+        return typeList.length > 1;
     }
 }

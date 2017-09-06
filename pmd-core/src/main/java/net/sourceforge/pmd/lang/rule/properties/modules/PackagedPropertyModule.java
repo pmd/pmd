@@ -19,6 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.PropertyDescriptorField;
 
 /**
+ * Factorises common functionality for packaged properties.
+ *
  * @author Clément Fournier
  */
 public abstract class PackagedPropertyModule<T> {
@@ -63,8 +65,8 @@ public abstract class PackagedPropertyModule<T> {
 
 
     /**
-     * Evaluates the names of the items against the allowable name prefixes. If
-     * one or more do not have valid prefixes then an exception will be thrown.
+     * Evaluates the names of the items against the allowable name prefixes. If one or more do not have valid prefixes
+     * then an exception will be thrown.
      *
      * @param items             Items to check
      * @param legalNamePrefixes Legal name prefixes

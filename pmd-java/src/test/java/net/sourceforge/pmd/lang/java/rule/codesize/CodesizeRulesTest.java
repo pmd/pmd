@@ -21,6 +21,7 @@ public class CodesizeRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "NcssConstructorCount");
         addRule(RULESET, "NcssMethodCount");
         addRule(RULESET, "NcssTypeCount");
+        addRule(RULESET, "NcssCount");
         addRule(RULESET, "NPathComplexity");
         addRule(RULESET, "StdCyclomaticComplexity");
         addRule(RULESET, "TooManyFields");

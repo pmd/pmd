@@ -8,6 +8,9 @@ import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getBestMethodReturnType;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getMethodExplicitTypeArugments;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.isMemberVisibleFromClass;
+import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.LOWER_WILDCARD;
+import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_BOUND;
+import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_WILDCARD;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -76,10 +79,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTWildcardBounds;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.ast.Token;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -1019,19 +1022,26 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTTypeArgument node, Object data) {
+        if (node.jjtGetNumChildren() == 0) { // if type argument is '?'
+            node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_WILDCARD, Object.class));
+        } else {
+            super.visit(node, data);
+            rollupTypeUnary(node);
+        }
+
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTWildcardBounds node, Object data) {
         super.visit(node, data);
-        rollupTypeUnary(node);
 
-        if (node.getType() == null) {
-            // ? extends Something
-            if (node.jjtGetFirstToken() instanceof Token
-                    && ((Token) node.jjtGetFirstToken()).next.image.equals("extends")) {
+        JavaTypeDefinition childType = ((TypeNode) node.jjtGetChild(0)).getTypeDefinition();
 
-                populateType(node, node.jjtGetLastToken().toString());
-
-            } else {  // ? or ? super Something
-                node.setType(Object.class);
-            }
+        if (node.jjtGetFirstToken().toString().equals("super")) {
+            node.setTypeDefinition(JavaTypeDefinition.forClass(LOWER_WILDCARD, childType));
+        } else { // equals "extends"
+            node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_WILDCARD, childType));
         }
 
         return data;
@@ -1057,11 +1067,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTTypeParameter node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-
-        if (node.getType() == null) {
-            node.setType(Object.class);
+        if (node.jjtGetNumChildren() == 0) { // type parameter doesn't have declared upper bounds
+            node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, Object.class));
+        } else {
+            super.visit(node, data);
+            rollupTypeUnary(node);
         }
 
         return data;
@@ -1070,7 +1080,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTTypeBound node, Object data) {
         super.visit(node, data);
-        rollupTypeUnary(node);
+
+        // TypeBound will have at least one child
+        JavaTypeDefinition[] bounds = new JavaTypeDefinition[node.jjtGetNumChildren()];
+
+        for (int index = 0; index < node.jjtGetNumChildren(); ++index) {
+            bounds[index] = ((TypeNode) node.jjtGetChild(index)).getTypeDefinition();
+        }
+
+        node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, bounds));
+
         return data;
     }
 

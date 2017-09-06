@@ -8,7 +8,10 @@ import static net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery.XPATH_1_0;
 import static net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery.XPATH_1_0_COMPATIBILITY;
 import static net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery.XPATH_2_0;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,15 +27,27 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 /**
  * Rule that tries to match an XPath expression against a DOM view of an AST.
  *
- * This rule needs a "xpath" property value in order to function.
+ * <p>This rule needs a "xpath" property value in order to function.
  */
 public class XPathRule extends AbstractRule {
 
     public static final StringProperty XPATH_DESCRIPTOR = new StringProperty("xpath", "XPath expression", "", 1.0f);
+
+    private static final Map<String, String> XPATH_VERSIONS;
+
+    static {
+        Map<String, String> tmp = new HashMap<>();
+        tmp.put(XPATH_1_0, XPATH_1_0);
+        tmp.put(XPATH_1_0_COMPATIBILITY, XPATH_1_0_COMPATIBILITY);
+        tmp.put(XPATH_2_0, XPATH_2_0);
+        XPATH_VERSIONS = Collections.unmodifiableMap(tmp);
+    }
+
+
+
     public static final EnumeratedProperty<String> VERSION_DESCRIPTOR
         = new EnumeratedProperty<>("version",
-                                   "XPath specification version", new String[] {XPATH_1_0, XPATH_1_0_COMPATIBILITY, XPATH_2_0},
-                                   new String[] {XPATH_1_0, XPATH_1_0_COMPATIBILITY, XPATH_2_0}, 0, String.class, 2.0f);
+                                   "XPath specification version", XPATH_VERSIONS, XPATH_1_0, String.class, 2.0f);
 
     private XPathRuleQuery xpathRuleQuery;
 
@@ -97,7 +112,7 @@ public class XPathRule extends AbstractRule {
     private boolean init() {
         if (xpathRuleQuery == null) {
             String xpath = getProperty(XPATH_DESCRIPTOR);
-            String version = (String) getProperty(VERSION_DESCRIPTOR);
+            String version = getProperty(VERSION_DESCRIPTOR);
             if (XPATH_1_0.equals(version)) {
                 xpathRuleQuery = new JaxenXPathRuleQuery();
             } else {
