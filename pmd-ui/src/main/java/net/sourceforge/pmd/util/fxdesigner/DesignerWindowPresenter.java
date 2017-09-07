@@ -49,7 +49,7 @@ import javafx.scene.control.TreeView;
 public class DesignerWindowPresenter {
 
     private static final String SETTINGS_FILE_NAME = System.getProperty("user.home")
-        + System.getProperty("file.separator") + ".pmd_designer.xml";
+        + System.getProperty("file.separator") + ".pmd_new_designer.xml";
 
     private DesignerWindow view;
     private ASTManager model;
