@@ -91,7 +91,7 @@ public class FileAnalysisCacheTest {
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
         cache.isUpToDate(sourceFile);
 
-        final RuleViolation rv = mock(RuleViolation.class, Mockito.RETURNS_SMART_NULLS);
+        final RuleViolation rv = mock(RuleViolation.class);
         when(rv.getFilename()).thenReturn(sourceFile.getPath());
         final net.sourceforge.pmd.Rule rule = mock(net.sourceforge.pmd.Rule.class, Mockito.RETURNS_SMART_NULLS);
         when(rv.getRule()).thenReturn(rule);
