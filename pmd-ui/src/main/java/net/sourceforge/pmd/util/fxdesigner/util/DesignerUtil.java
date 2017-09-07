@@ -69,6 +69,10 @@ public class DesignerUtil {
      */
     public static void highlightNode(CodeArea codeArea, Node node) {
 
+        if (node.getBeginLine() == node.getEndLine()
+            && node.getBeginColumn() == node.getEndColumn()) {
+            return;
+        }
 
         StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
 

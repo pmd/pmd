@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
+import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseTimeException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
@@ -28,6 +29,7 @@ import net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
@@ -38,6 +40,7 @@ import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
 /**
@@ -66,6 +69,7 @@ public class DesignerWindowPresenter {
         initializeLanguageVersionMenu();
         initializeASTTreeView();
         initializeXPath();
+        initialiseNodeInfoSection();
         bindModelToView();
 
         try {
@@ -109,6 +113,11 @@ public class DesignerWindowPresenter {
     }
 
 
+    private void initialiseNodeInfoSection() {
+        view.getMetricResultsListView().setCellFactory(param -> new MetricResultListCell());
+    }
+
+
     private void initializeXPath() {
 
         ToggleGroup xpathVersionToggleGroup = view.getXpathVersionToggleGroup();
@@ -136,13 +145,20 @@ public class DesignerWindowPresenter {
         TreeView<Node> astTreeView = view.getAstTreeView();
 
         astTreeView.setCellFactory(param -> new ASTTreeCell());
-        astTreeView.getSelectionModel()
-                   .selectedItemProperty()
-                   .addListener((observable, oldValue, newValue) -> {
-                       if (newValue != null) {
-                           onNodeItemSelected(newValue.getValue());
-                       }
-                   });
+
+        ReadOnlyObjectProperty<TreeItem<Node>> selectedItemProperty
+            = astTreeView.getSelectionModel().selectedItemProperty();
+
+        selectedItemProperty.addListener(observable -> {
+            view.getMetricResultsListView().getItems().clear();
+            view.getXpathAttributesListView().getItems().clear();
+        });
+
+        selectedItemProperty.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                onNodeItemSelected(newValue.getValue());
+            }
+        });
     }
 
 
@@ -151,6 +167,14 @@ public class DesignerWindowPresenter {
         if (selectedValue != null) {
             ObservableList<String> atts = DesignerUtil.getAttributes(selectedValue);
             view.getXpathAttributesListView().setItems(atts);
+
+            ObservableList<MetricResult> metrics = model.evaluateAllMetrics(selectedValue);
+            view.getMetricResultsListView().setItems(metrics);
+            view.notifyMetricsAvailable(metrics.stream()
+                                               .map(MetricResult::getValue)
+                                               .filter(result -> !result.isNaN())
+                                               .count());
+
 
             DesignerUtil.highlightNode(view.getCodeEditorArea(), selectedValue);
         }

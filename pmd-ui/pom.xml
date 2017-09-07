@@ -31,5 +31,10 @@
             <artifactId>richtextfx</artifactId>
             <version>0.6.10</version>
         </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-apex</artifactId>
+            <version>6.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

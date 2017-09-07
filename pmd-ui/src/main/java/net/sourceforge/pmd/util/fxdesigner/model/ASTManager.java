@@ -38,8 +38,11 @@ public class ASTManager {
     /** Selected language version. */
     private ObjectProperty<LanguageVersion> languageVersion = new SimpleObjectProperty<>();
 
-    /** Evaluates XPath queries and stores the results. */
+    /** Evaluates XPath queries. */
     private XPathEvaluator xpathEvaluator = new XPathEvaluator();
+
+    /** Evaluates metrics on a node. */
+    private MetricEvaluator metricEvaluator = new MetricEvaluator();
 
 
     public LanguageVersion getLanguageVersion() {
@@ -59,6 +62,22 @@ public class ASTManager {
 
     public String getXPathVersion() {
         return xpathEvaluator.xpathVersionProperty().get();
+    }
+
+
+    /**
+     * Evaluates all available metrics for that node.
+     *
+     * @param n Node
+     *
+     * @return A list of all the metric results that could be computed, possibly with some Double.NaN results
+     */
+    public ObservableList<MetricResult> evaluateAllMetrics(Node n) {
+        try {
+            return FXCollections.observableArrayList(metricEvaluator.evaluateAllMetrics(n));
+        } catch (UnsupportedOperationException e) {
+            return FXCollections.emptyObservableList();
+        }
     }
 
 
@@ -94,6 +113,7 @@ public class ASTManager {
             Node node = parser.parse(null, new StringReader(source));
             languageVersionHandler.getSymbolFacade().start(node);
             languageVersionHandler.getTypeResolutionFacade(ASTManager.class.getClassLoader()).start(node);
+            languageVersionHandler.getMetricsVisitorFacade().start(node);
             compilationUnit = node;
             lastValidSource = source;
             lastLanguageVersion = languageVersion.get();

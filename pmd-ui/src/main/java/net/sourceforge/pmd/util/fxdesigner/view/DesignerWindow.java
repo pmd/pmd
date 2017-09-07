@@ -12,6 +12,7 @@ import org.fxmisc.richtext.LineNumberFactory;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.DesignerWindowPresenter;
+import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -40,6 +41,8 @@ import javafx.util.Duration;
  */
 public class DesignerWindow implements Initializable {
 
+    @FXML
+    public TitledPane metricResultsTitledPane;
     @FXML
     private CodeArea codeEditorArea;
     @FXML
@@ -72,6 +75,9 @@ public class DesignerWindow implements Initializable {
     private TitledPane astTitledPane;
     @FXML
     private SplitPane mainVerticalSplitPane;
+    @FXML
+    private ListView<MetricResult> metricResultsListView;
+
     /* */
     private StringProperty sourceCodeProperty;
 
@@ -122,6 +128,12 @@ public class DesignerWindow implements Initializable {
                                               editorPanelHorizontalSplitPane.setDividerPosition(0, .5);
                                           }
                                       });
+    }
+
+
+    public void notifyMetricsAvailable(long numMetrics) {
+        metricResultsTitledPane.setText("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + " available)");
+        metricResultsTitledPane.setDisable(numMetrics == 0);
     }
 
 
@@ -213,5 +225,10 @@ public class DesignerWindow implements Initializable {
 
     public SplitPane getMainVerticalSplitPane() {
         return mainVerticalSplitPane;
+    }
+
+
+    public ListView<MetricResult> getMetricResultsListView() {
+        return metricResultsListView;
     }
 }
