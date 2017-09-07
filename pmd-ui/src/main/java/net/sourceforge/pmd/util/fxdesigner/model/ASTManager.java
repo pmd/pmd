@@ -6,15 +6,15 @@ package net.sourceforge.pmd.util.fxdesigner.model;
 
 import java.io.StringReader;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.fxdesigner.Designer;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,17 +27,19 @@ import javafx.collections.ObservableList;
  */
 public class ASTManager {
 
-    /** Source code text, bound to the view. */
-    private StringProperty sourceCode = new SimpleStringProperty();
+    /** Last valid source that was compiled, corresponds to {@link #compilationUnit}. */
+    private String lastValidSource;
+    /** Last language version used. */
+    private LanguageVersion lastLanguageVersion;
+
+    /** Latest computed compilation unit (only null before the first call to {@link #getCompilationUnit(String)}) */
+    private Node compilationUnit;
 
     /** Selected language version. */
     private ObjectProperty<LanguageVersion> languageVersion = new SimpleObjectProperty<>();
 
     /** Evaluates XPath queries and stores the results. */
     private XPathEvaluator xpathEvaluator = new XPathEvaluator();
-
-    /** Latest computed compilation unit (only null before the first call to {@link #getCompilationUnit()}) */
-    private Node compilationUnit;
 
 
     public LanguageVersion getLanguageVersion() {
@@ -47,16 +49,6 @@ public class ASTManager {
 
     public ObjectProperty<LanguageVersion> languageVersionProperty() {
         return languageVersion;
-    }
-
-
-    public String getSourceCode() {
-        return sourceCode.get();
-    }
-
-
-    public StringProperty sourceCodeProperty() {
-        return sourceCode;
     }
 
 
@@ -91,14 +83,20 @@ public class ASTManager {
      *
      * @throws ParseTimeException if parsing or one of the visitors fails. The cause is preserved.
      */
-    public Node getCompilationUnit() throws ParseTimeException {
+    public Node getCompilationUnit(String source) throws ParseTimeException {
+        if (StringUtils.equals(source, lastValidSource)
+            && languageVersion.get().equals(lastLanguageVersion)) {
+            return compilationUnit;
+        }
         LanguageVersionHandler languageVersionHandler = languageVersion.get().getLanguageVersionHandler();
         Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
         try {
-            Node node = parser.parse(null, new StringReader(sourceCode.get()));
+            Node node = parser.parse(null, new StringReader(source));
             languageVersionHandler.getSymbolFacade().start(node);
-            languageVersionHandler.getTypeResolutionFacade(Designer.class.getClassLoader()).start(node);
+            languageVersionHandler.getTypeResolutionFacade(ASTManager.class.getClassLoader()).start(node);
             compilationUnit = node;
+            lastValidSource = source;
+            lastLanguageVersion = languageVersion.get();
             return compilationUnit;
         } catch (Exception e) {
             throw new ParseTimeException(e);

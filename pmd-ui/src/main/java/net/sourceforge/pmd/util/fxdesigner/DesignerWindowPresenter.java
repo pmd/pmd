@@ -87,6 +87,7 @@ public class DesignerWindowPresenter {
         view.getRefreshASTButton().setOnAction(this::onRefreshASTClicked);
         view.sourceCodeProperty().addListener((observable, oldValue, newValue) -> view.notifyOutdatedAST());
 
+        onRefreshASTClicked(null); // Restore AST and XPath results
     }
 
 
@@ -97,7 +98,6 @@ public class DesignerWindowPresenter {
                                            languageVersionToggleGroup.selectedToggleProperty());
 
         model.languageVersionProperty().bind(langVersionBinding);
-        model.sourceCodeProperty().bind(view.sourceCodeProperty());
 
         ToggleGroup tg = view.getXpathVersionToggleGroup();
 
@@ -194,7 +194,7 @@ public class DesignerWindowPresenter {
     private void refreshAST() {
         Node n = null;
         try {
-            n = model.getCompilationUnit();
+            n = model.getCompilationUnit(view.getCodeEditorArea().getText());
         } catch (ParseTimeException e) {
             notifyParseTimeException(e);
         }
@@ -293,7 +293,7 @@ public class DesignerWindowPresenter {
 
 
     String getSourceCode() {
-        return model.getSourceCode();
+        return view.getCodeEditorArea().getText();
     }
 
 
@@ -342,6 +342,7 @@ public class DesignerWindowPresenter {
     String getLeftToolbarDividerPosition() {
         return String.valueOf(view.getMainVerticalSplitPane().getDividerPositions()[0]);
     }
+
 
     void setLeftToolbarDividerPosition(String pos) {
         view.getMainVerticalSplitPane().setDividerPosition(0, Double.parseDouble(pos));
