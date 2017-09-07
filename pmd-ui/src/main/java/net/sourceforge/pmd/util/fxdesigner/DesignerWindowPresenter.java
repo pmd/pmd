@@ -89,7 +89,13 @@ public class DesignerWindowPresenter {
         });
 
         view.getRefreshASTButton().setOnAction(this::onRefreshASTClicked);
-        view.sourceCodeProperty().addListener((observable, oldValue, newValue) -> view.notifyOutdatedAST());
+        view.sourceCodeProperty().addListener((observable, oldValue, newValue) -> {
+            if (model.isRecompilationNeeded(newValue)) {
+                view.notifyOutdatedAST();
+            } else {
+                view.acknowledgeUpdatedAST();
+            }
+        });
 
         onRefreshASTClicked(null); // Restore AST and XPath results
     }
@@ -205,7 +211,10 @@ public class DesignerWindowPresenter {
 
 
     private void onRefreshASTClicked(ActionEvent event) {
-        refreshAST();
+        String source = view.getCodeEditorArea().getText();
+        if (model.isRecompilationNeeded(source)) {
+            refreshAST(source);
+        }
         if (StringUtils.isNotBlank(view.getXpathExpressionArea().getText())) {
             evaluateXPath();
         } else {
@@ -215,10 +224,10 @@ public class DesignerWindowPresenter {
 
 
     /** Refresh the AST view with the updated code. */
-    private void refreshAST() {
+    private void refreshAST(String source) {
         Node n = null;
         try {
-            n = model.getCompilationUnit(view.getCodeEditorArea().getText());
+            n = model.getCompilationUnit(source);
         } catch (ParseTimeException e) {
             notifyParseTimeException(e);
         }

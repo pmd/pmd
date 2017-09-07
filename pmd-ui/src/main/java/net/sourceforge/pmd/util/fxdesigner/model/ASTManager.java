@@ -97,8 +97,16 @@ public class ASTManager {
     }
 
 
+    public boolean isRecompilationNeeded(String source) {
+        return !StringUtils.equals(source, lastValidSource)
+            || !languageVersion.get().equals(lastLanguageVersion);
+    }
+
+
     /**
      * Refreshes the compilation unit given the current parameters of the model.
+     *
+     * @param source Source code
      *
      * @throws ParseTimeException if parsing or one of the visitors fails. The cause is preserved.
      */
