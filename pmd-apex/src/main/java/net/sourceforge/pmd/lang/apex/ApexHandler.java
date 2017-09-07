@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.DumpFacade;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileVisitorFacade;
 import net.sourceforge.pmd.lang.apex.rule.ApexRuleViolationFactory;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
