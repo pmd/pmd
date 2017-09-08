@@ -36,7 +36,7 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     private ConcurrentHashMap<TestDescriptor, Description> testDescriptions = new ConcurrentHashMap<>();
     private final SimpleAggregatorTst instance;
 
-    public RuleTestRunner(Class<?> testClass) throws InitializationError {
+    public RuleTestRunner(Class<? extends SimpleAggregatorTst> testClass) throws InitializationError {
         super(testClass);
         instance = createTestClass();
         instance.setUp();
