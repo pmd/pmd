@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.testframework;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.manipulation.Filter;
@@ -21,8 +24,8 @@ import org.junit.runners.model.InitializationError;
  * and our custom {@link RuleTestRunner}.
  * It allows to selectively execute single test cases (it is {@link Filterable}).
  * 
- * <p>Note: Since we actually run two runner one after another, the static {@code BeforeClass}
- * and {@Code AfterClass} methods will be executed twice.</p>
+ * <p>Note: Since we actually run two runners one after another, the static {@code BeforeClass}
+ * and {@Code AfterClass} methods will be executed twice and the test class will be instantiated twice, too.</p>
  *
  * <p>In order to use it, you'll need to subclass {@link SimpleAggregatorTst} and
  * annotate your test class with RunWith:</p>
@@ -37,12 +40,17 @@ import org.junit.runners.model.InitializationError;
 public class PMDTestRunner extends Runner implements Filterable, Sortable {
     private final Class<? extends SimpleAggregatorTst> klass;
     private final RuleTestRunner ruleTests;
-    private final JUnit4 unitTests;
+    private final ParentRunner<?> unitTests;
 
     public PMDTestRunner(final Class<? extends SimpleAggregatorTst> klass) throws InitializationError {
         this.klass = klass;
         ruleTests = new RuleTestRunner(klass);
-        unitTests = new JUnit4(klass);
+
+        if (ruleTests.hasUnitTests()) {
+            unitTests = new JUnit4(klass);
+        } else {
+            unitTests = new EmptyRunner(klass);
+        }
     }
 
     @Override
@@ -74,7 +82,7 @@ public class PMDTestRunner extends Runner implements Filterable, Sortable {
         return description;
     }
 
-    private Description createChildrenDescriptions(ParentRunner<?> runner, String suiteName) {
+    private Description createChildrenDescriptions(Runner runner, String suiteName) {
         Description suite = Description.createSuiteDescription(suiteName);
         for (Description child : runner.getDescription().getChildren()) {
             suite.addChild(child);
@@ -92,5 +100,31 @@ public class PMDTestRunner extends Runner implements Filterable, Sortable {
     public void sort(Sorter sorter) {
         ruleTests.sort(sorter);
         unitTests.sort(sorter);
+    }
+
+    private static class EmptyRunner extends ParentRunner<Object> {
+        protected EmptyRunner(Class<?> testClass) throws InitializationError {
+            super(testClass);
+        }
+
+        @Override
+        public Description getDescription() {
+            return Description.EMPTY;
+        }
+
+        @Override
+        protected List<Object> getChildren() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        protected Description describeChild(Object child) {
+            return Description.EMPTY;
+        }
+
+        @Override
+        protected void runChild(Object child, RunNotifier notifier) {
+            // there are no tests - nothing to execute
+        }
     }
 }

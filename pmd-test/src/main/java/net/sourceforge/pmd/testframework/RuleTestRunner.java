@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.internal.runners.statements.RunAfters;
 import org.junit.internal.runners.statements.RunBefores;
 import org.junit.rules.RunRules;
@@ -53,6 +54,14 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
         }
         return description;
     };
+
+    /**
+     * Checks whether this test class has additionally unit test methods.
+     * @return true if there is at least one unit test method.
+     */
+    public boolean hasUnitTests() {
+        return !getTestClass().getAnnotatedMethods(Test.class).isEmpty();
+    }
 
     @Override
     protected List<TestDescriptor> getChildren() {
