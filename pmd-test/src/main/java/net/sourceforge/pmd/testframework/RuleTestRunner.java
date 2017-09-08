@@ -53,7 +53,7 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
             testDescriptions.putIfAbsent(testCase, description);
         }
         return description;
-    };
+    }
 
     /**
      * Checks whether this test class has additionally unit test methods.
@@ -86,7 +86,7 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
 
     private SimpleAggregatorTst createTestClass() throws InitializationError {
         try {
-            return (SimpleAggregatorTst)getTestClass().getOnlyConstructor().newInstance();
+            return (SimpleAggregatorTst) getTestClass().getOnlyConstructor().newInstance();
         } catch (Exception e) {
             throw new InitializationError(e);
         }
