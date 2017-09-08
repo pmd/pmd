@@ -11,12 +11,6 @@ permalink: pmd_devdocs_metrics_howto.html
 
 ## Using the metrics framework
 
-{%include note.html content="Using the metrics framework is for now restricted to Java rules (with plans to support 
-XPath rules later)." %}
-
-To use the metrics framework in a custom rule, the first thing to do would be to **enable metrics by adding the
-`metrics="true"` attribute** to your rule's XML element.
-
 {%include note.html content="The following explains how to use the Java metrics framework. The Apex framework 
 differs only by the name of its classes." %}
 
@@ -28,8 +22,38 @@ object in the framework can only handle either types or operations, but not both
 PMD ships with a library of already implemented metrics. These metrics are referenced by `MetricKey` objects,
 which are listed in two public enums: `JavaClassMetricKey` and `JavaOperationMetricKey`. Metric keys wrap a metric, and
 know which type of node their metric can be computed on. That way, you cannot compute an operation metric on a class 
-declaration node. Metrics that can be computed on operation and type declarations (e.g. NCSS) have one metric key in 
+declaration node. Metrics that can be computed on both operation and type declarations (e.g. NCSS) have one metric key in
 each enum.
+
+## For XPath rules
+
+To use the metrics framework in a custom rule, the first thing to do would be to enable metrics by adding the
+`metrics="true"` attribute to your rule's XML element.
+
+XPath rules can compute metrics using the `metric` function. This function takes a single **string argument**,
+which is the name of the metric key as defined in  `JavaClassMetricKey` or `JavaOperationMetricKey`. The metric
+ will be **computed on the context node**.
+
+The function will throw an exception in the following cases:
+* The context node is neither an instance of `ASTAnyTypeDeclaration` or `ASTMethodOrConstructorDeclaration`, that is,
+it's not one of `ClassOrInterfaceDeclaration`, `EnumDeclaration`, `AnnotationDeclaration`, `MethodDeclaration`,
+or `ConstructorDeclaration`.
+* The metric key does not exist (the name is case insensitive) or is not defined for the type of the context node.
+
+{%include note.html
+  content="More advanced features of the API are not accessible yet, but may be supported in the future.
+           The API is thus subject to change." %}
+
+### Examples
+
+* `//ClassOrInterfaceDeclaration[metric('NCSS') > 200]`
+* `//MethodDeclaration[metric('CYCLO') > 10 and metric('NCSS') > 20]`
+* `//ClassOrInterfaceDeclaration[metric('CYCLO') > 50]`: IllegalArgumentException!
+  CYCLO's only defined for methods and constructors.
+
+## For Java Rules
+
+First, similarly to XPath rules, you should add the `metrics="true"` attribute to your rule's XML element.
 
 The static façade class `JavaMetrics` is the single entry point to compute metrics in the Java framework. 
 This class provides the method `get` and its overloads. The following sections describes the interface of this class.
