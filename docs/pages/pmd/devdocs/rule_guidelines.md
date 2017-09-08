@@ -48,73 +48,16 @@ Rules which use the RuleChain to visit the AST are faster than rules which perfo
 
 ## Adding test cases
 
+See [Test Framework](pmd_devdocs_testing.html) for the general documentation
+
 ### … for a rule I want to submit (in a patch)
 
-In the test directory (src/test/java), you’ll find all the unit tests for PMD. In the proper package (for instance, net.sourceforge.pmd.lang.java.rule.basic, for rules from the basic rulesets), you’ll find a test suite such as this:
-
-```java
-public class BasicRulesTest extends SimpleAggregatorTst {
-   @Before
-   public void setUp() {
-       addRule("java-basic", "AvoidDecimalLiteralsInBigDecimalConstructor");
-       addRule("java-basic", "AvoidMultipleUnaryOperators");
-       addRule("java-basic", "AvoidThreadGroup");
-       ...
-```
-
-Suppose you want to add tests for a new rule of yours, called “MyNewRule”. Just add the proper line in this suite:
-
-```java
-public void setUp() {
-    ...
-    addRule("java-basic", "MyNewRule");
-    ...
-}
-```
-And add in the appropriate xml subpackage in src/test/resources (for instance, net.sourceforge.pmd.lang.java.rule.basic.xml). There you should find a XML file for each rule, the syntax is pretty obvious:
-
-```xml
-<test-data>
-    <test-code>
-        <description>call super</description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-            public class Foo extends Bar {
-                public void foo() {
-                super.foo();
-                }
-            }
-        ]]></code>
-    </test-code>
-</test-data>
-```
+Figure out the ruleset to which you want to the rule. Then add your rule to the appropriate test class for
+the ruleset and add the XML test data in the correct xml subpackage.
 
 ### … for something too specific, that I won’t be able to submit
 
-In this case, you can still use the PMD test framework, as it is shipped in PMD. Follow the previous instructions to right your test case, and simply create our own RulesTest using the SimpleAggregatorTst:
-
-```java
-package too.specific.to.submit;
-
-import org.junit.Before;
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
-
-public class SpecificRulesTest extends SimpleAggregatorTst {
-
-    @Before
-    public void setUp() {
-        addRule("specific-rules.xml", "MySpecificRule");
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(SpecificRulesTest.class);
-    }
-}
-```
-
->Note the following PMD dependencies are required to run the test:
->* asm
->* jaxen
+See [Using the test framework externally](pmd_devdocs_testing.html#using-the-test-framework-externally)
 
 ## Code quality
 
