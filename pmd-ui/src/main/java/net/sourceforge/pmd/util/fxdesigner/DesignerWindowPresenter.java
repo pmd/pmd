@@ -44,7 +44,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
 /**
- * Presenter of the designer window.
+ * Presenter of the designer window. Subscribes to the events of the {@link DesignerWindow} that instantiates it.
  *
  * @author Clément Fournier
  * @since 6.0.0
@@ -280,7 +280,7 @@ public class DesignerWindowPresenter {
         XMLSettingsSaver saver = XMLSettingsSaver.forFile(SETTINGS_FILE_NAME);
 
         for (DesignerWindowSettings setting : DesignerWindowSettings.values()) {
-            saver.put(setting.keyName, setting.getValueFrom(this));
+            saver.put(setting.getKeyName(), setting.getValueFrom(this));
         }
 
         saver.save();
@@ -291,7 +291,7 @@ public class DesignerWindowPresenter {
     private void loadSettings() throws IOException {
 
         Set<String> keyNames = Arrays.stream(DesignerWindowSettings.values())
-                                     .map(e -> e.keyName)
+                                     .map(DesignerWindowSettings::getKeyName)
                                      .collect(Collectors.toSet());
 
         XMLSettingsLoader loader = new XMLSettingsLoader(SETTINGS_FILE_NAME, keyNames);
@@ -304,8 +304,6 @@ public class DesignerWindowPresenter {
 
     /********************************/
     /* SETTINGS LOAD/STORE ROUTINES */
-
-
     /********************************/
 
 

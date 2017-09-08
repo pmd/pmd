@@ -47,7 +47,7 @@ enum DesignerWindowSettings {
                                   DesignerWindowPresenter::setLeftToolbarDividerPosition);
 
 
-    public final String keyName;
+    private final String keyName;
     private final Function<DesignerWindowPresenter, String> getValueFunction;
     private final PresenterSettingSetter setValueFunction;
 
@@ -80,6 +80,11 @@ enum DesignerWindowSettings {
      */
     void setValueIn(DesignerWindowPresenter presenter, String value) {
         setValueFunction.set(presenter, value);
+    }
+
+
+    public String getKeyName() {
+        return keyName;
     }
 
 

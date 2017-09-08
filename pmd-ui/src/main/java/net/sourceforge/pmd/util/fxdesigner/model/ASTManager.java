@@ -20,7 +20,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- * Main class of the model.
+ * Main class of the model. Manages the compilation unit and evaluation logic.
  *
  * @author Clément Fournier
  * @since 6.0.0
@@ -61,7 +61,7 @@ public class ASTManager {
 
 
     public String getXPathVersion() {
-        return xpathEvaluator.xpathVersionProperty().get();
+        return xpathEvaluator.getXpathVersion();
     }
 
 
@@ -82,11 +82,11 @@ public class ASTManager {
 
 
     /**
-     * Evaluates an XPath request, returns the matching nodes.
+     * Evaluates an XPath query, returns the matching nodes.
      *
      * @param xpathQuery Query to execute
      *
-     * @return The matching nodes, or Optional.empty if the compilation unit is invalid.
+     * @return List of the matching nodes, never null.
      *
      * @throws XPathEvaluationException if there was an error during the evaluation. The cause is preserved.
      */
@@ -97,6 +97,13 @@ public class ASTManager {
     }
 
 
+    /**
+     * Returns true if the source must be recompiled.
+     *
+     * @param source Source to test
+     *
+     * @return true if the current AST does not correspond to the parameter source
+     */
     public boolean isRecompilationNeeded(String source) {
         return !StringUtils.equals(source, lastValidSource)
             || !languageVersion.get().equals(lastLanguageVersion);
