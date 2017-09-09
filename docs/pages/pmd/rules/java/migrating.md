@@ -5,7 +5,7 @@ permalink: pmd_rules_java_migrating.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/migrating.xml
-keywords: Migration, ReplaceVectorWithList, ReplaceHashtableWithMap, ReplaceEnumerationWithIterator, AvoidEnumAsIdentifier, AvoidAssertAsIdentifier, IntegerInstantiation, ByteInstantiation, ShortInstantiation, LongInstantiation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit4SuitesShouldUseSuiteAnnotation, JUnitUseExpected
+keywords: Migration, ReplaceVectorWithList, ReplaceHashtableWithMap, ReplaceEnumerationWithIterator, AvoidEnumAsIdentifier, AvoidAssertAsIdentifier, IntegerInstantiation, ByteInstantiation, ShortInstantiation, LongInstantiation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit4SuitesShouldUseSuiteAnnotation, JUnitUseExpected, ForLoopCanBeForeach
 ---
 ## AvoidAssertAsIdentifier
 
@@ -72,6 +72,37 @@ or ClassOrInterfaceType/@Image='java.lang.Byte')]
 ``` java
 public class Foo {
     private Byte i = new Byte(0); // change to Byte i = Byte.valueOf(0);
+}
+```
+
+## ForLoopCanBeForeach
+
+**Since:** PMD 6.0
+
+**Priority:** Medium (3)
+
+**Minimum Language Version:** Java 1.5
+
+Reports loops that can be safely replaced with the foreach syntax. The rule considers loops over
+            lists, arrays and iterators. A loop is safe to replace if it only uses the index variable to
+            access an element of the list or array, only has one update statement, and loops through *every*
+            element of the list or array left to right.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.migrating.ForLoopCanBeForeachRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/migrating/ForLoopCanBeForeachRule.java)
+
+**Example(s):**
+
+``` java
+public class MyClass {
+  void loop(List<String> l) {
+    for (int i = 0; i < l.size(); i++) { // pre Java 1.5
+      System.out.println(l.get(i));
+    }
+
+    for (String s : l) {        // post Java 1.5
+      System.out.println(s);
+    }
+  }
 }
 ```
 
