@@ -8,24 +8,22 @@
   <xs:element name="pmd">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="file" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="file" type="file" minOccurs="0" maxOccurs="unbounded" />
         <xs:element name="error" type="error" minOccurs="0" maxOccurs="unbounded" />
-        <xs:element ref="suppressedviolation" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="configerror" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="suppressedviolation" type="suppressedviolation" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="configerror" type="configerror" minOccurs="0" maxOccurs="unbounded" />
       </xs:sequence>
       <xs:attribute name="version" type="xs:string" use="required" />
       <xs:attribute name="timestamp" type="xs:string" use="required" />
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="file">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="violation" type="violation" minOccurs="1" maxOccurs="unbounded" />
-      </xs:sequence>
-      <xs:attribute name="name" type="xs:string" use="required"/>
-    </xs:complexType>
-  </xs:element>
+  <xs:complexType name="file">
+    <xs:sequence>
+      <xs:element name="violation" type="violation" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
   
   <xs:complexType name="violation">
     <xs:simpleContent>
@@ -55,19 +53,15 @@
     </xs:simpleContent>
   </xs:complexType>
   
-  <xs:element name="suppressedviolation">
-    <xs:complexType>
-      <xs:attribute name="filename" type="xs:string" use="required" />
-      <xs:attribute name="suppressiontype" type="xs:string" use="required" />
-      <xs:attribute name="msg" type="xs:string" use="required" />
-      <xs:attribute name="usermsg" type="xs:string" use="required" />
-    </xs:complexType>
-  </xs:element>
+  <xs:complexType name="suppressedviolation">
+    <xs:attribute name="filename" type="xs:string" use="required" />
+    <xs:attribute name="suppressiontype" type="xs:string" use="required" />
+    <xs:attribute name="msg" type="xs:string" use="required" />
+    <xs:attribute name="usermsg" type="xs:string" use="required" />
+  </xs:complexType>
   
-  <xs:element name="configerror">
-    <xs:complexType>
-      <xs:attribute name="rule" type="xs:string" use="required" />
-      <xs:attribute name="msg" type="xs:string" use="required" />
-    </xs:complexType>
-  </xs:element>
+   <xs:complexType name="configerror">
+     <xs:attribute name="rule" type="xs:string" use="required" />
+     <xs:attribute name="msg" type="xs:string" use="required" />
+   </xs:complexType>
 </xs:schema>
