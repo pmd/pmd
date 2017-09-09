@@ -102,6 +102,9 @@ and include them to such reports.
     and "NcssTypeCount". The new rule uses the metrics framework to achieve the same. It has two properties, to
     define the report level for method and class sizes separately. Constructors and methods are considered the same.
 
+*   The new rule `ForLoopCanBeForeach` (ruleset `java-migration`) helps to identify those for-loops that can
+    be safely refactored into for-each-loops available since java 1.5.
+
 #### Modified Rules
 
 *   The rule `UnnecessaryFinalModifier` (ruleset `java-unnecessarycode`) has been revamped to detect more cases.
@@ -273,6 +276,7 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#556](https://github.com/pmd/pmd/pull/556): \[java] Fix #357: UncommentedEmptyConstructor consider annotations on Constructor - [Clément Fournier](https://github.com/oowekyala)
 *   [#557](https://github.com/pmd/pmd/pull/557): \[java] Fix NPath metric not counting ternaries correctly - [Clément Fournier](https://github.com/oowekyala)
 *   [#563](https://github.com/pmd/pmd/pull/563): \[java] Add support for basic method type inference for strict invocation - [Bendegúz Nagy](https://github.com/WinterGrascph)
+*   [#566](https://github.com/pmd/pmd/pull/566): \[java] New rule in migrating ruleset: ForLoopCanBeForeach - [Clément Fournier](https://github.com/oowekyala)
 *   [#567](https://github.com/pmd/pmd/pull/567): \[java] Last API change for metrics (metric options) - [Clément Fournier](https://github.com/oowekyala)
 *   [#570](https://github.com/pmd/pmd/pull/570): \[java] Model lower, upper and intersection types - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#573](https://github.com/pmd/pmd/pull/573): \[java] Data class rule - [Clément Fournier](https://github.com/oowekyala)
