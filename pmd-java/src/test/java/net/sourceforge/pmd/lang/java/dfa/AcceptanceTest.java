@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.dfa;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getOrderedNodes;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -12,13 +13,12 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
-import net.sourceforge.pmd.lang.java.ParserTst;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 
 /*
  * Created on 18.08.2004
  */
-public class AcceptanceTest extends ParserTst {
+public class AcceptanceTest {
 
     @Test
     public void testbook() {

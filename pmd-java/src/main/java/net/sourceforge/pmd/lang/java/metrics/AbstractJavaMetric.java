@@ -10,7 +10,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.metrics.Metric;
+import net.sourceforge.pmd.lang.metrics.AbstractMetric;
 
 
 /**
@@ -21,7 +21,8 @@ import net.sourceforge.pmd.lang.metrics.Metric;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractJavaMetric<N extends Node> implements Metric<N> {
+public abstract class AbstractJavaMetric<N extends Node> extends AbstractMetric<N> {
+
 
     protected List<JavaQualifiedName> findAllCalls(ASTMethodOrConstructorDeclaration node) {
         List<JavaQualifiedName> result = new ArrayList<>();
@@ -39,16 +40,6 @@ public abstract class AbstractJavaMetric<N extends Node> implements Metric<N> {
      */
     protected static JavaSignatureMatcher getSignatureMatcher() {
         return JavaMetrics.getFacade().getTopLevelPackageStats();
-    }
-
-    @Override
-    public final boolean equals(Object o) {
-        return o != null && o.getClass() == this.getClass();
-    }
-
-    @Override
-    public final int hashCode() {
-        return getClass().hashCode();
     }
 
 }

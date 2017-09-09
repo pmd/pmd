@@ -13,20 +13,14 @@ public class FieldAccessGenericBounds extends GenericSuperClassA<Long> {
     GenericClass<? extends Number, Object> upperBound;
 
     public void astPrimaryNameCases() {
-        // test ?, ? super Something, ? extends Something
         // Primary[Prefix[Name[superGeneric.first]]]
-        superGeneric.first = ""; // Object
-        superGeneric.second = null; // Object
-        inheritedSuperGeneric.first = ""; // Object
-        inheritedSuperGeneric.second = null; // Object
+        superGeneric.first = ""; // ? super String
+        superGeneric.second = null; // ?
+        inheritedSuperGeneric.first = ""; // ? super String
+        inheritedSuperGeneric.second = null; // ?
 
-        upperBound.first = null; // Number
-        inheritedUpperBound.first = null; // String
-
-        // test static imports
-        // Primary[Prefix[Name[instanceFields.generic.first]]]
-        //instanceFields.generic.first = "";
-        //staticGeneric.first = new Long(0);
+        upperBound.first = null; // ? extends Number
+        inheritedUpperBound.first = null; // ? extends String
     }
 }
 

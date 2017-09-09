@@ -170,7 +170,9 @@ public final class CollectionUtil {
      * @param otherValue
      *            Object
      * @return boolean
+     * @deprecated {@see Objects#deepEquals(Object, Object)}
      */
+    @Deprecated
     public static boolean arraysAreEqual(Object value, Object otherValue) {
         if (value instanceof Object[]) {
             if (otherValue instanceof Object[]) {
@@ -190,7 +192,9 @@ public final class CollectionUtil {
      * @param thatArray
      *            Object[]
      * @return boolean
+     * @deprecated {@see Arrays#deepEquals(Object[], Object[])}
      */
+    @Deprecated
     public static boolean valuesAreTransitivelyEqual(Object[] thisArray, Object[] thatArray) {
         if (thisArray == thatArray) {
             return true;
@@ -217,7 +221,9 @@ public final class CollectionUtil {
      * @param otherValue
      *            Object
      * @return boolean
+     * @deprecated {@see Objects#deepEquals(Object, Object)}
      */
+    @Deprecated
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
     public static boolean areEqual(Object value, Object otherValue) {
         if (value == otherValue) {
@@ -265,9 +271,10 @@ public final class CollectionUtil {
      * @param a
      * @param b
      * @return boolean
+     * @deprecated {@see Arrays#deepEquals(Object[], Object[])}
      */
+    @Deprecated
     public static <T> boolean areSemanticEquals(T[] a, T[] b) {
-
         if (a == null) {
             return b == null || b.length == 0;
         }
@@ -299,6 +306,7 @@ public final class CollectionUtil {
      * @param newValue
      * @return an array containing the union of values and newValue
      */
+    @Deprecated
     public static <T> T[] addWithoutDuplicates(T[] values, T newValue) {
 
         for (T value : values) {
@@ -321,6 +329,7 @@ public final class CollectionUtil {
      * @param newValues
      * @return the union of the two arrays
      */
+    @Deprecated
     public static <T> T[] addWithoutDuplicates(T[] values, T[] newValues) {
 
         Set<T> originals = new HashSet<>(values.length);

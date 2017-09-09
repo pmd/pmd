@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @param <N> Type of node on which the memoized metric can be computed
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public class BasicMetricMemoizer<N extends Node> implements MetricMemoizer<N> {
 

@@ -10,10 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Multi-valued property.
@@ -173,7 +174,7 @@ import net.sourceforge.pmd.util.StringUtil;
 
     @Override
     public List<V> valueFrom(String valueString) throws IllegalArgumentException {
-        if (StringUtil.isEmpty(valueString)) {
+        if (StringUtils.isBlank(valueString)) {
             return Collections.emptyList();
         }
 

@@ -6,7 +6,10 @@ package net.sourceforge.pmd.properties;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -73,17 +76,31 @@ public class NonRuleWithAllPropertyTypes extends AbstractRule {
                                                                     new String[] {"java.lang"}, 5.0f);
     public static final TypeMultiProperty MULTI_TYPE = new TypeMultiProperty("multiType", "Multiple types",
                                                                              Arrays.<Class>asList(Integer.class, Object.class), new String[] {"java.lang"}, 6.0f);
-    public static final EnumeratedProperty<Class> ENUM_TYPE = new EnumeratedProperty<>("enumType",
-                                                                                       "Enumerated choices",
-                                                                                       new String[] {"String", "Object"}, new Class[] {String.class, Object.class}, 1, Class.class, 5.0f);
-    public static final EnumeratedMultiProperty<Class> MULTI_ENUM_TYPE = new EnumeratedMultiProperty<>("multiEnumType",
-                                                                                                       "Multiple enumerated choices", new String[] {"String", "Object"},
-                                                                                                       new Class[] {String.class, Object.class}, new int[] {0, 1}, Class.class, 5.0f);
+
+    private static final Map<String, Class> ENUM_MAPPINGS;
+
+    static {
+        Map<String, Class> tmp = new HashMap<>();
+        tmp.put("String", String.class);
+        tmp.put("Object", Object.class);
+        ENUM_MAPPINGS = Collections.unmodifiableMap(tmp);
+    }
+
+
+    public static final EnumeratedProperty<Class> ENUM_TYPE = new EnumeratedProperty<>("enumType", "Enumerated choices", ENUM_MAPPINGS, Object.class, Class.class, 5.0f);
+
+
+    public static final EnumeratedMultiProperty<Class> MULTI_ENUM_TYPE = new EnumeratedMultiProperty<>("multiEnumType", "Multiple enumerated choices", ENUM_MAPPINGS,
+                                                                                                       Arrays.<Class>asList(String.class, Object.class), Class.class, 5.0f);
+
     private static final Method STRING_LENGTH = ClassUtil.methodFor(String.class, "length", ClassUtil.EMPTY_CLASS_ARRAY);
-    public static final MethodProperty SINGLE_METHOD = new MethodProperty("singleMethod", "Single method", STRING_LENGTH,
-                                                                          new String[] {"java.lang"}, 5.0f);
+
+    public static final MethodProperty SINGLE_METHOD = new MethodProperty("singleMethod", "Single method",
+                                                                          STRING_LENGTH, new String[] {"java.lang"}, 5.0f);
+
     private static final Method STRING_TO_LOWER_CASE = ClassUtil.methodFor(String.class, "toLowerCase",
                                                                            ClassUtil.EMPTY_CLASS_ARRAY);
+
     public static final MethodMultiProperty MULTI_METHOD = new MethodMultiProperty("multiMethod", "Multiple methods",
                                                                                    new Method[] {STRING_LENGTH, STRING_TO_LOWER_CASE}, new String[] {"java.lang"}, 6.0f);
 

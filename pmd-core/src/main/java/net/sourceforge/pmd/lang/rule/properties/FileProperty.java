@@ -7,9 +7,10 @@ package net.sourceforge.pmd.lang.rule.properties;
 import java.io.File;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Property taking a File object as its value.
@@ -60,6 +61,6 @@ public final class FileProperty extends AbstractSingleValueProperty<File> {
 
     @Override
     public File createFrom(String propertyString) {
-        return StringUtil.isEmpty(propertyString) ? null : new File(propertyString);
+        return StringUtils.isBlank(propertyString) ? null : new File(propertyString);
     }
 }

@@ -28,7 +28,7 @@ public enum InferenceRuleType {
                 // If S and T are proper types, the constraint reduces to true if S is the same as T (§4.3.4), and false
                 // otherwise.
                 if (val.isLeftProper() && val.isRightProper()) {
-                    if (val.leftProper().equivalent(val.rightProper())) {
+                    if (val.leftProper().equals(val.rightProper())) {
                         return newConstraints;
                     } else {
                         return null;

@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -42,7 +43,6 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * RuleSetFactory is responsible for creating RuleSet instances from XML
@@ -441,9 +441,6 @@ public class RuleSetFactory {
      */
     private void parseRuleSetReferenceNode(RuleSetReferenceId ruleSetReferenceId, RuleSetBuilder ruleSetBuilder,
             Element ruleElement, String ref) throws RuleSetNotFoundException {
-        RuleSetReference ruleSetReference = new RuleSetReference();
-        ruleSetReference.setAllRules(true);
-        ruleSetReference.setRuleSetFileName(ref);
         String priority = null;
         NodeList childNodes = ruleElement.getChildNodes();
         Set<String> excludedRulesCheck = new HashSet<>();
@@ -452,12 +449,12 @@ public class RuleSetFactory {
             if (isElementNode(child, "exclude")) {
                 Element excludeElement = (Element) child;
                 String excludedRuleName = excludeElement.getAttribute("name");
-                ruleSetReference.addExclude(excludedRuleName);
                 excludedRulesCheck.add(excludedRuleName);
             } else if (isElementNode(child, PRIORITY)) {
                 priority = parseTextNode(child).trim();
             }
         }
+        final RuleSetReference ruleSetReference = new RuleSetReference(ref, true, excludedRulesCheck);
 
         RuleSetFactory ruleSetFactory = new RuleSetFactory(this, warnDeprecated);
         RuleSet otherRuleSet = ruleSetFactory.createRuleSet(RuleSetReferenceId.parse(ref).get(0));
@@ -498,7 +495,7 @@ public class RuleSetFactory {
 
         // Stop if we're looking for a particular Rule, and this element is not
         // it.
-        if (StringUtil.isNotEmpty(ruleSetReferenceId.getRuleName())
+        if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
                 && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
             return;
         }
@@ -560,7 +557,7 @@ public class RuleSetFactory {
         }
 
         String since = ruleElement.getAttribute("since");
-        if (StringUtil.isNotEmpty(since)) {
+        if (StringUtils.isNotBlank(since)) {
             rule.setSince(since);
         }
         rule.setMessage(ruleElement.getAttribute(MESSAGE));
@@ -604,7 +601,7 @@ public class RuleSetFactory {
             }
 
         }
-        if (StringUtil.isNotEmpty(ruleSetReferenceId.getRuleName())
+        if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
                 || rule.getPriority().compareTo(minimumPriority) <= 0) {
             ruleSetBuilder.addRule(rule);
         }
@@ -637,7 +634,7 @@ public class RuleSetFactory {
 
         // Stop if we're looking for a particular Rule, and this element is not
         // it.
-        if (StringUtil.isNotEmpty(ruleSetReferenceId.getRuleName())
+        if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
                 && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
             return;
         }
@@ -683,9 +680,7 @@ public class RuleSetFactory {
             }
         }
 
-        RuleSetReference ruleSetReference = new RuleSetReference();
-        ruleSetReference.setAllRules(false);
-        ruleSetReference.setRuleSetFileName(otherRuleSetReferenceId.getRuleSetFileName());
+        RuleSetReference ruleSetReference = new RuleSetReference(otherRuleSetReferenceId.getRuleSetFileName(), false);
 
         RuleReference ruleReference = new RuleReference();
         ruleReference.setRuleSetReference(ruleSetReference);
@@ -721,7 +716,7 @@ public class RuleSetFactory {
             }
         }
 
-        if (StringUtil.isNotEmpty(ruleSetReferenceId.getRuleName())
+        if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
                 || referencedRule.getPriority().compareTo(minimumPriority) <= 0) {
             if (withDeprecatedRuleReferences || !isSameRuleSet || !ruleReference.isDeprecated()) {
                 ruleSetBuilder.addRuleReplaceIfExists(ruleReference);

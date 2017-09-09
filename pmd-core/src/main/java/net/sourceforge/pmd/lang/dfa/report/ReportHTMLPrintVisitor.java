@@ -10,10 +10,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Uses the generated result tree instead of the result list. The
@@ -59,7 +59,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
         renderViolationRow(sb, "Rule:", vio.getRule().getName());
         renderViolationRow(sb, "Description:", vio.getDescription());
 
-        if (StringUtil.isNotEmpty(vio.getVariableName())) {
+        if (StringUtils.isNotBlank(vio.getVariableName())) {
             renderViolationRow(sb, "Variable:", vio.getVariableName());
         }
 

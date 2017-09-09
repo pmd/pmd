@@ -189,7 +189,7 @@
         <profile>
             <id>jdk8-modules</id>
             <activation>
-                <jdk>1.8</jdk>
+                <jdk>[1.8,</jdk>
             </activation>
             <dependencies>
                 <dependency>
@@ -217,6 +217,7 @@
             </activation>
             <dependencies>
                 <!--
+                    https://github.com/scala/scala-dev/issues/139
                     https://issues.scala-lang.org/browse/SI-9103
                     https://sourceforge.net/p/pmd/bugs/1314/
                  -->

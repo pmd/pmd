@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.AbstractPropertySource;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
@@ -22,7 +23,6 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
-// FUTURE Implement Cloneable and clone()?
 public abstract class AbstractRule extends AbstractPropertySource implements Rule {
 
     private Language language;
@@ -502,5 +502,47 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         Object propertyValues = getPropertiesByPropertyDescriptor();
         return getClass().getName().hashCode() + (getName() != null ? getName().hashCode() : 0)
                 + getPriority().hashCode() + (propertyValues != null ? propertyValues.hashCode() : 0);
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public Rule deepCopy() {
+        Rule rule = null;
+        try {
+            rule = getClass().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            // Can't happen... we already have an instance
+        }
+        rule.setName(getName());
+        rule.setLanguage(getLanguage());
+        rule.setMinimumLanguageVersion(getMinimumLanguageVersion());
+        rule.setMaximumLanguageVersion(getMaximumLanguageVersion());
+        rule.setSince(getSince());
+        rule.setMessage(getMessage());
+        rule.setRuleSetName(getRuleSetName());
+        rule.setExternalInfoUrl(getExternalInfoUrl());
+        if (usesDFA()) {
+            rule.setUsesDFA();
+        }
+        if (usesTypeResolution()) {
+            rule.setUsesTypeResolution();
+        }
+        if (usesMetrics()) {
+            rule.setUsesMetrics();
+        }
+        rule.setDescription(getDescription());
+        for (final String example : getExamples()) {
+            rule.addExample(example);
+        }
+        rule.setPriority(getPriority());
+        for (final PropertyDescriptor<?> prop : getPropertyDescriptors()) {
+            if (!rule.hasDescriptor(prop)) {
+                rule.definePropertyDescriptor(prop); // Property descriptors are immutable, and can be freely shared
+            }
+            
+            rule.setProperty((PropertyDescriptor<Object>) prop, getProperty((PropertyDescriptor<Object>) prop));
+        }
+        
+        return rule;
     }
 }

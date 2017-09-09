@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.rule;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class RuleReference extends AbstractDelegateRule {
     private RulePriority priority;
     private RuleSetReference ruleSetReference;
 
-    private static final List<PropertyDescriptor<?>> EMPTY_DESCRIPTORS = new ArrayList<>(0);
+    private static final List<PropertyDescriptor<?>> EMPTY_DESCRIPTORS = Collections.emptyList();
 
     public RuleReference() {
     }
@@ -338,5 +339,32 @@ public class RuleReference extends AbstractDelegateRule {
         if (propertyDescriptors != null) {
             propertyDescriptors.remove(desc);
         }
+    }
+    
+    @Override
+    public Rule deepCopy() {
+        RuleReference rule = null;
+        try {
+            rule = getClass().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            // Can't happen... we already have an instance
+        }
+        rule.setRule(this.getRule().deepCopy());
+        
+        rule.language = language;
+        rule.minimumLanguageVersion = minimumLanguageVersion;
+        rule.maximumLanguageVersion = maximumLanguageVersion;
+        rule.deprecated = deprecated;
+        rule.name = name;
+        rule.propertyDescriptors = propertyDescriptors;
+        rule.propertyValues = propertyValues == null ? null : new HashMap<>(propertyValues);
+        rule.message = message;
+        rule.description = description;
+        rule.examples = examples == null ? null : new ArrayList<>(examples);
+        rule.externalInfoUrl = externalInfoUrl;
+        rule.priority = priority;
+        rule.ruleSetReference = ruleSetReference;
+        
+        return rule;
     }
 }

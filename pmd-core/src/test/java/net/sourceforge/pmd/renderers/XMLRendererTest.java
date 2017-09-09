@@ -60,8 +60,8 @@ public class XMLRendererTest extends AbstractRendererTst {
     @Override
     public String getExpectedError(ProcessingError error) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + "<pmd version=\"" + PMD.VERSION
-                + "\" timestamp=\"2014-10-06T19:30:51.222\">" + PMD.EOL + "<error filename=\"file\" msg=\"Error\"/>"
-                + PMD.EOL + "</pmd>" + PMD.EOL;
+                + "\" timestamp=\"2014-10-06T19:30:51.222\">" + PMD.EOL + "<error filename=\"file\" msg=\"Error\">"
+                + PMD.EOL + "<![CDATA[" + error.getDetail() + "]]>" + PMD.EOL + "</error>" + PMD.EOL + "</pmd>" + PMD.EOL;
     }
 
     @Override

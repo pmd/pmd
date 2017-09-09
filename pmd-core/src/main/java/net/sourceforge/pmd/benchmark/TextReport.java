@@ -12,8 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  *
@@ -98,10 +99,10 @@ public class TextReport implements BenchmarkReport {
             }
             String result = MessageFormat.format("{0,number,0.000}",
                     Double.valueOf(benchmarkResult.getTime() / 1000000000.0));
-            buf2.append(StringUtil.lpad(result, VALUE_COLUMN_WIDTH));
+            buf2.append(StringUtils.leftPad(result, VALUE_COLUMN_WIDTH));
             if (benchmarkResult.type.index <= Benchmark.RuleChainRule.index) {
-                buf2.append(StringUtil
-                        .lpad(MessageFormat.format("{0,number,###,###,###,###,###}", benchmarkResult.getCount()), 20));
+                buf2.append(StringUtils
+                        .leftPad(MessageFormat.format("{0,number,###,###,###,###,###}", benchmarkResult.getCount()), 20));
             }
             switch (benchmarkResult.type) {
             case Rule:
@@ -134,11 +135,11 @@ public class TextReport implements BenchmarkReport {
                 String s = MessageFormat.format("{0,number,###,###,###,###,###}", ruleCount);
                 String t = MessageFormat.format("{0,number,0.000}",
                         ruleCount == 0 ? 0 : total(totalTime, Benchmark.Rule, ruleCount));
-                buf.appendLn("Rule Average (", s, " rules):", StringUtil.lpad(t, 37 - s.length()));
+                buf.appendLn("Rule Average (", s, " rules):", StringUtils.leftPad(t, 37 - s.length()));
                 s = MessageFormat.format("{0,number,###,###,###,###,###}", ruleChainCount);
                 t = MessageFormat.format("{0,number,0.000}",
                         ruleChainCount == 0 ? 0 : total(totalTime, Benchmark.RuleChainRule, ruleChainCount));
-                buf.appendLn("RuleChain Average (", s, " rules):", StringUtil.lpad(t, 32 - s.length()));
+                buf.appendLn("RuleChain Average (", s, " rules):", StringUtils.leftPad(t, 32 - s.length()));
 
                 buf.appendLn();
                 buf.appendLn("-----------------------------<<< Final Summary >>>-----------------------------");

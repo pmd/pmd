@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.metrics.impl;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,24 +14,24 @@ import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-import net.sourceforge.pmd.lang.metrics.Metric.Version;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOption;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
+import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
 
 /**
  * Abstract test rule for a metric. Tests of metrics use the standard framework for rule testing, using one dummy rule
- * per metric. Default parameters can be overriden by overriding the protected methods of this class.
+ * per metric. Default parameters can be overridden by overriding the protected methods of this class.
  *
  * @author Clément Fournier
  */
 public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
 
-    private final EnumeratedProperty<MetricVersion> versionDescriptor = new EnumeratedProperty<>(
-        "metricVersion", "Choose a variant of the metric or the standard",
-        versionMappings(), Version.STANDARD, MetricVersion.class, 3.0f);
+    private final EnumeratedMultiProperty<MetricOption> optionsDescriptor = new EnumeratedMultiProperty<>(
+        "metricOptions", "Choose a variant of the metric or the standard",
+        optionMappings(), Collections.emptyList(), MetricOption.class, 3.0f);
     private final BooleanProperty reportClassesDescriptor = new BooleanProperty(
         "reportClasses", "Add class violations to the report", isReportClasses(), 2.0f);
     private final BooleanProperty reportMethodsDescriptor = new BooleanProperty(
@@ -38,7 +39,7 @@ public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
     private final DoubleProperty reportLevelDescriptor = new DoubleProperty(
         "reportLevel", "Minimum value required to report", -1., Double.POSITIVE_INFINITY, defaultReportLevel(), 3.0f);
 
-    private MetricVersion metricVersion;
+    private MetricOptions metricOptions;
     private boolean reportClasses;
     private boolean reportMethods;
     private double reportLevel;
@@ -53,7 +54,7 @@ public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
         definePropertyDescriptor(reportClassesDescriptor);
         definePropertyDescriptor(reportMethodsDescriptor);
         definePropertyDescriptor(reportLevelDescriptor);
-        definePropertyDescriptor(versionDescriptor);
+        definePropertyDescriptor(optionsDescriptor);
     }
 
 
@@ -94,14 +95,12 @@ public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
 
 
     /**
-     * Mappings of labels to versions for use in the version property.
+     * Mappings of labels to options for use in the options property.
      *
-     * @return A map of labels to versions
+     * @return A map of labels to options
      */
-    protected Map<String, MetricVersion> versionMappings() {
-        Map<String, MetricVersion> mappings = new HashMap<>();
-        mappings.put("standard", Version.STANDARD);
-        return mappings;
+    protected Map<String, MetricOption> optionMappings() {
+        return new HashMap<>();
     }
 
 
@@ -120,16 +119,17 @@ public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
         reportClasses = getProperty(reportClassesDescriptor);
         reportMethods = getProperty(reportMethodsDescriptor);
         reportLevel = getProperty(reportLevelDescriptor);
-        metricVersion = getProperty(versionDescriptor);
-
+        if (metricOptions == null) {
+            metricOptions = MetricOptions.ofOptions(getProperty(optionsDescriptor));
+        }
 
         if (classKey != null && reportClasses && classKey.supports(node)) {
-            int classValue = (int) ApexMetrics.get(classKey, node, metricVersion);
+            int classValue = (int) ApexMetrics.get(classKey, node, metricOptions);
 
             String valueReport = String.valueOf(classValue);
 
             if (opKey != null) {
-                int highest = (int) ApexMetrics.get(opKey, node, metricVersion, ResultOption.HIGHEST);
+                int highest = (int) ApexMetrics.get(opKey, node, metricOptions, ResultOption.HIGHEST);
                 valueReport += " highest " + highest;
             }
             if (classValue >= reportLevel) {
@@ -143,7 +143,7 @@ public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
     @Override
     public Object visit(ASTMethod node, Object data) {
         if (opKey != null && reportMethods && opKey.supports(node)) {
-            int methodValue = (int) ApexMetrics.get(opKey, node, metricVersion);
+            int methodValue = (int) ApexMetrics.get(opKey, node, metricOptions);
             if (methodValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getQualifiedName().toString(), "" + methodValue});
             }

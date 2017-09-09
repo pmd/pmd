@@ -6,7 +6,6 @@ package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
 
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Report;
@@ -71,16 +70,6 @@ public interface Renderer extends PropertySource {
      *            The description of the Renderer.
      */
     void setDescription(String description);
-
-    /**
-     * Get the configuration property definitions for Renderer. The keys in the
-     * map are the configuration property names, with the corresponding value
-     * being a description.
-     *
-     * @return The configuration property definition map.
-     */
-    @Deprecated // use PropertySource.getPropertyDescriptors() instead
-    Map<String, String> getPropertyDefinitions();
 
     /**
      * Get the indicator for whether to show suppressed violations.

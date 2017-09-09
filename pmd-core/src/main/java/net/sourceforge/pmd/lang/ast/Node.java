@@ -224,7 +224,7 @@ public interface Node {
      * @param xpathString
      *            the expression to check
      * @return List of all matching nodes. Returns an empty list if none found.
-     * @throws JaxenException
+     * @throws JaxenException if the xpath is incorrect or fails altogether
      */
     List<? extends Node> findChildNodesWithXPath(String xpathString) throws JaxenException;
 

@@ -57,7 +57,7 @@ public class PmdRunnable implements Callable<Report> {
     private void addError(Report report, Exception e, String errorMessage) {
         // unexpected exception: log and stop executor service
         LOG.log(Level.FINE, errorMessage, e);
-        report.addError(new Report.ProcessingError(e.getMessage(), fileName));
+        report.addError(new Report.ProcessingError(e, fileName));
     }
 
     @Override
@@ -73,6 +73,11 @@ public class PmdRunnable implements Callable<Report> {
             LOCAL_THREAD_CONTEXT.set(tc);
         }
 
+        /*
+         * FIXME : This creates ConfigErrors for dysfunctional rules **per-thread**.
+         * We need rulesets to be copy-constructable and have them cleaned-up only once
+         * before analysis starts, reducing this to Report.createReport(tc.ruleContext, fileName);
+         */
         Report report = PMD.setupReport(tc.ruleSets, tc.ruleContext, fileName);
 
         if (LOG.isLoggable(Level.FINE)) {

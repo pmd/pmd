@@ -16,10 +16,12 @@ This is a major release.
     *   [Revamped Apex CPD](#revamped-apex-cpd)
     *   [Java Type Resolution](#java-type-resolution)
     *   [Metrics Framework](#metrics-framework)
-    *   [Configuration Error Reporting](#configuration-error-reporting)
+    *   [Error Reporting](#error-reporting)
     *   [Java Symbol Table](#java-symbol-table)
     *   [Apex Parser Update](#apex-parser-update)
+    *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
+    *   [Deprecated Rules](#deprecated-rules)
     *   [Removed Rules](#removed-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
@@ -57,7 +59,24 @@ Based on those metrics, rules like "GodClass" detection can be implemented more 
 The Metrics framework has been abstracted and is available in `pmd-core` for other languages. With this
 PMD release, the metrics framework is supported for both Java and Apex.
 
-#### Configuration Error Reporting
+#### Error Reporting
+
+A number of improvements on error reporting have taken place, meaning changes to some of the report formats.
+
+##### Processing Errors
+
+Processing errors can now provide not only the message previously included on some reports, but also a full stacktrace.
+This will allow better error reports when providing feedback to the PMD team and help in debugging issues.
+
+The report formats providing full stacktrace of errors are:
+
+*   html
+*   summaryhtml
+*   textcolor
+*   vbhtml
+*   xml
+
+##### Configuration Errors
 
 For a long time reports have been notified of configuration errors on rules, but they have remained hidden.
 On a push to make these more evident to users, and help them get the best results out of PMD, we have started
@@ -77,6 +96,12 @@ providing configuration error reporting are:
 As we move forward we will be able to detect and report more configuration errors (ie: incomplete `auxclasspath`)
 and include them to such reports.
 
+#### New Rules
+
+*   The rule `NcssCount` (ruleset `java-codesize`) replaces the three rules "NcssConstructorCount", "NcssMethodCount",
+    and "NcssTypeCount". The new rule uses the metrics framework to achieve the same. It has two properties, to
+    define the report level for method and class sizes separately. Constructors and methods are considered the same.
+
 #### Modified Rules
 
 *   The rule `UnnecessaryFinalModifier` (ruleset `java-unnecessarycode`) has been revamped to detect more cases.
@@ -88,6 +113,16 @@ and include them to such reports.
 
 *   The rule `UncommentedEmptyConstructor` (ruleset `java-design`) will now ignore empty constructors annotated with
     `javax.inject.Inject`.
+
+*   The rule `AbstractClassWithoutAnyMethod` (ruleset `java-design`)  will now ignore classes annotated with
+    `com.google.auto.value.AutoValue`.
+
+*   The rule `GodClass` (ruleset `java-design`) has been revamped to use the new metrics framework.
+
+#### Deprecated Rules
+
+*   The rules `NcssConstructorCount`, `NcssMethodCount`, and `NcssTypeCount` (ruleset `java-codesize`) have been
+    deprecated. They will be replaced by the new rule `NcssCount` in the same ruleset.
 
 #### Removed Rules
 
@@ -135,6 +170,8 @@ All existing rules have been updated to reflect these changes. If you have custo
     *   [#537](https://github.com/pmd/pmd/issues/537): \[java] UnnecessaryParentheses fails to detect obvious scenario
 *   java-design
     *   [#357](https://github.com/pmd/pmd/issues/357): \[java] UncommentedEmptyConstructor consider annotations on Constructor
+    *   [#438](https://github.com/pmd/pmd/issues/438): \[java] Relax AbstractClassWithoutAnyMethod when class is annotated by @AutoValue
+    *   [#590](https://github.com/pmd/pmd/issues/590): \[java] False positive on MissingStaticMethodInNonInstantiatableClass
 *   java-sunsecure
     *   [#468](https://github.com/pmd/pmd/issues/468): \[java] ArrayIsStoredDirectly false positive
 *   java-unusedcode
@@ -156,6 +193,48 @@ All existing rules have been updated to reflect these changes. If you have custo
     respectively. This is to comply with the naming convention, that each rule class should be suffixed with "Rule".
     This change has no impact on custom rulesets, since the rule names themselves didn't change.
 
+*   The never implemented method `PMD.processFiles(PMDConfiguration, RuleSetFactory, Collection<File>, RuleContext, ProgressMonitor)` along with the interface `ProgressMonitor` has been removed.
+
+*   All APIs deprecated in older versions are now removed. This includes:
+    *    `Renderer.getPropertyDefinitions`
+    *    `AbstractRenderer.defineProperty(String, String)`
+    *    `AbstractRenderer.propertyDefinitions`
+    *    `ReportListener`
+    *    `Report.addListener(ReportListener)`
+    *    `SynchronizedReportListener`
+    *    `CPDConfiguration.CPDConfiguration(int, Language, String)`
+    *    `CPDConfiguration.getRendererFromString(String)`
+    *    `StreamUtil`
+    *    `StringUtil.appendXmlEscaped(StringBuilder, String)`
+    *    `StringUtil.htmlEncode(String)`
+
+
+*   Several methods in `net.sourceforge.pmd.util.CollectionUtil` have been deprecated and will be removed in PMD 7.0.0. In particular:
+    *    `CollectionUtil.addWithoutDuplicates(T[], T)`
+    *    `CollectionUtil.addWithoutDuplicates(T[], T[])`
+    *    `CollectionUtil.areSemanticEquals(T[], T[])`
+    *    `CollectionUtil.areEqual(Object, Object)`
+    *    `CollectionUtil.arraysAreEqual(Object, Object)`
+    *    `CollectionUtil.valuesAreTransitivelyEqual(Object[], Object[])`
+
+
+*   Several methods in `net.sourceforge.pmd.util.StringUtil` have been deprecated and will be removed in PMD 7.0.0. In particular:
+    *    `StringUtil.startsWithAny(String, String[])`
+    *    `StringUtil.isNotEmpty(String)`
+    *    `StringUtil.isEmpty(String)`
+    *    `StringUtil.isMissing(String)`
+    *    `StringUtil.areSemanticEquals(String, String)`
+    *    `StringUtil.replaceString(String, String, String)`
+    *    `StringUtil.replaceString(String, char, String)`
+    *    `StringUtil.substringsOf(String, char)`
+    *    `StringUtil.substringsOf(String, String)`
+    *    `StringUtil.asStringOn(StringBuffer, Iterator, String)`
+    *    `StringUtil.asStringOn(StringBuilder, Object[], String)`
+    *    `StringUtil.lpad(String, int)`
+
+*   The class `net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition` is now abstract, and has been enhanced
+    to provide several new methods.
+
 ### External Contributions
 
 *   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements - [Clément Fournier](https://github.com/oowekyala)
@@ -175,20 +254,33 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#513](https://github.com/pmd/pmd/pull/513): \[java] Fix for maximally specific method selection - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#514](https://github.com/pmd/pmd/pull/514): \[java] Add static method type resolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#517](https://github.com/pmd/pmd/pull/517): \[doc] Metrics documentation - [Clément Fournier](https://github.com/oowekyala)
+*   [#518](https://github.com/pmd/pmd/pull/518): \[core] Properties refactoring: factorized enumerated property - [Clément Fournier](https://github.com/oowekyala)
 *   [#523](https://github.com/pmd/pmd/pull/523): \[java] Npath complexity metric and rule - [Clément Fournier](https://github.com/oowekyala)
 *   [#524](https://github.com/pmd/pmd/pull/524): \[java] Add support for explicit type arguments with method invocation - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#525](https://github.com/pmd/pmd/pull/525): \[core] Fix line ending and not ignored files issues - [Matias Comercio](https://github.com/MatiasComercio)
 *   [#528](https://github.com/pmd/pmd/pull/528): \[core] Fix typo - [Ayoub Kaanich](https://github.com/kayoub5)
 *   [#529](https://github.com/pmd/pmd/pull/529): \[java] Abstracted the Java metrics framework - [Clément Fournier](https://github.com/oowekyala)
 *   [#530](https://github.com/pmd/pmd/pull/530): \[java] Fix issue #527: Lombok getter annotation on enum is not recognized correctly - [Clément Fournier](https://github.com/oowekyala)
+*   [#533](https://github.com/pmd/pmd/pull/533): \[core] improve error message - [Dennis Kieselhorst](https://github.com/deki)
 *   [#535](https://github.com/pmd/pmd/pull/535): \[apex] Fix broken Apex visitor adapter - [Clément Fournier](https://github.com/oowekyala)
 *   [#542](https://github.com/pmd/pmd/pull/542): \[java] Metrics abstraction - [Clément Fournier](https://github.com/oowekyala)
 *   [#545](https://github.com/pmd/pmd/pull/545): \[apex] Apex metrics framework - [Clément Fournier](https://github.com/oowekyala)
 *   [#548](https://github.com/pmd/pmd/pull/548): \[java] Metrics documentation - [Clément Fournier](https://github.com/oowekyala)
 *   [#550](https://github.com/pmd/pmd/pull/550): \[java] Add basic resolution to type inference - [Bendegúz Nagy](https://github.com/WinterGrascph)
+*   [#553](https://github.com/pmd/pmd/pull/553): \[java] Refactored ParserTst into a static utility class + add getSourceFromClass - [Clément Fournier](https://github.com/oowekyala)
 *   [#554](https://github.com/pmd/pmd/pull/554): \[java] Fix #537: UnnecessaryParentheses fails to detect obvious scenario - [Clément Fournier](https://github.com/oowekyala)
 *   [#555](https://github.com/pmd/pmd/pull/555): \[java] Changed metrics/CyclomaticComplexityRule to use WMC when reporting classes - [Clément Fournier](https://github.com/oowekyala)
 *   [#556](https://github.com/pmd/pmd/pull/556): \[java] Fix #357: UncommentedEmptyConstructor consider annotations on Constructor - [Clément Fournier](https://github.com/oowekyala)
 *   [#557](https://github.com/pmd/pmd/pull/557): \[java] Fix NPath metric not counting ternaries correctly - [Clément Fournier](https://github.com/oowekyala)
 *   [#563](https://github.com/pmd/pmd/pull/563): \[java] Add support for basic method type inference for strict invocation - [Bendegúz Nagy](https://github.com/WinterGrascph)
-
+*   [#567](https://github.com/pmd/pmd/pull/567): \[java] Last API change for metrics (metric options) - [Clément Fournier](https://github.com/oowekyala)
+*   [#570](https://github.com/pmd/pmd/pull/570): \[java] Model lower, upper and intersection types - [Bendegúz Nagy](https://github.com/WinterGrascph)
+*   [#573](https://github.com/pmd/pmd/pull/573): \[java] Data class rule - [Clément Fournier](https://github.com/oowekyala)
+*   [#576](https://github.com/pmd/pmd/pull/576): \[doc]\[java] Add hint for Guava users in InefficientEmptyStringCheck - [mmoehring](https://github.com/mmoehring)
+*   [#578](https://github.com/pmd/pmd/pull/578): \[java] Refactored god class rule - [Clément Fournier](https://github.com/oowekyala)
+*   [#579](https://github.com/pmd/pmd/pull/579): \[java] Update parsing to produce upper and lower bounds - [Bendegúz Nagy](https://github.com/WinterGrascph)
+*   [#580](https://github.com/pmd/pmd/pull/580): \[core] Add AbstractMetric to topple the class hierarchy of metrics - [Clément Fournier](https://github.com/oowekyala)
+*   [#581](https://github.com/pmd/pmd/pull/581): \[java] Relax AbstractClassWithoutAnyMethod when class is annotated by @AutoValue - [Niklas Baudy](https://github.com/vanniktech)
+*   [#583](https://github.com/pmd/pmd/pull/583): \[java] Documentation about writing metrics - [Clément Fournier](https://github.com/oowekyala)
+*   [#585](https://github.com/pmd/pmd/pull/585): \[java] Moved NcssCountRule to codesize.xml - [Clément Fournier](https://github.com/oowekyala)
+*   [#588](https://github.com/pmd/pmd/pull/588): \[java] XPath function to compute metrics - [Clément Fournier](https://github.com/oowekyala)

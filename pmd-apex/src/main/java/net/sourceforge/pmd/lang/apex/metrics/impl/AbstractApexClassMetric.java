@@ -14,7 +14,8 @@ import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetric;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractApexClassMetric extends AbstractApexMetric implements ApexClassMetric {
+public abstract class AbstractApexClassMetric extends AbstractApexMetric<ASTUserClassOrInterface<?>>
+    implements ApexClassMetric {
 
     @Override
     public boolean supports(ASTUserClassOrInterface<?> node) {
