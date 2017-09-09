@@ -22,7 +22,7 @@
                                 </complexType>
                             </element>
                             <element name="expected-problems" type="integer"></element>
-                            <element name="expected-linenumber" type="string" minOccurs="0"></element>
+                            <element name="expected-linenumbers" type="string" minOccurs="0"></element>
                             <element name="expected-messages" minOccurs="0">
                                 <complexType>
                                     <sequence>

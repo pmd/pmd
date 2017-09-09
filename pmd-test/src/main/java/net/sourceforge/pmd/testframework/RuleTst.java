@@ -60,7 +60,7 @@ public abstract class RuleTst {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema schema;
         try {
-            schema = schemaFactory.newSchema(RuleTst.class.getResource("/rule-tests.xsd"));
+            schema = schemaFactory.newSchema(RuleTst.class.getResource("/rule-tests_1_0_0.xsd"));
             dbf.setSchema(schema);
             dbf.setNamespaceAware(true);
             DocumentBuilder builder = dbf.newDocumentBuilder();
