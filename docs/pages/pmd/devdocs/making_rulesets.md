@@ -3,9 +3,8 @@ title:  PMD Making Rulesets
 tags: [customizing]
 summary: Making Custom Rulesets for PMD
 last_updated: July 3, 2016
-sidebar: pmd_sidebar
 permalink: pmd_devdocs_making_rulesets.html
-folder: pmd/devdocs
+author: Tom Copeland <tomcopeland@users.sourceforge.net>
 ---
 
 # How to make a new rule set

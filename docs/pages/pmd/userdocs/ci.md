@@ -1,8 +1,7 @@
 ---
 title: Continuous Integrations plugins
-sidebar: pmd_sidebar
 permalink: pmd_userdocs_ci.html
-folder: pmd/userdocs
+author: Romain PELISSE <belaran@gmail.com>
 ---
 
 ## Introduction

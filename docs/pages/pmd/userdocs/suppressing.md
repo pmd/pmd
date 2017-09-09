@@ -1,8 +1,7 @@
 ---
 title: Suppressing warnings
-sidebar: pmd_sidebar
 permalink: pmd_userdocs_suppressing.html
-folder: pmd/userdocs
+author: Tom Copeland <tom@infoether.com>
 ---
 
 PMD provides several methods by which Rule violations can be suppressed.

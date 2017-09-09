@@ -1,8 +1,7 @@
 ---
 title: JSP Support
-sidebar: pmd_sidebar
 permalink: pmd_languages_jsp.html
-folder: pmd/languages
+author: Pieter Vanraemdonck
 ---
 
 ## What is currently supported and what is not

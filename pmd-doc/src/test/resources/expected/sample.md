@@ -21,6 +21,11 @@ Just some description of a deprecated rule.
 //ForStatement
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/sample.xml/DeprecatedSample" />
+```
+
 ## JumbledIncrementer
 
 **Since:** PMD 1.0
@@ -58,6 +63,11 @@ public class JumbledIncrementerRule1 {
 |----|-------------|-----------|
 |sampleAdditionalProperty|the value|This is a additional property for tests|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/sample.xml/JumbledIncrementer" />
+```
+
 ## MovedRule
 
 <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
@@ -91,6 +101,11 @@ public class JumbledIncrementerRule1 {
         }
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/sample.xml/MovedRule" />
 ```
 
 ## OverrideBothEqualsAndHashcode
@@ -130,6 +145,11 @@ public class Foo {      // perfect, both methods provided
       // return some hash value
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/sample.xml/OverrideBothEqualsAndHashcode" />
 ```
 
 ## RenamedRule
@@ -172,3 +192,8 @@ public class JumbledIncrementerRule1 {
 |Name|Default Value|Description|
 |----|-------------|-----------|
 |sampleAdditionalProperty|the value|This is a additional property for tests|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/sample.xml/RenamedRule" />
+```
