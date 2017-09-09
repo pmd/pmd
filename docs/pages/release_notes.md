@@ -102,8 +102,8 @@ and include them to such reports.
     and "NcssTypeCount". The new rule uses the metrics framework to achieve the same. It has two properties, to
     define the report level for method and class sizes separately. Constructors and methods are considered the same.
 
-*   The new rule `ForLoopCanBeForeach` (ruleset `java-migration`) helps in identifies those for-loops that can
-    be safely refactored into for-each-loops.
+*   The new rule `ForLoopCanBeForeach` (ruleset `java-migration`) helps to identify those for-loops that can
+    be safely refactored into for-each-loops available since java 1.5.
 
 #### Modified Rules
 
