@@ -96,7 +96,10 @@ This is a stripped down example which just contains two test cases.
 
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description>ok: no violations</description>
         <expected-problems>0</expected-problems>
@@ -140,6 +143,7 @@ The root element is `<test-data>`. It can contain one or more `<test-code>` and 
 Each `<test-code>` element defines a single test case. `<code-fragment>` elements are used to share code snippets
 between different test cases.
 
+{%include note.html content="The XML schema is available at [rule-tests.xsd](https://github.com/pmd/pmd/blob/master/pmd-test/src/main/resources/rule-tests_1_0_0.xsd)." %}
 
 ### `<test-code>` attributes
 
