@@ -71,6 +71,11 @@ public class Foo {      // This has a Cyclomatic Complexity = 12
 |showClassesComplexity|true|Add class average violations to the report|
 |reportLevel|10|Cyclomatic Complexity reporting threshold|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/codesize.xml/CyclomaticComplexity" />
+```
+
 ## ExcessiveClassLength
 
 **Since:** PMD 0.6
@@ -111,6 +116,11 @@ public class Foo {
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/codesize.xml/ExcessiveClassLength" />
+```
+
 ## ExcessiveMethodLength
 
 **Since:** PMD 0.6
@@ -141,6 +151,11 @@ public void doSomething() {
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/codesize.xml/ExcessiveMethodLength" />
+```
 
 ## ExcessiveParameterList
 
@@ -176,6 +191,11 @@ public void addPerson(      // preferred approach
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/codesize.xml/ExcessiveParameterList" />
+```
 
 ## ExcessivePublicCount
 
@@ -213,6 +233,11 @@ public class Foo {
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/codesize.xml/ExcessivePublicCount" />
+```
 
 ## ModifiedCyclomaticComplexity
 
@@ -279,6 +304,11 @@ public class Foo {    // This has a Cyclomatic Complexity = 9
 |showClassesComplexity|true|Add class average violations to the report|
 |reportLevel|10|Cyclomatic Complexity reporting threshold|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/codesize.xml/ModifiedCyclomaticComplexity" />
+```
+
 ## NcssConstructorCount
 
 <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
@@ -317,6 +347,11 @@ public class Foo extends Bar {
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/codesize.xml/NcssConstructorCount" />
+```
 
 ## NcssCount
 
@@ -369,6 +404,11 @@ class Foo {                         // +1, total Ncss = 12
 |methodReportLevel|12|Metric reporting threshold for methods|
 |classReportLevel|250|Metric reporting threshold for classes|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/codesize.xml/NcssCount" />
+```
+
 ## NcssMethodCount
 
 <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
@@ -406,6 +446,11 @@ public class Foo extends Bar {
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/codesize.xml/NcssMethodCount" />
+```
 
 ## NcssTypeCount
 
@@ -445,6 +490,11 @@ public class Foo extends Bar {
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/codesize.xml/NcssTypeCount" />
+```
 
 ## NPathComplexity
 
@@ -497,6 +547,11 @@ void bar() {    // this is something more complex than it needs to be,
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/codesize.xml/NPathComplexity" />
+```
 
 ## StdCyclomaticComplexity
 
@@ -562,6 +617,11 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
 |showClassesComplexity|true|Add class average violations to the report|
 |reportLevel|10|Cyclomatic Complexity reporting threshold|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/codesize.xml/StdCyclomaticComplexity" />
+```
+
 ## TooManyFields
 
 **Since:** PMD 3.0
@@ -597,6 +657,11 @@ public class Person {   // this is more manageable
 |----|-------------|-----------|
 |maxfields|15|Max allowable fields|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/codesize.xml/TooManyFields" />
+```
+
 ## TooManyMethods
 
 **Since:** PMD 4.2
@@ -626,4 +691,9 @@ complexity and find a way to have more fine grained objects.
 |Name|Default Value|Description|
 |----|-------------|-----------|
 |maxmethods|10|The method count reporting threshold|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/codesize.xml/TooManyMethods" />
+```
 

@@ -35,6 +35,11 @@ class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/logging-java.xml/AvoidPrintStackTrace" />
+```
+
 ## GuardLogStatementJavaUtil
 
 **Since:** PMD 5.1.0
@@ -63,6 +68,11 @@ if (log.isLoggable(Level.FINE)) {
 |guardsMethods|[]|method use to guard the log statement|
 |logLevels|[]|LogLevels to guard|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/logging-java.xml/GuardLogStatementJavaUtil" />
+```
+
 ## InvalidSlf4jMessageFormat
 
 **Since:** PMD 5.5.0
@@ -79,6 +89,11 @@ Check for messages in slf4j loggers with non matching number of arguments and pl
 LOGGER.error("forget the arg {}");
 LOGGER.error("too many args {}", "arg1", "arg2");
 LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The exception is shown separately, so is correct.
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/logging-java.xml/InvalidSlf4jMessageFormat" />
 ```
 
 ## LoggerIsNotStaticFinal
@@ -108,6 +123,11 @@ public class Foo{
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/logging-java.xml/LoggerIsNotStaticFinal" />
+```
+
 ## MoreThanOneLogger
 
 **Since:** PMD 2.0
@@ -127,6 +147,11 @@ public class Foo {
     // log information is multiplexed by levels
     Logger log2= Logger.getLogger(Foo.class.getName());
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/logging-java.xml/MoreThanOneLogger" />
 ```
 
 ## SystemPrintln
@@ -158,5 +183,10 @@ class Foo{
         log.fine("Entering test");
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/logging-java.xml/SystemPrintln" />
 ```
 

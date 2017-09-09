@@ -31,6 +31,11 @@ import java.lang.*;         // this is bad
 public class Foo {}
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/imports.xml/DontImportJavaLang" />
+```
+
 ## DuplicateImports
 
 **Since:** PMD 0.5
@@ -47,6 +52,11 @@ Duplicate or overlapping import statements should be avoided.
 import java.lang.String;
 import java.lang.*;
 public class Foo {}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/imports.xml/DuplicateImports" />
 ```
 
 ## ImportFromSamePackage
@@ -68,6 +78,11 @@ import foo.Buz;     // no need for this
 import foo.*;       // or this
 
 public class Bar{}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/imports.xml/ImportFromSamePackage" />
 ```
 
 ## TooManyStaticImports
@@ -101,6 +116,11 @@ import static Yoko; // Too much !
 |----|-------------|-----------|
 |maximumStaticImports|4|All static imports can be disallowed by setting this to 0|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/imports.xml/TooManyStaticImports" />
+```
+
 ## UnnecessaryFullyQualifiedName
 
 **Since:** PMD 5.0
@@ -123,6 +143,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/imports.xml/UnnecessaryFullyQualifiedName" />
+```
+
 ## UnusedImports
 
 **Since:** PMD 1.0
@@ -139,5 +164,10 @@ Avoid the use of unused import statements to prevent unwanted dependencies.
 // this is bad
 import java.io.File;
 public class Foo {}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/imports.xml/UnusedImports" />
 ```
 

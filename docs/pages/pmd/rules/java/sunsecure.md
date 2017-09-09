@@ -30,6 +30,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/sunsecure.xml/ArrayIsStoredDirectly" />
+```
+
 ## MethodReturnsInternalArray
 
 **Since:** PMD 2.2
@@ -51,5 +56,10 @@ public class SecureSystem {
         return ud;
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/sunsecure.xml/MethodReturnsInternalArray" />
 ```
 

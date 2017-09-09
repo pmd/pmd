@@ -36,6 +36,11 @@ global class Unchangeable {
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/style.xml/AvoidGlobalModifier" />
+```
+
 ## AvoidLogicInTrigger
 
 **Since:** PMD 5.5.0
@@ -75,6 +80,11 @@ trigger Accounts on Account (before insert, before update, before delete, after 
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/style.xml/AvoidLogicInTrigger" />
+```
+
 ## ClassNamingConventions
 
 **Since:** PMD 5.5.0
@@ -98,6 +108,11 @@ public class Foo {}
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/style.xml/ClassNamingConventions" />
+```
 
 ## MethodNamingConventions
 
@@ -125,6 +140,11 @@ public class Foo {
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/style.xml/MethodNamingConventions" />
+```
 
 ## MethodWithSameNameAsEnclosingClass
 
@@ -154,6 +174,11 @@ public class MyClass {
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/style.xml/MethodWithSameNameAsEnclosingClass" />
+```
 
 ## VariableNamingConventions
 
@@ -195,4 +220,9 @@ public class Foo {
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 |checkMembers|true|Check member variables|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/style.xml/VariableNamingConventions" />
+```
 

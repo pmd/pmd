@@ -31,6 +31,11 @@ public class Foo extends TestCase {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/junit.xml/JUnitAssertionsShouldIncludeMessage" />
+```
+
 ## JUnitSpelling
 
 **Since:** PMD 1.0
@@ -59,6 +64,11 @@ public class Foo extends TestCase {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/junit.xml/JUnitSpelling" />
+```
+
 ## JUnitStaticSuite
 
 **Since:** PMD 1.0
@@ -83,6 +93,11 @@ public class Foo extends TestCase {
     public void suite() {}         // oops, should be static
     private static void suite() {} // oops, should be public
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/junit.xml/JUnitStaticSuite" />
 ```
 
 ## JUnitTestContainsTooManyAsserts
@@ -124,6 +139,11 @@ public class MyTestCase extends TestCase {
 |----|-------------|-----------|
 |maximumAsserts|1|Maximum number of Asserts in a test method|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/junit.xml/JUnitTestContainsTooManyAsserts" />
+```
+
 ## JUnitTestsShouldIncludeAssert
 
 **Since:** PMD 2.0
@@ -146,6 +166,11 @@ public class Foo extends TestCase {
    b.work();
    }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/junit.xml/JUnitTestsShouldIncludeAssert" />
 ```
 
 ## SimplifyBooleanAssertion
@@ -187,6 +212,11 @@ public class SimpleTest extends TestCase {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/junit.xml/SimplifyBooleanAssertion" />
+```
+
 ## TestClassWithoutTestCases
 
 **Since:** PMD 3.0
@@ -209,6 +239,11 @@ public class CarTest {
    }
    // code
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/junit.xml/TestClassWithoutTestCases" />
 ```
 
 ## UnnecessaryBooleanAssertion
@@ -246,6 +281,11 @@ public class SimpleTest extends TestCase {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/junit.xml/UnnecessaryBooleanAssertion" />
+```
+
 ## UseAssertEqualsInsteadOfAssertTrue
 
 **Since:** PMD 3.1
@@ -274,6 +314,11 @@ public class FooTest extends TestCase {
         assertEquals(?a should equals b?, a, b);    // good usage
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/junit.xml/UseAssertEqualsInsteadOfAssertTrue" />
 ```
 
 ## UseAssertNullInsteadOfAssertTrue
@@ -310,6 +355,11 @@ public class FooTest extends TestCase {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/junit.xml/UseAssertNullInsteadOfAssertTrue" />
+```
+
 ## UseAssertSameInsteadOfAssertTrue
 
 **Since:** PMD 3.1
@@ -340,6 +390,11 @@ public class FooTest extends TestCase {
         assertSame(a, b);   // good usage
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/junit.xml/UseAssertSameInsteadOfAssertTrue" />
 ```
 
 ## UseAssertTrueInsteadOfAssertEquals
@@ -378,5 +433,10 @@ public class MyTestCase extends TestCase {
         assertEquals("myVar is false", Boolean.FALSE, myVar);
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/junit.xml/UseAssertTrueInsteadOfAssertEquals" />
 ```
 

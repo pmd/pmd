@@ -42,6 +42,11 @@ for (int i = 0; i < 42; i++) { // preferred approach
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/braces.xml/ForLoopsMustUseBraces" />
+```
+
 ## IfElseStmtsMustUseBraces
 
 **Since:** PMD 5.6.0
@@ -79,6 +84,11 @@ else
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/braces.xml/IfElseStmtsMustUseBraces" />
+```
+
 ## IfStmtsMustUseBraces
 
 **Since:** PMD 5.6.0
@@ -112,6 +122,11 @@ if (foo) {  // preferred approach
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/braces.xml/IfStmtsMustUseBraces" />
+```
+
 ## WhileLoopsMustUseBraces
 
 **Since:** PMD 5.6.0
@@ -144,4 +159,9 @@ while (true) {  // preferred approach
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/braces.xml/WhileLoopsMustUseBraces" />
+```
 

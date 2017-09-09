@@ -43,6 +43,11 @@ public class Foo implements Cloneable {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/clone.xml/CloneMethodMustBePublic" />
+```
+
 ## CloneMethodMustImplementCloneable
 
 **Since:** PMD 1.9
@@ -74,6 +79,11 @@ public class MyClass {
   return foo;
  }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/clone.xml/CloneMethodMustImplementCloneable" />
 ```
 
 ## CloneMethodReturnTypeMustMatchClassName
@@ -114,6 +124,11 @@ public class Foo implements Cloneable {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/clone.xml/CloneMethodReturnTypeMustMatchClassName" />
+```
+
 ## CloneThrowsCloneNotSupportedException
 
 **Since:** PMD 1.9
@@ -146,6 +161,11 @@ public class MyClass implements Cloneable{
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/clone.xml/CloneThrowsCloneNotSupportedException" />
+```
+
 ## ProperCloneImplementation
 
 **Since:** PMD 1.4
@@ -174,5 +194,10 @@ class Foo{
         return new Foo(); // This is bad
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/clone.xml/ProperCloneImplementation" />
 ```
 

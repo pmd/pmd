@@ -29,6 +29,11 @@ public class A {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/AvoidAssertAsIdentifier" />
+```
+
 ## AvoidEnumAsIdentifier
 
 **Since:** PMD 3.4
@@ -49,6 +54,11 @@ public class A {
         String enum = "foo";
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/AvoidEnumAsIdentifier" />
 ```
 
 ## ByteInstantiation
@@ -73,6 +83,11 @@ or ClassOrInterfaceType/@Image='java.lang.Byte')]
 public class Foo {
     private Byte i = new Byte(0); // change to Byte i = Byte.valueOf(0);
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/ByteInstantiation" />
 ```
 
 ## ForLoopCanBeForeach
@@ -106,6 +121,11 @@ public class MyClass {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/ForLoopCanBeForeach" />
+```
+
 ## IntegerInstantiation
 
 **Since:** PMD 3.5
@@ -129,6 +149,11 @@ It makes use of an internal cache that recycles earlier instances making it more
 public class Foo {
     private Integer i = new Integer(0); // change to Integer i = Integer.valueOf(0);
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/IntegerInstantiation" />
 ```
 
 ## JUnit4SuitesShouldUseSuiteAnnotation
@@ -162,6 +187,11 @@ public class GoodTest {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/JUnit4SuitesShouldUseSuiteAnnotation" />
+```
+
 ## JUnit4TestShouldUseAfterAnnotation
 
 **Since:** PMD 4.0
@@ -190,6 +220,11 @@ public class MyTest2 {
         good();
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseAfterAnnotation" />
 ```
 
 ## JUnit4TestShouldUseBeforeAnnotation
@@ -222,6 +257,11 @@ public class MyTest2 {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseBeforeAnnotation" />
+```
+
 ## JUnit4TestShouldUseTestAnnotation
 
 **Since:** PMD 4.0
@@ -249,6 +289,11 @@ public class MyTest {
         doSomething();
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseTestAnnotation" />
 ```
 
 ## JUnitUseExpected
@@ -281,6 +326,11 @@ public class MyTest {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/JUnitUseExpected" />
+```
+
 ## LongInstantiation
 
 **Since:** PMD 4.0
@@ -304,6 +354,11 @@ or ClassOrInterfaceType/@Image='java.lang.Long')]
 public class Foo {
     private Long i = new Long(0); // change to Long i = Long.valueOf(0);
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/LongInstantiation" />
 ```
 
 ## ReplaceEnumerationWithIterator
@@ -332,6 +387,11 @@ public class Foo implements Enumeration {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/ReplaceEnumerationWithIterator" />
+```
+
 ## ReplaceHashtableWithMap
 
 **Since:** PMD 3.4
@@ -354,6 +414,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/ReplaceHashtableWithMap" />
+```
+
 ## ReplaceVectorWithList
 
 **Since:** PMD 3.4
@@ -374,6 +439,11 @@ public class Foo {
         Vector v = new Vector();
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/ReplaceVectorWithList" />
 ```
 
 ## ShortInstantiation
@@ -399,5 +469,10 @@ or ClassOrInterfaceType/@Image='java.lang.Short')]
 public class Foo {
     private Short i = new Short(0); // change to Short i = Short.valueOf(0);
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/migrating.xml/ShortInstantiation" />
 ```
 
