@@ -16,16 +16,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
@@ -46,6 +53,39 @@ import net.sourceforge.pmd.renderers.TextRenderer;
  * Advanced methods for test cases
  */
 public abstract class RuleTst {
+    private final DocumentBuilder documentBuilder;
+
+    public RuleTst() {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        Schema schema;
+        try {
+            schema = schemaFactory.newSchema(RuleTst.class.getResource("/rule-tests.xsd"));
+            dbf.setSchema(schema);
+            dbf.setNamespaceAware(true);
+            DocumentBuilder builder = dbf.newDocumentBuilder();
+            builder.setErrorHandler(new ErrorHandler() {
+                @Override
+                public void warning(SAXParseException exception) throws SAXException {
+                    throw exception;
+                }
+
+                @Override
+                public void fatalError(SAXParseException exception) throws SAXException {
+                    throw exception;
+                }
+
+                @Override
+                public void error(SAXParseException exception) throws SAXException {
+                    throw exception;
+                }
+            });
+            documentBuilder = builder;
+        } catch (SAXException | ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Find a rule in a certain ruleset by name
      */
@@ -286,11 +326,7 @@ public abstract class RuleTst {
 
         Document doc;
         try {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            doc = builder.parse(inputStream);
-        } catch (ParserConfigurationException pce) {
-            pce.printStackTrace();
-            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + pce.getMessage());
+            doc = documentBuilder.parse(inputStream);
         } catch (FactoryConfigurationError fce) {
             fce.printStackTrace();
             throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + fce.getMessage());
@@ -300,6 +336,8 @@ public abstract class RuleTst {
         } catch (SAXException se) {
             se.printStackTrace();
             throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + se.getMessage());
+        } finally {
+            IOUtils.closeQuietly(inputStream);
         }
 
         return parseTests(rule, doc);
