@@ -328,14 +328,11 @@ public abstract class RuleTst {
         try {
             doc = documentBuilder.parse(inputStream);
         } catch (FactoryConfigurationError fce) {
-            fce.printStackTrace();
-            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + fce.getMessage());
+            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + fce, fce);
         } catch (IOException ioe) {
-            ioe.printStackTrace();
-            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + ioe.getMessage());
+            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + ioe, ioe);
         } catch (SAXException se) {
-            se.printStackTrace();
-            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + se.getMessage());
+            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + se, se);
         } finally {
             IOUtils.closeQuietly(inputStream);
         }

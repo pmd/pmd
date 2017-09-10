@@ -7,62 +7,64 @@
 
     <element name="test-data">
         <complexType>
-            <sequence>
-                <element name="test-code" minOccurs="1" maxOccurs="unbounded">
-                    <complexType>
-                        <sequence>
-                            <element name="description" type="string"></element>
-                            <element name="rule-property" minOccurs="0" maxOccurs="unbounded">
-                                <complexType>
-                                    <simpleContent>
-                                        <extension base="string">
-                                            <attribute name="name"></attribute>
-                                        </extension>
-                                    </simpleContent>
-                                </complexType>
-                            </element>
-                            <element name="expected-problems" type="integer"></element>
-                            <element name="expected-linenumbers" type="string" minOccurs="0"></element>
-                            <element name="expected-messages" minOccurs="0">
-                                <complexType>
-                                    <sequence>
-                                        <element name="message" type="string" maxOccurs="unbounded"></element>
-                                    </sequence>
-                                </complexType>
-                            </element>
-                            <choice>
-                                <element name="code"></element>
-                                <element name="code-ref">
-                                    <complexType>
-                                        <attribute name="id"></attribute>
-                                    </complexType>
-                                </element>
-                            </choice>
-                            <element name="source-type" minOccurs="0" default="java">
-                                <simpleType>
-                                    <restriction base="string">
-                                        <enumeration value="apex"></enumeration>
-                                        <enumeration value="ecmascript"></enumeration>
-                                        <enumeration value="java"></enumeration>
-                                        <enumeration value="jsp"></enumeration>
-                                        <enumeration value="plsql"></enumeration>
-                                        <enumeration value="pom"></enumeration>
-                                        <enumeration value="vf"></enumeration>
-                                        <enumeration value="vm"></enumeration>
-                                        <enumeration value="wsdl"></enumeration>
-                                        <enumeration value="xml"></enumeration>
-                                        <enumeration value="xsl"></enumeration>
-                                    </restriction>
-                                </simpleType>
-                            </element>
-                        </sequence>
-                        <attribute name="reinitializeRule" type="boolean" default="true"></attribute>
-                        <attribute name="regressionTest" type="boolean" default="true"></attribute>
-                        <attribute name="useAuxClasspath" type="boolean" default="true"></attribute>
-                    </complexType>
-                </element>
-                <element name="code-fragment" minOccurs="0" maxOccurs="unbounded" type="string"></element>
-            </sequence>
+            <group ref="tns:testCodeOrCodeFragment" minOccurs="1" maxOccurs="unbounded"></group>
         </complexType>
     </element>
+
+    <group name="testCodeOrCodeFragment">
+        <sequence>
+            <element name="test-code" minOccurs="0" maxOccurs="unbounded" type="tns:testCodeType"></element>
+            <element name="code-fragment" minOccurs="0" maxOccurs="unbounded" type="tns:codeFragmentType"></element>
+        </sequence>
+    </group>
+
+    <complexType name="testCodeType">
+        <sequence>
+            <element name="description" type="string"></element>
+            <element name="rule-property" minOccurs="0" maxOccurs="unbounded">
+                <complexType>
+                    <simpleContent>
+                        <extension base="string">
+                            <attribute name="name" type="string" use="required"></attribute>
+                        </extension>
+                    </simpleContent>
+                </complexType>
+            </element>
+            <element name="expected-problems" type="integer"></element>
+            <element name="expected-linenumbers" type="string" minOccurs="0"></element>
+            <element name="expected-messages" minOccurs="0">
+                <complexType>
+                    <sequence>
+                        <element name="message" type="string" maxOccurs="unbounded"></element>
+                    </sequence>
+                </complexType>
+            </element>
+            <choice>
+                <element name="code"></element>
+                <element name="code-ref">
+                    <complexType>
+                        <attribute name="id" type="IDREF" use="required"></attribute>
+                    </complexType>
+                </element>
+            </choice>
+            <element name="source-type" minOccurs="0" default="java">
+                <simpleType>
+                    <restriction base="string">
+                        <pattern value="(apex|ecmascript|java|jsp|plsql|pom|vf|vm|wsdl|xml|xsl)( [0-9.]+)?"></pattern>
+                    </restriction>
+                </simpleType>
+            </element>
+        </sequence>
+        <attribute name="reinitializeRule" type="boolean" default="true"></attribute>
+        <attribute name="regressionTest" type="boolean" default="true"></attribute>
+        <attribute name="useAuxClasspath" type="boolean" default="true"></attribute>
+    </complexType>
+
+    <complexType name="codeFragmentType">
+        <simpleContent>
+            <extension base="string">
+                <attribute name="id" type="ID" use="required"></attribute>
+            </extension>
+        </simpleContent>
+    </complexType>
 </schema>
