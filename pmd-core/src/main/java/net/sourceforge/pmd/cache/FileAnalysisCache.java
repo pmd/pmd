@@ -78,7 +78,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
             } catch (final EOFException e) {
                 LOG.warning("Cache file " + cacheFile.getPath() + " is malformed, will not be used for current analysis");
             } catch (final IOException e) {
-                LOG.severe("Could not load analysis cache to file. " + e.getMessage());
+                LOG.severe("Could not load analysis cache from file. " + e.getMessage());
             }
         }
     }
