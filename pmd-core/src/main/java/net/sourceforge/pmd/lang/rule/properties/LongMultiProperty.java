@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.ValueParsers.LONG_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParserConstants.LONG_PARSER;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +28,7 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
             public LongMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 String[] minMax = minMaxFrom(valuesById);
                 char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Long> defaultValues = ValueParsers.parsePrimitives(defaultValueIn(valuesById), delimiter, LONG_PARSER);
+                List<Long> defaultValues = ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, LONG_PARSER);
                 return new LongMultiProperty(nameIn(valuesById),
                                              descriptionIn(valuesById),
                                              LONG_PARSER.valueOf(minMax[0]),

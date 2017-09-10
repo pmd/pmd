@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.ValueParsers.DOUBLE_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParserConstants.DOUBLE_PARSER;
 
 import java.util.Map;
 

@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 
-import static net.sourceforge.pmd.lang.rule.properties.ValueParsers.METHOD_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParserConstants.METHOD_PARSER;
 
 import java.lang.reflect.Method;
 import java.util.Collections;

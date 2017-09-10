@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.ValueParsers.BOOLEAN_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParserConstants.BOOLEAN_PARSER;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +28,7 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
                 char delimiter = delimiterIn(valuesById);
                 return new BooleanMultiProperty(nameIn(valuesById),
                                                 descriptionIn(valuesById),
-                                                ValueParsers.parsePrimitives(defaultValueIn(valuesById), delimiter, BOOLEAN_PARSER),
+                                                ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, BOOLEAN_PARSER),
                                                 0f,
                                                 isDefinedExternally);
             }

@@ -36,7 +36,7 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
                 char delimiter = delimiterIn(valuesById);
                 return new CharacterMultiProperty(nameIn(valuesById),
                                                   descriptionIn(valuesById),
-                                                  ValueParsers.parsePrimitives(defaultValueIn(valuesById), delimiter, ValueParsers.CHARACTER_PARSER),
+                                                  ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, ValueParserConstants.CHARACTER_PARSER),
                                                   0.0f,
                                                   delimiter,
                                                   isDefinedExternally);

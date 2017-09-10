@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.ValueParsers.DOUBLE_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParserConstants.DOUBLE_PARSER;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +29,7 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
                 String[] minMax = minMaxFrom(valuesById);
                 char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
                 List<Double> defaultValues
-                    = ValueParsers.parsePrimitives(defaultValueIn(valuesById), delimiter, DOUBLE_PARSER);
+                    = ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, DOUBLE_PARSER);
 
                 return new DoubleMultiProperty(nameIn(valuesById),
                                                descriptionIn(valuesById),

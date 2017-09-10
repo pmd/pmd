@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.ValueParsers.FLOAT_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParserConstants.FLOAT_PARSER;
 
 import java.util.Map;
 

@@ -23,7 +23,7 @@ import net.sourceforge.pmd.util.ClassUtil;
  * @since 6.0.0
  */
 //TODO: make package-private when we move everything to n.s.pmd.properties
-public final class ValueParsers {
+public final class ValueParserConstants {
 
 
     /** Extracts characters. */
@@ -225,7 +225,7 @@ public final class ValueParsers {
     };
 
 
-    private ValueParsers() {
+    private ValueParserConstants() {
 
     }
 
