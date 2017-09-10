@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 connection is closed, ok
@@ -334,7 +337,7 @@ public class StructureFactory {
 }
      ]]></code>
     </test-code>
-    <test-code> reinitializeRule="true"
+    <test-code reinitializeRule="true">
         <description>#1011 CloseResource Rule ignores Constructors</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -576,10 +579,10 @@ public class Foo {
     </test-code>
     <test-code>
         <description>#1372 False Negative for CloseResource rule.</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
         <rule-property name="types">Connection,Statement,ResultSet,PreparedStatement</rule-property>
         <rule-property name="closeTargets">closeLocalResources,closeResultSet</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 public class CloseResourceTest {
     public Object selectOne(final int val, final int val2) {
@@ -610,8 +613,8 @@ public class CloseResourceTest {
 
     <test-code>
         <description>#1387 CloseResource has false positive for ResultSet</description>
-        <expected-problems>0</expected-problems>
         <rule-property name="closeTargets">closeConnection,closeCloseable,closeReader,closeResource,closeResultSet,closeStream,closeStatement</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class CloseResource {
     public void querySomething(Connection connection) {
@@ -639,8 +642,8 @@ public class CloseResource {
 
     <test-code>
         <description>Verify closeAsDefaultTarget property</description>
-        <expected-problems>2</expected-problems>
         <rule-property name="closeAsDefaultTarget">false</rule-property>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class CloseResource {
     public void doSomething() {

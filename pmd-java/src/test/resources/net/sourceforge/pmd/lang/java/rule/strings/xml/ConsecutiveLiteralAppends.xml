@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 1, Single append, should be ok
@@ -20,7 +23,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <code-fragment id="back to back append"><![CDATA[
+    <code-fragment id="back-to-back-append"><![CDATA[
 public class Foo {
  public void bar() {
    StringBuffer sb = new StringBuffer();
@@ -40,7 +43,7 @@ public class Foo {
 2, Back to back append, not ok
      ]]></description>
         <expected-problems>2</expected-problems>
-        <code-ref id="back to back append"/>
+        <code-ref id="back-to-back-append"/>
     </test-code>
         <test-code>
         <description><![CDATA[
@@ -48,7 +51,7 @@ public class Foo {
      ]]></description>
         <rule-property name="threshold">2</rule-property>
         <expected-problems>0</expected-problems>
-        <code-ref id="back to back append"/>
+        <code-ref id="back-to-back-append"/>
     </test-code>
     <test-code>
         <description><![CDATA[
@@ -616,7 +619,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <code-fragment id="three appends on one line"><![CDATA[
+    <code-fragment id="three-appends-on-one-line"><![CDATA[
 public class Foo {
  public void bar() {
   String somevar = "";
@@ -642,7 +645,7 @@ public class Foo {
 23, force 2 failures on 3 lines
      ]]></description>
         <expected-problems>4</expected-problems>
-        <code-ref id="three appends on one line"/>
+        <code-ref id="three-appends-on-one-line"/>
     </test-code>
     <test-code>
         <description><![CDATA[
@@ -650,7 +653,7 @@ public class Foo {
      ]]></description>
         <rule-property name="threshold">2</rule-property>
         <expected-problems>2</expected-problems>
-        <code-ref id="three appends on one line"/>
+        <code-ref id="three-appends-on-one-line"/>
     </test-code>
     <test-code>
         <description><![CDATA[

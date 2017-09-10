@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 OneDeclarationPerLine's basic test case
@@ -38,8 +41,8 @@ public class Foo
     </test-code>
     <test-code>
         <description>#1221 OneDeclarationPerLine really checks for one declaration each statement</description>
-        <expected-problems>0</expected-problems>
         <rule-property name="strictMode">false</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -51,8 +54,8 @@ public class Foo {
     </test-code>
     <test-code>
         <description>#1221 OneDeclarationPerLine really checks for one declaration each statement</description>
-        <expected-problems>1</expected-problems>
         <rule-property name="strictMode">true</rule-property>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar() {

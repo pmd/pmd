@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 !=, bad
@@ -125,7 +128,7 @@ public class BadTernaries {
 }
         ]]></code>
     </test-code>
-    <code-fragment id="1161-confusing-ternary-ignore-else-if"><![CDATA[
+    <code-fragment id="code-1161-confusing-ternary-ignore-else-if"><![CDATA[
 public class Test {
   public void foo() {
     if (!condition) {
@@ -139,20 +142,20 @@ public class Test {
         ]]></code-fragment>
     <test-code>
         <description>#1161 Confusing Ternary should skip else if statements (or have a property to do so) (ignoreElseIf=false)</description>
-        <expected-problems>1</expected-problems>
         <rule-property name="ignoreElseIf">false</rule-property>
-        <code-ref id="1161-confusing-ternary-ignore-else-if"/>
+        <expected-problems>1</expected-problems>
+        <code-ref id="code-1161-confusing-ternary-ignore-else-if"/>
     </test-code>
     <test-code>
         <description>#1161 Confusing Ternary should skip else if statements (or have a property to do so) (ignoreElseIf=true)</description>
-        <expected-problems>0</expected-problems>
         <rule-property name="ignoreElseIf">true</rule-property>
-        <code-ref id="1161-confusing-ternary-ignore-else-if"/>
+        <expected-problems>0</expected-problems>
+        <code-ref id="code-1161-confusing-ternary-ignore-else-if"/>
     </test-code>
     <test-code>
         <description>#1198 ConfusingTernary does not ignore else if blocks even when property is set</description>
-        <expected-problems>0</expected-problems>
         <rule-property name="ignoreElseIf">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void foo() {

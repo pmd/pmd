@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 bad
@@ -112,8 +115,8 @@ public class Foo {
         <description><![CDATA[
 assignment in while conditional expression, allowed
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="allowWhile">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
@@ -128,8 +131,8 @@ public class Foo {
         <description><![CDATA[
 assignment in if conditional expression, allowed
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="allowIf">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
@@ -148,8 +151,8 @@ public class Foo {
         <description><![CDATA[
 assignment in for conditional expression, allowed
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="allowFor">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
@@ -164,8 +167,8 @@ public class Foo {
         <description><![CDATA[
 increment in if conditional expression, allowed
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="allowIncrementDecrement">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {

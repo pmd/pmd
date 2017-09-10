@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 failure case
@@ -48,7 +51,7 @@ public interface Foo {
 }
      ]]></code>
     </test-code>
-    <code-fragment id="public methods"><![CDATA[
+    <code-fragment id="public-methods"><![CDATA[
 class Foo {
  public void bar(int s) {}
 }
@@ -58,7 +61,7 @@ class Foo {
 don't flag public methods by default
      ]]></description>
         <expected-problems>0</expected-problems>
-        <code-ref id="public methods"/>
+        <code-ref id="public-methods"/>
     </test-code>
         <test-code>
         <description><![CDATA[
@@ -66,7 +69,7 @@ flag public methods if checkall property is set
      ]]></description>
         <rule-property name="checkAll">true</rule-property>
         <expected-problems>1</expected-problems>
-        <code-ref id="public methods"/>
+        <code-ref id="public-methods"/>
     </test-code>
     <test-code>
         <description><![CDATA[
@@ -283,8 +286,8 @@ public class Foo {
 
     <test-code>
         <description>#1456 UnusedFormalParameter should ignore overriding methods</description>
-        <expected-problems>0</expected-problems>
         <rule-property name="checkAll">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 abstract class Base{
   abstract public int badMethod(int arg1, String arg2);

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 unused local with assignment
@@ -332,7 +335,6 @@ public class PMDFalsePositiveTest {
     <test-code>
         <description>#1247 Not able to recognize JDK 8 Static Method References</description>
         <expected-problems>0</expected-problems>
-        <source-type>java 1.8</source-type>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -344,6 +346,7 @@ public class Foo {
     }
 }
         ]]></code>
+        <source-type>java 1.8</source-type>
     </test-code>
 
     <test-code>
