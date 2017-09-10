@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.PMD;
@@ -50,12 +51,20 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         // Now check the old cache
         final AnalysisResult analysisResult = fileResultsCache.get(sourceFile.getPath());
         
-        if (analysisResult == null) {
-            // new file, need to analyze it
-            return false;
+        // is this a known file? has it changed?
+        final boolean result = analysisResult != null
+                && analysisResult.getFileChecksum() == updatedResult.getFileChecksum();
+
+        if (LOG.isLoggable(Level.FINE)) {
+            if (result) {
+                LOG.fine("Incremental Analysis cache HIT");
+            } else {
+                LOG.fine("Incremental Analysis cache MISS - "
+                        + (analysisResult != null ? "file changed" : "no previous results found"));
+            }
         }
-        
-        return analysisResult.getFileChecksum() == updatedResult.getFileChecksum();
+
+        return result;
     }
 
     @Override

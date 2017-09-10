@@ -70,6 +70,8 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
 
                         fileResultsCache.put(fileName, new AnalysisResult(checksum, violations));
                     }
+
+                    LOG.info("Analysis cache loaded");
                 } else {
                     LOG.info("Analysis cache invalidated, PMD version changed.");
                 }
@@ -111,6 +113,8 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                     CachedRuleViolation.storeToStream(outputStream, rv);
                 }
             }
+            
+            LOG.info("Analysis cache updated");
         } catch (final IOException e) {
             LOG.severe("Could not persist analysis cache to file. " + e.getMessage());
         }
