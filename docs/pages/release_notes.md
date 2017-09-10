@@ -161,7 +161,7 @@ and several improvements have been performed to make it more accurate.
 
 The cache will now detect changes to the JARs referenced in the `auxclasspath` instead of simply looking at their paths
 and order. This means that if you are referencing a JAR you are overwriting in some way, the incremental analysis can
-now detect it and invalidat it's cache to avoid false reports.
+now detect it and invalidate it's cache to avoid false reports.
 
 We have also improved logging on the analysis code, allowing better insight into how the cache is performing,
 under debug / verbose builds you can even see individual hits / misses to the cache (and the reason for any miss!)
