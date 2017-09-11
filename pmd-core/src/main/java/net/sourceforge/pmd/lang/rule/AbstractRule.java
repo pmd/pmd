@@ -48,6 +48,10 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         definePropertyDescriptor(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
     }
 
+    /**
+     * @deprecated Use {@link #deepCopy()} to create verbatim copies of rules.
+     */
+    @Deprecated
     public void deepCopyValuesTo(AbstractRule otherRule) {
         otherRule.language = language;
         otherRule.minimumLanguageVersion = minimumLanguageVersion;
@@ -536,7 +540,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         }
         rule.setPriority(getPriority());
         for (final PropertyDescriptor<?> prop : getPropertyDescriptors()) {
-            if (!rule.hasDescriptor(prop)) {
+            if (rule.getPropertyDescriptor(prop.name()) == null) {
                 rule.definePropertyDescriptor(prop); // Property descriptors are immutable, and can be freely shared
             }
             
