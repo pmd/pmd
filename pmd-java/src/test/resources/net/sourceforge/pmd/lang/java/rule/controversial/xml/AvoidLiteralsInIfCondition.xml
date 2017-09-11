@@ -79,8 +79,8 @@ public class Foo {
   </test-code>
   <test-code>
     <description>#388 False positive due to space in property list</description>
-    <expected-problems>0</expected-problems>
     <rule-property name="ignoreMagicNumbers"><![CDATA[-1,0,1, 0.0]]></rule-property>
+    <expected-problems>0</expected-problems>
     <code><![CDATA[
     class Foo {
       void bar() {
