@@ -20,7 +20,7 @@ with an additional test case, so that the bug is not accidentally reintroduced l
 
 PMD's built-in rules are organized in rulesets, such as "java-basic". Each ruleset has a single test class,
 which executes all the test cases for all rules in this ruleset. The actual test cases are stored in separate
-XML files, for each rule an own file is used.
+XML files, for each rule a separate file is used.
 
 The test class subclasses `net.sourceforge.pmd.testframework.SimpleAggregatorTst`, which provides the seamless
 integration with JUnit. You basically tell the framework, which rules should be tested and it searches
@@ -168,7 +168,7 @@ The `<test-code>` elements understands three optional attributes:
 *   **`<expected-problems>`**: The the raw number of expected rule violations, that this rule is expected to report.
     For false-positive test cases, this is always "0". For false-negative test cases, it can be any positive number.
 
-*   **`<expected-linenumber>`**: Optional element. It's a comma separated list of line numbers.
+*   **`<expected-linenumbers>`**: Optional element. It's a comma separated list of line numbers.
     If there are rule violations reported, then this allows you to
     assert the line numbers. Useful if multiple violations should be detected and to be sure that
     false positives and negatives don't erase each other.
