@@ -27,6 +27,11 @@ void foo() {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/finalizers.xml/AvoidCallingFinalize" />
+```
+
 ## EmptyFinalizer
 
 **Since:** PMD 1.5
@@ -46,6 +51,11 @@ Empty finalize methods serve no purpose and should be removed.
 public class Foo {
    protected void finalize() {}
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/finalizers.xml/EmptyFinalizer" />
 ```
 
 ## FinalizeDoesNotCallSuperFinalize
@@ -82,6 +92,11 @@ protected void finalize() {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/finalizers.xml/FinalizeDoesNotCallSuperFinalize" />
+```
+
 ## FinalizeOnlyCallsSuperFinalize
 
 **Since:** PMD 1.5
@@ -108,6 +123,11 @@ protected void finalize() {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/finalizers.xml/FinalizeOnlyCallsSuperFinalize" />
+```
+
 ## FinalizeOverloaded
 
 **Since:** PMD 1.5
@@ -132,6 +152,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/finalizers.xml/FinalizeOverloaded" />
+```
+
 ## FinalizeShouldBeProtected
 
 **Since:** PMD 1.1
@@ -153,5 +178,10 @@ other classes may invoke it at inappropriate times.
 public void finalize() {
     // do something
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/finalizers.xml/FinalizeShouldBeProtected" />
 ```
 

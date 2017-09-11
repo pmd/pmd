@@ -42,6 +42,11 @@ public class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 |problemDepth|3|The if statement depth reporting threshold|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/complexity.xml/AvoidDeeplyNestedIfStmts" />
+```
+
 ## ExcessiveClassLength
 
 **Since:** PMD 5.5.0
@@ -84,6 +89,11 @@ public class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 |sigma||Sigma value|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/complexity.xml/ExcessiveClassLength" />
+```
+
 ## ExcessiveParameterList
 
 **Since:** PMD 5.5.0
@@ -118,6 +128,11 @@ public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/complexity.xml/ExcessiveParameterList" />
+```
 
 ## ExcessivePublicCount
 
@@ -159,6 +174,11 @@ public class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 |sigma||Sigma value|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/complexity.xml/ExcessivePublicCount" />
+```
+
 ## NcssConstructorCount
 
 **Since:** PMD 5.5.0
@@ -198,6 +218,11 @@ public class Foo extends Bar {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 |sigma||Sigma value|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/complexity.xml/NcssConstructorCount" />
+```
+
 ## NcssMethodCount
 
 **Since:** PMD 5.5.0
@@ -235,6 +260,11 @@ public class Foo extends Bar {
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/complexity.xml/NcssMethodCount" />
+```
 
 ## NcssTypeCount
 
@@ -275,6 +305,11 @@ public class Foo extends Bar {
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/complexity.xml/NcssTypeCount" />
+```
 
 ## StdCyclomaticComplexity
 
@@ -341,6 +376,11 @@ public class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 |reportLevel|10|Cyclomatic Complexity reporting threshold|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/complexity.xml/StdCyclomaticComplexity" />
+```
+
 ## TooManyFields
 
 **Since:** PMD 5.5.0
@@ -380,4 +420,9 @@ public class Person {
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 |maxfields|15|Max allowable fields|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/complexity.xml/TooManyFields" />
+```
 

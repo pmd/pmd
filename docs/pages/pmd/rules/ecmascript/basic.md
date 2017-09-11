@@ -55,6 +55,11 @@ function getX() {
 |allowTernaryResults|false|Allow assignment within the result expressions of a ternary operator|
 |allowIncrementDecrement|false|Allow increment or decrement operators within the conditional expression of an if, for, or while statement|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/basic.xml/AssignmentInOperand" />
+```
+
 ## AvoidTrailingComma
 
 **Since:** PMD 5.1
@@ -87,6 +92,11 @@ function(arg) {
 |----|-------------|-----------|
 |allowObjectLiteral|false|Allow a trailing comma within an object literal|
 |allowArrayLiteral|false|Allow a trailing comma within an array literal|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/basic.xml/AvoidTrailingComma" />
+```
 
 ## ConsistentReturn
 
@@ -128,6 +138,11 @@ function bar() {
 |recordingLocalJsDocComments|true|Specifies that JsDoc comments are produced in the AST.|
 |recordingComments|true|Specifies that comments are produced in the AST.|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/basic.xml/ConsistentReturn" />
+```
+
 ## EqualComparison
 
 **Since:** PMD 5.0
@@ -167,6 +182,11 @@ if (someVar != 3) {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/basic.xml/EqualComparison" />
+```
+
 ## GlobalVariable
 
 **Since:** PMD 5.0
@@ -190,6 +210,11 @@ function(arg) {
 
     window.otherGlobal = 2;     // this will not trigger the rule, although it is a global variable.
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/basic.xml/GlobalVariable" />
 ```
 
 ## InnaccurateNumericLiteral
@@ -219,6 +244,11 @@ var w = 1.12e-4; // Ok
 var x = 1.12; // Ok
 var y = 1.1234567890123; // Ok
 var z = 1.12345678901234567; // Not good
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/basic.xml/InnaccurateNumericLiteral" />
 ```
 
 ## ScopeForInVariable
@@ -269,6 +299,11 @@ function bar() {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/basic.xml/ScopeForInVariable" />
+```
+
 ## UnreachableCode
 
 **Since:** PMD 5.0
@@ -303,6 +338,11 @@ function bar() {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/basic.xml/UnreachableCode" />
+```
+
 ## UseBaseWithParseInt
 
 **Since:** PMD 5.0.1
@@ -329,5 +369,10 @@ See also: [parseInt()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/R
 parseInt("010");    // unclear, could be interpreted as 10 or 7 (with a base of 7)
 
 parseInt("10", 10); // good
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/basic.xml/UseBaseWithParseInt" />
 ```
 

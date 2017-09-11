@@ -37,6 +37,11 @@ public void bar() {
 |allowFor|false|Allow assignment within the conditional expression of a for statement|
 |allowIf|false|Allow assignment within the conditional expression of an if statement|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/AssignmentInOperand" />
+```
+
 ## AtLeastOneConstructor
 
 **Since:** PMD 1.04
@@ -64,6 +69,11 @@ public class Foo {
   public void doSomething() { ... }
   public void doOtherThing { ... }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/AtLeastOneConstructor" />
 ```
 
 ## AvoidAccessibilityAlteration
@@ -133,6 +143,11 @@ public class Violation {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/AvoidAccessibilityAlteration" />
+```
+
 ## AvoidFinalLocalVariable
 
 **Since:** PMD 4.1
@@ -164,6 +179,11 @@ public class MyClass {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/AvoidFinalLocalVariable" />
+```
+
 ## AvoidLiteralsInIfCondition
 
 **Since:** PMD 4.2.6
@@ -178,7 +198,7 @@ More exceptions can be defined with the property "ignoreMagicNumbers".
 //IfStatement/Expression/*/PrimaryExpression/PrimaryPrefix/Literal
 [not(NullLiteral)]
 [not(BooleanLiteral)]
-[empty(index-of(tokenize($ignoreMagicNumbers, ','), @Image))]
+[empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
 ```
 
 **Example(s):**
@@ -209,6 +229,11 @@ public void checkRequests() {
 |Name|Default Value|Description|
 |----|-------------|-----------|
 |ignoreMagicNumbers|-1,0|Comma-separated list of magic numbers, that should be ignored|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/AvoidLiteralsInIfCondition" />
+```
 
 ## AvoidPrefixingMethodParameters
 
@@ -255,6 +280,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/AvoidPrefixingMethodParameters" />
+```
+
 ## AvoidUsingNativeCode
 
 **Since:** PMD 4.1
@@ -287,6 +317,11 @@ public class SomeJNIClass {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/AvoidUsingNativeCode" />
+```
+
 ## AvoidUsingShortType
 
 **Since:** PMD 4.1
@@ -315,6 +350,11 @@ public class UsingShort {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/AvoidUsingShortType" />
+```
+
 ## AvoidUsingVolatile
 
 **Since:** PMD 4.1
@@ -336,6 +376,11 @@ public class ThrDeux {
   private volatile String var1; // not suggested
   private          String var2; // preferred
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/AvoidUsingVolatile" />
 ```
 
 ## CallSuperInConstructor
@@ -368,6 +413,11 @@ public class Foo extends Bar{
    // no problem with this
   }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/CallSuperInConstructor" />
 ```
 
 ## DataflowAnomalyAnalysis
@@ -403,6 +453,11 @@ public void foo() {
 |maxViolations|100|Maximum number of anomalies per class|
 |maxPaths|1000|Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/DataflowAnomalyAnalysis" />
+```
+
 ## DefaultPackage
 
 **Since:** PMD 3.4
@@ -421,6 +476,11 @@ The rule allows methods and fields annotated with Guava's @VisibleForTesting.
 FieldDeclaration[@PackagePrivate='true']
 or MethodDeclaration[@PackagePrivate='true']
 ]
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/DefaultPackage" />
 ```
 
 ## DoNotCallGarbageCollectionExplicitly
@@ -472,6 +532,11 @@ public class GCCall {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/DoNotCallGarbageCollectionExplicitly" />
+```
+
 ## DontImportSun
 
 **Since:** PMD 1.5
@@ -487,6 +552,11 @@ Avoid importing anything from the 'sun.*' packages.  These packages are not port
 ``` java
 import sun.misc.foo;
 public class Foo {}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/DontImportSun" />
 ```
 
 ## NullAssignment
@@ -512,6 +582,11 @@ public void bar() {
   x = null; // this is not required
      // big, complex piece of code here
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/NullAssignment" />
 ```
 
 ## OneDeclarationPerLine
@@ -548,6 +623,11 @@ String name,
 |----|-------------|-----------|
 |strictMode|false|If true, mark combined declaration even if the declarations are on separate lines.|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/OneDeclarationPerLine" />
+```
+
 ## OnlyOneReturn
 
 **Since:** PMD 1.0
@@ -569,6 +649,11 @@ public class OneReturnOnly1 {
     return "hi";	// second exit
   }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/OnlyOneReturn" />
 ```
 
 ## SuspiciousOctalEscape
@@ -599,6 +684,11 @@ public void foo() {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/SuspiciousOctalEscape" />
+```
+
 ## UnnecessaryConstructor
 
 **Since:** PMD 1.0
@@ -624,6 +714,11 @@ it's public, has an empty body, and takes no arguments.
 public class Foo {
   public Foo() {}
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/UnnecessaryConstructor" />
 ```
 
 ## UnnecessaryParentheses
@@ -711,6 +806,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/UnnecessaryParentheses" />
+```
+
 ## UseConcurrentHashMap
 
 **Since:** PMD 4.2.6
@@ -737,6 +837,11 @@ public class ConcurrentApp {
     Map map3 = someModule.methodThatReturnMap(); // might be OK, if the returned map is already thread-safe
   }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/UseConcurrentHashMap" />
 ```
 
 ## UseObjectForClearerAPI
@@ -774,5 +879,10 @@ public class MyClass {
 
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/controversial.xml/UseObjectForClearerAPI" />
 ```
 

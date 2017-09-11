@@ -37,6 +37,11 @@ public without sharing class Foo {
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/security.xml/ApexBadCrypto" />
+```
+
 ## ApexCRUDViolation
 
 **Since:** PMD 5.5.3
@@ -76,6 +81,11 @@ public class Foo {
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/security.xml/ApexCRUDViolation" />
+```
+
 ## ApexCSRF
 
 **Since:** PMD 5.5.3
@@ -108,6 +118,11 @@ public class Foo {
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/security.xml/ApexCSRF" />
+```
 
 ## ApexDangerousMethods
 
@@ -144,6 +159,11 @@ public class Foo {
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/security.xml/ApexDangerousMethods" />
+```
+
 ## ApexInsecureEndpoint
 
 **Since:** PMD 5.5.3
@@ -173,6 +193,11 @@ public without sharing class Foo {
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/security.xml/ApexInsecureEndpoint" />
+```
 
 ## ApexOpenRedirect
 
@@ -204,6 +229,11 @@ public without sharing class Foo {
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/security.xml/ApexOpenRedirect" />
+```
+
 ## ApexSharingViolations
 
 **Since:** PMD 5.5.3
@@ -230,6 +260,11 @@ public without sharing class Foo {
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/security.xml/ApexSharingViolations" />
+```
 
 ## ApexSOQLInjection
 
@@ -258,6 +293,11 @@ public class Foo {
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/security.xml/ApexSOQLInjection" />
+```
 
 ## ApexSuggestUsingNamedCred
 
@@ -301,6 +341,11 @@ public class Foo {
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/security.xml/ApexSuggestUsingNamedCred" />
+```
+
 ## ApexXSSFromEscapeFalse
 
 **Since:** PMD 5.5.3
@@ -329,6 +374,11 @@ public without sharing class Foo {
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/security.xml/ApexXSSFromEscapeFalse" />
+```
+
 ## ApexXSSFromURLParam
 
 **Since:** PMD 5.5.3
@@ -356,4 +406,9 @@ public without sharing class Foo {
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/security.xml/ApexXSSFromURLParam" />
+```
 

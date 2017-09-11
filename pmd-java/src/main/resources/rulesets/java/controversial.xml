@@ -681,7 +681,7 @@ More exceptions can be defined with the property "ignoreMagicNumbers".
 //IfStatement/Expression/*/PrimaryExpression/PrimaryPrefix/Literal
 [not(NullLiteral)]
 [not(BooleanLiteral)]
-[empty(index-of(tokenize($ignoreMagicNumbers, ','), @Image))]
+[empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
 ]]>
         </value>
       </property>

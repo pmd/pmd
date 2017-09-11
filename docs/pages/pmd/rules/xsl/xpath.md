@@ -47,6 +47,11 @@ cutting through 100% of the document.
 |----|-------------|-----------|
 |checkSelfDescendantAbreviation|false|descendant::self abreviation, '//', will also trigger this rule.|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/xsl/xpath.xml/AvoidAxisNavigation" />
+```
+
 ## UseConcatOnce
 
 **Since:** PMD 5.0
@@ -65,5 +70,10 @@ The XPath concat() functions accepts as many arguments as required so you can ha
 ``` xsl
 <xsl:variable name="var" select="concat("Welcome",concat("to you ",$name))"/>
 <xsl:variable name="var" select="concat("Welcome","to you ",$name))">
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/xsl/xpath.xml/UseConcatOnce" />
 ```
 

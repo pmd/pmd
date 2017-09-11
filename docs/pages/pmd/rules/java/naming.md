@@ -39,6 +39,11 @@ public abstract class Foo { // should be AbstractFoo
 |----|-------------|-----------|
 |strict|true|Also flag classes, that are named Abstract, but are not abstract.|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/AbstractNaming" />
+```
+
 ## AvoidDollarSigns
 
 **Since:** PMD 1.5
@@ -54,6 +59,11 @@ Avoid using dollar signs in variable/method/class/interface names.
 ``` java
 public class Fo$o {  // not a recommended name
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/AvoidDollarSigns" />
 ```
 
 ## AvoidFieldNameMatchingMethodName
@@ -79,6 +89,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/AvoidFieldNameMatchingMethodName" />
+```
+
 ## AvoidFieldNameMatchingTypeName
 
 **Since:** PMD 3.0
@@ -96,6 +111,11 @@ This probably means that type and/or field names should be chosen more carefully
 public class Foo extends Bar {
     int foo;    // There is probably a better name that can be used
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/AvoidFieldNameMatchingTypeName" />
 ```
 
 ## BooleanGetMethodName
@@ -132,6 +152,11 @@ public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
 |----|-------------|-----------|
 |checkParameterizedMethods|false|Check parameterized methods|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/BooleanGetMethodName" />
+```
+
 ## ClassNamingConventions
 
 **Since:** PMD 1.2
@@ -146,6 +171,11 @@ Class names should always begin with an upper case character.
 
 ``` java
 public class Foo {}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/ClassNamingConventions" />
 ```
 
 ## GenericsNaming
@@ -184,6 +214,11 @@ public interface GenericDao<EF extends BaseModel, K extends Serializable> {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/GenericsNaming" />
+```
+
 ## LongVariable
 
 **Since:** PMD 0.3
@@ -216,6 +251,11 @@ public class Something {
 |----|-------------|-----------|
 |minimum|17|The variable length reporting threshold|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/LongVariable" />
+```
+
 ## MethodNamingConventions
 
 **Since:** PMD 1.2
@@ -241,6 +281,11 @@ public class Foo {
 |----|-------------|-----------|
 |checkNativeMethods|true|Check native methods|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/MethodNamingConventions" />
+```
+
 ## MethodWithSameNameAsEnclosingClass
 
 **Since:** PMD 1.5
@@ -260,6 +305,11 @@ public class MyClass {
 
     public void MyClass() {}    // this is bad because it is a method
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/MethodWithSameNameAsEnclosingClass" />
 ```
 
 ## MisleadingVariableName
@@ -287,6 +337,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/MisleadingVariableName" />
+```
+
 ## NoPackage
 
 **Since:** PMD 3.3
@@ -305,6 +360,11 @@ Detects when a class or interface does not have a package definition.
 // no package declaration
 public class ClassInDefaultPackage {
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/NoPackage" />
 ```
 
 ## PackageCase
@@ -326,6 +386,11 @@ package com.MyCompany;  // should be lowercase name
 
 public class SomeClass {
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/PackageCase" />
 ```
 
 ## ShortClassName
@@ -353,6 +418,11 @@ public class Foo {
 |----|-------------|-----------|
 |minimum|5|Number of characters that are required as a minimum for a class name.|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/ShortClassName" />
+```
+
 ## ShortMethodName
 
 **Since:** PMD 0.3
@@ -379,6 +449,11 @@ public class ShortMethod {
 |Name|Default Value|Description|
 |----|-------------|-----------|
 |minimum|3|Number of characters that are required as a minimum for a method name.|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/ShortMethodName" />
+```
 
 ## ShortVariable
 
@@ -418,6 +493,11 @@ public class Something {
 |----|-------------|-----------|
 |minimum|3|Number of characters that are required as a minimum for a variable name.|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/ShortVariable" />
+```
+
 ## SuspiciousConstantFieldName
 
 **Since:** PMD 2.0
@@ -443,6 +523,11 @@ public class Foo {
  // final double PI = 3.16; is ok
   double PI = 3.16;
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/SuspiciousConstantFieldName" />
 ```
 
 ## SuspiciousEqualsMethodName
@@ -492,6 +577,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/SuspiciousEqualsMethodName" />
+```
+
 ## SuspiciousHashcodeMethodName
 
 **Since:** PMD 1.5
@@ -510,6 +600,11 @@ public class Foo {
     public int hashcode() { // oops, this probably was supposed to be 'hashCode'
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/SuspiciousHashcodeMethodName" />
 ```
 
 ## VariableNamingConventions
@@ -550,4 +645,9 @@ public class Foo {
 |staticPrefix|[]|Static variable prefixes|
 |checkLocals|true|Check local variables|
 |checkMembers|true|Check member variables|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/naming.xml/VariableNamingConventions" />
+```
 

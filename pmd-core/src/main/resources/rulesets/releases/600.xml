@@ -9,6 +9,7 @@ This ruleset contains links to rules that are new in PMD v6.0.0
   </description>
 
     <rule ref="rulesets/java/codesize.xml/NcssCount"/>
+    <rule ref="rulesets/java/migrating.xml/ForLoopCanBeForeach"/>
 
 </ruleset>
 
