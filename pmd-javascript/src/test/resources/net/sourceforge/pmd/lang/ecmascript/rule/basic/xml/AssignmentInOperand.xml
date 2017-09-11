@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 Ok, all cases
@@ -44,8 +47,8 @@ x ? true : x = false;
         <description><![CDATA[
 Ok, allow assignment, if
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="allowIf">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 if (x = true) {
 }
@@ -56,8 +59,8 @@ if (x = true) {
         <description><![CDATA[
 Ok, allow assignment, while
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="allowWhile">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 while (x = true) {
 }
@@ -68,8 +71,8 @@ while (x = true) {
         <description><![CDATA[
 Ok, allow assignment, do
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="allowWhile">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 do {
 } while(x = true);
@@ -80,8 +83,8 @@ do {
         <description><![CDATA[
 Ok, allow assignment, for
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="allowFor">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 for (var i = 0; x = true; i++) {
 }
@@ -92,8 +95,8 @@ for (var i = 0; x = true; i++) {
         <description><![CDATA[
 Ok, allow assignment, ternary
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="allowTernary">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 (x = true) ? true : false;
      ]]></code>
@@ -103,8 +106,8 @@ Ok, allow assignment, ternary
         <description><![CDATA[
 Ok, allow assignment, ternary results
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="allowTernaryResults">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 x ? x = true : false;
 x ? true : x = false;
@@ -135,8 +138,8 @@ x ? true : (++x || --x || x++ || x--);
         <description><![CDATA[
 Ok, allow increment/decrement, all cases
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="allowIncrementDecrement">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 if (++x || --x || x++ || x--) {
 }
