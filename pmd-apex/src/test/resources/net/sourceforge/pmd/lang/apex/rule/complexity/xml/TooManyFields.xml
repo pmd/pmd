@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-    <code-fragment id="3 fields"><![CDATA[
+    <code-fragment id="id-3-fields"><![CDATA[
 public class Foo {
 	Integer a1; 
 	Integer a2; 
@@ -13,14 +16,14 @@ public class Foo {
     <test-code>
         <description>3 fields, max is 15</description>
         <expected-problems>0</expected-problems>
-        <code-ref id="3 fields"/>
+        <code-ref id="id-3-fields"/>
     </test-code>
     
     <test-code>
         <description>3 fields, reduced max to 2</description>
         <rule-property name="maxfields">2</rule-property>
         <expected-problems>1</expected-problems>
-        <code-ref id="3 fields"/>
+        <code-ref id="id-3-fields"/>
     </test-code>
     
     <test-code>
