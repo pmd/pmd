@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class RuleDefsAggregator {
 
     private static final String OUTPUT_NAMESPACE = "http://pmd.sourceforge.net/ruleset/3.0.0";
     private static final String OUTPUT_XSD_LOCATION = "http://pmd.sourceforge.net/ruleset_3_0_0.xsd";
+    private static final String RULEDEFS_PREFIX_LOCATION = "ruledefs/";
 
 
     // Lists the ruledefs files in the directory, removing the excludedFiles
@@ -148,7 +150,7 @@ public class RuleDefsAggregator {
 
 
     // writes the document into the file
-    private void writeDocument(Document doc, Path outputPath) throws IOException, TransformerException {
+    private void writeDocument(Document doc, Writer outputWriter) throws IOException, TransformerException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.METHOD, "xml");
@@ -157,7 +159,7 @@ public class RuleDefsAggregator {
         transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
         Source source = new DOMSource(doc);
-        Result result = new StreamResult(new FileWriter(outputPath.toFile()));
+        Result result = new StreamResult(outputWriter);
         transformer.transform(source, result);
     }
 
@@ -167,14 +169,9 @@ public class RuleDefsAggregator {
      *
      * @param ruledefsDir   Path to the directory where the ruledef files sit
      * @param excludedFiles List of files to exclude
-     * @param outputPath    Path to the output document
-     *
-     * @throws IOException                  If listing the files fails
-     * @throws ParserConfigurationException If
-     * @throws SAXException
-     * @throws TransformerException
+     * @param outputWriter  Writer for the output document
      */
-    private void generateMasterRuledefFrom(Path ruledefsDir, List<String> excludedFiles, Path outputPath)
+    private void generateMasterRuledefFrom(Path ruledefsDir, List<String> excludedFiles, Writer outputWriter)
         throws IOException, ParserConfigurationException, SAXException, TransformerException {
 
         Document output = createOutputDocument(ruledefsDir.getFileName().toString());
@@ -183,7 +180,28 @@ public class RuleDefsAggregator {
             appendRules(ruledefFile, output);
         }
 
-        writeDocument(output, outputPath);
+        writeDocument(output, outputWriter);
+    }
+
+
+    /**
+     * Gets the name of the resource path to a language's master ruledef.
+     *
+     * @param langname Name of the language
+     *
+     * @return The name of the resource path, suitable for use within getResource(String)
+     */
+    public static String getGeneratedResourceFileName(String langname) {
+        return RULEDEFS_PREFIX_LOCATION + langname + "-index.xml";
+    }
+
+
+    private static List<String> parseExcludeArgument(String s) {
+        if (s.matches("exclude:\\w+\\.xml(,\\w+\\.xml)*")) {
+            return Arrays.asList(s.split("exclude:")[1].split(","));
+        } else {
+            throw new IllegalArgumentException("Incorrect exclusion pattern: \"" + s + "\"");
+        }
     }
 
     // @formatter:off
@@ -205,26 +223,21 @@ public class RuleDefsAggregator {
             throw new IllegalArgumentException("Expected the module's base directory and language");
         }
 
-        String ruledefs = "src/main/resources/ruledefs/" + args[1];
+        String langName = args[1];
 
-        Path ruledefsDir = FileSystems.getDefault().getPath(args[0]).resolve(ruledefs).toAbsolutePath().normalize();
-        Path outputPath = FileSystems.getDefault().getPath(args[0]).resolve(
-            ruledefs + "-index.xml").toAbsolutePath().normalize();
+        Path resourcesDir = FileSystems.getDefault().getPath(args[0]).resolve("src/main/resources/");
+        Path ruledefsDir = resourcesDir.resolve(RULEDEFS_PREFIX_LOCATION + langName).toAbsolutePath().normalize();
+        Path outputFilePath = resourcesDir.resolve(getGeneratedResourceFileName(langName)).toAbsolutePath().normalize();
 
-        List<String> excludes = Collections.emptyList();
-        if (args.length > 2) {
-            if (args[2].matches("exclude:\\w+\\.xml(,\\w+\\.xml)*")) {
-                excludes = Arrays.asList(args[2].split("exclude:")[1].split(","));
-            } else {
-                throw new IllegalArgumentException("Incorrect exclusion pattern: \"" + args[2] + "\"");
-            }
-        }
+        List<String> excludes = (args.length > 2) ? parseExcludeArgument(args[2]) : Collections.<String>emptyList();
 
         try {
-            System.out.println("Aggregating " + args[1] + " ruledefs into " + outputPath + " ...");
+            System.out.println("Aggregating " + args[1] + " ruledefs into " + outputFilePath + " ...");
             long start = System.currentTimeMillis();
-            new RuleDefsAggregator().generateMasterRuledefFrom(ruledefsDir, excludes, outputPath);
+            new RuleDefsAggregator().generateMasterRuledefFrom(ruledefsDir, excludes,
+                                                               new FileWriter(outputFilePath.toFile()));
             System.out.println("Done in " + (System.currentTimeMillis() - start) + " ms");
+
         } catch (TransformerException | SAXException | ParserConfigurationException | IOException e) {
             System.err.println("Failed to generate the ruledef index with parameters:");
             System.err.println("\tModule basedir: " + args[0]);
