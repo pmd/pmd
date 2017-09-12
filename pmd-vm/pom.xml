@@ -22,6 +22,30 @@
             </resource>
         </resources>
         <plugins>
+
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includeProjectDependencies>true</includeProjectDependencies>
+                    <mainClass>net.sourceforge.pmd.RuleDefsAggregator</mainClass>
+                    <arguments>
+                        <argument>${project.basedir}</argument>
+                        <argument>vm</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <configuration>
