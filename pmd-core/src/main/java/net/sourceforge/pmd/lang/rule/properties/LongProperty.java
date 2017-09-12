@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.ValueParser.LONG_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParserConstants.LONG_PARSER;
 
 import java.util.Map;
 

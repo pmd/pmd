@@ -16,7 +16,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.MethodMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.MethodProperty;
-import net.sourceforge.pmd.lang.rule.properties.ValueParser;
+import net.sourceforge.pmd.lang.rule.properties.ValueParserConstants;
 import net.sourceforge.pmd.lang.rule.properties.modules.MethodPropertyModule;
 import net.sourceforge.pmd.util.ClassUtil;
 
@@ -51,7 +51,7 @@ public class MethodPropertyTest extends AbstractPackagedPropertyDescriptorTester
         Method method;
 
         for (int i = 0; i < METHOD_SIGNATURES.length; i++) {
-            method = ValueParser.METHOD_PARSER.valueOf(METHOD_SIGNATURES[i]);
+            method = ValueParserConstants.METHOD_PARSER.valueOf(METHOD_SIGNATURES[i]);
             assertNotNull("Unable to identify method: " + METHOD_SIGNATURES[i], method);
         }
     }
@@ -63,7 +63,7 @@ public class MethodPropertyTest extends AbstractPackagedPropertyDescriptorTester
         Method[] methods = new Method[METHOD_SIGNATURES.length];
 
         for (int i = 0; i < METHOD_SIGNATURES.length; i++) {
-            methods[i] = ValueParser.METHOD_PARSER.valueOf(METHOD_SIGNATURES[i]);
+            methods[i] = ValueParserConstants.METHOD_PARSER.valueOf(METHOD_SIGNATURES[i]);
             assertNotNull("Unable to identify method: " + METHOD_SIGNATURES[i], methods[i]);
         }
 
