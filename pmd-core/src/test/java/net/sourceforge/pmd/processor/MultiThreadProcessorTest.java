@@ -167,7 +167,7 @@ public class MultiThreadProcessorTest {
     
     private static class SimpleRenderer extends AbstractAccumulatingRenderer {
 
-        public SimpleRenderer(String name, String description) {
+        /* default */ SimpleRenderer(String name, String description) {
             super(name, description);
         }
 
