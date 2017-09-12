@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 1, Single append, should be ok
@@ -222,7 +225,7 @@ public class Foo {
     <test-code>
         <description>#1370 ConsecutiveAppendsShouldReuse not detected properly on StringBuffer - part 2</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumber>7,8</expected-linenumber>
+        <expected-linenumbers>6,7</expected-linenumbers>
         <code><![CDATA[
 public class StringBufferTest {
     private static String TAG = "TAG";

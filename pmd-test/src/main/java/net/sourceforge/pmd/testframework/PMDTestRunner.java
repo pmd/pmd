@@ -4,182 +4,127 @@
 
 package net.sourceforge.pmd.testframework;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.manipulation.Filter;
 import org.junit.runner.manipulation.Filterable;
 import org.junit.runner.manipulation.NoTestsRemainException;
-import org.junit.runner.notification.Failure;
+import org.junit.runner.manipulation.Sortable;
+import org.junit.runner.manipulation.Sorter;
 import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.JUnit4;
+import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
-import org.junit.runners.model.TestClass;
-
-import net.sourceforge.pmd.Rule;
 
 /**
- * A test runner for rule tests. It reports
- * the successful executed tests and allows to selectively execute single test
- * cases (it is {@link Filterable}).
+ * A JUnit Runner, that combines the default {@link JUnit4}
+ * and our custom {@link RuleTestRunner}.
+ * It allows to selectively execute single test cases (it is {@link Filterable}).
+ * 
+ * <p>Note: Since we actually run two runners one after another, the static {@code BeforeClass}
+ * and {@Code AfterClass} methods will be executed twice and the test class will be instantiated twice, too.</p>
  *
  * <p>In order to use it, you'll need to subclass {@link SimpleAggregatorTst} and
  * annotate your test class with RunWith:</p>
  * 
  * <pre>
- * {@code @}RunWith(PMDTestRunner.class)
+ * &#64;RunWith(PMDTestRunner.class)
  * public class MyRuleSetTest extends SimpleAggregatorTst {
  * ...
  * }
  * </pre>
  */
-public class PMDTestRunner extends Runner implements Filterable {
-    private final Description desc;
+public class PMDTestRunner extends Runner implements Filterable, Sortable {
     private final Class<? extends SimpleAggregatorTst> klass;
-    private final List<TestDescriptor> allTests = new ArrayList<>();
-    private BlockJUnit4ClassRunner chainedRunner;
+    private final RuleTestRunner ruleTests;
+    private final ParentRunner<?> unitTests;
 
-    /**
-     * Creates a new {@link PMDTestRunner} for the given test class.
-     * 
-     * @param klass
-     *            the test class that is under test
-     * @throws InitializationError
-     *             any error
-     */
     public PMDTestRunner(final Class<? extends SimpleAggregatorTst> klass) throws InitializationError {
         this.klass = klass;
+        ruleTests = new RuleTestRunner(klass);
 
-        desc = Description.createSuiteDescription(klass);
-        configureRuleTests();
-        configureUnitTests();
-    }
-
-    private void configureRuleTests() throws InitializationError {
-        Description root = Description.createSuiteDescription("Rule Tests");
-        try {
-            SimpleAggregatorTst test = createTestClass();
-            test.setUp();
-
-            List<Rule> rules = new ArrayList<>(test.getRules());
-            Collections.sort(rules, new Comparator<Rule>() {
-                @Override
-                public int compare(Rule o1, Rule o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            });
-
-            for (Rule r : rules) {
-                Description ruleDescription = Description.createSuiteDescription(r.getName());
-                root.addChild(ruleDescription);
-
-                TestDescriptor[] ruleTests = test.extractTestsFromXml(r);
-                for (TestDescriptor t : ruleTests) {
-                    Description d = createTestDescription(t);
-                    ruleDescription.addChild(d);
-                    allTests.add(t);
-                }
-            }
-            if (!root.getChildren().isEmpty()) {
-                desc.addChild(root);
-            }
-        } catch (Exception e) {
-            throw new InitializationError(e);
+        if (ruleTests.hasUnitTests()) {
+            unitTests = new JUnit4(klass);
+        } else {
+            unitTests = new EmptyRunner(klass);
         }
     }
 
-    private SimpleAggregatorTst createTestClass() {
+    @Override
+    public void filter(Filter filter) throws NoTestsRemainException {
+        boolean noRuleTests = false;
         try {
-            return klass.getConstructor().newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            ruleTests.filter(filter);
+        } catch (NoTestsRemainException e) {
+            noRuleTests = true;
         }
-    }
 
-    private void configureUnitTests() throws InitializationError {
-        TestClass tclass = new TestClass(klass);
-        if (!tclass.getAnnotatedMethods(Test.class).isEmpty()) {
-            Description unitTests = Description.createSuiteDescription("Unit tests");
-            chainedRunner = new BlockJUnit4ClassRunner(klass);
-            for (Description d : chainedRunner.getDescription().getChildren()) {
-                unitTests.addChild(d);
-            }
-            desc.addChild(unitTests);
+        boolean noUnitTests = false;
+        try {
+            unitTests.filter(filter);
+        } catch (NoTestsRemainException e) {
+            noUnitTests = false;
+        }
+
+        if (noRuleTests && noUnitTests) {
+            throw new NoTestsRemainException();
         }
     }
 
     @Override
     public Description getDescription() {
-        return desc;
+        Description description = Description.createSuiteDescription(klass);
+        description.addChild(createChildrenDescriptions(ruleTests, "Rule Tests"));
+        description.addChild(createChildrenDescriptions(unitTests, "Unit Tests"));
+        return description;
+    }
+
+    private Description createChildrenDescriptions(Runner runner, String suiteName) {
+        Description suite = Description.createSuiteDescription(suiteName);
+        for (Description child : runner.getDescription().getChildren()) {
+            suite.addChild(child);
+        }
+        return suite;
     }
 
     @Override
     public void run(RunNotifier notifier) {
-        SimpleAggregatorTst test = createTestClass();
-        boolean regressionTestMode = TestDescriptor.inRegressionTestMode();
-
-        for (TestDescriptor t : allTests) {
-            Description d = createTestDescription(t);
-            notifier.fireTestStarted(d);
-            try {
-                if (!regressionTestMode || t.isRegressionTest()) {
-                    test.runTest(t);
-                } else {
-                    notifier.fireTestIgnored(d);
-                }
-            } catch (Throwable e) {
-                notifier.fireTestFailure(new Failure(d, e));
-            } finally {
-                notifier.fireTestFinished(d);
-            }
-        }
-        if (chainedRunner != null) {
-            chainedRunner.run(notifier);
-        }
-    }
-
-    private Description createTestDescription(TestDescriptor t) {
-        String d = t.getDescription().replaceAll("\n|\r", " ");
-        return Description.createTestDescription(klass,
-                t.getRule().getName() + "::" + t.getNumberInDocument() + " " + d);
+        ruleTests.run(notifier);
+        unitTests.run(notifier);
     }
 
     @Override
-    public void filter(Filter filter) throws NoTestsRemainException {
-        Iterator<TestDescriptor> it = allTests.iterator();
-        while (it.hasNext()) {
-            TestDescriptor t = it.next();
-            Description testDesc = createTestDescription(t);
-            if (filter.shouldRun(testDesc)) {
-                try {
-                    filter.apply(t);
-                } catch (NoTestsRemainException e) {
-                    it.remove();
-                }
-            } else {
-                it.remove();
-            }
+    public void sort(Sorter sorter) {
+        ruleTests.sort(sorter);
+        unitTests.sort(sorter);
+    }
+
+    private static class EmptyRunner extends ParentRunner<Object> {
+        protected EmptyRunner(Class<?> testClass) throws InitializationError {
+            super(testClass);
         }
 
-        boolean chainIsEmpty = false;
-        try {
-            if (chainedRunner != null) {
-                chainedRunner.filter(filter);
-            } else {
-                chainIsEmpty = true;
-            }
-        } catch (NoTestsRemainException e) {
-            chainIsEmpty = true;
+        @Override
+        public Description getDescription() {
+            return Description.EMPTY;
         }
 
-        if (allTests.isEmpty() && chainIsEmpty) {
-            throw new NoTestsRemainException();
+        @Override
+        protected List<Object> getChildren() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        protected Description describeChild(Object child) {
+            return Description.EMPTY;
+        }
+
+        @Override
+        protected void runChild(Object child, RunNotifier notifier) {
+            // there are no tests - nothing to execute
         }
     }
 }

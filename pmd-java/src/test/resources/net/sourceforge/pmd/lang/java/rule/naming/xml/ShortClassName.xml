@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 ShortClassName basic test case
@@ -57,7 +60,7 @@ public class Timer {
     <test-code>
         <description>#1232 Make ShortClassName configurable (default = 5)</description>
         <expected-problems>1</expected-problems>
-        <expected-lines>2</expected-lines>
+        <expected-linenumbers>2</expected-linenumbers>
         <expected-messages>
             <message>Avoid short class names like Bar</message>
         </expected-messages>
@@ -68,8 +71,8 @@ class Bar { }
     </test-code>
     <test-code>
         <description>#1232 Make ShortClassName configurable (minimum length = 2)</description>
-        <expected-problems>0</expected-problems>
         <rule-property name="minimum">2</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class ThisIsALongName { }
 class Bar { }
@@ -77,8 +80,8 @@ class Bar { }
     </test-code>
     <test-code>
         <description>#1232 Make ShortClassName configurable (minimum length = 4)</description>
-        <expected-problems>0</expected-problems>
         <rule-property name="minimum">4</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Isbn { }
 class Card { }

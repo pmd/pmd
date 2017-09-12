@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
   <test-code>
     <description>
       <![CDATA[
@@ -95,8 +98,8 @@ public class Foo {
   </test-code>
   <test-code>
     <description>#1126 Do not ignore enums</description>
-    <expected-problems>3</expected-problems>
     <rule-property name="ignoreEnumDeclarations">false</rule-property>
+    <expected-problems>3</expected-problems>
     <code><![CDATA[
 public class Foo {
     private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
@@ -136,8 +139,8 @@ public class MyClass {
   </test-code>
   <test-code>
     <description>#1244 FieldDeclarationsShouldBeAtStartOfClass and anonymous classes, fail</description>
-    <expected-problems>1</expected-problems>
     <rule-property name="ignoreAnonymousClassDeclarations">false</rule-property>
+    <expected-problems>1</expected-problems>
     <code><![CDATA[
 public class MyClass {
   private final String name;
@@ -215,8 +218,8 @@ public class TestFieldDeclarations {
 
   <test-code>
     <description>#345 [java] FieldDeclarationsShouldBeAtStartOfClass: Add ability to ignore interfaces - ignore interfaces</description>
-    <expected-problems>0</expected-problems>
     <rule-property name="ignoreInterfaceDeclarations">true</rule-property>
+    <expected-problems>0</expected-problems>
     <code><![CDATA[
 public class TestFieldDeclarations {
     public interface StartCaptureListener {

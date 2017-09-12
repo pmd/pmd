@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <code-fragment id="full-example">
         <![CDATA[
@@ -78,8 +81,8 @@
 
     <test-code>
         <description>Full example - Ignore boolean path option</description>
-        <expected-problems>2</expected-problems>
         <rule-property name="metricOptions">ignoreBooleanPaths</rule-property>
+        <expected-problems>2</expected-problems>
         <expected-messages>
             <message>'.Complicated#exception()' has value 4.</message>
             <message>'.Complicated#example()' has value 14.</message>
@@ -89,8 +92,8 @@
 
     <test-code>
         <description>Full example - Consider assert option</description>
-        <expected-problems>2</expected-problems>
         <rule-property name="metricOptions">considerAssert</rule-property>
+        <expected-problems>2</expected-problems>
         <expected-messages>
             <message>'.Complicated#exception()' has value 4.</message>
             <message>'.Complicated#example()' has value 28.</message>
@@ -100,8 +103,8 @@
 
     <test-code>
         <description>Full example - considerAssert + ignoreBooleanPaths</description>
-        <expected-problems>2</expected-problems>
         <rule-property name="metricOptions">ignoreBooleanPaths|considerAssert</rule-property>
+        <expected-problems>2</expected-problems>
         <expected-messages>
             <message>'.Complicated#exception()' has value 4.</message>
             <message>'.Complicated#example()' has value 18.</message>
@@ -198,8 +201,8 @@
 
     <test-code>
         <description>Standard Cyclo should count boolean paths</description>
-        <expected-problems>1</expected-problems>
         <rule-property name="reportClasses">false</rule-property>
+        <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'.Foo#foo()' has value 8.</message>
         </expected-messages>

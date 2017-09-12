@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 member level, final statics should be all caps
@@ -303,17 +306,17 @@ public class X {
     <test-code>
         <description>#1058 False positive for VariableNamingConventions</description>
         <expected-problems>0</expected-problems>
-        <source-type>java 1.7</source-type>
         <code><![CDATA[
 public class Test {
     private static final RemoteRepository REMOTE = new RemoteRepository<>();
 }
         ]]></code>
+        <source-type>java 1.7</source-type>
     </test-code>
     <test-code>
         <description>#1293 Disable VariableNamingConventions for native methods</description>
-        <expected-problems>0</expected-problems>
         <rule-property name="checkNativeMethodParameters">false</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class X {
     private native void stream_dip_set_data(long stream, long dip_x,
@@ -323,9 +326,9 @@ public class X {
     </test-code>
     <test-code>
         <description>#1293 Disable VariableNamingConventions for native methods - prevent false negative</description>
+        <rule-property name="checkNativeMethodParameters">true</rule-property>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>2,3</expected-linenumbers>
-        <rule-property name="checkNativeMethodParameters">true</rule-property>
         <code><![CDATA[
 public class X {
     private native void stream_dip_set_data(long stream, long dip_x,
@@ -335,10 +338,10 @@ public class X {
     </test-code>
     <test-code>
         <description>#1346 VariableNamingConventions do not work for method parameters</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
         <rule-property name="checkParameters">true</rule-property>
         <rule-property name="checkNativeMethodParameters">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class X {
     private long horsTout;
