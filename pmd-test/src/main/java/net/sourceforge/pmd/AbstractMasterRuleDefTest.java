@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,19 +34,19 @@ import org.xml.sax.SAXException;
 public class AbstractMasterRuleDefTest {
 
     private final String langName;
+    private final URL indexURL;
 
 
     public AbstractMasterRuleDefTest(String langName) {
         this.langName = langName;
+        indexURL = Thread.currentThread().getContextClassLoader()
+                         .getResource(RuleDefsAggregator.getGeneratedResourceFileName(langName));
     }
 
 
     @Test
     public void testMasterRuledefExists() {
-        assertTrue(new File(Thread.currentThread().getContextClassLoader()
-                                  .getResource(RuleDefsAggregator.getGeneratedResourceFileName(langName))
-                                  .getFile())
-                       .exists());
+        assertTrue(new File(indexURL.getFile()).exists());
     }
 
 
@@ -55,7 +56,7 @@ public class AbstractMasterRuleDefTest {
         documentBuilderFactory.setNamespaceAware(true);
         DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
 
-        File master = new File(getClass().getResource(RuleDefsAggregator.getGeneratedResourceFileName(langName)).getFile());
+        File master = new File(indexURL.getFile());
 
         if (!master.exists()) {
             fail();

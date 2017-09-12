@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset xmlns="http://pmd.sourceforge.net/ruleset/3.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         name="ECMASCRIPT"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/3.0.0 http://pmd.sourceforge.net/ruleset_3_0_0.xsd">
+   <description>All rules for the ecmascript language</description>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_braces.html#ifstmtsmustusebraces"
+         language="ecmascript"
+         message="Avoid using if statements without curly braces"
+         name="IfStmtsMustUseBraces"
+         since="5.0">
+      <description>
+Avoid using if statements without using curly braces.
+    </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//IfStatement[@Else = "false" and not(child::Scope)]
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+// Ok
+if (foo) {
+    x++;
+}
+
+// Bad
+if (foo)
+    x++;
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_braces.html#ifelsestmtsmustusebraces"
+         language="ecmascript"
+         message="Avoid using 'if...else' statements without curly braces"
+         name="IfElseStmtsMustUseBraces"
+         since="5.0">
+      <description>
+Avoid using if..else statements without using curly braces.
+    </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//ExpressionStatement[parent::IfStatement[@Else = "true"]]
+   [not(child::Scope)]
+   [not(child::IfStatement)]
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+// Ok
+if (foo) {
+    x++;
+} else {
+    y++;
+}
+
+// Bad
+if (foo)
+    x++;
+else
+    y++;
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_braces.html#whileloopsmustusebraces"
+         language="ecmascript"
+         message="Avoid using 'while' statements without curly braces"
+         name="WhileLoopsMustUseBraces"
+         since="5.0">
+      <description>
+Avoid using 'while' statements without using curly braces.
+    </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//WhileLoop[not(child::Scope)]
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+// Ok
+while (true) {
+    x++;
+}
+
+// Bad
+while (true)
+    x++;
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_braces.html#forloopsmustusebraces"
+         language="ecmascript"
+         message="Avoid using 'for' statements without curly braces"
+         name="ForLoopsMustUseBraces"
+         since="5.0">
+      <description>
+Avoid using 'for' statements without using curly braces.
+    </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//ForLoop[not(child::Scope)]
+|
+//ForInLoop[not(child::Scope)]
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+// Ok
+for (var i = 0; i &lt; 42; i++) {
+    foo();
+}
+
+// Bad
+for (var i = 0; i &lt; 42; i++)
+    foo();
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_controversial.html#avoidwithstatement"
+         language="ecmascript"
+         message="Avoid using with - it's bad news"
+         name="AvoidWithStatement"
+         since="5.0.1">
+      <description>Avoid using with - it's bad news</description>
+      <priority>1</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//WithStatement
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+with (object) {
+    property = 3; // Might be on object, might be on window: who knows.
+}
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_basic.html#assignmentinoperand"
+         language="ecmascript"
+         message="Avoid assignments in operands"
+         name="AssignmentInOperand"
+         since="5.0">
+      <description>
+Avoid assignments in operands; this can make code more complicated and harder to read.  This is sometime
+indicative of the bug where the assignment operator '=' was used instead of the equality operator '=='.
+    </description>
+      <priority>2</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+ 
+    //IfStatement[$allowIf = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+|
+    //WhileLoop[$allowWhile = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+|
+    //DoLoop[$allowWhile = "false"]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+|
+    //ForLoop[$allowFor = "false"]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+|
+   //ConditionalExpression[$allowTernary = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+|
+   //ConditionalExpression[$allowTernaryResults = "false"]/child::node()[position() = 2 or position() = 3]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+
+            </value>
+        </property>
+        <property description="Allow assignment within the conditional expression of an if statement"
+                   name="allowIf"
+                   type="Boolean"
+                   value="false"/>
+        <property description="Allow assignment within the conditional expression of a for statement"
+                   name="allowFor"
+                   type="Boolean"
+                   value="false"/>
+        <property description="Allow assignment within the conditional expression of a while statement"
+                   name="allowWhile"
+                   type="Boolean"
+                   value="false"/>
+        <property description="Allow assignment within the conditional expression of a ternary operator"
+                   name="allowTernary"
+                   type="Boolean"
+                   value="false"/>
+        <property description="Allow assignment within the result expressions of a ternary operator"
+                   name="allowTernaryResults"
+                   type="Boolean"
+                   value="false"/>
+        <property description="Allow increment or decrement operators within the conditional expression of an if, for, or while statement"
+                   name="allowIncrementDecrement"
+                   type="Boolean"
+                   value="false"/>
+      </properties>
+      <example>
+
+var x = 2;
+// Bad
+if ((x = getX()) == 3) {
+    alert('3!');
+}
+
+function getX() {
+    return 3;
+}
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_basic.html#unreachablecode"
+         language="ecmascript"
+         message="A ''return'', ''break'', ''continue'', or ''throw'' statement should be the last in a block."
+         name="UnreachableCode"
+         since="5.0">
+      <description>
+A 'return', 'break', 'continue', or 'throw' statement should be the last in a block. Statements after these
+will never execute.  This is a bug, or extremely poor style.
+    </description>
+      <priority>1</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+ 
+    //ReturnStatement[following-sibling::node()]
+|
+    //ContinueStatement[following-sibling::node()]
+|
+    //BreakStatement[following-sibling::node()]
+|
+    //ThrowStatement[following-sibling::node()]
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+// Ok
+function foo() {
+   return 1;
+}
+// Bad
+function bar() {
+   var x = 1;
+   return x;
+   x = 2;
+}
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_basic.html#innaccuratenumericliteral"
+         language="ecmascript"
+         message="The numeric literal ''{0}'' will have at different value at runtime."
+         name="InnaccurateNumericLiteral"
+         since="5.0">
+      <description>
+The numeric literal will have at different value at runtime, which can happen if you provide too much
+precision in a floating point number.  This may result in numeric calculations being in error.
+    </description>
+      <priority>2</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//NumberLiteral[
+    @Image != @Number
+    and translate(@Image, "e", "E") != @Number
+    and concat(@Image, ".0") != @Number
+    and @Image != substring-before(translate(@Number, ".", ""), "E")]
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+var a = 9; // Ok
+var b = 999999999999999; // Ok
+var c = 999999999999999999999; // Not good
+var w = 1.12e-4; // Ok
+var x = 1.12; // Ok
+var y = 1.1234567890123; // Ok
+var z = 1.12345678901234567; // Not good
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.ecmascript.rule.basic.ConsistentReturnRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_basic.html#consistentreturn"
+         message="A function should not mix 'return' statements with and without a result."
+         name="ConsistentReturn"
+         since="5.0">
+      <description>
+ECMAScript does provide for return types on functions, and therefore there is no solid rule as to their usage.
+However, when a function does use returns they should all have a value, or all with no value.  Mixed return
+usage is likely a bug, or at best poor style.
+    </description>
+      <priority>2</priority>
+      <example>
+
+// Ok
+function foo() {
+    if (condition1) {
+        return true;
+    }
+    return false;
+}
+
+// Bad
+function bar() {
+    if (condition1) {
+        return;
+    }
+    return false;
+}
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_basic.html#scopeforinvariable"
+         language="ecmascript"
+         message="The for-in loop variable ''{0}'' should be explicitly scoped with 'var' to avoid pollution."
+         name="ScopeForInVariable"
+         since="5.0">
+      <description>
+A for-in loop in which the variable name is not explicitly scoped to the enclosing scope with the 'var' keyword can
+refer to a variable in an enclosing scope outside the nearest enclosing scope.  This will overwrite the
+existing value of the variable in the outer scope when the body of the for-in is evaluated.  When the for-in loop
+has finished, the variable will contain the last value used in the for-in, and the original value from before
+the for-in loop will be gone.  Since the for-in variable name is most likely intended to be a temporary name, it
+is better to explicitly scope the variable name to the nearest enclosing scope with 'var'.
+    </description>
+      <priority>1</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//ForInLoop[not(child::VariableDeclaration)]/Name[1]
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+// Ok
+function foo() {
+    var p = 'clean';
+    function() {
+        var obj = { dirty: 'dirty' };
+        for (var p in obj) { // Use 'var' here.
+            obj[p] = obj[p];
+        }
+        return x;
+    }();
+
+    // 'p' still has value of 'clean'.
+}
+// Bad
+function bar() {
+    var p = 'clean';
+    function() {
+        var obj = { dirty: 'dirty' };
+        for (p in obj) { // Oh no, missing 'var' here!
+            obj[p] = obj[p];
+        }
+        return x;
+    }();
+
+    // 'p' is trashed and has value of 'dirty'!
+}
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_basic.html#equalcomparison"
+         language="ecmascript"
+         message="Use '==='/'!==' to compare with true/false or Numbers"
+         name="EqualComparison"
+         since="5.0">
+      <description>
+Using == in condition may lead to unexpected results, as the variables are automatically casted to be of the
+same type. The === operator avoids the casting.
+    </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//InfixExpression[(@Image = "==" or @Image = "!=")
+  and
+ (child::KeywordLiteral[@Image = "true" or @Image = "false"]
+ or
+ child::NumberLiteral)
+]
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+// Ok
+if (someVar === true) {
+  ...
+}
+// Ok
+if (someVar !== 3) {
+  ...
+}
+// Bad
+if (someVar == true) {
+  ...
+}
+// Bad
+if (someVar != 3) {
+  ...
+}
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_basic.html#globalvariable"
+         language="ecmascript"
+         message="Avoid using global variables"
+         name="GlobalVariable"
+         since="5.0">
+      <description>
+This rule helps to avoid using accidently global variables by simply missing the "var" declaration.
+Global variables can lead to side-effects that are hard to debug.
+    </description>
+      <priority>1</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//Assignment[Name/@GlobalName = 'true']
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+function(arg) {
+    notDeclaredVariable = 1;    // this will create a global variable and trigger the rule
+
+    var someVar = 1;            // this is a local variable, that's ok
+
+    window.otherGlobal = 2;     // this will not trigger the rule, although it is a global variable.
+}
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_basic.html#avoidtrailingcomma"
+         language="ecmascript"
+         message="Avoid trailing commas in object or array literals"
+         name="AvoidTrailingComma"
+         since="5.1">
+      <description>
+This rule helps improve code portability due to differences in browser treatment of trailing commas in object or array literals.
+    </description>
+      <priority>1</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//ObjectLiteral[$allowObjectLiteral = "false" and @TrailingComma = 'true']
+|
+//ArrayLiteral[$allowArrayLiteral = "false" and @TrailingComma = 'true']
+
+            </value>
+        </property>
+        <property description="Allow a trailing comma within an object literal"
+                   name="allowObjectLiteral"
+                   type="Boolean"
+                   value="false"/>
+        <property description="Allow a trailing comma within an array literal"
+                   name="allowArrayLiteral"
+                   type="Boolean"
+                   value="false"/>
+      </properties>
+      <example>
+
+function(arg) {
+    var obj1 = { a : 1 };   // Ok
+    var arr1 = [ 1, 2 ];    // Ok
+
+    var obj2 = { a : 1, };  // Syntax error in some browsers!
+    var arr2 = [ 1, 2, ];   // Length 2 or 3 depending on the browser!
+}
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_basic.html#usebasewithparseint"
+         language="ecmascript"
+         message="Always provide a base when using parseInt() functions"
+         name="UseBaseWithParseInt"
+         since="5.0.1">
+      <description>
+This rule checks for usages of parseInt. While the second parameter is optional and usually defaults
+to 10 (base/radix is 10 for a decimal number), different implementations may behave differently.
+It also improves readability, if the base is given.
+
+See also: [parseInt()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt)
+    </description>
+      <priority>1</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//FunctionCall/Name[
+     @Image = 'parseInt'
+     and
+     count(../*) &lt; 3
+]
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+parseInt("010");    // unclear, could be interpreted as 10 or 7 (with a base of 7)
+
+parseInt("10", 10); // good
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_unnecessary.html#unnecessaryparentheses"
+         language="ecmascript"
+         message="Unnecessary parentheses."
+         name="UnnecessaryParentheses"
+         since="5.0">
+      <description>Unnecessary parentheses should be removed.</description>
+      <priority>4</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//ParenthesizedExpression/ParenthesizedExpression
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+var x = 1; // Ok
+var y = (1 + 1); // Ok
+var z = ((1 + 1)); // Bad
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_unnecessary.html#unnecessaryblock"
+         language="ecmascript"
+         message="Unnecessary block."
+         name="UnnecessaryBlock"
+         since="5.0">
+      <description>
+An unnecessary Block is present.  Such Blocks are often used in other languages to
+introduce a new variable scope.  Blocks do not behave like this in ECMAScipt, and using them can
+be misleading.  Considering removing this unnecessary Block.
+    </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//Block[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
+    or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
+|
+//Scope[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
+    or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+if (foo) {
+    // Ok
+}
+if (bar) {
+    {
+        // Bad
+    }
+}
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_unnecessary.html#noelsereturn"
+         language="ecmascript"
+         message="The else block is unnecessary"
+         name="NoElseReturn"
+         since="5.5.0">
+      <description>
+The else block in a if-else-construct is unnecessary if the `if` block contains a return.
+Then the content of the else block can be put outside.
+
+See also: &lt;http://eslint.org/docs/rules/no-else-return&gt;
+    </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//IfStatement[@Else="true"][Scope[1]/ReturnStatement]
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+// Bad:
+if (x) {
+    return y;
+} else {
+    return z;
+}
+
+// Good:
+if (x) {
+    return y;
+}
+return z;
+
+    </example>
+  </rule>
+</ruleset>

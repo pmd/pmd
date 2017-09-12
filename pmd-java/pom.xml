@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>pmd-java</artifactId>
     <name>PMD Java</name>
@@ -33,15 +34,6 @@
             </resource>
         </resources>
         <plugins>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <useDefaultDelimiters>false</useDefaultDelimiters>
-                    <delimiters>
-                        <delimiter>${*}</delimiter>
-                    </delimiters>
-                </configuration>
-            </plugin>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -61,8 +53,18 @@
                     <arguments>
                         <argument>${project.basedir}</argument>
                         <argument>java</argument>
-                        <argument>exclude:metrics.xml</argument>
+                        <argument>exclude:metrics.xml,typeresolution.xml</argument>
                     </arguments>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                    <delimiters>
+                        <delimiter>${*}</delimiter>
+                    </delimiters>
                 </configuration>
             </plugin>
 
@@ -77,8 +79,10 @@
                         <configuration>
                             <target>
                                 <ant antfile="src/main/ant/alljavacc.xml">
-                                    <property name="target" value="${project.build.directory}/generated-sources/javacc" />
-                                    <property name="javacc.jar" value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar" />
+                                    <property name="target"
+                                              value="${project.build.directory}/generated-sources/javacc"/>
+                                    <property name="javacc.jar"
+                                              value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar"/>
                                 </ant>
                             </target>
                         </configuration>
@@ -93,9 +97,9 @@
                             <target>
                                 <echo>PMD specific tasks: cleaning generated markdown</echo>
                                 <delete quiet="true">
-                                    <fileset dir="${basedir}/src/site/markdown/rules/" includes="**/*.md" />
-                                    <fileset dir="${basedir}/src/site/markdown/" includes="mergedruleset.xml" />
-                                    <fileset dir="${basedir}/src/site/" includes="site.xml" />
+                                    <fileset dir="${basedir}/src/site/markdown/rules/" includes="**/*.md"/>
+                                    <fileset dir="${basedir}/src/site/markdown/" includes="mergedruleset.xml"/>
+                                    <fileset dir="${basedir}/src/site/" includes="site.xml"/>
                                 </delete>
                             </target>
                         </configuration>
