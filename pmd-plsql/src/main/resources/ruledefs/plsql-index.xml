@@ -1,0 +1,745 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset xmlns="http://pmd.sourceforge.net/ruleset/3.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         name="PLSQL"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/3.0.0 http://pmd.sourceforge.net/ruleset_3_0_0.xsd">
+   <description>All rules for the plsql language</description>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_TomKytesDespair.html#tomkytesdespair"
+         language="plsql"
+         message="WHEN OTHERS THEN NULL - when you do this, Tom Kyte cries"
+         name="TomKytesDespair"
+         since="5.1">
+      <description>
+"WHEN OTHERS THEN NULL" hides all errors - (Re)RAISE an exception or call RAISE_APPLICATION_ERROR 
+    </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//ExceptionHandler[QualifiedName/@Image='OTHERS' and upper-case(Statement/UnlabelledStatement/Expression/@Image)='NULL']
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+CREATE OR REPLACE PACKAGE BODY update_planned_hrs
+IS
+
+PROCEDURE set_new_planned (p_emp_id IN NUMBER, p_project_id IN NUMBER, p_hours IN NUMBER)
+IS
+BEGIN
+   UPDATE employee_on_activity ea
+   SET ea.ea_planned_hours = p_hours
+   WHERE
+            ea.ea_emp_id = p_emp_id
+            AND ea.ea_proj_id = p_project_id;
+
+EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+          RAISE_APPLICATION_ERROR (-20100, 'No such employee or project');
+
+END set_new_planned;
+
+FUNCTION existing_planned (p_emp_id IN NUMBER, p_project_id IN NUMBER) RETURN NUMBER
+
+IS
+
+existing_hours NUMBER(4);
+
+BEGIN
+   SELECT ea.ea_planned_hours INTO existing_hours
+   FROM employee_on_activity ea
+   WHERE
+            ea.ea_emp_id = p_emp_id
+            AND ea.ea_proj_id = p_project_id;
+
+   RETURN (existing_hours);
+
+   EXCEPTION
+          WHEN OTHERS THEN NULL;
+
+   END existing_planned;
+
+END update_planned_hrs;
+/
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_strictsyntax.html#misplacedpragma"
+         language="plsql"
+         message="Pragma should be used only inside the declaration block before 'BEGIN'."
+         name="MisplacedPragma"
+         since="5.5.2">
+      <description>
+Oracle states that the PRAQMA AUTONOMOUS_TRANSACTION must be in the declaration block,
+but the code does not complain, when being compiled on the 11g DB.
+https://docs.oracle.com/cd/B28359_01/appdev.111/b28370/static.htm#BABIIHBJ
+    </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//ProgramUnit/Pragma
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+create or replace package inline_pragma_error is
+
+end;
+/
+
+create or replace package body inline_pragma_error is
+  procedure do_transaction(p_input_token        in varchar(200)) is
+  PRAGMA AUTONOMOUS_TRANSACTION; /* this is correct place for PRAGMA */
+  begin
+    PRAGMA AUTONOMOUS_TRANSACTION; /* this is the wrong place for PRAGMA -&gt; violation */
+    /* do something */
+    COMMIT;
+   end do_transaction;
+
+end inline_pragma_error;
+/
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_dates.html#to_datewithoutdateformat"
+         language="plsql"
+         message="TO_DATE without date format"
+         name="TO_DATEWithoutDateFormat"
+         since="5.1">
+      <description>
+TO_DATE without date format- use TO_DATE(expression, date-format)
+    </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//PrimaryExpression[PrimaryPrefix/Name/@Image='TO_DATE'  and count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1 ]
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+CREATE OR REPLACE PACKAGE BODY date_utilities
+IS
+
+-- Take single parameter, relyimg on current default NLS date format
+FUNCTION to_date_single_parameter (p_date_string IN VARCHAR2) RETURN DATE
+IS
+BEGIN
+   RETURN TO_DATE(p_date_string);
+END to_date_single_parameter ;
+
+-- Take 2 parameters, using an explicit date format string
+FUNCTION to_date_two_parameters (p_date_string IN VARCHAR2, p_format_mask IN VARCHAR2) RETURN DATE
+IS
+BEGIN
+   TO_DATE(p_date_string, p_date_format);
+END to_date_two_parameters;
+
+-- Take 3 parameters, using an explicit date format string and an explicit language
+FUNCTION to_date_three_parameters (p_date_string IN VARCHAR2, p_format_mask IN VARCHAR2, p_nls_language VARCHAR2 ) RETURN DATE
+IS
+BEGIN
+   TO_DATE(p_date_string, p_format_mask, p_nls_language);
+END to_date_three_parameters;
+
+END date_utilities;
+/
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_dates.html#to_date_to_char"
+         language="plsql"
+         message="TO_DATE(TO_CHAR(variable)) instead of TRUNC(variable)"
+         name="TO_DATE_TO_CHAR"
+         since="5.1">
+      <description>
+TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-veriable)
+    </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//PrimaryExpression
+    [PrimaryPrefix/Name/@Image='TO_DATE']
+    [count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1]
+    [.//PrimaryExpression
+        [PrimaryPrefix/Name/@Image='TO_CHAR']
+        [count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1]
+    ]
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+CREATE OR REPLACE PACKAGE BODY date_utilities
+IS
+ 
+-- Take single parameter, relyimg on current default NLS date format
+FUNCTION strip_time (p_date IN DATE) RETURN DATE
+IS
+BEGIN
+   RETURN TO_DATE(TO_CHAR(p_date));
+END strip_time;
+
+
+END date_utilities;
+/
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_dates.html#to_timestampwithoutdateformat"
+         language="plsql"
+         message="TO_TIMESTAMP without date format"
+         name="TO_TIMESTAMPWithoutDateFormat"
+         since="5.1">
+      <description>
+TO_TIMESTAMP without date format- use TO_TIMESTAMP(expression, date-format)
+    </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+
+//PrimaryExpression[PrimaryPrefix/Name/@Image='TO_TIMESTAMP'  and count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1 ] 
+
+            </value>
+        </property>
+      </properties>
+      <example>
+
+CREATE OR REPLACE PACKAGE BODY date_utilities
+IS
+
+-- Take single parameter, relyimg on current default NLS date format
+FUNCTION to_timestamp_single_parameter (p_date_string IN VARCHAR2) RETURN DATE
+IS
+BEGIN
+   RETURN TO_TIMESTAMP(p_date_string);
+END to_timestamp_single_parameter;
+
+-- Take 2 parameters, using an explicit date format string
+FUNCTION to_timestamp_two_parameters (p_date_string IN VARCHAR2, p_format_mask IN VARCHAR2) RETURN DATE
+IS
+BEGIN
+   TO_TIMESTAMP(p_date_string, p_date_format);
+END to_timestamp_two_parameters;
+
+-- Take 3 parameters, using an explicit date format string and an explicit language
+FUNCTION to_timestamp_three_parameters (p_date_string IN VARCHAR2, p_format_mask IN VARCHAR2, p_nls_language VARCHAR2 ) RETURN DATE
+IS
+BEGIN
+   TO_TIMESTAMP(p_date_string, p_format_mask, p_nls_language);
+END to_timestamp_three_parameters;
+
+END date_utilities;
+/
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.plsql.rule.codesize.NPathComplexityRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codesize.html#npathcomplexity"
+         language="plsql"
+         message="The method {0}() has an NPath complexity of {1}"
+         name="NPathComplexity"
+         since="5.1">
+      <description>
+The NPath complexity of a method is the number of acyclic execution paths through that method.
+A threshold of 200 is generally considered the point where measures should be taken to reduce 
+complexity and increase readability.
+    </description>
+      <priority>3</priority>
+      <example>
+
+CREATE OR REPLACE
+PROCEDURE bar AS BEGIN  -- this is something more complex than it needs to be,
+    if (y) THEN -- it should be broken down into smaller methods or functions
+        for j IN 0 .. j-1 LOOP
+            if (j &gt; r) THEN
+                doSomething;
+                while (f &lt; 5 ) LOOP
+                    anotherThing;
+                    f := f - 27;
+                    END LOOP;
+            else
+                tryThis();
+            END IF;
+        END LOOP;
+    END IF;
+    if ( r - n &gt; 45) THEN
+        while (doMagic) LOOP
+            findRabbits;
+        END LOOP;
+    END IF;
+    BEGIN
+        doSomethingDangerous();
+    EXCEPTION WHEN FooException THEN
+        makeAmends;
+        BEGIN
+            dontDoItAgain;
+        EXCEPTION
+        WHEN OTHERS THEN
+            log_problem;
+        END;
+    END;
+END;
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveMethodLengthRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codesize.html#excessivemethodlength"
+         language="plsql"
+         message="Avoid really long methods ({0} lines found)."
+         name="ExcessiveMethodLength"
+         since="5.1">
+      <description>
+When methods are excessively long this usually indicates that the method is doing more than its
+name/signature might suggest. They also become challenging for others to digest since excessive 
+scrolling causes readers to lose focus.
+Try to reduce the method length by creating helper methods and removing any copy/pasted code.
+    </description>
+      <priority>3</priority>
+      <example>
+
+CREATE OR REPLACE
+PROCEDURE doSomething BEGIN
+    DBMS_OUTPUT.PUT_LINE("Hello world!");
+    DBMS_OUTPUT.PUT_LINE("Hello world!");
+        -- 98 copies omitted for brevity.
+END;
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveParameterListRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codesize.html#excessiveparameterlist"
+         language="plsql"
+         message="Avoid long parameter lists."
+         name="ExcessiveParameterList"
+         since="5.1">
+      <description>
+Methods with numerous parameters are a challenge to maintain, especially if most of them share the
+same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
+    </description>
+      <priority>3</priority>
+      <example>
+
+CREATE OR REPLACE
+PROCEDURE addPerson(        -- too many arguments liable to be mixed up
+    birthYear pls_integer, birthMonth pls_integer, birthDate pls_integer, height pls_integer, weight pls_integer, ssn pls_integer) {
+
+    . . . .
+END ADDPERSON;
+
+CREATE OR REPLACE
+PROCEDURE addPerson(        -- preferred approach
+    birthdate DATE, measurements BodyMeasurements , ssn INTEGER) BEGIN
+
+    . . . .
+END;
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveObjectLengthRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codesize.html#excessiveobjectlength"
+         language="plsql"
+         message="Avoid really long Oracle object specifications and bodies ({0} lines found)."
+         name="ExcessiveObjectLength"
+         since="5.1">
+      <description>
+Excessive object line lengths are usually indications that the object may be burdened with excessive 
+responsibilities that could be provided by other objects. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+    </description>
+      <priority>3</priority>
+      <example>
+
+CREATE OR REPLACE
+PACKAGE BODY Foo AS
+    PROCEDURE bar1 IS BEGIN
+    -- 1000 lines of code
+    END bar1;
+    PROCEDURE bar2 IS BEGIN
+    -- 1000 lines of code
+    END bar2;
+    PROCEDURE bar3 IS BEGIN
+    -- 1000 lines of code
+    END bar3;
+
+
+    PROCEDURE barN IS BEGIN
+    -- 1000 lines of code
+    END barn;
+END;
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveTypeLengthRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codesize.html#excessivetypelength"
+         language="plsql"
+         message="Avoid really long Object Type specifications ({0} lines found)."
+         name="ExcessiveTypeLength"
+         since="5.1">
+      <description>
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+    </description>
+      <priority>3</priority>
+      <example>
+
+CREATE OR REPLACE
+TYPE BODY Foo AS
+    MEMBER PROCEDURE bar1 IS BEGIN
+    -- 1000 lines of code
+    END bar1;
+    MEMBER PROCEDURE bar2 IS BEGIN
+    -- 1000 lines of code
+    END bar2;
+    MEMBER PROCEDURE bar3 IS BEGIN
+    -- 1000 lines of code
+    END bar3;
+
+
+    MEMBER PROCEDURE barN IS BEGIN
+    -- 1000 lines of code
+    END barn;
+END;
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessivePackageBodyLengthRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codesize.html#excessivepackagebodylength"
+         language="plsql"
+         message="Avoid really long Object Type and Package bodies ({0} lines found)."
+         name="ExcessivePackageBodyLength"
+         since="5.1">
+      <description>
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+    </description>
+      <priority>3</priority>
+      <example>
+
+CREATE OR REPLACE
+PACKAGE BODY Foo AS
+    PROCEDURE bar1 IS BEGIN
+    -- 1000 lines of code
+    END bar1;
+    PROCEDURE bar2 IS BEGIN
+    -- 1000 lines of code
+    END bar2;
+    PROCEDURE bar3 IS BEGIN
+    -- 1000 lines of code
+    END bar3;
+
+
+    PROCEDURE barN IS BEGIN
+    -- 1000 lines of code
+    END barn;
+END;
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessivePackageSpecificationLengthRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codesize.html#excessivepackagespecificationlength"
+         language="plsql"
+         message="Avoid really long Package Specifications ({0} lines found)."
+         name="ExcessivePackageSpecificationLength"
+         since="5.1">
+      <description>
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+    </description>
+      <priority>3</priority>
+      <example>
+
+CREATE OR REPLACE
+PACKAGE Foo AS
+    PROCEDURE bar1;
+    PROCEDURE bar2;
+    PROCEDURE bar3;
+
+    ...
+
+    PROCEDURE barN;
+END;
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.plsql.rule.codesize.CyclomaticComplexityRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codesize.html#cyclomaticcomplexity"
+         language="plsql"
+         message="The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
+         name="CyclomaticComplexity"
+         since="5.1">
+      <description>
+Complexity directly affects maintenance costs is determined by the number of decision points in a method 
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+high complexity, and 11+ is very high complexity.
+    </description>
+      <priority>3</priority>
+      <example>
+
+-- Cyclomatic Complexity of 25 
+CREATE OR REPLACE PACKAGE BODY pkg_pmd_working_sequence  AS
+1 PROCEDURE ty_logger  IS BEGIN
+2        IF true
+         THEN
+              DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+3        IF true
+         THEN
+              DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+4            IF true
+             THEN
+                  DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+5            ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+6        ELSIF false
+         THEN
+            DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+7            IF true
+             THEN
+                  DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+8            ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+         ELSE
+            DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+9            IF true
+             THEN
+                  DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+10           ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+         END IF;
+11         ELSIF false
+         THEN
+            DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+12       IF true
+         THEN
+              DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+13           IF true
+             THEN
+                  DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+14           ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+15       ELSIF false
+         THEN
+16           IF true
+             THEN
+                  DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+17           ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+             DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+         ELSE
+             DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+         END IF;
+     ELSE
+        DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+18       IF true
+         THEN
+              DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+19           IF true
+             THEN
+                  DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+20           ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+21       ELSIF false
+         THEN
+            DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+22           IF true
+             THEN
+                DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+23           ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+             ELSE
+             DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+24           IF true
+             THEN
+                  DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);
+25           ELSIF false
+             THEN
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);
+             END IF;
+         END IF;
+     END IF;
+END;
+
+END;
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.plsql.rule.codesize.TooManyFieldsRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codesize.html#toomanyfields"
+         language="plsql"
+         message="Too many fields"
+         name="TooManyFields"
+         since="5.1">
+      <description>
+Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
+possibly through grouping related fields in new objects.  For example, a class with individual 
+city/state/zip fields could park them within a single Address field.
+    </description>
+      <priority>3</priority>
+      <example>
+
+CREATE OR REPLACE PACKAGE pkg_too_many_fields AS
+    C_CHAR_A CONSTANT CHAR(1 CHAR) := 'A';
+    C_CHAR_B CONSTANT CHAR(1 CHAR) := 'B';
+    ...
+    C_CHAR_Z CONSTANT CHAR(1 CHAR) := 'Z';
+END pkg_too_many_fields;
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.plsql.rule.codesize.NcssMethodCountRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codesize.html#ncssmethodcount"
+         language="plsql"
+         message="The method {0}() has an NCSS line count of {1}"
+         name="NcssMethodCount"
+         since="5.1">
+      <description>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+    </description>
+      <priority>3</priority>
+      <example>
+
+CREATE OR REPLACE PACKAGE BODY AS
+ FUNCTION methd RETURN INTEGER IS
+ BEGIN
+   RETURN 1;;
+ END;
+END;
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.plsql.rule.codesize.NcssObjectCountRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codesize.html#ncssobjectcount"
+         language="plsql"
+         message="The Oracle object has an NCSS line count of {0}"
+         name="NcssObjectCount"
+         since="5.1">
+      <description>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given Oracle object. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+    </description>
+      <priority>3</priority>
+      <example>
+
+CREATE OR REPLACE PACKAGE pkg_
+ PROCEDURE Foo IS
+ BEGIN
+ --this class only has 6 NCSS lines
+     super();
+     super();
+ END;
+}
+
+    </example>
+  </rule>
+   <rule class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codesize.html#toomanymethods"
+         language="plsql"
+         message="This object has too many methods, consider refactoring it."
+         name="TooManyMethods"
+         since="5.1">
+      <description>
+A package or type with too many methods is probably a good suspect for refactoring, in order to reduce its complexity and find a way to
+have more fine grained objects.
+    </description>
+      <priority>3</priority>
+      <properties>
+        <property description="The method count reporting threshold" max="1000" min="1"
+                   name="maxmethods"
+                   type="Integer"
+                   value="1"/>
+        <property name="xpath">
+            <value>
+
+//node()
+     [ (
+        local-name(.) = 'PackageSpecification'
+        or
+        local-name(.) = 'TypeSpecification'
+       )
+       and 
+      (
+      count(/descendant::ProgramUnit[
+                                         not (
+                                                starts-with(@Image,'get')
+                                                or
+                                                starts-with(@Image,'set')
+                                                or
+                                                starts-with(@Image,'is')
+                                            )
+                                       ]
+           )
+      +
+      count(/descendant::TypeMethod[
+                                         not (
+                                                starts-with(@Image,'get')
+                                                or
+                                                starts-with(@Image,'set')
+                                                or
+                                                starts-with(@Image,'is')
+                                            )
+                                       ]
+           )
+      ) &gt; $maxmethods
+     ]
+
+            </value>
+        </property>
+      </properties>
+  </rule>
+</ruleset>
