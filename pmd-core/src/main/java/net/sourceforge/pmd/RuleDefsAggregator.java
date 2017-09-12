@@ -165,21 +165,21 @@ public class RuleDefsAggregator {
     /**
      * Generates the rule index.
      *
-     * @param ruledefsDir  Path to the directory where the ruledef files sit
-     * @param exludedFiles List of files to exclude
-     * @param outputPath   Path to the output document
+     * @param ruledefsDir   Path to the directory where the ruledef files sit
+     * @param excludedFiles List of files to exclude
+     * @param outputPath    Path to the output document
      *
      * @throws IOException                  If listing the files fails
      * @throws ParserConfigurationException If
      * @throws SAXException
      * @throws TransformerException
      */
-    private void generateMasterRuledefFrom(Path ruledefsDir, List<String> exludedFiles, Path outputPath)
+    private void generateMasterRuledefFrom(Path ruledefsDir, List<String> excludedFiles, Path outputPath)
         throws IOException, ParserConfigurationException, SAXException, TransformerException {
 
         Document output = createOutputDocument(ruledefsDir.getFileName().toString());
 
-        for (File ruledefFile : listRuledefs(ruledefsDir, exludedFiles)) {
+        for (File ruledefFile : listRuledefs(ruledefsDir, excludedFiles)) {
             appendRules(ruledefFile, output);
         }
 
@@ -221,12 +221,15 @@ public class RuleDefsAggregator {
         }
 
         try {
+            System.out.println("Aggregating " + args[1] + " ruledefs into " + outputPath + " ...");
+            long start = System.currentTimeMillis();
             new RuleDefsAggregator().generateMasterRuledefFrom(ruledefsDir, excludes, outputPath);
+            System.out.println("Done in " + (System.currentTimeMillis() - start) + " ms");
         } catch (TransformerException | SAXException | ParserConfigurationException | IOException e) {
-            System.err.println("Failed to generate the ruledef index, for parameters");
+            System.err.println("Failed to generate the ruledef index with parameters:");
             System.err.println("\tModule basedir: " + args[0]);
             System.err.println("\tLanguage name: " + args[1]);
-            System.err.println("\tExcluded files: " + ((args.length > 2) ? args[2] : ""));
+            System.err.println("\tExcluded files: " + ((args.length > 2) ? args[2] : "(not provided)"));
             System.err.println("Cause: ");
             e.printStackTrace();
         }
