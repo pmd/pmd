@@ -8,8 +8,8 @@ import org.mozilla.javascript.Context;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
+import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.EnumeratedProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class EcmascriptParserOptions extends ParserOptions {

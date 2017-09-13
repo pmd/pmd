@@ -15,7 +15,7 @@ import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
+import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
 
 public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 

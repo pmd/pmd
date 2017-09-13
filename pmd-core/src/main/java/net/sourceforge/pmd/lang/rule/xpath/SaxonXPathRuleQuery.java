@@ -14,11 +14,11 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.DocumentNode;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
-import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
-import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.lang.xpath.Initializer;
+import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.EnumeratedProperty;
+import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.StringProperty;
 
 import net.sf.saxon.om.ValueRepresentation;
 import net.sf.saxon.sxpath.AbstractStaticContext;

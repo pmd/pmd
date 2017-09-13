@@ -19,8 +19,6 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 import net.sourceforge.pmd.properties.SimpleEnumeratedPropertyTest.Foo;
 
 /**

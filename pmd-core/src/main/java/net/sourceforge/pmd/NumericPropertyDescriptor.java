@@ -9,7 +9,7 @@ import static net.sourceforge.pmd.PropertyDescriptorField.MIN;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.rule.properties.ExpectedFieldsBuilder;
+import net.sourceforge.pmd.properties.ExpectedFieldsBuilder;
 
 /**
  * Defines a descriptor type whose instance values are required to lie within

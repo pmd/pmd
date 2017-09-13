@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
+import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
 
 public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
 

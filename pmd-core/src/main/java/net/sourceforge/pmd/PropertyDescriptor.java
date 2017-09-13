@@ -11,7 +11,7 @@ import static net.sourceforge.pmd.PropertyDescriptorField.NAME;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.rule.properties.ExpectedFieldsBuilder;
+import net.sourceforge.pmd.properties.ExpectedFieldsBuilder;
 
 /**
  * Property value descriptor that defines the use &amp; requirements for setting

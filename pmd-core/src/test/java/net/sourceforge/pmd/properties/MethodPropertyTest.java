@@ -14,10 +14,7 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.lang.rule.properties.MethodMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.MethodProperty;
-import net.sourceforge.pmd.lang.rule.properties.ValueParserConstants;
-import net.sourceforge.pmd.lang.rule.properties.modules.MethodPropertyModule;
+import net.sourceforge.pmd.properties.modules.MethodPropertyModule;
 import net.sourceforge.pmd.util.ClassUtil;
 
 /**

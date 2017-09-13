@@ -15,7 +15,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions.Version;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
-import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.BooleanProperty;
 
 public class EcmascriptParserOptionsTest {
 

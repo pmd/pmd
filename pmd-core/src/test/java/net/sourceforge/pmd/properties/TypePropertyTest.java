@@ -14,8 +14,6 @@ import java.util.Observer;
 import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.lang.rule.properties.TypeMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
 
 /**
  * Evaluates the functionality of the TypeProperty descriptor by testing its

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
+import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
 
 /**
  * Field names for parsing the properties out of the ruleset xml files. These are intended to be used as the keys to

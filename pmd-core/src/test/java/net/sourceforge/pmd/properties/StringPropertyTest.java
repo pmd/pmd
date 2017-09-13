@@ -7,8 +7,6 @@ package net.sourceforge.pmd.properties;
 import java.util.List;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 /**
  * Evaluates the functionality of the StringProperty descriptor by testing its

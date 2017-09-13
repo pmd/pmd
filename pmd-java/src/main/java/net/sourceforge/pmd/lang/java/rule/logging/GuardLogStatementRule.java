@@ -17,7 +17,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.optimizations.AbstractOptimizationRule;
-import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
+import net.sourceforge.pmd.properties.StringMultiProperty;
 
 /**
  * Check that log.debug, log.trace, log.error, etc... statements are guarded by
