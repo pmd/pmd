@@ -35,6 +35,11 @@ public void foo() {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/j2ee.xml/DoNotCallSystemExit" />
+```
+
 ## DoNotUseThreads
 
 **Since:** PMD 4.1
@@ -62,6 +67,11 @@ public class OtherThread implements Runnable {
         Runnable thread = new Thread(); thread.run();
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/j2ee.xml/DoNotUseThreads" />
 ```
 
 ## LocalHomeNamingConvention
@@ -94,6 +104,11 @@ public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {} // prope
 public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}  // non-standard name
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/j2ee.xml/LocalHomeNamingConvention" />
+```
+
 ## LocalInterfaceSessionNamingConvention
 
 **Since:** PMD 4.0
@@ -122,6 +137,11 @@ The Local Interface of a Session EJB should be suffixed by 'Local'.
 public interface MyLocal extends javax.ejb.EJBLocalObject {}                // proper name
 
 public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}    // non-standard name
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/j2ee.xml/LocalInterfaceSessionNamingConvention" />
 ```
 
 ## MDBAndSessionBeanNamingConvention
@@ -154,6 +174,11 @@ The EJB Specification states that any MessageDrivenBean or SessionBean should be
 public class SomeBean implements SessionBean{}                  // proper name
 
 public class MissingTheProperSuffix implements SessionBean {}   // non-standard name
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/j2ee.xml/MDBAndSessionBeanNamingConvention" />
 ```
 
 ## RemoteInterfaceNamingConvention
@@ -194,6 +219,11 @@ public interface BadSuffixEJB extends javax.ejb.EJBObject {}
 public interface BadSuffixBean extends javax.ejb.EJBObject {}
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/j2ee.xml/RemoteInterfaceNamingConvention" />
+```
+
 ## RemoteSessionInterfaceNamingConvention
 
 **Since:** PMD 4.0
@@ -222,6 +252,11 @@ A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
 public interface MyBeautifulHome extends javax.ejb.EJBHome {}       // proper name
 
 public interface MissingProperSuffix extends javax.ejb.EJBHome {}   // non-standard name
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/j2ee.xml/RemoteSessionInterfaceNamingConvention" />
 ```
 
 ## StaticEJBFieldShouldBeFinal
@@ -267,6 +302,11 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/j2ee.xml/StaticEJBFieldShouldBeFinal" />
+```
+
 ## UseProperClassLoader
 
 **Since:** PMD 3.7
@@ -286,5 +326,10 @@ Thread.currentThread().getContextClassLoader() instead.
 public class Foo {
     ClassLoader cl = Bar.class.getClassLoader();
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/j2ee.xml/UseProperClassLoader" />
 ```
 

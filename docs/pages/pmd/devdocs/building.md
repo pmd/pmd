@@ -1,8 +1,7 @@
 ---
 title: Building PMD from source
-sidebar: pmd_sidebar
 permalink: pmd_devdocs_building.html
-folder: pmd/devdocs
+author: Tom Copeland, Xavier Le Vourch <xlv@users.sourceforge.net>
 ---
 
 # Compiling PMD

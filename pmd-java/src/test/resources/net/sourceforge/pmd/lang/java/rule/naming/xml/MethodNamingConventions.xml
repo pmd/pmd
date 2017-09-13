@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 method names should start with lowercase character
@@ -35,8 +38,8 @@ public class Foo {
     </test-code>
     <test-code>
         <description>#1288 MethodNamingConventions for native should be deactivated</description>
-        <expected-problems>0</expected-problems>
         <rule-property name="checkNativeMethods">false</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     protected final native void __surfunc__(float[] data);
@@ -45,9 +48,9 @@ public class Foo {
     </test-code>
     <test-code>
         <description>#1288 MethodNamingConventions for native should be deactivated - prevent false negative</description>
+        <rule-property name="checkNativeMethods">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
-        <rule-property name="checkNativeMethods">true</rule-property>
         <code><![CDATA[
 public class Foo {
     protected final native void __surfunc__(float[] data);

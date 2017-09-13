@@ -1,8 +1,9 @@
 ---
 title: Roadmap
-sidebar: pmd_sidebar
 permalink: pmd_devdocs_roadmap.html
-folder: pmd/devdocs
+author: >
+    Tom Copeland <tom@infoether.com>, Ryan Gustavson, Romain Pelisse <belaran@gmail.com>,
+    Juan Martín Sotuyo Dodero <juansotuyo@gmail.com>, Andreas Dangel <adangel@users.sourceforge.net>
 ---
 
 

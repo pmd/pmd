@@ -239,15 +239,16 @@ public class RuleDocGenerator {
         for (Map.Entry<Language, List<RuleSet>> entry : rulesets.entrySet()) {
             String languageTersename = entry.getKey().getTerseName();
             for (RuleSet ruleset : entry.getValue()) {
+                String rulesetFilename = getRuleSetFilename(ruleset);
                 String filename = RULESET_INDEX_FILENAME_PATTERN
                     .replace("${language.tersename}", languageTersename)
-                    .replace("${ruleset.name}", getRuleSetFilename(ruleset));
+                    .replace("${ruleset.name}", rulesetFilename);
 
                 Path path = getAbsoluteOutputPath(filename);
 
                 String permalink = RULESET_INDEX_PERMALINK_PATTERN
                         .replace("${language.tersename}", languageTersename)
-                        .replace("${ruleset.name}", getRuleSetFilename(ruleset));
+                        .replace("${ruleset.name}", rulesetFilename);
 
                 List<String> lines = new LinkedList<>();
                 lines.add("---");
@@ -350,6 +351,12 @@ public class RuleDocGenerator {
                         }
                         lines.add("");
                     }
+
+                    lines.add("**Use this rule by referencing it:**");
+                    lines.add("``` xml");
+                    lines.add("<rule ref=\"rulesets/" + languageTersename + "/" + rulesetFilename + ".xml/" + rule.getName() + "\" />");
+                    lines.add("```");
+                    lines.add("");
                 }
 
                 writer.write(path, lines);

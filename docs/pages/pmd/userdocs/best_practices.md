@@ -1,8 +1,7 @@
 ---
 title: Best Practices
-sidebar: pmd_sidebar
 permalink: pmd_userdocs_best_practices.html
-folder: pmd/userdocs
+author: Tom Copeland <tom@infoether.com>
 ---
 
 ## Choose the rules that are right for you
@@ -11,10 +10,10 @@ Running every ruleset will result in a huge number of rule violations, most of w
 Having to sort through a thousand line report to find the few you're really interested in takes
 all the fun out of things.
 
-Instead, start with some of the obvious rulesets - just run [unusedcode](/pmd_rules_java.html#Unused_Code) and fix any unused locals and fields.
-Then, run [empty](/pmd_rules_java.html#Empty_Code) and fix all the empty `if` statements and such-like. After that, take [unnecessary](/pmd_rules_java.html#Unnecessary)
-and fix these violations. Then, run [basic](/pmd_rules_java.html#Basic) and fix the remaining violations.
-Then peruse the [design](/pmd_rules_java.html#Design) and [controversial](/pmd_rules_java.html#Controversial) rulesets and use the ones
+Instead, start with some of the obvious rulesets - just run [unusedcode](/pmd_rules_java.html#unused-code) and fix any unused locals and fields.
+Then, run [empty](/pmd_rules_java.html#empty-code) and fix all the empty `if` statements and such-like. After that, take [unnecessary](/pmd_rules_java.html#unnecessary)
+and fix these violations. Then, run [basic](/pmd_rules_java.html#basic) and fix the remaining violations.
+Then peruse the [design](/pmd_rules_java.html#design) and [controversial](/pmd_rules_java.html#controversial) rulesets and use the ones
 you like [via a custom ruleset](/pmd_userdocs_understanding_rulesets.html).
 
 ## PMD rules are not set in stone

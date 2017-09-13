@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 private method called by public method
@@ -380,7 +383,6 @@ public class Foo {
     <test-code>
         <description>#1223 UnusedPrivateMethod: Java 8 method reference causing false positives</description>
         <expected-problems>0</expected-problems>
-        <source-type>java 1.8</source-type>
         <code><![CDATA[
 public class Foo {
     private static Runnable staticMethod() {
@@ -403,6 +405,7 @@ public class Foo {
     }
 }
         ]]></code>
+        <source-type>java 1.8</source-type>
     </test-code>
     <test-code>
         <description>#1226 False Positive: UnusedPrivateMethod overloading with varargs</description>

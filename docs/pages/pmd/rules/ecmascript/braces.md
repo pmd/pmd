@@ -34,6 +34,11 @@ for (var i = 0; i < 42; i++)
     foo();
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/braces.xml/ForLoopsMustUseBraces" />
+```
+
 ## IfElseStmtsMustUseBraces
 
 **Since:** PMD 5.0
@@ -65,6 +70,11 @@ else
     y++;
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/braces.xml/IfElseStmtsMustUseBraces" />
+```
+
 ## IfStmtsMustUseBraces
 
 **Since:** PMD 5.0
@@ -90,6 +100,11 @@ if (foo)
     x++;
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/braces.xml/IfStmtsMustUseBraces" />
+```
+
 ## WhileLoopsMustUseBraces
 
 **Since:** PMD 5.0
@@ -113,5 +128,10 @@ while (true) {
 // Bad
 while (true)
     x++;
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/braces.xml/WhileLoopsMustUseBraces" />
 ```
 

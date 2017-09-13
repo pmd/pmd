@@ -1,8 +1,7 @@
 ---
 title: Credits
-sidebar: pmd_sidebar
 permalink: pmd_userdocs_credits.html
-folder: pmd/userdocs
+author: Tom Copeland <tom@infoether.org>
 ---
 
 ## Committers

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <code-fragment id="full-example">
         <![CDATA[
@@ -121,8 +124,8 @@
 
     <test-code>
         <description>Standard Cyclo should count boolean paths</description>
-        <expected-problems>1</expected-problems>
         <rule-property name="reportClasses">false</rule-property>
+        <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'c__Foo#foo()' has value 8.</message>
         </expected-messages>

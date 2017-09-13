@@ -64,3 +64,8 @@ END update_planned_hrs;
 /
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/TomKytesDespair.xml/TomKytesDespair" />
+```
+

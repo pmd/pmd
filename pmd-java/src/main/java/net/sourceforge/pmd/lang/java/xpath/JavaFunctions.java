@@ -26,4 +26,8 @@ public final class JavaFunctions {
         return TypeOfFunction.typeof((Node) ((ElementNode) context.getContextItem()).getUnderlyingNode(), nodeTypeName,
                 fullTypeName, shortTypeName);
     }
+
+    public static double metric(XPathContext context, String metricKeyName) {
+        return MetricFunction.getMetric((Node) ((ElementNode) context.getContextItem()).getUnderlyingNode(), metricKeyName);
+    }
 }

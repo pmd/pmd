@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
         <description>short</description>
@@ -37,7 +40,7 @@ public class Foo {
 		]]></code>
     </test-code>
     
-    <code-fragment id="long constructor"><![CDATA[
+    <code-fragment id="long-constructor"><![CDATA[
 public class Foo {
     public Foo() {
      //nothing to see here
@@ -68,7 +71,7 @@ public class Foo {
         <description>long constructor</description>
         <rule-property name="minimum">13</rule-property>
         <expected-problems>1</expected-problems>
-        <code-ref id="long constructor"/>
+        <code-ref id="long-constructor"/>
     </test-code>
     
     <test-code>
@@ -76,13 +79,13 @@ public class Foo {
         <!-- obtained this value by using NCSS directly -->
         <rule-property name="minimum">14</rule-property>
         <expected-problems>0</expected-problems>
-        <code-ref id="long constructor"/>
+        <code-ref id="long-constructor"/>
     </test-code>
     
     <test-code>
         <description>ignore non-constructor methods</description>
-        <expected-problems>0</expected-problems>
         <rule-property name="minimum">10</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar() {

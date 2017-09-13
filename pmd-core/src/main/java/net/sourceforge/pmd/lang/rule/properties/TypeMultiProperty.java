@@ -83,7 +83,7 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
 
 
     private static List<Class> typesFrom(String valueString) {
-        return ValueParser.Companion.parsePrimitives(valueString, MULTI_VALUE_DELIMITER, ValueParser.CLASS_PARSER);
+        return ValueParserConstants.parsePrimitives(valueString, MULTI_VALUE_DELIMITER, ValueParserConstants.CLASS_PARSER);
     }
 
 
@@ -101,7 +101,7 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
 
     @Override
     protected Class createFrom(String toParse) {
-        return ValueParser.CLASS_PARSER.valueOf(toParse);
+        return ValueParserConstants.CLASS_PARSER.valueOf(toParse);
     }
 
 

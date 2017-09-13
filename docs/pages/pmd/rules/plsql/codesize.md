@@ -147,6 +147,11 @@ END;
 |showClassesComplexity|true|Add class average violations to the report|
 |reportLevel|10|Cyclomatic Complexity reporting threshold|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/codesize.xml/CyclomaticComplexity" />
+```
+
 ## ExcessiveMethodLength
 
 **Since:** PMD 5.1
@@ -178,6 +183,11 @@ END;
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/codesize.xml/ExcessiveMethodLength" />
+```
 
 ## ExcessiveObjectLength
 
@@ -221,6 +231,11 @@ END;
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/codesize.xml/ExcessiveObjectLength" />
+```
+
 ## ExcessivePackageBodyLength
 
 **Since:** PMD 5.1
@@ -263,6 +278,11 @@ END;
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/codesize.xml/ExcessivePackageBodyLength" />
+```
+
 ## ExcessivePackageSpecificationLength
 
 **Since:** PMD 5.1
@@ -297,6 +317,11 @@ END;
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/codesize.xml/ExcessivePackageSpecificationLength" />
+```
 
 ## ExcessiveParameterList
 
@@ -334,6 +359,11 @@ END;
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/codesize.xml/ExcessiveParameterList" />
+```
 
 ## ExcessiveTypeLength
 
@@ -377,6 +407,11 @@ END;
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/codesize.xml/ExcessiveTypeLength" />
+```
+
 ## NcssMethodCount
 
 **Since:** PMD 5.1
@@ -407,6 +442,11 @@ END;
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/codesize.xml/NcssMethodCount" />
+```
 
 ## NcssObjectCount
 
@@ -440,6 +480,11 @@ CREATE OR REPLACE PACKAGE pkg_
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/codesize.xml/NcssObjectCount" />
+```
 
 ## NPathComplexity
 
@@ -498,6 +543,11 @@ END;
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/codesize.xml/NPathComplexity" />
+```
+
 ## TooManyFields
 
 **Since:** PMD 5.1
@@ -526,6 +576,11 @@ END pkg_too_many_fields;
 |Name|Default Value|Description|
 |----|-------------|-----------|
 |maxfields|15|Max allowable fields|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/codesize.xml/TooManyFields" />
+```
 
 ## TooManyMethods
 
@@ -575,4 +630,9 @@ have more fine grained objects.
 |Name|Default Value|Description|
 |----|-------------|-----------|
 |maxmethods|1|The method count reporting threshold|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/codesize.xml/TooManyMethods" />
+```
 

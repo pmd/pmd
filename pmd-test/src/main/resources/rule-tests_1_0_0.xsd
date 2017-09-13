@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+    xmlns="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://pmd.sourceforge.net/rule-tests"
+    xmlns:tns="http://pmd.sourceforge.net/rule-tests"
+    elementFormDefault="qualified">
+
+    <element name="test-data">
+        <complexType>
+            <group ref="tns:testCodeOrCodeFragment" minOccurs="1" maxOccurs="unbounded"></group>
+        </complexType>
+    </element>
+
+    <group name="testCodeOrCodeFragment">
+        <sequence>
+            <element name="test-code" minOccurs="0" maxOccurs="unbounded" type="tns:testCodeType"></element>
+            <element name="code-fragment" minOccurs="0" maxOccurs="unbounded" type="tns:codeFragmentType"></element>
+        </sequence>
+    </group>
+
+    <complexType name="testCodeType">
+        <sequence>
+            <element name="description" type="string"></element>
+            <element name="rule-property" minOccurs="0" maxOccurs="unbounded">
+                <complexType>
+                    <simpleContent>
+                        <extension base="string">
+                            <attribute name="name" type="string" use="required"></attribute>
+                        </extension>
+                    </simpleContent>
+                </complexType>
+            </element>
+            <element name="expected-problems" type="integer"></element>
+            <element name="expected-linenumbers" type="string" minOccurs="0"></element>
+            <element name="expected-messages" minOccurs="0">
+                <complexType>
+                    <sequence>
+                        <element name="message" type="string" maxOccurs="unbounded"></element>
+                    </sequence>
+                </complexType>
+            </element>
+            <choice>
+                <element name="code"></element>
+                <element name="code-ref">
+                    <complexType>
+                        <attribute name="id" type="IDREF" use="required"></attribute>
+                    </complexType>
+                </element>
+            </choice>
+            <element name="source-type" minOccurs="0" default="java">
+                <simpleType>
+                    <restriction base="string">
+                        <pattern value="(apex|ecmascript|java|jsp|plsql|pom|vf|vm|wsdl|xml|xsl)( [0-9.]+)?"></pattern>
+                    </restriction>
+                </simpleType>
+            </element>
+        </sequence>
+        <attribute name="reinitializeRule" type="boolean" default="true"></attribute>
+        <attribute name="regressionTest" type="boolean" default="true"></attribute>
+        <attribute name="useAuxClasspath" type="boolean" default="true"></attribute>
+    </complexType>
+
+    <complexType name="codeFragmentType">
+        <simpleContent>
+            <extension base="string">
+                <attribute name="id" type="ID" use="required"></attribute>
+            </extension>
+        </simpleContent>
+    </complexType>
+</schema>

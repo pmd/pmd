@@ -1,8 +1,7 @@
 ---
 title: What does 'PMD' mean?
-sidebar: pmd_sidebar
 permalink: pmd_userdocs_meaning.html
-folder: pmd/userdocs
+author: David Dixon-Peugh
 ---
 
 We've been trying to find the meaning of the letters PMD - because frankly, we don't

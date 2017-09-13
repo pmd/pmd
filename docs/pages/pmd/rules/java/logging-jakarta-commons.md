@@ -51,6 +51,11 @@ public class Test {
 |guardsMethods|[]|method use to guard the log statement|
 |logLevels|[]|LogLevels to guard|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/logging-jakarta-commons.xml/GuardDebugLogging" />
+```
+
 ## GuardLogStatement
 
 **Since:** PMD 5.1.0
@@ -76,6 +81,11 @@ otherwise skip the associate String creation and manipulation.
 |----|-------------|-----------|
 |guardsMethods|[]|method use to guard the log statement|
 |logLevels|[]|LogLevels to guard|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/logging-jakarta-commons.xml/GuardLogStatement" />
+```
 
 ## ProperLogger
 
@@ -116,6 +126,11 @@ public class Foo {
 |----|-------------|-----------|
 |staticLoggerName|LOG|Name of the static Logger variable|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/logging-jakarta-commons.xml/ProperLogger" />
+```
+
 ## UseCorrectExceptionLogging
 
 **Since:** PMD 3.2
@@ -148,5 +163,10 @@ public class Main {
         }
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/logging-jakarta-commons.xml/UseCorrectExceptionLogging" />
 ```
 

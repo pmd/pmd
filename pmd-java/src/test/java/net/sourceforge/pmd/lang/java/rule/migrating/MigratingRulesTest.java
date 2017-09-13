@@ -15,6 +15,7 @@ public class MigratingRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "AvoidAssertAsIdentifier");
         addRule(RULESET, "AvoidEnumAsIdentifier");
         addRule(RULESET, "ByteInstantiation");
+        addRule(RULESET, "ForLoopCanBeForeach");
         addRule(RULESET, "IntegerInstantiation");
         addRule(RULESET, "JUnit4SuitesShouldUseSuiteAnnotation");
         addRule(RULESET, "JUnit4TestShouldUseAfterAnnotation");

@@ -37,6 +37,11 @@ public abstract class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AbstractClassWithoutAbstractMethod" />
+```
+
 ## AbstractClassWithoutAnyMethod
 
 **Since:** PMD 4.2
@@ -61,6 +66,11 @@ public class abstract Example {
     String field;
     int otherField;
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AbstractClassWithoutAnyMethod" />
 ```
 
 ## AccessorClassGeneration
@@ -88,6 +98,11 @@ public class Outer {
   private Inner(){}
  }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AccessorClassGeneration" />
 ```
 
 ## AccessorMethodGeneration
@@ -121,6 +136,11 @@ public class OuterClass {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AccessorMethodGeneration" />
+```
+
 ## AssignmentToNonFinalStatic
 
 **Since:** PMD 2.2
@@ -140,6 +160,11 @@ public class StaticField {
     x = y; // unsafe
    }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AssignmentToNonFinalStatic" />
 ```
 
 ## AvoidDeeplyNestedIfStmts
@@ -173,6 +198,11 @@ public class Foo {
 |Name|Default Value|Description|
 |----|-------------|-----------|
 |problemDepth|3|The if statement depth reporting threshold|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts" />
+```
 
 ## AvoidInstanceofChecksInCatchClause
 
@@ -209,6 +239,11 @@ try {  // Prefer this:
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AvoidInstanceofChecksInCatchClause" />
+```
+
 ## AvoidProtectedFieldInFinalClass
 
 **Since:** PMD 2.1
@@ -232,6 +267,11 @@ public final class Bar {
   protected int y;  // bar cannot be subclassed, so is y really private or package visible?
   Bar() {}
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AvoidProtectedFieldInFinalClass" />
 ```
 
 ## AvoidProtectedMethodInFinalClassNotExtending
@@ -259,6 +299,11 @@ public final class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AvoidProtectedMethodInFinalClassNotExtending" />
+```
+
 ## AvoidReassigningParameters
 
 **Since:** PMD 1.0
@@ -277,6 +322,11 @@ public class Foo {
     bar = "something else";
   }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AvoidReassigningParameters" />
 ```
 
 ## AvoidSynchronizedAtMethodLevel
@@ -318,6 +368,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AvoidSynchronizedAtMethodLevel" />
+```
+
 ## BadComparison
 
 **Since:** PMD 1.8
@@ -337,6 +392,11 @@ precision when comparing floating point numbers these are likely to cause logic 
 
 ``` java
 boolean x = (y == Double.NaN);
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/BadComparison" />
 ```
 
 ## ClassWithOnlyPrivateConstructorsShouldBeFinal
@@ -362,6 +422,11 @@ TypeDeclaration[count(../TypeDeclaration) = 1]/ClassOrInterfaceDeclaration
 public class Foo {  //Should be final
     private Foo() { }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal" />
 ```
 
 ## CloseResource
@@ -400,6 +465,11 @@ public class Bar {
 |types|[java.sql.Connection, java.sql.Statement, java.sql.ResultSet]|Affected types|
 |closeTargets|[]|Methods which may close this resource|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/CloseResource" />
+```
+
 ## CompareObjectsWithEquals
 
 **Since:** PMD 3.2
@@ -418,6 +488,11 @@ class Foo {
     return a == b;
   }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/CompareObjectsWithEquals" />
 ```
 
 ## ConfusingTernary
@@ -448,6 +523,11 @@ boolean bar(int x, int y) {
 |Name|Default Value|Description|
 |----|-------------|-----------|
 |ignoreElseIf|false|Ignore conditions with an else-if case|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/ConfusingTernary" />
+```
 
 ## ConstantsInInterface
 
@@ -493,6 +573,11 @@ public interface YetAnotherConstantInterface {
 |----|-------------|-----------|
 |ignoreIfHasMethods|true|Whether to ignore constants in interfaces if the interface defines any methods|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/ConstantsInInterface" />
+```
+
 ## ConstructorCallsOverridableMethod
 
 **Since:** PMD 1.04
@@ -532,6 +617,11 @@ public class JuniorClass extends SeniorClass {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/ConstructorCallsOverridableMethod" />
+```
+
 ## DefaultLabelNotLastInSwitchStmt
 
 **Since:** PMD 1.5
@@ -561,6 +651,11 @@ public class Foo {
    }
   }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/DefaultLabelNotLastInSwitchStmt" />
 ```
 
 ## EmptyMethodInAbstractClassShouldBeAbstract
@@ -604,6 +699,11 @@ public abstract class ShouldBeAbstract {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/EmptyMethodInAbstractClassShouldBeAbstract" />
+```
+
 ## EqualsNull
 
 **Since:** PMD 1.9
@@ -642,6 +742,11 @@ if (x == null) {        // preferred
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/EqualsNull" />
+```
+
 ## FieldDeclarationsShouldBeAtStartOfClass
 
 **Since:** PMD 5.0
@@ -677,6 +782,11 @@ public class HelloWorldBean {
 |ignoreAnonymousClassDeclarations|true|Ignore Field Declarations, that are initialized with anonymous class declarations|
 |ignoreEnumDeclarations|true|Ignore Enum Declarations that precede fields.|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/FieldDeclarationsShouldBeAtStartOfClass" />
+```
+
 ## FinalFieldCouldBeStatic
 
 **Since:** PMD 1.1
@@ -701,6 +811,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/FinalFieldCouldBeStatic" />
+```
+
 ## GodClass
 
 **Since:** PMD 5.0
@@ -719,6 +834,11 @@ Using Software Metrics to Characterize, Evaluate, and Improve the Design
 of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.GodClassRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/GodClassRule.java)
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/GodClass" />
+```
 
 ## IdempotentOperations
 
@@ -739,6 +859,11 @@ public class Foo {
   x = x;
  }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/IdempotentOperations" />
 ```
 
 ## ImmutableField
@@ -764,6 +889,11 @@ public class Foo {
      int a = x + 2;
   }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/ImmutableField" />
 ```
 
 ## InstantiationToGetClass
@@ -793,6 +923,11 @@ Class c = new String().getClass();
 Class c = String.class;
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/InstantiationToGetClass" />
+```
+
 ## LogicInversion
 
 **Since:** PMD 5.0
@@ -820,6 +955,11 @@ public boolean bar(int a, int b) {
 
     return true;
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/LogicInversion" />
 ```
 
 ## MissingBreakInSwitch
@@ -863,6 +1003,11 @@ public void bar(int status) {
         break;
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/MissingBreakInSwitch" />
 ```
 
 ## MissingStaticMethodInNonInstantiatableClass
@@ -913,6 +1058,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/MissingStaticMethodInNonInstantiatableClass" />
+```
+
 ## NonCaseLabelInSwitchStatement
 
 **Since:** PMD 1.5
@@ -944,6 +1094,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/NonCaseLabelInSwitchStatement" />
+```
+
 ## NonStaticInitializer
 
 **Since:** PMD 1.5
@@ -967,6 +1122,11 @@ public class MyClass {
     System.out.println("I am about to construct myself");
   }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/NonStaticInitializer" />
 ```
 
 ## NonThreadSafeSingleton
@@ -1010,6 +1170,11 @@ public static Foo getFoo() {
 |checkNonStaticFields|false|Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.|
 |checkNonStaticMethods|true|Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/NonThreadSafeSingleton" />
+```
+
 ## OptimizableToArrayCall
 
 **Since:** PMD 1.8
@@ -1041,6 +1206,11 @@ Foo[] fooArray = foos.toArray(new Foo[0]);
     // much better; this one sizes the destination array,
     // avoiding of a new one via reflection
 Foo[] fooArray = foos.toArray(new Foo[foos.size()]);
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/OptimizableToArrayCall" />
 ```
 
 ## PositionLiteralsFirstInCaseInsensitiveComparisons
@@ -1079,6 +1249,11 @@ class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/PositionLiteralsFirstInCaseInsensitiveComparisons" />
+```
+
 ## PositionLiteralsFirstInComparisons
 
 **Since:** PMD 3.3
@@ -1109,6 +1284,11 @@ class Foo {
     return x.equals("2"); // should be "2".equals(x)
   }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/PositionLiteralsFirstInComparisons" />
 ```
 
 ## PreserveStackTrace
@@ -1149,6 +1329,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/PreserveStackTrace" />
+```
+
 ## ReturnEmptyArrayRatherThanNull
 
 **Since:** PMD 4.2
@@ -1186,6 +1371,11 @@ public class Example {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/ReturnEmptyArrayRatherThanNull" />
+```
+
 ## SimpleDateFormatNeedsLocale
 
 **Since:** PMD 2.0
@@ -1208,6 +1398,11 @@ public class Foo {
   // Should specify Locale.US (or whatever)
   private SimpleDateFormat sdf = new SimpleDateFormat("pattern");
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/SimpleDateFormatNeedsLocale" />
 ```
 
 ## SimplifyBooleanExpressions
@@ -1235,6 +1430,11 @@ public class Bar {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/SimplifyBooleanExpressions" />
+```
+
 ## SimplifyBooleanReturns
 
 **Since:** PMD 0.9
@@ -1260,6 +1460,11 @@ public boolean isBarEqualTo(int x) {
 public boolean isBarEqualTo(int x) {
     return bar == x;    // can be replaced with this
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/SimplifyBooleanReturns" />
 ```
 
 ## SimplifyConditional
@@ -1309,6 +1514,11 @@ class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/SimplifyConditional" />
+```
+
 ## SingleMethodSingleton
 
 **Since:** PMD 5.4
@@ -1341,6 +1551,11 @@ public class Singleton {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/SingleMethodSingleton" />
+```
+
 ## SingletonClassReturningNewInstance
 
 **Since:** PMD 5.4
@@ -1364,6 +1579,11 @@ class Singleton {
         }
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/SingletonClassReturningNewInstance" />
 ```
 
 ## SingularField
@@ -1396,6 +1616,11 @@ public class Foo {
 |----|-------------|-----------|
 |disallowNotAssignment|false|Disallow violations where the first usage is not an assignment|
 |checkInnerClasses|false|Check inner classes|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/SingularField" />
+```
 
 ## SwitchDensity
 
@@ -1435,6 +1660,11 @@ public class Foo {
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/SwitchDensity" />
+```
+
 ## SwitchStmtsShouldHaveDefault
 
 **Since:** PMD 1.0
@@ -1458,6 +1688,11 @@ public void bar() {
           // missing default: here
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/SwitchStmtsShouldHaveDefault" />
 ```
 
 ## TooFewBranchesForASwitchStatement
@@ -1499,6 +1734,11 @@ public class Foo {
 |----|-------------|-----------|
 |minimumNumberCaseForASwitch|3|Minimum number of branches for a switch|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/TooFewBranchesForASwitchStatement" />
+```
+
 ## UncommentedEmptyConstructor
 
 **Since:** PMD 3.4
@@ -1530,6 +1770,11 @@ public Foo() {
 |----|-------------|-----------|
 |ignoreExplicitConstructorInvocation|false|Ignore explicit constructor invocation when deciding whether constructor is empty or not|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/UncommentedEmptyConstructor" />
+```
+
 ## UncommentedEmptyMethodBody
 
 **Since:** PMD 3.4
@@ -1550,6 +1795,11 @@ empty methods.
 ``` java
 public void doSomething() {
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/UncommentedEmptyMethodBody" />
 ```
 
 ## UnnecessaryLocalBeforeReturn
@@ -1579,6 +1829,11 @@ public class Foo {
 |----|-------------|-----------|
 |statementOrderMatters|true|If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/UnnecessaryLocalBeforeReturn" />
+```
+
 ## UnsynchronizedStaticDateFormatter
 
 **Since:** PMD 3.6
@@ -1603,6 +1858,11 @@ public class Foo {
         sdf.format(); // preferred
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/UnsynchronizedStaticDateFormatter" />
 ```
 
 ## UseCollectionIsEmpty
@@ -1634,6 +1894,11 @@ public class Foo {
         }
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/UseCollectionIsEmpty" />
 ```
 
 ## UseLocaleWithCaseConversions
@@ -1680,6 +1945,11 @@ class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/UseLocaleWithCaseConversions" />
+```
+
 ## UseNotifyAllInsteadOfNotify
 
 **Since:** PMD 3.0
@@ -1712,6 +1982,11 @@ void bar() {
   }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/UseNotifyAllInsteadOfNotify" />
+```
+
 ## UseUtilityClass
 
 **Since:** PMD 0.3
@@ -1733,6 +2008,11 @@ public class MaybeAUtility {
   public static void foo() {}
   public static void bar() {}
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/UseUtilityClass" />
 ```
 
 ## UseVarargs
@@ -1778,5 +2058,10 @@ public class Foo {
         // Ahh, varargs tastes much better...
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/UseVarargs" />
 ```
 
