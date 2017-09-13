@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.List;
-
-import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
@@ -48,10 +46,10 @@ public class SourceCodeProcessor {
      * @see #processSourceCode(Reader, RuleSets, RuleContext)
      */
     public void processSourceCode(InputStream sourceCode, RuleSets ruleSets, RuleContext ctx) throws PMDException {
-        try {
-            processSourceCode(new InputStreamReader(sourceCode, configuration.getSourceEncoding()), ruleSets, ctx);
-        } catch (UnsupportedEncodingException uee) {
-            throw new PMDException("Unsupported encoding exception: " + uee.getMessage());
+        try (Reader streamReader = new InputStreamReader(sourceCode, configuration.getSourceEncoding())) {
+            processSourceCode(streamReader, ruleSets, ctx);
+        } catch (IOException e) {
+            throw new PMDException("IO exception: " + e.getMessage(), e);
         }
     }
 
@@ -102,7 +100,6 @@ public class SourceCodeProcessor {
                 configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
                 throw new PMDException("Error while processing " + ctx.getSourceCodeFilename(), e);
             } finally {
-                IOUtils.closeQuietly(sourceCode);
                 ruleSets.end(ctx);
             }
         }

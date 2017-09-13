@@ -87,8 +87,7 @@ public class PmdRunnable implements Callable<Report> {
             r.startFileAnalysis(dataSource);
         }
 
-        try {
-            InputStream stream = new BufferedInputStream(dataSource.getInputStream());
+        try (InputStream stream = new BufferedInputStream(dataSource.getInputStream())) {
             tc.ruleContext.setLanguageVersion(null);
             sourceCodeProcessor.processSourceCode(stream, tc.ruleSets, tc.ruleContext);
         } catch (PMDException pmde) {
