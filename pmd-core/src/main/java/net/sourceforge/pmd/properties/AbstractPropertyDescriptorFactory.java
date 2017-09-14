@@ -166,7 +166,6 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
      *
      * @see PropertyDescriptor#isDefinedExternally()
      */
-    /* default */
     public final PropertyDescriptor<T> createExternalWith(Map<PropertyDescriptorField, String> valuesById) {
         checkRequiredFields(valuesById);
         return createWith(valuesById, true);
