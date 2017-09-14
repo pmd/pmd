@@ -8,9 +8,6 @@ import static net.sourceforge.pmd.properties.ValueParserConstants.LONG_PARSER;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorField;
-
 /**
  * Single valued long property.
  *

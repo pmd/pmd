@@ -10,9 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorField;
-
 /**
  * Multi-valued double property.
  *

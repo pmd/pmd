@@ -11,9 +11,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorField;
-
 /**
  * Multi-valued character property.
  *

@@ -6,8 +6,6 @@ package net.sourceforge.pmd.properties;
 
 import java.util.List;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-
 /**
  * Evaluates the functionality of the StringProperty descriptor by testing its
  * ability to catch creation errors (illegal args), flag invalid strings per any

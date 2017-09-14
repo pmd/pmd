@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptorField;
-
 /** Builder for an expected fields map. */
 public final class ExpectedFieldsBuilder {
 

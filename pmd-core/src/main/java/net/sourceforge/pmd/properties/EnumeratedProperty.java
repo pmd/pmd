@@ -7,9 +7,6 @@ package net.sourceforge.pmd.properties;
 import java.util.Enumeration;
 import java.util.Map;
 
-import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
-import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.modules.EnumeratedPropertyModule;
 import net.sourceforge.pmd.util.CollectionUtil;
 

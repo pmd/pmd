@@ -15,13 +15,13 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.properties.EnumeratedProperty;
+import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
 
 /**

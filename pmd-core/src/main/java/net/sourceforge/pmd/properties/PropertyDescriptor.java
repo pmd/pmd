@@ -2,16 +2,17 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptorField.DEFAULT_VALUE;
-import static net.sourceforge.pmd.PropertyDescriptorField.DELIMITER;
-import static net.sourceforge.pmd.PropertyDescriptorField.DESCRIPTION;
-import static net.sourceforge.pmd.PropertyDescriptorField.NAME;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.DEFAULT_VALUE;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.DELIMITER;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.DESCRIPTION;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.NAME;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.properties.ExpectedFieldsBuilder;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetWriter;
 
 /**
  * Property value descriptor that defines the use &amp; requirements for setting

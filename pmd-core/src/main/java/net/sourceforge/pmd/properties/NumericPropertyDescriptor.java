@@ -2,14 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptorField.MAX;
-import static net.sourceforge.pmd.PropertyDescriptorField.MIN;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.MAX;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.MIN;
 
 import java.util.Map;
-
-import net.sourceforge.pmd.properties.ExpectedFieldsBuilder;
 
 /**
  * Defines a descriptor type whose instance values are required to lie within

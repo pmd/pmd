@@ -2,9 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptorField.LEGAL_PACKAGES;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.LEGAL_PACKAGES;
 
 import java.util.Map;
 

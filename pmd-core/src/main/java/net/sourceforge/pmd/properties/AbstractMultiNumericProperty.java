@@ -7,8 +7,6 @@ package net.sourceforge.pmd.properties;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.NumericPropertyDescriptor;
-import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.modules.NumericPropertyModule;
 
 /**

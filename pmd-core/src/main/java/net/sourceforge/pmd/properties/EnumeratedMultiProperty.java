@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
-import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.modules.EnumeratedPropertyModule;
 import net.sourceforge.pmd.util.CollectionUtil;
 

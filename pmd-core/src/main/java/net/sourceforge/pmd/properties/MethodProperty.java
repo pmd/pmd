@@ -11,8 +11,6 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.modules.MethodPropertyModule;
 
 /**

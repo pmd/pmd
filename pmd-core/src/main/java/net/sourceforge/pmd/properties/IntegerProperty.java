@@ -8,9 +8,6 @@ import static net.sourceforge.pmd.properties.ValueParserConstants.INTEGER_PARSER
 
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorField;
-
 /**
  * Defines a datatype that supports single Integer property values within an
  * upper and lower boundary.

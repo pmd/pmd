@@ -20,7 +20,6 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
@@ -29,6 +28,7 @@ import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.CharacterProperty;
 import net.sourceforge.pmd.properties.FileProperty;
 import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
 
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {

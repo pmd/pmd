@@ -6,8 +6,6 @@ package net.sourceforge.pmd.properties;
 
 import java.util.List;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-
 /**
  * @author Clément Fournier
  */

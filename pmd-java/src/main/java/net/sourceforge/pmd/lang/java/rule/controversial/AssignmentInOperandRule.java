@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.controversial;
 
-import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -16,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  *

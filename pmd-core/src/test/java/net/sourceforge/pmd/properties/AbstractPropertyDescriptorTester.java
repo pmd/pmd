@@ -18,10 +18,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorField;
-
 /**
  * Base functionality for all concrete subclasses that evaluate type-specific
  * property descriptors. Checks for error conditions during construction, error

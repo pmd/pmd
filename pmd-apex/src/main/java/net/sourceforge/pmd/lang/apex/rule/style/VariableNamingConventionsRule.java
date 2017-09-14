@@ -9,7 +9,6 @@ import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
 
 import java.util.List;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -18,6 +17,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.StringMultiProperty;
 
 public class VariableNamingConventionsRule extends AbstractApexRule {

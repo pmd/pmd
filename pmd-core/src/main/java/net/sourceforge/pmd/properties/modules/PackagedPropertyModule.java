@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.properties.modules;
 
-import static net.sourceforge.pmd.PackagedPropertyDescriptor.PACKAGE_NAME_DELIMITER;
-import static net.sourceforge.pmd.PropertyDescriptorField.LEGAL_PACKAGES;
+import static net.sourceforge.pmd.properties.PackagedPropertyDescriptor.PACKAGE_NAME_DELIMITER;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.LEGAL_PACKAGES;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.properties.PropertyDescriptorField;
 
 /**
  * Factorises common functionality for packaged properties.

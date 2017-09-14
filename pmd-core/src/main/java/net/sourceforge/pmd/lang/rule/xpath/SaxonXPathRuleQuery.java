@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.DocumentNode;
@@ -18,6 +17,7 @@ import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.EnumeratedProperty;
 import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.StringProperty;
 
 import net.sf.saxon.om.ValueRepresentation;

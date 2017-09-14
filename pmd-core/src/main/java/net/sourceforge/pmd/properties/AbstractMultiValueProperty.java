@@ -12,8 +12,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.MultiValuePropertyDescriptor;
-import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.Rule;
 
 /**

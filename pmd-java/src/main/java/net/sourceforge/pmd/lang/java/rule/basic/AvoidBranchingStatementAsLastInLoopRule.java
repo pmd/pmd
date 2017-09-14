@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
@@ -21,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
+import net.sourceforge.pmd.properties.PropertySource;
 
 public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
 

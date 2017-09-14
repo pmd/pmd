@@ -31,9 +31,9 @@ import org.jaxen.expr.UnionExpr;
 import org.jaxen.expr.XPathFactory;
 import org.jaxen.saxpath.Axis;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * This is a Jaxen based XPathRule query.

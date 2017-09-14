@@ -8,8 +8,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-
 /**
  * Evaluates the functionality of the CharacterProperty descriptor by testing
  * its ability to catch creation errors (illegal args), flag invalid characters,

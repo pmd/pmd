@@ -2,16 +2,16 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptor.CORE_EXPECTED_FIELDS;
-import static net.sourceforge.pmd.PropertyDescriptorField.DEFAULT_VALUE;
-import static net.sourceforge.pmd.PropertyDescriptorField.DELIMITER;
-import static net.sourceforge.pmd.PropertyDescriptorField.DESCRIPTION;
-import static net.sourceforge.pmd.PropertyDescriptorField.LEGAL_PACKAGES;
-import static net.sourceforge.pmd.PropertyDescriptorField.MAX;
-import static net.sourceforge.pmd.PropertyDescriptorField.MIN;
-import static net.sourceforge.pmd.PropertyDescriptorField.NAME;
+import static net.sourceforge.pmd.properties.PropertyDescriptor.CORE_EXPECTED_FIELDS;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.DEFAULT_VALUE;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.DELIMITER;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.DESCRIPTION;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.LEGAL_PACKAGES;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.MAX;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.MIN;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.NAME;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -167,7 +167,7 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
      * @see PropertyDescriptor#isDefinedExternally()
      */
     /* default */
-    final PropertyDescriptor<T> createExternalWith(Map<PropertyDescriptorField, String> valuesById) {
+    public final PropertyDescriptor<T> createExternalWith(Map<PropertyDescriptorField, String> valuesById) {
         checkRequiredFields(valuesById);
         return createWith(valuesById, true);
     }
@@ -182,7 +182,7 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
      */
     protected static String[] labelsIn(Map<PropertyDescriptorField, String> valuesById) {
         return StringUtils.split(valuesById.get(PropertyDescriptorField.LABELS),
-                                       MultiValuePropertyDescriptor.DEFAULT_DELIMITER);
+                                 MultiValuePropertyDescriptor.DEFAULT_DELIMITER);
     }
 
 

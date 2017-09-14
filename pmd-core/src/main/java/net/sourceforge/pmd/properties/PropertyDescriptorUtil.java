@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptorFactory;
-
 /**
  * Utility class allowing to find the factory of a specific type of descriptor. That's used to define descriptors in
  * the xml, eg for xpath rules.

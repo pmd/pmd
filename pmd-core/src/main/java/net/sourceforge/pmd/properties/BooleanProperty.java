@@ -8,9 +8,6 @@ import static net.sourceforge.pmd.properties.ValueParserConstants.BOOLEAN_PARSER
 
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorField;
-
 /**
  * Defines a property type that supports single Boolean values.
  *

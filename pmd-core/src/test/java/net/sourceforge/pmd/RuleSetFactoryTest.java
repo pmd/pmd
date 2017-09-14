@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 public class RuleSetFactoryTest {

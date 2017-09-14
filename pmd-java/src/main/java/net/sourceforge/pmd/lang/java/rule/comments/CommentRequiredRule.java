@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.comments;
 
 import java.util.Arrays;
 
-import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -15,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.properties.EnumeratedProperty;
+import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * @author Brian Remedios

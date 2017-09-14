@@ -14,9 +14,9 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.renderers.ColumnDescriptor.Accessor;
 
 /**

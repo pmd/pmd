@@ -7,10 +7,6 @@ package net.sourceforge.pmd.properties;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.AbstractPropertyDescriptorFactory;
-import net.sourceforge.pmd.MultiValuePropertyDescriptor;
-import net.sourceforge.pmd.PropertyDescriptorField;
-
 /**
  * Concrete implementation of a property descriptor factory for multi valued properties.
  *

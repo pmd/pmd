@@ -8,8 +8,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-
 /**
  * @author Brian Remedios
  */

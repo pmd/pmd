@@ -4,17 +4,14 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptorField.DEFAULT_VALUE;
-import static net.sourceforge.pmd.PropertyDescriptorField.DESCRIPTION;
-import static net.sourceforge.pmd.PropertyDescriptorField.NAME;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.DEFAULT_VALUE;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.DESCRIPTION;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.NAME;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertyDescriptorField;
 
 /**
  * Abstract class for properties.

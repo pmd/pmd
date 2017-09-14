@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.properties;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.SingleValuePropertyDescriptor;
 
 /**
  * Single value property.

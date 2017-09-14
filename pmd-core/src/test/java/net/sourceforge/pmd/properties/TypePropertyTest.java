@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.Observer;
 import java.util.Set;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-
 /**
  * Evaluates the functionality of the TypeProperty descriptor by testing its
  * ability to catch creation errors (illegal args), flag invalid Type values per

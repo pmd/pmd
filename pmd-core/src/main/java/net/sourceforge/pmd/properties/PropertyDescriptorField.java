@@ -2,9 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.properties;
 
-import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
+import net.sourceforge.pmd.RuleSetFactory;
 
 /**
  * Field names for parsing the properties out of the ruleset xml files. These are intended to be used as the keys to

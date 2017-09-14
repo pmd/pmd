@@ -6,10 +6,6 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.AbstractPropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.SingleValuePropertyDescriptor;
-
 /**
  * Concrete implementation of a property descriptor factory for single valued properties.
  *

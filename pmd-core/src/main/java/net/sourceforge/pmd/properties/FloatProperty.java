@@ -8,9 +8,6 @@ import static net.sourceforge.pmd.properties.ValueParserConstants.FLOAT_PARSER;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorField;
-
 /**
  * Defines a property type that supports single float property values within an
  * upper and lower boundary.

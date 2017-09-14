@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.properties.modules;
 
-import static net.sourceforge.pmd.PropertyDescriptorField.MAX;
-import static net.sourceforge.pmd.PropertyDescriptorField.MIN;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.MAX;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.MIN;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.properties.PropertyDescriptorField;
 
 /**
  * Common utilities for implementations of numeric property descriptors.

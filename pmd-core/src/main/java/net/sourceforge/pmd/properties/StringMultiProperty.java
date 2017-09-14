@@ -12,9 +12,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorField;
-
 /**
  * Defines a datatype that supports multiple String values. Note that all
  * strings must be filtered by the delimiter character.

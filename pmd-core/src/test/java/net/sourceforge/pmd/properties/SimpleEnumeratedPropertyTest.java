@@ -17,8 +17,6 @@ import java.util.Map;
 import org.junit.Assume;
 import org.junit.Test;
 
-import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.properties.SimpleEnumeratedPropertyTest.Foo;
 
 /**
