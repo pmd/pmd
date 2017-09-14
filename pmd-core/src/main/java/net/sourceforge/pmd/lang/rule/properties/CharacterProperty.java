@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.ValueParser.CHARACTER_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParserConstants.CHARACTER_PARSER;
 
 import java.util.Map;
 

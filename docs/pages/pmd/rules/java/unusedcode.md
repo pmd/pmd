@@ -33,6 +33,11 @@ public class Foo {
 |----|-------------|-----------|
 |checkAll|false|Check all methods, including non-private ones|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter" />
+```
+
 ## UnusedLocalVariable
 
 **Since:** PMD 0.1
@@ -51,6 +56,11 @@ public class Foo {
         int i = 5; // Unused
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/unusedcode.xml/UnusedLocalVariable" />
 ```
 
 ## UnusedPrivateField
@@ -76,6 +86,11 @@ public class Something {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/unusedcode.xml/UnusedPrivateField" />
+```
+
 ## UnusedPrivateMethod
 
 **Since:** PMD 0.7
@@ -92,5 +107,10 @@ Unused Private Method detects when a private method is declared but is unused.
 public class Something {
     private void foo() {} // unused
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/unusedcode.xml/UnusedPrivateMethod" />
 ```
 

@@ -27,6 +27,11 @@ String s = "" + 123;                // inefficient
 String t = Integer.toString(456);   // preferred approach
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/optimizations.xml/AddEmptyString" />
+```
+
 ## AvoidArrayLoops
 
 **Since:** PMD 3.5
@@ -74,6 +79,11 @@ public class Test {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/optimizations.xml/AvoidArrayLoops" />
+```
+
 ## AvoidInstantiatingObjectsInLoops
 
 **Since:** PMD 2.2
@@ -94,6 +104,11 @@ public class Something {
         }
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/optimizations.xml/AvoidInstantiatingObjectsInLoops" />
 ```
 
 ## LocalVariableCouldBeFinal
@@ -117,6 +132,11 @@ public class Bar {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/optimizations.xml/LocalVariableCouldBeFinal" />
+```
+
 ## MethodArgumentCouldBeFinal
 
 **Since:** PMD 2.2
@@ -137,6 +157,11 @@ public void foo1 (String param) {       // do stuff with param never assigning i
 public void foo2 (final String param) { // better, do stuff with param never assigning it
 
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/optimizations.xml/MethodArgumentCouldBeFinal" />
 ```
 
 ## PrematureDeclaration
@@ -164,6 +189,11 @@ public int getLength(String[] strings) {
 
     return length;
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/optimizations.xml/PrematureDeclaration" />
 ```
 
 ## RedundantFieldInitializer
@@ -199,6 +229,11 @@ public class C {
         boolean b = false;
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/optimizations.xml/RedundantFieldInitializer" />
 ```
 
 ## SimplifyStartsWith
@@ -238,6 +273,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/optimizations.xml/SimplifyStartsWith" />
+```
+
 ## UnnecessaryWrapperObjectCreation
 
 **Since:** PMD 3.8
@@ -269,6 +309,11 @@ public int convert(String s) {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/optimizations.xml/UnnecessaryWrapperObjectCreation" />
+```
+
 ## UseArrayListInsteadOfVector
 
 **Since:** PMD 3.0
@@ -292,6 +337,11 @@ public class SimpleTest extends TestCase {
     Collection c2 = new ArrayList();    // achieves the same with much better performance
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/optimizations.xml/UseArrayListInsteadOfVector" />
 ```
 
 ## UseArraysAsList
@@ -352,6 +402,11 @@ public class Test {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/optimizations.xml/UseArraysAsList" />
+```
+
 ## UseStringBufferForStringAppends
 
 **Since:** PMD 3.1
@@ -377,5 +432,10 @@ public class Foo {
         // a.append(" bar);
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/optimizations.xml/UseStringBufferForStringAppends" />
 ```
 

@@ -31,6 +31,11 @@ A rule for the politically correct... we don't want to offend anyone.
 |caseSensitive|false|Case sensitive|
 |wordsAreRegex|false|Use regular expressions|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/comments.xml/CommentContent" />
+```
+
 ## CommentDefaultAccessModifier
 
 **Since:** PMD 5.4.0
@@ -74,6 +79,11 @@ public class Foo {
 |----|-------------|-----------|
 |regex||Regular expression|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/comments.xml/CommentDefaultAccessModifier" />
+```
+
 ## CommentRequired
 
 **Since:** PMD 5.1
@@ -104,6 +114,11 @@ Denotes whether comments are required (or unwanted) for specific language elemen
 |publicMethodCommentRequirement|Required|Public method and constructor comments. Possible values: [Required, Ignored, Unwanted]|
 |fieldCommentRequirement|Required|Field comments. Possible values: [Required, Ignored, Unwanted]|
 |headerCommentRequirement|Required|Header comments. Possible values: [Required, Ignored, Unwanted]|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/comments.xml/CommentRequired" />
+```
 
 ## CommentSize
 
@@ -142,4 +157,9 @@ Determines whether the dimensions of non-header comments found are within the sp
 |----|-------------|-----------|
 |maxLines|6|Maximum lines|
 |maxLineLength|80|Maximum line length|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/comments.xml/CommentSize" />
+```
 

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 Simple method
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="showClassesComplexity">""</rule-property>
         <rule-property name="showMethodsComplexity">""</rule-property>
-        <expected-problems>2</expected-problems>
-       <code-ref id="basic-violation"/>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 CREATE OR REPLACE
 PROCEDURE bar AS BEGIN	-- this is something more complex than it needs to be,

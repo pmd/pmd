@@ -43,6 +43,11 @@ public class PrimitiveType {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strictexception.xml/AvoidCatchingGenericException" />
+```
+
 ## AvoidCatchingNPE
 
 **Since:** PMD 1.8
@@ -70,6 +75,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strictexception.xml/AvoidCatchingNPE" />
+```
+
 ## AvoidCatchingThrowable
 
 **Since:** PMD 1.2
@@ -91,6 +101,11 @@ public void bar() {
         th.printStackTrace();
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strictexception.xml/AvoidCatchingThrowable" />
 ```
 
 ## AvoidLosingExceptionInformation
@@ -129,6 +144,11 @@ public void bar() {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strictexception.xml/AvoidLosingExceptionInformation" />
+```
+
 ## AvoidRethrowingException
 
 **Since:** PMD 3.8
@@ -154,6 +174,11 @@ public void bar() {
        throw se;
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strictexception.xml/AvoidRethrowingException" />
 ```
 
 ## AvoidThrowingNewInstanceOfSameException
@@ -190,6 +215,11 @@ public void bar() {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strictexception.xml/AvoidThrowingNewInstanceOfSameException" />
+```
+
 ## AvoidThrowingNullPointerException
 
 **Since:** PMD 1.8
@@ -212,6 +242,11 @@ public class Foo {
         throw new NullPointerException();
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strictexception.xml/AvoidThrowingNullPointerException" />
 ```
 
 ## AvoidThrowingRawExceptionTypes
@@ -246,6 +281,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strictexception.xml/AvoidThrowingRawExceptionTypes" />
+```
+
 ## DoNotExtendJavaLangError
 
 **Since:** PMD 4.0
@@ -263,6 +303,11 @@ Errors are system exceptions. Do not extend them.
 
 ``` java
 public class Foo extends Error { }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strictexception.xml/DoNotExtendJavaLangError" />
 ```
 
 ## DoNotThrowExceptionInFinally
@@ -296,6 +341,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strictexception.xml/DoNotThrowExceptionInFinally" />
+```
+
 ## ExceptionAsFlowControl
 
 **Since:** PMD 1.8
@@ -323,6 +373,11 @@ public void bar() {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strictexception.xml/ExceptionAsFlowControl" />
+```
+
 ## SignatureDeclareThrowsException
 
 **Since:** PMD 1.2
@@ -339,5 +394,10 @@ failure modes are unclear. Use a class derived from RuntimeException or a more s
 ``` java
 public void foo() throws Exception {
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strictexception.xml/SignatureDeclareThrowsException" />
 ```
 

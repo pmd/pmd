@@ -45,6 +45,11 @@ for (int i = 0; i < 10; i++) {
 |checkContinueLoopTypes|[for, do, while]|Check for continue statements in loop types|
 |checkBreakLoopTypes|[for, do, while]|Check for break statements in loop types|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/AvoidBranchingStatementAsLastInLoop" />
+```
+
 ## AvoidDecimalLiteralsInBigDecimalConstructor
 
 **Since:** PMD 3.4
@@ -93,6 +98,11 @@ BigDecimal bd = new BigDecimal("1.123");     // preferred approach
 BigDecimal bd = new BigDecimal(12);          // preferred approach, ok for integer values
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/AvoidDecimalLiteralsInBigDecimalConstructor" />
+```
+
 ## AvoidMultipleUnaryOperators
 
 **Since:** PMD 4.2
@@ -126,6 +136,11 @@ int i = ~-2;
 int j = -~7;
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/AvoidMultipleUnaryOperators" />
+```
+
 ## AvoidThreadGroup
 
 **Since:** PMD 3.6
@@ -151,6 +166,11 @@ public class Bar {
         tg = System.getSecurityManager().getThreadGroup();
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/AvoidThreadGroup" />
 ```
 
 ## AvoidUsingHardCodedIP
@@ -179,6 +199,11 @@ public class Foo {
 |checkAddressTypes|[IPv4, IPv6, IPv4 mapped IPv6]|Check for IP address types.|
 |pattern|^"[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"$|Regular Expression|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/AvoidUsingHardCodedIP" />
+```
+
 ## AvoidUsingOctalValues
 
 **Since:** PMD 3.9
@@ -204,6 +229,11 @@ k = i * j;      // set k with 80 not 120
 |----|-------------|-----------|
 |strict|false|Detect violations between 00 and 07|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/AvoidUsingOctalValues" />
+```
+
 ## BigIntegerInstantiation
 
 **Since:** PMD 3.9
@@ -225,6 +255,11 @@ BigInteger bi4;
 bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/BigIntegerInstantiation" />
+```
+
 ## BooleanInstantiation
 
 **Since:** PMD 1.2
@@ -240,6 +275,11 @@ Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FAL
 ``` java
 Boolean bar = new Boolean("true");        // unnecessary creation, just reference Boolean.TRUE;
 Boolean buz = Boolean.valueOf(false);    // ...., just reference Boolean.FALSE;
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/BooleanInstantiation" />
 ```
 
 ## BrokenNullCheck
@@ -264,6 +304,11 @@ public String bar(String string) {
     if (string==null && string.equals(""))
         return string;
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/BrokenNullCheck" />
 ```
 
 ## CheckResultSet
@@ -292,6 +337,11 @@ if (rst.next()) {    // result is properly examined and used
     } else  {
         // handle missing data
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/CheckResultSet" />
 ```
 
 ## CheckSkipResult
@@ -323,6 +373,11 @@ public class Foo {
          n -= skipped;
       }
    }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/CheckSkipResult" />
 ```
 
 ## ClassCastExceptionWithToArray
@@ -361,6 +416,11 @@ Integer[] a = (Integer [])c.toArray();
 Integer[] b = (Integer [])c.toArray(new Integer[c.size()]);
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/ClassCastExceptionWithToArray" />
+```
+
 ## CollapsibleIfStatements
 
 **Since:** PMD 3.1
@@ -396,6 +456,11 @@ void bar() {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/CollapsibleIfStatements" />
+```
+
 ## DontCallThreadRun
 
 **Since:** PMD 4.3
@@ -427,6 +492,11 @@ t.run();            // use t.start() instead
 new Thread().run(); // same violation
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/DontCallThreadRun" />
+```
+
 ## DontUseFloatTypeForLoopIndices
 
 **Since:** PMD 4.3
@@ -456,6 +526,11 @@ public class Count {
       //The termination test misbehaves due to floating point granularity.
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/DontUseFloatTypeForLoopIndices" />
 ```
 
 ## DoubleCheckedLocking
@@ -493,6 +568,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/DoubleCheckedLocking" />
+```
+
 ## ExtendsObject
 
 **Since:** PMD 5.0
@@ -510,6 +590,11 @@ No need to explicitly extend Object.
 ``` java
 public class Foo extends Object {     // not required
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/ExtendsObject" />
 ```
 
 ## ForLoopShouldBeWhileLoop
@@ -537,6 +622,11 @@ public class Foo {
         for (;true;) true; // No Init or Update part, may as well be: while (true)
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/ForLoopShouldBeWhileLoop" />
 ```
 
 ## JumbledIncrementer
@@ -568,6 +658,11 @@ public class JumbledIncrementerRule1 {
         }
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/JumbledIncrementer" />
 ```
 
 ## MisplacedNullCheck
@@ -617,6 +712,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/MisplacedNullCheck" />
+```
+
 ## OverrideBothEqualsAndHashcode
 
 **Since:** PMD 0.4
@@ -652,6 +752,11 @@ public class Foo {        // perfect, both methods provided
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/OverrideBothEqualsAndHashcode" />
+```
+
 ## ReturnFromFinallyBlock
 
 **Since:** PMD 1.05
@@ -678,6 +783,11 @@ public class Bar {
         }
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/ReturnFromFinallyBlock" />
 ```
 
 ## SimplifiedTernary
@@ -724,6 +834,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/SimplifiedTernary" />
+```
+
 ## UnconditionalIfStatement
 
 **Since:** PMD 1.5
@@ -748,5 +863,10 @@ public class Foo {
         }
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/basic.xml/UnconditionalIfStatement" />
 ```
 

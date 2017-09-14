@@ -39,6 +39,11 @@ dependency management section, it will not also uses the dependency.
 </project>
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/pom/basic.xml/InvalidDependencyTypes" />
+```
+
 ## ProjectVersionAsDependencyVersion
 
 **Since:** PMD 5.4
@@ -62,5 +67,10 @@ By far the most common problem is the use of 6.0.0-SNAPSHOT in a BOM or parent P
     <version>${project.dependency}</version>
   </dependency>
 </project>
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/pom/basic.xml/ProjectVersionAsDependencyVersion" />
 ```
 

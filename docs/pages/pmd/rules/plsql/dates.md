@@ -43,6 +43,11 @@ END date_utilities;
 /
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/dates.xml/TO_DATE_TO_CHAR" />
+```
+
 ## TO_DATEWithoutDateFormat
 
 **Since:** PMD 5.1
@@ -86,6 +91,11 @@ END date_utilities;
 /
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/dates.xml/TO_DATEWithoutDateFormat" />
+```
+
 ## TO_TIMESTAMPWithoutDateFormat
 
 **Since:** PMD 5.1
@@ -127,5 +137,10 @@ END to_timestamp_three_parameters;
 
 END date_utilities;
 /
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/plsql/dates.xml/TO_TIMESTAMPWithoutDateFormat" />
 ```
 

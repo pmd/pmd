@@ -28,6 +28,11 @@ for (int i = 0; i < 42; i++)
    foo();
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/braces.xml/ForLoopsMustUseBraces" />
+```
+
 ## IfElseStmtsMustUseBraces
 
 **Since:** PMD 0.2
@@ -58,6 +63,11 @@ if (foo)
        x = x-1;
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/braces.xml/IfElseStmtsMustUseBraces" />
+```
+
 ## IfStmtsMustUseBraces
 
 **Since:** PMD 1.0
@@ -83,6 +93,11 @@ if (foo) {  // preferred approach
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/braces.xml/IfStmtsMustUseBraces" />
+```
+
 ## WhileLoopsMustUseBraces
 
 **Since:** PMD 0.7
@@ -106,5 +121,10 @@ while (true)    // not recommended
 while (true) {  // preferred approach
       x++;
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/braces.xml/WhileLoopsMustUseBraces" />
 ```
 

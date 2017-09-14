@@ -39,6 +39,11 @@ if (x) {
 return z;
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/unnecessary.xml/NoElseReturn" />
+```
+
 ## UnnecessaryBlock
 
 **Since:** PMD 5.0
@@ -70,6 +75,11 @@ if (bar) {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/unnecessary.xml/UnnecessaryBlock" />
+```
+
 ## UnnecessaryParentheses
 
 **Since:** PMD 5.0
@@ -88,5 +98,10 @@ Unnecessary parentheses should be removed.
 var x = 1; // Ok
 var y = (1 + 1); // Ok
 var z = ((1 + 1)); // Bad
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/unnecessary.xml/UnnecessaryParentheses" />
 ```
 

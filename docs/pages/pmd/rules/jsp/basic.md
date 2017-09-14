@@ -23,6 +23,11 @@ Avoid duplicate import statements inside JSP's.
 <%@ page import=\"com.foo.MyClass,com.foo.MyClass\"%><html><body><b><img src=\"<%=Some.get()%>/foo\">xx</img>text</b></body></html>
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/jsp/basic.xml/DuplicateJspImports" />
+```
+
 ## IframeMissingSrcAttribute
 
 **Since:** PMD 3.6
@@ -46,6 +51,11 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 <HTML><title>good example><BODY>
 <iframe src="foo"></iframe>
 </BODY> </HTML>
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/jsp/basic.xml/IframeMissingSrcAttribute" />
 ```
 
 ## JspEncoding
@@ -76,6 +86,11 @@ Most browsers should be able to interpret the following headers:
 <meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/jsp/basic.xml/JspEncoding" />
+```
+
 ## NoClassAttribute
 
 **Since:** PMD 3.6
@@ -94,6 +109,11 @@ Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
 <HTML> <BODY>
 <P class="MajorHeading">Some text</P>
 </BODY> </HTML>
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/jsp/basic.xml/NoClassAttribute" />
 ```
 
 ## NoHtmlComments
@@ -122,6 +142,11 @@ little other purpose. Consider switching to JSP comments.
 </BODY> </HTML>
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/jsp/basic.xml/NoHtmlComments" />
+```
+
 ## NoInlineScript
 
 **Since:** PMD 4.0
@@ -145,6 +170,11 @@ Most browsers should be able to interpret the following headers:
 <meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/jsp/basic.xml/NoInlineScript" />
+```
+
 ## NoInlineStyleInformation
 
 **Since:** PMD 3.6
@@ -160,6 +190,11 @@ tags, or attributes like "align='center'".
 
 ``` jsp
 <html><body><p align='center'><b>text</b></p></body></html>
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/jsp/basic.xml/NoInlineStyleInformation" />
 ```
 
 ## NoJspForward
@@ -178,6 +213,11 @@ Do not do a forward from within a JSP file.
 
 ``` jsp
 <jsp:forward page='UnderConstruction.jsp'/>
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/jsp/basic.xml/NoJspForward" />
 ```
 
 ## NoLongScripts
@@ -218,6 +258,11 @@ onload=calcDays;
 </HTML>
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/jsp/basic.xml/NoLongScripts" />
+```
+
 ## NoScriptlets
 
 **Since:** PMD 3.6
@@ -247,6 +292,11 @@ response.setHeader("Pragma", "No-cache");
 </HTML>
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/jsp/basic.xml/NoScriptlets" />
+```
+
 ## NoUnsanitizedJSPExpression
 
 **Since:** PMD 5.1.4
@@ -266,5 +316,10 @@ would be interpreted by the browser directly (e.g. "<script>alert('hello');</scr
 ${expression}                    <!-- don't use this -->
 ${fn:escapeXml(expression)}      <!-- instead, escape it -->
 <c:out value="${expression}" />  <!-- or use c:out -->
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/jsp/basic.xml/NoUnsanitizedJSPExpression" />
 ```
 

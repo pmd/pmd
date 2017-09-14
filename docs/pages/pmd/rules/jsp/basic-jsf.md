@@ -33,3 +33,8 @@ Do not nest JSF component custom actions inside a custom action that iterates ov
 </html>
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/jsp/basic-jsf.xml/DontNestJsfInJstlIteration" />
+```
+

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 		JUnit 3 Test contains no assert  
@@ -99,8 +102,8 @@
         <description><![CDATA[
 		JUnit 3 Test contains more than one assert, but allowed
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="maximumAsserts">2</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 		public class MyTestCase extends TestCase {
 			//positive on rule
@@ -116,8 +119,8 @@
         <description><![CDATA[
 		JUnit 4 Test contains more than one assert, but allowed
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="maximumAsserts">2</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 			public class MyTestCase extends TestCase {
 				//positive on rule

@@ -13,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 
 /**
  * Multi-valued character property.
@@ -37,7 +36,7 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
                 char delimiter = delimiterIn(valuesById);
                 return new CharacterMultiProperty(nameIn(valuesById),
                                                   descriptionIn(valuesById),
-                                                  Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, ValueParser.CHARACTER_PARSER),
+                                                  ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, ValueParserConstants.CHARACTER_PARSER),
                                                   0.0f,
                                                   delimiter,
                                                   isDefinedExternally);

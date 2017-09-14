@@ -1,8 +1,7 @@
 ---
 title: Products/books related to PMD
-sidebar: pmd_sidebar
 permalink: pmd_userdocs_products.html
-folder: pmd/userdocs
+author: Tom Copeland <tom@infoether.org>
 ---
 
 ## Open source products

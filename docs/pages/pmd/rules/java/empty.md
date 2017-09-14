@@ -45,6 +45,11 @@ public void doSomething() {
 |allowCommentedBlocks|false|Empty blocks containing comments will be skipped|
 |allowExceptionNameRegex|^$|Empty blocks catching exceptions with names matching this regular expression will be skipped|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/empty.xml/EmptyCatchBlock" />
+```
+
 ## EmptyFinallyBlock
 
 **Since:** PMD 0.4
@@ -69,6 +74,11 @@ public class Foo {
         }
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/empty.xml/EmptyFinallyBlock" />
 ```
 
 ## EmptyIfStmt
@@ -96,6 +106,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/empty.xml/EmptyIfStmt" />
+```
+
 ## EmptyInitializer
 
 **Since:** PMD 5.0
@@ -118,6 +133,11 @@ public class Foo {
    {} // Again, why ?
 
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/empty.xml/EmptyInitializer" />
 ```
 
 ## EmptyStatementBlock
@@ -145,6 +165,11 @@ public class Foo {
    }
 
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/empty.xml/EmptyStatementBlock" />
 ```
 
 ## EmptyStatementNotInLoop
@@ -181,6 +206,11 @@ public void doit() {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/empty.xml/EmptyStatementNotInLoop" />
+```
+
 ## EmptyStaticInitializer
 
 **Since:** PMD 1.5
@@ -201,6 +231,11 @@ public class Foo {
         // empty
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/empty.xml/EmptyStaticInitializer" />
 ```
 
 ## EmptySwitchStatements
@@ -227,6 +262,11 @@ public void bar() {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/empty.xml/EmptySwitchStatements" />
+```
+
 ## EmptySynchronizedBlock
 
 **Since:** PMD 1.3
@@ -249,6 +289,11 @@ public class Foo {
         }
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/empty.xml/EmptySynchronizedBlock" />
 ```
 
 ## EmptyTryBlock
@@ -276,6 +321,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/empty.xml/EmptyTryBlock" />
+```
+
 ## EmptyWhileStmt
 
 **Since:** PMD 0.2
@@ -298,5 +348,10 @@ void bar(int a, int b) {
         // empty!
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/empty.xml/EmptyWhileStmt" />
 ```
 

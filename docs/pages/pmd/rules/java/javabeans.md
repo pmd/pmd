@@ -43,6 +43,11 @@ private int getMoreFoo(){
 |----|-------------|-----------|
 |prefix||A variable prefix to skip, i.e., m_|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/javabeans.xml/BeanMembersShouldSerialize" />
+```
+
 ## MissingSerialVersionUID
 
 **Since:** PMD 3.0
@@ -73,5 +78,10 @@ public class Foo implements java.io.Serializable {
     // Define serialization id to avoid serialization related bugs
     // i.e., public static final long serialVersionUID = 4328743;
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/javabeans.xml/MissingSerialVersionUID" />
 ```
 

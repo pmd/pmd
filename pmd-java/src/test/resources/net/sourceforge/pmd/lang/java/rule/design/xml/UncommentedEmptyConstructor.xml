@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 simple failure
      ]]></description>
-        <expected-problems>1</expected-problems>
         <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
  Foo() {
@@ -17,8 +20,8 @@ public class Foo {
         <description><![CDATA[
 only 'this(...)' is OK
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="ignoreExplicitConstructorInvocation">false</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  Foo() {
@@ -31,8 +34,8 @@ public class Foo {
         <description><![CDATA[
 only 'this(...)' is not OK, if ignoring explicit constructor calls
      ]]></description>
-        <expected-problems>1</expected-problems>
         <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
  Foo() {
@@ -45,8 +48,8 @@ public class Foo {
         <description><![CDATA[
 only 'super(...)' is OK
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="ignoreExplicitConstructorInvocation">false</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  Foo() {
@@ -59,8 +62,8 @@ public class Foo {
         <description><![CDATA[
 single-line comment is OK
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  Foo() {
@@ -73,8 +76,8 @@ public class Foo {
         <description><![CDATA[
 multiple-line comment is OK
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  Foo() {
@@ -88,8 +91,8 @@ public class Foo {
         <description><![CDATA[
 Javadoc comment is OK
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  Foo() {
@@ -103,8 +106,8 @@ public class Foo {
         <description><![CDATA[
 ok
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  Foo() {
@@ -117,8 +120,8 @@ public class Foo {
         <description><![CDATA[
 with 'this(...)' ok
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  Foo() {
@@ -132,8 +135,8 @@ public class Foo {
         <description><![CDATA[
 with 'super(...)' ok
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  Foo() {
@@ -147,8 +150,8 @@ public class Foo {
         <description><![CDATA[
 private is ok
      ]]></description>
-        <expected-problems>0</expected-problems>
         <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  private Foo() {
@@ -158,8 +161,8 @@ public class Foo {
     </test-code>
     <test-code>
         <description>Empty constructor with documenting javadoc still triggers</description>
-        <expected-problems>1</expected-problems>
         <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class WebAgent {
   /**

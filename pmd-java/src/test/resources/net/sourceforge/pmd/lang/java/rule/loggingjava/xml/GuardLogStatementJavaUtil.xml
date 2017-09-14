@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 Guarded call - OK
@@ -32,9 +35,9 @@ public class Foo {
     </test-code>
     <test-code>
         <description>#1203 GuardLogStatementJavaUtil issues warning for severe level not being specified as property</description>
-        <expected-problems>0</expected-problems>
         <rule-property name="logLevels">finest,finer,fine,info</rule-property>
         <rule-property name="guardsMethods">isLoggable</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.logging.Logger;
 import java.util.logging.Level;
