@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.IntegerProperty;
 
 public class AvoidDeeplyNestedIfStmtsRule extends AbstractJavaRule {
 

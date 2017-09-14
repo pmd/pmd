@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.AbstractPropertySource;
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
@@ -16,6 +14,8 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.properties.AbstractPropertySource;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * Basic abstract implementation of all parser-independent methods of the Rule

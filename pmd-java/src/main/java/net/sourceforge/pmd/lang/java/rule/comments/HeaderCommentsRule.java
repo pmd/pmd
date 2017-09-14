@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.java.rule.comments;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
-import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
+import net.sourceforge.pmd.properties.EnumeratedProperty;
+import net.sourceforge.pmd.properties.StringMultiProperty;
 
 /**
  * Restrictions regarding the legal placement and content of the file header.

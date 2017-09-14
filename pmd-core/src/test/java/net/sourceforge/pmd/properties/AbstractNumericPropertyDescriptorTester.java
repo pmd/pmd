@@ -10,9 +10,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.NumericPropertyDescriptor;
-import net.sourceforge.pmd.PropertyDescriptorField;
-
 /**
  * @author Clément Fournier
  */

@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.properties.StringMultiProperty;
+import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * Sample rule that detect any node with an image of "Foo", similar to

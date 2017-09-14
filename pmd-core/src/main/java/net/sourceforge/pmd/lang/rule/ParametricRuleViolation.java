@@ -6,11 +6,11 @@ package net.sourceforge.pmd.lang.rule;
 
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class ParametricRuleViolation<T extends Node> implements RuleViolation {

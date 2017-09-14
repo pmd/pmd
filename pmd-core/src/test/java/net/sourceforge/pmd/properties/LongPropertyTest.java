@@ -6,10 +6,6 @@ package net.sourceforge.pmd.properties;
 
 import java.util.List;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.lang.rule.properties.LongMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.LongProperty;
-
 /**
  * @author Clément Fournier
  */

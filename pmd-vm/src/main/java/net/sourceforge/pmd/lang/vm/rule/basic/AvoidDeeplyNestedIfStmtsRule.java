@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.vm.rule.basic;
 
-import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.lang.vm.ast.ASTElseIfStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTprocess;
 import net.sourceforge.pmd.lang.vm.ast.AbstractVmNode;
 import net.sourceforge.pmd.lang.vm.rule.AbstractVmRule;
+import net.sourceforge.pmd.properties.IntegerProperty;
 
 public class AvoidDeeplyNestedIfStmtsRule extends AbstractVmRule {
 

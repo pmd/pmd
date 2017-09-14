@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
+import net.sourceforge.pmd.properties.IntegerProperty;
 
 /**
  * This interface tags a Rule specifying properties required for the Code

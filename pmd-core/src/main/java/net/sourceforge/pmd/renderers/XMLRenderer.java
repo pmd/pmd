@@ -13,7 +13,7 @@ import java.util.Iterator;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**

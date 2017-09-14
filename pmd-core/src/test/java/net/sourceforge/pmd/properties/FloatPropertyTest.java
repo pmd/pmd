@@ -6,10 +6,6 @@ package net.sourceforge.pmd.properties;
 
 import java.util.List;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.lang.rule.properties.FloatMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.FloatProperty;
-
 /**
  * Evaluates the functionality of the FloatProperty descriptor by testing its
  * ability to catch creation errors (illegal args), flag out-of-range test

@@ -10,7 +10,8 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * This is the basic Rule interface for PMD rules.

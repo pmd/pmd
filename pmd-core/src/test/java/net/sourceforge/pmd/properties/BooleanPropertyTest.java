@@ -8,10 +8,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.lang.rule.properties.BooleanMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
-
 /**
  * @author Brian Remedios
  */
