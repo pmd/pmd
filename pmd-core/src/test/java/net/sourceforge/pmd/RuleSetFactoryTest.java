@@ -268,9 +268,6 @@ public class RuleSetFactoryTest {
         PropertyDescriptor<?> test3Descriptor = r.getPropertyDescriptor("test3");
         assertNotNull("test3 descriptor", test3Descriptor);
         assertEquals("override3", r.getProperty(test3Descriptor));
-        PropertyDescriptor<?> test4Descriptor = r.getPropertyDescriptor("test4");
-        assertNotNull("test3 descriptor", test4Descriptor);
-        assertEquals("new property", r.getProperty(test4Descriptor));
     }
 
     @Test
@@ -687,14 +684,14 @@ public class RuleSetFactoryTest {
 
     private static final String REF_OVERRIDE = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
             + " <description>testdesc</description>" + PMD.EOL + " <rule " + PMD.EOL
-            + "  ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule1\" " + PMD.EOL + "  name=\"TestNameOverride\" "
+            + "  ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule4\" " + PMD.EOL + "  name=\"TestNameOverride\" "
             + PMD.EOL + "  message=\"Test message override\"> " + PMD.EOL
             + "  <description>Test description override</description>" + PMD.EOL
             + "  <example>Test example override</example>" + PMD.EOL + "  <priority>3</priority>" + PMD.EOL
             + "  <properties>" + PMD.EOL
-            + "   <property name=\"test2\" description=\"test2\" type=\"String\" value=\"override2\"/>" + PMD.EOL
-            + "   <property name=\"test3\" description=\"test3\" type=\"String\"><value>override3</value></property>"
-            + PMD.EOL + "   <property name=\"test4\" description=\"test4\" type=\"String\" value=\"new property\"/>"
+            + "   <property name=\"test2\" description=\"test2\" value=\"override2\"/>" + PMD.EOL
+            + "   <property name=\"test3\" description=\"test3\"><value>override3</value></property>"
+            // + PMD.EOL + "   <property name=\"test4\" description=\"test4\" type=\"String\" value=\"new property\"/>" // Nonsense
             + PMD.EOL + "  </properties>" + PMD.EOL + " </rule>" + PMD.EOL + "</ruleset>";
 
     private static final String REF_INTERNAL_TO_INTERNAL = "<?xml version=\"1.0\"?>" + PMD.EOL
