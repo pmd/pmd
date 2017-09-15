@@ -18,6 +18,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.AbstractPropertyDescriptorFactory;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorFactory;
@@ -37,6 +39,63 @@ public class RuleFactory {
 
     private RuleFactory() {
 
+    }
+
+
+    /**
+     * Decorates a referenced rule with the values that are overriden in the given rule element.
+     *
+     * @param referencedRule Referenced rule
+     * @param ruleElement    Element overriding some metadata about the rule
+     *
+     * @return A rule reference to the referenced rule
+     */
+    public RuleReference decorateRule(Rule referencedRule, Element ruleElement) {
+        RuleReference ruleReference = new RuleReference();
+        ruleReference.setRule(referencedRule);
+
+
+        if (ruleElement.hasAttribute("deprecated")) {
+            ruleReference.setDeprecated(Boolean.parseBoolean(ruleElement.getAttribute("deprecated")));
+        }
+        if (ruleElement.hasAttribute("name")) {
+            ruleReference.setName(ruleElement.getAttribute("name"));
+        }
+        if (ruleElement.hasAttribute("message")) {
+            ruleReference.setMessage(ruleElement.getAttribute("message"));
+        }
+        if (ruleElement.hasAttribute("externalInfoUrl")) {
+            ruleReference.setExternalInfoUrl(ruleElement.getAttribute("externalInfoUrl"));
+        }
+
+
+        for (int i = 0; i < ruleElement.getChildNodes().getLength(); i++) {
+            Node node = ruleElement.getChildNodes().item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                switch (node.getNodeName()) {
+                case "description":
+                    ruleReference.setDescription(parseTextNode(node));
+                    break;
+                case "example":
+                    ruleReference.addExample(parseTextNode(node));
+                    break;
+                case "priority":
+                    ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node))));
+                    break;
+                case "properties":
+                    setPropertyValues(ruleReference, (Element) node);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unexpected element <" + node.getNodeName()
+                                                           + "> encountered as child of <rule> element for Rule "
+                                                           + ruleReference.getName());
+
+                }
+            }
+        }
+
+
+        return ruleReference;
     }
 
 
@@ -123,7 +182,7 @@ public class RuleFactory {
 
 
         if (propertiesElement != null) {
-            overrideProperties(rule, propertiesElement);
+            setPropertyValues(rule, propertiesElement);
         }
 
         return rule;
@@ -131,8 +190,7 @@ public class RuleFactory {
 
 
     private void checkRequiredAttributesArePresent(Element ruleElement) {
-        final List<String> required = Arrays.asList("name",
-                                                    "class");
+        final List<String> required = Arrays.asList("name", "class");
 
         for (String att : required) {
             if (!ruleElement.hasAttribute(att)) {
@@ -143,20 +201,19 @@ public class RuleFactory {
 
 
     /**
-     * Parses a properties element looking only for property value overrides.
+     * Parses a properties element looking only for the values of the properties defined or overridden.
      *
      * @param propertiesNode Node to parse
      *
-     * @return The map of overridden properties names to their value
+     * @return A map of property names to their value
      */
-    private Map<String, String> parsePropertiesForOverrides(Element propertiesNode) {
+    private Map<String, String> getPropertyValuesFrom(Element propertiesNode) {
         Map<String, String> overridenProperties = new HashMap<>();
 
         for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
             Node node = propertiesNode.getChildNodes().item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals("property")
-                && !isPropertyDefinition((Element) node)) {
-                Entry<String, String> overridden = parsePropertyOverride((Element) node);
+            if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals("property")) {
+                Entry<String, String> overridden = getPropertyValue((Element) node);
                 overridenProperties.put(overridden.getKey(), overridden.getValue());
             }
         }
@@ -185,7 +242,7 @@ public class RuleFactory {
     }
 
 
-    private Entry<String, String> parsePropertyOverride(Element propertyElement) {
+    private Entry<String, String> getPropertyValue(Element propertyElement) {
         String name = propertyElement.getAttribute(PropertyDescriptorField.NAME.attributeName());
         return new SimpleEntry<>(name, valueFrom(propertyElement));
     }
@@ -197,8 +254,8 @@ public class RuleFactory {
      * @param rule          The rule
      * @param propertiesElt The {@literal <properties>} element
      */
-    private void overrideProperties(Rule rule, Element propertiesElt) {
-        Map<String, String> overridden = parsePropertiesForOverrides(propertiesElt);
+    private void setPropertyValues(Rule rule, Element propertiesElt) {
+        Map<String, String> overridden = getPropertyValuesFrom(propertiesElt);
 
         for (Entry<String, String> e : overridden.entrySet()) {
             PropertyDescriptor<?> descriptor = rule.getPropertyDescriptor(e.getKey());

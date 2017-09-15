@@ -4,17 +4,13 @@
 
 package net.sourceforge.pmd;
 
-import static net.sourceforge.pmd.properties.PropertyDescriptorField.DEFAULT_VALUE;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
@@ -26,10 +22,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -41,9 +35,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyDescriptorField;
-import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
 import net.sourceforge.pmd.ruleset.RuleFactory;
 import net.sourceforge.pmd.util.ResourceLoader;
 
@@ -61,9 +52,6 @@ public class RuleSetFactory {
     private static final String DESCRIPTION = "description";
     private static final String UNEXPECTED_ELEMENT = "Unexpected element <";
     private static final String PRIORITY = "priority";
-    private static final String FOR_RULE = "' for Rule ";
-    private static final String MESSAGE = "message";
-    private static final String EXTERNAL_INFO_URL = "externalInfoUrl";
 
     private final ResourceLoader resourceLoader;
     private final RulePriority minimumPriority;
@@ -538,7 +526,7 @@ public class RuleSetFactory {
                 && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
             return;
         }
-<<      Rule rule = RuleFactory.INSTANCE.buildRule(ruleElement);
+        Rule rule = RuleFactory.INSTANCE.buildRule(ruleElement);
         rule.setRuleSetName(ruleSetBuilder.getName());
 
         if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
@@ -547,9 +535,6 @@ public class RuleSetFactory {
         }
     }
 
-    private static boolean hasAttributeSetTrue(Element element, String attributeId) {
-        return element.hasAttribute(attributeId) && "true".equalsIgnoreCase(element.getAttribute(attributeId));
-    }
 
     /**
      * Parse a rule node as a RuleReference. A RuleReference is a single Rule
@@ -622,39 +607,9 @@ public class RuleSetFactory {
 
         RuleSetReference ruleSetReference = new RuleSetReference(otherRuleSetReferenceId.getRuleSetFileName(), false);
 
-        RuleReference ruleReference = new RuleReference();
+        RuleReference ruleReference = RuleFactory.INSTANCE.decorateRule(referencedRule, ruleElement);
         ruleReference.setRuleSetReference(ruleSetReference);
-        ruleReference.setRule(referencedRule);
 
-        if (ruleElement.hasAttribute("deprecated")) {
-            ruleReference.setDeprecated(Boolean.parseBoolean(ruleElement.getAttribute("deprecated")));
-        }
-        if (ruleElement.hasAttribute("name")) {
-            ruleReference.setName(ruleElement.getAttribute("name"));
-        }
-        if (ruleElement.hasAttribute(MESSAGE)) {
-            ruleReference.setMessage(ruleElement.getAttribute(MESSAGE));
-        }
-        if (ruleElement.hasAttribute(EXTERNAL_INFO_URL)) {
-            ruleReference.setExternalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
-        }
-        for (int i = 0; i < ruleElement.getChildNodes().getLength(); i++) {
-            Node node = ruleElement.getChildNodes().item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                if (node.getNodeName().equals(DESCRIPTION)) {
-                    ruleReference.setDescription(parseTextNode(node));
-                } else if (node.getNodeName().equals("example")) {
-                    ruleReference.addExample(parseTextNode(node));
-                } else if (node.getNodeName().equals(PRIORITY)) {
-                    ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node))));
-                } else if (node.getNodeName().equals("properties")) {
-                    parsePropertiesNode(ruleReference, node);
-                } else {
-                    throw new IllegalArgumentException(UNEXPECTED_ELEMENT + node.getNodeName()
-                            + "> encountered as child of <rule> element for Rule " + ruleReference.getName());
-                }
-            }
-        }
 
         if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
                 || referencedRule.getPriority().compareTo(minimumPriority) <= 0) {
@@ -697,110 +652,6 @@ public class RuleSetFactory {
 
     private static boolean isElementNode(Node node, String name) {
         return node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(name);
-    }
-
-    /**
-     * Parse a properties node.
-     *
-     * @param rule
-     *            The Rule to which the properties should be added.
-     * @param propertiesNode
-     *            Must be a properties element node.
-     */
-    private static void parsePropertiesNode(Rule rule, Node propertiesNode) {
-        for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
-            Node node = propertiesNode.getChildNodes().item(i);
-            if (isElementNode(node, "property")) {
-                parsePropertyNodeBR(rule, node);
-            }
-        }
-    }
-
-    private static String valueFrom(Node parentNode) {
-
-        final NodeList nodeList = parentNode.getChildNodes();
-
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            if (isElementNode(node, "value")) {
-                return parseTextNode(node);
-            }
-        }
-        return null;
-    }
-
-
-    /**
-     * Sets the value of a property.
-     *
-     * @param rule     The rule which has the property
-     * @param desc     The property descriptor
-     * @param strValue The string value of the property, converted to a T
-     * @param <T>      The type of values of the property descriptor
-     */
-    private static <T> void setValue(Rule rule, PropertyDescriptor<T> desc, String strValue) {
-        T realValue = desc.valueFrom(strValue);
-        rule.setProperty(desc, realValue);
-    }
-
-
-    /**
-     * Parse a property node.
-     *
-     * @param rule         The Rule to which the property should be added.
-     * @param propertyNode Must be a property element node.
-     */
-    private static void parsePropertyNodeBR(Rule rule, Node propertyNode) {
-
-        Element propertyElement = (Element) propertyNode;
-        String typeId = propertyElement.getAttribute(PropertyDescriptorField.TYPE.attributeName());
-        String strValue = propertyElement.getAttribute(DEFAULT_VALUE.attributeName());
-        if (StringUtils.isBlank(strValue)) {
-            strValue = valueFrom(propertyElement);
-        }
-
-        // Setting of existing property, or defining a new property?
-        if (StringUtils.isBlank(typeId)) {
-            String name = propertyElement.getAttribute(PropertyDescriptorField.NAME.attributeName());
-
-            PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
-            if (propertyDescriptor == null) {
-                throw new IllegalArgumentException(
-                        "Cannot set non-existant property '" + name + "' on Rule " + rule.getName());
-            } else {
-                setValue(rule, propertyDescriptor, strValue);
-            }
-            return;
-        }
-
-        PropertyDescriptorExternalBuilder<?> pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
-        if (pdFactory == null) {
-            throw new RuntimeException("No property descriptor factory for type: " + typeId);
-        }
-
-        Map<PropertyDescriptorField, String> values = new HashMap<>();
-        NamedNodeMap atts = propertyElement.getAttributes();
-
-        // populate a map of values for an individual descriptor
-        for (int i = 0; i < atts.getLength(); i++) {
-            Attr a = (Attr) atts.item(i);
-            values.put(PropertyDescriptorField.getConstant(a.getName()), a.getValue());
-        }
-
-        if (StringUtils.isBlank(values.get(DEFAULT_VALUE))) {
-            NodeList children = propertyElement.getElementsByTagName(DEFAULT_VALUE.attributeName());
-            if (children.getLength() == 1) {
-                values.put(DEFAULT_VALUE, children.item(0).getTextContent());
-            } else {
-                throw new RuntimeException("No value defined!");
-            }
-        }
-
-        // casting is not pretty but prevents the interface from having this method
-        PropertyDescriptor<?> desc = pdFactory.build(values);
-
-        rule.definePropertyDescriptor(desc);
-        setValue(rule, desc, strValue);
     }
 
     /**
