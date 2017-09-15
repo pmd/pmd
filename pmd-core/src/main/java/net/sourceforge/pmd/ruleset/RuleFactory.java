@@ -17,12 +17,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import net.sourceforge.pmd.AbstractPropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
+import net.sourceforge.pmd.properties.AbstractPropertyDescriptorFactory;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyDescriptorFactory;
+import net.sourceforge.pmd.properties.PropertyDescriptorField;
+import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
 
 /**
  * Builds rules from rule XML nodes. You cannot use a single one to concurrently build several rules.

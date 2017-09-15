@@ -9,12 +9,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * Builds a rule, validating its parameters throughout. The builder can define property descriptors, but not override
@@ -186,7 +186,7 @@ class RuleBuilder {
     public Rule build() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
 
 
-        Rule rule = (Rule) RuledefFile.class.getClassLoader().loadClass(clazz).newInstance();
+        Rule rule = (Rule) RuleBuilder.class.getClassLoader().loadClass(clazz).newInstance();
 
         rule.setName(name);
         rule.setRuleClass(clazz);
