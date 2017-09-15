@@ -63,6 +63,8 @@ PMD release, the metrics framework is supported for both Java and Apex.
 
 A number of improvements on error reporting have taken place, meaning changes to some of the report formats.
 
+Also of note, the xml report now provides a XML Schema definition, allowing easier parsing and validation.
+
 ##### Processing Errors
 
 Processing errors can now provide not only the message previously included on some reports, but also a full stacktrace.
@@ -156,7 +158,8 @@ All existing rules have been updated to reflect these changes. If you have custo
 ### Fixed Issues
 
 *   all
-    *  [#532](https://github.com/pmd/pmd/issues/532): \[core] security concerns on URL-based rulesets
+    *   [#532](https://github.com/pmd/pmd/issues/532): \[core] security concerns on URL-based rulesets
+    *   [#538](https://github.com/pmd/pmd/issues/538): \[core] Provide an XML Schema for XML reports
 *   apex
     *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
     *   [#489](https://github.com/pmd/pmd/pull/489): \[apex] Update Apex compiler
@@ -294,4 +297,3 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#588](https://github.com/pmd/pmd/pull/588): \[java] XPath function to compute metrics - [Clément Fournier](https://github.com/oowekyala)
 *   [#598](https://github.com/pmd/pmd/pull/598): \[java] Fix #388: controversial.AvoidLiteralsInIfCondition 0.0 false positive - [Clément Fournier](https://github.com/oowekyala)
 *   [#620](https://github.com/pmd/pmd/pull/620): \[core] Moved properties to n.s.pmd.properties - [Clément Fournier](https://github.com/oowekyala)
-

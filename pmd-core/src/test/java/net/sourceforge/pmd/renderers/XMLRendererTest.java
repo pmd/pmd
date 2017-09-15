@@ -35,22 +35,19 @@ public class XMLRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpected() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + "<pmd version=\"" + PMD.VERSION
-                + "\" timestamp=\"2014-10-06T19:30:51.262\">" + PMD.EOL + "<file name=\"n/a\">" + PMD.EOL
+        return getHeader() + "<file name=\"n/a\">" + PMD.EOL
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
                 + PMD.EOL + "blah" + PMD.EOL + "</violation>" + PMD.EOL + "</file>" + PMD.EOL + "</pmd>" + PMD.EOL;
     }
 
     @Override
     public String getExpectedEmpty() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + "<pmd version=\"" + PMD.VERSION
-                + "\" timestamp=\"2014-10-06T19:30:51.262\">" + PMD.EOL + "</pmd>" + PMD.EOL;
+        return getHeader() + "</pmd>" + PMD.EOL;
     }
 
     @Override
     public String getExpectedMultiple() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + "<pmd version=\"" + PMD.VERSION
-                + "\" timestamp=\"2014-10-06T19:30:51.239\">" + PMD.EOL + "<file name=\"n/a\">" + PMD.EOL
+        return getHeader() + "<file name=\"n/a\">" + PMD.EOL
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
                 + PMD.EOL + "blah" + PMD.EOL + "</violation>" + PMD.EOL
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"2\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
@@ -59,15 +56,13 @@ public class XMLRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpectedError(ProcessingError error) {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + "<pmd version=\"" + PMD.VERSION
-                + "\" timestamp=\"2014-10-06T19:30:51.222\">" + PMD.EOL + "<error filename=\"file\" msg=\"Error\">"
+        return getHeader() + "<error filename=\"file\" msg=\"Error\">"
                 + PMD.EOL + "<![CDATA[" + error.getDetail() + "]]>" + PMD.EOL + "</error>" + PMD.EOL + "</pmd>" + PMD.EOL;
     }
 
     @Override
     public String getExpectedError(ConfigurationError error) {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + "<pmd version=\"" + PMD.VERSION
-                + "\" timestamp=\"2014-10-06T19:30:51.222\">" + PMD.EOL + "<configerror rule=\"Foo\" msg=\"a configuration error\"/>"
+        return getHeader() + "<configerror rule=\"Foo\" msg=\"a configuration error\"/>"
                 + PMD.EOL + "</pmd>" + PMD.EOL;
     }
 
@@ -114,5 +109,13 @@ public class XMLRendererTest extends AbstractRendererTst {
         Renderer renderer = getRenderer();
         renderer.setProperty(XMLRenderer.ENCODING, "ISO-8859-1");
         verifyXmlEscaping(renderer, "&#x1041c;");
+    }
+    
+    public String getHeader() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL
+                + "<pmd xmlns=\"http://pmd.sourceforge.net/report/2.0.0\"" + PMD.EOL
+                + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + PMD.EOL
+                + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd\"" + PMD.EOL
+                + "    version=\"" + PMD.VERSION + "\" timestamp=\"2014-10-06T19:30:51.262\">" + PMD.EOL;
     }
 }
