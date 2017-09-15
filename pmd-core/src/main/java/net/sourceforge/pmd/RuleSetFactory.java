@@ -36,7 +36,6 @@ import org.xml.sax.SAXException;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -45,6 +44,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorFactory;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
+import net.sourceforge.pmd.ruleset.RuleFactory;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
@@ -538,108 +538,9 @@ public class RuleSetFactory {
                 && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
             return;
         }
-
-        String attribute = ruleElement.getAttribute("class");
-        if (attribute == null || "".equals(attribute)) {
-            throw new IllegalArgumentException("The 'class' field of rule can't be null, nor empty.");
-        }
-        Rule rule = (Rule) classLoader.loadClass(attribute).newInstance();
-        rule.setName(ruleElement.getAttribute("name"));
-
-        if (ruleElement.hasAttribute("language")) {
-            String languageName = ruleElement.getAttribute("language");
-            Language language = LanguageRegistry.findLanguageByTerseName(languageName);
-            if (language == null) {
-                throw new IllegalArgumentException("Unknown Language '" + languageName + FOR_RULE + rule.getName()
-                        + ", supported Languages are "
-                        + LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.findWithRuleSupport()));
-            }
-            rule.setLanguage(language);
-        }
-
-        Language language = rule.getLanguage();
-        if (language == null) {
-            throw new IllegalArgumentException(
-                    "Rule " + rule.getName() + " does not have a Language; missing 'language' attribute?");
-        }
-
-        if (ruleElement.hasAttribute("minimumLanguageVersion")) {
-            String minimumLanguageVersionName = ruleElement.getAttribute("minimumLanguageVersion");
-            LanguageVersion minimumLanguageVersion = language.getVersion(minimumLanguageVersionName);
-            if (minimumLanguageVersion == null) {
-                throw new IllegalArgumentException("Unknown minimum Language Version '" + minimumLanguageVersionName
-                        + "' for Language '" + language.getTerseName() + FOR_RULE + rule.getName()
-                        + "; supported Language Versions are: "
-                        + LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
-            }
-            rule.setMinimumLanguageVersion(minimumLanguageVersion);
-        }
-
-        if (ruleElement.hasAttribute("maximumLanguageVersion")) {
-            String maximumLanguageVersionName = ruleElement.getAttribute("maximumLanguageVersion");
-            LanguageVersion maximumLanguageVersion = language.getVersion(maximumLanguageVersionName);
-            if (maximumLanguageVersion == null) {
-                throw new IllegalArgumentException("Unknown maximum Language Version '" + maximumLanguageVersionName
-                        + "' for Language '" + language.getTerseName() + FOR_RULE + rule.getName()
-                        + "; supported Language Versions are: "
-                        + LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
-            }
-            rule.setMaximumLanguageVersion(maximumLanguageVersion);
-        }
-
-        if (rule.getMinimumLanguageVersion() != null && rule.getMaximumLanguageVersion() != null) {
-            throw new IllegalArgumentException(
-                    "The minimum Language Version '" + rule.getMinimumLanguageVersion().getTerseName()
-                            + "' must be prior to the maximum Language Version '"
-                            + rule.getMaximumLanguageVersion().getTerseName() + FOR_RULE + rule.getName()
-                            + "; perhaps swap them around?");
-        }
-
-        String since = ruleElement.getAttribute("since");
-        if (StringUtils.isNotBlank(since)) {
-            rule.setSince(since);
-        }
-        rule.setMessage(ruleElement.getAttribute(MESSAGE));
+        Rule rule = RuleFactory.INSTANCE.buildRule(ruleElement);
         rule.setRuleSetName(ruleSetBuilder.getName());
-        rule.setExternalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
 
-        if (hasAttributeSetTrue(ruleElement, "deprecated")) {
-            rule.setDeprecated(true);
-        }
-
-        if (hasAttributeSetTrue(ruleElement, "dfa")) {
-            rule.setUsesDFA();
-        }
-
-        if (hasAttributeSetTrue(ruleElement, "typeResolution")) {
-            rule.setUsesTypeResolution();
-        }
-
-        if (hasAttributeSetTrue(ruleElement, "metrics")) {
-            rule.setUsesMetrics();
-        }
-
-        final NodeList nodeList = ruleElement.getChildNodes();
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            if (node.getNodeType() != Node.ELEMENT_NODE) {
-                continue;
-            }
-            String nodeName = node.getNodeName();
-            if (DESCRIPTION.equals(nodeName)) {
-                rule.setDescription(parseTextNode(node));
-            } else if ("example".equals(nodeName)) {
-                rule.addExample(parseTextNode(node));
-            } else if (PRIORITY.equals(nodeName)) {
-                rule.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node).trim())));
-            } else if ("properties".equals(nodeName)) {
-                parsePropertiesNode(rule, node);
-            } else {
-                throw new IllegalArgumentException(UNEXPECTED_ELEMENT + nodeName
-                        + "> encountered as child of <rule> element for Rule " + rule.getName());
-            }
-
-        }
         if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
                 || rule.getPriority().compareTo(minimumPriority) <= 0) {
             ruleSetBuilder.addRule(rule);

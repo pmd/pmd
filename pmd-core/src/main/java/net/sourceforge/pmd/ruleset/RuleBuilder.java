@@ -29,8 +29,8 @@ class RuleBuilder {
     private String name;
     private String clazz;
     private Language language;
-    private LanguageVersion minimumVersion;
-    private LanguageVersion maximumVersion;
+    private String minimumVersion;
+    private String maximumVersion;
     private String since;
     private String message;
     private String rulesetName;
@@ -66,9 +66,10 @@ class RuleBuilder {
     }
 
 
-    private RuleBuilder language(String languageName) {
+    private void language(String languageName) {
         if (StringUtils.isBlank(languageName)) {
-            throw new IllegalArgumentException("Blank language attribute");
+            return;
+            // throw new IllegalArgumentException("Blank language attribute");
         }
 
         Language lang = LanguageRegistry.findLanguageByTerseName(languageName);
@@ -78,58 +79,35 @@ class RuleBuilder {
                     + LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.findWithRuleSupport()));
         }
         language = lang;
-        return this;
     }
 
 
-    private RuleBuilder className(String className) {
+    private void className(String className) {
         if (StringUtils.isBlank(className)) {
             throw new IllegalArgumentException("The 'class' field of rule can't be null, nor empty.");
         }
 
         this.clazz = className;
-        return this;
     }
 
 
-    public RuleBuilder minimumLanguageVersion(String minimum) {
-        LanguageVersion minimumLanguageVersion = language.getVersion(minimum);
-        if (minimumLanguageVersion == null) {
-            throw new IllegalArgumentException("Unknown minimum Language Version '" + minimum
-                                                   + "' for Language '" + language.getTerseName() + "' for rule"
-                                                   + name
-                                                   + "; supported Language Versions are: "
-                                                   + LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
-        }
-
-        minimumVersion = minimumLanguageVersion;
-        checkLanguageVersionsAreOrdered();
-        return this;
+    public void minimumLanguageVersion(String minimum) {
+        minimumVersion = minimum;
     }
 
 
-    public RuleBuilder maximumLanguageVersion(String maximum) {
-        LanguageVersion maximumLanguageVersion = language.getVersion(maximum);
-        if (maximumLanguageVersion == null) {
-            throw new IllegalArgumentException("Unknown maximum Language Version '" + maximum
-                                                   + "' for Language '" + language.getTerseName()
-                                                   + "' for Rule " + name
-                                                   + "; supported Language Versions are: "
-                                                   + LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
-        }
-        maximumVersion = maximumLanguageVersion;
-        checkLanguageVersionsAreOrdered();
-        return this;
+    public void maximumLanguageVersion(String maximum) {
+        maximumVersion = maximum;
     }
 
 
-    private void checkLanguageVersionsAreOrdered() {
-        if (minimumVersion != null && maximumVersion != null
-            && minimumVersion.compareTo(maximumVersion) > 0) {
+    private void checkLanguageVersionsAreOrdered(Rule rule) {
+        if (rule.getMinimumLanguageVersion() != null && rule.getMaximumLanguageVersion() != null
+            && rule.getMinimumLanguageVersion().compareTo(rule.getMaximumLanguageVersion()) > 0) {
             throw new IllegalArgumentException(
-                "The minimum Language Version '" + minimumVersion.getTerseName()
+                "The minimum Language Version '" + rule.getMinimumLanguageVersion().getTerseName()
                     + "' must be prior to the maximum Language Version '"
-                    + maximumVersion.getTerseName() + "' for Rule '" + name
+                    + rule.getMaximumLanguageVersion().getTerseName() + "' for Rule '" + name
                     + "'; perhaps swap them around?");
         }
     }
@@ -178,8 +156,42 @@ class RuleBuilder {
     }
 
 
-    public void priority(int priority) {
-        this.priority = RulePriority.valueOf(priority);
+    public void priority(int priorityString) {
+        this.priority = RulePriority.valueOf(priorityString);
+    }
+
+
+    // Must be loaded after rule construction to know the Language
+    private void loadLanguageMinMaxVersions(Rule rule) {
+
+        if (minimumVersion != null) {
+            LanguageVersion minimumLanguageVersion = rule.getLanguage().getVersion(minimumVersion);
+            if (minimumLanguageVersion == null) {
+                throwUnknownLanguageVersionException("minimum", minimumVersion);
+            } else {
+                rule.setMinimumLanguageVersion(minimumLanguageVersion);
+            }
+        }
+
+        if (maximumVersion != null) {
+            LanguageVersion maximumLanguageVersion = rule.getLanguage().getVersion(maximumVersion);
+            if (maximumLanguageVersion == null) {
+                throwUnknownLanguageVersionException("maximum", maximumVersion);
+            } else {
+                rule.setMaximumLanguageVersion(maximumLanguageVersion);
+            }
+        }
+
+        checkLanguageVersionsAreOrdered(rule);
+    }
+
+
+    private void throwUnknownLanguageVersionException(String minOrMax, String unknownVersion) {
+        throw new IllegalArgumentException("Unknown " + minOrMax + " Language Version '" + unknownVersion
+                                               + "' for Language '" + language.getTerseName()
+                                               + "' for Rule " + name
+                                               + "; supported Language Versions are: "
+                                               + LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
     }
 
 
@@ -190,15 +202,18 @@ class RuleBuilder {
 
         rule.setName(name);
         rule.setRuleClass(clazz);
-        rule.setLanguage(language);
-        rule.setMinimumLanguageVersion(minimumVersion);
-        rule.setMaximumLanguageVersion(maximumVersion);
+
+        if (rule.getLanguage() == null) {
+            rule.setLanguage(language);
+        }
+
+        loadLanguageMinMaxVersions(rule);
         rule.setSince(since);
         rule.setMessage(message);
         rule.setExternalInfoUrl(externalInfoUrl);
         rule.setDeprecated(isDeprecated);
         rule.setDescription(description);
-        rule.setPriority(priority);
+        rule.setPriority(priority == null ? RulePriority.valueOf(666) : priority);
 
         for (String example : examples) {
             rule.addExample(example);

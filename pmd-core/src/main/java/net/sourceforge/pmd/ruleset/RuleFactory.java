@@ -131,7 +131,8 @@ public class RuleFactory {
 
 
     private void checkRequiredAttributesArePresent(Element ruleElement) {
-        final List<String> required = Arrays.asList("name", "class", "language");
+        final List<String> required = Arrays.asList("name",
+                                                    "class");
 
         for (String att : required) {
             if (!ruleElement.hasAttribute(att)) {
