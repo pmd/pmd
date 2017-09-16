@@ -2,7 +2,22 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.ruleset;
+package net.sourceforge.pmd.ruledef;
+
+import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.CLASS;
+import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.DEPRECATED;
+import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.DFA;
+import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.EXTERNAL_INFO_URL;
+import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.LANGUAGE;
+import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.MAXIMUM_LANGUAGE_VERSION;
+import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.MESSAGE;
+import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.METRICS;
+import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.MINIMUM_LANGUAGE_VERSION;
+import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.NAME;
+import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.PROPERTY;
+import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.SINCE;
+import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.TYPERESOLUTION;
+import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.VALUE;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
@@ -12,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -43,7 +59,10 @@ public class RuleFactory {
 
 
     /**
-     * Decorates a referenced rule with the values that are overriden in the given rule element.
+     * Decorates a referenced rule with the metadata that are overriden in the given rule element.
+     *
+     * <p>Declaring a property in the overriding element throws an exception (the property must exist in the referenced
+     * rule).
      *
      * @param referencedRule Referenced rule
      * @param ruleElement    Element overriding some metadata about the rule
@@ -55,34 +74,36 @@ public class RuleFactory {
         ruleReference.setRule(referencedRule);
 
 
-        if (ruleElement.hasAttribute("deprecated")) {
-            ruleReference.setDeprecated(Boolean.parseBoolean(ruleElement.getAttribute("deprecated")));
+        if (ruleElement.hasAttribute(DEPRECATED.name)) {
+            ruleReference.setDeprecated(Boolean.parseBoolean(ruleElement.getAttribute(DEPRECATED.name)));
         }
-        if (ruleElement.hasAttribute("name")) {
-            ruleReference.setName(ruleElement.getAttribute("name"));
+        if (ruleElement.hasAttribute(NAME.name)) {
+            ruleReference.setName(ruleElement.getAttribute(NAME.name));
         }
-        if (ruleElement.hasAttribute("message")) {
-            ruleReference.setMessage(ruleElement.getAttribute("message"));
+        if (ruleElement.hasAttribute(MESSAGE.name)) {
+            ruleReference.setMessage(ruleElement.getAttribute(MESSAGE.name));
         }
-        if (ruleElement.hasAttribute("externalInfoUrl")) {
-            ruleReference.setExternalInfoUrl(ruleElement.getAttribute("externalInfoUrl"));
+        if (ruleElement.hasAttribute(EXTERNAL_INFO_URL.name)) {
+            ruleReference.setExternalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL.name));
         }
 
 
         for (int i = 0; i < ruleElement.getChildNodes().getLength(); i++) {
             Node node = ruleElement.getChildNodes().item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
-                switch (node.getNodeName()) {
-                case "description":
+                RulesetSchemaConstants name = EnumUtils.getEnum(RulesetSchemaConstants.class,
+                                                                node.getNodeName().toUpperCase());
+                switch (name) {
+                case DESCRIPTION:
                     ruleReference.setDescription(parseTextNode(node));
                     break;
-                case "example":
+                case EXAMPLE:
                     ruleReference.addExample(parseTextNode(node));
                     break;
-                case "priority":
+                case PRIORITY:
                     ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node))));
                     break;
-                case "properties":
+                case PROPERTIES:
                     setPropertyValues(ruleReference, (Element) node);
                     break;
                 default:
@@ -109,37 +130,38 @@ public class RuleFactory {
      * @param ruleElement The rule element to parse
      *
      * @return A new instance of the rule in this element
+     *
+     * @throws IllegalArgumentException if the element doesn't describe a valid rule.
      */
     public Rule buildRule(Element ruleElement) {
 
         checkRequiredAttributesArePresent(ruleElement);
 
-        String name = ruleElement.getAttribute("name");
+        String name = ruleElement.getAttribute(NAME.name);
 
         RuleBuilder builder = new RuleBuilder(name,
-                                              ruleElement.getAttribute("class"),
-                                              ruleElement.getAttribute("language"));
+                                              ruleElement.getAttribute(CLASS.name),
+                                              ruleElement.getAttribute(LANGUAGE.name));
 
 
-        if (ruleElement.hasAttribute("minimumLanguageVersion")) {
-            builder.minimumLanguageVersion(ruleElement.getAttribute("minimumLanguageVersion"));
+        if (ruleElement.hasAttribute(MINIMUM_LANGUAGE_VERSION.name)) {
+            builder.minimumLanguageVersion(ruleElement.getAttribute(MINIMUM_LANGUAGE_VERSION.name));
         }
 
-        if (ruleElement.hasAttribute("maximumLanguageVersion")) {
-            builder.maximumLanguageVersion(ruleElement.getAttribute("maximumLanguageVersion"));
+        if (ruleElement.hasAttribute(MAXIMUM_LANGUAGE_VERSION.name)) {
+            builder.maximumLanguageVersion(ruleElement.getAttribute(MAXIMUM_LANGUAGE_VERSION.name));
         }
 
-        if (ruleElement.hasAttribute("since")) {
-            builder.since(ruleElement.getAttribute("since"));
+        if (ruleElement.hasAttribute(SINCE.name)) {
+            builder.since(ruleElement.getAttribute(SINCE.name));
         }
 
-        builder.since(ruleElement.getAttribute("since"));
-        builder.message(ruleElement.getAttribute("message"));
-        builder.externalInfoUrl(ruleElement.getAttribute("externalInfoUrl"));
-        builder.setDeprecated(hasAttributeSetTrue(ruleElement, "deprecated"));
-        builder.usesDFA(hasAttributeSetTrue(ruleElement, "dfa"));
-        builder.usesTyperesolution(hasAttributeSetTrue(ruleElement, "typeResolution"));
-        builder.usesMetrics(hasAttributeSetTrue(ruleElement, "metrics"));
+        builder.message(ruleElement.getAttribute(MESSAGE.name));
+        builder.externalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL.name));
+        builder.setDeprecated(hasAttributeSetTrue(ruleElement, DEPRECATED.name));
+        builder.usesDFA(hasAttributeSetTrue(ruleElement, DFA.name));
+        builder.usesTyperesolution(hasAttributeSetTrue(ruleElement, TYPERESOLUTION.name));
+        builder.usesMetrics(hasAttributeSetTrue(ruleElement, METRICS.name));
 
 
         Element propertiesElement = null;
@@ -150,23 +172,25 @@ public class RuleFactory {
             if (node.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
-            String nodeName = node.getNodeName();
+            RulesetSchemaConstants nodeName = EnumUtils.getEnum(RulesetSchemaConstants.class,
+                                                                node.getNodeName().toUpperCase());
+
             switch (nodeName) {
-            case "description":
+            case DESCRIPTION:
                 builder.description(parseTextNode(node));
                 break;
-            case "example":
+            case EXAMPLE:
                 builder.addExample(parseTextNode(node));
                 break;
-            case "priority":
+            case PRIORITY:
                 builder.priority(Integer.parseInt(parseTextNode(node).trim()));
                 break;
-            case "properties":
+            case PROPERTIES:
                 parsePropertiesForDefinitions(builder, node);
                 propertiesElement = (Element) node;
                 break;
             default:
-                throw new IllegalArgumentException("Unexpected element <" + nodeName
+                throw new IllegalArgumentException("Unexpected element <" + node.getNodeName()
                                                        + "> encountered as child of <rule> element for Rule "
                                                        + name);
             }
@@ -190,7 +214,8 @@ public class RuleFactory {
 
 
     private void checkRequiredAttributesArePresent(Element ruleElement) {
-        final List<String> required = Arrays.asList("name", "class");
+        // add an attribute name here to make it required
+        final List<String> required = Arrays.asList(NAME.name, CLASS.name);
 
         for (String att : required) {
             if (!ruleElement.hasAttribute(att)) {
@@ -212,7 +237,7 @@ public class RuleFactory {
 
         for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
             Node node = propertiesNode.getChildNodes().item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals("property")) {
+            if (node.getNodeType() == Node.ELEMENT_NODE && PROPERTY.name.equals(node.getNodeName())) {
                 Entry<String, String> overridden = getPropertyValue((Element) node);
                 overridenProperties.put(overridden.getKey(), overridden.getValue());
             }
@@ -233,7 +258,7 @@ public class RuleFactory {
 
         for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
             Node node = propertiesNode.getChildNodes().item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals("property")
+            if (node.getNodeType() == Node.ELEMENT_NODE && PROPERTY.name.equals(node.getNodeName())
                 && isPropertyDefinition((Element) node)) {
                 PropertyDescriptor<?> descriptor = parsePropertyDefinition((Element) node);
                 builder.defineProperty(descriptor);
@@ -242,6 +267,13 @@ public class RuleFactory {
     }
 
 
+    /**
+     * Gets a mapping of property name to its value from the given property element.
+     *
+     * @param propertyElement Property element
+     *
+     * @return An entry of property name to its value
+     */
     private Entry<String, String> getPropertyValue(Element propertyElement) {
         String name = propertyElement.getAttribute(PropertyDescriptorField.NAME.attributeName());
         return new SimpleEntry<>(name, valueFrom(propertyElement));
@@ -274,6 +306,13 @@ public class RuleFactory {
     }
 
 
+    /**
+     * Finds out if the property element defines a property.
+     *
+     * @param node Property element
+     *
+     * @return True if this element defines a new property, false if this is just stating a value
+     */
     private static boolean isPropertyDefinition(Element node) {
         return StringUtils.isNotBlank(node.getAttribute(PropertyDescriptorField.TYPE.attributeName()));
     }
@@ -289,7 +328,6 @@ public class RuleFactory {
     private static PropertyDescriptor<?> parsePropertyDefinition(Element propertyElement) {
 
         String typeId = propertyElement.getAttribute(PropertyDescriptorField.TYPE.attributeName());
-        String strValue = valueFrom(propertyElement);
 
         PropertyDescriptorFactory<?> pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
         if (pdFactory == null) {
@@ -334,7 +372,7 @@ public class RuleFactory {
 
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals("value")) {
+            if (node.getNodeType() == Node.ELEMENT_NODE && VALUE.name.equals(node.getNodeName())) {
                 return parseTextNode(node);
             }
         }
