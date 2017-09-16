@@ -27,6 +27,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import net.sourceforge.pmd.ruledef.RuleDefsAggregator;
+
 /**
  * @author Clément Fournier
  * @since 6.0.0

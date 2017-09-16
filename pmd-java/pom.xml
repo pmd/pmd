@@ -49,7 +49,7 @@
                 </executions>
                 <configuration>
                     <includeProjectDependencies>true</includeProjectDependencies>
-                    <mainClass>net.sourceforge.pmd.RuleDefsAggregator</mainClass>
+                    <mainClass>net.sourceforge.pmd.ruledef.RuleDefsAggregator</mainClass>
                     <arguments>
                         <argument>${project.basedir}</argument>
                         <argument>java</argument>
