@@ -720,7 +720,8 @@ for (int i = 0; i < 10; i++) {
            since="4.3"
            message="Don't call Thread.run() explicitly, use Thread.start()"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
-           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#dontcallthreadrun">
+           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#dontcallthreadrun"
+           typeResolution="true">
       <description>
 Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.
       </description>
@@ -735,9 +736,8 @@ Explicitly calling Thread.run() method will execute in the caller's thread of co
     [
         ./Name[ends-with(@Image, '.run') or @Image = 'run']
         and substring-before(Name/@Image, '.') =//VariableDeclarator/VariableDeclaratorId/@Image
-        [../../../Type/ReferenceType[ClassOrInterfaceType/@Image = 'Thread']]
-        or (
-        ./AllocationExpression/ClassOrInterfaceType[@Image = 'Thread']
+            [../../../Type/ReferenceType/ClassOrInterfaceType[typeof(@Image, 'java.lang.Thread', 'Thread')]]
+        or (./AllocationExpression/ClassOrInterfaceType[typeof(@Image, 'java.lang.Thread', 'Thread')]
         and ../PrimarySuffix[@Image = 'run'])
     ]
 ]
