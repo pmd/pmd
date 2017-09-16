@@ -43,8 +43,8 @@ import org.xml.sax.SAXException;
  */
 public class RuleDefsAggregator {
 
-    private static final String OUTPUT_NAMESPACE = "http://pmd.sourceforge.net/ruleset/3.0.0";
-    private static final String OUTPUT_XSD_LOCATION = "http://pmd.sourceforge.net/ruleset_3_0_0.xsd";
+    public static final String OUTPUT_NAMESPACE = "http://pmd.sourceforge.net/ruleset/3.0.0";
+    public static final String OUTPUT_XSD_LOCATION = "http://pmd.sourceforge.net/ruleset_3_0_0.xsd";
     private static final String RULEDEFS_PREFIX_LOCATION = "ruledefs/";
 
 
@@ -171,7 +171,7 @@ public class RuleDefsAggregator {
      * @param excludedFiles List of files to exclude
      * @param outputWriter  Writer for the output document
      */
-    private void generateMasterRuledefFrom(Path ruledefsDir, List<String> excludedFiles, Writer outputWriter)
+    void generateMasterRuledefFrom(Path ruledefsDir, List<String> excludedFiles, Writer outputWriter)
         throws IOException, ParserConfigurationException, SAXException, TransformerException {
 
         Document output = createOutputDocument(ruledefsDir.getFileName().toString());

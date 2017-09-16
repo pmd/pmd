@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<ruleset name="Test Ruleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+    <description>
+        Ruleset used by test RuleSetReferenceIdTest
+    </description>
+
+    <rule name="RDef2Rule1"
+          language="dummy"
+          since="1.0"
+          message="Test Rule 1"
+          class="net.sourceforge.pmd.lang.rule.MockRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#DummyBasicMockRule">
+        <description>
+            Just for test
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+ ]]>
+        </example>
+    </rule>
+
+
+    <rule name="RDef2Rule2"
+          language="dummy"
+          since="1.1"
+          message="Test Rule 2"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#SampleXPathRule">
+        <description>Test</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//DummyNode
+                ]]></value>
+            </property>
+        </properties>
+        <example>foo</example>
+    </rule>
+</ruleset>
