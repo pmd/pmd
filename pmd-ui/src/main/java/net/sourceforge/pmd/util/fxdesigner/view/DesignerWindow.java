@@ -49,6 +49,8 @@ public class DesignerWindow implements Initializable {
     @FXML
     public MenuItem licenseMenuItem;
     @FXML
+    public TreeView<Object> scopeHierarchyTreeView;
+    @FXML
     private CodeArea codeEditorArea;
     @FXML
     private Menu languageMenu;
@@ -162,6 +164,11 @@ public class DesignerWindow implements Initializable {
     }
 
 
+    public TreeView<Object> getScopeHierarchyTreeView() {
+        return scopeHierarchyTreeView;
+    }
+
+
     public CodeArea getCodeEditorArea() {
         return codeEditorArea;
     }
@@ -214,11 +221,6 @@ public class DesignerWindow implements Initializable {
 
     public BorderPane getMainEditorBorderPane() {
         return editorAndASTBorderPane;
-    }
-
-
-    public TitledPane getAstTitledPane() {
-        return astTitledPane;
     }
 
 

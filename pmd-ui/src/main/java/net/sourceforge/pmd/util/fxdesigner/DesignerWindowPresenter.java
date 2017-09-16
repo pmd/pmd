@@ -128,6 +128,7 @@ public class DesignerWindowPresenter {
 
     private void initialiseNodeInfoSection() {
         view.getMetricResultsListView().setCellFactory(param -> new MetricResultListCell());
+        view.getScopeHierarchyTreeView().setCellFactory(param -> new ScopeHierarchyTreeCell());
     }
 
 
@@ -188,6 +189,8 @@ public class DesignerWindowPresenter {
                                                .filter(result -> !result.isNaN())
                                                .count());
 
+            TreeItem<Object> rootScope = ScopeHierarchyTreeItem.buildAscendantHerarchy(selectedValue);
+            view.getScopeHierarchyTreeView().setRoot(rootScope);
 
             DesignerUtil.highlightNode(view.getCodeEditorArea(), selectedValue);
         }

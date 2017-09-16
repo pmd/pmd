@@ -16,6 +16,8 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
@@ -42,7 +44,7 @@
                         <Menu mnemonicParsing="false" text="About">
                             <items>
                                 <MenuItem mnemonicParsing="false" text="About" />
-                        <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License" />
+                                <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License" />
                             </items>
                         </Menu>
                     </menus>
@@ -69,7 +71,15 @@
                                                                 </AnchorPane>
                                                             </content>
                                                         </TitledPane>
-                                                        <TitledPane expanded="false" text="Scope hierarchy" />
+                                          <TitledPane animated="false" text="Scope hierarchy">
+                                            <content>
+                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                   <children>
+                                                                        <TreeView fx:id="scopeHierarchyTreeView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                            </content>
+                                          </TitledPane>
                                                         <TitledPane fx:id="metricResultsTitledPane" expanded="false" prefHeight="200.0" prefWidth="200.0" text="Metrics">
                                                             <content>
                                                                 <AnchorPane>
@@ -112,13 +122,13 @@
                                                     </children>
                                                 </AnchorPane>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                                                    <children>
-                                                        <TitledPane fx:id="astTitledPane" collapsible="false" prefHeight="200.0" prefWidth="200.0" text="Abstract syntax tree" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                            <content>
-                                                                <TreeView fx:id="astTreeView" prefHeight="200.0" prefWidth="200.0" />
-                                                            </content>
-                                                        </TitledPane>
-                                                    </children>
+                                       <children>
+                                          <TitledPane fx:id="astTitledPane" collapsible="false" prefHeight="200.0" prefWidth="200.0" text="Abstract Syntax Tree" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <content>
+                                                                    <TreeView fx:id="astTreeView" prefHeight="200.0" prefWidth="200.0" />
+                                             </content>
+                                          </TitledPane>
+                                       </children>
                                                 </AnchorPane>
                                             </items>
                                         </SplitPane>

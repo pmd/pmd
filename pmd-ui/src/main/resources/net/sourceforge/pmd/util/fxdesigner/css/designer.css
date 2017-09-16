@@ -4,8 +4,6 @@
     -fx-font-size: 11pt;
 }
 
-
-
 .titled-pane > .title {
     -fx-pref-height: 28.0;
 }
@@ -15,7 +13,6 @@
     -fx-pref-height: 24.0;
     -fx-background-color: derive(-fx-base, -10%);
 }
-
 
 .styled-text-area {
     -fx-border-color: -fx-outer-border, -fx-text-box-border;
