@@ -27,7 +27,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@designer.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow">
+<AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@css/designer.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow">
     <children>
         <BorderPane prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
@@ -35,13 +35,14 @@
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Action 1" />
+                                <MenuItem fx:id="loadSourceFromFileMenuItem" mnemonicParsing="false" text="Load source from file..." />
                             </items>
                         </Menu>
                         <Menu fx:id="languageMenu" mnemonicParsing="false" text="Language" />
                         <Menu mnemonicParsing="false" text="About">
                             <items>
                                 <MenuItem mnemonicParsing="false" text="About" />
+                        <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License" />
                             </items>
                         </Menu>
                     </menus>

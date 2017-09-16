@@ -26,6 +26,7 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
@@ -43,6 +44,10 @@ public class DesignerWindow implements Initializable {
 
     @FXML
     public TitledPane metricResultsTitledPane;
+    @FXML
+    public MenuItem loadSourceFromFileMenuItem;
+    @FXML
+    public MenuItem licenseMenuItem;
     @FXML
     private CodeArea codeEditorArea;
     @FXML
@@ -77,7 +82,6 @@ public class DesignerWindow implements Initializable {
     private SplitPane mainVerticalSplitPane;
     @FXML
     private ListView<MetricResult> metricResultsListView;
-
     /* */
     private StringProperty sourceCodeProperty;
 
@@ -230,5 +234,15 @@ public class DesignerWindow implements Initializable {
 
     public ListView<MetricResult> getMetricResultsListView() {
         return metricResultsListView;
+    }
+
+
+    public MenuItem getLoadSourceFromFileMenuItem() {
+        return loadSourceFromFileMenuItem;
+    }
+
+
+    public MenuItem getLicenseMenuItem() {
+        return licenseMenuItem;
     }
 }

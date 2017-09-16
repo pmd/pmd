@@ -4,12 +4,15 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -42,6 +45,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.stage.FileChooser;
 
 /**
  * Presenter of the designer window. Subscribes to the events of the {@link DesignerWindow} that instantiates it.
@@ -88,7 +92,6 @@ public class DesignerWindowPresenter {
             }
         });
 
-        view.getRefreshASTButton().setOnAction(this::onRefreshASTClicked);
         view.sourceCodeProperty().addListener((observable, oldValue, newValue) -> {
             if (model.isRecompilationNeeded(newValue)) {
                 view.notifyOutdatedAST();
@@ -96,6 +99,10 @@ public class DesignerWindowPresenter {
                 view.acknowledgeUpdatedAST();
             }
         });
+
+        view.getRefreshASTButton().setOnAction(this::onRefreshASTClicked);
+        view.getLicenseMenuItem().setOnAction(this::showLicensePopup);
+        view.getLoadSourceFromFileMenuItem().setOnAction(this::loadSourceFromFile);
 
         onRefreshASTClicked(null); // Restore AST and XPath results
     }
@@ -276,6 +283,37 @@ public class DesignerWindowPresenter {
     }
 
 
+    private void showLicensePopup(ActionEvent event) {
+        Alert licenseAlert = new Alert(AlertType.INFORMATION);
+        licenseAlert.setWidth(500);
+        licenseAlert.setHeaderText("License");
+
+        ScrollPane scroll = new ScrollPane();
+        try {
+            scroll.setContent(new TextArea(IOUtils.toString(getClass().getResourceAsStream("LICENSE"))));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        licenseAlert.getDialogPane().setContent(scroll);
+        licenseAlert.showAndWait();
+    }
+
+
+    private void loadSourceFromFile(ActionEvent event) {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Load source from file");
+        File file = chooser.showOpenDialog(Designer.getMainStage());
+        try {
+            String source = IOUtils.toString(new FileInputStream(file));
+            view.getCodeEditorArea().replaceText(source);
+            onRefreshASTClicked(null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private void saveSettings() throws IOException {
         XMLSettingsSaver saver = XMLSettingsSaver.forFile(SETTINGS_FILE_NAME);
 
@@ -304,6 +342,8 @@ public class DesignerWindowPresenter {
 
     /********************************/
     /* SETTINGS LOAD/STORE ROUTINES */
+
+
     /********************************/
 
 
