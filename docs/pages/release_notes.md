@@ -160,6 +160,7 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   all
     *   [#532](https://github.com/pmd/pmd/issues/532): \[core] security concerns on URL-based rulesets
     *   [#538](https://github.com/pmd/pmd/issues/538): \[core] Provide an XML Schema for XML reports
+    *   [#600](https://github.com/pmd/pmd/issues/600): \[core] Nullpointer while creating cache File
 *   apex
     *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
     *   [#489](https://github.com/pmd/pmd/pull/489): \[apex] Update Apex compiler
