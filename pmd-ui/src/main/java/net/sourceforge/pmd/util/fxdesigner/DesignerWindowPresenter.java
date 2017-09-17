@@ -421,4 +421,16 @@ public class DesignerWindowPresenter {
     void setLeftToolbarDividerPosition(String pos) {
         view.getMainVerticalSplitPane().setDividerPosition(0, Double.parseDouble(pos));
     }
+
+
+    String getIsFullScreen() {
+        return Boolean.toString(Designer.getMainStage().isMaximized());
+    }
+
+
+    void setFullScreen(String bool) {
+        boolean b = Boolean.parseBoolean(bool);
+        Designer.getMainStage().setMaximized(b);
+    }
+
 }

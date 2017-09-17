@@ -44,7 +44,11 @@ enum DesignerWindowSettings {
     /** Position of the divider for the left toolbar (information). */
     LEFT_TOOLBAR_DIVIDER_POSITION("leftToolBarDividerPosition",
                                   DesignerWindowPresenter::getLeftToolbarDividerPosition,
-                                  DesignerWindowPresenter::setLeftToolbarDividerPosition);
+                                  DesignerWindowPresenter::setLeftToolbarDividerPosition),
+
+    IS_FULLSCREEN("isFullScreen",
+                  DesignerWindowPresenter::getIsFullScreen,
+                  DesignerWindowPresenter::setFullScreen);
 
 
     private final String keyName;
