@@ -17,7 +17,7 @@ public class Foo {
       insert accounts;
     } catch(Exception e) {
         // Generic exception handling code
-        system.debug('Something has gone wrong', e);
+        system.debug("Something has gone wrong", e);
     } finally {
     }
  }
@@ -35,9 +35,9 @@ public class Foo {
     try {
       List<Account> bar = [SELECT Id FROM Account];
     } catch(Exception e) {
-      system.debug('Oh oh there has been an error', e);
+      system.debug("Oh oh there has been an error", e);
     } finally {
-      system.debug('This could be a very cool action, but it isnt');
+      system.debug("This could be a very cool action, but it isnt");
     }
  }
 }

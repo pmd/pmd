@@ -26,7 +26,7 @@ Success Case: Empty If statement
 public class Foo {
  void foo() {
     if (true) {
-      system.debug('This works like a charm');
+      system.debug("This works like a charm");
     }
  }
 }

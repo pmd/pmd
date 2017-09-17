@@ -30,7 +30,7 @@ public class Foo {
     try {
       List<Account> bar = [SELECT Id FROM Account];
     } catch(Exception e) {
-      system.debug('Oh oh there has been an error', e);
+      system.debug("Oh oh there has been an error", e);
     }
  }
 }
