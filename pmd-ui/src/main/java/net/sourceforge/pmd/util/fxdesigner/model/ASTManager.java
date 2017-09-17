@@ -127,7 +127,11 @@ public class ASTManager {
         try {
             Node node = parser.parse(null, new StringReader(source));
             languageVersionHandler.getSymbolFacade().start(node);
-            languageVersionHandler.getTypeResolutionFacade(ASTManager.class.getClassLoader()).start(node);
+            try {
+                languageVersionHandler.getTypeResolutionFacade(ASTManager.class.getClassLoader()).start(node);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             languageVersionHandler.getMetricsVisitorFacade().start(node);
             compilationUnit = node;
             lastValidSource = source;
