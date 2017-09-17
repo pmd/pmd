@@ -51,9 +51,9 @@
                 </MenuBar>
             </top>
             <center>
-                <SplitPane fx:id="mainVerticalSplitPane" dividerPositions="0.2020033388981636">
+                <SplitPane fx:id="mainVerticalSplitPane" dividerPositions="0.202">
                     <items>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                        <AnchorPane maxWidth="230.0" minWidth="230.0" prefHeight="200.0" prefWidth="230.0">
                             <children>
                                 <VBox layoutX="84.0" layoutY="14.0" prefHeight="200.0" prefWidth="100.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>

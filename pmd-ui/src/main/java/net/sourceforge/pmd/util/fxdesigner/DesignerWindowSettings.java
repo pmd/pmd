@@ -41,14 +41,10 @@ enum DesignerWindowSettings {
                             DesignerWindowPresenter::isXPathPanelExpanded,
                             DesignerWindowPresenter::setIsXPathPanelExpanded),
 
-    /** Position of the divider for the left toolbar (information). */
-    LEFT_TOOLBAR_DIVIDER_POSITION("leftToolBarDividerPosition",
-                                  DesignerWindowPresenter::getLeftToolbarDividerPosition,
-                                  DesignerWindowPresenter::setLeftToolbarDividerPosition),
-
-    IS_FULLSCREEN("isFullScreen",
-                  DesignerWindowPresenter::getIsFullScreen,
-                  DesignerWindowPresenter::setFullScreen);
+    /** Whether the window is maximized. */
+    IS_FULLSCREEN("isMaximized",
+                  DesignerWindowPresenter::isMaximized,
+                  DesignerWindowPresenter::setIsMaximized);
 
 
     private final String keyName;

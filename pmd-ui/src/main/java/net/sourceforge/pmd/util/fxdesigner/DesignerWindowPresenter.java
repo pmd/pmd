@@ -413,23 +413,14 @@ public class DesignerWindowPresenter {
     }
 
 
-    String getLeftToolbarDividerPosition() {
-        return String.valueOf(view.getMainVerticalSplitPane().getDividerPositions()[0]);
-    }
-
-
-    void setLeftToolbarDividerPosition(String pos) {
-        view.getMainVerticalSplitPane().setDividerPosition(0, Double.parseDouble(pos));
-    }
-
-
-    String getIsFullScreen() {
+    String isMaximized() {
         return Boolean.toString(Designer.getMainStage().isMaximized());
     }
 
 
-    void setFullScreen(String bool) {
+    void setIsMaximized(String bool) {
         boolean b = Boolean.parseBoolean(bool);
+        Designer.getMainStage().setMaximized(!b); // trigger change listener anyway
         Designer.getMainStage().setMaximized(b);
     }
 

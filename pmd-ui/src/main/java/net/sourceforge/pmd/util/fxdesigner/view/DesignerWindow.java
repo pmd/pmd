@@ -11,6 +11,7 @@ import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.fxdesigner.Designer;
 import net.sourceforge.pmd.util.fxdesigner.DesignerWindowPresenter;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 
@@ -24,6 +25,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
+import javafx.scene.control.Control;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -31,6 +33,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 
@@ -105,14 +108,18 @@ public class DesignerWindow implements Initializable {
         nodeInfoAccordion.setExpandedPane(xpathAttributesTitledPane);
 
 
-        double defaultMainHorizontalSplitPaneDividerPosition = editorPanelHorizontalSplitPane.getDividerPositions()[0];
+        final double defaultMainHorizontalSplitPaneDividerPosition
+            = editorPanelHorizontalSplitPane.getDividerPositions()[0];
 
+        final double bottomEditorPaneMinHeightWhenMaximized = violationsTitledPane.getPrefHeight();
+        final double bottomEditorPaneMinHeightWhenNotMaximized = violationsTitledPane.getPrefHeight();
 
         // Fold xpath panel
         xpathEditorTitledPane.expandedProperty().addListener((observable, wasExpanded, isNowExpanded) -> {
             KeyValue keyValue = null;
             DoubleProperty divPosition = editorPanelHorizontalSplitPane.getDividers().get(0).positionProperty();
             if (wasExpanded && !isNowExpanded) {
+                xpathEditorTitledPane.setMinHeight(Control.USE_COMPUTED_SIZE);
                 keyValue = new KeyValue(divPosition, 1);
             } else if (!wasExpanded && isNowExpanded) {
                 keyValue = new KeyValue(divPosition, defaultMainHorizontalSplitPaneDividerPosition);
@@ -120,9 +127,38 @@ public class DesignerWindow implements Initializable {
 
             if (keyValue != null) {
                 Timeline timeline = new Timeline(new KeyFrame(Duration.millis(350), keyValue));
+                timeline.setOnFinished(e -> {
+                    if (isNowExpanded) {
+                        if (Designer.getMainStage().isMaximized()) {
+                            xpathEditorTitledPane.setMinHeight(bottomEditorPaneMinHeightWhenMaximized);
+                        } else {
+                            xpathEditorTitledPane.setMinHeight(bottomEditorPaneMinHeightWhenNotMaximized);
+                        }
+                    }
+                });
                 timeline.play();
             }
         });
+
+
+        Designer.getMainStage().maximizedProperty().addListener((obs, wasMaximized, isNowMaximized) -> {
+            if (isNowMaximized) {
+                final double maximizedLeftToolbarWidth = 250;
+                ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMinWidth(maximizedLeftToolbarWidth);
+                ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMaxWidth(maximizedLeftToolbarWidth);
+                if (xpathEditorTitledPane.isExpanded()) {
+                    xpathEditorTitledPane.setMinHeight(bottomEditorPaneMinHeightWhenMaximized);
+                }
+            } else {
+                final double unmaximizedLeftToolbarWidth = 200;
+                ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMinWidth(unmaximizedLeftToolbarWidth);
+                ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMaxWidth(unmaximizedLeftToolbarWidth);
+                if (xpathEditorTitledPane.isExpanded()) {
+                    xpathEditorTitledPane.setMinHeight(bottomEditorPaneMinHeightWhenNotMaximized);
+                }
+            }
+        });
+
 
 
         // ensure main horizontal divider is never under 50%

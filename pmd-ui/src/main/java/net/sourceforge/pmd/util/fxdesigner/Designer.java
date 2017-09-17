@@ -67,7 +67,7 @@ public class Designer extends Application {
     }
 
 
-    static Stage getMainStage() {
+    public static Stage getMainStage() {
         return mainStage;
     }
 
