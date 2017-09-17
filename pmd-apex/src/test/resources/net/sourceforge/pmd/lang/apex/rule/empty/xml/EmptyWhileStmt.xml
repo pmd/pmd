@@ -12,8 +12,8 @@ Failure Case: Empty While Statement
 public class Foo {
  void foo() {
     Integer count = 1;
-
-    while (count < 11) {}
+    while (count < 11) {
+    }
  }
 }
      ]]></code>

@@ -290,95 +290,95 @@
    <!-- BRACES -->
    <rule ref="rulesets/apex/braces.xml/IfStmtsMustUseBraces" message="Avoid using if statements without curly braces">
     	<priority>3</priority>
-		<properties>
+		  <properties>
 		   <!-- relevant for Code Climate output only -->
 		   <property name="cc_categories" value="Style" />
 		   <property name="cc_remediation_points_multiplier" value="5" />
 		   <property name="cc_block_highlighting" value="false" />
-		</properties>
+		  </properties>
      </rule>
     <rule ref="rulesets/apex/braces.xml/WhileLoopsMustUseBraces" message="Avoid using 'while' statements without curly braces">
     	<priority>3</priority>
-		<properties>
+		  <properties>
 		   <!-- relevant for Code Climate output only -->
 		   <property name="cc_categories" value="Style" />
 		   <property name="cc_remediation_points_multiplier" value="5" />
 		   <property name="cc_block_highlighting" value="false" />
-		</properties>
+		  </properties>
      </rule>
       <rule ref="rulesets/apex/braces.xml/IfElseStmtsMustUseBraces" message="Avoid using 'if...else' statements without curly braces">
     	<priority>3</priority>
-		<properties>
+		  <properties>
 		   <!-- relevant for Code Climate output only -->
 		   <property name="cc_categories" value="Style" />
 		   <property name="cc_remediation_points_multiplier" value="5" />
 		   <property name="cc_block_highlighting" value="false" />
-		</properties>
+		  </properties>
      </rule>
      <rule ref="rulesets/apex/braces.xml/ForLoopsMustUseBraces" message="Avoid using 'for' statements without curly braces">
     	<priority>3</priority>
-		<properties>
+	  	<properties>
 		   <!-- relevant for Code Climate output only -->
 		   <property name="cc_categories" value="Style" />
 		   <property name="cc_remediation_points_multiplier" value="5" />
 		   <property name="cc_block_highlighting" value="false" />
-		</properties>
+		  </properties>
      </rule>
     <!-- EMPTY -->
      <rule ref="rulesets/apex/empty.xml/EmptyCatchBlock" message="Avoid empty catch blocks">
     	<priority>3</priority>
-		<properties>
+		  <properties>
 		   <property name="allowCommentedBlocks" value="false" />
 		   <property name="allowExceptionNameRegex" value="^$" />
 		   <!-- relevant for Code Climate output only -->
 		   <property name="cc_categories" value="Style" />
 		   <property name="cc_remediation_points_multiplier" value="5" />
 		   <property name="cc_block_highlighting" value="false" />
-		</properties>
+		  </properties>
      </rule>
      <rule ref="rulesets/apex/empty.xml/EmptyIfStmt" message="Avoid empty 'if' statements">
     	<priority>3</priority>
-		<properties>
+		  <properties>
 		   <!-- relevant for Code Climate output only -->
 		   <property name="cc_categories" value="Style" />
 		   <property name="cc_remediation_points_multiplier" value="5" />
 		   <property name="cc_block_highlighting" value="false" />
-		</properties>
+		  </properties>
      </rule>
      <rule ref="rulesets/apex/empty.xml/EmptyWhileStmt" message="Avoid empty 'while' statements">
     	<priority>3</priority>
-		<properties>
+		  <properties>
 		   <!-- relevant for Code Climate output only -->
 		   <property name="cc_categories" value="Style" />
 		   <property name="cc_remediation_points_multiplier" value="5" />
 		   <property name="cc_block_highlighting" value="false" />
-		</properties>
+		  </properties>
      </rule>
      <rule ref="rulesets/apex/empty.xml/EmptyTryBlock" message="Avoid empty try blocks">
     	<priority>3</priority>
-		<properties>
+		  <properties>
 		   <!-- relevant for Code Climate output only -->
 		   <property name="cc_categories" value="Style" />
 		   <property name="cc_remediation_points_multiplier" value="5" />
 		   <property name="cc_block_highlighting" value="false" />
-		</properties>
+		  </properties>
      </rule>
      <rule ref="rulesets/apex/empty.xml/EmptyFinallyBlock" message="Avoid empty finally blocks">
     	<priority>3</priority>
-		<properties>
+		  <properties>
 		   <!-- relevant for Code Climate output only -->
 		   <property name="cc_categories" value="Style" />
 		   <property name="cc_remediation_points_multiplier" value="5" />
 		   <property name="cc_block_highlighting" value="false" />
-		</properties>
+		  </properties>
      </rule>
      <rule ref="rulesets/apex/empty.xml/EmptyStaticInitializer" message="Empty static initializer was found">
     	<priority>3</priority>
-		<properties>
+		  <properties>
 		   <!-- relevant for Code Climate output only -->
 		   <property name="cc_categories" value="Style" />
 		   <property name="cc_remediation_points_multiplier" value="5" />
 		   <property name="cc_block_highlighting" value="false" />
-		</properties>
+		  </properties>
      </rule>
 </ruleset>
