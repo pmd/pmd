@@ -1,0 +1,216 @@
+<?xml version="1.0"?>
+
+<ruleset name="Empty Code"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>
+The Empty Code ruleset contains rules that find empty statements of any kind (empty method,
+empty block statement, empty try or catch block,...).
+  </description>
+
+  <rule name="EmptyCatchBlock"
+        language="apex"
+        since="5.8.2"
+        message="Avoid empty catch blocks"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptycatchblock">
+      <description>
+Empty Catch Block finds instances where an exception is caught, but nothing is done.  
+In most circumstances, this swallows an exception which should either be acted on 
+or reported.
+      </description>
+      <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//CatchStatement
+ [count(Block/BlockStatement) = 0 and ($allowCommentedBlocks != 'true' or Block/@containsComment = 'false')]
+ [FormalParameter/Type/ReferenceType
+   /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
+ ]
+ [FormalParameter/VariableDeclaratorId[not(matches(@Image, $allowExceptionNameRegex))]]
+ ]]>
+             </value>
+          </property>
+          <property name="allowCommentedBlocks" type="Boolean" description="Empty blocks containing comments will be skipped" value="false"/>
+          <property name="allowExceptionNameRegex" type="String" description="Empty blocks catching exceptions with names matching this regular expression will be skipped" value="^$"/>
+      </properties>
+      <example>
+  <![CDATA[
+public void doSomething() {
+  ...
+  try {
+    insert accounts;
+  } catch (DmlException dmle) {
+    // not good
+  }
+}
+ ]]>
+      </example>
+    </rule>
+
+  <rule name="EmptyIfStmt"
+        language="apex"
+        since="5.8.2"
+        message="Avoid empty 'if' statements"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptyifstmt">
+      <description>
+Empty If Statement finds instances where a condition is checked but nothing is done about it.
+    </description>
+        <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//IfStatement/Statement
+ [EmptyStatement or Block[count(*) = 0]]
+ ]]>
+              </value>
+          </property>
+      </properties>
+      <example>
+    <![CDATA[
+public class Foo {
+  public void bar(Integer x) {
+    if (x == 0) {
+      // empty!
+    }
+  }
+}
+ ]]>
+       </example>
+    </rule>
+
+  <rule name="EmptyWhileStmt"
+        language="apex"
+        since="5.8.2"
+        message="Avoid empty 'while' statements"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptywhilestmt">
+       <description>
+Empty While Statement finds all instances where a while statement does nothing.  
+If it is a timing loop, then you should use Thread.sleep() for it; if it is
+a while loop that does a lot in the exit expression, rewrite it to make it clearer.
+       </description>
+       <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//WhileStatement/Statement[./Block[count(*) = 0]  or ./EmptyStatement]
+]]>
+              </value>
+          </property>
+      </properties>
+       <example>
+  <![CDATA[
+public void bar(Integer a, Integer b) {
+  while (a == b) {
+    // empty!
+  }
+}
+ ]]>
+       </example>
+    </rule>
+
+  <rule name="EmptyTryBlock"
+        language="apex"
+        since="5.8.2"
+        message="Avoid empty try blocks"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptytryblock">
+      <description>
+Avoid empty try blocks - what's the point?
+      </description>
+      <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//TryStatement[not(ResourceSpecification)]/Block[1][count(*) = 0]
+]]>
+              </value>
+          </property>
+      </properties>
+      <example>
+  <![CDATA[
+public class Foo {
+    public void bar() {
+        try {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+]]>
+      </example>
+    </rule>
+
+  <rule name="EmptyFinallyBlock"
+        language="apex"
+        since="5.8.2"
+        message="Avoid empty finally blocks"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptyfinallyblock">
+      <description>
+Empty finally blocks serve no purpose and should be removed.
+      </description>
+      <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//FinallyStatement[count(Block/BlockStatement) = 0]
+ ]]>
+              </value>
+          </property>
+      </properties>
+      <example>
+  <![CDATA[
+public class Foo {
+    public void bar() {
+        try {
+            int x=2;
+        } finally {
+            // empty!
+        }
+    }
+}
+ ]]>
+      </example>
+    </rule>
+
+  <rule name="EmptyStaticInitializer"
+        language="apex"
+        since="5.8.2"
+        message="Empty static initializer was found"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptystaticinitializer">
+       <description>
+An empty static initializer serve no purpose and should be removed.
+       </description>
+       <priority>3</priority>
+         <properties>
+             <property name="xpath">
+                 <value>
+<![CDATA[
+//Initializer[@Static='true']/Block[count(*)=0]
+]]>
+                 </value>
+             </property>
+         </properties>
+       <example>
+   <![CDATA[
+public class Foo {
+    static {
+        // empty
+    }
+}
+]]>
+       </example>
+     </rule>
+
+</ruleset>
