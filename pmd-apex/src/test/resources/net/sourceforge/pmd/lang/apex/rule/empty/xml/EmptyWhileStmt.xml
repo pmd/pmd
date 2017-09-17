@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
-simple failure case
+Failure Case: Empty While Statement
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -20,7 +20,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-ok
+Success Case: Empty While Statement
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

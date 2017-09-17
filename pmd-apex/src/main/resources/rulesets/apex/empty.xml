@@ -27,7 +27,6 @@ or reported.
     <![CDATA[
 //CatchStatement
  [count(Block/BlockStatement) = 0 and ($allowCommentedBlocks != 'true' or Block/@containsComment = 'false')]
- [FormalParameter/Type/ReferenceType]
  [FormalParameter/VariableDeclaratorId[not(matches(@Image, $allowExceptionNameRegex))]]
  ]]>
              </value>
