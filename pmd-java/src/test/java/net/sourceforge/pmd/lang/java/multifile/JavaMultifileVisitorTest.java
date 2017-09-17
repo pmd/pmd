@@ -95,9 +95,9 @@ public class JavaMultifileVisitorTest {
 
         String[] opNames = {"getX()", "getY()", "setX(String)", "setY(String)",
                             "mymethod1()", "mymethod2()", "mystatic1()",
-                            "mystatic2(String)", "mystatic2(String, String)"};
+                            "mystatic2(String)", "mystatic2(String, String)", };
         Role[] roles = {Role.GETTER_OR_SETTER, Role.GETTER_OR_SETTER, Role.GETTER_OR_SETTER, Role.GETTER_OR_SETTER,
-                        Role.METHOD, Role.METHOD, Role.STATIC, Role.STATIC, Role.STATIC};
+                        Role.METHOD, Role.METHOD, Role.STATIC, Role.STATIC, Role.STATIC, };
 
 
         for (int i = 0; i < opNames.length; i++) {
