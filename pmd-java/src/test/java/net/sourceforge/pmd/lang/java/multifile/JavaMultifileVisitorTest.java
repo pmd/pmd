@@ -18,8 +18,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaSignature.Visibility;
-import net.sourceforge.pmd.lang.java.multifile.testdata.MultifileVisitorTestData;
 import net.sourceforge.pmd.lang.java.multifile.testdata.MultifileVisitorTestData2;
 
 /**
@@ -44,7 +44,7 @@ public class JavaMultifileVisitorTest {
 
     @Test
     public void testOperationsAreThere() {
-        ASTCompilationUnit acu = parseAndVisitForClass(MultifileVisitorTestData.class);
+        ASTCompilationUnit acu = parseAndVisitForClass(MultifileVisitorTestData2.class);
 
         final ProjectMirror toplevel = PackageStats.INSTANCE;
 
@@ -63,13 +63,13 @@ public class JavaMultifileVisitorTest {
 
     @Test
     public void testFieldsAreThere() {
-        parseAndVisitForClass(MultifileVisitorTestData.class);
+        parseAndVisitForClass(MultifileVisitorTestData2.class);
 
         final ProjectMirror toplevel = PackageStats.INSTANCE;
 
         final JavaFieldSigMask fieldSigMask = new JavaFieldSigMask();
 
-        JavaQualifiedName clazz = JavaQualifiedName.ofClass(MultifileVisitorTestData.class);
+        JavaQualifiedName clazz = JavaQualifiedName.ofClass(MultifileVisitorTestData2.class);
 
         String[] fieldNames = {"x", "y", "z", "t"};
         Visibility[] visibilities = {Visibility.PUBLIC, Visibility.PRIVATE, Visibility.PROTECTED, Visibility.PACKAGE};
@@ -82,26 +82,55 @@ public class JavaMultifileVisitorTest {
 
 
     @Test
+    public void testBothClassesOperationsAreThere() {
+        parseAndVisitForClass(MultifileVisitorTestData2.class);
+        parseAndVisitForClass(MultifileVisitorTestData2.class);
+
+        final ProjectMirror toplevel = PackageStats.INSTANCE;
+
+        final JavaOperationSigMask operationSigMask = new JavaOperationSigMask();
+
+        JavaQualifiedName clazz = JavaQualifiedName.ofClass(MultifileVisitorTestData2.class);
+        JavaQualifiedName clazz2 = JavaQualifiedName.ofClass(MultifileVisitorTestData2.class);
+
+        String[] opNames = {"getX()", "getY()", "setX(String)", "setY(String)",
+                            "mymethod1()", "mymethod2()", "mystatic1()",
+                            "mystatic2(String)", "mystatic2(String, String)"};
+        Role[] roles = {Role.GETTER_OR_SETTER, Role.GETTER_OR_SETTER, Role.GETTER_OR_SETTER, Role.GETTER_OR_SETTER,
+                        Role.METHOD, Role.METHOD, Role.STATIC, Role.STATIC, Role.STATIC};
+
+
+        for (int i = 0; i < opNames.length; i++) {
+            operationSigMask.restrictRolesTo(roles[i]);
+            JavaQualifiedName name1 = JavaQualifiedName.ofString(clazz.toString() + "#" + opNames[i]);
+            JavaQualifiedName name2 = JavaQualifiedName.ofString(clazz2.toString() + "#" + opNames[i]);
+
+            assertTrue(toplevel.hasMatchingSig(name1, operationSigMask));
+            assertTrue(toplevel.hasMatchingSig(name2, operationSigMask));
+        }
+    }
+
+
+    @Test
     public void testBothClassesFieldsAreThere() {
-        parseAndVisitForClass(MultifileVisitorTestData.class);
+        parseAndVisitForClass(MultifileVisitorTestData2.class);
         parseAndVisitForClass(MultifileVisitorTestData2.class);
 
         final ProjectMirror toplevel = PackageStats.INSTANCE;
 
         final JavaFieldSigMask fieldSigMask = new JavaFieldSigMask();
 
-        JavaQualifiedName clazz = JavaQualifiedName.ofClass(MultifileVisitorTestData.class);
+        JavaQualifiedName clazz = JavaQualifiedName.ofClass(MultifileVisitorTestData2.class);
         JavaQualifiedName clazz2 = JavaQualifiedName.ofClass(MultifileVisitorTestData2.class);
 
-        String[] fieldNames1 = {"x", "y", "z", "t"};
-        String[] fieldNames2 = {"x2", "y2", "z2", "t2"};
+        String[] fieldNames = {"x", "y", "z", "t"};
         Visibility[] visibilities = {Visibility.PUBLIC, Visibility.PRIVATE, Visibility.PROTECTED, Visibility.PACKAGE};
 
 
-        for (int i = 0; i < fieldNames1.length; i++) {
+        for (int i = 0; i < fieldNames.length; i++) {
             fieldSigMask.restrictVisibilitiesTo(visibilities[i]);
-            assertTrue(toplevel.hasMatchingSig(clazz, fieldNames1[i], fieldSigMask));
-            assertTrue(toplevel.hasMatchingSig(clazz2, fieldNames2[i], fieldSigMask));
+            assertTrue(toplevel.hasMatchingSig(clazz, fieldNames[i], fieldSigMask));
+            assertTrue(toplevel.hasMatchingSig(clazz2, fieldNames[i], fieldSigMask));
         }
     }
 

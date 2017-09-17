@@ -11,77 +11,65 @@ package net.sourceforge.pmd.lang.java.multifile.testdata;
  */
 public class MultifileVisitorTestData2 {
 
-    public String x2;
-    protected String z2;
-    String t2;
-    private String y2;
-
+    public String x;
+    private String y;
+    protected String z;
+    String t;
 
     public MultifileVisitorTestData2() {
 
     }
 
-
     private MultifileVisitorTestData2(String x) {
 
     }
 
+    public String getX() {
+        return x;
+    }
 
-    public String getX2() {
-        return x2;
+    public String getY() {
+        return y;
+    }
+
+    public void setX(String n) {
+        x = n;
+    }
+
+    public void setY(String n) {
+        y = n;
     }
 
 
-    public String getY2() {
-        return y2;
-    }
+    public static class NestedClass {
 
-
-    public void setX2(String n) {
-        x2 = n;
-    }
-
-
-    public void setY2(String n) {
-        y2 = n;
-    }
-
-
-    public void mymethod12() {
-
-    }
-
-
-    private void mymethod22() {
-
-    }
-
-
-    protected static void mystatic12() {
-
-    }
-
-
-    private static void mystatic22(String k) {
-
-    }
-
-
-    private static void mystatic22(String k, String l) {
-
-    }
-
-
-    public static class NestedClass2 {
-
-        public NestedClass2() {
+        public NestedClass() {
 
         }
 
-
-        public void nestedMethod12() {
+        public void nestedMethod1() {
 
         }
+    }
+
+    public void mymethod1() {
+
+    }
+
+    private void mymethod2() {
+
+    }
+
+    protected static void mystatic1() {
+
+    }
+
+    private static void mystatic2(String k) {
+
+    }
+
+    private static void mystatic2(String k, String l) {
+
     }
 
 }
