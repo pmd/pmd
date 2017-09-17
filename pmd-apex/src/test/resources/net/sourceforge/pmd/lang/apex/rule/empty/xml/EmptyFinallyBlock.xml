@@ -11,13 +11,11 @@ Failure Case: Empty Finally Block
         <code><![CDATA[
 public class Foo {
  void foo() {
-    List<Account> accounts = [SELECT Id FROM Account LIMIT 200]:
-
     try {
-      insert accounts;
+      insert account;
     } catch(Exception e) {
         // Generic exception handling code
-        system.debug("Something has gone wrong", e);
+        system.debug(e);
     } finally {
     }
  }
@@ -33,11 +31,11 @@ Success Case: Empty Finally Block
 public class Foo {
  void foo() {
     try {
-      List<Account> bar = [SELECT Id FROM Account];
+      insert account;
     } catch(Exception e) {
-      system.debug("Oh oh there has been an error", e);
+      system.debug(e);
     } finally {
-      system.debug("This could be a very cool action, but it isnt");
+      someAction();
     }
  }
 }

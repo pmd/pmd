@@ -28,8 +28,7 @@ Success Case: Empty Static Initializer
 public class DiscountUtility{
     public static final Double DISCOUNT;
     static{
-        Custom_Setting_Config__c settings = Custom_Setting_Config__c.getInstance();
-        DISCOUNT = settings.Discount__c;
+        DISCOUNT = 5;
     }
 
     public static Double applyDiscount(Double value) {

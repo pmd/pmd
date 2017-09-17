@@ -10,9 +10,9 @@ Failure case: Empty Catch Block
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
+ public void foo() {
     try {
-      List<Account> bar = [SELECT Id FROM Account];
+      system.debug("test");
     }
     catch(Exception e) {}
  }
@@ -26,11 +26,11 @@ Success case: Empty Catch Block
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
+ public void foo() {
     try {
-      List<Account> bar = [SELECT Id FROM Account];
+      system.debug("test");
     } catch(Exception e) {
-      system.debug("Oh oh there has been an error", e);
+      system.debug(e);
     }
  }
 }

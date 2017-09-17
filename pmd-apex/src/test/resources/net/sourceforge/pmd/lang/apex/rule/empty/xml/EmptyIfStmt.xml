@@ -10,7 +10,7 @@ Failure Case: Empty If Statement
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
+ public void foo() {
     if(true) {
     }
  }
@@ -24,9 +24,9 @@ Success Case: Empty If statement
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-    if (true) {
-      system.debug("This works like a charm");
+ public void foo() {
+    if(true) {
+      system.debug(true);
     }
  }
 }
