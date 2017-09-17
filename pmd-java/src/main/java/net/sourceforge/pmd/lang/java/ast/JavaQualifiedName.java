@@ -129,7 +129,7 @@ public final class JavaQualifiedName implements QualifiedName {
 
         String name = clazz.getName();
         if (name.indexOf('.') < 0) {
-            name = '.' + name;
+            name = '.' + name; // unnamed package, marked by a full stop. See ofString's format below
         }
 
         return ofString(name);
