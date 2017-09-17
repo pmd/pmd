@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+simple failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+    List<Account> accounts = [SELECT Id FROM Account LIMIT 200]:
+
+    try {
+      insert accounts;
+    } catch(Exception e) {
+        // Generic exception handling code
+        system.debug('Something has gone wrong', e);
+    } finally {
+    }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+    try {
+      List<Account> bar = [SELECT Id FROM Account];
+    } catch(Exception e) {
+      system.debug('Oh oh there has been an error', e);
+    } finally {
+      system.debug('This could be a very cool action, but it isnt');
+    }
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>
