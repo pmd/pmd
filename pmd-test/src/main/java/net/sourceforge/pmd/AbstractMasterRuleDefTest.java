@@ -21,6 +21,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,6 +34,7 @@ import net.sourceforge.pmd.ruledef.RuleDefsAggregator;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@Ignore
 public class AbstractMasterRuleDefTest {
 
     private final String langName;
