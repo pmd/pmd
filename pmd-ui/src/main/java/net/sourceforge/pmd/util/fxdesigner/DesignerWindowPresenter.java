@@ -8,8 +8,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
@@ -25,6 +28,7 @@ import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseTimeException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
+import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsLoader;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsSaver;
 import net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow;
@@ -35,14 +39,18 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.stage.FileChooser;
@@ -61,6 +69,7 @@ public class DesignerWindowPresenter {
     private DesignerWindow view;
     private ASTManager model;
     private ToggleGroup languageVersionToggleGroup;
+    private Stack<File> recentFiles = new LimitedSizeStack<>(5);
 
 
     public DesignerWindowPresenter(DesignerWindow designerWindow) {
@@ -102,7 +111,10 @@ public class DesignerWindowPresenter {
 
         view.getRefreshASTButton().setOnAction(this::onRefreshASTClicked);
         view.getLicenseMenuItem().setOnAction(this::showLicensePopup);
-        view.getLoadSourceFromFileMenuItem().setOnAction(this::loadSourceFromFile);
+        view.getLoadSourceFromFileMenuItem().setOnAction(this::onOpenFileClicked);
+        view.getOpenRecentMenu().setOnAction(this::onRecentFilesMenuClicked);
+        view.getFileMenu().setOnAction(this::onOpenFileClicked);
+
 
         onRefreshASTClicked(null); // Restore AST and XPath results
     }
@@ -303,17 +315,51 @@ public class DesignerWindowPresenter {
     }
 
 
-    private void loadSourceFromFile(ActionEvent event) {
+    private void onFileMenuShowing(Event event) {
+        view.getOpenRecentMenu().setDisable(recentFiles.size() == 0);
+    }
+
+
+    private void onOpenFileClicked(ActionEvent event) {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Load source from file");
         File file = chooser.showOpenDialog(Designer.getMainStage());
-        try {
-            String source = IOUtils.toString(new FileInputStream(file));
-            view.getCodeEditorArea().replaceText(source);
-            onRefreshASTClicked(null);
-        } catch (IOException e) {
-            e.printStackTrace();
+        loadSourceFromFile(file);
+    }
+
+
+    private void loadSourceFromFile(File file) {
+        if (file != null) {
+            try {
+                String source = IOUtils.toString(new FileInputStream(file));
+                view.getCodeEditorArea().replaceText(source);
+                recentFiles.push(file);
+                onRefreshASTClicked(null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+
+    private void onRecentFilesMenuClicked(Event event) {
+        ObservableList<MenuItem> openRecentMenuItems = view.getOpenRecentMenu().getItems();
+        openRecentMenuItems.clear();
+
+        for (final File f : recentFiles) {
+            if (f.exists()) {
+                CustomMenuItem item = new CustomMenuItem(new Label(f.getName()));
+                item.setOnAction(e -> loadSourceFromFile(f));
+                Tooltip.install(item.getContent(), new Tooltip(f.getAbsolutePath()));
+                openRecentMenuItems.add(item);
+            }
+        }
+
+        MenuItem moreItem = new MenuItem();
+        moreItem.setText("...");
+        moreItem.setOnAction(this::onOpenFileClicked);
+        openRecentMenuItems.add(moreItem);
+        view.getOpenRecentMenu().show();
     }
 
 
@@ -343,11 +389,7 @@ public class DesignerWindowPresenter {
         }
     }
 
-    /********************************/
     /* SETTINGS LOAD/STORE ROUTINES */
-
-
-    /********************************/
 
 
     String getLanguageVersionTerseName() {
@@ -422,6 +464,27 @@ public class DesignerWindowPresenter {
         boolean b = Boolean.parseBoolean(bool);
         Designer.getMainStage().setMaximized(!b); // trigger change listener anyway
         Designer.getMainStage().setMaximized(b);
+    }
+
+
+    String getRecentFiles() {
+        StringBuilder sb = new StringBuilder();
+        for (File f : recentFiles) {
+            sb.append(',').append(f.getAbsolutePath());
+        }
+        return sb.length() > 0 ? sb.substring(1) : "";
+    }
+
+
+    void setRecentFiles(String files) {
+        List<String> fileNames = Arrays.asList(files.split(","));
+        Collections.reverse(fileNames);
+        for (String fileName : fileNames) {
+            File f = new File(fileName);
+            if (f.exists()) {
+                recentFiles.push(f);
+            }
+        }
     }
 
 }

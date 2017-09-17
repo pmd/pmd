@@ -48,11 +48,21 @@ public class DesignerWindow implements Initializable {
     @FXML
     public TitledPane metricResultsTitledPane;
     @FXML
-    public MenuItem loadSourceFromFileMenuItem;
+    public MenuItem openFileMenuItem;
     @FXML
     public MenuItem licenseMenuItem;
     @FXML
     public TreeView<Object> scopeHierarchyTreeView;
+    @FXML
+    public Menu openRecentMenu;
+    @FXML
+    public Menu exportMenu;
+    @FXML
+    public MenuItem exportToTestCodeMenuItem;
+    @FXML
+    public MenuItem exportXPathMenuItem;
+    @FXML
+    public Menu fileMenu;
     @FXML
     private CodeArea codeEditorArea;
     @FXML
@@ -158,7 +168,6 @@ public class DesignerWindow implements Initializable {
                 }
             }
         });
-
 
 
         // ensure main horizontal divider is never under 50%
@@ -276,11 +285,32 @@ public class DesignerWindow implements Initializable {
 
 
     public MenuItem getLoadSourceFromFileMenuItem() {
-        return loadSourceFromFileMenuItem;
+        return openFileMenuItem;
     }
 
 
     public MenuItem getLicenseMenuItem() {
         return licenseMenuItem;
     }
+
+
+    public Menu getFileMenu() {
+        return fileMenu;
+    }
+
+
+    public MenuItem getExportToTestCodeMenuItem() {
+        return exportToTestCodeMenuItem;
+    }
+
+
+    public MenuItem getExportXPathMenuItem() {
+        return exportXPathMenuItem;
+    }
+
+
+    public Menu getOpenRecentMenu() {
+        return openRecentMenu;
+    }
+
 }

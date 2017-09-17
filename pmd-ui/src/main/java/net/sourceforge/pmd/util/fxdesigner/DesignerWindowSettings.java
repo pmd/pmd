@@ -42,9 +42,14 @@ enum DesignerWindowSettings {
                             DesignerWindowPresenter::setIsXPathPanelExpanded),
 
     /** Whether the window is maximized. */
-    IS_FULLSCREEN("isMaximized",
-                  DesignerWindowPresenter::isMaximized,
-                  DesignerWindowPresenter::setIsMaximized);
+    IS_MAXIMIZED("isMaximized",
+                 DesignerWindowPresenter::isMaximized,
+                 DesignerWindowPresenter::setIsMaximized),
+
+    /** List of recent files. */
+    RECENT_FILES("recentFiles",
+                 DesignerWindowPresenter::getRecentFiles,
+                 DesignerWindowPresenter::setRecentFiles);
 
 
     private final String keyName;
