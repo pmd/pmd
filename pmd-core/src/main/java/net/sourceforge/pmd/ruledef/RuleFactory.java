@@ -43,7 +43,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
 
 /**
- * Builds rules from rule XML nodes. You cannot use a single one to concurrently build several rules.
+ * Builds rules from rule XML nodes.
  *
  * @author Clément Fournier
  * @since 6.0.0
@@ -123,13 +123,12 @@ public class RuleFactory {
     /**
      * Parses a rule element and returns a new rule instance.
      *
-     *
-     * <p>Notes: The ruleset name is not set here. Exceptions thrown from this class indicate invalid XML structure,
+     * <p>Notes: The ruleset name is not set here. Exceptions raised from this method indicate invalid XML structure,
      * with regards to the expected schema, while RuleBuilder validates the semantics.
      *
      * @param ruleElement The rule element to parse
      *
-     * @return A new instance of the rule in this element
+     * @return A new instance of the rule described by this element
      *
      * @throws IllegalArgumentException if the element doesn't describe a valid rule.
      */
