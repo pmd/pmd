@@ -11,7 +11,7 @@ empty block statement, empty try or catch block,...).
 
   <rule name="EmptyCatchBlock"
         language="apex"
-        since="5.8.2"
+        since="6.0.0"
         message="Avoid empty catch blocks"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptycatchblock">
@@ -27,8 +27,7 @@ or reported.
     <![CDATA[
 //CatchStatement
  [count(Block/BlockStatement) = 0 and ($allowCommentedBlocks != 'true' or Block/@containsComment = 'false')]
- [FormalParameter/Type/ReferenceType
-   /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
+ [FormalParameter/Type/ReferenceType]
  ]
  [FormalParameter/VariableDeclaratorId[not(matches(@Image, $allowExceptionNameRegex))]]
  ]]>
@@ -53,7 +52,7 @@ public void doSomething() {
 
   <rule name="EmptyIfStmt"
         language="apex"
-        since="5.8.2"
+        since="6.0.0"
         message="Avoid empty 'if' statements"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptyifstmt">
@@ -86,7 +85,7 @@ public class Foo {
 
   <rule name="EmptyWhileStmt"
         language="apex"
-        since="5.8.2"
+        since="6.0.0"
         message="Avoid empty 'while' statements"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptywhilestmt">
@@ -118,7 +117,7 @@ public void bar(Integer a, Integer b) {
 
   <rule name="EmptyTryBlock"
         language="apex"
-        since="5.8.2"
+        since="6.0.0"
         message="Avoid empty try blocks"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptytryblock">
@@ -151,7 +150,7 @@ public class Foo {
 
   <rule name="EmptyFinallyBlock"
         language="apex"
-        since="5.8.2"
+        since="6.0.0"
         message="Avoid empty finally blocks"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptyfinallyblock">
@@ -185,7 +184,7 @@ public class Foo {
 
   <rule name="EmptyStaticInitializer"
         language="apex"
-        since="5.8.2"
+        since="6.0.0"
         message="Empty static initializer was found"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptystaticinitializer">
