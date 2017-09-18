@@ -13,10 +13,8 @@ public class EmptyRulesTest extends SimpleAggregatorTst {
     @Override
     public void setUp() {
         addRule(RULESET, "EmptyCatchBlock");
-        addRule(RULESET, "EmptyFinallyBlock");
         addRule(RULESET, "EmptyIfStmt");
-        addRule(RULESET, "EmptyStaticInitializer");
-        addRule(RULESET, "EmptyTryBlock");
+        addRule(RULESET, "EmptyTryOrFinallyBlock");
         addRule(RULESET, "EmptyWhileStmt");
     }
 }

@@ -25,14 +25,10 @@ or reported.
           <property name="xpath">
               <value>
     <![CDATA[
-//CatchStatement
- [count(Block/BlockStatement) = 0 and ($allowCommentedBlocks != 'true' or Block/@containsComment = 'false')]
- [FormalParameter/VariableDeclaratorId[not(matches(@Image, $allowExceptionNameRegex))]]
+//CatchBlockStatement[./BlockStatement[count(*) = 0]]
  ]]>
              </value>
           </property>
-          <property name="allowCommentedBlocks" type="Boolean" description="Empty blocks containing comments will be skipped" value="false"/>
-          <property name="allowExceptionNameRegex" type="String" description="Empty blocks catching exceptions with names matching this regular expression will be skipped" value="^$"/>
       </properties>
       <example>
   <![CDATA[
@@ -62,8 +58,8 @@ Empty If Statement finds instances where a condition is checked but nothing is d
           <property name="xpath">
               <value>
 <![CDATA[
-//IfStatement/Statement
- [EmptyStatement or Block[count(*) = 0]]
+//IfBlockStatement
+ [BlockStatement[count(*) = 0]]
  ]]>
               </value>
           </property>
@@ -79,6 +75,51 @@ public class Foo {
 }
  ]]>
        </example>
+    </rule>
+
+
+    <rule name="EmptyTryOrFinallyBlock"
+        language="apex"
+        since="6.0.0"
+        message="Avoid empty try or finally blocks"
+        class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptytryorfinallyblock">
+      <description>
+Avoid empty try or finally blocks - what's the point?
+      </description>
+      <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//TryCatchFinallyBlockStatement[./BlockStatement[count(*) = 0]]
+]]>
+              </value>
+          </property>
+      </properties>
+      <example>
+  <![CDATA[
+public class Foo {
+    public void bar() {
+        try {
+          // empty !
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+public class Foo {
+    public void bar() {
+        try {
+            int x=2;
+        } finally {
+            // empty!
+        }
+    }
+}
+]]>
+      </example>
     </rule>
 
   <rule name="EmptyWhileStmt"
@@ -97,7 +138,7 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
           <property name="xpath">
               <value>
 <![CDATA[
-//WhileStatement/Statement[./Block[count(*) = 0]  or ./EmptyStatement]
+//WhileLoopStatement[./BlockStatement[count(*) = 0]]
 ]]>
               </value>
           </property>
@@ -110,103 +151,6 @@ public void bar(Integer a, Integer b) {
   }
 }
  ]]>
-       </example>
-    </rule>
-
-  <rule name="EmptyTryBlock"
-        language="apex"
-        since="6.0.0"
-        message="Avoid empty try blocks"
-        class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptytryblock">
-      <description>
-Avoid empty try blocks - what's the point?
-      </description>
-      <priority>3</priority>
-      <properties>
-          <property name="xpath">
-              <value>
-<![CDATA[
-//TryStatement[not(ResourceSpecification)]/Block[1][count(*) = 0]
-]]>
-              </value>
-          </property>
-      </properties>
-      <example>
-  <![CDATA[
-public class Foo {
-    public void bar() {
-        try {
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-}
-]]>
-      </example>
-    </rule>
-
-  <rule name="EmptyFinallyBlock"
-        language="apex"
-        since="6.0.0"
-        message="Avoid empty finally blocks"
-        class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptyfinallyblock">
-      <description>
-Empty finally blocks serve no purpose and should be removed.
-      </description>
-      <priority>3</priority>
-      <properties>
-          <property name="xpath">
-              <value>
-<![CDATA[
-//FinallyStatement[count(Block/BlockStatement) = 0]
- ]]>
-              </value>
-          </property>
-      </properties>
-      <example>
-  <![CDATA[
-public class Foo {
-    public void bar() {
-        try {
-            int x=2;
-        } finally {
-            // empty!
-        }
-    }
-}
- ]]>
-      </example>
-    </rule>
-
-  <rule name="EmptyStaticInitializer"
-        language="apex"
-        since="6.0.0"
-        message="Empty static initializer was found"
-        class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_empty.html#emptystaticinitializer">
-       <description>
-An empty static initializer serve no purpose and should be removed.
-       </description>
-       <priority>3</priority>
-         <properties>
-             <property name="xpath">
-                 <value>
-<![CDATA[
-//Initializer[@Static='true']/Block[count(*)=0]
-]]>
-                 </value>
-             </property>
-         </properties>
-       <example>
-   <![CDATA[
-public class Foo {
-    static {
-        // empty
-    }
-}
-]]>
        </example>
      </rule>
 

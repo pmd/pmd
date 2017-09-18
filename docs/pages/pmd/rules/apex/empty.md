@@ -5,11 +5,11 @@ permalink: pmd_rules_apex_empty.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/empty.xml
-keywords: Empty Code, EmptyCatchBlock, EmptyIfStmt, EmptyWhileStmt, EmptyTryBlock, EmptyFinallyBlock, EmptyStaticInitializer
+keywords: Empty Code, EmptyCatchBlock, EmptyIfStmt, EmptyWhileStmt, EmptyTryOrFinallyBlock
 ---
 ## EmptyCatchBlock
 
-**Since:** PMD 5.8.2
+**Since:** PMD 6.0.0
 
 **Priority:** Medium (3)
 
@@ -18,12 +18,8 @@ In most circumstances, this swallows an exception which should either be acted o
 or reported.
 
 ```
-//CatchStatement
- [count(Block/BlockStatement) = 0 and ($allowCommentedBlocks != 'true' or Block/@containsComment = 'false')]
- [FormalParameter/Type/ReferenceType
-   /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
- ]
- [FormalParameter/VariableDeclaratorId[not(matches(@Image, $allowExceptionNameRegex))]]
+//CatchBlockStatement
+[./BlockStatement[count(*) = 0]]
 ```
 
 **Example(s):**
@@ -39,60 +35,22 @@ public void doSomething() {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|allowCommentedBlocks|false|Empty blocks containing comments will be skipped|
-|allowExceptionNameRegex|^$|Empty blocks catching exceptions with names matching this regular expression will be skipped|
-
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="rulesets/apex/empty.xml/EmptyCatchBlock" />
 ```
 
-## EmptyFinallyBlock
-
-**Since:** PMD 5.8.2
-
-**Priority:** Medium (3)
-
-Empty finally blocks serve no purpose and should be removed.
-
-```
-//FinallyStatement[count(Block/BlockStatement) = 0]
-```
-
-**Example(s):**
-
-``` java
-public class Foo {
-  public void bar() {
-    try {
-      Integer x=2;
-    } finally {
-      // empty!
-    }
-  }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/apex/empty.xml/EmptyFinallyBlock" />
-```
-
 ## EmptyIfStmt
 
-**Since:** PMD 5.8.2
+**Since:** PMD 6.0.0
 
 **Priority:** Medium (3)
 
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
 
 ```
-//IfStatement/Statement
- [EmptyStatement or Block[count(*) = 0]]
+//IfBlockStatement
+ [BlockStatement[count(*) = 0]]
 ```
 
 **Example(s):**
@@ -112,67 +70,52 @@ public class Foo {
 <rule ref="rulesets/apex/empty.xml/EmptyIfStmt" />
 ```
 
-## EmptyStaticInitializer
+## EmptyTryOrFinallyBlock
 
-**Since:** PMD 5.8.2
+**Since:** PMD 6.0.0
 
 **Priority:** Medium (3)
 
-An empty static initializer serve no purpose and should be removed.
+Avoid empty try or finally blocks - what's the point?
 
 ```
-//Initializer[@Static='true']/Block[count(*)=0]
+//TryCatchFinallyBlockStatement[./BlockStatement[count(*) = 0]]
 ```
 
 **Example(s):**
 
 ``` java
 public class Foo {
-    static {
-        // empty
+    public void bar() {
+        try {
+          // empty !
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
-```
 
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/apex/empty.xml/EmptyStaticInitializer" />
-```
-
-## EmptyTryBlock
-
-**Since:** PMD 5.8.2
-
-**Priority:** Medium (3)
-
-Avoid empty try blocks - what's the point?
-
-```
-//TryStatement[not(ResourceSpecification)]/Block[1][count(*) = 0]
-```
-
-**Example(s):**
-
-``` java
 public class Foo {
-  public void bar() {
-    try {
-      // this has no use
-    } catch (Exception e) {
-      e.printStackTrace();
+    public void bar() {
+        try {
+            int x=2;
+        } catch (Exception e) {
+            system.debug(e):
+        } finally {
+            // empty!
+        }
     }
-  }
 }
 ```
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/empty.xml/EmptyTryBlock" />
+<rule ref="rulesets/apex/empty.xml/EmptyTryOrFinallyBlock" />
 ```
 
 ## EmptyWhileStmt
 
-**Since:** PMD 5.8.2
+**Since:** PMD 6.0.0
 
 **Priority:** Medium (3)
 
@@ -181,7 +124,7 @@ If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.
 
 ```
-//WhileStatement/Statement[./Block[count(*) = 0]  or ./EmptyStatement]
+//WhileLoopStatement[./BlockStatement[count(*) = 0]]
 ```
 
 **Example(s):**
