@@ -16,5 +16,6 @@ public class EmptyRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "EmptyIfStmt");
         addRule(RULESET, "EmptyTryOrFinallyBlock");
         addRule(RULESET, "EmptyWhileStmt");
+        addRule(RULESET, "EmptyStatementBlock");
     }
 }

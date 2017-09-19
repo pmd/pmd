@@ -144,3 +144,33 @@ public class Foo {
 <rule ref="rulesets/apex/empty.xml/EmptyWhileStmt" />
 ```
 
+## EmptyStatementBlock
+
+**Since:** PMD 6.0.0
+
+**Priority:** Medium (3)
+
+Empty block statements serve no purpose and should be removed.
+
+```
+//Method/ModifierNode[@Abstract!='true' and ../BlockStatement[count(*) = 0]]
+| //Method/BlockStatement//BlockStatement[count(*) = 0]```
+
+**Example(s):**
+
+``` java
+public class Foo {
+   public void setBar(int bar) {
+        // empty, not allowed
+   }
+
+   public abstract void foo() {
+     // this is allowed
+   }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/empty.xml/EmptyStatementBlock" />
+```
