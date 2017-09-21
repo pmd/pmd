@@ -577,7 +577,7 @@ public class RuleSetFactory {
         }
 
         if (hasAttributeSetTrue(ruleElement, "multifile")) {
-            rule.setUsesMultifile();
+            // rule.setUsesMultifile(); // TODO, once that's safe
         }
 
         final NodeList nodeList = ruleElement.getChildNodes();
