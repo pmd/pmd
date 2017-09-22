@@ -706,4 +706,22 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
     public Object visit(ASTMethodReference node, Object data) {
         return visitor.visit(node, data);
     }
+
+
+    @Override
+    public Object visit(ASTModuleDeclaration node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+
+    @Override
+    public Object visit(ASTModuleDirective node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+
+    @Override
+    public Object visit(ASTModuleName node, Object data) {
+        return visitor.visit(node, data);
+    }
 }

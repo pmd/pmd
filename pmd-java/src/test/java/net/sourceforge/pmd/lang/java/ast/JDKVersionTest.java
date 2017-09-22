@@ -247,4 +247,14 @@ public class JDKVersionTest {
     public final void jdk9AnonymousDiamond() {
         parseJava9(loadSource("jdk9_anonymous_diamond.java"));
     }
+
+    @Test(expected = ParseException.class)
+    public final void jdk9ModuleInfoInJava8() {
+        parseJava18(loadSource("jdk9_module_info.java"));
+    }
+
+    @Test
+    public final void jdk9ModuleInfo() {
+        parseJava9(loadSource("jdk9_module_info.java"));
+    }
 }
