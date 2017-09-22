@@ -379,6 +379,14 @@ public class JavaParser {
       return res;
   }
 
+  /**
+   * Semantic lookahead to check if the next identifier is a
+   * specific restricted keyword.
+   */
+  private boolean isKeyword(String keyword) {
+    return getToken(1).kind == IDENTIFIER && getToken(1).image.equals(keyword);
+  }
+
   public Map<Integer, String> getSuppressMap() {
     return token_source.getSuppressMap();
   }
@@ -497,7 +505,17 @@ TOKEN :
 | < VOLATILE: "volatile" >
 | < WHILE: "while" >
 | < STRICTFP: "strictfp" >
-| < OPEN: "open" >
+}
+
+
+/* Restricted Keywords */
+// Note: These are commented out, since these keywords
+// can still be used as identifiers.
+// see isKeyword() semantic lookup
+/*
+TOKEN :
+{
+  < OPEN: "open" >
 | < MODULE: "module" >
 | < REQUIRES: "requires" >
 | < TRANSITIVE: "transitive" >
@@ -508,6 +526,7 @@ TOKEN :
 | < PROVIDES: "provides" >
 | < WITH: "with" >
 }
+*/
 
 /* LITERALS */
 
@@ -1311,7 +1330,7 @@ ASTCompilationUnit CompilationUnit() :
   [ LOOKAHEAD( ( Annotation() )* "package" ) PackageDeclaration() ( EmptyStatement() )* ]
   ( ImportDeclaration() ( EmptyStatement() )* )*
   ( LOOKAHEAD(2) TypeDeclaration() ( EmptyStatement() )* )*
-  [ ModuleDeclaration() ( EmptyStatement() )* ]
+  [ LOOKAHEAD({isKeyword("open") || isKeyword("module") || getToken(1).kind == AT}) ModuleDeclaration() ( EmptyStatement() )* ]
   ( < "\u001a" > )?
   ( < "~[]" > )?
   <EOF>
@@ -1378,7 +1397,7 @@ void TypeDeclaration():
   (
      ClassOrInterfaceDeclaration(modifiers)
    |
-     EnumDeclaration(modifiers)
+     LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
    |
      AnnotationTypeDeclaration(modifiers)
   )
@@ -1486,7 +1505,7 @@ void ClassOrInterfaceBodyDeclaration():
 { LOOKAHEAD(["static"] "{" ) Initializer()
 |  modifiers = Modifiers()
   ( LOOKAHEAD(3) ClassOrInterfaceDeclaration(modifiers)
-    | LOOKAHEAD(3) EnumDeclaration(modifiers)
+    | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
     | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration(modifiers)
     | LOOKAHEAD( Type() <IDENTIFIER> ( "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
     | LOOKAHEAD(2) MethodDeclaration(modifiers)
@@ -2405,7 +2424,7 @@ void ModuleDeclaration():
     checkForBadModuleUsage();
 }
 {
-  ( Annotation() )* ["open" {jjtThis.setOpen(true);}] "module"
+  ( Annotation() )* [LOOKAHEAD({isKeyword("open")}) <IDENTIFIER> {jjtThis.setOpen(true);}] LOOKAHEAD({isKeyword("module")}) <IDENTIFIER>
   t=<IDENTIFIER> { s.append(t.image); }
   ( "." t=<IDENTIFIER> { s.append('.').append(t.image); } )* { jjtThis.setImage(s.toString()); }
   "{" (ModuleDirective())* "}"
@@ -2414,14 +2433,14 @@ void ModuleDeclaration():
 void ModuleDirective():
 {}
 {
-    ( "requires" { jjtThis.setType(ASTModuleDirective.DirectiveType.REQUIRES); }
-            ("transitive" { jjtThis.setRequiresModifier(ASTModuleDirective.RequiresModifier.TRANSITIVE); } |
+    ( LOOKAHEAD({isKeyword("requires")}) <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.REQUIRES); }
+            (LOOKAHEAD({isKeyword("transitive")}) <IDENTIFIER> { jjtThis.setRequiresModifier(ASTModuleDirective.RequiresModifier.TRANSITIVE); } |
              "static"     { jjtThis.setRequiresModifier(ASTModuleDirective.RequiresModifier.STATIC);     } )?
          ModuleName() ";" )
-  | ( "exports"  { jjtThis.setType(ASTModuleDirective.DirectiveType.EXPORTS); }  Name() [ "to" ModuleName() ("," ModuleName())*] ";" )
-  | ( "opens"    { jjtThis.setType(ASTModuleDirective.DirectiveType.OPENS); }    Name() [ "to" ModuleName() ("," ModuleName())*] ";" )
-  | ( "uses"     { jjtThis.setType(ASTModuleDirective.DirectiveType.USES); }     Name() ";" )
-  | ( "provides" { jjtThis.setType(ASTModuleDirective.DirectiveType.PROVIDES); } Name() "with" Name() ("," Name() )* ";" )
+  | ( LOOKAHEAD({isKeyword("exports")})  <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.EXPORTS); }  Name() [ LOOKAHEAD({isKeyword("to")}) <IDENTIFIER> ModuleName() ("," ModuleName())*] ";" )
+  | ( LOOKAHEAD({isKeyword("opens")})    <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.OPENS); }    Name() [ LOOKAHEAD({isKeyword("to")}) <IDENTIFIER> ModuleName() ("," ModuleName())*] ";" )
+  | ( LOOKAHEAD({isKeyword("uses")})     <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.USES); }     Name() ";" )
+  | ( LOOKAHEAD({isKeyword("provides")}) <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.PROVIDES); } Name() LOOKAHEAD({isKeyword("with")}) <IDENTIFIER> Name() ("," Name() )* ";" )
 }
 
 // Similar to Name()
