@@ -10,7 +10,6 @@ import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIAT
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
