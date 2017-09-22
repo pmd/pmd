@@ -4,6 +4,7 @@
  * A single underscore "_" is an invalid identifier in java9.
  * Diamond operator for anonymous classes is only allowed with java9.
  * Add support for module-info.java.
+ * Allow more concise try-with-resources statements with java9.
  * Andreas Dangel 09/2017
  *====================================================================
  * Add support for new Java 8 annotation locations.
@@ -354,6 +355,11 @@ public class JavaParser {
   private void checkForBadModuleUsage() {
     if (jdkVersion < 9) {
       throwParseException("Cannot use module declaration when running in JDK inferior to 9 mode!");
+    }
+  }
+  private void checkForBadConciseTryWithResourcesUsage() {
+    if (jdkVersion < 9) {
+      throwParseException("Cannot use concise try-with-resources when running in JDK inferior to 9 mode!");
     }
   }
 
@@ -2247,11 +2253,9 @@ void Resources() :
 void Resource() :
 {}
 {
-	( "final" | Annotation() )*
-	Type()
-	VariableDeclaratorId()
-	"="
-	Expression()
+   LOOKAHEAD(2) ( ( "final" | Annotation() )* Type() VariableDeclaratorId() "=" Expression() )
+   |
+   Name() {checkForBadConciseTryWithResourcesUsage();}
 }
 
 void CatchStatement() :
