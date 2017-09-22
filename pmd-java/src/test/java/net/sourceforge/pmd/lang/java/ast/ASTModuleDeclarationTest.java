@@ -39,38 +39,38 @@ public class ASTModuleDeclarationTest {
         assertEquals(7, directives.size());
         
         // requires com.example.foo.http;
-        assertEquals(ASTModuleDirective.DirectiveType.REQUIRES, directives.get(0).getType());
+        assertEquals(ASTModuleDirective.DirectiveType.REQUIRES.name(), directives.get(0).getType());
         assertNull(directives.get(0).getRequiresModifier());
         assertEquals("com.example.foo.http", directives.get(0).getFirstChildOfType(ASTModuleName.class).getImage());
 
         // requires java.logging;
-        assertEquals(ASTModuleDirective.DirectiveType.REQUIRES, directives.get(1).getType());
+        assertEquals(ASTModuleDirective.DirectiveType.REQUIRES.name(), directives.get(1).getType());
         assertNull(directives.get(1).getRequiresModifier());
         assertEquals("java.logging", directives.get(1).getFirstChildOfType(ASTModuleName.class).getImage());
 
         // requires transitive com.example.foo.network;
-        assertEquals(ASTModuleDirective.DirectiveType.REQUIRES, directives.get(2).getType());
-        assertEquals(ASTModuleDirective.RequiresModifier.TRANSITIVE, directives.get(2).getRequiresModifier());
+        assertEquals(ASTModuleDirective.DirectiveType.REQUIRES.name(), directives.get(2).getType());
+        assertEquals(ASTModuleDirective.RequiresModifier.TRANSITIVE.name(), directives.get(2).getRequiresModifier());
         assertEquals("com.example.foo.network", directives.get(2).getFirstChildOfType(ASTModuleName.class).getImage());
 
         // exports com.example.foo.bar;
-        assertEquals(ASTModuleDirective.DirectiveType.EXPORTS, directives.get(3).getType());
+        assertEquals(ASTModuleDirective.DirectiveType.EXPORTS.name(), directives.get(3).getType());
         assertNull(directives.get(3).getRequiresModifier());
         assertEquals("com.example.foo.bar", directives.get(3).getFirstChildOfType(ASTName.class).getImage());
 
         // exports com.example.foo.internal to com.example.foo.probe;
-        assertEquals(ASTModuleDirective.DirectiveType.EXPORTS, directives.get(4).getType());
+        assertEquals(ASTModuleDirective.DirectiveType.EXPORTS.name(), directives.get(4).getType());
         assertNull(directives.get(4).getRequiresModifier());
         assertEquals("com.example.foo.internal", directives.get(4).getFirstChildOfType(ASTName.class).getImage());
         assertEquals("com.example.foo.probe", directives.get(4).getFirstChildOfType(ASTModuleName.class).getImage());
 
         // uses com.example.foo.spi.Intf;
-        assertEquals(ASTModuleDirective.DirectiveType.USES, directives.get(5).getType());
+        assertEquals(ASTModuleDirective.DirectiveType.USES.name(), directives.get(5).getType());
         assertNull(directives.get(5).getRequiresModifier());
         assertEquals("com.example.foo.spi.Intf", directives.get(5).getFirstChildOfType(ASTName.class).getImage());
 
         // provides com.example.foo.spi.Intf with com.example.foo.Impl;
-        assertEquals(ASTModuleDirective.DirectiveType.PROVIDES, directives.get(6).getType());
+        assertEquals(ASTModuleDirective.DirectiveType.PROVIDES.name(), directives.get(6).getType());
         assertNull(directives.get(6).getRequiresModifier());
         assertEquals("com.example.foo.spi.Intf", directives.get(6).getFirstChildOfType(ASTName.class).getImage());
         assertEquals("com.example.foo.Impl", directives.get(6).findChildrenOfType(ASTName.class).get(1).getImage());
