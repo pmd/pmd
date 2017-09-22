@@ -1359,11 +1359,11 @@ void TypeDeclaration():
 
 void ClassOrInterfaceDeclaration(int modifiers):
 {
-Token t = null;
-jjtThis.setModifiers(modifiers);
+    Token t = null;
+    jjtThis.setModifiers(modifiers);
+    inInterface = false;
 }
 {
-
   ( /* See note about this optional final modifier in BlockStatement */
     ["final"|"abstract"] "class" | "interface" { jjtThis.setInterface(); inInterface = true; } )
   t=<IDENTIFIER> { jjtThis.setImage(t.image); }

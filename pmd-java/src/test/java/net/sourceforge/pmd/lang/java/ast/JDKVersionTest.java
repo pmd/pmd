@@ -219,6 +219,11 @@ public class JDKVersionTest {
     }
 
     @Test
+    public final void testNestedPrivateMethods() {
+        parseJava18("public interface Baz { public static class Foo { private void bar() { } } }");
+    }
+
+    @Test
     public final void jdk9PrivateInterfaceMethods() {
         parseJava9(loadSource("jdk9_private_interface_methods.java"));
     }
