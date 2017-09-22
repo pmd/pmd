@@ -1963,7 +1963,7 @@ void AllocationExpression():
   (LOOKAHEAD(2)
     PrimitiveType() ArrayDimsAndInits()
   |
-    ClassOrInterfaceType() [ TypeArguments() ]
+    ClassOrInterfaceType()
      (
       ArrayDimsAndInits()
      |
