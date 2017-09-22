@@ -35,7 +35,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
 
     // Note: required by https://github.com/codeclimate/spec/blob/master/SPEC.md
     protected static final String NULL_CHARACTER = "\u0000";
-    protected static final List<String> INTERNAL_DEV_PROPERTIES = Arrays.asList("index", "xpath");
+    protected static final List<String> INTERNAL_DEV_PROPERTIES = Arrays.asList("version", "xpath");
     private final String pmdDeveloperUrl;
     private Rule rule;
 
