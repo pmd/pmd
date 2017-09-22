@@ -1,7 +1,8 @@
 /**
- * Add support for Java 9 changes
- * private interface methods are only allowed with java9,
- * a single underscore "_" is an invalid identifier in java9.
+ * Add support for Java 9 changes:
+ * Private interface methods are only allowed with java9.
+ * A single underscore "_" is an invalid identifier in java9.
+ * Diamond operator for anonymous classes is only allowed with java9.
  * Andreas Dangel 09/2017
  *====================================================================
  * Add support for new Java 8 annotation locations.
@@ -322,6 +323,15 @@ public class JavaParser {
   private void checkforBadExplicitReceiverParameter() {
     if (jdkVersion < 8) {
       throwParseException("Cannot use explicit receiver parameters when running in JDK inferior to 1.8 mode!");
+    }
+  }
+  private void checkForBadAnonymousDiamondUsage() {
+    if (jdkVersion < 9) {
+      ASTAllocationExpression node = (ASTAllocationExpression)jjtree.peekNode();
+      ASTTypeArguments types = node.getFirstDescendantOfType(ASTTypeArguments.class);
+      if (node.isAnonymousClass() && types != null && types.isDiamond()) {
+          throwParseException("Cannot use '<>' with anonymous inner classes when running in JDK inferior to 9 mode!");
+      }
     }
   }
   /**
@@ -1960,6 +1970,7 @@ void AllocationExpression():
       Arguments() [ ClassOrInterfaceBody() ]
      )
   )
+  { checkForBadAnonymousDiamondUsage(); }
 }
 
 /*

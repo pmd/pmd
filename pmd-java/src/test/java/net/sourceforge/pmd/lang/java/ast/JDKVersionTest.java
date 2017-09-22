@@ -237,4 +237,14 @@ public class JDKVersionTest {
     public final void jdk9InvalidIdentifier() {
         parseJava9(loadSource("jdk9_invalid_identifier.java"));
     }
+
+    @Test(expected = ParseException.class)
+    public final void jdk9AnonymousDiamondInJava8() {
+        parseJava18(loadSource("jdk9_anonymous_diamond.java"));
+    }
+
+    @Test
+    public final void jdk9AnonymousDiamond() {
+        parseJava9(loadSource("jdk9_anonymous_diamond.java"));
+    }
 }
