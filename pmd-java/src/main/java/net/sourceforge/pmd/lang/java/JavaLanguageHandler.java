@@ -7,9 +7,15 @@ package net.sourceforge.pmd.lang.java;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 
-public class Java13Handler extends AbstractJavaHandler {
+public class JavaLanguageHandler extends AbstractJavaHandler {
+    private final int jdkVersion;
 
+    public JavaLanguageHandler(int jdkVersion) {
+        this.jdkVersion = jdkVersion;
+    }
+
+    @Override
     public Parser getParser(ParserOptions parserOptions) {
-        return new Java13Parser(parserOptions);
+        return new JavaLanguageParser(jdkVersion, parserOptions);
     }
 }
