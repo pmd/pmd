@@ -13,6 +13,7 @@ This is a major release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
+    *   [Java 9 support](#java-9-support)
     *   [Revamped Apex CPD](#revamped-apex-cpd)
     *   [Java Type Resolution](#java-type-resolution)
     *   [Metrics Framework](#metrics-framework)
@@ -28,6 +29,18 @@ This is a major release.
 * [External Contributions](#external-contributions)
 
 ### New and noteworthy
+
+#### Java 9 support
+
+The Java grammar has been updated to support analyzing Java 9 projects:
+
+*   private methods in interfaces are possible
+*   The underscore "_" is considered an invalid identifier
+*   Diamond operator for anonymous classes
+*   The module declarations in `module-info.java` can be parsed
+*   Concise try-with-resources statements are supported
+
+You can enable Java9 support with `-language java -version 9` on the command line.
 
 #### Revamped Apex CPD
 
@@ -78,7 +91,7 @@ The report formats providing full stacktrace of errors are:
 *   vbhtml
 *   xml
 
-##### Configuration Errors
+##### Configuration Errors
 
 For a long time reports have been notified of configuration errors on rules, but they have remained hidden.
 On a push to make these more evident to users, and help them get the best results out of PMD, we have started
