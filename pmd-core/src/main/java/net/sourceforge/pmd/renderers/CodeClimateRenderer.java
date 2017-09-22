@@ -10,6 +10,7 @@ import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIAT
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +36,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
 
     // Note: required by https://github.com/codeclimate/spec/blob/master/SPEC.md
     protected static final String NULL_CHARACTER = "\u0000";
+    protected static final List<String> INTERNAL_DEV_PROPERTIES = Arrays.asList("index", "xpath");
     private final String pmdDeveloperUrl;
     private Rule rule;
 
@@ -170,6 +172,11 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
             result += "--- | --- | ---\\n";
 
             for (PropertyDescriptor<?> property : rule.getPropertyDescriptors()) {
+                String propertyName = property.name().replaceAll("\\_", "\\\\_");
+                if (INTERNAL_DEV_PROPERTIES.contains(propertyName)) {
+                    continue;
+                }
+
                 @SuppressWarnings("unchecked")
                 PropertyDescriptor<T> typed = (PropertyDescriptor<T>) property;
                 T value = rule.getProperty(typed);
@@ -179,10 +186,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 }
                 propertyValue = propertyValue.replaceAll("(\n|\r\n|\r)", "\\\\n");
 
-                String porpertyName = property.name();
-                porpertyName = porpertyName.replaceAll("\\_", "\\\\_");
-
-                result += porpertyName + " | " + propertyValue + " | " + property.description() + "\\n";
+                result += propertyName + " | " + propertyValue + " | " + property.description() + "\\n";
             }
         }
         return cleaned(result);
