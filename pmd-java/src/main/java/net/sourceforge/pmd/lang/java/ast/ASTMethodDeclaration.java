@@ -57,7 +57,8 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
 
     @Override
     public boolean isPublic() {
-        if (isInterfaceMember()) {
+        // interface methods are public by default, but could be private since java9
+        if (isInterfaceMember() && !isPrivate()) {
             return true;
         }
         return super.isPublic();
