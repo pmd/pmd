@@ -23,6 +23,7 @@ public class JavaLanguageModule extends BaseLanguageModule {
         addVersion("1.6", new Java16Handler(), false);
         addVersion("1.7", new Java17Handler(), false);
         addVersion("1.8", new Java18Handler(), true);
+        addVersion("9", new Java19Handler(), false);
     }
 
 }

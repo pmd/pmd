@@ -8,6 +8,8 @@ import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava13;
 import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava14;
 import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava15;
 import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava17;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava18;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava9;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -204,5 +206,30 @@ public class JDKVersionTest {
     @Test
     public final void testMulticatchWithAnnotations() {
         parseJava17(loadSource("jdk17_multicatch_with_annotations.java"));
+    }
+
+    @Test(expected = ParseException.class)
+    public final void jdk9PrivateInterfaceMethodsInJava18() {
+        parseJava18(loadSource("jdk9_private_interface_methods.java"));
+    }
+
+    @Test
+    public final void testPrivateMethods() {
+        parseJava18("public class Foo { private void bar() { } }");
+    }
+
+    @Test
+    public final void jdk9PrivateInterfaceMethods() {
+        parseJava9(loadSource("jdk9_private_interface_methods.java"));
+    }
+
+    @Test
+    public final void jdk9InvalidIdentifierInJava18() {
+        parseJava18(loadSource("jdk9_invalid_identifier.java"));
+    }
+
+    @Test(expected = ParseException.class)
+    public final void jdk9InvalidIdentifier() {
+        parseJava9(loadSource("jdk9_invalid_identifier.java"));
     }
 }

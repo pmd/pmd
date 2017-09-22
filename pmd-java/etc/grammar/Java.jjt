@@ -1,4 +1,9 @@
 /**
+ * Add support for Java 9 changes
+ * private interface methods are only allowed with java9,
+ * a single underscore "_" is an invalid identifier in java9.
+ * Andreas Dangel 09/2017
+ *====================================================================
  * Add support for new Java 8 annotation locations.
  * Bugs #414, #415, #417
  * @Snap252 06/2017
@@ -317,6 +322,22 @@ public class JavaParser {
   private void checkforBadExplicitReceiverParameter() {
     if (jdkVersion < 8) {
       throwParseException("Cannot use explicit receiver parameters when running in JDK inferior to 1.8 mode!");
+    }
+  }
+  /**
+   * Keeps track whether we are dealing with an interface or not. Needed since the tree is
+   * is not fully constructed yet, when we check for private interface methods.
+   * The flag is updated, if entering ClassOrInterfaceDeclaration and reset when leaving.
+   */
+  private boolean inInterface = false;
+  private void checkForBadPrivateInterfaceMethod(ASTMethodDeclaration node) {
+    if (jdkVersion < 9 && inInterface && node.isPrivate()) {
+      throwParseException("Cannot use private interface methods when running in JDK inferior to 9 mode!");
+    }
+  }
+  private void checkForBadIdentifier(String image) {
+    if (jdkVersion >= 9 && "_".equals(image)) {
+      throwParseException("With JDK 9, '_' is a keyword, and may not be used as an identifier!");
     }
   }
 
@@ -1343,12 +1364,14 @@ jjtThis.setModifiers(modifiers);
 }
 {
 
-  ( /* See note about this optional final modifier in BlockStatement */ ["final"|"abstract"] "class" | "interface" { jjtThis.setInterface(); } )
+  ( /* See note about this optional final modifier in BlockStatement */
+    ["final"|"abstract"] "class" | "interface" { jjtThis.setInterface(); inInterface = true; } )
   t=<IDENTIFIER> { jjtThis.setImage(t.image); }
   [ TypeParameters() ]
   [ ExtendsList() ]
   [ ImplementsList() ]
   ClassOrInterfaceBody()
+  { inInterface = false; } // always reset the flag after leaving the node
 }
 
 void ExtendsList():
@@ -1446,6 +1469,7 @@ void ClassOrInterfaceBodyDeclaration():
   ";"
 }
 
+
 void FieldDeclaration(int modifiers) :
 {jjtThis.setModifiers(modifiers);}
 {
@@ -1471,6 +1495,7 @@ void VariableDeclaratorId() :
   {
     checkForBadAssertUsage(image, "a variable name");
     checkForBadEnumUsage(image, "a variable name");
+    checkForBadIdentifier(image);
     jjtThis.setImage( image );
   }
 }
@@ -1489,7 +1514,10 @@ void ArrayInitializer() :
 }
 
 void MethodDeclaration(int modifiers) :
-{jjtThis.setModifiers(modifiers);}
+{
+    jjtThis.setModifiers(modifiers);
+    { checkForBadPrivateInterfaceMethod(jjtThis); }
+}
 {
   [ TypeParameters() ]
   (Annotation() {checkForBadTypeAnnotations();})* ResultType() MethodDeclarator() [ "throws" NameList() ]
