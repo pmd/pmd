@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.Designer;
 import net.sourceforge.pmd.util.fxdesigner.DesignerWindowPresenter;
@@ -29,6 +30,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
@@ -72,7 +74,7 @@ public class DesignerWindow implements Initializable {
     @FXML
     private CustomCodeArea codeEditorArea;
     @FXML
-    private Menu languageMenu;
+    private ChoiceBox<LanguageVersion> languageChoiceBox;
     @FXML
     private Button refreshASTButton;
     @FXML
@@ -235,8 +237,8 @@ public class DesignerWindow implements Initializable {
     }
 
 
-    public Menu getLanguageMenu() {
-        return languageMenu;
+    public ChoiceBox<LanguageVersion> getLanguageChoiceBox() {
+        return languageChoiceBox;
     }
 
 

@@ -50,12 +50,14 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.stage.FileChooser;
+import javafx.util.StringConverter;
 
 /**
  * Presenter of the designer window. Subscribes to the events of the {@link DesignerWindow} that instantiates it.
@@ -70,7 +72,6 @@ public class DesignerWindowPresenter {
 
     private DesignerWindow view;
     private ASTManager model;
-    private ToggleGroup languageVersionToggleGroup;
     private Stack<File> recentFiles = new LimitedSizeStack<>(5);
 
 
@@ -86,6 +87,8 @@ public class DesignerWindowPresenter {
         initializeXPath();
         initialiseNodeInfoSection();
         bindModelToView();
+
+        initializeSyntaxHighlighting();
 
         try {
             loadSettings();
@@ -105,7 +108,6 @@ public class DesignerWindowPresenter {
             }
         });
 
-        initializeSyntaxHighlighting();
 
         view.sourceCodeProperty().addListener((observable, oldValue, newValue) -> {
             if (model.isRecompilationNeeded(newValue)) {
@@ -127,11 +129,8 @@ public class DesignerWindowPresenter {
 
     /** Creates direct bindings from model properties to UI properties. */
     private void bindModelToView() {
-        languageVersionToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                model.languageVersionProperty().setValue((LanguageVersion) newValue.getUserData());
-            }
-        });
+        model.languageVersionProperty().bind(view.getLanguageChoiceBox().getSelectionModel().selectedItemProperty());
+
 
         ToggleGroup tg = view.getXpathVersionToggleGroup();
 
@@ -223,25 +222,26 @@ public class DesignerWindowPresenter {
 
     private void initializeLanguageVersionMenu() {
         LanguageVersion[] supported = DesignerUtil.getSupportedLanguageVersions();
-        ObservableList<MenuItem> items = view.getLanguageMenu().getItems();
-        languageVersionToggleGroup = new ToggleGroup();
+        ObservableList<LanguageVersion> items = view.getLanguageChoiceBox().getItems();
+
+        items.addAll(Arrays.asList(supported));
+
+        view.getLanguageChoiceBox().setConverter(new StringConverter<LanguageVersion>() {
+            @Override
+            public String toString(LanguageVersion object) {
+                return object.getShortName();
+            }
+
+
+            @Override
+            public LanguageVersion fromString(String string) {
+                return LanguageRegistry.findLanguageVersionByTerseName(string.toLowerCase());
+            }
+        });
 
         LanguageVersion defaultLangVersion = LanguageRegistry.getLanguage("Java").getDefaultVersion();
-
-        for (LanguageVersion version : supported) {
-            if (version != null) {
-                RadioMenuItem item = new RadioMenuItem(version.getShortName());
-                item.setToggleGroup(languageVersionToggleGroup);
-                item.setUserData(version);
-                items.add(item);
-
-                if (version.equals(defaultLangVersion)) {
-                    item.setSelected(true);
-                }
-            }
-        }
-
-        view.getLanguageMenu().show();
+        view.getLanguageChoiceBox().getSelectionModel().select(defaultLangVersion);
+        view.getLanguageChoiceBox().show();
 
     }
 
@@ -387,6 +387,7 @@ public class DesignerWindowPresenter {
             }
         }
 
+        openRecentMenuItems.add(new SeparatorMenuItem());
         MenuItem clearItem = new MenuItem();
         clearItem.setText("Clear recents");
         clearItem.setOnAction(e -> recentFiles.clear());
@@ -441,12 +442,7 @@ public class DesignerWindowPresenter {
 
     void setLanguageVersionFromTerseName(String name) {
         LanguageVersion version = LanguageRegistry.findLanguageVersionByTerseName(name);
-        languageVersionToggleGroup.getToggles()
-                                  .stream()
-                                  .filter(toggle -> toggle.getUserData().equals(version))
-                                  .findAny()
-                                  .orElse(new RadioMenuItem()) // discard
-                                  .setSelected(true);
+        view.getLanguageChoiceBox().getSelectionModel().select(version);
     }
 
 

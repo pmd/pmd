@@ -49,7 +49,6 @@
                                 </Menu>
                             </items>
                         </Menu>
-                        <Menu fx:id="languageMenu" mnemonicParsing="false" text="Language" />
                         <Menu mnemonicParsing="false" text="About">
                             <items>
                                 <MenuItem mnemonicParsing="false" text="About" />
@@ -157,6 +156,7 @@
                                                         <Tooltip text="Refresh the AST, and XPath results if there's an expression to evaluate" />
                                                     </tooltip>
                                                 </Button>
+                                    <ChoiceBox fx:id="languageChoiceBox" prefWidth="150.0" />
                                                 <MenuButton mnemonicParsing="false" text="XPath version">
                                                     <items>
                                                         <RadioMenuItem mnemonicParsing="false" text="XPath 1.0">
