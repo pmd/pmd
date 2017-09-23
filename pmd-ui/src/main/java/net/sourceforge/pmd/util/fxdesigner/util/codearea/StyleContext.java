@@ -45,6 +45,11 @@ class StyleContext implements Iterable<StyleLayer> {
     }
 
 
+    public boolean isSyntaxHighlightingEnabled() {
+        return isSyntaxHighlightingEnabled;
+    }
+
+
     /**
      * Disables syntax highlighting if enabled.
      */

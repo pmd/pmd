@@ -19,9 +19,12 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Accordion;
@@ -47,23 +50,25 @@ import javafx.util.Duration;
 public class DesignerWindow implements Initializable {
 
     @FXML
-    public TitledPane metricResultsTitledPane;
+    private TitledPane metricResultsTitledPane;
     @FXML
-    public MenuItem openFileMenuItem;
+    private MenuItem openFileMenuItem;
     @FXML
-    public MenuItem licenseMenuItem;
+    private MenuItem licenseMenuItem;
     @FXML
-    public TreeView<Object> scopeHierarchyTreeView;
+    private TreeView<Object> scopeHierarchyTreeView;
     @FXML
-    public Menu openRecentMenu;
+    private Menu openRecentMenu;
     @FXML
-    public Menu exportMenu;
+    private Menu exportMenu;
     @FXML
-    public MenuItem exportToTestCodeMenuItem;
+    private MenuItem exportToTestCodeMenuItem;
     @FXML
-    public MenuItem exportXPathMenuItem;
+    private MenuItem exportXPathMenuItem;
     @FXML
-    public Menu fileMenu;
+    private Menu fileMenu;
+    @FXML
+    private MenuItem toggleSyntaxHighlighting;
     @FXML
     private CustomCodeArea codeEditorArea;
     @FXML
@@ -100,6 +105,7 @@ public class DesignerWindow implements Initializable {
     private ListView<MetricResult> metricResultsListView;
     /* */
     private StringProperty sourceCodeProperty;
+    private BooleanProperty isSyntaxHighlightingEnabled = new SimpleBooleanProperty(false);
 
 
     @Override
@@ -178,6 +184,10 @@ public class DesignerWindow implements Initializable {
                                       .addListener((observable, oldValue, newValue) -> {
                                           if (newValue.doubleValue() < .5) {
                                               editorPanelHorizontalSplitPane.setDividerPosition(0, .5);
+                                          }
+
+                                          if (!xpathEditorTitledPane.isExpanded() && oldValue.doubleValue() == 1) {
+                                              editorPanelHorizontalSplitPane.setDividerPosition(0, 1);
                                           }
                                       });
     }
@@ -312,6 +322,19 @@ public class DesignerWindow implements Initializable {
 
     public Menu getOpenRecentMenu() {
         return openRecentMenu;
+    }
+
+
+    @FXML
+    public void onToggleSyntaxHighlightingClicked(Event event) {
+        isSyntaxHighlightingEnabled.set(!isSyntaxHighlightingEnabled.get());
+        toggleSyntaxHighlighting.setText((isSyntaxHighlightingEnabled.get() ? "Disable" : "Enable")
+                                             + " syntax highlighting");
+    }
+
+
+    public BooleanProperty isSyntaxHighlightingEnabledProperty() {
+        return isSyntaxHighlightingEnabled;
     }
 
 }

@@ -31,9 +31,9 @@ import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsLoader;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsSaver;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlightings;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingComputer;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.SyntaxHighlighterConstants;
 import net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow;
 
 import javafx.beans.binding.Bindings;
@@ -88,10 +88,6 @@ public class DesignerWindowPresenter {
         initialiseNodeInfoSection();
         bindModelToView();
 
-
-        view.getCodeEditorArea().setSyntaxHighlightingEnabled(new SyntaxHighlightingComputer(SyntaxHighlighterConstants.getHighlighterForLanguage("Java")));
-
-
         try {
             loadSettings();
         } catch (IOException ioe) {
@@ -102,6 +98,7 @@ public class DesignerWindowPresenter {
         Designer.getMainStage().setOnCloseRequest(event -> {
             try {
                 saveSettings();
+                view.getCodeEditorArea().disableSyntaxHighlighting(); // shutdown the executor
             } catch (IOException e) {
                 e.printStackTrace();
                 // no big deal
@@ -115,6 +112,23 @@ public class DesignerWindowPresenter {
                 view.acknowledgeUpdatedAST();
             }
         });
+
+        view.isSyntaxHighlightingEnabledProperty().addListener(((observable, wasEnabled, isEnabled) -> {
+            if (!wasEnabled && isEnabled) {
+                SyntaxHighlightingComputer computer = AvailableSyntaxHighlightings.getComputerForLanguage(model.getLanguageVersion().getLanguage());
+                if (computer != null) {
+                    view.getCodeEditorArea().setSyntaxHighlightingEnabled(computer);
+                    return;
+                }
+            } else if (isEnabled) {
+                return;
+            }
+            view.getCodeEditorArea().disableSyntaxHighlighting();
+        }));
+
+        view.onToggleSyntaxHighlightingClicked(null);
+        view.onToggleSyntaxHighlightingClicked(null);
+
 
         view.getRefreshASTButton().setOnAction(this::onRefreshASTClicked);
         view.getLicenseMenuItem().setOnAction(this::showLicensePopup);
@@ -498,6 +512,19 @@ public class DesignerWindowPresenter {
             if (f.exists()) {
                 recentFiles.push(f);
             }
+        }
+    }
+
+
+    String isSyntaxHighlightingEnabled() {
+        return Boolean.toString(view.isSyntaxHighlightingEnabledProperty().get());
+    }
+
+
+    void setIsSyntaxHighlightingEnabled(String bool) {
+        boolean b = Boolean.parseBoolean(bool);
+        if (view.isSyntaxHighlightingEnabledProperty().get() != b) {
+            view.onToggleSyntaxHighlightingClicked(null);
         }
     }
 

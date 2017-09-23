@@ -49,7 +49,11 @@ enum DesignerWindowSettings {
     /** List of recent files. */
     RECENT_FILES("recentFiles",
                  DesignerWindowPresenter::getRecentFiles,
-                 DesignerWindowPresenter::setRecentFiles);
+                 DesignerWindowPresenter::setRecentFiles),
+
+    IS_SYNTAX_HIGHLIGHTING_ENABLED("isSyntaxHighlightingEnabled",
+                                   DesignerWindowPresenter::isSyntaxHighlightingEnabled,
+                                   DesignerWindowPresenter::setIsSyntaxHighlightingEnabled);
 
 
     private final String keyName;

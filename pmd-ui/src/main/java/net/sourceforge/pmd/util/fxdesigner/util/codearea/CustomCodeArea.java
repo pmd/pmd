@@ -64,11 +64,19 @@ public class CustomCodeArea extends CodeArea {
 
     public void setSyntaxHighlightingEnabled(SyntaxHighlightingComputer computer) {
         styleContext.setSyntaxHighlighting(computer);
+        this.replaceText(0, 0, " ");
+        this.undo();
+    }
+
+
+    public boolean isSyntaxHighlightingEnabled() {
+        return styleContext.isSyntaxHighlightingEnabled();
     }
 
 
     public void disableSyntaxHighlighting() {
         styleContext.disableSyntaxHighlighting();
+        paintCss();
     }
 
 
