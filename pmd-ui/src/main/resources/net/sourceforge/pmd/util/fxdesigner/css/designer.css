@@ -14,14 +14,16 @@
     -fx-background-color: derive(-fx-base, -10%);
 }
 
+
+#mainCodeEditorArea .node-highlight {
+    -fx-font-weight: bolder !important;
+    -fx-fill: royalblue !important;
+}
+
+
 .styled-text-area {
     -fx-border-color: -fx-outer-border, -fx-text-box-border;
     -fx-border-insets: -4 -4 -6 -5, -2 -2 -5 -3;
-}
-
-.node-highlight {
-    -fx-font-weight: bolder;
-    -fx-fill: royalblue;
 }
 
 .lineno {

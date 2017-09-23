@@ -27,11 +27,13 @@ import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseTimeException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsLoader;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsSaver;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingComputer;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.SyntaxHighlighterConstants;
 import net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow;
 
 import javafx.beans.binding.Bindings;
@@ -86,6 +88,10 @@ public class DesignerWindowPresenter {
         initialiseNodeInfoSection();
         bindModelToView();
 
+
+        view.getCodeEditorArea().setSyntaxHighlightingEnabled(new SyntaxHighlightingComputer(SyntaxHighlighterConstants.getHighlighterForLanguage("Java")));
+
+
         try {
             loadSettings();
         } catch (IOException ioe) {
@@ -115,7 +121,6 @@ public class DesignerWindowPresenter {
         view.getLoadSourceFromFileMenuItem().setOnAction(this::onOpenFileClicked);
         view.getOpenRecentMenu().setOnAction(this::onRecentFilesMenuClicked);
         view.getFileMenu().setOnAction(this::onOpenFileClicked);
-
 
         onRefreshASTClicked(null); // Restore AST and XPath results
     }
@@ -206,13 +211,13 @@ public class DesignerWindowPresenter {
             view.getScopeHierarchyTreeView().setRoot(rootScope);
 
             highlightNode(selectedValue, view.getCodeEditorArea());
+            view.getCodeEditorArea().positionCaret(selectedValue.getBeginLine(), selectedValue.getBeginColumn());
         }
     }
 
 
     private void highlightNode(Node node, CustomCodeArea codeArea) {
-        codeArea.clearStyleLayers();
-        codeArea.styleCss(node, Collections.singleton("node-highlight"));
+        codeArea.restylePrimaryCssLayer(node, Collections.singleton("node-highlight"));
         codeArea.paintCss();
     }
 
@@ -333,6 +338,7 @@ public class DesignerWindowPresenter {
         chooser.setTitle("Load source from file");
         File file = chooser.showOpenDialog(Designer.getMainStage());
         loadSourceFromFile(file);
+        view.getCodeEditorArea().clearStyleLayers();
     }
 
 

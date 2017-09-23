@@ -162,6 +162,7 @@
                                                                     AnchorPane.topAnchor="0.0">
                                                             <content>
                                                                 <CustomCodeArea fx:id="codeEditorArea"
+                                                                                id="mainCodeEditorArea"
                                                                                 prefHeight="346.0"
                                                                                 prefWidth="445.0" styleClass="code"/>
                                                             </content>

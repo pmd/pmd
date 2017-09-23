@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.Paragraph;
 
 /**
@@ -21,10 +20,10 @@ class StyleLayer {
 
     private final String id;
     private List<SpanBound> bounds = new ArrayList<>();
-    private CodeArea codeArea;
+    private CustomCodeArea codeArea;
 
 
-    StyleLayer(String id, CodeArea parent) {
+    StyleLayer(String id, CustomCodeArea parent) {
         Objects.requireNonNull(id, "The id of a style layer cannot be null");
         this.id = id;
         codeArea = parent;
@@ -36,6 +35,11 @@ class StyleLayer {
      */
     public void clearStyles() {
         bounds.clear();
+    }
+
+
+    public void setBounds(List<SpanBound> newBounds) {
+        bounds = newBounds;
     }
 
 

@@ -4,11 +4,13 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.fxmisc.richtext.CodeArea;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 /**
  * Code area that can handle syntax highlighting as well as regular node highlighting.
@@ -19,23 +21,37 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class CustomCodeArea extends CodeArea {
 
     private static final String PRIMARY_HIGHLIGHT_LAYER_ID = "primary";
-    private static final String SYNTAX_HIGHLIGHT_LAYER_ID = "syntax";
-    private StyleContext styleContext = new StyleContext(this);
+    private StyleContext styleContext;
 
 
     public CustomCodeArea() {
         super();
+        styleContext = new StyleContext(this);
         styleContext.addLayer(PRIMARY_HIGHLIGHT_LAYER_ID, new StyleLayer(PRIMARY_HIGHLIGHT_LAYER_ID, this));
     }
 
 
     public void styleCss(int beginLine, int beginColumn, int endLine, int endColumn, Set<String> cssClasses) {
-        styleContext.getLayer(PRIMARY_HIGHLIGHT_LAYER_ID).style(beginLine, beginColumn, endLine, endColumn, cssClasses);
+        Set<String> fullClasses = new HashSet<>(cssClasses);
+        fullClasses.add("text");
+        fullClasses.add("styled-text-area");
+        styleContext.getLayer(PRIMARY_HIGHLIGHT_LAYER_ID).style(beginLine, beginColumn, endLine, endColumn, fullClasses);
     }
 
 
     public void styleCss(Node node, Set<String> cssClasses) {
-        styleContext.getLayer(PRIMARY_HIGHLIGHT_LAYER_ID).style(node.getBeginLine(), node.getBeginColumn(), node.getEndLine(), node.getEndColumn(), cssClasses);
+        this.styleCss(node.getBeginLine(), node.getBeginColumn(), node.getEndLine(), node.getEndColumn(), cssClasses);
+    }
+
+
+    public void positionCaret(int line, int column) {
+        this.positionCaret(DesignerUtil.lengthUntil(line, column, this));
+    }
+
+
+    public void restylePrimaryCssLayer(Node node, Set<String> cssClasses) {
+        styleContext.getLayer(PRIMARY_HIGHLIGHT_LAYER_ID).clearStyles();
+        styleCss(node, cssClasses);
     }
 
 
@@ -46,13 +62,13 @@ public class CustomCodeArea extends CodeArea {
     }
 
 
-    public void setSyntaxHighlightingEnabled(boolean isEnabled) {
-        StyleLayer syntaxHighlightLayer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
-        if (isEnabled && syntaxHighlightLayer == null) {
-            styleContext.addLayer(SYNTAX_HIGHLIGHT_LAYER_ID, new StyleLayer(SYNTAX_HIGHLIGHT_LAYER_ID, this));
-        } else if (!isEnabled && syntaxHighlightLayer != null) {
-            styleContext.dropLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
-        }
+    public void setSyntaxHighlightingEnabled(SyntaxHighlightingComputer computer) {
+        styleContext.setSyntaxHighlighting(computer);
+    }
+
+
+    public void disableSyntaxHighlighting() {
+        styleContext.disableSyntaxHighlighting();
     }
 
 
