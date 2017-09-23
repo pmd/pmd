@@ -297,7 +297,7 @@ public class DesignerWindowPresenter {
         errorAlert.setHeaderText("An exception occurred during parsing:");
 
         ScrollPane scroll = new ScrollPane();
-        scroll.setContent(new TextArea(ExceptionUtils.getStackTrace(e)));
+        scroll.setContent(new TextArea(ExceptionUtils.getStackTrace(e.getCause())));
         errorAlert.getDialogPane().setContent(scroll);
         errorAlert.showAndWait();
     }
