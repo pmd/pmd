@@ -401,6 +401,15 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <version>${javadoc.plugin.version}</version>
                     <configuration>
                         <quiet>true</quiet>
+                        <doclint>none</doclint>
+                        <additionalDependencies>
+                            <!-- TODO: this is only needed to make javadoc happy -->
+                            <additionalDependency>
+                                <groupId>org.apache.ant</groupId>
+                                <artifactId>ant</artifactId>
+                                <version>${ant.version}</version>
+                            </additionalDependency>
+                        </additionalDependencies>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -936,7 +945,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <configuration>
-                                <additionalparam>-Xdoclint:all</additionalparam>
+                                <doclint>all</doclint>
                             </configuration>
                         </plugin>
                     </plugins>
