@@ -8,14 +8,18 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.ApexSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.JavaSyntaxHighlighter;
 
 /**
+ * Lists the available syntax highlighter engines by language.
+ *
  * @author Clément Fournier
  * @since 6.0.0
  */
 public enum AvailableSyntaxHighlightings {
-    JAVA("java", new SyntaxHighlightingComputer(new JavaSyntaxHighlighter()));
+    JAVA("java", new SyntaxHighlightingComputer(new JavaSyntaxHighlighter())),
+    APEX("apex", new SyntaxHighlightingComputer(new ApexSyntaxHighlighter()));
 
 
     private final String language;
@@ -28,6 +32,13 @@ public enum AvailableSyntaxHighlightings {
     }
 
 
+    /**
+     * Gets the highlighting computer for a language if present, otherwise returns null.
+     *
+     * @param language Language to look for
+     *
+     * @return A highlighting computer if available, otherwise null
+     */
     public static SyntaxHighlightingComputer getComputerForLanguage(Language language) {
         Optional<AvailableSyntaxHighlightings> found = Arrays.stream(AvailableSyntaxHighlightings.values())
                                                              .filter(e -> e.language.equals(language.getTerseName()))

@@ -35,14 +35,6 @@ public interface SyntaxHighlighter {
 
 
     /**
-     * Returns the terse name of the language this highlighter handles.
-     *
-     * @return The name of the language
-     */
-    String getLanguage();
-
-
-    /**
      * Gets the identifier of the resource file containing appropriate css. This string must be suitable for use within
      * a call to {@code getStyleSheets().add()}.
      *

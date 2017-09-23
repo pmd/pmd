@@ -42,14 +42,14 @@ public class JavaSyntaxHighlighter implements SyntaxHighlighter {
     private static final String ANNOTATION_PATTERN = "@[\\w]+";
 
     private static final Pattern PATTERN = Pattern.compile(
-        "(?<KEYWORD>" + KEYWORD_PATTERN + ")"
+        "(?<SINGLELINECOMMENT>" + SINGLELINE_COMMENT_PATTERN + ")"
+            + "|(?<MULTILINECOMMENT>" + MULTILINE_COMMENT_PATTERN + ")"
+            + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")"
             + "|(?<PAREN>" + PAREN_PATTERN + ")"
             + "|(?<BRACE>" + BRACE_PATTERN + ")"
             + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
             + "|(?<SEMICOLON>" + SEMICOLON_PATTERN + ")"
             + "|(?<STRING>" + STRING_PATTERN + ")"
-            + "|(?<SINGLELINECOMMENT>" + SINGLELINE_COMMENT_PATTERN + ")"
-            + "|(?<MULTILINECOMMENT>" + MULTILINE_COMMENT_PATTERN + ")"
             + "|(?<ANNOTATION>" + ANNOTATION_PATTERN + ")"
     );
 
@@ -57,14 +57,14 @@ public class JavaSyntaxHighlighter implements SyntaxHighlighter {
     @Override
     public Map<String, String> getGroupNameToCssClass() {
         Map<String, String> map = new LinkedHashMap<>();
+        map.put("SINGLELINECOMMENT", "single-line-comment");
+        map.put("MULTILINECOMMENT", "multi-line-comment");
         map.put("KEYWORD", "keyword");
         map.put("PAREN", "paren");
         map.put("BRACE", "brace");
         map.put("BRACKET", "bracket");
         map.put("SEMICOLON", "semicolon");
         map.put("STRING", "string");
-        map.put("SINGLELINECOMMENT", "single-line-comment");
-        map.put("MULTILINECOMMENT", "multi-line-comment");
         map.put("ANNOTATION", "annotation");
         return Collections.unmodifiableMap(map);
     }
@@ -77,13 +77,7 @@ public class JavaSyntaxHighlighter implements SyntaxHighlighter {
 
 
     @Override
-    public String getLanguage() {
-        return "java";
-    }
-
-
-    @Override
     public String getCssFileIdentifier() {
-        return JavaSyntaxHighlighter.class.getResource("java-keywords.css").toExternalForm();
+        return JavaSyntaxHighlighter.class.getResource("java.css").toExternalForm();
     }
 }

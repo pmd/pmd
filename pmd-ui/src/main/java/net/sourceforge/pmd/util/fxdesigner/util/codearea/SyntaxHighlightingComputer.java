@@ -48,7 +48,6 @@ public class SyntaxHighlightingComputer {
 
     private List<SpanBound> computeHighlighting(String text) {
         List<SpanBound> updated = new ArrayList<>();
-
         Matcher matcher = highlighter.getTokenizerPattern().matcher(text);
         int lastKwEnd = 0;
 
@@ -68,9 +67,6 @@ public class SyntaxHighlightingComputer {
             updated.add(new SpanBound(matcher.end(), Collections.singleton(styleClass), false));
             lastKwEnd = matcher.end();
         }
-
         return updated;
-        //this.codeArea.paintCss();
-
     }
 }
