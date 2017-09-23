@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import org.fxmisc.richtext.CodeArea?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.CustomCodeArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
@@ -160,8 +161,9 @@
                                                                     AnchorPane.rightAnchor="0.0"
                                                                     AnchorPane.topAnchor="0.0">
                                                             <content>
-                                                                <CodeArea fx:id="codeEditorArea" prefHeight="346.0"
-                                                                          prefWidth="445.0" styleClass="code"/>
+                                                                <CustomCodeArea fx:id="codeEditorArea"
+                                                                                prefHeight="346.0"
+                                                                                prefWidth="445.0" styleClass="code"/>
                                                             </content>
                                                         </TitledPane>
                                                     </children>

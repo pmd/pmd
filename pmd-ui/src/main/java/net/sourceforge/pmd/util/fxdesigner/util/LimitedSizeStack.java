@@ -26,17 +26,20 @@ public class LimitedSizeStack<E> extends Stack<E> {
 
     @Override
     public E push(E item) {
-        if (item != null) {
-            if (this.contains(item)) {
-                this.remove(item);
-            }
-
-            super.push(item);
-
-            if (size() > maxSize) {
-                this.removeElementAt(size() - 1);
-            }
+        if (item == null) {
+            return null;
         }
+
+        if (this.contains(item)) {
+            this.remove(item);
+        }
+
+        super.push(item);
+
+        if (size() > maxSize) {
+            this.removeElementAt(size() - 1);
+        }
+
         return item;
     }
 }

@@ -27,6 +27,7 @@ import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseTimeException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
+import net.sourceforge.pmd.util.fxdesigner.util.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsLoader;
@@ -201,11 +202,18 @@ public class DesignerWindowPresenter {
                                                .filter(result -> !result.isNaN())
                                                .count());
 
-            TreeItem<Object> rootScope = ScopeHierarchyTreeItem.buildAscendantHerarchy(selectedValue);
+            TreeItem<Object> rootScope = ScopeHierarchyTreeItem.buildAscendantHierarchy(selectedValue);
             view.getScopeHierarchyTreeView().setRoot(rootScope);
 
-            DesignerUtil.highlightNode(view.getCodeEditorArea(), selectedValue);
+            highlightNode(selectedValue, view.getCodeEditorArea());
         }
+    }
+
+
+    private void highlightNode(Node node, CustomCodeArea codeArea) {
+        codeArea.clearStyles();
+        codeArea.styleCss(node, Collections.singleton("node-highlight"));
+        codeArea.paintCss();
     }
 
 

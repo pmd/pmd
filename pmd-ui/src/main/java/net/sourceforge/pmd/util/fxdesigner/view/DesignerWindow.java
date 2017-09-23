@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.Designer;
 import net.sourceforge.pmd.util.fxdesigner.DesignerWindowPresenter;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
+import net.sourceforge.pmd.util.fxdesigner.util.CustomCodeArea;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -64,7 +65,7 @@ public class DesignerWindow implements Initializable {
     @FXML
     public Menu fileMenu;
     @FXML
-    private CodeArea codeEditorArea;
+    private CustomCodeArea codeEditorArea;
     @FXML
     private Menu languageMenu;
     @FXML
@@ -214,7 +215,7 @@ public class DesignerWindow implements Initializable {
     }
 
 
-    public CodeArea getCodeEditorArea() {
+    public CustomCodeArea getCodeEditorArea() {
         return codeEditorArea;
     }
 

@@ -34,8 +34,13 @@ public class ScopeHierarchyTreeItem extends TreeItem<Object> {
      *
      * @return Root of the tree
      */
-    public static ScopeHierarchyTreeItem buildAscendantHerarchy(Node node) {
+    public static ScopeHierarchyTreeItem buildAscendantHierarchy(Node node) {
         ScopeHierarchyTreeItem item = buildAscendantHierarchyHelper(getScope(node));
+
+        if (item == null) {
+            return null;
+        }
+
         while (item.getParent() != null) {
             item = (ScopeHierarchyTreeItem) item.getParent();
         }
