@@ -10,7 +10,7 @@
 }
 
 #mainCodeEditorArea .semicolon {
-    -fx-font-weight: bold;
+
 }
 
 #mainCodeEditorArea .annotation {
@@ -34,7 +34,7 @@
 }
 
 #mainCodeEditorArea .multi-line-comment {
-    -fx-fill: #4a5d64;
+    -fx-fill: #4e6971;
     -fx-font-style: italic;
 }
 

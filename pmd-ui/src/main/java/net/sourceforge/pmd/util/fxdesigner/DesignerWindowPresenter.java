@@ -33,11 +33,10 @@ import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsLoader;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsSaver;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlightings;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingComputer;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.ObservableList;
@@ -95,6 +94,7 @@ public class DesignerWindowPresenter {
             // no big deal
         }
 
+
         Designer.getMainStage().setOnCloseRequest(event -> {
             try {
                 saveSettings();
@@ -105,6 +105,8 @@ public class DesignerWindowPresenter {
             }
         });
 
+        initializeSyntaxHighlighting();
+
         view.sourceCodeProperty().addListener((observable, oldValue, newValue) -> {
             if (model.isRecompilationNeeded(newValue)) {
                 view.notifyOutdatedAST();
@@ -112,23 +114,6 @@ public class DesignerWindowPresenter {
                 view.acknowledgeUpdatedAST();
             }
         });
-
-        view.isSyntaxHighlightingEnabledProperty().addListener(((observable, wasEnabled, isEnabled) -> {
-            if (!wasEnabled && isEnabled) {
-                SyntaxHighlightingComputer computer = AvailableSyntaxHighlightings.getComputerForLanguage(model.getLanguageVersion().getLanguage());
-                if (computer != null) {
-                    view.getCodeEditorArea().setSyntaxHighlightingEnabled(computer);
-                    return;
-                }
-            } else if (isEnabled) {
-                return;
-            }
-            view.getCodeEditorArea().disableSyntaxHighlighting();
-        }));
-
-        view.onToggleSyntaxHighlightingClicked(null);
-        view.onToggleSyntaxHighlightingClicked(null);
-
 
         view.getRefreshASTButton().setOnAction(this::onRefreshASTClicked);
         view.getLicenseMenuItem().setOnAction(this::showLicensePopup);
@@ -142,11 +127,11 @@ public class DesignerWindowPresenter {
 
     /** Creates direct bindings from model properties to UI properties. */
     private void bindModelToView() {
-        ObjectBinding<LanguageVersion> langVersionBinding
-            = Bindings.createObjectBinding(() -> (LanguageVersion) languageVersionToggleGroup.getSelectedToggle().getUserData(),
-                                           languageVersionToggleGroup.selectedToggleProperty());
-
-        model.languageVersionProperty().bind(langVersionBinding);
+        languageVersionToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                model.languageVersionProperty().setValue((LanguageVersion) newValue.getUserData());
+            }
+        });
 
         ToggleGroup tg = view.getXpathVersionToggleGroup();
 
@@ -244,18 +229,37 @@ public class DesignerWindowPresenter {
         LanguageVersion defaultLangVersion = LanguageRegistry.getLanguage("Java").getDefaultVersion();
 
         for (LanguageVersion version : supported) {
-            RadioMenuItem item = new RadioMenuItem(version.getShortName());
-            item.setToggleGroup(languageVersionToggleGroup);
-            item.setUserData(version);
-            items.add(item);
+            if (version != null) {
+                RadioMenuItem item = new RadioMenuItem(version.getShortName());
+                item.setToggleGroup(languageVersionToggleGroup);
+                item.setUserData(version);
+                items.add(item);
 
-            if (version.equals(defaultLangVersion)) {
-                item.setSelected(true);
+                if (version.equals(defaultLangVersion)) {
+                    item.setSelected(true);
+                }
             }
         }
 
         view.getLanguageMenu().show();
 
+    }
+
+
+    private void initializeSyntaxHighlighting() {
+        view.isSyntaxHighlightingEnabledProperty().addListener(((observable, wasEnabled, isEnabled) -> {
+            if (!wasEnabled && isEnabled) {
+                updateSyntaxHighlighter();
+            } else if (!isEnabled) {
+                view.getCodeEditorArea().disableSyntaxHighlighting();
+            }
+        }));
+
+        model.languageVersionProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && !newVal.equals(oldVal)) {
+                updateSyntaxHighlighter();
+            }
+        });
     }
 
 
@@ -383,11 +387,21 @@ public class DesignerWindowPresenter {
             }
         }
 
-        MenuItem moreItem = new MenuItem();
-        moreItem.setText("...");
-        moreItem.setOnAction(this::onOpenFileClicked);
-        openRecentMenuItems.add(moreItem);
+        MenuItem clearItem = new MenuItem();
+        clearItem.setText("Clear recents");
+        clearItem.setOnAction(e -> recentFiles.clear());
+        openRecentMenuItems.add(clearItem);
         view.getOpenRecentMenu().show();
+    }
+
+
+    private void updateSyntaxHighlighter() {
+        SyntaxHighlighter computer = AvailableSyntaxHighlightings.getComputerForLanguage(model.getLanguageVersion().getLanguage());
+        if (computer != null) {
+            view.getCodeEditorArea().setSyntaxHighlightingEnabled(computer);
+        } else {
+            view.getCodeEditorArea().disableSyntaxHighlighting();
+        }
     }
 
 

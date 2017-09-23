@@ -18,15 +18,15 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.Java
  * @since 6.0.0
  */
 public enum AvailableSyntaxHighlightings {
-    JAVA("java", new SyntaxHighlightingComputer(new JavaSyntaxHighlighter())),
-    APEX("apex", new SyntaxHighlightingComputer(new ApexSyntaxHighlighter()));
+    JAVA("java", new JavaSyntaxHighlighter()),
+    APEX("apex", new ApexSyntaxHighlighter());
 
 
     private final String language;
-    private final SyntaxHighlightingComputer computer;
+    private final SyntaxHighlighter computer;
 
 
-    AvailableSyntaxHighlightings(String languageTerseName, SyntaxHighlightingComputer computer) {
+    AvailableSyntaxHighlightings(String languageTerseName, SyntaxHighlighter computer) {
         this.language = languageTerseName;
         this.computer = computer;
     }
@@ -39,7 +39,7 @@ public enum AvailableSyntaxHighlightings {
      *
      * @return A highlighting computer if available, otherwise null
      */
-    public static SyntaxHighlightingComputer getComputerForLanguage(Language language) {
+    public static SyntaxHighlighter getComputerForLanguage(Language language) {
         Optional<AvailableSyntaxHighlightings> found = Arrays.stream(AvailableSyntaxHighlightings.values())
                                                              .filter(e -> e.language.equals(language.getTerseName()))
                                                              .findFirst();

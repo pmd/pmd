@@ -35,7 +35,7 @@ class StyleContext implements Iterable<StyleLayer> {
     /** Contains the primary highlighting layers. */
     private Map<String, StyleLayer> layersById = new HashMap<>();
 
-    private SyntaxHighlightingComputer highlightingComputer;
+    private SyntaxHighlighter highlightingComputer;
     private ExecutorService executorService;
     private boolean isSyntaxHighlightingEnabled;
 
@@ -72,7 +72,7 @@ class StyleContext implements Iterable<StyleLayer> {
      *
      * @param computer The computer to use
      */
-    public void setSyntaxHighlighting(SyntaxHighlightingComputer computer) {
+    public void setSyntaxHighlighting(SyntaxHighlighter computer) {
         isSyntaxHighlightingEnabled = true;
         Objects.requireNonNull(computer, "The syntax highlighting computer cannot be null");
 
@@ -95,7 +95,7 @@ class StyleContext implements Iterable<StyleLayer> {
     }
 
 
-    private void setSyntaxHighlightingComputer(SyntaxHighlightingComputer computer) {
+    private void setSyntaxHighlightingComputer(SyntaxHighlighter computer) {
         this.highlightingComputer = computer;
         if (executorService != null) {
             executorService.shutdown();

@@ -62,7 +62,7 @@ public class CustomCodeArea extends CodeArea {
     }
 
 
-    public void setSyntaxHighlightingEnabled(SyntaxHighlightingComputer computer) {
+    public void setSyntaxHighlightingEnabled(SyntaxHighlighter computer) {
         styleContext.setSyntaxHighlighting(computer);
         this.replaceText(0, 0, " ");
         this.undo();

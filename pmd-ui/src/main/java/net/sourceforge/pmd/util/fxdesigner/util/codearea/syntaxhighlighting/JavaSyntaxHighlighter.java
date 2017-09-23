@@ -9,13 +9,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
+
 /**
  * Syntax highlighter for Java.
  *
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class JavaSyntaxHighlighter implements SyntaxHighlighter {
+public class JavaSyntaxHighlighter extends SyntaxHighlighter {
 
 
     private static final String[] KEYWORDS = new String[] {
@@ -38,19 +40,20 @@ public class JavaSyntaxHighlighter implements SyntaxHighlighter {
     private static final String SEMICOLON_PATTERN = ";";
     private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"";
     private static final String SINGLELINE_COMMENT_PATTERN = "//[^\n]*";
-    private static final String MULTILINE_COMMENT_PATTERN = "/\\*(.|\\R)*?\\*/";
+    private static final String MULTILINE_COMMENT_PATTERN = "/\\*.*?\\*/";
     private static final String ANNOTATION_PATTERN = "@[\\w]+";
 
     private static final Pattern PATTERN = Pattern.compile(
         "(?<SINGLELINECOMMENT>" + SINGLELINE_COMMENT_PATTERN + ")"
             + "|(?<MULTILINECOMMENT>" + MULTILINE_COMMENT_PATTERN + ")"
-            + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")"
+            + "|(?<ANNOTATION>" + ANNOTATION_PATTERN + ")"
             + "|(?<PAREN>" + PAREN_PATTERN + ")"
             + "|(?<BRACE>" + BRACE_PATTERN + ")"
             + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
             + "|(?<SEMICOLON>" + SEMICOLON_PATTERN + ")"
-            + "|(?<STRING>" + STRING_PATTERN + ")"
-            + "|(?<ANNOTATION>" + ANNOTATION_PATTERN + ")"
+            + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")"
+            + "|(?<STRING>" + STRING_PATTERN + ")",
+        Pattern.DOTALL
     );
 
 

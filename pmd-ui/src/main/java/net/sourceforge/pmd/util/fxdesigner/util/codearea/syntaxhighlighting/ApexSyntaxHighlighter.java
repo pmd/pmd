@@ -9,13 +9,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
+
 /**
  * Syntax highlighter for Apex.
  *
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class ApexSyntaxHighlighter implements SyntaxHighlighter {
+public class ApexSyntaxHighlighter extends SyntaxHighlighter {
 
 
     private static final String[] KEYWORDS = new String[] {
@@ -42,7 +44,7 @@ public class ApexSyntaxHighlighter implements SyntaxHighlighter {
         "virtual", "webservice", "when", "where", "while", "yesterday",
         "after", "before", "count", "excludes", "first", "includes",
         "last", "order", "sharing", "with",
-    };
+        };
 
 
     private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
