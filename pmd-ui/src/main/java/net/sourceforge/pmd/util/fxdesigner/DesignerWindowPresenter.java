@@ -27,7 +27,7 @@ import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseTimeException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
-import net.sourceforge.pmd.util.fxdesigner.util.CustomCodeArea;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsLoader;
@@ -211,7 +211,7 @@ public class DesignerWindowPresenter {
 
 
     private void highlightNode(Node node, CustomCodeArea codeArea) {
-        codeArea.clearStyles();
+        codeArea.clearStyleLayers();
         codeArea.styleCss(node, Collections.singleton("node-highlight"));
         codeArea.paintCss();
     }

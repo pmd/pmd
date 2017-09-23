@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import org.fxmisc.richtext.CodeArea?>
-<?import net.sourceforge.pmd.util.fxdesigner.util.CustomCodeArea?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
