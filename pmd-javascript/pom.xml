@@ -99,7 +99,19 @@
             <groupId>org.mozilla</groupId>
             <artifactId>rhino</artifactId>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.saxon</groupId>
+            <artifactId>saxon</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-test</artifactId>
