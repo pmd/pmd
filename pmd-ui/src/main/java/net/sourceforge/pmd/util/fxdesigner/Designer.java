@@ -49,10 +49,11 @@ public class Designer extends Application {
     private void setIcons(Stage primaryStage) {
         ObservableList<Image> icons = primaryStage.getIcons();
         final String dirPrefix = "icons/app/";
-        List<String> imageNames = Arrays.asList("pmd-logo.png",
-                                                "pmd-logo_small.png",
-                                                "pmd-logo_tiny.png",
-                                                "pmd-logo_big.png");
+        List<String> imageNames = Arrays.asList("designer_logo.jpeg"
+                                               // "pmd-logo_small.png",
+                                               // "pmd-logo_tiny.png",
+                                               // "pmd-logo_big.png"
+                                                );
 
         // TODO make new icons
 
