@@ -8,12 +8,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.autofixes.Document;
-import net.sourceforge.pmd.autofixes.DocumentImp;
 
 /**
  * Tests for different operations over a document
  */
-public class PlaceholderTextOperationTest {
+public class RootTextOperationTest {
 
     private TextOperation textOperation;
     private Document document;
@@ -26,7 +25,7 @@ public class PlaceholderTextOperationTest {
         final String expectedStringAfterOperation = "void main() {}";
 
         document = new DocumentImp(initialString);
-        textOperation = new PlaceholderTextOperation(0, initialString.length());
+        textOperation = new RootTextOperation(initialString.length());
         textOperation.addChild(new DeleteTextOperation(0, text1ToDelete.length()));
         textOperation.addChild(new DeleteTextOperation(7, text2ToDelete.length()));
 
@@ -43,7 +42,7 @@ public class PlaceholderTextOperationTest {
         final String expectedStringAfterOperation = "static void main()";
 
         document = new DocumentImp(initialString);
-        textOperation = new PlaceholderTextOperation(0, initialString.length());
+        textOperation = new RootTextOperation(initialString.length());
         textOperation.addChild(new DeleteTextOperation(0, text1ToDelete.length()));
         textOperation.addChild(new DeleteTextOperation(25, text2ToDelete.length()));
 
@@ -57,7 +56,7 @@ public class PlaceholderTextOperationTest {
         final String initialString = "public static int main(String[] args, int dummy) {}";
         document = new DocumentImp(initialString);
 
-        textOperation = new PlaceholderTextOperation(0, initialString.length());
+        textOperation = new RootTextOperation(initialString.length());
         final String textToDelete = ", int dummy";
         textOperation.addChild(new DeleteTextOperation(36, textToDelete.length()));
         final String textToBeReplaced = "int";

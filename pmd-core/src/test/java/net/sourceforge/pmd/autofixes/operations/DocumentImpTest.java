@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.autofixes.Document;
-import net.sourceforge.pmd.autofixes.DocumentImp;
 
 /**
  * Tests for different type of creations of a document

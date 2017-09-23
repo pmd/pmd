@@ -23,7 +23,6 @@ public abstract class TextOperation implements Comparable<TextOperation> {
 
     private final Region region;
     private final List<TextOperation> children;
-    private TextOperation parent;
 
     /**
      * Default constructor for a text operation.
@@ -41,7 +40,7 @@ public abstract class TextOperation implements Comparable<TextOperation> {
      *
      * @return -1 if this textOperation ends before the other textOperation; 1 if this textOperation
      *      starts after the other textOperation ends; 0 if both textOperations start at the same offset
-     *      and have length equal to zero
+     *      and have length equal to zero (represented as an insert operation)
      * @throws IllegalArgumentException if both textOperations overlap
      */
     @Override
@@ -50,6 +49,7 @@ public abstract class TextOperation implements Comparable<TextOperation> {
 
         final int comparison;
 
+        // If both operations are an insert operation
         if (getOffset() == other.getOffset() && getLength() == 0 && other.getLength() == 0) {
             comparison = 0;
         } else if (getOffsetAfterEnding() <= other.getOffset()) {
@@ -83,7 +83,6 @@ public abstract class TextOperation implements Comparable<TextOperation> {
         final int indexToAddChild = getIndexToAddChild(childToAdd);
 
         children.add(indexToAddChild, childToAdd);
-        childToAdd.setParent(this);
     }
 
     private boolean containsChildRegion(final TextOperation childToAdd) {
@@ -95,68 +94,24 @@ public abstract class TextOperation implements Comparable<TextOperation> {
     }
 
     private int getIndexToAddChild(final TextOperation childToAdd) {
-        final int index;
+        int potentialIndex = Collections.binarySearch(children, childToAdd);
 
-        if (children.isEmpty()) {
-            index = 0;
-        } else if (startsAfterLastChild(childToAdd)) {
-            index = children.size();
-        } else {
-            int potentialIndex = Collections.binarySearch(children, childToAdd);
-
-            if (potentialIndex < 0) {
-                index = -(potentialIndex + 1);
-            } else {
-                final int childrenLastIndex = children.size() - 1;
-
-                while (potentialIndex < childrenLastIndex && compareAdjacentChildren(potentialIndex) == 0) {
-                    potentialIndex++;
-                }
-
-                index = potentialIndex + 1;
-            }
+        if (potentialIndex < 0) { // It is not an insert operation
+            return -(potentialIndex + 1);
         }
 
-        return index;
+        final int childrenLastIndex = children.size() - 1;
+
+        // Of all the insert operations at this offset this one will be to the rightmost
+        while (potentialIndex < childrenLastIndex && compareAdjacentChildren(potentialIndex) == 0) {
+            potentialIndex++;
+        }
+
+        return potentialIndex + 1;
     }
 
     private int compareAdjacentChildren(final int index) {
         return children.get(index).compareTo(children.get(index + 1));
-    }
-
-    private boolean startsAfterLastChild(final TextOperation childToAdd) {
-        final int childrenLastIndex = children.size() - 1;
-
-        return children.get(childrenLastIndex).getOffsetAfterEnding() <= childToAdd.getOffset();
-    }
-
-    private void setParent(final TextOperation parent) {
-        this.parent = parent;
-    }
-
-    /**
-     * Get the parent of this text Operation.
-     *
-     * @return the instance of the parent; null if this instance is a root text Operation
-     */
-    public final TextOperation getParentTextOperation() {
-        return parent;
-    }
-
-    /**
-     * Get the root Text Operation of the tree in which this instance belongs.
-     *
-     * @return the instance of the root text Operation; null if this instance is a root text Operation
-     */
-    public final TextOperation getRootTextOperation() {
-        TextOperation currentRoot = this;
-        TextOperation currentParent;
-
-        while ((currentParent = currentRoot.getParentTextOperation()) != null) {
-            currentRoot = currentParent;
-        }
-
-        return currentRoot;
     }
 
     private int getOffsetAfterEnding() {
@@ -177,75 +132,6 @@ public abstract class TextOperation implements Comparable<TextOperation> {
      */
     protected int getLength() {
         return region.getLength();
-    }
-
-    /**
-     * Attempt to remove the child at the specified index. If the child is removed then its parent is
-     * removed and then it is returned.
-     *
-     * @param indexOfChild index which corresponds to the child to be removed.
-     * @return the child removed
-     * @throws IndexOutOfBoundsException if a child does not exist in the corresponding index
-     */
-    public final TextOperation removeAndGetChild(final int indexOfChild) {
-        final TextOperation childRemoved = children.remove(indexOfChild);
-
-        childRemoved.setParent(null);
-
-        return childRemoved;
-    }
-
-    /**
-     * Attempt to remove a child identified by its instance. Before returning, the child's parent is
-     * removed.
-     *
-     * @param childToRemove child instance to be removed from this instance's children.
-     * @return true if the child was removed; false if the child's instance was not found
-     */
-    public final boolean removeChild(final TextOperation childToRemove) {
-        final boolean isRemoved = children.remove(childToRemove);
-
-        if (isRemoved) {
-            childToRemove.setParent(null);
-        }
-
-        return isRemoved;
-    }
-
-    /**
-     * Remove all the children from this instance, set their parent to null and return a new list
-     * containing the children.
-     *
-     * @return a list of the removed children. If there are not children, then the list will be empty
-     */
-    public final List<TextOperation> removeAndGetChildren() {
-        final List<TextOperation> childrenToReturn = getShallowCopyOfChildren();
-
-        children.clear();
-        for (final TextOperation children : childrenToReturn) {
-            children.setParent(null);
-        }
-
-        return childrenToReturn;
-    }
-
-    /**
-     * Create and return a new list containing all the instance's children. If any child included in
-     * this instance is modified, then its changes will be reflected in this child's instance.
-     *
-     * @return the list containing the children
-     */
-    public final List<TextOperation> getShallowCopyOfChildren() {
-        return new ArrayList<>(children);
-    }
-
-    /**
-     * Checks if this instance has any children.
-     *
-     * @return true if this instance has at least one child; false if it hasn't got any children
-     */
-    public final boolean hasChildren() {
-        return !children.isEmpty();
     }
 
     /**
@@ -284,16 +170,11 @@ public abstract class TextOperation implements Comparable<TextOperation> {
         update the delta of its siblings to the right;
          */
         for (int indexChild = getChildrenSize() - 1; indexChild >= 0; indexChild--) {
-            final TextOperation child = getChildAtIndex(indexChild);
-
+            final TextOperation child = children.get(indexChild);
             accumulatedDelta += child.applyTextOperationTreeToDocumentAndGetDelta(document);
         }
 
         return accumulatedDelta;
-    }
-
-    private TextOperation getChildAtIndex(final int indexChild) {
-        return children.get(indexChild);
     }
 
     /* package-private */

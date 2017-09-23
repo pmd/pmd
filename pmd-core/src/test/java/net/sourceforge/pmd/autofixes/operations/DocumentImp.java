@@ -2,22 +2,29 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.autofixes;
+package net.sourceforge.pmd.autofixes.operations;
 
 import java.util.Objects;
 
+import net.sourceforge.pmd.autofixes.Document;
+import net.sourceforge.pmd.autofixes.Region;
+
+/**
+ * Note: this implementation should only be used as a proof of concept and it is nowhere near a final implementation to
+ * be used in production code.
+ */
 public class DocumentImp implements Document {
 
-    private StringBuffer stream;
+    private StringBuilder stream;
 
     public DocumentImp() {
-        stream = new StringBuffer();
+        stream = new StringBuilder();
     }
 
     public DocumentImp(final String documentAsString) {
         Objects.requireNonNull(documentAsString);
 
-        stream = new StringBuffer(documentAsString);
+        stream = new StringBuilder(documentAsString);
     }
 
     @Override
@@ -51,7 +58,7 @@ public class DocumentImp implements Document {
 
     @Override
     public String getAsString() {
-        return new String(stream);
+        return stream.toString();
     }
 
     @Override

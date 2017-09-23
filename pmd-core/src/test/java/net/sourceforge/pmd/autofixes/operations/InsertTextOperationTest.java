@@ -9,9 +9,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import net.sourceforge.pmd.autofixes.Document;
-import net.sourceforge.pmd.autofixes.DocumentImp;
-
-
 
 
 /**
