@@ -30,15 +30,18 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Control;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
 import javafx.util.Duration;
 
 /**
@@ -49,6 +52,14 @@ import javafx.util.Duration;
  */
 public class DesignerWindow implements Initializable {
 
+    @FXML
+    private TabPane bottomTabPane;
+    @FXML
+    private ToggleButton bottomPaneToggle;
+    @FXML
+    private Tab eventLogTab;
+    @FXML
+    private ListView eventLogListView;
     @FXML
     private ChoiceBox<String> xpathVersionChoiceBox;
     @FXML
@@ -88,7 +99,7 @@ public class DesignerWindow implements Initializable {
     @FXML
     private TreeView<Node> astTreeView;
     @FXML
-    private TitledPane xpathEditorTitledPane;
+    private Tab xpathEditorTab;
     @FXML
     private SplitPane editorPanelHorizontalSplitPane;
     @FXML
@@ -131,12 +142,12 @@ public class DesignerWindow implements Initializable {
         final double bottomEditorPaneMinHeightWhenMaximized = violationsTitledPane.getPrefHeight();
         final double bottomEditorPaneMinHeightWhenNotMaximized = violationsTitledPane.getPrefHeight();
 
-        // Fold xpath panel
-        xpathEditorTitledPane.expandedProperty().addListener((observable, wasExpanded, isNowExpanded) -> {
+        // show/ hide bottom pane
+        bottomPaneToggle.selectedProperty().addListener((observable, wasExpanded, isNowExpanded) -> {
             KeyValue keyValue = null;
             DoubleProperty divPosition = editorPanelHorizontalSplitPane.getDividers().get(0).positionProperty();
             if (wasExpanded && !isNowExpanded) {
-                xpathEditorTitledPane.setMinHeight(Control.USE_COMPUTED_SIZE);
+                bottomTabPane.setMinHeight(Region.USE_COMPUTED_SIZE);
                 keyValue = new KeyValue(divPosition, 1);
             } else if (!wasExpanded && isNowExpanded) {
                 keyValue = new KeyValue(divPosition, defaultMainHorizontalSplitPaneDividerPosition);
@@ -147,9 +158,9 @@ public class DesignerWindow implements Initializable {
                 timeline.setOnFinished(e -> {
                     if (isNowExpanded) {
                         if (Designer.getMainStage().isMaximized()) {
-                            xpathEditorTitledPane.setMinHeight(bottomEditorPaneMinHeightWhenMaximized);
+                            bottomTabPane.setMinHeight(bottomEditorPaneMinHeightWhenMaximized);
                         } else {
-                            xpathEditorTitledPane.setMinHeight(bottomEditorPaneMinHeightWhenNotMaximized);
+                            bottomTabPane.setMinHeight(bottomEditorPaneMinHeightWhenNotMaximized);
                         }
                     }
                 });
@@ -157,21 +168,21 @@ public class DesignerWindow implements Initializable {
             }
         });
 
-
+        // Set width of left pane
         Designer.getMainStage().maximizedProperty().addListener((obs, wasMaximized, isNowMaximized) -> {
             if (isNowMaximized) {
                 final double maximizedLeftToolbarWidth = 250;
                 ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMinWidth(maximizedLeftToolbarWidth);
                 ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMaxWidth(maximizedLeftToolbarWidth);
-                if (xpathEditorTitledPane.isExpanded()) {
-                    xpathEditorTitledPane.setMinHeight(bottomEditorPaneMinHeightWhenMaximized);
+                if (bottomPaneToggle.isSelected()) {
+                    bottomTabPane.setMinHeight(bottomEditorPaneMinHeightWhenMaximized);
                 }
             } else {
                 final double unmaximizedLeftToolbarWidth = 200;
                 ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMinWidth(unmaximizedLeftToolbarWidth);
                 ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMaxWidth(unmaximizedLeftToolbarWidth);
-                if (xpathEditorTitledPane.isExpanded()) {
-                    xpathEditorTitledPane.setMinHeight(bottomEditorPaneMinHeightWhenNotMaximized);
+                if (bottomPaneToggle.isSelected()) {
+                    bottomTabPane.setMinHeight(bottomEditorPaneMinHeightWhenNotMaximized);
                 }
             }
         });
@@ -186,7 +197,7 @@ public class DesignerWindow implements Initializable {
                                               editorPanelHorizontalSplitPane.setDividerPosition(0, .5);
                                           }
 
-                                          if (!xpathEditorTitledPane.isExpanded() && oldValue.doubleValue() == 1) {
+                                          if (!bottomPaneToggle.isSelected() && oldValue.doubleValue() == 1) {
                                               editorPanelHorizontalSplitPane.setDividerPosition(0, 1);
                                           }
                                       });
@@ -275,8 +286,8 @@ public class DesignerWindow implements Initializable {
     }
 
 
-    public TitledPane getXpathEditorTitledPane() {
-        return xpathEditorTitledPane;
+    public Tab getXpathEditorTab() {
+        return xpathEditorTab;
     }
 
 
@@ -335,5 +346,25 @@ public class DesignerWindow implements Initializable {
 
     public ChoiceBox<String> getXpathVersionChoiceBox() {
         return xpathVersionChoiceBox;
+    }
+
+
+    public ToggleButton getBottomPaneToggle() {
+        return bottomPaneToggle;
+    }
+
+
+    public Tab getEventLogTab() {
+        return eventLogTab;
+    }
+
+
+    public ListView getEventLogListView() {
+        return eventLogListView;
+    }
+
+
+    public TabPane getBottomTabPane() {
+        return bottomTabPane;
     }
 }

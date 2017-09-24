@@ -1,9 +1,4 @@
 
-.code {
-    -fx-font-family: "monospace";
-    -fx-font-size: 11pt;
-}
-
 .titled-pane > .title {
     -fx-pref-height: 28.0;
 }
@@ -15,7 +10,24 @@
 }
 
 
-.lineno {
-    -fx-font-size: 80%;
-    -fx-font-weight: normal;
+
+
+.tab-pane {
+    -fx-tab-min-height: 28.0;
+    -fx-tab-max-height: 28.0;
+}
+
+.tab:focused {
+    /*-fx-focus-color: transparent;*/
+}
+.tab {
+    -fx-padding: 0 30 0 30;
+}
+
+.tab-pane:top *.tab-header-area {
+    -fx-padding: 0.0em 0.166667em 0.0em 0.0em;
+}
+.tab:selected .focus-indicator {
+    -fx-focus-color: transparent;
+    -fx-border-color: transparent;
 }

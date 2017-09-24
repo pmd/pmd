@@ -496,13 +496,13 @@ public class DesignerWindowPresenter {
 
 
     String isXPathPanelExpanded() {
-        return Boolean.toString(view.getXpathEditorTitledPane().isExpanded());
+        return Boolean.toString(view.getBottomPaneToggle().isSelected());
     }
 
 
     void setIsXPathPanelExpanded(String bool) {
         boolean b = Boolean.parseBoolean(bool);
-        view.getXpathEditorTitledPane().setExpanded(b);
+        view.getBottomPaneToggle().setSelected(b);
     }
 
 

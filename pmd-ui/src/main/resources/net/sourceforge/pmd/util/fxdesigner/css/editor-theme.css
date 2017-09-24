@@ -5,11 +5,31 @@
     -fx-fill: royalblue !important;
 }
 
+/* Base */
+
 .styled-text-area {
     -fx-background-color: #F5F5F5;
     -fx-border-color: -fx-outer-border, -fx-text-box-border;
     -fx-border-insets: -4 -4 -6 -5, -2 -2 -5 -3;
 }
+
+.paragraph-box:has-caret {
+    -fx-background-color: #FDF6E3;
+}
+
+.text {
+    -fx-fill: #585858;
+    -fx-font-size: 10.5pt;
+}
+
+/* Line numbers */
+.lineno {
+    -fx-fill: #586E75;
+    -fx-font-size: 80%;
+    -fx-font-weight: normal;
+}
+
+/* Syntax highlighting base */
 
 .styled-text-area .keyword {
     -fx-fill: #B58900;
@@ -42,18 +62,6 @@
     -fx-font-style: italic; /* doesn't work... */
 }
 
-.paragraph-box:has-caret {
-    -fx-background-color: #FDF6E3;
-}
-
-.text {
-    -fx-fill: #585858;
-}
-
-.lineno {
-    -fx-fill: #586E75;
-}
-
 .styled-text-area .semicolon {
 
 }
@@ -72,8 +80,8 @@
 
 /* XPath specific */
 
-#xpathExpressionArea {
-    -fx-font-size: 11pt;
+#xpathExpressionArea .text {
+    -fx-font-size: 11.5pt;
 }
 
 .styled-text-area  .xpath.path {

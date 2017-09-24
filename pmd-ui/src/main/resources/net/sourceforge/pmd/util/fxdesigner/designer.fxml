@@ -14,13 +14,13 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.control.TreeView?>
@@ -66,11 +66,11 @@
                                 <VBox layoutX="84.0" layoutY="14.0" prefHeight="200.0" prefWidth="100.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
                                         <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                                        <TitledPane collapsible="false" prefHeight="300.0" prefWidth="200.0" text="Node information">
+                                        <TitledPane collapsible="false" prefHeight="300.0" prefWidth="200.0" text="Node Information">
                                             <content>
                                                 <Accordion fx:id="nodeInfoAccordion" prefHeight="300.0" prefWidth="236.0">
                                                     <panes>
-                                                        <TitledPane prefHeight="234.0" prefWidth="236.0" text="XPath attributes" fx:id="xpathAttributesTitledPane">
+                                                        <TitledPane prefHeight="234.0" prefWidth="236.0" text="XPath Attributes" fx:id="xpathAttributesTitledPane">
                                                             <content>
                                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                                     <children>
@@ -79,7 +79,7 @@
                                                                 </AnchorPane>
                                                             </content>
                                                         </TitledPane>
-                                                        <TitledPane animated="false" text="Scope hierarchy">
+                                                        <TitledPane animated="false" text="Scope Hierarchy">
                                                             <content>
                                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                                     <children>
@@ -101,7 +101,7 @@
                                                 </Accordion>
                                             </content>
                                         </TitledPane>
-                                        <TitledPane fx:id="violationsTitledPane" animated="false" collapsible="false" prefHeight="232.0" prefWidth="236.0" text="Matched nodes">
+                                        <TitledPane fx:id="violationsTitledPane" animated="false" collapsible="false" prefHeight="232.0" prefWidth="236.0" text="Matched Nodes">
                                             <content>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                     <children>
@@ -122,7 +122,7 @@
                                             <items>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                     <children>
-                                                        <TitledPane collapsible="false" prefHeight="200.0" prefWidth="200.0" text="Source code" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                        <TitledPane collapsible="false" prefHeight="200.0" prefWidth="200.0" text="Source Code" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <content>
                                                                 <CustomCodeArea fx:id="codeEditorArea" prefHeight="346.0" prefWidth="445.0" styleClass="code" stylesheets="@css/editor-theme.css">
                                                                     <contextMenu>
@@ -158,9 +158,10 @@
                                                     </tooltip>
                                                 </Button>
                                                 <ChoiceBox fx:id="languageChoiceBox" prefHeight="25.0" prefWidth="115.0" />
-                                    <ChoiceBox prefHeight="25.0" prefWidth="115.0" fx:id="xpathVersionChoiceBox" />
+                                                <ChoiceBox prefHeight="25.0" prefWidth="115.0" fx:id="xpathVersionChoiceBox" />
 
                                                 <Pane HBox.hgrow="ALWAYS" />
+                                                <ToggleButton fx:id="bottomPaneToggle" mnemonicParsing="false" text="Bottom Panel" />
                                             </items>
                                             <BorderPane.margin>
                                                 <Insets />
@@ -170,15 +171,28 @@
                                 </BorderPane>
                                 <AnchorPane>
                                     <children>
-                                        <TitledPane alignment="BOTTOM_LEFT" animated="false" prefHeight="220.0" prefWidth="898.0" text="XPath editor" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="xpathEditorTitledPane">
-                                            <content>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                                                    <children>
-                                                        <CustomCodeArea stylesheets="@css/editor-theme.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="xpathExpressionArea" />
-                                                    </children>
-                                                </AnchorPane>
-                                            </content>
-                                        </TitledPane>
+                                        <TabPane fx:id="bottomTabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <tabs>
+                                                <Tab text="XPath Editor" fx:id="xpathEditorTab">
+                                                    <content>
+                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                            <children>
+                                                                <CustomCodeArea stylesheets="@css/editor-theme.css" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0" fx:id="xpathExpressionArea" />
+                                                            </children>
+                                                        </AnchorPane>
+                                                    </content>
+                                                </Tab>
+                                                <Tab fx:id="eventLogTab" text="Event Log">
+                                                    <content>
+                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                            <children>
+                                                                <ListView fx:id="eventLogListView" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0" />
+                                                            </children>
+                                                        </AnchorPane>
+                                                    </content>
+                                                </Tab>
+                                            </tabs>
+                                        </TabPane>
                                     </children>
                                 </AnchorPane>
                             </items>
