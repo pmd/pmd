@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,9 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import org.fxmisc.richtext.StyleSpan;
@@ -24,64 +20,19 @@ import org.fxmisc.richtext.StyleSpans;
 import org.fxmisc.richtext.StyleSpansBuilder;
 
 /**
- * Stores the current style layers and flattens them into a {@link StyleSpans} to style the text.
+ * Stores the current style layers and can flattens them into a {@link StyleSpans} to style the text.
  */
 class StyleContext implements Iterable<StyleLayer> {
 
-    private static final String SYNTAX_HIGHLIGHT_LAYER_ID = "syntax";
 
     private final CustomCodeArea codeArea;
 
     /** Contains the primary highlighting layers. */
     private Map<String, StyleLayer> layersById = new HashMap<>();
 
-    private SyntaxHighlighter highlightingComputer;
-    private ExecutorService executorService;
-    private boolean isSyntaxHighlightingEnabled;
-
 
     StyleContext(CustomCodeArea codeArea) {
         this.codeArea = codeArea;
-    }
-
-
-    public boolean isSyntaxHighlightingEnabled() {
-        return isSyntaxHighlightingEnabled;
-    }
-
-
-    /**
-     * Disables syntax highlighting if enabled.
-     */
-    public void disableSyntaxHighlighting() {
-        if (isSyntaxHighlightingEnabled) {
-            isSyntaxHighlightingEnabled = false;
-            if (executorService != null) {
-                executorService.shutdown();
-            }
-            StyleLayer syntaxHighlightLayer = layersById.get(SYNTAX_HIGHLIGHT_LAYER_ID);
-            if (syntaxHighlightLayer != null) {
-                syntaxHighlightLayer.clearStyles();
-            }
-        }
-    }
-
-
-    /**
-     * Enables syntax highlighting if disabled and sets it to use the given computer.
-     *
-     * @param computer The computer to use
-     */
-    public void setSyntaxHighlighting(SyntaxHighlighter computer) {
-        isSyntaxHighlightingEnabled = true;
-        Objects.requireNonNull(computer, "The syntax highlighting computer cannot be null");
-
-        StyleLayer syntaxHighlightLayer = layersById.get(SYNTAX_HIGHLIGHT_LAYER_ID);
-        if (syntaxHighlightLayer == null) {
-            layersById.put(SYNTAX_HIGHLIGHT_LAYER_ID, new StyleLayer(SYNTAX_HIGHLIGHT_LAYER_ID, codeArea));
-        }
-
-        setSyntaxHighlightingComputer(computer);
     }
 
 
@@ -92,37 +43,6 @@ class StyleContext implements Iterable<StyleLayer> {
 
     StyleLayer getLayer(String id) {
         return layersById.get(id);
-    }
-
-
-    private void setSyntaxHighlightingComputer(SyntaxHighlighter computer) {
-        this.highlightingComputer = computer;
-        if (executorService != null) {
-            executorService.shutdown();
-        }
-        if (isSyntaxHighlightingEnabled && highlightingComputer != null) {
-            executorService = Executors.newSingleThreadExecutor();
-            codeArea.richChanges()
-                    .filter(ch -> !ch.getInserted().equals(ch.getRemoved())) // XXX
-                    .successionEnds(Duration.ofMillis(500))
-                    .supplyTask(() -> highlightingComputer.computeHighlightingAsync(codeArea.getText(), executorService))
-                    .awaitLatest(codeArea.richChanges())
-                    .filterMap(t -> {
-                        if (t.isSuccess()) {
-                            return Optional.of(t.get());
-                        } else {
-                            t.getFailure().printStackTrace();
-                            return Optional.empty();
-                        }
-                    })
-                    .subscribe(bounds -> {
-                        StyleLayer layer = layersById.get(SYNTAX_HIGHLIGHT_LAYER_ID);
-                        assert layer != null;
-                        layer.setBounds(bounds);
-                        codeArea.paintCss(); // TODO too high level method
-                    });
-            codeArea.getStylesheets().add(computer.getCssFileIdentifier());
-        }
     }
 
 
