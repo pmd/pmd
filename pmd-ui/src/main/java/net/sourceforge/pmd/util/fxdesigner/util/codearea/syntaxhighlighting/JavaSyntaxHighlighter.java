@@ -38,6 +38,8 @@ public class JavaSyntaxHighlighter extends SyntaxHighlighter {
     private static final String BRACE_PATTERN = "[{}]";
     private static final String BRACKET_PATTERN = "[\\[]]";
     private static final String SEMICOLON_PATTERN = ";";
+    private static final String CLASS_IDENT_PATTERN = "\\b[A-Z][\\w_$]*\\b";
+    private static final String NUMBER_PATTERN = "\\b\\d+[fdlFDL]*\\b";
     private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"";
     private static final String SINGLELINE_COMMENT_PATTERN = "//[^\n]*";
     private static final String MULTILINE_COMMENT_PATTERN = "/\\*.*?\\*/";
@@ -48,10 +50,12 @@ public class JavaSyntaxHighlighter extends SyntaxHighlighter {
             + "|(?<MULTILINECOMMENT>" + MULTILINE_COMMENT_PATTERN + ")"
             + "|(?<ANNOTATION>" + ANNOTATION_PATTERN + ")"
             + "|(?<PAREN>" + PAREN_PATTERN + ")"
+            + "|(?<NUMBER>" + NUMBER_PATTERN + ")"
             + "|(?<BRACE>" + BRACE_PATTERN + ")"
             + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
             + "|(?<SEMICOLON>" + SEMICOLON_PATTERN + ")"
             + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")"
+            + "|(?<CLASSIDENT>" + CLASS_IDENT_PATTERN + ")"
             + "|(?<STRING>" + STRING_PATTERN + ")",
         Pattern.DOTALL
     );
@@ -65,8 +69,10 @@ public class JavaSyntaxHighlighter extends SyntaxHighlighter {
         map.put("KEYWORD", "keyword");
         map.put("PAREN", "paren");
         map.put("BRACE", "brace");
+        map.put("NUMBER", "number");
         map.put("BRACKET", "bracket");
         map.put("SEMICOLON", "semicolon");
+        map.put("CLASSIDENT", "class-ident");
         map.put("STRING", "string");
         map.put("ANNOTATION", "annotation");
         return Collections.unmodifiableMap(map);

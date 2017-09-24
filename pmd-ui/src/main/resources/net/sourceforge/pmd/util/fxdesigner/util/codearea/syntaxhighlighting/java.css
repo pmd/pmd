@@ -1,7 +1,7 @@
 /* Theme based on Solarized Light for Eclipse, http://www.eclipsecolorthemes.org/?view=theme&id=1013 */
 
 #mainCodeEditorArea {
-    -fx-background-color: #FDF6E3;
+    -fx-background-color: #F5F5F5;
 }
 
 #mainCodeEditorArea .keyword {
@@ -33,8 +33,16 @@
     -fx-fill: #317ECC;
 }
 
+#mainCodeEditorArea .number {
+    -fx-fill: #317ECC;
+}
+
+#mainCodeEditorArea .class-ident {
+    -fx-fill: #B05A65;
+}
+
 #mainCodeEditorArea .multi-line-comment {
-    -fx-fill: #4e6971;
+    -fx-fill: #93A1A1;
     -fx-font-style: italic;
 }
 
@@ -48,7 +56,8 @@
 }
 
 .text {
-    -fx-fill: #657A81;
+    /* -fx-fill: #657A81; */
+    -fx-fill: #585858;
 }
 
 .lineno {
