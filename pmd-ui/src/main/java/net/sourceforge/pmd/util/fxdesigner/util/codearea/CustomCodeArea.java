@@ -13,7 +13,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 /**
- * Code area that can handle syntax highlighting as well as regular node highlighting.
+ * Code area that can handle syntax highlighting as well as regular node highlighting. Regular node highlighting is
+ * handled in the "primary" {@link StyleLayer}, which you can affect with {@link #styleCss(Node, Set)}, {@link
+ * #clearPrimaryStyleLayer()} and the like. Syntax highlighting uses another internal style layer.
  *
  * @author Clément Fournier
  * @since 6.0.0
@@ -49,9 +51,14 @@ public class CustomCodeArea extends CodeArea {
     }
 
 
-    public void restylePrimaryCssLayer(Node node, Set<String> cssClasses) {
-        styleContext.getLayer(PRIMARY_HIGHLIGHT_LAYER_ID).clearStyles();
+    public void restylePrimaryStyleLayer(Node node, Set<String> cssClasses) {
+        clearPrimaryStyleLayer();
         styleCss(node, cssClasses);
+    }
+
+
+    public void clearPrimaryStyleLayer() {
+        styleContext.getLayer(PRIMARY_HIGHLIGHT_LAYER_ID).clearStyles();
     }
 
 

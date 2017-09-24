@@ -7,7 +7,6 @@ package net.sourceforge.pmd.util.fxdesigner.view;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -78,7 +77,7 @@ public class DesignerWindow implements Initializable {
     @FXML
     private Button refreshASTButton;
     @FXML
-    private CodeArea xpathExpressionArea;
+    private CustomCodeArea xpathExpressionArea;
     @FXML
     private ListView<Node> xpathResultListView;
     @FXML
@@ -252,7 +251,7 @@ public class DesignerWindow implements Initializable {
     }
 
 
-    public CodeArea getXpathExpressionArea() {
+    public CustomCodeArea getXpathExpressionArea() {
         return xpathExpressionArea;
     }
 

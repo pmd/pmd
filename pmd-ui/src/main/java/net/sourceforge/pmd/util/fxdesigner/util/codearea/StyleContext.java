@@ -152,6 +152,7 @@ class StyleContext implements Iterable<StyleLayer> {
                                                .filter(Objects::nonNull)
                                                .flatMap(layer -> layer.getBounds().stream())
                                                .filter(Objects::nonNull)
+                                               .filter(spanBound -> !spanBound.getCssClasses().isEmpty())
                                                .sorted()
                                                .collect(Collectors.toList());
 

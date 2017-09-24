@@ -31,9 +31,10 @@ import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsLoader;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsSaver;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlightings;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow;
 
 import javafx.beans.binding.Bindings;
@@ -102,6 +103,7 @@ public class DesignerWindowPresenter {
             try {
                 saveSettings();
                 view.getCodeEditorArea().disableSyntaxHighlighting(); // shutdown the executor
+                view.getXpathExpressionArea().disableSyntaxHighlighting();
             } catch (IOException e) {
                 e.printStackTrace();
                 // no big deal
@@ -215,7 +217,7 @@ public class DesignerWindowPresenter {
 
 
     private void highlightNode(Node node, CustomCodeArea codeArea) {
-        codeArea.restylePrimaryCssLayer(node, Collections.singleton("node-highlight"));
+        codeArea.restylePrimaryStyleLayer(node, Collections.singleton("node-highlight"));
         codeArea.paintCss();
     }
 
@@ -260,6 +262,8 @@ public class DesignerWindowPresenter {
                 updateSyntaxHighlighter();
             }
         });
+
+        view.getXpathExpressionArea().setSyntaxHighlightingEnabled(new XPathSyntaxHighlighter());
     }
 
 
@@ -267,6 +271,7 @@ public class DesignerWindowPresenter {
         String source = view.getCodeEditorArea().getText();
         if (model.isRecompilationNeeded(source)) {
             refreshAST(source);
+            view.getCodeEditorArea().clearPrimaryStyleLayer();
         }
         if (StringUtils.isNotBlank(view.getXpathExpressionArea().getText())) {
             evaluateXPath();
@@ -397,7 +402,7 @@ public class DesignerWindowPresenter {
 
 
     private void updateSyntaxHighlighter() {
-        SyntaxHighlighter computer = AvailableSyntaxHighlightings.getComputerForLanguage(model.getLanguageVersion().getLanguage());
+        SyntaxHighlighter computer = AvailableSyntaxHighlighters.getComputerForLanguage(model.getLanguageVersion().getLanguage());
         if (computer != null) {
             view.getCodeEditorArea().setSyntaxHighlightingEnabled(computer);
         } else {
