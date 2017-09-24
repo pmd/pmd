@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.*?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
@@ -24,33 +29,30 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@css/designer.css" xmlns="http://javafx.com/javafx/8"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow">
+
+<AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@css/designer.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow">
     <children>
-        <BorderPane prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <BorderPane prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
                 <MenuBar BorderPane.alignment="CENTER">
                     <menus>
                         <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem fx:id="openFileMenuItem" mnemonicParsing="false" text="Open"/>
-                                <Menu fx:id="openRecentMenu" mnemonicParsing="false" text="Open recent..."/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="openFileMenuItem" mnemonicParsing="false" text="Open" />
+                                <Menu fx:id="openRecentMenu" mnemonicParsing="false" text="Open recent..." />
+                                <SeparatorMenuItem mnemonicParsing="false" />
                                 <Menu fx:id="exportMenu" mnemonicParsing="false" text="Export...">
                                     <items>
-                                        <MenuItem fx:id="exportToTestCodeMenuItem" mnemonicParsing="false"
-                                                  text="Export code to test code"/>
-                                        <MenuItem fx:id="exportXPathMenuItem" mnemonicParsing="false"
-                                                  text="Export XPath to rule"/>
+                                        <MenuItem fx:id="exportToTestCodeMenuItem" mnemonicParsing="false" text="Export code to test code" />
+                                        <MenuItem fx:id="exportXPathMenuItem" mnemonicParsing="false" text="Export XPath to rule" />
                                     </items>
                                 </Menu>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="About">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="About"/>
-                                <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License"/>
+                                <MenuItem mnemonicParsing="false" text="About" />
+                                <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License" />
                             </items>
                         </Menu>
                     </menus>
@@ -61,61 +63,36 @@
                     <items>
                         <AnchorPane maxWidth="230.0" minWidth="230.0" prefHeight="200.0" prefWidth="230.0">
                             <children>
-                                <VBox layoutX="84.0" layoutY="14.0" prefHeight="200.0" prefWidth="100.0" spacing="5.0"
-                                      AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <VBox layoutX="84.0" layoutY="14.0" prefHeight="200.0" prefWidth="100.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                        <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS"/>
-                                        <TitledPane collapsible="false" prefHeight="300.0" prefWidth="200.0"
-                                                    text="Node information">
+                                        <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                        <TitledPane collapsible="false" prefHeight="300.0" prefWidth="200.0" text="Node information">
                                             <content>
-                                                <Accordion fx:id="nodeInfoAccordion" prefHeight="300.0"
-                                                           prefWidth="236.0">
+                                                <Accordion fx:id="nodeInfoAccordion" prefHeight="300.0" prefWidth="236.0">
                                                     <panes>
-                                                        <TitledPane prefHeight="234.0" prefWidth="236.0"
-                                                                    text="XPath attributes"
-                                                                    fx:id="xpathAttributesTitledPane">
+                                                        <TitledPane prefHeight="234.0" prefWidth="236.0" text="XPath attributes" fx:id="xpathAttributesTitledPane">
                                                             <content>
-                                                                <AnchorPane minHeight="0.0" minWidth="0.0"
-                                                                            prefHeight="180.0" prefWidth="200.0">
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                                     <children>
-                                                                        <ListView layoutX="21.0" layoutY="23.0"
-                                                                                  prefHeight="200.0" prefWidth="200.0"
-                                                                                  AnchorPane.bottomAnchor="0.0"
-                                                                                  AnchorPane.leftAnchor="0.0"
-                                                                                  AnchorPane.rightAnchor="0.0"
-                                                                                  AnchorPane.topAnchor="0.0"
-                                                                                  fx:id="xpathAttributesListView"/>
+                                                                        <ListView layoutX="21.0" layoutY="23.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="xpathAttributesListView" />
                                                                     </children>
                                                                 </AnchorPane>
                                                             </content>
                                                         </TitledPane>
                                                         <TitledPane animated="false" text="Scope hierarchy">
                                                             <content>
-                                                                <AnchorPane minHeight="0.0" minWidth="0.0"
-                                                                            prefHeight="180.0" prefWidth="200.0">
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                                     <children>
-                                                                        <TreeView fx:id="scopeHierarchyTreeView"
-                                                                                  prefHeight="200.0" prefWidth="200.0"
-                                                                                  AnchorPane.bottomAnchor="0.0"
-                                                                                  AnchorPane.leftAnchor="0.0"
-                                                                                  AnchorPane.rightAnchor="0.0"
-                                                                                  AnchorPane.topAnchor="0.0"/>
+                                                                        <TreeView fx:id="scopeHierarchyTreeView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                     </children>
                                                                 </AnchorPane>
                                                             </content>
                                                         </TitledPane>
-                                                        <TitledPane fx:id="metricResultsTitledPane" expanded="false"
-                                                                    prefHeight="200.0" prefWidth="200.0" text="Metrics">
+                                                        <TitledPane fx:id="metricResultsTitledPane" expanded="false" prefHeight="200.0" prefWidth="200.0" text="Metrics">
                                                             <content>
                                                                 <AnchorPane>
                                                                     <children>
-                                                                        <ListView fx:id="metricResultsListView"
-                                                                                  prefHeight="200.0" prefWidth="200.0"
-                                                                                  AnchorPane.bottomAnchor="0.0"
-                                                                                  AnchorPane.leftAnchor="0.0"
-                                                                                  AnchorPane.rightAnchor="0.0"
-                                                                                  AnchorPane.topAnchor="0.0"/>
+                                                                        <ListView fx:id="metricResultsListView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                     </children>
                                                                 </AnchorPane>
                                                             </content>
@@ -124,18 +101,11 @@
                                                 </Accordion>
                                             </content>
                                         </TitledPane>
-                                        <TitledPane fx:id="violationsTitledPane" animated="false" collapsible="false"
-                                                    prefHeight="232.0" prefWidth="236.0" text="Matched nodes">
+                                        <TitledPane fx:id="violationsTitledPane" animated="false" collapsible="false" prefHeight="232.0" prefWidth="236.0" text="Matched nodes">
                                             <content>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
-                                                            prefWidth="100.0">
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                     <children>
-                                                        <ListView layoutX="34.0" layoutY="24.0" prefHeight="200.0"
-                                                                  prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
-                                                                  AnchorPane.leftAnchor="0.0"
-                                                                  AnchorPane.rightAnchor="0.0"
-                                                                  AnchorPane.topAnchor="0.0"
-                                                                  fx:id="xpathResultListView"/>
+                                                        <ListView layoutX="34.0" layoutY="24.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="xpathResultListView" />
                                                     </children>
                                                 </AnchorPane>
                                             </content>
@@ -144,35 +114,21 @@
                                 </VBox>
                             </children>
                         </AnchorPane>
-                        <SplitPane fx:id="editorPanelHorizontalSplitPane" dividerPositions="0.6703755215577191"
-                                   orientation="VERTICAL" BorderPane.alignment="BOTTOM_CENTER">
+                        <SplitPane fx:id="editorPanelHorizontalSplitPane" dividerPositions="0.6703755215577191" orientation="VERTICAL" BorderPane.alignment="BOTTOM_CENTER">
                             <items>
                                 <BorderPane fx:id="editorAndASTBorderPane" prefHeight="200.0" prefWidth="200.0">
                                     <center>
                                         <SplitPane dividerPositions="0.5" BorderPane.alignment="CENTER">
                                             <items>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
-                                                            prefWidth="100.0">
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                     <children>
-                                                        <TitledPane collapsible="false" prefHeight="200.0"
-                                                                    prefWidth="200.0" text="Source code"
-                                                                    AnchorPane.bottomAnchor="0.0"
-                                                                    AnchorPane.leftAnchor="0.0"
-                                                                    AnchorPane.rightAnchor="0.0"
-                                                                    AnchorPane.topAnchor="0.0">
+                                                        <TitledPane collapsible="false" prefHeight="200.0" prefWidth="200.0" text="Source code" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <content>
-                                                                <CustomCodeArea fx:id="codeEditorArea"
-                                                                                stylesheets="@css/editor-theme.css"
-                                                                                prefHeight="346.0" prefWidth="445.0"
-                                                                                styleClass="code">
+                                                                <CustomCodeArea fx:id="codeEditorArea" prefHeight="346.0" prefWidth="445.0" styleClass="code" stylesheets="@css/editor-theme.css">
                                                                     <contextMenu>
                                                                         <ContextMenu>
                                                                             <items>
-                                                                                <MenuItem
-                                                                                        fx:id="toggleSyntaxHighlighting"
-                                                                                        mnemonicParsing="false"
-                                                                                        onAction="#onToggleSyntaxHighlightingClicked"
-                                                                                        text="Disable syntax highlighting"/>
+                                                                                <MenuItem fx:id="toggleSyntaxHighlighting" mnemonicParsing="false" onAction="#onToggleSyntaxHighlightingClicked" text="Disable syntax highlighting" />
                                                                             </items>
                                                                         </ContextMenu>
                                                                     </contextMenu>
@@ -181,19 +137,11 @@
                                                         </TitledPane>
                                                     </children>
                                                 </AnchorPane>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
-                                                            prefWidth="100.0">
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                     <children>
-                                                        <TitledPane fx:id="astTitledPane" collapsible="false"
-                                                                    prefHeight="200.0" prefWidth="200.0"
-                                                                    text="Abstract Syntax Tree"
-                                                                    AnchorPane.bottomAnchor="0.0"
-                                                                    AnchorPane.leftAnchor="0.0"
-                                                                    AnchorPane.rightAnchor="0.0"
-                                                                    AnchorPane.topAnchor="0.0">
+                                                        <TitledPane fx:id="astTitledPane" collapsible="false" prefHeight="200.0" prefWidth="200.0" text="Abstract Syntax Tree" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <content>
-                                                                <TreeView fx:id="astTreeView" prefHeight="200.0"
-                                                                          prefWidth="200.0"/>
+                                                                <TreeView fx:id="astTreeView" prefHeight="200.0" prefWidth="200.0" />
                                                             </content>
                                                         </TitledPane>
                                                     </children>
@@ -204,53 +152,29 @@
                                     <bottom>
                                         <ToolBar prefHeight="35.0" prefWidth="954.0" BorderPane.alignment="CENTER">
                                             <items>
-                                                <Button fx:id="refreshASTButton" mnemonicParsing="true"
-                                                        prefHeight="25.0" prefWidth="289.0" text="_Refresh AST">
+                                                <Button fx:id="refreshASTButton" mnemonicParsing="true" prefHeight="25.0" prefWidth="289.0" text="_Refresh AST">
                                                     <tooltip>
-                                                        <Tooltip
-                                                                text="Refresh the AST, and XPath results if there's an expression to evaluate"/>
+                                                        <Tooltip text="Refresh the AST, and XPath results if there's an expression to evaluate" />
                                                     </tooltip>
                                                 </Button>
-                                                <ChoiceBox fx:id="languageChoiceBox" prefWidth="150.0"/>
-                                                <MenuButton mnemonicParsing="false" text="XPath version">
-                                                    <items>
-                                                        <RadioMenuItem mnemonicParsing="false" text="XPath 1.0">
-                                                            <toggleGroup>
-                                                                <ToggleGroup fx:id="xpathVersionToggleGroup"/>
-                                                            </toggleGroup>
-                                                        </RadioMenuItem>
-                                                        <RadioMenuItem mnemonicParsing="false"
-                                                                       text="XPath 1.0 (compatibility)"
-                                                                       toggleGroup="$xpathVersionToggleGroup"/>
-                                                        <RadioMenuItem mnemonicParsing="false" selected="true"
-                                                                       text="XPath 2.0"
-                                                                       toggleGroup="$xpathVersionToggleGroup"/>
-                                                    </items>
-                                                </MenuButton>
-                                                <Pane HBox.hgrow="ALWAYS"/>
+                                                <ChoiceBox fx:id="languageChoiceBox" prefHeight="25.0" prefWidth="115.0" />
+                                    <ChoiceBox prefHeight="25.0" prefWidth="115.0" fx:id="xpathVersionChoiceBox" />
+
+                                                <Pane HBox.hgrow="ALWAYS" />
                                             </items>
                                             <BorderPane.margin>
-                                                <Insets/>
+                                                <Insets />
                                             </BorderPane.margin>
                                         </ToolBar>
                                     </bottom>
                                 </BorderPane>
                                 <AnchorPane>
                                     <children>
-                                        <TitledPane alignment="BOTTOM_LEFT" animated="false" prefHeight="220.0"
-                                                    prefWidth="898.0" text="XPath editor" AnchorPane.bottomAnchor="0.0"
-                                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                                    AnchorPane.topAnchor="0.0" fx:id="xpathEditorTitledPane">
+                                        <TitledPane alignment="BOTTOM_LEFT" animated="false" prefHeight="220.0" prefWidth="898.0" text="XPath editor" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="xpathEditorTitledPane">
                                             <content>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
-                                                            prefWidth="100.0">
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                     <children>
-                                                        <CustomCodeArea AnchorPane.bottomAnchor="0.0"
-                                                                        AnchorPane.leftAnchor="0.0"
-                                                                        AnchorPane.rightAnchor="0.0"
-                                                                        AnchorPane.topAnchor="0.0"
-                                                                        stylesheets="@css/editor-theme.css"
-                                                                        fx:id="xpathExpressionArea"/>
+                                                        <CustomCodeArea stylesheets="@css/editor-theme.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="xpathExpressionArea" />
                                                     </children>
                                                 </AnchorPane>
                                             </content>

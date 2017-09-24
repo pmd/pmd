@@ -37,8 +37,6 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -49,11 +47,9 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -132,15 +128,7 @@ public class DesignerWindowPresenter {
     /** Creates direct bindings from model properties to UI properties. */
     private void bindModelToView() {
         model.languageVersionProperty().bind(view.getLanguageChoiceBox().getSelectionModel().selectedItemProperty());
-
-
-        ToggleGroup tg = view.getXpathVersionToggleGroup();
-
-        StringBinding xpathVersionBinding
-            = Bindings.createStringBinding(() -> tg.getSelectedToggle().getUserData().toString(),
-                                           tg.selectedToggleProperty());
-
-        model.xpathVersionProperty().bind(xpathVersionBinding);
+        model.xpathVersionProperty().bind(view.getXpathVersionChoiceBox().getSelectionModel().selectedItemProperty());
     }
 
 
@@ -152,11 +140,23 @@ public class DesignerWindowPresenter {
 
     private void initializeXPath() {
 
-        ToggleGroup xpathVersionToggleGroup = view.getXpathVersionToggleGroup();
+        ObservableList<String> xpathVersionChoiceBox = view.getXpathVersionChoiceBox().getItems();
+        xpathVersionChoiceBox.add(XPathRuleQuery.XPATH_1_0);
+        xpathVersionChoiceBox.add(XPathRuleQuery.XPATH_1_0_COMPATIBILITY);
+        xpathVersionChoiceBox.add(XPathRuleQuery.XPATH_2_0);
 
-        xpathVersionToggleGroup.getToggles().get(0).setUserData(XPathRuleQuery.XPATH_1_0);
-        xpathVersionToggleGroup.getToggles().get(1).setUserData(XPathRuleQuery.XPATH_1_0_COMPATIBILITY);
-        xpathVersionToggleGroup.getToggles().get(2).setUserData(XPathRuleQuery.XPATH_2_0);
+        view.getXpathVersionChoiceBox().setConverter(new StringConverter<String>() {
+            @Override
+            public String toString(String object) {
+                return "XPath " + object;
+            }
+
+
+            @Override
+            public String fromString(String string) {
+                return string.substring(6);
+            }
+        });
 
 
         ListView<Node> xpathResultsListView = view.getXpathResultListView();
@@ -467,13 +467,7 @@ public class DesignerWindowPresenter {
 
 
     void setXPathVersion(String version) {
-        view.getXpathVersionToggleGroup()
-            .getToggles()
-            .stream()
-            .filter(toggle -> toggle.getUserData().equals(version))
-            .findFirst()
-            .orElse(new RadioMenuItem()) // discard
-            .setSelected(true);
+        view.getXpathVersionChoiceBox().getSelectionModel().select(version);
     }
 
 

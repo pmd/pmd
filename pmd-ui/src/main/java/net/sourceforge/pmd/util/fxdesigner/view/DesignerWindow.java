@@ -36,7 +36,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -50,6 +49,8 @@ import javafx.util.Duration;
  */
 public class DesignerWindow implements Initializable {
 
+    @FXML
+    private ChoiceBox<String> xpathVersionChoiceBox;
     @FXML
     private TitledPane metricResultsTitledPane;
     @FXML
@@ -90,8 +91,6 @@ public class DesignerWindow implements Initializable {
     private TitledPane xpathEditorTitledPane;
     @FXML
     private SplitPane editorPanelHorizontalSplitPane;
-    @FXML
-    private ToggleGroup xpathVersionToggleGroup;
     @FXML
     private TitledPane xpathAttributesTitledPane;
     @FXML
@@ -241,11 +240,6 @@ public class DesignerWindow implements Initializable {
     }
 
 
-    public ToggleGroup getXpathVersionToggleGroup() {
-        return xpathVersionToggleGroup;
-    }
-
-
     public Button getRefreshASTButton() {
         return refreshASTButton;
     }
@@ -338,4 +332,8 @@ public class DesignerWindow implements Initializable {
         return isSyntaxHighlightingEnabled;
     }
 
+
+    public ChoiceBox<String> getXpathVersionChoiceBox() {
+        return xpathVersionChoiceBox;
+    }
 }

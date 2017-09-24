@@ -50,12 +50,12 @@ public class Designer extends Application {
         ObservableList<Image> icons = primaryStage.getIcons();
         final String dirPrefix = "icons/app/";
         List<String> imageNames = Arrays.asList("designer_logo.jpeg"
-                                               // "pmd-logo_small.png",
-                                               // "pmd-logo_tiny.png",
-                                               // "pmd-logo_big.png"
+                                                // "pmd-logo_small.png",
+                                                // "pmd-logo_tiny.png",
+                                                // "pmd-logo_big.png"
                                                 );
 
-        // TODO make new icons
+        // TODO make more icon sizes
 
         List<Image> images = imageNames.stream()
                                        .map(s -> dirPrefix + s)
