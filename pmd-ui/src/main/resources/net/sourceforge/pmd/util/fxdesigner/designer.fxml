@@ -38,7 +38,7 @@
                     <menus>
                         <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem fx:id="openFileMenuItem" mnemonicParsing="false" text="Open" />
+                                <MenuItem fx:id="openFileMenuItem" mnemonicParsing="false" text="Open..." />
                                 <Menu fx:id="openRecentMenu" mnemonicParsing="false" text="Open recent..." />
                                 <SeparatorMenuItem mnemonicParsing="false" />
                                 <Menu fx:id="exportMenu" mnemonicParsing="false" text="Export...">

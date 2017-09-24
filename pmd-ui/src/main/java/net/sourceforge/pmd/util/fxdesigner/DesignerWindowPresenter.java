@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.fxdesigner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -118,8 +119,9 @@ public class DesignerWindowPresenter {
         view.getRefreshASTButton().setOnAction(this::onRefreshASTClicked);
         view.getLicenseMenuItem().setOnAction(this::showLicensePopup);
         view.getLoadSourceFromFileMenuItem().setOnAction(this::onOpenFileClicked);
-        view.getOpenRecentMenu().setOnAction(this::onRecentFilesMenuClicked);
-        view.getFileMenu().setOnAction(this::onOpenFileClicked);
+        view.getOpenRecentMenu().setOnAction(e -> updateRecentFilesMenu());
+        view.getOpenRecentMenu().setOnShowing(e -> updateRecentFilesMenu());
+        view.getFileMenu().setOnShowing(this::onFileMenuShowing);
 
         onRefreshASTClicked(null); // Restore AST and XPath results
     }
@@ -379,25 +381,37 @@ public class DesignerWindowPresenter {
     }
 
 
-    private void onRecentFilesMenuClicked(Event event) {
-        ObservableList<MenuItem> openRecentMenuItems = view.getOpenRecentMenu().getItems();
-        openRecentMenuItems.clear();
+    private void updateRecentFilesMenu() {
+        List<MenuItem> items = new ArrayList<>();
 
         for (final File f : recentFiles) {
             if (f.exists()) {
                 CustomMenuItem item = new CustomMenuItem(new Label(f.getName()));
                 item.setOnAction(e -> loadSourceFromFile(f));
+                item.setMnemonicParsing(false);
                 Tooltip.install(item.getContent(), new Tooltip(f.getAbsolutePath()));
-                openRecentMenuItems.add(item);
+                items.add(item);
+            } else {
+                recentFiles.remove(f);
             }
         }
+        if (items.isEmpty()) {
+            view.getOpenRecentMenu().setDisable(true);
+            return;
+        }
 
-        openRecentMenuItems.add(new SeparatorMenuItem());
+        Collections.reverse(items);
+
+        items.add(new SeparatorMenuItem());
         MenuItem clearItem = new MenuItem();
-        clearItem.setText("Clear recents");
-        clearItem.setOnAction(e -> recentFiles.clear());
-        openRecentMenuItems.add(clearItem);
-        view.getOpenRecentMenu().show();
+        clearItem.setText("Clear menu");
+        clearItem.setOnAction(e -> {
+            recentFiles.clear();
+            view.getOpenRecentMenu().setDisable(true);
+        });
+        items.add(clearItem);
+
+        view.getOpenRecentMenu().getItems().setAll(items);
     }
 
 
