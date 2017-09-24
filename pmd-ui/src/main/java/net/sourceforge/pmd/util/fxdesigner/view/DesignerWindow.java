@@ -154,7 +154,7 @@ public class DesignerWindow implements Initializable {
             }
 
             if (keyValue != null) {
-                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(350), keyValue));
+                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), keyValue));
                 timeline.setOnFinished(e -> {
                     if (isNowExpanded) {
                         if (Designer.getMainStage().isMaximized()) {

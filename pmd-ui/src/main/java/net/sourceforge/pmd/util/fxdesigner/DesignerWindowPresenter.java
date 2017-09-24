@@ -49,6 +49,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionModel;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
@@ -169,6 +170,7 @@ public class DesignerWindowPresenter {
                             .addListener((observable, oldValue, newValue) -> {
                                 if (newValue != null) {
                                     onNodeItemSelected(newValue);
+                                    focusNodeInASTTreeView(newValue);
                                 }
                             });
     }
@@ -221,6 +223,18 @@ public class DesignerWindowPresenter {
     private void highlightNode(Node node, CustomCodeArea codeArea) {
         codeArea.restylePrimaryStyleLayer(node, Collections.singleton("primary-highlight"));
         codeArea.paintCss();
+    }
+
+
+    private void focusNodeInASTTreeView(Node node) {
+        TreeView<Node> astTreeView = view.getAstTreeView();
+        ASTTreeItem found = ((ASTTreeItem) astTreeView.getRoot()).findItem(node);
+        if (found != null) {
+            SelectionModel<TreeItem<Node>> selectionModel = astTreeView.getSelectionModel();
+            selectionModel.select(found);
+            astTreeView.getFocusModel().focus(selectionModel.getSelectedIndex());
+            // astTreeView.scrollTo(selectionModel.getSelectedIndex());
+        }
     }
 
 
@@ -295,7 +309,6 @@ public class DesignerWindowPresenter {
         if (n != null) {
             view.acknowledgeUpdatedAST();
             ASTTreeItem root = ASTTreeItem.getRoot(n);
-            root.expandAll();
             view.getAstTreeView().setRoot(root);
         }
     }
@@ -532,9 +545,7 @@ public class DesignerWindowPresenter {
         Collections.reverse(fileNames);
         for (String fileName : fileNames) {
             File f = new File(fileName);
-            if (f.exists()) {
-                recentFiles.push(f);
-            }
+            recentFiles.push(f);
         }
     }
 

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
+import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 
 /**
@@ -19,12 +20,25 @@ public class ASTTreeItem extends TreeItem<Node> {
 
     private ASTTreeItem(Node n) {
         super(n);
+        setExpanded(true);
     }
 
 
-    /** Sets this item and all its children to the expanded state. */
-    void expandAll() {
-        expandAllHelper(this);
+    public ASTTreeItem findItem(Node node) {
+        if (this.getValue().equals(node)) {
+            return this;
+        }
+
+        ObservableList<TreeItem<Node>> children = this.getChildren();
+        ASTTreeItem found;
+        for (TreeItem<Node> child : children) {
+            found = ((ASTTreeItem) child).findItem(node);
+            if (found != null) {
+                return found;
+            }
+        }
+
+        return null;
     }
 
 
@@ -40,12 +54,4 @@ public class ASTTreeItem extends TreeItem<Node> {
     }
 
 
-    private static void expandAllHelper(TreeItem<Node> item) {
-        item.setExpanded(true);
-        if (item.getChildren().size() > 0) {
-            for (TreeItem<Node> child : item.getChildren()) {
-                expandAllHelper(child);
-            }
-        }
-    }
 }
