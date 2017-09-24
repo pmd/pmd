@@ -217,7 +217,7 @@ public class DesignerWindowPresenter {
 
 
     private void highlightNode(Node node, CustomCodeArea codeArea) {
-        codeArea.restylePrimaryStyleLayer(node, Collections.singleton("node-highlight"));
+        codeArea.restylePrimaryStyleLayer(node, Collections.singleton("primary-highlight"));
         codeArea.paintCss();
     }
 

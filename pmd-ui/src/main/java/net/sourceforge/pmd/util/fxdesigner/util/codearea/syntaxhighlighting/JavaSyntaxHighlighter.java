@@ -87,7 +87,7 @@ public class JavaSyntaxHighlighter extends SyntaxHighlighter {
 
     @Override
     public String getCssFileIdentifier() {
-        return JavaSyntaxHighlighter.class.getResource("java.css").toExternalForm();
+        return JavaSyntaxHighlighter.class.getResource("java-theme.css").toExternalForm();
     }
 
 

@@ -17,6 +17,8 @@ import org.fxmisc.richtext.CodeArea;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
+import javafx.collections.ObservableList;
+
 /**
  * Code area that can handle syntax highlighting as well as regular node highlighting. Regular node highlighting is
  * handled in the "primary" {@link StyleLayer}, which you can affect with {@link #styleCss(Node, Set)}, {@link
@@ -34,7 +36,7 @@ public class CustomCodeArea extends CodeArea {
     private ExecutorService executorService;
     private boolean isSyntaxHighlightingEnabled;
     private StyleContext styleContext;
-    private SyntaxHighlighter highlightingComputer;
+    private SyntaxHighlighter syntaxHighlighter;
 
 
     public CustomCodeArea() {
@@ -118,32 +120,39 @@ public class CustomCodeArea extends CodeArea {
     /**
      * Enables syntax highlighting if disabled and sets it to use the given computer.
      *
-     * @param computer The computer to use
+     * @param newHighlighter The computer to use
      */
-    public void setSyntaxHighlighting(SyntaxHighlighter computer) {
+    public void setSyntaxHighlighting(SyntaxHighlighter newHighlighter) {
         isSyntaxHighlightingEnabled = true;
-        Objects.requireNonNull(computer, "The syntax highlighting computer cannot be null");
+        Objects.requireNonNull(newHighlighter, "The syntax highlighting computer cannot be null");
 
         StyleLayer syntaxHighlightLayer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
         if (syntaxHighlightLayer == null) {
             styleContext.addLayer(SYNTAX_HIGHLIGHT_LAYER_ID, new StyleLayer(SYNTAX_HIGHLIGHT_LAYER_ID, this));
         }
 
-        setSyntaxHighlightingComputer(computer);
+
+        ObservableList<String> styleClasses = this.getStyleClass();
+        if (syntaxHighlighter != null) {
+            styleClasses.remove("." + syntaxHighlighter.getLanguageTerseName());
+        }
+        styleClasses.add("." + newHighlighter.getLanguageTerseName());
+
+        launchAsyncSyntaxHighlighting(newHighlighter);
     }
 
 
-    private void setSyntaxHighlightingComputer(SyntaxHighlighter computer) {
-        this.highlightingComputer = computer;
+    private void launchAsyncSyntaxHighlighting(SyntaxHighlighter computer) {
+        this.syntaxHighlighter = computer;
         if (executorService != null) {
             executorService.shutdown();
         }
-        if (isSyntaxHighlightingEnabled && highlightingComputer != null) {
+        if (isSyntaxHighlightingEnabled && syntaxHighlighter != null) {
             executorService = Executors.newSingleThreadExecutor();
             this.richChanges()
                 .filter(ch -> !ch.getInserted().equals(ch.getRemoved())) // XXX
                 .successionEnds(Duration.ofMillis(500))
-                .supplyTask(() -> highlightingComputer.computeHighlightingAsync(this.getText(), executorService))
+                .supplyTask(() -> syntaxHighlighter.computeHighlightingAsync(this.getText(), executorService))
                 .awaitLatest(this.richChanges())
                 .filterMap(t -> {
                     if (t.isSuccess()) {
@@ -159,7 +168,6 @@ public class CustomCodeArea extends CodeArea {
                     layer.setBounds(bounds);
                     this.paintCss();
                 });
-            this.getStylesheets().add(computer.getCssFileIdentifier());
         }
     }
 

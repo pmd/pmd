@@ -1,0 +1,89 @@
+/* Presets for the editor theme and syntax highlighting. */
+
+.styled-text-area .primary-highlight {
+    -fx-font-weight: bolder !important;
+    -fx-fill: royalblue !important;
+}
+
+.styled-text-area {
+    -fx-background-color: #F5F5F5;
+    -fx-border-color: -fx-outer-border, -fx-text-box-border;
+    -fx-border-insets: -4 -4 -6 -5, -2 -2 -5 -3;
+}
+
+.styled-text-area .keyword {
+    -fx-fill: #B58900;
+    /* -fx-font-weight: bold; */
+}
+
+.styled-text-area .paren {
+
+}
+
+.styled-text-area .brace {
+
+}
+
+.styled-text-area .string {
+    -fx-fill: #317ECC;
+}
+
+.styled-text-area .number {
+    -fx-fill: #317ECC;
+}
+
+.styled-text-area .multi-line-comment {
+    -fx-fill: #93A1A1;
+    -fx-font-style: italic;
+}
+
+.styled-text-area .single-line-comment {
+    -fx-fill: #93A1A1;
+    -fx-font-style: italic; /* doesn't work... */
+}
+
+.paragraph-box:has-caret {
+    -fx-background-color: #FDF6E3;
+}
+
+.text {
+    -fx-fill: #585858;
+}
+
+.lineno {
+    -fx-fill: #586E75;
+}
+
+.styled-text-area .semicolon {
+
+}
+
+/* Java specific */
+
+.styled-text-area .annotation {
+    -fx-fill: #d30102;
+}
+
+.styled-text-area .class-ident {
+    -fx-fill: #B05A65;
+}
+
+/* Apex specific */
+
+/* XPath specific */
+
+#xpathExpressionArea {
+    -fx-font-size: 11pt;
+}
+
+.styled-text-area  .xpath.path {
+    -fx-font-weight: bolder;
+}
+
+.styled-text-area  .xpath.bracket {
+    -fx-font-weight: bolder;
+}
+
+.styled-text-area .xpath.attribute {
+    -fx-fill: #B05A65;
+}

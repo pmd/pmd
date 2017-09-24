@@ -30,7 +30,7 @@ public class XPathSyntaxHighlighter extends SyntaxHighlighter {
     private static final String AXIS_PATTERN = "(" + String.join("|", AXIS_NAMES) + ")(?=::)";
     private static final String KEYWORD_PATTERN = "(" + String.join("|", KEYWORDS) + ")";
     private static final String PAREN_PATTERN = "[()]";
-    private static final String PATH_PATTERN = "/";
+    private static final String PATH_PATTERN = "//*";
     private static final String BRACKET_PATTERN = "[\\[\\]]";
     private static final String STRING_PATTERN = "'([^'\\\\]|\\\\.)*'";
     private static final String COMMENT_PATTERN = "\\(:.*:\\)";
@@ -53,12 +53,12 @@ public class XPathSyntaxHighlighter extends SyntaxHighlighter {
     @Override
     public Map<String, String> getGroupNameToCssClass() {
         Map<String, String> map = new LinkedHashMap<>();
-        map.put("ATTRIBUTE", "xpath-attribute");
-        map.put("FUNCTION", "xpath-function");
-        map.put("PATH", "xpath-path");
+        map.put("ATTRIBUTE", "attribute");
+        map.put("FUNCTION", "function");
+        map.put("PATH", "path");
         map.put("PAREN", BaseHighlightingClasses.PAREN.name);
         map.put("BRACKET", BaseHighlightingClasses.BRACKET.name);
-        map.put("AXIS", "xpath-axis");
+        map.put("AXIS", "axis");
         map.put("KEYWORD", BaseHighlightingClasses.KEYWORD.name);
         map.put("STRING", BaseHighlightingClasses.STRING.name);
         map.put("COMMENT", BaseHighlightingClasses.SINGLE_LINE_COMMENT.name);

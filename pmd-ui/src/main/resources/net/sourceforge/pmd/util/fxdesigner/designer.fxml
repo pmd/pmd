@@ -161,8 +161,8 @@
                                                                     AnchorPane.rightAnchor="0.0"
                                                                     AnchorPane.topAnchor="0.0">
                                                             <content>
-                                                                <CustomCodeArea id="mainCodeEditorArea"
-                                                                                fx:id="codeEditorArea"
+                                                                <CustomCodeArea fx:id="codeEditorArea"
+                                                                                stylesheets="@css/editor-theme.css"
                                                                                 prefHeight="346.0" prefWidth="445.0"
                                                                                 styleClass="code">
                                                                     <contextMenu>
@@ -249,6 +249,7 @@
                                                                         AnchorPane.leftAnchor="0.0"
                                                                         AnchorPane.rightAnchor="0.0"
                                                                         AnchorPane.topAnchor="0.0"
+                                                                        stylesheets="@css/editor-theme.css"
                                                                         fx:id="xpathExpressionArea"/>
                                                     </children>
                                                 </AnchorPane>

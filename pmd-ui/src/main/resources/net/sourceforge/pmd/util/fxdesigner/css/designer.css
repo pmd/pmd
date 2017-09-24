@@ -15,17 +15,6 @@
 }
 
 
-#mainCodeEditorArea .node-highlight {
-    -fx-font-weight: bolder !important;
-    -fx-fill: royalblue !important;
-}
-
-
-.styled-text-area {
-    -fx-border-color: -fx-outer-border, -fx-text-box-border;
-    -fx-border-insets: -4 -4 -6 -5, -2 -2 -5 -3;
-}
-
 .lineno {
     -fx-font-size: 80%;
     -fx-font-weight: normal;
