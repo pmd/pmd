@@ -64,16 +64,16 @@ public class JavaSyntaxHighlighter extends SyntaxHighlighter {
     @Override
     public Map<String, String> getGroupNameToCssClass() {
         Map<String, String> map = new LinkedHashMap<>();
-        map.put("SINGLELINECOMMENT", "single-line-comment");
-        map.put("MULTILINECOMMENT", "multi-line-comment");
-        map.put("KEYWORD", "keyword");
-        map.put("PAREN", "paren");
-        map.put("BRACE", "brace");
-        map.put("NUMBER", "number");
-        map.put("BRACKET", "bracket");
+        map.put("SINGLELINECOMMENT", BaseHighlightingClasses.SINGLE_LINE_COMMENT.name);
+        map.put("MULTILINECOMMENT", BaseHighlightingClasses.MULTI_LINE_COMMENT.name);
+        map.put("KEYWORD", BaseHighlightingClasses.KEYWORD.name);
+        map.put("PAREN", BaseHighlightingClasses.PAREN.name);
+        map.put("BRACE", BaseHighlightingClasses.BRACE.name);
+        map.put("BRACKET", BaseHighlightingClasses.BRACKET.name);
         map.put("SEMICOLON", "semicolon");
+        map.put("STRING", BaseHighlightingClasses.STRING.name);
+        map.put("NUMBER", "number");
         map.put("CLASSIDENT", "class-ident");
-        map.put("STRING", "string");
         map.put("ANNOTATION", "annotation");
         return Collections.unmodifiableMap(map);
     }
@@ -88,5 +88,11 @@ public class JavaSyntaxHighlighter extends SyntaxHighlighter {
     @Override
     public String getCssFileIdentifier() {
         return JavaSyntaxHighlighter.class.getResource("java.css").toExternalForm();
+    }
+
+
+    @Override
+    public String getLanguageTerseName() {
+        return "java";
     }
 }

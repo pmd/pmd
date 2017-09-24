@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -48,6 +50,8 @@ public abstract class SyntaxHighlighter {
         Matcher matcher = getTokenizerPattern().matcher(text);
         int lastKwEnd = 0;
 
+        String languageClass = getLanguageTerseName();
+
         try {
             while (matcher.find()) {
                 String styleClass = null;
@@ -58,14 +62,14 @@ public abstract class SyntaxHighlighter {
                     }
                 }
                 assert styleClass != null;
-                updated.add(new SpanBound(lastKwEnd, Collections.emptySet(), true));
+                updated.add(new SpanBound(lastKwEnd, Collections.singleton(languageClass), true));
                 updated.add(new SpanBound(matcher.start(), Collections.emptySet(), false));
-                updated.add(new SpanBound(matcher.start(), Collections.singleton(styleClass), true));
-                updated.add(new SpanBound(matcher.end(), Collections.singleton(styleClass), false));
+                updated.add(new SpanBound(matcher.start(), new HashSet<>(Arrays.asList(languageClass, styleClass)), true));
+                updated.add(new SpanBound(matcher.end(), new HashSet<>(Arrays.asList(languageClass, styleClass)), false));
                 lastKwEnd = matcher.end();
             }
         } catch (StackOverflowError so) {
-            // matcher.find overflowed, possible when handling huge files with incorrect language
+            // matcher.find overflowed, may happen when coloring ginormous files with incorrect language
         }
         return updated;
     }
@@ -96,6 +100,35 @@ public abstract class SyntaxHighlighter {
      * @return The identifier of a css file
      */
     public abstract String getCssFileIdentifier();
+
+
+    /**
+     * Language terse name, used as a css class to differentiate between classes.
+     *
+     * @return The language's terse name
+     */
+    public abstract String getLanguageTerseName();
+
+
+    /** Css classes defined for all languages. */
+    public enum BaseHighlightingClasses {
+        KEYWORD("keyword"),
+        PAREN("paren"),
+        BRACE("brace"),
+        BRACKET("bracket"),
+        MULTI_LINE_COMMENT("multi-line-comment"),
+        SINGLE_LINE_COMMENT("single-line-comment"),
+        STRING("string"),
+        NUMBER("number");
+
+
+        public final String name;
+
+
+        BaseHighlightingClasses(String className) {
+            this.name = className;
+        }
+    }
 
 
 }

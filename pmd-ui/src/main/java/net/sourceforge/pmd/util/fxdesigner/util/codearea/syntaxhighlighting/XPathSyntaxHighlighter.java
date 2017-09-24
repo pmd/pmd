@@ -56,12 +56,12 @@ public class XPathSyntaxHighlighter extends SyntaxHighlighter {
         map.put("ATTRIBUTE", "xpath-attribute");
         map.put("FUNCTION", "xpath-function");
         map.put("PATH", "xpath-path");
-        map.put("PAREN", "xpath-paren");
-        map.put("BRACKET", "xpath-bracket");
+        map.put("PAREN", BaseHighlightingClasses.PAREN.name);
+        map.put("BRACKET", BaseHighlightingClasses.BRACKET.name);
         map.put("AXIS", "xpath-axis");
-        map.put("KEYWORD", "xpath-keyword");
-        map.put("STRING", "xpath-string");
-        map.put("COMMENT", "xpath-comment");
+        map.put("KEYWORD", BaseHighlightingClasses.KEYWORD.name);
+        map.put("STRING", BaseHighlightingClasses.STRING.name);
+        map.put("COMMENT", BaseHighlightingClasses.SINGLE_LINE_COMMENT.name);
         return Collections.unmodifiableMap(map);
     }
 
@@ -75,6 +75,12 @@ public class XPathSyntaxHighlighter extends SyntaxHighlighter {
     @Override
     public String getCssFileIdentifier() {
         return JavaSyntaxHighlighter.class.getResource("xpath.css").toExternalForm();
+    }
+
+
+    @Override
+    public String getLanguageTerseName() {
+        return "xpath";
     }
 
 

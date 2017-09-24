@@ -71,14 +71,14 @@ public class ApexSyntaxHighlighter extends SyntaxHighlighter {
     @Override
     public Map<String, String> getGroupNameToCssClass() {
         Map<String, String> map = new LinkedHashMap<>();
-        map.put("SINGLELINECOMMENT", "single-line-comment");
-        map.put("MULTILINECOMMENT", "multi-line-comment");
-        map.put("KEYWORD", "keyword");
-        map.put("PAREN", "paren");
-        map.put("BRACE", "brace");
-        map.put("BRACKET", "bracket");
+        map.put("SINGLELINECOMMENT", BaseHighlightingClasses.SINGLE_LINE_COMMENT.name);
+        map.put("MULTILINECOMMENT", BaseHighlightingClasses.MULTI_LINE_COMMENT.name);
+        map.put("KEYWORD", BaseHighlightingClasses.KEYWORD.name);
+        map.put("PAREN", BaseHighlightingClasses.PAREN.name);
+        map.put("BRACE", BaseHighlightingClasses.BRACE.name);
+        map.put("BRACKET", BaseHighlightingClasses.BRACKET.name);
         map.put("SEMICOLON", "semicolon");
-        map.put("STRING", "string");
+        map.put("STRING", BaseHighlightingClasses.STRING.name);
         return Collections.unmodifiableMap(map);
     }
 
@@ -92,5 +92,11 @@ public class ApexSyntaxHighlighter extends SyntaxHighlighter {
     @Override
     public String getCssFileIdentifier() {
         return ApexSyntaxHighlighter.class.getResource("apex.css").toExternalForm();
+    }
+
+
+    @Override
+    public String getLanguageTerseName() {
+        return "apex";
     }
 }
