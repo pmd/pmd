@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.ApexSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.JavaSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XmlSyntaxHighlighter;
 
 /**
  * Lists the available syntax highlighter engines by language.
@@ -19,9 +20,10 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPat
  * @since 6.0.0
  */
 public enum AvailableSyntaxHighlighters {
-    JAVA("java", new JavaSyntaxHighlighter()),
-    APEX("apex", new ApexSyntaxHighlighter()),
-    XPATH("xpath", new XPathSyntaxHighlighter());
+    JAVA("java", JavaSyntaxHighlighter.INSTANCE),
+    APEX("apex", ApexSyntaxHighlighter.INSTANCE),
+    XML("xml", XmlSyntaxHighlighter.INSTANCE),
+    XPATH("xpath", XPathSyntaxHighlighter.INSTANCE);
 
 
     private final String language;

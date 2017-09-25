@@ -4,11 +4,10 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.SimpleRegexSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
 
 /**
@@ -17,7 +16,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class ApexSyntaxHighlighter extends SyntaxHighlighter {
+public class ApexSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
 
 
     private static final String[] KEYWORDS = new String[] {
@@ -47,56 +46,21 @@ public class ApexSyntaxHighlighter extends SyntaxHighlighter {
         };
 
 
-    private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
-    private static final String PAREN_PATTERN = "[()]";
-    private static final String BRACE_PATTERN = "[{}]";
-    private static final String BRACKET_PATTERN = "[\\[]]";
-    private static final String SEMICOLON_PATTERN = ";";
-    private static final String STRING_PATTERN = "'([^'\\\\]|\\\\.)*'";
-    private static final String SINGLELINE_COMMENT_PATTERN = "//[^\r\n]*";
-    private static final String MULTILINE_COMMENT_PATTERN = "/\\*.*?\\*/";
-
-    private static final Pattern PATTERN = Pattern.compile(
-        "(?<SINGLELINECOMMENT>" + SINGLELINE_COMMENT_PATTERN + ")"
-            + "|(?<MULTILINECOMMENT>" + MULTILINE_COMMENT_PATTERN + ")"
-            + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")"
-            + "|(?<PAREN>" + PAREN_PATTERN + ")"
-            + "|(?<BRACE>" + BRACE_PATTERN + ")"
-            + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
-            + "|(?<SEMICOLON>" + SEMICOLON_PATTERN + ")"
-            + "|(?<STRING>" + STRING_PATTERN + ")",
-        Pattern.DOTALL);
+    public static final SyntaxHighlighter INSTANCE
+        = builder("apex",
+                  "single-line-comment", "//[^\r\n]*")
+        .or("multi-line-comment", "/\\*.*?\\*/")
+        .or("keyword", "\\b(" + String.join("|", KEYWORDS) + ")\\b")
+        .or("paren", "[()]")
+        .or("brace", "[{}]")
+        .or("bracket", "[\\[]]")
+        .or("semicolon", ";")
+        .or("string", "'([^'\\\\]|\\\\.)*'")
+        .create(Pattern.DOTALL);
 
 
-    @Override
-    public Map<String, String> getGroupNameToCssClass() {
-        Map<String, String> map = new LinkedHashMap<>();
-        map.put("SINGLELINECOMMENT", BaseHighlightingClasses.SINGLE_LINE_COMMENT.name);
-        map.put("MULTILINECOMMENT", BaseHighlightingClasses.MULTI_LINE_COMMENT.name);
-        map.put("KEYWORD", BaseHighlightingClasses.KEYWORD.name);
-        map.put("PAREN", BaseHighlightingClasses.PAREN.name);
-        map.put("BRACE", BaseHighlightingClasses.BRACE.name);
-        map.put("BRACKET", BaseHighlightingClasses.BRACKET.name);
-        map.put("SEMICOLON", "semicolon");
-        map.put("STRING", BaseHighlightingClasses.STRING.name);
-        return Collections.unmodifiableMap(map);
+    private ApexSyntaxHighlighter(String languageName, Pattern pattern, Map<String, String> namesToCssClass) {
+        super(languageName, pattern, namesToCssClass);
     }
 
-
-    @Override
-    public Pattern getTokenizerPattern() {
-        return PATTERN;
-    }
-
-
-    @Override
-    public String getCssFileIdentifier() {
-        return ApexSyntaxHighlighter.class.getResource("apex.css").toExternalForm();
-    }
-
-
-    @Override
-    public String getLanguageTerseName() {
-        return "apex";
-    }
 }

@@ -84,14 +84,40 @@
     -fx-font-size: 11.5pt;
 }
 
-.styled-text-area  .xpath.path {
+.styled-text-area .xpath.path {
     -fx-font-weight: bolder;
 }
 
-.styled-text-area  .xpath.bracket {
+.styled-text-area .xpath.bracket {
     -fx-font-weight: bolder;
 }
 
 .styled-text-area .xpath.attribute {
     -fx-fill: #B05A65;
+}
+
+/* XML specific */
+
+.styled-text-area .xml.xml-prolog {
+    -fx-font-weight: bolder;
+}
+
+.styled-text-area .xml.tag-name {
+    -fx-fill: #B05A65;
+}
+
+.styled-text-area .xml.lt-gt {
+    -fx-fill: #B05A65;
+}
+
+.styled-text-area .xml.attribute-name {
+    -fx-fill: #B58900;
+}
+
+.styled-text-area .xml.cdata-tag {
+    -fx-fill: #B58900;
+}
+
+.styled-text-area .xml.cdata-content {
+    -fx-fill: #93A1A1;
 }
