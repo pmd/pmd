@@ -19,6 +19,8 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -38,6 +40,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -53,9 +56,15 @@ import javafx.util.Duration;
 public class DesignerWindow implements Initializable {
 
     @FXML
-    private TabPane bottomTabPane;
+    private SplitPane editorAstSplitPane;
     @FXML
-    private ToggleButton bottomPaneToggle;
+    private ToggleGroup bottomTabsToggleGroup;
+    @FXML
+    private ToggleButton eventLogToggle;
+    @FXML
+    private ToggleButton xpathEditorToggle;
+    @FXML
+    private TabPane bottomTabPane;
     @FXML
     private Tab eventLogTab;
     @FXML
@@ -117,6 +126,7 @@ public class DesignerWindow implements Initializable {
     /* */
     private StringProperty sourceCodeProperty;
     private BooleanProperty isSyntaxHighlightingEnabled = new SimpleBooleanProperty(false);
+    private BooleanProperty isBottomPaneExpandedProperty = new SimpleBooleanProperty(true);
 
 
     @Override
@@ -131,6 +141,11 @@ public class DesignerWindow implements Initializable {
         sourceCodeProperty = new SimpleStringProperty();
         sourceCodeProperty.bind(codeEditorArea.textProperty());
 
+        Binding<Boolean> bottomPaneBinding
+            = Bindings.createBooleanBinding(() -> bottomTabsToggleGroup.getSelectedToggle() != null,
+                                            bottomTabsToggleGroup.selectedToggleProperty());
+
+        isBottomPaneExpandedProperty.bind(bottomPaneBinding);
 
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
         nodeInfoAccordion.setExpandedPane(xpathAttributesTitledPane);
@@ -142,8 +157,21 @@ public class DesignerWindow implements Initializable {
         final double bottomEditorPaneMinHeightWhenMaximized = violationsTitledPane.getPrefHeight();
         final double bottomEditorPaneMinHeightWhenNotMaximized = violationsTitledPane.getPrefHeight();
 
+        xpathEditorToggle.selectedProperty().addListener((e, oldVal, newVal) -> {
+            if (newVal) {
+                bottomTabPane.getSelectionModel().select(xpathEditorTab);
+            }
+        });
+
+        eventLogToggle.selectedProperty().addListener((e, oldVal, newVal) -> {
+            if (newVal) {
+                bottomTabPane.getSelectionModel().select(eventLogTab);
+            }
+        });
+
+
         // show/ hide bottom pane
-        bottomPaneToggle.selectedProperty().addListener((observable, wasExpanded, isNowExpanded) -> {
+        isBottomPaneExpandedProperty.addListener((observable, wasExpanded, isNowExpanded) -> {
             KeyValue keyValue = null;
             DoubleProperty divPosition = editorPanelHorizontalSplitPane.getDividers().get(0).positionProperty();
             if (wasExpanded && !isNowExpanded) {
@@ -174,14 +202,14 @@ public class DesignerWindow implements Initializable {
                 final double maximizedLeftToolbarWidth = 250;
                 ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMinWidth(maximizedLeftToolbarWidth);
                 ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMaxWidth(maximizedLeftToolbarWidth);
-                if (bottomPaneToggle.isSelected()) {
+                if (isBottomPaneExpanded()) {
                     bottomTabPane.setMinHeight(bottomEditorPaneMinHeightWhenMaximized);
                 }
             } else {
                 final double unmaximizedLeftToolbarWidth = 200;
                 ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMinWidth(unmaximizedLeftToolbarWidth);
                 ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMaxWidth(unmaximizedLeftToolbarWidth);
-                if (bottomPaneToggle.isSelected()) {
+                if (isBottomPaneExpanded()) {
                     bottomTabPane.setMinHeight(bottomEditorPaneMinHeightWhenNotMaximized);
                 }
             }
@@ -197,7 +225,7 @@ public class DesignerWindow implements Initializable {
                                               editorPanelHorizontalSplitPane.setDividerPosition(0, .5);
                                           }
 
-                                          if (!bottomPaneToggle.isSelected() && oldValue.doubleValue() == 1) {
+                                          if (!isBottomPaneExpanded() && oldValue.doubleValue() == 1) {
                                               editorPanelHorizontalSplitPane.setDividerPosition(0, 1);
                                           }
                                       });
@@ -349,11 +377,6 @@ public class DesignerWindow implements Initializable {
     }
 
 
-    public ToggleButton getBottomPaneToggle() {
-        return bottomPaneToggle;
-    }
-
-
     public Tab getEventLogTab() {
         return eventLogTab;
     }
@@ -366,5 +389,35 @@ public class DesignerWindow implements Initializable {
 
     public TabPane getBottomTabPane() {
         return bottomTabPane;
+    }
+
+
+    public boolean isBottomPaneExpanded() {
+        return isBottomPaneExpandedProperty.get();
+    }
+
+
+    public BooleanProperty isBottomPaneExpandedPropertyProperty() {
+        return isBottomPaneExpandedProperty;
+    }
+
+
+    public ToggleGroup getBottomTabsToggleGroup() {
+        return bottomTabsToggleGroup;
+    }
+
+
+    public ToggleButton getEventLogToggle() {
+        return eventLogToggle;
+    }
+
+
+    public ToggleButton getXpathEditorToggle() {
+        return xpathEditorToggle;
+    }
+
+
+    public SplitPane getEditorAstSplitPane() {
+        return editorAstSplitPane;
     }
 }

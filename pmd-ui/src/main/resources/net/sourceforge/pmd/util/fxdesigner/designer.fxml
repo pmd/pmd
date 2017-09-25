@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.codearea.*?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -21,6 +19,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.control.TreeView?>
@@ -118,7 +117,7 @@
                             <items>
                                 <BorderPane fx:id="editorAndASTBorderPane" prefHeight="200.0" prefWidth="200.0">
                                     <center>
-                                        <SplitPane dividerPositions="0.5" BorderPane.alignment="CENTER">
+                                        <SplitPane fx:id="editorAstSplitPane" dividerPositions="0.5657620041753654" BorderPane.alignment="CENTER">
                                             <items>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                     <children>
@@ -149,25 +148,6 @@
                                             </items>
                                         </SplitPane>
                                     </center>
-                                    <bottom>
-                                        <ToolBar prefHeight="35.0" prefWidth="954.0" BorderPane.alignment="CENTER">
-                                            <items>
-                                                <Button fx:id="refreshASTButton" mnemonicParsing="true" prefHeight="25.0" prefWidth="289.0" text="_Refresh AST">
-                                                    <tooltip>
-                                                        <Tooltip text="Refresh the AST, and XPath results if there's an expression to evaluate" />
-                                                    </tooltip>
-                                                </Button>
-                                                <ChoiceBox fx:id="languageChoiceBox" prefHeight="25.0" prefWidth="115.0" />
-                                                <ChoiceBox prefHeight="25.0" prefWidth="115.0" fx:id="xpathVersionChoiceBox" />
-
-                                                <Pane HBox.hgrow="ALWAYS" />
-                                                <ToggleButton fx:id="bottomPaneToggle" mnemonicParsing="false" text="Bottom Panel" />
-                                            </items>
-                                            <BorderPane.margin>
-                                                <Insets />
-                                            </BorderPane.margin>
-                                        </ToolBar>
-                                    </bottom>
                                 </BorderPane>
                                 <AnchorPane>
                                     <children>
@@ -193,6 +173,25 @@
                                                 </Tab>
                                             </tabs>
                                         </TabPane>
+                                        <ToolBar prefHeight="35.0" prefWidth="954.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <items>
+                                                <Button fx:id="refreshASTButton" mnemonicParsing="true" prefHeight="25.0" prefWidth="289.0" text="_Refresh AST">
+                                                    <tooltip>
+                                                        <Tooltip text="Refresh the AST, and XPath results if there's an expression to evaluate" />
+                                                    </tooltip>
+                                                </Button>
+                                                <ChoiceBox fx:id="languageChoiceBox" prefHeight="25.0" prefWidth="115.0" />
+                                                <ChoiceBox prefHeight="25.0" prefWidth="115.0" fx:id="xpathVersionChoiceBox" />
+
+                                                <Pane HBox.hgrow="ALWAYS" />
+                                                <ToggleButton mnemonicParsing="false" selected="true" text="XPath Editor" fx:id="xpathEditorToggle">
+                                                    <toggleGroup>
+                                                        <ToggleGroup fx:id="bottomTabsToggleGroup" />
+                                                    </toggleGroup>
+                                                </ToggleButton>
+                                                <ToggleButton fx:id="eventLogToggle" mnemonicParsing="false" text="Log" toggleGroup="$bottomTabsToggleGroup" />
+                                            </items>
+                                        </ToolBar>
                                     </children>
                                 </AnchorPane>
                             </items>

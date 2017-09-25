@@ -11,6 +11,12 @@
 
 
 
+.tab-pane {
+    -fx-tab-max-height: 0 ;
+}
+.tab-pane .tab-header-area {
+    visibility: hidden ;
+}
 
 .tab-pane {
     -fx-tab-min-height: 28.0;
@@ -20,14 +26,20 @@
 .tab:focused {
     /*-fx-focus-color: transparent;*/
 }
-.tab {
-    -fx-padding: 0 30 0 30;
-}
 
-.tab-pane:top *.tab-header-area {
-    -fx-padding: 0.0em 0.166667em 0.0em 0.0em;
+.tab-pane:left *.tab-header-area {
+    -fx-padding: 0em 0.0em 0.0em 0.166667em;
 }
 .tab:selected .focus-indicator {
     -fx-focus-color: transparent;
     -fx-border-color: transparent;
+}
+
+#editorPanelHorizontalSplitPane > .split-pane-divider {
+    -fx-padding: 0 1 0 1;
+    /*-fx-border-color: -fx-box-border;*/
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    /*-fx-background-color: -fx-inner-border-horizontal;*/
+    -fx-background-insets: 0, 0 0 0 1;
 }

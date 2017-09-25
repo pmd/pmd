@@ -52,10 +52,12 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.util.StringConverter;
 
 /**
@@ -323,6 +325,7 @@ public class DesignerWindowPresenter {
         ScrollPane scroll = new ScrollPane();
         scroll.setContent(new TextArea(ExceptionUtils.getStackTrace(e.getCause())));
         errorAlert.getDialogPane().setContent(scroll);
+        errorAlert.initModality(Modality.NONE);
         errorAlert.showAndWait();
     }
 
@@ -508,14 +511,31 @@ public class DesignerWindowPresenter {
     }
 
 
-    String isXPathPanelExpanded() {
-        return Boolean.toString(view.getBottomPaneToggle().isSelected());
+    String getBottomExpandedTab() {
+        Toggle selected = view.getBottomTabsToggleGroup().getSelectedToggle();
+        if (selected == view.getXpathEditorToggle()) {
+            return "xpathEditor";
+        } else if (selected == view.getEventLogToggle()) {
+            return "eventLog";
+        } else {
+            return "none";
+        }
     }
 
 
-    void setIsXPathPanelExpanded(String bool) {
-        boolean b = Boolean.parseBoolean(bool);
-        view.getBottomPaneToggle().setSelected(b);
+    void setBottomExpandedTab(String id) {
+        switch (id) {
+        case "xpathEditor":
+            view.getXpathEditorToggle().setSelected(true);
+            break;
+        case "eventLog":
+            view.getEventLogToggle().setSelected(true);
+            break;
+        default:
+            view.getXpathEditorToggle().setSelected(false);
+            view.getEventLogToggle().setSelected(false);
+            break;
+        }
     }
 
 

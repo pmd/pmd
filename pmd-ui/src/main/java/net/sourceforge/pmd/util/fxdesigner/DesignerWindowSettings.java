@@ -26,6 +26,7 @@ enum DesignerWindowSettings {
     SOURCE_CODE("code",
                 DesignerWindowPresenter::getSourceCode,
                 DesignerWindowPresenter::setSourceCode),
+
     /** Version of the XPath parser. */
     XPATH_VERSION("xpathVersion",
                   DesignerWindowPresenter::getXPathVersion,
@@ -36,10 +37,10 @@ enum DesignerWindowSettings {
                DesignerWindowPresenter::getXPathCode,
                DesignerWindowPresenter::setXPathCode),
 
-    /** Whether the xpath bottom pane is expanded. */
-    IS_XPATH_PANEL_EXPANDED("isXPathPanelExpanded",
-                            DesignerWindowPresenter::isXPathPanelExpanded,
-                            DesignerWindowPresenter::setIsXPathPanelExpanded),
+    /** Which tab of the bottom area is currently visible. */
+    BOTTOM_EXPANDED_TAB("bottomExpandedTab",
+                        DesignerWindowPresenter::getBottomExpandedTab,
+                        DesignerWindowPresenter::setBottomExpandedTab),
 
     /** Whether the window is maximized. */
     IS_MAXIMIZED("isMaximized",
@@ -54,7 +55,6 @@ enum DesignerWindowSettings {
     IS_SYNTAX_HIGHLIGHTING_ENABLED("isSyntaxHighlightingEnabled",
                                    DesignerWindowPresenter::isSyntaxHighlightingEnabled,
                                    DesignerWindowPresenter::setIsSyntaxHighlightingEnabled);
-
 
     private final String keyName;
     private final Function<DesignerWindowPresenter, String> getValueFunction;
