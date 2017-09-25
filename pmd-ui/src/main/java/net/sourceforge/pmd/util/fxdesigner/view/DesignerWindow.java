@@ -11,7 +11,6 @@ import org.fxmisc.richtext.LineNumberFactory;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.fxdesigner.Designer;
 import net.sourceforge.pmd.util.fxdesigner.DesignerWindowPresenter;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
@@ -32,6 +31,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -40,11 +40,8 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Region;
 import javafx.util.Duration;
 
 /**
@@ -56,13 +53,9 @@ import javafx.util.Duration;
 public class DesignerWindow implements Initializable {
 
     @FXML
-    private SplitPane editorAstSplitPane;
+    private Label metricsTitleLabel;
     @FXML
-    private ToggleGroup bottomTabsToggleGroup;
-    @FXML
-    private ToggleButton eventLogToggle;
-    @FXML
-    private ToggleButton xpathEditorToggle;
+    private ToggleButton bottomTabsToggle;
     @FXML
     private TabPane bottomTabPane;
     @FXML
@@ -72,7 +65,7 @@ public class DesignerWindow implements Initializable {
     @FXML
     private ChoiceBox<String> xpathVersionChoiceBox;
     @FXML
-    private TitledPane metricResultsTitledPane;
+    private Tab metricResultsTitledPane;
     @FXML
     private MenuItem openFileMenuItem;
     @FXML
@@ -112,7 +105,7 @@ public class DesignerWindow implements Initializable {
     @FXML
     private SplitPane editorPanelHorizontalSplitPane;
     @FXML
-    private TitledPane xpathAttributesTitledPane;
+    private Tab xpathAttributesTitledPane;
     @FXML
     private Accordion nodeInfoAccordion;
     @FXML
@@ -142,32 +135,16 @@ public class DesignerWindow implements Initializable {
         sourceCodeProperty.bind(codeEditorArea.textProperty());
 
         Binding<Boolean> bottomPaneBinding
-            = Bindings.createBooleanBinding(() -> bottomTabsToggleGroup.getSelectedToggle() != null,
-                                            bottomTabsToggleGroup.selectedToggleProperty());
+            = Bindings.createBooleanBinding(() -> bottomTabsToggle.isSelected(),
+                                            bottomTabsToggle.selectedProperty());
 
         isBottomPaneExpandedProperty.bind(bottomPaneBinding);
 
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
-        nodeInfoAccordion.setExpandedPane(xpathAttributesTitledPane);
 
 
         final double defaultMainHorizontalSplitPaneDividerPosition
             = editorPanelHorizontalSplitPane.getDividerPositions()[0];
-
-        final double bottomEditorPaneMinHeightWhenMaximized = violationsTitledPane.getPrefHeight();
-        final double bottomEditorPaneMinHeightWhenNotMaximized = violationsTitledPane.getPrefHeight();
-
-        xpathEditorToggle.selectedProperty().addListener((e, oldVal, newVal) -> {
-            if (newVal) {
-                bottomTabPane.getSelectionModel().select(xpathEditorTab);
-            }
-        });
-
-        eventLogToggle.selectedProperty().addListener((e, oldVal, newVal) -> {
-            if (newVal) {
-                bottomTabPane.getSelectionModel().select(eventLogTab);
-            }
-        });
 
 
         // show/ hide bottom pane
@@ -175,7 +152,6 @@ public class DesignerWindow implements Initializable {
             KeyValue keyValue = null;
             DoubleProperty divPosition = editorPanelHorizontalSplitPane.getDividers().get(0).positionProperty();
             if (wasExpanded && !isNowExpanded) {
-                bottomTabPane.setMinHeight(Region.USE_COMPUTED_SIZE);
                 keyValue = new KeyValue(divPosition, 1);
             } else if (!wasExpanded && isNowExpanded) {
                 keyValue = new KeyValue(divPosition, defaultMainHorizontalSplitPaneDividerPosition);
@@ -183,57 +159,15 @@ public class DesignerWindow implements Initializable {
 
             if (keyValue != null) {
                 Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), keyValue));
-                timeline.setOnFinished(e -> {
-                    if (isNowExpanded) {
-                        if (Designer.getMainStage().isMaximized()) {
-                            bottomTabPane.setMinHeight(bottomEditorPaneMinHeightWhenMaximized);
-                        } else {
-                            bottomTabPane.setMinHeight(bottomEditorPaneMinHeightWhenNotMaximized);
-                        }
-                    }
-                });
                 timeline.play();
             }
         });
-
-        // Set width of left pane
-        Designer.getMainStage().maximizedProperty().addListener((obs, wasMaximized, isNowMaximized) -> {
-            if (isNowMaximized) {
-                final double maximizedLeftToolbarWidth = 250;
-                ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMinWidth(maximizedLeftToolbarWidth);
-                ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMaxWidth(maximizedLeftToolbarWidth);
-                if (isBottomPaneExpanded()) {
-                    bottomTabPane.setMinHeight(bottomEditorPaneMinHeightWhenMaximized);
-                }
-            } else {
-                final double unmaximizedLeftToolbarWidth = 200;
-                ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMinWidth(unmaximizedLeftToolbarWidth);
-                ((AnchorPane) mainVerticalSplitPane.getItems().get(0)).setMaxWidth(unmaximizedLeftToolbarWidth);
-                if (isBottomPaneExpanded()) {
-                    bottomTabPane.setMinHeight(bottomEditorPaneMinHeightWhenNotMaximized);
-                }
-            }
-        });
-
-
-        // ensure main horizontal divider is never under 50%
-        editorPanelHorizontalSplitPane.getDividers()
-                                      .get(0)
-                                      .positionProperty()
-                                      .addListener((observable, oldValue, newValue) -> {
-                                          if (newValue.doubleValue() < .5) {
-                                              editorPanelHorizontalSplitPane.setDividerPosition(0, .5);
-                                          }
-
-                                          if (!isBottomPaneExpanded() && oldValue.doubleValue() == 1) {
-                                              editorPanelHorizontalSplitPane.setDividerPosition(0, 1);
-                                          }
-                                      });
     }
 
 
     public void notifyMetricsAvailable(long numMetrics) {
-        metricResultsTitledPane.setText("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + " available)");
+        metricResultsTitledPane.setText("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + ")");
+        metricsTitleLabel.setText("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + " available)");
         metricResultsTitledPane.setDisable(numMetrics == 0);
     }
 
@@ -402,22 +336,9 @@ public class DesignerWindow implements Initializable {
     }
 
 
-    public ToggleGroup getBottomTabsToggleGroup() {
-        return bottomTabsToggleGroup;
+    public ToggleButton getBottomTabsToggle() {
+        return bottomTabsToggle;
     }
 
 
-    public ToggleButton getEventLogToggle() {
-        return eventLogToggle;
-    }
-
-
-    public ToggleButton getXpathEditorToggle() {
-        return xpathEditorToggle;
-    }
-
-
-    public SplitPane getEditorAstSplitPane() {
-        return editorAstSplitPane;
-    }
 }

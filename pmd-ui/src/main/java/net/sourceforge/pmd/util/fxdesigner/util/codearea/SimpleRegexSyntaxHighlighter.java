@@ -48,7 +48,9 @@ public class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter {
                 return computeHighlighting(text);
             }
         };
-        executor.execute(task);
+        if (!executor.isShutdown()) {
+            executor.execute(task);
+        }
         return task;
     }
 

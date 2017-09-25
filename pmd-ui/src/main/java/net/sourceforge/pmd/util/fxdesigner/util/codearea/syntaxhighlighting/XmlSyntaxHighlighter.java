@@ -26,7 +26,8 @@ public class XmlSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         .or("lt-gt", "</?|/?>")
         .or("tag-name", "\\b(?<=(</?))[\\w:]++")
         .or("attribute-name", "\\w+(?=\\s*=\\s*[\"'])")
-        .or("string", "('([^'\\\\]|\\\\.)*')|(\"([^\"\\\\]|\\\\.)*\")")
+        .or("string", "" // + "('([^'\\\\]|\\\\.)*')|" // this expression crashes the regex engine on really big files...
+            + "(\"([^\"\\\\]|\\\\.)*\")")
         .create(Pattern.DOTALL);
 
 

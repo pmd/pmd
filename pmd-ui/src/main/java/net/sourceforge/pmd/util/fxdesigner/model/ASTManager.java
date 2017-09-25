@@ -130,7 +130,7 @@ public class ASTManager {
             try {
                 languageVersionHandler.getTypeResolutionFacade(ASTManager.class.getClassLoader()).start(node);
             } catch (Exception e) {
-                e.printStackTrace();
+               // e.printStackTrace();
             }
             languageVersionHandler.getMetricsVisitorFacade().start(node);
             compilationUnit = node;

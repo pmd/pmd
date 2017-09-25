@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
 import java.time.Duration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -18,6 +19,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 
 /**
  * Code area that can handle syntax highlighting as well as regular node highlighting. Regular node highlighting is
@@ -84,8 +86,16 @@ public class CustomCodeArea extends CodeArea {
 
     public void setSyntaxHighlightingEnabled(SyntaxHighlighter computer) {
         this.setSyntaxHighlighting(computer);
-        this.replaceText(0, 0, " ");
-        this.undo();
+        try {
+            Task<List<SpanBound>> t = syntaxHighlighter.computeHighlightingAsync(this.getText(), executorService);
+            t.setOnSucceeded((e) -> {
+                StyleLayer layer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
+                layer.setBounds(t.getValue());
+                this.paintCss();
+            });
+        } catch (Exception e) {
+            // nevermind
+        }
     }
 
 
@@ -143,16 +153,19 @@ public class CustomCodeArea extends CodeArea {
 
 
     private synchronized void launchAsyncSyntaxHighlighting(SyntaxHighlighter computer) {
-        this.syntaxHighlighter = computer;
+
         if (executorService != null) {
             executorService.shutdown();
             executorService = null;
         }
+
+        this.syntaxHighlighter = computer;
+
         if (isSyntaxHighlightingEnabled && syntaxHighlighter != null) {
             executorService = Executors.newSingleThreadExecutor();
             this.richChanges()
-                .filter(ch -> !ch.getInserted().equals(ch.getRemoved())) // XXX
-                .successionEnds(Duration.ofMillis(500))
+                .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
+                .successionEnds(Duration.ofMillis(300))
                 .supplyTask(() -> syntaxHighlighter.computeHighlightingAsync(this.getText(), executorService))
                 .awaitLatest(this.richChanges())
                 .filterMap(t -> {
@@ -165,7 +178,6 @@ public class CustomCodeArea extends CodeArea {
                 })
                 .subscribe(bounds -> {
                     StyleLayer layer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
-                    assert layer != null;
                     layer.setBounds(bounds);
                     this.paintCss();
                 });
