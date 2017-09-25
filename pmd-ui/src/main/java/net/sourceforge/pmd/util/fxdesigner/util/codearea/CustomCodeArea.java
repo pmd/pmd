@@ -142,10 +142,11 @@ public class CustomCodeArea extends CodeArea {
     }
 
 
-    private void launchAsyncSyntaxHighlighting(SyntaxHighlighter computer) {
+    private synchronized void launchAsyncSyntaxHighlighting(SyntaxHighlighter computer) {
         this.syntaxHighlighter = computer;
         if (executorService != null) {
             executorService.shutdown();
+            executorService = null;
         }
         if (isSyntaxHighlightingEnabled && syntaxHighlighter != null) {
             executorService = Executors.newSingleThreadExecutor();

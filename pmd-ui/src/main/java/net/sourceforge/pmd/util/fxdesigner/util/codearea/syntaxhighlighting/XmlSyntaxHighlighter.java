@@ -25,8 +25,8 @@ public class XmlSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         .or("xml-prolog", "<[?]xml.*[?]>")
         .or("lt-gt", "</?|/?>")
         .or("tag-name", "\\b(?<=(</?))[\\w:]++")
-        .or("attribute-name", "\\w+(?=\\s*=\\s*\")")
-        .or("string", "\"([^\"\\\\]|\\\\.)*\"")
+        .or("attribute-name", "\\w+(?=\\s*=\\s*[\"'])")
+        .or("string", "('([^'\\\\]|\\\\.)*')|(\"([^\"\\\\]|\\\\.)*\")")
         .create(Pattern.DOTALL);
 
 

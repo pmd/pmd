@@ -35,7 +35,7 @@ public class XPathSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         .or("path", "//?")
         .or("paren", "[()]")
         .or("bracket", "[\\[\\]]")
-        .or("string", "'([^'\\\\]|\\\\.)*'")
+        .or("string", "('([^'\\\\]|\\\\.)*')|(\"([^\"\\\\]|\\\\.)*\")")
         .or("single-line-comment", "\\(:.*:\\)")
         .create();
 

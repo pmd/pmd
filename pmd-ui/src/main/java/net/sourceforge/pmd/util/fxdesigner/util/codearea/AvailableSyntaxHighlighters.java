@@ -23,6 +23,9 @@ public enum AvailableSyntaxHighlighters {
     JAVA("java", JavaSyntaxHighlighter.INSTANCE),
     APEX("apex", ApexSyntaxHighlighter.INSTANCE),
     XML("xml", XmlSyntaxHighlighter.INSTANCE),
+    XSL("xsl", XmlSyntaxHighlighter.INSTANCE),
+    WSDL("wsdl", XmlSyntaxHighlighter.INSTANCE),
+    POM("pom", XmlSyntaxHighlighter.INSTANCE),
     XPATH("xpath", XPathSyntaxHighlighter.INSTANCE);
 
 
