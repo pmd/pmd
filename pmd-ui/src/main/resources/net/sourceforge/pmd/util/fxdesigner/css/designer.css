@@ -1,8 +1,4 @@
 
-.root {
-    -fx-border-color: derive(-fx-base, -10%);
-    -fx-background-color: derive(-fx-base, -10%);
-}
 
 .list-view, .tree-view {
     -fx-selection-bar: royalblue;

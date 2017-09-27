@@ -199,9 +199,9 @@
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <children>
-                                                <SplitPane dividerPositions="0.9" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                <SplitPane dividerPositions="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <items>
-                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                      <AnchorPane>
                                                          <children>
                                                             <CustomCodeArea styleClass="code" stylesheets="@css/editor-theme.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="xpathExpressionArea">
                                                                <contextMenu>
@@ -214,9 +214,9 @@
                                                             </CustomCodeArea>
                                                          </children>
                                                       </AnchorPane>
-                                                      <AnchorPane>
+                                                      <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefWidth="300.0">
                                                          <children>
-                                                                      <TitledPane fx:id="violationsTitledPane" animated="false" collapsible="false" prefHeight="232.0" prefWidth="236.0" text="Matched Nodes" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                      <TitledPane fx:id="violationsTitledPane" animated="false" collapsible="false" maxHeight="600.0" maxWidth="-Infinity" minHeight="0.0" minWidth="-Infinity" prefWidth="300.0" text="Matched Nodes" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <content>
                                                                   <ListView fx:id="xpathResultListView" />
                                                                </content>
