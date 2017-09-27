@@ -40,7 +40,8 @@ The Java grammar has been updated to support analyzing Java 9 projects:
 *   The module declarations in `module-info.java` can be parsed
 *   Concise try-with-resources statements are supported
 
-You can enable Java9 support with `-language java -version 9` on the command line.
+Java 9 support is enabled by default. You can switch back to an older java version
+via the command line, e.g. `-language java -version 1.8`.
 
 #### Revamped Apex CPD
 
