@@ -114,6 +114,8 @@ public class RuleSetSchemaTest {
         dbf.setFeature("http://apache.org/xml/features/validation/schema", true);
         DocumentBuilder builder = dbf.newDocumentBuilder();
         builder.setErrorHandler(errorHandler);
+        builder.setEntityResolver(new PMDRuleSetEntityResolver());
+
         Document doc = builder.parse(new ByteArrayInputStream(ruleset.getBytes(StandardCharsets.UTF_8)));
         return doc;
     }
