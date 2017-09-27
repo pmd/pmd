@@ -1,8 +1,25 @@
 
-
-.list-view, .tree-view {
+.list-view, .tree-view, .table-view {
     -fx-selection-bar: royalblue;
     -fx-selection-bar-non-focused: derive(-fx-base, -20%);
+}
+
+.table-view {
+    -fx-border-color: derive(-fx-base, -10%);
+    -fx-padding: 0;
+}
+
+.table-view .column-header .label {
+    -fx-font-weight: normal;
+    -fx-font-size: 9pt;
+    -fx-min-height: 20pt;
+    -fx-max-height: 20pt;
+}
+
+.table-view .column-header {
+    -fx-background-color: derive(-fx-base, -10%);
+    -fx-border-color: derive(-fx-base, -20%);
+    -fx-border-style: none solid solid solid;
 }
 
 /**************/

@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.util.fxdesigner.util.EventLogger;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -26,14 +27,18 @@ import javafx.stage.Stage;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class Designer extends Application {
+public class Designer extends Application implements DesignerApp {
 
-    private static Stage mainStage;
+    private static Designer designer;
+    private Stage mainStage;
+    private EventLogger logger = new EventLogger();
 
 
     @Override
     public void start(Stage stage) throws IOException {
         mainStage = stage;
+        designer = this;
+
         Parent root = FXMLLoader.load(getClass().getResource("designer.fxml"));
 
         Scene scene = new Scene(root);
@@ -53,7 +58,7 @@ public class Designer extends Application {
                                                 // "pmd-logo_small.png",
                                                 // "pmd-logo_tiny.png",
                                                 // "pmd-logo_big.png"
-                                                );
+        );
 
         // TODO make more icon sizes
 
@@ -68,8 +73,25 @@ public class Designer extends Application {
     }
 
 
-    public static Stage getMainStage() {
+    @Override
+    public EventLogger getLogger() {
+        return logger;
+    }
+
+
+    @Override
+    public Stage getMainStage() {
         return mainStage;
+    }
+
+
+    /**
+     * Gets the singleton instance of the app.
+     *
+     * @return The singleton
+     */
+    public static DesignerApp instance() {
+        return designer;
     }
 
 

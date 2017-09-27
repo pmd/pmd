@@ -7,9 +7,12 @@ package net.sourceforge.pmd.util.fxdesigner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -26,10 +29,12 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
-import net.sourceforge.pmd.util.fxdesigner.model.ParseTimeException;
+import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
+import net.sourceforge.pmd.util.fxdesigner.util.LogEntry;
+import net.sourceforge.pmd.util.fxdesigner.util.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsLoader;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsSaver;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
@@ -39,6 +44,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPat
 import net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -51,10 +57,12 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.util.StringConverter;
@@ -87,8 +95,8 @@ public class DesignerWindowPresenter {
         initializeXPath();
         initialiseNodeInfoSection();
         bindModelToView();
-
         initializeSyntaxHighlighting();
+        initializeEventLog();
 
         try {
             loadSettings();
@@ -98,7 +106,7 @@ public class DesignerWindowPresenter {
         }
 
 
-        Designer.getMainStage().setOnCloseRequest(event -> {
+        Designer.instance().getMainStage().setOnCloseRequest(event -> {
             try {
                 saveSettings();
                 view.getCodeEditorArea().disableSyntaxHighlighting(); // shutdown the executor
@@ -284,6 +292,38 @@ public class DesignerWindowPresenter {
     }
 
 
+    private void initializeEventLog() {
+        view.getLogCategoryColumn().setCellValueFactory(new PropertyValueFactory<>("category"));
+        view.getLogMessageColumn().setCellValueFactory(new PropertyValueFactory<>("message"));
+        final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        view.getLogDateColumn().setCellValueFactory(
+            entry -> new SimpleObjectProperty<>(entry.getValue().getTimestamp()));
+        view.getLogDateColumn().setCellFactory(column -> new TableCell<LogEntry, Date>() {
+            @Override
+            protected void updateItem(Date item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(dateFormat.format(item));
+                }
+            }
+        });
+
+        view.getEventLogTableView().setItems(Designer.instance().getLogger().getLog());
+
+        view.getEventLogTableView()
+            .getSelectionModel()
+            .selectedItemProperty()
+            .addListener((obs, oldVal, newVal) -> view.getLogDetailsTextArea()
+                                                      .setText(newVal == null ? "" : newVal.getStackTrace()));
+
+        view.getEventLogTableView().resizeColumn(view.getLogMessageColumn(), -1);
+
+    }
+
+
     private void onRefreshASTClicked(ActionEvent event) {
         String source = view.getCodeEditorArea().getText();
         if (model.isRecompilationNeeded(source)) {
@@ -303,8 +343,8 @@ public class DesignerWindowPresenter {
         Node n = null;
         try {
             n = model.getCompilationUnit(source);
-        } catch (ParseTimeException e) {
-            notifyParseTimeException(e);
+        } catch (ParseAbortedException e) {
+            // notifyParseAbortedException(e);
         }
 
         if (n != null) {
@@ -316,7 +356,7 @@ public class DesignerWindowPresenter {
 
 
     // not very elegant
-    private void notifyParseTimeException(Exception e) {
+    private void notifyParseAbortedException(Exception e) {
         Alert errorAlert = new Alert(AlertType.ERROR);
         errorAlert.setWidth(1.5 * errorAlert.getWidth());
         errorAlert.setHeaderText("An exception occurred during parsing:");
@@ -344,6 +384,7 @@ public class DesignerWindowPresenter {
             view.displayXPathResultsSize(results.size());
         } catch (XPathEvaluationException e) {
             view.displayXPathError(e);
+            Designer.instance().getLogger().logEvent(new LogEntry(e, Category.XPATH_EVALUATION_EXCEPTION));
         }
 
         view.getXpathResultListView().refresh();
@@ -376,7 +417,7 @@ public class DesignerWindowPresenter {
     private void onOpenFileClicked(ActionEvent event) {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Load source from file");
-        File file = chooser.showOpenDialog(Designer.getMainStage());
+        File file = chooser.showOpenDialog(Designer.instance().getMainStage());
         loadSourceFromFile(file);
         view.getCodeEditorArea().clearStyleLayers();
     }
@@ -524,14 +565,14 @@ public class DesignerWindowPresenter {
 
 
     String isMaximized() {
-        return Boolean.toString(Designer.getMainStage().isMaximized());
+        return Boolean.toString(Designer.instance().getMainStage().isMaximized());
     }
 
 
     void setIsMaximized(String bool) {
         boolean b = Boolean.parseBoolean(bool);
-        Designer.getMainStage().setMaximized(!b); // trigger change listener anyway
-        Designer.getMainStage().setMaximized(b);
+        Designer.instance().getMainStage().setMaximized(!b); // trigger change listener anyway
+        Designer.instance().getMainStage().setMaximized(b);
     }
 
 

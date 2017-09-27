@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util.fxdesigner.view;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import org.fxmisc.richtext.LineNumberFactory;
@@ -13,6 +14,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.DesignerWindowPresenter;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
+import net.sourceforge.pmd.util.fxdesigner.util.LogEntry;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 
 import javafx.animation.KeyFrame;
@@ -38,6 +40,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TreeView;
@@ -58,10 +63,20 @@ public class DesignerWindow implements Initializable {
     private ToggleButton bottomTabsToggle;
     @FXML
     private TabPane bottomTabPane;
+
     @FXML
     private Tab eventLogTab;
     @FXML
-    private ListView eventLogListView;
+    private TableView<LogEntry> eventLogTableView;
+    @FXML
+    private TableColumn<LogEntry, Date> logDateColumn;
+    @FXML
+    private TableColumn<LogEntry, Date> logMessageColumn;
+    @FXML
+    private TableColumn<LogEntry, Date> logCategoryColumn;
+    @FXML
+    private TextArea logDetailsTextArea;
+
     @FXML
     private ChoiceBox<String> xpathVersionChoiceBox;
     @FXML
@@ -316,8 +331,28 @@ public class DesignerWindow implements Initializable {
     }
 
 
-    public ListView getEventLogListView() {
-        return eventLogListView;
+    public TableView<LogEntry> getEventLogTableView() {
+        return eventLogTableView;
+    }
+
+
+    public TableColumn<LogEntry, Date> getLogDateColumn() {
+        return logDateColumn;
+    }
+
+
+    public TableColumn<LogEntry, Date> getLogMessageColumn() {
+        return logMessageColumn;
+    }
+
+
+    public TableColumn<LogEntry, Date> getLogCategoryColumn() {
+        return logCategoryColumn;
+    }
+
+
+    public TextArea getLogDetailsTextArea() {
+        return logDetailsTextArea;
     }
 
 

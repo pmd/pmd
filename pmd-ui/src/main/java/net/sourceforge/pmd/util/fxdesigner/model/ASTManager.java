@@ -12,6 +12,9 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.fxdesigner.Designer;
+import net.sourceforge.pmd.util.fxdesigner.util.LogEntry;
+import net.sourceforge.pmd.util.fxdesigner.util.LogEntry.Category;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -115,9 +118,9 @@ public class ASTManager {
      *
      * @param source Source code
      *
-     * @throws ParseTimeException if parsing or one of the visitors fails. The cause is preserved.
+     * @throws ParseAbortedException if parsing or one of the visitors fails. The cause is preserved.
      */
-    public Node getCompilationUnit(String source) throws ParseTimeException {
+    public Node getCompilationUnit(String source) throws ParseAbortedException {
         if (StringUtils.equals(source, lastValidSource)
             && languageVersion.get().equals(lastLanguageVersion)) {
             return compilationUnit;
@@ -125,20 +128,30 @@ public class ASTManager {
         LanguageVersionHandler languageVersionHandler = languageVersion.get().getLanguageVersionHandler();
         Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
         try {
-            Node node = parser.parse(null, new StringReader(source));
+            Node node;
+            try {
+                node = parser.parse(null, new StringReader(source));
+            } catch (Exception e) {
+                Designer.instance().getLogger().logEvent(new LogEntry(e, Category.PARSE_EXCEPTION));
+                return null;
+            }
+
             languageVersionHandler.getSymbolFacade().start(node);
+
             try {
                 languageVersionHandler.getTypeResolutionFacade(ASTManager.class.getClassLoader()).start(node);
             } catch (Exception e) {
-               // e.printStackTrace();
+                Designer.instance().getLogger().logEvent(new LogEntry(e, Category.TYPERESOLUTION_EXCEPTION));
             }
-            languageVersionHandler.getMetricsVisitorFacade().start(node);
+
+            languageVersionHandler.getMetricsVisitorFacade().start(node); // will disappear
             compilationUnit = node;
             lastValidSource = source;
             lastLanguageVersion = languageVersion.get();
             return compilationUnit;
         } catch (Exception e) {
-            throw new ParseTimeException(e);
+            Designer.instance().getLogger().logEvent(new LogEntry(e, Category.OTHER_PARSE_TIME_EXCEPTION));
+            throw new ParseAbortedException(e);
         }
 
     }
