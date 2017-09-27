@@ -97,7 +97,7 @@ public abstract class TextOperation implements Comparable<TextOperation> {
         int potentialIndex = Collections.binarySearch(children, childToAdd);
 
         if (potentialIndex < 0) { // It is not an insert operation
-            return -(potentialIndex + 1);
+            return ~potentialIndex;
         }
 
         final int childrenLastIndex = children.size() - 1;
