@@ -18,24 +18,31 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.SpanBound;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
+
 import javafx.concurrent.Task;
 
 /**
- * Language specific engine for syntax highlighting.
+ * Language-specific engine for syntax highlighting. The highlighter assigns classes to
  *
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter {
+public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter {
 
-    private final Pattern pattern;
-    private final Map<String, String> namesToCssClass;
+    private final RegexHighlightGrammar grammar;
     private final String languageName;
 
 
-    protected SimpleRegexSyntaxHighlighter(String languageName, Pattern pattern, Map<String, String> namesToCssClass) {
-        this.pattern = pattern;
-        this.namesToCssClass = namesToCssClass;
+    /**
+     * Creates a highlighter given a name for the language and a "regex grammar".
+     *
+     * @param languageName The language name
+     * @param grammar      The grammar
+     */
+    protected SimpleRegexSyntaxHighlighter(String languageName, final RegexHighlightGrammar grammar) {
+        this.grammar = grammar;
         this.languageName = languageName;
     }
 
@@ -57,12 +64,12 @@ public class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter {
 
     private List<SpanBound> computeHighlighting(String text) {
         List<SpanBound> updated = new ArrayList<>();
-        Matcher matcher = pattern.matcher(text);
+        Matcher matcher = grammar.getPattern().matcher(text);
         int lastKwEnd = 0;
 
         try {
             while (matcher.find()) {
-                String styleClass = getCssClassOfLastGroup(matcher);
+                String styleClass = grammar.getCssClassOfLastGroup(matcher);
                 updated.add(new SpanBound(lastKwEnd, Collections.singleton(languageName), true));
                 updated.add(new SpanBound(matcher.start(), Collections.emptySet(), false));
                 updated.add(new SpanBound(matcher.start(), new HashSet<>(Arrays.asList(languageName, styleClass)), true));
@@ -76,37 +83,32 @@ public class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter {
     }
 
 
-    private String getCssClassOfLastGroup(Matcher matcher) {
-        for (Entry<String, String> groupToClass : namesToCssClass.entrySet()) {
-            if (matcher.group(groupToClass.getKey()) != null) {
-                return groupToClass.getValue();
-            }
-        }
-
-        return "";
-    }
-
-
     @Override
     public final String getLanguageTerseName() {
         return languageName;
     }
 
 
-    public static RegexHighlighterBuilder builder(String languageName, String cssClass, String pattern) {
-        return new RegexHighlighterBuilder(languageName, cssClass, pattern);
+    /**
+     * Gets a builder to make a grammar to build a highlighter.
+     *
+     * @param cssClass The css class of the first pattern
+     * @param pattern  The first pattern
+     *
+     * @return A builder
+     */
+    protected static RegexHighlightGrammarBuilder grammarBuilder(String cssClass, String pattern) {
+        return new RegexHighlightGrammarBuilder(cssClass, pattern);
     }
 
 
-    public static class RegexHighlighterBuilder {
+    protected static class RegexHighlightGrammarBuilder {
 
-        private final String language;
         private Map<String, String> regexToClasses = new LinkedHashMap<>();
 
 
-        RegexHighlighterBuilder(String languageName, String cssClass, String regex) {
+        RegexHighlightGrammarBuilder(String cssClass, String regex) {
             or(cssClass, regex);
-            language = languageName;
         }
 
 
@@ -118,7 +120,7 @@ public class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter {
          *
          * @return The same builder
          */
-        public RegexHighlighterBuilder or(String cssClass, String regex) {
+        public RegexHighlightGrammarBuilder or(String cssClass, String regex) {
             regexToClasses.put(regex, cssClass);
             return this;
         }
@@ -135,7 +137,6 @@ public class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter {
 
 
         private String getRegexString() {
-
             return String.join("|",
                                regexToClasses.entrySet()
                                              .stream()
@@ -144,24 +145,27 @@ public class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter {
         }
 
 
-        public SyntaxHighlighter create() {
-            return new SimpleRegexSyntaxHighlighter(language,
-                                                    Pattern.compile(getRegexString()),
-                                                    getGroupNamesToCssClasses());
+        /**
+         * Builds the grammar.
+         *
+         * @return A new grammar
+         */
+        public RegexHighlightGrammar create() {
+            return new RegexHighlightGrammar(Pattern.compile(getRegexString()),
+                                             getGroupNamesToCssClasses());
         }
 
 
         /**
-         * Builds the syntax highlighter.
+         * Builds the grammar.
          *
          * @param flags Regex compilation flags
          *
-         * @return A new highlighter
+         * @return A new grammar
          */
-        public SyntaxHighlighter create(int flags) {
-            return new SimpleRegexSyntaxHighlighter(language,
-                                                    Pattern.compile(getRegexString(), flags),
-                                                    getGroupNamesToCssClasses());
+        public RegexHighlightGrammar create(int flags) {
+            return new RegexHighlightGrammar(Pattern.compile(getRegexString(), flags),
+                                             getGroupNamesToCssClasses());
         }
 
 
@@ -174,6 +178,50 @@ public class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter {
 
             return result;
         }
+    }
+
+    /**
+     * Describes the tokens of the language that should be colored with a regular expression.
+     */
+    protected static class RegexHighlightGrammar {
+
+        private final Pattern pattern;
+        private final Map<String, String> namesToCssClass;
+
+
+        public RegexHighlightGrammar(Pattern pattern, Map<String, String> namesToCssClass) {
+            this.pattern = pattern;
+            this.namesToCssClass = namesToCssClass;
+        }
+
+
+        /**
+         * Pattern describing the tokens.
+         *
+         * @return The pattern
+         */
+        public Pattern getPattern() {
+            return pattern;
+        }
+
+
+        /**
+         * Gets the css class that should be applied to the last matched group (token), according to this grammar.
+         *
+         * @param matcher The matcher in which to look
+         *
+         * @return The name of the css class corresponding to the token
+         */
+        public String getCssClassOfLastGroup(Matcher matcher) {
+            for (Entry<String, String> groupToClass : namesToCssClass.entrySet()) {
+                if (matcher.group(groupToClass.getKey()) != null) {
+                    return groupToClass.getValue();
+                }
+            }
+
+            return "";
+        }
+
     }
 
 }

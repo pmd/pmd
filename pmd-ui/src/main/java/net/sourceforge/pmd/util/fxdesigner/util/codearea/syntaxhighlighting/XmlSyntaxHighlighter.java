@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting;
 
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SimpleRegexSyntaxHighlighter;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
 
 /**
  * @author Clément Fournier
@@ -17,9 +15,8 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
 public class XmlSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
 
 
-    public static final SyntaxHighlighter INSTANCE
-        = builder("xml",
-                  "multi-line-comment", "<!--.*?-->")
+    private static final RegexHighlightGrammar GRAMMAR
+        = grammarBuilder("multi-line-comment", "<!--.*?-->")
         .or("cdata-tag", "<!\\[CDATA\\[|]]>")
         .or("cdata-content", "(?<=<!\\[CDATA\\[).*?(?=]]>)")
         .or("xml-prolog", "<[?]xml.*[?]>")
@@ -30,7 +27,7 @@ public class XmlSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         .create(Pattern.DOTALL);
 
 
-    private XmlSyntaxHighlighter(String languageName, Pattern pattern, Map<String, String> namesToCssClass) {
-        super(languageName, pattern, namesToCssClass);
+    public XmlSyntaxHighlighter() {
+        super("xml", GRAMMAR);
     }
 }

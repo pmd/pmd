@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting;
 
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SimpleRegexSyntaxHighlighter;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
 
 /**
  * Syntax highlighter for Apex.
@@ -46,9 +44,8 @@ public class ApexSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         };
 
 
-    public static final SyntaxHighlighter INSTANCE
-        = builder("apex",
-                  "single-line-comment", "//[^\r\n]*")
+    public static final RegexHighlightGrammar GRAMMAR
+        = grammarBuilder("single-line-comment", "//[^\r\n]*")
         .or("multi-line-comment", "/\\*.*?\\*/")
         .or("keyword", "\\b(" + String.join("|", KEYWORDS) + ")\\b")
         .or("paren", "[()]")
@@ -59,8 +56,8 @@ public class ApexSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         .create(Pattern.DOTALL);
 
 
-    private ApexSyntaxHighlighter(String languageName, Pattern pattern, Map<String, String> namesToCssClass) {
-        super(languageName, pattern, namesToCssClass);
+    public ApexSyntaxHighlighter() {
+        super("apex", GRAMMAR);
     }
 
 }

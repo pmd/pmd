@@ -20,22 +20,22 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XmlS
  * @since 6.0.0
  */
 public enum AvailableSyntaxHighlighters {
-    JAVA("java", JavaSyntaxHighlighter.INSTANCE),
-    APEX("apex", ApexSyntaxHighlighter.INSTANCE),
-    XML("xml", XmlSyntaxHighlighter.INSTANCE),
-    XSL("xsl", XmlSyntaxHighlighter.INSTANCE),
-    WSDL("wsdl", XmlSyntaxHighlighter.INSTANCE),
-    POM("pom", XmlSyntaxHighlighter.INSTANCE),
-    XPATH("xpath", XPathSyntaxHighlighter.INSTANCE);
+    JAVA("java", new JavaSyntaxHighlighter()),
+    APEX("apex", new ApexSyntaxHighlighter()),
+    XML("xml", new XmlSyntaxHighlighter()),
+    XSL("xsl", new XmlSyntaxHighlighter()),
+    WSDL("wsdl", new XmlSyntaxHighlighter()),
+    POM("pom", new XmlSyntaxHighlighter()),
+    XPATH("xpath", new XPathSyntaxHighlighter());
 
 
     private final String language;
-    private final SyntaxHighlighter computer;
+    private final SyntaxHighlighter engine;
 
 
-    AvailableSyntaxHighlighters(String languageTerseName, SyntaxHighlighter computer) {
+    AvailableSyntaxHighlighters(String languageTerseName, SyntaxHighlighter engine) {
         this.language = languageTerseName;
-        this.computer = computer;
+        this.engine = engine;
     }
 
 
@@ -51,7 +51,7 @@ public enum AvailableSyntaxHighlighters {
                                                             .filter(e -> e.language.equals(language.getTerseName()))
                                                             .findFirst();
         if (found.isPresent()) {
-            return found.get().computer;
+            return found.get().engine;
         } else {
             return null;
         }

@@ -288,7 +288,7 @@ public class DesignerWindowPresenter {
             }
         });
 
-        view.getXpathExpressionArea().setSyntaxHighlightingEnabled(XPathSyntaxHighlighter.INSTANCE);
+        view.getXpathExpressionArea().setSyntaxHighlightingEnabled(new XPathSyntaxHighlighter());
     }
 
 

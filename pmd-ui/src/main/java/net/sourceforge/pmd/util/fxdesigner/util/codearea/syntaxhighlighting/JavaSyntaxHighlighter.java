@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting;
 
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SimpleRegexSyntaxHighlighter;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
 
 /**
  * Syntax highlighter for Java.
@@ -33,9 +31,8 @@ public class JavaSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         };
 
 
-    public static final SyntaxHighlighter INSTANCE
-        = builder("java",
-                  "single-line-comment", "//[^\n]*")
+    private static final RegexHighlightGrammar GRAMMAR
+        = grammarBuilder("single-line-comment", "//[^\n]*")
         .or("multi-line-comment", "/\\*.*?\\*/")
         .or("annotation", "@[\\w]+")
         .or("paren", "[()]")
@@ -49,8 +46,8 @@ public class JavaSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         .create(Pattern.DOTALL);
 
 
-    private JavaSyntaxHighlighter(String languageName, Pattern pattern, Map<String, String> namesToCssClass) {
-        super(languageName, pattern, namesToCssClass);
+    public JavaSyntaxHighlighter() {
+        super("java", GRAMMAR);
     }
 
 }
