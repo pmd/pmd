@@ -48,6 +48,16 @@ public class CustomCodeArea extends CodeArea {
     }
 
 
+    /**
+     * Styles the region delimited by the coordinates with the given css classes. Should be followed by a call to {@link
+     * #paintCss()} to update the visual appearance.
+     *
+     * @param beginLine   Begin line
+     * @param beginColumn Begin column
+     * @param endLine     End line
+     * @param endColumn   End column
+     * @param cssClasses  The css classes to apply
+     */
     public void styleCss(int beginLine, int beginColumn, int endLine, int endColumn, Set<String> cssClasses) {
         Set<String> fullClasses = new HashSet<>(cssClasses);
         fullClasses.add("text");
@@ -56,6 +66,12 @@ public class CustomCodeArea extends CodeArea {
     }
 
 
+    /**
+     * Styles the node's position with the given css classes.
+     *
+     * @param node       The node to style
+     * @param cssClasses The css classes to apply
+     */
     public void styleCss(Node node, Set<String> cssClasses) {
         this.styleCss(node.getBeginLine(), node.getBeginColumn(), node.getEndLine(), node.getEndColumn(), cssClasses);
     }
@@ -66,17 +82,29 @@ public class CustomCodeArea extends CodeArea {
     }
 
 
+    /**
+     * Replaces the styling of the primary layer by styling the node's position with the given css classes.
+     *
+     * @param node       The node to style
+     * @param cssClasses The css classes to apply
+     */
     public void restylePrimaryStyleLayer(Node node, Set<String> cssClasses) {
         clearPrimaryStyleLayer();
         styleCss(node, cssClasses);
     }
 
 
+    /**
+     * Clears the primary style layer from its contents.
+     */
     public void clearPrimaryStyleLayer() {
         styleContext.getLayer(PRIMARY_HIGHLIGHT_LAYER_ID).clearStyles();
     }
 
 
+    /**
+     * Clears all style layers from their contents.
+     */
     public void clearStyleLayers() {
         for (StyleLayer layer : styleContext) {
             layer.clearStyles();
@@ -84,9 +112,15 @@ public class CustomCodeArea extends CodeArea {
     }
 
 
-    public void setSyntaxHighlightingEnabled(SyntaxHighlighter computer) {
-        this.setSyntaxHighlighting(computer);
-        try {
+    /**
+     * Enables syntax highlighting if disabled and sets it to use the given highlighter.
+     *
+     * @param highlighter The highlighter to use (not null)
+     */
+    public void setSyntaxHighlightingEnabled(SyntaxHighlighter highlighter) {
+        this.setSyntaxHighlighter(highlighter);
+
+        try { // refresh the highlighting.
             Task<List<SpanBound>> t = syntaxHighlighter.computeHighlightingAsync(this.getText(), executorService);
             t.setOnSucceeded((e) -> {
                 StyleLayer layer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
@@ -104,13 +138,16 @@ public class CustomCodeArea extends CodeArea {
     }
 
 
+    /**
+     * Forcefully applies the possibly updated css classes.
+     */
     public void paintCss() {
         this.setStyleSpans(0, styleContext.getStyleSpans());
     }
 
 
     /**
-     * Disables syntax highlighting if enabled.
+     * Disables syntax highlighting gracefully, if enabled.
      */
     public void disableSyntaxHighlighting() {
         if (isSyntaxHighlightingEnabled) {
@@ -127,14 +164,9 @@ public class CustomCodeArea extends CodeArea {
     }
 
 
-    /**
-     * Enables syntax highlighting if disabled and sets it to use the given computer.
-     *
-     * @param newHighlighter The computer to use
-     */
-    public void setSyntaxHighlighting(SyntaxHighlighter newHighlighter) {
+    private void setSyntaxHighlighter(SyntaxHighlighter newHighlighter) {
         isSyntaxHighlightingEnabled = true;
-        Objects.requireNonNull(newHighlighter, "The syntax highlighting computer cannot be null");
+        Objects.requireNonNull(newHighlighter, "The syntax highlighting highlighter cannot be null");
 
         StyleLayer syntaxHighlightLayer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
         if (syntaxHighlightLayer == null) {

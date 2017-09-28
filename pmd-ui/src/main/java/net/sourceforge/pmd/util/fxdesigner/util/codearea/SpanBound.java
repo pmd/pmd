@@ -16,11 +16,17 @@ public class SpanBound implements Comparable<SpanBound> {
 
     private final Set<String> cssClasses;
     private final boolean isBeginBound;
-    private int offset;
+    private int position;
 
 
-    SpanBound(int offset, Set<String> cssClasses, boolean isBeginBound) {
-        this.offset = offset;
+    /**
+     * This
+     * @param position
+     * @param cssClasses
+     * @param isBeginBound
+     */
+    SpanBound(int position, Set<String> cssClasses, boolean isBeginBound) {
+        this.position = position;
         this.cssClasses = cssClasses;
         this.isBeginBound = isBeginBound;
     }
@@ -36,14 +42,14 @@ public class SpanBound implements Comparable<SpanBound> {
     }
 
 
-    public int getOffset() {
-        return offset;
+    public int getPosition() {
+        return position;
     }
 
 
     @Override
     public int compareTo(SpanBound o) {
-        return Integer.compare(offset, o.offset);
+        return Integer.compare(position, o.position);
     }
 
 

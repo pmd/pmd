@@ -82,7 +82,7 @@ class StyleContext implements Iterable<StyleLayer> {
         StyleSpansBuilder<Collection<String>> builder = new StyleSpansBuilder<>();
 
         for (SpanBound bound : spanBounds) {
-            int lengthFromLastOffset = bound.getOffset() - lastOffset;
+            int lengthFromLastOffset = bound.getPosition() - lastOffset;
 
             if (bound.isBeginBound()) {
                 builder.add(new StyleSpan<>(new HashSet<>(currentCssClasses), lengthFromLastOffset));
@@ -94,7 +94,7 @@ class StyleContext implements Iterable<StyleLayer> {
                 }
             }
 
-            lastOffset = bound.getOffset();
+            lastOffset = bound.getPosition();
         }
 
         int totalLength = codeArea.getLength();
