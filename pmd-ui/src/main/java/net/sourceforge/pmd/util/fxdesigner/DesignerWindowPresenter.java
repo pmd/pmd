@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -180,6 +181,8 @@ public class DesignerWindowPresenter {
                                 if (newValue != null) {
                                     onNodeItemSelected(newValue);
                                     focusNodeInASTTreeView(newValue);
+                                } else {
+                                    view.getScopeHierarchyTreeView().setRoot(null);
                                 }
                             });
     }
@@ -202,6 +205,8 @@ public class DesignerWindowPresenter {
         selectedItemProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 onNodeItemSelected(newValue.getValue());
+            } else {
+                view.getScopeHierarchyTreeView().setRoot(null);
             }
         });
     }
@@ -209,23 +214,25 @@ public class DesignerWindowPresenter {
 
     /** Executed when the user selects a node in a treeView or listView. */
     private void onNodeItemSelected(Node selectedValue) {
-        if (selectedValue != null) {
-            ObservableList<String> atts = DesignerUtil.getAttributes(selectedValue);
-            view.getXpathAttributesListView().setItems(atts);
+        Objects.requireNonNull(selectedValue, "Node cannot be null");
 
-            ObservableList<MetricResult> metrics = model.evaluateAllMetrics(selectedValue);
-            view.getMetricResultsListView().setItems(metrics);
-            view.notifyMetricsAvailable(metrics.stream()
-                                               .map(MetricResult::getValue)
-                                               .filter(result -> !result.isNaN())
-                                               .count());
+        ObservableList<String> atts = DesignerUtil.getAttributes(selectedValue);
+        view.getXpathAttributesListView().setItems(atts);
 
-            TreeItem<Object> rootScope = ScopeHierarchyTreeItem.buildAscendantHierarchy(selectedValue);
-            view.getScopeHierarchyTreeView().setRoot(rootScope);
+        ObservableList<MetricResult> metrics = model.evaluateAllMetrics(selectedValue);
+        view.getMetricResultsListView().setItems(metrics);
+        view.notifyMetricsAvailable(metrics.stream()
+                                           .map(MetricResult::getValue)
+                                           .filter(result -> !result.isNaN())
+                                           .count());
 
-            highlightNode(selectedValue, view.getCodeEditorArea());
-            view.getCodeEditorArea().positionCaret(selectedValue.getBeginLine(), selectedValue.getBeginColumn());
-        }
+
+        TreeItem<Object> rootScope = ScopeHierarchyTreeItem.buildAscendantHierarchy(selectedValue);
+        view.getScopeHierarchyTreeView().setRoot(rootScope);
+
+        highlightNode(selectedValue, view.getCodeEditorArea());
+        view.getCodeEditorArea().positionCaret(selectedValue.getBeginLine(), selectedValue.getBeginColumn());
+
     }
 
 
@@ -530,6 +537,14 @@ public class DesignerWindowPresenter {
         view.getCodeEditorArea().replaceText(code);
     }
 
+
+    String getASTPaneWidth() {
+        return Double.toString(view.getAstTreeView().getWidth());
+    }
+
+    void setAstPaneWidth(String val) {
+        view.getAstTreeView().setPrefWidth(Double.parseDouble(val));
+    }
 
     String getXPathVersion() {
         return model.getXPathVersion();

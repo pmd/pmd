@@ -39,6 +39,8 @@ public class Designer extends Application implements DesignerApp {
         mainStage = stage;
         designer = this;
 
+        // System.err.close();
+
         Parent root = FXMLLoader.load(getClass().getResource("designer.fxml"));
 
         Scene scene = new Scene(root);
@@ -54,11 +56,7 @@ public class Designer extends Application implements DesignerApp {
     private void setIcons(Stage primaryStage) {
         ObservableList<Image> icons = primaryStage.getIcons();
         final String dirPrefix = "icons/app/";
-        List<String> imageNames = Arrays.asList("designer_logo.jpeg"
-                                                // "pmd-logo_small.png",
-                                                // "pmd-logo_tiny.png",
-                                                // "pmd-logo_big.png"
-        );
+        List<String> imageNames = Arrays.asList("designer_logo.jpeg");
 
         // TODO make more icon sizes
 

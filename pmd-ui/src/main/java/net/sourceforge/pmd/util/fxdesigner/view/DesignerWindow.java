@@ -30,7 +30,6 @@ import javafx.beans.property.StringProperty;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -41,6 +40,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
@@ -118,17 +118,13 @@ public class DesignerWindow implements Initializable {
     @FXML
     private Tab xpathEditorTab;
     @FXML
-    private SplitPane editorPanelHorizontalSplitPane;
+    private SplitPane mainHorizontalSplitPane;
     @FXML
     private Tab xpathAttributesTitledPane;
     @FXML
-    private Accordion nodeInfoAccordion;
-    @FXML
     private BorderPane editorAndASTBorderPane;
     @FXML
-    private TitledPane astTitledPane;
-    @FXML
-    private SplitPane mainVerticalSplitPane;
+    private Label astTitledPane;
     @FXML
     private ListView<MetricResult> metricResultsListView;
     /* */
@@ -152,20 +148,27 @@ public class DesignerWindow implements Initializable {
         Binding<Boolean> bottomPaneBinding
             = Bindings.createBooleanBinding(() -> bottomTabsToggle.isSelected(),
                                             bottomTabsToggle.selectedProperty());
-
         isBottomPaneExpandedProperty.bind(bottomPaneBinding);
+
+
+        logMessageColumn.prefWidthProperty()
+                        .bind(eventLogTableView.widthProperty()
+                                               .subtract(logCategoryColumn.getPrefWidth())
+                                               .subtract(logDateColumn.getPrefWidth())
+                                               .subtract(2)); // makes it work
+        logDateColumn.setSortType(SortType.DESCENDING);
 
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
 
-
+        // gets captured in the closure
         final double defaultMainHorizontalSplitPaneDividerPosition
-            = editorPanelHorizontalSplitPane.getDividerPositions()[0];
+            = mainHorizontalSplitPane.getDividerPositions()[0];
 
 
         // show/ hide bottom pane
         isBottomPaneExpandedProperty.addListener((observable, wasExpanded, isNowExpanded) -> {
             KeyValue keyValue = null;
-            DoubleProperty divPosition = editorPanelHorizontalSplitPane.getDividers().get(0).positionProperty();
+            DoubleProperty divPosition = mainHorizontalSplitPane.getDividers().get(0).positionProperty();
             if (wasExpanded && !isNowExpanded) {
                 keyValue = new KeyValue(divPosition, 1);
             } else if (!wasExpanded && isNowExpanded) {
@@ -248,28 +251,13 @@ public class DesignerWindow implements Initializable {
     }
 
 
-    public TitledPane getViolationsTitledPane() {
-        return violationsTitledPane;
-    }
-
-
     public TreeView<Node> getAstTreeView() {
         return astTreeView;
     }
 
 
-    public BorderPane getMainEditorBorderPane() {
-        return editorAndASTBorderPane;
-    }
-
-
     public Tab getXpathEditorTab() {
         return xpathEditorTab;
-    }
-
-
-    public SplitPane getMainVerticalSplitPane() {
-        return mainVerticalSplitPane;
     }
 
 

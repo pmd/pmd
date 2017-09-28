@@ -8,10 +8,22 @@
 /* Base */
 
 .styled-text-area {
-    -fx-background-color: #F5F5F5;
+    -fx-background-color: whitesmoke;
     -fx-border-color: -fx-outer-border, -fx-text-box-border;
     -fx-border-insets: -4 -4 -6 -5, -2 -2 -5 -3;
 }
+
+
+.styled-text-area .scroll-bar * {
+    -fx-background-color: whitesmoke;
+    -fx-border-color: whitesmoke;
+}
+
+
+.styled-text-area .scroll-bar .thumb {
+    -fx-background-color: derive(black, 90%);
+}
+
 
 .paragraph-box:has-caret {
     -fx-background-color: #FDF6E3;

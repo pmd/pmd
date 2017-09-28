@@ -52,6 +52,10 @@ enum DesignerWindowSettings {
                  DesignerWindowPresenter::getRecentFiles,
                  DesignerWindowPresenter::setRecentFiles),
 
+    AST_PANE_WIDTH("astPaneWidth",
+                   DesignerWindowPresenter::getASTPaneWidth,
+                   DesignerWindowPresenter::setAstPaneWidth),
+
     IS_SYNTAX_HIGHLIGHTING_ENABLED("isSyntaxHighlightingEnabled",
                                    DesignerWindowPresenter::isSyntaxHighlightingEnabled,
                                    DesignerWindowPresenter::setIsSyntaxHighlightingEnabled);
@@ -82,7 +86,8 @@ enum DesignerWindowSettings {
 
 
     /**
-     * Restores the value into the presenter.
+     * Restores the value into the presenter. The string passed is the same as that returned by {@link
+     * #getValueFrom(DesignerWindowPresenter)} when the settings were last saved.
      *
      * @param presenter The presenter
      * @param value     The value of the setting
