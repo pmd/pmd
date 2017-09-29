@@ -2,25 +2,28 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics;
+package net.sourceforge.pmd.lang.java.multifile;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 
 
 /**
  * Statistics about a package. This recursive data structure mirrors the package structure of the analysed project and
- * stores information about the classes and subpackages it contains. This object provides signature matching
- * utilities to metrics.
+ * stores information about the classes and subpackages it contains. This object provides signature matching utilities
+ * to metrics.
  *
  * @author Clément Fournier
  * @see ClassStats
+ * @since 6.0.0
  */
-public final class PackageStats implements JavaSignatureMatcher {
+final class PackageStats implements ProjectMirror {
+
+    static final PackageStats INSTANCE = new PackageStats();
 
     private final Map<String, PackageStats> subPackages = new HashMap<>();
     private final Map<String, ClassStats> classes = new HashMap<>();
@@ -60,11 +63,11 @@ public final class PackageStats implements JavaSignatureMatcher {
         }
 
         String topClassName = qname.getClasses()[0];
-        if (createIfNotFound && classes.get(topClassName) == null) {
-            classes.put(topClassName, new ClassStats());
+        if (createIfNotFound && container.classes.get(topClassName) == null) {
+            container.classes.put(topClassName, new ClassStats());
         }
 
-        ClassStats next = classes.get(topClassName);
+        ClassStats next = container.classes.get(topClassName);
 
         if (next == null) {
             return null;
@@ -114,7 +117,7 @@ public final class PackageStats implements JavaSignatureMatcher {
     public boolean hasMatchingSig(JavaQualifiedName qname, JavaOperationSigMask sigMask) {
         ClassStats clazz = getClassStats(qname, false);
 
-        return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
+        return clazz != null && clazz.hasMatchingOpSig(qname.getOperation(), sigMask);
     }
 
 
@@ -122,7 +125,13 @@ public final class PackageStats implements JavaSignatureMatcher {
     public boolean hasMatchingSig(JavaQualifiedName qname, String fieldName, JavaFieldSigMask sigMask) {
         ClassStats clazz = getClassStats(qname, false);
 
-        return clazz != null && clazz.hasMatchingSig(fieldName, sigMask);
+        return clazz != null && clazz.hasMatchingFieldSig(fieldName, sigMask);
+    }
+
+
+    @Override
+    public ClassMirror getClassMirror(JavaQualifiedName className) {
+        return getClassStats(className, false);
     }
 
 }

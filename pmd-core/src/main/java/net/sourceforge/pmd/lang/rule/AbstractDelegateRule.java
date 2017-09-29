@@ -240,13 +240,13 @@ public abstract class AbstractDelegateRule implements Rule {
     }
 
     @Override
-    public void setUsesMetrics() {
-        rule.setUsesMetrics();
+    public void setUsesMultifile() {
+        rule.setUsesMultifile();
     }
 
     @Override
-    public boolean usesMetrics() {
-        return rule.usesMetrics();
+    public boolean usesMultifile() {
+        return rule.usesMultifile();
     }
 
     @Override

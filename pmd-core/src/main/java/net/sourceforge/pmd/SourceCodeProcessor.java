@@ -155,17 +155,18 @@ public class SourceCodeProcessor {
         }
     }
 
-    private void usesMetrics(LanguageVersion languageVersion, Node rootNode, RuleSets ruleSets,
-                                    Language language) {
 
-        if (ruleSets.usesMetrics(language)) {
+    private void usesMultifile(Node rootNode, LanguageVersionHandler languageVersionHandler, RuleSets ruleSets,
+                               Language language) {
+
+        if (ruleSets.usesMultifile(language)) {
             long start = System.nanoTime();
-            languageVersion.getLanguageVersionHandler().getMetricsVisitorFacade()
-                    .start(rootNode);
+            languageVersionHandler.getMultifileFacade().start(rootNode);
             long end = System.nanoTime();
-            Benchmarker.mark(Benchmark.MetricsVisitor, end - start, 0);
+            Benchmarker.mark(Benchmark.Multifile, end - start, 0);
         }
     }
+
 
     private void processSource(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) {
         LanguageVersion languageVersion = ctx.getLanguageVersion();
@@ -177,7 +178,7 @@ public class SourceCodeProcessor {
         Language language = languageVersion.getLanguage();
         usesDFA(languageVersion, rootNode, ruleSets, language);
         usesTypeResolution(languageVersion, rootNode, ruleSets, language);
-        usesMetrics(languageVersion, rootNode, ruleSets, language);
+        usesMultifile(rootNode, languageVersionHandler, ruleSets, language);
 
         List<Node> acus = Collections.singletonList(rootNode);
         ruleSets.apply(acus, ctx, language);

@@ -15,8 +15,4 @@ import net.sourceforge.pmd.lang.metrics.AbstractMetric;
 public abstract class AbstractApexMetric<N extends Node> extends AbstractMetric<N> {
 
 
-    protected ApexSignatureMatcher getSignatureMatcher() {
-        return ApexMetrics.getFacade().getProjectMirror();
-    }
-
 }

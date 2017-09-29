@@ -4,11 +4,21 @@
 
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.java.metrics.MetricsHook;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class CodesizeRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "java-codesize";
+
+
+    @Override
+    protected Rule reinitializeRule(Rule rule) {
+        MetricsHook.reset();
+        return rule;
+    }
+
 
     @Override
     public void setUp() {

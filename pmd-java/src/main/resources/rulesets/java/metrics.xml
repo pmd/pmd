@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <ruleset name="Metrics temporary ruleset"
-         xmlns="http://pmd.sourceforge.net/ruleset/3.0.0"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/3.0.0 http://pmd.sourceforge.net/ruleset_3_0_0.xsd">
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
     <description>
         These are rules which use the Metrics Framework to calculate metrics.
@@ -13,7 +13,6 @@
           message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."
           since="1.03"
           class="net.sourceforge.pmd.lang.java.metrics.rule.CyclomaticComplexityRule"
-          metrics="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_metrics.html#cyclomaticcomplexity">
         <description><![CDATA[
             The complexity of methods directly affects maintenance costs and readability. Concentrating too much decisional logic
@@ -67,7 +66,6 @@ class Foo {
           since="3.9"
           message="The {0} ''{1}'' has an NPath complexity of {2}"
           class="net.sourceforge.pmd.lang.java.metrics.rule.NPathComplexityRule"
-          metrics="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_metrics.html#NPathComplexity">
         <description>
             The NPath complexity of a method is the number of acyclic execution paths through that method.
@@ -124,7 +122,6 @@ public class Foo {
           since="6.0"
           message="The class ''{0}'' is suspected to be a Data Class (WOC={1}, NOPA={2}, NOAM={3}, WMC={4})"
           class="net.sourceforge.pmd.lang.java.metrics.rule.DataClassRule"
-          metrics="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_metrics.html#DataClass">
         <description>
             Data Classes are simple data holders, which reveal most of their state, and

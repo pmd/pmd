@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.DumpFacade;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetricsVisitorFacade;
+import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
@@ -100,20 +100,20 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
     }
 
     @Override
-    public VisitorStarter getMetricsVisitorFacade() {
+    public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {
-            @Override
             public void start(Node rootNode) {
-                new JavaMetricsVisitorFacade().initializeWith((ASTCompilationUnit) rootNode);
+                new DumpFacade().initializeWith(writer, prefix, recurse, (JavaNode) rootNode);
             }
         };
     }
 
     @Override
-    public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
+    public VisitorStarter getMultifileFacade() {
         return new VisitorStarter() {
+            @Override
             public void start(Node rootNode) {
-                new DumpFacade().initializeWith(writer, prefix, recurse, (JavaNode) rootNode);
+                new MultifileVisitorFacade().initializeWith((ASTCompilationUnit) rootNode);
             }
         };
     }

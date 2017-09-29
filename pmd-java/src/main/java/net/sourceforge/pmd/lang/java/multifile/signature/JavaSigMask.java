@@ -2,13 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.signature;
+package net.sourceforge.pmd.lang.java.multifile.signature;
 
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaSignature.Visibility;
 import net.sourceforge.pmd.lang.metrics.SigMask;
 
 /**

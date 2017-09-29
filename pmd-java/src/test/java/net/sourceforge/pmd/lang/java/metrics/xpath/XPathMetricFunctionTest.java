@@ -43,7 +43,6 @@ public class XPathMetricFunctionTest {
         rule.setXPath(xpath);
         rule.setMessage(VIOLATION_MESSAGE);
         rule.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
-        rule.setUsesMetrics();
         return rule;
     }
 
@@ -73,7 +72,7 @@ public class XPathMetricFunctionTest {
     @Test
     public void testWellFormedOperationMetricRule() throws PMDException {
         Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[metric('CYCLO') > 1]");
-        final String code = "class Foo { Foo() {if(true){}} }";
+        final String code = "class Goo { Goo() {if(true){}} }";
 
         Iterator<RuleViolation> violations = getViolations(rule, code);
         assertTrue(violations.hasNext());
@@ -83,7 +82,7 @@ public class XPathMetricFunctionTest {
     @Test
     public void testBadCase() throws PMDException {
         Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[metric('cYclo') > 1]");
-        final String code = "class Foo { Foo() {if(true){}} }";
+        final String code = "class Hoo { Hoo() {if(true){}} }";
 
         Iterator<RuleViolation> violations = getViolations(rule, code);
         assertTrue(violations.hasNext());
@@ -93,7 +92,7 @@ public class XPathMetricFunctionTest {
     @Test
     public void testNonexistentMetric() throws Exception {
         testWithExpectedException("//ConstructorDeclaration[metric('FOOBAR') > 1]",
-                                  "class Foo { Foo() {if(true){}} }",
+                                  "class Joo { Joo() {if(true){}} }",
                                   IllegalArgumentException.class,
                                   MetricFunction.badOperationMetricKeyMessage());
     }
@@ -102,7 +101,7 @@ public class XPathMetricFunctionTest {
     @Test
     public void testWrongNodeTypeGeneric() throws Exception {
         testWithExpectedException("//IfStatement[metric('NCSS') > 1]",
-                                  "class Foo { Foo() {if(true){}} }",
+                                  "class Koo { Koo() {if(true){}} }",
                                   IllegalStateException.class,
                                   MetricFunction.genericBadNodeMessage());
     }
@@ -111,7 +110,7 @@ public class XPathMetricFunctionTest {
     @Test
     public void testWrongMetricKeyForTypeDeclaration() throws Exception {
         testWithExpectedException("//EnumDeclaration[metric('CYCLO') > 1]",
-                                  "enum Foo { FOO; }",
+                                  "enum Loo { FOO; }",
                                   IllegalArgumentException.class,
                                   MetricFunction.badClassMetricKeyMessage());
     }
@@ -120,7 +119,7 @@ public class XPathMetricFunctionTest {
     @Test
     public void testWrongMetricKeyForOperationDeclaration() throws Exception {
         testWithExpectedException("//MethodDeclaration[metric('WMC') > 1]",
-                                  "class Foo { void foo() {if(true){}} }",
+                                  "class Moo { void foo() {if(true){}} }",
                                   IllegalArgumentException.class,
                                   MetricFunction.badOperationMetricKeyMessage());
     }

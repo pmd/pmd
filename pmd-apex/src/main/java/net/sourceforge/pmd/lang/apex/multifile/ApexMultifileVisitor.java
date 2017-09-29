@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.metrics;
+package net.sourceforge.pmd.lang.apex.multifile;
 
 import java.util.Stack;
 
@@ -13,22 +13,20 @@ import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorReducedAdapter;
 /**
  * @author Clément Fournier
  */
-public class ApexMetricsVisitor extends ApexParserVisitorReducedAdapter {
+public class ApexMultifileVisitor extends ApexParserVisitorReducedAdapter {
 
-    private final ApexProjectMemoizer memoizer;
     private final ApexProjectMirror mirror;
 
     private final Stack<ApexClassStats> stack = new Stack<>();
 
 
-    public ApexMetricsVisitor(ApexProjectMemoizer memoizer, ApexProjectMirror mirror) {
-        this.memoizer = memoizer;
+    public ApexMultifileVisitor(ApexProjectMirror mirror) {
         this.mirror = mirror;
     }
 
+
     @Override
     public Object visit(ASTUserClassOrInterface<?> node, Object data) {
-        memoizer.addClassMemoizer(node.getQualifiedName());
         stack.push(mirror.getClassStats(node.getQualifiedName(), true));
         super.visit(node, data);
         stack.pop();
@@ -37,12 +35,8 @@ public class ApexMetricsVisitor extends ApexParserVisitorReducedAdapter {
     }
 
 
-
-
     @Override
     public Object visit(ASTMethod node, Object data) {
-        memoizer.addOperationMemoizer(node.getQualifiedName());
-
         stack.peek().addOperation(node.getQualifiedName().getOperation(), node.getSignature());
         return data;
     }

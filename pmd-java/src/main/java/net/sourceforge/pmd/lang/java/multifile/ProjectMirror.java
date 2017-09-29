@@ -2,18 +2,19 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics;
+package net.sourceforge.pmd.lang.java.multifile;
 
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 
 /**
- * Gathers the methods that PackageStats should make available to metrics during the computation.
+ * Represents the analysed project to provide all rules with info about other classes.
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
-public interface JavaSignatureMatcher {
+interface ProjectMirror {
 
     /**
      * Returns true if the signature of the operation designated by the qualified name is covered by the mask.
@@ -38,5 +39,14 @@ public interface JavaSignatureMatcher {
      */
     boolean hasMatchingSig(JavaQualifiedName qname, String fieldName, JavaFieldSigMask sigMask);
 
+
+    /**
+     * Gets the class mirror corresponding to the qualified name.
+     *
+     * @param className The qualified name of the class.
+     *
+     * @return The class mirror
+     */
+    ClassMirror getClassMirror(JavaQualifiedName className);
 
 }

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.signature;
+package net.sourceforge.pmd.lang.java.multifile.signature;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +50,16 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
     @Override
     public int hashCode() {
         return code(visibility, role, isAbstract);
+    }
+
+
+    @Override
+    public String toString() {
+        return "JavaOperationSignature{"
+            + "role=" + role
+            + ", isAbstract=" + isAbstract
+            + ", visibility=" + visibility
+            + '}';
     }
 
 

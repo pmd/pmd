@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.metrics;
+package net.sourceforge.pmd.lang.apex.multifile;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTest;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestHelpers;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
+import net.sourceforge.pmd.lang.apex.metrics.ApexSignatureMatcher;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSigMask;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
@@ -27,20 +28,20 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 /**
  * @author Clément Fournier
  */
-public class ApexMetricsVisitorTest extends ApexParserTest {
+public class ApexMultifileVisitorTest extends ApexParserTest {
 
     @Test
     public void testProjectMirrorNotNull() {
-        assertNotNull(ApexMetrics.getFacade().getProjectMirror());
+        assertNotNull(ApexProjectMirror.INSTANCE);
     }
 
 
     @Test
     public void testOperationsAreThere() throws IOException {
         ApexNode<Compilation> acu = parseAndVisitForString(
-            IOUtils.toString(ApexMetricsVisitorTest.class.getResourceAsStream("MetadataDeployController.cls")));
+            IOUtils.toString(ApexMultifileVisitorTest.class.getResourceAsStream("MetadataDeployController.cls")));
 
-        final ApexSignatureMatcher toplevel = ApexMetrics.getFacade().getProjectMirror();
+        final ApexSignatureMatcher toplevel = ApexProjectMirror.INSTANCE;
 
         final ApexOperationSigMask opMask = new ApexOperationSigMask();
 
@@ -63,7 +64,7 @@ public class ApexMetricsVisitorTest extends ApexParserTest {
                                                                         .getDefaultVersion().getLanguageVersionHandler();
         ApexNode<Compilation> acu = ApexParserTestHelpers.parse(source);
         languageVersionHandler.getSymbolFacade().start(acu);
-        languageVersionHandler.getMetricsVisitorFacade().start(acu);
+        languageVersionHandler.getMultifileFacade().start(acu);
         return acu;
     }
 }

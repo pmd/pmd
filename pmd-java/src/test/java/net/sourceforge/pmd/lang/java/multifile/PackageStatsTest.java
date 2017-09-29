@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics;
+package net.sourceforge.pmd.lang.java.multifile;
 
 import static net.sourceforge.pmd.lang.java.ParserTstUtil.getOrderedNodes;
 import static org.junit.Assert.assertFalse;
@@ -17,13 +17,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 
 /**
- * Tests functionality of PackageStats, so both its ProjectMemoizer and JavaSignatureMatcher interfaces.
+ * Tests functionality of PackageStats
  *
  * @author Clément Fournier
  */
@@ -85,7 +85,6 @@ public class PackageStatsTest {
         clazz.addField(fieldName, signature);
         assertTrue(pack.hasMatchingSig(qname, fieldName, new JavaFieldSigMask()));
     }
-
 
 
 }

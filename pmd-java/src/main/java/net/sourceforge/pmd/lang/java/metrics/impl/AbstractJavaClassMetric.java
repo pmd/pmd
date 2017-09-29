@@ -15,8 +15,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaMetric;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetric;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 
 /**
  * Base class for class metrics.

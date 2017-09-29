@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.signature;
+package net.sourceforge.pmd.lang.java.multifile.signature;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +26,16 @@ public final class JavaFieldSignature extends JavaSignature<ASTFieldDeclaration>
         super(visibility);
         this.isStatic = isStatic;
         this.isFinal = isFinal;
+    }
+
+
+    @Override
+    public String toString() {
+        return "JavaFieldSignature{"
+            + "isStatic=" + isStatic
+            + ", isFinal=" + isFinal
+            + ", visibility=" + visibility
+            + '}';
     }
 
 

@@ -2,13 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.signature;
+package net.sourceforge.pmd.lang.java.multifile.signature;
 
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;
 
 /**
  * Signature mask for an operation. Newly created masks cover any operation that is not abstract.
@@ -57,6 +57,16 @@ public final class JavaOperationSigMask extends JavaSigMask<JavaOperationSignatu
      */
     public void coverAbstract(boolean coverAbstract) {
         this.coverAbstract = coverAbstract;
+    }
+
+
+    public void coverAbstract() {
+        this.coverAbstract = true;
+    }
+
+
+    public void forbidAbstract() {
+        this.coverAbstract = false;
     }
 
 

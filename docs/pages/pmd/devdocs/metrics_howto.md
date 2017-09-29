@@ -15,10 +15,7 @@ author: Clément Fournier <clement.fournier76@gmail.com>
 {%include note.html content="Using the metrics framework is for now restricted to Java rules (with plans to support
 XPath rules later)." %}
 
-To use the metrics framework in a custom rule, the first thing to do would be to **enable metrics by adding the
-`metrics="true"` attribute** to your rule's XML element.
-
-{%include note.html content="The following explains how to use the Java metrics framework. The Apex framework
+{%include note.html content="The following explains how to use the Java metrics framework. The Apex framework 
 differs only by the name of its classes." %}
 
 In PMD's Metrics framework, a metric is an operation that can be carried out on nodes of a certain type and produces

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics;
+package net.sourceforge.pmd.lang.java.multifile;
 
 import java.util.Stack;
 
@@ -12,28 +12,24 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 
 /**
- * Visitor for the metrics framework, that fills a {@link PackageStats} object with the signatures of operations and
- * fields it encounters.
+ * Fills the PackageStats.
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
-class JavaMetricsVisitor extends JavaParserVisitorReducedAdapter {
+public class MultifileVisitor extends JavaParserVisitorReducedAdapter {
 
     private final Stack<ClassStats> stack = new Stack<>();
     private final PackageStats toplevel;
-    private final JavaProjectMemoizer memoizer;
 
 
-    JavaMetricsVisitor(PackageStats toplevel, JavaProjectMemoizer memoizer) {
+    MultifileVisitor(PackageStats toplevel) {
         this.toplevel = toplevel;
-        this.memoizer = memoizer;
     }
 
 
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
-        memoizer.addClassMemoizer(node.getQualifiedName());
-
         stack.push(toplevel.getClassStats(node.getQualifiedName(), true));
         super.visit(node, data);
         stack.pop();
@@ -44,8 +40,6 @@ class JavaMetricsVisitor extends JavaParserVisitorReducedAdapter {
 
     @Override
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-        memoizer.addOperationMemoizer(node.getQualifiedName());
-
         stack.peek().addOperation(node.getQualifiedName().getOperation(), node.getSignature());
         return super.visit(node, data);
     }
@@ -56,5 +50,6 @@ class JavaMetricsVisitor extends JavaParserVisitorReducedAdapter {
         stack.peek().addField(node.getVariableName(), node.getSignature());
         return data; // end recursion
     }
+
 
 }
