@@ -7,14 +7,9 @@ last_updated: September 2017
 
 There are numerous ways of getting help:
 
-*   Browse already existing questions on [StackOverflow](https://stackoverflow.com/questions/tagged/pmd),
-    that are [tagged with `pmd`](https://stackoverflow.com/questions/tagged/pmd).
+*   Search for already existing questions on [StackOverflow](https://stackoverflow.com/).
 
-*   You can search on [StackOverflow](https://stackoverflow.com/) for a similar problem or ask a new question there.
-
-    Don't forget to tag the question with `pmd`.
-
-*   Create a new [github issue](https://github.com/pmd/pmd/issues) with your question.
+*   If you can't find your problem, post a new question. Don't forget to tag the question with [`pmd`](https://stackoverflow.com/questions/tagged/pmd).
 
 *   If you found a bug, please create a new [github issue](https://github.com/pmd/pmd/issues).
 
