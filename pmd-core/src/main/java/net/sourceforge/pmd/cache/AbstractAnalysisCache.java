@@ -5,14 +5,19 @@
 package net.sourceforge.pmd.cache;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.Adler32;
+import java.util.zip.CheckedInputStream;
+
+import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
@@ -96,7 +101,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         final long classLoaderChecksum;
         if (classLoader instanceof URLClassLoader) {
             final URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
-            classLoaderChecksum = Arrays.hashCode(urlClassLoader.getURLs());
+            classLoaderChecksum = computeClassLoaderHash(urlClassLoader);
             
             if (cacheIsValid && classLoaderChecksum != classpathChecksum) {
                 // Do we even care?
@@ -121,6 +126,23 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         rulesetChecksum = ruleSets.getChecksum();
         classpathChecksum = classLoaderChecksum;
         ruleMapper.initialize(ruleSets);
+    }
+
+    private long computeClassLoaderHash(final URLClassLoader classLoader) {
+        final Adler32 adler32 = new Adler32();
+        for (final URL url : classLoader.getURLs()) {
+            try (CheckedInputStream inputStream = new CheckedInputStream(url.openStream(), adler32)) {
+                // Just read it, the CheckedInputStream will update the checksum on it's own
+                while (IOUtils.skip(inputStream, Long.MAX_VALUE) == Long.MAX_VALUE) {
+                    // just loop
+                }
+            } catch (final IOException e) {
+                // Can this even happen?
+                LOG.log(Level.SEVERE, "Incremental analysis can't check auxclasspath contents", e);
+                throw new RuntimeException(e);
+            }
+        }
+        return adler32.getValue();
     }
 
     @Override

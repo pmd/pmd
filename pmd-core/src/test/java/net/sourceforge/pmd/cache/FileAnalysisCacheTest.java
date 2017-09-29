@@ -110,7 +110,7 @@ public class FileAnalysisCacheTest {
     @Test
     public void testCacheValidityWithNoChanges() {
         final RuleSets rs = mock(RuleSets.class);
-        final URLClassLoader cl = mock(URLClassLoader.class);
+        final ClassLoader cl = mock(ClassLoader.class);
 
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
 
@@ -123,7 +123,7 @@ public class FileAnalysisCacheTest {
     @Test
     public void testRulesetChangeInvalidatesCache() {
         final RuleSets rs = mock(RuleSets.class);
-        final URLClassLoader cl = mock(URLClassLoader.class);
+        final ClassLoader cl = mock(ClassLoader.class);
         
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
         
@@ -138,6 +138,7 @@ public class FileAnalysisCacheTest {
     public void testClasspathChangeWithoutDFAorTypeResolutionDoesNotInvalidatesCache() throws MalformedURLException, IOException {
         final RuleSets rs = mock(RuleSets.class);
         final URLClassLoader cl = mock(URLClassLoader.class);
+        when(cl.getURLs()).thenReturn(new URL[] { });
         
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
         
@@ -152,16 +153,45 @@ public class FileAnalysisCacheTest {
     public void testClasspathChangeInvalidatesCache() throws MalformedURLException, IOException {
         final RuleSets rs = mock(RuleSets.class);
         final URLClassLoader cl = mock(URLClassLoader.class);
+        when(cl.getURLs()).thenReturn(new URL[] { });
         
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
         
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
-        when(cl.getURLs()).thenReturn(new URL[] { tempFolder.newFile().toURI().toURL(), });
+        final File classpathFile = tempFolder.newFile();
+        when(cl.getURLs()).thenReturn(new URL[] { classpathFile.toURI().toURL(), });
+        
+        // Make sure the classpath file is not empty
+        Files.write(Paths.get(classpathFile.getAbsolutePath()), "some text".getBytes());
+        
         final net.sourceforge.pmd.Rule r = mock(net.sourceforge.pmd.Rule.class);
         when(r.usesDFA()).thenReturn(true);
         when(rs.getAllRules()).thenReturn(Collections.singleton(r));
         reloadedCache.checkValidity(rs, cl);
         assertFalse("Cache believes unmodified file is up to date after classpath changed",
+                reloadedCache.isUpToDate(sourceFile));
+    }
+    
+    @Test
+    public void testClasspathJarContentsChangeInvalidatesCache() throws MalformedURLException, IOException {
+        final RuleSets rs = mock(RuleSets.class);
+        final URLClassLoader cl = mock(URLClassLoader.class);
+        
+        final File classpathFile = tempFolder.newFile();
+        when(cl.getURLs()).thenReturn(new URL[] { classpathFile.toURI().toURL(), });
+        
+        final net.sourceforge.pmd.Rule r = mock(net.sourceforge.pmd.Rule.class);
+        when(r.usesDFA()).thenReturn(true);
+        when(rs.getAllRules()).thenReturn(Collections.singleton(r));
+        
+        setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
+        
+        // Edit the classpath referenced file
+        Files.write(Paths.get(classpathFile.getAbsolutePath()), "some text".getBytes());
+        
+        final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
+        reloadedCache.checkValidity(rs, cl);
+        assertFalse("Cache believes cache is up to date when a classpath file changed",
                 reloadedCache.isUpToDate(sourceFile));
     }
 

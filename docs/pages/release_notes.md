@@ -17,12 +17,13 @@ This is a major release.
     *   [Java Type Resolution](#java-type-resolution)
     *   [Metrics Framework](#metrics-framework)
     *   [Error Reporting](#error-reporting)
-    *   [Java Symbol Table](#java-symbol-table)
-    *   [Apex Parser Update](#apex-parser-update)
     *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
     *   [Deprecated Rules](#deprecated-rules)
     *   [Removed Rules](#removed-rules)
+    *   [Java Symbol Table](#java-symbol-table)
+    *   [Apex Parser Update](#apex-parser-update)
+    *   [Incremental Analysis](#incremental-analysis)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
 * [External Contributions](#external-contributions)
@@ -154,6 +155,21 @@ of the latest improvements from Salesforce, but introduces some breaking changes
     (replaced by `NewKeyValueObjectExpression`)
 
 All existing rules have been updated to reflect these changes. If you have custom rules, be sure to update them.
+
+#### Incremental Analysis
+
+The incremental analysis feature first introduced in PMD 5.6.0 has been enhanced. A few minor issues have been fixed,
+and several improvements have been performed to make it more accurate.
+
+The cache will now detect changes to the JARs referenced in the `auxclasspath` instead of simply looking at their paths
+and order. This means that if you are referencing a JAR you are overwriting in some way, the incremental analysis can
+now detect it and invalidate it's cache to avoid false reports.
+
+We have also improved logging on the analysis code, allowing better insight into how the cache is performing,
+under debug / verbose builds you can even see individual hits / misses to the cache (and the reason for any miss!)
+
+Finally, as this feature keeps maturing, we are gently pushing this forward. If not using incremental analysis,
+a warning will now be produced suggesting users to adopt it for better performance.
 
 ### Fixed Issues
 
