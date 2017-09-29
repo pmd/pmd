@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <ruleset name="Code Size"
-    xmlns="http://pmd.sourceforge.net/ruleset/3.0.0"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/3.0.0 http://pmd.sourceforge.net/ruleset_3_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
   <description>
 The Code Size ruleset contains rules that find problems related to code size or complexity.
@@ -455,7 +455,6 @@ public class Foo extends Bar {
           message="The {0} ''{1}'' has a NCSS line count of {2}."
           since="6.0"
           class="net.sourceforge.pmd.lang.java.rule.codesize.NcssCountRule"
-          metrics="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codesize.html#ncsscount">
         <description>
             This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines

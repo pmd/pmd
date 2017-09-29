@@ -31,9 +31,9 @@ You start by creating a new XML file with the following contents:
 <?xml version="1.0"?>
 
 <ruleset name="Custom Rules"
-    xmlns="http://pmd.sourceforge.net/ruleset/3.0.0"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/3.0.0 http://pmd.sourceforge.net/ruleset_3_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
     <description>
 Custom rules
     </description>
