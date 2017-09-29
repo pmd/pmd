@@ -177,6 +177,7 @@ a warning will now be produced suggesting users to adopt it for better performan
     *   [#532](https://github.com/pmd/pmd/issues/532): \[core] security concerns on URL-based rulesets
     *   [#538](https://github.com/pmd/pmd/issues/538): \[core] Provide an XML Schema for XML reports
     *   [#600](https://github.com/pmd/pmd/issues/600): \[core] Nullpointer while creating cache File
+    *   [#604](https://github.com/pmd/pmd/issues/604): \[core] Incremental analysis should detect changes to jars in classpath
     *   [#608](https://github.com/pmd/pmd/issues/608): \[core] Add DEBUG log when applying incremental analysis
 *   apex
     *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
