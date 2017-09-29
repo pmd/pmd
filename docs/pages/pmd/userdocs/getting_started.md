@@ -1,7 +1,7 @@
 ---
 title: Getting Started
 permalink: pmd_userdocs_getting_started.html
-author: Tom Copeland <tom@infoether.com>, Xavier Le Vourch <xlv@users.sourceforge.net>
+author: Tom Copeland <tom@infoether.com>, Xavier Le Vourch <xlv@users.sourceforge.net>, Juan Martín Sotuyo Dodero <juansotuyo@gmail.com>
 ---
 
 ## How to install PMD and CPD
@@ -343,3 +343,26 @@ PMD comes with many different renderer types:
     Properties:
 
     *   outputDir: Output directory.
+
+
+### Incremenal Analysis
+
+Ever since PMD 5.6.0, PMD has been able to perform Incremental Analysis.
+
+When performing Incremental Analysis for the first time, PMD will cache analysis data and results.
+This allows subsequent analysis to only look into those files that are new / have changed. For
+a typical development environment, where you are only changing a few files at a time, this can
+reduce analysis time dramatically.
+
+The generated report will be *exactly the same* as it would if running without incremental analysis.
+Files included in the final report will reflect exactly those files in your filesystem. Even if
+untouched, files with violations will be listed with full detail.
+
+
+#### Enabling Incremental Analysis
+
+Incremental analysis is enabled automatically once a location to store the cache has been defined.
+From Command Line that is done through the `-cache` argument, but support for the feature is
+available for tools integrating PMD such as [Ant](/pmd_userdocs_tools_ant.html),
+[Maven](/pmd_userdocs_tools_maven.html), and Gradle.
+
