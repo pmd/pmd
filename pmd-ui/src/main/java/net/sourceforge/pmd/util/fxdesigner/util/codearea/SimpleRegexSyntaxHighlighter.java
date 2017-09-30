@@ -13,15 +13,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.SpanBound;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
-
-import javafx.concurrent.Task;
 
 /**
  * Language-specific engine for syntax highlighting. The highlighter assigns classes to
@@ -48,23 +42,9 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
 
 
     @Override
-    public final Task<List<SpanBound>> computeHighlightingAsync(String text, ExecutorService executor) {
-        Task<List<SpanBound>> task = new Task<List<SpanBound>>() {
-            @Override
-            protected List<SpanBound> call() throws Exception {
-                return computeHighlighting(text);
-            }
-        };
-        if (!executor.isShutdown()) {
-            executor.execute(task);
-        }
-        return task;
-    }
-
-
-    private List<SpanBound> computeHighlighting(String text) {
+    public List<SpanBound> computeHighlighting(String text) {
         List<SpanBound> updated = new ArrayList<>();
-        Matcher matcher = grammar.getPattern().matcher(text);
+        Matcher matcher = grammar.getMatcher(text);
         int lastKwEnd = 0;
 
         try {
@@ -185,12 +165,12 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
      */
     protected static class RegexHighlightGrammar {
 
-        private final Pattern pattern;
+        private final Matcher matcher;
         private final Map<String, String> namesToCssClass;
 
 
         public RegexHighlightGrammar(Pattern pattern, Map<String, String> namesToCssClass) {
-            this.pattern = pattern;
+            this.matcher = pattern.matcher("");
             this.namesToCssClass = namesToCssClass;
         }
 
@@ -200,8 +180,8 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
          *
          * @return The pattern
          */
-        public Pattern getPattern() {
-            return pattern;
+        public Matcher getMatcher(String text) {
+            return matcher.reset(text);
         }
 
 

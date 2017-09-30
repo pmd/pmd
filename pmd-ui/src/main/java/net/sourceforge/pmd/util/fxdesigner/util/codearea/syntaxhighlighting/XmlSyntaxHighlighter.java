@@ -19,7 +19,7 @@ public class XmlSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         = grammarBuilder("multi-line-comment", "<!--.*?-->")
         .or("cdata-tag", "<!\\[CDATA\\[|]]>")
         .or("cdata-content", "(?<=<!\\[CDATA\\[).*?(?=]]>)")
-        .or("xml-prolog", "<[?]xml.*[?]>")
+        .or("xml-prolog", "<\\?xml.*?\\?>")
         .or("lt-gt", "</?|/?>")
         .or("tag-name", "\\b(?<=(</?))[\\w:]++")
         .or("attribute-name", "\\w+(?=\\s*=\\s*[\"'])")

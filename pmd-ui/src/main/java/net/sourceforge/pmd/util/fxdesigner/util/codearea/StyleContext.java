@@ -64,6 +64,8 @@ class StyleContext implements Iterable<StyleLayer> {
     /**
      * Turns the currently stored bounds into a collection of style spans for use in the code area.
      *
+     * FIXME naive algorithm, explodes the heap on very long files
+     *
      * @return The style spans
      */
     StyleSpans<Collection<String>> getStyleSpans() {
@@ -99,7 +101,7 @@ class StyleContext implements Iterable<StyleLayer> {
 
         int totalLength = codeArea.getLength();
         if (lastOffset > totalLength) {
-            throw new IllegalArgumentException("StyleSpans too long bitch");
+            throw new IllegalArgumentException("StyleSpans too long");
         } else if (lastOffset < totalLength) {
             builder.add(new StyleSpan<>(Collections.emptySet(), totalLength - lastOffset));
         }

@@ -121,7 +121,7 @@ public class CustomCodeArea extends CodeArea {
         this.setSyntaxHighlighter(highlighter);
 
         try { // refresh the highlighting.
-            Task<List<SpanBound>> t = syntaxHighlighter.computeHighlightingAsync(this.getText(), executorService);
+            Task<List<SpanBound>> t = computeHighlightingAsync(this.getText());
             t.setOnSucceeded((e) -> {
                 StyleLayer layer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
                 layer.setBounds(t.getValue());
@@ -198,7 +198,7 @@ public class CustomCodeArea extends CodeArea {
             this.richChanges()
                 .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
                 .successionEnds(Duration.ofMillis(300))
-                .supplyTask(() -> syntaxHighlighter.computeHighlightingAsync(this.getText(), executorService))
+                .supplyTask(() -> computeHighlightingAsync(this.getText()))
                 .awaitLatest(this.richChanges())
                 .filterMap(t -> {
                     if (t.isSuccess()) {
@@ -214,6 +214,20 @@ public class CustomCodeArea extends CodeArea {
                     this.paintCss();
                 });
         }
+    }
+
+
+    private Task<List<SpanBound>> computeHighlightingAsync(String text) {
+        Task<List<SpanBound>> task = new Task<List<SpanBound>>() {
+            @Override
+            protected List<SpanBound> call() throws Exception {
+                return syntaxHighlighter.computeHighlighting(text);
+            }
+        };
+        if (!executorService.isShutdown()) {
+            executorService.execute(task);
+        }
+        return task;
     }
 
 

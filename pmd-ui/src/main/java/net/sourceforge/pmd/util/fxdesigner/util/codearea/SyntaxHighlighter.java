@@ -5,9 +5,6 @@
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-
-import javafx.concurrent.Task;
 
 /**
  * Language-specific engine for syntax highlighting.
@@ -26,12 +23,13 @@ public interface SyntaxHighlighter {
 
 
     /**
-     * Schedules a syntax highlighting update task and returns it.
+     * Computes the syntax highlighting on the given text.
      *
-     * @param text     Text on which to compute the task.
-     * @param executor Task executor service
+     * @param text The text
      *
-     * @return The scheduled task
+     * @return The bounds of the computed style spans
      */
-    Task<List<SpanBound>> computeHighlightingAsync(String text, ExecutorService executor);
+    List<SpanBound> computeHighlighting(String text);
+
+
 }

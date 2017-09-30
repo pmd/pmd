@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SimpleRegexSyntaxHighlighter;
@@ -44,17 +45,23 @@ public class ApexSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         };
 
 
+    /** First characters of the keywords, used to optimise the regex. */
+    private static final String KEYWORDS_START_CHARS = Arrays.stream(KEYWORDS)
+                                                             .map(s -> s.substring(0, 1))
+                                                             .distinct()
+                                                             .reduce((s1, s2) -> s1 + s2)
+                                                             .get();
+
     public static final RegexHighlightGrammar GRAMMAR
         = grammarBuilder("single-line-comment", "//[^\r\n]*")
         .or("multi-line-comment", "/\\*.*?\\*/")
-        .or("keyword", "\\b(" + String.join("|", KEYWORDS) + ")\\b")
+        .or("keyword", "\\b(?=[" + KEYWORDS_START_CHARS + "])(" + String.join("|", KEYWORDS) + ")\\b")
         .or("paren", "[()]")
         .or("brace", "[{}]")
         .or("bracket", "[\\[]]")
         .or("semicolon", ";")
-        .or("string", "'([^'\\\\]|\\\\.)*'")
+        .or("string", "'[^'\\\\]*(\\\\.[^'\\\\]*)*'")
         .create(Pattern.DOTALL);
-
 
     public ApexSyntaxHighlighter() {
         super("apex", GRAMMAR);
