@@ -37,7 +37,7 @@ public class PMDASMVisitor extends ClassVisitor {
     public List<String> innerClasses;
 
     public PMDASMVisitor(String outerName) {
-        super(Opcodes.ASM5);
+        super(Opcodes.ASM6);
         this.outerName = outerName;
     }
 

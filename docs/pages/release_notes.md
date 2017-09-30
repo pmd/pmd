@@ -13,6 +13,7 @@ This is a major release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
+    *   [Java 9 support](#java-9-support)
     *   [Revamped Apex CPD](#revamped-apex-cpd)
     *   [Java Type Resolution](#java-type-resolution)
     *   [Metrics Framework](#metrics-framework)
@@ -29,6 +30,19 @@ This is a major release.
 * [External Contributions](#external-contributions)
 
 ### New and noteworthy
+
+#### Java 9 support
+
+The Java grammar has been updated to support analyzing Java 9 projects:
+
+*   private methods in interfaces are possible
+*   The underscore "_" is considered an invalid identifier
+*   Diamond operator for anonymous classes
+*   The module declarations in `module-info.java` can be parsed
+*   Concise try-with-resources statements are supported
+
+Java 9 support is enabled by default. You can switch back to an older java version
+via the command line, e.g. `-language java -version 1.8`.
 
 #### Revamped Apex CPD
 

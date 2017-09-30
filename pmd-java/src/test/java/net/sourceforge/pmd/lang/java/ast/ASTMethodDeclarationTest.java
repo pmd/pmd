@@ -5,8 +5,12 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import net.sourceforge.pmd.lang.java.ParserTstUtil;
 
 public class ASTMethodDeclarationTest {
 
@@ -20,5 +24,21 @@ public class ASTMethodDeclarationTest {
         md.jjtAddChild(de, 0);
 
         assertEquals("foo", md.getMethodName());
+    }
+
+    @Test
+    public void testPrivateInterfaceMethods() {
+        ASTCompilationUnit node = ParserTstUtil.parseJava9("public interface Foo { private void bar() { } }");
+        ASTMethodDeclaration methodDecl = node.getFirstDescendantOfType(ASTMethodDeclaration.class);
+        assertTrue(methodDecl.isPrivate());
+        assertFalse(methodDecl.isPublic());
+    }
+
+    @Test
+    public void testPublicInterfaceMethods() {
+        ASTCompilationUnit node = ParserTstUtil.parseJava9("public interface Foo { void bar(); }");
+        ASTMethodDeclaration methodDecl = node.getFirstDescendantOfType(ASTMethodDeclaration.class);
+        assertFalse(methodDecl.isPrivate());
+        assertTrue(methodDecl.isPublic());
     }
 }
