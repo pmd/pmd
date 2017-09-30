@@ -169,54 +169,6 @@ public class PMD {
     }
 
     /**
-     * Create a report, filter out any defective rules, and keep a record of
-     * them.
-     *
-     * @param rs
-     *            the rules
-     * @param ctx
-     *            the rule context
-     * @param fileName
-     *            the filename of the source file, which should appear in the
-     *            report
-     * @return the Report
-     */
-    public static Report setupReport(RuleSets rs, RuleContext ctx, String fileName) {
-
-        Set<Rule> brokenRules = removeBrokenRules(rs);
-        Report report = Report.createReport(ctx, fileName);
-
-        for (Rule rule : brokenRules) {
-            report.addConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
-        }
-
-        return report;
-    }
-
-    /**
-     * Remove and return the misconfigured rules from the rulesets and log them
-     * for good measure.
-     *
-     * @param ruleSets
-     *            RuleSets
-     * @return Set<Rule>
-     */
-    private static Set<Rule> removeBrokenRules(RuleSets ruleSets) {
-
-        Set<Rule> brokenRules = new HashSet<>();
-        ruleSets.removeDysfunctionalRules(brokenRules);
-
-        for (Rule rule : brokenRules) {
-            if (LOG.isLoggable(Level.WARNING)) {
-                LOG.log(Level.WARNING,
-                        "Removed misconfigured rule: " + rule.getName() + "  cause: " + rule.dysfunctionReason());
-            }
-        }
-
-        return brokenRules;
-    }
-
-    /**
      * Get the runtime configuration. The configuration can be modified to
      * affect how PMD behaves.
      *

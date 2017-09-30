@@ -225,6 +225,10 @@ a warning will now be produced suggesting users to adopt it for better performan
 
 *   The never implemented method `PMD.processFiles(PMDConfiguration, RuleSetFactory, Collection<File>, RuleContext, ProgressMonitor)` along with the interface `ProgressMonitor` has been removed.
 
+*   The method `PMD.setupReport(RuleSets, RuleContext, String)` is gone. It was used to report dysfunctional
+    rules. But PMD does this now automatically before processing the files, so there is no need for this
+    method anymore.
+
 *   All APIs deprecated in older versions are now removed. This includes:
     *    `Renderer.getPropertyDefinitions`
     *    `AbstractRenderer.defineProperty(String, String)`
