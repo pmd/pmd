@@ -155,6 +155,8 @@ All existing rules have been updated to reflect these changes. If you have custo
 
 ### Fixed Issues
 
+*   all
+    *   [#618](https://github.com/pmd/pmd/issues/618): \[core] Incremental Analysis doesn't close file correctly on Windows upon a cache hit
 *   apex
     *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
     *   [#489](https://github.com/pmd/pmd/pull/489): \[apex] Update Apex compiler
@@ -291,4 +293,3 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#587](https://github.com/pmd/pmd/pull/587): \[core] Properties refactoring: Move static constants of ValueParser to class ValueParserConstants - [Clément Fournier](https://github.com/oowekyala)
 *   [#588](https://github.com/pmd/pmd/pull/588): \[java] XPath function to compute metrics - [Clément Fournier](https://github.com/oowekyala)
 *   [#598](https://github.com/pmd/pmd/pull/598): \[java] Fix #388: controversial.AvoidLiteralsInIfCondition 0.0 false positive - [Clément Fournier](https://github.com/oowekyala)
-
