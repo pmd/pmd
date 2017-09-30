@@ -79,7 +79,7 @@ The report formats providing full stacktrace of errors are:
 *   vbhtml
 *   xml
 
-##### Configuration Errors
+##### Configuration Errors
 
 For a long time reports have been notified of configuration errors on rules, but they have remained hidden.
 On a push to make these more evident to users, and help them get the best results out of PMD, we have started
