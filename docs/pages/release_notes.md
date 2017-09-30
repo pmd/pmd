@@ -180,6 +180,7 @@ a warning will now be produced suggesting users to adopt it for better performan
     *   [#604](https://github.com/pmd/pmd/issues/604): \[core] Incremental analysis should detect changes to jars in classpath
     *   [#608](https://github.com/pmd/pmd/issues/608): \[core] Add DEBUG log when applying incremental analysis
     *   [#618](https://github.com/pmd/pmd/issues/618): \[core] Incremental Analysis doesn't close file correctly on Windows upon a cache hit
+    *   [#643](https://github.com/pmd/pmd/issues/643): \[core] PMD Properties (dev-properties) breaks markup on CodeClimateRenderer
 *   apex
     *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
     *   [#489](https://github.com/pmd/pmd/pull/489): \[apex] Update Apex compiler
@@ -324,3 +325,4 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#598](https://github.com/pmd/pmd/pull/598): \[java] Fix #388: controversial.AvoidLiteralsInIfCondition 0.0 false positive - [Clément Fournier](https://github.com/oowekyala)
 *   [#602](https://github.com/pmd/pmd/pull/602): \[java] \[apex] Separate multifile analysis from metrics - [Clément Fournier](https://github.com/oowekyala)
 *   [#620](https://github.com/pmd/pmd/pull/620): \[core] Moved properties to n.s.pmd.properties - [Clément Fournier](https://github.com/oowekyala)
+*   [#644](https://github.com/pmd/pmd/pull/644): \[core] Prevent internal dev-properties from being displayed on CodeClimate renderer - [Filipe Esperandio](https://github.com/filipesperandio)
