@@ -211,7 +211,7 @@ public class CustomCodeArea extends CodeArea {
             executorService = Executors.newSingleThreadExecutor();
             this.richChanges()
                 .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
-                .successionEnds(Duration.ofMillis(300))
+                .successionEnds(Duration.ofMillis(100))
                 .supplyTask(() -> computeHighlightingAsync(this.getText()))
                 .awaitLatest(this.richChanges())
                 .filterMap(t -> {

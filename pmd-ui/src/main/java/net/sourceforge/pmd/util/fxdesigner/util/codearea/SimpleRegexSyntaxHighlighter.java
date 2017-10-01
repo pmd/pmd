@@ -7,7 +7,6 @@ package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.fxmisc.richtext.StyleSpans;
 import org.fxmisc.richtext.StyleSpansBuilder;
 
@@ -90,7 +90,8 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
      */
     protected static class RegexHighlightGrammarBuilder {
 
-        private Map<String, String> regexToClasses = new LinkedHashMap<>();
+        private Map<String, String> groupNameToRegex = new LinkedHashMap<>();
+        private Map<String, String> groupNameToCssClass = new LinkedHashMap<>();
 
 
         RegexHighlightGrammarBuilder(String cssClass, String regex) {
@@ -107,7 +108,9 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
          * @return The same builder
          */
         public RegexHighlightGrammarBuilder or(String cssClass, String regex) {
-            regexToClasses.put(regex, cssClass);
+            String groupName = RandomStringUtils.randomAlphabetic(8);
+            groupNameToRegex.put(groupName, regex);
+            groupNameToCssClass.put(groupName, cssClass);
             return this;
         }
 
@@ -117,17 +120,11 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
         }
 
 
-        private String getGroupNameOf(String regex, String cssClass) {
-            return cssClass.replaceAll("[^a-zA-Z]", "").toUpperCase();
-        }
-
-
         private String getRegexString() {
-            return String.join("|",
-                               regexToClasses.entrySet()
-                                             .stream()
-                                             .map(e -> namedGroup(getGroupNameOf(e.getKey(), e.getValue()), e.getKey()))
-                                             .collect(Collectors.toList()));
+            return String.join("|", groupNameToRegex.entrySet()
+                                                    .stream()
+                                                    .map(e -> namedGroup(e.getKey(), e.getValue()))
+                                                    .collect(Collectors.toList()));
         }
 
 
@@ -156,13 +153,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
 
 
         private Map<String, String> getGroupNamesToCssClasses() {
-            Map<String, String> result = new HashMap<>();
-
-            for (Entry<String, String> e : regexToClasses.entrySet()) {
-                result.put(getGroupNameOf(e.getKey(), e.getValue()), e.getValue());
-            }
-
-            return result;
+            return Collections.unmodifiableMap(groupNameToCssClass);
         }
     }
 

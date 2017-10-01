@@ -42,15 +42,16 @@ public class JavaSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
     private static final RegexHighlightGrammar GRAMMAR
         = grammarBuilder("single-line-comment", "//[^\n]*")
         .or("multi-line-comment", "/\\*.*?\\*/")
-        .or("annotation", "\\b@[\\w]+")
         .or("paren", "[()]")
         .or("number", "\\b\\d+[fdlFDL]*\\b")
         .or("brace", "[{}]")
         .or("bracket", "[\\[]]")
         .or("semicolon", ";")
-        .or("keyword", "\\b(?=[" + KEYWORDS_START_CHARS + "])(" + String.join("|", KEYWORDS) + ")\\b")
-        .or("class-ident", "\\b[A-Z][\\w_$]*\\b")
+        .or("keyword", "\\b(?=[" + KEYWORDS_START_CHARS + "])(?:" + String.join("|", KEYWORDS) + ")\\b")
         .or("string", "\"[^\"\\\\]*(\\\\.[^\"\\\\]*)*\"")
+        .or("string", "'(?:[^']|\\\\(?:'|u\\w{4}))'") // char
+        .or("annotation", "@[\\w]+")
+        .or("class-ident", "\\b[A-Z][\\w_$]*\\b")
         .create(Pattern.DOTALL);
 
 
