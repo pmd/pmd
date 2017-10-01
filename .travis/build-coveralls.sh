@@ -12,5 +12,4 @@ if ! travis_isPush; then
 fi
 
 
-travis_wait ./mvnw clean test jacoco:report coveralls:report -Pcoveralls  -B -V -q
-
+./mvnw clean test jacoco:report coveralls:report -Pcoveralls -B -V
