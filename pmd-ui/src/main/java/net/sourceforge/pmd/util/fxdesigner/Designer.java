@@ -41,8 +41,35 @@ public class Designer extends Application implements DesignerApp {
 
         // System.err.close();
 
-        Parent root = FXMLLoader.load(getClass().getResource("designer.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/designer.fxml"));
 
+        DesignerApp owner = this;
+        NodeInfoPanelController nodeInfoPanelController = new NodeInfoPanelController(owner);
+        XPathPanelController xpathPanelController = new XPathPanelController(owner);
+
+        DesignerWindowController mainController
+            = new DesignerWindowController(owner, nodeInfoPanelController, xpathPanelController);
+
+        loader.setControllerFactory(type -> {
+            if (type == DesignerWindowController.class) {
+                return mainController;
+            } else if (type == NodeInfoPanelController.class) {
+                return nodeInfoPanelController;
+            } else if (type == XPathPanelController.class) {
+                return xpathPanelController;
+            } else {
+                // default behavior for controllerFactory:
+                try {
+                    return type.newInstance();
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                    throw new RuntimeException(exc); // fatal, just bail...
+                }
+            }
+        });
+
+
+        Parent root = loader.load();
         Scene scene = new Scene(root);
 
         stage.setTitle("PMD Rule Designer (v " + PMD.VERSION + ')');

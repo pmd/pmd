@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.StyleSpans;
+import org.reactfx.Subscription;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
@@ -39,6 +40,7 @@ public class CustomCodeArea extends CodeArea {
     private static final String SYNTAX_HIGHLIGHT_LAYER_ID = "syntax";
     private static final String PRIMARY_HIGHLIGHT_LAYER_ID = "primary";
     private ExecutorService executorService;
+    private Subscription syntaxAutoRefresh;
     private BooleanProperty isSyntaxHighlightingEnabled = new SimpleBooleanProperty(false);
     private StyleContext styleContext;
     private SyntaxHighlighter syntaxHighlighter;
@@ -60,6 +62,8 @@ public class CustomCodeArea extends CodeArea {
      * @param endLine     End line
      * @param endColumn   End column
      * @param cssClasses  The css classes to apply
+     *
+     * @throws IllegalArgumentException if the region identified by the coordinates is out of bounds
      */
     public void styleCss(int beginLine, int beginColumn, int endLine, int endColumn, Set<String> cssClasses) {
         Set<String> fullClasses = new HashSet<>(cssClasses);
@@ -74,6 +78,8 @@ public class CustomCodeArea extends CodeArea {
      *
      * @param node       The node to style
      * @param cssClasses The css classes to apply
+     *
+     * @throws IllegalArgumentException if the node's coordinates are out of bounds
      */
     public void styleCss(Node node, Set<String> cssClasses) {
         this.styleCss(node.getBeginLine(), node.getBeginColumn(), node.getEndLine(), node.getEndColumn(), cssClasses);
@@ -96,10 +102,26 @@ public class CustomCodeArea extends CodeArea {
      *
      * @param node       The node to style
      * @param cssClasses The css classes to apply
+     *
+     * @throws IllegalArgumentException if the node's coordinates are out of bounds
      */
     public void restylePrimaryStyleLayer(Node node, Set<String> cssClasses) {
         clearPrimaryStyleLayer();
         styleCss(node, cssClasses);
+    }
+
+
+    /**
+     * Returns true if the node is in the range of the current text.
+     *
+     * @param n The node to check
+     *
+     * @return True or false
+     */
+    public boolean isInRange(Node n) {
+        return n.getEndLine() <= getParagraphs().size()
+            && (n.getEndLine() != getParagraphs().size()
+            || n.getEndColumn() <= getParagraph(n.getEndLine() - 2).length());
     }
 
 
@@ -166,6 +188,11 @@ public class CustomCodeArea extends CodeArea {
     public void disableSyntaxHighlighting() {
         if (isSyntaxHighlightingEnabled.get()) {
             isSyntaxHighlightingEnabled.set(false);
+
+            if (syntaxAutoRefresh != null) {
+                syntaxAutoRefresh.unsubscribe();
+            }
+
             if (executorService != null) {
                 executorService.shutdown();
             }
@@ -209,24 +236,24 @@ public class CustomCodeArea extends CodeArea {
 
         if (isSyntaxHighlightingEnabled.get() && syntaxHighlighter != null) {
             executorService = Executors.newSingleThreadExecutor();
-            this.richChanges()
-                .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
-                .successionEnds(Duration.ofMillis(100))
-                .supplyTask(() -> computeHighlightingAsync(this.getText()))
-                .awaitLatest(this.richChanges())
-                .filterMap(t -> {
-                    if (t.isSuccess()) {
-                        return Optional.of(t.get());
-                    } else {
-                        t.getFailure().printStackTrace();
-                        return Optional.empty();
-                    }
-                })
-                .subscribe(spans -> {
-                    StyleLayer layer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
-                    layer.reset(spans);
-                    this.paintCss();
-                });
+            syntaxAutoRefresh = this.richChanges()
+                                    .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
+                                    .successionEnds(Duration.ofMillis(100))
+                                    .supplyTask(() -> computeHighlightingAsync(this.getText()))
+                                    .awaitLatest(this.richChanges())
+                                    .filterMap(t -> {
+                                        if (t.isSuccess()) {
+                                            return Optional.of(t.get());
+                                        } else {
+                                            t.getFailure().printStackTrace();
+                                            return Optional.empty();
+                                        }
+                                    })
+                                    .subscribe(spans -> {
+                                        StyleLayer layer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
+                                        layer.reset(spans);
+                                        this.paintCss();
+                                    });
         }
     }
 

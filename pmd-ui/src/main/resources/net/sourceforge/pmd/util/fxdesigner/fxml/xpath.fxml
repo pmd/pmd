@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="net.sourceforge.pmd.util.fxdesigner.XPathPanelController"
+
+            minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+    <children>
+        <SplitPane dividerPositions="1.0"
+                   styleClass="bottom-pane-split-pane"
+                   AnchorPane.bottomAnchor="0.0"
+                   AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0"
+                   AnchorPane.topAnchor="0.0">
+            <items>
+                <AnchorPane>
+                    <children>
+                        <CustomCodeArea styleClass="code"
+                                        stylesheets="@../css/editor-theme.css"
+                                        AnchorPane.bottomAnchor="0.0"
+                                        AnchorPane.leftAnchor="0.0"
+                                        AnchorPane.rightAnchor="0.0"
+                                        AnchorPane.topAnchor="0.0"
+                                        fx:id="xpathExpressionArea">
+                            <contextMenu>
+                                <ContextMenu>
+                                    <items>
+                                        <MenuItem
+                                                mnemonicParsing="false"
+                                                text="Disable syntax highlighting"/>
+                                    </items>
+                                </ContextMenu>
+                            </contextMenu>
+                        </CustomCodeArea>
+                    </children>
+                </AnchorPane>
+                <AnchorPane maxWidth="-Infinity"
+                            minWidth="-Infinity"
+                            prefWidth="300.0">
+                    <children>
+                        <TitledPane fx:id="violationsTitledPane"
+                                    animated="false"
+                                    collapsible="false"
+                                    maxHeight="600.0"
+                                    maxWidth="-Infinity"
+                                    minHeight="0.0"
+                                    minWidth="-Infinity"
+                                    prefWidth="300.0"
+                                    text="Matched Nodes"
+                                    AnchorPane.bottomAnchor="0.0"
+                                    AnchorPane.leftAnchor="0.0"
+                                    AnchorPane.rightAnchor="0.0"
+                                    AnchorPane.topAnchor="0.0">
+                            <content>
+                                <ListView
+                                        fx:id="xpathResultListView"/>
+                            </content>
+                        </TitledPane>
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+    </children>
+</AnchorPane>

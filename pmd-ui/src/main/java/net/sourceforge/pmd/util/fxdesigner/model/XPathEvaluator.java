@@ -27,7 +27,7 @@ import javafx.beans.property.StringProperty;
  * @author Clément Fournier
  * @since 6.0.0
  */
-class XPathEvaluator {
+public class XPathEvaluator {
 
 
     private final StringProperty xpathVersion = new SimpleStringProperty();
@@ -52,9 +52,9 @@ class XPathEvaluator {
      *
      * @throws XPathEvaluationException if there was an error during the evaluation. The cause is preserved
      */
-    List<Node> evaluateQuery(Node compilationUnit,
-                             LanguageVersion languageVersion,
-                             String xpathQuery) throws XPathEvaluationException {
+    public List<Node> evaluateQuery(Node compilationUnit,
+                                    LanguageVersion languageVersion,
+                                    String xpathQuery) throws XPathEvaluationException {
 
         if (StringUtils.isBlank(xpathQuery)) {
             return Collections.emptyList();

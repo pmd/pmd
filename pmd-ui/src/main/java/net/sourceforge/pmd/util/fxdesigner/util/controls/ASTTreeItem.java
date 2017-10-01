@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.fxdesigner;
+package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -43,7 +43,7 @@ public class ASTTreeItem extends TreeItem<Node> {
 
 
     /** Builds an ASTTreeItem recursively from a node. */
-    static ASTTreeItem getRoot(Node n) {
+    public static ASTTreeItem getRoot(Node n) {
         ASTTreeItem item = new ASTTreeItem(n);
         if (n.jjtGetNumChildren() > 0) {
             for (int i = 0; i < n.jjtGetNumChildren(); i++) {

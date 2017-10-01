@@ -12,8 +12,6 @@ import org.fxmisc.richtext.LineNumberFactory;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.fxdesigner.DesignerWindowPresenter;
-import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.util.LogEntry;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 
@@ -33,7 +31,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
@@ -43,7 +40,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
@@ -58,7 +54,7 @@ import javafx.util.Duration;
 public class DesignerWindow implements Initializable {
 
     @FXML
-    private Label metricsTitleLabel;
+    public TabPane nodeInfoPanel;
     @FXML
     private ToggleButton bottomTabsToggle;
     @FXML
@@ -80,17 +76,11 @@ public class DesignerWindow implements Initializable {
     @FXML
     private ChoiceBox<String> xpathVersionChoiceBox;
     @FXML
-    private Tab metricResultsTitledPane;
-    @FXML
     private MenuItem openFileMenuItem;
     @FXML
     private MenuItem licenseMenuItem;
     @FXML
-    private TreeView<Object> scopeHierarchyTreeView;
-    @FXML
     private Menu openRecentMenu;
-    @FXML
-    private Menu exportMenu;
     @FXML
     private MenuItem exportToTestCodeMenuItem;
     @FXML
@@ -106,27 +96,15 @@ public class DesignerWindow implements Initializable {
     @FXML
     private Button refreshASTButton;
     @FXML
-    private CustomCodeArea xpathExpressionArea;
-    @FXML
-    private ListView<Node> xpathResultListView;
-    @FXML
-    private ListView<String> xpathAttributesListView;
-    @FXML
-    private TitledPane violationsTitledPane;
-    @FXML
     private TreeView<Node> astTreeView;
     @FXML
     private Tab xpathEditorTab;
     @FXML
     private SplitPane mainHorizontalSplitPane;
     @FXML
-    private Tab xpathAttributesTitledPane;
-    @FXML
     private BorderPane editorAndASTBorderPane;
     @FXML
     private Label astTitledPane;
-    @FXML
-    private ListView<MetricResult> metricResultsListView;
     /* */
     private StringProperty sourceCodeProperty;
     private BooleanProperty isSyntaxHighlightingEnabled = new SimpleBooleanProperty(false);
@@ -136,7 +114,6 @@ public class DesignerWindow implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeView();
-        new DesignerWindowPresenter(this).initialize(); // instantiate presenter
     }
 
 
@@ -183,15 +160,8 @@ public class DesignerWindow implements Initializable {
     }
 
 
-    public void notifyMetricsAvailable(long numMetrics) {
-        metricResultsTitledPane.setText("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + ")");
-        metricsTitleLabel.setText("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + " available)");
-        metricResultsTitledPane.setDisable(numMetrics == 0);
-    }
-
-
-    public void notifyOutdatedAST() {
-        astTitledPane.setText("Abstract syntax tree (outdated)");
+    public void notifyOutdatedAST(boolean error) {
+        astTitledPane.setText("Abstract syntax tree (" + (error ? "error" : "outdated") + ")");
     }
 
 
@@ -199,21 +169,6 @@ public class DesignerWindow implements Initializable {
         astTitledPane.setText("Abstract syntax tree");
     }
 
-
-    public void displayXPathResultsSize(int size) {
-        violationsTitledPane.setText("Matched nodes\t(" + size + ")");
-    }
-
-
-    public void displayXPathError(Throwable t) {
-        // Currently dismisses the exception
-        violationsTitledPane.setText("Matched nodes\t(error)");
-    }
-
-
-    public TreeView<Object> getScopeHierarchyTreeView() {
-        return scopeHierarchyTreeView;
-    }
 
 
     public CustomCodeArea getCodeEditorArea() {
@@ -235,22 +190,6 @@ public class DesignerWindow implements Initializable {
         return refreshASTButton;
     }
 
-
-    public CustomCodeArea getXpathExpressionArea() {
-        return xpathExpressionArea;
-    }
-
-
-    public ListView<Node> getXpathResultListView() {
-        return xpathResultListView;
-    }
-
-
-    public ListView<String> getXpathAttributesListView() {
-        return xpathAttributesListView;
-    }
-
-
     public TreeView<Node> getAstTreeView() {
         return astTreeView;
     }
@@ -258,11 +197,6 @@ public class DesignerWindow implements Initializable {
 
     public Tab getXpathEditorTab() {
         return xpathEditorTab;
-    }
-
-
-    public ListView<MetricResult> getMetricResultsListView() {
-        return metricResultsListView;
     }
 
 

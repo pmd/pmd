@@ -5,24 +5,21 @@
 package net.sourceforge.pmd.util.fxdesigner.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.Paragraph;
 
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 /**
  * @author Clément Fournier
@@ -32,6 +29,7 @@ public class DesignerUtil {
 
 
     private static LanguageVersion[] supportedLanguageVersions;
+    private static Map<String, LanguageVersion> extensionsToLanguage;
 
 
     private DesignerUtil() {
@@ -39,21 +37,28 @@ public class DesignerUtil {
     }
 
 
-    /** Gets the XPath attributes of the node for display within a listview. */
-    public static ObservableList<String> getAttributes(Node node) {
-        ObservableList<String> result = FXCollections.observableArrayList();
-        AttributeAxisIterator attributeAxisIterator = new AttributeAxisIterator(node);
-        while (attributeAxisIterator.hasNext()) {
-            Attribute attribute = attributeAxisIterator.next();
-            result.add(attribute.getName() + " = "
-                           + ((attribute.getValue() != null) ? attribute.getStringValue() : "null"));
+    private static Map<String, LanguageVersion> getExtensionsToLanguageMap() {
+        Map<String, LanguageVersion> result = new HashMap<>();
+        Arrays.stream(getSupportedLanguageVersions())
+              .map(LanguageVersion::getLanguage)
+              .distinct()
+              .collect(Collectors.toMap(Language::getExtensions, Language::getDefaultVersion))
+              .forEach((key, value) -> key.forEach(ext -> result.put(ext, value)));
+        return result;
+    }
+
+
+    public static LanguageVersion getLanguageVersionFromExtension(String filename) {
+        if (extensionsToLanguage == null) {
+            extensionsToLanguage = getExtensionsToLanguageMap();
         }
 
-        if (node instanceof TypeNode) {
-            result.add("typeof() = " + ((TypeNode) node).getType());
+        if (filename.indexOf('.') > 0) {
+            String[] tokens = filename.split("\\.");
+            return extensionsToLanguage.get(tokens[tokens.length - 1]);
         }
-        Collections.sort(result);
-        return result;
+
+        return null;
     }
 
 

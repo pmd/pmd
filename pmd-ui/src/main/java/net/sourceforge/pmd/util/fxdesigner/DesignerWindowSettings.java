@@ -19,53 +19,53 @@ enum DesignerWindowSettings {
 
     /** Language version. */
     LANGUAGE_VERSION("langVersion",
-                     DesignerWindowPresenter::getLanguageVersionTerseName,
-                     DesignerWindowPresenter::setLanguageVersionFromTerseName),
+                     DesignerWindowController::getLanguageVersionTerseName,
+                     DesignerWindowController::setLanguageVersionFromTerseName),
 
     /** Code from the main editor area. */
     SOURCE_CODE("code",
-                DesignerWindowPresenter::getSourceCode,
-                DesignerWindowPresenter::setSourceCode),
+                DesignerWindowController::getSourceCode,
+                DesignerWindowController::setSourceCode),
 
     /** Version of the XPath parser. */
     XPATH_VERSION("xpathVersion",
-                  DesignerWindowPresenter::getXPathVersion,
-                  DesignerWindowPresenter::setXPathVersion),
+                  DesignerWindowController::getXPathVersion,
+                  DesignerWindowController::setXPathVersion),
 
     /** Code of the XPath expression. */
     XPATH_CODE("xpathCode",
-               DesignerWindowPresenter::getXPathCode,
-               DesignerWindowPresenter::setXPathCode),
+               DesignerWindowController::getXPathCode,
+               DesignerWindowController::setXPathCode),
 
     /** Which tab of the bottom area is currently visible. */
     BOTTOM_EXPANDED_TAB("bottomExpandedTab",
-                        DesignerWindowPresenter::getBottomExpandedTab,
-                        DesignerWindowPresenter::setBottomExpandedTab),
+                        DesignerWindowController::getBottomExpandedTab,
+                        DesignerWindowController::setBottomExpandedTab),
 
     /** Whether the window is maximized. */
     IS_MAXIMIZED("isMaximized",
-                 DesignerWindowPresenter::isMaximized,
-                 DesignerWindowPresenter::setIsMaximized),
+                 DesignerWindowController::isMaximized,
+                 DesignerWindowController::setIsMaximized),
 
     /** List of recent files. */
     RECENT_FILES("recentFiles",
-                 DesignerWindowPresenter::getRecentFiles,
-                 DesignerWindowPresenter::setRecentFiles),
+                 DesignerWindowController::getRecentFiles,
+                 DesignerWindowController::setRecentFiles),
 
     AST_PANE_WIDTH("astPaneWidth",
-                   DesignerWindowPresenter::getASTPaneWidth,
-                   DesignerWindowPresenter::setAstPaneWidth),
+                   DesignerWindowController::getASTPaneWidth,
+                   DesignerWindowController::setAstPaneWidth),
 
     IS_SYNTAX_HIGHLIGHTING_ENABLED("isSyntaxHighlightingEnabled",
-                                   DesignerWindowPresenter::isSyntaxHighlightingEnabled,
-                                   DesignerWindowPresenter::setIsSyntaxHighlightingEnabled);
+                                   DesignerWindowController::isSyntaxHighlightingEnabled,
+                                   DesignerWindowController::setIsSyntaxHighlightingEnabled);
 
     private final String keyName;
-    private final Function<DesignerWindowPresenter, String> getValueFunction;
+    private final Function<DesignerWindowController, String> getValueFunction;
     private final PresenterSettingSetter setValueFunction;
 
 
-    DesignerWindowSettings(String keyName, Function<DesignerWindowPresenter, String> getValueFunction,
+    DesignerWindowSettings(String keyName, Function<DesignerWindowController, String> getValueFunction,
                            PresenterSettingSetter setValueFunction) {
         this.keyName = keyName;
         this.getValueFunction = getValueFunction;
@@ -80,19 +80,19 @@ enum DesignerWindowSettings {
      *
      * @return The value obtained from the presenter
      */
-    String getValueFrom(DesignerWindowPresenter presenter) {
+    String getValueFrom(DesignerWindowController presenter) {
         return getValueFunction.apply(presenter);
     }
 
 
     /**
      * Restores the value into the presenter. The string passed is the same as that returned by {@link
-     * #getValueFrom(DesignerWindowPresenter)} when the settings were last saved.
+     * #getValueFrom(DesignerWindowController)} when the settings were last saved.
      *
      * @param presenter The presenter
      * @param value     The value of the setting
      */
-    void setValueIn(DesignerWindowPresenter presenter, String value) {
+    void setValueIn(DesignerWindowController presenter, String value) {
         setValueFunction.set(presenter, value);
     }
 
@@ -114,7 +114,7 @@ enum DesignerWindowSettings {
     @FunctionalInterface
     private interface PresenterSettingSetter {
 
-        void set(DesignerWindowPresenter presenter, String value);
+        void set(DesignerWindowController presenter, String value);
     }
 
 }

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Left pane of the designer. Displays node information. -->
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<TabPane xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         fx:id="nodeInfoTabPane"
+         fx:controller="net.sourceforge.pmd.util.fxdesigner.NodeInfoPanelController"
+
+         maxWidth="-Infinity"
+         minWidth="-Infinity"
+         prefWidth="300.0"
+         side="LEFT"
+         tabClosingPolicy="UNAVAILABLE"
+         BorderPane.alignment="CENTER">
+
+    <tabs>
+        <Tab text="Attributes" fx:id="xpathAttributesTitledPane">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <children>
+                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <top>
+                                <ToolBar styleClass="info-title-bar" BorderPane.alignment="CENTER">
+                                    <items>
+                                        <Label text="XPath Attributes">
+                                            <tooltip>
+                                                <Tooltip text="Those attributes can be accessed via XPath"/>
+                                            </tooltip>
+                                        </Label>
+                                    </items>
+                                </ToolBar>
+                            </top>
+                            <center>
+                                <ListView styleClass="secondary-panel" BorderPane.alignment="CENTER"
+                                          fx:id="xpathAttributesListView"/>
+                            </center>
+                        </BorderPane>
+                    </children>
+                </AnchorPane>
+            </content>
+        </Tab>
+        <Tab fx:id="metricResultsTitledPane" text="Metrics">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <children>
+                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <center>
+                                <ListView fx:id="metricResultsListView" styleClass="secondary-panel"
+                                          BorderPane.alignment="CENTER"/>
+                            </center>
+                            <top>
+                                <ToolBar styleClass="info-title-bar" BorderPane.alignment="CENTER">
+                                    <items>
+                                        <Label fx:id="metricsTitleLabel" text="Metrics"/>
+                                    </items>
+                                </ToolBar>
+                            </top>
+                        </BorderPane>
+                    </children>
+                </AnchorPane>
+            </content>
+        </Tab>
+        <Tab text="Scopes">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <children>
+                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <center>
+                                <TreeView fx:id="scopeHierarchyTreeView" styleClass="secondary-panel"
+                                          BorderPane.alignment="CENTER"/>
+                            </center>
+                            <top>
+                                <ToolBar styleClass="info-title-bar" BorderPane.alignment="CENTER">
+                                    <items>
+                                        <Label text="Scope hierarchy"/>
+                                    </items>
+                                </ToolBar>
+                            </top>
+                        </BorderPane>
+                    </children>
+                </AnchorPane>
+            </content>
+        </Tab>
+    </tabs>
+</TabPane>
+

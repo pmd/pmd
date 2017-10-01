@@ -70,7 +70,7 @@
     -fx-border-style: none;
 }
 
-#nodeInfoTabPane {
+#nodeInfoPanel {
     -fx-pref-width: 300px;
     -fx-max-width: 300px;
     -fx-min-width: 300px;

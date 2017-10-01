@@ -62,10 +62,17 @@ class StyleLayer {
      * @param endLine     End line
      * @param endColumn   End column
      * @param cssClasses  CSS classes with which to style the text
+     *
+     * @throws IllegalArgumentException if the region identified is out of bounds
      */
     public void style(int beginLine, int beginColumn,
                       int endLine, int endColumn,
                       Set<String> cssClasses) {
+
+        if (endLine > codeArea.getParagraphs().size()
+            || endLine == codeArea.getParagraphs().size() && endColumn > codeArea.getParagraph(endLine).length()) {
+            throw new IllegalArgumentException("Cannot style, the region is out of bounds");
+        }
 
         int offset = lengthUntil(beginLine, beginColumn);
         int spanLength = lengthBetween(beginLine, beginColumn, endLine, endColumn);

@@ -30,22 +30,18 @@ import javafx.collections.ObservableList;
  */
 public class ASTManager {
 
+    /** Evaluates XPath queries. */
+    private final XPathEvaluator xpathEvaluator = new XPathEvaluator();
+    /** Evaluates metrics on a node. */
+    private final MetricEvaluator metricEvaluator = new MetricEvaluator();
     /** Last valid source that was compiled, corresponds to {@link #compilationUnit}. */
     private String lastValidSource;
     /** Last language version used. */
     private LanguageVersion lastLanguageVersion;
-
     /** Latest computed compilation unit (only null before the first call to {@link #getCompilationUnit(String)}) */
-    private Node compilationUnit;
-
+    private ObjectProperty<Node> compilationUnit = new SimpleObjectProperty<>();
     /** Selected language version. */
     private ObjectProperty<LanguageVersion> languageVersion = new SimpleObjectProperty<>();
-
-    /** Evaluates XPath queries. */
-    private XPathEvaluator xpathEvaluator = new XPathEvaluator();
-
-    /** Evaluates metrics on a node. */
-    private MetricEvaluator metricEvaluator = new MetricEvaluator();
 
 
     public LanguageVersion getLanguageVersion() {
@@ -55,6 +51,16 @@ public class ASTManager {
 
     public ObjectProperty<LanguageVersion> languageVersionProperty() {
         return languageVersion;
+    }
+
+
+    public Node getCompilationUnit() {
+        return compilationUnit.get();
+    }
+
+
+    public ObjectProperty<Node> compilationUnitProperty() {
+        return compilationUnit;
     }
 
 
@@ -69,22 +75,6 @@ public class ASTManager {
 
 
     /**
-     * Evaluates all available metrics for that node.
-     *
-     * @param n Node
-     *
-     * @return A list of all the metric results that could be computed, possibly with some Double.NaN results
-     */
-    public ObservableList<MetricResult> evaluateAllMetrics(Node n) {
-        try {
-            return FXCollections.observableArrayList(metricEvaluator.evaluateAllMetrics(n));
-        } catch (UnsupportedOperationException e) {
-            return FXCollections.emptyObservableList();
-        }
-    }
-
-
-    /**
      * Evaluates an XPath query, returns the matching nodes.
      *
      * @param xpathQuery Query to execute
@@ -94,7 +84,7 @@ public class ASTManager {
      * @throws XPathEvaluationException if there was an error during the evaluation. The cause is preserved.
      */
     public ObservableList<Node> evaluateXPath(String xpathQuery) throws XPathEvaluationException {
-        return FXCollections.observableArrayList(xpathEvaluator.evaluateQuery(compilationUnit,
+        return FXCollections.observableArrayList(xpathEvaluator.evaluateQuery(compilationUnit.get(),
                                                                               languageVersion.get(),
                                                                               xpathQuery));
     }
@@ -118,41 +108,40 @@ public class ASTManager {
      *
      * @param source Source code
      *
-     * @throws ParseAbortedException if parsing or one of the visitors fails. The cause is preserved.
+     * @throws ParseAbortedException if parsing fails and cannot recover
      */
     public Node getCompilationUnit(String source) throws ParseAbortedException {
-        if (StringUtils.equals(source, lastValidSource)
-            && languageVersion.get().equals(lastLanguageVersion)) {
-            return compilationUnit;
+        if (languageVersion.get().equals(lastLanguageVersion)
+            && StringUtils.equals(source, lastValidSource)) {
+            return compilationUnit.get();
         }
         LanguageVersionHandler languageVersionHandler = languageVersion.get().getLanguageVersionHandler();
         Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
+
+        Node node;
         try {
-            Node node;
-            try {
-                node = parser.parse(null, new StringReader(source));
-            } catch (Exception e) {
-                Designer.instance().getLogger().logEvent(new LogEntry(e, Category.PARSE_EXCEPTION));
-                return null;
-            }
-
-            languageVersionHandler.getSymbolFacade().start(node);
-
-            try {
-                languageVersionHandler.getTypeResolutionFacade(ASTManager.class.getClassLoader()).start(node);
-            } catch (Exception e) {
-                Designer.instance().getLogger().logEvent(new LogEntry(e, Category.TYPERESOLUTION_EXCEPTION));
-            }
-
-            languageVersionHandler.getMetricsVisitorFacade().start(node); // will disappear
-            compilationUnit = node;
-            lastValidSource = source;
-            lastLanguageVersion = languageVersion.get();
-            return compilationUnit;
+            node = parser.parse(null, new StringReader(source));
         } catch (Exception e) {
-            Designer.instance().getLogger().logEvent(new LogEntry(e, Category.OTHER_PARSE_TIME_EXCEPTION));
+            Designer.instance().getLogger().logEvent(new LogEntry(e, Category.PARSE_EXCEPTION));
             throw new ParseAbortedException(e);
         }
+        try {
+            languageVersionHandler.getSymbolFacade().start(node);
+        } catch (Exception e) {
+            Designer.instance().getLogger().logEvent(new LogEntry(e, Category.SYMBOL_FACADE_EXCEPTION));
+            throw new ParseAbortedException(e);
+        }
+        try {
+            languageVersionHandler.getTypeResolutionFacade(ASTManager.class.getClassLoader()).start(node);
+        } catch (Exception e) {
+            Designer.instance().getLogger().logEvent(new LogEntry(e, Category.TYPERESOLUTION_EXCEPTION));
+        }
+
+        compilationUnit.setValue(node);
+        lastValidSource = source;
+        lastLanguageVersion = languageVersion.get();
+        return compilationUnit.get();
+
 
     }
 

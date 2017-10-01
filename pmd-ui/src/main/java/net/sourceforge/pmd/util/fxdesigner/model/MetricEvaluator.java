@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
  * @author Clément Fournier
  * @since 6.0.0
  */
-class MetricEvaluator {
+public class MetricEvaluator {
 
     /**
      * Evaluates all available metrics and returns a list of results.
@@ -36,7 +36,7 @@ class MetricEvaluator {
      *
      * @throws UnsupportedOperationException If no metrics are available for this node
      */
-    List<MetricResult> evaluateAllMetrics(Node node) throws UnsupportedOperationException {
+    public List<MetricResult> evaluateAllMetrics(Node node) throws UnsupportedOperationException {
         if (ASTAnyTypeDeclaration.class.isInstance(node)) {
             return evaluateAllMetrics((ASTAnyTypeDeclaration) node);
         } else if (ASTMethodOrConstructorDeclaration.class.isInstance(node)) {

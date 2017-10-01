@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--suppress JavaFxDefaultTag -->
+
+<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow">
+    <children>
+        <BorderPane prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <top>
+                <AnchorPane>
+                    <children>
+                        <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <MenuBar maxHeight="20.0" prefHeight="20.0">
+                                    <menus>
+                                        <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
+                                            <items>
+                                                <MenuItem fx:id="openFileMenuItem" mnemonicParsing="false"
+                                                          text="Open..."/>
+                                                <Menu fx:id="openRecentMenu" mnemonicParsing="false"
+                                                      text="Open recent..."/>
+                                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                                <Menu fx:id="exportMenu" mnemonicParsing="false" text="Export...">
+                                                    <items>
+                                                        <MenuItem fx:id="exportToTestCodeMenuItem"
+                                                                  mnemonicParsing="false"
+                                                                  text="Export code to test code"/>
+                                                        <MenuItem fx:id="exportXPathMenuItem" mnemonicParsing="false"
+                                                                  text="Export XPath to rule"/>
+                                                    </items>
+                                                </Menu>
+                                            </items>
+                                        </Menu>
+                                        <Menu mnemonicParsing="false" text="About">
+                                            <items>
+                                                <MenuItem mnemonicParsing="false" text="About"/>
+                                                <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false"
+                                                          text="License"/>
+                                            </items>
+                                        </Menu>
+                                    </menus>
+                                </MenuBar>
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </top>
+            <center>
+                <SplitPane fx:id="mainHorizontalSplitPane" dividerPositions="0.8" orientation="VERTICAL"
+                           BorderPane.alignment="BOTTOM_CENTER">
+                    <items>
+                        <BorderPane fx:id="editorAndASTBorderPane" prefHeight="200.0" prefWidth="200.0">
+                            <left>
+                                <fx:include source="node-info.fxml" fx:id="nodeInfoPanel"/>
+                            </left>
+                            <center>
+                                <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                    <center>
+                                        <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0"
+                                                   BorderPane.alignment="CENTER">
+                                            <items>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
+                                                            prefWidth="100.0">
+                                                    <children>
+                                                        <BorderPane prefHeight="200.0" prefWidth="200.0"
+                                                                    AnchorPane.bottomAnchor="0.0"
+                                                                    AnchorPane.leftAnchor="0.0"
+                                                                    AnchorPane.rightAnchor="0.0"
+                                                                    AnchorPane.topAnchor="0.0">
+                                                            <center>
+                                                                <CustomCodeArea fx:id="codeEditorArea"
+                                                                                prefHeight="346.0" prefWidth="445.0"
+                                                                                styleClass="code"
+                                                                                stylesheets="@../css/editor-theme.css"
+                                                                                BorderPane.alignment="CENTER">
+                                                                    <contextMenu>
+                                                                        <ContextMenu>
+                                                                            <items>
+                                                                                <MenuItem
+                                                                                        fx:id="toggleSyntaxHighlighting"
+                                                                                        mnemonicParsing="false"
+                                                                                        onAction="#onToggleSyntaxHighlightingClicked"
+                                                                                        text="Disable syntax highlighting"/>
+                                                                            </items>
+                                                                        </ContextMenu>
+                                                                    </contextMenu>
+                                                                    <BorderPane.margin>
+                                                                        <Insets/>
+                                                                    </BorderPane.margin>
+                                                                </CustomCodeArea>
+                                                            </center>
+                                                            <top>
+                                                                <ToolBar prefHeight="40.0" prefWidth="200.0"
+                                                                         styleClass="info-title-bar"
+                                                                         BorderPane.alignment="CENTER">
+                                                                    <items>
+                                                                        <Label text="Source code"/>
+                                                                    </items>
+                                                                </ToolBar>
+                                                            </top>
+                                                        </BorderPane>
+                                                    </children>
+                                                </AnchorPane>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
+                                                            prefWidth="100.0">
+                                                    <children>
+                                                        <BorderPane prefHeight="200.0" prefWidth="200.0"
+                                                                    AnchorPane.bottomAnchor="0.0"
+                                                                    AnchorPane.leftAnchor="0.0"
+                                                                    AnchorPane.rightAnchor="0.0"
+                                                                    AnchorPane.topAnchor="0.0">
+                                                            <center>
+                                                                <TreeView fx:id="astTreeView" prefHeight="200.0"
+                                                                          prefWidth="200.0" styleClass="secondary-panel"
+                                                                          BorderPane.alignment="CENTER"/>
+                                                            </center>
+                                                            <top>
+                                                                <ToolBar prefHeight="40.0" prefWidth="200.0"
+                                                                         styleClass="info-title-bar"
+                                                                         BorderPane.alignment="CENTER">
+                                                                    <items>
+                                                                        <Label fx:id="astTitledPane"
+                                                                               text="Abstract Syntax Tree"/>
+                                                                    </items>
+                                                                </ToolBar>
+                                                            </top>
+                                                        </BorderPane>
+                                                    </children>
+                                                </AnchorPane>
+                                            </items>
+                                        </SplitPane>
+                                    </center>
+                                    <bottom>
+                                        <ToolBar id="mainToolbar" prefHeight="40.0" prefWidth="200.0"
+                                                 styleClass="info-title-bar" BorderPane.alignment="CENTER">
+                                            <items>
+                                                <Button fx:id="refreshASTButton" maxHeight="22.0" minHeight="22.0"
+                                                        mnemonicParsing="true" prefHeight="20.0" text="_Refresh AST">
+                                                    <tooltip>
+                                                        <Tooltip
+                                                                text="Refresh the AST, and XPath results if there's an expression to evaluate"/>
+                                                    </tooltip>
+                                                    <padding>
+                                                        <Insets bottom="-3.0" left="5.0" right="5.0" top="-3.0"/>
+                                                    </padding>
+                                                </Button>
+                                                <ChoiceBox fx:id="languageChoiceBox" maxHeight="22.0" prefHeight="22.0"
+                                                           prefWidth="115.0">
+                                                    <padding>
+                                                        <Insets bottom="-3.0" left="-3.0" right="-3.0" top="-3.0"/>
+                                                    </padding>
+                                                </ChoiceBox>
+                                                <ChoiceBox maxHeight="22.0" minHeight="20.0" prefHeight="22.0"
+                                                           prefWidth="115.0" fx:id="xpathVersionChoiceBox">
+                                                    <padding>
+                                                        <Insets bottom="-3.0" left="-3.0" right="-3.0" top="-3.0"/>
+                                                    </padding>
+                                                </ChoiceBox>
+                                                <Pane HBox.hgrow="ALWAYS"/>
+                                                <ToggleButton fx:id="bottomTabsToggle" mnemonicParsing="false"
+                                                              selected="true" styleClass="expand-toggle"/>
+                                            </items>
+                                            <padding>
+                                                <Insets left="20.0" right="20.0"/>
+                                            </padding>
+                                        </ToolBar>
+                                    </bottom>
+                                </BorderPane>
+                            </center>
+                        </BorderPane>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                            <center>
+                                <AnchorPane BorderPane.alignment="CENTER">
+                                    <children>
+                                        <TabPane fx:id="bottomTabPane" minHeight="20.0" tabClosingPolicy="UNAVAILABLE"
+                                                 AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                 AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <tabs>
+                                                <Tab text="XPath Editor" fx:id="xpathEditorTab">
+                                                    <content>
+                                                        <fx:include source="xpath.fxml" fx:id="xpathPanel"/>
+                                                    </content>
+                                                </Tab>
+                                                <Tab fx:id="eventLogTab" text="Exception Log">
+                                                    <content>
+                                                        <SplitPane dividerPositions="0.6"
+                                                                   styleClass="bottom-pane-split-pane">
+                                                            <items>
+                                                                <AnchorPane>
+                                                                    <children>
+                                                                        <TableView fx:id="eventLogTableView"
+                                                                                   layoutX="31.0" layoutY="-79.0"
+                                                                                   prefHeight="200.0" prefWidth="200.0"
+                                                                                   AnchorPane.bottomAnchor="0.0"
+                                                                                   AnchorPane.leftAnchor="0.0"
+                                                                                   AnchorPane.rightAnchor="0.0"
+                                                                                   AnchorPane.topAnchor="0.0">
+                                                                            <columns>
+                                                                                <TableColumn fx:id="logDateColumn"
+                                                                                             editable="false"
+                                                                                             prefWidth="97.0"
+                                                                                             resizable="false"
+                                                                                             sortType="DESCENDING"
+                                                                                             text="Date"/>
+                                                                                <TableColumn fx:id="logCategoryColumn"
+                                                                                             editable="false"
+                                                                                             prefWidth="174.0"
+                                                                                             resizable="false"
+                                                                                             text="Category"/>
+                                                                                <TableColumn fx:id="logMessageColumn"
+                                                                                             editable="false"
+                                                                                             prefWidth="123.0"
+                                                                                             text="Message"/>
+                                                                            </columns>
+                                                                            <columnResizePolicy>
+                                                                                <TableView
+                                                                                        fx:constant="UNCONSTRAINED_RESIZE_POLICY"/>
+                                                                            </columnResizePolicy>
+                                                                        </TableView>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                                <AnchorPane prefWidth="300.0">
+                                                                    <children>
+                                                                        <TitledPane collapsible="false"
+                                                                                    prefWidth="300.0" text="Details"
+                                                                                    AnchorPane.bottomAnchor="0.0"
+                                                                                    AnchorPane.leftAnchor="0.0"
+                                                                                    AnchorPane.rightAnchor="0.0"
+                                                                                    AnchorPane.topAnchor="0.0">
+                                                                            <content>
+                                                                                <TextArea fx:id="logDetailsTextArea"
+                                                                                          editable="false"
+                                                                                          prefHeight="200.0"
+                                                                                          prefWidth="300.0"/>
+                                                                            </content>
+                                                                        </TitledPane>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </items>
+                                                        </SplitPane>
+                                                    </content>
+                                                </Tab>
+                                                <Tab disable="true">
+                                                    <content>
+                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+                                                                    prefWidth="200.0"/>
+                                                    </content>
+                                                </Tab>
+                                            </tabs>
+                                        </TabPane>
+                                    </children>
+                                </AnchorPane>
+                            </center>
+                            <top>
+                                <AnchorPane prefWidth="200.0" BorderPane.alignment="CENTER"/>
+                            </top>
+                        </BorderPane>
+                    </items>
+                </SplitPane>
+            </center>
+        </BorderPane>
+    </children>
+</AnchorPane>

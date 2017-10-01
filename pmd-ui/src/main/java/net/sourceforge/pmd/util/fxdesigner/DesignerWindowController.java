@@ -7,53 +7,57 @@ package net.sourceforge.pmd.util.fxdesigner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Objects;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.reactfx.Subscription;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
-import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
-import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.LogEntry;
-import net.sourceforge.pmd.util.fxdesigner.util.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsLoader;
 import net.sourceforge.pmd.util.fxdesigner.util.XMLSettingsSaver;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.view.DesignerWindow;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionModel;
@@ -65,36 +69,45 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.util.StringConverter;
 
 /**
- * Presenter of the designer window. Subscribes to the events of the {@link DesignerWindow} that instantiates it.
+ * Main controller of the app.
  *
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class DesignerWindowPresenter {
+public class DesignerWindowController implements Initializable {
 
     private static final String SETTINGS_FILE_NAME = System.getProperty("user.home")
         + System.getProperty("file.separator") + ".pmd_new_designer.xml";
 
+    private final DesignerApp designerApp;
+
+    @FXML
+    private NodeInfoPanelController nodeInfoPanelController;
+
+    @FXML
+    private XPathPanelController xpathPanelController;
+
+
     private DesignerWindow view;
-    private ASTManager model;
+    private ASTManager model = new ASTManager();
     private Stack<File> recentFiles = new LimitedSizeStack<>(5);
+    private Subscription compilAutoRefresh;
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 
-    public DesignerWindowPresenter(DesignerWindow designerWindow) {
-        view = designerWindow;
-        model = new ASTManager();
+    public DesignerWindowController(DesignerApp root) {
+        this.designerApp = root;
     }
 
 
-    public void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         initializeLanguageVersionMenu();
         initializeASTTreeView();
         initializeXPath();
-        initialiseNodeInfoSection();
         bindModelToView();
         initializeSyntaxHighlighting();
         initializeEventLog();
@@ -111,7 +124,13 @@ public class DesignerWindowPresenter {
             try {
                 saveSettings();
                 view.getCodeEditorArea().disableSyntaxHighlighting(); // shutdown the executor
-                view.getXpathExpressionArea().disableSyntaxHighlighting();
+                xpathPanelController.shutdown(); // shutdown syntax highlighting
+                if (compilAutoRefresh != null) {
+                    compilAutoRefresh.unsubscribe();
+                }
+                if (executorService != null) {
+                    executorService.shutdown();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 // no big deal
@@ -119,22 +138,56 @@ public class DesignerWindowPresenter {
         });
 
 
-        view.sourceCodeProperty().addListener((observable, oldValue, newValue) -> {
-            if (model.isRecompilationNeeded(newValue)) {
-                view.notifyOutdatedAST();
-            } else {
-                view.acknowledgeUpdatedAST();
-            }
-        });
-
-        view.getRefreshASTButton().setOnAction(this::onRefreshASTClicked);
+        view.getRefreshASTButton().setOnAction(e -> this.onRefreshASTClicked());
         view.getLicenseMenuItem().setOnAction(this::showLicensePopup);
         view.getLoadSourceFromFileMenuItem().setOnAction(this::onOpenFileClicked);
         view.getOpenRecentMenu().setOnAction(e -> updateRecentFilesMenu());
         view.getOpenRecentMenu().setOnShowing(e -> updateRecentFilesMenu());
         view.getFileMenu().setOnShowing(this::onFileMenuShowing);
 
-        onRefreshASTClicked(null); // Restore AST and XPath results
+        try {
+            setUpToDateCompilationUnit(getCompilationUnitUpdate(view.sourceCodeProperty().get()));
+        } catch (ParseAbortedException e) {
+            invalidateAST(true);
+        }
+    }
+
+
+    private void enableASTAutoRefresh() {
+        CustomCodeArea area = view.getCodeEditorArea();
+        compilAutoRefresh = area.richChanges()
+                                .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
+                                .successionEnds(Duration.ofMillis(500))
+                                .supplyTask(() -> updateASTTask(area.getText()))
+                                .awaitLatest(area.richChanges())
+                                .filterMap(t -> {
+                                    if (t.isSuccess()) {
+                                        return Optional.ofNullable(t.get());
+                                    } else {
+                                        invalidateAST(true);
+                                        return Optional.empty();
+                                    }
+                                })
+                                .subscribe(this::setUpToDateCompilationUnit);
+    }
+
+
+    private void disableASTAutoRefresh() {
+
+    }
+
+
+    private Task<Node> updateASTTask(final String text) {
+        Task<Node> task = new Task<Node>() {
+            @Override
+            protected Node call() throws Exception {
+                return getCompilationUnitUpdate(text);
+            }
+        };
+        if (!executorService.isShutdown()) {
+            executorService.execute(task);
+        }
+        return task;
     }
 
 
@@ -142,12 +195,6 @@ public class DesignerWindowPresenter {
     private void bindModelToView() {
         model.languageVersionProperty().bind(view.getLanguageChoiceBox().getSelectionModel().selectedItemProperty());
         model.xpathVersionProperty().bind(view.getXpathVersionChoiceBox().getSelectionModel().selectedItemProperty());
-    }
-
-
-    private void initialiseNodeInfoSection() {
-        view.getMetricResultsListView().setCellFactory(param -> new MetricResultListCell());
-        view.getScopeHierarchyTreeView().setCellFactory(param -> new ScopeHierarchyTreeCell());
     }
 
 
@@ -172,17 +219,11 @@ public class DesignerWindowPresenter {
         });
 
 
-        ListView<Node> xpathResultsListView = view.getXpathResultListView();
-
-        xpathResultsListView.setCellFactory(param -> new XpathViolationListCell());
-        xpathResultsListView.getSelectionModel()
-                            .selectedItemProperty()
+        xpathPanelController.selectedResultPropertyProperty()
                             .addListener((observable, oldValue, newValue) -> {
                                 if (newValue != null) {
                                     onNodeItemSelected(newValue);
                                     focusNodeInASTTreeView(newValue);
-                                } else {
-                                    view.getScopeHierarchyTreeView().setRoot(null);
                                 }
                             });
     }
@@ -197,16 +238,20 @@ public class DesignerWindowPresenter {
         ReadOnlyObjectProperty<TreeItem<Node>> selectedItemProperty
             = astTreeView.getSelectionModel().selectedItemProperty();
 
+
+        astTreeView.rootProperty().addListener((obs, oldRoot, newRoot) -> {
+            if (newRoot == null) {
+                nodeInfoPanelController.invalidateInfo();
+            }
+        });
+
         selectedItemProperty.addListener(observable -> {
-            view.getMetricResultsListView().getItems().clear();
-            view.getXpathAttributesListView().getItems().clear();
+            nodeInfoPanelController.invalidateInfo();
         });
 
         selectedItemProperty.addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
+            if (newValue != null && newValue != oldValue) {
                 onNodeItemSelected(newValue.getValue());
-            } else {
-                view.getScopeHierarchyTreeView().setRoot(null);
             }
         });
     }
@@ -214,24 +259,16 @@ public class DesignerWindowPresenter {
 
     /** Executed when the user selects a node in a treeView or listView. */
     private void onNodeItemSelected(Node selectedValue) {
-        Objects.requireNonNull(selectedValue, "Node cannot be null");
 
-        ObservableList<String> atts = DesignerUtil.getAttributes(selectedValue);
-        view.getXpathAttributesListView().setItems(atts);
-
-        ObservableList<MetricResult> metrics = model.evaluateAllMetrics(selectedValue);
-        view.getMetricResultsListView().setItems(metrics);
-        view.notifyMetricsAvailable(metrics.stream()
-                                           .map(MetricResult::getValue)
-                                           .filter(result -> !result.isNaN())
-                                           .count());
+        nodeInfoPanelController.displayInfo(selectedValue);
 
 
-        TreeItem<Object> rootScope = ScopeHierarchyTreeItem.buildAscendantHierarchy(selectedValue);
-        view.getScopeHierarchyTreeView().setRoot(rootScope);
-
-        highlightNode(selectedValue, view.getCodeEditorArea());
-        view.getCodeEditorArea().positionCaret(selectedValue.getBeginLine(), selectedValue.getBeginColumn());
+        if (view.getCodeEditorArea().isInRange(selectedValue)) {
+            highlightNode(selectedValue, view.getCodeEditorArea());
+            view.getCodeEditorArea().positionCaret(selectedValue.getBeginLine(), selectedValue.getBeginColumn());
+        } else {
+            view.getCodeEditorArea().clearPrimaryStyleLayer();
+        }
 
     }
 
@@ -295,7 +332,7 @@ public class DesignerWindowPresenter {
             }
         });
 
-        view.getXpathExpressionArea().setSyntaxHighlightingEnabled(new XPathSyntaxHighlighter());
+
     }
 
 
@@ -331,71 +368,63 @@ public class DesignerWindowPresenter {
     }
 
 
-    private void onRefreshASTClicked(ActionEvent event) {
+    /**
+     * Returns the new compilation unit if it has changed. Returns null in case of no change.
+     *
+     * @param source Source code
+     *
+     * @return The new compilation unit, or null if it has not changed
+     *
+     * @throws ParseAbortedException if there was an error during parsing
+     */
+    private Node getCompilationUnitUpdate(String source) {
+        return model.isRecompilationNeeded(source) ? model.getCompilationUnit(source) : null;
+    }
+
+
+    private void setUpToDateCompilationUnit(Node node) {
+        ASTTreeItem root = ASTTreeItem.getRoot(node);
+        view.getAstTreeView().setRoot(root);
+        view.acknowledgeUpdatedAST();
+    }
+
+
+    private void onRefreshASTClicked() {
         String source = view.getCodeEditorArea().getText();
         if (model.isRecompilationNeeded(source)) {
             refreshAST(source);
             view.getCodeEditorArea().clearPrimaryStyleLayer();
         }
-        if (StringUtils.isNotBlank(view.getXpathExpressionArea().getText())) {
-            evaluateXPath();
-        } else {
-            view.getXpathResultListView().getItems().clear();
-        }
+        xpathPanelController.evaluateXPath(model.getCompilationUnit(),
+                                           model.getLanguageVersion());
+
     }
 
 
     /** Refresh the AST view with the updated code. */
     private void refreshAST(String source) {
-        Node n = null;
+        Node n;
         try {
             n = model.getCompilationUnit(source);
         } catch (ParseAbortedException e) {
-            // notifyParseAbortedException(e);
+            n = null;
         }
 
         if (n != null) {
             view.acknowledgeUpdatedAST();
             ASTTreeItem root = ASTTreeItem.getRoot(n);
             view.getAstTreeView().setRoot(root);
+        } else {
+            invalidateAST(true);
         }
     }
 
 
-    // not very elegant
-    private void notifyParseAbortedException(Exception e) {
-        Alert errorAlert = new Alert(AlertType.ERROR);
-        errorAlert.setWidth(1.5 * errorAlert.getWidth());
-        errorAlert.setHeaderText("An exception occurred during parsing:");
-
-        ScrollPane scroll = new ScrollPane();
-        scroll.setContent(new TextArea(ExceptionUtils.getStackTrace(e.getCause())));
-        errorAlert.getDialogPane().setContent(scroll);
-        errorAlert.initModality(Modality.NONE);
-        errorAlert.showAndWait();
-    }
-
-
-    /** Evaluate XPath expression, print results on the ListView. */
-    private void evaluateXPath() {
-
-        try {
-            String xpath = view.getXpathExpressionArea().getText();
-
-            if (StringUtils.isBlank(xpath)) {
-                return;
-            }
-
-            ObservableList<Node> results = model.evaluateXPath(xpath);
-            view.getXpathResultListView().setItems(results);
-            view.displayXPathResultsSize(results.size());
-        } catch (XPathEvaluationException e) {
-            view.displayXPathError(e);
-            Designer.instance().getLogger().logEvent(new LogEntry(e, Category.XPATH_EVALUATION_EXCEPTION));
-        }
-
-        view.getXpathResultListView().refresh();
-        view.getXpathExpressionArea().requestFocus();
+    /** Clears the ast and all node inspection views. */
+    private void invalidateAST(boolean error) {
+        view.getAstTreeView().setRoot(null);
+        view.notifyOutdatedAST(error);
+        nodeInfoPanelController.invalidateInfo();
     }
 
 
@@ -435,8 +464,12 @@ public class DesignerWindowPresenter {
             try {
                 String source = IOUtils.toString(new FileInputStream(file));
                 view.getCodeEditorArea().replaceText(source);
+                LanguageVersion guess = DesignerUtil.getLanguageVersionFromExtension(file.getName());
+                if (guess != null) { // guess the language from the extension
+                    view.getLanguageChoiceBox().getSelectionModel().select(guess);
+                }
+
                 recentFiles.push(file);
-                onRefreshASTClicked(null);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -542,9 +575,11 @@ public class DesignerWindowPresenter {
         return Double.toString(view.getAstTreeView().getWidth());
     }
 
+
     void setAstPaneWidth(String val) {
         view.getAstTreeView().setPrefWidth(Double.parseDouble(val));
     }
+
 
     String getXPathVersion() {
         return model.getXPathVersion();
