@@ -4,13 +4,16 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Stack;
 
 import org.fxmisc.richtext.Paragraph;
+import org.fxmisc.richtext.StyleSpans;
+import org.fxmisc.richtext.StyleSpansBuilder;
 
 /**
  * Represents a layer of styling in the text. Several layers are aggregated into a {@link StyleContext}, and can evolve
@@ -19,7 +22,7 @@ import org.fxmisc.richtext.Paragraph;
 class StyleLayer {
 
     private final String id;
-    private List<SpanBound> bounds = new ArrayList<>();
+    private Stack<StyleSpans<Collection<String>>> spans = new Stack<>();
     private CustomCodeArea codeArea;
 
 
@@ -31,25 +34,23 @@ class StyleLayer {
 
 
     /**
-     * Clears this layer from previous styling.
+     * Returns the stack of all spans contained in this one.
+     *
+     * @return The stack of all spans
      */
-    public void clearStyles() {
-        bounds.clear();
-    }
-
-
-    public void setBounds(List<SpanBound> newBounds) {
-        bounds = newBounds;
+    Stack<StyleSpans<Collection<String>>> getSpans() {
+        return spans;
     }
 
 
     /**
-     * Gets the span bounds of this layer.
+     * Resets the spans to the specified value.
      *
-     * @return The span bounds
+     * @param replacement The new spans
      */
-    List<SpanBound> getBounds() {
-        return bounds;
+    void reset(StyleSpans<Collection<String>> replacement) {
+        spans.clear();
+        spans.push(replacement);
     }
 
 
@@ -68,12 +69,14 @@ class StyleLayer {
 
         int offset = lengthUntil(beginLine, beginColumn);
         int spanLength = lengthBetween(beginLine, beginColumn, endLine, endColumn);
-        SpanBound start = new SpanBound(offset, cssClasses, true);
-        SpanBound end = new SpanBound(offset + spanLength, cssClasses, false);
 
+        StyleSpansBuilder<Collection<String>> builder = new StyleSpansBuilder<>();
 
-        bounds.add(start);
-        bounds.add(end);
+        builder.add(Collections.emptySet(), offset);
+        builder.add(cssClasses, spanLength);
+        builder.add(Collections.emptySet(), codeArea.getLength() - (offset + spanLength));
+
+        spans.push(builder.create());
     }
 
 
@@ -125,5 +128,19 @@ class StyleLayer {
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+
+
+    public void clearStyles() {
+        spans.clear();
+    }
+
+
+    @Override
+    public String toString() {
+        return "StyleLayer{"
+            + "id='" + id + '\''
+            + ", spans=\"" + spans.size() + " spans\""
+            + '}';
     }
 }

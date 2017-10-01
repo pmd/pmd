@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
-import java.util.List;
+import java.util.Collection;
+
+import org.fxmisc.richtext.StyleSpans;
 
 /**
  * Language-specific engine for syntax highlighting.
@@ -29,7 +31,7 @@ public interface SyntaxHighlighter {
      *
      * @return The bounds of the computed style spans
      */
-    List<SpanBound> computeHighlighting(String text);
+    StyleSpans<Collection<String>> computeHighlighting(String text);
 
 
 }

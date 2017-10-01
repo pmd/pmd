@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -14,10 +14,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.StyleSpans;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 
@@ -36,7 +39,7 @@ public class CustomCodeArea extends CodeArea {
     private static final String SYNTAX_HIGHLIGHT_LAYER_ID = "syntax";
     private static final String PRIMARY_HIGHLIGHT_LAYER_ID = "primary";
     private ExecutorService executorService;
-    private boolean isSyntaxHighlightingEnabled;
+    private BooleanProperty isSyntaxHighlightingEnabled = new SimpleBooleanProperty(false);
     private StyleContext styleContext;
     private SyntaxHighlighter syntaxHighlighter;
 
@@ -77,6 +80,12 @@ public class CustomCodeArea extends CodeArea {
     }
 
 
+    /**
+     * Positions the caret at the specified coordinates.
+     *
+     * @param line   Line
+     * @param column Column
+     */
     public void positionCaret(int line, int column) {
         this.positionCaret(DesignerUtil.lengthUntil(line, column, this));
     }
@@ -121,10 +130,10 @@ public class CustomCodeArea extends CodeArea {
         this.setSyntaxHighlighter(highlighter);
 
         try { // refresh the highlighting.
-            Task<List<SpanBound>> t = computeHighlightingAsync(this.getText());
+            Task<StyleSpans<Collection<String>>> t = computeHighlightingAsync(this.getText());
             t.setOnSucceeded((e) -> {
                 StyleLayer layer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
-                layer.setBounds(t.getValue());
+                layer.reset(t.getValue());
                 this.paintCss();
             });
         } catch (Exception e) {
@@ -134,6 +143,11 @@ public class CustomCodeArea extends CodeArea {
 
 
     public boolean isSyntaxHighlightingEnabled() {
+        return isSyntaxHighlightingEnabled.get();
+    }
+
+
+    public BooleanProperty syntaxHighlightingEnabledProperty() {
         return isSyntaxHighlightingEnabled;
     }
 
@@ -150,8 +164,8 @@ public class CustomCodeArea extends CodeArea {
      * Disables syntax highlighting gracefully, if enabled.
      */
     public void disableSyntaxHighlighting() {
-        if (isSyntaxHighlightingEnabled) {
-            isSyntaxHighlightingEnabled = false;
+        if (isSyntaxHighlightingEnabled.get()) {
+            isSyntaxHighlightingEnabled.set(false);
             if (executorService != null) {
                 executorService.shutdown();
             }
@@ -165,7 +179,7 @@ public class CustomCodeArea extends CodeArea {
 
 
     private void setSyntaxHighlighter(SyntaxHighlighter newHighlighter) {
-        isSyntaxHighlightingEnabled = true;
+        isSyntaxHighlightingEnabled.set(true);
         Objects.requireNonNull(newHighlighter, "The syntax highlighting highlighter cannot be null");
 
         StyleLayer syntaxHighlightLayer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
@@ -193,7 +207,7 @@ public class CustomCodeArea extends CodeArea {
 
         this.syntaxHighlighter = computer;
 
-        if (isSyntaxHighlightingEnabled && syntaxHighlighter != null) {
+        if (isSyntaxHighlightingEnabled.get() && syntaxHighlighter != null) {
             executorService = Executors.newSingleThreadExecutor();
             this.richChanges()
                 .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
@@ -208,19 +222,19 @@ public class CustomCodeArea extends CodeArea {
                         return Optional.empty();
                     }
                 })
-                .subscribe(bounds -> {
+                .subscribe(spans -> {
                     StyleLayer layer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
-                    layer.setBounds(bounds);
+                    layer.reset(spans);
                     this.paintCss();
                 });
         }
     }
 
 
-    private Task<List<SpanBound>> computeHighlightingAsync(String text) {
-        Task<List<SpanBound>> task = new Task<List<SpanBound>>() {
+    private Task<StyleSpans<Collection<String>>> computeHighlightingAsync(String text) {
+        Task<StyleSpans<Collection<String>>> task = new Task<StyleSpans<Collection<String>>>() {
             @Override
-            protected List<SpanBound> call() throws Exception {
+            protected StyleSpans<Collection<String>> call() throws Exception {
                 return syntaxHighlighter.computeHighlighting(text);
             }
         };

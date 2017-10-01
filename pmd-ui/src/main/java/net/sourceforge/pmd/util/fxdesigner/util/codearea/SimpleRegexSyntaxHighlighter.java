@@ -4,21 +4,24 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.fxmisc.richtext.StyleSpans;
+import org.fxmisc.richtext.StyleSpansBuilder;
+
 /**
- * Language-specific engine for syntax highlighting. The highlighter assigns classes to
+ * Language-specific engine for syntax highlighting. This implementation tokenises the text using regex, and assigns a
+ * specific CSS class to every found token. The whole text also receives a style class named after the language of the
+ * tokenizer (e.g. "xml" or "java"). Styling of each class is then done in stylesheets.
  *
  * @author Clément Fournier
  * @since 6.0.0
@@ -42,24 +45,24 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
 
 
     @Override
-    public List<SpanBound> computeHighlighting(String text) {
-        List<SpanBound> updated = new ArrayList<>();
+    public StyleSpans<Collection<String>> computeHighlighting(String text) {
+        StyleSpansBuilder<Collection<String>> builder = new StyleSpansBuilder<>();
         Matcher matcher = grammar.getMatcher(text);
         int lastKwEnd = 0;
 
         try {
             while (matcher.find()) {
                 String styleClass = grammar.getCssClassOfLastGroup(matcher);
-                updated.add(new SpanBound(lastKwEnd, Collections.singleton(languageName), true));
-                updated.add(new SpanBound(matcher.start(), Collections.emptySet(), false));
-                updated.add(new SpanBound(matcher.start(), new HashSet<>(Arrays.asList(languageName, styleClass)), true));
-                updated.add(new SpanBound(matcher.end(), new HashSet<>(Arrays.asList(languageName, styleClass)), false));
+
+                builder.add(Collections.singleton(languageName), matcher.start() - lastKwEnd);
+                builder.add(Arrays.asList(languageName, styleClass), matcher.end() - matcher.start());
+
                 lastKwEnd = matcher.end();
             }
         } catch (StackOverflowError so) {
-            // matcher.find overflowed, may happen when coloring ginormous files with incorrect language
+            // matcher.find overflowed, might happen when coloring ginormous files with incorrect language
         }
-        return updated;
+        return builder.create();
     }
 
 
@@ -82,6 +85,9 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
     }
 
 
+    /**
+     * Builds a highlight grammar in a concise way.
+     */
     protected static class RegexHighlightGrammarBuilder {
 
         private Map<String, String> regexToClasses = new LinkedHashMap<>();
@@ -165,23 +171,23 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
      */
     protected static class RegexHighlightGrammar {
 
-        private final Matcher matcher;
+        private final Pattern pattern;
         private final Map<String, String> namesToCssClass;
 
 
-        public RegexHighlightGrammar(Pattern pattern, Map<String, String> namesToCssClass) {
-            this.matcher = pattern.matcher("");
+        RegexHighlightGrammar(Pattern pattern, Map<String, String> namesToCssClass) {
+            this.pattern = pattern;
             this.namesToCssClass = namesToCssClass;
         }
 
 
         /**
-         * Pattern describing the tokens.
+         * Gets a matcher for the given piece of text.
          *
-         * @return The pattern
+         * @return A matcher
          */
-        public Matcher getMatcher(String text) {
-            return matcher.reset(text);
+        Matcher getMatcher(String text) {
+            return pattern.matcher(text);
         }
 
 
@@ -192,7 +198,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
          *
          * @return The name of the css class corresponding to the token
          */
-        public String getCssClassOfLastGroup(Matcher matcher) {
+        String getCssClassOfLastGroup(Matcher matcher) {
             for (Entry<String, String> groupToClass : namesToCssClass.entrySet()) {
                 if (matcher.group(groupToClass.getKey()) != null) {
                     return groupToClass.getValue();
