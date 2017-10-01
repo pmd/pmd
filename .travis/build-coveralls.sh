@@ -11,5 +11,10 @@ if ! travis_isPush; then
     exit 0
 fi
 
+#
+# for java9: enable all modules.
+# coveralls plugin seems to need java.xml.bind module
+#
+echo "MAVEN_OPTS='-Xms1g -Xmx1g --add-modules java.se.ee'" > $HOME/.mavenrc
 
 ./mvnw clean test jacoco:report coveralls:report -Pcoveralls -B -V
