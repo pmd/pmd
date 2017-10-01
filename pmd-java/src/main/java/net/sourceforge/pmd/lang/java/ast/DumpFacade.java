@@ -192,6 +192,12 @@ public class DumpFacade extends JavaParserVisitorAdapter {
             if (((ASTTryStatement) node).hasFinally()) {
                 extras.add("has finally");
             }
+        } else if (node instanceof ASTModuleDirective) {
+            ASTModuleDirective directive = (ASTModuleDirective) node;
+            extras.add(directive.getType());
+            if (directive.getRequiresModifier() != null) {
+                extras.add(directive.getRequiresModifier());
+            }
         }
 
         // Output image and extras

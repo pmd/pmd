@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <ruleset name="Metrics testing ruleset"
-         xmlns="http://pmd.sourceforge.net/ruleset/3.0.0"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/3.0.0 http://pmd.sourceforge.net/ruleset_3_0_0.xsd">
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
     <description>
         Metrics testing ruleset. Each metric is tested through a dummy rule.
@@ -11,62 +11,52 @@
 
     <rule name="CycloTest"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.java.metrics.impl.CycloTestRule"
-          metrics="true">
+          class="net.sourceforge.pmd.lang.java.metrics.impl.CycloTestRule">
     </rule>
 
     <rule name="NcssTest"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.java.metrics.impl.NcssTestRule"
-          metrics="true">
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NcssTestRule">
     </rule>
 
     <rule name="WmcTest"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.java.metrics.impl.WmcTestRule"
-          metrics="true">
+          class="net.sourceforge.pmd.lang.java.metrics.impl.WmcTestRule">
     </rule>
 
     <rule name="LocTest"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.java.metrics.impl.LocTestRule"
-          metrics="true">
+          class="net.sourceforge.pmd.lang.java.metrics.impl.LocTestRule">
     </rule>
 
     <rule name="NPathTest"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.java.metrics.impl.NPathTestRule"
-          metrics="true">
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NPathTestRule">
     </rule>
 
     <rule name="NopaTest"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.java.metrics.impl.NopaTestRule"
-          metrics="true">
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NopaTestRule">
     </rule>
 
     <rule name="NoamTest"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.java.metrics.impl.NoamTestRule"
-          metrics="true">
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NoamTestRule">
     </rule>
 
     <rule name="WocTest"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.java.metrics.impl.WocTestRule"
-          metrics="true">
+          class="net.sourceforge.pmd.lang.java.metrics.impl.WocTestRule">
     </rule>
 
     <rule name="TccTest"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.java.metrics.impl.TccTestRule"
-          metrics="true">
+          class="net.sourceforge.pmd.lang.java.metrics.impl.TccTestRule">
     </rule>
 
     <rule name="AtfdTest"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.java.metrics.impl.AtfdTestRule"
-          metrics="true">
+          class="net.sourceforge.pmd.lang.java.metrics.impl.AtfdTestRule">
     </rule>
 
 </ruleset>

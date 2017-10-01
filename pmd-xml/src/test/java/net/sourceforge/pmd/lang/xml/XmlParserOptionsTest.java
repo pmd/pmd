@@ -13,8 +13,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.xml.rule.AbstractXmlRule;
+import net.sourceforge.pmd.properties.BooleanProperty;
 
 public class XmlParserOptionsTest {
 

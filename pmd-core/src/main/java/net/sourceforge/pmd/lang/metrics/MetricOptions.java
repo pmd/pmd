@@ -15,6 +15,7 @@ import java.util.Set;
  * Bundles a set of options to pass to a metric. Metrics may use these options as they see fit.
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public class MetricOptions {
 
@@ -41,7 +42,7 @@ public class MetricOptions {
             options = Collections.emptySet();
             break;
         case 1:
-            options = Collections.singleton(opts.iterator().next());
+            options = Collections.<MetricOption>singleton(opts.iterator().next());
             break;
         default:
             options = Collections.unmodifiableSet(opts);

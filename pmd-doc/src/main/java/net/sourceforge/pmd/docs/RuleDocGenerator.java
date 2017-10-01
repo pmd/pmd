@@ -26,13 +26,13 @@ import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class RuleDocGenerator {
     private static final String LANGUAGE_INDEX_FILENAME_PATTERN = "docs/pages/pmd/rules/${language.tersename}.md";
@@ -239,15 +239,16 @@ public class RuleDocGenerator {
         for (Map.Entry<Language, List<RuleSet>> entry : rulesets.entrySet()) {
             String languageTersename = entry.getKey().getTerseName();
             for (RuleSet ruleset : entry.getValue()) {
+                String rulesetFilename = getRuleSetFilename(ruleset);
                 String filename = RULESET_INDEX_FILENAME_PATTERN
                     .replace("${language.tersename}", languageTersename)
-                    .replace("${ruleset.name}", getRuleSetFilename(ruleset));
+                    .replace("${ruleset.name}", rulesetFilename);
 
                 Path path = getAbsoluteOutputPath(filename);
 
                 String permalink = RULESET_INDEX_PERMALINK_PATTERN
                         .replace("${language.tersename}", languageTersename)
-                        .replace("${ruleset.name}", getRuleSetFilename(ruleset));
+                        .replace("${ruleset.name}", rulesetFilename);
 
                 List<String> lines = new LinkedList<>();
                 lines.add("---");
@@ -350,6 +351,12 @@ public class RuleDocGenerator {
                         }
                         lines.add("");
                     }
+
+                    lines.add("**Use this rule by referencing it:**");
+                    lines.add("``` xml");
+                    lines.add("<rule ref=\"rulesets/" + languageTersename + "/" + rulesetFilename + ".xml/" + rule.getName() + "\" />");
+                    lines.add("```");
+                    lines.add("");
                 }
 
                 writer.write(path, lines);

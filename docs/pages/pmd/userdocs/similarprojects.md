@@ -1,8 +1,7 @@
 ---
 title: Similar projects
-sidebar: pmd_sidebar
 permalink: pmd_userdocs_similarprojects.html
-folder: pmd/userdocs
+author: Tom Copeland <tom@infoether.org>, David Dixon-Peugh <ddp@apache.org>
 ---
 
 ## Similar to PMD

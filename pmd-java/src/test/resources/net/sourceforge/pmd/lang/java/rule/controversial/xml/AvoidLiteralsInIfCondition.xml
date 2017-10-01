@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
   <test-code>
     <description>basic test</description>
     <expected-problems>1</expected-problems>
@@ -51,8 +54,8 @@ public class Foo {
   </test-code>
   <test-code>
     <description>#1213 AvoidLiteralsInIfCondition -- switch for integer comparison with 0.0</description>
-    <expected-problems>0</expected-problems>
     <rule-property name="ignoreMagicNumbers">-1,0,0.0</rule-property>
+    <expected-problems>0</expected-problems>
     <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -74,4 +77,19 @@ public class Foo {
 }
       ]]></code>
   </test-code>
+  <test-code>
+    <description>#388 False positive due to space in property list</description>
+    <rule-property name="ignoreMagicNumbers"><![CDATA[-1,0,1, 0.0]]></rule-property>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+    class Foo {
+      void bar() {
+        if (num == 0.0) {
+	        return MathExtItg.sgn0raw(num) == 1 ? IEEEclass.PositiveZero : IEEEclass.NegativeZero;
+	      }
+      }
+    }
+    ]]></code>
+  </test-code>
+
 </test-data>

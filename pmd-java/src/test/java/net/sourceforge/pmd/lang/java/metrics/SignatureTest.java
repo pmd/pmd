@@ -20,13 +20,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
 import net.sourceforge.pmd.lang.java.metrics.testdata.GetterDetection;
 import net.sourceforge.pmd.lang.java.metrics.testdata.SetterDetection;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaSignature;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaSignature.Visibility;
 
 /**
  * Test class for {@link JavaSignature} and its subclasses.

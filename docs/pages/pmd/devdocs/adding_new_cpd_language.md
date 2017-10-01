@@ -4,9 +4,8 @@ short_title: Add a New CPD Language
 tags: [customizing]
 summary: How to Add a New CPD Language
 last_updated: July 3, 2016
-sidebar: pmd_sidebar
 permalink: pmd_devdocs_adding_new_cpd_language.html
-folder: pmd/devdocs
+author: Romain PELISSE <belaran@gmail.com>
 ---
 
 # How to Add a New Language to CPD

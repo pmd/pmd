@@ -40,6 +40,11 @@ public class Foo {
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/apexunit.xml/ApexUnitTestClassShouldHaveAsserts" />
+```
+
 ## ApexUnitTestShouldNotUseSeeAllDataTrue
 
 **Since:** PMD 5.5.1
@@ -71,4 +76,9 @@ public class Foo {
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/apexunit.xml/ApexUnitTestShouldNotUseSeeAllDataTrue" />
+```
 

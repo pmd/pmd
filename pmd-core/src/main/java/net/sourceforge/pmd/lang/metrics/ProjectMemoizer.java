@@ -11,10 +11,14 @@ import net.sourceforge.pmd.lang.ast.QualifiedName;
  * Object storing the memoizers of the analysed project. This object should ideally be kept separate from the
  * SignatureMatcher if there is one. A base implementation is available, see {@link BasicProjectMemoizer}.
  *
+ * <p>Memoizers need not be all kept, in fact, only those who refer to operations or classes defined in
+ * the analysed file are still relevant.
+ *
  * @param <T> Type of type declaration nodes of the language
  * @param <O> Type of operation declaration nodes of the language
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public interface ProjectMemoizer<T extends QualifiableNode, O extends QualifiableNode> {
 
@@ -36,22 +40,5 @@ public interface ProjectMemoizer<T extends QualifiableNode, O extends Qualifiabl
      * @return The correct memoizer, or null if it wasn't found
      */
     MetricMemoizer<T> getClassMemoizer(QualifiedName qname);
-
-
-    /**
-     * Adds a memoizer for the class identified by this qualified name.
-     *
-     * @param qname The qualified name of the class
-     */
-    void addClassMemoizer(QualifiedName qname);
-
-
-    /**
-     * Adds a memoizer for the operation identified by this qualified name.
-     *
-     * @param qname The qualified name of the operations
-     */
-    void addOperationMemoizer(QualifiedName qname);
-
 
 }

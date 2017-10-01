@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.apex.rule.complexity;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.IntegerProperty;
 
 public class AvoidDeeplyNestedIfStmtsRule extends AbstractApexRule {
 

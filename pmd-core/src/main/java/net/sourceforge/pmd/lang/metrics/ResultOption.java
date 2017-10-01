@@ -11,6 +11,7 @@ package net.sourceforge.pmd.lang.metrics;
  * produce detailed violation reports for classes.
  *
  * @author Clément Fournier
+ * @since 5.8.0
  */
 public enum ResultOption {
     /** Compute the sum on all operations. */

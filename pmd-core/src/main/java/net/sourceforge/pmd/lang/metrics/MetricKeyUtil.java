@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * Holds the key creation method until we move it to the MetricKey interface.
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public class MetricKeyUtil {
 
@@ -23,13 +24,13 @@ public class MetricKeyUtil {
     /**
      * Creates a new metric key holding a metric which can be computed on a class.
      *
-     * TODO:cf Move that to the MetricKey interface once we upgrade the compiler
-     *
      * @param name   The name of the metric
      * @param metric The metric to use
+     * @param <T>    Type of node the metric can be computed on
      *
      * @return The metric key
      */
+    // FUTURE Move that to the MetricKey interface once we upgrade the compiler
     public static <T extends Node> MetricKey<T> of(final String name, final Metric<T> metric) {
         return new MetricKey<T>() {
             @Override

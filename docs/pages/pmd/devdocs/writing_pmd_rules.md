@@ -3,9 +3,8 @@ title:  PMD Writing a Custom Rule
 tags: [customizing]
 summary: Writing a Custom Rule for PMD
 last_updated: July 3, 2016
-sidebar: pmd_sidebar
 permalink: pmd_devdocs_writing_pmd_rules.html
-folder: pmd/devdocs
+author: Tom Copeland <tomcopeland@users.sourceforge.net>
 ---
 
 # How to write a PMD rule

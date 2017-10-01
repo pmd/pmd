@@ -27,6 +27,11 @@ StringBuffer sb = new StringBuffer();
 sb.append('a');     // use this instead
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/AppendCharacterWithChar" />
+```
+
 ## AvoidDuplicateLiterals
 
 **Since:** PMD 1.0
@@ -60,6 +65,11 @@ private void buz(String x) {}
 |minimumLength|3|Minimum string length to check|
 |skipAnnotations|false|Skip literals within annotations|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/AvoidDuplicateLiterals" />
+```
+
 ## AvoidStringBufferField
 
 **Since:** PMD 4.2
@@ -79,6 +89,11 @@ if held within objects with long lifetimes.
 public class Foo {
     private StringBuffer buffer;    // potential memory leak as an instance variable;
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/AvoidStringBufferField" />
 ```
 
 ## ConsecutiveAppendsShouldReuse
@@ -106,6 +121,11 @@ StringBuffer buf = new StringBuffer();
 buf.append("Hello").append(foo).append("World"); // good
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/ConsecutiveAppendsShouldReuse" />
+```
+
 ## ConsecutiveLiteralAppends
 
 **Since:** PMD 3.5
@@ -129,6 +149,11 @@ buf.append("Hello World");                          // good
 |Name|Default Value|Description|
 |----|-------------|-----------|
 |threshold|1|Max consecutive appends|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/ConsecutiveLiteralAppends" />
+```
 
 ## InefficientEmptyStringCheck
 
@@ -155,6 +180,11 @@ public void bar(String string) {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/InefficientEmptyStringCheck" />
+```
+
 ## InefficientStringBuffering
 
 **Since:** PMD 3.4
@@ -175,6 +205,11 @@ StringBuffer sb = new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir")
 // do this instead
 StringBuffer sb = new StringBuffer("tmp = ");
 sb.append(System.getProperty("java.io.tmpdir"));
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/InefficientStringBuffering" />
 ```
 
 ## InsufficientStringBufferDeclaration
@@ -199,6 +234,11 @@ bad.append("This is a long string that will exceed the default 16 characters");
 
 StringBuffer good = new StringBuffer(41);
 good.append("This is a long string, which is pre-sized");
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/InsufficientStringBufferDeclaration" />
 ```
 
 ## StringBufferInstantiationWithChar
@@ -247,6 +287,11 @@ StringBuffer  sb3 = new StringBuffer("c");
 StringBuilder sb4 = new StringBuilder("c");
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/StringBufferInstantiationWithChar" />
+```
+
 ## StringInstantiation
 
 **Since:** PMD 1.0
@@ -261,6 +306,11 @@ Avoid instantiating String objects; this is usually unnecessary since they are i
 
 ``` java
 private String bar = new String("bar"); // just do a String bar = "bar";
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/StringInstantiation" />
 ```
 
 ## StringToString
@@ -282,6 +332,11 @@ private String baz() {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/StringToString" />
+```
+
 ## UnnecessaryCaseChange
 
 **Since:** PMD 3.3
@@ -298,6 +353,11 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
 boolean answer1 = buz.toUpperCase().equals("baz");              // should be buz.equalsIgnoreCase("baz")
 
 boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");    // another unnecessary toUpperCase()
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/UnnecessaryCaseChange" />
 ```
 
 ## UseEqualsToCompareStrings
@@ -327,6 +387,11 @@ public boolean test(String s) {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/UseEqualsToCompareStrings" />
+```
+
 ## UseIndexOfChar
 
 **Since:** PMD 3.5
@@ -345,6 +410,11 @@ String s = "hello world";
 if (s.indexOf("d") {}
 // instead do this
 if (s.indexOf('d') {}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/UseIndexOfChar" />
 ```
 
 ## UselessStringValueOf
@@ -368,6 +438,11 @@ public String convert(int i) {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/UselessStringValueOf" />
+```
+
 ## UseStringBufferLength
 
 **Since:** PMD 3.4
@@ -387,5 +462,10 @@ StringBuffer sb = new StringBuffer();
 if (sb.toString().equals("")) {}        // inefficient
 
 if (sb.length() == 0) {}                // preferred
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strings.xml/UseStringBufferLength" />
 ```
 

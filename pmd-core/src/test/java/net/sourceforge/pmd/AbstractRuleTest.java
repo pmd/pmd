@@ -20,17 +20,18 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.StringProperty;
 
 public class AbstractRuleTest {
 
-    private static class MyRule extends AbstractRule {
+    public static class MyRule extends AbstractRule {
         private static final StringProperty FOO_PROPERTY = new StringProperty("foo", "foo property", "x", 1.0f);
 
         private static final StringProperty XPATH_PROPERTY = new StringProperty("xpath", "xpath property", "", 2.0f);
 
-        MyRule() {
+        public MyRule() {
             definePropertyDescriptor(FOO_PROPERTY);
             definePropertyDescriptor(XPATH_PROPERTY);
             setName("MyRule");
@@ -200,6 +201,26 @@ public class AbstractRuleTest {
         r2.setMessage("another message");
         assertEquals("Rules with different messages are still equal", r1, r2);
         assertEquals("Rules that are equal must have the an equal hashcode", r1.hashCode(), r2.hashCode());
+    }
+    
+    @Test
+    public void testDeepCopyRule() {
+        MyRule r1 = new MyRule();
+        MyRule r2 = (MyRule) r1.deepCopy();
+        assertEquals(r1.getDescription(), r2.getDescription());
+        assertEquals(r1.getExamples(), r2.getExamples());
+        assertEquals(r1.getExternalInfoUrl(), r2.getExternalInfoUrl());
+        assertEquals(r1.getLanguage(), r2.getLanguage());
+        assertEquals(r1.getMaximumLanguageVersion(), r2.getMaximumLanguageVersion());
+        assertEquals(r1.getMessage(), r2.getMessage());
+        assertEquals(r1.getMinimumLanguageVersion(), r2.getMinimumLanguageVersion());
+        assertEquals(r1.getName(), r2.getName());
+        assertEquals(r1.getPriority(), r2.getPriority());
+        assertEquals(r1.getPropertyDescriptors(), r2.getPropertyDescriptors());
+        assertEquals(r1.getRuleChainVisits(), r2.getRuleChainVisits());
+        assertEquals(r1.getRuleClass(), r2.getRuleClass());
+        assertEquals(r1.getRuleSetName(), r2.getRuleSetName());
+        assertEquals(r1.getSince(), r2.getSince());
     }
 
     public static junit.framework.Test suite() {

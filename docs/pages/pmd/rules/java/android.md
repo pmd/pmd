@@ -46,6 +46,11 @@ public class DummyActivity extends Activity {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/android.xml/CallSuperFirst" />
+```
+
 ## CallSuperLast
 
 **Since:** PMD 4.2.5
@@ -83,6 +88,11 @@ public class DummyActivity extends Activity {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/android.xml/CallSuperLast" />
+```
+
 ## DoNotHardCodeSDCard
 
 **Since:** PMD 4.2.6
@@ -105,5 +115,10 @@ public class MyActivity extends Activity {
        storageLocation = Environment.getExternalStorageDirectory() + "/mypackage"; // preferred approach
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/android.xml/DoNotHardCodeSDCard" />
 ```
 

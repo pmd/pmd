@@ -90,7 +90,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
                 + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL
                 + "</table><hr/><center><h3>Processing errors</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + PMD.EOL + "<th>File</th><th>Problem</th></tr>" + PMD.EOL + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL
-                + "<td>file</td>" + PMD.EOL + "<td>Error</td>" + PMD.EOL + "</tr>" + PMD.EOL
+                + "<td>file</td>" + PMD.EOL + "<td><pre>" + error.getDetail() + "</pre></td>" + PMD.EOL + "</tr>" + PMD.EOL
                 + "</table></tr></table></body></html>" + PMD.EOL;
     }
     

@@ -10,7 +10,8 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * This is the basic Rule interface for PMD rules.
@@ -283,18 +284,18 @@ public interface Rule extends PropertySource {
     boolean usesTypeResolution();
 
     /**
-     * Sets whether this Rule uses Object-Oriented Metrics.
+     * Sets whether this Rule uses multi-file analysis.
      */
     // FUTURE Use JavaBean conventions for boolean attributes
-    void setUsesMetrics();
+    void setUsesMultifile();
 
     /**
-     * Gets whether this Rule uses Object-Oriented Metrics.
+     * Gets whether this Rule uses multi-file analysis.
      *
-     * @return <code>true</code> if the Metrics Framework is used.
+     * @return <code>true</code> if the multi file analysis is used.
      */
     // FUTURE Use JavaBean conventions for boolean attributes
-    boolean usesMetrics();
+    boolean usesMultifile();
 
     /**
      * Gets whether this Rule uses the RuleChain.

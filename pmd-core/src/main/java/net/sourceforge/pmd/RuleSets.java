@@ -220,15 +220,17 @@ public class RuleSets {
     }
 
     /**
-     * Does any Rule for the given Language use the Metrics Framework?
+     * Does any Rule for the given Language use multi-file analysis?
      *
-     * @param language The Language.
-     * @return <code>true</code> if a Rule for the Language uses the Metrics
-     * Framework, <code>false</code> otherwise.
+     * @param language
+     *            The Language.
+     *
+     * @return {@code true} if a Rule for the Language uses multi file analysis,
+     *         {@code false} otherwise.
      */
-    public boolean usesMetrics(Language language) {
+    public boolean usesMultifile(Language language) {
         for (RuleSet ruleSet : ruleSets) {
-            if (ruleSet.usesMetrics(language)) {
+            if (ruleSet.usesMultifile(language)) {
                 return true;
             }
         }

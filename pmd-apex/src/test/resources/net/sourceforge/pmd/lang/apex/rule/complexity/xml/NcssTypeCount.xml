@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
         <description>short</description>
@@ -37,7 +40,7 @@ public class Foo {
 		]]></code>
     </test-code>
     
-    <code-fragment id="long method"><![CDATA[
+    <code-fragment id="long-method"><![CDATA[
 public class Foo {
     public void foo() {
 		//nothing to see here
@@ -68,7 +71,7 @@ public class Foo {
         <description>long method</description>
         <rule-property name="minimum">13</rule-property>
         <expected-problems>1</expected-problems>
-        <code-ref id="long method"/>
+        <code-ref id="long-method"/>
     </test-code>
     
     <test-code>
@@ -76,7 +79,7 @@ public class Foo {
         <!-- validated this number against NCSS -->
         <rule-property name="minimum">15</rule-property>
         <expected-problems>0</expected-problems>
-        <code-ref id="long method"/>
+        <code-ref id="long-method"/>
     </test-code>
 
 	<test-code>

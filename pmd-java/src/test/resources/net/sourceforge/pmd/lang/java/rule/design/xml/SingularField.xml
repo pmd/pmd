@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 failure case
@@ -382,8 +385,8 @@ public class Foo {
         <description><![CDATA[
 Not ok, since inner classes are checked
      ]]></description>
-        <expected-problems>1</expected-problems>
         <rule-property name="checkInnerClasses">true</rule-property>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     private class Bar {
@@ -405,8 +408,8 @@ public class Foo {
         <description><![CDATA[
 Not ok, violation with first usage = non-assignment
      ]]></description>
-        <expected-problems>1</expected-problems>
         <rule-property name="disallowNotAssignment">true</rule-property>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
  private int x;

@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
  * NPath complexity. See the <a href="https://{pmd.website.baseurl}/pmd_java_metrics_index.html">documentation site</a>.
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public class NpathMetric extends AbstractJavaOperationMetric {
 

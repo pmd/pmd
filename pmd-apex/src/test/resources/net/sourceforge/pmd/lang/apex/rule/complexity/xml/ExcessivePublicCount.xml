@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
 	<test-code>
 		<description>Few public fields</description>
@@ -41,7 +44,7 @@ public class Foo {
 		]]></code>
 	</test-code>
 	
-	<code-fragment id="3 public methods"><![CDATA[
+	<code-fragment id="id-3-public-methods"><![CDATA[
 public class Foo {
 	public Integer foo1() {return 1;}
 	public Integer foo2() {return 1;}
@@ -53,14 +56,14 @@ public class Foo {
 		<description>Some public methods</description>
 		<rule-property name="minimum">50</rule-property>
 		<expected-problems>0</expected-problems>
-		<code-ref id="3 public methods"/>
+		<code-ref id="id-3-public-methods"/>
 	</test-code>
 	
 	<test-code>
 		<description>Reduced minimum</description>
 		<rule-property name="minimum">2</rule-property>
 		<expected-problems>1</expected-problems>
-		<code-ref id="3 public methods"/>
+		<code-ref id="id-3-public-methods"/>
 	</test-code>
     
 	<test-code>

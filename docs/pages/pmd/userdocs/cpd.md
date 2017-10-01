@@ -1,9 +1,8 @@
 ---
 title: Finding duplicated code
 summary: Or how to find copied and pasted code
-sidebar: pmd_sidebar
 permalink: pmd_userdocs_cpd.html
-folder: pmd/userdocs
+author: Tom Copeland <tom@infoether.com>
 ---
 
 ## Overview

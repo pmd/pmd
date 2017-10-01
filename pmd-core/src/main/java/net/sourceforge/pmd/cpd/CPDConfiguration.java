@@ -143,7 +143,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
     public SourceCode sourceCodeFor(File file) {
-        return new SourceCode(new SourceCode.FileCodeLoader(file, getSourceEncoding()));
+        return new SourceCode(new SourceCode.FileCodeLoader(file, getSourceEncoding().name()));
     }
 
     public SourceCode sourceCodeFor(Reader reader, String sourceCodeName) {

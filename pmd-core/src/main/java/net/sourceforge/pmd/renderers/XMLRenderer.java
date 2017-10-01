@@ -13,7 +13,7 @@ import java.util.Iterator;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -132,7 +132,9 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             StringUtil.appendXmlEscaped(buf, pe.getFile(), useUTF8);
             buf.append("\" msg=\"");
             StringUtil.appendXmlEscaped(buf, pe.getMsg(), useUTF8);
-            buf.append("\"/>").append(PMD.EOL);
+            buf.append("\">").append(PMD.EOL);
+            buf.append("<![CDATA[").append(pe.getDetail()).append("]]>").append(PMD.EOL);
+            buf.append("</error>").append(PMD.EOL);
             writer.write(buf.toString());
         }
 
@@ -176,7 +178,10 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     }
 
     private void createVersionAttr(StringBuilder buffer) {
-        buffer.append("<pmd version=\"").append(PMD.VERSION).append('"');
+        buffer.append("<pmd xmlns=\"http://pmd.sourceforge.net/report/2.0.0\"").append(PMD.EOL)
+            .append("    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"").append(PMD.EOL)
+            .append("    xsi:schemaLocation=\"http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd\"").append(PMD.EOL)
+            .append("    version=\"").append(PMD.VERSION).append('"');
     }
 
     private void createTimestampAttr(StringBuilder buffer) {

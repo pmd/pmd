@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -42,6 +41,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
@@ -300,9 +300,6 @@ public abstract class AbstractRuleSetFactoryTest {
         inputStream.close();
 
         String rulesetNamespace = RuleSetWriter.RULESET_2_0_0_NS_URI;
-        if (file.contains(RuleSetWriter.RULESET_3_0_0_NS_URI)) {
-            rulesetNamespace = RuleSetWriter.RULESET_3_0_0_NS_URI;
-        }
 
         // Remove XML Schema stuff, replace with DTD
         file = file.replaceAll("<\\?xml [ a-zA-Z0-9=\".-]*\\?>", "");
@@ -314,9 +311,6 @@ public abstract class AbstractRuleSetFactoryTest {
         if (rulesetNamespace.equals(RuleSetWriter.RULESET_2_0_0_NS_URI)) {
             file = "<?xml version=\"1.0\"?>" + PMD.EOL + "<!DOCTYPE ruleset SYSTEM "
                     + "\"http://pmd.sourceforge.net/ruleset_2_0_0.dtd\">" + PMD.EOL + file;
-        } else if (rulesetNamespace.equals(RuleSetWriter.RULESET_3_0_0_NS_URI)) {
-            file = "<?xml version=\"1.0\"?>" + PMD.EOL + "<!DOCTYPE ruleset SYSTEM "
-                    + "\"http://pmd.sourceforge.net/ruleset_3_0_0.dtd\">" + PMD.EOL + file;
         } else {
             file = "<?xml version=\"1.0\"?>" + PMD.EOL + "<!DOCTYPE ruleset>" + PMD.EOL + file;
         }
@@ -503,10 +497,7 @@ public abstract class AbstractRuleSetFactoryTest {
         ValidateDefaultHandler() {
             schemaMapping = new HashMap<>();
             schemaMapping.put("http://pmd.sourceforge.net/ruleset_2_0_0.xsd", "ruleset_2_0_0.xsd");
-            schemaMapping.put("http://pmd.sourceforge.net/ruleset_3_0_0.xsd", "ruleset_3_0_0.xsd");
-
             schemaMapping.put("http://pmd.sourceforge.net/ruleset_2_0_0.dtd", "ruleset_2_0_0.dtd");
-            schemaMapping.put("http://pmd.sourceforge.net/ruleset_3_0_0.dtd", "ruleset_3_0_0.dtd");
         }
 
         public ValidateDefaultHandler resetValid() {

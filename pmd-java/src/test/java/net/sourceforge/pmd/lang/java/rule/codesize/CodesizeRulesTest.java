@@ -4,11 +4,21 @@
 
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.java.metrics.MetricsHook;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class CodesizeRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "java-codesize";
+
+
+    @Override
+    protected Rule reinitializeRule(Rule rule) {
+        MetricsHook.reset();
+        return rule;
+    }
+
 
     @Override
     public void setUp() {
@@ -21,6 +31,7 @@ public class CodesizeRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "NcssConstructorCount");
         addRule(RULESET, "NcssMethodCount");
         addRule(RULESET, "NcssTypeCount");
+        addRule(RULESET, "NcssCount");
         addRule(RULESET, "NPathComplexity");
         addRule(RULESET, "StdCyclomaticComplexity");
         addRule(RULESET, "TooManyFields");

@@ -79,14 +79,6 @@ public interface LanguageVersionHandler {
     VisitorStarter getTypeResolutionFacade(ClassLoader classLoader);
 
     /**
-     * Get the Metrics Framework visitor.
-     *
-     * @return VisitorStarter
-     */
-    VisitorStarter getMetricsVisitorFacade();
-
-
-    /**
      * Get the DumpFacade.
      *
      * @param writer
@@ -94,6 +86,15 @@ public interface LanguageVersionHandler {
      * @return VisitorStarter
      */
     VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse);
+
+
+    /**
+     * Gets the visitor that performs multifile data gathering.
+     *
+     * @return The visitor starter
+     */
+    VisitorStarter getMultifileFacade();
+
 
     DFAGraphRule getDFAGraphRule();
 }

@@ -13,7 +13,7 @@ import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class XmlParserOptions extends ParserOptions {

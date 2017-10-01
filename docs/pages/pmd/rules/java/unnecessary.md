@@ -28,6 +28,11 @@ public String convert(int x) {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/unnecessary.xml/UnnecessaryConversionTemporary" />
+```
+
 ## UnnecessaryFinalModifier
 
 **Since:** PMD 3.0
@@ -57,6 +62,11 @@ public final class Foo {
     private final void foo() {
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/unnecessary.xml/UnnecessaryFinalModifier" />
 ```
 
 ## UnnecessaryModifier
@@ -96,6 +106,11 @@ public class Bar {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/unnecessary.xml/UnnecessaryModifier" />
+```
+
 ## UnnecessaryReturn
 
 **Since:** PMD 1.3
@@ -115,6 +130,11 @@ public class Foo {
         return;
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/unnecessary.xml/UnnecessaryReturn" />
 ```
 
 ## UnusedNullCheckInEquals
@@ -175,6 +195,11 @@ public class Test {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/unnecessary.xml/UnusedNullCheckInEquals" />
+```
+
 ## UselessOperationOnImmutable
 
 **Since:** PMD 3.5
@@ -201,6 +226,11 @@ class Test {
         bd = bd.add(new BigDecimal(5)); // this won't trigger the rule
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/unnecessary.xml/UselessOperationOnImmutable" />
 ```
 
 ## UselessOverridingMethod
@@ -235,6 +265,11 @@ public Long getId() {
 |Name|Default Value|Description|
 |----|-------------|-----------|
 |ignoreAnnotations|false|Ignore annotations|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/unnecessary.xml/UselessOverridingMethod" />
+```
 
 ## UselessParentheses
 
@@ -315,6 +350,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/unnecessary.xml/UselessParentheses" />
+```
+
 ## UselessQualifiedThis
 
 **Since:** PMD 5.4.0
@@ -359,5 +399,10 @@ public class Foo {
         final Foo2 myFoo2 = Foo2.this;  // Use "this" direclty
     }
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/unnecessary.xml/UselessQualifiedThis" />
 ```
 

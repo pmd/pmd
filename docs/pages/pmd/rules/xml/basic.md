@@ -25,3 +25,8 @@ An XML CDATA section begins with a <!CDATA[ marker, which has only one [, and en
 An extra [ looks like &lt;!CDATA[[]]&gt;, and an extra ] looks like &lt;!CDATA[]]]&gt;.
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/xml/basic.xml/MistypedCDATASection" />
+```
+

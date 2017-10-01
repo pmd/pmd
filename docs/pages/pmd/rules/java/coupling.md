@@ -45,6 +45,11 @@ public class Foo {
 |----|-------------|-----------|
 |threshold|20|Unique type reporting threshold|
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/coupling.xml/CouplingBetweenObjects" />
+```
+
 ## ExcessiveImports
 
 **Since:** PMD 1.04
@@ -75,6 +80,11 @@ public class Foo {
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/coupling.xml/ExcessiveImports" />
+```
 
 ## LawOfDemeter
 
@@ -120,6 +130,11 @@ public class Foo {
 }
 ```
 
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/coupling.xml/LawOfDemeter" />
+```
+
 ## LooseCoupling
 
 **Since:** PMD 0.7
@@ -148,6 +163,11 @@ private List<SomeType> list = new ArrayList<>();
 public Set<SomeType> getFoo() {
     return new HashSet<SomeType>();
 }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/coupling.xml/LooseCoupling" />
 ```
 
 ## LoosePackageCoupling
@@ -179,4 +199,9 @@ public class Bar {
 |----|-------------|-----------|
 |classes|[]|Allowed classes|
 |packages|[]|Restricted packages|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/coupling.xml/LoosePackageCoupling" />
+```
 

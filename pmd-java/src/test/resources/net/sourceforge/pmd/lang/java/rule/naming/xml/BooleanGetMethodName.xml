@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 Bad name
@@ -51,12 +54,12 @@ public class Foo implements Toggleable {
         <description><![CDATA[
 Should match on multiple parameters when checkParameterizedMethods = true
      ]]></description>
+        <rule-property name="checkParameterizedMethods">true</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public boolean getEnabled(boolean thisIsNotABean);
 }
      ]]></code>
-     <rule-property name="checkParameterizedMethods">true</rule-property>
     </test-code>
 </test-data>

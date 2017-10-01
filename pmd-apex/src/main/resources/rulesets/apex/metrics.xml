@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <ruleset name="Metrics temporary ruleset"
-         xmlns="http://pmd.sourceforge.net/ruleset/3.0.0"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/3.0.0 http://pmd.sourceforge.net/ruleset_3_0_0.xsd">
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
     <description>
         These are rules which use the Metrics Framework to calculate metrics.
@@ -13,7 +13,6 @@
           message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."
           since="6.0.0"
           class="net.sourceforge.pmd.lang.apex.metrics.rule.CyclomaticComplexityRule"
-          metrics="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_metrics.html#cyclomaticcomplexity">
         <description>
             <![CDATA[

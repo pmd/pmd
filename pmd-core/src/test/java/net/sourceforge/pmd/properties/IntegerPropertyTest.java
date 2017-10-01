@@ -6,10 +6,6 @@ package net.sourceforge.pmd.properties;
 
 import java.util.List;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.lang.rule.properties.IntegerMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
-
 /**
  * Evaluates the functionality of the IntegerProperty descriptor by testing its
  * ability to catch creation errors (illegal args), flag out-of-range test

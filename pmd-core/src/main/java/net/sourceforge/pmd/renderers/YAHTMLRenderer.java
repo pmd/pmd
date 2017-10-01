@@ -9,7 +9,7 @@ import java.io.IOException;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.dfa.report.ReportHTMLPrintVisitor;
 import net.sourceforge.pmd.lang.dfa.report.ReportTree;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * Renderer to another HTML format.

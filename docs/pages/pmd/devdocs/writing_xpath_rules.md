@@ -1,11 +1,10 @@
 ---
-title:  PMD Writing XPath Rules
+title:  Writing XPath Rules
 tags: [customizing]
 summary: "Writing XPath rules for PMD"
 last_updated: July 3, 2016
-sidebar: pmd_sidebar
 permalink: pmd_devdocs_writing_xpath_rules.html
-folder: pmd/devdocs
+author: Miguel Griffa <mikkey@users.sourceforge.net>
 ---
 
 # XPath Rule tutorial
@@ -150,5 +149,51 @@ The following expression does the magic we need:
 ```
 
 We recommend at this point that you experiment with Designer putting the final modifier to the Factory and verifying that the results produced are those expected.
+
+## Creating a new rule definition
+
+To actually use your new XPath rule, it needs to be in a ruleset. You can create a new custom ruleset which just
+contains your new XPath rule. You can use the following template. Just make sure, to replace the `xpath` property,
+the example code and give your rule a useful name and message.
+
+``` xml
+<?xml version="1.0"?>
+
+<ruleset name="Custom Rules"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    <description>
+Custom rules
+    </description>
+
+    <rule name="My Rule"
+          language="java"
+          message="violation message"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>
+Rule Description
+         </description>
+         <priority>3</priority>
+         <properties>
+             <property name="xpath">
+                 <value><![CDATA[
+--- here comes your XPath expression
+]]></value>
+             </property>
+         </properties>
+         <example>
+ <![CDATA[
+public class ExampleCode {
+    public void foo() {
+    }
+}
+]]>
+        </example>
+    </rule>
+</ruleset>
+```
+
+
 
 Finally, for many more details on writing XPath rules, pick up [PMD Applied](http://pmdapplied.com/)!

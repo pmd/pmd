@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 ok
@@ -207,6 +210,38 @@ public final class BacklogElementParameters {
 
         public BacklogElementParameters build() {
             return new BacklogElementParameters(this);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#590 Check Builder pattern alternative</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class BacklogElementParameters {
+    private final Long backlogId;
+    private final String name;
+
+    private BacklogElementParameters(Long backlogId, String name) {
+        this.backlogId = backlogId;
+        this.name = name;
+    }
+
+    public static class Builder {
+        public Builder backlogId(final Long backlogId) {
+            this.backlogId = backlogId;
+            return this;
+        }
+
+        public Builder name(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        public BacklogElementParameters build() {
+            return new BacklogElementParameters(backlogId, name);
         }
     }
 }

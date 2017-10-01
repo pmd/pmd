@@ -9,7 +9,7 @@ import java.io.Writer;
 
 import org.apache.commons.io.IOUtils;
 
-import net.sourceforge.pmd.AbstractPropertySource;
+import net.sourceforge.pmd.properties.AbstractPropertySource;
 
 /**
  * Abstract base class for {@link Renderer} implementations.

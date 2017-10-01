@@ -45,9 +45,20 @@ entries:
     - title: Suppressing
       url: /pmd_userdocs_suppressing.html
       output: web, pdf
-    - title: Tools / Integrations
-      url: /pmd_userdocs_tools.html
-      output: web, pdf
+      subfolders:
+      - title: Tools / Integrations
+        output: web, pdf
+        subfolderitems:
+        - title: Maven PMD Plugin
+          output: web, pdf
+          url: /pmd_userdocs_tools_maven.html
+        - title: Ant
+          output: web, pdf
+          url: /pmd_userdocs_tools_ant.html
+        - title: Other Tools / Integrations
+          output: web, pdf
+          url: /pmd_userdocs_tools.html
+
     - title: FAQ
       url: /pmd_userdocs_faq.html
       output: web, pdf
@@ -117,9 +128,18 @@ entries:
     - title: Java code metrics
       url: /pmd_java_metrics_index.html
       output: web, pdf
+    - title: Apex code metrics
+      url: /pmd_apex_metrics_index.html
+      output: web, pdf
   - title: Developer Documentation
     output: web, pdf
     folderitems:
+    - title: Developer Resources
+      url: /pmd_devdocs_development.html
+      output: web, pdf
+    - title: Writing Documentation
+      url: /pmd_devdocs_writing_documentation.html
+      output: web, pdf
     - title: Code Style
       url: /pmd_devdocs_codestyle.html
       output: web, pdf

@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.rule.xpath;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * This interface captures the logic needed by XPathRule to implement an XPath

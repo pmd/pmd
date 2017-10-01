@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cache;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
@@ -17,6 +18,13 @@ import net.sourceforge.pmd.stat.Metric;
  */
 public class NoopAnalysisCache implements AnalysisCache {
 
+    private static final Logger LOG = Logger.getLogger(NoopAnalysisCache.class.getName());
+    
+    public NoopAnalysisCache() {
+        LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
+                + "https://pmd.github.io/pmd/pmd_userdocs_getting_started.html#incremenal-analysis");
+    }
+    
     @Override
     public void ruleViolationAdded(final RuleViolation ruleViolation) {
         // noop

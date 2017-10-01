@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.MultiValuePropertyDescriptor;
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
@@ -18,6 +15,9 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * Base class for Rule implementations which delegate to another Rule instance.
@@ -240,13 +240,13 @@ public abstract class AbstractDelegateRule implements Rule {
     }
 
     @Override
-    public void setUsesMetrics() {
-        rule.setUsesMetrics();
+    public void setUsesMultifile() {
+        rule.setUsesMultifile();
     }
 
     @Override
-    public boolean usesMetrics() {
-        return rule.usesMetrics();
+    public boolean usesMultifile() {
+        return rule.usesMultifile();
     }
 
     @Override
