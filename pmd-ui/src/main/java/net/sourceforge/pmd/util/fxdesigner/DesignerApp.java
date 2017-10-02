@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
-import net.sourceforge.pmd.util.fxdesigner.util.EventLogger;
+import net.sourceforge.pmd.util.fxdesigner.model.EventLogger;
 
 import javafx.stage.Stage;
 

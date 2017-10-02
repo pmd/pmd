@@ -10,8 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
 
-import net.sourceforge.pmd.util.fxdesigner.util.LogEntry;
-import net.sourceforge.pmd.util.fxdesigner.util.LogEntry.Category;
+import net.sourceforge.pmd.util.fxdesigner.model.LogEntry;
+import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;

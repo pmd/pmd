@@ -17,6 +17,7 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -30,7 +31,7 @@ import javafx.beans.property.StringProperty;
 public class XPathEvaluator {
 
 
-    private final StringProperty xpathVersion = new SimpleStringProperty();
+    private final StringProperty xpathVersion = new SimpleStringProperty(XPathRuleQuery.XPATH_2_0);
 
 
     String getXpathVersion() {

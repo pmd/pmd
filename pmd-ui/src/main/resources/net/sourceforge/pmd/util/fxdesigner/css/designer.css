@@ -133,12 +133,12 @@
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.25em 0.3125em 0.25em 0.3125em; /* 3 3.75 3 3.75 */
     -fx-shape: "M 0 0 h 7 l -3.5 -4 z";
-    -fx-min-height: 15;
-    -fx-max-height: 15;
-    -fx-pref-height: 15;
-    -fx-min-width: 20;
-    -fx-max-width: 20;
-    -fx-pref-width: 20;
+    -fx-min-height: 5;
+    -fx-max-height: 5;
+    -fx-pref-height: 5;
+    -fx-min-width: 10;
+    -fx-max-width: 10;
+    -fx-pref-width: 10;
 }
 
 

@@ -21,10 +21,10 @@ import org.apache.commons.io.IOUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.AppSetting;
+import net.sourceforge.pmd.util.fxdesigner.util.settings.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.XMLSettingsLoader;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.XMLSettingsSaver;
 
@@ -32,7 +32,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -58,7 +57,13 @@ import javafx.util.Duration;
 import javafx.util.StringConverter;
 
 /**
+ * Main controller of the app. Serves as a mediator for subdivisions of the UI.
+ *
  * @author Clément Fournier
+ * @see NodeInfoPanelController
+ * @see SourceEditorController
+ * @see EventLogController
+ * @see XPathPanelController
  * @since 6.0.0
  */
 public class MainDesignerController implements Initializable, SettingsOwner {
@@ -70,7 +75,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
     /** Callback to the owner. */
     private final DesignerApp designerApp;
-
     /* Menu bar */
     @FXML
     private MenuItem openFileMenuItem;
@@ -86,7 +90,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     private Menu exportMenu;
     @FXML
     private Menu fileMenu;
-
     /* Center toolbar */
     @FXML
     private Button refreshASTButton;
@@ -96,8 +99,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     private ChoiceBox<String> xpathVersionChoiceBox;
     @FXML
     private ToggleButton bottomTabsToggle;
-
-
     /* Bottom panel */
     @FXML
     private TabPane bottomTabPane;
@@ -107,7 +108,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     private Tab xpathEditorTab;
     @FXML
     private SplitPane mainHorizontalSplitPane;
-
     /* Children */
     @FXML
     private NodeInfoPanelController nodeInfoPanelController;
@@ -116,9 +116,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     @FXML
     private SourceEditorController sourceEditorController;
     @FXML
-    private SplitPane eventLogPanelController;
+    private EventLogController eventLogPanelController;
     private Stack<File> recentFiles = new LimitedSizeStack<>(5);
-    private final List<AppSetting> allSettings = getAllSettings();
 
 
     public MainDesignerController(DesignerApp owner) {
@@ -137,8 +136,24 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         }
 
         initializeLanguageVersionMenu();
-        initializeXPath();
         initializeViewAnimation();
+
+        xpathPanelController.initialiseVersionChoiceBox(xpathVersionChoiceBox);
+        xpathPanelController.selectedResultProperty()
+                            .addListener((observable, oldValue, newValue) -> {
+                                if (newValue != null) {
+                                    onNodeItemSelected(newValue);
+                                    sourceEditorController.focusNodeInTreeView(newValue);
+                                }
+                            });
+
+        sourceEditorController.selectedNodeProperty()
+                              .addListener((observable, oldValue, newValue) -> {
+                                  if (newValue != null) {
+                                      onNodeItemSelected(newValue);
+                                  }
+                              });
+
 
         sourceEditorController.languageVersionProperty().bind(languageChoiceBox.getSelectionModel().selectedItemProperty());
         xpathPanelController.xpathVersionProperty().bind(xpathVersionChoiceBox.getSelectionModel().selectedItemProperty());
@@ -150,44 +165,15 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         openRecentMenu.setOnShowing(e -> updateRecentFilesMenu());
         fileMenu.setOnShowing(this::onFileMenuShowing);
 
-    }
-
-
-    private void initializeXPath() {
-
-        ObservableList<String> versionItems = xpathVersionChoiceBox.getItems();
-        versionItems.add(XPathRuleQuery.XPATH_1_0);
-        versionItems.add(XPathRuleQuery.XPATH_1_0_COMPATIBILITY);
-        versionItems.add(XPathRuleQuery.XPATH_2_0);
-
-        xpathVersionChoiceBox.setConverter(new StringConverter<String>() {
-            @Override
-            public String toString(String object) {
-                return "XPath " + object;
-            }
-
-
-            @Override
-            public String fromString(String string) {
-                return string.substring(6);
-            }
-        });
-
-        xpathPanelController.selectedResultProperty()
-                            .addListener((observable, oldValue, newValue) -> {
-                                if (newValue != null) {
-                                    onNodeItemSelected(newValue);
-                                    sourceEditorController.focusNodeInTreeView(newValue);
-                                }
-                            });
+        sourceEditorController.refreshAST();
     }
 
 
     private void initializeLanguageVersionMenu() {
-        LanguageVersion[] supported = DesignerUtil.getSupportedLanguageVersions();
-        ObservableList<LanguageVersion> items = languageChoiceBox.getItems();
+        List<LanguageVersion> supported = Arrays.asList(DesignerUtil.getSupportedLanguageVersions());
+        supported.sort(LanguageVersion::compareTo);
+        languageChoiceBox.getItems().addAll(supported);
 
-        items.addAll(Arrays.asList(supported));
 
         languageChoiceBox.setConverter(new StringConverter<LanguageVersion>() {
             @Override
@@ -237,7 +223,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     public void shutdown() {
         try {
             XMLSettingsSaver saver = XMLSettingsSaver.forFile(SETTINGS_FILE_NAME);
-            saveSettings(saver);
+            this.saveSettings(saver);
             saver.save();
         } catch (IOException ioe) {
             // nevermind
@@ -245,8 +231,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
         sourceEditorController.shutdown(); // shutdown syntax highlighting
         xpathPanelController.shutdown();
-
-
     }
 
 
@@ -347,7 +331,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     }
 
 
-    private List<AppSetting> getAllSettings() {
+    @Override
+    public List<AppSetting> getSettings() {
         List<AppSetting> settings = new ArrayList<>();
         settings.add(new AppSetting("recentFiles", this::getRecentFiles, this::setRecentFiles));
         settings.add(new AppSetting("isMaximized", this::isMaximized, this::setIsMaximized));
@@ -356,22 +341,33 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     }
 
 
-    @Override
-    public void saveSettings(SettingsAccumulator saver) {
-        for (AppSetting s : allSettings) {
+    private void saveSettings(XMLSettingsSaver saver) {
+        saveSettingsOf(this, saver);
+        saveSettingsOf(sourceEditorController, saver);
+        saveSettingsOf(xpathPanelController, saver);
+    }
+
+
+    private void saveSettingsOf(SettingsOwner owner, XMLSettingsSaver saver) {
+        for (AppSetting s : owner.getSettings()) {
             saver.put(s.getKeyName(), s.getValue());
         }
     }
 
 
-    @Override
-    public void loadSettings(Map<String, String> loaded) {
-        sourceEditorController.loadSettings(loaded);
-        xpathPanelController.loadSettings(loaded);
+    private void loadSettings(Map<String, String> settings) {
+        loadSettingsOf(sourceEditorController, settings);
+        loadSettingsOf(xpathPanelController, settings);
+        loadSettingsOf(this, settings);
+    }
 
 
-        for (AppSetting s : allSettings) {
-            s.setValue(loaded.get(s.getKeyName()));
+    private void loadSettingsOf(SettingsOwner owner, Map<String, String> loaded) {
+        for (AppSetting s : owner.getSettings()) {
+            String val = loaded.get(s.getKeyName());
+            if (val != null) {
+                s.setValue(val);
+            }
         }
     }
 

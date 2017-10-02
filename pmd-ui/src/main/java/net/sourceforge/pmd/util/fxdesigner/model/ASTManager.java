@@ -8,13 +8,13 @@ import java.io.StringReader;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.DesignerApp;
-import net.sourceforge.pmd.util.fxdesigner.util.LogEntry;
-import net.sourceforge.pmd.util.fxdesigner.util.LogEntry.Category;
+import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -37,6 +37,10 @@ public class ASTManager {
     private ObjectProperty<Node> compilationUnit = new SimpleObjectProperty<>();
     /** Selected language version. */
     private ObjectProperty<LanguageVersion> languageVersion = new SimpleObjectProperty<>();
+
+    {
+        languageVersion.setValue(LanguageRegistry.findLanguageVersionByTerseName("java 8"));
+    }
 
 
     public ASTManager(DesignerApp owner) {
@@ -85,8 +89,8 @@ public class ASTManager {
      * @throws ParseAbortedException if parsing fails and cannot recover
      */
     public Node updateCompilationUnit(String source) throws ParseAbortedException {
-        if (compilationUnit.get() == null
-            || languageVersion.get().equals(lastLanguageVersion) && StringUtils.equals(source, lastValidSource)) {
+        if (compilationUnit.get() != null
+            && languageVersion.get().equals(lastLanguageVersion) && StringUtils.equals(source, lastValidSource)) {
             return compilationUnit.get();
         }
         LanguageVersionHandler languageVersionHandler = languageVersion.get().getLanguageVersionHandler();

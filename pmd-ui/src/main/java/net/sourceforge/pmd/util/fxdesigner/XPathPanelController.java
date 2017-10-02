@@ -7,21 +7,22 @@ package net.sourceforge.pmd.util.fxdesigner;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
-import net.sourceforge.pmd.util.fxdesigner.util.LogEntry;
-import net.sourceforge.pmd.util.fxdesigner.util.LogEntry.Category;
+import net.sourceforge.pmd.util.fxdesigner.model.LogEntry;
+import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.XpathViolationListCell;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.AppSetting;
+import net.sourceforge.pmd.util.fxdesigner.util.settings.SettingsOwner;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -30,8 +31,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TitledPane;
+import javafx.util.StringConverter;
 
 /**
  * XPath panel controller.
@@ -43,14 +46,15 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
     private final DesignerApp designerApp;
     private final XPathEvaluator xpathEvaluator = new XPathEvaluator();
+
     @FXML
     private CustomCodeArea xpathExpressionArea;
-    private final List<AppSetting> allSettings = getAllSettings();
     @FXML
     private TitledPane violationsTitledPane;
     @FXML
     private ListView<Node> xpathResultListView;
 
+    private ChoiceBox<String> xpathVersionChoiceBox;
 
     private ObjectProperty<Node> selectedResultProperty = new SimpleObjectProperty<>();
 
@@ -66,6 +70,31 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         xpathResultListView.setCellFactory(param -> new XpathViolationListCell());
 
         selectedResultProperty.bind(xpathResultListView.getSelectionModel().selectedItemProperty());
+    }
+
+
+    public void initialiseVersionChoiceBox(ChoiceBox<String> choiceBox) {
+        this.xpathVersionChoiceBox = choiceBox;
+
+        ObservableList<String> versionItems = choiceBox.getItems();
+        versionItems.add(XPathRuleQuery.XPATH_1_0);
+        versionItems.add(XPathRuleQuery.XPATH_1_0_COMPATIBILITY);
+        versionItems.add(XPathRuleQuery.XPATH_2_0);
+
+        xpathVersionChoiceBox.getSelectionModel().select(xpathEvaluator.xpathVersionProperty().get());
+
+        choiceBox.setConverter(new StringConverter<String>() {
+            @Override
+            public String toString(String object) {
+                return "XPath " + object;
+            }
+
+
+            @Override
+            public String fromString(String string) {
+                return string.substring(6);
+            }
+        });
     }
 
 
@@ -130,29 +159,18 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     }
 
 
-    private List<AppSetting> getAllSettings() {
+    @Override
+    public List<AppSetting> getSettings() {
         List<AppSetting> settings = new ArrayList<>();
         settings.add(new AppSetting("xpathVersion", () -> xpathEvaluator.xpathVersionProperty().getValue(),
-                                    v -> xpathEvaluator.xpathVersionProperty().setValue(v)));
+                                    v -> {
+                                        if (!"".equals(v)) {
+                                            xpathEvaluator.xpathVersionProperty().setValue(v);
+                                        }
+                                    }));
         settings.add(new AppSetting("xpathCode", () -> xpathExpressionArea.getText(), (v) -> xpathExpressionArea.replaceText(v)));
 
         return settings;
-    }
-
-
-    @Override
-    public void saveSettings(SettingsAccumulator saver) {
-        for (AppSetting s : allSettings) {
-            saver.put(s.getKeyName(), s.getValue());
-        }
-    }
-
-
-    @Override
-    public void loadSettings(Map<String, String> loaded) {
-        for (AppSetting s : allSettings) {
-            s.setValue(loaded.get(s.getKeyName()));
-        }
     }
 
 

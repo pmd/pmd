@@ -8,7 +8,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.fxmisc.richtext.LineNumberFactory;
@@ -24,6 +23,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.AppSetting;
+import net.sourceforge.pmd.util.fxdesigner.util.settings.SettingsOwner;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
@@ -62,7 +62,6 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private ObjectProperty<Node> selectedNode = new SimpleObjectProperty<>();
     private BooleanProperty isSyntaxHighlightingEnabled = new SimpleBooleanProperty(true);
     private ASTManager astManager;
-    private final List<AppSetting> allSettings = getAllSettings();
 
 
     public SourceEditorController(DesignerApp owner) {
@@ -82,14 +81,14 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     private void initializeSyntaxHighlighting() {
 
-        codeEditorArea.syntaxHighlightingEnabledProperty().bind(isSyntaxHighlightingEnabled);
+        isSyntaxHighlightingEnabled.bind(codeEditorArea.syntaxHighlightingEnabledProperty());
         toggleSyntaxHighlighting.setOnAction(e -> {
             isSyntaxHighlightingEnabled.set(!isSyntaxHighlightingEnabled.get());
             toggleSyntaxHighlighting.setText((isSyntaxHighlightingEnabled.get() ? "Disable" : "Enable")
                                                  + " syntax highlighting");
         });
 
-        codeEditorArea.syntaxHighlightingEnabledProperty().addListener(((observable, wasEnabled, isEnabled) -> {
+        isSyntaxHighlightingEnabled.addListener(((observable, wasEnabled, isEnabled) -> {
             if (!wasEnabled && isEnabled) {
                 updateSyntaxHighlighter();
             } else if (!isEnabled) {
@@ -121,8 +120,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
         ObjectBinding<Node> selectedBinding
             = Bindings.createObjectBinding(() -> {
-                                               TreeItem<Node> selected = astTreeView.getSelectionModel()
-                                                                                    .getSelectedItem();
+                                               TreeItem<Node> selected = astTreeView.getSelectionModel().getSelectedItem();
                                                return selected == null ? null : selected.getValue();
                                            },
                                            selectedItemProperty);
@@ -163,7 +161,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
 
     private void setUpToDateCompilationUnit(Node node) {
-        astTitleLabel.setText("Abstract syntax tree");
+        astTitleLabel.setText("Abstract Syntax Tree");
         ASTTreeItem root = ASTTreeItem.getRoot(node);
         astTreeView.setRoot(root);
     }
@@ -256,31 +254,16 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    private List<AppSetting> getAllSettings() {
+    @Override
+    public List<AppSetting> getSettings() {
         List<AppSetting> settings = new ArrayList<>();
-        settings.add(new AppSetting("languageVersion", () -> getLanguageVersion().getTerseName(),
+        settings.add(new AppSetting("langVersion", () -> getLanguageVersion().getTerseName(),
                                     this::restoreLanguageVersion));
 
         settings.add(new AppSetting("code", () -> codeEditorArea.getText(),
                                     (e) -> codeEditorArea.replaceText(e)));
 
         return settings;
-    }
-
-
-    @Override
-    public void saveSettings(SettingsAccumulator saver) {
-        for (AppSetting s : allSettings) {
-            saver.put(s.getKeyName(), s.getValue());
-        }
-    }
-
-
-    @Override
-    public void loadSettings(Map<String, String> loaded) {
-        for (AppSetting s : allSettings) {
-            s.setValue(loaded.get(s.getKeyName()));
-        }
     }
 
 
@@ -292,4 +275,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
+    public ObjectProperty<Node> selectedNodeProperty() {
+        return selectedNode;
+    }
 }

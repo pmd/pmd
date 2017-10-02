@@ -22,15 +22,13 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import net.sourceforge.pmd.util.fxdesigner.SettingsOwner.SettingsAccumulator;
-
 /**
  * Saves settings to disk as key-value pairs. This implementation stores them into an XML file.
  *
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class XMLSettingsSaver implements SettingsAccumulator {
+public class XMLSettingsSaver {
 
     private final String fileName;
     private Document document;
@@ -53,7 +51,9 @@ public class XMLSettingsSaver implements SettingsAccumulator {
     }
 
 
-    @Override
+    /**
+     * Saves a key value pair.
+     */
     public XMLSettingsSaver put(String key, String value) {
         Element settingElement = document.createElement("setting");
         settingElement.setAttribute("key", key);
