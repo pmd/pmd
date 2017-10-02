@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.fxdesigner.util;
+package net.sourceforge.pmd.util.fxdesigner.util.settings;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -22,13 +22,15 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.util.fxdesigner.SettingsOwner.SettingsAccumulator;
+
 /**
  * Saves settings to disk as key-value pairs. This implementation stores them into an XML file.
  *
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class XMLSettingsSaver {
+public class XMLSettingsSaver implements SettingsAccumulator {
 
     private final String fileName;
     private Document document;
@@ -51,7 +53,7 @@ public class XMLSettingsSaver {
     }
 
 
-    /** Adds a setting key-value pair. */
+    @Override
     public XMLSettingsSaver put(String key, String value) {
         Element settingElement = document.createElement("setting");
         settingElement.setAttribute("key", key);

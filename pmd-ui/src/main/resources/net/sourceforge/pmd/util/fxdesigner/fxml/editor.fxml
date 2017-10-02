@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- One editor, ie source + ast view -->
+<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<SplitPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="net.sourceforge.pmd.util.fxdesigner.SourceEditorController"
+           dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0"
+           BorderPane.alignment="CENTER">
+    <items>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
+                    prefWidth="100.0">
+            <children>
+                <BorderPane prefHeight="200.0" prefWidth="200.0"
+                            AnchorPane.bottomAnchor="0.0"
+                            AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0"
+                            AnchorPane.topAnchor="0.0">
+                    <center>
+                        <CustomCodeArea fx:id="codeEditorArea"
+                                        prefHeight="346.0" prefWidth="445.0"
+                                        stylesheets="@../css/editor-theme.css"
+                                        BorderPane.alignment="CENTER">
+                            <contextMenu>
+                                <ContextMenu>
+                                    <items>
+                                        <MenuItem
+                                                fx:id="toggleSyntaxHighlighting"
+                                                mnemonicParsing="false"
+                                                text="Disable syntax highlighting"/>
+                                    </items>
+                                </ContextMenu>
+                            </contextMenu>
+                            <BorderPane.margin>
+                                <Insets/>
+                            </BorderPane.margin>
+                        </CustomCodeArea>
+                    </center>
+                    <top>
+                        <ToolBar prefHeight="40.0" prefWidth="200.0"
+                                 styleClass="info-title-bar"
+                                 BorderPane.alignment="CENTER">
+                            <items>
+                                <Label text="Source code"/>
+                            </items>
+                        </ToolBar>
+                    </top>
+                </BorderPane>
+            </children>
+        </AnchorPane>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
+                    prefWidth="100.0">
+            <children>
+                <BorderPane prefHeight="200.0" prefWidth="200.0"
+                            AnchorPane.bottomAnchor="0.0"
+                            AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0"
+                            AnchorPane.topAnchor="0.0">
+                    <center>
+                        <TreeView fx:id="astTreeView" prefHeight="200.0"
+                                  prefWidth="200.0" styleClass="secondary-panel"
+                                  BorderPane.alignment="CENTER"/>
+                    </center>
+                    <top>
+                        <ToolBar prefHeight="40.0" prefWidth="200.0"
+                                 styleClass="info-title-bar"
+                                 BorderPane.alignment="CENTER">
+                            <items>
+                                <Label fx:id="astTitleLabel"
+                                       text="Abstract Syntax Tree"/>
+                            </items>
+                        </ToolBar>
+                    </top>
+                </BorderPane>
+            </children>
+        </AnchorPane>
+    </items>
+</SplitPane>

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.fxdesigner.util;
+package net.sourceforge.pmd.util.fxdesigner.util.settings;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,12 +33,10 @@ import org.xml.sax.SAXException;
 public class XMLSettingsLoader {
 
     private final String fileName;
-    private final Set<String> keys;
 
 
-    public XMLSettingsLoader(String fileName, Set<String> keys) {
+    public XMLSettingsLoader(String fileName) {
         this.fileName = fileName;
-        this.keys = keys;
     }
 
 
@@ -53,7 +51,7 @@ public class XMLSettingsLoader {
     }
 
 
-    public Map<String, String> loadSettings() throws IOException {
+    public Map<String, String> getSettings() throws IOException {
         InputStream stream = null;
         try {
             File file = new File(fileName);
@@ -67,10 +65,8 @@ public class XMLSettingsLoader {
                 Set<Element> settings = getSettingNodes(document);
 
                 return settings.stream()
-                               .filter(elt -> keys.contains(elt.getAttribute("key")))
                                .collect(Collectors.toMap((elt) -> elt.getAttribute("key"),
                                                          Node::getTextContent));
-
 
             }
         } catch (SAXException | ParserConfigurationException | IOException e) {

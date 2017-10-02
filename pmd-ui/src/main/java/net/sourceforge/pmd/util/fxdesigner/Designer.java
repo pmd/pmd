@@ -11,7 +11,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.util.fxdesigner.util.EventLogger;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -27,36 +26,34 @@ import javafx.stage.Stage;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class Designer extends Application implements DesignerApp {
-
-    private static Designer designer;
-    private Stage mainStage;
-    private EventLogger logger = new EventLogger();
-
+public class Designer extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        mainStage = stage;
-        designer = this;
 
         // System.err.close();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/designer.fxml"));
+        FXMLLoader loader = new FXMLLoader(Thread.currentThread().getContextClassLoader().getResource("fxml/designer.fxml"));
 
-        DesignerApp owner = this;
+        DesignerApp owner = new DesignerApp(stage);
         NodeInfoPanelController nodeInfoPanelController = new NodeInfoPanelController(owner);
         XPathPanelController xpathPanelController = new XPathPanelController(owner);
+        SourceEditorController sourceEditorController = new SourceEditorController(owner);
+        EventLogController eventLogController = new EventLogController(owner);
 
-        DesignerWindowController mainController
-            = new DesignerWindowController(owner, nodeInfoPanelController, xpathPanelController);
+        MainDesignerController mainController = new MainDesignerController(owner);
 
         loader.setControllerFactory(type -> {
-            if (type == DesignerWindowController.class) {
+            if (type == MainDesignerController.class) {
                 return mainController;
             } else if (type == NodeInfoPanelController.class) {
                 return nodeInfoPanelController;
             } else if (type == XPathPanelController.class) {
                 return xpathPanelController;
+            } else if (type == SourceEditorController.class) {
+                return sourceEditorController;
+            } else if (type == EventLogController.class) {
+                return eventLogController;
             } else {
                 // default behavior for controllerFactory:
                 try {
@@ -68,7 +65,9 @@ public class Designer extends Application implements DesignerApp {
             }
         });
 
+        stage.setOnCloseRequest(e -> mainController.shutdown());
 
+      //  loader.setLocation(getClass().getResource("fxml/designer.xml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
 
@@ -95,28 +94,6 @@ public class Designer extends Application implements DesignerApp {
                                        .collect(Collectors.toList());
 
         icons.addAll(images);
-    }
-
-
-    @Override
-    public EventLogger getLogger() {
-        return logger;
-    }
-
-
-    @Override
-    public Stage getMainStage() {
-        return mainStage;
-    }
-
-
-    /**
-     * Gets the singleton instance of the app.
-     *
-     * @return The singleton
-     */
-    public static DesignerApp instance() {
-        return designer;
     }
 
 

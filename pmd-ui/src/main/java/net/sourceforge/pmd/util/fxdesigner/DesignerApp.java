@@ -14,7 +14,19 @@ import javafx.stage.Stage;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public interface DesignerApp {
+public class DesignerApp {
+
+
+    private static final String SETTINGS_FILE_NAME = System.getProperty("user.home")
+        + System.getProperty("file.separator") + ".pmd_new_designer.xml";
+
+    private final Stage mainStage;
+    private final EventLogger logger = new EventLogger();
+
+
+    public DesignerApp(Stage mainStage) {
+        this.mainStage = mainStage;
+    }
 
 
     /**
@@ -22,7 +34,9 @@ public interface DesignerApp {
      *
      * @return The logger
      */
-    EventLogger getLogger();
+    public EventLogger getLogger() {
+        return logger;
+    }
 
 
     /**
@@ -30,6 +44,8 @@ public interface DesignerApp {
      *
      * @return The main stage
      */
-    Stage getMainStage();
+    public Stage getMainStage() {
+        return mainStage;
+    }
 
 }

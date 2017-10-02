@@ -38,7 +38,7 @@ public class XPathEvaluator {
     }
 
 
-    StringProperty xpathVersionProperty() {
+    public StringProperty xpathVersionProperty() {
         return xpathVersion;
     }
 
