@@ -16,6 +16,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -1081,11 +1082,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTTypeBound node, Object data) {
         super.visit(node, data);
 
-        // TypeBound will have at least one child
-        JavaTypeDefinition[] bounds = new JavaTypeDefinition[node.jjtGetNumChildren()];
+        // selecting only the type nodes, since the types can be preceded by annotations
+        List<TypeNode> typeNodes = node.findChildrenOfType(TypeNode.class);
 
-        for (int index = 0; index < node.jjtGetNumChildren(); ++index) {
-            bounds[index] = ((TypeNode) node.jjtGetChild(index)).getTypeDefinition();
+        // TypeBound will have at least one child, but maybe more
+        JavaTypeDefinition[] bounds = new JavaTypeDefinition[typeNodes.size()];
+        for (int index = 0; index < typeNodes.size(); index++) {
+            bounds[index] = typeNodes.get(index).getTypeDefinition();
         }
 
         node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, bounds));

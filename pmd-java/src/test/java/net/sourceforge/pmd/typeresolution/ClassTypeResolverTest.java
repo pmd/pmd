@@ -1648,6 +1648,10 @@ public class ClassTypeResolverTest {
                      forClass(SuperClassAOther2.class));
     }
 
+    @Test
+    public void testAnnotatedTypeParams() {
+        parseAndTypeResolveForString("public class Foo { public static <T extends @NonNull Enum<?>> T getEnum() { return null; } }", "1.8");
+    }
 
     private JavaTypeDefinition getChildTypeDef(Node node, int childIndex) {
         return ((TypeNode) node.jjtGetChild(childIndex)).getTypeDefinition();
