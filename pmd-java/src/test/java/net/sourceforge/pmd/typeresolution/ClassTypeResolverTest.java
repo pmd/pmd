@@ -97,6 +97,7 @@ import net.sourceforge.pmd.typeresolution.testdata.MethodThirdPhase;
 import net.sourceforge.pmd.typeresolution.testdata.NestedAnonymousClass;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
+import net.sourceforge.pmd.typeresolution.testdata.SubTypeUsage;
 import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.Converter;
@@ -1651,6 +1652,11 @@ public class ClassTypeResolverTest {
     @Test
     public void testAnnotatedTypeParams() {
         parseAndTypeResolveForString("public class Foo { public static <T extends @NonNull Enum<?>> T getEnum() { return null; } }", "1.8");
+    }
+
+    @Test
+    public void testMethodOverrides() throws Exception {
+        parseAndTypeResolveForClass(SubTypeUsage.class, "1.8");
     }
 
     private JavaTypeDefinition getChildTypeDef(Node node, int childIndex) {
