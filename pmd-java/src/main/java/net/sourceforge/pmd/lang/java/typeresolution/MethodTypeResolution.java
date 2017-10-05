@@ -407,14 +407,15 @@ public final class MethodTypeResolution {
                 // the bottom of the section is relevant here, we can't resolve this type
                 // TODO: resolve this
 
-                return null;
+                // we obviously don't know the runtime type. Let's return the first as the most specific
+                return first;
             } else { // second one isn't abstract
                 return second;
             }
         } else if (second.isAbstract()) {
             return first; // first isn't abstract, second one is
         } else {
-            return null; // TODO: once shadowing and overriding methods is done, add exception back
+            return first; // TODO: once shadowing and overriding methods is done, add exception back
             // throw new IllegalStateException("None of the maximally specific methods are abstract.\n"
             //                                        + first.toString() + "\n" + second.toString());
         }

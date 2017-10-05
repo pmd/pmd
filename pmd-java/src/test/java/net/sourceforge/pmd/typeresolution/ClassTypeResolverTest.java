@@ -65,6 +65,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Bound;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Constraint;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
+import net.sourceforge.pmd.typeresolution.testdata.AbstractReturnTypeUseCase;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousClassFromInterface;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.AnoymousExtendingObject;
@@ -1663,6 +1664,11 @@ public class ClassTypeResolverTest {
     @Test
     public void testMethodWildcardParam() throws Exception {
         parseAndTypeResolveForClass(MethodGenericParam.class, "1.8");
+    }
+
+    @Test
+    public void testAbstractMethodReturnType() throws Exception {
+        parseAndTypeResolveForClass(AbstractReturnTypeUseCase.class, "1.8");
     }
 
     private JavaTypeDefinition getChildTypeDef(Node node, int childIndex) {
