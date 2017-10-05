@@ -18,6 +18,7 @@ This is a major release.
     *   [Java Type Resolution](#java-type-resolution)
     *   [Metrics Framework](#metrics-framework)
     *   [Error Reporting](#error-reporting)
+    *   [Apex Rule Suppression](#apex-rule-suppression)
     *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
     *   [Deprecated Rules](#deprecated-rules)
@@ -113,6 +114,22 @@ providing configuration error reporting are:
 As we move forward we will be able to detect and report more configuration errors (ie: incomplete `auxclasspath`)
 and include them to such reports.
 
+#### Apex Rule Suppression		
+		
+Apex violations can now be suppressed very similarly to how it's done in Java, by making use of a		
+`@SuppressWarnings` annotation.		
+		
+Supported syntax includes:		
+		
+```		
+@SupressWarnings('PMD') // to supress all Apex rules		
+@SupressWarnings('all') // to supress all Apex rules		
+@SupressWarnings('PMD.ARuleName') // to supress only the rule named ARuleName		
+@SupressWarnings('PMD.ARuleName, PMD.AnotherRuleName') // to supress only the rule named ARuleName or AnotherRuleName		
+```		
+		
+Notice this last scenario is slightly different to the Java syntax. This is due to differences in the Apex grammar for annotations.
+
 #### New Rules
 
 *   The rule `NcssCount` (ruleset `java-codesize`) replaces the three rules "NcssConstructorCount", "NcssMethodCount",
@@ -196,6 +213,7 @@ a warning will now be produced suggesting users to adopt it for better performan
     *   [#618](https://github.com/pmd/pmd/issues/618): \[core] Incremental Analysis doesn't close file correctly on Windows upon a cache hit
     *   [#643](https://github.com/pmd/pmd/issues/643): \[core] PMD Properties (dev-properties) breaks markup on CodeClimateRenderer
 *   apex
+    *   [#265](https://github.com/pmd/pmd/issues/265): \[apex] Make Rule suppression work
     *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
     *   [#489](https://github.com/pmd/pmd/pull/489): \[apex] Update Apex compiler
     *   [#500](https://github.com/pmd/pmd/issues/500): \[apex] Running through CLI shows jorje optimization messages
@@ -287,6 +305,7 @@ a warning will now be produced suggesting users to adopt it for better performan
 
 ### External Contributions
 
+*   [#287](https://github.com/pmd/pmd/pull/287): \[apex] Make Rule suppression work - [Robert Sösemann](https://github.com/up2go-rsoesemann)
 *   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements - [Clément Fournier](https://github.com/oowekyala)
 *   [#482](https://github.com/pmd/pmd/pull/482): \[java] Metrics testing framework + improved capabilities for metrics - [Clément Fournier](https://github.com/oowekyala)
 *   [#484](https://github.com/pmd/pmd/pull/484): \[core] Changed linux usage to a more unix like path - [patriksevallius](https://github.com/patriksevallius)
