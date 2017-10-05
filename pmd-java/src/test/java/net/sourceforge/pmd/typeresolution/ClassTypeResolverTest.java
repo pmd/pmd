@@ -89,6 +89,7 @@ import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.MethodAccessibility;
 import net.sourceforge.pmd.typeresolution.testdata.MethodFirstPhase;
 import net.sourceforge.pmd.typeresolution.testdata.MethodGenericExplicit;
+import net.sourceforge.pmd.typeresolution.testdata.MethodGenericParam;
 import net.sourceforge.pmd.typeresolution.testdata.MethodMostSpecific;
 import net.sourceforge.pmd.typeresolution.testdata.MethodPotentialApplicability;
 import net.sourceforge.pmd.typeresolution.testdata.MethodSecondPhase;
@@ -1657,6 +1658,11 @@ public class ClassTypeResolverTest {
     @Test
     public void testMethodOverrides() throws Exception {
         parseAndTypeResolveForClass(SubTypeUsage.class, "1.8");
+    }
+
+    @Test
+    public void testMethodWildcardParam() throws Exception {
+        parseAndTypeResolveForClass(MethodGenericParam.class, "1.8");
     }
 
     private JavaTypeDefinition getChildTypeDef(Node node, int childIndex) {

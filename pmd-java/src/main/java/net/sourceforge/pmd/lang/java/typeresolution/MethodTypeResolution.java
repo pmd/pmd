@@ -638,7 +638,10 @@ public final class MethodTypeResolution {
             // right now we only check if generic arguments are the same
             // TODO: add support for wildcard types
             // (future note: can't call subtype as it is recursively, infinite types)
-            return parameter.equals(argSuper);
+            //return parameter.equals(argSuper);
+
+            // TODO: this ignores the check for generic types!!
+            return parameter.getType().equals(argSuper.getType());
         }
 
         int indexOfParameter = PRIMITIVE_SUBTYPE_ORDER.indexOf(parameter.getType());
