@@ -448,12 +448,18 @@ public final class MethodTypeResolution {
             }
         }
 
-        // search it's supertype - but only, if there has been no method in the contextClass found.
-        // if there is already a method, it will override the methods defined in the supertypes.
-        // TODO: we'll need to check, whether the method is abstract...
-        if (!contextClass.equals(Object.class) && result.isEmpty()) {
-            result.addAll(getApplicableMethods(context.resolveTypeDefinition(contextClass.getGenericSuperclass()),
-                                               methodName, typeArguments, argArity, accessingClass));
+        // search it's supertype
+        if (!contextClass.equals(Object.class)) {
+            List<MethodType> inheritedMethods = getApplicableMethods(context.resolveTypeDefinition(contextClass.getGenericSuperclass()),
+                                               methodName, typeArguments, argArity, accessingClass);
+
+            // but only add the found methods of the supertype, if they have not been overridden
+            // TODO: verify whether this simplified overriding detection is good enough and at the correct place
+            for (MethodType inherited : inheritedMethods) {
+                if (!result.contains(inherited)) {
+                    result.add(inherited);
+                }
+            }
         }
 
         // search it's interfaces

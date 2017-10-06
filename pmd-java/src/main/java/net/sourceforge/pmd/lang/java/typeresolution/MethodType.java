@@ -84,4 +84,49 @@ public class MethodType {
     public boolean isParameterized() {
         return returnType != null && argTypes != null;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((argTypes == null) ? 0 : argTypes.hashCode());
+        // note: only taking the method's name
+        result = prime * result + ((method == null) ? 0 : method.getName().hashCode());
+        result = prime * result + ((returnType == null) ? 0 : returnType.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        MethodType other = (MethodType) obj;
+        if (argTypes == null) {
+            if (other.argTypes != null)
+                return false;
+        } else if (!argTypes.equals(other.argTypes))
+            return false;
+        if (method == null) {
+            if (other.method != null)
+                return false;
+        // note: only comparing the method's name
+        } else if (!method.getName().equals(other.method.getName()))
+            return false;
+        if (returnType == null) {
+            if (other.returnType != null)
+                return false;
+        } else if (!returnType.equals(other.returnType))
+            return false;
+        return true;
+    }
 }
