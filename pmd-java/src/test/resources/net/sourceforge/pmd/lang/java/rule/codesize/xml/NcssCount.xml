@@ -215,4 +215,34 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code-ref id="complicated-method"/>
     </test-code>
+
+    <test-code>
+        <description>Nullpointer for getQualifiedName</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum EnumWithAnonymousInnerClass {
+    A {
+        @Override
+        public void foo() {
+            super.foo();
+        }
+    },
+    B;
+    
+    public void foo() {
+    }
+    
+    interface Inner {
+        int get();
+    }
+
+    public static final Inner VAL = new Inner() {
+        @Override
+        public int get() {
+            return 1;
+        }
+    };
+}
+        ]]></code>
+    </test-code>
 </test-data>

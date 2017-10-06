@@ -17,7 +17,8 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 public class StringToStringRule extends AbstractJavaRule {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!TypeHelper.isA(node.getNameDeclaration(), String.class)) {
+        if (!TypeHelper.isA(node.getNameDeclaration(), String.class)
+                && !TypeHelper.isA(node.getNameDeclaration(), String[].class)) {
             return data;
         }
         boolean isArray = node.isArray();

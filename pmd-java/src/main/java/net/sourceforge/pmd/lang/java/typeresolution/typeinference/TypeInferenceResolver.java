@@ -160,7 +160,7 @@ public final class TypeInferenceResolver {
     }
 
     public static Set<Class<?>> getErasedCandidateSet(List<JavaTypeDefinition> erasedSuperTypeSets) {
-        Set<Class<?>> result = null;
+        Set<Class<?>> result = new HashSet<>();
 
         if (!erasedSuperTypeSets.isEmpty()) {
             result = erasedSuperTypeSets.get(0).getErasedSuperTypeSet();

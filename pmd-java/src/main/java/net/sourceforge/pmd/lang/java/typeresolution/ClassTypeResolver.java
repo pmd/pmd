@@ -12,6 +12,7 @@ import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDe
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_BOUND;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_WILDCARD;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -267,7 +268,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
         }
 
-        populateType(node, typeName);
+        populateType(node, typeName, node.isArray());
 
         ASTTypeArguments typeArguments = node.getFirstChildOfType(ASTTypeArguments.class);
 
@@ -355,7 +356,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      *
      * @param node
      * @return The index in the array produced by splitting the node's name by '.', which is not part of the
-     * class name found. Example: com.package.SomeClass.staicField.otherField, return would be 3
+     * class name found. Example: com.package.SomeClass.staticField.otherField, return would be 3
      */
     private int searchNodeNameForClass(TypeNode node) {
         // this is the index from which field/method names start in the dotSplitImage array
@@ -683,7 +684,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
         String name = node.getNameDeclaration().getTypeImage();
         if (name != null) {
-            populateType(node, name);
+            populateType(node, name, node.getNameDeclaration().isArray());
         }
         return super.visit(node, data);
     }
@@ -1081,11 +1082,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTTypeBound node, Object data) {
         super.visit(node, data);
 
-        // TypeBound will have at least one child
-        JavaTypeDefinition[] bounds = new JavaTypeDefinition[node.jjtGetNumChildren()];
+        // selecting only the type nodes, since the types can be preceded by annotations
+        List<TypeNode> typeNodes = node.findChildrenOfType(TypeNode.class);
 
-        for (int index = 0; index < node.jjtGetNumChildren(); ++index) {
-            bounds[index] = ((TypeNode) node.jjtGetChild(index)).getTypeDefinition();
+        // TypeBound will have at least one child, but maybe more
+        JavaTypeDefinition[] bounds = new JavaTypeDefinition[typeNodes.size()];
+        for (int index = 0; index < typeNodes.size(); index++) {
+            bounds[index] = typeNodes.get(index).getTypeDefinition();
         }
 
         node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, bounds));
@@ -1272,6 +1275,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     private void populateType(TypeNode node, String className) {
+        populateType(node, className, false);
+    }
+
+    private void populateType(TypeNode node, String className, boolean isArray) {
 
         String qualifiedName = className;
         Class<?> myType = PRIMITIVE_TYPES.get(className);
@@ -1325,6 +1332,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 node.setTypeDefinition(parameter.getTypeDefinition());
             }
         } else {
+            if (isArray) {
+                myType = Array.newInstance(myType, 0).getClass();
+            }
             node.setType(myType);
         }
     }

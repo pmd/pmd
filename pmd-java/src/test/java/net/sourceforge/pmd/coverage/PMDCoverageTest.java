@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.coverage;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -12,18 +14,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.StandardOutputStreamLog;
 
 import net.sourceforge.pmd.PMD;
 
 public class PMDCoverageTest {
+
+    @Rule
+    public StandardOutputStreamLog output = new StandardOutputStreamLog();
 
     /**
      * Test some of the PMD command line options
      */
     @Test
     public void testPmdOptions() {
-        runPmd("-d src/main/java/net/sourceforge/pmd/lang/java/rule/design -f text -R rulesets/internal/all-java.xml -version 1.5 -language java -stress -benchmark");
+        runPmd("-d src/main/java/net/sourceforge/pmd/lang/java/rule/design -f text -R rulesets/internal/all-java.xml -language java -stress -benchmark");
     }
 
     /**
@@ -47,7 +56,13 @@ public class PMDCoverageTest {
 
             PMD.run(args);
 
-            // FIXME: check that output doesn't have parsing errors
+            assertFalse("There was at least one exception mentioned in the output", output.getLog().contains("Exception applying rule"));
+
+            String report = FileUtils.readFileToString(f);
+            assertEquals("No processing errors expected", 0, StringUtils.countMatches(report, "Error while processing"));
+
+            // we might have explicit examples of parsing errors, so these are maybe false positives
+            assertEquals("No parsing error expected", 0, StringUtils.countMatches(report, "Error while parsing"));
         } catch (IOException ioe) {
             fail("Problem creating temporary file: " + ioe.getLocalizedMessage());
         } finally {
