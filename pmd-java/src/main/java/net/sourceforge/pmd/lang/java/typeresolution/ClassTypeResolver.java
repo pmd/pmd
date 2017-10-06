@@ -356,7 +356,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      *
      * @param node
      * @return The index in the array produced by splitting the node's name by '.', which is not part of the
-     * class name found. Example: com.package.SomeClass.staicField.otherField, return would be 3
+     * class name found. Example: com.package.SomeClass.staticField.otherField, return would be 3
      */
     private int searchNodeNameForClass(TypeNode node) {
         // this is the index from which field/method names start in the dotSplitImage array

@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.typeresolution.testdata;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class MethodFirstPhase {
     void test() {
         //  primitive, char, simple
@@ -11,6 +15,9 @@ public class MethodFirstPhase {
         // TODO: add null, array types
 
         Exception b = vararg((Number) null);
+
+        Set<String> set = new HashSet<>();
+        set.addAll(Arrays.asList("a", "b")); // TODO: return type of method call Arrays.asList is missing
     }
 
     String vararg(Number... a) {
@@ -28,7 +35,6 @@ public class MethodFirstPhase {
     void classVarargs(Class<?>... c) {
         
     }
-
 
     Exception subtype(short a, int b, String c) {
         return null;

@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -1319,7 +1320,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodFirstPhase() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodFirstPhase.class);
+        ASTCompilationUnit acu = parseAndTypeResolveForClass(MethodFirstPhase.class, "1.8");
 
         List<AbstractJavaTypeNode> expressions = convertList(
                 acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
@@ -1336,6 +1337,9 @@ public class ClassTypeResolverTest {
         assertEquals(Exception.class, expressions.get(index).getType());
         assertEquals(Exception.class, getChildType(expressions.get(index), 0));
         assertEquals(Exception.class, getChildType(expressions.get(index++), 1));
+
+        // Set<String> set = new HashSet<>();
+        assertEquals(HashSet.class, expressions.get(index++).getType());
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());

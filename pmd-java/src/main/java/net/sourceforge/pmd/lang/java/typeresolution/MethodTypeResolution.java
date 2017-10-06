@@ -315,7 +315,8 @@ public final class MethodTypeResolution {
                 selectedMethods.add(methodType);
 
                 // now we consider varargs as not fixed arity
-            } else { // check subtypeability of each argument to the corresponding parameter
+                // if we reach here and the method is not a vararg, then we didn't find a resolution in earlier phases
+            } else if (methodType.isVararg()) { // check subtypeability of each argument to the corresponding parameter
                 boolean methodIsApplicable = true;
 
                 List<JavaTypeDefinition> methodParameters = methodType.getParameterTypes();
@@ -340,6 +341,9 @@ public final class MethodTypeResolution {
                 if (methodIsApplicable) {
                     selectedMethods.add(methodType);
                 }
+            } else if (!methodType.isVararg()) {
+                // TODO: Remove check for vararg here, once we can detect and use return types of method calls
+                log.log(Level.FINE, "Method {0} couldn't be resolved", String.valueOf(methodType));
             }
         }
 
