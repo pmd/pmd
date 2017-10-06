@@ -34,7 +34,7 @@ import java.util.logging.Logger;
     private final boolean isRawType;
     private final JavaTypeDefinition enclosingClass;
 
-    private static final Logger log = Logger.getLogger(JavaTypeDefinitionSimple.class.getName());
+    private static final Logger LOG = Logger.getLogger(JavaTypeDefinitionSimple.class.getName());
 
     protected JavaTypeDefinitionSimple(Class<?> clazz, JavaTypeDefinition... boundGenerics) {
         super(EXACT);
@@ -116,7 +116,7 @@ import java.util.logging.Logger;
             builder.append(clazz.getSimpleName());
         }
 
-        log.log(Level.FINE, builder.toString());
+        LOG.log(Level.FINE, builder.toString());
         // TODO: throw eventually
         //throw new IllegalArgumentException(builder.toString());
         return null;

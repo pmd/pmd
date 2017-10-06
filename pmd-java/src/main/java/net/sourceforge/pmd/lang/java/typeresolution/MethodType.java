@@ -104,29 +104,38 @@ public class MethodType {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         MethodType other = (MethodType) obj;
         if (argTypes == null) {
-            if (other.argTypes != null)
+            if (other.argTypes != null) {
                 return false;
-        } else if (!argTypes.equals(other.argTypes))
+            }
+        } else if (!argTypes.equals(other.argTypes)) {
             return false;
+        }
         if (method == null) {
-            if (other.method != null)
+            if (other.method != null) {
                 return false;
-        // note: only comparing the method's name
-        } else if (!method.getName().equals(other.method.getName()))
+            }
+        } else if (!method.getName().equals(other.method.getName())) {
+            // note: only comparing the method's name
             return false;
+        }
         if (returnType == null) {
-            if (other.returnType != null)
+            if (other.returnType != null) {
                 return false;
-        } else if (!returnType.equals(other.returnType))
+            }
+        } else if (!returnType.equals(other.returnType)) {
             return false;
+        }
         return true;
     }
 }

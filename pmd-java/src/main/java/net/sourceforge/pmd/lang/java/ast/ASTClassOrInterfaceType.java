@@ -57,7 +57,7 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
     public boolean isArray() {
         Node p = jjtGetParent();
         if (p instanceof ASTReferenceType) {
-            return ((ASTReferenceType)p).isArray();
+            return ((ASTReferenceType) p).isArray();
         }
         return false;
     }

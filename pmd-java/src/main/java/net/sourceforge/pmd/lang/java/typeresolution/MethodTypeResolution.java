@@ -34,7 +34,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
 public final class MethodTypeResolution {
     private MethodTypeResolution() {}
 
-    private static final Logger log = Logger.getLogger(MethodTypeResolution.class.getName());
+    private static final Logger LOG = Logger.getLogger(MethodTypeResolution.class.getName());
 
     private static final List<Class<?>> PRIMITIVE_SUBTYPE_ORDER;
     private static final List<Class<?>> BOXED_PRIMITIVE_SUBTYPE_ORDER;
@@ -343,7 +343,7 @@ public final class MethodTypeResolution {
                 }
             } else if (!methodType.isVararg()) {
                 // TODO: Remove check for vararg here, once we can detect and use return types of method calls
-                log.log(Level.FINE, "Method {0} couldn't be resolved", String.valueOf(methodType));
+                LOG.log(Level.FINE, "Method {0} couldn't be resolved", String.valueOf(methodType));
             }
         }
 
@@ -582,7 +582,7 @@ public final class MethodTypeResolution {
 
     public static boolean isMethodConvertible(JavaTypeDefinition parameter, ASTExpression argument) {
         if (argument.getTypeDefinition() == null) {
-            log.log(Level.FINE, "No type information for node {0}", argument.toString());
+            LOG.log(Level.FINE, "No type information for node {0}", argument.toString());
             return true;
         }
         return isMethodConvertible(parameter, argument.getTypeDefinition());
@@ -625,7 +625,7 @@ public final class MethodTypeResolution {
 
     public static boolean isSubtypeable(JavaTypeDefinition parameter, ASTExpression argument) {
         if (argument.getTypeDefinition() == null) {
-            log.log(Level.FINE, "No type information for node {0}", argument.toString());
+            LOG.log(Level.FINE, "No type information for node {0}", argument.toString());
             return true;
         }
         return isSubtypeable(parameter, argument.getTypeDefinition());
