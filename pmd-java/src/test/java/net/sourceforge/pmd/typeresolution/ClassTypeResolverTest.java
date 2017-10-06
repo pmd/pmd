@@ -1341,6 +1341,9 @@ public class ClassTypeResolverTest {
         // Set<String> set = new HashSet<>();
         assertEquals(HashSet.class, expressions.get(index++).getType());
 
+        // List<String> myList = new ArrayList<>();
+        assertEquals(ArrayList.class, expressions.get(index++).getType());
+
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
     }

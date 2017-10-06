@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /* default */ class JavaTypeDefinitionSimple extends JavaTypeDefinition {
@@ -31,6 +33,8 @@ import java.util.Set;
     private final boolean isGeneric;
     private final boolean isRawType;
     private final JavaTypeDefinition enclosingClass;
+
+    private static final Logger log = Logger.getLogger(JavaTypeDefinitionSimple.class.getName());
 
     protected JavaTypeDefinitionSimple(Class<?> clazz, JavaTypeDefinition... boundGenerics) {
         super(EXACT);
@@ -112,7 +116,10 @@ import java.util.Set;
             builder.append(clazz.getSimpleName());
         }
 
-        throw new IllegalArgumentException(builder.toString());
+        log.log(Level.FINE, builder.toString());
+        // TODO: throw eventually
+        //throw new IllegalArgumentException(builder.toString());
+        return null;
     }
 
     @Override

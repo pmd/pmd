@@ -4,8 +4,11 @@
 
 package net.sourceforge.pmd.typeresolution.testdata;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MethodFirstPhase {
@@ -18,6 +21,9 @@ public class MethodFirstPhase {
 
         Set<String> set = new HashSet<>();
         set.addAll(Arrays.asList("a", "b")); // TODO: return type of method call Arrays.asList is missing
+
+        List<String> myList = new ArrayList<>();
+        Collections.sort(myList); // TODO: generic type variables on methods
     }
 
     String vararg(Number... a) {
