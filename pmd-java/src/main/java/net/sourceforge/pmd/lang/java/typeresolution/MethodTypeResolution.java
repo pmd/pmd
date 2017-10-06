@@ -14,6 +14,8 @@ import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -31,6 +33,8 @@ import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
 
 public final class MethodTypeResolution {
     private MethodTypeResolution() {}
+
+    private static final Logger log = Logger.getLogger(MethodTypeResolution.class.getName());
 
     private static final List<Class<?>> PRIMITIVE_SUBTYPE_ORDER;
     private static final List<Class<?>> BOXED_PRIMITIVE_SUBTYPE_ORDER;
@@ -573,6 +577,10 @@ public final class MethodTypeResolution {
     }
 
     public static boolean isMethodConvertible(JavaTypeDefinition parameter, ASTExpression argument) {
+        if (argument.getTypeDefinition() == null) {
+            log.log(Level.FINE, "No type information for node {0}", argument.toString());
+            return true;
+        }
         return isMethodConvertible(parameter, argument.getTypeDefinition());
     }
 
@@ -612,6 +620,10 @@ public final class MethodTypeResolution {
 
 
     public static boolean isSubtypeable(JavaTypeDefinition parameter, ASTExpression argument) {
+        if (argument.getTypeDefinition() == null) {
+            log.log(Level.FINE, "No type information for node {0}", argument.toString());
+            return true;
+        }
         return isSubtypeable(parameter, argument.getTypeDefinition());
     }
 
