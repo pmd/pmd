@@ -16,7 +16,7 @@ import net.sourceforge.pmd.autofixes.Document;
  */
 public final class InsertTextOperationTest {
 
-    private TextOperation insertTextOperation;
+    private TextOperations textOperations;
     private Document document;
 
     @Test
@@ -24,10 +24,11 @@ public final class InsertTextOperationTest {
         final String initialString = "static void main() {}";
         document = new DocumentImp(initialString);
 
+        textOperations = new TextOperations(document);
         final String stringToInsert = "public ";
-        insertTextOperation = new InsertTextOperation(0, stringToInsert);
+        textOperations.addTextOperation(new InsertTextOperation(0, stringToInsert));
 
-        insertTextOperation.applyTextOperationTreeToDocument(document);
+        textOperations.applyToDocument();
         final String expectedString = "public static void main() {}";
         assertEquals(expectedString, document.getAsString());
     }
@@ -37,10 +38,11 @@ public final class InsertTextOperationTest {
         final String initialString = "public static void main(String[] args) {}";
         document = new DocumentImp(initialString);
 
+        textOperations = new TextOperations(document);
         final String stringToInsert = "final ";
-        insertTextOperation = new InsertTextOperation(24, stringToInsert);
+        textOperations.addTextOperation(new InsertTextOperation(24, stringToInsert));
 
-        insertTextOperation.applyTextOperationTreeToDocument(document);
+        textOperations.applyToDocument();
         final String expectedString = "public static void main(final String[] args) {}";
         assertEquals(expectedString, document.getAsString());
     }
@@ -50,11 +52,11 @@ public final class InsertTextOperationTest {
         final String initialString = "public static void main()";
         document = new DocumentImp(initialString);
 
+        textOperations = new TextOperations(document);
         final String stringToInsert = " {}";
-        insertTextOperation = new InsertTextOperation(document.getLength(),
-                stringToInsert);
+        textOperations.addTextOperation(new InsertTextOperation(document.getLength(), stringToInsert));
 
-        insertTextOperation.applyTextOperationTreeToDocument(document);
+        textOperations.applyToDocument();
         final String expectedString = "public static void main() {}";
         assertEquals(expectedString, document.getAsString());
     }

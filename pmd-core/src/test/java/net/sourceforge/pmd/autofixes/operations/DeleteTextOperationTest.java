@@ -14,17 +14,18 @@ import net.sourceforge.pmd.autofixes.Document;
  */
 public final class DeleteTextOperationTest {
 
-    private TextOperation textOperation;
+    private TextOperations textOperations;
     private Document document;
 
     @Test
     public void deleteTextOfLengthZeroShouldNotChangeDocument() {
         final String expectedString = "public static void main() {}";
         document = new DocumentImp(expectedString);
-        textOperation = new DeleteTextOperation(0, 0);
 
-        textOperation.applyTextOperationTreeToDocument(document);
+        textOperations = new TextOperations(document);
+        textOperations.addTextOperation(new DeleteTextOperation(0, 0));
 
+        textOperations.applyToDocument();
         Assert.assertEquals(expectedString, document.getAsString());
     }
 
@@ -33,10 +34,11 @@ public final class DeleteTextOperationTest {
         final String initialString = "public static void main() {}";
         final String expectedStringAfterOperation = "";
         document = new DocumentImp(initialString);
-        textOperation = new DeleteTextOperation(0, document.getLength());
 
-        textOperation.applyTextOperationTreeToDocument(document);
+        textOperations = new TextOperations(document);
+        textOperations.addTextOperation(new DeleteTextOperation(0, document.getLength()));
 
+        textOperations.applyToDocument();
         Assert.assertEquals(expectedStringAfterOperation, document.getAsString());
     }
 
@@ -46,10 +48,11 @@ public final class DeleteTextOperationTest {
         final String textToDelete = "public ";
         final String expectedStringAfterOperation = "static void main() {}";
         document = new DocumentImp(initialString);
-        textOperation = new DeleteTextOperation(0, textToDelete.length());
 
-        textOperation.applyTextOperationTreeToDocument(document);
+        textOperations = new TextOperations(document);
+        textOperations.addTextOperation(new DeleteTextOperation(0, textToDelete.length()));
 
+        textOperations.applyToDocument();
         Assert.assertEquals(expectedStringAfterOperation, document.getAsString());
     }
 }

@@ -15,17 +15,20 @@ import net.sourceforge.pmd.autofixes.Document;
  */
 public final class ReplaceTextOperationTest {
 
+    private TextOperations textOperations;
+
     @Test
     public void replaceTextAtBeginningOfDocumentShouldSucceed() {
         final String initialString = "public void main() {}";
         Document document = new DocumentImp(initialString);
 
+        textOperations = new TextOperations(document);
         final String stringToBeReplaced = "void";
         final String replacementString = "int";
-        TextOperation replaceTextOperation = new ReplaceTextOperation(7,
-                stringToBeReplaced.length(), replacementString);
+        textOperations.addTextOperation(new ReplaceTextOperation(7,
+                stringToBeReplaced.length(), replacementString));
 
-        replaceTextOperation.applyTextOperationTreeToDocument(document);
+        textOperations.applyToDocument();
         final String expectedString = "public int main() {}";
         assertEquals(expectedString, document.getAsString());
     }
