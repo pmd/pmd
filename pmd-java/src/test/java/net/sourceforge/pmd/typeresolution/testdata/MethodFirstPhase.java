@@ -21,6 +21,14 @@ public class MethodFirstPhase {
         return null;
     }
 
+    void stringVarargs(String... s) {
+        
+    }
+
+    void classVarargs(Class<?>... c) {
+        
+    }
+
 
     Exception subtype(short a, int b, String c) {
         return null;

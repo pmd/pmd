@@ -9,6 +9,8 @@ import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDe
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.LOWER_WILDCARD;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_WILDCARD;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -180,6 +182,10 @@ import java.util.Set;
                 final Type[] wildcardUpperBounds = ((WildcardType) type).getUpperBounds();
                 return forClass(UPPER_WILDCARD, resolveTypeDefinition(wildcardUpperBounds[0], method, methodTypeArgs));
             }
+        } else if (type instanceof GenericArrayType) {
+            JavaTypeDefinition component = resolveTypeDefinition(((GenericArrayType) type).getGenericComponentType());
+            // TODO: retain the generic types of the array component...
+            return forClass(Array.newInstance(component.getType(), 0).getClass());
         }
 
         // TODO : Shall we throw here?

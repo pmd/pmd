@@ -103,6 +103,7 @@ import net.sourceforge.pmd.typeresolution.testdata.Promotion;
 import net.sourceforge.pmd.typeresolution.testdata.SubTypeUsage;
 import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
+import net.sourceforge.pmd.typeresolution.testdata.VarArgsMethodUseCase;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.Converter;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.JavaTypeDefinitionEquals;
@@ -1675,6 +1676,11 @@ public class ClassTypeResolverTest {
     @Test
     public void testMethodOverloaded() throws Exception {
         parseAndTypeResolveForClass(OverloadedMethodsUsage.class, "1.8");
+    }
+
+    @Test
+    public void testVarArgsMethodUseCase() throws Exception {
+        parseAndTypeResolveForClass(VarArgsMethodUseCase.class, "1.8");
     }
 
     private JavaTypeDefinition getChildTypeDef(Node node, int childIndex) {

@@ -118,7 +118,7 @@ public final class MethodTypeResolution {
             if (argList == null) {
                 selectedMethods.add(methodType);
 
-                // vararg methods are considered fixed arity here
+                // vararg methods are considered fixed arity here - varargs are dealt with in the 3rd phase
             } else if (getArity(methodType.getMethod()) == argList.jjtGetNumChildren()) {
                 if (!methodType.isParameterized()) {
                     // https://docs.oracle.com/javase/specs/jls/se8/html/jls-18.html#jls-18.5.1
@@ -271,7 +271,7 @@ public final class MethodTypeResolution {
             if (argList == null) {
                 selectedMethods.add(methodType);
 
-                // vararg methods are considered fixed arity here
+                // vararg methods are considered fixed arity here, see 3rd phase
             } else if (getArity(methodType.getMethod()) == argList.jjtGetNumChildren()) {
                 // check method convertability of each argument to the corresponding parameter
                 boolean methodIsApplicable = true;
