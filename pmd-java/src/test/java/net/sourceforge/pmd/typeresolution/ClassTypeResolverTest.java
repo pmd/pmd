@@ -98,6 +98,7 @@ import net.sourceforge.pmd.typeresolution.testdata.MethodStaticAccess;
 import net.sourceforge.pmd.typeresolution.testdata.MethodThirdPhase;
 import net.sourceforge.pmd.typeresolution.testdata.NestedAnonymousClass;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
+import net.sourceforge.pmd.typeresolution.testdata.OverloadedMethodsUsage;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
 import net.sourceforge.pmd.typeresolution.testdata.SubTypeUsage;
 import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
@@ -1669,6 +1670,11 @@ public class ClassTypeResolverTest {
     @Test
     public void testAbstractMethodReturnType() throws Exception {
         parseAndTypeResolveForClass(AbstractReturnTypeUseCase.class, "1.8");
+    }
+
+    @Test
+    public void testMethodOverloaded() throws Exception {
+        parseAndTypeResolveForClass(OverloadedMethodsUsage.class, "1.8");
     }
 
     private JavaTypeDefinition getChildTypeDef(Node node, int childIndex) {

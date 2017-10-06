@@ -12,11 +12,11 @@ import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDe
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_BOUND;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_WILDCARD;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -268,7 +268,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
         }
 
-        populateType(node, typeName);
+        populateType(node, typeName, node.isArray());
 
         ASTTypeArguments typeArguments = node.getFirstChildOfType(ASTTypeArguments.class);
 
@@ -684,7 +684,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
         String name = node.getNameDeclaration().getTypeImage();
         if (name != null) {
-            populateType(node, name);
+            populateType(node, name, node.getNameDeclaration().isArray());
         }
         return super.visit(node, data);
     }
@@ -1275,6 +1275,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     private void populateType(TypeNode node, String className) {
+        populateType(node, className, false);
+    }
+
+    private void populateType(TypeNode node, String className, boolean isArray) {
 
         String qualifiedName = className;
         Class<?> myType = PRIMITIVE_TYPES.get(className);
@@ -1328,6 +1332,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 node.setTypeDefinition(parameter.getTypeDefinition());
             }
         } else {
+            if (isArray) {
+                myType = Array.newInstance(myType, 0).getClass();
+            }
             node.setType(myType);
         }
     }
