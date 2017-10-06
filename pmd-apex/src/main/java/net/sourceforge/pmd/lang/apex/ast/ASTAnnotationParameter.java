@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import apex.jorje.semantic.ast.modifier.AnnotationParameter;
 
