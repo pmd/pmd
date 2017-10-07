@@ -7,7 +7,7 @@
 
     <test-code>
         <description>Directly accessing the Trigger.old map.</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 trigger AccountTrigger on Account (before insert, before update) {
    Account a = Trigger.new[0]; //Bad: Accessing the trigger array directly is not recommended.

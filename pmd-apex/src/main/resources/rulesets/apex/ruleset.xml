@@ -113,7 +113,7 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
-   <rule ref="rulesets/apex/performance.xml/AvoidDirectAccessTriggerMap" message="Avoid directly accessing Trigger.old and Trigger.new">
+   <rule ref="rulesets/apex/style.xml/AvoidDirectAccessTriggerMap" message="Avoid directly accessing Trigger.old and Trigger.new">
       <priority>3</priority>
       <properties>
          <!-- relevant for Code Climate output only -->
