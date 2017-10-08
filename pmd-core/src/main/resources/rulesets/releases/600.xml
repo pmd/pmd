@@ -12,5 +12,10 @@ This ruleset contains links to rules that are new in PMD v6.0.0
     <rule ref="rulesets/java/migrating.xml/ForLoopCanBeForeach"/>
     <rule ref="rulesets/apex/style.xml/AvoidDirectAccessTriggerMap"/>
 
+    <rule ref="rulesets/apex/empty.xml/EmptyCatchBlock"/>
+    <rule ref="rulesets/apex/empty.xml/EmptyIfStmt"/>
+    <rule ref="rulesets/apex/empty.xml/EmptyTryOrFinallyBlock"/>
+    <rule ref="rulesets/apex/empty.xml/EmptyWhileStmt"/>
+    <rule ref="rulesets/apex/empty.xml/EmptyStatementBlock"/>
 </ruleset>
 
