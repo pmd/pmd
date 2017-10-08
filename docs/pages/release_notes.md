@@ -105,6 +105,14 @@ and include them to such reports.
 *   The new rule `ForLoopCanBeForeach` (ruleset `java-migration`) helps to identify those for-loops that can
     be safely refactored into for-each-loops available since java 1.5.
 
+*   A whole new ruleset has been added to Apex, `apex-empty`. It currently migrates 5 rules from the equivalent
+    `java-empty` ruleset for Apex. The ruleset includes:
+    * `EmptyCatchBlock` to detect catch blocks completely ignoring exceptions.
+    * `EmptyIfStmt` for if blocks with no content, that can be safely removed.
+    * `EmptyTryOrFinallyBlock` for empty try / finally blocks that can be safely removed.
+    * `EmptyWhileStmt` for empty while loops that can be safely removed.
+    * `EmptyStatementBlock` for empty code blocks that can be safely removed.
+
 #### Modified Rules
 
 *   The rule `UnnecessaryFinalModifier` (ruleset `java-unnecessarycode`) has been revamped to detect more cases.
@@ -292,4 +300,5 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#588](https://github.com/pmd/pmd/pull/588): \[java] XPath function to compute metrics - [Clément Fournier](https://github.com/oowekyala)
 *   [#598](https://github.com/pmd/pmd/pull/598): \[java] Fix #388: controversial.AvoidLiteralsInIfCondition 0.0 false positive - [Clément Fournier](https://github.com/oowekyala)
 *   [#620](https://github.com/pmd/pmd/pull/620): \[core] Moved properties to n.s.pmd.properties - [Clément Fournier](https://github.com/oowekyala)
+*   [#625](https://github.com/pmd/pmd/pull/625): \[apex] empty code ruleset for apex - [Jan Aertgeerts](https://github.com/JAertgeerts)
 
