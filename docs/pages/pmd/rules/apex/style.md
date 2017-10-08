@@ -20,7 +20,8 @@ Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Tr
 ```
 
 **Example(s):**
-``` 
+
+``` java
 trigger AccountTrigger on Account (before insert, before update) {
    Account a = Trigger.new[0]; //Bad: Accessing the trigger array directly is not recommended.
    
