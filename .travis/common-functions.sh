@@ -20,7 +20,7 @@ function travis_isPullRequest() {
 }
 
 function travis_isPush() {
-    if [ "${TRAVIS_REPO_SLUG}" = "pmd/pmd" && "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_SECURE_ENV_VARS}" = "true" ]; then
+    if [ "${TRAVIS_REPO_SLUG}" = "pmd/pmd" ] && [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_SECURE_ENV_VARS}" = "true" ]; then
         return 0
     else
         return 1
