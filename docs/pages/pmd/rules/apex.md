@@ -8,6 +8,7 @@ List of rulesets and rules contained in each ruleset.
 *   [ApexUnit](pmd_rules_apex_apexunit.html): These rules deal with different problems that can occur with Apex unit tests.
 *   [Braces](pmd_rules_apex_braces.html): The Braces ruleset contains rules regarding the use and placement of braces.
 *   [Complexity](pmd_rules_apex_complexity.html): The Complexity ruleset contains rules that find problems related to code size or complexity.
+*   [Empty Code](pmd_rules_apex_empty.html): The Empty Code ruleset contains rules that find empty statements of any kind (empty method, empty block statement, empty try or catch block,...).
 *   [Performance](pmd_rules_apex_performance.html): The Performance ruleset contains a collection of good practices which should be followed.
 *   [Security](pmd_rules_apex_security.html): These rules deal with different security problems that can occur within Apex.
 *   [Style](pmd_rules_apex_style.html): The Style Ruleset contains rules regarding preferred usage of names and identifiers.
@@ -32,6 +33,13 @@ List of rulesets and rules contained in each ruleset.
 *   [NcssTypeCount](pmd_rules_apex_complexity.html#ncsstypecount): This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of l...
 *   [StdCyclomaticComplexity](pmd_rules_apex_complexity.html#stdcyclomaticcomplexity): Complexity directly affects maintenance costs is determined by the number of decision points in a...
 *   [TooManyFields](pmd_rules_apex_complexity.html#toomanyfields): Classes that have too many fields can become unwieldy and could be redesigned to have fewer field...
+
+## Empty Code
+*   [EmptyCatchBlock](pmd_rules_apex_empty.html#emptycatchblock): Empty Catch Block finds instances where an exception is caught, but nothing is done.  In most cir...
+*   [EmptyIfStmt](pmd_rules_apex_empty.html#emptyifstmt): Empty If Statement finds instances where a condition is checked but nothing is done about it.
+*   [EmptyStatementBlock](pmd_rules_apex_empty.html#emptystatementblock): Empty block statements serve no purpose and should be removed.
+*   [EmptyTryOrFinallyBlock](pmd_rules_apex_empty.html#emptytryorfinallyblock): Avoid empty try or finally blocks - what's the point?
+*   [EmptyWhileStmt](pmd_rules_apex_empty.html#emptywhilestmt): Empty While Statement finds all instances where a while statement does nothing.  If it is a timin...
 
 ## Performance
 *   [AvoidDmlStatementsInLoops](pmd_rules_apex_performance.html#avoiddmlstatementsinloops): Avoid DML statements inside loops to avoid hitting the DML governor limit. Instead, try to batch ...
