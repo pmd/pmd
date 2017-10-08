@@ -1,93 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Default ruleset used by the CodeClimate Engine for Salesforce.com Apex" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+   
    <description>Default ruleset used by the Code Climate Engine for Salesforce.com Apex</description>
    
    <!-- COMPLEXITY -->
+   
    <rule ref="rulesets/apex/complexity.xml/ExcessiveClassLength" message="Avoid really long classes (lines of code)">
-      <priority>3</priority>
+      <priority>2</priority>
       <properties>
          <property name="minimum" value="1000" />
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="1800" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Complexity" />
          <property name="cc_remediation_points_multiplier" value="150" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/complexity.xml/ExcessiveParameterList" message="Avoid long parameter lists">
-      <priority>3</priority>
+      <priority>2</priority>
       <properties>
          <property name="minimum" value="4" />
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="60" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Complexity" />
          <property name="cc_remediation_points_multiplier" value="50" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/complexity.xml/ExcessivePublicCount" message="This class has too many public methods and attributes">
-      <priority>3</priority>
+      <priority>2</priority>
       <properties>
          <property name="minimum" value="25" />
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="1800" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Complexity" />
          <property name="cc_remediation_points_multiplier" value="150" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/complexity.xml/NcssConstructorCount" message="The constructor has an NCSS line count of {0}">
-      <priority>3</priority>
+      <priority>2</priority>
       <properties>
          <property name="minimum" value="20" />
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="60" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Complexity" />
          <property name="cc_remediation_points_multiplier" value="50" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/complexity.xml/NcssMethodCount" message="The method {0}() has an NCSS line count of {1}">
-      <priority>3</priority>
+      <priority>2</priority>
       <properties>
          <property name="minimum" value="60" />
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="60" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Complexity" />
          <property name="cc_remediation_points_multiplier" value="50" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/complexity.xml/NcssTypeCount" message="The type has an NCSS line count of {0}">
-      <priority>3</priority>
+      <priority>2</priority>
       <properties>
          <property name="minimum" value="700" />
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="1800" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Complexity" />
          <property name="cc_remediation_points_multiplier" value="250" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/complexity.xml/StdCyclomaticComplexity" message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}.">
-      <priority>3</priority>
+      <priority>2</priority>
       <properties>
          <property name="reportLevel" value="10" />
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="1800" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Complexity" />
          <property name="cc_remediation_points_multiplier" value="250" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/complexity.xml/TooManyFields" message="Too many fields">
-      <priority>3</priority>
+      <priority>2</priority>
       <properties>
          <property name="maxfields" value="20" />
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="1800" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Complexity" />
          <property name="cc_remediation_points_multiplier" value="200" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/complexity.xml/AvoidDeeplyNestedIfStmts" message="Deeply nested if..else statements are hard to read">
-      <priority>3</priority>
+      <priority>2</priority>
       <properties>
          <property name="problemDepth" value="4" />
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="360" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Complexity" />
          <property name="cc_remediation_points_multiplier" value="200" />
          <property name="cc_block_highlighting" value="false" />
@@ -95,233 +123,313 @@
    </rule>
    
    <!-- PERFORMANCE -->
+   
    <rule ref="rulesets/apex/performance.xml/AvoidSoqlInLoops" message="Avoid Soql queries inside loops">
-      <priority>3</priority>
+      <priority>2</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="360" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Performance" />
          <property name="cc_remediation_points_multiplier" value="150" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/performance.xml/AvoidDmlStatementsInLoops" message="Avoid DML Statements inside loops">
-      <priority>3</priority>
+      <priority>2</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="360" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Performance" />
          <property name="cc_remediation_points_multiplier" value="150" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
+   <!-- STYLE -->
+   
    <rule ref="rulesets/apex/style.xml/AvoidLogicInTrigger" message="Avoid logic in triggers">
-      <priority>3</priority>
+      <priority>2</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="360" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Style" />
          <property name="cc_remediation_points_multiplier" value="200" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/style.xml/AvoidGlobalModifier" message="Avoid using global modifier">
-      <priority>3</priority>
+      <priority>2</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="10" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Style" />
          <property name="cc_remediation_points_multiplier" value="100" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
-   <!-- NAMING -->
+   
    <rule ref="rulesets/apex/style.xml/ClassNamingConventions" message="Class names should begin with an uppercase character">
       <priority>3</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="10" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Style" />
          <property name="cc_remediation_points_multiplier" value="5" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/style.xml/MethodNamingConventions" message="Method name does not begin with a lower case character.">
       <priority>3</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="10" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Style" />
          <property name="cc_remediation_points_multiplier" value="1" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/style.xml/MethodWithSameNameAsEnclosingClass" message="Classes should not have non-constructor methods with the same name as the class">
       <priority>3</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="10" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Style" />
          <property name="cc_remediation_points_multiplier" value="50" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/style.xml/VariableNamingConventions" message="{0} variable {1} should begin with {2}">
       <priority>3</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="10" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Style" />
          <property name="cc_remediation_points_multiplier" value="5" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
-   <!-- TESTS -->
+   
+   <!-- APEX UNIT -->
+   
    <rule ref="rulesets/apex/apexunit.xml/ApexUnitTestClassShouldHaveAsserts" message="Apex unit test classes should have at least one System.assert() or assertEquals() or AssertNotEquals() call">
       <priority>3</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="60" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Bug Risk" />
          <property name="cc_remediation_points_multiplier" value="100" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/apexunit.xml/ApexUnitTestShouldNotUseSeeAllDataTrue" message="@isTest(seeAllData=true) should not be used in Apex unit tests because it opens up the existing database data for unexpected modification by tests">
       <priority>3</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="360" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Bug Risk" />
          <property name="cc_remediation_points_multiplier" value="100" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <!-- SECURITY -->
+   
    <rule ref="rulesets/apex/security.xml/ApexSharingViolations" message="Apex classes should declare a sharing model if DML or SOQL is used">
-      <priority>3</priority>
+      <priority>1</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="10" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Security" />
          <property name="cc_remediation_points_multiplier" value="5" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/security.xml/ApexInsecureEndpoint" message="Apex callouts should use encrypted communication channels">
-      <priority>3</priority>
+      <priority>1</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="60" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Security" />
          <property name="cc_remediation_points_multiplier" value="50" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/security.xml/ApexCSRF" message="Avoid making DML operations in Apex class constructor/init method">
-      <priority>3</priority>
+      <priority>1</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="60" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Security" />
          <property name="cc_remediation_points_multiplier" value="100" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/security.xml/ApexOpenRedirect" message="Apex classes should safely redirect to a known location">
-      <priority>3</priority>
+      <priority>1</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="60" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Security" />
          <property name="cc_remediation_points_multiplier" value="50" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/security.xml/ApexSOQLInjection" message="Apex classes should escape variables merged in DML query">
-      <priority>3</priority>
+      <priority>1</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="60" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Security" />
          <property name="cc_remediation_points_multiplier" value="20" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/security.xml/ApexXSSFromURLParam" message="Apex classes should escape Strings obtained from URL parameters">
-      <priority>3</priority>
+      <priority>1</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="60" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Security" />
          <property name="cc_remediation_points_multiplier" value="20" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/security.xml/ApexXSSFromEscapeFalse" message="Apex classes should escape addError strings">
-      <priority>3</priority>
+      <priority>1</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="60" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Security" />
          <property name="cc_remediation_points_multiplier" value="20" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/security.xml/ApexBadCrypto" message="Apex Crypto should use random IV/key">
-      <priority>3</priority>
+      <priority>1</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="360" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Security" />
          <property name="cc_remediation_points_multiplier" value="50" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/security.xml/ApexCRUDViolation" message="Validate CRUD permission before SOQL/DML operation">
-      <priority>3</priority>
+      <priority>1</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="60" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Security"/>
          <property name="cc_remediation_points_multiplier" value="150"/>
          <property name="cc_block_highlighting" value="false"/>
       </properties>
    </rule>
+   
    <rule ref="rulesets/apex/security.xml/ApexDangerousMethods" message="Calling potentially dangerous method">
-      <priority>3</priority>
+      <priority>1</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="60" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Security"/>
          <property name="cc_remediation_points_multiplier" value="50"/>
          <property name="cc_block_highlighting" value="false"/>
       </properties>
-   </rule>		
+   </rule>	
+   	
    <rule ref="rulesets/apex/security.xml/ApexSuggestUsingNamedCred" message="Consider using named credentials for authenticated callouts">
-      <priority>3</priority>
+      <priority>1</priority>
       <properties>
-         <!-- relevant for Code Climate output only -->
+         <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="60" />
+         <!-- CodeClimate.com only  -->
          <property name="cc_categories" value="Security"/>
          <property name="cc_remediation_points_multiplier" value="20"/>
          <property name="cc_block_highlighting" value="false"/>
       </properties>
    </rule>
+   
    <!-- BRACES -->
+   
    <rule ref="rulesets/apex/braces.xml/IfStmtsMustUseBraces" message="Avoid using if statements without curly braces">
-    	<priority>3</priority>
+    	<priority>2</priority>
 		<properties>
-		   <!-- relevant for Code Climate output only -->
+		   <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="10" />
+         <!-- CodeClimate.com only  -->
 		   <property name="cc_categories" value="Style" />
 		   <property name="cc_remediation_points_multiplier" value="5" />
 		   <property name="cc_block_highlighting" value="false" />
 		</properties>
      </rule>
+     
     <rule ref="rulesets/apex/braces.xml/WhileLoopsMustUseBraces" message="Avoid using 'while' statements without curly braces">
-    	<priority>3</priority>
+    	<priority>2</priority>
 		<properties>
-		   <!-- relevant for Code Climate output only -->
+		   <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="10" />
+         <!-- CodeClimate.com only  -->
 		   <property name="cc_categories" value="Style" />
 		   <property name="cc_remediation_points_multiplier" value="5" />
 		   <property name="cc_block_highlighting" value="false" />
 		</properties>
      </rule>
+     
       <rule ref="rulesets/apex/braces.xml/IfElseStmtsMustUseBraces" message="Avoid using 'if...else' statements without curly braces">
-    	<priority>3</priority>
+    	<priority>2</priority>
 		<properties>
-		   <!-- relevant for Code Climate output only -->
+		   <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="10" />
+         <!-- CodeClimate.com only  -->
 		   <property name="cc_categories" value="Style" />
 		   <property name="cc_remediation_points_multiplier" value="5" />
 		   <property name="cc_block_highlighting" value="false" />
 		</properties>
      </rule>
+     
      <rule ref="rulesets/apex/braces.xml/ForLoopsMustUseBraces" message="Avoid using 'for' statements without curly braces">
-    	<priority>3</priority>
+    	<priority>2</priority>
 		<properties>
-		   <!-- relevant for Code Climate output only -->
+		   <!-- Codacy.com only-->
+         <property name="codacy_minutes_to_fix" value="10" />
+         <!-- CodeClimate.com only  -->
 		   <property name="cc_categories" value="Style" />
 		   <property name="cc_remediation_points_multiplier" value="5" />
 		   <property name="cc_block_highlighting" value="false" />
 		</properties>
      </rule>
+     
 </ruleset>
