@@ -139,6 +139,10 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
 *   The new rule `ForLoopCanBeForeach` (ruleset `java-migration`) helps to identify those for-loops that can
     be safely refactored into for-each-loops available since java 1.5.
 
+*   The new rule `AvoidDirectAccessTriggerMap` (ruleset `apex-style`) helps to identify direct array access to triggers,
+    which can produce bugs by iether accessing non-existing indexes, or them leaving out. You should use for-each-loops
+    instead.
+
 #### Modified Rules
 
 *   The rule `UnnecessaryFinalModifier` (ruleset `java-unnecessarycode`) has been revamped to detect more cases.
@@ -361,4 +365,6 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#598](https://github.com/pmd/pmd/pull/598): \[java] Fix #388: controversial.AvoidLiteralsInIfCondition 0.0 false positive - [Clément Fournier](https://github.com/oowekyala)
 *   [#602](https://github.com/pmd/pmd/pull/602): \[java] \[apex] Separate multifile analysis from metrics - [Clément Fournier](https://github.com/oowekyala)
 *   [#620](https://github.com/pmd/pmd/pull/620): \[core] Moved properties to n.s.pmd.properties - [Clément Fournier](https://github.com/oowekyala)
+*   [#632](https://github.com/pmd/pmd/pull/632): \[apex] Add AvoidDirectAccessTriggerMap rule to the style set - [Jan Aertgeerts](https://github.com/JAertgeerts)
 *   [#644](https://github.com/pmd/pmd/pull/644): \[core] Prevent internal dev-properties from being displayed on CodeClimate renderer - [Filipe Esperandio](https://github.com/filipesperandio)
+

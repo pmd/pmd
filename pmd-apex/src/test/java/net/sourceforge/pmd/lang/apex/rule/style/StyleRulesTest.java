@@ -12,6 +12,7 @@ public class StyleRulesTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
+        addRule(RULESET, "AvoidDirectAccessTriggerMap");
         addRule(RULESET, "AvoidGlobalModifier");
         addRule(RULESET, "AvoidLogicInTrigger");
         addRule(RULESET, "ClassNamingConventions");
