@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Problematic Sosl in for each</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void test1() {
+		for(Integer i : new List<Integer>{1,2}) {
+			List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+		}
+	}
+}
+		]]></code>
+	</test-code>
+    
+	<test-code>
+        <description>Problematic Sosl in for loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void test1() {
+		for(;;) {
+			List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+		}
+	}
+}
+		]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Problematic Sosl in While loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void test1() {
+		while(true) {
+			List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+		}
+	}
+}
+		]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Problematic Sosl in do loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void test1() {
+		do{
+			List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+		}while(true) ;
+	}
+}
+		]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Multiple problematic Sosl expressions</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void test1() {
+		do{
+			List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+			List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name)];
+		}while(true) ;
+	}
+}
+		]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Return Sosl is even ok in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public List<Account> test1() {
+		for(;;) {
+			return [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+		}
+	}
+}
+		]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#29 SOSL For Loops should not throw an Avoid Sosl queries inside loops issue</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void test1() {
+		for(List<sObject> a : [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity]) {
+			
+		}
+	}
+}
+		]]></code>
+    </test-code>
+    
+</test-data>
