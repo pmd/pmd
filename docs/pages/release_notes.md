@@ -151,6 +151,10 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
     * `EmptyWhileStmt` for empty while loops that can be safely removed.
     * `EmptyStatementBlock` for empty code blocks that can be safely removed.
 
+*   The new rule `AvoidSoslInLoops` (ruleset `apex-performance`) is the companion of the old
+    `apex-performance/AvoidSoqlInLoops` rule, flagging SOSL (Salesforce Object Search Language) queries when within
+    loops, to avoid governor issues, and hitting the database too often.
+
 #### Modified Rules
 
 *   The rule `UnnecessaryFinalModifier` (ruleset `java-unnecessarycode`) has been revamped to detect more cases.
@@ -229,6 +233,7 @@ a warning will now be produced suggesting users to adopt it for better performan
     *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
     *   [#489](https://github.com/pmd/pmd/pull/489): \[apex] Update Apex compiler
     *   [#500](https://github.com/pmd/pmd/issues/500): \[apex] Running through CLI shows jorje optimization messages
+    *   [#637](https://github.com/pmd/pmd/issues/637): \[apex] Avoid SOSL in loops
 *   cpp
     *   [#448](https://github.com/pmd/pmd/issues/448): \[cpp] Write custom CharStream to handle continuation characters
 *   java
@@ -376,4 +381,5 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#625](https://github.com/pmd/pmd/pull/625): \[apex] empty code ruleset for apex - [Jan Aertgeerts](https://github.com/JAertgeerts)
 *   [#632](https://github.com/pmd/pmd/pull/632): \[apex] Add AvoidDirectAccessTriggerMap rule to the style set - [Jan Aertgeerts](https://github.com/JAertgeerts)
 *   [#644](https://github.com/pmd/pmd/pull/644): \[core] Prevent internal dev-properties from being displayed on CodeClimate renderer - [Filipe Esperandio](https://github.com/filipesperandio)
+*   [#660](https://github.com/pmd/pmd/pull/660): \[apex] avoid sosl in loops - [Jan Aertgeerts](https://github.com/JAertgeerts)
 
