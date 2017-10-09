@@ -113,3 +113,4 @@ public class Something {
 ``` xml
 <rule ref="rulesets/apex/performance.xml/AvoidSoslInLoops" />
 ```
+
