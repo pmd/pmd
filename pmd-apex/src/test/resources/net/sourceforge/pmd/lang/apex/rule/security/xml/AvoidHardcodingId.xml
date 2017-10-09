@@ -23,7 +23,7 @@ public class Foo {
 
 	<test-code>
 		<description>Compliant scenario, getting ID dynamically</description>
-		<expected-problems>1</expected-problems>
+		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
 	public void method (ID newRecordID) {
