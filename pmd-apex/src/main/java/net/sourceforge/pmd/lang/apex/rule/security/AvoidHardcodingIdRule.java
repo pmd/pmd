@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 public class AvoidHardcodingIdRule extends AbstractApexRule {
@@ -21,22 +19,14 @@ public class AvoidHardcodingIdRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTAssignmentExpression node, Object data) {
-        findHardcodedId(node, data);
-        return data;
-    }
-
-    private void findHardcodedId(AbstractApexNode<?> node, Object data) {
-        ASTLiteralExpression literalNode = node.getFirstChildOfType(ASTLiteralExpression.class);
-        
-        if (literalNode != null) {
-            Object o = literalNode.getNode().getLiteral();
-            if (o instanceof String) {
-                String literal = (String) o;
-                if (PATTERN.matcher(literal).matches()) {
-                    addViolation(data, literalNode);
-                }
+    public Object visit(ASTLiteralExpression node, Object data) {
+        Object o = node.getNode().getLiteral();
+        if (o instanceof String) {
+            String literal = (String) o;
+            if (PATTERN.matcher(literal).matches()) {
+                addViolation(data, node);
             }
         }
+        return data;
     }
 }
