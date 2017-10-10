@@ -30,6 +30,28 @@ public class Something {
     </example>
   </rule>
 
+  <rule name="AvoidSoslInLoops"
+        since="6.0.0"
+        message="Avoid Sosl queries inside loops"
+        class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoslInLoopsRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoidsoslinloops">
+    <description>
+Sosl calls within loops can cause governor limit exceptions.
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
+public class Something {
+    public static void main( String as[] ) {
+        for (Integer i = 0; i < 10; i++) {
+            List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+        }
+    }
+}
+]]>
+    </example>
+  </rule>
+
   <rule name="AvoidDmlStatementsInLoops"
         since="5.5.0"
         message="Avoid DML statements inside loops"

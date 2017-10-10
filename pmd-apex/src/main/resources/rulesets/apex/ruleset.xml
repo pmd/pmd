@@ -104,6 +104,15 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   <rule ref="rulesets/apex/performance.xml/AvoidSoslInLoops" message="Avoid Sosl queries inside loops">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Performance" />
+         <property name="cc_remediation_points_multiplier" value="150" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
    <rule ref="rulesets/apex/performance.xml/AvoidNonRestrictiveQueries" message="Avoid SOQL queries without a where or limit statement">
       <priority>3</priority>
       <properties>
