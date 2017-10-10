@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.performance;
 
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
