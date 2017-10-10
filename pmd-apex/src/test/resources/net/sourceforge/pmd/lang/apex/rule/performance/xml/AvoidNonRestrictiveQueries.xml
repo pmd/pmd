@@ -35,7 +35,7 @@ public class Something {
         <code><![CDATA[
 public class Something {
     public static void main( String as[] ) {
-        Account[] accs = [ select id, (SELECT Id FROM Contact) from account where id = 1 limit 1];  //Bad
+        Account[] accs = [ select id, (SELECT Id FROM Contact) from account where id = 1];  //Bad
     }
 }
 		]]></code>
