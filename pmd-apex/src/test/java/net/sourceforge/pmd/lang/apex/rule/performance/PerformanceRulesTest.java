@@ -12,6 +12,7 @@ public class PerformanceRulesTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
+        addRule(RULESET, "AvoidNonRestrictiveQueries");
         addRule(RULESET, "AvoidSoqlInLoops");
         addRule(RULESET, "AvoidDmlStatementsInLoops");
     }
