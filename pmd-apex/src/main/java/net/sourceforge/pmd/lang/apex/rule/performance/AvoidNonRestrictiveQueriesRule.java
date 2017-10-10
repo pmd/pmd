@@ -10,8 +10,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
-    private static final Pattern RESTRICTIVE_PATTERN = Pattern.compile("(where|limit)", Pattern.CASE_INSENSITIVE);
-    private static final Pattern SELECT_PATTERN = Pattern.compile("(select)", Pattern.CASE_INSENSITIVE);
+    private static final Pattern RESTRICTIVE_PATTERN = Pattern.compile("(where |limit )", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SELECT_PATTERN = Pattern.compile("(select )", Pattern.CASE_INSENSITIVE);
     
     public AvoidNonRestrictiveQueriesRule() {
         setProperty(CODECLIMATE_CATEGORIES, "Performance");
