@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex.rule.performance;
 
 import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -23,14 +24,16 @@ public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
     public Object visit(ASTSoqlExpression node, Object data) {
         Integer occurencesSelect = 0;
         Integer occurencesWhereOrLimit = 0;
-
+        
         Object o = node.getNode().getRawQuery();
         if (o instanceof String) {
             String query = (String) o;
-            while (RESTRICTIVE_PATTERN.matcher(query).find()) {
+            Matcher matcherRestrictive = RESTRICTIVE_PATTERN.matcher(query);
+            Matcher matcherSelect = SELECT_PATTERN.matcher(query);
+            while (matcherRestrictive.find()) {
                 occurencesWhereOrLimit++;
             }
-            while (SELECT_PATTERN.matcher(query).find()) {
+            while (matcherSelect.find()) {
                 occurencesSelect++;
             }
             if (occurencesSelect > occurencesWhereOrLimit) {
