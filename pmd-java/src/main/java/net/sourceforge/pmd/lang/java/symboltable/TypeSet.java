@@ -532,6 +532,9 @@ public class TypeSet {
                     return resolver.resolve(name);
                 } catch (ClassNotFoundException cnfe) {
                     // ignored, maybe another resolver will find the class
+                } catch (LinkageError le) {
+                    // we found the class, but there is a problem with it (see https://github.com/pmd/pmd/issues/328)
+                    return null;
                 }
             }
         }

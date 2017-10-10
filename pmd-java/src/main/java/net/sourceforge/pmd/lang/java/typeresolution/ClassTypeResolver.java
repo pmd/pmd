@@ -1298,8 +1298,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     myType = pmdClassLoader.loadClass(qualifiedName);
                 } catch (ClassNotFoundException e) {
                     myType = processOnDemand(qualifiedName);
-                } catch (NoClassDefFoundError e) {
-                    myType = processOnDemand(qualifiedName);
                 } catch (LinkageError e) {
                     myType = processOnDemand(qualifiedName);
                 }
@@ -1430,7 +1428,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     String strName = anImportDeclaration.getImportedName();
                     String fieldName = strName.substring(strName.lastIndexOf('.') + 1);
 
-                    Class staticClassWithField = loadClass(strPackage);
+                    Class<?> staticClassWithField = loadClass(strPackage);
                     if (staticClassWithField != null) {
                         JavaTypeDefinition typeDef = getFieldType(JavaTypeDefinition.forClass(staticClassWithField),
                                                                   fieldName, currentAcu.getType());
