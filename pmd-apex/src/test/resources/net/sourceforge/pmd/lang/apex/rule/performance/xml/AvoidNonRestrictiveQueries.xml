@@ -29,6 +29,18 @@ public class Something {
 		]]></code>
     </test-code>
     
+	<test-code>
+        <description>Subquery without limit</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Something {
+    public static void main( String as[] ) {
+        Account[] accs = [ select id, (SELECT Id FROM Contact) from account where id = 1 limit 1];  //Bad
+    }
+}
+		]]></code>
+    </test-code>
+
     <test-code>
         <description>Multiple non restrictive queries</description>
         <expected-problems>3</expected-problems>
