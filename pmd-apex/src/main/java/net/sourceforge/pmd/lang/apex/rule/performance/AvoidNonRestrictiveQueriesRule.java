@@ -24,7 +24,7 @@ public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
         Integer occurencesSelect = 0;
         Integer occurencesWhereOrLimit = 0;
 
-        Object o = node.getNode().getCanonicalQuery();
+        Object o = node.getNode().getRawQuery();
         if (o instanceof String) {
             String query = (String) o;
             while (RESTRICTIVE_PATTERN.matcher(query).find()) {
