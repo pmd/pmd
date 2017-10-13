@@ -29,15 +29,17 @@ public class LooseCouplingRule extends AbstractJavaRule {
     // "java.util.TreeMap", "java.util.Vector"
     // });
 
+    @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
         if (methodHasOverride(node)) {
             return data;
         }
         Node parent = node.getNthParent(3);
-        String typeName = node.getImage();
-        if (CollectionUtil.isCollectionType(typeName, false) && (parent instanceof ASTFieldDeclaration
-                || parent instanceof ASTFormalParameter || parent instanceof ASTResultType)) {
-            addViolation(data, node, typeName);
+        Class<?> clazzType = node.getType();
+        boolean isType = CollectionUtil.isCollectionType(clazzType, false);
+        if (isType && (parent instanceof ASTFieldDeclaration || parent instanceof ASTFormalParameter
+                || parent instanceof ASTResultType)) {
+            addViolation(data, node, node.getImage());
         }
         return data;
     }
@@ -48,7 +50,7 @@ public class LooseCouplingRule extends AbstractJavaRule {
             ASTMarkerAnnotation marker = method.getFirstDescendantOfType(ASTMarkerAnnotation.class);
             if (marker != null && marker.getFirstChildOfType(ASTName.class) != null) {
                 ASTName name = marker.getFirstChildOfType(ASTName.class);
-                if ("Override".equals(name.getImage())) {
+                if (name.getType() == Override.class) {
                     return true;
                 }
             }

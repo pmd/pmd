@@ -71,7 +71,7 @@ public class RuleSetFactoryCompatibility {
         // PMD 6.0.0
         addFilterRuleMoved("java", "controversial", "unnecessary", "UnnecessaryParentheses");
         addFilterRuleRenamed("java", "unnecessary", "UnnecessaryParentheses", "UselessParentheses");
-
+        addFilterRuleMoved("java", "typeresolution", "coupling", "LooseCoupling");
     }
 
     void addFilterRuleRenamed(String language, String ruleset, String oldName, String newName) {

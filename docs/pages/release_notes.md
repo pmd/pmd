@@ -114,20 +114,20 @@ providing configuration error reporting are:
 As we move forward we will be able to detect and report more configuration errors (ie: incomplete `auxclasspath`)
 and include them to such reports.
 
-#### Apex Rule Suppression		
-		
-Apex violations can now be suppressed very similarly to how it's done in Java, by making use of a		
-`@SuppressWarnings` annotation.		
-		
-Supported syntax includes:		
-		
-```		
-@SupressWarnings('PMD') // to supress all Apex rules		
-@SupressWarnings('all') // to supress all Apex rules		
-@SupressWarnings('PMD.ARuleName') // to supress only the rule named ARuleName		
-@SupressWarnings('PMD.ARuleName, PMD.AnotherRuleName') // to supress only the rule named ARuleName or AnotherRuleName		
-```		
-		
+#### Apex Rule Suppression
+
+Apex violations can now be suppressed very similarly to how it's done in Java, by making use of a
+`@SuppressWarnings` annotation.
+
+Supported syntax includes:
+
+```
+@SupressWarnings('PMD') // to supress all Apex rules
+@SupressWarnings('all') // to supress all Apex rules
+@SupressWarnings('PMD.ARuleName') // to supress only the rule named ARuleName
+@SupressWarnings('PMD.ARuleName, PMD.AnotherRuleName') // to supress only the rule named ARuleName or AnotherRuleName
+```
+
 Notice this last scenario is slightly different to the Java syntax. This is due to differences in the Apex grammar for annotations.
 
 #### New Rules
@@ -172,10 +172,14 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
 
 *   The rule `GodClass` (ruleset `java-design`) has been revamped to use the new metrics framework.
 
+*   The rule `LooseCoupling` (ruleset `java-coupling`) has been replaced by the typeresolution-based implementation.
+
 #### Deprecated Rules
 
 *   The rules `NcssConstructorCount`, `NcssMethodCount`, and `NcssTypeCount` (ruleset `java-codesize`) have been
     deprecated. They will be replaced by the new rule `NcssCount` in the same ruleset.
+
+*   The rule `LooseCoupling` in ruleset `java-typeresolution` is deprecated. Use the rule with the same name from ruleset `java-coupling` instead.
 
 #### Removed Rules
 
@@ -383,4 +387,3 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#632](https://github.com/pmd/pmd/pull/632): \[apex] Add AvoidDirectAccessTriggerMap rule to the style set - [Jan Aertgeerts](https://github.com/JAertgeerts)
 *   [#644](https://github.com/pmd/pmd/pull/644): \[core] Prevent internal dev-properties from being displayed on CodeClimate renderer - [Filipe Esperandio](https://github.com/filipesperandio)
 *   [#660](https://github.com/pmd/pmd/pull/660): \[apex] avoid sosl in loops - [Jan Aertgeerts](https://github.com/JAertgeerts)
-

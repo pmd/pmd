@@ -9,33 +9,7 @@
 These are rules which resolve java Class files for comparison, as opposed to a String
   </description>
 
-
-  <rule name="LooseCoupling"
-        since="3.9"
-        message="Avoid using implementation types like ''{0}''; use the interface instead"
-        class="net.sourceforge.pmd.lang.java.typeresolution.rules.LooseCoupling"
-        typeResolution="true"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_typeresolution.html#loosecoupling">
-    <description>
-Avoid using implementation types (i.e., HashSet); use the interface (i.e, Set) instead
-    </description>
-    <priority>3</priority>
-    <example>
-<![CDATA[
-import java.util.ArrayList;
-import java.util.HashSet;
-
-public class Bar {
-    // Use List instead
-    private ArrayList list = new ArrayList();
-    // Use Set instead
-    public HashSet getFoo() {
-        return new HashSet();
-    }
-}
-]]>
-    </example>
-  </rule>
+  <rule ref="java-coupling/LooseCoupling" deprecated="true" />
 
   <rule name="CloneMethodMustImplementCloneable"
         since="3.9"
