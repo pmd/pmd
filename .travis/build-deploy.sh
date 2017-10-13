@@ -32,10 +32,10 @@ if travis_isPullRequest; then
 
 elif travis_isPush; then
 
-    if [[ "$VERSION" != *-SNAPSHOT && "$TRAVIS_TAG" != "" ]]; then
-        echo "This is a release build for tag $TRAVIS_TAG"
+    if [[ "${VERSION}" != *-SNAPSHOT && "${TRAVIS_TAG}" != "" ]]; then
+        echo "This is a release build for tag ${TRAVIS_TAG}"
         ./mvnw deploy -Possrh,pmd-release -B -V
-    elif [[ "$VERSION" == *-SNAPSHOT ]]; then
+    elif [[ "${VERSION}" == *-SNAPSHOT ]]; then
         echo "This is a snapshot build"
         ./mvnw deploy -Possrh -B -V
         push_docs
