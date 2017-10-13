@@ -73,6 +73,7 @@ public class RuleSetFactoryCompatibility {
         addFilterRuleRenamed("java", "unnecessary", "UnnecessaryParentheses", "UselessParentheses");
         addFilterRuleMoved("java", "typeresolution", "coupling", "LooseCoupling");
         addFilterRuleMoved("java", "typeresolution", "clone", "CloneMethodMustImplementCloneable");
+        addFilterRuleMoved("java", "typeresolution", "imports", "UnusedImports");
     }
 
     void addFilterRuleRenamed(String language, String ruleset, String oldName, String newName) {

@@ -177,15 +177,22 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
 *   The rule `CloneMethodMustImplementCloneable` (ruleset `java-clone`) has been replaced by the typeresolution-based
     implementation and is now able to detect cases if a class implements or extends a Cloneable class/interface.
 
+*   The rule `UnusedImports` (ruleset `java-imports`) has been replaced by the typeresolution-based
+    implementation and is now able to detect unused on-demand imports.
+
 #### Deprecated Rules
 
 *   The rules `NcssConstructorCount`, `NcssMethodCount`, and `NcssTypeCount` (ruleset `java-codesize`) have been
     deprecated. They will be replaced by the new rule `NcssCount` in the same ruleset.
 
-*   The rule `LooseCoupling` in ruleset `java-typeresolution` is deprecated. Use the rule with the same name from ruleset `java-coupling` instead.
+*   The rule `LooseCoupling` in ruleset `java-typeresolution` is deprecated. Use the rule with the same name
+    from ruleset `java-coupling` instead.
 
-*   The rule `CloneMethodMustImplementCloneable` in ruleset `java-typeresolution`is deprecated. Use the rule with
+*   The rule `CloneMethodMustImplementCloneable` in ruleset `java-typeresolution` is deprecated. Use the rule with
     the same name from ruleset `java-clone` instead.
+
+*   The rule `UnusedImports` in ruleset `java-typeresolution` is deprecated. Use the rule with
+    the same name from ruleset `java-imports` instead.
 
 #### Removed Rules
 

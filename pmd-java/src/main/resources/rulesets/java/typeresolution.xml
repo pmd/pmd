@@ -11,25 +11,7 @@ These are rules which resolve java Class files for comparison, as opposed to a S
 
   <rule ref="java-coupling/LooseCoupling" deprecated="true" />
   <rule ref="java-clone/CloneMethodMustImplementCloneable" deprecated="true" />
-
-  <rule name="UnusedImports"
-        since="4.0"
-        message="Avoid unused imports such as ''{0}''"
-        class="net.sourceforge.pmd.lang.java.typeresolution.rules.imports.UnusedImports"
-        typeResolution="true"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_typeresolution.html#unusedimports">
-    <description>
-Avoid unused import statements. This rule will find unused on demand imports, i.e. import com.foo.*.
-    </description>
-    <priority>4</priority>
-    <example>
-<![CDATA[
-import java.io.*;   // not referenced or required
-
-public class Foo {}
-]]>
-    </example>
-  </rule>
+  <rule ref="java-imports/UnusedImports" deprecated="true" />
 
   <rule name="SignatureDeclareThrowsException"
         since="4.0"
