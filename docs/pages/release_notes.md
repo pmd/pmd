@@ -180,6 +180,10 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
 *   The rule `UnusedImports` (ruleset `java-imports`) has been replaced by the typeresolution-based
     implementation and is now able to detect unused on-demand imports.
 
+*   The rule `SignatureDeclareThrowsException` (ruleset 'java-strictexception') has been replaced by the
+    typeresolution-based implementation. It has a new property `IgnoreJUnitCompletely`, which allows all
+    methods in a JUnit testcase to throws exceptions.
+
 #### Deprecated Rules
 
 *   The rules `NcssConstructorCount`, `NcssMethodCount`, and `NcssTypeCount` (ruleset `java-codesize`) have been
@@ -193,6 +197,9 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
 
 *   The rule `UnusedImports` in ruleset `java-typeresolution` is deprecated. Use the rule with
     the same name from ruleset `java-imports` instead.
+
+*   The rule `SignatureDeclareThrowsException` in ruleset `java-typeresolution` is deprecated. Use the rule
+    with the same name from ruleset `java-strictexception` instead.
 
 #### Removed Rules
 

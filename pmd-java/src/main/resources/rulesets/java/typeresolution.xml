@@ -6,37 +6,13 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
   <description>
-These are rules which resolve java Class files for comparison, as opposed to a String
+All rules in this ruleset have been moved to other rulesets. Please use the other rules
+directly and don't use this ruleset anymore.
   </description>
 
   <rule ref="java-coupling/LooseCoupling" deprecated="true" />
   <rule ref="java-clone/CloneMethodMustImplementCloneable" deprecated="true" />
   <rule ref="java-imports/UnusedImports" deprecated="true" />
-
-  <rule name="SignatureDeclareThrowsException"
-        since="4.0"
-        message="A method/constructor shouldn't explicitly throw java.lang.Exception"
-        class="net.sourceforge.pmd.lang.java.typeresolution.rules.SignatureDeclareThrowsException"
-        typeResolution="true"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_typeresolution.html#signaturedeclarethrowsexception">
-    <description>
-It is unclear which exceptions that can be thrown from the methods.
-It might be difficult to document and understand the vague interfaces.
-Use either a class derived from RuntimeException or a checked exception.
-
-JUnit classes are excluded.
-    </description>
-    <priority>3</priority>
-    <properties>
-        <property description="If true, all methods in a JUnit testcase may throw Exception"
-                  name="IgnoreJUnitCompletely" value="false"/>
-    </properties>
-    <example>
-<![CDATA[
-public void methodThrowingException() throws Exception {
-}
-]]>
-    </example>
-  </rule> 
+  <rule ref="java-strictexception/SignatureDeclareThrowsException" deprecated="true" />
 
 </ruleset>
