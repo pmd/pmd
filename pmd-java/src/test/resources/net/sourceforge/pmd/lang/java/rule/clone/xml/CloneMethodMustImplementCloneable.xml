@@ -66,7 +66,7 @@ ok, implements interface in same package which extends Cloneable
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-package net.sourceforge.pmd.lang.java.rule.typeresolution.xml;
+package net.sourceforge.pmd.lang.java.rule.clone;
 public class FooX extends MyInterface {
  void clone() {}
 }
@@ -78,7 +78,7 @@ ok, implements interface imported implicitly which extends Cloneable
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.typeresolution.xml.*;
+import net.sourceforge.pmd.lang.java.rule.clone.*;
 public class FooX extends MyInterface {
  void clone() {}
 }
@@ -90,7 +90,7 @@ ok, implements interface which extends Cloneable
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class FooX extends net.sourceforge.pmd.lang.java.rule.typeresolution.xml.MyInterface {
+public class FooX extends net.sourceforge.pmd.lang.java.rule.clone.MyInterface {
  void clone() {}
 }
      ]]></code>
