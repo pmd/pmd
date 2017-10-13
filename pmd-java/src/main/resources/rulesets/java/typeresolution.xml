@@ -10,29 +10,7 @@ These are rules which resolve java Class files for comparison, as opposed to a S
   </description>
 
   <rule ref="java-coupling/LooseCoupling" deprecated="true" />
-
-  <rule name="CloneMethodMustImplementCloneable"
-        since="3.9"
-        message="clone() method should be implemented only if implementing Cloneable interface"
-        class="net.sourceforge.pmd.lang.java.typeresolution.rules.CloneMethodMustImplementCloneable"
-        typeResolution="true"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_typeresolution.html#clonemethodmustimplementcloneable">
-    <description>
-The method clone() should only be implemented if the class implements the Cloneable interface with the exception 
-of a final method that only throws CloneNotSupportedException. This version uses PMD's type resolution facilities, 
-and can detect if the class implements or extends a Cloneable class.
-    </description>
-    <priority>3</priority>
-    <example>
-<![CDATA[
-public class MyClass {
-    public Object clone() throws CloneNotSupportedException {
-        return foo;
-    }
-}
-]]>
-    </example>
-  </rule>
+  <rule ref="java-clone/CloneMethodMustImplementCloneable" deprecated="true" />
 
   <rule name="UnusedImports"
         since="4.0"

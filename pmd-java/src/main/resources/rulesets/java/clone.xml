@@ -90,32 +90,16 @@ public class MyClass implements Cloneable{
           language="java"
           since="1.9"
           message="clone() method should be implemented only if implementing Cloneable interface"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.clone.CloneMethodMustImplementCloneableRule"
+          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_clone.html#clonemethodmustimplementcloneable">
         <description>
-The method clone() should only be implemented if the class implements the Cloneable interface with the exception of a final method that only throws CloneNotSupportedException.
+The method clone() should only be implemented if the class implements the Cloneable interface with the exception of
+a final method that only throws CloneNotSupportedException.
+
+The rule can also detect, if the class implements or extends a Cloneable class.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//ClassOrInterfaceDeclaration
-[not(./ExtendsList/ClassOrInterfaceType[@Image='Cloneable'])]
-[not(./ImplementsList/ClassOrInterfaceType[@Image='Cloneable'])]
-/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-[MethodDeclaration
-[MethodDeclarator[@Image
-= 'clone' and count(FormalParameters/*) = 0]]
-[not((../MethodDeclaration[@Final = 'true'] or ancestor::ClassOrInterfaceDeclaration[1][@Final = 'true'])
-and Block[count(BlockStatement)=1]
-/BlockStatement/Statement/ThrowStatement/Expression
-/PrimaryExpression/PrimaryPrefix/AllocationExpression
-/ClassOrInterfaceType[@Image = 'CloneNotSupportedException'])]]
-                    ]]>
-                </value>
-            </property>
-        </properties>
         <example>
             <![CDATA[
 public class MyClass {
