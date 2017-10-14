@@ -5,7 +5,7 @@ permalink: pmd_rules_java_strictexception.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/strictexception.xml
-keywords: Strict Exceptions, AvoidCatchingThrowable, SignatureDeclareThrowsException, ExceptionAsFlowControl, AvoidCatchingNPE, AvoidThrowingRawExceptionTypes, AvoidThrowingNullPointerException, AvoidRethrowingException, DoNotExtendJavaLangError, DoNotThrowExceptionInFinally, AvoidThrowingNewInstanceOfSameException, AvoidCatchingGenericException, AvoidLosingExceptionInformation
+keywords: Strict Exceptions, AvoidCatchingThrowable, SignatureDeclareThrowsException, ExceptionAsFlowControl, AvoidCatchingNPE, AvoidThrowingRawExceptionTypes, AvoidThrowingNullPointerException, AvoidRethrowingException, DoNotExtendJavaLangError, DoNotExtendJavaLangThrowable, DoNotThrowExceptionInFinally, AvoidThrowingNewInstanceOfSameException, AvoidCatchingGenericException, AvoidLosingExceptionInformation
 ---
 ## AvoidCatchingGenericException
 
@@ -308,6 +308,30 @@ public class Foo extends Error { }
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="rulesets/java/strictexception.xml/DoNotExtendJavaLangError" />
+```
+
+## DoNotExtendJavaLangThrowable
+
+**Since:** PMD 6.0
+
+**Priority:** Medium (3)
+
+Extend Exception or RuntimeException instead of Throwable.
+
+```
+//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
+  [@Image="Throwable" or @Image="java.lang.Throwable"]
+```
+
+**Example(s):**
+
+``` java
+public class Foo extends Throwable { }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/strictexception.xml/DoNotExtendJavaLangThrowable" />
 ```
 
 ## DoNotThrowExceptionInFinally
