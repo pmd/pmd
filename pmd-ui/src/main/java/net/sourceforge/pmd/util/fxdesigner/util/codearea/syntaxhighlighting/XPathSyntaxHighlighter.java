@@ -26,7 +26,7 @@ public class XPathSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
     private static final RegexHighlightGrammar GRAMMAR
         = grammarBuilder("attribute", "@[\\w]+")
         .or("axis", "(" + String.join("|", AXIS_NAMES) + ")(?=::)")
-        .or("keyword", "(" + String.join("|", KEYWORDS) + ")")
+        .or("keyword", "\\b(" + String.join("|", KEYWORDS) + ")\\b")
         .or("function", "[\\w-]+?(?=\\()")
         .or("path", "//?")
         .or("paren", "[()]")

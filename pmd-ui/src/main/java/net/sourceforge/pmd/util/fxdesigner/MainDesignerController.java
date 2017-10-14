@@ -15,12 +15,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.AppSetting;
@@ -56,8 +59,9 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 
+
 /**
- * Main controller of the app. Serves as a mediator for subdivisions of the UI.
+ * Main controller of the app. Mediator for subdivisions of the UI.
  *
  * @author Clément Fournier
  * @see NodeInfoPanelController
@@ -70,11 +74,14 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
 
     private static final String SETTINGS_FILE_NAME = System.getProperty("user.home")
-        + System.getProperty("file.separator") + ".pmd_new_designer.xml";
+                                                     + System.getProperty("file.separator") + ".pmd_new_designer.xml";
 
 
-    /** Callback to the owner. */
+    /**
+     * Callback to the owner.
+     */
     private final DesignerApp designerApp;
+
     /* Menu bar */
     @FXML
     private MenuItem openFileMenuItem;
@@ -139,21 +146,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         initializeViewAnimation();
 
         xpathPanelController.initialiseVersionChoiceBox(xpathVersionChoiceBox);
-        xpathPanelController.selectedResultProperty()
-                            .addListener((observable, oldValue, newValue) -> {
-                                if (newValue != null) {
-                                    onNodeItemSelected(newValue);
-                                    sourceEditorController.focusNodeInTreeView(newValue);
-                                }
-                            });
-
-        sourceEditorController.selectedNodeProperty()
-                              .addListener((observable, oldValue, newValue) -> {
-                                  if (newValue != null) {
-                                      onNodeItemSelected(newValue);
-                                  }
-                              });
-
 
         sourceEditorController.languageVersionProperty().bind(languageChoiceBox.getSelectionModel().selectedItemProperty());
         xpathPanelController.xpathVersionProperty().bind(xpathVersionChoiceBox.getSelectionModel().selectedItemProperty());
@@ -199,7 +191,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
         // gets captured in the closure
         final double defaultMainHorizontalSplitPaneDividerPosition
-            = mainHorizontalSplitPane.getDividerPositions()[0];
+                = mainHorizontalSplitPane.getDividerPositions()[0];
 
 
         // show/ hide bottom pane
@@ -241,10 +233,26 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     }
 
 
-    /** Executed when the user selects a node in a treeView or listView. */
-    private void onNodeItemSelected(Node selectedValue) {
+    /**
+     * Executed when the user selects a node in a treeView or listView.
+     */
+    public void onNodeItemSelected(Node selectedValue) {
         nodeInfoPanelController.displayInfo(selectedValue);
-        sourceEditorController.highlightNode(selectedValue);
+        sourceEditorController.clearNodeHighlight();
+        sourceEditorController.highlightNodePrimary(selectedValue);
+        sourceEditorController.focusNodeInTreeView(selectedValue);
+    }
+
+
+    public void onNameDeclarationSelected(NameDeclaration declaration) {        
+        sourceEditorController.clearNodeHighlight();
+        sourceEditorController.highlightNodePrimary(declaration.getNode());
+        sourceEditorController.highlightNodesSecondary(declaration.getNode().getScope()
+                                                                  .getDeclarations()
+                                                                  .get(declaration)
+                                                                  .stream()
+                                                                  .map(NameOccurrence::getLocation)
+                                                                  .collect(Collectors.toList()));
     }
 
 
@@ -405,7 +413,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
     private String getBottomExpandedTab() {
         return (bottomTabsToggle.isSelected() ? "expanded:" : "collapsed:")
-            + bottomTabPane.getSelectionModel().getSelectedIndex();
+               + bottomTabPane.getSelectionModel().getSelectedIndex();
     }
 
 

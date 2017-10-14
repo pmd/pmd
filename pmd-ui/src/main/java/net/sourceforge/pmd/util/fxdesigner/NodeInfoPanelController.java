@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.MetricResultListCell;
@@ -30,6 +31,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
+
 /**
  * Controller of the node info panel (left).
  *
@@ -39,6 +41,7 @@ import javafx.scene.control.TreeView;
 public class NodeInfoPanelController implements Initializable {
 
     private final DesignerApp designerApp;
+    private final MainDesignerController parent;
 
     @FXML
     private TabPane nodeInfoTabPane;
@@ -57,8 +60,21 @@ public class NodeInfoPanelController implements Initializable {
     private MetricEvaluator metricEvaluator = new MetricEvaluator();
 
 
-    NodeInfoPanelController(DesignerApp root) {
+    NodeInfoPanelController(DesignerApp root, MainDesignerController mainController) {
         this.designerApp = root;
+        parent = mainController;
+    }
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        metricResultsListView.setCellFactory(param -> new MetricResultListCell());
+        scopeHierarchyTreeView.setCellFactory(param -> new ScopeHierarchyTreeCell());
+        scopeHierarchyTreeView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && newVal.getValue() instanceof NameDeclaration) {
+                parent.onNameDeclarationSelected((NameDeclaration) newVal.getValue());
+            }
+        });
     }
 
 
@@ -113,22 +129,16 @@ public class NodeInfoPanelController implements Initializable {
     }
 
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        metricResultsListView.setCellFactory(param -> new MetricResultListCell());
-        scopeHierarchyTreeView.setCellFactory(param -> new ScopeHierarchyTreeCell());
-
-    }
-
-
-    /** Gets the XPath attributes of the node for display within a listview. */
+    /**
+     * Gets the XPath attributes of the node for display within a listview.
+     */
     private static ObservableList<String> getAttributes(Node node) {
         ObservableList<String> result = FXCollections.observableArrayList();
         AttributeAxisIterator attributeAxisIterator = new AttributeAxisIterator(node);
         while (attributeAxisIterator.hasNext()) {
             Attribute attribute = attributeAxisIterator.next();
             result.add(attribute.getName() + " = "
-                           + ((attribute.getValue() != null) ? attribute.getStringValue() : "null"));
+                       + ((attribute.getValue() != null) ? attribute.getStringValue() : "null"));
         }
 
         if (node instanceof TypeNode) {

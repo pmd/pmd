@@ -14,18 +14,16 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
-import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
-import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
+import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
+import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.XpathViolationListCell;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.AppSetting;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.SettingsOwner;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,6 +43,8 @@ import javafx.util.StringConverter;
 public class XPathPanelController implements Initializable, SettingsOwner {
 
     private final DesignerApp designerApp;
+    private final MainDesignerController parent;
+
     private final XPathEvaluator xpathEvaluator = new XPathEvaluator();
 
     @FXML
@@ -56,11 +56,10 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
     private ChoiceBox<String> xpathVersionChoiceBox;
 
-    private ObjectProperty<Node> selectedResultProperty = new SimpleObjectProperty<>();
 
-
-    XPathPanelController(DesignerApp owner) {
+    XPathPanelController(DesignerApp owner, MainDesignerController mainController) {
         this.designerApp = owner;
+        parent = mainController;
     }
 
 
@@ -69,7 +68,12 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         xpathExpressionArea.setSyntaxHighlightingEnabled(new XPathSyntaxHighlighter());
         xpathResultListView.setCellFactory(param -> new XpathViolationListCell());
 
-        selectedResultProperty.bind(xpathResultListView.getSelectionModel().selectedItemProperty());
+        xpathResultListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                parent.onNodeItemSelected(newVal);
+            }
+        });
+
     }
 
 
@@ -144,16 +148,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     }
 
 
-    public Node getSelectedResultProperty() {
-        return selectedResultProperty.get();
-    }
-
-
-    public ObjectProperty<Node> selectedResultProperty() {
-        return selectedResultProperty;
-    }
-
-
     public StringProperty xpathVersionProperty() {
         return xpathEvaluator.xpathVersionProperty();
     }
@@ -163,11 +157,11 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     public List<AppSetting> getSettings() {
         List<AppSetting> settings = new ArrayList<>();
         settings.add(new AppSetting("xpathVersion", () -> xpathEvaluator.xpathVersionProperty().getValue(),
-                                    v -> {
-                                        if (!"".equals(v)) {
-                                            xpathEvaluator.xpathVersionProperty().setValue(v);
-                                        }
-                                    }));
+            v -> {
+                if (!"".equals(v)) {
+                    xpathEvaluator.xpathVersionProperty().setValue(v);
+                }
+            }));
         settings.add(new AppSetting("xpathCode", () -> xpathExpressionArea.getText(), (v) -> xpathExpressionArea.replaceText(v)));
 
         return settings;

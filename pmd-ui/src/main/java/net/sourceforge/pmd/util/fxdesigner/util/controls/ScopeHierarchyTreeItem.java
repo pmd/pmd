@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 import javafx.scene.control.TreeItem;
 
+
 /**
  * @author Clément Fournier
  * @since 6.0.0
@@ -31,7 +32,6 @@ public class ScopeHierarchyTreeItem extends TreeItem<Object> {
      * Gets the scope hierarchy of a node.
      *
      * @param node Node
-     *
      * @return Root of the tree
      */
     public static ScopeHierarchyTreeItem buildAscendantHierarchy(Node node) {
@@ -79,6 +79,5 @@ public class ScopeHierarchyTreeItem extends TreeItem<Object> {
         }
         return null;
     }
-
-
+ 
 }

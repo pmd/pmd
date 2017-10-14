@@ -25,7 +25,7 @@ public class ScopeHierarchyTreeCell extends TreeCell<Object> {
             setGraphic(null);
         } else {
             setText(item instanceof Scope ? getTextForScope((Scope) item)
-                                          : getTextForDeclaration((NameDeclaration) item));
+                    : getTextForDeclaration((NameDeclaration) item));
         }
     }
 
@@ -38,7 +38,7 @@ public class ScopeHierarchyTreeCell extends TreeCell<Object> {
     private String getTextForDeclaration(NameDeclaration declaration) {
 
         Class<?> type = declaration.getNode() instanceof TypeNode ? ((TypeNode) declaration.getNode()).getType()
-                                                                   : null;
+                : null;
 
         return declaration.getName() + (type != null ? " : " + type.getSimpleName() : "");
     }

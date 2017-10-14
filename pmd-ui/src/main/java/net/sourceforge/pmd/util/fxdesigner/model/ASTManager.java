@@ -19,6 +19,7 @@ import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
+
 /**
  * Main class of the model. Manages a compilation unit.
  *
@@ -29,13 +30,21 @@ public class ASTManager {
 
     private final DesignerApp designerApp;
 
-    /** Last valid source that was compiled, corresponds to {@link #compilationUnit}. */
+    /**
+     * Last valid source that was compiled, corresponds to {@link #compilationUnit}.
+     */
     private String lastValidSource;
-    /** Last language version used. */
+    /**
+     * Last language version used.
+     */
     private LanguageVersion lastLanguageVersion;
-    /** Latest computed compilation unit (only null before the first call to {@link #updateCompilationUnit(String)}) */
+    /**
+     * Latest computed compilation unit (only null before the first call to {@link #updateCompilationUnit(String)})
+     */
     private ObjectProperty<Node> compilationUnit = new SimpleObjectProperty<>();
-    /** Selected language version. */
+    /**
+     * Selected language version.
+     */
     private ObjectProperty<LanguageVersion> languageVersion = new SimpleObjectProperty<>();
 
     {
@@ -69,23 +78,9 @@ public class ASTManager {
 
 
     /**
-     * Returns true if the source must be recompiled.
-     *
-     * @param source Source to test
-     *
-     * @return true if the current AST does not correspond to the parameter source
-     */
-//    public boolean isRecompilationNeeded(String source) {
-//        return !StringUtils.equals(source, lastValidSource)
-//            || !languageVersion.get().equals(lastLanguageVersion);
-//    }
-
-
-    /**
      * Refreshes the compilation unit given the current parameters of the model.
      *
      * @param source Source code
-     *
      * @throws ParseAbortedException if parsing fails and cannot recover
      */
     public Node updateCompilationUnit(String source) throws ParseAbortedException {

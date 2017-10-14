@@ -6,9 +6,11 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.fxmisc.richtext.LineNumberFactory;
 
@@ -25,14 +27,11 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.AppSetting;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.SettingsOwner;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -41,6 +40,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+
 
 /**
  * One editor, i.e. source editor and ast tree view.
@@ -51,6 +51,8 @@ import javafx.scene.control.TreeView;
 public class SourceEditorController implements Initializable, SettingsOwner {
 
     private final DesignerApp designerApp;
+    private final MainDesignerController parent;
+
     @FXML
     private Label astTitleLabel;
     @FXML
@@ -59,13 +61,13 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private MenuItem toggleSyntaxHighlighting;
     @FXML
     private CustomCodeArea codeEditorArea;
-    private ObjectProperty<Node> selectedNode = new SimpleObjectProperty<>();
     private BooleanProperty isSyntaxHighlightingEnabled = new SimpleBooleanProperty(true);
     private ASTManager astManager;
 
 
-    public SourceEditorController(DesignerApp owner) {
+    public SourceEditorController(DesignerApp owner, MainDesignerController mainController) {
         this.designerApp = owner;
+        parent = mainController;
         astManager = new ASTManager(designerApp);
     }
 
@@ -85,7 +87,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         toggleSyntaxHighlighting.setOnAction(e -> {
             isSyntaxHighlightingEnabled.set(!isSyntaxHighlightingEnabled.get());
             toggleSyntaxHighlighting.setText((isSyntaxHighlightingEnabled.get() ? "Disable" : "Enable")
-                                                 + " syntax highlighting");
+                                             + " syntax highlighting");
         });
 
         isSyntaxHighlightingEnabled.addListener(((observable, wasEnabled, isEnabled) -> {
@@ -109,35 +111,14 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         astTreeView.setCellFactory(param -> new ASTTreeCell());
 
         ReadOnlyObjectProperty<TreeItem<Node>> selectedItemProperty
-            = astTreeView.getSelectionModel().selectedItemProperty();
+                = astTreeView.getSelectionModel().selectedItemProperty();
 
 
-        //        astTreeView.rootProperty().addListener((obs, oldRoot, newRoot) -> {
-        //            if (newRoot == null) {
-        //                nodeInfoPanelController.invalidateInfo();
-        //            }
-        //        });
-
-        ObjectBinding<Node> selectedBinding
-            = Bindings.createObjectBinding(() -> {
-                                               TreeItem<Node> selected = astTreeView.getSelectionModel().getSelectedItem();
-                                               return selected == null ? null : selected.getValue();
-                                           },
-                                           selectedItemProperty);
-        selectedNode.bind(selectedBinding);
-
-//
-//        selectedItemProperty.addListener(observable -> {
-//            nodeInfoPanelController.invalidateInfo();
-//        });
-//
-//        selectedItemProperty.addListener((observable, oldValue, newValue) -> {
-//            if (newValue != null && newValue != oldValue) {
-//                onNodeItemSelected(newValue.getValue());
-//            } else if (newValue == null) {
-//                nodeInfoPanelController.invalidateInfo();
-//            }
-//        });
+        astTreeView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && newVal.getValue() != null) {
+                parent.onNodeItemSelected(newVal.getValue());
+            }
+        });
     }
 
 
@@ -182,14 +163,31 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    public void highlightNode(Node node) {
-        if (codeEditorArea.isInRange(node)) {
-            codeEditorArea.restylePrimaryStyleLayer(node, Collections.singleton("primary-highlight"));
-            codeEditorArea.paintCss();
-            codeEditorArea.positionCaret(node.getBeginLine(), node.getBeginColumn());
-        } else {
-            codeEditorArea.clearPrimaryStyleLayer();
+    public void clearNodeHighlight() {
+        codeEditorArea.clearPrimaryStyleLayer();
+    }
+
+
+    public void highlightNodePrimary(Node node) {
+        highlightNodes(Collections.singleton(node), Collections.singleton("primary-highlight"));
+    }
+
+
+    private void highlightNodes(Collection<Node> nodes, Set<String> cssClasses) {
+        for (Node node : nodes) {
+            if (codeEditorArea.isInRange(node)) {
+                codeEditorArea.styleCss(node, cssClasses);
+                codeEditorArea.paintCss();
+                codeEditorArea.positionCaret(node.getBeginLine(), node.getBeginColumn());
+            } else {
+                codeEditorArea.clearPrimaryStyleLayer();
+            }
         }
+    }
+
+
+    public void highlightNodesSecondary(Collection<Node> nodes) {
+        highlightNodes(nodes, Collections.singleton("secondary-highlight"));
     }
 
 
@@ -239,7 +237,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    public ObjectProperty<Node> commpilationUnitProperty() {
+    public ObjectProperty<Node> compilationUnitProperty() {
         return astManager.compilationUnitProperty();
     }
 
@@ -258,10 +256,10 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     public List<AppSetting> getSettings() {
         List<AppSetting> settings = new ArrayList<>();
         settings.add(new AppSetting("langVersion", () -> getLanguageVersion().getTerseName(),
-                                    this::restoreLanguageVersion));
+                this::restoreLanguageVersion));
 
         settings.add(new AppSetting("code", () -> codeEditorArea.getText(),
-                                    (e) -> codeEditorArea.replaceText(e)));
+            e -> codeEditorArea.replaceText(e)));
 
         return settings;
     }
@@ -275,7 +273,4 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    public ObjectProperty<Node> selectedNodeProperty() {
-        return selectedNode;
-    }
 }

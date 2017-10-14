@@ -30,6 +30,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class EventLogController implements Initializable {
 
     private final DesignerApp designerApp;
+    private final MainDesignerController parent;
 
     @FXML
     private TableView<LogEntry> eventLogTableView;
@@ -43,8 +44,9 @@ public class EventLogController implements Initializable {
     private TextArea logDetailsTextArea;
 
 
-    public EventLogController(DesignerApp owner) {
+    public EventLogController(DesignerApp owner, MainDesignerController mainController) {
         this.designerApp = owner;
+        parent = mainController;
     }
 
 

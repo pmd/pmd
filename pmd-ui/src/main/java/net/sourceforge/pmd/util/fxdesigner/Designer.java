@@ -37,12 +37,12 @@ public class Designer extends Application {
             = new FXMLLoader(getClass().getResource("fxml/designer.fxml"));
 
         DesignerApp owner = new DesignerApp(stage);
-        NodeInfoPanelController nodeInfoPanelController = new NodeInfoPanelController(owner);
-        XPathPanelController xpathPanelController = new XPathPanelController(owner);
-        SourceEditorController sourceEditorController = new SourceEditorController(owner);
-        EventLogController eventLogController = new EventLogController(owner);
-
         MainDesignerController mainController = new MainDesignerController(owner);
+
+        NodeInfoPanelController nodeInfoPanelController = new NodeInfoPanelController(owner, mainController);
+        XPathPanelController xpathPanelController = new XPathPanelController(owner, mainController);
+        SourceEditorController sourceEditorController = new SourceEditorController(owner, mainController);
+        EventLogController eventLogController = new EventLogController(owner, mainController);
 
         loader.setControllerFactory(type -> {
             if (type == MainDesignerController.class) {
@@ -68,7 +68,6 @@ public class Designer extends Application {
 
         stage.setOnCloseRequest(e -> mainController.shutdown());
 
-      //  loader.setLocation(getClass().getResource("fxml/designer.xml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
 
