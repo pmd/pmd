@@ -6,33 +6,17 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.properties.ValueParserConstants.DOUBLE_PARSER;
 
-import java.util.Map;
+import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
+
 
 /**
- * Defines a property type that support single double-type property values
- * within an upper and lower boundary.
+ * Defines a property type that support single double-type property values within an upper and lower boundary.
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
 public final class DoubleProperty extends AbstractNumericProperty<Double> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<Double> FACTORY // @formatter:off
-            = new SingleValuePropertyDescriptorFactory<Double>(Double.class, NUMBER_FIELD_TYPES_BY_KEY) {
-                @Override
-                public DoubleProperty createWith(Map<PropertyDescriptorField, String> valuesById,
-                                                 boolean isDefinedExternally) {
-                    final String[] minMax = minMaxFrom(valuesById);
-                    return new DoubleProperty(nameIn(valuesById),
-                                              descriptionIn(valuesById),
-                                              doubleFrom(minMax[0]),
-                                              doubleFrom(minMax[1]),
-                                              doubleFrom(defaultValueIn(valuesById)),
-                                              0f,
-                                              isDefinedExternally);
-                }
-            }; // @formatter:on
 
 
     /**
@@ -45,7 +29,6 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
      * @param maxStr         Maximum value of the property
      * @param defaultStr     Default value
      * @param theUIOrder     UI order
-     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      * @deprecated will be removed in 7.0.0
      */
@@ -63,18 +46,6 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
 
 
     /**
-     * Parses a String into a Double.
-     *
-     * @param numberString String to parse
-     *
-     * @return Parsed Double
-     */
-    private static Double doubleFrom(String numberString) {
-        return DOUBLE_PARSER.valueOf(numberString);
-    }
-
-
-    /**
      * Constructor that limits itself to a single value within the specified limits.
      *
      * @param theName        Name
@@ -83,7 +54,6 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
      * @param max            Maximum value of the property
      * @param theDefault     Default value
      * @param theUIOrder     UI order
-     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
@@ -102,4 +72,40 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
     protected Double createFrom(String value) {
         return doubleFrom(value);
     }
+
+
+    /**
+     * Parses a String into a Double.
+     *
+     * @param numberString String to parse
+     * @return Parsed Double
+     */
+    private static Double doubleFrom(String numberString) {
+        return DOUBLE_PARSER.valueOf(numberString);
+    }
+
+
+    static PropertyBuilderConversionWrapper.SingleValue.Numeric<Double, DoublePBuilder> extractor() {
+        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Double, DoublePBuilder>(ValueParserConstants.DOUBLE_PARSER) {
+            @Override
+            protected DoublePBuilder newBuilder() {
+                return new DoublePBuilder();
+            }
+        };
+    }
+
+
+    public static DoublePBuilder builder(String name) {
+        return new DoublePBuilder().name(name);
+    }
+
+
+    private static class DoublePBuilder extends SingleNumericPropertyBuilder<Double, DoublePBuilder> {
+
+        @Override
+        protected DoubleProperty createInstance() {
+            return new DoubleProperty(name, description, lowerLimit, upperLimit, defaultValue, uiOrder, isDefinedInXML);
+        }
+    }
+
 }

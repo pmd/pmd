@@ -7,6 +7,9 @@ package net.sourceforge.pmd.properties;
 import java.util.Arrays;
 import java.util.List;
 
+import net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder;
+import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+
 
 /**
  * Multi-valued float property.
@@ -68,4 +71,30 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
     protected Float createFrom(String value) {
         return Float.valueOf(value);
     }
+
+
+    static PropertyBuilderConversionWrapper.MultiValue.Numeric<Float, FloatMultiPBuilder> extractor() {
+        return new PropertyBuilderConversionWrapper.MultiValue.Numeric<Float, FloatMultiPBuilder>(ValueParserConstants.FLOAT_PARSER) {
+            @Override
+            protected FloatMultiPBuilder newBuilder() {
+                return new FloatMultiPBuilder();
+            }
+        };
+    }
+
+
+    public static FloatMultiPBuilder builder(String name) {
+        return new FloatMultiPBuilder().name(name);
+    }
+
+
+    private static class FloatMultiPBuilder extends MultiNumericPropertyBuilder<Float, FloatMultiPBuilder> {
+
+        @Override
+        protected PropertyDescriptor<List<Float>> createInstance() {
+            return new FloatMultiProperty(name, description, lowerLimit, upperLimit, defaultValues, uiOrder, isDefinedInXML);
+        }
+    }
+
+
 }

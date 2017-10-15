@@ -6,32 +6,16 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.properties.ValueParserConstants.INTEGER_PARSER;
 
-import java.util.Map;
+import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
+
 
 /**
- * Defines a datatype that supports single Integer property values within an
- * upper and lower boundary.
+ * Defines a datatype that supports single Integer property values within an upper and lower boundary.
  *
  * @author Brian Remedios
  */
 public final class IntegerProperty extends AbstractNumericProperty<Integer> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<Integer> FACTORY // @formatter:off
-        = new SingleValuePropertyDescriptorFactory<Integer>(Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
-
-            @Override
-            public IntegerProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                final String[] minMax = minMaxFrom(valuesById);
-                return new IntegerProperty(nameIn(valuesById),
-                                           descriptionIn(valuesById),
-                                           INTEGER_PARSER.valueOf(minMax[0]),
-                                           INTEGER_PARSER.valueOf(minMax[1]),
-                                           INTEGER_PARSER.valueOf(defaultValueIn(valuesById)),
-                                           0f,
-                                           isDefinedExternally);
-            }
-        }; // @formatter:on
 
 
     /**
@@ -43,7 +27,6 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
      * @param max            Maximum value of the property
      * @param theDefault     Default value
      * @param theUIOrder     UI order
-     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public IntegerProperty(String theName, String theDescription, Integer min, Integer max, Integer theDefault,
@@ -70,5 +53,28 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
         return INTEGER_PARSER.valueOf(value);
     }
 
+
+    static PropertyBuilderConversionWrapper.SingleValue.Numeric<Integer, IntegerPBuilder> extractor() {
+        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Integer, IntegerPBuilder>(ValueParserConstants.INTEGER_PARSER) {
+            @Override
+            protected IntegerPBuilder newBuilder() {
+                return new IntegerPBuilder();
+            }
+        };
+    }
+
+
+    public static IntegerPBuilder builder(String name) {
+        return new IntegerPBuilder().name(name);
+    }
+
+
+    private static class IntegerPBuilder extends SingleNumericPropertyBuilder<Integer, IntegerPBuilder> {
+
+        @Override
+        protected IntegerProperty createInstance() {
+            return new IntegerProperty(name, description, lowerLimit, upperLimit, defaultValue, uiOrder, isDefinedInXML);
+        }
+    }
 
 }

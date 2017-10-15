@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.ValueParserConstants.DOUBLE_PARSER;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+
+import net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder;
+import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+
 
 /**
  * Multi-valued double property.
@@ -17,27 +18,6 @@ import java.util.Map;
  * @version Refactored June 2017 (6.0.0)
  */
 public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Double> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<List<Double>> FACTORY // @formatter:off
-        = new MultiValuePropertyDescriptorFactory<Double>(Double.class, NUMBER_FIELD_TYPES_BY_KEY) {
-            @Override
-            public DoubleMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                String[] minMax = minMaxFrom(valuesById);
-                char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Double> defaultValues
-                    = ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, DOUBLE_PARSER);
-
-                return new DoubleMultiProperty(nameIn(valuesById),
-                                               descriptionIn(valuesById),
-                                               DOUBLE_PARSER.valueOf(minMax[0]),
-                                               DOUBLE_PARSER.valueOf(minMax[1]),
-                                               defaultValues,
-                                               0f,
-                                               isDefinedExternally);
-            }
-        }; // @formatter:on
-
 
     /**
      * Constructor using an array of defaults.
@@ -48,7 +28,6 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
      * @param max            Maximum value of the property
      * @param defaultValues  Array of defaults
      * @param theUIOrder     UI order
-     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public DoubleMultiProperty(String theName, String theDescription, Double min, Double max,
@@ -73,7 +52,6 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
      * @param max            Maximum value of the property
      * @param defaultValues  List of defaults
      * @param theUIOrder     UI order
-     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public DoubleMultiProperty(String theName, String theDescription, Double min, Double max,
@@ -91,6 +69,30 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
     @Override
     protected Double createFrom(String value) {
         return Double.valueOf(value);
+    }
+
+
+    static PropertyBuilderConversionWrapper.MultiValue.Numeric<Double, DoubleMultiPBuilder> extractor() {
+        return new PropertyBuilderConversionWrapper.MultiValue.Numeric<Double, DoubleMultiPBuilder>(ValueParserConstants.DOUBLE_PARSER) {
+            @Override
+            protected DoubleMultiPBuilder newBuilder() {
+                return new DoubleMultiPBuilder();
+            }
+        };
+    }
+
+
+    public static DoubleMultiPBuilder builder(String name) {
+        return new DoubleMultiPBuilder().name(name);
+    }
+
+
+    private static class DoubleMultiPBuilder extends MultiNumericPropertyBuilder<Double, DoubleMultiPBuilder> {
+
+        @Override
+        protected PropertyDescriptor<List<Double>> createInstance() {
+            return new DoubleMultiProperty(name, description, lowerLimit, upperLimit, defaultValues, uiOrder, isDefinedInXML);
+        }
     }
 
 }

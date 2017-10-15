@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.ValueParserConstants.LONG_PARSER;
+import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
 
-import java.util.Map;
 
 /**
  * Single valued long property.
@@ -15,23 +15,6 @@ import java.util.Map;
  * @version Refactored June 2017 (6.0.0)
  */
 public final class LongProperty extends AbstractNumericProperty<Long> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<Long> FACTORY // @formatter:off
-        = new SingleValuePropertyDescriptorFactory<Long>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
-            @Override
-            public LongProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                final String[] minMax = minMaxFrom(valuesById);
-                return new LongProperty(nameIn(valuesById),
-                                        descriptionIn(valuesById),
-                                        LONG_PARSER.valueOf(minMax[0]),
-                                        LONG_PARSER.valueOf(minMax[1]),
-                                        LONG_PARSER.valueOf(defaultValueIn(valuesById)),
-                                        0f,
-                                        isDefinedExternally);
-            }
-        };
-    // @formatter:on
 
 
     /**
@@ -44,14 +27,13 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
      * @param maxStr         Maximum value of the property
      * @param defaultStr     Default value
      * @param theUIOrder     UI order
-     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      * @deprecated will be removed in 7.0.0
      */
     public LongProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
                         float theUIOrder) {
         this(theName, theDescription, Long.valueOf(minStr), Long.valueOf(maxStr),
-             Long.valueOf(defaultStr), theUIOrder, false);
+                Long.valueOf(defaultStr), theUIOrder, false);
     }
 
 
@@ -71,7 +53,6 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
      * @param max            Maximum value of the property
      * @param theDefault     Default value
      * @param theUIOrder     UI order
-     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault, float theUIOrder) {
@@ -88,6 +69,30 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
     @Override
     protected Long createFrom(String toParse) {
         return Long.valueOf(toParse);
+    }
+
+
+    static PropertyBuilderConversionWrapper.SingleValue.Numeric<Long, LongPBuilder> extractor() {
+        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Long, LongPBuilder>(ValueParserConstants.LONG_PARSER) {
+            @Override
+            protected LongPBuilder newBuilder() {
+                return new LongPBuilder();
+            }
+        };
+    }
+
+
+    public static LongPBuilder builder(String name) {
+        return new LongPBuilder().name(name);
+    }
+
+
+    private static class LongPBuilder extends SingleNumericPropertyBuilder<Long, LongPBuilder> {
+
+        @Override
+        protected LongProperty createInstance() {
+            return new LongProperty(name, description, lowerLimit, upperLimit, defaultValue, uiOrder, isDefinedInXML);
+        }
     }
 
 }

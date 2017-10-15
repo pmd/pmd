@@ -4,11 +4,8 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.ValueParserConstants.LONG_PARSER;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder;
 import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
@@ -21,24 +18,6 @@ import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
  * @version Refactored June 2017 (6.0.0)
  */
 public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<List<Long>> FACTORY // @formatter:off
-            = new MultiValuePropertyDescriptorFactory<Long>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
-        @Override
-        public LongMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-            String[] minMax = minMaxFrom(valuesById);
-            char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-            List<Long> defaultValues = ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, LONG_PARSER);
-            return new LongMultiProperty(nameIn(valuesById),
-                    descriptionIn(valuesById),
-                    LONG_PARSER.valueOf(minMax[0]),
-                    LONG_PARSER.valueOf(minMax[1]),
-                    defaultValues,
-                    0f,
-                    isDefinedExternally);
-        }
-    }; // @formatter:on
 
 
     /**
