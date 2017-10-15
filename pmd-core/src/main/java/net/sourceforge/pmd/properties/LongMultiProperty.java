@@ -4,13 +4,11 @@
 
 package net.sourceforge.pmd.properties;
 
+import static net.sourceforge.pmd.properties.ValueParserConstants.LONG_PARSER;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import net.sourceforge.pmd.properties.builders.AbstractMultiNumericPropertyBuilder;
-
-import static net.sourceforge.pmd.properties.ValueParserConstants.LONG_PARSER;
 
 
 /**
@@ -49,7 +47,6 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
      * @param max            Maximum value of the property
      * @param defaultValues  Array of defaults
      * @param theUIOrder     UI order
-     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public LongMultiProperty(String theName, String theDescription, Long min, Long max,
@@ -74,7 +71,6 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
      * @param max            Maximum value of the property
      * @param defaultValues  List of defaults
      * @param theUIOrder     UI order
-     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public LongMultiProperty(String theName, String theDescription, Long min, Long max,
@@ -95,21 +91,21 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
     }
 
 
-    public static LongMultiPBuilder builder(String name) {
-        return new LongMultiPBuilder(name);
+    static PropertyDescriptor<List<Long>> extract(Map<PropertyDescriptorField, String> fields) {
+        return new PropertyBuilderConversionWrapper.MultiValue.Numeric<>(fields, ValueParserConstants.LONG_PARSER, new LongMultiPBuilder()).build();
     }
-    
 
-    private static final class LongMultiPBuilder 
-            extends AbstractMultiNumericPropertyBuilder<Long, LongMultiPBuilder> {
 
-        private LongMultiPBuilder(String name) {
-            super(name);
-        }
+    public static LongMultiPBuilder builder(String name) {
+        return new LongMultiPBuilder().name(name);
+    }
 
+
+    private static final class LongMultiPBuilder
+            extends PropertyDescriptorBuilder.MultiValue.Numeric<Long, LongMultiPBuilder> {
 
         @Override
-        public PropertyDescriptor<List<Long>> build() {
+        public LongMultiProperty build() {
             return new LongMultiProperty(name, description, lowerLimit, upperLimit,
                     defaultValues, uiOrder, false);
         }

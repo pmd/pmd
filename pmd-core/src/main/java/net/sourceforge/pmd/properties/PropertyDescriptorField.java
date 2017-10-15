@@ -23,6 +23,8 @@ public enum PropertyDescriptorField {
     NAME("name"),
     /** The description of the property. */
     DESCRIPTION("description"),
+    /** The UI order. */
+    UI_ORDER("uiOrder"),
     /** The default value. */
     DEFAULT_VALUE("value"),
     /** For multi-valued properties, this defines the delimiter of the single values. */
