@@ -25,6 +25,7 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
      * @param theDescription Description
      * @param defaultBoolStr String representing the default value.
      * @param theUIOrder     UI order
+     *
      * @deprecated will be removed in 7.0.0
      */
     public BooleanProperty(String theName, String theDescription, String defaultBoolStr, float theUIOrder) {

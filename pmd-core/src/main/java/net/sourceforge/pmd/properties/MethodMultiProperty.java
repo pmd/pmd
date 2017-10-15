@@ -50,6 +50,7 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
      * @param theDefaults       Method[]
      * @param legalPackageNames String[]
      * @param theUIOrder        float
+     *
      * @throws IllegalArgumentException
      */
     public MethodMultiProperty(String theName, String theDescription, List<Method> theDefaults,
@@ -74,6 +75,7 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
      * @param methodDefaults    String
      * @param legalPackageNames String[]
      * @param theUIOrder        float
+     *
      * @throws IllegalArgumentException
      * @deprecated will be removed in 7.O.O
      */

@@ -83,6 +83,7 @@ public class NumericPropertyModule<T extends Number> {
      *
      * @param low Lower bound
      * @param up  Upper bound
+     *
      * @return String
      */
     private static String rangeString(Number low, Number up) {

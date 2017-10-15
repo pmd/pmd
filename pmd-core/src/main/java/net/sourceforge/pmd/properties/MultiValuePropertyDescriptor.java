@@ -14,6 +14,7 @@ import java.util.List;
  * is <i>not</i> the same as the type parameter of {@link PropertyDescriptor} they inherit!
  *
  * @param <V> The type of value this descriptor works with. This is the type of the list's component.
+ *
  * @author Clément Fournier
  * @since 6.0.0
  */

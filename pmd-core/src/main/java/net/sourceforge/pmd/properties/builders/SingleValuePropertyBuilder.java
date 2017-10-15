@@ -20,6 +20,7 @@ public abstract class SingleValuePropertyBuilder<E, T extends SingleValuePropert
      * Specify a default value.
      *
      * @param val Value
+     *
      * @return The same builder
      */
     @SuppressWarnings("unchecked")

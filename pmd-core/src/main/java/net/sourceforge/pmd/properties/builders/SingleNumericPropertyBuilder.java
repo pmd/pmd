@@ -20,6 +20,7 @@ public abstract class SingleNumericPropertyBuilder<V, T extends SingleNumericPro
      * Specify a minimum value.
      *
      * @param val Value
+     *
      * @return The same builder
      */
     @SuppressWarnings("unchecked")
@@ -33,6 +34,7 @@ public abstract class SingleNumericPropertyBuilder<V, T extends SingleNumericPro
      * Specify a maximum value.
      *
      * @param val Value
+     *
      * @return The same builder
      */
     @SuppressWarnings("unchecked")

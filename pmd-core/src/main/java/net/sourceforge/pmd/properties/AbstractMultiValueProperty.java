@@ -19,6 +19,7 @@ import net.sourceforge.pmd.Rule;
  * Multi-valued property.
  *
  * @param <V> The type of the individual values. The multiple values are wrapped into a list.
+ *
  * @author Clément Fournier
  * @version 6.0.0
  */
@@ -38,6 +39,7 @@ import net.sourceforge.pmd.Rule;
      * @param theDescription Description (must not be empty)
      * @param theDefault     Default value
      * @param theUIOrder     UI order (must be positive or zero)
+     *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
     AbstractMultiValueProperty(String theName, String theDescription, List<V> theDefault, float theUIOrder,
@@ -54,6 +56,7 @@ import net.sourceforge.pmd.Rule;
      * @param theDefault     Default value
      * @param theUIOrder     UI order (must be positive or zero)
      * @param delimiter      The delimiter to separate multiple values
+     *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
     AbstractMultiValueProperty(String theName, String theDescription, List<V> theDefault,
@@ -98,6 +101,7 @@ import net.sourceforge.pmd.Rule;
      * Checks a single value for a "missing value" error.
      *
      * @param value Value to check
+     *
      * @return A descriptive String of the error or null if there was none
      */
     protected String valueErrorFor(V value) {
@@ -153,6 +157,7 @@ import net.sourceforge.pmd.Rule;
      * Returns a string representation of the value, even if it's null.
      *
      * @param value The value to describe
+     *
      * @return A string representation of the value
      */
     protected String asString(V value) {
@@ -187,6 +192,7 @@ import net.sourceforge.pmd.Rule;
      * Parse a string and returns an instance of a single value (not a list).
      *
      * @param toParse String to parse
+     *
      * @return An instance of a value
      */
     protected abstract V createFrom(String toParse);

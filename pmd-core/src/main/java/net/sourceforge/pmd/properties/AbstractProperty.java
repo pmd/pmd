@@ -18,7 +18,9 @@ import org.apache.commons.lang3.StringUtils;
  * Abstract class for properties.
  *
  * @param <T> The type of the property's value. This is a list type for multi-valued properties
+ *
  * @author Brian Remedios
+ * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
 /* default */ abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
@@ -35,6 +37,7 @@ import org.apache.commons.lang3.StringUtils;
      * @param theName        Name of the property
      * @param theDescription Description
      * @param theUIOrder     UI order
+     *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
     protected AbstractProperty(String theName, String theDescription, float theUIOrder, boolean isDefinedExternally) {

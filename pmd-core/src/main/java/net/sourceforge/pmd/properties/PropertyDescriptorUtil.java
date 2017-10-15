@@ -61,6 +61,7 @@ public class PropertyDescriptorUtil {
      * Gets the factory for the descriptor identified by the string id.
      *
      * @param typeId The identifier of the type
+     *
      * @return The factory used to build new instances of a descriptor
      */
     public static PropertyDescriptorExternalBuilder<?> factoryFor(String typeId) {
@@ -73,6 +74,7 @@ public class PropertyDescriptorUtil {
      *
      * @param valueType  The type to look for
      * @param multiValue Whether the descriptor is multivalued or not
+     *
      * @return The type id
      */
     public static String typeIdFor(Class<?> valueType, boolean multiValue) {

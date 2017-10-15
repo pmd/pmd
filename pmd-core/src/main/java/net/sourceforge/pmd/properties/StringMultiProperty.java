@@ -31,6 +31,7 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
      * @param defaultValues  Array of defaults
      * @param theUIOrder     UI order
      * @param delimiter      The delimiter to use
+     *
      * @throws IllegalArgumentException if a default value contains the delimiter
      * @throws NullPointerException     if the defaults array is null
      */
@@ -48,6 +49,7 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
      * @param defaultValues  List of defaults
      * @param theUIOrder     UI order
      * @param delimiter      The delimiter to useg
+     *
      * @throws IllegalArgumentException if a default value contains the delimiter
      * @throws NullPointerException     if the defaults array is null
      */
@@ -99,6 +101,7 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
      * Returns true if the multi value delimiter is present in the string.
      *
      * @param value String
+     *
      * @return boolean
      */
     private boolean containsDelimiter(String value) {
@@ -117,6 +120,7 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
      *
      * @param defaultValue The default value
      * @param delim        The delimiter
+     *
      * @throws IllegalArgumentException if one value contains the delimiter
      */
     private static void checkDefaults(List<String> defaultValue, char delim) {

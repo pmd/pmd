@@ -9,6 +9,7 @@ package net.sourceforge.pmd.properties;
  * packages. These typically use values such as {@link Class} and {@link java.lang.reflect.Method}.
  *
  * @param <T> type of the property value
+ *
  * @author Clément Fournier
  */
 public interface PackagedPropertyDescriptor<T> extends PropertyDescriptor<T> {

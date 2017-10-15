@@ -18,6 +18,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * <p>This property currently doesn't support serialization and cannot be defined in a ruleset file.z
  *
  * @param <E> Type of the values
+ *
  * @author Brian Remedios
  * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
@@ -39,6 +40,7 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
      * @param defaultIndex   The index of the default value
      * @param valueType      Type of the values
      * @param theUIOrder     UI order
+     *
      * @deprecated will be removed in 7.0.0. Use {@link #EnumeratedProperty(String, String, Map, Object, Class, float)}
      */
     @Deprecated
@@ -59,6 +61,7 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
      * @param theChoices     Values that can be chosen
      * @param defaultIndex   Index of the default value
      * @param theUIOrder     UI order
+     *
      * @deprecated will be removed in 7.0.0. Use {@link #EnumeratedProperty(String, String, Map, Object, Class, float)}
      */
     @Deprecated

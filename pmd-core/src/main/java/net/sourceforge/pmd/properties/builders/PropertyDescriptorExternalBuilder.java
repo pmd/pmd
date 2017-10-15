@@ -14,6 +14,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptorField;
  * Builds properties from a map of key value pairs, eg extracted from an XML element.
  *
  * @param <E> The type of values.
+ *
  * @author Clément Fournier
  * @since 6.0.0
  */
@@ -40,6 +41,7 @@ public interface PropertyDescriptorExternalBuilder<E> {
      * Builds a descriptor. The descriptor returned is tagged as built externally.
      *
      * @param fields Key value pairs
+     *
      * @return A builder
      */
     PropertyDescriptor<E> build(Map<PropertyDescriptorField, String> fields);

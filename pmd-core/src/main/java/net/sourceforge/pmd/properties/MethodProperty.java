@@ -58,6 +58,7 @@ public final class MethodProperty extends AbstractPackagedProperty<Method> {
      * @param defaultMethodStr  Default value, that will be parsed into a Method object
      * @param legalPackageNames Legal packages
      * @param theUIOrder        UI order
+     *
      * @deprecated will be removed in 7.0.0
      */
     public MethodProperty(String theName, String theDescription, String defaultMethodStr, String[] legalPackageNames,

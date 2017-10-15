@@ -15,6 +15,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @param <E> Value type of the built descriptor
  * @param <T> Concrete type of this builder instance. Removes code duplication at the expense of a few unchecked casts.
  *            Everything goes well if this parameter's value is correctly set.
+ *
  * @author Clément Fournier
  * @since 6.0.0
  */
@@ -30,6 +31,7 @@ public abstract class PropertyDescriptorBuilder<E, T extends PropertyDescriptorB
      * Specify the name of the property.
      *
      * @param name The name
+     *
      * @return The same builder
      */
     @SuppressWarnings("unchecked")
@@ -46,6 +48,7 @@ public abstract class PropertyDescriptorBuilder<E, T extends PropertyDescriptorB
      * Specify the description of the property.
      *
      * @param desc The description
+     *
      * @return The same builder
      */
     @SuppressWarnings("unchecked")
@@ -62,6 +65,7 @@ public abstract class PropertyDescriptorBuilder<E, T extends PropertyDescriptorB
      * Specify the UI order of the property.
      *
      * @param f The UI order
+     *
      * @return The same builder
      */
     @SuppressWarnings("unchecked")

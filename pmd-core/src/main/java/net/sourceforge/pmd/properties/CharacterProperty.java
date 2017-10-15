@@ -25,6 +25,7 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
      * @param theDescription String
      * @param defaultStr     String
      * @param theUIOrder     float
+     *
      * @throws IllegalArgumentException
      * @deprecated will be removed in 7.0.0
      */
@@ -68,6 +69,7 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
      * Parses a String into a Character.
      *
      * @param charStr String to parse
+     *
      * @return Parsed Character
      * @throws IllegalArgumentException if the String doesn't have length 1
      */

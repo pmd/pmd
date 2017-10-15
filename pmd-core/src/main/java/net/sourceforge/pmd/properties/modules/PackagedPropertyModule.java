@@ -44,6 +44,7 @@ public abstract class PackagedPropertyModule<T> {
      * Checks that the legal packages are okay.
      *
      * @param legalNamePrefixes Prefixes to check. Can be null, but not contain null
+     *
      * @throws IllegalArgumentException If the prefixes contain null
      * @throws IllegalArgumentException If one name that does not look like a package name
      */
@@ -70,6 +71,7 @@ public abstract class PackagedPropertyModule<T> {
      *
      * @param items             Items to check
      * @param legalNamePrefixes Legal name prefixes
+     *
      * @throws IllegalArgumentException if some items are not allowed
      */
     private void checkValidDefaults(List<T> items, String[] legalNamePrefixes) {
@@ -111,6 +113,7 @@ public abstract class PackagedPropertyModule<T> {
      * Returns the package name of the item.
      *
      * @param item Item (not null)
+     *
      * @return Package name of the item
      */
     protected abstract String packageNameOf(T item);

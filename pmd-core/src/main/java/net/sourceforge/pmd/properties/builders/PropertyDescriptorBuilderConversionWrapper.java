@@ -25,6 +25,7 @@ import net.sourceforge.pmd.properties.ValueParserConstants;
  *
  * @param <E> Value type of the descriptor
  * @param <T> Concrete type of the underlying builder
+ *
  * @author Clément Fournier
  * @since 6.0.0
  */
@@ -75,14 +76,14 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
     }
 
 
-    private static char delimiterIn(Map<PropertyDescriptorField, String> valuesById, char defaultDelimiter) {
+    private static char delimiterIn(Map<PropertyDescriptorField, String> valuesById, char defalt) {
         String characterStr = "";
         if (valuesById.containsKey(DELIMITER)) {
             characterStr = valuesById.get(DELIMITER).trim();
         }
 
         if (StringUtils.isBlank(characterStr)) {
-            return defaultDelimiter;
+            return defalt;
         }
 
         if (characterStr.length() != 1) {

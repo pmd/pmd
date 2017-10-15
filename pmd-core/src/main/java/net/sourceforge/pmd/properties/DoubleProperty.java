@@ -29,6 +29,7 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
      * @param maxStr         Maximum value of the property
      * @param defaultStr     Default value
      * @param theUIOrder     UI order
+     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      * @deprecated will be removed in 7.0.0
      */
@@ -54,6 +55,7 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
      * @param max            Maximum value of the property
      * @param theDefault     Default value
      * @param theUIOrder     UI order
+     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
@@ -78,6 +80,7 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
      * Parses a String into a Double.
      *
      * @param numberString String to parse
+     *
      * @return Parsed Double
      */
     private static Double doubleFrom(String numberString) {

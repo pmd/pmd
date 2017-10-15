@@ -31,6 +31,7 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
      * @param defaultValues  Array of defaults
      * @param theUIOrder     UI order
      * @param delimiter      The delimiter to use
+     *
      * @throws IllegalArgumentException if the delimiter is in the default values
      */
     public CharacterMultiProperty(String theName, String theDescription, Character[] defaultValues, float theUIOrder, char delimiter) {
@@ -61,6 +62,7 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
      * @param defaultValues  List of defaults
      * @param theUIOrder     UI order
      * @param delimiter      The delimiter to use
+     *
      * @throws IllegalArgumentException if the delimiter is in the default values
      */
     public CharacterMultiProperty(String theName, String theDescription, List<Character> defaultValues, float theUIOrder, char delimiter) {

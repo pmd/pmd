@@ -24,13 +24,11 @@ import net.sourceforge.pmd.util.ClassUtil;
  * @author Clément Fournier
  * @since 6.0.0
  */
-//TODO: make package-private when we move everything to n.s.pmd.properties
 public final class ValueParserConstants {
 
 
     /** Extracts methods. */
-    // TODO: make package-private when we move everything to n.s.pmd.properties
-    public static final ValueParser<Method> METHOD_PARSER = new ValueParser<Method>() {
+    static final ValueParser<Method> METHOD_PARSER = new ValueParser<Method>() {
         @Override
         public Method valueOf(String value) throws IllegalArgumentException {
             return methodFrom(value, CLASS_METHOD_DELIMITER, METHOD_ARG_DELIMITER);
@@ -230,6 +228,7 @@ public final class ValueParserConstants {
      * @param parser    Parser used to parse a single value
      * @param delimiter Char delimiting values
      * @param <U>       Element type of the target list
+     *
      * @return A list of values
      */
     public static <U> ValueParser<List<U>> multi(final ValueParser<U> parser, final char delimiter) {
@@ -249,11 +248,12 @@ public final class ValueParserConstants {
      * @param delimiter The delimiter to use
      * @param extractor The function mapping a string to an instance of {@code <U>}
      * @param <U>       The type of the values to parse
+     *
      * @return A list of values
      */
     // FUTURE 1.8 : use java.util.function.Function<String, U> in place of ValueParser<U>,
     // replace ValueParser constants with static functions
-    public static <U> List<U> parsePrimitives(String toParse, char delimiter, ValueParser<U> extractor) {
+    static <U> List<U> parsePrimitives(String toParse, char delimiter, ValueParser<U> extractor) {
         String[] values = StringUtils.split(toParse, delimiter);
         List<U> result = new ArrayList<>();
         for (String s : values) {

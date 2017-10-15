@@ -28,6 +28,7 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
      * @param max            Maximum value of the property
      * @param defaultValues  Array of defaults
      * @param theUIOrder     UI order
+     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public DoubleMultiProperty(String theName, String theDescription, Double min, Double max,
@@ -52,6 +53,7 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
      * @param max            Maximum value of the property
      * @param defaultValues  List of defaults
      * @param theUIOrder     UI order
+     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public DoubleMultiProperty(String theName, String theDescription, Double min, Double max,

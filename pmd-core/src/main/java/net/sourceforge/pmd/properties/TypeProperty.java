@@ -28,6 +28,7 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
      * @param defaultTypeStr    String
      * @param legalPackageNames String[]
      * @param theUIOrder        float
+     *
      * @throws IllegalArgumentException if the default string could not be parsed into a Class
      * @deprecated will be removed in 7.0.0
      */

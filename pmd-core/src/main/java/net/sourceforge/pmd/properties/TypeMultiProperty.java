@@ -29,6 +29,7 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
      * @param theDefaults       Class[]
      * @param legalPackageNames String[]
      * @param theUIOrder        float
+     *
      * @throws IllegalArgumentException
      */
     public TypeMultiProperty(String theName, String theDescription, List<Class> theDefaults,
@@ -54,6 +55,7 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
      * @param theTypeDefaults   String
      * @param legalPackageNames String[]
      * @param theUIOrder        float
+     *
      * @throws IllegalArgumentException
      */
     public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults,

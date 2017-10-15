@@ -26,6 +26,7 @@ public abstract class MultiValuePropertyBuilder<V, T extends MultiValuePropertyB
      * Specify a default value.
      *
      * @param val List of values
+     *
      * @return The same builder
      */
     @SuppressWarnings("unchecked")
@@ -40,6 +41,7 @@ public abstract class MultiValuePropertyBuilder<V, T extends MultiValuePropertyB
      * MultiValuePropertyDescriptor#DEFAULT_NUMERIC_DELIMITER} for numeric properties.
      *
      * @param delim Delimiter
+     *
      * @return The same builder
      */
     @SuppressWarnings("unchecked")

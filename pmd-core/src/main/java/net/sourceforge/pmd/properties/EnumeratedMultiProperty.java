@@ -18,6 +18,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * mappings method returns the set of mappings between the labels and their values.
  *
  * @param <E> The type of the values
+ *
  * @author Brian Remedios
  * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
@@ -40,6 +41,7 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
      * @param choiceIndices  Indices of the default values
      * @param valueType      Type of the values
      * @param theUIOrder     UI order
+     *
      * @deprecated Use {@link #EnumeratedMultiProperty(String, String, Map, List, Class, float)}. Will be removed in
      *         7.0.0
      */
@@ -61,6 +63,7 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
      * @param theChoices     Values that can be chosen
      * @param choiceIndices  Indices of the default values
      * @param theUIOrder     UI order
+     *
      * @deprecated Use {@link #EnumeratedMultiProperty(String, String, Map, List, Class, float)}. Will be removed in
      *         7.0.0
      */

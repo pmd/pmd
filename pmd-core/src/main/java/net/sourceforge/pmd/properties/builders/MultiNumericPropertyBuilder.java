@@ -30,6 +30,7 @@ public abstract class MultiNumericPropertyBuilder<V, T extends MultiNumericPrope
      * Specify a minimum value.
      *
      * @param val Value
+     *
      * @return The same builder
      */
     @SuppressWarnings("unchecked")
@@ -43,6 +44,7 @@ public abstract class MultiNumericPropertyBuilder<V, T extends MultiNumericPrope
      * Specify a maximum value.
      *
      * @param val Value
+     *
      * @return The same builder
      */
     @SuppressWarnings("unchecked")

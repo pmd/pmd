@@ -13,7 +13,9 @@ import net.sourceforge.pmd.properties.modules.NumericPropertyModule;
  * Maintains a pair of boundary limit values between which all values managed by the subclasses must fit.
  *
  * @param <T> The type of value.
+ *
  * @author Brian Remedios
+ * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
 /* default */ abstract class AbstractNumericProperty<T extends Number> extends AbstractSingleValueProperty<T>
@@ -32,6 +34,7 @@ import net.sourceforge.pmd.properties.modules.NumericPropertyModule;
      * @param upper          Maximum value of the property
      * @param theDefault     List of defaults
      * @param theUIOrder     UI order
+     *
      * @throws IllegalArgumentException if lower > upper, or one of them is null, or the default is not between the
      *                                  bounds
      */

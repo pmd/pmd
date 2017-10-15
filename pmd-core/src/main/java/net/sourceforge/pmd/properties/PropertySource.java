@@ -20,6 +20,7 @@ public interface PropertySource {
      * Define a new property via a PropertyDescriptor.
      *
      * @param propertyDescriptor The property descriptor.
+     *
      * @throws IllegalArgumentException If there is already a property defined the same name.
      */
     void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) throws IllegalArgumentException;
@@ -29,6 +30,7 @@ public interface PropertySource {
      * Get the PropertyDescriptor for the given property name.
      *
      * @param name The name of the property.
+     *
      * @return The PropertyDescriptor for the named property, <code>null</code> if there is no such property defined.
      */
     PropertyDescriptor<?> getPropertyDescriptor(String name);
@@ -47,6 +49,7 @@ public interface PropertySource {
      *
      * @param <T>                The underlying type of the property descriptor.
      * @param propertyDescriptor The property descriptor.
+     *
      * @return The property value.
      */
     <T> T getProperty(PropertyDescriptor<T> propertyDescriptor);
@@ -84,6 +87,7 @@ public interface PropertySource {
      * Returns whether this Rule has the specified PropertyDescriptor.
      *
      * @param descriptor The PropertyDescriptor for which to check.
+     *
      * @return boolean <code>true</code> if the descriptor is present, <code>false</code> otherwise.
      */
     boolean hasDescriptor(PropertyDescriptor<?> descriptor);

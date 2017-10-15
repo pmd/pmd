@@ -8,7 +8,9 @@ package net.sourceforge.pmd.properties;
  * Defines a descriptor type whose instance values are required to lie within specified upper and lower limits.
  *
  * @param <T> type of the property value
+ *
  * @author Brian Remedios
+ * @author Clément Fournier
  */
 public interface NumericPropertyDescriptor<T> extends PropertyDescriptor<T> {
 

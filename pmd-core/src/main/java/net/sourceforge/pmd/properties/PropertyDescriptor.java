@@ -22,6 +22,7 @@ import net.sourceforge.pmd.RuleSetWriter;
  * see {@link NumericPropertyDescriptor} and {@link EnumeratedPropertyDescriptor}.
  *
  * @param <T> type of the property's value. This is a list type for multi-valued properties.
+ *
  * @author Brian Remedios
  * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
@@ -78,6 +79,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * value is acceptable.
      *
      * @param value The value to check.
+     *
      * @return A diagnostic message.
      */
     String errorFor(T value);
@@ -102,6 +104,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * Returns the value represented by this string.
      *
      * @param propertyString The string to parse
+     *
      * @return The value represented by the string
      * @throws IllegalArgumentException if the given string cannot be parsed
      */
@@ -112,6 +115,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * Formats the object onto a string suitable for storage within the property map.
      *
      * @param value Object
+     *
      * @return String
      */
     String asDelimitedString(T value);
@@ -122,6 +126,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * Returns null otherwise.
      *
      * @param rule Rule
+     *
      * @return String
      */
     String propertyErrorFor(Rule rule);

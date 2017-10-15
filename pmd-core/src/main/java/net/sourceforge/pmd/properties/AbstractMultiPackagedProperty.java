@@ -14,7 +14,9 @@ import net.sourceforge.pmd.properties.modules.PackagedPropertyModule;
  * Multi-valued property restricting the type of its values to some packages.
  *
  * @param <T> The type of the values
+ *
  * @author Brian Remedios
+ * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
 /* default */ abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValueProperty<T>
@@ -32,6 +34,7 @@ import net.sourceforge.pmd.properties.modules.PackagedPropertyModule;
      * @param theDefault     Default value
      * @param theUIOrder     UI order
      * @param module
+     *
      * @throws IllegalArgumentException
      */
     protected AbstractMultiPackagedProperty(String theName, String theDescription, List<T> theDefault,

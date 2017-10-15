@@ -16,6 +16,7 @@ public interface ValueParser<U> {
      * Extracts a primitive from a string.
      *
      * @param value The string to parse
+     *
      * @return The primitive found
      * @throws IllegalArgumentException if the value couldn't be parsed
      */

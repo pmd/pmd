@@ -14,7 +14,9 @@ import net.sourceforge.pmd.properties.modules.PackagedPropertyModule;
  * no restrictions are made.
  *
  * @param <T> The type of the values
+ *
  * @author Brian Remedios
+ * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
 /* default */ abstract class AbstractPackagedProperty<T> extends AbstractSingleValueProperty<T>
@@ -31,6 +33,7 @@ import net.sourceforge.pmd.properties.modules.PackagedPropertyModule;
      * @param theDefault     Default value
      * @param theUIOrder     UI order
      * @param module
+     *
      * @throws IllegalArgumentException
      */
     protected AbstractPackagedProperty(String theName, String theDescription, T theDefault,
