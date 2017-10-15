@@ -29,7 +29,7 @@ public abstract class MultiValuePropertyBuilder<V, T extends MultiValuePropertyB
      * @return The same builder
      */
     @SuppressWarnings("unchecked")
-    public T deft(List<V> val) {
+    public T defalt(List<V> val) {
         this.defaultValues = val;
         return (T) this;
     }

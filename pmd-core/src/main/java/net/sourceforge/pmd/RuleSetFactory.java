@@ -21,6 +21,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Attr;
@@ -44,10 +47,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptorBuildUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
 import net.sourceforge.pmd.util.ResourceLoader;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * RuleSetFactory is responsible for creating RuleSet instances from XML

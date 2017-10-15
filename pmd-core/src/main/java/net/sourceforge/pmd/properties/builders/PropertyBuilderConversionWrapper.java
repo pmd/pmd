@@ -39,8 +39,11 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
 
     /** Populates the builder with extracted fields. To be overridden. */
     protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
+        builder.name(fields.get(PropertyDescriptorField.NAME));
         builder.desc(fields.get(PropertyDescriptorField.DESCRIPTION));
-        builder.uiOrder(Float.parseFloat(fields.get(PropertyDescriptorField.UI_ORDER)));
+        if (fields.containsKey(PropertyDescriptorField.UI_ORDER)) {
+            builder.uiOrder(Float.parseFloat(fields.get(PropertyDescriptorField.UI_ORDER)));
+        }
     }
 
 
@@ -117,9 +120,8 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
         protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
             super.populate(builder, fields);
             char delim = delimiterIn(fields, builder.multiValueDelimiter);
-            builder.delim(delim);
-            builder.deft(ValueParserConstants.multi(parser, delim)
-                                             .valueOf(fields.get(PropertyDescriptorField.DEFAULT_VALUE)));
+            builder.delim(delim).defalt(ValueParserConstants.multi(parser, delim)
+                                                            .valueOf(fields.get(PropertyDescriptorField.DEFAULT_VALUE)));
         }
 
 
@@ -169,7 +171,7 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
             @Override
             protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
                 super.populate(builder, fields);
-                builder.legalPackageNames(legalPackageNamesIn(fields, PropertyBuilderConversionWrapper.delimiterIn(fields,
+                builder.legalPackages(legalPackageNamesIn(fields, PropertyBuilderConversionWrapper.delimiterIn(fields,
                         MultiValuePropertyDescriptor.DEFAULT_DELIMITER)));
             }
         }

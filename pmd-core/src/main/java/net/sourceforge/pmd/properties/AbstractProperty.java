@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.PropertyDescriptorField.*;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.DEFAULT_VALUE;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.DESCRIPTION;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.NAME;
 
 import java.util.HashMap;
 import java.util.Map;

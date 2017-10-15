@@ -18,8 +18,10 @@ public abstract class MultiPackagedPropertyBuilder<V, T extends MultiPackagedPro
 
 
     @SuppressWarnings("unchecked")
-    public T legalPackageNames(String[] packs) {
-        this.legalPackageNames = Arrays.copyOf(packs, packs.length);
+    public T legalPackages(String[] packs) {
+        if (packs != null) {
+            this.legalPackageNames = Arrays.copyOf(packs, packs.length);
+        }
         return (T) this;
     }
 

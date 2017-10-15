@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.modules.MethodPropertyModule.*;
+import static net.sourceforge.pmd.properties.modules.MethodPropertyModule.ARRAY_FLAG;
+import static net.sourceforge.pmd.properties.modules.MethodPropertyModule.CLASS_METHOD_DELIMITER;
+import static net.sourceforge.pmd.properties.modules.MethodPropertyModule.METHOD_ARG_DELIMITER;
+import static net.sourceforge.pmd.properties.modules.MethodPropertyModule.METHOD_GROUP_DELIMITERS;
 
 import java.io.File;
 import java.lang.reflect.Array;

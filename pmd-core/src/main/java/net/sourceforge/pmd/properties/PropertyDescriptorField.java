@@ -70,7 +70,9 @@ public enum PropertyDescriptorField {
 
     public static PropertyDescriptorField getConstant(String name) {
         for (PropertyDescriptorField f : values()) {
-            if (Objects.equals(f.attributeName, name)) return f;
+            if (Objects.equals(f.attributeName, name)) {
+                return f;
+            }
         }
         return null;
     }

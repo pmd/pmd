@@ -19,7 +19,9 @@ public abstract class SinglePackagedPropertyBuilder<V, T extends SinglePackagedP
 
     @SuppressWarnings("unchecked")
     public T legalPackageNames(String[] packs) {
-        this.legalPackageNames = Arrays.copyOf(packs, packs.length);
+        if (packs != null) {
+            this.legalPackageNames = Arrays.copyOf(packs, packs.length);
+        }
         return (T) this;
     }
 
