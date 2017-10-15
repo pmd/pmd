@@ -91,10 +91,14 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
     }
 
 
-    private static final class CharacterPBuilder extends SingleValuePropertyBuilder<Character, CharacterPBuilder> {
+    public static final class CharacterPBuilder extends SingleValuePropertyBuilder<Character, CharacterPBuilder> {
+        private CharacterPBuilder() {
+        }
+
+
         @Override
-        protected CharacterProperty createInstance() {
-            return new CharacterProperty(this.name, this.description, this.defaultValue, this.uiOrder, false);
+        public CharacterProperty build() {
+            return new CharacterProperty(this.name, this.description, this.defaultValue, this.uiOrder, isDefinedInXML);
         }
     }
 

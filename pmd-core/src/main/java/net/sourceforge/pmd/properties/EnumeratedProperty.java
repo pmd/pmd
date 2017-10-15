@@ -130,13 +130,13 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
     }
 
 
-    private static final class EnumPBuilder<E> extends SingleValuePropertyBuilder<E, EnumPBuilder<E>> {
+    public static final class EnumPBuilder<E> extends SingleValuePropertyBuilder<E, EnumPBuilder<E>> {
 
         private final Class<E> valueType;
         private Map<String, E> mappings;
 
 
-        EnumPBuilder(Class<E> type) {
+        private EnumPBuilder(Class<E> type) {
             this.valueType = type;
         }
 
@@ -148,7 +148,7 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
 
 
         @Override
-        protected EnumeratedProperty<E> createInstance() {
+        public EnumeratedProperty<E> build() {
             return new EnumeratedProperty<>(this.name, this.description, mappings, this.defaultValue, valueType, this.uiOrder, isDefinedInXML);
         }
     }

@@ -63,10 +63,14 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
     }
 
 
-    private static final class StringPBuilder extends SingleValuePropertyBuilder<String, StringPBuilder> {
+    public static final class StringPBuilder extends SingleValuePropertyBuilder<String, StringPBuilder> {
+        private StringPBuilder() {
+        }
+
+
         @Override
-        protected StringProperty createInstance() {
-            return new StringProperty(this.name, this.description, this.defaultValue, this.uiOrder, false);
+        public StringProperty build() {
+            return new StringProperty(this.name, this.description, this.defaultValue, this.uiOrder, isDefinedInXML);
         }
     }
 }

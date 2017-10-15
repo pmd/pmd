@@ -67,10 +67,13 @@ public final class FileProperty extends AbstractSingleValueProperty<File> {
     }
 
 
-    private static class FilePBuilder extends SinglePackagedPropertyBuilder<File, FilePBuilder> {
+    public static final class FilePBuilder extends SinglePackagedPropertyBuilder<File, FilePBuilder> {
+        private FilePBuilder() {
+        }
+
 
         @Override
-        protected FileProperty createInstance() {
+        public FileProperty build() {
             return new FileProperty(name, description, defaultValue, uiOrder, isDefinedInXML);
         }
     }

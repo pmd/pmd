@@ -51,12 +51,4 @@ public abstract class MultiNumericPropertyBuilder<V, T extends MultiNumericPrope
         return (T) this;
     }
 
-
-    @Override
-    protected void preBuildCheck() {
-        super.preBuildCheck();
-        if (lowerLimit == null || upperLimit == null) {
-            throw new RuntimeException("Min and max values must be specified");
-        }
-    }
 }

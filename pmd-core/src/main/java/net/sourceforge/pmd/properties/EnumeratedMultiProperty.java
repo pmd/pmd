@@ -25,7 +25,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E>
         implements EnumeratedPropertyDescriptor<E, List<E>> {
 
-   
+
     private final EnumeratedPropertyModule<E> module;
 
 
@@ -158,13 +158,13 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
     }
 
 
-    private static final class EnumMultiPBuilder<E> extends MultiValuePropertyBuilder<E, EnumMultiPBuilder<E>> {
+    public static final class EnumMultiPBuilder<E> extends MultiValuePropertyBuilder<E, EnumMultiPBuilder<E>> {
 
         private final Class<E> valueType;
         private Map<String, E> mappings;
 
 
-        EnumMultiPBuilder(Class<E> type) {
+        private EnumMultiPBuilder(Class<E> type) {
             this.valueType = type;
         }
 
@@ -176,7 +176,7 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
 
 
         @Override
-        protected EnumeratedMultiProperty<E> createInstance() {
+        public EnumeratedMultiProperty<E> build() {
             return new EnumeratedMultiProperty<>(this.name, this.description, mappings, this.defaultValues, valueType, this.uiOrder, isDefinedInXML);
         }
     }

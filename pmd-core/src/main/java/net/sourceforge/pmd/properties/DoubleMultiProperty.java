@@ -87,10 +87,13 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
     }
 
 
-    private static class DoubleMultiPBuilder extends MultiNumericPropertyBuilder<Double, DoubleMultiPBuilder> {
+    public static final class DoubleMultiPBuilder extends MultiNumericPropertyBuilder<Double, DoubleMultiPBuilder> {
+        private DoubleMultiPBuilder() {
+        }
+
 
         @Override
-        protected PropertyDescriptor<List<Double>> createInstance() {
+        public DoubleMultiProperty build() {
             return new DoubleMultiProperty(name, description, lowerLimit, upperLimit, defaultValues, uiOrder, isDefinedInXML);
         }
     }

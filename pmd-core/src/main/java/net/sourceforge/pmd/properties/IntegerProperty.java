@@ -69,10 +69,13 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
     }
 
 
-    private static class IntegerPBuilder extends SingleNumericPropertyBuilder<Integer, IntegerPBuilder> {
+    public static final class IntegerPBuilder extends SingleNumericPropertyBuilder<Integer, IntegerPBuilder> {
+        private IntegerPBuilder() {
+        }
+
 
         @Override
-        protected IntegerProperty createInstance() {
+        public IntegerProperty build() {
             return new IntegerProperty(name, description, lowerLimit, upperLimit, defaultValue, uiOrder, isDefinedInXML);
         }
     }

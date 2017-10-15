@@ -100,10 +100,13 @@ public final class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
 
-    private static class MethodPBuilder extends SinglePackagedPropertyBuilder<Method, MethodPBuilder> {
+    public static final class MethodPBuilder extends SinglePackagedPropertyBuilder<Method, MethodPBuilder> {
+        private MethodPBuilder() {
+        }
+
 
         @Override
-        protected MethodProperty createInstance() {
+        public MethodProperty build() {
             return new MethodProperty(name, description, defaultValue, legalPackageNames, uiOrder, isDefinedInXML);
         }
     }

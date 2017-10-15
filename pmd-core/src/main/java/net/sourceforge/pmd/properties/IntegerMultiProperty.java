@@ -90,10 +90,13 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
     }
 
 
-    private static class IntegerMultiPBuilder extends MultiNumericPropertyBuilder<Integer, IntegerMultiPBuilder> {
+    public static final class IntegerMultiPBuilder extends MultiNumericPropertyBuilder<Integer, IntegerMultiPBuilder> {
+        private IntegerMultiPBuilder() {
+        }
+
 
         @Override
-        protected PropertyDescriptor<List<Integer>> createInstance() {
+        public IntegerMultiProperty build() {
             return new IntegerMultiProperty(name, description, lowerLimit, upperLimit, defaultValues, uiOrder, isDefinedInXML);
         }
     }

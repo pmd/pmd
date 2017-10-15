@@ -109,10 +109,13 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
     }
 
 
-    private static class TypeMultiPBuilder extends MultiPackagedPropertyBuilder<Class, TypeMultiPBuilder> {
+    public static final class TypeMultiPBuilder extends MultiPackagedPropertyBuilder<Class, TypeMultiPBuilder> {
+        private TypeMultiPBuilder() {
+        }
+
 
         @Override
-        protected PropertyDescriptor<List<Class>> createInstance() {
+        public TypeMultiProperty build() {
             return new TypeMultiProperty(name, description, defaultValues, legalPackageNames, uiOrder, isDefinedInXML);
         }
     }

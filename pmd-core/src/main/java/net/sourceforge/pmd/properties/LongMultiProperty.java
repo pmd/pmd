@@ -92,7 +92,7 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
             extends MultiNumericPropertyBuilder<Long, LongMultiPBuilder> {
 
         @Override
-        protected LongMultiProperty createInstance() {
+        public LongMultiProperty build() {
             return new LongMultiProperty(name, description, lowerLimit, upperLimit,
                     defaultValues, uiOrder, isDefinedInXML);
         }

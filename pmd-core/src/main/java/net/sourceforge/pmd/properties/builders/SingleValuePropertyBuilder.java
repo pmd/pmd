@@ -23,7 +23,7 @@ public abstract class SingleValuePropertyBuilder<E, T extends SingleValuePropert
      * @return The same builder
      */
     @SuppressWarnings("unchecked")
-    public T deft(E val) {
+    public T defalt(E val) {
         this.defaultValue = val;
         return (T) this;
     }

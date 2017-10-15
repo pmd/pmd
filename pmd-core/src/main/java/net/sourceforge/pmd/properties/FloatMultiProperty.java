@@ -88,10 +88,13 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
     }
 
 
-    private static class FloatMultiPBuilder extends MultiNumericPropertyBuilder<Float, FloatMultiPBuilder> {
+    public static final class FloatMultiPBuilder extends MultiNumericPropertyBuilder<Float, FloatMultiPBuilder> {
+        private FloatMultiPBuilder() {
+        }
+
 
         @Override
-        protected PropertyDescriptor<List<Float>> createInstance() {
+        public FloatMultiProperty build() {
             return new FloatMultiProperty(name, description, lowerLimit, upperLimit, defaultValues, uiOrder, isDefinedInXML);
         }
     }

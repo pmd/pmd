@@ -130,10 +130,13 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
     }
 
 
-    private static class MethodMultiPBuilder extends MultiPackagedPropertyBuilder<Method, MethodMultiPBuilder> {
+    public static final class MethodMultiPBuilder extends MultiPackagedPropertyBuilder<Method, MethodMultiPBuilder> {
+        private MethodMultiPBuilder() {
+        }
+
 
         @Override
-        protected MethodMultiProperty createInstance() {
+        public MethodMultiProperty build() {
             return new MethodMultiProperty(name, description, defaultValues, legalPackageNames, uiOrder, isDefinedInXML);
         }
     }

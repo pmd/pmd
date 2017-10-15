@@ -93,10 +93,13 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
 
-    private static class TypePBuilder extends SinglePackagedPropertyBuilder<Class, TypePBuilder> {
+    public static final class TypePBuilder extends SinglePackagedPropertyBuilder<Class, TypePBuilder> {
+        private TypePBuilder() {
+        }
+
 
         @Override
-        protected TypeProperty createInstance() {
+        public TypeProperty build() {
             return new TypeProperty(name, description, defaultValue, legalPackageNames, uiOrder, isDefinedInXML);
         }
     }

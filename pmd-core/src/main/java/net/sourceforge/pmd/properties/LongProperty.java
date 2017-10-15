@@ -87,10 +87,13 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
     }
 
 
-    private static class LongPBuilder extends SingleNumericPropertyBuilder<Long, LongPBuilder> {
+    public static final class LongPBuilder extends SingleNumericPropertyBuilder<Long, LongPBuilder> {
+        private LongPBuilder() {
+        }
+
 
         @Override
-        protected LongProperty createInstance() {
+        public LongProperty build() {
             return new LongProperty(name, description, lowerLimit, upperLimit, defaultValue, uiOrder, isDefinedInXML);
         }
     }

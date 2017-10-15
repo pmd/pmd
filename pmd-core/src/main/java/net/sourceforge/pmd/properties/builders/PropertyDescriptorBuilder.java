@@ -77,18 +77,7 @@ public abstract class PropertyDescriptorBuilder<E, T extends PropertyDescriptorB
      * @return The built descriptor
      * @throws IllegalArgumentException if parameters are incorrect
      */
-    public final PropertyDescriptor<E> build() {
-        preBuildCheck();
-        return createInstance();
-    }
-
-
-    protected abstract PropertyDescriptor<E> createInstance();
-
-
-    protected void preBuildCheck() {
-
-    }
+    public abstract PropertyDescriptor<E> build();
 
 
 }

@@ -78,10 +78,15 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
     }
 
 
-    private static final class BooleanPBuilder extends SingleValuePropertyBuilder<Boolean, BooleanPBuilder> {
+    public static final class BooleanPBuilder extends SingleValuePropertyBuilder<Boolean, BooleanPBuilder> {
+        private BooleanPBuilder() {
+
+        }
+
+
         @Override
-        protected BooleanProperty createInstance() {
-            return new BooleanProperty(this.name, this.description, this.defaultValue, this.uiOrder, false);
+        public BooleanProperty build() {
+            return new BooleanProperty(this.name, this.description, this.defaultValue, this.uiOrder, this.isDefinedInXML);
         }
     }
 

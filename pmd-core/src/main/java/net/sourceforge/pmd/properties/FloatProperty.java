@@ -89,10 +89,13 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
     }
 
 
-    private static class FloatPBuilder extends SingleNumericPropertyBuilder<Float, FloatPBuilder> {
+    public static final class FloatPBuilder extends SingleNumericPropertyBuilder<Float, FloatPBuilder> {
+        private FloatPBuilder() {
+        }
+
 
         @Override
-        protected FloatProperty createInstance() {
+        public FloatProperty build() {
             return new FloatProperty(name, description, lowerLimit, upperLimit, defaultValue, uiOrder, isDefinedInXML);
         }
     }

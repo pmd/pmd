@@ -200,7 +200,7 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
         @Override
         protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
             super.populate(builder, fields);
-            builder.deft(parser.valueOf(fields.get(PropertyDescriptorField.DEFAULT_VALUE)));
+            builder.defalt(parser.valueOf(fields.get(PropertyDescriptorField.DEFAULT_VALUE)));
         }
 
 

@@ -107,10 +107,14 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
     }
 
 
-    private static final class CharacterMultiPBuilder extends MultiValuePropertyBuilder<Character, CharacterMultiPBuilder> {
+    public static final class CharacterMultiPBuilder extends MultiValuePropertyBuilder<Character, CharacterMultiPBuilder> {
+        private CharacterMultiPBuilder() {
+        }
+
+
         @Override
-        protected CharacterMultiProperty createInstance() {
-            return new CharacterMultiProperty(this.name, this.description, this.defaultValues, this.uiOrder, multiValueDelimiter, false);
+        public CharacterMultiProperty build() {
+            return new CharacterMultiProperty(this.name, this.description, this.defaultValues, this.uiOrder, multiValueDelimiter, isDefinedInXML);
         }
     }
 

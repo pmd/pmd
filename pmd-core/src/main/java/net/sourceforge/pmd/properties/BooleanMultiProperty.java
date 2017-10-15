@@ -81,10 +81,14 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
     }
 
 
-    private static final class BooleanMultiPBuilder extends MultiValuePropertyBuilder<Boolean, BooleanMultiPBuilder> {
+    public static final class BooleanMultiPBuilder extends MultiValuePropertyBuilder<Boolean, BooleanMultiPBuilder> {
+        private BooleanMultiPBuilder() {
+        }
+
+
         @Override
-        protected BooleanMultiProperty createInstance() {
-            return new BooleanMultiProperty(this.name, this.description, this.defaultValues, this.uiOrder, false);
+        public BooleanMultiProperty build() {
+            return new BooleanMultiProperty(this.name, this.description, this.defaultValues, this.uiOrder, isDefinedInXML);
         }
     }
 

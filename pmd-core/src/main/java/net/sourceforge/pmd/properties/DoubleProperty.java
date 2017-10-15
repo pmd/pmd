@@ -100,10 +100,13 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
     }
 
 
-    private static class DoublePBuilder extends SingleNumericPropertyBuilder<Double, DoublePBuilder> {
+    public static final class DoublePBuilder extends SingleNumericPropertyBuilder<Double, DoublePBuilder> {
+        private DoublePBuilder() {
+        }
+
 
         @Override
-        protected DoubleProperty createInstance() {
+        public DoubleProperty build() {
             return new DoubleProperty(name, description, lowerLimit, upperLimit, defaultValue, uiOrder, isDefinedInXML);
         }
     }

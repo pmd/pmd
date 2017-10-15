@@ -148,10 +148,14 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
     }
 
 
-    private static final class StringMultiPBuilder extends MultiValuePropertyBuilder<String, StringMultiPBuilder> {
+    public static final class StringMultiPBuilder extends MultiValuePropertyBuilder<String, StringMultiPBuilder> {
+        private StringMultiPBuilder() {
+        }
+
+
         @Override
-        protected StringMultiProperty createInstance() {
-            return new StringMultiProperty(this.name, this.description, this.defaultValues, this.uiOrder, this.multiValueDelimiter, false);
+        public StringMultiProperty build() {
+            return new StringMultiProperty(this.name, this.description, this.defaultValues, this.uiOrder, this.multiValueDelimiter, isDefinedInXML);
         }
     }
 }
