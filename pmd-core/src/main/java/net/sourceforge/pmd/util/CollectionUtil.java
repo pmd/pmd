@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -170,7 +171,7 @@ public final class CollectionUtil {
      * @param otherValue
      *            Object
      * @return boolean
-     * @deprecated {@see Objects#deepEquals(Object, Object)}
+     * @deprecated {@link Objects#deepEquals(Object, Object)}
      */
     @Deprecated
     public static boolean arraysAreEqual(Object value, Object otherValue) {
@@ -192,7 +193,7 @@ public final class CollectionUtil {
      * @param thatArray
      *            Object[]
      * @return boolean
-     * @deprecated {@see Arrays#deepEquals(Object[], Object[])}
+     * @deprecated {@link Arrays#deepEquals(Object[], Object[])}
      */
     @Deprecated
     public static boolean valuesAreTransitivelyEqual(Object[] thisArray, Object[] thatArray) {
@@ -221,7 +222,7 @@ public final class CollectionUtil {
      * @param otherValue
      *            Object
      * @return boolean
-     * @deprecated {@see Objects#deepEquals(Object, Object)}
+     * @deprecated {@link Objects#deepEquals(Object, Object)}
      */
     @Deprecated
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -271,7 +272,7 @@ public final class CollectionUtil {
      * @param a
      * @param b
      * @return boolean
-     * @deprecated {@see Arrays#deepEquals(Object[], Object[])}
+     * @deprecated {@link Arrays#deepEquals(Object[], Object[])}
      */
     @Deprecated
     public static <T> boolean areSemanticEquals(T[] a, T[] b) {

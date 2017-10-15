@@ -44,7 +44,7 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
      * @param theDefault     Default value
      * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
      */
     public IntegerProperty(String theName, String theDescription, Integer min, Integer max, Integer theDefault,
                            float theUIOrder) {
