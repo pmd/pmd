@@ -23,7 +23,7 @@ public class MockRule extends AbstractRule {
     public MockRule() {
         super();
         setLanguage(LanguageRegistry.getLanguage("Dummy"));
-        definePropertyDescriptor(new IntegerProperty("testIntProperty", "testIntProperty", 0, 100, 1, 0));
+        definePropertyDescriptor(IntegerProperty.builder("testIntProperty").desc("testIntProperty").min(0).max(100).defalt(1).uiOrder(0).build());
     }
 
     public MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {
