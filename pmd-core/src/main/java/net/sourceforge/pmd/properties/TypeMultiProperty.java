@@ -5,33 +5,20 @@
 package net.sourceforge.pmd.properties;
 
 import java.util.List;
-import java.util.Map;
 
+import net.sourceforge.pmd.properties.builders.MultiPackagedPropertyBuilder;
+import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.modules.TypePropertyModule;
 
+
 /**
- * Defines a property that supports multiple class types, even for primitive
- * values!
+ * Defines a property that supports multiple class types, even for primitive values!
  *
  * TODO - untested for array types
  *
  * @author Brian Remedios
  */
 public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<List<Class>> FACTORY // @formatter:off
-        = new MultiValuePropertyDescriptorFactory<Class>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
-            @Override
-            public TypeMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                char delimiter = delimiterIn(valuesById);
-                return new TypeMultiProperty(nameIn(valuesById),
-                                             descriptionIn(valuesById),
-                                             defaultValueIn(valuesById),
-                                             legalPackageNamesIn(valuesById, delimiter),
-                                             0f);
-            }
-        }; // @formatter:on
 
 
     /**
@@ -42,7 +29,6 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
      * @param theDefaults       Class[]
      * @param legalPackageNames String[]
      * @param theUIOrder        float
-     *
      * @throws IllegalArgumentException
      */
     public TypeMultiProperty(String theName, String theDescription, List<Class> theDefaults,
@@ -56,7 +42,7 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
     private TypeMultiProperty(String theName, String theDescription, List<Class> theTypeDefaults,
                               String[] legalPackageNames, float theUIOrder, boolean isDefinedExternally) {
         super(theName, theDescription, theTypeDefaults, theUIOrder, isDefinedExternally,
-              new TypePropertyModule(legalPackageNames, theTypeDefaults));
+                new TypePropertyModule(legalPackageNames, theTypeDefaults));
     }
 
 
@@ -68,20 +54,14 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
      * @param theTypeDefaults   String
      * @param legalPackageNames String[]
      * @param theUIOrder        float
-     *
      * @throws IllegalArgumentException
      */
     public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults,
                              String[] legalPackageNames, float theUIOrder) {
         this(theName, theDescription, typesFrom(theTypeDefaults),
-             legalPackageNames,
-             theUIOrder, false);
+                legalPackageNames,
+                theUIOrder, false);
 
-    }
-
-
-    private static List<Class> typesFrom(String valueString) {
-        return ValueParserConstants.parsePrimitives(valueString, MULTI_VALUE_DELIMITER, ValueParserConstants.CLASS_PARSER);
     }
 
 
@@ -106,5 +86,34 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
     @Override
     public List<Class> valueFrom(String valueString) {
         return typesFrom(valueString);
+    }
+
+
+    private static List<Class> typesFrom(String valueString) {
+        return ValueParserConstants.parsePrimitives(valueString, MULTI_VALUE_DELIMITER, ValueParserConstants.CLASS_PARSER);
+    }
+
+
+    public static PropertyBuilderConversionWrapper.MultiValue.Packaged<Class, TypeMultiPBuilder> extractor() {
+        return new PropertyBuilderConversionWrapper.MultiValue.Packaged<Class, TypeMultiPBuilder>(ValueParserConstants.CLASS_PARSER) {
+            @Override
+            protected TypeMultiPBuilder newBuilder() {
+                return new TypeMultiPBuilder();
+            }
+        };
+    }
+
+
+    public static TypeMultiPBuilder builder(String name) {
+        return new TypeMultiPBuilder().name(name);
+    }
+
+
+    private static class TypeMultiPBuilder extends MultiPackagedPropertyBuilder<Class, TypeMultiPBuilder> {
+
+        @Override
+        protected PropertyDescriptor<List<Class>> createInstance() {
+            return new TypeMultiProperty(name, description, defaultValues, legalPackageNames, uiOrder, isDefinedInXML);
+        }
     }
 }

@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.ValueParserConstants.FLOAT_PARSER;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * Multi-valued float property.
@@ -17,25 +15,6 @@ import java.util.Map;
  * @version Refactored June 2017 (6.0.0)
  */
 public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<List<Float>> FACTORY // @formatter:off
-        = new MultiValuePropertyDescriptorFactory<Float>(Float.class, NUMBER_FIELD_TYPES_BY_KEY) {
-            @Override
-            public FloatMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById,
-                                                 boolean isDefinedExternally) {
-                String[] minMax = minMaxFrom(valuesById);
-                char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Float> defaultValues = ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, FLOAT_PARSER);
-                return new FloatMultiProperty(nameIn(valuesById),
-                                              descriptionIn(valuesById),
-                                              FLOAT_PARSER.valueOf(minMax[0]),
-                                              FLOAT_PARSER.valueOf(minMax[1]),
-                                              defaultValues,
-                                              0f,
-                                              isDefinedExternally);
-            }
-        }; // @formatter:on
 
 
     /**
@@ -47,7 +26,6 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
      * @param max            Maximum value of the property
      * @param defaultValues  Array of defaults
      * @param theUIOrder     UI order
-     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public FloatMultiProperty(String theName, String theDescription, Float min, Float max,
@@ -72,7 +50,6 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
      * @param max            Maximum value of the property
      * @param defaultValues  List of defaults
      * @param theUIOrder     UI order
-     *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public FloatMultiProperty(String theName, String theDescription, Float min, Float max,

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.properties.builders;
 
 import java.util.List;
-import java.util.Objects;
 
 import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
 
@@ -47,12 +46,5 @@ public abstract class MultiValuePropertyBuilder<V, T extends MultiValuePropertyB
     public T delim(char delim) {
         this.multiValueDelimiter = delim;
         return (T) this;
-    }
-
-
-    @Override
-    protected void preBuildCheck() {
-        super.preBuildCheck();
-        Objects.requireNonNull(defaultValues, "Default value must not be null. Use Collections.emptyList() to represent empty values.");
     }
 }

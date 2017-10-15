@@ -6,19 +6,21 @@ package net.sourceforge.pmd.properties.builders;
 
 
 import static net.sourceforge.pmd.properties.PropertyDescriptorField.DELIMITER;
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.LEGAL_PACKAGES;
 
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.ValueParser;
 import net.sourceforge.pmd.properties.ValueParserConstants;
 
 
 /**
- * Wraps a property builder and converts its inputs from strings to the target types of the descriptor.
+ * Wraps a property builder and maps its inputs from strings to the target types of the descriptor.
  *
  * @param <E> Value type of the descriptor
  * @param <T> Concrete type of the underlying builder
@@ -36,7 +38,7 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
 
     abstract boolean isMultiValue();
 
-    
+
     protected abstract T newBuilder(); // FUTURE 1.8: use a Supplier constructor parameter
 
 
@@ -50,6 +52,32 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
         T builder = newBuilder();
         populate(builder, fields);
         return builder;
+    }
+
+
+    protected static String[] legalPackageNamesIn(Map<PropertyDescriptorField, String> valuesById, char delimiter) {
+        String names = valuesById.get(LEGAL_PACKAGES);
+        if (StringUtils.isBlank(names)) {
+            return null;
+        }
+        return StringUtils.split(names, delimiter);
+    }
+
+
+    private static char delimiterIn(Map<PropertyDescriptorField, String> valuesById, char defaultDelimiter) {
+        String characterStr = "";
+        if (valuesById.containsKey(DELIMITER)) {
+            characterStr = valuesById.get(DELIMITER).trim();
+        }
+
+        if (StringUtils.isBlank(characterStr)) {
+            return defaultDelimiter;
+        }
+
+        if (characterStr.length() != 1) {
+            throw new RuntimeException("Ambiguous delimiter character, must have length 1: \"" + characterStr + "\"");
+        }
+        return characterStr.charAt(0);
     }
 
 
@@ -86,23 +114,6 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
         }
 
 
-        private static char delimiterIn(Map<PropertyDescriptorField, String> valuesById, char defaultDelimiter) {
-            String characterStr = "";
-            if (valuesById.containsKey(DELIMITER)) {
-                characterStr = valuesById.get(DELIMITER).trim();
-            }
-
-            if (StringUtils.isBlank(characterStr)) {
-                return defaultDelimiter;
-            }
-
-            if (characterStr.length() != 1) {
-                throw new RuntimeException("Ambiguous delimiter character, must have length 1: \"" + characterStr + "\"");
-            }
-            return characterStr.charAt(0);
-        }
-
-
         /**
          * For multi-value numeric properties.
          *
@@ -120,12 +131,113 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
             @Override
             protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
                 super.populate(builder, fields);
-
                 builder.min(parser.valueOf(fields.get(PropertyDescriptorField.MIN)));
                 builder.max(parser.valueOf(fields.get(PropertyDescriptorField.MAX)));
+            }
+        }
 
+
+        /**
+         * For single-value packaged properties.
+         *
+         * @param <V> Element type of the list
+         * @param <T> Concrete type of the underlying builder
+         */
+        public abstract static class Packaged<V, T extends MultiPackagedPropertyBuilder<V, T>>
+                extends MultiValue<V, T> {
+
+            protected Packaged(ValueParser<V> parser) {
+                super(parser);
+            }
+
+
+            @Override
+            protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
+                super.populate(builder, fields);
+                builder.legalPackageNames(legalPackageNamesIn(fields, PropertyBuilderConversionWrapper.delimiterIn(fields,
+                        MultiValuePropertyDescriptor.DEFAULT_DELIMITER)));
             }
         }
 
     }
+
+
+    /**
+     * For single-value properties.
+     *
+     * @param <V> Value type of the property
+     * @param <T> Concrete type of the underlying builder
+     */
+    public abstract static class SingleValue<V, T extends SingleValuePropertyBuilder<V, T>>
+            extends PropertyBuilderConversionWrapper<V, T> {
+
+        protected final ValueParser<V> parser;
+
+
+        protected SingleValue(ValueParser<V> parser) {
+            this.parser = parser;
+        }
+
+
+        @Override
+        protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
+            super.populate(builder, fields);
+            builder.deft(parser.valueOf(fields.get(PropertyDescriptorField.DEFAULT_VALUE)));
+        }
+
+
+        @Override
+        boolean isMultiValue() {
+            return false;
+        }
+
+
+        /**
+         * For single-value numeric properties.
+         *
+         * @param <V> Element type of the list
+         * @param <T> Concrete type of the underlying builder
+         */
+        public abstract static class Numeric<V, T extends SingleNumericPropertyBuilder<V, T>>
+                extends SingleValue<V, T> {
+
+            protected Numeric(ValueParser<V> parser) {
+                super(parser);
+            }
+
+
+            @Override
+            protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
+                super.populate(builder, fields);
+                builder.min(parser.valueOf(fields.get(PropertyDescriptorField.MIN)));
+                builder.max(parser.valueOf(fields.get(PropertyDescriptorField.MAX)));
+            }
+        }
+
+
+        /**
+         * For single-value packaged properties.
+         *
+         * @param <V> Element type of the list
+         * @param <T> Concrete type of the underlying builder
+         */
+        public abstract static class Packaged<V, T extends SinglePackagedPropertyBuilder<V, T>>
+                extends SingleValue<V, T> {
+
+            protected Packaged(ValueParser<V> parser) {
+                super(parser);
+            }
+
+
+            @Override
+            protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
+                super.populate(builder, fields);
+                builder.legalPackageNames(legalPackageNamesIn(fields, PropertyBuilderConversionWrapper.delimiterIn(fields,
+                        MultiValuePropertyDescriptor.DEFAULT_DELIMITER)));
+            }
+        }
+
+
+    }
+
 }
