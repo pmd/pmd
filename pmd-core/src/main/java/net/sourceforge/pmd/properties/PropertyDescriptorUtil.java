@@ -8,20 +8,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
 
 
 /**
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class PropertyDescriptorBuildUtil {
+public class PropertyDescriptorUtil {
 
-    private static final Map<String, PropertyBuilderConversionWrapper<?, ?>> DESCRIPTOR_FACTORIES_BY_TYPE;
+    private static final Map<String, PropertyDescriptorExternalBuilder<?>> DESCRIPTOR_FACTORIES_BY_TYPE;
 
 
     static {
-        Map<String, PropertyBuilderConversionWrapper<?, ?>> temp = new HashMap<>(18);
+        Map<String, PropertyDescriptorExternalBuilder<?>> temp = new HashMap<>(18);
         temp.put("Boolean", BooleanProperty.extractor());
         temp.put("List<Boolean>", BooleanMultiProperty.extractor());
 
@@ -53,7 +53,7 @@ public class PropertyDescriptorBuildUtil {
     }
 
 
-    private PropertyDescriptorBuildUtil() {
+    private PropertyDescriptorUtil() {
     }
 
 
@@ -63,7 +63,7 @@ public class PropertyDescriptorBuildUtil {
      * @param typeId The identifier of the type
      * @return The factory used to build new instances of a descriptor
      */
-    public static PropertyBuilderConversionWrapper<?, ?> factoryFor(String typeId) {
+    public static PropertyDescriptorExternalBuilder<?> factoryFor(String typeId) {
         return DESCRIPTOR_FACTORIES_BY_TYPE.get(typeId);
     }
 
@@ -77,7 +77,7 @@ public class PropertyDescriptorBuildUtil {
      */
     public static String typeIdFor(Class<?> valueType, boolean multiValue) {
 
-        for (Map.Entry<String, PropertyBuilderConversionWrapper<?, ?>> entry : DESCRIPTOR_FACTORIES_BY_TYPE.entrySet()) {
+        for (Map.Entry<String, PropertyDescriptorExternalBuilder<?>> entry : DESCRIPTOR_FACTORIES_BY_TYPE.entrySet()) {
             if (entry.getValue().valueType() == valueType && entry.getValue().isMultiValue() == multiValue) {
                 return entry.getKey();
             }

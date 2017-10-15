@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder;
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 
 
 /**
@@ -66,8 +66,8 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
     }
 
 
-    static PropertyBuilderConversionWrapper.MultiValue<Boolean, BooleanMultiPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.MultiValue<Boolean, BooleanMultiPBuilder>(Boolean.class, ValueParserConstants.BOOLEAN_PARSER) {
+    static PropertyDescriptorBuilderConversionWrapper.MultiValue<Boolean, BooleanMultiPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.MultiValue<Boolean, BooleanMultiPBuilder>(Boolean.class, ValueParserConstants.BOOLEAN_PARSER) {
             @Override
             protected BooleanMultiPBuilder newBuilder() {
                 return new BooleanMultiPBuilder();

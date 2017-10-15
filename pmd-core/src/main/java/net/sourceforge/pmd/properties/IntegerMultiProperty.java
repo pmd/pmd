@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder;
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 
 
 /**
@@ -75,8 +75,8 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
     }
 
 
-    static PropertyBuilderConversionWrapper.MultiValue.Numeric<Integer, IntegerMultiPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.MultiValue.Numeric<Integer, IntegerMultiPBuilder>(Integer.class, ValueParserConstants.INTEGER_PARSER) {
+    static PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Integer, IntegerMultiPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Integer, IntegerMultiPBuilder>(Integer.class, ValueParserConstants.INTEGER_PARSER) {
             @Override
             protected IntegerMultiPBuilder newBuilder() {
                 return new IntegerMultiPBuilder();

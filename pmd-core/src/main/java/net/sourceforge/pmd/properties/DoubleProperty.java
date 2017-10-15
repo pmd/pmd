@@ -6,7 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.properties.ValueParserConstants.DOUBLE_PARSER;
 
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
 
 
@@ -85,8 +85,8 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
     }
 
 
-    static PropertyBuilderConversionWrapper.SingleValue.Numeric<Double, DoublePBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Double, DoublePBuilder>(Double.class, ValueParserConstants.DOUBLE_PARSER) {
+    static PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Double, DoublePBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Double, DoublePBuilder>(Double.class, ValueParserConstants.DOUBLE_PARSER) {
             @Override
             protected DoublePBuilder newBuilder() {
                 return new DoublePBuilder();

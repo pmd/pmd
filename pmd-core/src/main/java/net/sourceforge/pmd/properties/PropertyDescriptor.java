@@ -4,11 +4,6 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.PropertyDescriptorField.DEFAULT_VALUE;
-import static net.sourceforge.pmd.properties.PropertyDescriptorField.DELIMITER;
-import static net.sourceforge.pmd.properties.PropertyDescriptorField.DESCRIPTION;
-import static net.sourceforge.pmd.properties.PropertyDescriptorField.NAME;
-
 import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
@@ -28,19 +23,10 @@ import net.sourceforge.pmd.RuleSetWriter;
  *
  * @param <T> type of the property's value. This is a list type for multi-valued properties.
  * @author Brian Remedios
+ * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
 public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>> {
-
-    /** Default expected fields. Unmodifiable. */
-    Map<PropertyDescriptorField, Boolean> CORE_EXPECTED_FIELDS
-            = ExpectedFieldsBuilder.instance()
-                                   .put(NAME, true)
-                                   .put(DESCRIPTION, true)
-                                   .put(DEFAULT_VALUE, true)
-                                   .put(DELIMITER, false)
-                                   .build();
-
 
     /**
      * The name of the property without spaces as it serves as the key into the property map.

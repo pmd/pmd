@@ -20,7 +20,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
@@ -34,8 +33,8 @@ import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyDescriptorBuildUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
+import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
 
 /**
  * This class represents a way to serialize a RuleSet to an XML configuration
@@ -349,7 +348,7 @@ public class RuleSetWriter {
         final Element propertyElement = createPropertyValueElement(propertyDescriptor,
                 propertyDescriptor.defaultValue());
         propertyElement.setAttribute(PropertyDescriptorField.TYPE.attributeName(),
-                                     PropertyDescriptorBuildUtil.typeIdFor(propertyDescriptor.type(),
+                                     PropertyDescriptorUtil.typeIdFor(propertyDescriptor.type(),
                                                                       propertyDescriptor.isMultiValue()));
 
         Map<PropertyDescriptorField, String> propertyValuesById = propertyDescriptor.attributeValuesById();

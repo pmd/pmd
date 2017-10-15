@@ -11,7 +11,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder;
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 
 
 /**
@@ -92,8 +92,8 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
     }
 
 
-    static PropertyBuilderConversionWrapper.MultiValue<Character, CharacterMultiPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.MultiValue<Character, CharacterMultiPBuilder>(Character.class, ValueParserConstants.CHARACTER_PARSER) {
+    static PropertyDescriptorBuilderConversionWrapper.MultiValue<Character, CharacterMultiPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.MultiValue<Character, CharacterMultiPBuilder>(Character.class, ValueParserConstants.CHARACTER_PARSER) {
             @Override
             protected CharacterMultiPBuilder newBuilder() {
                 return new CharacterMultiPBuilder();

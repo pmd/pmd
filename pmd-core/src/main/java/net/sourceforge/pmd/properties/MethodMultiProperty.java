@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.properties.builders.MultiPackagedPropertyBuilder;
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.modules.MethodPropertyModule;
 
 
@@ -115,8 +115,8 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
     }
 
 
-    static PropertyBuilderConversionWrapper.MultiValue.Packaged<Method, MethodMultiPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.MultiValue.Packaged<Method, MethodMultiPBuilder>(Method.class, ValueParserConstants.METHOD_PARSER) {
+    static PropertyDescriptorBuilderConversionWrapper.MultiValue.Packaged<Method, MethodMultiPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.MultiValue.Packaged<Method, MethodMultiPBuilder>(Method.class, ValueParserConstants.METHOD_PARSER) {
             @Override
             protected MethodMultiPBuilder newBuilder() {
                 return new MethodMultiPBuilder();

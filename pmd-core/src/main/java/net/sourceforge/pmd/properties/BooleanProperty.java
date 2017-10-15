@@ -6,7 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.properties.ValueParserConstants.BOOLEAN_PARSER;
 
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
 
 
@@ -63,8 +63,8 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
     }
 
 
-    static PropertyBuilderConversionWrapper.SingleValue<Boolean, BooleanPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.SingleValue<Boolean, BooleanPBuilder>(Boolean.class, ValueParserConstants.BOOLEAN_PARSER) {
+    static PropertyDescriptorBuilderConversionWrapper.SingleValue<Boolean, BooleanPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.SingleValue<Boolean, BooleanPBuilder>(Boolean.class, ValueParserConstants.BOOLEAN_PARSER) {
             @Override
             protected BooleanPBuilder newBuilder() {
                 return new BooleanPBuilder();

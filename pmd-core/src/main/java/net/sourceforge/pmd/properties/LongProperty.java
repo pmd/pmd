@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.properties;
 
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
 
 
@@ -12,6 +12,7 @@ import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
  * Single valued long property.
  *
  * @author Brian Remedios
+ * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
 public final class LongProperty extends AbstractNumericProperty<Long> {
@@ -72,8 +73,8 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
     }
 
 
-    static PropertyBuilderConversionWrapper.SingleValue.Numeric<Long, LongPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Long, LongPBuilder>(Long.class, ValueParserConstants.LONG_PARSER) {
+    static PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Long, LongPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Long, LongPBuilder>(Long.class, ValueParserConstants.LONG_PARSER) {
             @Override
             protected LongPBuilder newBuilder() {
                 return new LongPBuilder();

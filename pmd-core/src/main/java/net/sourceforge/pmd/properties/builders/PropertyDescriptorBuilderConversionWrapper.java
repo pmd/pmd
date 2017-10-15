@@ -14,6 +14,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.ValueParser;
 import net.sourceforge.pmd.properties.ValueParserConstants;
@@ -27,12 +28,13 @@ import net.sourceforge.pmd.properties.ValueParserConstants;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDescriptorBuilder<E, T>> {
+public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends PropertyDescriptorBuilder<E, T>>
+        implements PropertyDescriptorExternalBuilder<E> {
 
     private final Class<?> valueType;
 
 
-    protected PropertyBuilderConversionWrapper(Class<?> valueType) {
+    protected PropertyDescriptorBuilderConversionWrapper(Class<?> valueType) {
         this.valueType = valueType;
     }
 
@@ -58,26 +60,18 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
     protected abstract T newBuilder(); // FUTURE 1.8: use a Supplier constructor parameter
 
 
-    /**
-     * Gets a property builder populated with the given fields.
-     *
-     * @param fields Key value pairs
-     * @return A builder
-     */
-    public T getBuilder(Map<PropertyDescriptorField, String> fields) {
+    @Override
+    public PropertyDescriptor<E> build(Map<PropertyDescriptorField, String> fields) {
         T builder = newBuilder();
         populate(builder, fields);
         builder.isDefinedInXML = true;
-        return builder;
+        return builder.build();
     }
 
 
     protected static String[] legalPackageNamesIn(Map<PropertyDescriptorField, String> valuesById, char delimiter) {
         String names = valuesById.get(LEGAL_PACKAGES);
-        if (StringUtils.isBlank(names)) {
-            return null;
-        }
-        return StringUtils.split(names, delimiter);
+        return StringUtils.isBlank(names) ? null : StringUtils.split(names, delimiter);
     }
 
 
@@ -105,7 +99,7 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
      * @param <T> Concrete type of the underlying builder
      */
     public abstract static class MultiValue<V, T extends MultiValuePropertyBuilder<V, T>>
-            extends PropertyBuilderConversionWrapper<List<V>, T> {
+            extends PropertyDescriptorBuilderConversionWrapper<List<V>, T> {
 
         protected final ValueParser<V> parser;
 
@@ -171,7 +165,7 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
             @Override
             protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
                 super.populate(builder, fields);
-                builder.legalPackages(legalPackageNamesIn(fields, PropertyBuilderConversionWrapper.delimiterIn(fields,
+                builder.legalPackages(legalPackageNamesIn(fields, PropertyDescriptorBuilderConversionWrapper.delimiterIn(fields,
                         MultiValuePropertyDescriptor.DEFAULT_DELIMITER)));
             }
         }
@@ -186,7 +180,7 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
      * @param <T> Concrete type of the underlying builder
      */
     public abstract static class SingleValue<E, T extends SingleValuePropertyBuilder<E, T>>
-            extends PropertyBuilderConversionWrapper<E, T> {
+            extends PropertyDescriptorBuilderConversionWrapper<E, T> {
 
         protected final ValueParser<E> parser;
 
@@ -250,7 +244,7 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
             @Override
             protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
                 super.populate(builder, fields);
-                builder.legalPackageNames(legalPackageNamesIn(fields, PropertyBuilderConversionWrapper.delimiterIn(fields,
+                builder.legalPackageNames(legalPackageNamesIn(fields, PropertyDescriptorBuilderConversionWrapper.delimiterIn(fields,
                         MultiValuePropertyDescriptor.DEFAULT_DELIMITER)));
             }
         }

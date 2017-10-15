@@ -10,7 +10,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder;
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 
 
 /**
@@ -133,8 +133,8 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
     }
 
 
-    static PropertyBuilderConversionWrapper.MultiValue<String, StringMultiPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.MultiValue<String, StringMultiPBuilder>(String.class, ValueParserConstants.STRING_PARSER) {
+    static PropertyDescriptorBuilderConversionWrapper.MultiValue<String, StringMultiPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.MultiValue<String, StringMultiPBuilder>(String.class, ValueParserConstants.STRING_PARSER) {
             @Override
             protected StringMultiPBuilder newBuilder() {
                 return new StringMultiPBuilder();

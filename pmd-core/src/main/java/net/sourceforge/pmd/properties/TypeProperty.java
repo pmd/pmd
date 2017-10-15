@@ -6,7 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Collections;
 
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.builders.SinglePackagedPropertyBuilder;
 import net.sourceforge.pmd.properties.modules.TypePropertyModule;
 
@@ -78,8 +78,8 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
 
-    static PropertyBuilderConversionWrapper.SingleValue.Packaged<Class, TypePBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.SingleValue.Packaged<Class, TypePBuilder>(Class.class, ValueParserConstants.CLASS_PARSER) {
+    static PropertyDescriptorBuilderConversionWrapper.SingleValue.Packaged<Class, TypePBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.SingleValue.Packaged<Class, TypePBuilder>(Class.class, ValueParserConstants.CLASS_PARSER) {
             @Override
             protected TypePBuilder newBuilder() {
                 return new TypePBuilder();

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.properties;
 
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
 
 
@@ -48,8 +48,8 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
     }
 
 
-    static PropertyBuilderConversionWrapper.SingleValue<String, StringPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.SingleValue<String, StringPBuilder>(String.class, ValueParserConstants.STRING_PARSER) {
+    static PropertyDescriptorBuilderConversionWrapper.SingleValue<String, StringPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.SingleValue<String, StringPBuilder>(String.class, ValueParserConstants.STRING_PARSER) {
             @Override
             protected StringPBuilder newBuilder() {
                 return new StringPBuilder();

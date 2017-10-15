@@ -43,9 +43,9 @@ import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyDescriptorBuildUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
@@ -873,7 +873,7 @@ public class RuleSetFactory {
             return;
         }
 
-        PropertyBuilderConversionWrapper<?, ?> pdFactory = PropertyDescriptorBuildUtil.factoryFor(typeId);
+        PropertyDescriptorExternalBuilder<?> pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
         if (pdFactory == null) {
             throw new RuntimeException("No property descriptor factory for type: " + typeId);
         }
@@ -897,7 +897,7 @@ public class RuleSetFactory {
         }
 
         // casting is not pretty but prevents the interface from having this method
-        PropertyDescriptor<?> desc = pdFactory.getBuilder(values).build();
+        PropertyDescriptor<?> desc = pdFactory.build(values);
 
         rule.definePropertyDescriptor(desc);
         setValue(rule, desc, strValue);

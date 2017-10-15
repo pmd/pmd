@@ -6,7 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.properties.ValueParserConstants.INTEGER_PARSER;
 
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
 
 
@@ -54,8 +54,8 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
     }
 
 
-    static PropertyBuilderConversionWrapper.SingleValue.Numeric<Integer, IntegerPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Integer, IntegerPBuilder>(Integer.class, ValueParserConstants.INTEGER_PARSER) {
+    static PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Integer, IntegerPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Integer, IntegerPBuilder>(Integer.class, ValueParserConstants.INTEGER_PARSER) {
             @Override
             protected IntegerPBuilder newBuilder() {
                 return new IntegerPBuilder();

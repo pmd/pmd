@@ -7,7 +7,7 @@ package net.sourceforge.pmd.properties;
 import java.util.List;
 
 import net.sourceforge.pmd.properties.builders.MultiPackagedPropertyBuilder;
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.modules.TypePropertyModule;
 
 
@@ -94,8 +94,8 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
     }
 
 
-    public static PropertyBuilderConversionWrapper.MultiValue.Packaged<Class, TypeMultiPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.MultiValue.Packaged<Class, TypeMultiPBuilder>(Class.class, ValueParserConstants.CLASS_PARSER) {
+    public static PropertyDescriptorBuilderConversionWrapper.MultiValue.Packaged<Class, TypeMultiPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.MultiValue.Packaged<Class, TypeMultiPBuilder>(Class.class, ValueParserConstants.CLASS_PARSER) {
             @Override
             protected TypeMultiPBuilder newBuilder() {
                 return new TypeMultiPBuilder();

@@ -33,7 +33,7 @@ public abstract class AbstractNumericPropertyDescriptorTester<T> extends Abstrac
     public void testMissingMinThreshold() {
         Map<PropertyDescriptorField, String> attributes = getPropertyDescriptorValues();
         attributes.remove(PropertyDescriptorField.MIN);
-        getSingleFactory().getBuilder(attributes).build();
+        getSingleFactory().build(attributes);
     }
 
 
@@ -50,7 +50,7 @@ public abstract class AbstractNumericPropertyDescriptorTester<T> extends Abstrac
     public void testMissingMaxThreshold() {
         Map<PropertyDescriptorField, String> attributes = getPropertyDescriptorValues();
         attributes.remove(PropertyDescriptorField.MAX);
-        getSingleFactory().getBuilder(attributes).build();
+        getSingleFactory().build(attributes);
 
     }
 }

@@ -10,7 +10,7 @@ import static net.sourceforge.pmd.properties.ValueParserConstants.METHOD_PARSER;
 import java.lang.reflect.Method;
 import java.util.Collections;
 
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.builders.SinglePackagedPropertyBuilder;
 import net.sourceforge.pmd.properties.modules.MethodPropertyModule;
 
@@ -85,8 +85,8 @@ public final class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
 
-    static PropertyBuilderConversionWrapper.SingleValue.Packaged<Method, MethodPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.SingleValue.Packaged<Method, MethodPBuilder>(Method.class, ValueParserConstants.METHOD_PARSER) {
+    static PropertyDescriptorBuilderConversionWrapper.SingleValue.Packaged<Method, MethodPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.SingleValue.Packaged<Method, MethodPBuilder>(Method.class, ValueParserConstants.METHOD_PARSER) {
             @Override
             protected MethodPBuilder newBuilder() {
                 return new MethodPBuilder();

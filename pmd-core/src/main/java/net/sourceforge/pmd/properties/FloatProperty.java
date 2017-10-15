@@ -6,7 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.properties.ValueParserConstants.FLOAT_PARSER;
 
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
 
 
@@ -74,8 +74,8 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
     }
 
 
-    static PropertyBuilderConversionWrapper.SingleValue.Numeric<Float, FloatPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Float, FloatPBuilder>(Float.class, ValueParserConstants.FLOAT_PARSER) {
+    static PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Float, FloatPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Float, FloatPBuilder>(Float.class, ValueParserConstants.FLOAT_PARSER) {
             @Override
             protected FloatPBuilder newBuilder() {
                 return new FloatPBuilder();

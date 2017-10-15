@@ -6,7 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.properties.ValueParserConstants.CHARACTER_PARSER;
 
-import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
 
 
@@ -76,8 +76,8 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
     }
 
 
-    static PropertyBuilderConversionWrapper.SingleValue<Character, CharacterPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.SingleValue<Character, CharacterPBuilder>(Character.class, ValueParserConstants.CHARACTER_PARSER) {
+    static PropertyDescriptorBuilderConversionWrapper.SingleValue<Character, CharacterPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.SingleValue<Character, CharacterPBuilder>(Character.class, ValueParserConstants.CHARACTER_PARSER) {
             @Override
             protected CharacterPBuilder newBuilder() {
                 return new CharacterPBuilder();
