@@ -6,6 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import java.util.List;
 
+
 /**
  * Specializes property descriptors for multi valued descriptors. For this type of property, the return value of the
  * {@link #type()} method must be the class literal of the type parameter of this interface, which is the type of the
@@ -13,7 +14,6 @@ import java.util.List;
  * is <i>not</i> the same as the type parameter of {@link PropertyDescriptor} they inherit!
  *
  * @param <V> The type of value this descriptor works with. This is the type of the list's component.
- *
  * @author Clément Fournier
  * @since 6.0.0
  */

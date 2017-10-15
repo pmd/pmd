@@ -4,43 +4,23 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.ValueParserConstants.STRING_PARSER;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder;
+import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+
+
 /**
- * Defines a datatype that supports multiple String values. Note that all
- * strings must be filtered by the delimiter character.
+ * Defines a datatype that supports multiple String values. Note that all strings must be filtered by the delimiter
+ * character.
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
 public final class StringMultiProperty extends AbstractMultiValueProperty<String> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<List<String>> FACTORY // @formatter:off
-        = new MultiValuePropertyDescriptorFactory<String>(String.class) {
-
-            @Override
-            protected boolean isValueMissing(String value) {
-                return StringUtils.isEmpty(value);
-            }
-
-            @Override
-            public StringMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                char delimiter = delimiterIn(valuesById);
-                return new StringMultiProperty(nameIn(valuesById),
-                                               descriptionIn(valuesById),
-                                               ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, STRING_PARSER),
-                                               0.0f,
-                                               delimiter,
-                                               isDefinedExternally);
-            }
-        }; // @formatter:on
 
 
     /**
@@ -51,7 +31,6 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
      * @param defaultValues  Array of defaults
      * @param theUIOrder     UI order
      * @param delimiter      The delimiter to use
-     *
      * @throws IllegalArgumentException if a default value contains the delimiter
      * @throws NullPointerException     if the defaults array is null
      */
@@ -69,7 +48,6 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
      * @param defaultValues  List of defaults
      * @param theUIOrder     UI order
      * @param delimiter      The delimiter to useg
-     *
      * @throws IllegalArgumentException if a default value contains the delimiter
      * @throws NullPointerException     if the defaults array is null
      */
@@ -85,28 +63,6 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
         super(theName, theDescription, defaultValues, theUIOrder, delimiter, isDefinedExternally);
 
         checkDefaults(defaultValues, delimiter);
-    }
-
-
-    /**
-     * Checks if the values are valid.
-     *
-     * @param defaultValue The default value
-     * @param delim        The delimiter
-     *
-     * @throws IllegalArgumentException if one value contains the delimiter
-     */
-    private static void checkDefaults(List<String> defaultValue, char delim) {
-
-        if (defaultValue == null) {
-            return;
-        }
-
-        for (String aDefaultValue : defaultValue) {
-            if (aDefaultValue.indexOf(delim) >= 0) {
-                throw new IllegalArgumentException("Cannot include the delimiter in the set of defaults");
-            }
-        }
     }
 
 
@@ -143,7 +99,6 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
      * Returns true if the multi value delimiter is present in the string.
      *
      * @param value String
-     *
      * @return boolean
      */
     private boolean containsDelimiter(String value) {
@@ -154,5 +109,49 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
     @Override
     protected String createFrom(String toParse) {
         return toParse;
+    }
+
+
+    /**
+     * Checks if the values are valid.
+     *
+     * @param defaultValue The default value
+     * @param delim        The delimiter
+     * @throws IllegalArgumentException if one value contains the delimiter
+     */
+    private static void checkDefaults(List<String> defaultValue, char delim) {
+
+        if (defaultValue == null) {
+            return;
+        }
+
+        for (String aDefaultValue : defaultValue) {
+            if (aDefaultValue.indexOf(delim) >= 0) {
+                throw new IllegalArgumentException("Cannot include the delimiter in the set of defaults");
+            }
+        }
+    }
+
+
+    static PropertyBuilderConversionWrapper.MultiValue<String, StringMultiPBuilder> extractor() {
+        return new PropertyBuilderConversionWrapper.MultiValue<String, StringMultiPBuilder>(String.class, ValueParserConstants.STRING_PARSER) {
+            @Override
+            protected StringMultiPBuilder newBuilder() {
+                return new StringMultiPBuilder();
+            }
+        };
+    }
+
+
+    public static StringMultiPBuilder builder(String name) {
+        return new StringMultiPBuilder().name(name);
+    }
+
+
+    private static final class StringMultiPBuilder extends MultiValuePropertyBuilder<String, StringMultiPBuilder> {
+        @Override
+        protected StringMultiProperty createInstance() {
+            return new StringMultiProperty(this.name, this.description, this.defaultValues, this.uiOrder, this.multiValueDelimiter, false);
+        }
     }
 }

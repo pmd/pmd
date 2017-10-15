@@ -22,8 +22,8 @@ public abstract class AbstractPackagedPropertyDescriptorTester<T> extends Abstra
     public void testMissingPackageNames() {
         Map<PropertyDescriptorField, String> attributes = getPropertyDescriptorValues();
         attributes.remove(PropertyDescriptorField.LEGAL_PACKAGES);
-        getMultiFactory().createWith(attributes); // no exception, null is ok
-        getSingleFactory().createWith(attributes);
+        getMultiFactory().getBuilder(attributes).build(); // no exception, null is ok
+        getSingleFactory().getBuilder(attributes).build();
     }
 
 

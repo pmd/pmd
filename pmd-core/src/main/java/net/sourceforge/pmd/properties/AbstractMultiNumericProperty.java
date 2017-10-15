@@ -9,16 +9,16 @@ import java.util.Map;
 
 import net.sourceforge.pmd.properties.modules.NumericPropertyModule;
 
+
 /**
  * Base class for multi-valued numeric properties.
  *
  * @param <T> The type of number
- *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
 /* default */ abstract class AbstractMultiNumericProperty<T extends Number> extends AbstractMultiValueProperty<T>
-    implements NumericPropertyDescriptor<List<T>> {
+        implements NumericPropertyDescriptor<List<T>> {
 
     private final NumericPropertyModule<T> module;
 
@@ -32,7 +32,6 @@ import net.sourceforge.pmd.properties.modules.NumericPropertyModule;
      * @param upper          Maximum value of the property
      * @param theDefault     List of defaults
      * @param theUIOrder     UI order
-     *
      * @throws IllegalArgumentException if lower > upper, or one of them is null, or one of the defaults is not between
      *                                  the bounds
      */

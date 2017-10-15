@@ -6,12 +6,12 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Map;
 
+
 /**
  * Interface defining an enumerated property descriptor.
  *
  * @param <E> The type of the values
  * @param <T> The type of default values the descriptor can take (can be a List)
- *
  * @author Clément Fournier
  * @since 6.0.0
  */

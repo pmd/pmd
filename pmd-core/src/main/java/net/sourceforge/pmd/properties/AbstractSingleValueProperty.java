@@ -6,15 +6,15 @@ package net.sourceforge.pmd.properties;
 
 import net.sourceforge.pmd.Rule;
 
+
 /**
  * Single value property.
  *
  * @param <T> The type of the value.
- *
  * @author Clément Fournier
  */
 /* default */ abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
-    implements SingleValuePropertyDescriptor<T> {
+        implements SingleValuePropertyDescriptor<T> {
 
     /** Default value. */
     private T defaultValue;
@@ -27,7 +27,6 @@ import net.sourceforge.pmd.Rule;
      * @param theDescription Description
      * @param theUIOrder     UI order
      * @param theDefault     Default value
-     *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
     protected AbstractSingleValueProperty(String theName, String theDescription, T theDefault,
@@ -60,7 +59,6 @@ import net.sourceforge.pmd.Rule;
      * Returns a string representation of the value, even if it's null.
      *
      * @param value The value to describe
-     *
      * @return A string representation of the value
      */
     protected String asString(T value) {
@@ -99,7 +97,6 @@ import net.sourceforge.pmd.Rule;
      * Checks the value for an error.
      *
      * @param value Value to check
-     *
      * @return A diagnostic error message, or null if there's no problem
      */
     protected String valueErrorFor(T value) {
@@ -133,7 +130,6 @@ import net.sourceforge.pmd.Rule;
      * Parse a string and returns an instance of a value.
      *
      * @param toParse String to parse
-     *
      * @return An instance of a value
      */
     protected abstract T createFrom(String toParse);    // this is there to be symmetrical to multi values

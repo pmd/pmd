@@ -8,38 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder;
 import net.sourceforge.pmd.properties.modules.EnumeratedPropertyModule;
 import net.sourceforge.pmd.util.CollectionUtil;
+
 
 /**
  * Multi-valued property which can take only a fixed set of values of any type, then selected via String labels. The
  * mappings method returns the set of mappings between the labels and their values.
  *
  * @param <E> The type of the values
- *
  * @author Brian Remedios
  * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
 public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E>
-    implements EnumeratedPropertyDescriptor<E, List<E>> {
+        implements EnumeratedPropertyDescriptor<E, List<E>> {
 
-    /** Factory. */
-    public static final PropertyDescriptorFactory<List<Object>> FACTORY // @formatter:off
-        = new MultiValuePropertyDescriptorFactory<Object>(Object.class) {  // TODO:cf is Object the right type?
-            @Override
-            public EnumeratedMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                Object[] choices = choicesIn(valuesById);
-                return new EnumeratedMultiProperty<>(nameIn(valuesById),
-                                                     descriptionIn(valuesById),
-                                                     CollectionUtil.mapFrom(labelsIn(valuesById), choices),
-                                                     selection(indicesIn(valuesById), choices),
-                                                     classIn(valuesById),
-                                                     0f,
-                                                     isDefinedExternally);
-            }
-        }; // @formatter:on
-
+   
     private final EnumeratedPropertyModule<E> module;
 
 
@@ -54,15 +40,14 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
      * @param choiceIndices  Indices of the default values
      * @param valueType      Type of the values
      * @param theUIOrder     UI order
-     *
      * @deprecated Use {@link #EnumeratedMultiProperty(String, String, Map, List, Class, float)}. Will be removed in
-     * 7.0.0
+     *         7.0.0
      */
     @Deprecated
     public EnumeratedMultiProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
                                    int[] choiceIndices, Class<E> valueType, float theUIOrder) {
         this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices),
-             selection(choiceIndices, theChoices), valueType, theUIOrder, false);
+                selection(choiceIndices, theChoices), valueType, theUIOrder, false);
     }
 
 
@@ -76,15 +61,14 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
      * @param theChoices     Values that can be chosen
      * @param choiceIndices  Indices of the default values
      * @param theUIOrder     UI order
-     *
      * @deprecated Use {@link #EnumeratedMultiProperty(String, String, Map, List, Class, float)}. Will be removed in
-     * 7.0.0
+     *         7.0.0
      */
     @Deprecated
     public EnumeratedMultiProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
                                    int[] choiceIndices, float theUIOrder) {
         this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices),
-             selection(choiceIndices, theChoices), null, theUIOrder, false);
+                selection(choiceIndices, theChoices), null, theUIOrder, false);
     }
 
 
@@ -166,6 +150,35 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
             selected.add(theChoices[i]);
         }
         return selected;
+    }
+
+
+    public static <E> EnumMultiPBuilder<E> builder(String name, Class<E> type) {
+        return new EnumMultiPBuilder<>(type).name(name);
+    }
+
+
+    private static final class EnumMultiPBuilder<E> extends MultiValuePropertyBuilder<E, EnumMultiPBuilder<E>> {
+
+        private final Class<E> valueType;
+        private Map<String, E> mappings;
+
+
+        EnumMultiPBuilder(Class<E> type) {
+            this.valueType = type;
+        }
+
+
+        public EnumMultiPBuilder<E> mappings(Map<String, E> map) {
+            this.mappings = map;
+            return this;
+        }
+
+
+        @Override
+        protected EnumeratedMultiProperty<E> createInstance() {
+            return new EnumeratedMultiProperty<>(this.name, this.description, mappings, this.defaultValues, valueType, this.uiOrder, isDefinedInXML);
+        }
     }
 
 }

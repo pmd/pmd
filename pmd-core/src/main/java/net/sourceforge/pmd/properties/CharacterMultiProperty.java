@@ -7,9 +7,12 @@ package net.sourceforge.pmd.properties;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+
+import net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder;
+import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+
 
 /**
  * Multi-valued character property.
@@ -18,27 +21,6 @@ import org.apache.commons.lang3.StringUtils;
  * @version Refactored June 2017 (6.0.0)
  */
 public final class CharacterMultiProperty extends AbstractMultiValueProperty<Character> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<List<Character>> FACTORY // @formatter:off
-        = new MultiValuePropertyDescriptorFactory<Character>(Character.class) {
-
-            @Override
-            protected boolean isValueMissing(String value) {
-                return StringUtils.isEmpty(value);
-            }
-
-            @Override
-            public CharacterMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                char delimiter = delimiterIn(valuesById);
-                return new CharacterMultiProperty(nameIn(valuesById),
-                                                  descriptionIn(valuesById),
-                                                  ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, ValueParserConstants.CHARACTER_PARSER),
-                                                  0.0f,
-                                                  delimiter,
-                                                  isDefinedExternally);
-            }
-        }; // @formatter:on
 
 
     /**
@@ -49,7 +31,6 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
      * @param defaultValues  Array of defaults
      * @param theUIOrder     UI order
      * @param delimiter      The delimiter to use
-     *
      * @throws IllegalArgumentException if the delimiter is in the default values
      */
     public CharacterMultiProperty(String theName, String theDescription, Character[] defaultValues, float theUIOrder, char delimiter) {
@@ -80,7 +61,6 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
      * @param defaultValues  List of defaults
      * @param theUIOrder     UI order
      * @param delimiter      The delimiter to use
-     *
      * @throws IllegalArgumentException if the delimiter is in the default values
      */
     public CharacterMultiProperty(String theName, String theDescription, List<Character> defaultValues, float theUIOrder, char delimiter) {
@@ -110,5 +90,29 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
         }
         return chars;
     }
+
+
+    static PropertyBuilderConversionWrapper.MultiValue<Character, CharacterMultiPBuilder> extractor() {
+        return new PropertyBuilderConversionWrapper.MultiValue<Character, CharacterMultiPBuilder>(Character.class, ValueParserConstants.CHARACTER_PARSER) {
+            @Override
+            protected CharacterMultiPBuilder newBuilder() {
+                return new CharacterMultiPBuilder();
+            }
+        };
+    }
+
+
+    public static CharacterMultiPBuilder builder(String name) {
+        return new CharacterMultiPBuilder().name(name);
+    }
+
+
+    private static final class CharacterMultiPBuilder extends MultiValuePropertyBuilder<Character, CharacterMultiPBuilder> {
+        @Override
+        protected CharacterMultiProperty createInstance() {
+            return new CharacterMultiProperty(this.name, this.description, this.defaultValues, this.uiOrder, multiValueDelimiter, false);
+        }
+    }
+
 
 }

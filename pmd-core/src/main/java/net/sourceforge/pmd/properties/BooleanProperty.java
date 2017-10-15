@@ -6,7 +6,9 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.properties.ValueParserConstants.BOOLEAN_PARSER;
 
-import java.util.Map;
+import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
+
 
 /**
  * Defines a property type that supports single Boolean values.
@@ -16,29 +18,13 @@ import java.util.Map;
  */
 public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> {
 
-    /** Factory. */
-    public static final PropertyDescriptorFactory<Boolean> FACTORY // @formatter:off
-        = new SingleValuePropertyDescriptorFactory<Boolean>(Boolean.class) {
-            @Override
-            public BooleanProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                return new BooleanProperty(nameIn(valuesById),
-                                           descriptionIn(valuesById),
-                                           BOOLEAN_PARSER.valueOf(defaultValueIn(valuesById)),
-                                           0f,
-                                           isDefinedExternally);
-            }
-        }; // @formatter:on
-
-
     /**
-     * Constructor for BooleanProperty limited to a single value. Converts
-     * default argument string into a boolean.
+     * Constructor for BooleanProperty limited to a single value. Converts default argument string into a boolean.
      *
      * @param theName        Name
      * @param theDescription Description
      * @param defaultBoolStr String representing the default value.
      * @param theUIOrder     UI order
-     *
      * @deprecated will be removed in 7.0.0
      */
     public BooleanProperty(String theName, String theDescription, String defaultBoolStr, float theUIOrder) {
@@ -75,4 +61,28 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
     public Boolean createFrom(String propertyString) throws IllegalArgumentException {
         return BOOLEAN_PARSER.valueOf(propertyString);
     }
+
+
+    static PropertyBuilderConversionWrapper.SingleValue<Boolean, BooleanPBuilder> extractor() {
+        return new PropertyBuilderConversionWrapper.SingleValue<Boolean, BooleanPBuilder>(Boolean.class, ValueParserConstants.BOOLEAN_PARSER) {
+            @Override
+            protected BooleanPBuilder newBuilder() {
+                return new BooleanPBuilder();
+            }
+        };
+    }
+
+
+    public static BooleanPBuilder builder(String name) {
+        return new BooleanPBuilder().name(name);
+    }
+
+
+    private static final class BooleanPBuilder extends SingleValuePropertyBuilder<Boolean, BooleanPBuilder> {
+        @Override
+        protected BooleanProperty createInstance() {
+            return new BooleanProperty(this.name, this.description, this.defaultValue, this.uiOrder, false);
+        }
+    }
+
 }

@@ -73,7 +73,7 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
 
 
     static PropertyBuilderConversionWrapper.SingleValue.Numeric<Long, LongPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Long, LongPBuilder>(ValueParserConstants.LONG_PARSER) {
+        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Long, LongPBuilder>(Long.class, ValueParserConstants.LONG_PARSER) {
             @Override
             protected LongPBuilder newBuilder() {
                 return new LongPBuilder();

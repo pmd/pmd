@@ -55,7 +55,7 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
 
 
     static PropertyBuilderConversionWrapper.SingleValue.Numeric<Integer, IntegerPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Integer, IntegerPBuilder>(ValueParserConstants.INTEGER_PARSER) {
+        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Integer, IntegerPBuilder>(Integer.class, ValueParserConstants.INTEGER_PARSER) {
             @Override
             protected IntegerPBuilder newBuilder() {
                 return new IntegerPBuilder();

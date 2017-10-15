@@ -6,6 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.properties.modules.MethodPropertyModule.*;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -185,6 +186,14 @@ public final class ValueParserConstants {
             return Double.valueOf(value);
         }
     };
+    /** Extracts files */
+    static final ValueParser<File> FILE_PARSER = new ValueParser<File>() {
+        @Override
+        public File valueOf(String value) throws IllegalArgumentException {
+            return new File(value);
+        }
+    };
+
     /** Extract classes. */
     static final ValueParser<Class> CLASS_PARSER = new ValueParser<Class>() {
         @Override
@@ -218,7 +227,6 @@ public final class ValueParserConstants {
      * @param parser    Parser used to parse a single value
      * @param delimiter Char delimiting values
      * @param <U>       Element type of the target list
-     *
      * @return A list of values
      */
     public static <U> ValueParser<List<U>> multi(final ValueParser<U> parser, final char delimiter) {
@@ -238,7 +246,6 @@ public final class ValueParserConstants {
      * @param delimiter The delimiter to use
      * @param extractor The function mapping a string to an instance of {@code <U>}
      * @param <U>       The type of the values to parse
-     *
      * @return A list of values
      */
     // FUTURE 1.8 : use java.util.function.Function<String, U> in place of ValueParser<U>,

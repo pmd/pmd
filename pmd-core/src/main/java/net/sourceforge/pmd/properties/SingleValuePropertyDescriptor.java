@@ -9,7 +9,6 @@ package net.sourceforge.pmd.properties;
  * {@link #type()} method must be the class literal of the type parameter of the interface {@link PropertyDescriptor}.
  *
  * @param <T> The type of value this descriptor works with. Cannot be a list.
- *
  * @author Clément Fournier
  * @since 6.0.0
  */

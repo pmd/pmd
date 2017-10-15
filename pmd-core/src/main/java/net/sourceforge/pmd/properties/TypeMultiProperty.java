@@ -95,7 +95,7 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
 
 
     public static PropertyBuilderConversionWrapper.MultiValue.Packaged<Class, TypeMultiPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.MultiValue.Packaged<Class, TypeMultiPBuilder>(ValueParserConstants.CLASS_PARSER) {
+        return new PropertyBuilderConversionWrapper.MultiValue.Packaged<Class, TypeMultiPBuilder>(Class.class, ValueParserConstants.CLASS_PARSER) {
             @Override
             protected TypeMultiPBuilder newBuilder() {
                 return new TypeMultiPBuilder();

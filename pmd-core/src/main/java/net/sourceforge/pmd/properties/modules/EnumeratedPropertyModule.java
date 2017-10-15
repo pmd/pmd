@@ -9,6 +9,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.util.CollectionUtil;
 
+
 /**
  * Factorises common functionality for enumerated properties.
  *

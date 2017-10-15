@@ -18,6 +18,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+
+
 /**
  * Base functionality for all concrete subclasses that evaluate type-specific
  * property descriptors. Checks for error conditions during construction, error
@@ -47,7 +50,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
     @Test
     public void testFactorySingleValue() {
-        PropertyDescriptor<T> prop = getSingleFactory().createWith(getPropertyDescriptorValues());
+        PropertyDescriptor<T> prop = getSingleFactory().getBuilder(getPropertyDescriptorValues()).build();
         T originalValue = createValue();
         T value = prop.valueFrom(
             originalValue instanceof Class ? ((Class) originalValue).getName() : String.valueOf(originalValue));
@@ -59,8 +62,8 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @SuppressWarnings("unchecked")
-    protected final PropertyDescriptorFactory<T> getSingleFactory() {
-        return (PropertyDescriptorFactory<T>) PropertyDescriptorUtil.factoryFor(typeName);
+    protected final PropertyBuilderConversionWrapper<T, ?> getSingleFactory() {
+        return (PropertyBuilderConversionWrapper<T, ?>) PropertyDescriptorBuildUtil.factoryFor(typeName);
     }
 
 
@@ -83,8 +86,8 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
     @Test
     public void testFactoryMultiValueDefaultDelimiter() {
-        PropertyDescriptorFactory<List<T>> multiFactory = getMultiFactory();
-        PropertyDescriptor<List<T>> prop = multiFactory.createWith(getPropertyDescriptorValues());
+        PropertyBuilderConversionWrapper<List<T>, ?> multiFactory = getMultiFactory();
+        PropertyDescriptor<List<T>> prop = multiFactory.getBuilder(getPropertyDescriptorValues()).build();
         List<T> originalValue = createMultipleValues(MULTI_VALUE_COUNT);
         String asDelimitedString = prop.asDelimitedString(originalValue);
         List<T> value2 = prop.valueFrom(asDelimitedString);
@@ -93,8 +96,8 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @SuppressWarnings("unchecked")
-    protected final PropertyDescriptorFactory<List<T>> getMultiFactory() {
-        return (PropertyDescriptorFactory<List<T>>) PropertyDescriptorUtil.factoryFor("List<" + typeName + ">");
+    protected final PropertyBuilderConversionWrapper<List<T>, ?> getMultiFactory() {
+        return (PropertyBuilderConversionWrapper<List<T>, ?>) PropertyDescriptorBuildUtil.factoryFor("List<" + typeName + ">");
     }
 
 
@@ -110,12 +113,12 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
     @Test
     public void testFactoryMultiValueCustomDelimiter() {
-        PropertyDescriptorFactory<List<T>> multiFactory = getMultiFactory();
+        PropertyBuilderConversionWrapper<List<T>, ?> multiFactory = getMultiFactory();
         Map<PropertyDescriptorField, String> valuesById = getPropertyDescriptorValues();
         String customDelimiter = "ä";
         assertFalse(ALL_CHARS.contains(customDelimiter));
         valuesById.put(PropertyDescriptorField.DELIMITER, customDelimiter);
-        PropertyDescriptor<List<T>> prop = multiFactory.createWith(valuesById);
+        PropertyDescriptor<List<T>> prop = multiFactory.getBuilder(valuesById).build();
         List<T> originalValue = createMultipleValues(MULTI_VALUE_COUNT);
         String asDelimitedString = prop.asDelimitedString(originalValue);
         List<T> value2 = prop.valueFrom(asDelimitedString);

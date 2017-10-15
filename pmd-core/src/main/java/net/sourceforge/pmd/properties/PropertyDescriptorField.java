@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.properties;
 
+import java.util.Objects;
+
 import net.sourceforge.pmd.RuleSetFactory;
 
 
@@ -13,7 +15,7 @@ import net.sourceforge.pmd.RuleSetFactory;
  *
  * @author Brian Remedios
  * @see RuleSetFactory
- * @see PropertyDescriptorUtil
+ * @see PropertyDescriptorBuildUtil
  */
 public enum PropertyDescriptorField {
 
@@ -63,6 +65,14 @@ public enum PropertyDescriptorField {
     @Override
     public String toString() {
         return attributeName();
+    }
+
+
+    public static PropertyDescriptorField getConstant(String name) {
+        for (PropertyDescriptorField f : values()) {
+            if (Objects.equals(f.attributeName, name)) return f;
+        }
+        return null;
     }
 
 }

@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /** Builder for an expected fields map. */
 public final class ExpectedFieldsBuilder {
 
@@ -24,7 +25,6 @@ public final class ExpectedFieldsBuilder {
      *
      * @param field      The field to expect
      * @param isRequired Whether it's required or not
-     *
      * @return This instance, so that we have a fluent interface
      */
     public ExpectedFieldsBuilder put(PropertyDescriptorField field, boolean isRequired) {
@@ -47,7 +47,6 @@ public final class ExpectedFieldsBuilder {
      * Gets a builder for a required fields map.
      *
      * @return A builder
-     *
      * @see ExpectedFieldsBuilder
      */
     public static ExpectedFieldsBuilder instance() {

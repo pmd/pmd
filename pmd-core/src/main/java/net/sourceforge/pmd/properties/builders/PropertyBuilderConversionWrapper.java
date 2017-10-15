@@ -29,6 +29,14 @@ import net.sourceforge.pmd.properties.ValueParserConstants;
  */
 public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDescriptorBuilder<E, T>> {
 
+    private final Class<?> valueType;
+
+
+    protected PropertyBuilderConversionWrapper(Class<?> valueType) {
+        this.valueType = valueType;
+    }
+
+
     /** Populates the builder with extracted fields. To be overridden. */
     protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
         builder.desc(fields.get(PropertyDescriptorField.DESCRIPTION));
@@ -36,7 +44,12 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
     }
 
 
-    abstract boolean isMultiValue();
+    public abstract boolean isMultiValue();
+
+
+    public Class<?> valueType() {
+        return valueType;
+    }
 
 
     protected abstract T newBuilder(); // FUTURE 1.8: use a Supplier constructor parameter
@@ -51,6 +64,7 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
     public T getBuilder(Map<PropertyDescriptorField, String> fields) {
         T builder = newBuilder();
         populate(builder, fields);
+        builder.isDefinedInXML = true;
         return builder;
     }
 
@@ -93,7 +107,8 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
         protected final ValueParser<V> parser;
 
 
-        protected MultiValue(ValueParser<V> parser) {
+        protected MultiValue(Class<V> valueType, ValueParser<V> parser) {
+            super(valueType);
             this.parser = parser;
         }
 
@@ -109,7 +124,7 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
 
 
         @Override
-        boolean isMultiValue() {
+        public boolean isMultiValue() {
             return true;
         }
 
@@ -123,8 +138,8 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
         public abstract static class Numeric<V, T extends MultiNumericPropertyBuilder<V, T>>
                 extends MultiValue<V, T> {
 
-            protected Numeric(ValueParser<V> parser) {
-                super(parser);
+            protected Numeric(Class<V> valueType, ValueParser<V> parser) {
+                super(valueType, parser);
             }
 
 
@@ -146,8 +161,8 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
         public abstract static class Packaged<V, T extends MultiPackagedPropertyBuilder<V, T>>
                 extends MultiValue<V, T> {
 
-            protected Packaged(ValueParser<V> parser) {
-                super(parser);
+            protected Packaged(Class<V> valueType, ValueParser<V> parser) {
+                super(valueType, parser);
             }
 
 
@@ -165,16 +180,17 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
     /**
      * For single-value properties.
      *
-     * @param <V> Value type of the property
+     * @param <E> Value type of the property
      * @param <T> Concrete type of the underlying builder
      */
-    public abstract static class SingleValue<V, T extends SingleValuePropertyBuilder<V, T>>
-            extends PropertyBuilderConversionWrapper<V, T> {
+    public abstract static class SingleValue<E, T extends SingleValuePropertyBuilder<E, T>>
+            extends PropertyBuilderConversionWrapper<E, T> {
 
-        protected final ValueParser<V> parser;
+        protected final ValueParser<E> parser;
 
 
-        protected SingleValue(ValueParser<V> parser) {
+        protected SingleValue(Class<E> valueType, ValueParser<E> parser) {
+            super(valueType);
             this.parser = parser;
         }
 
@@ -187,7 +203,7 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
 
 
         @Override
-        boolean isMultiValue() {
+        public boolean isMultiValue() {
             return false;
         }
 
@@ -195,14 +211,14 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
         /**
          * For single-value numeric properties.
          *
-         * @param <V> Element type of the list
+         * @param <E> Element type of the list
          * @param <T> Concrete type of the underlying builder
          */
-        public abstract static class Numeric<V, T extends SingleNumericPropertyBuilder<V, T>>
-                extends SingleValue<V, T> {
+        public abstract static class Numeric<E, T extends SingleNumericPropertyBuilder<E, T>>
+                extends SingleValue<E, T> {
 
-            protected Numeric(ValueParser<V> parser) {
-                super(parser);
+            protected Numeric(Class<E> valueType, ValueParser<E> parser) {
+                super(valueType, parser);
             }
 
 
@@ -218,14 +234,14 @@ public abstract class PropertyBuilderConversionWrapper<E, T extends PropertyDesc
         /**
          * For single-value packaged properties.
          *
-         * @param <V> Element type of the list
+         * @param <E> Element type of the list
          * @param <T> Concrete type of the underlying builder
          */
-        public abstract static class Packaged<V, T extends SinglePackagedPropertyBuilder<V, T>>
-                extends SingleValue<V, T> {
+        public abstract static class Packaged<E, T extends SinglePackagedPropertyBuilder<E, T>>
+                extends SingleValue<E, T> {
 
-            protected Packaged(ValueParser<V> parser) {
-                super(parser);
+            protected Packaged(Class<E> valueType, ValueParser<E> parser) {
+                super(valueType, parser);
             }
 
 

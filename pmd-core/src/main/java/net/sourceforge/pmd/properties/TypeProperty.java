@@ -5,35 +5,20 @@
 package net.sourceforge.pmd.properties;
 
 import java.util.Collections;
-import java.util.Map;
 
+import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.SinglePackagedPropertyBuilder;
 import net.sourceforge.pmd.properties.modules.TypePropertyModule;
 
+
 /**
- * Defines a property that supports single class types, even for primitive
- * values!
+ * Defines a property that supports single class types, even for primitive values!
  *
  * TODO - untested for array types
  *
  * @author Brian Remedios
  */
 public final class TypeProperty extends AbstractPackagedProperty<Class> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<Class> FACTORY // @formatter:off
-        = new SingleValuePropertyDescriptorFactory<Class>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
-            @Override
-            public TypeProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                char delimiter = delimiterIn(valuesById);
-                return new TypeProperty(nameIn(valuesById),
-                                        descriptionIn(valuesById),
-                                        ValueParserConstants.CLASS_PARSER.valueOf(defaultValueIn(valuesById)),
-                                        legalPackageNamesIn(valuesById, delimiter),
-                                        0f,
-                                        isDefinedExternally);
-            }
-        }; // @formatter:on
-
 
     /**
      * Constructor for TypeProperty using a string as default value.
@@ -43,7 +28,6 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
      * @param defaultTypeStr    String
      * @param legalPackageNames String[]
      * @param theUIOrder        float
-     *
      * @throws IllegalArgumentException if the default string could not be parsed into a Class
      * @deprecated will be removed in 7.0.0
      */
@@ -57,7 +41,7 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
     private TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames,
                          float theUIOrder, boolean isDefinedExternally) {
         super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally,
-              new TypePropertyModule(legalPackageNames, Collections.<Class>singletonList(theDefault)));
+                new TypePropertyModule(legalPackageNames, Collections.<Class>singletonList(theDefault)));
     }
 
 
@@ -92,4 +76,29 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
     public Class<?> createFrom(String valueString) {
         return ValueParserConstants.CLASS_PARSER.valueOf(valueString);
     }
+
+
+    static PropertyBuilderConversionWrapper.SingleValue.Packaged<Class, TypePBuilder> extractor() {
+        return new PropertyBuilderConversionWrapper.SingleValue.Packaged<Class, TypePBuilder>(Class.class, ValueParserConstants.CLASS_PARSER) {
+            @Override
+            protected TypePBuilder newBuilder() {
+                return new TypePBuilder();
+            }
+        };
+    }
+
+
+    public static TypePBuilder builder(String name) {
+        return new TypePBuilder().name(name);
+    }
+
+
+    private static class TypePBuilder extends SinglePackagedPropertyBuilder<Class, TypePBuilder> {
+
+        @Override
+        protected TypeProperty createInstance() {
+            return new TypeProperty(name, description, defaultValue, legalPackageNames, uiOrder, isDefinedInXML);
+        }
+    }
+
 }

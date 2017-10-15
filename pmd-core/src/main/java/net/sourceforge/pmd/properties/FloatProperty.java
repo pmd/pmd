@@ -75,7 +75,7 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
 
 
     static PropertyBuilderConversionWrapper.SingleValue.Numeric<Float, FloatPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Float, FloatPBuilder>(ValueParserConstants.FLOAT_PARSER) {
+        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Float, FloatPBuilder>(Float.class, ValueParserConstants.FLOAT_PARSER) {
             @Override
             protected FloatPBuilder newBuilder() {
                 return new FloatPBuilder();

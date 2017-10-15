@@ -76,7 +76,7 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
 
 
     static PropertyBuilderConversionWrapper.MultiValue.Numeric<Integer, IntegerMultiPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.MultiValue.Numeric<Integer, IntegerMultiPBuilder>(ValueParserConstants.INTEGER_PARSER) {
+        return new PropertyBuilderConversionWrapper.MultiValue.Numeric<Integer, IntegerMultiPBuilder>(Integer.class, ValueParserConstants.INTEGER_PARSER) {
             @Override
             protected IntegerMultiPBuilder newBuilder() {
                 return new IntegerMultiPBuilder();

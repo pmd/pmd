@@ -22,48 +22,48 @@ public class PropertyDescriptorBuildUtil {
 
     static {
         Map<String, PropertyBuilderConversionWrapper<?, ?>> temp = new HashMap<>(18);
-        temp.put("Boolean", BooleanProperty.FACTORY);
-        temp.put("List<Boolean>", BooleanMultiProperty.FACTORY);
+        temp.put("Boolean", BooleanProperty.extractor());
+        temp.put("List<Boolean>", BooleanMultiProperty.extractor());
 
-        temp.put("String", StringProperty.FACTORY);
-        temp.put("List<String>", StringMultiProperty.FACTORY);
-        temp.put("Character", CharacterProperty.FACTORY);
-        temp.put("List<Character>", CharacterMultiProperty.FACTORY);
+        temp.put("String", StringProperty.extractor());
+        temp.put("List<String>", StringMultiProperty.extractor());
+        temp.put("Character", CharacterProperty.extractor());
+        temp.put("List<Character>", CharacterMultiProperty.extractor());
 
 
-        temp.put("Integer", IntegerProperty.FACTORY);
-        temp.put("List<Integer>", IntegerMultiProperty.FACTORY);
-        temp.put("Long", LongProperty.FACTORY);
+        temp.put("Integer", IntegerProperty.extractor());
+        temp.put("List<Integer>", IntegerMultiProperty.extractor());
+        temp.put("Long", LongProperty.extractor());
         temp.put("List<Long>", LongMultiProperty.extractor());
-        temp.put("Float", FloatProperty.ex);
+        temp.put("Float", FloatProperty.extractor());
         temp.put("List<Float>", FloatMultiProperty.extractor());
-        temp.put("Double", DoubleProperty.FACTORY);
-        temp.put("List<Double>", DoubleMultiProperty.FACTORY);
+        temp.put("Double", DoubleProperty.extractor());
+        temp.put("List<Double>", DoubleMultiProperty.extractor());
         //    temp.put("Enum", EnumeratedProperty.FACTORY); // TODO:cf implement that
         //    temp.put("List<Enum>", EnumeratedMultiProperty.FACTORY);
 
-        temp.put("Class", TypeProperty.FACTORY);
-        temp.put("List<Class>", TypeMultiProperty.FACTORY);
-        temp.put("Method", MethodProperty.FACTORY);
-        temp.put("List<Method>", MethodMultiProperty.FACTORY);
+        temp.put("Class", TypeProperty.extractor());
+        temp.put("List<Class>", TypeMultiProperty.extractor());
+        temp.put("Method", MethodProperty.extractor());
+        temp.put("List<Method>", MethodMultiProperty.extractor());
 
-        temp.put("File", FileProperty.FACTORY);
+        temp.put("File", FileProperty.extractor());
 
         DESCRIPTOR_FACTORIES_BY_TYPE = Collections.unmodifiableMap(temp);
     }
 
 
-    private PropertyDescriptorBuildUtil() { }
+    private PropertyDescriptorBuildUtil() {
+    }
 
 
     /**
      * Gets the factory for the descriptor identified by the string id.
      *
      * @param typeId The identifier of the type
-     *
      * @return The factory used to build new instances of a descriptor
      */
-    public static PropertyDescriptorFactory<?> factoryFor(String typeId) {
+    public static PropertyBuilderConversionWrapper<?, ?> factoryFor(String typeId) {
         return DESCRIPTOR_FACTORIES_BY_TYPE.get(typeId);
     }
 
@@ -73,18 +73,17 @@ public class PropertyDescriptorBuildUtil {
      *
      * @param valueType  The type to look for
      * @param multiValue Whether the descriptor is multivalued or not
-     *
      * @return The type id
      */
     public static String typeIdFor(Class<?> valueType, boolean multiValue) {
 
-        for (Map.Entry<String, PropertyDescriptorFactory<?>> entry : DESCRIPTOR_FACTORIES_BY_TYPE.entrySet()) {
+        for (Map.Entry<String, PropertyBuilderConversionWrapper<?, ?>> entry : DESCRIPTOR_FACTORIES_BY_TYPE.entrySet()) {
             if (entry.getValue().valueType() == valueType && entry.getValue().isMultiValue() == multiValue) {
                 return entry.getKey();
             }
         }
         return null;
     }
-    
-    
+
+
 }

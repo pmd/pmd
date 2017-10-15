@@ -6,9 +6,9 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.properties.ValueParserConstants.CHARACTER_PARSER;
 
-import java.util.Map;
+import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
 
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Defines a property type that supports single Character values.
@@ -18,26 +18,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public final class CharacterProperty extends AbstractSingleValueProperty<Character> {
 
-    public static final PropertyDescriptorFactory<Character> FACTORY // @formatter:off
-        = new SingleValuePropertyDescriptorFactory<Character>(Character.class) {
-
-            @Override
-            protected boolean isValueMissing(String value) {
-                return StringUtils.isEmpty(value);
-            }
-
-            @Override
-            public CharacterProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                return new CharacterProperty(nameIn(valuesById),
-                                             descriptionIn(valuesById),
-                                             defaultValueIn(valuesById) == null ? null
-                                                                                : defaultValueIn(valuesById).charAt(0),
-                                             0f,
-                                             isDefinedExternally);
-            }
-        }; // @formatter:on
-
-
     /**
      * Constructor for CharacterProperty.
      *
@@ -45,7 +25,6 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
      * @param theDescription String
      * @param defaultStr     String
      * @param theUIOrder     float
-     *
      * @throws IllegalArgumentException
      * @deprecated will be removed in 7.0.0
      */
@@ -57,20 +36,6 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
     /** Master constructor. */
     private CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder, boolean isDefinedExternally) {
         super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
-    }
-
-
-    /**
-     * Parses a String into a Character.
-     *
-     * @param charStr String to parse
-     *
-     * @return Parsed Character
-     *
-     * @throws IllegalArgumentException if the String doesn't have length 1
-     */
-    public static Character charFrom(String charStr) {
-        return CHARACTER_PARSER.valueOf(charStr);
     }
 
 
@@ -96,6 +61,41 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
     @Override
     public Character createFrom(String valueString) throws IllegalArgumentException {
         return charFrom(valueString);
+    }
+
+
+    /**
+     * Parses a String into a Character.
+     *
+     * @param charStr String to parse
+     * @return Parsed Character
+     * @throws IllegalArgumentException if the String doesn't have length 1
+     */
+    public static Character charFrom(String charStr) {
+        return CHARACTER_PARSER.valueOf(charStr);
+    }
+
+
+    static PropertyBuilderConversionWrapper.SingleValue<Character, CharacterPBuilder> extractor() {
+        return new PropertyBuilderConversionWrapper.SingleValue<Character, CharacterPBuilder>(Character.class, ValueParserConstants.CHARACTER_PARSER) {
+            @Override
+            protected CharacterPBuilder newBuilder() {
+                return new CharacterPBuilder();
+            }
+        };
+    }
+
+
+    public static CharacterPBuilder builder(String name) {
+        return new CharacterPBuilder().name(name);
+    }
+
+
+    private static final class CharacterPBuilder extends SingleValuePropertyBuilder<Character, CharacterPBuilder> {
+        @Override
+        protected CharacterProperty createInstance() {
+            return new CharacterProperty(this.name, this.description, this.defaultValue, this.uiOrder, false);
+        }
     }
 
 }

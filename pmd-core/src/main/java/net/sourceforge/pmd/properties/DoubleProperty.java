@@ -86,7 +86,7 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
 
 
     static PropertyBuilderConversionWrapper.SingleValue.Numeric<Double, DoublePBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Double, DoublePBuilder>(ValueParserConstants.DOUBLE_PARSER) {
+        return new PropertyBuilderConversionWrapper.SingleValue.Numeric<Double, DoublePBuilder>(Double.class, ValueParserConstants.DOUBLE_PARSER) {
             @Override
             protected DoublePBuilder newBuilder() {
                 return new DoublePBuilder();

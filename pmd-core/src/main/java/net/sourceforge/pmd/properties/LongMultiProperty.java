@@ -74,7 +74,7 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
 
 
     static PropertyBuilderConversionWrapper.MultiValue.Numeric<Long, LongMultiPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.MultiValue.Numeric<Long, LongMultiPBuilder>(ValueParserConstants.LONG_PARSER) {
+        return new PropertyBuilderConversionWrapper.MultiValue.Numeric<Long, LongMultiPBuilder>(Long.class, ValueParserConstants.LONG_PARSER) {
             @Override
             protected LongMultiPBuilder newBuilder() {
                 return new LongMultiPBuilder();

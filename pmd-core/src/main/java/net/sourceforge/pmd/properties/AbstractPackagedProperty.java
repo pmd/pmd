@@ -8,17 +8,17 @@ import java.util.Map;
 
 import net.sourceforge.pmd.properties.modules.PackagedPropertyModule;
 
+
 /**
- * Property which restricts the type of its values to some packages. If
- * the legalPackageNames value is set to null then no restrictions are made.
+ * Property which restricts the type of its values to some packages. If the legalPackageNames value is set to null then
+ * no restrictions are made.
  *
  * @param <T> The type of the values
- *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
 /* default */ abstract class AbstractPackagedProperty<T> extends AbstractSingleValueProperty<T>
-    implements PackagedPropertyDescriptor<T> {
+        implements PackagedPropertyDescriptor<T> {
 
     protected final PackagedPropertyModule<T> module;
 
@@ -31,7 +31,6 @@ import net.sourceforge.pmd.properties.modules.PackagedPropertyModule;
      * @param theDefault     Default value
      * @param theUIOrder     UI order
      * @param module
-     *
      * @throws IllegalArgumentException
      */
     protected AbstractPackagedProperty(String theName, String theDescription, T theDefault,

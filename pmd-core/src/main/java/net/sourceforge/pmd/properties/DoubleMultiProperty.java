@@ -73,7 +73,7 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
 
 
     static PropertyBuilderConversionWrapper.MultiValue.Numeric<Double, DoubleMultiPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.MultiValue.Numeric<Double, DoubleMultiPBuilder>(ValueParserConstants.DOUBLE_PARSER) {
+        return new PropertyBuilderConversionWrapper.MultiValue.Numeric<Double, DoubleMultiPBuilder>(Double.class, ValueParserConstants.DOUBLE_PARSER) {
             @Override
             protected DoubleMultiPBuilder newBuilder() {
                 return new DoubleMultiPBuilder();

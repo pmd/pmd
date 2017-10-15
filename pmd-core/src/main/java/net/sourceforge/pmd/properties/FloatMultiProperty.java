@@ -74,7 +74,7 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
 
 
     static PropertyBuilderConversionWrapper.MultiValue.Numeric<Float, FloatMultiPBuilder> extractor() {
-        return new PropertyBuilderConversionWrapper.MultiValue.Numeric<Float, FloatMultiPBuilder>(ValueParserConstants.FLOAT_PARSER) {
+        return new PropertyBuilderConversionWrapper.MultiValue.Numeric<Float, FloatMultiPBuilder>(Float.class, ValueParserConstants.FLOAT_PARSER) {
             @Override
             protected FloatMultiPBuilder newBuilder() {
                 return new FloatMultiPBuilder();
