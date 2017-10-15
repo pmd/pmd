@@ -4,11 +4,14 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.ValueParserConstants.LONG_PARSER;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import net.sourceforge.pmd.properties.builders.AbstractMultiNumericPropertyBuilder;
+
+import static net.sourceforge.pmd.properties.ValueParserConstants.LONG_PARSER;
+
 
 /**
  * Multi-valued long property.
@@ -20,21 +23,21 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
 
     /** Factory. */
     public static final PropertyDescriptorFactory<List<Long>> FACTORY // @formatter:off
-        = new MultiValuePropertyDescriptorFactory<Long>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
-            @Override
-            public LongMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                String[] minMax = minMaxFrom(valuesById);
-                char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Long> defaultValues = ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, LONG_PARSER);
-                return new LongMultiProperty(nameIn(valuesById),
-                                             descriptionIn(valuesById),
-                                             LONG_PARSER.valueOf(minMax[0]),
-                                             LONG_PARSER.valueOf(minMax[1]),
-                                             defaultValues,
-                                             0f,
-                                             isDefinedExternally);
-            }
-        }; // @formatter:on
+            = new MultiValuePropertyDescriptorFactory<Long>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
+        @Override
+        public LongMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+            String[] minMax = minMaxFrom(valuesById);
+            char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
+            List<Long> defaultValues = ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, LONG_PARSER);
+            return new LongMultiProperty(nameIn(valuesById),
+                    descriptionIn(valuesById),
+                    LONG_PARSER.valueOf(minMax[0]),
+                    LONG_PARSER.valueOf(minMax[1]),
+                    defaultValues,
+                    0f,
+                    isDefinedExternally);
+        }
+    }; // @formatter:on
 
 
     /**
@@ -90,5 +93,27 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
     protected Long createFrom(String value) {
         return Long.valueOf(value);
     }
+
+
+    public static LongMultiPBuilder builder(String name) {
+        return new LongMultiPBuilder(name);
+    }
+    
+
+    private static final class LongMultiPBuilder 
+            extends AbstractMultiNumericPropertyBuilder<Long, LongMultiPBuilder> {
+
+        private LongMultiPBuilder(String name) {
+            super(name);
+        }
+
+
+        @Override
+        public PropertyDescriptor<List<Long>> build() {
+            return new LongMultiProperty(name, description, lowerLimit, upperLimit,
+                    defaultValues, uiOrder, false);
+        }
+    }
+
 
 }

@@ -8,6 +8,9 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.properties.builders.AbstractSingleValuePropertyBuilder;
+
+
 /**
  * Defines a datatype that supports single String values.
  *
@@ -18,22 +21,23 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory<String> FACTORY // @formatter:off
-        = new SingleValuePropertyDescriptorFactory<String>(String.class) {
+            = new SingleValuePropertyDescriptorFactory<String>(String.class) {
 
-            @Override
-            protected boolean isValueMissing(String value) {
-                return StringUtils.isEmpty(value);
-            }
+        @Override
+        protected boolean isValueMissing(String value) {
+            return StringUtils.isEmpty(value);
+        }
 
-            @Override
-            public StringProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                return new StringProperty(nameIn(valuesById),
-                                          descriptionIn(valuesById),
-                                          defaultValueIn(valuesById),
-                                          0f,
-                                          isDefinedExternally);
-            }
-        }; // @formatter:on
+
+        @Override
+        public StringProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+            return new StringProperty(nameIn(valuesById),
+                    descriptionIn(valuesById),
+                    defaultValueIn(valuesById),
+                    0f,
+                    isDefinedExternally);
+        }
+    }; // @formatter:on
 
 
     /**
@@ -51,7 +55,7 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
 
     /** Master constructor. */
     private StringProperty(String theName, String theDescription, String defaultValue, float theUIOrder, boolean
-        isDefinedExternally) {
+            isDefinedExternally) {
         super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);
     }
 
@@ -65,5 +69,24 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
     @Override
     public String createFrom(String valueString) {
         return valueString;
+    }
+
+
+    public static StringPBuilder builder(String name) {
+        return new StringPBuilder(name);
+    }
+
+
+    private static final class StringPBuilder extends AbstractSingleValuePropertyBuilder<String, StringPBuilder> {
+
+        private StringPBuilder(String name) {
+            super(name);
+        }
+
+
+        @Override
+        public PropertyDescriptor<String> build() {
+            return new StringProperty(this.name, this.description, this.defaultValue, this.uiOrder, false);
+        }
     }
 }
