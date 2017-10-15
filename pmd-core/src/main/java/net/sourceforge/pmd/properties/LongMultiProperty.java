@@ -10,6 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder;
+import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+
 
 /**
  * Multi-valued long property.
@@ -91,8 +94,13 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
     }
 
 
-    static PropertyDescriptor<List<Long>> extract(Map<PropertyDescriptorField, String> fields) {
-        return new PropertyBuilderConversionWrapper.MultiValue.Numeric<>(fields, ValueParserConstants.LONG_PARSER, new LongMultiPBuilder()).build();
+    static PropertyBuilderConversionWrapper.MultiValue.Numeric<Long, LongMultiPBuilder> extractor() {
+        return new PropertyBuilderConversionWrapper.MultiValue.Numeric<Long, LongMultiPBuilder>(ValueParserConstants.LONG_PARSER) {
+            @Override
+            protected LongMultiPBuilder newBuilder() {
+                return new LongMultiPBuilder();
+            }
+        };
     }
 
 
@@ -102,12 +110,12 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
 
 
     private static final class LongMultiPBuilder
-            extends PropertyDescriptorBuilder.MultiValue.Numeric<Long, LongMultiPBuilder> {
+            extends MultiNumericPropertyBuilder<Long, LongMultiPBuilder> {
 
         @Override
-        public LongMultiProperty build() {
+        protected LongMultiProperty createInstance() {
             return new LongMultiProperty(name, description, lowerLimit, upperLimit,
-                    defaultValues, uiOrder, false);
+                    defaultValues, uiOrder, isDefinedInXML);
         }
     }
 

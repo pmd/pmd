@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
+
 
 /**
  * Defines a datatype that supports single String values.
@@ -75,11 +77,9 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
     }
 
 
-    private static final class StringPBuilder extends PropertyDescriptorBuilder.SingleValue<String, StringPBuilder> {
-
-
+    private static final class StringPBuilder extends SingleValuePropertyBuilder<String, StringPBuilder> {
         @Override
-        public PropertyDescriptor<String> build() {
+        protected PropertyDescriptor<String> createInstance() {
             return new StringProperty(this.name, this.description, this.defaultValue, this.uiOrder, false);
         }
     }

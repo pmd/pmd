@@ -1,0 +1,94 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.properties.builders;
+
+import org.apache.commons.lang3.StringUtils;
+
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
+
+/**
+ * Base class for property builders.
+ *
+ * @param <E> Value type of the built descriptor
+ * @param <T> Concrete type of this builder instance. Removes code duplication at the expense of a few unchecked casts.
+ *            Everything goes well if this parameter's value is correctly set.
+ * @author Clément Fournier
+ * @since 6.0.0
+ */
+public abstract class PropertyDescriptorBuilder<E, T extends PropertyDescriptorBuilder<E, T>> {
+
+    protected String name;
+    protected String description;
+    protected float uiOrder = 0f;
+    protected boolean isDefinedInXML = false;
+
+
+    /**
+     * Specify the name of the property.
+     *
+     * @param name The name
+     * @return The same builder
+     */
+    @SuppressWarnings("unchecked")
+    public T name(String name) {
+        if (StringUtils.isBlank(name)) {
+            throw new IllegalArgumentException("Name must be provided");
+        }
+        this.name = name;
+        return (T) this;
+    }
+
+
+    /**
+     * Specify the description of the property.
+     *
+     * @param desc The description
+     * @return The same builder
+     */
+    @SuppressWarnings("unchecked")
+    public T desc(String desc) {
+        if (StringUtils.isBlank(desc)) {
+            throw new IllegalArgumentException("Description must be provided");
+        }
+        this.description = desc;
+        return (T) this;
+    }
+
+
+    /**
+     * Specify the UI order of the property.
+     *
+     * @param f The UI order
+     * @return The same builder
+     */
+    @SuppressWarnings("unchecked")
+    public T uiOrder(float f) {
+        this.uiOrder = f;
+        return (T) this;
+    }
+
+
+    /**
+     * Builds the descriptor and returns it.
+     *
+     * @return The built descriptor
+     * @throws IllegalArgumentException if parameters are incorrect
+     */
+    public final PropertyDescriptor<E> build() {
+        preBuildCheck();
+        return createInstance();
+    }
+
+
+    protected abstract PropertyDescriptor<E> createInstance();
+
+
+    protected void preBuildCheck() {
+
+    }
+
+
+}

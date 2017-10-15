@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.properties.builders.PropertyBuilderConversionWrapper;
+
 
 /**
  * @author Clément Fournier
@@ -15,11 +17,11 @@ import java.util.Map;
  */
 public class PropertyDescriptorBuildUtil {
 
-    private static final Map<String, PropertyDescriptorFactory<?>> DESCRIPTOR_FACTORIES_BY_TYPE;
+    private static final Map<String, PropertyBuilderConversionWrapper<?, ?>> DESCRIPTOR_FACTORIES_BY_TYPE;
 
 
     static {
-        Map<String, PropertyDescriptorFactory<?>> temp = new HashMap<>(18);
+        Map<String, PropertyBuilderConversionWrapper<?, ?>> temp = new HashMap<>(18);
         temp.put("Boolean", BooleanProperty.FACTORY);
         temp.put("List<Boolean>", BooleanMultiProperty.FACTORY);
 
@@ -32,9 +34,9 @@ public class PropertyDescriptorBuildUtil {
         temp.put("Integer", IntegerProperty.FACTORY);
         temp.put("List<Integer>", IntegerMultiProperty.FACTORY);
         temp.put("Long", LongProperty.FACTORY);
-        temp.put("List<Long>", LongMultiProperty.FACTORY);
-        temp.put("Float", FloatProperty.FACTORY);
-        temp.put("List<Float>", FloatMultiProperty.FACTORY);
+        temp.put("List<Long>", LongMultiProperty.extractor());
+        temp.put("Float", FloatProperty.ex);
+        temp.put("List<Float>", FloatMultiProperty.extractor());
         temp.put("Double", DoubleProperty.FACTORY);
         temp.put("List<Double>", DoubleMultiProperty.FACTORY);
         //    temp.put("Enum", EnumeratedProperty.FACTORY); // TODO:cf implement that
