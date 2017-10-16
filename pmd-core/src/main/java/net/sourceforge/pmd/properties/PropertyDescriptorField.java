@@ -32,7 +32,7 @@ public enum PropertyDescriptorField {
     MAX("max"),
     /**
      * To limit the range of valid values, package names.
-     * @see PackagedPro
+     * @see PackagedPropertyDescriptor
      */
     LEGAL_PACKAGES("legalPackages"),
     /** Labels for enumerated properties. */

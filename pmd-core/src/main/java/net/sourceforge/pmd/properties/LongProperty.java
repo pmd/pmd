@@ -45,7 +45,7 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
      * @param defaultStr     Default value
      * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
      * @deprecated will be removed in 7.0.0
      */
     public LongProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
@@ -72,7 +72,7 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
      * @param theDefault     Default value
      * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
      */
     public LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault, float theUIOrder) {
         this(theName, theDescription, min, max, theDefault, theUIOrder, false);

@@ -44,7 +44,7 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
      * @param defaultStr     Default value
      * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
      * @deprecated will be removed in 7.0.0
      */
     public FloatProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
@@ -71,7 +71,7 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
      * @param theDefault     Default value
      * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
      */
     public FloatProperty(String theName, String theDescription, Float min, Float max, Float theDefault,
                          float theUIOrder) {
