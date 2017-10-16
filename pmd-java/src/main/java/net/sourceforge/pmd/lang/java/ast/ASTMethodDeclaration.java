@@ -7,11 +7,12 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 
 public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAGraphMethod, ASTMethodOrConstructorDeclaration {
 
     private JavaQualifiedName qualifiedName;
+    private JavaOperationSignature signature;
 
 
     public ASTMethodDeclaration(int id) {
@@ -57,7 +58,8 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
 
     @Override
     public boolean isPublic() {
-        if (isInterfaceMember()) {
+        // interface methods are public by default, but could be private since java9
+        if (isInterfaceMember() && !isPrivate()) {
             return true;
         }
         return super.isPublic();
@@ -127,6 +129,10 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
 
     @Override
     public JavaOperationSignature getSignature() {
-        return JavaOperationSignature.buildFor(this);
+        if (signature == null) {
+            signature = JavaOperationSignature.buildFor(this);
+        }
+
+        return signature;
     }
 }

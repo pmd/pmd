@@ -13,21 +13,37 @@ This is a major release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
+    *   [Java 9 support](#java-9-support)
     *   [Revamped Apex CPD](#revamped-apex-cpd)
     *   [Java Type Resolution](#java-type-resolution)
     *   [Metrics Framework](#metrics-framework)
     *   [Error Reporting](#error-reporting)
-    *   [Java Symbol Table](#java-symbol-table)
-    *   [Apex Parser Update](#apex-parser-update)
+    *   [Apex Rule Suppression](#apex-rule-suppression)
     *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
     *   [Deprecated Rules](#deprecated-rules)
     *   [Removed Rules](#removed-rules)
+    *   [Java Symbol Table](#java-symbol-table)
+    *   [Apex Parser Update](#apex-parser-update)
+    *   [Incremental Analysis](#incremental-analysis)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
 * [External Contributions](#external-contributions)
 
 ### New and noteworthy
+
+#### Java 9 support
+
+The Java grammar has been updated to support analyzing Java 9 projects:
+
+*   private methods in interfaces are possible
+*   The underscore "_" is considered an invalid identifier
+*   Diamond operator for anonymous classes
+*   The module declarations in `module-info.java` can be parsed
+*   Concise try-with-resources statements are supported
+
+Java 9 support is enabled by default. You can switch back to an older java version
+via the command line, e.g. `-language java -version 1.8`.
 
 #### Revamped Apex CPD
 
@@ -78,7 +94,7 @@ The report formats providing full stacktrace of errors are:
 *   vbhtml
 *   xml
 
-##### Configuration Errors
+##### Configuration Errors
 
 For a long time reports have been notified of configuration errors on rules, but they have remained hidden.
 On a push to make these more evident to users, and help them get the best results out of PMD, we have started
@@ -98,6 +114,22 @@ providing configuration error reporting are:
 As we move forward we will be able to detect and report more configuration errors (ie: incomplete `auxclasspath`)
 and include them to such reports.
 
+#### Apex Rule Suppression		
+		
+Apex violations can now be suppressed very similarly to how it's done in Java, by making use of a		
+`@SuppressWarnings` annotation.		
+		
+Supported syntax includes:		
+		
+```		
+@SupressWarnings('PMD') // to supress all Apex rules		
+@SupressWarnings('all') // to supress all Apex rules		
+@SupressWarnings('PMD.ARuleName') // to supress only the rule named ARuleName		
+@SupressWarnings('PMD.ARuleName, PMD.AnotherRuleName') // to supress only the rule named ARuleName or AnotherRuleName		
+```		
+		
+Notice this last scenario is slightly different to the Java syntax. This is due to differences in the Apex grammar for annotations.
+
 #### New Rules
 
 *   The rule `NcssCount` (ruleset `java-codesize`) replaces the three rules "NcssConstructorCount", "NcssMethodCount",
@@ -106,6 +138,22 @@ and include them to such reports.
 
 *   The new rule `ForLoopCanBeForeach` (ruleset `java-migration`) helps to identify those for-loops that can
     be safely refactored into for-each-loops available since java 1.5.
+
+*   The new rule `AvoidDirectAccessTriggerMap` (ruleset `apex-style`) helps to identify direct array access to triggers,
+    which can produce bugs by iether accessing non-existing indexes, or them leaving out. You should use for-each-loops
+    instead.
+
+*   A whole new ruleset has been added to Apex, `apex-empty`. It currently migrates 5 rules from the equivalent
+    `java-empty` ruleset for Apex. The ruleset includes:
+    * `EmptyCatchBlock` to detect catch blocks completely ignoring exceptions.
+    * `EmptyIfStmt` for if blocks with no content, that can be safely removed.
+    * `EmptyTryOrFinallyBlock` for empty try / finally blocks that can be safely removed.
+    * `EmptyWhileStmt` for empty while loops that can be safely removed.
+    * `EmptyStatementBlock` for empty code blocks that can be safely removed.
+
+*   The new rule `AvoidSoslInLoops` (ruleset `apex-performance`) is the companion of the old
+    `apex-performance/AvoidSoqlInLoops` rule, flagging SOSL (Salesforce Object Search Language) queries when within
+    loops, to avoid governor issues, and hitting the database too often.
 
 #### Modified Rules
 
@@ -155,22 +203,50 @@ of the latest improvements from Salesforce, but introduces some breaking changes
 
 All existing rules have been updated to reflect these changes. If you have custom rules, be sure to update them.
 
+#### Incremental Analysis
+
+The incremental analysis feature first introduced in PMD 5.6.0 has been enhanced. A few minor issues have been fixed,
+and several improvements have been performed to make it more accurate.
+
+The cache will now detect changes to the JARs referenced in the `auxclasspath` instead of simply looking at their paths
+and order. This means that if you are referencing a JAR you are overwriting in some way, the incremental analysis can
+now detect it and invalidate it's cache to avoid false reports.
+
+We have also improved logging on the analysis code, allowing better insight into how the cache is performing,
+under debug / verbose builds you can even see individual hits / misses to the cache (and the reason for any miss!)
+
+Finally, as this feature keeps maturing, we are gently pushing this forward. If not using incremental analysis,
+a warning will now be produced suggesting users to adopt it for better performance.
+
 ### Fixed Issues
 
 *   all
     *   [#532](https://github.com/pmd/pmd/issues/532): \[core] security concerns on URL-based rulesets
     *   [#538](https://github.com/pmd/pmd/issues/538): \[core] Provide an XML Schema for XML reports
+    *   [#600](https://github.com/pmd/pmd/issues/600): \[core] Nullpointer while creating cache File
+    *   [#604](https://github.com/pmd/pmd/issues/604): \[core] Incremental analysis should detect changes to jars in classpath
+    *   [#608](https://github.com/pmd/pmd/issues/608): \[core] Add DEBUG log when applying incremental analysis
+    *   [#618](https://github.com/pmd/pmd/issues/618): \[core] Incremental Analysis doesn't close file correctly on Windows upon a cache hit
+    *   [#643](https://github.com/pmd/pmd/issues/643): \[core] PMD Properties (dev-properties) breaks markup on CodeClimateRenderer
 *   apex
+    *   [#265](https://github.com/pmd/pmd/issues/265): \[apex] Make Rule suppression work
     *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
     *   [#489](https://github.com/pmd/pmd/pull/489): \[apex] Update Apex compiler
     *   [#500](https://github.com/pmd/pmd/issues/500): \[apex] Running through CLI shows jorje optimization messages
+    *   [#637](https://github.com/pmd/pmd/issues/637): \[apex] Avoid SOSL in loops
 *   cpp
     *   [#448](https://github.com/pmd/pmd/issues/448): \[cpp] Write custom CharStream to handle continuation characters
 *   java
     *   [#1513](https://sourceforge.net/p/pmd/bugs/1513/): \[java] Remove deprecated rule UseSingleton
+    *   [#328](https://github.com/pmd/pmd/issues/328): \[java] java.lang.ClassFormatError: Absent Code attribute in method that is not native or abstract in class file javax/servlet/jsp/PageContext
     *   [#487](https://github.com/pmd/pmd/pull/487): \[java] Fix typeresolution for anonymous extending object
     *   [#496](https://github.com/pmd/pmd/issues/496): \[java] processing error on generics inherited from enclosing class
+    *   [#510](https://github.com/pmd/pmd/issues/510): \[java] Typeresolution fails on a simple primary when the source is loaded from a class literal
     *   [#527](https://github.com/pmd/pmd/issues/527): \[java] Lombok getter annotation on enum is not recognized correctly
+    *   [#534](https://github.com/pmd/pmd/issues/534): \[java] NPE in MethodTypeResolution for static methods
+    *   [#650](https://github.com/pmd/pmd/issues/650): \[java] ProcesingError analyzing code under 5.8.1
+*   java-basic
+    *   [#565](https://github.com/pmd/pmd/pull/565): \[java] False negative on DontCallThreadRun when extending Thread
 *   java-comments
     *   [#536](https://github.com/pmd/pmd/issues/536): \[java] CommentDefaultAccessModifierRule ignores constructors
 *   java-controversial
@@ -203,6 +279,10 @@ All existing rules have been updated to reflect these changes. If you have custo
     This change has no impact on custom rulesets, since the rule names themselves didn't change.
 
 *   The never implemented method `PMD.processFiles(PMDConfiguration, RuleSetFactory, Collection<File>, RuleContext, ProgressMonitor)` along with the interface `ProgressMonitor` has been removed.
+
+*   The method `PMD.setupReport(RuleSets, RuleContext, String)` is gone. It was used to report dysfunctional
+    rules. But PMD does this now automatically before processing the files, so there is no need for this
+    method anymore.
 
 *   All APIs deprecated in older versions are now removed. This includes:
     *    `Renderer.getPropertyDefinitions`
@@ -246,6 +326,7 @@ All existing rules have been updated to reflect these changes. If you have custo
 
 ### External Contributions
 
+*   [#287](https://github.com/pmd/pmd/pull/287): \[apex] Make Rule suppression work - [Robert Sösemann](https://github.com/up2go-rsoesemann)
 *   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements - [Clément Fournier](https://github.com/oowekyala)
 *   [#482](https://github.com/pmd/pmd/pull/482): \[java] Metrics testing framework + improved capabilities for metrics - [Clément Fournier](https://github.com/oowekyala)
 *   [#484](https://github.com/pmd/pmd/pull/484): \[core] Changed linux usage to a more unix like path - [patriksevallius](https://github.com/patriksevallius)
@@ -296,4 +377,10 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#587](https://github.com/pmd/pmd/pull/587): \[core] Properties refactoring: Move static constants of ValueParser to class ValueParserConstants - [Clément Fournier](https://github.com/oowekyala)
 *   [#588](https://github.com/pmd/pmd/pull/588): \[java] XPath function to compute metrics - [Clément Fournier](https://github.com/oowekyala)
 *   [#598](https://github.com/pmd/pmd/pull/598): \[java] Fix #388: controversial.AvoidLiteralsInIfCondition 0.0 false positive - [Clément Fournier](https://github.com/oowekyala)
+*   [#602](https://github.com/pmd/pmd/pull/602): \[java] \[apex] Separate multifile analysis from metrics - [Clément Fournier](https://github.com/oowekyala)
 *   [#620](https://github.com/pmd/pmd/pull/620): \[core] Moved properties to n.s.pmd.properties - [Clément Fournier](https://github.com/oowekyala)
+*   [#625](https://github.com/pmd/pmd/pull/625): \[apex] empty code ruleset for apex - [Jan Aertgeerts](https://github.com/JAertgeerts)
+*   [#632](https://github.com/pmd/pmd/pull/632): \[apex] Add AvoidDirectAccessTriggerMap rule to the style set - [Jan Aertgeerts](https://github.com/JAertgeerts)
+*   [#644](https://github.com/pmd/pmd/pull/644): \[core] Prevent internal dev-properties from being displayed on CodeClimate renderer - [Filipe Esperandio](https://github.com/filipesperandio)
+*   [#660](https://github.com/pmd/pmd/pull/660): \[apex] avoid sosl in loops - [Jan Aertgeerts](https://github.com/JAertgeerts)
+

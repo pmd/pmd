@@ -138,4 +138,37 @@ global class Unchangeable {
     </example>
   </rule>
 
+
+  <rule name="AvoidDirectAccessTriggerMap"
+        since="6.0.0"
+        message="Avoid directly accessing Trigger.old and Trigger.new"
+        class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_style.html#avoiddirectaccesstriggermap">
+    <description>
+Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Triggers should be bulkified and iterate through the map to handle the actions for each item separately.
+    </description>
+    <priority>3</priority>
+        <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//ArrayLoadExpression/TriggerVariableExpression | //ArrayLoadExpression/LiteralExpression
+]]>
+            </value>
+        </property>
+    </properties>
+
+    <example>
+<![CDATA[
+trigger AccountTrigger on Account (before insert, before update) {
+   Account a = Trigger.new[0]; //Bad: Accessing the trigger array directly is not recommended.
+   
+   foreach ( Account a : Trigger.new ){   
+        //Good: Iterate through the trigger.new array instead.
+   }
+}
+]]>
+    </example>
+  </rule>
+
 </ruleset>

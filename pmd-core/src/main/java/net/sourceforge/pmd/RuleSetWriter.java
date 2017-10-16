@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -43,7 +44,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
 public class RuleSetWriter {
 
     public static final String RULESET_2_0_0_NS_URI = "http://pmd.sourceforge.net/ruleset/2.0.0";
-    public static final String RULESET_3_0_0_NS_URI = "http://pmd.sourceforge.net/ruleset/3.0.0";
 
     /**
      * @deprecated use {@link #RULESET_2_0_0_NS_URI} instead
@@ -99,10 +99,10 @@ public class RuleSetWriter {
     }
 
     private Element createRuleSetElement(RuleSet ruleSet) {
-        Element ruleSetElement = document.createElementNS(RULESET_3_0_0_NS_URI, "ruleset");
+        Element ruleSetElement = document.createElementNS(RULESET_2_0_0_NS_URI, "ruleset");
         ruleSetElement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
         ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation",
-                RULESET_3_0_0_NS_URI + " http://pmd.sourceforge.net/ruleset_3_0_0.xsd");
+                RULESET_2_0_0_NS_URI + " http://pmd.sourceforge.net/ruleset_2_0_0.xsd");
         ruleSetElement.setAttribute("name", ruleSet.getName());
 
         Element descriptionElement = createDescriptionElement(ruleSet.getDescription());
@@ -139,11 +139,11 @@ public class RuleSetWriter {
     }
 
     private Element createRuleElement() {
-        return document.createElementNS(RULESET_3_0_0_NS_URI, "rule");
+        return document.createElementNS(RULESET_2_0_0_NS_URI, "rule");
     }
 
     private Element createExcludeElement(String exclude) {
-        Element element = document.createElementNS(RULESET_3_0_0_NS_URI, "exclude");
+        Element element = document.createElementNS(RULESET_2_0_0_NS_URI, "exclude");
         element.setAttribute("name", exclude);
         return element;
     }
@@ -157,7 +157,7 @@ public class RuleSetWriter {
     }
 
     private Element createPropertiesElement() {
-        return document.createElementNS(RULESET_3_0_0_NS_URI, "properties");
+        return document.createElementNS(RULESET_2_0_0_NS_URI, "properties");
     }
 
     private Element createRuleElement(Rule rule) {
@@ -197,7 +197,7 @@ public class RuleSetWriter {
             return createSingleRuleElement(rule instanceof ImmutableLanguage ? null : rule.getLanguage(),
                     rule.getMinimumLanguageVersion(), rule.getMaximumLanguageVersion(), rule.isDeprecated(),
                     rule.getName(), rule.getSince(), null, rule.getMessage(), rule.getExternalInfoUrl(),
-                    rule.getRuleClass(), rule.usesDFA(), rule.usesTypeResolution(), rule.usesMetrics(),
+                    rule.getRuleClass(), rule.usesDFA(), rule.usesTypeResolution(), rule.usesMultifile(),
                     rule.getDescription(),
                     rule.getPriority(), rule.getPropertyDescriptors(), rule.getPropertiesByPropertyDescriptor(),
                     rule.getExamples());
@@ -213,7 +213,7 @@ public class RuleSetWriter {
     private Element createSingleRuleElement(Language language, LanguageVersion minimumLanguageVersion,
             LanguageVersion maximumLanguageVersion, Boolean deprecated, String name, String since, String ref,
             String message, String externalInfoUrl, String clazz, Boolean dfa, Boolean typeResolution,
-            Boolean metrics,
+            Boolean multifile,
             String description, RulePriority priority, List<PropertyDescriptor<?>> propertyDescriptors,
             Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor, List<String> examples) {
         Element ruleElement = createRuleElement();
@@ -236,7 +236,7 @@ public class RuleSetWriter {
         setIfNonNull(externalInfoUrl, ruleElement, "externalInfoUrl");
         setIfNonNull(dfa, ruleElement, "dfa");
         setIfNonNull(typeResolution, ruleElement, "typeResolution");
-        setIfNonNull(metrics, ruleElement, "metrics");
+        //TODO multifile: setIfNonNull(multifile, ruleElement, "multifile");
 
         if (description != null) {
             Element descriptionElement = createDescriptionElement(description);
@@ -330,7 +330,7 @@ public class RuleSetWriter {
     }
 
     private Element createPropertyValueElement(PropertyDescriptor propertyDescriptor, Object value) {
-        Element propertyElement = document.createElementNS(RULESET_3_0_0_NS_URI, "property");
+        Element propertyElement = document.createElementNS(RULESET_2_0_0_NS_URI, "property");
         propertyElement.setAttribute("name", propertyDescriptor.name());
         String valueString = propertyDescriptor.asDelimitedString(value);
         if (XPathRule.XPATH_DESCRIPTOR.equals(propertyDescriptor)) {
@@ -361,14 +361,14 @@ public class RuleSetWriter {
     }
 
     private Element createTextElement(String name, String value) {
-        Element element = document.createElementNS(RULESET_3_0_0_NS_URI, name);
+        Element element = document.createElementNS(RULESET_2_0_0_NS_URI, name);
         Text text = document.createTextNode(value);
         element.appendChild(text);
         return element;
     }
 
     private Element createCDATASectionElement(String name, String value) {
-        Element element = document.createElementNS(RULESET_3_0_0_NS_URI, name);
+        Element element = document.createElementNS(RULESET_2_0_0_NS_URI, name);
         CDATASection cdataSection = document.createCDATASection(value);
         element.appendChild(cdataSection);
         return element;

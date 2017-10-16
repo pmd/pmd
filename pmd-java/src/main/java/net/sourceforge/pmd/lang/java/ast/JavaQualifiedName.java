@@ -115,9 +115,24 @@ public final class JavaQualifiedName implements QualifiedName {
     }
 
 
-    // Might be useful with type resolution
+    /**
+     * Gets the qualified name of a class.
+     *
+     * @param clazz Class object
+     *
+     * @return The qualified name of the class, or null if the class is null
+     */
     public static JavaQualifiedName ofClass(Class<?> clazz) {
-        throw new UnsupportedOperationException();
+        if (clazz == null) {
+            return null;
+        }
+
+        String name = clazz.getName();
+        if (name.indexOf('.') < 0) {
+            name = '.' + name; // unnamed package, marked by a full stop. See ofString's format below
+        }
+
+        return ofString(name);
     }
 
     /**

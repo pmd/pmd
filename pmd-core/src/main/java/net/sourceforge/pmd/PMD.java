@@ -169,54 +169,6 @@ public class PMD {
     }
 
     /**
-     * Create a report, filter out any defective rules, and keep a record of
-     * them.
-     *
-     * @param rs
-     *            the rules
-     * @param ctx
-     *            the rule context
-     * @param fileName
-     *            the filename of the source file, which should appear in the
-     *            report
-     * @return the Report
-     */
-    public static Report setupReport(RuleSets rs, RuleContext ctx, String fileName) {
-
-        Set<Rule> brokenRules = removeBrokenRules(rs);
-        Report report = Report.createReport(ctx, fileName);
-
-        for (Rule rule : brokenRules) {
-            report.addConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
-        }
-
-        return report;
-    }
-
-    /**
-     * Remove and return the misconfigured rules from the rulesets and log them
-     * for good measure.
-     *
-     * @param ruleSets
-     *            RuleSets
-     * @return Set<Rule>
-     */
-    private static Set<Rule> removeBrokenRules(RuleSets ruleSets) {
-
-        Set<Rule> brokenRules = new HashSet<>();
-        ruleSets.removeDysfunctionalRules(brokenRules);
-
-        for (Rule rule : brokenRules) {
-            if (LOG.isLoggable(Level.WARNING)) {
-                LOG.log(Level.WARNING,
-                        "Removed misconfigured rule: " + rule.getName() + "  cause: " + rule.dysfunctionReason());
-            }
-        }
-
-        return brokenRules;
-    }
-
-    /**
      * Get the runtime configuration. The configuration can be modified to
      * affect how PMD behaves.
      *
@@ -326,6 +278,19 @@ public class PMD {
         return context;
     }
 
+    // TODO: remove this, once the maven pmd plugin can report details of processing errors
+    private static ScopedLogHandlersManager enableLoggingMavenDebug() {
+        ScopedLogHandlersManager logHandlerManager = null;
+        String commandLine = System.getProperty("sun.java.command");
+        if (commandLine != null && commandLine.startsWith("org.codehaus.plexus.classworlds.launcher.Launcher")
+                && (commandLine.endsWith("-X") || commandLine.contains("-X "))) {
+            final Handler logHandler = new ConsoleLogHandler();
+            logHandlerManager = new ScopedLogHandlersManager(Level.FINE, logHandler);
+            LOG.setLevel(Level.FINE);
+        }
+        return logHandlerManager;
+    }
+
     /**
      * Run PMD on a list of files using multiple threads - if more than one is
      * available
@@ -343,6 +308,8 @@ public class PMD {
      */
     public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
             final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
+
+        ScopedLogHandlersManager logHandlerManager = enableLoggingMavenDebug();
 
         sortFiles(configuration, files);
 
@@ -364,6 +331,11 @@ public class PMD {
 
         // Persist the analysis cache
         configuration.getAnalysisCache().persist();
+
+        // see enableLoggingMavenDebug above
+        if (logHandlerManager != null) {
+            logHandlerManager.close();
+        }
     }
 
     private static void sortFiles(final PMDConfiguration configuration, final List<DataSource> files) {

@@ -12,7 +12,7 @@
 
     <properties>
         <config.basedir>${basedir}/../pmd-core</config.basedir>
-        <java.version>1.8</java.version>
+        <java.version>8</java.version>
     </properties>
 
     <dependencies>

@@ -39,7 +39,7 @@ public class RuleTstTest {
         verify(rule, times(5)).getLanguage();
         verify(rule).usesDFA();
         verify(rule).usesTypeResolution();
-        verify(rule).usesMetrics();
+        verify(rule).usesMultifile();
         verify(rule, times(2)).usesRuleChain();
         verify(rule).getMinimumLanguageVersion();
         verify(rule).getMaximumLanguageVersion();

@@ -75,7 +75,7 @@ public abstract class AbstractRendererTst {
         return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, "blah");
     }
 
-    private static DummyNode createNode(int endColumn) {
+    protected static DummyNode createNode(int endColumn) {
         DummyNode node = new DummyNode(1);
         node.testingOnlySetBeginLine(1);
         node.testingOnlySetBeginColumn(1);

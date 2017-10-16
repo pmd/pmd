@@ -105,7 +105,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     private boolean stressTest;
     private boolean benchmark;
-    private AnalysisCache analysisCache = new NoopAnalysisCache();
+    private AnalysisCache analysisCache;
 
     /**
      * Get the suppress marker. This is the source level marker used to indicate
@@ -567,6 +567,11 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @return The currently used analysis cache. Never null.
      */
     public AnalysisCache getAnalysisCache() {
+        // Make sure we are not null
+        if (analysisCache == null) {
+            setAnalysisCache(null);
+        }
+
         return analysisCache;
     }
     
@@ -592,7 +597,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setAnalysisCacheLocation(final String cacheLocation) {
         if (cacheLocation == null) {
-            setAnalysisCache(new NoopAnalysisCache());
+            setAnalysisCache(null);
         } else {
             setAnalysisCache(new FileAnalysisCache(new File(cacheLocation)));
         }

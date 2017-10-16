@@ -70,13 +70,15 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
 
                         fileResultsCache.put(fileName, new AnalysisResult(checksum, violations));
                     }
+
+                    LOG.info("Analysis cache loaded");
                 } else {
                     LOG.info("Analysis cache invalidated, PMD version changed.");
                 }
             } catch (final EOFException e) {
                 LOG.warning("Cache file " + cacheFile.getPath() + " is malformed, will not be used for current analysis");
             } catch (final IOException e) {
-                LOG.severe("Could not load analysis cache to file. " + e.getMessage());
+                LOG.severe("Could not load analysis cache from file. " + e.getMessage());
             }
         }
     }
@@ -111,6 +113,8 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                     CachedRuleViolation.storeToStream(outputStream, rv);
                 }
             }
+            
+            LOG.info("Analysis cache updated");
         } catch (final IOException e) {
             LOG.severe("Could not persist analysis cache to file. " + e.getMessage());
         }

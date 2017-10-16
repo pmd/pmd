@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.junit.Test;
@@ -76,9 +77,9 @@ public class ConfigurationTest {
     @Test
     public void testSourceEncoding() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default source encoding", System.getProperty("file.encoding"), configuration.getSourceEncoding());
-        configuration.setSourceEncoding("some_other_encoding");
-        assertEquals("Changed source encoding", "some_other_encoding", configuration.getSourceEncoding());
+        assertEquals("Default source encoding", System.getProperty("file.encoding"), configuration.getSourceEncoding().name());
+        configuration.setSourceEncoding(StandardCharsets.UTF_16LE.name());
+        assertEquals("Changed source encoding", StandardCharsets.UTF_16LE, configuration.getSourceEncoding());
     }
 
     @Test

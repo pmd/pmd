@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 
 /**
  * @author Clément Fournier

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import java.nio.charset.Charset;
+
 /**
  * Base configuration class for both PMD and CPD.
  *
@@ -11,7 +13,7 @@ package net.sourceforge.pmd;
  */
 public abstract class AbstractConfiguration {
 
-    private String sourceEncoding = System.getProperty("file.encoding");
+    private Charset sourceEncoding = Charset.forName(System.getProperty("file.encoding"));
     private boolean debug;
 
     /**
@@ -26,7 +28,7 @@ public abstract class AbstractConfiguration {
      *
      * @return The character encoding.
      */
-    public String getSourceEncoding() {
+    public Charset getSourceEncoding() {
         return sourceEncoding;
     }
 
@@ -37,7 +39,7 @@ public abstract class AbstractConfiguration {
      *            The character encoding.
      */
     public void setSourceEncoding(String sourceEncoding) {
-        this.sourceEncoding = sourceEncoding;
+        this.sourceEncoding = Charset.forName(sourceEncoding);
     }
 
     /**

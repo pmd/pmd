@@ -9,10 +9,12 @@ import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.Inferen
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.LOOSE_INVOCATION;
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.SUBTYPE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -306,10 +308,14 @@ public class TypeInferenceTest {
 
         Set<Class<?>> erasedCandidate = TypeInferenceResolver.getErasedCandidateSet(types);
 
-        assertEquals(erasedCandidate.size(), 3);
+        assertEquals(3, erasedCandidate.size());
         assertTrue(erasedCandidate.contains(Object.class));
         assertTrue(erasedCandidate.contains(Collection.class));
         assertTrue(erasedCandidate.contains(Iterable.class));
+
+        Set<Class<?>> emptySet = TypeInferenceResolver.getErasedCandidateSet(Collections.<JavaTypeDefinition>emptyList());
+        assertNotNull(emptySet);
+        assertEquals(0, emptySet.size());
     }
 
     @Test

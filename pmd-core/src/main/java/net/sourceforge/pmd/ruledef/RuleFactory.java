@@ -156,7 +156,7 @@ public class RuleFactory {
         builder.setDeprecated(hasAttributeSetTrue(ruleElement, DEPRECATED));
         builder.usesDFA(hasAttributeSetTrue(ruleElement, "dfa"));
         builder.usesTyperesolution(hasAttributeSetTrue(ruleElement, "typeResolution"));
-        builder.usesMetrics(hasAttributeSetTrue(ruleElement, "metrics"));
+        // builder.usesMultifile(hasAttributeSetTrue(ruleElement, "multifile"));
 
 
         Element propertiesElement = null;

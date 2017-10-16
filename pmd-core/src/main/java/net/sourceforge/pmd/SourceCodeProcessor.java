@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.List;
-
-import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
@@ -48,10 +46,10 @@ public class SourceCodeProcessor {
      * @see #processSourceCode(Reader, RuleSets, RuleContext)
      */
     public void processSourceCode(InputStream sourceCode, RuleSets ruleSets, RuleContext ctx) throws PMDException {
-        try {
-            processSourceCode(new InputStreamReader(sourceCode, configuration.getSourceEncoding()), ruleSets, ctx);
-        } catch (UnsupportedEncodingException uee) {
-            throw new PMDException("Unsupported encoding exception: " + uee.getMessage());
+        try (Reader streamReader = new InputStreamReader(sourceCode, configuration.getSourceEncoding())) {
+            processSourceCode(streamReader, ruleSets, ctx);
+        } catch (IOException e) {
+            throw new PMDException("IO exception: " + e.getMessage(), e);
         }
     }
 
@@ -102,7 +100,6 @@ public class SourceCodeProcessor {
                 configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
                 throw new PMDException("Error while processing " + ctx.getSourceCodeFilename(), e);
             } finally {
-                IOUtils.closeQuietly(sourceCode);
                 ruleSets.end(ctx);
             }
         }
@@ -155,17 +152,18 @@ public class SourceCodeProcessor {
         }
     }
 
-    private void usesMetrics(LanguageVersion languageVersion, Node rootNode, RuleSets ruleSets,
-                                    Language language) {
 
-        if (ruleSets.usesMetrics(language)) {
+    private void usesMultifile(Node rootNode, LanguageVersionHandler languageVersionHandler, RuleSets ruleSets,
+                               Language language) {
+
+        if (ruleSets.usesMultifile(language)) {
             long start = System.nanoTime();
-            languageVersion.getLanguageVersionHandler().getMetricsVisitorFacade()
-                    .start(rootNode);
+            languageVersionHandler.getMultifileFacade().start(rootNode);
             long end = System.nanoTime();
-            Benchmarker.mark(Benchmark.MetricsVisitor, end - start, 0);
+            Benchmarker.mark(Benchmark.Multifile, end - start, 0);
         }
     }
+
 
     private void processSource(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) {
         LanguageVersion languageVersion = ctx.getLanguageVersion();
@@ -177,7 +175,7 @@ public class SourceCodeProcessor {
         Language language = languageVersion.getLanguage();
         usesDFA(languageVersion, rootNode, ruleSets, language);
         usesTypeResolution(languageVersion, rootNode, ruleSets, language);
-        usesMetrics(languageVersion, rootNode, ruleSets, language);
+        usesMultifile(rootNode, languageVersionHandler, ruleSets, language);
 
         List<Node> acus = Collections.singletonList(rootNode);
         ruleSets.apply(acus, ctx, language);

@@ -145,15 +145,19 @@ public final class CachedRuleViolation implements RuleViolation {
      */
     /* package */ static void storeToStream(final DataOutputStream stream,
             final RuleViolation violation) throws IOException {
-        stream.writeUTF(violation.getDescription());
-        stream.writeUTF(violation.getRule().getRuleClass());
+        stream.writeUTF(getValueOrEmpty(violation.getDescription()));
+        stream.writeUTF(getValueOrEmpty(violation.getRule().getRuleClass()));
         stream.writeInt(violation.getBeginLine());
         stream.writeInt(violation.getBeginColumn());
         stream.writeInt(violation.getEndLine());
         stream.writeInt(violation.getEndColumn());
-        stream.writeUTF(violation.getPackageName());
-        stream.writeUTF(violation.getClassName());
-        stream.writeUTF(violation.getMethodName());
-        stream.writeUTF(violation.getVariableName());
+        stream.writeUTF(getValueOrEmpty(violation.getPackageName()));
+        stream.writeUTF(getValueOrEmpty(violation.getClassName()));
+        stream.writeUTF(getValueOrEmpty(violation.getMethodName()));
+        stream.writeUTF(getValueOrEmpty(violation.getVariableName()));
+    }
+
+    private static String getValueOrEmpty(final String value) {
+        return value == null ? "" : value;
     }
 }

@@ -40,7 +40,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     private RulePriority priority = RulePriority.LOW;
     private boolean usesDFA;
     private boolean usesTypeResolution;
-    private boolean usesMetrics;
+    private boolean usesMultifile;
     private List<String> ruleChainVisits = new ArrayList<>();
 
     public AbstractRule() {
@@ -48,6 +48,10 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         definePropertyDescriptor(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
     }
 
+    /**
+     * @deprecated Use {@link #deepCopy()} to create verbatim copies of rules.
+     */
+    @Deprecated
     public void deepCopyValuesTo(AbstractRule otherRule) {
         otherRule.language = language;
         otherRule.minimumLanguageVersion = minimumLanguageVersion;
@@ -66,7 +70,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         otherRule.propertyValuesByDescriptor = copyPropertyValues();
         otherRule.usesDFA = usesDFA;
         otherRule.usesTypeResolution = usesTypeResolution;
-        otherRule.usesMetrics = usesMetrics;
+        otherRule.usesMultifile = usesMultifile;
         otherRule.ruleChainVisits = copyRuleChainVisits();
     }
 
@@ -78,17 +82,11 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         return new ArrayList<>(ruleChainVisits);
     }
 
-    /**
-     * @see Rule#getLanguage()
-     */
     @Override
     public Language getLanguage() {
         return language;
     }
 
-    /**
-     * @see Rule#setLanguage(net.sourceforge.pmd.lang.Language)
-     */
     @Override
     public void setLanguage(Language language) {
         if (this.language != null && this instanceof ImmutableLanguage && !this.language.equals(language)) {
@@ -98,194 +96,122 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         this.language = language;
     }
 
-    /**
-     * @see Rule#getMinimumLanguageVersion()
-     */
     @Override
     public LanguageVersion getMinimumLanguageVersion() {
         return minimumLanguageVersion;
     }
 
-    /**
-     * @see Rule#setMinimumLanguageVersion(net.sourceforge.pmd.lang.LanguageVersion)
-     */
     @Override
     public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
         this.minimumLanguageVersion = minimumLanguageVersion;
     }
 
-    /**
-     * @see Rule#getMaximumLanguageVersion()
-     */
     @Override
     public LanguageVersion getMaximumLanguageVersion() {
         return maximumLanguageVersion;
     }
 
-    /**
-     * @see Rule#setMaximumLanguageVersion(net.sourceforge.pmd.lang.LanguageVersion)
-     */
     @Override
     public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
         this.maximumLanguageVersion = maximumLanguageVersion;
     }
 
-    /**
-     * @see Rule#isDeprecated()
-     */
     @Override
     public boolean isDeprecated() {
         return deprecated;
     }
 
-    /**
-     * @see Rule#setDeprecated(boolean)
-     */
     @Override
     public void setDeprecated(boolean deprecated) {
         this.deprecated = deprecated;
     }
 
-    /**
-     * @see Rule#getName()
-     */
     @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * @see Rule#setName(String)
-     */
     @Override
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * @see Rule#getSince()
-     */
     @Override
     public String getSince() {
         return since;
     }
 
-    /**
-     * @see Rule#setSince(String)
-     */
     @Override
     public void setSince(String since) {
         this.since = since;
     }
 
-    /**
-     * @see Rule#getRuleClass()
-     */
     @Override
     public String getRuleClass() {
         return ruleClass;
     }
 
-    /**
-     * @see Rule#setRuleClass(String)
-     */
     @Override
     public void setRuleClass(String ruleClass) {
         this.ruleClass = ruleClass;
     }
 
-    /**
-     * @see Rule#getRuleSetName()
-     */
     @Override
     public String getRuleSetName() {
         return ruleSetName;
     }
 
-    /**
-     * @see Rule#setRuleSetName(String)
-     */
     @Override
     public void setRuleSetName(String ruleSetName) {
         this.ruleSetName = ruleSetName;
     }
 
-    /**
-     * @see Rule#getMessage()
-     */
     @Override
     public String getMessage() {
         return message;
     }
 
-    /**
-     * @see Rule#setMessage(String)
-     */
     @Override
     public void setMessage(String message) {
         this.message = message;
     }
 
-    /**
-     * @see Rule#getDescription()
-     */
     @Override
     public String getDescription() {
         return description;
     }
 
-    /**
-     * @see Rule#setDescription(String)
-     */
     @Override
     public void setDescription(String description) {
         this.description = description;
     }
 
-    /**
-     * @see Rule#getExamples()
-     */
     @Override
     public List<String> getExamples() {
         // TODO Needs to be externally immutable
         return examples;
     }
 
-    /**
-     * @see Rule#addExample(String)
-     */
     @Override
     public void addExample(String example) {
         examples.add(example);
     }
 
-    /**
-     * @see Rule#getExternalInfoUrl()
-     */
     @Override
     public String getExternalInfoUrl() {
         return externalInfoUrl;
     }
 
-    /**
-     * @see Rule#setExternalInfoUrl(String)
-     */
     @Override
     public void setExternalInfoUrl(String externalInfoUrl) {
         this.externalInfoUrl = externalInfoUrl;
     }
 
-    /**
-     * @see Rule#getPriority()
-     */
     @Override
     public RulePriority getPriority() {
         return priority;
     }
 
-    /**
-     * @see Rule#setPriority(RulePriority)
-     */
     @Override
     public void setPriority(RulePriority priority) {
         this.priority = priority;
@@ -302,74 +228,46 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         return new ParserOptions();
     }
 
-    /**
-     * @see Rule#setUsesDFA()
-     */
     @Override
     public void setUsesDFA() {
         usesDFA = true;
     }
 
-    /**
-     * @see Rule#usesDFA()
-     */
     @Override
     public boolean usesDFA() {
         return usesDFA;
     }
 
-    /**
-     * @see Rule#setUsesTypeResolution()
-     */
     @Override
     public void setUsesTypeResolution() {
         usesTypeResolution = true;
     }
 
-    /**
-     * @see Rule#usesTypeResolution()
-     */
     @Override
     public boolean usesTypeResolution() {
         return usesTypeResolution;
     }
 
-    /**
-     * @see Rule#setUsesMetrics()
-     */
     @Override
-    public void setUsesMetrics() {
-        usesMetrics = true;
+    public void setUsesMultifile() {
+        usesMultifile = true;
     }
 
-    /**
-     * @see Rule#usesMetrics()
-     */
     @Override
-    public boolean usesMetrics() {
-        return usesMetrics;
+    public boolean usesMultifile() {
+        return usesMultifile;
     }
 
-
-    /**
-     * @see Rule#usesRuleChain()
-     */
     @Override
     public boolean usesRuleChain() {
         return !getRuleChainVisits().isEmpty();
     }
 
-    /**
-     * @see Rule#getRuleChainVisits()
-     */
     @Override
     public List<String> getRuleChainVisits() {
         return ruleChainVisits;
     }
 
-    /**
-     * @see Rule#addRuleChainVisit(Class)
-     */
     @Override
     public void addRuleChainVisit(Class<? extends Node> nodeClass) {
         if (!nodeClass.getSimpleName().startsWith("AST")) {
@@ -378,9 +276,6 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         addRuleChainVisit(nodeClass.getSimpleName().substring("AST".length()));
     }
 
-    /**
-     * @see Rule#addRuleChainVisit(String)
-     */
     @Override
     public void addRuleChainVisit(String astNodeName) {
         if (!ruleChainVisits.contains(astNodeName)) {
@@ -388,17 +283,11 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         }
     }
 
-    /**
-     * @see Rule#start(RuleContext)
-     */
     @Override
     public void start(RuleContext ctx) {
         // Override as needed
     }
 
-    /**
-     * @see Rule#end(RuleContext)
-     */
     @Override
     public void end(RuleContext ctx) {
         // Override as needed
@@ -494,9 +383,6 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         return equality;
     }
 
-    /**
-     * @see #equals(Object)
-     */
     @Override
     public int hashCode() {
         Object propertyValues = getPropertiesByPropertyDescriptor();
@@ -527,8 +413,8 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         if (usesTypeResolution()) {
             rule.setUsesTypeResolution();
         }
-        if (usesMetrics()) {
-            rule.setUsesMetrics();
+        if (usesMultifile()) {
+            rule.setUsesMultifile();
         }
         rule.setDescription(getDescription());
         for (final String example : getExamples()) {
@@ -536,7 +422,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         }
         rule.setPriority(getPriority());
         for (final PropertyDescriptor<?> prop : getPropertyDescriptors()) {
-            if (!rule.hasDescriptor(prop)) {
+            if (rule.getPropertyDescriptor(prop.name()) == null) {
                 rule.definePropertyDescriptor(prop); // Property descriptors are immutable, and can be freely shared
             }
             

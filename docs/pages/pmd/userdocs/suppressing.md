@@ -34,7 +34,7 @@ Otherwise, the other suppression methods are explained in the following sections
 
 ## Annotations
 
-You can use a JDK 1.5 annotation to suppress PMD warnings, like this:
+When using Java 1.5 or later, or Salesforce.com's Apex you can use annotations to suppress PMD warnings, like this:
 
     // This will suppress all the PMD warnings in this class
     @SuppressWarnings("PMD")
@@ -54,7 +54,19 @@ Or you can suppress one rule with an annotation like this:
         }
     }
 
-PMD also obeys the JDK annotation @SuppressWarnings("unused"), which will apply to all rules in the unused ruleset.
+Multiple rules can be suppressed by providing multiple values, ie:
+
+```
+@SuppressWarnings({"PMD.UnusedLocalVariable", "PMD.UnusedPrivateMethod"})
+```
+
+For Apex, the syntax for this is slightly different:
+
+```
+@SuppressWarnings("PMD.UnusedLocalVariable, PMD.UnusedPrivateMethod")
+```
+
+PMD Java also obeys the JDK annotation @SuppressWarnings("unused"), which will apply to all rules in the unused ruleset.
 
     // This will suppress UnusedLocalVariable and UnusedPrivateMethod warnings in this class
     @SuppressWarnings("unused")

@@ -25,13 +25,13 @@ zip -qr pmd-doc-${VERSION}.zip pmd-doc-${VERSION}/
 
 
 # Uploading pmd doc distribution to sourceforge
-if [[ "$TRAVIS_TAG" != "" || "$VERSION" == *-SNAPSHOT ]]; then
+if [[ "${TRAVIS_TAG}" != "" || "${VERSION}" == *-SNAPSHOT ]]; then
     echo -e "\n\nUploading pmd-doc archive to sourceforge...\n\n"
     rsync -avh pmd-doc-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/
 fi
 
 # rsync site to pmd.sourceforge.net/snapshot
-if [[ "$VERSION" == *-SNAPSHOT && "$TRAVIS_BRANCH" == "master" ]]; then
+if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]]; then
     echo -e "\n\nUploading snapshot site...\n\n"
     travis_wait rsync -ah --stats --delete pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
 fi

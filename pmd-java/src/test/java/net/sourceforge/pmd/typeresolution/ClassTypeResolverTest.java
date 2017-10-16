@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -65,6 +66,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Bound;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Constraint;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
+import net.sourceforge.pmd.typeresolution.testdata.AbstractReturnTypeUseCase;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousClassFromInterface;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.AnoymousExtendingObject;
@@ -89,6 +91,7 @@ import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.MethodAccessibility;
 import net.sourceforge.pmd.typeresolution.testdata.MethodFirstPhase;
 import net.sourceforge.pmd.typeresolution.testdata.MethodGenericExplicit;
+import net.sourceforge.pmd.typeresolution.testdata.MethodGenericParam;
 import net.sourceforge.pmd.typeresolution.testdata.MethodMostSpecific;
 import net.sourceforge.pmd.typeresolution.testdata.MethodPotentialApplicability;
 import net.sourceforge.pmd.typeresolution.testdata.MethodSecondPhase;
@@ -96,9 +99,12 @@ import net.sourceforge.pmd.typeresolution.testdata.MethodStaticAccess;
 import net.sourceforge.pmd.typeresolution.testdata.MethodThirdPhase;
 import net.sourceforge.pmd.typeresolution.testdata.NestedAnonymousClass;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
+import net.sourceforge.pmd.typeresolution.testdata.OverloadedMethodsUsage;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
+import net.sourceforge.pmd.typeresolution.testdata.SubTypeUsage;
 import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
+import net.sourceforge.pmd.typeresolution.testdata.VarArgsMethodUseCase;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.Converter;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.JavaTypeDefinitionEquals;
@@ -1314,7 +1320,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodFirstPhase() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodFirstPhase.class);
+        ASTCompilationUnit acu = parseAndTypeResolveForClass(MethodFirstPhase.class, "1.8");
 
         List<AbstractJavaTypeNode> expressions = convertList(
                 acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
@@ -1331,6 +1337,12 @@ public class ClassTypeResolverTest {
         assertEquals(Exception.class, expressions.get(index).getType());
         assertEquals(Exception.class, getChildType(expressions.get(index), 0));
         assertEquals(Exception.class, getChildType(expressions.get(index++), 1));
+
+        // Set<String> set = new HashSet<>();
+        assertEquals(HashSet.class, expressions.get(index++).getType());
+
+        // List<String> myList = new ArrayList<>();
+        assertEquals(ArrayList.class, expressions.get(index++).getType());
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
@@ -1648,6 +1660,35 @@ public class ClassTypeResolverTest {
                      forClass(SuperClassAOther2.class));
     }
 
+    @Test
+    public void testAnnotatedTypeParams() {
+        parseAndTypeResolveForString("public class Foo { public static <T extends @NonNull Enum<?>> T getEnum() { return null; } }", "1.8");
+    }
+
+    @Test
+    public void testMethodOverrides() throws Exception {
+        parseAndTypeResolveForClass(SubTypeUsage.class, "1.8");
+    }
+
+    @Test
+    public void testMethodWildcardParam() throws Exception {
+        parseAndTypeResolveForClass(MethodGenericParam.class, "1.8");
+    }
+
+    @Test
+    public void testAbstractMethodReturnType() throws Exception {
+        parseAndTypeResolveForClass(AbstractReturnTypeUseCase.class, "1.8");
+    }
+
+    @Test
+    public void testMethodOverloaded() throws Exception {
+        parseAndTypeResolveForClass(OverloadedMethodsUsage.class, "1.8");
+    }
+
+    @Test
+    public void testVarArgsMethodUseCase() throws Exception {
+        parseAndTypeResolveForClass(VarArgsMethodUseCase.class, "1.8");
+    }
 
     private JavaTypeDefinition getChildTypeDef(Node node, int childIndex) {
         return ((TypeNode) node.jjtGetChild(childIndex)).getTypeDefinition();

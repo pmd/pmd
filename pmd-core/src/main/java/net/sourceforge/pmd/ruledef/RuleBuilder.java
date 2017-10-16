@@ -42,7 +42,7 @@ class RuleBuilder {
     private RulePriority priority;
     private boolean isDeprecated;
     private boolean isUsesDfa;
-    private boolean isUsesMetrics;
+    private boolean isUsesMultifile;
     private boolean isUsesTyperesolution;
 
 
@@ -58,8 +58,8 @@ class RuleBuilder {
     }
 
 
-    public void usesMetrics(boolean usesMetrics) {
-        isUsesMetrics = usesMetrics;
+    public void usesMultifile(boolean usesMultifile) {
+        isUsesMultifile = usesMultifile;
     }
 
 
@@ -226,8 +226,8 @@ class RuleBuilder {
             rule.setUsesDFA();
         }
 
-        if (isUsesMetrics) {
-            rule.setUsesMetrics();
+        if (isUsesMultifile) {
+            rule.setUsesMultifile();
         }
 
         if (isUsesTyperesolution) {

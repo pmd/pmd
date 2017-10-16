@@ -1,4 +1,12 @@
 /**
+ * Add support for Java 9 changes:
+ * Private interface methods are only allowed with java9.
+ * A single underscore "_" is an invalid identifier in java9.
+ * Diamond operator for anonymous classes is only allowed with java9.
+ * Add support for module-info.java.
+ * Allow more concise try-with-resources statements with java9.
+ * Andreas Dangel 09/2017
+ *====================================================================
  * Add support for new Java 8 annotation locations.
  * Bugs #414, #415, #417
  * @Snap252 06/2017
@@ -319,6 +327,41 @@ public class JavaParser {
       throwParseException("Cannot use explicit receiver parameters when running in JDK inferior to 1.8 mode!");
     }
   }
+  private void checkForBadAnonymousDiamondUsage() {
+    if (jdkVersion < 9) {
+      ASTAllocationExpression node = (ASTAllocationExpression)jjtree.peekNode();
+      ASTTypeArguments types = node.getFirstDescendantOfType(ASTTypeArguments.class);
+      if (node.isAnonymousClass() && types != null && types.isDiamond()) {
+          throwParseException("Cannot use '<>' with anonymous inner classes when running in JDK inferior to 9 mode!");
+      }
+    }
+  }
+  /**
+   * Keeps track whether we are dealing with an interface or not. Needed since the tree is
+   * is not fully constructed yet, when we check for private interface methods.
+   * The flag is updated, if entering ClassOrInterfaceDeclaration and reset when leaving.
+   */
+  private boolean inInterface = false;
+  private void checkForBadPrivateInterfaceMethod(ASTMethodDeclaration node) {
+    if (jdkVersion < 9 && inInterface && node.isPrivate()) {
+      throwParseException("Cannot use private interface methods when running in JDK inferior to 9 mode!");
+    }
+  }
+  private void checkForBadIdentifier(String image) {
+    if (jdkVersion >= 9 && "_".equals(image)) {
+      throwParseException("With JDK 9, '_' is a keyword, and may not be used as an identifier!");
+    }
+  }
+  private void checkForBadModuleUsage() {
+    if (jdkVersion < 9) {
+      throwParseException("Cannot use module declaration when running in JDK inferior to 9 mode!");
+    }
+  }
+  private void checkForBadConciseTryWithResourcesUsage() {
+    if (jdkVersion < 9) {
+      throwParseException("Cannot use concise try-with-resources when running in JDK inferior to 9 mode!");
+    }
+  }
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
@@ -340,6 +383,14 @@ public class JavaParser {
                 tok.kind == MULTI_LINE_COMMENT;
       }
       return res;
+  }
+
+  /**
+   * Semantic lookahead to check if the next identifier is a
+   * specific restricted keyword.
+   */
+  private boolean isKeyword(String keyword) {
+    return getToken(1).kind == IDENTIFIER && getToken(1).image.equals(keyword);
   }
 
   public Map<Integer, String> getSuppressMap() {
@@ -461,6 +512,27 @@ TOKEN :
 | < WHILE: "while" >
 | < STRICTFP: "strictfp" >
 }
+
+
+/* Restricted Keywords */
+// Note: These are commented out, since these keywords
+// can still be used as identifiers.
+// see isKeyword() semantic lookup
+/*
+TOKEN :
+{
+  < OPEN: "open" >
+| < MODULE: "module" >
+| < REQUIRES: "requires" >
+| < TRANSITIVE: "transitive" >
+| < EXPORTS: "exports" >
+| < OPENS: "opens" >
+| < TO: "to" >
+| < USES: "uses" >
+| < PROVIDES: "provides" >
+| < WITH: "with" >
+}
+*/
 
 /* LITERALS */
 
@@ -1263,7 +1335,8 @@ ASTCompilationUnit CompilationUnit() :
 {
   [ LOOKAHEAD( ( Annotation() )* "package" ) PackageDeclaration() ( EmptyStatement() )* ]
   ( ImportDeclaration() ( EmptyStatement() )* )*
-  ( TypeDeclaration() ( EmptyStatement() )* )*
+  ( LOOKAHEAD(2) TypeDeclaration() ( EmptyStatement() )* )*
+  [ LOOKAHEAD({isKeyword("open") || isKeyword("module") || getToken(1).kind == AT}) ModuleDeclaration() ( EmptyStatement() )* ]
   ( < "\u001a" > )?
   ( < "~[]" > )?
   <EOF>
@@ -1330,7 +1403,7 @@ void TypeDeclaration():
   (
      ClassOrInterfaceDeclaration(modifiers)
    |
-     EnumDeclaration(modifiers)
+     LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
    |
      AnnotationTypeDeclaration(modifiers)
   )
@@ -1338,17 +1411,19 @@ void TypeDeclaration():
 
 void ClassOrInterfaceDeclaration(int modifiers):
 {
-Token t = null;
-jjtThis.setModifiers(modifiers);
+    Token t = null;
+    jjtThis.setModifiers(modifiers);
+    inInterface = false;
 }
 {
-
-  ( /* See note about this optional final modifier in BlockStatement */ ["final"|"abstract"] "class" | "interface" { jjtThis.setInterface(); } )
+  ( /* See note about this optional final modifier in BlockStatement */
+    ["final"|"abstract"] "class" | "interface" { jjtThis.setInterface(); inInterface = true; } )
   t=<IDENTIFIER> { jjtThis.setImage(t.image); }
   [ TypeParameters() ]
   [ ExtendsList() ]
   [ ImplementsList() ]
   ClassOrInterfaceBody()
+  { inInterface = false; } // always reset the flag after leaving the node
 }
 
 void ExtendsList():
@@ -1436,7 +1511,7 @@ void ClassOrInterfaceBodyDeclaration():
 { LOOKAHEAD(["static"] "{" ) Initializer()
 |  modifiers = Modifiers()
   ( LOOKAHEAD(3) ClassOrInterfaceDeclaration(modifiers)
-    | LOOKAHEAD(3) EnumDeclaration(modifiers)
+    | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
     | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration(modifiers)
     | LOOKAHEAD( Type() <IDENTIFIER> ( "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
     | LOOKAHEAD(2) MethodDeclaration(modifiers)
@@ -1445,6 +1520,7 @@ void ClassOrInterfaceBodyDeclaration():
 |
   ";"
 }
+
 
 void FieldDeclaration(int modifiers) :
 {jjtThis.setModifiers(modifiers);}
@@ -1471,6 +1547,7 @@ void VariableDeclaratorId() :
   {
     checkForBadAssertUsage(image, "a variable name");
     checkForBadEnumUsage(image, "a variable name");
+    checkForBadIdentifier(image);
     jjtThis.setImage( image );
   }
 }
@@ -1489,7 +1566,10 @@ void ArrayInitializer() :
 }
 
 void MethodDeclaration(int modifiers) :
-{jjtThis.setModifiers(modifiers);}
+{
+    jjtThis.setModifiers(modifiers);
+    { checkForBadPrivateInterfaceMethod(jjtThis); }
+}
 {
   [ TypeParameters() ]
   (Annotation() {checkForBadTypeAnnotations();})* ResultType() MethodDeclarator() [ "throws" NameList() ]
@@ -1925,13 +2005,14 @@ void AllocationExpression():
   (LOOKAHEAD(2)
     PrimitiveType() ArrayDimsAndInits()
   |
-    ClassOrInterfaceType() [ TypeArguments() ]
+    ClassOrInterfaceType()
      (
       ArrayDimsAndInits()
      |
       Arguments() [ ClassOrInterfaceBody() ]
      )
   )
+  { checkForBadAnonymousDiamondUsage(); }
 }
 
 /*
@@ -2172,11 +2253,9 @@ void Resources() :
 void Resource() :
 {}
 {
-	( "final" | Annotation() )*
-	Type()
-	VariableDeclaratorId()
-	"="
-	Expression()
+   LOOKAHEAD(2) ( ( "final" | Annotation() )* Type() VariableDeclaratorId() "=" Expression() )
+   |
+   Name() {checkForBadConciseTryWithResourcesUsage();}
 }
 
 void CatchStatement() :
@@ -2340,4 +2419,42 @@ void DefaultValue():
 {}
 {
   "default" MemberValue()
+}
+
+void ModuleDeclaration():
+{
+    StringBuilder s = new StringBuilder();
+    Token t;
+    checkForBadModuleUsage();
+}
+{
+  ( Annotation() )* [LOOKAHEAD({isKeyword("open")}) <IDENTIFIER> {jjtThis.setOpen(true);}] LOOKAHEAD({isKeyword("module")}) <IDENTIFIER>
+  t=<IDENTIFIER> { s.append(t.image); }
+  ( "." t=<IDENTIFIER> { s.append('.').append(t.image); } )* { jjtThis.setImage(s.toString()); }
+  "{" (ModuleDirective())* "}"
+}
+
+void ModuleDirective():
+{}
+{
+    ( LOOKAHEAD({isKeyword("requires")}) <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.REQUIRES); }
+            (LOOKAHEAD({isKeyword("transitive")}) <IDENTIFIER> { jjtThis.setRequiresModifier(ASTModuleDirective.RequiresModifier.TRANSITIVE); } |
+             "static"     { jjtThis.setRequiresModifier(ASTModuleDirective.RequiresModifier.STATIC);     } )?
+         ModuleName() ";" )
+  | ( LOOKAHEAD({isKeyword("exports")})  <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.EXPORTS); }  Name() [ LOOKAHEAD({isKeyword("to")}) <IDENTIFIER> ModuleName() ("," ModuleName())*] ";" )
+  | ( LOOKAHEAD({isKeyword("opens")})    <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.OPENS); }    Name() [ LOOKAHEAD({isKeyword("to")}) <IDENTIFIER> ModuleName() ("," ModuleName())*] ";" )
+  | ( LOOKAHEAD({isKeyword("uses")})     <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.USES); }     Name() ";" )
+  | ( LOOKAHEAD({isKeyword("provides")}) <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.PROVIDES); } Name() LOOKAHEAD({isKeyword("with")}) <IDENTIFIER> Name() ("," Name() )* ";" )
+}
+
+// Similar to Name()
+void ModuleName():
+{
+  StringBuilder s = new StringBuilder();
+  Token t;
+}
+{
+  t=<IDENTIFIER> { s.append(t.image); }
+  ( "." t=<IDENTIFIER> {s.append('.').append(t.image);} )*
+  {jjtThis.setImage(s.toString());}
 }

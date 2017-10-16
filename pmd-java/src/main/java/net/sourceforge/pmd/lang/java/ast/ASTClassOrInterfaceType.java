@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
     public ASTClassOrInterfaceType(int id) {
         super(id);
@@ -50,5 +52,13 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
 
     public boolean isAnonymousClass() {
         return jjtGetParent().hasDescendantOfType(ASTClassOrInterfaceBody.class);
+    }
+
+    public boolean isArray() {
+        Node p = jjtGetParent();
+        if (p instanceof ASTReferenceType) {
+            return ((ASTReferenceType) p).isArray();
+        }
+        return false;
     }
 }

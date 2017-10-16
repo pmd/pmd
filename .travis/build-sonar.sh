@@ -11,7 +11,11 @@ if ! travis_isPush; then
     exit 0
 fi
 
+#
+# for java9: enable all modules.
+# sonar plugin seems to need java.xml.bind module
+#
+echo "MAVEN_OPTS='-Xms1g -Xmx1g --add-modules java.se.ee'" > ${HOME}/.mavenrc
 
 # Run the build, truncate output due to Travis log limits
-travis_wait ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN} -B -V -q
-
+./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN} -B -V

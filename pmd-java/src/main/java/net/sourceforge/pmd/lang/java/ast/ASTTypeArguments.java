@@ -20,4 +20,8 @@ public class ASTTypeArguments extends AbstractJavaNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public boolean isDiamond() {
+        return jjtGetNumChildren() == 0;
+    }
 }

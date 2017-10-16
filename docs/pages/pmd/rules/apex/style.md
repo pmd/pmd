@@ -5,8 +5,45 @@ permalink: pmd_rules_apex_style.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/style.xml
-keywords: Style, VariableNamingConventions, MethodNamingConventions, ClassNamingConventions, MethodWithSameNameAsEnclosingClass, AvoidLogicInTrigger, AvoidGlobalModifier
+keywords: Style, VariableNamingConventions, MethodNamingConventions, ClassNamingConventions, MethodWithSameNameAsEnclosingClass, AvoidLogicInTrigger, AvoidGlobalModifier, AvoidDirectAccessTriggerMap
 ---
+## AvoidDirectAccessTriggerMap
+
+**Since:** PMD 6.0.0
+
+**Priority:** Medium (3)
+
+Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Triggers should be bulkified and iterate through the map to handle the actions for each item separately.
+
+```
+//ArrayLoadExpression/TriggerVariableExpression | //ArrayLoadExpression/LiteralExpression
+```
+
+**Example(s):**
+
+``` java
+trigger AccountTrigger on Account (before insert, before update) {
+   Account a = Trigger.new[0]; //Bad: Accessing the trigger array directly is not recommended.
+   
+   foreach ( Account a : Trigger.new ){   
+        //Good: Iterate through the trigger.new array instead.
+   }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/style.xml/AvoidDirectAccessTriggerMap" />
+```
+
 ## AvoidGlobalModifier
 
 **Since:** PMD 5.5.0
