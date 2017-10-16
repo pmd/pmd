@@ -526,7 +526,7 @@ public class RuleSetFactory {
                 && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
             return;
         }
-        Rule rule = RuleFactory.INSTANCE.buildRule(ruleElement);
+        Rule rule = new RuleFactory().buildRule(ruleElement);
         rule.setRuleSetName(ruleSetBuilder.getName());
 
         if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
@@ -607,7 +607,7 @@ public class RuleSetFactory {
 
         RuleSetReference ruleSetReference = new RuleSetReference(otherRuleSetReferenceId.getRuleSetFileName(), false);
 
-        RuleReference ruleReference = RuleFactory.INSTANCE.decorateRule(referencedRule, ruleElement);
+        RuleReference ruleReference = new RuleFactory().decorateRule(referencedRule, ruleElement);
         ruleReference.setRuleSetReference(ruleSetReference);
 
 

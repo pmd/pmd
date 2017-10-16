@@ -35,8 +35,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
  */
 public class RuleFactory {
 
-    public static final RuleFactory INSTANCE = new RuleFactory();
-    
+
     private static final String DEPRECATED = "deprecated";
     private static final String NAME = "name";
     private static final String MESSAGE = "message";
@@ -52,7 +51,8 @@ public class RuleFactory {
     private static final String CLASS = "class";
 
 
-    private RuleFactory() {
+    /** Create a new rule factory. */
+    public RuleFactory() {
 
     }
 
