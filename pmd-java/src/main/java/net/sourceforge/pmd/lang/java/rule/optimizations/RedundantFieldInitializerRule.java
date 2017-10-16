@@ -95,9 +95,9 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
                                     // remove the ending "f" or "F" for float
                                     // values
                                     s = s.substring(0, s.length() - 1);
-                                    value = Float.valueOf(s);
+                                    value = Float.valueOf(s.replaceAll("_", ""));
                                 } else if (literal.isDoubleLiteral()) {
-                                    value = Double.valueOf(literal.getImage());
+                                    value = Double.valueOf(literal.getImage().replaceAll("_", ""));
                                 } else if (literal.isCharLiteral()) {
                                     value = (int) literal.getImage().charAt(1);
                                 }

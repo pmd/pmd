@@ -5,7 +5,7 @@ permalink: pmd_rules_apex_performance.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/performance.xml
-keywords: Performance, AvoidSoqlInLoops, AvoidDmlStatementsInLoops
+keywords: Performance, AvoidSoqlInLoops, AvoidSoslInLoops, AvoidDmlStatementsInLoops
 ---
 ## AvoidDmlStatementsInLoops
 
@@ -77,5 +77,40 @@ public class Something {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="rulesets/apex/performance.xml/AvoidSoqlInLoops" />
+```
+
+## AvoidSoslInLoops
+
+**Since:** PMD 6.0.0
+
+**Priority:** Medium (3)
+
+Sosl calls within loops can cause governor limit exceptions.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoslInLoopsRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/performance/AvoidSoslInLoopsRule.java)
+
+**Example(s):**
+
+``` java
+public class Something {
+    public static void main( String as[] ) {
+        for (Integer i = 0; i < 10; i++) {
+            List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+        }
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/performance.xml/AvoidSoslInLoops" />
 ```
 

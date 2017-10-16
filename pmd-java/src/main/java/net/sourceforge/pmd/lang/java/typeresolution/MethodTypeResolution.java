@@ -14,6 +14,8 @@ import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -31,6 +33,8 @@ import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
 
 public final class MethodTypeResolution {
     private MethodTypeResolution() {}
+
+    private static final Logger LOG = Logger.getLogger(MethodTypeResolution.class.getName());
 
     private static final List<Class<?>> PRIMITIVE_SUBTYPE_ORDER;
     private static final List<Class<?>> BOXED_PRIMITIVE_SUBTYPE_ORDER;
@@ -114,7 +118,7 @@ public final class MethodTypeResolution {
             if (argList == null) {
                 selectedMethods.add(methodType);
 
-                // vararg methods are considered fixed arity here
+                // vararg methods are considered fixed arity here - varargs are dealt with in the 3rd phase
             } else if (getArity(methodType.getMethod()) == argList.jjtGetNumChildren()) {
                 if (!methodType.isParameterized()) {
                     // https://docs.oracle.com/javase/specs/jls/se8/html/jls-18.html#jls-18.5.1
@@ -267,7 +271,7 @@ public final class MethodTypeResolution {
             if (argList == null) {
                 selectedMethods.add(methodType);
 
-                // vararg methods are considered fixed arity here
+                // vararg methods are considered fixed arity here, see 3rd phase
             } else if (getArity(methodType.getMethod()) == argList.jjtGetNumChildren()) {
                 // check method convertability of each argument to the corresponding parameter
                 boolean methodIsApplicable = true;
@@ -311,7 +315,8 @@ public final class MethodTypeResolution {
                 selectedMethods.add(methodType);
 
                 // now we consider varargs as not fixed arity
-            } else { // check subtypeability of each argument to the corresponding parameter
+                // if we reach here and the method is not a vararg, then we didn't find a resolution in earlier phases
+            } else if (methodType.isVararg()) { // check subtypeability of each argument to the corresponding parameter
                 boolean methodIsApplicable = true;
 
                 List<JavaTypeDefinition> methodParameters = methodType.getParameterTypes();
@@ -336,6 +341,9 @@ public final class MethodTypeResolution {
                 if (methodIsApplicable) {
                     selectedMethods.add(methodType);
                 }
+            } else if (!methodType.isVararg()) {
+                // TODO: Remove check for vararg here, once we can detect and use return types of method calls
+                LOG.log(Level.FINE, "Method {0} couldn't be resolved", String.valueOf(methodType));
             }
         }
 
@@ -407,14 +415,15 @@ public final class MethodTypeResolution {
                 // the bottom of the section is relevant here, we can't resolve this type
                 // TODO: resolve this
 
-                return null;
+                // we obviously don't know the runtime type. Let's return the first as the most specific
+                return first;
             } else { // second one isn't abstract
                 return second;
             }
         } else if (second.isAbstract()) {
             return first; // first isn't abstract, second one is
         } else {
-            return null; // TODO: once shadowing and overriding methods is done, add exception back
+            return first; // TODO: once shadowing and overriding methods is done, add exception back
             // throw new IllegalStateException("None of the maximally specific methods are abstract.\n"
             //                                        + first.toString() + "\n" + second.toString());
         }
@@ -449,8 +458,16 @@ public final class MethodTypeResolution {
 
         // search it's supertype
         if (!contextClass.equals(Object.class)) {
-            result.addAll(getApplicableMethods(context.resolveTypeDefinition(contextClass.getGenericSuperclass()),
-                                               methodName, typeArguments, argArity, accessingClass));
+            List<MethodType> inheritedMethods = getApplicableMethods(context.resolveTypeDefinition(contextClass.getGenericSuperclass()),
+                                               methodName, typeArguments, argArity, accessingClass);
+
+            // but only add the found methods of the supertype, if they have not been overridden
+            // TODO: verify whether this simplified overriding detection is good enough and at the correct place
+            for (MethodType inherited : inheritedMethods) {
+                if (!result.contains(inherited)) {
+                    result.add(inherited);
+                }
+            }
         }
 
         // search it's interfaces
@@ -564,6 +581,10 @@ public final class MethodTypeResolution {
     }
 
     public static boolean isMethodConvertible(JavaTypeDefinition parameter, ASTExpression argument) {
+        if (argument.getTypeDefinition() == null) {
+            LOG.log(Level.FINE, "No type information for node {0}", argument.toString());
+            return true;
+        }
         return isMethodConvertible(parameter, argument.getTypeDefinition());
     }
 
@@ -603,6 +624,10 @@ public final class MethodTypeResolution {
 
 
     public static boolean isSubtypeable(JavaTypeDefinition parameter, ASTExpression argument) {
+        if (argument.getTypeDefinition() == null) {
+            LOG.log(Level.FINE, "No type information for node {0}", argument.toString());
+            return true;
+        }
         return isSubtypeable(parameter, argument.getTypeDefinition());
     }
 
@@ -636,7 +661,10 @@ public final class MethodTypeResolution {
             // right now we only check if generic arguments are the same
             // TODO: add support for wildcard types
             // (future note: can't call subtype as it is recursively, infinite types)
-            return parameter.equals(argSuper);
+            //return parameter.equals(argSuper);
+
+            // TODO: this ignores the check for generic types!!
+            return parameter.getType().equals(argSuper.getType());
         }
 
         int indexOfParameter = PRIMITIVE_SUBTYPE_ORDER.indexOf(parameter.getType());

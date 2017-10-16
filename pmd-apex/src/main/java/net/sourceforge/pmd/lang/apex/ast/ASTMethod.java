@@ -4,12 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 
 import apex.jorje.semantic.ast.member.Method;
 
-public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode, SignedNode<ASTMethod> {
+public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode,
+       SignedNode<ASTMethod>, CanSuppressWarnings {
 
     public ASTMethod(Method method) {
         super(method);
@@ -44,7 +46,6 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
         return super.getEndColumn();
     }
 
-
     @Override
     public ApexQualifiedName getQualifiedName() {
         return ApexQualifiedName.ofMethod(this);
@@ -54,5 +55,17 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
     @Override
     public ApexOperationSignature getSignature() {
         return ApexOperationSignature.of(this);
+    }
+
+    @Override
+    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
+        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
+            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
+                if (a.suppresses(rule)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

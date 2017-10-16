@@ -6,13 +6,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.lang.reflect.Field;
 
+import net.sourceforge.pmd.Rule;
+
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.semantic.ast.compilation.UserClass;
 
-public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClassOrInterface<UserClass> {
+public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClassOrInterface<UserClass>,
+       CanSuppressWarnings {
 
     private ApexQualifiedName qname;
-
 
     public ASTUserClass(UserClass userClass) {
         super(userClass);
@@ -37,7 +39,6 @@ public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClas
         return super.getImage();
     }
 
-
     @Override
     public ApexQualifiedName getQualifiedName() {
         if (qname == null) {
@@ -58,5 +59,17 @@ public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClas
     @Override
     public TypeKind getTypeKind() {
         return TypeKind.CLASS;
+    }
+
+    @Override
+    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
+        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
+            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
+                if (a.suppresses(rule)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
