@@ -4,21 +4,6 @@
 
 package net.sourceforge.pmd.ruledef;
 
-import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.CLASS;
-import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.DEPRECATED;
-import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.DFA;
-import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.EXTERNAL_INFO_URL;
-import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.LANGUAGE;
-import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.MAXIMUM_LANGUAGE_VERSION;
-import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.MESSAGE;
-import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.METRICS;
-import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.MINIMUM_LANGUAGE_VERSION;
-import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.NAME;
-import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.PROPERTY;
-import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.SINCE;
-import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.TYPERESOLUTION;
-import static net.sourceforge.pmd.ruledef.RulesetSchemaConstants.VALUE;
-
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,7 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -42,6 +26,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptorFactory;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
 
+
 /**
  * Builds rules from rule XML nodes.
  *
@@ -51,6 +36,20 @@ import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
 public class RuleFactory {
 
     public static final RuleFactory INSTANCE = new RuleFactory();
+    
+    private static final String DEPRECATED = "deprecated";
+    private static final String NAME = "name";
+    private static final String MESSAGE = "message";
+    private static final String EXTERNAL_INFO_URL = "externalInfoUrl";
+    private static final String MINIMUM_LANGUAGE_VERSION = "minimumLanguageVersion";
+    private static final String MAXIMUM_LANGUAGE_VERSION = "maximumLanguageVersion";
+    private static final String SINCE = "since";
+    private static final String PROPERTIES = "properties";
+    private static final String PRIORITY = "priority";
+    private static final String EXAMPLE = "example";
+    private static final String DESCRIPTION = "description";
+    private static final String PROPERTY = "property";
+    private static final String CLASS = "class";
 
 
     private RuleFactory() {
@@ -74,26 +73,24 @@ public class RuleFactory {
         ruleReference.setRule(referencedRule);
 
 
-        if (ruleElement.hasAttribute(DEPRECATED.name)) {
-            ruleReference.setDeprecated(Boolean.parseBoolean(ruleElement.getAttribute(DEPRECATED.name)));
+        if (ruleElement.hasAttribute(DEPRECATED)) {
+            ruleReference.setDeprecated(Boolean.parseBoolean(ruleElement.getAttribute(DEPRECATED)));
         }
-        if (ruleElement.hasAttribute(NAME.name)) {
-            ruleReference.setName(ruleElement.getAttribute(NAME.name));
+        if (ruleElement.hasAttribute(NAME)) {
+            ruleReference.setName(ruleElement.getAttribute(NAME));
         }
-        if (ruleElement.hasAttribute(MESSAGE.name)) {
-            ruleReference.setMessage(ruleElement.getAttribute(MESSAGE.name));
+        if (ruleElement.hasAttribute(MESSAGE)) {
+            ruleReference.setMessage(ruleElement.getAttribute(MESSAGE));
         }
-        if (ruleElement.hasAttribute(EXTERNAL_INFO_URL.name)) {
-            ruleReference.setExternalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL.name));
+        if (ruleElement.hasAttribute(EXTERNAL_INFO_URL)) {
+            ruleReference.setExternalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
         }
 
 
         for (int i = 0; i < ruleElement.getChildNodes().getLength(); i++) {
             Node node = ruleElement.getChildNodes().item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
-                RulesetSchemaConstants name = EnumUtils.getEnum(RulesetSchemaConstants.class,
-                                                                node.getNodeName().toUpperCase());
-                switch (name) {
+                switch (node.getNodeName()) {
                 case DESCRIPTION:
                     ruleReference.setDescription(parseTextNode(node));
                     break;
@@ -108,8 +105,8 @@ public class RuleFactory {
                     break;
                 default:
                     throw new IllegalArgumentException("Unexpected element <" + node.getNodeName()
-                                                           + "> encountered as child of <rule> element for Rule "
-                                                           + ruleReference.getName());
+                                                       + "> encountered as child of <rule> element for Rule "
+                                                       + ruleReference.getName());
 
                 }
             }
@@ -129,38 +126,37 @@ public class RuleFactory {
      * @param ruleElement The rule element to parse
      *
      * @return A new instance of the rule described by this element
-     *
      * @throws IllegalArgumentException if the element doesn't describe a valid rule.
      */
     public Rule buildRule(Element ruleElement) {
 
         checkRequiredAttributesArePresent(ruleElement);
 
-        String name = ruleElement.getAttribute(NAME.name);
+        String name = ruleElement.getAttribute(NAME);
 
         RuleBuilder builder = new RuleBuilder(name,
-                                              ruleElement.getAttribute(CLASS.name),
-                                              ruleElement.getAttribute(LANGUAGE.name));
+                ruleElement.getAttribute(CLASS),
+                ruleElement.getAttribute("language"));
 
 
-        if (ruleElement.hasAttribute(MINIMUM_LANGUAGE_VERSION.name)) {
-            builder.minimumLanguageVersion(ruleElement.getAttribute(MINIMUM_LANGUAGE_VERSION.name));
+        if (ruleElement.hasAttribute(MINIMUM_LANGUAGE_VERSION)) {
+            builder.minimumLanguageVersion(ruleElement.getAttribute(MINIMUM_LANGUAGE_VERSION));
         }
 
-        if (ruleElement.hasAttribute(MAXIMUM_LANGUAGE_VERSION.name)) {
-            builder.maximumLanguageVersion(ruleElement.getAttribute(MAXIMUM_LANGUAGE_VERSION.name));
+        if (ruleElement.hasAttribute(MAXIMUM_LANGUAGE_VERSION)) {
+            builder.maximumLanguageVersion(ruleElement.getAttribute(MAXIMUM_LANGUAGE_VERSION));
         }
 
-        if (ruleElement.hasAttribute(SINCE.name)) {
-            builder.since(ruleElement.getAttribute(SINCE.name));
+        if (ruleElement.hasAttribute(SINCE)) {
+            builder.since(ruleElement.getAttribute(SINCE));
         }
 
-        builder.message(ruleElement.getAttribute(MESSAGE.name));
-        builder.externalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL.name));
-        builder.setDeprecated(hasAttributeSetTrue(ruleElement, DEPRECATED.name));
-        builder.usesDFA(hasAttributeSetTrue(ruleElement, DFA.name));
-        builder.usesTyperesolution(hasAttributeSetTrue(ruleElement, TYPERESOLUTION.name));
-        builder.usesMetrics(hasAttributeSetTrue(ruleElement, METRICS.name));
+        builder.message(ruleElement.getAttribute(MESSAGE));
+        builder.externalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
+        builder.setDeprecated(hasAttributeSetTrue(ruleElement, DEPRECATED));
+        builder.usesDFA(hasAttributeSetTrue(ruleElement, "dfa"));
+        builder.usesTyperesolution(hasAttributeSetTrue(ruleElement, "typeResolution"));
+        builder.usesMetrics(hasAttributeSetTrue(ruleElement, "metrics"));
 
 
         Element propertiesElement = null;
@@ -171,10 +167,8 @@ public class RuleFactory {
             if (node.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
-            RulesetSchemaConstants nodeName = EnumUtils.getEnum(RulesetSchemaConstants.class,
-                                                                node.getNodeName().toUpperCase());
 
-            switch (nodeName) {
+            switch (node.getNodeName()) {
             case DESCRIPTION:
                 builder.description(parseTextNode(node));
                 break;
@@ -190,8 +184,8 @@ public class RuleFactory {
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected element <" + node.getNodeName()
-                                                       + "> encountered as child of <rule> element for Rule "
-                                                       + name);
+                                                   + "> encountered as child of <rule> element for Rule "
+                                                   + name);
             }
         }
 
@@ -214,7 +208,7 @@ public class RuleFactory {
 
     private void checkRequiredAttributesArePresent(Element ruleElement) {
         // add an attribute name here to make it required
-        final List<String> required = Arrays.asList(NAME.name, CLASS.name);
+        final List<String> required = Arrays.asList(NAME, CLASS);
 
         for (String att : required) {
             if (!ruleElement.hasAttribute(att)) {
@@ -236,7 +230,7 @@ public class RuleFactory {
 
         for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
             Node node = propertiesNode.getChildNodes().item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE && PROPERTY.name.equals(node.getNodeName())) {
+            if (node.getNodeType() == Node.ELEMENT_NODE && PROPERTY.equals(node.getNodeName())) {
                 Entry<String, String> overridden = getPropertyValue((Element) node);
                 overridenProperties.put(overridden.getKey(), overridden.getValue());
             }
@@ -257,7 +251,7 @@ public class RuleFactory {
 
         for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
             Node node = propertiesNode.getChildNodes().item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE && PROPERTY.name.equals(node.getNodeName())
+            if (node.getNodeType() == Node.ELEMENT_NODE && PROPERTY.equals(node.getNodeName())
                 && isPropertyDefinition((Element) node)) {
                 PropertyDescriptor<?> descriptor = parsePropertyDefinition((Element) node);
                 builder.defineProperty(descriptor);
@@ -292,7 +286,7 @@ public class RuleFactory {
             PropertyDescriptor<?> descriptor = rule.getPropertyDescriptor(e.getKey());
             if (descriptor == null) {
                 throw new IllegalArgumentException(
-                    "Cannot set non-existent property '" + e.getKey() + "' on Rule " + rule.getName());
+                        "Cannot set non-existent property '" + e.getKey() + "' on Rule " + rule.getName());
             }
 
             setRulePropertyCapture(rule, descriptor, e.getValue());
@@ -371,7 +365,7 @@ public class RuleFactory {
 
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE && VALUE.name.equals(node.getNodeName())) {
+            if (node.getNodeType() == Node.ELEMENT_NODE && "value".equals(node.getNodeName())) {
                 return parseTextNode(node);
             }
         }
