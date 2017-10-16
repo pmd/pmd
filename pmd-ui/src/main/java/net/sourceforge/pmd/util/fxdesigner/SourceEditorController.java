@@ -127,12 +127,16 @@ public class SourceEditorController implements Initializable, SettingsOwner {
      */
     public void refreshAST() {
         String source = codeEditorArea.getText();
+        Node previous = astManager.compilationUnitProperty().get();
         Node current;
         try {
             current = astManager.updateCompilationUnit(source);
         } catch (ParseAbortedException e) {
             invalidateAST(true);
             return;
+        }
+        if (previous != current) {
+            parent.invalidateAst();
         }
 
         setUpToDateCompilationUnit(current);

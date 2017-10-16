@@ -424,4 +424,9 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     }
 
 
+    public void invalidateAst() {
+        nodeInfoPanelController.invalidateInfo();
+        xpathPanelController.invalidateResults(false);
+        sourceEditorController.clearNodeHighlight();
+    }
 }

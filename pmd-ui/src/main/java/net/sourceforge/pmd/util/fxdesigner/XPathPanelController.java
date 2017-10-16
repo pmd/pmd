@@ -34,6 +34,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TitledPane;
 import javafx.util.StringConverter;
 
+
 /**
  * XPath panel controller.
  *
@@ -123,7 +124,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
             xpathResultListView.setItems(results);
             violationsTitledPane.setText("Matched nodes\t(" + results.size() + ")");
         } catch (XPathEvaluationException e) {
-            notifyXPathError(e);
+            invalidateResults(true);
             designerApp.getLogger().logEvent(new LogEntry(e, Category.XPATH_EVALUATION_EXCEPTION));
         }
 
@@ -132,19 +133,14 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     }
 
 
-    public void invalidateResults() {
+    public void invalidateResults(boolean error) {
         xpathResultListView.getItems().clear();
+        violationsTitledPane.setText("Matched nodes" + (error ? "\t(error)" : ""));
     }
 
 
     public void shutdown() {
         xpathExpressionArea.disableSyntaxHighlighting();
-    }
-
-
-    private void notifyXPathError(Throwable t) {
-        // Currently dismisses the exception
-        violationsTitledPane.setText("Matched nodes\t(error)");
     }
 
 

@@ -121,7 +121,7 @@ public class CustomCodeArea extends CodeArea {
     public boolean isInRange(Node n) {
         return n.getEndLine() <= getParagraphs().size()
             && (n.getEndLine() != getParagraphs().size()
-            || n.getEndColumn() <= getParagraph(n.getEndLine() - 2).length());
+            || n.getEndColumn() <= getParagraph(n.getEndLine() - 1).length());
     }
 
 

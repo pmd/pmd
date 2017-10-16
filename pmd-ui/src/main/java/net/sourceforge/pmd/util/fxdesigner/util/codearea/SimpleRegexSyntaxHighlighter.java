@@ -62,6 +62,11 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
         } catch (StackOverflowError so) {
             // matcher.find overflowed, might happen when coloring ginormous files with incorrect language
         }
+        
+        if (lastKwEnd == 0) { // no spans found/ no text
+            builder.add(Collections.emptySet(), text.length());
+        }
+        
         return builder.create();
     }
 

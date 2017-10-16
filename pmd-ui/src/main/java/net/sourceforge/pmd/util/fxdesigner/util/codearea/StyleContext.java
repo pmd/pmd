@@ -86,6 +86,7 @@ class StyleContext implements Iterable<StyleLayer> {
 
         return allSpans.stream()
                        .filter(spans -> spans != base)
+                       .filter(spans -> spans.length() <= codeArea.getLength())
                        .reduce(allSpans.get(0),
                                (accumulator, elt) -> accumulator.overlay(elt, (style1, style2) -> {
                                    Set<String> styles = new HashSet<>(style1);
