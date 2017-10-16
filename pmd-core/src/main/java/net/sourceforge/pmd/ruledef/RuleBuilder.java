@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
+
 /**
  * Builds a rule, validating its parameters throughout. The builder can define property descriptors, but not override
  * them. For that, use {@link RuleFactory#decorateRule(Rule, Element)}.
@@ -76,7 +77,7 @@ class RuleBuilder {
         Language lang = LanguageRegistry.findLanguageByTerseName(languageName);
         if (lang == null) {
             throw new IllegalArgumentException(
-                "Unknown Language '" + languageName + "' for rule" + name + ", supported Languages are "
+                    "Unknown Language '" + languageName + "' for rule" + name + ", supported Languages are "
                     + LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.findWithRuleSupport()));
         }
         language = lang;
@@ -106,7 +107,7 @@ class RuleBuilder {
         if (rule.getMinimumLanguageVersion() != null && rule.getMaximumLanguageVersion() != null
             && rule.getMinimumLanguageVersion().compareTo(rule.getMaximumLanguageVersion()) > 0) {
             throw new IllegalArgumentException(
-                "The minimum Language Version '" + rule.getMinimumLanguageVersion().getTerseName()
+                    "The minimum Language Version '" + rule.getMinimumLanguageVersion().getTerseName()
                     + "' must be prior to the maximum Language Version '"
                     + rule.getMaximumLanguageVersion().getTerseName() + "' for Rule '" + name
                     + "'; perhaps swap them around?");
@@ -189,10 +190,10 @@ class RuleBuilder {
 
     private void throwUnknownLanguageVersionException(String minOrMax, String unknownVersion) {
         throw new IllegalArgumentException("Unknown " + minOrMax + " Language Version '" + unknownVersion
-                                               + "' for Language '" + language.getTerseName()
-                                               + "' for Rule " + name
-                                               + "; supported Language Versions are: "
-                                               + LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
+                                           + "' for Language '" + language.getTerseName()
+                                           + "' for Rule " + name
+                                           + "; supported Language Versions are: "
+                                           + LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
     }
 
 
@@ -234,7 +235,9 @@ class RuleBuilder {
         }
 
         for (PropertyDescriptor<?> descriptor : definedProperties) {
-            rule.definePropertyDescriptor(descriptor);
+            if (!rule.getPropertyDescriptors().contains(descriptor)) {
+                rule.definePropertyDescriptor(descriptor);
+            }
         }
 
 

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -30,6 +31,10 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 public class RuleSetFactoryTest {
+    
+    @org.junit.Rule
+    public ExpectedException ex = ExpectedException.none();
+    
     @Test
     public void testRuleSetFileName() throws RuleSetNotFoundException {
         RuleSet rs = loadRuleSet(EMPTY_RULESET);
@@ -267,6 +272,13 @@ public class RuleSetFactoryTest {
         PropertyDescriptor<?> test3Descriptor = r.getPropertyDescriptor("test3");
         assertNotNull("test3 descriptor", test3Descriptor);
         assertEquals("override3", r.getProperty(test3Descriptor));
+    }
+
+    @Test
+    public void testExternalReferenceOverrideNonExistent() throws RuleSetNotFoundException {
+        ex.expect(IllegalArgumentException.class);
+        ex.expectMessage("Cannot set non-existent property 'test4' on Rule TestNameOverride");
+        loadFirstRule(REF_OVERRIDE_NONEXISTENT);
     }
 
     @Test
@@ -690,11 +702,21 @@ public class RuleSetFactoryTest {
             + "  <description>Test description override</description>" + PMD.EOL
             + "  <example>Test example override</example>" + PMD.EOL + "  <priority>3</priority>" + PMD.EOL
             + "  <properties>" + PMD.EOL
-            + "   <property name=\"test2\" description=\"test2\" value=\"override2\"/>" + PMD.EOL
-            + "   <property name=\"test3\" description=\"test3\"><value>override3</value></property>"
+            + "   <property name=\"test2\" description=\"test2\" type=\"String\" value=\"override2\"/>" + PMD.EOL
+            + "   <property name=\"test3\" type=\"String\" description=\"test3\"><value>override3</value></property>"
             // + PMD.EOL + "   <property name=\"test4\" description=\"test4\" type=\"String\" value=\"new property\"/>" // Nonsense
             + PMD.EOL + "  </properties>" + PMD.EOL + " </rule>" + PMD.EOL + "</ruleset>";
 
+    private static final String REF_OVERRIDE_NONEXISTENT = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
+                                                           + " <description>testdesc</description>" + PMD.EOL + " <rule " + PMD.EOL
+                                                           + "  ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule4\" " + PMD.EOL + "  name=\"TestNameOverride\" "
+                                                           + PMD.EOL + "  message=\"Test message override\"> " + PMD.EOL
+                                                           + "  <description>Test description override</description>" + PMD.EOL
+                                                           + "  <example>Test example override</example>" + PMD.EOL + "  <priority>3</priority>" + PMD.EOL
+                                                           + "  <properties>" + PMD.EOL
+                                                           + "   <property name=\"test4\" description=\"test4\" type=\"String\" value=\"new property\"/>" + PMD.EOL // inexistent property
+                                                           + "  </properties>" + PMD.EOL + " </rule>" + PMD.EOL + "</ruleset>";
+    
     private static final String REF_INTERNAL_TO_INTERNAL = "<?xml version=\"1.0\"?>" + PMD.EOL
             + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL + "<rule "
             + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
