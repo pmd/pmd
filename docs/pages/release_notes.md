@@ -136,6 +136,9 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
     and "NcssTypeCount". The new rule uses the metrics framework to achieve the same. It has two properties, to
     define the report level for method and class sizes separately. Constructors and methods are considered the same.
 
+*   The new rule `DoNotExtendJavaLangThrowable` (ruleset `java-strictexception`) is a companion for the
+    `java-strictexception.xml/DoNotExtendJavaLangError`, detecting direct extensions of `java.lang.Throwable`.
+
 *   The new rule `ForLoopCanBeForeach` (ruleset `java-migration`) helps to identify those for-loops that can
     be safely refactored into for-each-loops available since java 1.5.
 
@@ -383,4 +386,5 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#632](https://github.com/pmd/pmd/pull/632): \[apex] Add AvoidDirectAccessTriggerMap rule to the style set - [Jan Aertgeerts](https://github.com/JAertgeerts)
 *   [#644](https://github.com/pmd/pmd/pull/644): \[core] Prevent internal dev-properties from being displayed on CodeClimate renderer - [Filipe Esperandio](https://github.com/filipesperandio)
 *   [#660](https://github.com/pmd/pmd/pull/660): \[apex] avoid sosl in loops - [Jan Aertgeerts](https://github.com/JAertgeerts)
+*   [#666](https://github.com/pmd/pmd/pull/666): \[java] Add DoNotExtendJavaLangThrowable rule - [Robert Painsi](https://github.com/robertpainsi)
 
