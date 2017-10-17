@@ -54,22 +54,12 @@ public class Foo implements Cloneable {
 
 **Priority:** Medium (3)
 
-The method clone() should only be implemented if the class implements the Cloneable interface with the exception of a final method that only throws CloneNotSupportedException.
+The method clone() should only be implemented if the class implements the Cloneable interface with the exception of
+a final method that only throws CloneNotSupportedException.
 
-```
-//ClassOrInterfaceDeclaration
-[not(./ExtendsList/ClassOrInterfaceType[@Image='Cloneable'])]
-[not(./ImplementsList/ClassOrInterfaceType[@Image='Cloneable'])]
-/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-[MethodDeclaration
-[MethodDeclarator[@Image
-= 'clone' and count(FormalParameters/*) = 0]]
-[not((../MethodDeclaration[@Final = 'true'] or ancestor::ClassOrInterfaceDeclaration[1][@Final = 'true'])
-and Block[count(BlockStatement)=1]
-/BlockStatement/Statement/ThrowStatement/Expression
-/PrimaryExpression/PrimaryPrefix/AllocationExpression
-/ClassOrInterfaceType[@Image = 'CloneNotSupportedException'])]]
-```
+The rule can also detect, if the class implements or extends a Cloneable class.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.clone.CloneMethodMustImplementCloneableRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/clone/CloneMethodMustImplementCloneableRule.java)
 
 **Example(s):**
 

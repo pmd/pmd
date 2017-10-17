@@ -408,8 +408,10 @@ public void bar() {
 
 **Priority:** Medium (3)
 
-Methods that declare the generic Exception as a possible throwable are not very helpful since their
-failure modes are unclear. Use a class derived from RuntimeException or a more specific checked exception.
+A method/constructor shouldn't explicitly throw the generic java.lang.Exception, since it
+is unclear which exceptions that can be thrown from the methods. It might be
+difficult to document and understand such vague interfaces. Use either a class
+derived from RuntimeException or a checked exception.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strictexception.SignatureDeclareThrowsExceptionRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strictexception/SignatureDeclareThrowsExceptionRule.java)
 
@@ -419,6 +421,12 @@ failure modes are unclear. Use a class derived from RuntimeException or a more s
 public void foo() throws Exception {
 }
 ```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|IgnoreJUnitCompletely|false|Allow all methods in a JUnit testcase to throw Exceptions|
 
 **Use this rule by referencing it:**
 ``` xml

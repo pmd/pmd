@@ -141,27 +141,32 @@ public class Foo {
 
 **Priority:** Medium (3)
 
-The use of implementation types as object references limits your ability to use alternate
-implementations in the future as requirements change. Whenever available, referencing objects 
-by their interface types provides much more flexibility.
+The use of implementation types (i.e., HashSet) as object references limits your ability to use alternate
+implementations in the future as requirements change. Whenever available, referencing objects
+by their interface types (i.e, Set) provides much more flexibility.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.coupling.LooseCouplingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/coupling/LooseCouplingRule.java)
 
 **Example(s):**
 
 ``` java
-// sub-optimal approach
-private ArrayList<SomeType> list = new ArrayList<>();
+import java.util.ArrayList;
+import java.util.HashSet;
 
-public HashSet<SomeType> getFoo() {
-    return new HashSet<SomeType>();
-}
+public class Bar {
+    // sub-optimal approach
+    private ArrayList<SomeType> list = new ArrayList<>();
 
-// preferred approach
-private List<SomeType> list = new ArrayList<>();
+    public HashSet<SomeType> getFoo() {
+        return new HashSet<SomeType>();
+    }
 
-public Set<SomeType> getFoo() {
-    return new HashSet<SomeType>();
+    // preferred approach
+    private List<SomeType> list = new ArrayList<>();
+
+    public Set<SomeType> getFoo() {
+        return new HashSet<SomeType>();
+    }
 }
 ```
 
