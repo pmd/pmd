@@ -246,6 +246,31 @@ public class Foo extends Error { }
     ]]></example>
   </rule>
 
+  <rule name="DoNotExtendJavaLangThrowable"
+        language="java"
+        since="6.0"
+        message="Exceptions should not extend java.lang.Throwable"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_strictexception.html#donotextendjavalangthrowable">
+    <description>
+Extend Exception or RuntimeException instead of Throwable.
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
+  [@Image="Throwable" or @Image="java.lang.Throwable"]
+]]>
+            </value>
+        </property>
+    </properties>
+    <example><![CDATA[
+public class Foo extends Throwable { }
+    ]]></example>
+  </rule>
+
   <rule name="DoNotThrowExceptionInFinally"
         language="java"
         since="4.2"
