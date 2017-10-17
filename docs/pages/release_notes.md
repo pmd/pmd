@@ -114,20 +114,20 @@ providing configuration error reporting are:
 As we move forward we will be able to detect and report more configuration errors (ie: incomplete `auxclasspath`)
 and include them to such reports.
 
-#### Apex Rule Suppression		
-		
-Apex violations can now be suppressed very similarly to how it's done in Java, by making use of a		
-`@SuppressWarnings` annotation.		
-		
-Supported syntax includes:		
-		
-```		
-@SupressWarnings('PMD') // to supress all Apex rules		
-@SupressWarnings('all') // to supress all Apex rules		
-@SupressWarnings('PMD.ARuleName') // to supress only the rule named ARuleName		
-@SupressWarnings('PMD.ARuleName, PMD.AnotherRuleName') // to supress only the rule named ARuleName or AnotherRuleName		
-```		
-		
+#### Apex Rule Suppression
+
+Apex violations can now be suppressed very similarly to how it's done in Java, by making use of a
+`@SuppressWarnings` annotation.
+
+Supported syntax includes:
+
+```
+@SupressWarnings('PMD') // to supress all Apex rules
+@SupressWarnings('all') // to supress all Apex rules
+@SupressWarnings('PMD.ARuleName') // to supress only the rule named ARuleName
+@SupressWarnings('PMD.ARuleName, PMD.AnotherRuleName') // to supress only the rule named ARuleName or AnotherRuleName
+```
+
 Notice this last scenario is slightly different to the Java syntax. This is due to differences in the Apex grammar for annotations.
 
 #### New Rules
@@ -172,10 +172,34 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
 
 *   The rule `GodClass` (ruleset `java-design`) has been revamped to use the new metrics framework.
 
+*   The rule `LooseCoupling` (ruleset `java-coupling`) has been replaced by the typeresolution-based implementation.
+
+*   The rule `CloneMethodMustImplementCloneable` (ruleset `java-clone`) has been replaced by the typeresolution-based
+    implementation and is now able to detect cases if a class implements or extends a Cloneable class/interface.
+
+*   The rule `UnusedImports` (ruleset `java-imports`) has been replaced by the typeresolution-based
+    implementation and is now able to detect unused on-demand imports.
+
+*   The rule `SignatureDeclareThrowsException` (ruleset 'java-strictexception') has been replaced by the
+    typeresolution-based implementation. It has a new property `IgnoreJUnitCompletely`, which allows all
+    methods in a JUnit testcase to throws exceptions.
+
 #### Deprecated Rules
 
 *   The rules `NcssConstructorCount`, `NcssMethodCount`, and `NcssTypeCount` (ruleset `java-codesize`) have been
     deprecated. They will be replaced by the new rule `NcssCount` in the same ruleset.
+
+*   The rule `LooseCoupling` in ruleset `java-typeresolution` is deprecated. Use the rule with the same name
+    from ruleset `java-coupling` instead.
+
+*   The rule `CloneMethodMustImplementCloneable` in ruleset `java-typeresolution` is deprecated. Use the rule with
+    the same name from ruleset `java-clone` instead.
+
+*   The rule `UnusedImports` in ruleset `java-typeresolution` is deprecated. Use the rule with
+    the same name from ruleset `java-imports` instead.
+
+*   The rule `SignatureDeclareThrowsException` in ruleset `java-typeresolution` is deprecated. Use the rule
+    with the same name from ruleset `java-strictexception` instead.
 
 #### Removed Rules
 

@@ -6,103 +6,13 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
   <description>
-These are rules which resolve java Class files for comparison, as opposed to a String
+All rules in this ruleset have been moved to other rulesets. Please use the other rules
+directly and don't use this ruleset anymore.
   </description>
 
-
-  <rule name="LooseCoupling"
-        since="3.9"
-        message="Avoid using implementation types like ''{0}''; use the interface instead"
-        class="net.sourceforge.pmd.lang.java.typeresolution.rules.LooseCoupling"
-        typeResolution="true"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_typeresolution.html#loosecoupling">
-    <description>
-Avoid using implementation types (i.e., HashSet); use the interface (i.e, Set) instead
-    </description>
-    <priority>3</priority>
-    <example>
-<![CDATA[
-import java.util.ArrayList;
-import java.util.HashSet;
-
-public class Bar {
-    // Use List instead
-    private ArrayList list = new ArrayList();
-    // Use Set instead
-    public HashSet getFoo() {
-        return new HashSet();
-    }
-}
-]]>
-    </example>
-  </rule>
-
-  <rule name="CloneMethodMustImplementCloneable"
-        since="3.9"
-        message="clone() method should be implemented only if implementing Cloneable interface"
-        class="net.sourceforge.pmd.lang.java.typeresolution.rules.CloneMethodMustImplementCloneable"
-        typeResolution="true"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_typeresolution.html#clonemethodmustimplementcloneable">
-    <description>
-The method clone() should only be implemented if the class implements the Cloneable interface with the exception 
-of a final method that only throws CloneNotSupportedException. This version uses PMD's type resolution facilities, 
-and can detect if the class implements or extends a Cloneable class.
-    </description>
-    <priority>3</priority>
-    <example>
-<![CDATA[
-public class MyClass {
-    public Object clone() throws CloneNotSupportedException {
-        return foo;
-    }
-}
-]]>
-    </example>
-  </rule>
-
-  <rule name="UnusedImports"
-        since="4.0"
-        message="Avoid unused imports such as ''{0}''"
-        class="net.sourceforge.pmd.lang.java.typeresolution.rules.imports.UnusedImports"
-        typeResolution="true"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_typeresolution.html#unusedimports">
-    <description>
-Avoid unused import statements. This rule will find unused on demand imports, i.e. import com.foo.*.
-    </description>
-    <priority>4</priority>
-    <example>
-<![CDATA[
-import java.io.*;   // not referenced or required
-
-public class Foo {}
-]]>
-    </example>
-  </rule>
-
-  <rule name="SignatureDeclareThrowsException"
-        since="4.0"
-        message="A method/constructor shouldn't explicitly throw java.lang.Exception"
-        class="net.sourceforge.pmd.lang.java.typeresolution.rules.SignatureDeclareThrowsException"
-        typeResolution="true"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_typeresolution.html#signaturedeclarethrowsexception">
-    <description>
-It is unclear which exceptions that can be thrown from the methods.
-It might be difficult to document and understand the vague interfaces.
-Use either a class derived from RuntimeException or a checked exception.
-
-JUnit classes are excluded.
-    </description>
-    <priority>3</priority>
-    <properties>
-        <property description="If true, all methods in a JUnit testcase may throw Exception"
-                  name="IgnoreJUnitCompletely" value="false"/>
-    </properties>
-    <example>
-<![CDATA[
-public void methodThrowingException() throws Exception {
-}
-]]>
-    </example>
-  </rule> 
+  <rule ref="java-coupling/LooseCoupling" deprecated="true" />
+  <rule ref="java-clone/CloneMethodMustImplementCloneable" deprecated="true" />
+  <rule ref="java-imports/UnusedImports" deprecated="true" />
+  <rule ref="java-strictexception/SignatureDeclareThrowsException" deprecated="true" />
 
 </ruleset>

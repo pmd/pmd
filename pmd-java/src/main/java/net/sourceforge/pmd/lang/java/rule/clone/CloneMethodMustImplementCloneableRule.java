@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.typeresolution.rules;
+package net.sourceforge.pmd.lang.java.rule.clone;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  *
  * @author acaplan
  */
-public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
+public class CloneMethodMustImplementCloneableRule extends AbstractJavaRule {
 
     @Override
     public Object visit(final ASTClassOrInterfaceDeclaration node, final Object data) {

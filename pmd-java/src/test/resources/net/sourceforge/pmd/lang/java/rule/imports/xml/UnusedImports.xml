@@ -93,6 +93,21 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
+Generics 2
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Collection;
+import java.util.List;
+import java.util.ArrayList;
+public class Foo {
+ private List<Collection> x = new ArrayList<Collection>();
+}
+     ]]></code>
+     <source-type>java 1.5</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
 Annotations
      ]]></description>
         <expected-problems>0</expected-problems>
@@ -186,7 +201,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-imports used in javadoc comment
+imports used in javadoc comment, see also bug #254
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -195,17 +210,35 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.File;
+import java.util.NoSuchElementException;
+
 public class Foo {
-	/**
-	 * {@linkplain  List list} 
-	 * {@link  ArrayList  arraylist} 
-	 * {@link  LinkedList} 
-	 * {@value  Calendar#DATE} 
-	 * @see File
-	 */
-	public void test() {}
+    /**
+     * {@linkplain  List list} 
+     * {@link  ArrayList  arraylist} 
+     * {@link  LinkedList} 
+     * {@value  Calendar#DATE} 
+     * @see File
+     * @throws NoSuchElementException no such element
+     */
+    public void test() {}
 }
      ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1280 False Positive in UnusedImports when import used in javadoc</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import some.pack.SomeUtility;
+
+public class Foo {
+    /**
+     * The {@link SomeUtility#someHelperMethod(String, SomeObject)} method does something.
+     */
+    public void someMethod() {
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -345,4 +378,21 @@ public interface Interface {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#348 False Positive UnusedImports with javadoc for public static inner classes of imports</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.swing.GroupLayout;
+
+public class Foo {
+
+    /**
+     * {@link Bar#doSomething(GroupLayout.Group)}
+    */
+    void doSomething();
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
