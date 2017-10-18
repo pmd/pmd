@@ -2253,7 +2253,7 @@ void Resources() :
 void Resource() :
 {}
 {
-   LOOKAHEAD(2) ( ( "final" | Annotation() )* Type() VariableDeclaratorId() "=" Expression() )
+   LOOKAHEAD(2) ( ( "final" {jjtThis.setFinal(true);} | Annotation() )* Type() VariableDeclaratorId() "=" Expression() )
    |
    Name() {checkForBadConciseTryWithResourcesUsage();}
 }
