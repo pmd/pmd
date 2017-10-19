@@ -105,6 +105,10 @@ and include them to such reports.
 *   The new rule `ForLoopCanBeForeach` (ruleset `java-migration`) helps to identify those for-loops that can
     be safely refactored into for-each-loops available since java 1.5.
 
+*   The new rule `AvoidHardcodingId` (ruleset `apex-style`) detects hardcoded strings that look like identifiers
+    and flags them. Record IDs change between environments, meaning hardcoded ids are bound to fail under a different
+    setup.
+
 #### Modified Rules
 
 *   The rule `UnnecessaryFinalModifier` (ruleset `java-unnecessarycode`) has been revamped to detect more cases.
@@ -292,4 +296,5 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#588](https://github.com/pmd/pmd/pull/588): \[java] XPath function to compute metrics - [Clément Fournier](https://github.com/oowekyala)
 *   [#598](https://github.com/pmd/pmd/pull/598): \[java] Fix #388: controversial.AvoidLiteralsInIfCondition 0.0 false positive - [Clément Fournier](https://github.com/oowekyala)
 *   [#620](https://github.com/pmd/pmd/pull/620): \[core] Moved properties to n.s.pmd.properties - [Clément Fournier](https://github.com/oowekyala)
+*   [#661](https://github.com/pmd/pmd/pull/661): \[apex] avoid hardcoding id's - [Jan Aertgeerts](https://github.com/JAertgeerts)
 
