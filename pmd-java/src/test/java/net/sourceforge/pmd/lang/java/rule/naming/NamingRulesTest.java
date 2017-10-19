@@ -32,5 +32,8 @@ public class NamingRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "SuspiciousHashcodeMethodName");
         addRule(RULESET, "VariableNamingConventions");
         addRule(RULESET, "GenericsNaming");
+        addRule(RULESET, “MethodTypeAndNameIsInconsistent”);
+        addRule(RULESET, “AttributeTypeAndNameIsInconsistent”);
+
     }
 }
