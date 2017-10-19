@@ -19,6 +19,6 @@ public class StyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "MethodNamingConventions");
         addRule(RULESET, "VariableNamingConventions");
         addRule(RULESET, "MethodWithSameNameAsEnclosingClass");
-
+        addRule(RULESET, "AvoidHardcodingId");
     }
 }

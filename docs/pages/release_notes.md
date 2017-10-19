@@ -146,6 +146,10 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
     which can produce bugs by iether accessing non-existing indexes, or them leaving out. You should use for-each-loops
     instead.
 
+*   The new rule `AvoidHardcodingId` (ruleset `apex-style`) detects hardcoded strings that look like identifiers
+    and flags them. Record IDs change between environments, meaning hardcoded ids are bound to fail under a different
+    setup.
+
 *   A whole new ruleset has been added to Apex, `apex-empty`. It currently migrates 5 rules from the equivalent
     `java-empty` ruleset for Apex. The ruleset includes:
     * `EmptyCatchBlock` to detect catch blocks completely ignoring exceptions.
@@ -411,6 +415,7 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#632](https://github.com/pmd/pmd/pull/632): \[apex] Add AvoidDirectAccessTriggerMap rule to the style set - [Jan Aertgeerts](https://github.com/JAertgeerts)
 *   [#644](https://github.com/pmd/pmd/pull/644): \[core] Prevent internal dev-properties from being displayed on CodeClimate renderer - [Filipe Esperandio](https://github.com/filipesperandio)
 *   [#660](https://github.com/pmd/pmd/pull/660): \[apex] avoid sosl in loops - [Jan Aertgeerts](https://github.com/JAertgeerts)
+*   [#661](https://github.com/pmd/pmd/pull/661): \[apex] avoid hardcoding id's - [Jan Aertgeerts](https://github.com/JAertgeerts)
 *   [#666](https://github.com/pmd/pmd/pull/666): \[java] Add DoNotExtendJavaLangThrowable rule - [Robert Painsi](https://github.com/robertpainsi)
 *   [#668](https://github.com/pmd/pmd/pull/668): \[core] Fix javadoc warnings on pmd-core - [Clément Fournier](https://github.com/oowekyala)
 *   [#675](https://github.com/pmd/pmd/pull/675): \[java] Fix in Java grammar: Try with final resource node error - [Gonzalo Ibars Ingman](https://github.com/gibarsin)
