@@ -60,6 +60,7 @@
 
 public class]]></replacevalue>
         </replace>
+
         <replace file="${target}/net/sourceforge/pmd/lang/java/ast/Token.java">
             <replacetoken><![CDATA[      default : return new Token(ofKind, image);
     }
@@ -81,12 +82,42 @@ public class]]></replacevalue>
   }
 ]]></replacevalue>
         </replace>
-    	<replace file="${target}/net/sourceforge/pmd/lang/java/ast/Token.java">
-    		<replacetoken>public class Token</replacetoken>
-    	    <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.GenericToken;
 
-public class Token extends GenericToken]]></replacevalue>
-    	</replace>
+        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/Token.java">
+            <replacetoken>public class Token implements java.io.Serializable</replacetoken>
+            <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.RegionByLine;
+import net.sourceforge.pmd.lang.ast.RegionByLineImpl;
+
+public class Token implements GenericToken, java.io.Serializable]]></replacevalue>
+        </replace>
+
+        <!--Add implementation methods of GenericToken-->
+        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/Token.java">
+            <replacetoken>specialToken;</replacetoken>
+            <replacevalue><![CDATA[specialToken;
+
+  @Override
+  public GenericToken getNextGenericToken() {
+    return next;
+  }
+
+  @Override
+  public GenericToken getPreviousSpecialGenericToken() {
+    return specialToken;
+  }
+
+  @Override
+  public RegionByLine getLineRegion() {
+    return new RegionByLineImpl(beginLine, endLine, beginColumn, endColumn);
+  }
+
+  @Override
+  public String getImage() {
+    return image;
+  }
+]]></replacevalue>
+        </replace>
 
         <delete>
             <fileset dir="${target}/net/sourceforge/pmd/lang/java/ast">
