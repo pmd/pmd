@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.ast;
 
 /**
- * Default implementation for the RegionByLine interface which is used by {@link GenericToken}
+ * Default immutable implementation for the RegionByLine interface which is used by {@link GenericToken}
  */
 public class RegionByLineImpl implements RegionByLine {
     private int beginLine;
@@ -14,11 +14,11 @@ public class RegionByLineImpl implements RegionByLine {
     private int endColumn;
 
     /**
-     *
-     * @param beginLine
-     * @param endLine
-     * @param beginColumn
-     * @param endColumn
+     * Create an immutable instance with all the corresponding fields. Every field requires to be non-negative
+     * @param beginLine the line where the region begins
+     * @param endLine the line where the region ends
+     * @param beginColumn the column offset from the start of the begin line where the region begins
+     * @param endColumn the column offset from the start of the end line where the region ends
      */
     public RegionByLineImpl(final int beginLine, final int endLine, final int beginColumn, final int endColumn) {
         setBeginLine(beginLine);
