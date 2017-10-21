@@ -63,11 +63,38 @@
 public class]]></replacevalue>
         </replace>
     	<replace file="${target}/net/sourceforge/pmd/lang/vf/ast/Token.java">
-    	    <replacetoken>public class Token</replacetoken>
+    	    <replacetoken>public class Token implements java.io.Serializable</replacetoken>
     	    <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.RegionByLine;
+import net.sourceforge.pmd.lang.ast.RegionByLineImpl;
 
-public class Token extends GenericToken]]></replacevalue>
+public class Token implements GenericToken, java.io.Serializable]]></replacevalue>
 		</replace>
+
+        <replace file="${target}/net/sourceforge/pmd/lang/vf/ast/Token.java">
+            <replacetoken>specialToken;</replacetoken>
+            <replacevalue><![CDATA[specialToken;
+
+  @Override
+  public GenericToken getNextGenericToken() {
+    return next;
+  }
+
+  @Override
+  public GenericToken getPreviousSpecialGenericToken() {
+    return specialToken;
+  }
+
+  @Override
+  public RegionByLine getLineRegion() {
+    return new RegionByLineImpl(beginLine, endLine, beginColumn, endColumn);
+  }
+
+  @Override
+  public String getImage() {
+    return image;
+  }]]></replacevalue>
+        </replace>
 
         <delete>
             <fileset dir="${target}/net/sourceforge/pmd/lang/vf/ast">
