@@ -108,7 +108,7 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
   }
 
   @Override
-  public RegionByLine getLineRegion() {
+  public RegionByLine getRegionByLine() {
     return new RegionByLineImpl(beginLine, endLine, beginColumn, endColumn);
   }
 

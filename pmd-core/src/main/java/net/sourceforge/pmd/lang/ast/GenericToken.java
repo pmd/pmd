@@ -26,7 +26,7 @@ public interface GenericToken {
      * Obtain the region where the token occupies in the source file.
      * @return the region
      */
-    RegionByLine getLineRegion();
+    RegionByLine getRegionByLine();
 
     /**
      * Gets the string representation of the instance of this token.
