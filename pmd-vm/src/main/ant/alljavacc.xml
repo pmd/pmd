@@ -73,5 +73,41 @@ public class]]></replacevalue>
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTReference.java"/>
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTStringLiteral.java"/>
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTSubtractNode.java"/>
+
+        <replace file="${target}/net/sourceforge/pmd/lang/vm/ast/Token.java">
+            <replacetoken>public class Token implements java.io.Serializable</replacetoken>
+            <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.RegionByLine;
+import net.sourceforge.pmd.lang.ast.RegionByLineImpl;
+
+public class Token implements GenericToken, java.io.Serializable]]></replacevalue>
+        </replace>
+
+        <!--Add implementation methods of GenericToken-->
+        <replace file="${target}/net/sourceforge/pmd/lang/vm/ast/Token.java">
+            <replacetoken>public Token specialToken;</replacetoken>
+            <replacevalue><![CDATA[public Token specialToken;
+
+  @Override
+  public GenericToken getNext() {
+    return next;
+  }
+
+  @Override
+  public GenericToken getPreviousSpecialGenericToken() {
+    return specialToken;
+  }
+
+  @Override
+  public RegionByLine getRegionByLine() {
+    return new RegionByLineImpl(beginLine, endLine, beginColumn, endColumn);
+  }
+
+  @Override
+  public String getImage() {
+    return image;
+  }
+]]></replacevalue>
+        </replace>
     </target>
 </project>
