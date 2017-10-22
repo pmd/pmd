@@ -13,7 +13,7 @@ public interface GenericToken {
      * Obtain the next generic token according to the input stream which generated the instance of this token.
      * @return the next generic token if it exists; null if it does not exist
      */
-    GenericToken getNextGenericToken();
+    GenericToken getNext();
 
     /**
      * Obtain a special generic token which, according to the input stream which generated the instance of this token,
@@ -29,8 +29,8 @@ public interface GenericToken {
     RegionByLine getRegionByLine();
 
     /**
-     * Gets the string representation of the instance of this token.
-     * @return the string representing this token
+     * Gets the token's text.
+     * @return the token's text
      */
     String getImage();
 }

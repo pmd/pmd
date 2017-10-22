@@ -94,11 +94,11 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
 
         <!--Add implementation methods of GenericToken-->
         <replace file="${target}/net/sourceforge/pmd/lang/java/ast/Token.java">
-            <replacetoken>specialToken;</replacetoken>
-            <replacevalue><![CDATA[specialToken;
+            <replacetoken>public Token specialToken;</replacetoken>
+            <replacevalue><![CDATA[public Token specialToken;
 
   @Override
-  public GenericToken getNextGenericToken() {
+  public GenericToken getNext() {
     return next;
   }
 
