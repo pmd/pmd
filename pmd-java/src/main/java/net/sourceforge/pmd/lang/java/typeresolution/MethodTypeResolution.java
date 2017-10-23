@@ -140,8 +140,14 @@ public final class MethodTypeResolution {
                     }
 
                     methodType = parameterizeInvocation(context, methodType.getMethod(), argList);
+                    
+                    // May be null if the method call is not applicable
+                    if (methodType == null) {
+                        continue;
+                    }
                 }
 
+                // TODO : Is this needed? parameterizeInvocation already performs inference to check applicability...
                 // check subtypeability of each argument to the corresponding parameter
                 boolean methodIsApplicable = true;
 
@@ -166,7 +172,6 @@ public final class MethodTypeResolution {
         return selectedMethods;
     }
 
-
     public static MethodType parameterizeInvocation(JavaTypeDefinition context, Method method,
                                                     ASTArgumentList argList) {
 
@@ -177,6 +182,11 @@ public final class MethodTypeResolution {
 
         List<JavaTypeDefinition> resolvedTypeParameters = TypeInferenceResolver
                 .inferTypes(produceInitialConstraints(method, argList, variables), initialBounds, variables);
+
+        // Is the method applicable?
+        if (resolvedTypeParameters == null) {
+            return null;
+        }
 
         return getTypeDefOfMethod(context, method, resolvedTypeParameters);
     }
