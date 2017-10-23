@@ -96,7 +96,7 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
   }
 
   @Override
-  public GenericToken getPreviousSpecialGenericToken() {
+  public GenericToken getPreviousComment() {
     return specialToken;
   }
 

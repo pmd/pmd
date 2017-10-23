@@ -16,11 +16,11 @@ public interface GenericToken {
     GenericToken getNext();
 
     /**
-     * Obtain a special generic token which, according to the input stream which generated the instance of this token,
+     * Obtain a comment-type token which, according to the input stream which generated the instance of this token,
      * precedes this instance token and succeeds the previous generic token (if there is any).
-     * @return the special token if it exists; null if it does not exist
+     * @return the comment-type token if it exists; null if it does not exist
      */
-    GenericToken getPreviousSpecialGenericToken();
+    GenericToken getPreviousComment();
 
     /**
      * Gets the token's text.
