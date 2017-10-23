@@ -102,15 +102,13 @@ public class ClasspathClassLoader extends URLClassLoader {
         // First, check if the class has already been loaded
         Class<?> c = findLoadedClass(name);
         if (c == null) {
-            if (c == null) {
-                try {
-                    // checking local
-                    c = findClass(name);
-                } catch (final ClassNotFoundException e) {
-                    // checking parent
-                    // This call to loadClass may eventually call findClass again, in case the parent doesn't find anything.
-                    c = super.loadClass(name, resolve);
-                }
+            try {
+                // checking local
+                c = findClass(name);
+            } catch (final ClassNotFoundException e) {
+                // checking parent
+                // This call to loadClass may eventually call findClass again, in case the parent doesn't find anything.
+                c = super.loadClass(name, resolve);
             }
         }
 
