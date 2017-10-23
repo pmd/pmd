@@ -23,14 +23,32 @@ public interface GenericToken {
     GenericToken getPreviousSpecialGenericToken();
 
     /**
-     * Obtain the region where the token occupies in the source file.
-     * @return the region
-     */
-    RegionByLine getRegionByLine();
-
-    /**
      * Gets the token's text.
      * @return the token's text
      */
     String getImage();
+
+    /**
+     * Gets the line where the token's region begins
+     * @return a non-negative integer containing the begin line
+     */
+    int getBeginLine();
+
+    /**
+     * Gets the line where the token's region ends
+     * @return a non-negative integer containing the end line
+     */
+    int getEndLine();
+
+    /**
+     * Gets the column offset from the start of the begin line where the token's region begins
+     * @return a non-negative integer containing the begin column
+     */
+    int getBeginColumn();
+
+    /**
+     * Gets the column offset from the start of the end line where the token's region ends
+     * @return a non-negative integer containing the begin column
+     */
+    int getEndColumn();
 }

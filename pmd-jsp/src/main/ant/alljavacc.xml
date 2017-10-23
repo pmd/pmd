@@ -64,8 +64,6 @@ public class]]></replacevalue>
     	<replace file="${target}/net/sourceforge/pmd/lang/jsp/ast/Token.java">
             <replacetoken>public class Token implements java.io.Serializable</replacetoken>
             <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.ast.RegionByLine;
-import net.sourceforge.pmd.lang.ast.RegionByLineImpl;
 
 public class Token implements GenericToken, java.io.Serializable]]></replacevalue>
 		</replace>
@@ -86,14 +84,30 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
   }
 
   @Override
-  public RegionByLine getRegionByLine() {
-    return new RegionByLineImpl(beginLine, endLine, beginColumn, endColumn);
-  }
-
-  @Override
   public String getImage() {
     return image;
   }
+
+    @Override
+  public int getBeginLine() {
+    return beginLine;
+  }
+
+  @Override
+  public int getEndLine() {
+    return endLine;
+  }
+
+  @Override
+  public int getBeginColumn() {
+    return beginColumn;
+  }
+
+  @Override
+  public int getEndColumn() {
+    return endColumn;
+  }
+
 ]]></replacevalue>
         </replace>
 
