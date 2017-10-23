@@ -543,7 +543,7 @@ public class RuleSetFactory {
         if (attribute == null || "".equals(attribute)) {
             throw new IllegalArgumentException("The 'class' field of rule can't be null, nor empty.");
         }
-        Rule rule = (Rule) classLoader.loadClass(attribute).newInstance();
+        Rule rule = (Rule) RuleSetFactory.class.getClassLoader().loadClass(attribute).newInstance();
         rule.setName(ruleElement.getAttribute("name"));
 
         if (ruleElement.hasAttribute("language")) {
