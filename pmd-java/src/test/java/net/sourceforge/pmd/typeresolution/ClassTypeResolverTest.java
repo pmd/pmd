@@ -1328,7 +1328,7 @@ public class ClassTypeResolverTest {
 
         int index = 0;
 
-        // int a = subtype(10, 'a', null, new Integer[0]);
+        // int a = subtype(10, 'a', "");
         assertEquals(int.class, expressions.get(index).getType());
         assertEquals(int.class, getChildType(expressions.get(index), 0));
         assertEquals(int.class, getChildType(expressions.get(index++), 1));
