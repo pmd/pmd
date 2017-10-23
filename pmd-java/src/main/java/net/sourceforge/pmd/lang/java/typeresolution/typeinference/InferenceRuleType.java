@@ -128,7 +128,8 @@ public enum InferenceRuleType {
 
             // Otherwise, the constraint is reduced according to the form of T: TODO
 
-            throw new IllegalStateException("Reduce method is flawed! " + val.toString());
+            return null;
+            //throw new IllegalStateException("Reduce method is flawed! " + val.toString());
         }
     },
 
@@ -257,7 +258,5 @@ public enum InferenceRuleType {
         }
     }
 
-    public List<BoundOrConstraint> reduce(BoundOrConstraint constraint) {
-        return null;
-    }
+    public abstract List<BoundOrConstraint> reduce(BoundOrConstraint constraint);
 }
