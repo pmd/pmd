@@ -55,8 +55,7 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testExtendedReferences() throws Exception {
-        InputStream in = ResourceLoader.loadResourceAsStream("net/sourceforge/pmd/rulesets/reference-ruleset.xml",
-                this.getClass().getClassLoader());
+        InputStream in = new ResourceLoader().loadClassPathResourceAsStream("net/sourceforge/pmd/rulesets/reference-ruleset.xml");
         assertNotNull("Test ruleset not found - can't continue with test!", in);
         in.close();
 
@@ -325,7 +324,8 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testReferencePriority() throws RuleSetNotFoundException {
-        RuleSetFactory rsf = new RuleSetFactory(getClass().getClassLoader(), RulePriority.LOW, false, true);
+        ResourceLoader rl = new ResourceLoader();
+        RuleSetFactory rsf = new RuleSetFactory(rl, RulePriority.LOW, false, true);
 
         RuleSet ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_INTERNAL_CHAIN));
         assertEquals("Number of Rules", 3, ruleSet.getRules().size());
@@ -333,31 +333,31 @@ public class RuleSetFactoryTest {
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
 
-        rsf = new RuleSetFactory(getClass().getClassLoader(), RulePriority.MEDIUM_HIGH, false, true);
+        rsf = new RuleSetFactory(rl, RulePriority.MEDIUM_HIGH, false, true);
         ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_INTERNAL_CHAIN));
         assertEquals("Number of Rules", 2, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
 
-        rsf = new RuleSetFactory(getClass().getClassLoader(), RulePriority.HIGH, false, true);
+        rsf = new RuleSetFactory(rl, RulePriority.HIGH, false, true);
         ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_INTERNAL_CHAIN));
         assertEquals("Number of Rules", 1, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
 
-        rsf = new RuleSetFactory(getClass().getClassLoader(), RulePriority.LOW, false, true);
+        rsf = new RuleSetFactory(rl, RulePriority.LOW, false, true);
         ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_EXTERNAL_CHAIN));
         assertEquals("Number of Rules", 3, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleName"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
 
-        rsf = new RuleSetFactory(getClass().getClassLoader(), RulePriority.MEDIUM_HIGH, false, true);
+        rsf = new RuleSetFactory(rl, RulePriority.MEDIUM_HIGH, false, true);
         ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_EXTERNAL_CHAIN));
         assertEquals("Number of Rules", 2, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
 
-        rsf = new RuleSetFactory(getClass().getClassLoader(), RulePriority.HIGH, false, true);
+        rsf = new RuleSetFactory(rl, RulePriority.HIGH, false, true);
         ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_EXTERNAL_CHAIN));
         assertEquals("Number of Rules", 1, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
@@ -382,9 +382,10 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testSetPriority() throws RuleSetNotFoundException {
-        RuleSetFactory rsf = new RuleSetFactory(getClass().getClassLoader(), RulePriority.MEDIUM_HIGH, false, true);
+        ResourceLoader rl = new ResourceLoader();
+        RuleSetFactory rsf = new RuleSetFactory(rl, RulePriority.MEDIUM_HIGH, false, true);
         assertEquals(0, rsf.createRuleSet(createRuleSetReferenceId(SINGLE_RULE)).size());
-        rsf = new RuleSetFactory(getClass().getClassLoader(), RulePriority.MEDIUM_LOW, false, true);
+        rsf = new RuleSetFactory(rl, RulePriority.MEDIUM_LOW, false, true);
         assertEquals(1, rsf.createRuleSet(createRuleSetReferenceId(SINGLE_RULE)).size());
     }
 
@@ -862,7 +863,7 @@ public class RuleSetFactoryTest {
     private static RuleSetReferenceId createRuleSetReferenceId(final String ruleSetXml) {
         return new RuleSetReferenceId(null) {
             @Override
-            public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
+            public InputStream getInputStream(ResourceLoader resourceLoader) throws RuleSetNotFoundException {
                 try {
                     return new ByteArrayInputStream(ruleSetXml.getBytes("UTF-8"));
                 } catch (UnsupportedEncodingException e) {
