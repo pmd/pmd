@@ -44,7 +44,7 @@ public interface AnalysisCache extends ThreadSafeReportListener {
     /**
      * Checks if the cache is valid for the configured rulesets and class loader.
      * @param ruleSets The rulesets configured for this analysis.
-     * @param classLoader The class loader configured for this analysis.
+     * @param auxclassPathClassLoader The class loader for auxclasspath configured for this analysis.
      */
-    void checkValidity(RuleSets ruleSets, ClassLoader classLoader);
+    void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader);
 }
