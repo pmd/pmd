@@ -13,7 +13,9 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,9 +40,10 @@ public final class MethodTypeResolution {
 
     private static final List<Class<?>> PRIMITIVE_SUBTYPE_ORDER;
     private static final List<Class<?>> BOXED_PRIMITIVE_SUBTYPE_ORDER;
+    private static final Map<Class<?>, Class<?>> PRIMITIVE_BOXING_RULES;
 
     static {
-        List<Class<?>> primitiveList = new ArrayList<>();
+        final List<Class<?>> primitiveList = new ArrayList<>();
 
         primitiveList.add(double.class);
         primitiveList.add(float.class);
@@ -52,7 +55,7 @@ public final class MethodTypeResolution {
 
         PRIMITIVE_SUBTYPE_ORDER = Collections.unmodifiableList(primitiveList);
 
-        List<Class<?>> boxedList = new ArrayList<>();
+        final List<Class<?>> boxedList = new ArrayList<>();
 
         boxedList.add(Double.class);
         boxedList.add(Float.class);
@@ -63,6 +66,20 @@ public final class MethodTypeResolution {
         boxedList.add(Character.class);
 
         BOXED_PRIMITIVE_SUBTYPE_ORDER = Collections.unmodifiableList(boxedList);
+        
+        final Map<Class<?>, Class<?>> boxingRules = new HashMap<>();
+        
+        boxingRules.put(double.class, Double.class);
+        boxingRules.put(float.class, Float.class);
+        boxingRules.put(long.class, Long.class);
+        boxingRules.put(int.class, Integer.class);
+        boxingRules.put(short.class, Short.class);
+        boxingRules.put(byte.class, Byte.class);
+        boxingRules.put(char.class, Character.class);
+        boxingRules.put(boolean.class, Boolean.class);
+        boxingRules.put(void.class, Void.class);
+        
+        PRIMITIVE_BOXING_RULES = Collections.unmodifiableMap(boxingRules);
     }
 
     public static boolean checkSubtypeability(MethodType method, MethodType subtypeableMethod) {
@@ -686,11 +703,7 @@ public final class MethodTypeResolution {
     }
 
     public static JavaTypeDefinition boxPrimitive(JavaTypeDefinition def) {
-        if (!def.isPrimitive()) {
-            return null;
-        }
-
-        return JavaTypeDefinition.forClass(BOXED_PRIMITIVE_SUBTYPE_ORDER.get(PRIMITIVE_SUBTYPE_ORDER.indexOf(def.getType())));
+        return JavaTypeDefinition.forClass(PRIMITIVE_BOXING_RULES.get(def.getType()));
     }
 
     public static List<JavaTypeDefinition> getMethodExplicitTypeArugments(Node node) {
