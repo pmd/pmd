@@ -83,7 +83,9 @@ public enum InferenceRuleType {
             // A constraint formula of the form ‹S = T›, where S and T are type arguments (§4.5.1), is reduced as
             // follows: TODO
 
-            throw new IllegalStateException("Reduce method is flawed! " + val.toString());
+            // TODO: Reduce to false for the time being, reduction is still incomplete
+            return null;
+            //throw new IllegalStateException("Reduce method is flawed! " + val.toString());
         }
     },
 
@@ -128,6 +130,7 @@ public enum InferenceRuleType {
 
             // Otherwise, the constraint is reduced according to the form of T: TODO
 
+            // TODO: Reduce to false for the time being, reduction is still incomplete
             return null;
             //throw new IllegalStateException("Reduce method is flawed! " + val.toString());
         }
@@ -221,7 +224,9 @@ public enum InferenceRuleType {
 
             // If T is a wildcard of the form ? super T': TODO
 
-            throw new IllegalStateException("Reduce method is flawed! " + val.toString());
+            // TODO: Reduce to false for the time being, reduction is still incomplete
+            return null;
+            //throw new IllegalStateException("Reduce method is flawed! " + val.toString());
         }
     };
 
