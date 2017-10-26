@@ -105,6 +105,7 @@ import net.sourceforge.pmd.typeresolution.testdata.SubTypeUsage;
 import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
 import net.sourceforge.pmd.typeresolution.testdata.VarArgsMethodUseCase;
+import net.sourceforge.pmd.typeresolution.testdata.VarargsZeroArity;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.Converter;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.JavaTypeDefinitionEquals;
@@ -1518,6 +1519,26 @@ public class ClassTypeResolverTest {
         assertEquals(SuperClassA2.class, getChildType(expressions.get(index), 0));
         assertEquals(SuperClassA2.class, getChildType(expressions.get(index++), 1));
 
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+    
+    @Test
+    public void testMethodTypeInferenceVarargsZeroArity() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(VarargsZeroArity.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // int var = aMethod();
+        assertEquals(int.class, expressions.get(index++).getType());
+
+        //String var2 = aMethod("");
+        assertEquals(String.class, expressions.get(index++).getType());
+        
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
     }
