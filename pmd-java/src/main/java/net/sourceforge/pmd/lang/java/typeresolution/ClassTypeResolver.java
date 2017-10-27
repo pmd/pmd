@@ -1135,18 +1135,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTAllocationExpression node, Object data) {
         super.visit(node, data);
 
-        if (node.hasDescendantOfType(ASTArrayDimsAndInits.class)) {
-            //
-            // Classes for Array types cannot be found directly using
-            // reflection.
-            // As far as I can tell you have to create an array instance of the
-            // necessary
-            // dimensionality, and then ask for the type from the instance. OMFG
-            // that's ugly.
-            //
+        final ASTArrayDimsAndInits dims = node.getFirstChildOfType(ASTArrayDimsAndInits.class);
+        if (dims != null) {
             final Class<?> arrayType = ((TypeNode) node.jjtGetChild(0)).getType();
             if (arrayType != null) {
-                final ASTArrayDimsAndInits dims = node.getFirstChildOfType(ASTArrayDimsAndInits.class);
                 node.setType(Array.newInstance(arrayType, (int[]) Array.newInstance(int.class, dims.getArrayDepth())).getClass());
             }
         } else {
