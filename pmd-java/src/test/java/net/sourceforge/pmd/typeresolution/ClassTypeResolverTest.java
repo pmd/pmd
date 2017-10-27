@@ -760,20 +760,24 @@ public class ClassTypeResolverTest {
         int index = 0;
 
         // int[] a = new int[1];
-        AbstractJavaTypeNode typeNode = expressions.get(index++);
-        assertEquals(int[].class, typeNode.getType());
-        for (AbstractJavaTypeNode n : typeNode.findDescendantsOfType(AbstractJavaTypeNode.class)) {
-            assertEquals(int[].class, n.getType());
-        }
+        testSubtreeNodeTypes(expressions.get(index++), int[].class);
 
         // Object[][] b = new Object[1][0];
-        assertEquals(Object[][].class, expressions.get(index++).getType());
+        testSubtreeNodeTypes(expressions.get(index++), Object[][].class);
         
         // ArrayTypes[][][] c = new ArrayTypes[][][] { new ArrayTypes[1][2] };
-        assertEquals(ArrayTypes[][][].class, expressions.get(index++).getType());
+        testSubtreeNodeTypes(expressions.get(index++), ArrayTypes[][][].class);
         
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
+    }
+    
+    private void testSubtreeNodeTypes(final AbstractJavaTypeNode node, final Class<?> expectedType) {
+        assertEquals(expectedType, node.getType());
+        // Check all typeable nodes in the tree
+        for (AbstractJavaTypeNode n : node.findDescendantsOfType(AbstractJavaTypeNode.class)) {
+            assertEquals(expectedType, n.getType());
+        }
     }
 
     @Test
