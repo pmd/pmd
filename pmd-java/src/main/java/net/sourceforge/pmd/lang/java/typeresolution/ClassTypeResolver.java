@@ -1147,7 +1147,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             final Class<?> arrayType = ((TypeNode) node.jjtGetChild(0)).getType();
             if (arrayType != null) {
                 final ASTArrayDimsAndInits dims = node.getFirstChildOfType(ASTArrayDimsAndInits.class);
-                node.setType(Array.newInstance(arrayType, (int[]) Array.newInstance(int.class, dims.getDimensions())).getClass());
+                node.setType(Array.newInstance(arrayType, (int[]) Array.newInstance(int.class, dims.getArrayDepth())).getClass());
             }
         } else {
             rollupTypeUnary(node);

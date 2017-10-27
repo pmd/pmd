@@ -6,7 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTArrayDimsAndInits extends AbstractJavaNode {
-    private int dimensions;
+    private int arrayDepth;
     
     public ASTArrayDimsAndInits(int id) {
         super(id);
@@ -24,10 +24,10 @@ public class ASTArrayDimsAndInits extends AbstractJavaNode {
     }
     
     public void bumpArrayDepth() {
-        dimensions++;
+        arrayDepth++;
     }
     
-    public int getDimensions() {
-        return dimensions;
+    public int getArrayDepth() {
+        return arrayDepth;
     }
 }
