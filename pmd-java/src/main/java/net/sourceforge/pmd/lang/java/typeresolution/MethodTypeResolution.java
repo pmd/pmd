@@ -69,34 +69,21 @@ public final class MethodTypeResolution {
         List<JavaTypeDefinition> subtypeableParams = subtypeableMethod.getParameterTypes();
         List<JavaTypeDefinition> methodParams = method.getParameterTypes();
 
-
-        if (!method.getMethod().isVarArgs() && !subtypeableMethod.getMethod().isVarArgs()) {
+        // If we come from third-phase, both are varargs, otherwhise, treat all as fixed-arity
+        if (!method.getMethod().isVarArgs() || !subtypeableMethod.getMethod().isVarArgs()) {
             for (int index = 0; index < subtypeableParams.size(); ++index) {
                 if (!isSubtypeable(methodParams.get(index), subtypeableParams.get(index))) {
                     return false;
                 }
             }
-        } else if (method.getMethod().isVarArgs() && subtypeableMethod.getMethod().isVarArgs()) {
-
-            if (methodParams.size() < subtypeableParams.size()) {
-                for (int index = 0; index < subtypeableParams.size(); ++index) {
-                    if (!isSubtypeable(method.getArgTypeIncludingVararg(index),
-                                       subtypeableMethod.getArgTypeIncludingVararg(index))) {
-                        return false;
-                    }
-                }
-            } else {
-                for (int index = 0; index < methodParams.size(); ++index) {
-                    if (!isSubtypeable(method.getArgTypeIncludingVararg(index),
-                                       subtypeableMethod.getArgTypeIncludingVararg(index))) {
-                        return false;
-                    }
+        } else {
+            final int maxSize = Math.max(subtypeableParams.size(), methodParams.size());
+            for (int index = 0; index < maxSize; ++index) {
+                if (!isSubtypeable(method.getArgTypeIncludingVararg(index),
+                                   subtypeableMethod.getArgTypeIncludingVararg(index))) {
+                    return false;
                 }
             }
-
-        } else {
-            throw new IllegalStateException("These methods can only be vararg at the same time:\n"
-                                                    + method.toString() + "\n" + subtypeableMethod.toString());
         }
 
         return true;
@@ -110,12 +97,11 @@ public final class MethodTypeResolution {
                                                            List<MethodType> methodsToSearch, ASTArgumentList argList) {
         // TODO: check if explicit type arguments are applicable to the type parameter bounds
         List<MethodType> selectedMethods = new ArrayList<>();
+        final int argCount = argList == null ? 0 : argList.jjtGetNumChildren();
 
         outter:
         for (int methodIndex = 0; methodIndex < methodsToSearch.size(); ++methodIndex) {
             MethodType methodType = methodsToSearch.get(methodIndex);
-
-            final int argCount = argList == null ? 0 : argList.jjtGetNumChildren();
 
             // vararg methods are considered fixed arity here, see 3rd phase
             if (getArity(methodType.getMethod()) == argCount) {
@@ -260,14 +246,13 @@ public final class MethodTypeResolution {
     public static List<MethodType> selectMethodsSecondPhase(List<MethodType> methodsToSearch, ASTArgumentList argList) {
         // TODO: check if explicit type arguments are applicable to the type parameter bounds
         List<MethodType> selectedMethods = new ArrayList<>();
+        final int argCount = argList == null ? 0 : argList.jjtGetNumChildren();
 
         for (int methodIndex = 0; methodIndex < methodsToSearch.size(); ++methodIndex) {
             MethodType methodType = methodsToSearch.get(methodIndex);
             if (!methodType.isParameterized()) {
                 throw new ResolutionFailedException();
             }
-
-            final int argCount = argList == null ? 0 : argList.jjtGetNumChildren();
 
             // vararg methods are considered fixed arity here, see 3rd phase
             if (getArity(methodType.getMethod()) == argCount) {

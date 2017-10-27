@@ -105,6 +105,7 @@ import net.sourceforge.pmd.typeresolution.testdata.SubTypeUsage;
 import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
 import net.sourceforge.pmd.typeresolution.testdata.VarArgsMethodUseCase;
+import net.sourceforge.pmd.typeresolution.testdata.VarargsAsFixedArity;
 import net.sourceforge.pmd.typeresolution.testdata.VarargsZeroArity;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.Converter;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
@@ -1538,6 +1539,35 @@ public class ClassTypeResolverTest {
 
         //String var2 = aMethod("");
         assertEquals(String.class, expressions.get(index++).getType());
+        
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+    
+    @Test
+    public void testMethodTypeInferenceVarargsAsFixedArity() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(VarargsAsFixedArity.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // int var = aMethod("");
+        assertEquals(int.class, expressions.get(index++).getType());
+
+        // String var2 = aMethod();
+        assertEquals(String.class, expressions.get(index++).getType());
+        
+        // String var3 = aMethod("", "");
+        assertEquals(String.class, expressions.get(index++).getType());
+        
+        // String var4 = aMethod(new Object[] { null });
+        assertEquals(String.class, expressions.get(index++).getType());
+        
+        // null literal has null type
+        assertNull(expressions.get(index++).getType());
         
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
