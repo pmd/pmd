@@ -268,7 +268,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
         }
 
-        populateType(node, typeName, node.isArray());
+        populateType(node, typeName, node.getArrayDepth());
 
         ASTTypeArguments typeArguments = node.getFirstChildOfType(ASTTypeArguments.class);
 
@@ -546,13 +546,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         if (prefix instanceof ASTPrimaryPrefix
                 && prefix.jjtGetParent().jjtGetNumChildren() >= 2) {
-            ASTArguments args = prefix.jjtGetParent().jjtGetChild(1).getFirstChildOfType(ASTArguments.class);
-            return args;
+            return prefix.jjtGetParent().jjtGetChild(1).getFirstChildOfType(ASTArguments.class);
         }
 
         return null;
     }
-
 
     /**
      * Searches a JavaTypeDefinition and it's superclasses until a field with name {@code fieldImage} that
@@ -684,7 +682,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
         String name = node.getNameDeclaration().getTypeImage();
         if (name != null) {
-            populateType(node, name, node.getNameDeclaration().isArray());
+            populateType(node, name, node.getNameDeclaration().getArrayDepth());
         }
         return super.visit(node, data);
     }
@@ -1137,8 +1135,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTAllocationExpression node, Object data) {
         super.visit(node, data);
 
-        if (node.jjtGetNumChildren() >= 2 && node.jjtGetChild(1) instanceof ASTArrayDimsAndInits
-                || node.jjtGetNumChildren() >= 3 && node.jjtGetChild(2) instanceof ASTArrayDimsAndInits) {
+        if (node.hasDescendantOfType(ASTArrayDimsAndInits.class)) {
             //
             // Classes for Array types cannot be found directly using
             // reflection.
@@ -1147,28 +1144,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             // dimensionality, and then ask for the type from the instance. OMFG
             // that's ugly.
             //
-
-            // TODO Need to create utility method to allow array type creation
-            // which will use
-            // caching to avoid repeated object creation.
-            // TODO Modify Parser to tell us array dimensions count.
-            // TODO Parser seems to do some work to handle arrays in certain
-            // case already.
-            // Examine those to figure out what's going on, make sure _all_
-            // array scenarios
-            // are ultimately covered. Appears to use a Dimensionable interface
-            // to handle
-            // only a part of the APIs (not bump), but is implemented several
-            // times, so
-            // look at refactoring to eliminate duplication. Dimensionable is
-            // also used
-            // on AccessNodes for some scenarios, need to account for that.
-            // Might be
-            // missing some TypeNode candidates we can add to the AST and have
-            // to deal
-            // with here (e.g. FormalParameter)? Plus some existing usages may
-            // be
-            // incorrect.
+            final Class<?> arrayType = ((TypeNode) node.jjtGetChild(0)).getType();
+            if (arrayType != null) {
+                final ASTArrayDimsAndInits dims = node.getFirstChildOfType(ASTArrayDimsAndInits.class);
+                node.setType(Array.newInstance(arrayType, (int[]) Array.newInstance(int.class, dims.getDimensions())).getClass());
+            }
         } else {
             rollupTypeUnary(node);
         }
@@ -1275,10 +1255,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     private void populateType(TypeNode node, String className) {
-        populateType(node, className, false);
+        populateType(node, className, 0);
     }
 
-    private void populateType(TypeNode node, String className, boolean isArray) {
+    private void populateType(TypeNode node, String className, int arrayDimens) {
 
         String qualifiedName = className;
         Class<?> myType = PRIMITIVE_TYPES.get(className);
@@ -1330,8 +1310,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 node.setTypeDefinition(parameter.getTypeDefinition());
             }
         } else {
-            if (isArray) {
-                myType = Array.newInstance(myType, 0).getClass();
+            if (arrayDimens > 0) {
+                myType = Array.newInstance(myType, (int[]) Array.newInstance(int.class, arrayDimens)).getClass();
             }
             node.setType(myType);
         }

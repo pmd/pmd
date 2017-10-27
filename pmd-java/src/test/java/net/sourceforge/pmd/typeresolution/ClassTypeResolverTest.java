@@ -71,6 +71,7 @@ import net.sourceforge.pmd.typeresolution.testdata.AnonymousClassFromInterface;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.AnoymousExtendingObject;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
+import net.sourceforge.pmd.typeresolution.testdata.ArrayTypes;
 import net.sourceforge.pmd.typeresolution.testdata.DefaultJavaLangImport;
 import net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ExtraTopLevelClass;
@@ -748,6 +749,32 @@ public class ClassTypeResolverTest {
         assertEquals("All expressions not tested", index, expressions.size());
     }
 
+    @Test
+    public void testArrayTypes() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(ArrayTypes.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableDeclarator"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // int[] a = new int[1];
+        AbstractJavaTypeNode typeNode = expressions.get(index++);
+        assertEquals(int[].class, typeNode.getType());
+        for (AbstractJavaTypeNode n : typeNode.findDescendantsOfType(AbstractJavaTypeNode.class)) {
+            assertEquals(int[].class, n.getType());
+        }
+
+        // Object[][] b = new Object[1][0];
+        assertEquals(Object[][].class, expressions.get(index++).getType());
+        
+        // ArrayTypes[][][] c = new ArrayTypes[][][] { new ArrayTypes[1][2] };
+        assertEquals(ArrayTypes[][][].class, expressions.get(index++).getType());
+        
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
 
     @Test
     public void testFieldAccess() throws JaxenException {
