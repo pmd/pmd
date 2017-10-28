@@ -87,6 +87,7 @@ import net.sourceforge.pmd.typeresolution.testdata.FieldAccessShadow;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessStatic;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper;
 import net.sourceforge.pmd.typeresolution.testdata.GenericMethodsImplicit;
+import net.sourceforge.pmd.typeresolution.testdata.GenericsArrays;
 import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.MethodAccessibility;
@@ -1535,6 +1536,36 @@ public class ClassTypeResolverTest {
         assertEquals("All expressions not tested", index, expressions.size());
     }
 
+
+    @Test
+    public void testGenericArrays() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(GenericsArrays.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+        
+        int index = 0;
+
+        // List<String> var = Arrays.asList(params);
+        AbstractJavaTypeNode expression = expressions.get(index++);
+        // TODO : Type inference is still incomplete, we fail to detect the return type of the method
+        //assertEquals(List.class, expression.getTypeDefinition().getType());
+        //assertEquals(String.class, expression.getTypeDefinition().getGenericType(0).getType());
+        
+        // List<String> var2 = Arrays.<String>asList(params);
+        AbstractJavaTypeNode expression2 = expressions.get(index++);
+        assertEquals(List.class, expression2.getTypeDefinition().getType());
+        assertEquals(String.class, expression2.getTypeDefinition().getGenericType(0).getType());
+        
+        // List<String[]> var3 = Arrays.<String[]>asList(params);
+        AbstractJavaTypeNode expression3 = expressions.get(index++);
+        assertEquals(List.class, expression3.getTypeDefinition().getType());
+        assertEquals(String[].class, expression3.getTypeDefinition().getGenericType(0).getType());
+        
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
 
     @Test
     public void testMethodTypeInference() throws JaxenException {
