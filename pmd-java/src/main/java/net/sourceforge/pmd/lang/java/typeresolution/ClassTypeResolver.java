@@ -419,7 +419,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (node.getType() != null) { // static field or method
             // node.getType() has been set by the call to searchNodeNameForClass above
             // node.getType() will have the value equal to the Class found by that method
-            previousType = JavaTypeDefinition.forClass(node.getType());
+            previousType = node.getTypeDefinition();
         } else { // non-static field or method
             if (dotSplitImage.length == 1 && astArguments != null) { // method
                 List<MethodType> methods = getLocalApplicableMethods(node, dotSplitImage[0],

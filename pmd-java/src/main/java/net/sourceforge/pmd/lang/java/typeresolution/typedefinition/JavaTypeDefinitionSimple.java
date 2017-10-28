@@ -85,11 +85,11 @@ import java.util.logging.Logger;
     }
 
     private JavaTypeDefinition getGenericType(final String parameterName, Method method,
-                                              List<JavaTypeDefinition> methodTypeArgumens) {
-        if (method != null && methodTypeArgumens != null) {
+                                              List<JavaTypeDefinition> methodTypeArguments) {
+        if (method != null && methodTypeArguments != null) {
             int paramIndex = getGenericTypeIndex(method.getTypeParameters(), parameterName);
             if (paramIndex != -1) {
-                return methodTypeArgumens.get(paramIndex);
+                return methodTypeArguments.get(paramIndex);
             }
         }
 
@@ -190,7 +190,7 @@ import java.util.logging.Logger;
                 return forClass(UPPER_WILDCARD, resolveTypeDefinition(wildcardUpperBounds[0], method, methodTypeArgs));
             }
         } else if (type instanceof GenericArrayType) {
-            JavaTypeDefinition component = resolveTypeDefinition(((GenericArrayType) type).getGenericComponentType());
+            JavaTypeDefinition component = resolveTypeDefinition(((GenericArrayType) type).getGenericComponentType(), method, methodTypeArgs);
             // TODO: retain the generic types of the array component...
             return forClass(Array.newInstance(component.getType(), 0).getClass());
         }
