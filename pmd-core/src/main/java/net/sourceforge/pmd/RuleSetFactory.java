@@ -49,9 +49,9 @@ import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
  * RuleSetFactory is responsible for creating RuleSet instances from XML
- * content. By default Rules will be loaded using the ClassLoader for this
- * class, using the {@link RulePriority#LOW} priority, with Rule deprecation
- * warnings off. By default, the ruleset compatibility filter is active, too.
+ * content. By default Rules will be loaded using the {@link RulePriority#LOW} priority,
+ * with Rule deprecation warnings off.
+ * By default, the ruleset compatibility filter is active, too.
  * See {@link RuleSetFactoryCompatibility}.
  */
 public class RuleSetFactory {
@@ -65,18 +65,18 @@ public class RuleSetFactory {
     private static final String MESSAGE = "message";
     private static final String EXTERNAL_INFO_URL = "externalInfoUrl";
 
-    private final ClassLoader classLoader;
+    private final ResourceLoader resourceLoader;
     private final RulePriority minimumPriority;
     private final boolean warnDeprecated;
     private final RuleSetFactoryCompatibility compatibilityFilter;
 
     public RuleSetFactory() {
-        this(RuleSetFactory.class.getClassLoader(), RulePriority.LOW, false, true);
+        this(new ResourceLoader(), RulePriority.LOW, false, true);
     }
 
-    public RuleSetFactory(final ClassLoader classLoader, final RulePriority minimumPriority,
+    public RuleSetFactory(final ResourceLoader resourceLoader, final RulePriority minimumPriority,
             final boolean warnDeprecated, final boolean enableCompatibility) {
-        this.classLoader = classLoader;
+        this.resourceLoader = resourceLoader;
         this.minimumPriority = minimumPriority;
         this.warnDeprecated = warnDeprecated;
 
@@ -97,7 +97,7 @@ public class RuleSetFactory {
      *            factory.
      */
     public RuleSetFactory(final RuleSetFactory factory, final boolean warnDeprecated) {
-        this(factory.classLoader, factory.minimumPriority, warnDeprecated, factory.compatibilityFilter != null);
+        this(factory.resourceLoader, factory.minimumPriority, warnDeprecated, factory.compatibilityFilter != null);
     }
 
     /**
@@ -125,7 +125,7 @@ public class RuleSetFactory {
             for (Language language : LanguageRegistry.findWithRuleSupport()) {
                 Properties props = new Properties();
                 rulesetsProperties = "rulesets/" + language.getTerseName() + "/rulesets.properties";
-                try (InputStream inputStream = ResourceLoader.loadResourceAsStream(rulesetsProperties);) {
+                try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
                     props.load(inputStream);
                 }
                 String rulesetFilenames = props.getProperty("rulesets.filenames");
@@ -134,7 +134,7 @@ public class RuleSetFactory {
             return createRuleSets(ruleSetReferenceIds).getRuleSetsIterator();
         } catch (IOException ioe) {
             throw new RuntimeException("Couldn't find " + rulesetsProperties
-                    + "; please ensure that the rulesets directory is on the classpath.  The current classpath is: "
+                    + "; please ensure that the rulesets directory is on the classpath. The current classpath is: "
                     + System.getProperty("java.class.path"));
         }
     }
@@ -143,7 +143,7 @@ public class RuleSetFactory {
      * Create a RuleSets from a comma separated list of RuleSet reference IDs.
      * This is a convenience method which calls
      * {@link RuleSetReferenceId#parse(String)}, and then calls
-     * {@link #createRuleSets(List)}. The currently configured ClassLoader is
+     * {@link #createRuleSets(List)}. The currently configured ResourceLoader is
      * used.
      *
      * @param referenceString
@@ -158,7 +158,7 @@ public class RuleSetFactory {
 
     /**
      * Create a RuleSets from a list of RuleSetReferenceIds. The currently
-     * configured ClassLoader is used.
+     * configured ResourceLoader is used.
      *
      * @param ruleSetReferenceIds
      *            The List of RuleSetReferenceId of the RuleSets to create.
@@ -180,7 +180,7 @@ public class RuleSetFactory {
      * convenience method which calls {@link RuleSetReferenceId#parse(String)},
      * gets the first item in the List, and then calls
      * {@link #createRuleSet(RuleSetReferenceId)}. The currently configured
-     * ClassLoader is used.
+     * ResourceLoader is used.
      *
      * @param referenceString
      *            A comma separated list of RuleSet reference IDs.
@@ -199,7 +199,7 @@ public class RuleSetFactory {
 
     /**
      * Create a RuleSet from a RuleSetReferenceId. Priority filtering is ignored
-     * when loading a single Rule. The currently configured ClassLoader is used.
+     * when loading a single Rule. The currently configured ResourceLoader is used.
      *
      * @param ruleSetReferenceId
      *            The RuleSetReferenceId of the RuleSet to create.
@@ -291,7 +291,7 @@ public class RuleSetFactory {
 
     /**
      * Create a Rule from a RuleSet created from a file name resource. The
-     * currently configured ClassLoader is used.
+     * currently configured ResourceLoader is used.
      * <p>
      * Any Rules in the RuleSet other than the one being created, are _not_
      * created. Deprecated rules are _not_ ignored, so that they can be
@@ -329,7 +329,7 @@ public class RuleSetFactory {
     private RuleSet parseRuleSetNode(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
             throws RuleSetNotFoundException {
         try (CheckedInputStream inputStream = new CheckedInputStream(
-                ruleSetReferenceId.getInputStream(this.classLoader), new Adler32());) {
+                ruleSetReferenceId.getInputStream(resourceLoader), new Adler32());) {
             if (!ruleSetReferenceId.isExternal()) {
                 throw new IllegalArgumentException(
                         "Cannot parse a RuleSet from a non-external reference: <" + ruleSetReferenceId + ">.");
@@ -543,7 +543,7 @@ public class RuleSetFactory {
         if (attribute == null || "".equals(attribute)) {
             throw new IllegalArgumentException("The 'class' field of rule can't be null, nor empty.");
         }
-        Rule rule = (Rule) classLoader.loadClass(attribute).newInstance();
+        Rule rule = (Rule) Class.forName(attribute).newInstance();
         rule.setName(ruleElement.getAttribute("name"));
 
         if (ruleElement.hasAttribute("language")) {
@@ -774,7 +774,7 @@ public class RuleSetFactory {
      */
     private boolean containsRule(RuleSetReferenceId ruleSetReferenceId, String ruleName) {
         boolean found = false;
-        try (InputStream ruleSet = ruleSetReferenceId.getInputStream(classLoader)) {
+        try (InputStream ruleSet = ruleSetReferenceId.getInputStream(resourceLoader)) {
             DocumentBuilder builder = createDocumentBuilder();
             Document document = builder.parse(ruleSet);
             Element ruleSetElement = document.getDocumentElement();
