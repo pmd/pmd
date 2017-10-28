@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTArrayDimsAndInits extends AbstractJavaNode {
+public class ASTArrayDimsAndInits extends AbstractJavaNode implements Dimensionable {
     private int arrayDepth;
     
     public ASTArrayDimsAndInits(int id) {
@@ -26,8 +26,14 @@ public class ASTArrayDimsAndInits extends AbstractJavaNode {
     public void bumpArrayDepth() {
         arrayDepth++;
     }
-    
+
+    @Override
     public int getArrayDepth() {
         return arrayDepth;
+    }
+
+    @Override
+    public boolean isArray() {
+        return arrayDepth > 0; // should always be true...
     }
 }

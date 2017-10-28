@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
+public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dimensionable {
 
     private int arrayDepth;
     private VariableNameDeclaration nameDeclaration;
