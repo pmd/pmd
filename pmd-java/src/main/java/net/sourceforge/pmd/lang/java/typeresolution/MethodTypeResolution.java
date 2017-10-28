@@ -462,10 +462,14 @@ public final class MethodTypeResolution {
         Class<?> contextClass = context.getType();
 
         // search the class
-        for (Method method : contextClass.getDeclaredMethods()) {
-            if (isMethodApplicable(method, methodName, argArity, accessingClass, typeArguments)) {
-                result.add(getTypeDefOfMethod(context, method, typeArguments));
+        try {
+            for (Method method : contextClass.getDeclaredMethods()) {
+                if (isMethodApplicable(method, methodName, argArity, accessingClass, typeArguments)) {
+                    result.add(getTypeDefOfMethod(context, method, typeArguments));
+                }
             }
+        } catch (final LinkageError ignored) {
+            // TODO : This is an incomplete classpath, report the missing class
         }
 
         // search it's supertype
