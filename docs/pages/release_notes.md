@@ -259,6 +259,7 @@ a warning will now be produced suggesting users to adopt it for better performan
     *   [#608](https://github.com/pmd/pmd/issues/608): \[core] Add DEBUG log when applying incremental analysis
     *   [#618](https://github.com/pmd/pmd/issues/618): \[core] Incremental Analysis doesn't close file correctly on Windows upon a cache hit
     *   [#643](https://github.com/pmd/pmd/issues/643): \[core] PMD Properties (dev-properties) breaks markup on CodeClimateRenderer
+    *   [#680](https://github.com/pmd/pmd/pull/680): \[core] Isolate classloaders for runtime and auxclasspath
 *   apex
     *   [#265](https://github.com/pmd/pmd/issues/265): \[apex] Make Rule suppression work
     *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
