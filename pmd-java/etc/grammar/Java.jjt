@@ -2024,9 +2024,9 @@ void ArrayDimsAndInits() :
 {
 
   LOOKAHEAD(2)
-  ( LOOKAHEAD(2) (Annotation() {checkForBadTypeAnnotations();})* "[" Expression() "]" )+ ( LOOKAHEAD(2) "[" "]" )*
+  ( LOOKAHEAD(2) (Annotation() {checkForBadTypeAnnotations();})* "[" Expression() "]" {jjtThis.bumpArrayDepth();})+ ( LOOKAHEAD(2) "[" "]" {jjtThis.bumpArrayDepth();} )*
 |
-  ( "[" "]" )+ ArrayInitializer()
+  ( "[" "]" {jjtThis.bumpArrayDepth();})+ ArrayInitializer()
 }
 
 

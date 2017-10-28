@@ -36,6 +36,16 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
             return false;
         }
     }
+    
+    public int getArrayDepth() {
+        ASTVariableDeclaratorId astVariableDeclaratorId = (ASTVariableDeclaratorId) node;
+        ASTType typeNode = astVariableDeclaratorId.getTypeNode();
+        if (typeNode != null) {
+            return ((Dimensionable) typeNode.jjtGetParent()).getArrayDepth();
+        } else {
+            return 0;
+        }
+    }
 
     public boolean isVarargs() {
         ASTVariableDeclaratorId astVariableDeclaratorId = (ASTVariableDeclaratorId) node;

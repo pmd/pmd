@@ -71,6 +71,7 @@ import net.sourceforge.pmd.typeresolution.testdata.AnonymousClassFromInterface;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.AnoymousExtendingObject;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
+import net.sourceforge.pmd.typeresolution.testdata.ArrayTypes;
 import net.sourceforge.pmd.typeresolution.testdata.DefaultJavaLangImport;
 import net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ExtraTopLevelClass;
@@ -750,6 +751,36 @@ public class ClassTypeResolverTest {
         assertEquals("All expressions not tested", index, expressions.size());
     }
 
+    @Test
+    public void testArrayTypes() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(ArrayTypes.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableDeclarator"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // int[] a = new int[1];
+        testSubtreeNodeTypes(expressions.get(index++), int[].class);
+
+        // Object[][] b = new Object[1][0];
+        testSubtreeNodeTypes(expressions.get(index++), Object[][].class);
+        
+        // ArrayTypes[][][] c = new ArrayTypes[][][] { new ArrayTypes[1][2] };
+        testSubtreeNodeTypes(expressions.get(index++), ArrayTypes[][][].class);
+        
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+    
+    private void testSubtreeNodeTypes(final AbstractJavaTypeNode node, final Class<?> expectedType) {
+        assertEquals(expectedType, node.getType());
+        // Check all typeable nodes in the tree
+        for (AbstractJavaTypeNode n : node.findDescendantsOfType(AbstractJavaTypeNode.class)) {
+            assertEquals(expectedType, n.getType());
+        }
+    }
 
     @Test
     public void testFieldAccess() throws JaxenException {
