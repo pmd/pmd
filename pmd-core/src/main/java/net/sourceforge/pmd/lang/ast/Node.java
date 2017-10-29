@@ -270,9 +270,7 @@ public interface Node {
     void setUserData(Object userData);
 
     /**
-     * Remove the current node from its parent & the association it has with all its children.
-     * <p>
-     * This last type of removal makes it possible to avoid the visitor to visit children of removed nodes.
+     * Remove the current node from its parent.
      */
     void remove();
 

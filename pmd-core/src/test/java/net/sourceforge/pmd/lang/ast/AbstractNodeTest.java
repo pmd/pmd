@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.ast;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -92,16 +92,10 @@ public class AbstractNodeTest {
     @Parameters(method = "childrenIndexes")
     public void testRemoveChildOfRootNode(final int childIndex) {
         final Node child = rootNode.jjtGetChild(childIndex);
-
-        // Check that the child has the expected properties
-        assertEquals(NUM_CHILDREN, rootNode.jjtGetNumChildren());
-        assertEquals(rootNode, child.jjtGetParent());
-        assertEquals(NUM_GRAND_CHILDREN, child.jjtGetNumChildren());
         final Node[] grandChildren = new Node[child.jjtGetNumChildren()];
         for (int i = 0; i < grandChildren.length; i++) {
             final Node grandChild = child.jjtGetChild(i);
             grandChildren[i] = grandChild;
-            assertEquals(child, grandChild.jjtGetParent());
         }
 
         // Do the actual removal
@@ -110,9 +104,10 @@ public class AbstractNodeTest {
         // Check that conditions have been successfully changed
         assertEquals(NUM_CHILDREN - 1, rootNode.jjtGetNumChildren());
         assertNull(child.jjtGetParent());
-        assertEquals(0, child.jjtGetNumChildren());
+        // The child node is expected to still have all its children and vice versa
+        assertEquals(NUM_GRAND_CHILDREN, child.jjtGetNumChildren());
         for (final Node grandChild : grandChildren) {
-            assertNull(grandChild.jjtGetParent());
+            assertEquals(child, grandChild.jjtGetParent());
         }
     }
 
@@ -123,23 +118,21 @@ public class AbstractNodeTest {
     @Test
     public void testRemoveRootNode() {
         // Check that the root node has the expected properties
-        assertEquals(NUM_CHILDREN, rootNode.jjtGetNumChildren());
-        assertNull(rootNode.jjtGetParent());
         final Node[] children = new Node[rootNode.jjtGetNumChildren()];
         for (int i = 0; i < children.length; i++) {
             final Node child = rootNode.jjtGetChild(i);
             children[i] = child;
-            assertEquals(rootNode, child.jjtGetParent());
         }
 
         // Do the actual removal
         rootNode.remove();
 
-        // Check that conditions have been successfully changed
-        assertEquals(0, rootNode.jjtGetNumChildren());
+        // Check that conditions have been successfully changed, i.e.,
+        //  the root node is expected to still have all its children and vice versa
+        assertEquals(NUM_CHILDREN, rootNode.jjtGetNumChildren());
         assertNull(rootNode.jjtGetParent());
         for (final Node aChild : children) {
-            assertNull(aChild.jjtGetParent());
+            assertEquals(rootNode, aChild.jjtGetParent());
         }
     }
 
@@ -149,14 +142,9 @@ public class AbstractNodeTest {
      */
     @Test
     @Parameters(method = "childrenAndGrandChildrenIndexes")
-    public void testRemoveGrandChildNode(final Integer childIndex, final Integer grandChildIndex) {
+    public void testRemoveGrandChildNode(final int childIndex, final int grandChildIndex) {
         final Node child = rootNode.jjtGetChild(childIndex);
         final Node grandChild = child.jjtGetChild(grandChildIndex);
-
-        // Check that the child has the expected properties
-        assertEquals(NUM_GRAND_CHILDREN, child.jjtGetNumChildren());
-        assertEquals(0, grandChild.jjtGetNumChildren());
-        assertEquals(child, grandChild.jjtGetParent());
 
         // Do the actual removal
         grandChild.remove();
@@ -172,18 +160,12 @@ public class AbstractNodeTest {
      */
     @Test
     @Parameters(method = "childrenIndexes")
-    public void testRemoveRootNodeChildAtIndex(final Integer childIndex) {
+    public void testRemoveRootNodeChildAtIndex(final int childIndex) {
         final Node[] originalChildren = new Node[rootNode.jjtGetNumChildren()];
 
-        // Check that prior conditions are OK
         for (int i = 0; i < originalChildren.length; i++) {
             originalChildren[i] = rootNode.jjtGetChild(i);
-            assertEquals(i, originalChildren[i].jjtGetChildIndex());
-            if (i > 0) {
-                assertNotEquals(originalChildren[i - 1], originalChildren[i]);
-            }
         }
-        assertEquals(NUM_CHILDREN, rootNode.jjtGetNumChildren());
 
         // Do the actual removal
         rootNode.removeChildAtIndex(childIndex);
@@ -205,13 +187,16 @@ public class AbstractNodeTest {
 
     /**
      * Explicitly tests the {@code removeChildAtIndex} method.
-     * Test how invalid indexes cases are handled.
+     * Test that invalid indexes cases are handled without exception.
      */
     @Test
     public void testRemoveChildAtIndexWithInvalidIndex() {
-        // No assert as the test is considered passed if no exception is thrown
-        rootNode.removeChildAtIndex(-1);
-        rootNode.removeChildAtIndex(rootNode.jjtGetNumChildren());
+        try {
+            rootNode.removeChildAtIndex(-1);
+            rootNode.removeChildAtIndex(rootNode.jjtGetNumChildren());
+        } catch (final Exception e) {
+            fail("No exception was expected.");
+        }
     }
 
     /**
@@ -219,11 +204,12 @@ public class AbstractNodeTest {
      * This is a border case as the method invocation should do nothing.
      */
     @Test
-    public void testRemoveChildAtIndexOnNodeWithNoChildren() {
-        final Node grandChild = rootNode.jjtGetChild(0).jjtGetChild(0);
-        // Check that this node does not have any children
-        assertEquals(0, grandChild.jjtGetNumChildren());
+    @Parameters(method = "grandChildrenIndexes")
+    public void testRemoveChildAtIndexOnNodeWithNoChildren(final int grandChildIndex) {
+        // grandChild does not have any child
+        final Node grandChild = rootNode.jjtGetChild(grandChildIndex).jjtGetChild(grandChildIndex);
 
+        // Do the actual removal
         grandChild.removeChildAtIndex(0);
 
         // If here, no exception has been thrown

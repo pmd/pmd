@@ -422,14 +422,6 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public void remove() {
-        // Detach current node of all its children, if any
-        if (children != null) {
-            for (Node child : children) {
-                child.jjtSetParent(null);
-            }
-            children = new Node[0];
-        }
-
         // Detach current node of its parent, if any
         final Node parent = jjtGetParent();
         if (parent != null) {
@@ -445,8 +437,8 @@ public abstract class AbstractNode implements Node {
         if (0 <= childIndex && childIndex < jjtGetNumChildren()) {
             // Remove the child at the given index
             children = ArrayUtils.remove(children, childIndex);
-            // Update the remaining children indexes
-            for (int i = 0; i < jjtGetNumChildren(); i++) {
+            // Update the remaining & left-shifted children indexes
+            for (int i = childIndex; i < jjtGetNumChildren(); i++) {
                 jjtGetChild(i).jjtSetChildIndex(i);
             }
         }
