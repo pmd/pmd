@@ -72,7 +72,7 @@ public class JumbledIncrementerRule1 {
 
 <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
-The rule has been moved to another ruleset. Use instead: [JumbledIncrementer](pmd_rules_java_basic.html#jumbledincrementer)
+The rule has been moved to another ruleset. Use instead: [JumbledIncrementer](pmd_rules_java_sample2.html#jumbledincrementer)
 
 **Since:** PMD 1.0
 
