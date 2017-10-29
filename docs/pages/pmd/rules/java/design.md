@@ -1,13 +1,19 @@
 ---
 title: Design
-summary: The Design ruleset contains rules that flag suboptimal code implementations. Alternate approaches are suggested.
+summary: The Design category contains rules that flag suboptimal code implementations. Alternate approaches are suggested.  It fully contains these previous rulesets:  *   codesize
 permalink: pmd_rules_java_design.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/design.xml
-keywords: Design, UseUtilityClass, SimplifyBooleanReturns, SimplifyBooleanExpressions, SwitchStmtsShouldHaveDefault, AvoidDeeplyNestedIfStmts, AvoidReassigningParameters, SwitchDensity, ConstructorCallsOverridableMethod, AccessorClassGeneration, FinalFieldCouldBeStatic, CloseResource, NonStaticInitializer, DefaultLabelNotLastInSwitchStmt, NonCaseLabelInSwitchStatement, OptimizableToArrayCall, BadComparison, EqualsNull, ConfusingTernary, InstantiationToGetClass, IdempotentOperations, SimpleDateFormatNeedsLocale, ImmutableField, UseLocaleWithCaseConversions, AvoidProtectedFieldInFinalClass, AssignmentToNonFinalStatic, MissingStaticMethodInNonInstantiatableClass, AvoidSynchronizedAtMethodLevel, MissingBreakInSwitch, UseNotifyAllInsteadOfNotify, AvoidInstanceofChecksInCatchClause, AbstractClassWithoutAbstractMethod, SimplifyConditional, CompareObjectsWithEquals, PositionLiteralsFirstInComparisons, PositionLiteralsFirstInCaseInsensitiveComparisons, UnnecessaryLocalBeforeReturn, NonThreadSafeSingleton, SingleMethodSingleton, SingletonClassReturningNewInstance, UncommentedEmptyMethodBody, UncommentedEmptyConstructor, UnsynchronizedStaticDateFormatter, PreserveStackTrace, UseCollectionIsEmpty, ClassWithOnlyPrivateConstructorsShouldBeFinal, EmptyMethodInAbstractClassShouldBeAbstract, SingularField, ReturnEmptyArrayRatherThanNull, AbstractClassWithoutAnyMethod, TooFewBranchesForASwitchStatement, LogicInversion, UseVarargs, FieldDeclarationsShouldBeAtStartOfClass, GodClass, AvoidProtectedMethodInFinalClassNotExtending, ConstantsInInterface, AccessorMethodGeneration
+keywords: Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, ClassWithOnlyPrivateConstructorsShouldBeFinal, CollapsibleIfStatements, CouplingBetweenObjects, CyclomaticComplexity, DataClass, ExceptionAsFlowControl, ExcessiveClassLength, ExcessiveImports, ExcessiveMethodLength, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, LawOfDemeter, LogicInversion, LoosePackageCoupling, ModifiedCyclomaticComplexity, NcssConstructorCount, NcssCount, NcssMethodCount, NcssTypeCount, NPathComplexity, SignatureDeclareThrowsException, SimplifiedTernary, SimplifyBooleanAssertion, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, StdCyclomaticComplexity, SwitchDensity, TooFewBranchesForASwitchStatement, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, AssignmentToNonFinalStatic, AvoidInstanceofChecksInCatchClause, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, BadComparison, CloseResource, CompareObjectsWithEquals, ConfusingTernary, ConstantsInInterface, ConstructorCallsOverridableMethod, DefaultLabelNotLastInSwitchStmt, EqualsNull, IdempotentOperations, InstantiationToGetClass, MissingBreakInSwitch, MissingStaticMethodInNonInstantiatableClass, NonCaseLabelInSwitchStatement, NonStaticInitializer, PreserveStackTrace, ReturnEmptyArrayRatherThanNull, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, UseCollectionIsEmpty, UseLocaleWithCaseConversions, EmptyMethodInAbstractClassShouldBeAbstract, FieldDeclarationsShouldBeAtStartOfClass, UnnecessaryLocalBeforeReturn, AvoidSynchronizedAtMethodLevel, NonThreadSafeSingleton, UnsynchronizedStaticDateFormatter, UseNotifyAllInsteadOfNotify, AvoidReassigningParameters, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, SwitchStmtsShouldHaveDefault, UseVarargs, OptimizableToArrayCall, UncommentedEmptyConstructor, UncommentedEmptyMethodBody
 ---
 ## AbstractClassWithoutAbstractMethod
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [AbstractClassWithoutAbstractMethod](pmd_rules_java_errorprone.html#abstractclasswithoutabstractmethod)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 3.0
 
@@ -75,6 +81,12 @@ public class abstract Example {
 
 ## AccessorClassGeneration
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [AccessorClassGeneration](pmd_rules_java_errorprone.html#accessorclassgeneration)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 1.04
 
 **Priority:** Medium (3)
@@ -106,6 +118,12 @@ public class Outer {
 ```
 
 ## AccessorMethodGeneration
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [AccessorMethodGeneration](pmd_rules_java_errorprone.html#accessormethodgeneration)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 5.5.4
 
@@ -143,6 +161,12 @@ public class OuterClass {
 
 ## AssignmentToNonFinalStatic
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [AssignmentToNonFinalStatic](pmd_rules_java_errorprone.html#assignmenttononfinalstatic)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 2.2
 
 **Priority:** Medium (3)
@@ -165,6 +189,47 @@ public class StaticField {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="rulesets/java/design.xml/AssignmentToNonFinalStatic" />
+```
+
+## AvoidCatchingGenericException
+
+**Since:** PMD 4.2.6
+
+**Priority:** Medium (3)
+
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+
+```
+//CatchStatement/FormalParameter/Type/ReferenceType/ClassOrInterfaceType[
+    @Image='NullPointerException' or
+    @Image='Exception' or
+    @Image='RuntimeException']
+```
+
+**Example(s):**
+
+``` java
+package com.igate.primitive;
+
+public class PrimitiveType {
+
+    public void downCastPrimitiveType() {
+        try {
+            System.out.println(" i [" + i + "]");
+        } catch(Exception e) {
+            e.printStackTrace();
+        } catch(RuntimeException e) {
+            e.printStackTrace();
+        } catch(NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AvoidCatchingGenericException" />
 ```
 
 ## AvoidDeeplyNestedIfStmts
@@ -206,6 +271,12 @@ public class Foo {
 
 ## AvoidInstanceofChecksInCatchClause
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [AvoidInstanceofChecksInCatchClause](pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 3.0
 
 **Priority:** Medium (3)
@@ -246,6 +317,12 @@ try {  // Prefer this:
 
 ## AvoidProtectedFieldInFinalClass
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [AvoidProtectedFieldInFinalClass](pmd_rules_java_errorprone.html#avoidprotectedfieldinfinalclass)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 2.1
 
 **Priority:** Medium (3)
@@ -275,6 +352,12 @@ public final class Bar {
 ```
 
 ## AvoidProtectedMethodInFinalClassNotExtending
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [AvoidProtectedMethodInFinalClassNotExtending](pmd_rules_java_errorprone.html#avoidprotectedmethodinfinalclassnotextending)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 5.1
 
@@ -306,6 +389,12 @@ public final class Foo {
 
 ## AvoidReassigningParameters
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [AvoidReassigningParameters](pmd_rules_java_bestpractices.html#avoidreassigningparameters)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 1.0
 
 **Priority:** Medium High (2)
@@ -329,7 +418,45 @@ public class Foo {
 <rule ref="rulesets/java/design.xml/AvoidReassigningParameters" />
 ```
 
+## AvoidRethrowingException
+
+**Since:** PMD 3.8
+
+**Priority:** Medium (3)
+
+Catch blocks that merely rethrow a caught exception only add to code size and runtime complexity.
+
+```
+//CatchStatement[FormalParameter
+ /VariableDeclaratorId/@Image = Block/BlockStatement/Statement
+ /ThrowStatement/Expression/PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix/Name/@Image
+ and count(Block/BlockStatement/Statement) =1]
+```
+
+**Example(s):**
+
+``` java
+public void bar() {
+    try {
+        // do something
+    }  catch (SomeException se) {
+       throw se;
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AvoidRethrowingException" />
+```
+
 ## AvoidSynchronizedAtMethodLevel
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [AvoidSynchronizedAtMethodLevel](pmd_rules_java_multithreading.html#avoidsynchronizedatmethodlevel)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 3.0
 
@@ -373,7 +500,118 @@ public class Foo {
 <rule ref="rulesets/java/design.xml/AvoidSynchronizedAtMethodLevel" />
 ```
 
+## AvoidThrowingNewInstanceOfSameException
+
+**Since:** PMD 4.2.5
+
+**Priority:** Medium (3)
+
+Catch blocks that merely rethrow a caught exception wrapped inside a new instance of the same type only add to
+code size and runtime complexity.
+
+```
+//CatchStatement[
+  count(Block/BlockStatement/Statement) = 1
+  and
+  FormalParameter/Type/ReferenceType/ClassOrInterfaceType/@Image = Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ClassOrInterfaceType/@Image
+  and
+  count(Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/Arguments/ArgumentList/Expression) = 1
+  and
+  FormalParameter/VariableDeclaratorId = Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
+  ]
+```
+
+**Example(s):**
+
+``` java
+public void bar() {
+    try {
+        // do something
+    } catch (SomeException se) {
+        // harmless comment
+        throw new SomeException(se);
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AvoidThrowingNewInstanceOfSameException" />
+```
+
+## AvoidThrowingNullPointerException
+
+**Since:** PMD 1.8
+
+**Priority:** High (1)
+
+Avoid throwing NullPointerExceptions. These are confusing because most people will assume that the
+virtual machine threw it. Consider using an IllegalArgumentException instead; this will be
+clearly seen as a programmer-initiated exception.
+
+```
+//AllocationExpression/ClassOrInterfaceType[@Image='NullPointerException']
+```
+
+**Example(s):**
+
+``` java
+public class Foo {
+    void bar() {
+        throw new NullPointerException();
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AvoidThrowingNullPointerException" />
+```
+
+## AvoidThrowingRawExceptionTypes
+
+**Since:** PMD 1.8
+
+**Priority:** High (1)
+
+Avoid throwing certain exception types. Rather than throw a raw RuntimeException, Throwable,
+Exception, or Error, use a subclassed exception or error instead.
+
+```
+//ThrowStatement//AllocationExpression
+ /ClassOrInterfaceType[
+ (@Image='Throwable' and count(//ImportDeclaration/Name[ends-with(@Image,'Throwable')]) = 0)
+or
+ (@Image='Exception' and count(//ImportDeclaration/Name[ends-with(@Image,'Exception')]) = 0)
+or
+ (@Image='Error'  and count(//ImportDeclaration/Name[ends-with(@Image,'Error')]) = 0)
+or
+( @Image='RuntimeException'  and count(//ImportDeclaration/Name[ends-with(@Image,'RuntimeException')]) = 0)
+]
+```
+
+**Example(s):**
+
+``` java
+public class Foo {
+    public void bar() throws Exception {
+        throw new Exception();
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/AvoidThrowingRawExceptionTypes" />
+```
+
 ## BadComparison
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [BadComparison](pmd_rules_java_errorprone.html#badcomparison)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 1.8
 
@@ -431,6 +669,12 @@ public class Foo {  //Should be final
 
 ## CloseResource
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [CloseResource](pmd_rules_java_errorprone.html#closeresource)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 1.2.2
 
 **Priority:** Medium (3)
@@ -470,7 +714,53 @@ public class Bar {
 <rule ref="rulesets/java/design.xml/CloseResource" />
 ```
 
+## CollapsibleIfStatements
+
+**Since:** PMD 3.1
+
+**Priority:** Medium (3)
+
+Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
+
+```
+//IfStatement[@Else='false']/Statement
+ /IfStatement[@Else='false']
+ |
+//IfStatement[@Else='false']/Statement
+ /Block[count(BlockStatement)=1]/BlockStatement
+  /Statement/IfStatement[@Else='false']
+```
+
+**Example(s):**
+
+``` java
+void bar() {
+    if (x) {            // original implementation
+        if (y) {
+            // do stuff
+        }
+    }
+}
+
+void bar() {
+    if (x && y) {        // optimized implementation
+        // do stuff
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/CollapsibleIfStatements" />
+```
+
 ## CompareObjectsWithEquals
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [CompareObjectsWithEquals](pmd_rules_java_errorprone.html#compareobjectswithequals)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 3.2
 
@@ -496,6 +786,12 @@ class Foo {
 ```
 
 ## ConfusingTernary
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [ConfusingTernary](pmd_rules_java_errorprone.html#confusingternary)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 1.9
 
@@ -530,6 +826,12 @@ boolean bar(int x, int y) {
 ```
 
 ## ConstantsInInterface
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [ConstantsInInterface](pmd_rules_java_errorprone.html#constantsininterface)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 5.5
 
@@ -580,6 +882,12 @@ public interface YetAnotherConstantInterface {
 
 ## ConstructorCallsOverridableMethod
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [ConstructorCallsOverridableMethod](pmd_rules_java_errorprone.html#constructorcallsoverridablemethod)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 1.04
 
 **Priority:** High (1)
@@ -622,7 +930,166 @@ public class JuniorClass extends SeniorClass {
 <rule ref="rulesets/java/design.xml/ConstructorCallsOverridableMethod" />
 ```
 
+## CouplingBetweenObjects
+
+**Since:** PMD 1.04
+
+**Priority:** Medium (3)
+
+This rule counts the number of unique attributes, local variables, and return types within an object. 
+A number higher than the specified threshold can indicate a high degree of coupling.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.coupling.CouplingBetweenObjectsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/coupling/CouplingBetweenObjectsRule.java)
+
+**Example(s):**
+
+``` java
+import com.Blah;
+import org.Bar;
+import org.Bardo;
+
+public class Foo {
+    private Blah var1;
+    private Bar var2;
+
+    //followed by many imports of unique objects
+    void ObjectC doWork() {
+        Bardo var55;
+        ObjectA var44;
+        ObjectZ var93;
+        return something;
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|threshold|20|Unique type reporting threshold|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/CouplingBetweenObjects" />
+```
+
+## CyclomaticComplexity
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+**Since:** PMD 1.03
+
+**Priority:** Medium (3)
+
+Complexity directly affects maintenance costs is determined by the number of decision points in a method 
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+high complexity, and 11+ is very high complexity.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.CyclomaticComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/CyclomaticComplexityRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo {      // This has a Cyclomatic Complexity = 12
+1   public void example()  {
+2       if (a == b)  {
+3           if (a1 == b1) {
+                fiddle();
+4           } else if a2 == b2) {
+                fiddle();
+            }  else {
+                fiddle();
+            }
+5       } else if (c == d) {
+6           while (c == d) {
+                fiddle();
+            }
+7        } else if (e == f) {
+8           for (int n = 0; n < h; n++) {
+                fiddle();
+            }
+        } else{
+            switch (z) {
+9               case 1:
+                    fiddle();
+                    break;
+10              case 2:
+                    fiddle();
+                    break;
+11              case 3:
+                    fiddle();
+                    break;
+12              default:
+                    fiddle();
+                    break;
+            }
+        }
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|showMethodsComplexity|true|Add method average violations to the report|
+|showClassesComplexity|true|Add class average violations to the report|
+|reportLevel|10|Cyclomatic Complexity reporting threshold|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/CyclomaticComplexity" />
+```
+
+## DataClass
+
+**Since:** PMD 6.0
+
+**Priority:** Medium (3)
+
+Data Classes are simple data holders, which reveal most of their state, and
+without complex functionality. The lack of functionality may indicate that
+their behaviour is defined elsewhere, which is a sign of poor data-behaviour
+proximity. By directly exposing their internals, Data Classes break encapsulation,
+and therefore reduce the system's maintainability and understandability. Moreover,
+classes tend to strongly rely on their data representation, which makes for a brittle
+design.
+
+Refactoring a Data Class should focus on restoring a good data-behaviour proximity. In
+most cases, that means moving the operations defined on the data back into the class.
+In some other cases it may make sense to remove entirely the class and move the data
+into the former client classes.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.metrics.rule.DataClassRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/rule/DataClassRule.java)
+
+**Example(s):**
+
+``` java
+public class DataClass {
+
+  public int bar = 0;
+  public int na = 0;
+  private int bee = 0;
+
+  public void setBee(int n) {
+    bee = n;
+  }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/DataClass" />
+```
+
 ## DefaultLabelNotLastInSwitchStmt
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [DefaultLabelNotLastInSwitchStmt](pmd_rules_java_errorprone.html#defaultlabelnotlastinswitchstmt)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 1.5
 
@@ -660,6 +1127,12 @@ public class Foo {
 
 ## EmptyMethodInAbstractClassShouldBeAbstract
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [EmptyMethodInAbstractClassShouldBeAbstract](pmd_rules_java_codestyle.html#emptymethodinabstractclassshouldbeabstract)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 4.1
 
 **Priority:** High (1)
@@ -669,20 +1142,20 @@ usage by developers who should be implementing their own versions in the concret
 
 ```
 //ClassOrInterfaceDeclaration[@Abstract = 'true']
-                        /ClassOrInterfaceBody
-                        /ClassOrInterfaceBodyDeclaration
-                        /MethodDeclaration[@Abstract = 'false' and @Native = 'false']
-                        [
-                            ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral) = 'true' )
-                            or
-                            ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image = '0']) = 'true' )
-                            or
-                            ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[string-length(@Image) = 2]) = 'true' )
-                            or
-                            (./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/EmptyStatement)
-                            or
-                            ( count (./Block/*) = 0 )
-                        ]
+    /ClassOrInterfaceBody
+    /ClassOrInterfaceBodyDeclaration
+    /MethodDeclaration[@Abstract = 'false' and @Native = 'false']
+    [
+        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral) = 'true' )
+        or
+        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image = '0']) = 'true' )
+        or
+        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[string-length(@Image) = 2]) = 'true' )
+        or
+        (./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/EmptyStatement)
+        or
+        ( count (./Block/*) = 0 )
+    ]
 ```
 
 **Example(s):**
@@ -705,6 +1178,12 @@ public abstract class ShouldBeAbstract {
 ```
 
 ## EqualsNull
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [EqualsNull](pmd_rules_java_errorprone.html#equalsnull)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 1.9
 
@@ -747,7 +1226,244 @@ if (x == null) {        // preferred
 <rule ref="rulesets/java/design.xml/EqualsNull" />
 ```
 
+## ExceptionAsFlowControl
+
+**Since:** PMD 1.8
+
+**Priority:** Medium (3)
+
+Using Exceptions as form of flow control is not recommended as they obscure true exceptions when debugging.
+Either add the necessary validation or use an alternate control structure.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strictexception.ExceptionAsFlowControlRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strictexception/ExceptionAsFlowControlRule.java)
+
+**Example(s):**
+
+``` java
+public void bar() {
+    try {
+        try {
+        } catch (Exception e) {
+            throw new WrapperException(e);
+            // this is essentially a GOTO to the WrapperException catch block
+        }
+    } catch (WrapperException e) {
+        // do some more stuff
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/ExceptionAsFlowControl" />
+```
+
+## ExcessiveClassLength
+
+**Since:** PMD 0.6
+
+**Priority:** Medium (3)
+
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more manageable and ripe for reuse.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveClassLengthRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/ExcessiveClassLengthRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo {
+    public void bar1() {
+        // 1000 lines of code
+    }
+    public void bar2() {
+        // 1000 lines of code
+    }
+    public void bar3() {
+        // 1000 lines of code
+    }
+
+    public void barN() {
+        // 1000 lines of code
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/ExcessiveClassLength" />
+```
+
+## ExcessiveImports
+
+**Since:** PMD 1.04
+
+**Priority:** Medium (3)
+
+A high number of imports can indicate a high degree of coupling within an object. This rule 
+counts the number of unique imports and reports a violation if the count is above the 
+user-specified threshold.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.coupling.ExcessiveImportsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/coupling/ExcessiveImportsRule.java)
+
+**Example(s):**
+
+``` java
+import blah.blah.Baz;
+import blah.blah.Bif;
+// 18 others from the same package elided
+public class Foo {
+    public void doWork() {}
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/ExcessiveImports" />
+```
+
+## ExcessiveMethodLength
+
+**Since:** PMD 0.6
+
+**Priority:** Medium (3)
+
+When methods are excessively long this usually indicates that the method is doing more than its
+name/signature might suggest. They also become challenging for others to digest since excessive 
+scrolling causes readers to lose focus.
+Try to reduce the method length by creating helper methods and removing any copy/pasted code.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveMethodLengthRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/ExcessiveMethodLengthRule.java)
+
+**Example(s):**
+
+``` java
+public void doSomething() {
+    System.out.println("Hello world!");
+    System.out.println("Hello world!");
+    // 98 copies omitted for brevity.
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/ExcessiveMethodLength" />
+```
+
+## ExcessiveParameterList
+
+**Since:** PMD 0.9
+
+**Priority:** Medium (3)
+
+Methods with numerous parameters are a challenge to maintain, especially if most of them share the
+same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveParameterListRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/ExcessiveParameterListRule.java)
+
+**Example(s):**
+
+``` java
+public void addPerson(      // too many arguments liable to be mixed up
+    int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
+
+    . . . .
+}
+ 
+public void addPerson(      // preferred approach
+    Date birthdate, BodyMeasurements measurements, int ssn) {
+
+    . . . .
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/ExcessiveParameterList" />
+```
+
+## ExcessivePublicCount
+
+**Since:** PMD 1.04
+
+**Priority:** Medium (3)
+
+Classes with large numbers of public methods and attributes require disproportionate testing efforts
+since combinational side effects grow rapidly and increase risk. Refactoring these classes into
+smaller ones not only increases testability and reliability but also allows new variations to be
+developed easily.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.ExcessivePublicCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/ExcessivePublicCountRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo {
+    public String value;
+    public Bar something;
+    public Variable var;
+    // [... more more public attributes ...]
+
+    public void doWork() {}
+    public void doMoreWork() {}
+    public void doWorkAgain() {}
+    // [... more more public methods ...]
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/ExcessivePublicCount" />
+```
+
 ## FieldDeclarationsShouldBeAtStartOfClass
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [FieldDeclarationsShouldBeAtStartOfClass](pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 5.0
 
@@ -842,6 +1558,12 @@ of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
 
 ## IdempotentOperations
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [IdempotentOperations](pmd_rules_java_errorprone.html#idempotentoperations)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 2.0
 
 **Priority:** Medium (3)
@@ -898,6 +1620,12 @@ public class Foo {
 
 ## InstantiationToGetClass
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [InstantiationToGetClass](pmd_rules_java_errorprone.html#instantiationtogetclass)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 2.0
 
 **Priority:** Medium Low (4)
@@ -926,6 +1654,55 @@ Class c = String.class;
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="rulesets/java/design.xml/InstantiationToGetClass" />
+```
+
+## LawOfDemeter
+
+**Since:** PMD 5.0
+
+**Priority:** Medium (3)
+
+The Law of Demeter is a simple rule, that says "only talk to friends". It helps to reduce coupling between classes
+or objects.
+
+See also the references:
+
+*   Andrew Hunt, David Thomas, and Ward Cunningham. The Pragmatic Programmer. From Journeyman to Master. Addison-Wesley Longman, Amsterdam, October 1999.;
+*   K.J. Lieberherr and I.M. Holland. Assuring good style for object-oriented programs. Software, IEEE, 6(5):38–48, 1989.;
+*   <http://www.ccs.neu.edu/home/lieber/LoD.html>
+*   <http://en.wikipedia.org/wiki/Law_of_Demeter>
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.coupling.LawOfDemeterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/coupling/LawOfDemeterRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo {
+    /**
+     * This example will result in two violations.
+     */
+    public void example(Bar b) {
+        // this method call is ok, as b is a parameter of "example"
+        C c = b.getC();
+
+        // this method call is a violation, as we are using c, which we got from B.
+        // We should ask b directly instead, e.g. "b.doItOnC();"
+        c.doIt();
+
+        // this is also a violation, just expressed differently as a method chain without temporary variables.
+        b.getC().doIt();
+
+        // a constructor call, not a method call.
+        D d = new D();
+        // this method call is ok, because we have create the new instance of D locally.
+        d.doSomethingElse(); 
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/LawOfDemeter" />
 ```
 
 ## LogicInversion
@@ -962,7 +1739,48 @@ public boolean bar(int a, int b) {
 <rule ref="rulesets/java/design.xml/LogicInversion" />
 ```
 
+## LoosePackageCoupling
+
+**Since:** PMD 5.0
+
+**Priority:** Medium (3)
+
+Avoid using classes from the configured package hierarchy outside of the package hierarchy, 
+except when using one of the configured allowed classes.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.coupling.LoosePackageCouplingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/coupling/LoosePackageCouplingRule.java)
+
+**Example(s):**
+
+``` java
+package some.package;
+
+import some.other.package.subpackage.subsubpackage.DontUseThisClass;
+
+public class Bar {
+    DontUseThisClass boo = new DontUseThisClass();
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|classes|[]|Allowed classes|
+|packages|[]|Restricted packages|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/LoosePackageCoupling" />
+```
+
 ## MissingBreakInSwitch
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [MissingBreakInSwitch](pmd_rules_java_errorprone.html#missingbreakinswitch)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 3.0
 
@@ -1011,6 +1829,12 @@ public void bar(int status) {
 ```
 
 ## MissingStaticMethodInNonInstantiatableClass
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [MissingStaticMethodInNonInstantiatableClass](pmd_rules_java_errorprone.html#missingstaticmethodinnoninstantiatableclass)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 3.0
 
@@ -1063,7 +1887,272 @@ public class Foo {
 <rule ref="rulesets/java/design.xml/MissingStaticMethodInNonInstantiatableClass" />
 ```
 
+## ModifiedCyclomaticComplexity
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+**Since:** PMD 5.1.2
+
+**Priority:** Medium (3)
+
+Complexity directly affects maintenance costs is determined by the number of decision points in a method 
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+high complexity, and 11+ is very high complexity. Modified complexity treats switch statements as a single
+decision point.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.ModifiedCyclomaticComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/ModifiedCyclomaticComplexityRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo {    // This has a Cyclomatic Complexity = 9
+1   public void example()  {
+2       if (a == b)  {
+3           if (a1 == b1) {
+                fiddle();
+4           } else if a2 == b2) {
+                fiddle();
+            }  else {
+                fiddle();
+            }
+5       } else if (c == d) {
+6           while (c == d) {
+                fiddle();
+            }
+7        } else if (e == f) {
+8           for (int n = 0; n < h; n++) {
+                fiddle();
+            }
+        } else{
+9           switch (z) {
+                case 1:
+                    fiddle();
+                    break;
+                case 2:
+                    fiddle();
+                    break;
+                case 3:
+                    fiddle();
+                    break;
+                default:
+                    fiddle();
+                    break;
+            }
+        }
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|showMethodsComplexity|true|Add method average violations to the report|
+|showClassesComplexity|true|Add class average violations to the report|
+|reportLevel|10|Cyclomatic Complexity reporting threshold|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/ModifiedCyclomaticComplexity" />
+```
+
+## NcssConstructorCount
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+**Since:** PMD 3.9
+
+**Priority:** Medium (3)
+
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.NcssConstructorCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/NcssConstructorCountRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo extends Bar {
+    public Foo() {
+        super();
+
+
+
+
+
+        //this constructor only has 1 NCSS lines
+        super.foo();
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/NcssConstructorCount" />
+```
+
+## NcssCount
+
+**Since:** PMD 6.0
+
+**Priority:** Medium (3)
+
+This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines
+of code in a class, method or constructor. NCSS ignores comments, blank lines, and only counts actual
+statements. For more details on the calculation, see the documentation of
+the [NCSS metric](/pmd_java_metrics_index.html#non-commenting-source-statements-ncss).
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.NcssCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/NcssCountRule.java)
+
+**Example(s):**
+
+``` java
+import java.util.Collections;       // +0
+import java.io.IOException;         // +0
+
+class Foo {                         // +1, total Ncss = 12
+
+  public void bigMethod()           // +1
+      throws IOException {
+    int x = 0, y = 2;               // +1
+    boolean a = false, b = true;    // +1
+
+    if (a || b) {                   // +1
+      try {                         // +1
+        do {                        // +1
+          x += 2;                   // +1
+        } while (x < 12);
+
+        System.exit(0);             // +1
+      } catch (IOException ioe) {   // +1
+        throw new PatheticFailException(ioe); // +1
+      }
+    } else {
+      assert false;                 // +1
+    }
+  }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|ncssOptions|[]|Choose options for the calculation of Ncss|
+|methodReportLevel|12|Metric reporting threshold for methods|
+|classReportLevel|250|Metric reporting threshold for classes|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/NcssCount" />
+```
+
+## NcssMethodCount
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+**Since:** PMD 3.9
+
+**Priority:** Medium (3)
+
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.NcssMethodCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/NcssMethodCountRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo extends Bar {
+    public int methd() {
+        super.methd();
+
+
+
+
+
+
+        //this method only has 1 NCSS lines
+        return 1;
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/NcssMethodCount" />
+```
+
+## NcssTypeCount
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+**Since:** PMD 3.9
+
+**Priority:** Medium (3)
+
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.NcssTypeCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/NcssTypeCountRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo extends Bar {
+    public Foo() {
+        //this class only has 6 NCSS lines
+        super();
+
+
+
+
+
+        super.foo();
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/NcssTypeCount" />
+```
+
 ## NonCaseLabelInSwitchStatement
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [NonCaseLabelInSwitchStatement](pmd_rules_java_errorprone.html#noncaselabelinswitchstatement)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 1.5
 
@@ -1101,6 +2190,12 @@ public class Foo {
 
 ## NonStaticInitializer
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [NonStaticInitializer](pmd_rules_java_errorprone.html#nonstaticinitializer)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 1.5
 
 **Priority:** Medium (3)
@@ -1130,6 +2225,12 @@ public class MyClass {
 ```
 
 ## NonThreadSafeSingleton
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [NonThreadSafeSingleton](pmd_rules_java_multithreading.html#nonthreadsafesingleton)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 3.4
 
@@ -1175,7 +2276,70 @@ public static Foo getFoo() {
 <rule ref="rulesets/java/design.xml/NonThreadSafeSingleton" />
 ```
 
+## NPathComplexity
+
+**Since:** PMD 3.9
+
+**Priority:** Medium (3)
+
+The NPath complexity of a method is the number of acyclic execution paths through that method.
+A threshold of 200 is generally considered the point where measures should be taken to reduce 
+complexity and increase readability.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/NPathComplexityRule.java)
+
+**Example(s):**
+
+``` java
+void bar() {    // this is something more complex than it needs to be,
+    if (y) {   // it should be broken down into smaller methods or functions
+        for (j = 0; j < m; j++) {
+            if (j > r) {
+                doSomething();
+                while (f < 5 ) {
+                    anotherThing();
+                    f -= 27;
+                }
+            } else {
+                tryThis();
+            }
+        }
+    }
+    if ( r - n > 45) {
+       while (doMagic()) {
+          findRabbits();
+       }
+    }
+    try {
+        doSomethingDangerous();
+    } catch (Exception ex) {
+        makeAmends();
+    } finally {
+        dontDoItAgain();
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/NPathComplexity" />
+```
+
 ## OptimizableToArrayCall
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [OptimizableToArrayCall](pmd_rules_java_performance.html#optimizabletoarraycall)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 1.8
 
@@ -1214,6 +2378,12 @@ Foo[] fooArray = foos.toArray(new Foo[foos.size()]);
 ```
 
 ## PositionLiteralsFirstInCaseInsensitiveComparisons
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [PositionLiteralsFirstInCaseInsensitiveComparisons](pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 5.1
 
@@ -1256,6 +2426,12 @@ class Foo {
 
 ## PositionLiteralsFirstInComparisons
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [PositionLiteralsFirstInComparisons](pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 3.3
 
 **Priority:** Medium (3)
@@ -1292,6 +2468,12 @@ class Foo {
 ```
 
 ## PreserveStackTrace
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [PreserveStackTrace](pmd_rules_java_errorprone.html#preservestacktrace)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 3.7
 
@@ -1336,6 +2518,12 @@ public class Foo {
 
 ## ReturnEmptyArrayRatherThanNull
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [ReturnEmptyArrayRatherThanNull](pmd_rules_java_errorprone.html#returnemptyarrayratherthannull)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 4.2
 
 **Priority:** High (1)
@@ -1346,11 +2534,11 @@ NullPointerExceptions.
 
 ```
 //MethodDeclaration
-                        [
-                        (./ResultType/Type[@Array='true'])
-                        and
-                        (./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
-                        ]
+[
+(./ResultType/Type[@Array='true'])
+and
+(./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
+]
 ```
 
 **Example(s):**
@@ -1376,7 +2564,44 @@ public class Example {
 <rule ref="rulesets/java/design.xml/ReturnEmptyArrayRatherThanNull" />
 ```
 
+## SignatureDeclareThrowsException
+
+**Since:** PMD 1.2
+
+**Priority:** Medium (3)
+
+A method/constructor shouldn't explicitly throw the generic java.lang.Exception, since it
+is unclear which exceptions that can be thrown from the methods. It might be
+difficult to document and understand such vague interfaces. Use either a class
+derived from RuntimeException or a checked exception.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strictexception.SignatureDeclareThrowsExceptionRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strictexception/SignatureDeclareThrowsExceptionRule.java)
+
+**Example(s):**
+
+``` java
+public void foo() throws Exception {
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|IgnoreJUnitCompletely|false|Allow all methods in a JUnit testcase to throw Exceptions|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/SignatureDeclareThrowsException" />
+```
+
 ## SimpleDateFormatNeedsLocale
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [SimpleDateFormatNeedsLocale](pmd_rules_java_errorprone.html#simpledateformatneedslocale)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 2.0
 
@@ -1403,6 +2628,99 @@ public class Foo {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="rulesets/java/design.xml/SimpleDateFormatNeedsLocale" />
+```
+
+## SimplifiedTernary
+
+**Since:** PMD 5.4.0
+
+**Priority:** Medium (3)
+
+Look for ternary operators with the form `condition ? literalBoolean : foo`
+or `condition ? foo : literalBoolean`.
+
+These expressions can be simplified respectively to
+`condition || foo`  when the literalBoolean is true
+`!condition && foo` when the literalBoolean is false
+or
+`!condition || foo` when the literalBoolean is true
+`condition && foo`  when the literalBoolean is false
+
+```
+//ConditionalExpression[@Ternary='true'][not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
+|
+//ConditionalExpression[@Ternary='true'][not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
+```
+
+**Example(s):**
+
+``` java
+public class Foo {
+    public boolean test() {
+        return condition ? true : something(); // can be as simple as return condition || something();
+    }
+
+    public void test2() {
+        final boolean value = condition ? false : something(); // can be as simple as value = !condition && something();
+    }
+
+    public boolean test3() {
+        return condition ? something() : true; // can be as simple as return !condition || something();
+    }
+
+    public void test4() {
+        final boolean otherValue = condition ? something() : false; // can be as simple as condition && something();
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/SimplifiedTernary" />
+```
+
+## SimplifyBooleanAssertion
+
+**Since:** PMD 3.6
+
+**Priority:** Medium (3)
+
+Avoid negation in an assertTrue or assertFalse test.
+
+For example, rephrase:
+
+    assertTrue(!expr);
+
+as:
+
+    assertFalse(expr);
+
+```
+//StatementExpression
+[
+.//Name[@Image='assertTrue' or  @Image='assertFalse']
+and
+PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
+ /Expression/UnaryExpressionNotPlusMinus[@Image='!']
+/PrimaryExpression/PrimaryPrefix
+]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
+```
+
+**Example(s):**
+
+``` java
+public class SimpleTest extends TestCase {
+    public void testX() {
+        assertTrue("not empty", !r.isEmpty());  // replace with assertFalse("not empty", r.isEmpty())
+        assertFalse(!r.isEmpty());              // replace with assertTrue(r.isEmpty())
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/SimplifyBooleanAssertion" />
 ```
 
 ## SimplifyBooleanExpressions
@@ -1521,6 +2839,12 @@ class Foo {
 
 ## SingleMethodSingleton
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [SingleMethodSingleton](pmd_rules_java_errorprone.html#singlemethodsingleton)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 5.4
 
 **Priority:** Medium High (2)
@@ -1557,6 +2881,12 @@ public class Singleton {
 ```
 
 ## SingletonClassReturningNewInstance
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [SingletonClassReturningNewInstance](pmd_rules_java_errorprone.html#singletonclassreturningnewinstance)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 5.4
 
@@ -1622,6 +2952,75 @@ public class Foo {
 <rule ref="rulesets/java/design.xml/SingularField" />
 ```
 
+## StdCyclomaticComplexity
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+**Since:** PMD 5.1.2
+
+**Priority:** Medium (3)
+
+Complexity directly affects maintenance costs is determined by the number of decision points in a method 
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+high complexity, and 11+ is very high complexity.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.StdCyclomaticComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/StdCyclomaticComplexityRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo {    // This has a Cyclomatic Complexity = 12
+1   public void example()  {
+2       if (a == b || (c == d && e == f))  { // Only one
+3           if (a1 == b1) {
+                fiddle();
+4           } else if a2 == b2) {
+                fiddle();
+            }  else {
+                fiddle();
+            }
+5       } else if (c == d) {
+6           while (c == d) {
+                fiddle();
+            }
+7        } else if (e == f) {
+8           for (int n = 0; n < h; n++) {
+                fiddle();
+            }
+        } else{
+            switch (z) {
+9               case 1:
+                    fiddle();
+                    break;
+10              case 2:
+                    fiddle();
+                    break;
+11              case 3:
+                    fiddle();
+                    break;
+12              default:
+                    fiddle();
+                    break;
+            }
+        }
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|showMethodsComplexity|true|Add method average violations to the report|
+|showClassesComplexity|true|Add class average violations to the report|
+|reportLevel|10|Cyclomatic Complexity reporting threshold|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/StdCyclomaticComplexity" />
+```
+
 ## SwitchDensity
 
 **Since:** PMD 1.02
@@ -1666,6 +3065,12 @@ public class Foo {
 ```
 
 ## SwitchStmtsShouldHaveDefault
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [SwitchStmtsShouldHaveDefault](pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 1.0
 
@@ -1739,7 +3144,88 @@ public class Foo {
 <rule ref="rulesets/java/design.xml/TooFewBranchesForASwitchStatement" />
 ```
 
+## TooManyFields
+
+**Since:** PMD 3.0
+
+**Priority:** Medium (3)
+
+Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
+possibly through grouping related fields in new objects.  For example, a class with individual 
+city/state/zip fields could park them within a single Address field.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.TooManyFieldsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/TooManyFieldsRule.java)
+
+**Example(s):**
+
+``` java
+public class Person {   // too many separate fields
+   int birthYear;
+   int birthMonth;
+   int birthDate;
+   float height;
+   float weight;
+}
+
+public class Person {   // this is more manageable
+   Date birthDate;
+   BodyMeasurements measurements;
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|maxfields|15|Max allowable fields|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/TooManyFields" />
+```
+
+## TooManyMethods
+
+**Since:** PMD 4.2
+
+**Priority:** Medium (3)
+
+A class with too many methods is probably a good suspect for refactoring, in order to reduce its
+complexity and find a way to have more fine grained objects.
+
+```
+//ClassOrInterfaceDeclaration/ClassOrInterfaceBody
+     [
+      count(./ClassOrInterfaceBodyDeclaration/MethodDeclaration/MethodDeclarator[
+         not (
+                starts-with(@Image,'get')
+                or
+                starts-with(@Image,'set')
+                or
+                starts-with(@Image,'is')
+            )
+      ]) > $maxmethods
+   ]
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|maxmethods|10|The method count reporting threshold|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/TooManyMethods" />
+```
+
 ## UncommentedEmptyConstructor
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [UncommentedEmptyConstructor](pmd_rules_java_documentation.html#uncommentedemptyconstructor)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 3.4
 
@@ -1777,6 +3263,12 @@ public Foo() {
 
 ## UncommentedEmptyMethodBody
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [UncommentedEmptyMethodBody](pmd_rules_java_documentation.html#uncommentedemptymethodbody)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 3.4
 
 **Priority:** Medium (3)
@@ -1803,6 +3295,12 @@ public void doSomething() {
 ```
 
 ## UnnecessaryLocalBeforeReturn
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [UnnecessaryLocalBeforeReturn](pmd_rules_java_codestyle.html#unnecessarylocalbeforereturn)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 3.3
 
@@ -1836,6 +3334,12 @@ public class Foo {
 
 ## UnsynchronizedStaticDateFormatter
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [UnsynchronizedStaticDateFormatter](pmd_rules_java_multithreading.html#unsynchronizedstaticdateformatter)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 3.6
 
 **Priority:** Medium (3)
@@ -1866,6 +3370,12 @@ public class Foo {
 ```
 
 ## UseCollectionIsEmpty
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [UseCollectionIsEmpty](pmd_rules_java_errorprone.html#usecollectionisempty)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 3.9
 
@@ -1901,7 +3411,51 @@ public class Foo {
 <rule ref="rulesets/java/design.xml/UseCollectionIsEmpty" />
 ```
 
+## UselessOverridingMethod
+
+**Since:** PMD 3.3
+
+**Priority:** Medium (3)
+
+The overriding method merely calls the same method defined in a superclass.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unnecessary.UselessOverridingMethodRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unnecessary/UselessOverridingMethodRule.java)
+
+**Example(s):**
+
+``` java
+public void foo(String bar) {
+    super.foo(bar);      // why bother overriding?
+}
+
+public String foo() {
+    return super.foo();  // why bother overriding?
+}
+
+@Id
+public Long getId() {
+    return super.getId();  // OK if 'ignoreAnnotations' is false, which is the default behavior
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|ignoreAnnotations|false|Ignore annotations|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/UselessOverridingMethod" />
+```
+
 ## UseLocaleWithCaseConversions
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [UseLocaleWithCaseConversions](pmd_rules_java_errorprone.html#uselocalewithcaseconversions)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 2.0
 
@@ -1952,6 +3506,12 @@ class Foo {
 
 ## UseNotifyAllInsteadOfNotify
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [UseNotifyAllInsteadOfNotify](pmd_rules_java_multithreading.html#usenotifyallinsteadofnotify)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 3.0
 
 **Priority:** Medium (3)
@@ -1987,6 +3547,48 @@ void bar() {
 <rule ref="rulesets/java/design.xml/UseNotifyAllInsteadOfNotify" />
 ```
 
+## UseObjectForClearerAPI
+
+**Since:** PMD 4.2.6
+
+**Priority:** Medium (3)
+
+When you write a public method, you should be thinking in terms of an API. If your method is public, it means other class
+will use it, therefore, you want (or need) to offer a comprehensive and evolutive API. If you pass a lot of information
+as a simple series of Strings, you may think of using an Object to represent all those information. You'll get a simpler
+API (such as doWork(Workload workload), rather than a tedious series of Strings) and more importantly, if you need at some
+point to pass extra data, you'll be able to do so by simply modifying or extending Workload without any modification to
+your API.
+
+```
+//MethodDeclaration[@Public]/MethodDeclarator/FormalParameters[
+     count(FormalParameter/Type/ReferenceType/ClassOrInterfaceType[@Image = 'String']) > 3
+]
+```
+
+**Example(s):**
+
+``` java
+public class MyClass {
+    public void connect(String username,
+        String pssd,
+        String databaseName,
+        String databaseAdress)
+        // Instead of those parameters object
+        // would ensure a cleaner API and permit
+        // to add extra data transparently (no code change):
+        // void connect(UserData data);
+    {
+
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/java/design.xml/UseObjectForClearerAPI" />
+```
+
 ## UseUtilityClass
 
 **Since:** PMD 0.3
@@ -2016,6 +3618,12 @@ public class MaybeAUtility {
 ```
 
 ## UseVarargs
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [UseVarargs](pmd_rules_java_bestpractices.html#usevarargs)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 5.0
 
