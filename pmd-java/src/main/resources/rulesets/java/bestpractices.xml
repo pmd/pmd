@@ -1,0 +1,871 @@
+<?xml version="1.0"?>
+
+<ruleset name="Best Practices"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    <description>
+The Best Practices category contains rules...
+
+It fully contains these previous rulesets:
+
+*   sunsecure
+    </description>
+
+    <rule name="ArrayIsStoredDirectly"
+          since="2.2"
+          message="The user-supplied array ''{0}'' is stored directly."
+          class="net.sourceforge.pmd.lang.java.rule.sunsecure.ArrayIsStoredDirectlyRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#arrayisstoreddirectly">
+        <description>
+Constructors and methods receiving arrays should clone objects and store the copy.
+This prevents future changes from the user from affecting the original array.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    private String [] x;
+        public void foo (String [] param) {
+        // Don't do this, make a copy of the array at least
+        this.x=param;
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidPrintStackTrace"
+          language="java"
+          since="3.2"
+          message="Avoid printStackTrace(); use a logger call instead."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidprintstacktrace">
+        <description>
+Avoid printStackTrace(); use a logger call instead.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//PrimaryExpression
+ [PrimaryPrefix/Name[contains(@Image,'printStackTrace')]]
+ [PrimarySuffix[not(boolean(Arguments/ArgumentList/Expression))]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+class Foo {
+    void bar() {
+        try {
+            // do something
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidReassigningParameters"
+          since="1.0"
+          message="Avoid reassigning parameters such as ''{0}''"
+          class="net.sourceforge.pmd.lang.java.rule.design.AvoidReassigningParametersRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidreassigningparameters">
+        <description>
+Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
+        </description>
+        <priority>2</priority>
+        <example>
+<![CDATA[
+public class Foo {
+  private void foo(String bar) {
+    bar = "something else";
+  }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidStringBufferField"
+          language="java"
+          since="4.2"
+          message="StringBuffers can grow quite a lot, and so may become a source of memory leak (if the owning class has a long life time)."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidstringbufferfield">
+        <description>
+StringBuffers/StringBuilders can grow considerably, and so may become a source of memory leaks
+if held within objects with long lifetimes.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[@Image = 'StringBuffer' or @Image = 'StringBuilder']
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    private StringBuffer buffer;    // potential memory leak as an instance variable;
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidUsingHardCodedIP"
+          since="4.1"
+          message="Do not hard code the IP address ${variableName}"
+          class="net.sourceforge.pmd.lang.java.rule.basic.AvoidUsingHardCodedIPRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidusinghardcodedip">
+        <description>
+Application with hard-coded IP addresses can become impossible to deploy in some cases.
+Externalizing IP adresses is preferable.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="pattern" type="String" description="Regular Expression" value='^"[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"$'/>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    private String ip = "127.0.0.1";     // not recommended
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="GuardDebugLogging"
+          language="java"
+          since="4.3"
+          message="debug logging that involves string concatenation should be guarded with isDebugEnabled() checks"
+          class="net.sourceforge.pmd.lang.java.rule.logging.GuardDebugLoggingRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#guarddebuglogging">
+        <description>
+When log messages are composed by concatenating strings, the whole section should be guarded
+by a isDebugEnabled() check to avoid performance and memory issues.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Test {
+    private static final Log __log = LogFactory.getLog(Test.class);
+    public void test() {
+        // okay:
+        __log.debug("log something");
+
+        // okay:
+        __log.debug("log something with exception", e);
+
+        // bad:
+        __log.debug("log something" + " and " + "concat strings");
+
+        // bad:
+        __log.debug("log something" + " and " + "concat strings", e);
+
+        // good:
+        if (__log.isDebugEnabled()) {
+        __log.debug("bla" + "",e );
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="GuardLogStatement"
+          language="java"
+          since="5.1.0"
+          message="There is log block not surrounded by if"
+          class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#guardlogstatement">
+        <description>
+Whenever using a log level, one should check if the loglevel is actually enabled, or
+otherwise skip the associate String creation and manipulation.
+        </description>
+        <priority>2</priority>
+        <example>
+<![CDATA[
+    // Add this for performance
+    if (log.isDebugEnabled() { ...
+        log.debug("log something" + " and " + "concat strings");
+]]>
+        </example>
+    </rule>
+
+    <rule name="GuardLogStatementJavaUtil"
+          language="java"
+          since="5.1.0"
+          message="There is log block not surrounded by if"
+          class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementJavaUtilRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#guardlogstatementjavautil">
+        <description>
+Whenever using a log level, one should check if the loglevel is actually enabled, or
+otherwise skip the associate String creation and manipulation.
+        </description>
+        <priority>2</priority>
+        <example>
+ <![CDATA[
+//...
+// Add this for performance
+if (log.isLoggable(Level.FINE)) {
+    log.fine("log something" + " and " + "concat strings");
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="JUnit4SuitesShouldUseSuiteAnnotation"
+          language="java"
+          since="4.0"
+          message="JUnit 4 indicates test suites via annotations, not the suite method."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4suitesshouldusesuiteannotation">
+        <description>
+In JUnit 3, test suites are indicated by the suite() method. In JUnit 4, suites are indicated
+through the @RunWith(Suite.class) annotation.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='suite']]
+[MethodDeclaration/ResultType/Type/ReferenceType/ClassOrInterfaceType[@Image='Test' or @Image = 'junit.framework.Test']]
+[not(MethodDeclaration/Block//ClassOrInterfaceType[@Image='JUnit4TestAdapter'])]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class BadExample extends TestCase{
+
+    public static Test suite(){
+        return new Suite();
+    }
+}
+
+@RunWith(Suite.class)
+@SuiteClasses( { TestOne.class, TestTwo.class })
+public class GoodTest {
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="JUnit4TestShouldUseAfterAnnotation"
+          language="java"
+          since="4.0"
+          message="JUnit 4 tests that clean up tests should use the @After annotation"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshoulduseafterannotation">
+        <description>
+In JUnit 3, the tearDown method was used to clean up all data entities required in running tests. 
+JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//CompilationUnit[not(ImportDeclaration/Name[starts-with(@Image, "org.testng")])]
+//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='tearDown']]
+[count(Annotation//Name[@Image='After'])=0]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class MyTest {
+    public void tearDown() {
+        bad();
+    }
+}
+public class MyTest2 {
+    @After public void tearDown() {
+        good();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="JUnit4TestShouldUseBeforeAnnotation"
+          language="java"
+          since="4.0"
+          message="JUnit 4 tests that set up tests should use the @Before annotation"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusebeforeannotation">
+        <description>
+In JUnit 3, the setUp method was used to set up all data entities required in running tests. 
+JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//CompilationUnit[not(ImportDeclaration/Name[starts-with(@Image, "org.testng")])]
+//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='setUp']]
+[count(Annotation//Name[@Image='Before'])=0]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class MyTest {
+    public void setUp() {
+        bad();
+    }
+}
+public class MyTest2 {
+    @Before public void setUp() {
+        good();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="JUnit4TestShouldUseTestAnnotation"
+          language="java"
+          since="4.0"
+          message="JUnit 4 tests that execute tests should use the @Test annotation"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation">
+        <description>
+In JUnit 3, the framework executed all methods which started with the word test as a unit test. 
+In JUnit 4, only methods annotated with the @Test annotation are executed.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public='true']/MethodDeclarator[starts-with(@Image,'test')]]
+[count(Annotation//Name[@Image='Test'])=0]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class MyTest {
+    public void testBad() {
+        doSomething();
+    }
+
+    @Test
+    public void testGood() {
+        doSomething();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="JUnitAssertionsShouldIncludeMessage"
+          since="1.04"
+          message="JUnit assertions should include a message"
+          class="net.sourceforge.pmd.lang.java.rule.junit.JUnitAssertionsShouldIncludeMessageRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junitassertionsshouldincludemessage">
+        <description>
+JUnit assertions should include an informative message - i.e., use the three-argument version of 
+assertEquals(), not the two-argument version.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo extends TestCase {
+    public void testSomething() {
+        assertEquals("foo", "bar");
+        // Use the form:
+        // assertEquals("Foo does not equals bar", "foo", "bar");
+        // instead
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="JUnitTestContainsTooManyAsserts"
+          language="java"
+          since="5.0"
+          message="JUnit tests should not contain more than ${maximumAsserts} assert(s)."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junittestcontainstoomanyasserts">
+        <description>
+JUnit tests should not contain too many asserts.  Many asserts are indicative of a complex test, for which 
+it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.  
+Customize the maximum number of assertions used by this Rule to suit your needs.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="maximumAsserts" type="Integer" min="1" max="1000" description="Maximum number of Asserts in a test method" value="1"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclarator[(@Image[fn:matches(.,'^test')] or ../../Annotation/MarkerAnnotation/Name[@Image='Test']) and count(..//PrimaryPrefix/Name[@Image[fn:matches(.,'^assert')]]) > $maximumAsserts]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class MyTestCase extends TestCase {
+    // Ok
+    public void testMyCaseWithOneAssert() {
+        boolean myVar = false;
+        assertFalse("should be false", myVar);
+    }
+
+    // Bad, too many asserts (assuming max=1)
+    public void testMyCaseWithMoreAsserts() {
+        boolean myVar = false;
+        assertFalse("myVar should be false", myVar);
+        assertEquals("should equals false", false, myVar);
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="JUnitTestsShouldIncludeAssert"
+          since="2.0"
+          message="JUnit tests should include assert() or fail()"
+          class="net.sourceforge.pmd.lang.java.rule.junit.JUnitTestsShouldIncludeAssertRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junittestsshouldincludeassert">
+        <description>
+JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert 
+with messages provide the developer a clearer idea of what the test does.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo extends TestCase {
+   public void testSomething() {
+      Bar b = findBar();
+   // This is better than having a NullPointerException
+   // assertNotNull("bar not found", b);
+   b.work();
+   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="JUnitUseExpected"
+          since="4.0"
+          message="In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions"
+          class="net.sourceforge.pmd.lang.java.rule.migrating.JUnitUseExpectedRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junituseexpected">
+        <description>
+In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class MyTest {
+    @Test
+    public void testBad() {
+        try {
+            doSomething();
+            fail("should have thrown an exception");
+        } catch (Exception e) {
+        }
+    }
+
+    @Test(expected=Exception.class)
+    public void testGood() {
+        doSomething();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="LooseCoupling"
+          since="0.7"
+          message="Avoid using implementation types like ''{0}''; use the interface instead"
+          class="net.sourceforge.pmd.lang.java.rule.coupling.LooseCouplingRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#loosecoupling">
+        <description>
+The use of implementation types (i.e., HashSet) as object references limits your ability to use alternate
+implementations in the future as requirements change. Whenever available, referencing objects
+by their interface types (i.e, Set) provides much more flexibility.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+import java.util.ArrayList;
+import java.util.HashSet;
+
+public class Bar {
+    // sub-optimal approach
+    private ArrayList<SomeType> list = new ArrayList<>();
+
+    public HashSet<SomeType> getFoo() {
+        return new HashSet<SomeType>();
+    }
+
+    // preferred approach
+    private List<SomeType> list = new ArrayList<>();
+
+    public Set<SomeType> getFoo() {
+        return new HashSet<SomeType>();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="MethodReturnsInternalArray"
+          since="2.2"
+          message="Returning ''{0}'' may expose an internal array."
+          class="net.sourceforge.pmd.lang.java.rule.sunsecure.MethodReturnsInternalArrayRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#methodreturnsinternalarray">
+        <description>
+Exposing internal arrays to the caller violates object encapsulation since elements can be 
+removed or replaced outside of the object that owns it. It is safer to return a copy of the array.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class SecureSystem {
+    UserData [] ud;
+    public UserData [] getUserData() {
+        // Don't return directly the internal array, return a copy
+        return ud;
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="NullAssignment"
+          since="1.02"
+          message="Assigning an Object to null is a code smell.  Consider refactoring."
+          class="net.sourceforge.pmd.lang.java.rule.controversial.NullAssignmentRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#nullassignment">
+        <description>
+Assigning a "null" to a variable (outside of its declaration) is usually bad form.  Sometimes, this type
+of assignment is an indication that the programmer doesn't completely understand what is going on in the code.
+
+NOTE: This sort of assignment may used in some cases to dereference objects and encourage garbage collection.
+        </description>
+        <priority>3</priority>
+        <example>
+ <![CDATA[
+public void bar() {
+  Object x = null; // this is OK
+  x = new Object();
+     // big, complex piece of code here
+  x = null; // this is not required
+     // big, complex piece of code here
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="PositionLiteralsFirstInCaseInsensitiveComparisons"
+          language="java"
+          since="5.1"
+          message="Position literals first in String comparisons for EqualsIgnoreCase"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons">
+        <description>
+Position literals first in comparisons, if the second argument is null then NullPointerExceptions
+can be avoided, they will just return false.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//PrimaryExpression[
+        PrimaryPrefix[Name
+                [
+    (ends-with(@Image, '.equalsIgnoreCase'))
+                ]
+        ]
+        [
+                   (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal)
+    and
+    ( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
+        ]
+]
+[not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
+[not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+class Foo {
+  boolean bar(String x) {
+    return x.equalsIgnoreCase("2"); // should be "2".equalsIgnoreCase(x)
+  }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="PositionLiteralsFirstInComparisons"
+          language="java"
+          since="3.3"
+          message="Position literals first in String comparisons"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons">
+        <description>
+Position literals first in comparisons, if the second argument is null then NullPointerExceptions
+can be avoided, they will just return false.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//PrimaryExpression[
+    PrimaryPrefix[Name[(ends-with(@Image, '.equals'))]]
+        [
+            (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])
+            and
+            ( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
+        ]
+]
+[not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
+[not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+class Foo {
+  boolean bar(String x) {
+    return x.equals("2"); // should be "2".equals(x)
+  }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ReplaceEnumerationWithIterator"
+          language="java"
+          since="3.4"
+          message="Consider replacing this Enumeration with the newer java.util.Iterator"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replaceenumerationwithiterator">
+        <description>
+Consider replacing Enumeration usages with the newer java.util.Iterator
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ImplementsList/ClassOrInterfaceType[@Image='Enumeration']
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo implements Enumeration {
+    private int x = 42;
+    public boolean hasMoreElements() {
+        return true;
+    }
+    public Object nextElement() {
+        return String.valueOf(i++);
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ReplaceHashtableWithMap"
+          language="java"
+          since="3.4"
+          message="Consider replacing this Hashtable with the newer java.util.Map"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replacehashtablewithmap">
+        <description>
+Consider replacing Hashtable usage with the newer java.util.Map if thread safety is not required.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Hashtable']</value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    void bar() {
+        Hashtable h = new Hashtable();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ReplaceVectorWithList"
+          language="java"
+          since="3.4"
+          message="Consider replacing this Vector with the newer java.util.List"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replacevectorwithlist">
+        <description>
+Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Vector']</value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    void bar() {
+        Vector v = new Vector();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="SwitchStmtsShouldHaveDefault"
+          language="java"
+          since="1.0"
+          message="Switch statements should have a default label"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">
+        <description>
+All switch statements should include a default option to catch any unspecified values.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>//SwitchStatement[not(SwitchLabel[@Default='true'])]</value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public void bar() {
+    int x = 2;
+    switch (x) {
+      case 1: int j = 6;
+      case 2: int j = 8;
+          // missing default: here
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="SystemPrintln"
+          language="java"
+          since="2.1"
+          message="{0} is used"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#systemprintln">
+        <description>
+References to System.(out|err).print are usually intended for debugging purposes and can remain in
+the codebase even in production code. By using a logger one can enable/disable this behaviour at
+will (and by priority) and avoid clogging the Standard out log.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Name[
+    starts-with(@Image, 'System.out.print')
+    or
+    starts-with(@Image, 'System.err.print')
+    ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+ <![CDATA[
+class Foo{
+    Logger log = Logger.getLogger(Foo.class.getName());
+    public void testA () {
+        System.out.println("Entering test");
+        // Better use this
+        log.fine("Entering test");
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UseVarargs"
+          language="java"
+          minimumLanguageVersion="1.5"
+          since="5.0"
+          message="Consider using varargs for methods or constructors which take an array the last parameter."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usevarargs">
+        <description>
+Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic
+sugar provides flexibility for users of these methods and constructors, allowing them to avoid
+having to deal with the creation of an array.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//FormalParameters/FormalParameter
+    [position()=last()]
+    [@Array='true']
+    [@Varargs='false']
+    [not (./Type/ReferenceType[@Array='true'][PrimitiveType[@Image='byte']])]
+    [not (./Type/ReferenceType[ClassOrInterfaceType[@Image='Byte']])]
+    [not (./Type/PrimitiveType[@Image='byte'])]
+    [not (ancestor::MethodDeclaration/preceding-sibling::Annotation/*/Name[@Image='Override'])]
+    [not(
+        ancestor::MethodDeclaration
+            [@Public='true' and @Static='true']
+            [child::ResultType[@Void='true']] and
+        ancestor::MethodDeclarator[@Image='main'] and
+        ..[@ParameterCount='1'] and
+        ./Type/ReferenceType[ClassOrInterfaceType[@Image='String']]
+    )]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    public void foo(String s, Object[] args) {
+        // Do something here...
+    }
+
+    public void bar(String s, Object... args) {
+        // Ahh, varargs tastes much better...
+    }
+}
+]]>
+        </example>
+    </rule>
+
+</ruleset>
