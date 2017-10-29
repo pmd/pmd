@@ -12,12 +12,14 @@ import java.util.Objects;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.TestRule;
 
+@Ignore
 public class PMDTaskTest extends AbstractAntTestHelper {
 
     public PMDTaskTest() {
