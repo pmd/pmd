@@ -9,10 +9,10 @@ The Jakarta Commons Logging ruleset contains a collection of rules that find que
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-errorprone/ProperLogger" deprecated="true" />
-    <rule ref="java-errorprone/UseCorrectExceptionLogging" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/ProperLogger" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UseCorrectExceptionLogging" deprecated="true" />
 
-    <rule ref="java-bestpractices/GuardDebugLogging" deprecated="true" />
-    <rule ref="java-bestpractices/GuardLogStatement" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/GuardDebugLogging" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/GuardLogStatement" deprecated="true" />
 
 </ruleset>

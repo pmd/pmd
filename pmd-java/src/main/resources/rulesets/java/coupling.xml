@@ -10,11 +10,11 @@ Rules which find instances of high or inappropriate coupling between objects and
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-bestpractices/LooseCoupling" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/LooseCoupling" deprecated="true" />
 
-    <rule ref="java-design/CouplingBetweenObjects" deprecated="true" />
-    <rule ref="java-design/ExcessiveImports" deprecated="true" />
-    <rule ref="java-design/LawOfDemeter" deprecated="true" />
-    <rule ref="java-design/LoosePackageCoupling" deprecated="true" />
+    <rule ref="category/java/design.xml/CouplingBetweenObjects" deprecated="true" />
+    <rule ref="category/java/design.xml/ExcessiveImports" deprecated="true" />
+    <rule ref="category/java/design.xml/LawOfDemeter" deprecated="true" />
+    <rule ref="category/java/design.xml/LoosePackageCoupling" deprecated="true" />
 
 </ruleset>

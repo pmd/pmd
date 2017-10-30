@@ -10,7 +10,7 @@ The JavaBeans Ruleset catches instances of bean rules not being followed.
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-errorprone/BeanMembersShouldSerialize" deprecated="true" />
-    <rule ref="java-errorprone/MissingSerialVersionUID" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/BeanMembersShouldSerialize" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/MissingSerialVersionUID" deprecated="true" />
 
 </ruleset>

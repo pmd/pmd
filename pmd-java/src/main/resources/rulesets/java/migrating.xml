@@ -11,22 +11,22 @@ rather, use a wrapper ruleset such as migrating_to_13.xml.
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-errorprone/AvoidAssertAsIdentifier" deprecated="true" />
-    <rule ref="java-errorprone/AvoidEnumAsIdentifier" deprecated="true" />
-    <rule ref="java-errorprone/ForLoopCanBeForeach" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidAssertAsIdentifier" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidEnumAsIdentifier" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/ForLoopCanBeForeach" deprecated="true" />
 
-    <rule ref="java-bestpractices/JUnit4SuitesShouldUseSuiteAnnotation" deprecated="true" />
-    <rule ref="java-bestpractices/JUnit4TestShouldUseAfterAnnotation" deprecated="true" />
-    <rule ref="java-bestpractices/JUnit4TestShouldUseBeforeAnnotation" deprecated="true" />
-    <rule ref="java-bestpractices/JUnit4TestShouldUseTestAnnotation" deprecated="true" />
-    <rule ref="java-bestpractices/JUnitUseExpected" deprecated="true" />
-    <rule ref="java-bestpractices/ReplaceEnumerationWithIterator" deprecated="true" />
-    <rule ref="java-bestpractices/ReplaceHashtableWithMap" deprecated="true" />
-    <rule ref="java-bestpractices/ReplaceVectorWithList" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseTestAnnotation" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnitUseExpected" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/ReplaceEnumerationWithIterator" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList" deprecated="true" />
 
-    <rule ref="java-performance/ByteInstantiation" deprecated="true" />
-    <rule ref="java-performance/IntegerInstantiation" deprecated="true" />
-    <rule ref="java-performance/LongInstantiation" deprecated="true" />
-    <rule ref="java-performance/ShortInstantiation" deprecated="true" />
+    <rule ref="category/java/performance.xml/ByteInstantiation" deprecated="true" />
+    <rule ref="category/java/performance.xml/IntegerInstantiation" deprecated="true" />
+    <rule ref="category/java/performance.xml/LongInstantiation" deprecated="true" />
+    <rule ref="category/java/performance.xml/ShortInstantiation" deprecated="true" />
 
 </ruleset>

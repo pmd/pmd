@@ -10,10 +10,10 @@ Rules intended to catch errors related to code comments
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-codestyle/CommentDefaultAccessModifier" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/CommentDefaultAccessModifier" deprecated="true" />
 
-    <rule ref="java-documentation/CommentContent" deprecated="true" />
-    <rule ref="java-documentation/CommentRequired" deprecated="true" />
-    <rule ref="java-documentation/CommentSize" deprecated="true" />
+    <rule ref="category/java/documentation.xml/CommentContent" deprecated="true" />
+    <rule ref="category/java/documentation.xml/CommentRequired" deprecated="true" />
+    <rule ref="category/java/documentation.xml/CommentSize" deprecated="true" />
 
  </ruleset>

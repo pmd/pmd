@@ -9,9 +9,9 @@ The Unused Code ruleset contains rules that find unused or ineffective code.
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-errorprone/UnusedFormalParameter" deprecated="true" />
-    <rule ref="java-errorprone/UnusedLocalVariable" deprecated="true" />
-    <rule ref="java-errorprone/UnusedPrivateField" deprecated="true" />
-    <rule ref="java-errorprone/UnusedPrivateMethod" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UnusedFormalParameter" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UnusedLocalVariable" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UnusedPrivateField" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UnusedPrivateMethod" deprecated="true" />
 
 </ruleset>

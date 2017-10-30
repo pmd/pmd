@@ -9,16 +9,16 @@ The Unnecessary Ruleset contains a collection of rules for unnecessary code.
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-errorprone/UnnecessaryConversionTemporary" deprecated="true" />
-    <rule ref="java-errorprone/UnnecessaryReturn" deprecated="true" />
-    <rule ref="java-errorprone/UnusedNullCheckInEquals" deprecated="true" />
-    <rule ref="java-errorprone/UselessOperationOnImmutable" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UnnecessaryReturn" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable" deprecated="true" />
 
-    <rule ref="java-codestyle/UnnecessaryFinalModifier" deprecated="true" />
-    <rule ref="java-codestyle/UnnecessaryModifier" deprecated="true" />
-    <rule ref="java-codestyle/UselessParentheses" deprecated="true" />
-    <rule ref="java-codestyle/UselessQualifiedThis" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/UnnecessaryFinalModifier" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/UnnecessaryModifier" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/UselessParentheses" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/UselessQualifiedThis" deprecated="true" />
 
-    <rule ref="java-design/UselessOverridingMethod" deprecated="true" />
+    <rule ref="category/java/design.xml/UselessOverridingMethod" deprecated="true" />
 
 </ruleset>

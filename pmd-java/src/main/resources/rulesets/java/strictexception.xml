@@ -9,18 +9,18 @@ These rules provide some strict guidelines about throwing and catching exception
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-errorprone/AvoidCatchingNPE" deprecated="true" />
-    <rule ref="java-errorprone/AvoidCatchingThrowable" deprecated="true" />
-    <rule ref="java-errorprone/AvoidLosingExceptionInformation" deprecated="true" />
-    <rule ref="java-errorprone/DoNotExtendJavaLangError" deprecated="true" />
-    <rule ref="java-errorprone/DoNotThrowExceptionInFinally" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidCatchingNPE" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidCatchingThrowable" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidLosingExceptionInformation" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangError" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally" deprecated="true" />
 
-    <rule ref="java-design/AvoidCatchingGenericException" deprecated="true" />
-    <rule ref="java-design/AvoidRethrowingException" deprecated="true" />
-    <rule ref="java-design/AvoidThrowingNewInstanceOfSameException" deprecated="true" />
-    <rule ref="java-design/AvoidThrowingNullPointerException" deprecated="true" />
-    <rule ref="java-design/AvoidThrowingRawExceptionTypes" deprecated="true" />
-    <rule ref="java-design/ExceptionAsFlowControl" deprecated="true" />
-    <rule ref="java-design/SignatureDeclareThrowsException" deprecated="true" />
+    <rule ref="category/java/design.xml/AvoidCatchingGenericException" deprecated="true" />
+    <rule ref="category/java/design.xml/AvoidRethrowingException" deprecated="true" />
+    <rule ref="category/java/design.xml/AvoidThrowingNewInstanceOfSameException" deprecated="true" />
+    <rule ref="category/java/design.xml/AvoidThrowingNullPointerException" deprecated="true" />
+    <rule ref="category/java/design.xml/AvoidThrowingRawExceptionTypes" deprecated="true" />
+    <rule ref="category/java/design.xml/ExceptionAsFlowControl" deprecated="true" />
+    <rule ref="category/java/design.xml/SignatureDeclareThrowsException" deprecated="true" />
 
 </ruleset>

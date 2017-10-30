@@ -9,9 +9,9 @@ The Braces ruleset contains rules regarding the use and placement of braces.
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-codestyle/ForLoopsMustUseBraces" deprecated="true" />
-    <rule ref="java-codestyle/IfElseStmtsMustUseBraces" deprecated="true" />
-    <rule ref="java-codestyle/IfStmtsMustUseBraces" deprecated="true" />
-    <rule ref="java-codestyle/WhileLoopsMustUseBraces" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/ForLoopsMustUseBraces" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/IfElseStmtsMustUseBraces" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/IfStmtsMustUseBraces" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/WhileLoopsMustUseBraces" deprecated="true" />
 
 </ruleset>

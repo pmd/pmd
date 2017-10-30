@@ -10,16 +10,16 @@ Rules specific to the use of J2EE implementations.
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-errorprone/DoNotCallSystemExit" deprecated="true" />
-    <rule ref="java-errorprone/StaticEJBFieldShouldBeFinal" deprecated="true" />
-    <rule ref="java-errorprone/UseProperClassLoader" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/DoNotCallSystemExit" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/StaticEJBFieldShouldBeFinal" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UseProperClassLoader" deprecated="true" />
 
-    <rule ref="java-codestyle/LocalHomeNamingConvention" deprecated="true" />
-    <rule ref="java-codestyle/LocalInterfaceSessionNamingConvention" deprecated="true" />
-    <rule ref="java-codestyle/MDBAndSessionBeanNamingConvention" deprecated="true" />
-    <rule ref="java-codestyle/RemoteInterfaceNamingConvention" deprecated="true" />
-    <rule ref="java-codestyle/RemoteSessionInterfaceNamingConvention" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/LocalHomeNamingConvention" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/LocalInterfaceSessionNamingConvention" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/MDBAndSessionBeanNamingConvention" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/RemoteInterfaceNamingConvention" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/RemoteSessionInterfaceNamingConvention" deprecated="true" />
 
-    <rule ref="java-multithreading/DoNotUseThreads" deprecated="true" />
+    <rule ref="category/java/multithreading.xml/DoNotUseThreads" deprecated="true" />
 
 </ruleset>

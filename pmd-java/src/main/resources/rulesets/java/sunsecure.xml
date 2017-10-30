@@ -9,7 +9,7 @@ These rules check the security guidelines from Sun, published at http://java.sun
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-bestpractices/ArrayIsStoredDirectly" deprecated="true" />
-    <rule ref="java-bestpractices/MethodReturnsInternalArray" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/ArrayIsStoredDirectly" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray" deprecated="true" />
 
 </ruleset>

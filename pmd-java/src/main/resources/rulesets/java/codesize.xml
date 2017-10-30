@@ -10,19 +10,19 @@ The Code Size ruleset contains rules that find problems related to code size or 
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-design/CyclomaticComplexity" deprecated="true" />
-    <rule ref="java-design/ExcessiveClassLength" deprecated="true" />
-    <rule ref="java-design/ExcessiveMethodLength" deprecated="true" />
-    <rule ref="java-design/ExcessiveParameterList" deprecated="true" />
-    <rule ref="java-design/ExcessivePublicCount" deprecated="true" />
-    <rule ref="java-design/ModifiedCyclomaticComplexity" deprecated="true" />
-    <rule ref="java-design/NcssConstructorCount" deprecated="true" />
-    <rule ref="java-design/NcssCount" deprecated="true" />
-    <rule ref="java-design/NcssMethodCount" deprecated="true" />
-    <rule ref="java-design/NcssTypeCount" deprecated="true" />
-    <rule ref="java-design/NPathComplexity" deprecated="true" />
-    <rule ref="java-design/StdCyclomaticComplexity" deprecated="true" />
-    <rule ref="java-design/TooManyFields" deprecated="true" />
-    <rule ref="java-design/TooManyMethods" deprecated="true" />
+    <rule ref="category/java/design.xml/CyclomaticComplexity" deprecated="true" />
+    <rule ref="category/java/design.xml/ExcessiveClassLength" deprecated="true" />
+    <rule ref="category/java/design.xml/ExcessiveMethodLength" deprecated="true" />
+    <rule ref="category/java/design.xml/ExcessiveParameterList" deprecated="true" />
+    <rule ref="category/java/design.xml/ExcessivePublicCount" deprecated="true" />
+    <rule ref="category/java/design.xml/ModifiedCyclomaticComplexity" deprecated="true" />
+    <rule ref="category/java/design.xml/NcssConstructorCount" deprecated="true" />
+    <rule ref="category/java/design.xml/NcssCount" deprecated="true" />
+    <rule ref="category/java/design.xml/NcssMethodCount" deprecated="true" />
+    <rule ref="category/java/design.xml/NcssTypeCount" deprecated="true" />
+    <rule ref="category/java/design.xml/NPathComplexity" deprecated="true" />
+    <rule ref="category/java/design.xml/StdCyclomaticComplexity" deprecated="true" />
+    <rule ref="category/java/design.xml/TooManyFields" deprecated="true" />
+    <rule ref="category/java/design.xml/TooManyMethods" deprecated="true" />
 
 </ruleset>

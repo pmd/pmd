@@ -9,33 +9,33 @@ The Basic ruleset contains a collection of good practices which should be follow
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-errorprone/AvoidBranchingStatementAsLastInLoop" deprecated="true" />
-    <rule ref="java-errorprone/AvoidDecimalLiteralsInBigDecimalConstructor" deprecated="true" />
-    <rule ref="java-errorprone/AvoidMultipleUnaryOperators" deprecated="true" />
-    <rule ref="java-errorprone/AvoidUsingOctalValues" deprecated="true" />
-    <rule ref="java-errorprone/BrokenNullCheck" deprecated="true" />
-    <rule ref="java-errorprone/CheckResultSet" deprecated="true" />
-    <rule ref="java-errorprone/CheckSkipResult" deprecated="true" />
-    <rule ref="java-errorprone/ClassCastExceptionWithToArray" deprecated="true" />
-    <rule ref="java-errorprone/DontUseFloatTypeForLoopIndices" deprecated="true" />
-    <rule ref="java-errorprone/ExtendsObject" deprecated="true" />
-    <rule ref="java-errorprone/ForLoopShouldBeWhileLoop" deprecated="true" />
-    <rule ref="java-errorprone/JumbledIncrementer" deprecated="true" />
-    <rule ref="java-errorprone/MisplacedNullCheck" deprecated="true" />
-    <rule ref="java-errorprone/OverrideBothEqualsAndHashcode" deprecated="true" />
-    <rule ref="java-errorprone/ReturnFromFinallyBlock" deprecated="true" />
-    <rule ref="java-errorprone/UnconditionalIfStatement" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/BrokenNullCheck" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/CheckResultSet" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/CheckSkipResult" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/ClassCastExceptionWithToArray" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/ExtendsObject" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/ForLoopShouldBeWhileLoop" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/JumbledIncrementer" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/MisplacedNullCheck" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/ReturnFromFinallyBlock" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UnconditionalIfStatement" deprecated="true" />
 
-    <rule ref="java-multithreading/AvoidThreadGroup" deprecated="true" />
-    <rule ref="java-multithreading/DontCallThreadRun" deprecated="true" />
-    <rule ref="java-multithreading/DoubleCheckedLocking" deprecated="true" />
+    <rule ref="category/java/multithreading.xml/AvoidThreadGroup" deprecated="true" />
+    <rule ref="category/java/multithreading.xml/DontCallThreadRun" deprecated="true" />
+    <rule ref="category/java/multithreading.xml/DoubleCheckedLocking" deprecated="true" />
 
-    <rule ref="java-bestpractices/AvoidUsingHardCodedIP" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP" deprecated="true" />
 
-    <rule ref="java-performance/BigIntegerInstantiation" deprecated="true" />
-    <rule ref="java-performance/BooleanInstantiation" deprecated="true" />
+    <rule ref="category/java/performance.xml/BigIntegerInstantiation" deprecated="true" />
+    <rule ref="category/java/performance.xml/BooleanInstantiation" deprecated="true" />
 
-    <rule ref="java-design/CollapsibleIfStatements" deprecated="true" />
-    <rule ref="java-design/SimplifiedTernary" deprecated="true" />
+    <rule ref="category/java/design.xml/CollapsibleIfStatements" deprecated="true" />
+    <rule ref="category/java/design.xml/SimplifiedTernary" deprecated="true" />
 
 </ruleset>

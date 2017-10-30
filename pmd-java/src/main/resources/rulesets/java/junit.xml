@@ -9,18 +9,18 @@ These rules deal with different problems that can occur with JUnit tests.
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-errorprone/JUnitSpelling" deprecated="true" />
-    <rule ref="java-errorprone/JUnitStaticSuite" deprecated="true" />
-    <rule ref="java-errorprone/TestClassWithoutTestCases" deprecated="true" />
-    <rule ref="java-errorprone/UnnecessaryBooleanAssertion" deprecated="true" />
-    <rule ref="java-errorprone/UseAssertEqualsInsteadOfAssertTrue" deprecated="true" />
-    <rule ref="java-errorprone/UseAssertNullInsteadOfAssertTrue" deprecated="true" />
-    <rule ref="java-errorprone/UseAssertSameInsteadOfAssertTrue" deprecated="true" />
-    <rule ref="java-errorprone/UseAssertTrueInsteadOfAssertEquals" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/JUnitSpelling" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/JUnitStaticSuite" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/TestClassWithoutTestCases" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UnnecessaryBooleanAssertion" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UseAssertEqualsInsteadOfAssertTrue" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UseAssertNullInsteadOfAssertTrue" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UseAssertSameInsteadOfAssertTrue" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UseAssertTrueInsteadOfAssertEquals" deprecated="true" />
 
-    <rule ref="java-bestpractices/JUnitAssertionsShouldIncludeMessage" deprecated="true" />
-    <rule ref="java-bestpractices/JUnitTestContainsTooManyAsserts" deprecated="true" />
-    <rule ref="java-bestpractices/JUnitTestsShouldIncludeAssert" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnitAssertionsShouldIncludeMessage" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert" deprecated="true" />
 
-    <rule ref="java-design/SimplifyBooleanAssertion" deprecated="true" />
+    <rule ref="category/java/design.xml/SimplifyBooleanAssertion" deprecated="true" />
 </ruleset>

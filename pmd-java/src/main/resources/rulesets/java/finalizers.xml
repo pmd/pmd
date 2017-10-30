@@ -10,11 +10,11 @@ These rules deal with different problems that can occur with finalizers.
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-errorprone/AvoidCallingFinalize" deprecated="true" />
-    <rule ref="java-errorprone/EmptyFinalizer" deprecated="true" />
-    <rule ref="java-errorprone/FinalizeDoesNotCallSuperFinalize" deprecated="true" />
-    <rule ref="java-errorprone/FinalizeOnlyCallsSuperFinalize" deprecated="true" />
-    <rule ref="java-errorprone/FinalizeOverloaded" deprecated="true" />
-    <rule ref="java-errorprone/FinalizeShouldBeProtected" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidCallingFinalize" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/EmptyFinalizer" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/FinalizeDoesNotCallSuperFinalize" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/FinalizeOnlyCallsSuperFinalize" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/FinalizeOverloaded" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/FinalizeShouldBeProtected" deprecated="true" />
 
 </ruleset>

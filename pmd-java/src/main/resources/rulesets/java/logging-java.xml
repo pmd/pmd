@@ -10,12 +10,12 @@ The Java Logging ruleset contains a collection of rules that find questionable u
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-errorprone/InvalidSlf4jMessageFormat" deprecated="true" />
-    <rule ref="java-errorprone/LoggerIsNotStaticFinal" deprecated="true" />
-    <rule ref="java-errorprone/MoreThanOneLogger" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/InvalidSlf4jMessageFormat" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/LoggerIsNotStaticFinal" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/MoreThanOneLogger" deprecated="true" />
 
-    <rule ref="java-bestpractices/AvoidPrintStackTrace" deprecated="true" />
-    <rule ref="java-bestpractices/GuardLogStatementJavaUtil" deprecated="true" />
-    <rule ref="java-bestpractices/SystemPrintln" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/GuardLogStatementJavaUtil" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/SystemPrintln" deprecated="true" />
 
 </ruleset>

@@ -9,25 +9,25 @@ The Naming Ruleset contains rules regarding preferred usage of names and identif
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-errorprone/AvoidFieldNameMatchingMethodName" deprecated="true" />
-    <rule ref="java-errorprone/AvoidFieldNameMatchingTypeName" deprecated="true" />
-    <rule ref="java-errorprone/BooleanGetMethodName" deprecated="true" />
-    <rule ref="java-errorprone/MethodWithSameNameAsEnclosingClass" deprecated="true" />
-    <rule ref="java-errorprone/SuspiciousConstantFieldName" deprecated="true" />
-    <rule ref="java-errorprone/SuspiciousEqualsMethodName" deprecated="true" />
-    <rule ref="java-errorprone/SuspiciousHashcodeMethodName" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingMethodName" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingTypeName" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/BooleanGetMethodName" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/MethodWithSameNameAsEnclosingClass" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/SuspiciousConstantFieldName" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/SuspiciousEqualsMethodName" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/SuspiciousHashcodeMethodName" deprecated="true" />
 
-    <rule ref="java-codestyle/AbstractNaming" deprecated="true" />
-    <rule ref="java-codestyle/AvoidDollarSigns" deprecated="true" />
-    <rule ref="java-codestyle/ClassNamingConventions" deprecated="true" />
-    <rule ref="java-codestyle/GenericsNaming" deprecated="true" />
-    <rule ref="java-codestyle/LongVariable" deprecated="true" />
-    <rule ref="java-codestyle/MethodNamingConventions" deprecated="true" />
-    <rule ref="java-codestyle/MIsLeadingVariableName" name="MisleadingVariableName" deprecated="true" /> <!-- also renamed -->
-    <rule ref="java-codestyle/NoPackage" deprecated="true" />
-    <rule ref="java-codestyle/PackageCase" deprecated="true" />
-    <rule ref="java-codestyle/ShortClassName" deprecated="true" />
-    <rule ref="java-codestyle/ShortMethodName" deprecated="true" />
-    <rule ref="java-codestyle/ShortVariable" deprecated="true" />
-    <rule ref="java-codestyle/VariableNamingConventions" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/AbstractNaming" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/AvoidDollarSigns" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/ClassNamingConventions" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/GenericsNaming" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/LongVariable" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/MethodNamingConventions" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/MIsLeadingVariableName" name="MisleadingVariableName" deprecated="true" /> <!-- also renamed -->
+    <rule ref="category/java/codestyle.xml/NoPackage" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/PackageCase" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/ShortClassName" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/ShortMethodName" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/ShortVariable" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/VariableNamingConventions" deprecated="true" />
 </ruleset>

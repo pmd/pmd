@@ -9,18 +9,18 @@ These rules deal with different optimizations that generally apply to best pract
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-codestyle/PrematureDeclaration" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/PrematureDeclaration" deprecated="true" />
 
-    <rule ref="java-performance/AddEmptyString" deprecated="true" />
-    <rule ref="java-performance/AvoidArrayLoops" deprecated="true" />
-    <rule ref="java-performance/AvoidInstantiatingObjectsInLoops" deprecated="true" />
-    <rule ref="java-performance/LocalVariableCouldBeFinal" deprecated="true" />
-    <rule ref="java-performance/MethodArgumentCouldBeFinal" deprecated="true" />
-    <rule ref="java-performance/RedundantFieldInitializer" deprecated="true" />
-    <rule ref="java-performance/SimplifyStartsWith" deprecated="true" />
-    <rule ref="java-performance/UnnecessaryWrapperObjectCreation" deprecated="true" />
-    <rule ref="java-performance/UseArrayListInsteadOfVector" deprecated="true" />
-    <rule ref="java-performance/UseArraysAsList" deprecated="true" />
-    <rule ref="java-performance/UseStringBufferForStringAppends" deprecated="true" />
+    <rule ref="category/java/performance.xml/AddEmptyString" deprecated="true" />
+    <rule ref="category/java/performance.xml/AvoidArrayLoops" deprecated="true" />
+    <rule ref="category/java/performance.xml/AvoidInstantiatingObjectsInLoops" deprecated="true" />
+    <rule ref="category/java/performance.xml/LocalVariableCouldBeFinal" deprecated="true" />
+    <rule ref="category/java/performance.xml/MethodArgumentCouldBeFinal" deprecated="true" />
+    <rule ref="category/java/performance.xml/RedundantFieldInitializer" deprecated="true" />
+    <rule ref="category/java/performance.xml/SimplifyStartsWith" deprecated="true" />
+    <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation" deprecated="true" />
+    <rule ref="category/java/performance.xml/UseArrayListInsteadOfVector" deprecated="true" />
+    <rule ref="category/java/performance.xml/UseArraysAsList" deprecated="true" />
+    <rule ref="category/java/performance.xml/UseStringBufferForStringAppends" deprecated="true" />
 
 </ruleset>

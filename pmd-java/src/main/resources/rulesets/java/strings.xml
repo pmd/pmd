@@ -9,23 +9,23 @@ These rules deal with different issues that can arise with manipulation of the S
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-errorprone/AvoidDuplicateLiterals" deprecated="true" />
-    <rule ref="java-errorprone/StringBufferInstantiationWithChar" deprecated="true" />
-    <rule ref="java-errorprone/UnnecessaryCaseChange" deprecated="true" />
-    <rule ref="java-errorprone/UseEqualsToCompareStrings" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/StringBufferInstantiationWithChar" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UnnecessaryCaseChange" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings" deprecated="true" />
 
-    <rule ref="java-bestpractices/AvoidStringBufferField" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/AvoidStringBufferField" deprecated="true" />
 
-    <rule ref="java-performance/AppendCharacterWithChar" deprecated="true" />
-    <rule ref="java-performance/ConsecutiveAppendsShouldReuse" deprecated="true" />
-    <rule ref="java-performance/ConsecutiveLiteralAppends" deprecated="true" />
-    <rule ref="java-performance/InefficientEmptyStringCheck" deprecated="true" />
-    <rule ref="java-performance/InefficientStringBuffering" deprecated="true" />
-    <rule ref="java-performance/InsufficientStringBufferDeclaration" deprecated="true" />
-    <rule ref="java-performance/StringInstantiation" deprecated="true" />
-    <rule ref="java-performance/StringToString" deprecated="true" />
-    <rule ref="java-performance/UseIndexOfChar" deprecated="true" />
-    <rule ref="java-performance/UselessStringValueOf" deprecated="true" />
-    <rule ref="java-performance/UseStringBufferLength" deprecated="true" />
+    <rule ref="category/java/performance.xml/AppendCharacterWithChar" deprecated="true" />
+    <rule ref="category/java/performance.xml/ConsecutiveAppendsShouldReuse" deprecated="true" />
+    <rule ref="category/java/performance.xml/ConsecutiveLiteralAppends" deprecated="true" />
+    <rule ref="category/java/performance.xml/InefficientEmptyStringCheck" deprecated="true" />
+    <rule ref="category/java/performance.xml/InefficientStringBuffering" deprecated="true" />
+    <rule ref="category/java/performance.xml/InsufficientStringBufferDeclaration" deprecated="true" />
+    <rule ref="category/java/performance.xml/StringInstantiation" deprecated="true" />
+    <rule ref="category/java/performance.xml/StringToString" deprecated="true" />
+    <rule ref="category/java/performance.xml/UseIndexOfChar" deprecated="true" />
+    <rule ref="category/java/performance.xml/UselessStringValueOf" deprecated="true" />
+    <rule ref="category/java/performance.xml/UseStringBufferLength" deprecated="true" />
 
 </ruleset>

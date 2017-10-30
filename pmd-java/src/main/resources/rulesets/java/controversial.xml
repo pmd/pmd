@@ -14,31 +14,31 @@ They are held here to allow people to include them as they see fit within their 
     <rule name="UnnecessaryParentheses" deprecated="true" ref="rulesets/java/unnecessary.xml/UselessParentheses" />
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="java-errorprone/AssignmentInOperand" deprecated="true" />
-    <rule ref="java-errorprone/AvoidAccessibilityAlteration" deprecated="true" />
-    <rule ref="java-errorprone/AvoidLiteralsInIfCondition" deprecated="true" />
-    <rule ref="java-errorprone/CallSuperInConstructor" deprecated="true" />
-    <rule ref="java-errorprone/DataflowAnomalyAnalysis" deprecated="true" />
-    <rule ref="java-errorprone/DontImportSun" deprecated="true" />
-    <rule ref="java-errorprone/OneDeclarationPerLine" deprecated="true" />
-    <rule ref="java-errorprone/SuspiciousOctalEscape" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AssignmentInOperand" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidAccessibilityAlteration" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/CallSuperInConstructor" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/DontImportSun" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/OneDeclarationPerLine" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/SuspiciousOctalEscape" deprecated="true" />
 
-    <rule ref="java-codestyle/AtLeastOneConstructor" deprecated="true" />
-    <rule ref="java-codestyle/AvoidFinalLocalVariable" deprecated="true" />
-    <rule ref="java-codestyle/AvoidPrefixingMethodParameters" deprecated="true" />
-    <rule ref="java-codestyle/AvoidUsingNativeCode" deprecated="true" />
-    <rule ref="java-codestyle/DefaultPackage" deprecated="true" />
-    <rule ref="java-codestyle/OnlyOneReturn" deprecated="true" />
-    <rule ref="java-codestyle/UnnecessaryConstructor" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/AtLeastOneConstructor" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/AvoidFinalLocalVariable" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/AvoidPrefixingMethodParameters" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/AvoidUsingNativeCode" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/DefaultPackage" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/OnlyOneReturn" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/UnnecessaryConstructor" deprecated="true" />
 
-    <rule ref="java-multithreading/AvoidUsingVolatile" deprecated="true" />
-    <rule ref="java-multithreading/UseConcurrentHashMap" deprecated="true" />
+    <rule ref="category/java/multithreading.xml/AvoidUsingVolatile" deprecated="true" />
+    <rule ref="category/java/multithreading.xml/UseConcurrentHashMap" deprecated="true" />
 
-    <rule ref="java-bestpractices/NullAssignment" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/NullAssignment" deprecated="true" />
 
-    <rule ref="java-performance/AvoidUsingShortType" deprecated="true" />
-    <rule ref="java-performance/DoNotCallGarbageCollectionExplicitly" deprecated="true" />
+    <rule ref="category/java/performance.xml/AvoidUsingShortType" deprecated="true" />
+    <rule ref="category/java/performance.xml/DoNotCallGarbageCollectionExplicitly" deprecated="true" />
 
-    <rule ref="java-design/UseObjectForClearerAPI" deprecated="true" />
+    <rule ref="category/java/design.xml/UseObjectForClearerAPI" deprecated="true" />
 
 </ruleset>
