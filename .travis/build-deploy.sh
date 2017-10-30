@@ -25,24 +25,27 @@ function push_docs() {
 VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 echo "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
+# TODO : Once we release PMD 6.0.0 and have a compatible PMD plugin, enable PMD once again
+MVN_BUILD_FLAGS="-B -V -Dpmd.skip=true"
+
 if travis_isPullRequest; then
 
     echo "This is a pull-request build"
-    ./mvnw verify -B -V
+    ./mvnw verify $MVN_BUILD_FLAGS
 
 elif travis_isPush; then
 
     if [[ "${VERSION}" != *-SNAPSHOT && "${TRAVIS_TAG}" != "" ]]; then
         echo "This is a release build for tag ${TRAVIS_TAG}"
-        ./mvnw deploy -Possrh,pmd-release -B -V
+        ./mvnw deploy -Possrh,pmd-release $MVN_BUILD_FLAGS
     elif [[ "${VERSION}" == *-SNAPSHOT ]]; then
         echo "This is a snapshot build"
-        ./mvnw deploy -Possrh -B -V
+        ./mvnw deploy -Possrh $MVN_BUILD_FLAGS
         push_docs
     else
         # other build. Can happen during release: the commit with a non snapshot version is built, but not from the tag.
         echo "This is some other build, probably during release: commit with a non-snapshot version on branch master..."
-        ./mvnw verify -Possrh -B -V
+        ./mvnw verify -Possrh $MVN_BUILD_FLAGS
         # we stop here - no need to execute further steps
         exit 0
     fi
