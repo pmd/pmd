@@ -4,50 +4,9 @@ summary: The Design category contains rules that flag suboptimal code implementa
 permalink: pmd_rules_java_design.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
-editmepath: ../pmd-java/src/main/resources/rulesets/java/design.xml
-keywords: Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, ClassWithOnlyPrivateConstructorsShouldBeFinal, CollapsibleIfStatements, CouplingBetweenObjects, CyclomaticComplexity, DataClass, ExceptionAsFlowControl, ExcessiveClassLength, ExcessiveImports, ExcessiveMethodLength, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, LawOfDemeter, LogicInversion, LoosePackageCoupling, ModifiedCyclomaticComplexity, NcssConstructorCount, NcssCount, NcssMethodCount, NcssTypeCount, NPathComplexity, SignatureDeclareThrowsException, SimplifiedTernary, SimplifyBooleanAssertion, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, StdCyclomaticComplexity, SwitchDensity, TooFewBranchesForASwitchStatement, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, AssignmentToNonFinalStatic, AvoidInstanceofChecksInCatchClause, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, BadComparison, CloseResource, CompareObjectsWithEquals, ConfusingTernary, ConstantsInInterface, ConstructorCallsOverridableMethod, DefaultLabelNotLastInSwitchStmt, EqualsNull, IdempotentOperations, InstantiationToGetClass, MissingBreakInSwitch, MissingStaticMethodInNonInstantiatableClass, NonCaseLabelInSwitchStatement, NonStaticInitializer, PreserveStackTrace, ReturnEmptyArrayRatherThanNull, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, UseCollectionIsEmpty, UseLocaleWithCaseConversions, EmptyMethodInAbstractClassShouldBeAbstract, FieldDeclarationsShouldBeAtStartOfClass, UnnecessaryLocalBeforeReturn, AvoidSynchronizedAtMethodLevel, NonThreadSafeSingleton, UnsynchronizedStaticDateFormatter, UseNotifyAllInsteadOfNotify, AvoidReassigningParameters, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, SwitchStmtsShouldHaveDefault, UseVarargs, OptimizableToArrayCall, UncommentedEmptyConstructor, UncommentedEmptyMethodBody
+editmepath: ../pmd-java/src/main/resources/category/java/design.xml
+keywords: Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, ClassWithOnlyPrivateConstructorsShouldBeFinal, CollapsibleIfStatements, CouplingBetweenObjects, CyclomaticComplexity, DataClass, ExceptionAsFlowControl, ExcessiveClassLength, ExcessiveImports, ExcessiveMethodLength, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, LawOfDemeter, LogicInversion, LoosePackageCoupling, ModifiedCyclomaticComplexity, NcssConstructorCount, NcssCount, NcssMethodCount, NcssTypeCount, NPathComplexity, SignatureDeclareThrowsException, SimplifiedTernary, SimplifyBooleanAssertion, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, StdCyclomaticComplexity, SwitchDensity, TooFewBranchesForASwitchStatement, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass
 ---
-## AbstractClassWithoutAbstractMethod
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [AbstractClassWithoutAbstractMethod](pmd_rules_java_errorprone.html#abstractclasswithoutabstractmethod)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.0
-
-**Priority:** Medium (3)
-
-The abstract class does not contain any abstract methods. An abstract class suggests
-an incomplete implementation, which is to be completed by subclasses implementing the
-abstract methods. If the class is intended to be used as a base class only (not to be instantiated
-directly) a protected constructor can be provided prevent direct instantiation.
-
-```
-//ClassOrInterfaceDeclaration
- [@Abstract='true'
-  and count( .//MethodDeclaration[@Abstract='true'] )=0 ]
-  [count(ImplementsList)=0]
-  [count(.//ExtendsList)=0]
-```
-
-**Example(s):**
-
-``` java
-public abstract class Foo {
-  void int method1() { ... }
-  void int method2() { ... }
-  // consider using abstract methods or removing
-  // the abstract modifier and adding protected constructors
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/AbstractClassWithoutAbstractMethod" />
-```
-
 ## AbstractClassWithoutAnyMethod
 
 **Since:** PMD 4.2
@@ -76,119 +35,7 @@ public class abstract Example {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/AbstractClassWithoutAnyMethod" />
-```
-
-## AccessorClassGeneration
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [AccessorClassGeneration](pmd_rules_java_errorprone.html#accessorclassgeneration)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 1.04
-
-**Priority:** Medium (3)
-
-Instantiation by way of private constructors from outside of the constructor's class often causes the
-generation of an accessor. A factory method, or non-privatization of the constructor can eliminate this
-situation. The generated class file is actually an interface.  It gives the accessing class the ability
-to invoke a new hidden package scope constructor that takes the interface as a supplementary parameter.
-This turns a private constructor effectively into one with package scope, and is challenging to discern.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AccessorClassGenerationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AccessorClassGenerationRule.java)
-
-**Example(s):**
-
-``` java
-public class Outer {
- void method(){
-  Inner ic = new Inner();//Causes generation of accessor class
- }
- public class Inner {
-  private Inner(){}
- }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/AccessorClassGeneration" />
-```
-
-## AccessorMethodGeneration
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [AccessorMethodGeneration](pmd_rules_java_errorprone.html#accessormethodgeneration)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 5.5.4
-
-**Priority:** Medium (3)
-
-When accessing a private field / method from another class, the Java compiler will generate a accessor methods
-with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
-be avoided by changing the visibility of the field / method from private to package-private.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AccessorMethodGenerationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AccessorMethodGenerationRule.java)
-
-**Example(s):**
-
-``` java
-public class OuterClass {
-    private int counter;
-    /* package */ int id;
-
-    public class InnerClass {
-        InnerClass() {
-            OuterClass.this.counter++; // wrong accessor method will be generated
-        }
-
-        public int getOuterClassId() {
-            return OuterClass.this.id; // id is package-private, no accessor method needed
-        }
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/AccessorMethodGeneration" />
-```
-
-## AssignmentToNonFinalStatic
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [AssignmentToNonFinalStatic](pmd_rules_java_errorprone.html#assignmenttononfinalstatic)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 2.2
-
-**Priority:** Medium (3)
-
-Identifies a possible unsafe usage of a static field.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AssignmentToNonFinalStaticRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AssignmentToNonFinalStaticRule.java)
-
-**Example(s):**
-
-``` java
-public class StaticField {
-   static int x;
-   public FinalFields(int y) {
-    x = y; // unsafe
-   }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/AssignmentToNonFinalStatic" />
+<rule ref="category/java/design.xml/AbstractClassWithoutAnyMethod" />
 ```
 
 ## AvoidCatchingGenericException
@@ -229,7 +76,7 @@ public class PrimitiveType {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/AvoidCatchingGenericException" />
+<rule ref="category/java/design.xml/AvoidCatchingGenericException" />
 ```
 
 ## AvoidDeeplyNestedIfStmts
@@ -266,156 +113,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts" />
-```
-
-## AvoidInstanceofChecksInCatchClause
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [AvoidInstanceofChecksInCatchClause](pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.0
-
-**Priority:** Medium (3)
-
-Each caught exception type should be handled in its own catch clause.
-
-```
-//CatchStatement/FormalParameter
- /following-sibling::Block//InstanceOfExpression/PrimaryExpression/PrimaryPrefix
-  /Name[
-   @Image = ./ancestor::Block/preceding-sibling::FormalParameter
-    /VariableDeclaratorId/@Image
-  ]
-```
-
-**Example(s):**
-
-``` java
-try { // Avoid this
-    // do something
-} catch (Exception ee) {
-    if (ee instanceof IOException) {
-        cleanup();
-    }
-}
-
-try {  // Prefer this:
-    // do something
-} catch (IOException ee) {
-    cleanup();
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/AvoidInstanceofChecksInCatchClause" />
-```
-
-## AvoidProtectedFieldInFinalClass
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [AvoidProtectedFieldInFinalClass](pmd_rules_java_errorprone.html#avoidprotectedfieldinfinalclass)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 2.1
-
-**Priority:** Medium (3)
-
-Do not use protected fields in final classes since they cannot be subclassed.
-Clarify your intent by using private or package access modifiers instead.
-
-```
-//ClassOrInterfaceDeclaration[@Final='true']
-/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/FieldDeclaration[@Protected='true']
-```
-
-**Example(s):**
-
-``` java
-public final class Bar {
-  private int x;
-  protected int y;  // bar cannot be subclassed, so is y really private or package visible?
-  Bar() {}
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/AvoidProtectedFieldInFinalClass" />
-```
-
-## AvoidProtectedMethodInFinalClassNotExtending
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [AvoidProtectedMethodInFinalClassNotExtending](pmd_rules_java_errorprone.html#avoidprotectedmethodinfinalclassnotextending)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 5.1
-
-**Priority:** Medium (3)
-
-Do not use protected methods in most final classes since they cannot be subclassed. This should
-only be allowed in final classes that extend other classes with protected methods (whose
-visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.
-
-```
-//ClassOrInterfaceDeclaration[@Final='true' and not(ExtendsList)]
-/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/MethodDeclaration[@Protected='true'][MethodDeclarator/@Image != 'finalize']
-```
-
-**Example(s):**
-
-``` java
-public final class Foo {
-  private int bar() {}
-  protected int baz() {} // Foo cannot be subclassed, and doesn't extend anything, so is baz() really private or package visible?
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/AvoidProtectedMethodInFinalClassNotExtending" />
-```
-
-## AvoidReassigningParameters
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [AvoidReassigningParameters](pmd_rules_java_bestpractices.html#avoidreassigningparameters)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 1.0
-
-**Priority:** Medium High (2)
-
-Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AvoidReassigningParametersRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AvoidReassigningParametersRule.java)
-
-**Example(s):**
-
-``` java
-public class Foo {
-  private void foo(String bar) {
-    bar = "something else";
-  }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/AvoidReassigningParameters" />
+<rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts" />
 ```
 
 ## AvoidRethrowingException
@@ -447,57 +145,7 @@ public void bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/AvoidRethrowingException" />
-```
-
-## AvoidSynchronizedAtMethodLevel
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [AvoidSynchronizedAtMethodLevel](pmd_rules_java_multithreading.html#avoidsynchronizedatmethodlevel)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.0
-
-**Priority:** Medium (3)
-
-Method-level synchronization can cause problems when new code is added to the method.
-Block-level synchronization helps to ensure that only the code that needs synchronization
-gets it.
-
-```
-//MethodDeclaration[@Synchronized='true']
-```
-
-**Example(s):**
-
-``` java
-public class Foo {
-  // Try to avoid this:
-  synchronized void foo() {
-  }
-  // Prefer this:
-  void bar() {
-    synchronized(this) {
-    }
-  }
-
-  // Try to avoid this for static methods:
-  static synchronized void fooStatic() {
-  }
-
-  // Prefer this:
-  static void barStatic() {
-    synchronized(Foo.class) {
-    }
-  }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/AvoidSynchronizedAtMethodLevel" />
+<rule ref="category/java/design.xml/AvoidRethrowingException" />
 ```
 
 ## AvoidThrowingNewInstanceOfSameException
@@ -536,7 +184,7 @@ public void bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/AvoidThrowingNewInstanceOfSameException" />
+<rule ref="category/java/design.xml/AvoidThrowingNewInstanceOfSameException" />
 ```
 
 ## AvoidThrowingNullPointerException
@@ -565,7 +213,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/AvoidThrowingNullPointerException" />
+<rule ref="category/java/design.xml/AvoidThrowingNullPointerException" />
 ```
 
 ## AvoidThrowingRawExceptionTypes
@@ -602,39 +250,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/AvoidThrowingRawExceptionTypes" />
-```
-
-## BadComparison
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [BadComparison](pmd_rules_java_errorprone.html#badcomparison)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 1.8
-
-**Priority:** Medium (3)
-
-Avoid equality comparisons with Double.NaN. Due to the implicit lack of representation
-precision when comparing floating point numbers these are likely to cause logic errors.
-
-```
-//EqualityExpression[@Image='==']
- /PrimaryExpression/PrimaryPrefix
- /Name[@Image='Double.NaN' or @Image='Float.NaN']
-```
-
-**Example(s):**
-
-``` java
-boolean x = (y == Double.NaN);
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/BadComparison" />
+<rule ref="category/java/design.xml/AvoidThrowingRawExceptionTypes" />
 ```
 
 ## ClassWithOnlyPrivateConstructorsShouldBeFinal
@@ -664,54 +280,7 @@ public class Foo {  //Should be final
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal" />
-```
-
-## CloseResource
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [CloseResource](pmd_rules_java_errorprone.html#closeresource)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 1.2.2
-
-**Priority:** Medium (3)
-
-Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.CloseResourceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/CloseResourceRule.java)
-
-**Example(s):**
-
-``` java
-public class Bar {
-  public void foo() {
-    Connection c = pool.getConnection();
-    try {
-      // do stuff
-    } catch (SQLException ex) {
-     // handle exception
-    } finally {
-      // oops, should close the connection using 'close'!
-      // c.close();
-    }
-  }
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|closeAsDefaultTarget|true|Consider 'close' as a target by default|
-|types|[java.sql.Connection, java.sql.Statement, java.sql.ResultSet]|Affected types|
-|closeTargets|[]|Methods which may close this resource|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/CloseResource" />
+<rule ref="category/java/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal" />
 ```
 
 ## CollapsibleIfStatements
@@ -751,183 +320,7 @@ void bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/CollapsibleIfStatements" />
-```
-
-## CompareObjectsWithEquals
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [CompareObjectsWithEquals](pmd_rules_java_errorprone.html#compareobjectswithequals)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.2
-
-**Priority:** Medium (3)
-
-Use equals() to compare object references; avoid comparing them with ==.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.CompareObjectsWithEqualsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/CompareObjectsWithEqualsRule.java)
-
-**Example(s):**
-
-``` java
-class Foo {
-  boolean bar(String a, String b) {
-    return a == b;
-  }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/CompareObjectsWithEquals" />
-```
-
-## ConfusingTernary
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [ConfusingTernary](pmd_rules_java_errorprone.html#confusingternary)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 1.9
-
-**Priority:** Medium (3)
-
-Avoid negation within an "if" expression with an "else" clause.  For example, rephrase:
-`if (x != y) diff(); else same();` as: `if (x == y) same(); else diff();`.
-
-Most "if (x != y)" cases without an "else" are often return cases, so consistent use of this
-rule makes the code easier to read.  Also, this resolves trivial ordering problems, such
-as "does the error case go first?" or "does the common case go first?".
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.ConfusingTernaryRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ConfusingTernaryRule.java)
-
-**Example(s):**
-
-``` java
-boolean bar(int x, int y) {
-    return (x != y) ? diff : same;
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoreElseIf|false|Ignore conditions with an else-if case|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/ConfusingTernary" />
-```
-
-## ConstantsInInterface
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [ConstantsInInterface](pmd_rules_java_errorprone.html#constantsininterface)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 5.5
-
-**Priority:** Medium (3)
-
-Avoid constants in interfaces. Interfaces should define types, constants are implementation details
-better placed in classes or enums. See Effective Java, item 19.
-
-```
-//ClassOrInterfaceDeclaration[@Interface='true'][$ignoreIfHasMethods='false' or not(.//MethodDeclaration)]//FieldDeclaration
-```
-
-**Example(s):**
-
-``` java
-public interface ConstantInterface {
-    public static final int CONST1 = 1; // violation, no fields allowed in interface!
-    static final int CONST2 = 1;        // violation, no fields allowed in interface!
-    final int CONST3 = 1;               // violation, no fields allowed in interface!
-    int CONST4 = 1;                     // violation, no fields allowed in interface!
-}
-
-// with ignoreIfHasMethods = false
-public interface AnotherConstantInterface {
-    public static final int CONST1 = 1; // violation, no fields allowed in interface!
-
-    int anyMethod();
-}
-
-// with ignoreIfHasMethods = true
-public interface YetAnotherConstantInterface {
-    public static final int CONST1 = 1; // no violation
-
-    int anyMethod();
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoreIfHasMethods|true|Whether to ignore constants in interfaces if the interface defines any methods|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/ConstantsInInterface" />
-```
-
-## ConstructorCallsOverridableMethod
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [ConstructorCallsOverridableMethod](pmd_rules_java_errorprone.html#constructorcallsoverridablemethod)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 1.04
-
-**Priority:** High (1)
-
-Calling overridable methods during construction poses a risk of invoking methods on an incompletely
-constructed object and can be difficult to debug.
-It may leave the sub-class unable to construct its superclass or forced to replicate the construction
-process completely within itself, losing the ability to call super().  If the default constructor
-contains a call to an overridable method, the subclass may be completely uninstantiable.   Note that
-this includes method calls throughout the control flow graph - i.e., if a constructor Foo() calls a
-private method bar() that calls a public method buz(), this denotes a problem.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.ConstructorCallsOverridableMethodRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ConstructorCallsOverridableMethodRule.java)
-
-**Example(s):**
-
-``` java
-public class SeniorClass {
-  public SeniorClass(){
-      toString(); //may throw NullPointerException if overridden
-  }
-  public String toString(){
-    return "IAmSeniorClass";
-  }
-}
-public class JuniorClass extends SeniorClass {
-  private String name;
-  public JuniorClass(){
-    super(); //Automatic call leads to NullPointerException
-    name = "JuniorClass";
-  }
-  public String toString(){
-    return name.toUpperCase();
-  }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/ConstructorCallsOverridableMethod" />
+<rule ref="category/java/design.xml/CollapsibleIfStatements" />
 ```
 
 ## CouplingBetweenObjects
@@ -970,7 +363,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/CouplingBetweenObjects" />
+<rule ref="category/java/design.xml/CouplingBetweenObjects" />
 ```
 
 ## CyclomaticComplexity
@@ -1039,7 +432,7 @@ public class Foo {      // This has a Cyclomatic Complexity = 12
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/CyclomaticComplexity" />
+<rule ref="category/java/design.xml/CyclomaticComplexity" />
 ```
 
 ## DataClass
@@ -1080,150 +473,7 @@ public class DataClass {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/DataClass" />
-```
-
-## DefaultLabelNotLastInSwitchStmt
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [DefaultLabelNotLastInSwitchStmt](pmd_rules_java_errorprone.html#defaultlabelnotlastinswitchstmt)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 1.5
-
-**Priority:** Medium (3)
-
-By convention, the default label should be the last label in a switch statement.
-
-```
-//SwitchStatement
- [not(SwitchLabel[position() = last()][@Default='true'])]
- [SwitchLabel[@Default='true']]
-```
-
-**Example(s):**
-
-``` java
-public class Foo {
-  void bar(int a) {
-   switch (a) {
-    case 1:  // do something
-       break;
-    default:  // the default case should be last, by convention
-       break;
-    case 2:
-       break;
-   }
-  }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/DefaultLabelNotLastInSwitchStmt" />
-```
-
-## EmptyMethodInAbstractClassShouldBeAbstract
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [EmptyMethodInAbstractClassShouldBeAbstract](pmd_rules_java_codestyle.html#emptymethodinabstractclassshouldbeabstract)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 4.1
-
-**Priority:** High (1)
-
-Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inapproprate
-usage by developers who should be implementing their own versions in the concrete subclasses.
-
-```
-//ClassOrInterfaceDeclaration[@Abstract = 'true']
-    /ClassOrInterfaceBody
-    /ClassOrInterfaceBodyDeclaration
-    /MethodDeclaration[@Abstract = 'false' and @Native = 'false']
-    [
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral) = 'true' )
-        or
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image = '0']) = 'true' )
-        or
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[string-length(@Image) = 2]) = 'true' )
-        or
-        (./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/EmptyStatement)
-        or
-        ( count (./Block/*) = 0 )
-    ]
-```
-
-**Example(s):**
-
-``` java
-public abstract class ShouldBeAbstract {
-    public Object couldBeAbstract() {
-        // Should be abstract method ?
-        return null;
-    }
-
-    public void couldBeAbstract() {
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/EmptyMethodInAbstractClassShouldBeAbstract" />
-```
-
-## EqualsNull
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [EqualsNull](pmd_rules_java_errorprone.html#equalsnull)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 1.9
-
-**Priority:** High (1)
-
-Tests for null should not use the equals() method. The '==' operator should be used instead.
-
-```
-//PrimaryExpression
-  [
-    PrimaryPrefix[Name[ends-with(@Image, 'equals')]]
-      [following-sibling::node()/Arguments/ArgumentList[count(Expression)=1]
-          /Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-
-    or
-
-    PrimarySuffix[ends-with(@Image, 'equals')]
-      [following-sibling::node()/Arguments/ArgumentList[count(Expression)=1]
-          /Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-
-  ]
-```
-
-**Example(s):**
-
-``` java
-String x = "foo";
-
-if (x.equals(null)) {   // bad form
-    doSomething();
-}
-
-if (x == null) {        // preferred
-    doSomething();
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/EqualsNull" />
+<rule ref="category/java/design.xml/DataClass" />
 ```
 
 ## ExceptionAsFlowControl
@@ -1255,7 +505,7 @@ public void bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/ExceptionAsFlowControl" />
+<rule ref="category/java/design.xml/ExceptionAsFlowControl" />
 ```
 
 ## ExcessiveClassLength
@@ -1300,7 +550,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/ExcessiveClassLength" />
+<rule ref="category/java/design.xml/ExcessiveClassLength" />
 ```
 
 ## ExcessiveImports
@@ -1336,7 +586,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/ExcessiveImports" />
+<rule ref="category/java/design.xml/ExcessiveImports" />
 ```
 
 ## ExcessiveMethodLength
@@ -1372,7 +622,7 @@ public void doSomething() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/ExcessiveMethodLength" />
+<rule ref="category/java/design.xml/ExcessiveMethodLength" />
 ```
 
 ## ExcessiveParameterList
@@ -1412,7 +662,7 @@ public void addPerson(      // preferred approach
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/ExcessiveParameterList" />
+<rule ref="category/java/design.xml/ExcessiveParameterList" />
 ```
 
 ## ExcessivePublicCount
@@ -1454,53 +704,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/ExcessivePublicCount" />
-```
-
-## FieldDeclarationsShouldBeAtStartOfClass
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [FieldDeclarationsShouldBeAtStartOfClass](pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 5.0
-
-**Priority:** Medium (3)
-
-Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.FieldDeclarationsShouldBeAtStartOfClassRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/FieldDeclarationsShouldBeAtStartOfClassRule.java)
-
-**Example(s):**
-
-``` java
-public class HelloWorldBean {
-
-  // Field declared before methods / inner classes - OK
-  private String _thing;
-
-  public String getMessage() {
-    return "Hello World!";
-  }
-
-  // Field declared after methods / inner classes - avoid this
-  private String _fieldInWrongLocation;
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoreInterfaceDeclarations|false|Ignore Interface Declarations that precede fields.|
-|ignoreAnonymousClassDeclarations|true|Ignore Field Declarations, that are initialized with anonymous class declarations|
-|ignoreEnumDeclarations|true|Ignore Enum Declarations that precede fields.|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/FieldDeclarationsShouldBeAtStartOfClass" />
+<rule ref="category/java/design.xml/ExcessivePublicCount" />
 ```
 
 ## FinalFieldCouldBeStatic
@@ -1529,7 +733,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/FinalFieldCouldBeStatic" />
+<rule ref="category/java/design.xml/FinalFieldCouldBeStatic" />
 ```
 
 ## GodClass
@@ -1553,39 +757,7 @@ of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/GodClass" />
-```
-
-## IdempotentOperations
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [IdempotentOperations](pmd_rules_java_errorprone.html#idempotentoperations)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 2.0
-
-**Priority:** Medium (3)
-
-Avoid idempotent operations - they have no effect.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.IdempotentOperationsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/IdempotentOperationsRule.java)
-
-**Example(s):**
-
-``` java
-public class Foo {
- public void bar() {
-  int x = 2;
-  x = x;
- }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/IdempotentOperations" />
+<rule ref="category/java/design.xml/GodClass" />
 ```
 
 ## ImmutableField
@@ -1615,45 +787,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/ImmutableField" />
-```
-
-## InstantiationToGetClass
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [InstantiationToGetClass](pmd_rules_java_errorprone.html#instantiationtogetclass)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 2.0
-
-**Priority:** Medium Low (4)
-
-Avoid instantiating an object just to call getClass() on it; use the .class public member instead.
-
-```
-//PrimarySuffix
- [@Image='getClass']
- [parent::PrimaryExpression
-  [PrimaryPrefix/AllocationExpression]
-  [count(PrimarySuffix) = 2]
- ]
-```
-
-**Example(s):**
-
-``` java
-// replace this
-Class c = new String().getClass();
-
-// with this:
-Class c = String.class;
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/InstantiationToGetClass" />
+<rule ref="category/java/design.xml/ImmutableField" />
 ```
 
 ## LawOfDemeter
@@ -1702,7 +836,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/LawOfDemeter" />
+<rule ref="category/java/design.xml/LawOfDemeter" />
 ```
 
 ## LogicInversion
@@ -1736,7 +870,7 @@ public boolean bar(int a, int b) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/LogicInversion" />
+<rule ref="category/java/design.xml/LogicInversion" />
 ```
 
 ## LoosePackageCoupling
@@ -1771,120 +905,7 @@ public class Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/LoosePackageCoupling" />
-```
-
-## MissingBreakInSwitch
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [MissingBreakInSwitch](pmd_rules_java_errorprone.html#missingbreakinswitch)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.0
-
-**Priority:** Medium (3)
-
-Switch statements without break or return statements for each case option
-may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.
-
-```
-//SwitchStatement
-[(count(.//BreakStatement)
- + count(BlockStatement//Statement/ReturnStatement)
- + count(BlockStatement//Statement/ContinueStatement)
- + count(BlockStatement//Statement/ThrowStatement)
- + count(BlockStatement//Statement/IfStatement[@Else='true' and Statement[2][ReturnStatement|ContinueStatement|ThrowStatement]]/Statement[1][ReturnStatement|ContinueStatement|ThrowStatement])
- + count(SwitchLabel[name(following-sibling::node()) = 'SwitchLabel'])
- + count(SwitchLabel[count(following-sibling::node()) = 0])
-  < count (SwitchLabel))]
-```
-
-**Example(s):**
-
-``` java
-public void bar(int status) {
-    switch(status) {
-      case CANCELLED:
-        doCancelled();
-        // break; hm, should this be commented out?
-      case NEW:
-        doNew();
-        // is this really a fall-through?
-      case REMOVED:
-        doRemoved();
-        // what happens if you add another case after this one?
-      case OTHER: // empty case - this is interpreted as an intentional fall-through
-      case ERROR:
-        doErrorHandling();
-        break;
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/MissingBreakInSwitch" />
-```
-
-## MissingStaticMethodInNonInstantiatableClass
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [MissingStaticMethodInNonInstantiatableClass](pmd_rules_java_errorprone.html#missingstaticmethodinnoninstantiatableclass)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.0
-
-**Priority:** Medium (3)
-
-A class that has private constructors and does not have any static methods or fields cannot be used.
-
-```
-//ClassOrInterfaceDeclaration[@Nested='false']
-[
-  (
-    ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration
-    and
-    count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private='true'])
-  )
-  and
-  not(.//MethodDeclaration[@Static='true'])
-  and
-  not(.//FieldDeclaration[@Private='false'][@Static='true'])
-  and
-  not(.//ClassOrInterfaceDeclaration[@Nested='true']
-           [@Public='true']
-           [@Static='true']
-           [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) or ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public='true']]
-           [./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
-                [@Public='true']
-                [./ResultType/Type/ReferenceType/ClassOrInterfaceType
-                    [@Image = //ClassOrInterfaceDeclaration[@Nested='false']/@Image]
-                ]
-            ]
-        )
-]
-```
-
-**Example(s):**
-
-``` java
-// This class is unusable, since it cannot be
-// instantiated (private constructor),
-// and no static method can be called.
-
-public class Foo {
-  private Foo() {}
-  void foo() {}
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/MissingStaticMethodInNonInstantiatableClass" />
+<rule ref="category/java/design.xml/LoosePackageCoupling" />
 ```
 
 ## ModifiedCyclomaticComplexity
@@ -1954,7 +975,7 @@ public class Foo {    // This has a Cyclomatic Complexity = 9
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/ModifiedCyclomaticComplexity" />
+<rule ref="category/java/design.xml/ModifiedCyclomaticComplexity" />
 ```
 
 ## NcssConstructorCount
@@ -1998,7 +1019,7 @@ public class Foo extends Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/NcssConstructorCount" />
+<rule ref="category/java/design.xml/NcssConstructorCount" />
 ```
 
 ## NcssCount
@@ -2054,7 +1075,7 @@ class Foo {                         // +1, total Ncss = 12
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/NcssCount" />
+<rule ref="category/java/design.xml/NcssCount" />
 ```
 
 ## NcssMethodCount
@@ -2099,7 +1120,7 @@ public class Foo extends Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/NcssMethodCount" />
+<rule ref="category/java/design.xml/NcssMethodCount" />
 ```
 
 ## NcssTypeCount
@@ -2143,137 +1164,7 @@ public class Foo extends Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/NcssTypeCount" />
-```
-
-## NonCaseLabelInSwitchStatement
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [NonCaseLabelInSwitchStatement](pmd_rules_java_errorprone.html#noncaselabelinswitchstatement)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 1.5
-
-**Priority:** Medium (3)
-
-A non-case label (e.g. a named break/continue label) was present in a switch statement.
-This legal, but confusing. It is easy to mix up the case labels and the non-case labels.
-
-```
-//SwitchStatement//BlockStatement/Statement/LabeledStatement
-```
-
-**Example(s):**
-
-``` java
-public class Foo {
-  void bar(int a) {
-   switch (a) {
-     case 1:
-       // do something
-       break;
-     mylabel: // this is legal, but confusing!
-       break;
-     default:
-       break;
-    }
-  }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/NonCaseLabelInSwitchStatement" />
-```
-
-## NonStaticInitializer
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [NonStaticInitializer](pmd_rules_java_errorprone.html#nonstaticinitializer)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 1.5
-
-**Priority:** Medium (3)
-
-A non-static initializer block will be called any time a constructor is invoked (just prior to
-invoking the constructor).  While this is a valid language construct, it is rarely used and is
-confusing.
-
-```
-//Initializer[@Static='false']
-```
-
-**Example(s):**
-
-``` java
-public class MyClass {
-  // this block gets run before any call to a constructor
-  {
-    System.out.println("I am about to construct myself");
-  }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/NonStaticInitializer" />
-```
-
-## NonThreadSafeSingleton
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [NonThreadSafeSingleton](pmd_rules_java_multithreading.html#nonthreadsafesingleton)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.4
-
-**Priority:** Medium (3)
-
-Non-thread safe singletons can result in bad state changes. Eliminate
-static singletons if possible by instantiating the object directly. Static
-singletons are usually not needed as only a single instance exists anyway.
-Other possible fixes are to synchronize the entire method or to use an
-[initialize-on-demand holder class](https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom).
-
-Refrain from using the double-checked locking pattern. The Java Memory Model doesn't
-guarantee it to work unless the variable is declared as `volatile`, adding an uneeded
-performance penalty. [Reference](http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html)
-
-See Effective Java, item 48.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.NonThreadSafeSingletonRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/NonThreadSafeSingletonRule.java)
-
-**Example(s):**
-
-``` java
-private static Foo foo = null;
-
-//multiple simultaneous callers may see partially initialized objects
-public static Foo getFoo() {
-    if (foo==null) {
-        foo = new Foo();
-    }
-    return foo;
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|checkNonStaticFields|false|Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.|
-|checkNonStaticMethods|true|Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/NonThreadSafeSingleton" />
+<rule ref="category/java/design.xml/NcssTypeCount" />
 ```
 
 ## NPathComplexity
@@ -2330,238 +1221,7 @@ void bar() {    // this is something more complex than it needs to be,
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/NPathComplexity" />
-```
-
-## OptimizableToArrayCall
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [OptimizableToArrayCall](pmd_rules_java_performance.html#optimizabletoarraycall)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 1.8
-
-**Priority:** Medium (3)
-
-Calls to a collection's toArray() method should specify target arrays sized to match the size of the
-collection. Initial arrays that are too small are discarded in favour of new ones that have to be created
-that are the proper size.
-
-```
-//PrimaryExpression
-[PrimaryPrefix/Name[ends-with(@Image, 'toArray')]]
-[
-PrimarySuffix/Arguments/ArgumentList/Expression
- /PrimaryExpression/PrimaryPrefix/AllocationExpression
- /ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image='0']
-]
-```
-
-**Example(s):**
-
-``` java
-List foos = getFoos();
-
-    // inefficient, the array will be discarded
-Foo[] fooArray = foos.toArray(new Foo[0]);
-
-    // much better; this one sizes the destination array,
-    // avoiding of a new one via reflection
-Foo[] fooArray = foos.toArray(new Foo[foos.size()]);
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/OptimizableToArrayCall" />
-```
-
-## PositionLiteralsFirstInCaseInsensitiveComparisons
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [PositionLiteralsFirstInCaseInsensitiveComparisons](pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 5.1
-
-**Priority:** Medium (3)
-
-Position literals first in comparisons, if the second argument is null then NullPointerExceptions
-can be avoided, they will just return false.
-
-```
-//PrimaryExpression[
-        PrimaryPrefix[Name
-                [
-    (ends-with(@Image, '.equalsIgnoreCase'))
-                ]
-        ]
-        [
-                   (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal)
-    and
-    ( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
-        ]
-]
-[not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
-[not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
-```
-
-**Example(s):**
-
-``` java
-class Foo {
-  boolean bar(String x) {
-    return x.equalsIgnoreCase("2"); // should be "2".equalsIgnoreCase(x)
-  }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/PositionLiteralsFirstInCaseInsensitiveComparisons" />
-```
-
-## PositionLiteralsFirstInComparisons
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [PositionLiteralsFirstInComparisons](pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.3
-
-**Priority:** Medium (3)
-
-Position literals first in comparisons, if the second argument is null then NullPointerExceptions
-can be avoided, they will just return false.
-
-```
-//PrimaryExpression[
-    PrimaryPrefix[Name[(ends-with(@Image, '.equals'))]]
-        [
-            (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])
-            and
-            ( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
-        ]
-]
-[not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
-[not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
-```
-
-**Example(s):**
-
-``` java
-class Foo {
-  boolean bar(String x) {
-    return x.equals("2"); // should be "2".equals(x)
-  }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/PositionLiteralsFirstInComparisons" />
-```
-
-## PreserveStackTrace
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [PreserveStackTrace](pmd_rules_java_errorprone.html#preservestacktrace)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.7
-
-**Priority:** Medium (3)
-
-Throwing a new exception from a catch block without passing the original exception into the
-new exception will cause the original stack trace to be lost making it difficult to debug
-effectively.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.PreserveStackTraceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/PreserveStackTraceRule.java)
-
-**Example(s):**
-
-``` java
-public class Foo {
-    void good() {
-        try{
-            Integer.parseInt("a");
-        } catch (Exception e) {
-            throw new Exception(e); // first possibility to create exception chain
-        }
-        try {
-            Integer.parseInt("a");
-        } catch (Exception e) {
-            throw (IllegalStateException)new IllegalStateException().initCause(e); // second possibility to create exception chain.
-        }
-    }
-    void bad() {
-        try{
-            Integer.parseInt("a");
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/PreserveStackTrace" />
-```
-
-## ReturnEmptyArrayRatherThanNull
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [ReturnEmptyArrayRatherThanNull](pmd_rules_java_errorprone.html#returnemptyarrayratherthannull)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 4.2
-
-**Priority:** High (1)
-
-For any method that returns an array, it is a better to return an empty array rather than a
-null reference. This removes the need for null checking all results and avoids inadvertent
-NullPointerExceptions.
-
-```
-//MethodDeclaration
-[
-(./ResultType/Type[@Array='true'])
-and
-(./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
-]
-```
-
-**Example(s):**
-
-``` java
-public class Example {
-    // Not a good idea...
-    public int[] badBehavior() {
-        // ...
-        return null;
-    }
-
-    // Good behavior
-    public String[] bonnePratique() {
-        //...
-        return new String[0];
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/ReturnEmptyArrayRatherThanNull" />
+<rule ref="category/java/design.xml/NPathComplexity" />
 ```
 
 ## SignatureDeclareThrowsException
@@ -2592,42 +1252,7 @@ public void foo() throws Exception {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/SignatureDeclareThrowsException" />
-```
-
-## SimpleDateFormatNeedsLocale
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [SimpleDateFormatNeedsLocale](pmd_rules_java_errorprone.html#simpledateformatneedslocale)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 2.0
-
-**Priority:** Medium (3)
-
-Be sure to specify a Locale when creating SimpleDateFormat instances to ensure that locale-appropriate
-formatting is used.
-
-```
-//AllocationExpression
- [ClassOrInterfaceType[@Image='SimpleDateFormat']]
- [Arguments[@ArgumentCount=1]]
-```
-
-**Example(s):**
-
-``` java
-public class Foo {
-  // Should specify Locale.US (or whatever)
-  private SimpleDateFormat sdf = new SimpleDateFormat("pattern");
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/SimpleDateFormatNeedsLocale" />
+<rule ref="category/java/design.xml/SignatureDeclareThrowsException" />
 ```
 
 ## SimplifiedTernary
@@ -2676,7 +1301,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/SimplifiedTernary" />
+<rule ref="category/java/design.xml/SimplifiedTernary" />
 ```
 
 ## SimplifyBooleanAssertion
@@ -2720,7 +1345,7 @@ public class SimpleTest extends TestCase {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/SimplifyBooleanAssertion" />
+<rule ref="category/java/design.xml/SimplifyBooleanAssertion" />
 ```
 
 ## SimplifyBooleanExpressions
@@ -2750,7 +1375,7 @@ public class Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/SimplifyBooleanExpressions" />
+<rule ref="category/java/design.xml/SimplifyBooleanExpressions" />
 ```
 
 ## SimplifyBooleanReturns
@@ -2782,7 +1407,7 @@ public boolean isBarEqualTo(int x) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/SimplifyBooleanReturns" />
+<rule ref="category/java/design.xml/SimplifyBooleanReturns" />
 ```
 
 ## SimplifyConditional
@@ -2834,86 +1459,7 @@ class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/SimplifyConditional" />
-```
-
-## SingleMethodSingleton
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [SingleMethodSingleton](pmd_rules_java_errorprone.html#singlemethodsingleton)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 5.4
-
-**Priority:** Medium High (2)
-
-Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
-is that the instance created using the overloaded method is not cached and so,
-for each call and new objects will be created for every invocation.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.SingleMethodSingletonRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SingleMethodSingletonRule.java)
-
-**Example(s):**
-
-``` java
-public class Singleton {
-
-    private static Singleton singleton = new Singleton( );
-
-    private Singleton(){ }
-
-    public static Singleton getInstance( ) {
-        return singleton;
-    }
-
-    public static Singleton getInstance(Object obj){
-        Singleton singleton = (Singleton) obj;
-        return singleton;           //violation
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/SingleMethodSingleton" />
-```
-
-## SingletonClassReturningNewInstance
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [SingletonClassReturningNewInstance](pmd_rules_java_errorprone.html#singletonclassreturningnewinstance)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 5.4
-
-**Priority:** Medium High (2)
-
-Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
-is that the instance created using the overloaded method is not cached and so,
-for each call and new objects will be created for every invocation.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.SingletonClassReturningNewInstanceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SingletonClassReturningNewInstanceRule.java)
-
-**Example(s):**
-
-``` java
-class Singleton {
-    private static Singleton instance = null;
-    public static Singleton getInstance() {
-        synchronized(Singleton.class) {
-            return new Singleton();
-        }
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/SingletonClassReturningNewInstance" />
+<rule ref="category/java/design.xml/SimplifyConditional" />
 ```
 
 ## SingularField
@@ -2949,7 +1495,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/SingularField" />
+<rule ref="category/java/design.xml/SingularField" />
 ```
 
 ## StdCyclomaticComplexity
@@ -3018,7 +1564,7 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/StdCyclomaticComplexity" />
+<rule ref="category/java/design.xml/StdCyclomaticComplexity" />
 ```
 
 ## SwitchDensity
@@ -3061,43 +1607,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/SwitchDensity" />
-```
-
-## SwitchStmtsShouldHaveDefault
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [SwitchStmtsShouldHaveDefault](pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 1.0
-
-**Priority:** Medium (3)
-
-All switch statements should include a default option to catch any unspecified values.
-
-```
-//SwitchStatement[not(SwitchLabel[@Default='true'])]
-```
-
-**Example(s):**
-
-``` java
-public void bar() {
-    int x = 2;
-    switch (x) {
-      case 1: int j = 6;
-      case 2: int j = 8;
-          // missing default: here
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/SwitchStmtsShouldHaveDefault" />
+<rule ref="category/java/design.xml/SwitchDensity" />
 ```
 
 ## TooFewBranchesForASwitchStatement
@@ -3141,7 +1651,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/TooFewBranchesForASwitchStatement" />
+<rule ref="category/java/design.xml/TooFewBranchesForASwitchStatement" />
 ```
 
 ## TooManyFields
@@ -3181,7 +1691,7 @@ public class Person {   // this is more manageable
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/TooManyFields" />
+<rule ref="category/java/design.xml/TooManyFields" />
 ```
 
 ## TooManyMethods
@@ -3216,199 +1726,7 @@ complexity and find a way to have more fine grained objects.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/TooManyMethods" />
-```
-
-## UncommentedEmptyConstructor
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [UncommentedEmptyConstructor](pmd_rules_java_documentation.html#uncommentedemptyconstructor)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.4
-
-**Priority:** Medium (3)
-
-Uncommented Empty Constructor finds instances where a constructor does not
-contain statements, but there is no comment. By explicitly commenting empty
-constructors it is easier to distinguish between intentional (commented)
-and unintentional empty constructors.
-
-```
-//ConstructorDeclaration[@Private='false']
-                        [count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
-                        [not(../Annotation/MarkerAnnotation/Name[typeof(@Image, 'javax.inject.Inject', 'Inject')])]
-```
-
-**Example(s):**
-
-``` java
-public Foo() {
-  // This constructor is intentionally empty. Nothing special is needed here.
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoreExplicitConstructorInvocation|false|Ignore explicit constructor invocation when deciding whether constructor is empty or not|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/UncommentedEmptyConstructor" />
-```
-
-## UncommentedEmptyMethodBody
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [UncommentedEmptyMethodBody](pmd_rules_java_documentation.html#uncommentedemptymethodbody)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.4
-
-**Priority:** Medium (3)
-
-Uncommented Empty Method Body finds instances where a method body does not contain
-statements, but there is no comment. By explicitly commenting empty method bodies
-it is easier to distinguish between intentional (commented) and unintentional
-empty methods.
-
-```
-//MethodDeclaration/Block[count(BlockStatement) = 0 and @containsComment = 'false']
-```
-
-**Example(s):**
-
-``` java
-public void doSomething() {
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/UncommentedEmptyMethodBody" />
-```
-
-## UnnecessaryLocalBeforeReturn
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [UnnecessaryLocalBeforeReturn](pmd_rules_java_codestyle.html#unnecessarylocalbeforereturn)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.3
-
-**Priority:** Medium (3)
-
-Avoid the creation of unnecessary local variables
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.UnnecessaryLocalBeforeReturnRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/UnnecessaryLocalBeforeReturnRule.java)
-
-**Example(s):**
-
-``` java
-public class Foo {
-   public int foo() {
-     int x = doSomething();
-     return x;  // instead, just 'return doSomething();'
-   }
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|statementOrderMatters|true|If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/UnnecessaryLocalBeforeReturn" />
-```
-
-## UnsynchronizedStaticDateFormatter
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [UnsynchronizedStaticDateFormatter](pmd_rules_java_multithreading.html#unsynchronizedstaticdateformatter)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.6
-
-**Priority:** Medium (3)
-
-SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances
-for each thread. If multiple threads must access a static formatter, the formatter must be
-synchronized either on method or block level.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.UnsynchronizedStaticDateFormatterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/UnsynchronizedStaticDateFormatterRule.java)
-
-**Example(s):**
-
-``` java
-public class Foo {
-    private static final SimpleDateFormat sdf = new SimpleDateFormat();
-    void bar() {
-        sdf.format(); // poor, no thread-safety
-    }
-    synchronized void foo() {
-        sdf.format(); // preferred
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/UnsynchronizedStaticDateFormatter" />
-```
-
-## UseCollectionIsEmpty
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [UseCollectionIsEmpty](pmd_rules_java_errorprone.html#usecollectionisempty)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.9
-
-**Priority:** Medium (3)
-
-The isEmpty() method on java.util.Collection is provided to determine if a collection has any elements.
-Comparing the value of size() to 0 does not convey intent as well as the isEmpty() method.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.UseCollectionIsEmptyRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/UseCollectionIsEmptyRule.java)
-
-**Example(s):**
-
-``` java
-public class Foo {
-    void good() {
-        List foo = getList();
-        if (foo.isEmpty()) {
-            // blah
-        }
-    }
-
-    void bad() {
-        List foo = getList();
-        if (foo.size() == 0) {
-            // blah
-        }
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/UseCollectionIsEmpty" />
+<rule ref="category/java/design.xml/TooManyMethods" />
 ```
 
 ## UselessOverridingMethod
@@ -3446,105 +1764,7 @@ public Long getId() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/UselessOverridingMethod" />
-```
-
-## UseLocaleWithCaseConversions
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [UseLocaleWithCaseConversions](pmd_rules_java_errorprone.html#uselocalewithcaseconversions)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 2.0
-
-**Priority:** Medium (3)
-
-When doing String.toLowerCase()/toUpperCase() conversions, use Locales to avoids problems with languages that
-have unusual conventions, i.e. Turkish.
-
-```
-//PrimaryExpression
-[
-PrimaryPrefix
-[Name[ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]]
-[following-sibling::PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
-
-or
-
-PrimarySuffix
-[ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]
-[following-sibling::PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
-]
-[not(PrimaryPrefix/Name[ends-with(@Image, 'toHexString')])]
-```
-
-**Example(s):**
-
-``` java
-class Foo {
-    // BAD
-    if (x.toLowerCase().equals("list")) { }
-
-    /*
-     * This will not match "LIST" when in Turkish locale
-     * The above could be
-     * if (x.toLowerCase(Locale.US).equals("list")) { }
-     * or simply
-     * if (x.equalsIgnoreCase("list")) { }
-     */
-    // GOOD
-    String z = a.toLowerCase(Locale.EN);
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/UseLocaleWithCaseConversions" />
-```
-
-## UseNotifyAllInsteadOfNotify
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [UseNotifyAllInsteadOfNotify](pmd_rules_java_multithreading.html#usenotifyallinsteadofnotify)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 3.0
-
-**Priority:** Medium (3)
-
-Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
-one is chosen.  The thread chosen is arbitrary; thus its usually safer to call notifyAll() instead.
-
-```
-//StatementExpression/PrimaryExpression
-[PrimarySuffix/Arguments[@ArgumentCount = '0']]
-[
-    PrimaryPrefix[
-        ./Name[@Image='notify' or ends-with(@Image,'.notify')]
-        or ../PrimarySuffix/@Image='notify'
-        or (./AllocationExpression and ../PrimarySuffix[@Image='notify'])
-    ]
-]
-```
-
-**Example(s):**
-
-``` java
-void bar() {
-    x.notify();
-    // If many threads are monitoring x, only one (and you won't know which) will be notified.
-    // use instead:
-    x.notifyAll();
-  }
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/UseNotifyAllInsteadOfNotify" />
+<rule ref="category/java/design.xml/UselessOverridingMethod" />
 ```
 
 ## UseObjectForClearerAPI
@@ -3586,7 +1806,7 @@ public class MyClass {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/UseObjectForClearerAPI" />
+<rule ref="category/java/design.xml/UseObjectForClearerAPI" />
 ```
 
 ## UseUtilityClass
@@ -3614,62 +1834,6 @@ public class MaybeAUtility {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/design.xml/UseUtilityClass" />
-```
-
-## UseVarargs
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-The rule has been moved to another ruleset. Use instead: [UseVarargs](pmd_rules_java_bestpractices.html#usevarargs)
-
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
-**Since:** PMD 5.0
-
-**Priority:** Medium Low (4)
-
-**Minimum Language Version:** Java 1.5
-
-Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic
-sugar provides flexibility for users of these methods and constructors, allowing them to avoid
-having to deal with the creation of an array.
-
-```
-//FormalParameters/FormalParameter
-    [position()=last()]
-    [@Array='true']
-    [@Varargs='false']
-    [not (./Type/ReferenceType[@Array='true'][PrimitiveType[@Image='byte']])]
-    [not (./Type/ReferenceType[ClassOrInterfaceType[@Image='Byte']])]
-    [not (./Type/PrimitiveType[@Image='byte'])]
-    [not (ancestor::MethodDeclaration/preceding-sibling::Annotation/*/Name[@Image='Override'])]
-    [not(
-        ancestor::MethodDeclaration
-            [@Public='true' and @Static='true']
-            [child::ResultType[@Void='true']] and
-        ancestor::MethodDeclarator[@Image='main'] and
-        ..[@ParameterCount='1'] and
-        ./Type/ReferenceType[ClassOrInterfaceType[@Image='String']]
-    )]
-```
-
-**Example(s):**
-
-``` java
-public class Foo {
-    public void foo(String s, Object[] args) {
-        // Do something here...
-    }
-
-    public void bar(String s, Object... args) {
-        // Ahh, varargs tastes much better...
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/java/design.xml/UseVarargs" />
+<rule ref="category/java/design.xml/UseUtilityClass" />
 ```
 

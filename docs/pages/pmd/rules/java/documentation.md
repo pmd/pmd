@@ -4,7 +4,7 @@ summary: The Documentation category contains rules that deal with comments and c
 permalink: pmd_rules_java_documentation.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
-editmepath: ../pmd-java/src/main/resources/rulesets/java/documentation.xml
+editmepath: ../pmd-java/src/main/resources/category/java/documentation.xml
 keywords: Documentation, CommentContent, CommentRequired, CommentSize, UncommentedEmptyConstructor, UncommentedEmptyMethodBody
 ---
 ## CommentContent
@@ -33,7 +33,7 @@ A rule for the politically correct... we don't want to offend anyone.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/documentation.xml/CommentContent" />
+<rule ref="category/java/documentation.xml/CommentContent" />
 ```
 
 ## CommentRequired
@@ -69,7 +69,7 @@ Denotes whether comments are required (or unwanted) for specific language elemen
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/documentation.xml/CommentRequired" />
+<rule ref="category/java/documentation.xml/CommentRequired" />
 ```
 
 ## CommentSize
@@ -112,7 +112,7 @@ Determines whether the dimensions of non-header comments found are within the sp
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/documentation.xml/CommentSize" />
+<rule ref="category/java/documentation.xml/CommentSize" />
 ```
 
 ## UncommentedEmptyConstructor
@@ -148,7 +148,7 @@ public Foo() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/documentation.xml/UncommentedEmptyConstructor" />
+<rule ref="category/java/documentation.xml/UncommentedEmptyConstructor" />
 ```
 
 ## UncommentedEmptyMethodBody
@@ -175,6 +175,6 @@ public void doSomething() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/documentation.xml/UncommentedEmptyMethodBody" />
+<rule ref="category/java/documentation.xml/UncommentedEmptyMethodBody" />
 ```
 

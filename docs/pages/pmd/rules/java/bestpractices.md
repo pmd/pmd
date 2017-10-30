@@ -4,7 +4,7 @@ summary: The Best Practices category contains rules...  It fully contains these 
 permalink: pmd_rules_java_bestpractices.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
-editmepath: ../pmd-java/src/main/resources/rulesets/java/bestpractices.xml
+editmepath: ../pmd-java/src/main/resources/category/java/bestpractices.xml
 keywords: Best Practices, ArrayIsStoredDirectly, AvoidPrintStackTrace, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, GuardDebugLogging, GuardLogStatement, GuardLogStatementJavaUtil, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LooseCoupling, MethodReturnsInternalArray, NullAssignment, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UseVarargs
 ---
 ## ArrayIsStoredDirectly
@@ -32,7 +32,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/ArrayIsStoredDirectly" />
+<rule ref="category/java/bestpractices.xml/ArrayIsStoredDirectly" />
 ```
 
 ## AvoidPrintStackTrace
@@ -65,7 +65,7 @@ class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/AvoidPrintStackTrace" />
+<rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace" />
 ```
 
 ## AvoidReassigningParameters
@@ -90,7 +90,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/AvoidReassigningParameters" />
+<rule ref="category/java/bestpractices.xml/AvoidReassigningParameters" />
 ```
 
 ## AvoidStringBufferField
@@ -116,7 +116,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/AvoidStringBufferField" />
+<rule ref="category/java/bestpractices.xml/AvoidStringBufferField" />
 ```
 
 ## AvoidUsingHardCodedIP
@@ -147,7 +147,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/AvoidUsingHardCodedIP" />
+<rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP" />
 ```
 
 ## GuardDebugLogging
@@ -196,7 +196,7 @@ public class Test {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/GuardDebugLogging" />
+<rule ref="category/java/bestpractices.xml/GuardDebugLogging" />
 ```
 
 ## GuardLogStatement
@@ -227,7 +227,7 @@ otherwise skip the associate String creation and manipulation.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/GuardLogStatement" />
+<rule ref="category/java/bestpractices.xml/GuardLogStatement" />
 ```
 
 ## GuardLogStatementJavaUtil
@@ -260,7 +260,7 @@ if (log.isLoggable(Level.FINE)) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/GuardLogStatementJavaUtil" />
+<rule ref="category/java/bestpractices.xml/GuardLogStatementJavaUtil" />
 ```
 
 ## JUnit4SuitesShouldUseSuiteAnnotation
@@ -296,7 +296,7 @@ public class GoodTest {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" />
+<rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" />
 ```
 
 ## JUnit4TestShouldUseAfterAnnotation
@@ -331,7 +331,7 @@ public class MyTest2 {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation" />
+<rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation" />
 ```
 
 ## JUnit4TestShouldUseBeforeAnnotation
@@ -366,7 +366,7 @@ public class MyTest2 {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation" />
+<rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation" />
 ```
 
 ## JUnit4TestShouldUseTestAnnotation
@@ -400,7 +400,7 @@ public class MyTest {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/JUnit4TestShouldUseTestAnnotation" />
+<rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseTestAnnotation" />
 ```
 
 ## JUnitAssertionsShouldIncludeMessage
@@ -429,7 +429,7 @@ public class Foo extends TestCase {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/JUnitAssertionsShouldIncludeMessage" />
+<rule ref="category/java/bestpractices.xml/JUnitAssertionsShouldIncludeMessage" />
 ```
 
 ## JUnitTestContainsTooManyAsserts
@@ -473,7 +473,7 @@ public class MyTestCase extends TestCase {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/JUnitTestContainsTooManyAsserts" />
+<rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts" />
 ```
 
 ## JUnitTestsShouldIncludeAssert
@@ -502,7 +502,7 @@ public class Foo extends TestCase {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/JUnitTestsShouldIncludeAssert" />
+<rule ref="category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert" />
 ```
 
 ## JUnitUseExpected
@@ -537,7 +537,7 @@ public class MyTest {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/JUnitUseExpected" />
+<rule ref="category/java/bestpractices.xml/JUnitUseExpected" />
 ```
 
 ## LooseCoupling
@@ -577,7 +577,7 @@ public class Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/LooseCoupling" />
+<rule ref="category/java/bestpractices.xml/LooseCoupling" />
 ```
 
 ## MethodReturnsInternalArray
@@ -605,7 +605,7 @@ public class SecureSystem {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/MethodReturnsInternalArray" />
+<rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray" />
 ```
 
 ## NullAssignment
@@ -635,7 +635,7 @@ public void bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/NullAssignment" />
+<rule ref="category/java/bestpractices.xml/NullAssignment" />
 ```
 
 ## PositionLiteralsFirstInCaseInsensitiveComparisons
@@ -676,7 +676,7 @@ class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/PositionLiteralsFirstInCaseInsensitiveComparisons" />
+<rule ref="category/java/bestpractices.xml/PositionLiteralsFirstInCaseInsensitiveComparisons" />
 ```
 
 ## PositionLiteralsFirstInComparisons
@@ -713,7 +713,7 @@ class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/PositionLiteralsFirstInComparisons" />
+<rule ref="category/java/bestpractices.xml/PositionLiteralsFirstInComparisons" />
 ```
 
 ## ReplaceEnumerationWithIterator
@@ -744,7 +744,7 @@ public class Foo implements Enumeration {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/ReplaceEnumerationWithIterator" />
+<rule ref="category/java/bestpractices.xml/ReplaceEnumerationWithIterator" />
 ```
 
 ## ReplaceHashtableWithMap
@@ -771,7 +771,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/ReplaceHashtableWithMap" />
+<rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap" />
 ```
 
 ## ReplaceVectorWithList
@@ -798,7 +798,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/ReplaceVectorWithList" />
+<rule ref="category/java/bestpractices.xml/ReplaceVectorWithList" />
 ```
 
 ## SwitchStmtsShouldHaveDefault
@@ -828,7 +828,7 @@ public void bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/SwitchStmtsShouldHaveDefault" />
+<rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault" />
 ```
 
 ## SystemPrintln
@@ -864,7 +864,7 @@ class Foo{
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/SystemPrintln" />
+<rule ref="category/java/bestpractices.xml/SystemPrintln" />
 ```
 
 ## UseVarargs
@@ -914,6 +914,6 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/bestpractices.xml/UseVarargs" />
+<rule ref="category/java/bestpractices.xml/UseVarargs" />
 ```
 

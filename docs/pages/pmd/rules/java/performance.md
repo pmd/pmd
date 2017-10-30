@@ -4,7 +4,7 @@ summary: The Performance category contains rules that deal with optimizations an
 permalink: pmd_rules_java_performance.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
-editmepath: ../pmd-java/src/main/resources/rulesets/java/performance.xml
+editmepath: ../pmd-java/src/main/resources/category/java/performance.xml
 keywords: Performance, AddEmptyString, AppendCharacterWithChar, AvoidArrayLoops, AvoidInstantiatingObjectsInLoops, AvoidUsingShortType, BigIntegerInstantiation, BooleanInstantiation, ByteInstantiation, ConsecutiveAppendsShouldReuse, ConsecutiveLiteralAppends, DoNotCallGarbageCollectionExplicitly, InefficientEmptyStringCheck, InefficientStringBuffering, InsufficientStringBufferDeclaration, IntegerInstantiation, LocalVariableCouldBeFinal, LongInstantiation, MethodArgumentCouldBeFinal, OptimizableToArrayCall, RedundantFieldInitializer, SimplifyStartsWith, ShortInstantiation, StringInstantiation, StringToString, UnnecessaryWrapperObjectCreation, UseArrayListInsteadOfVector, UseArraysAsList, UseIndexOfChar, UselessStringValueOf, UseStringBufferForStringAppends, UseStringBufferLength
 ---
 ## AddEmptyString
@@ -29,7 +29,7 @@ String t = Integer.toString(456);   // preferred approach
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/AddEmptyString" />
+<rule ref="category/java/performance.xml/AddEmptyString" />
 ```
 
 ## AppendCharacterWithChar
@@ -54,7 +54,7 @@ sb.append('a');     // use this instead
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/AppendCharacterWithChar" />
+<rule ref="category/java/performance.xml/AppendCharacterWithChar" />
 ```
 
 ## AvoidArrayLoops
@@ -106,7 +106,7 @@ public class Test {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/AvoidArrayLoops" />
+<rule ref="category/java/performance.xml/AvoidArrayLoops" />
 ```
 
 ## AvoidInstantiatingObjectsInLoops
@@ -133,7 +133,7 @@ public class Something {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/AvoidInstantiatingObjectsInLoops" />
+<rule ref="category/java/performance.xml/AvoidInstantiatingObjectsInLoops" />
 ```
 
 ## AvoidUsingShortType
@@ -166,7 +166,7 @@ public class UsingShort {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/AvoidUsingShortType" />
+<rule ref="category/java/performance.xml/AvoidUsingShortType" />
 ```
 
 ## BigIntegerInstantiation
@@ -192,7 +192,7 @@ bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/BigIntegerInstantiation" />
+<rule ref="category/java/performance.xml/BigIntegerInstantiation" />
 ```
 
 ## BooleanInstantiation
@@ -214,7 +214,7 @@ Boolean buz = Boolean.valueOf(false);    // ...., just reference Boolean.FALSE;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/BooleanInstantiation" />
+<rule ref="category/java/performance.xml/BooleanInstantiation" />
 ```
 
 ## ByteInstantiation
@@ -243,7 +243,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/ByteInstantiation" />
+<rule ref="category/java/performance.xml/ByteInstantiation" />
 ```
 
 ## ConsecutiveAppendsShouldReuse
@@ -273,7 +273,7 @@ buf.append("Hello").append(foo).append("World"); // good
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/ConsecutiveAppendsShouldReuse" />
+<rule ref="category/java/performance.xml/ConsecutiveAppendsShouldReuse" />
 ```
 
 ## ConsecutiveLiteralAppends
@@ -302,7 +302,7 @@ buf.append("Hello World");                          // good
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/ConsecutiveLiteralAppends" />
+<rule ref="category/java/performance.xml/ConsecutiveLiteralAppends" />
 ```
 
 ## DoNotCallGarbageCollectionExplicitly
@@ -356,7 +356,7 @@ public class GCCall {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/DoNotCallGarbageCollectionExplicitly" />
+<rule ref="category/java/performance.xml/DoNotCallGarbageCollectionExplicitly" />
 ```
 
 ## InefficientEmptyStringCheck
@@ -386,7 +386,7 @@ public void bar(String string) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/InefficientEmptyStringCheck" />
+<rule ref="category/java/performance.xml/InefficientEmptyStringCheck" />
 ```
 
 ## InefficientStringBuffering
@@ -413,7 +413,7 @@ sb.append(System.getProperty("java.io.tmpdir"));
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/InefficientStringBuffering" />
+<rule ref="category/java/performance.xml/InefficientStringBuffering" />
 ```
 
 ## InsufficientStringBufferDeclaration
@@ -442,7 +442,7 @@ good.append("This is a long string, which is pre-sized");
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/InsufficientStringBufferDeclaration" />
+<rule ref="category/java/performance.xml/InsufficientStringBufferDeclaration" />
 ```
 
 ## IntegerInstantiation
@@ -472,7 +472,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/IntegerInstantiation" />
+<rule ref="category/java/performance.xml/IntegerInstantiation" />
 ```
 
 ## LocalVariableCouldBeFinal
@@ -498,7 +498,7 @@ public class Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/LocalVariableCouldBeFinal" />
+<rule ref="category/java/performance.xml/LocalVariableCouldBeFinal" />
 ```
 
 ## LongInstantiation
@@ -528,7 +528,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/LongInstantiation" />
+<rule ref="category/java/performance.xml/LongInstantiation" />
 ```
 
 ## MethodArgumentCouldBeFinal
@@ -555,7 +555,7 @@ public void foo2 (final String param) { // better, do stuff with param never ass
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/MethodArgumentCouldBeFinal" />
+<rule ref="category/java/performance.xml/MethodArgumentCouldBeFinal" />
 ```
 
 ## OptimizableToArrayCall
@@ -593,7 +593,7 @@ Foo[] fooArray = foos.toArray(new Foo[foos.size()]);
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/OptimizableToArrayCall" />
+<rule ref="category/java/performance.xml/OptimizableToArrayCall" />
 ```
 
 ## RedundantFieldInitializer
@@ -633,7 +633,7 @@ public class C {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/RedundantFieldInitializer" />
+<rule ref="category/java/performance.xml/RedundantFieldInitializer" />
 ```
 
 ## ShortInstantiation
@@ -663,7 +663,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/ShortInstantiation" />
+<rule ref="category/java/performance.xml/ShortInstantiation" />
 ```
 
 ## SimplifyStartsWith
@@ -705,7 +705,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/SimplifyStartsWith" />
+<rule ref="category/java/performance.xml/SimplifyStartsWith" />
 ```
 
 ## StringInstantiation
@@ -726,7 +726,7 @@ private String bar = new String("bar"); // just do a String bar = "bar";
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/StringInstantiation" />
+<rule ref="category/java/performance.xml/StringInstantiation" />
 ```
 
 ## StringToString
@@ -750,7 +750,7 @@ private String baz() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/StringToString" />
+<rule ref="category/java/performance.xml/StringToString" />
 ```
 
 ## UnnecessaryWrapperObjectCreation
@@ -786,7 +786,7 @@ public int convert(String s) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/UnnecessaryWrapperObjectCreation" />
+<rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation" />
 ```
 
 ## UseArrayListInsteadOfVector
@@ -816,7 +816,7 @@ public class SimpleTest extends TestCase {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/UseArrayListInsteadOfVector" />
+<rule ref="category/java/performance.xml/UseArrayListInsteadOfVector" />
 ```
 
 ## UseArraysAsList
@@ -879,7 +879,7 @@ public class Test {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/UseArraysAsList" />
+<rule ref="category/java/performance.xml/UseArraysAsList" />
 ```
 
 ## UseIndexOfChar
@@ -904,7 +904,7 @@ if (s.indexOf('d') {}
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/UseIndexOfChar" />
+<rule ref="category/java/performance.xml/UseIndexOfChar" />
 ```
 
 ## UselessStringValueOf
@@ -930,7 +930,7 @@ public String convert(int i) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/UselessStringValueOf" />
+<rule ref="category/java/performance.xml/UselessStringValueOf" />
 ```
 
 ## UseStringBufferForStringAppends
@@ -962,7 +962,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/UseStringBufferForStringAppends" />
+<rule ref="category/java/performance.xml/UseStringBufferForStringAppends" />
 ```
 
 ## UseStringBufferLength
@@ -988,6 +988,6 @@ if (sb.length() == 0) {}                // preferred
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/performance.xml/UseStringBufferLength" />
+<rule ref="category/java/performance.xml/UseStringBufferLength" />
 ```
 

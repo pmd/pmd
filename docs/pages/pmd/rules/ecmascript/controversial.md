@@ -29,6 +29,6 @@ with (object) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/controversial.xml/AvoidWithStatement" />
+<rule ref="category/ecmascript/controversial.xml/AvoidWithStatement" />
 ```
 

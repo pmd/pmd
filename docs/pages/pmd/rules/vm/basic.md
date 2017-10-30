@@ -25,7 +25,7 @@ Avoid creating deeply nested if-then statements since they are harder to read an
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/basic.xml/AvoidDeeplyNestedIfStmts" />
+<rule ref="category/vm/basic.xml/AvoidDeeplyNestedIfStmts" />
 ```
 
 ## AvoidReassigningParameters
@@ -40,7 +40,7 @@ Reassigning values to incoming parameters is not recommended.  Use temporary loc
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/basic.xml/AvoidReassigningParameters" />
+<rule ref="category/vm/basic.xml/AvoidReassigningParameters" />
 ```
 
 ## CollapsibleIfStatements
@@ -55,7 +55,7 @@ Sometimes two consecutive 'if' statements can be consolidated by separating thei
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/basic.xml/CollapsibleIfStatements" />
+<rule ref="category/vm/basic.xml/CollapsibleIfStatements" />
 ```
 
 ## EmptyForeachStmt
@@ -70,7 +70,7 @@ Empty foreach statements should be deleted.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/basic.xml/EmptyForeachStmt" />
+<rule ref="category/vm/basic.xml/EmptyForeachStmt" />
 ```
 
 ## EmptyIfStmt
@@ -85,7 +85,7 @@ Empty if statements should be deleted.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/basic.xml/EmptyIfStmt" />
+<rule ref="category/vm/basic.xml/EmptyIfStmt" />
 ```
 
 ## ExcessiveTemplateLength
@@ -108,7 +108,7 @@ The template is too long. It should be broken up into smaller pieces.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/basic.xml/ExcessiveTemplateLength" />
+<rule ref="category/vm/basic.xml/ExcessiveTemplateLength" />
 ```
 
 ## NoInlineJavaScript
@@ -123,7 +123,7 @@ Avoid inline JavaScript. Import .js files instead.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/basic.xml/NoInlineJavaScript" />
+<rule ref="category/vm/basic.xml/NoInlineJavaScript" />
 ```
 
 ## NoInlineStyles
@@ -140,7 +140,7 @@ Avoid inline styles. Use css classes instead.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/basic.xml/NoInlineStyles" />
+<rule ref="category/vm/basic.xml/NoInlineStyles" />
 ```
 
 ## UnusedMacroParameter
@@ -155,6 +155,6 @@ Avoid unused macro parameters. They should be deleted.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/basic.xml/UnusedMacroParameter" />
+<rule ref="category/vm/basic.xml/UnusedMacroParameter" />
 ```
 

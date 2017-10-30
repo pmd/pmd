@@ -23,7 +23,7 @@ Just some description of a deprecated rule.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/sample.xml/DeprecatedSample" />
+<rule ref="category/java/sample.xml/DeprecatedSample" />
 ```
 
 ## JumbledIncrementer
@@ -65,7 +65,7 @@ public class JumbledIncrementerRule1 {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/sample.xml/JumbledIncrementer" />
+<rule ref="category/java/sample.xml/JumbledIncrementer" />
 ```
 
 ## MovedRule
@@ -105,7 +105,7 @@ public class JumbledIncrementerRule1 {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/sample.xml/MovedRule" />
+<rule ref="category/java/sample.xml/MovedRule" />
 ```
 
 ## OverrideBothEqualsAndHashcode
@@ -149,7 +149,7 @@ public class Foo {      // perfect, both methods provided
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/sample.xml/OverrideBothEqualsAndHashcode" />
+<rule ref="category/java/sample.xml/OverrideBothEqualsAndHashcode" />
 ```
 
 ## RenamedRule
@@ -195,5 +195,5 @@ public class JumbledIncrementerRule1 {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/sample.xml/RenamedRule" />
+<rule ref="category/java/sample.xml/RenamedRule" />
 ```

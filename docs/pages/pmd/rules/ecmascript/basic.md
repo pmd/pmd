@@ -57,7 +57,7 @@ function getX() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/basic.xml/AssignmentInOperand" />
+<rule ref="category/ecmascript/basic.xml/AssignmentInOperand" />
 ```
 
 ## AvoidTrailingComma
@@ -95,7 +95,7 @@ function(arg) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/basic.xml/AvoidTrailingComma" />
+<rule ref="category/ecmascript/basic.xml/AvoidTrailingComma" />
 ```
 
 ## ConsistentReturn
@@ -140,7 +140,7 @@ function bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/basic.xml/ConsistentReturn" />
+<rule ref="category/ecmascript/basic.xml/ConsistentReturn" />
 ```
 
 ## EqualComparison
@@ -184,7 +184,7 @@ if (someVar != 3) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/basic.xml/EqualComparison" />
+<rule ref="category/ecmascript/basic.xml/EqualComparison" />
 ```
 
 ## GlobalVariable
@@ -214,7 +214,7 @@ function(arg) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/basic.xml/GlobalVariable" />
+<rule ref="category/ecmascript/basic.xml/GlobalVariable" />
 ```
 
 ## InnaccurateNumericLiteral
@@ -248,7 +248,7 @@ var z = 1.12345678901234567; // Not good
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/basic.xml/InnaccurateNumericLiteral" />
+<rule ref="category/ecmascript/basic.xml/InnaccurateNumericLiteral" />
 ```
 
 ## ScopeForInVariable
@@ -301,7 +301,7 @@ function bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/basic.xml/ScopeForInVariable" />
+<rule ref="category/ecmascript/basic.xml/ScopeForInVariable" />
 ```
 
 ## UnreachableCode
@@ -340,7 +340,7 @@ function bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/basic.xml/UnreachableCode" />
+<rule ref="category/ecmascript/basic.xml/UnreachableCode" />
 ```
 
 ## UseBaseWithParseInt
@@ -373,6 +373,6 @@ parseInt("10", 10); // good
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/basic.xml/UseBaseWithParseInt" />
+<rule ref="category/ecmascript/basic.xml/UseBaseWithParseInt" />
 ```
 

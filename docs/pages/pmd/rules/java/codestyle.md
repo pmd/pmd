@@ -4,7 +4,7 @@ summary: The Code Style category contains rules that enforce conventions like br
 permalink: pmd_rules_java_codestyle.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
-editmepath: ../pmd-java/src/main/resources/rulesets/java/codestyle.xml
+editmepath: ../pmd-java/src/main/resources/category/java/codestyle.xml
 keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidUsingNativeCode, ClassNamingConventions, CommentDefaultAccessModifier, DefaultPackage, EmptyMethodInAbstractClassShouldBeAbstract, FieldDeclarationsShouldBeAtStartOfClass, ForLoopsMustUseBraces, GenericsNaming, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LongVariable, MDBAndSessionBeanNamingConvention, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, UnnecessaryConstructor, UnnecessaryFinalModifier, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
 ---
 ## AbstractNaming
@@ -41,7 +41,7 @@ public abstract class Foo { // should be AbstractFoo
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/AbstractNaming" />
+<rule ref="category/java/codestyle.xml/AbstractNaming" />
 ```
 
 ## AtLeastOneConstructor
@@ -75,7 +75,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/AtLeastOneConstructor" />
+<rule ref="category/java/codestyle.xml/AtLeastOneConstructor" />
 ```
 
 ## AvoidDollarSigns
@@ -97,7 +97,7 @@ public class Fo$o {  // not a recommended name
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/AvoidDollarSigns" />
+<rule ref="category/java/codestyle.xml/AvoidDollarSigns" />
 ```
 
 ## AvoidFinalLocalVariable
@@ -133,7 +133,7 @@ public class MyClass {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/AvoidFinalLocalVariable" />
+<rule ref="category/java/codestyle.xml/AvoidFinalLocalVariable" />
 ```
 
 ## AvoidPrefixingMethodParameters
@@ -183,7 +183,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/AvoidPrefixingMethodParameters" />
+<rule ref="category/java/codestyle.xml/AvoidPrefixingMethodParameters" />
 ```
 
 ## AvoidUsingNativeCode
@@ -220,7 +220,7 @@ public class SomeJNIClass {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/AvoidUsingNativeCode" />
+<rule ref="category/java/codestyle.xml/AvoidUsingNativeCode" />
 ```
 
 ## ClassNamingConventions
@@ -241,7 +241,7 @@ public class Foo {}
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/ClassNamingConventions" />
+<rule ref="category/java/codestyle.xml/ClassNamingConventions" />
 ```
 
 ## CommentDefaultAccessModifier
@@ -289,7 +289,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/CommentDefaultAccessModifier" />
+<rule ref="category/java/codestyle.xml/CommentDefaultAccessModifier" />
 ```
 
 ## DefaultPackage
@@ -314,7 +314,7 @@ or MethodDeclaration[@PackagePrivate='true']
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/DefaultPackage" />
+<rule ref="category/java/codestyle.xml/DefaultPackage" />
 ```
 
 ## EmptyMethodInAbstractClassShouldBeAbstract
@@ -360,7 +360,7 @@ public abstract class ShouldBeAbstract {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/EmptyMethodInAbstractClassShouldBeAbstract" />
+<rule ref="category/java/codestyle.xml/EmptyMethodInAbstractClassShouldBeAbstract" />
 ```
 
 ## FieldDeclarationsShouldBeAtStartOfClass
@@ -400,7 +400,7 @@ public class HelloWorldBean {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass" />
+<rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass" />
 ```
 
 ## ForLoopsMustUseBraces
@@ -426,7 +426,7 @@ for (int i = 0; i < 42; i++)
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/ForLoopsMustUseBraces" />
+<rule ref="category/java/codestyle.xml/ForLoopsMustUseBraces" />
 ```
 
 ## GenericsNaming
@@ -467,7 +467,7 @@ public interface GenericDao<EF extends BaseModel, K extends Serializable> {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/GenericsNaming" />
+<rule ref="category/java/codestyle.xml/GenericsNaming" />
 ```
 
 ## IfElseStmtsMustUseBraces
@@ -502,7 +502,7 @@ if (foo)
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/IfElseStmtsMustUseBraces" />
+<rule ref="category/java/codestyle.xml/IfElseStmtsMustUseBraces" />
 ```
 
 ## IfStmtsMustUseBraces
@@ -532,7 +532,7 @@ if (foo) {  // preferred approach
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/IfStmtsMustUseBraces" />
+<rule ref="category/java/codestyle.xml/IfStmtsMustUseBraces" />
 ```
 
 ## LocalHomeNamingConvention
@@ -567,7 +567,7 @@ public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}  // non-s
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/LocalHomeNamingConvention" />
+<rule ref="category/java/codestyle.xml/LocalHomeNamingConvention" />
 ```
 
 ## LocalInterfaceSessionNamingConvention
@@ -602,7 +602,7 @@ public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}    // n
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/LocalInterfaceSessionNamingConvention" />
+<rule ref="category/java/codestyle.xml/LocalInterfaceSessionNamingConvention" />
 ```
 
 ## LongVariable
@@ -639,7 +639,7 @@ public class Something {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/LongVariable" />
+<rule ref="category/java/codestyle.xml/LongVariable" />
 ```
 
 ## MDBAndSessionBeanNamingConvention
@@ -676,7 +676,7 @@ public class MissingTheProperSuffix implements SessionBean {}   // non-standard 
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/MDBAndSessionBeanNamingConvention" />
+<rule ref="category/java/codestyle.xml/MDBAndSessionBeanNamingConvention" />
 ```
 
 ## MethodNamingConventions
@@ -706,7 +706,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/MethodNamingConventions" />
+<rule ref="category/java/codestyle.xml/MethodNamingConventions" />
 ```
 
 ## MIsLeadingVariableName
@@ -736,7 +736,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/MIsLeadingVariableName" />
+<rule ref="category/java/codestyle.xml/MIsLeadingVariableName" />
 ```
 
 ## NoPackage
@@ -761,7 +761,7 @@ public class ClassInDefaultPackage {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/NoPackage" />
+<rule ref="category/java/codestyle.xml/NoPackage" />
 ```
 
 ## OnlyOneReturn
@@ -789,7 +789,7 @@ public class OneReturnOnly1 {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/OnlyOneReturn" />
+<rule ref="category/java/codestyle.xml/OnlyOneReturn" />
 ```
 
 ## PackageCase
@@ -815,7 +815,7 @@ public class SomeClass {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/PackageCase" />
+<rule ref="category/java/codestyle.xml/PackageCase" />
 ```
 
 ## PrematureDeclaration
@@ -847,7 +847,7 @@ public int getLength(String[] strings) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/PrematureDeclaration" />
+<rule ref="category/java/codestyle.xml/PrematureDeclaration" />
 ```
 
 ## RemoteInterfaceNamingConvention
@@ -890,7 +890,7 @@ public interface BadSuffixBean extends javax.ejb.EJBObject {}
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/RemoteInterfaceNamingConvention" />
+<rule ref="category/java/codestyle.xml/RemoteInterfaceNamingConvention" />
 ```
 
 ## RemoteSessionInterfaceNamingConvention
@@ -925,7 +925,7 @@ public interface MissingProperSuffix extends javax.ejb.EJBHome {}   // non-stand
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/RemoteSessionInterfaceNamingConvention" />
+<rule ref="category/java/codestyle.xml/RemoteSessionInterfaceNamingConvention" />
 ```
 
 ## ShortClassName
@@ -955,7 +955,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/ShortClassName" />
+<rule ref="category/java/codestyle.xml/ShortClassName" />
 ```
 
 ## ShortMethodName
@@ -987,7 +987,7 @@ public class ShortMethod {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/ShortMethodName" />
+<rule ref="category/java/codestyle.xml/ShortMethodName" />
 ```
 
 ## ShortVariable
@@ -1030,7 +1030,7 @@ public class Something {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/ShortVariable" />
+<rule ref="category/java/codestyle.xml/ShortVariable" />
 ```
 
 ## TooManyStaticImports
@@ -1066,7 +1066,7 @@ import static Yoko; // Too much !
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/TooManyStaticImports" />
+<rule ref="category/java/codestyle.xml/TooManyStaticImports" />
 ```
 
 ## UnnecessaryConstructor
@@ -1098,7 +1098,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/UnnecessaryConstructor" />
+<rule ref="category/java/codestyle.xml/UnnecessaryConstructor" />
 ```
 
 ## UnnecessaryFinalModifier
@@ -1134,7 +1134,7 @@ public final class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/UnnecessaryFinalModifier" />
+<rule ref="category/java/codestyle.xml/UnnecessaryFinalModifier" />
 ```
 
 ## UnnecessaryLocalBeforeReturn
@@ -1166,7 +1166,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/UnnecessaryLocalBeforeReturn" />
+<rule ref="category/java/codestyle.xml/UnnecessaryLocalBeforeReturn" />
 ```
 
 ## UnnecessaryModifier
@@ -1208,7 +1208,7 @@ public class Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/UnnecessaryModifier" />
+<rule ref="category/java/codestyle.xml/UnnecessaryModifier" />
 ```
 
 ## UselessParentheses
@@ -1292,7 +1292,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/UselessParentheses" />
+<rule ref="category/java/codestyle.xml/UselessParentheses" />
 ```
 
 ## UselessQualifiedThis
@@ -1343,7 +1343,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/UselessQualifiedThis" />
+<rule ref="category/java/codestyle.xml/UselessQualifiedThis" />
 ```
 
 ## VariableNamingConventions
@@ -1387,7 +1387,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/VariableNamingConventions" />
+<rule ref="category/java/codestyle.xml/VariableNamingConventions" />
 ```
 
 ## WhileLoopsMustUseBraces
@@ -1417,6 +1417,6 @@ while (true) {  // preferred approach
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/codestyle.xml/WhileLoopsMustUseBraces" />
+<rule ref="category/java/codestyle.xml/WhileLoopsMustUseBraces" />
 ```
 

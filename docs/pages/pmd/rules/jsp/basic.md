@@ -25,7 +25,7 @@ Avoid duplicate import statements inside JSP's.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/basic.xml/DuplicateJspImports" />
+<rule ref="category/jsp/basic.xml/DuplicateJspImports" />
 ```
 
 ## IframeMissingSrcAttribute
@@ -55,7 +55,7 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/basic.xml/IframeMissingSrcAttribute" />
+<rule ref="category/jsp/basic.xml/IframeMissingSrcAttribute" />
 ```
 
 ## JspEncoding
@@ -88,7 +88,7 @@ Most browsers should be able to interpret the following headers:
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/basic.xml/JspEncoding" />
+<rule ref="category/jsp/basic.xml/JspEncoding" />
 ```
 
 ## NoClassAttribute
@@ -113,7 +113,7 @@ Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/basic.xml/NoClassAttribute" />
+<rule ref="category/jsp/basic.xml/NoClassAttribute" />
 ```
 
 ## NoHtmlComments
@@ -144,7 +144,7 @@ little other purpose. Consider switching to JSP comments.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/basic.xml/NoHtmlComments" />
+<rule ref="category/jsp/basic.xml/NoHtmlComments" />
 ```
 
 ## NoInlineScript
@@ -172,7 +172,7 @@ Most browsers should be able to interpret the following headers:
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/basic.xml/NoInlineScript" />
+<rule ref="category/jsp/basic.xml/NoInlineScript" />
 ```
 
 ## NoInlineStyleInformation
@@ -194,7 +194,7 @@ tags, or attributes like "align='center'".
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/basic.xml/NoInlineStyleInformation" />
+<rule ref="category/jsp/basic.xml/NoInlineStyleInformation" />
 ```
 
 ## NoJspForward
@@ -217,7 +217,7 @@ Do not do a forward from within a JSP file.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/basic.xml/NoJspForward" />
+<rule ref="category/jsp/basic.xml/NoJspForward" />
 ```
 
 ## NoLongScripts
@@ -260,7 +260,7 @@ onload=calcDays;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/basic.xml/NoLongScripts" />
+<rule ref="category/jsp/basic.xml/NoLongScripts" />
 ```
 
 ## NoScriptlets
@@ -294,7 +294,7 @@ response.setHeader("Pragma", "No-cache");
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/basic.xml/NoScriptlets" />
+<rule ref="category/jsp/basic.xml/NoScriptlets" />
 ```
 
 ## NoUnsanitizedJSPExpression
@@ -320,6 +320,6 @@ ${fn:escapeXml(expression)}      <!-- instead, escape it -->
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/basic.xml/NoUnsanitizedJSPExpression" />
+<rule ref="category/jsp/basic.xml/NoUnsanitizedJSPExpression" />
 ```
 

@@ -44,7 +44,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/complexity.xml/AvoidDeeplyNestedIfStmts" />
+<rule ref="category/apex/complexity.xml/AvoidDeeplyNestedIfStmts" />
 ```
 
 ## ExcessiveClassLength
@@ -91,7 +91,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/complexity.xml/ExcessiveClassLength" />
+<rule ref="category/apex/complexity.xml/ExcessiveClassLength" />
 ```
 
 ## ExcessiveParameterList
@@ -131,7 +131,7 @@ public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/complexity.xml/ExcessiveParameterList" />
+<rule ref="category/apex/complexity.xml/ExcessiveParameterList" />
 ```
 
 ## ExcessivePublicCount
@@ -176,7 +176,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/complexity.xml/ExcessivePublicCount" />
+<rule ref="category/apex/complexity.xml/ExcessivePublicCount" />
 ```
 
 ## NcssConstructorCount
@@ -220,7 +220,7 @@ public class Foo extends Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/complexity.xml/NcssConstructorCount" />
+<rule ref="category/apex/complexity.xml/NcssConstructorCount" />
 ```
 
 ## NcssMethodCount
@@ -263,7 +263,7 @@ public class Foo extends Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/complexity.xml/NcssMethodCount" />
+<rule ref="category/apex/complexity.xml/NcssMethodCount" />
 ```
 
 ## NcssTypeCount
@@ -308,7 +308,7 @@ public class Foo extends Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/complexity.xml/NcssTypeCount" />
+<rule ref="category/apex/complexity.xml/NcssTypeCount" />
 ```
 
 ## StdCyclomaticComplexity
@@ -378,7 +378,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/complexity.xml/StdCyclomaticComplexity" />
+<rule ref="category/apex/complexity.xml/StdCyclomaticComplexity" />
 ```
 
 ## TooManyFields
@@ -423,6 +423,6 @@ public class Person {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/complexity.xml/TooManyFields" />
+<rule ref="category/apex/complexity.xml/TooManyFields" />
 ```
 

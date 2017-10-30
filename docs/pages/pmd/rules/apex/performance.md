@@ -41,7 +41,7 @@ public class Something {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/performance.xml/AvoidDmlStatementsInLoops" />
+<rule ref="category/apex/performance.xml/AvoidDmlStatementsInLoops" />
 ```
 
 ## AvoidSoqlInLoops
@@ -76,7 +76,7 @@ public class Something {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/performance.xml/AvoidSoqlInLoops" />
+<rule ref="category/apex/performance.xml/AvoidSoqlInLoops" />
 ```
 
 ## AvoidSoslInLoops
@@ -111,6 +111,6 @@ public class Something {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/performance.xml/AvoidSoslInLoops" />
+<rule ref="category/apex/performance.xml/AvoidSoslInLoops" />
 ```
 

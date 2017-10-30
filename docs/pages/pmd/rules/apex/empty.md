@@ -44,7 +44,7 @@ public void doSomething() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/empty.xml/EmptyCatchBlock" />
+<rule ref="category/apex/empty.xml/EmptyCatchBlock" />
 ```
 
 ## EmptyIfStmt
@@ -82,7 +82,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/empty.xml/EmptyIfStmt" />
+<rule ref="category/apex/empty.xml/EmptyIfStmt" />
 ```
 
 ## EmptyStatementBlock
@@ -122,7 +122,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/empty.xml/EmptyStatementBlock" />
+<rule ref="category/apex/empty.xml/EmptyStatementBlock" />
 ```
 
 ## EmptyTryOrFinallyBlock
@@ -171,7 +171,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/empty.xml/EmptyTryOrFinallyBlock" />
+<rule ref="category/apex/empty.xml/EmptyTryOrFinallyBlock" />
 ```
 
 ## EmptyWhileStmt
@@ -208,6 +208,6 @@ public void bar(Integer a, Integer b) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/empty.xml/EmptyWhileStmt" />
+<rule ref="category/apex/empty.xml/EmptyWhileStmt" />
 ```
 

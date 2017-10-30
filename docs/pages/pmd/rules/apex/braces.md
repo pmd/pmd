@@ -44,7 +44,7 @@ for (int i = 0; i < 42; i++) { // preferred approach
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/braces.xml/ForLoopsMustUseBraces" />
+<rule ref="category/apex/braces.xml/ForLoopsMustUseBraces" />
 ```
 
 ## IfElseStmtsMustUseBraces
@@ -86,7 +86,7 @@ else
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/braces.xml/IfElseStmtsMustUseBraces" />
+<rule ref="category/apex/braces.xml/IfElseStmtsMustUseBraces" />
 ```
 
 ## IfStmtsMustUseBraces
@@ -124,7 +124,7 @@ if (foo) {  // preferred approach
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/braces.xml/IfStmtsMustUseBraces" />
+<rule ref="category/apex/braces.xml/IfStmtsMustUseBraces" />
 ```
 
 ## WhileLoopsMustUseBraces
@@ -162,6 +162,6 @@ while (true) {  // preferred approach
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/braces.xml/WhileLoopsMustUseBraces" />
+<rule ref="category/apex/braces.xml/WhileLoopsMustUseBraces" />
 ```
 

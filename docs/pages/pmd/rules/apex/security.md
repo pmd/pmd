@@ -39,7 +39,7 @@ public without sharing class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexBadCrypto" />
+<rule ref="category/apex/security.xml/ApexBadCrypto" />
 ```
 
 ## ApexCRUDViolation
@@ -83,7 +83,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexCRUDViolation" />
+<rule ref="category/apex/security.xml/ApexCRUDViolation" />
 ```
 
 ## ApexCSRF
@@ -121,7 +121,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexCSRF" />
+<rule ref="category/apex/security.xml/ApexCSRF" />
 ```
 
 ## ApexDangerousMethods
@@ -161,7 +161,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexDangerousMethods" />
+<rule ref="category/apex/security.xml/ApexDangerousMethods" />
 ```
 
 ## ApexInsecureEndpoint
@@ -196,7 +196,7 @@ public without sharing class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexInsecureEndpoint" />
+<rule ref="category/apex/security.xml/ApexInsecureEndpoint" />
 ```
 
 ## ApexOpenRedirect
@@ -231,7 +231,7 @@ public without sharing class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexOpenRedirect" />
+<rule ref="category/apex/security.xml/ApexOpenRedirect" />
 ```
 
 ## ApexSharingViolations
@@ -263,7 +263,7 @@ public without sharing class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexSharingViolations" />
+<rule ref="category/apex/security.xml/ApexSharingViolations" />
 ```
 
 ## ApexSOQLInjection
@@ -296,7 +296,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexSOQLInjection" />
+<rule ref="category/apex/security.xml/ApexSOQLInjection" />
 ```
 
 ## ApexSuggestUsingNamedCred
@@ -343,7 +343,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexSuggestUsingNamedCred" />
+<rule ref="category/apex/security.xml/ApexSuggestUsingNamedCred" />
 ```
 
 ## ApexXSSFromEscapeFalse
@@ -376,7 +376,7 @@ public without sharing class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexXSSFromEscapeFalse" />
+<rule ref="category/apex/security.xml/ApexXSSFromEscapeFalse" />
 ```
 
 ## ApexXSSFromURLParam
@@ -409,6 +409,6 @@ public without sharing class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexXSSFromURLParam" />
+<rule ref="category/apex/security.xml/ApexXSSFromURLParam" />
 ```
 

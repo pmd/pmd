@@ -4,7 +4,7 @@ summary: The Error Prone category contains rules, that detect incorrect usages, 
 permalink: pmd_rules_java_errorprone.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
-editmepath: ../pmd-java/src/main/resources/rulesets/java/errorprone.xml
+editmepath: ../pmd-java/src/main/resources/category/java/errorprone.xml
 keywords: Error Prone, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingOctalValues, BadComparison, BeanMembersShouldSerialize, BooleanGetMethodName, BrokenNullCheck, CallSuperFirst, CallSuperInConstructor, CallSuperLast, CheckResultSet, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloneThrowsCloneNotSupportedException, CloseResource, CompareObjectsWithEquals, ConfusingTernary, ConstantsInInterface, ConstructorCallsOverridableMethod, DataflowAnomalyAnalysis, DefaultLabelNotLastInSwitchStmt, DoNotCallSystemExit, DoNotExtendJavaLangError, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotThrowExceptionInFinally, DontImportJavaLang, DontImportSun, DontUseFloatTypeForLoopIndices, DuplicateImports, EmptyCatchBlock, EmptyFinalizer, EmptyFinallyBlock, EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, EmptyStaticInitializer, EmptyStatementNotInLoop, EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, EmptyWhileStmt, EqualsNull, ExtendsObject, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, ForLoopCanBeForeach, ForLoopShouldBeWhileLoop, IdempotentOperations, ImportFromSamePackage, InstantiationToGetClass, InvalidSlf4jMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, LoggerIsNotStaticFinal, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingBreakInSwitch, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonStaticInitializer, OneDeclarationPerLine, OverrideBothEqualsAndHashcode, PreserveStackTrace, ProperCloneImplementation, ProperLogger, ReturnEmptyArrayRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousConstantFieldName, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnnecessaryFullyQualifiedName, UnnecessaryReturn, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedNullCheckInEquals, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader
 ---
 ## AbstractClassWithoutAbstractMethod
@@ -39,7 +39,7 @@ public abstract class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AbstractClassWithoutAbstractMethod" />
+<rule ref="category/java/errorprone.xml/AbstractClassWithoutAbstractMethod" />
 ```
 
 ## AccessorClassGeneration
@@ -71,7 +71,7 @@ public class Outer {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AccessorClassGeneration" />
+<rule ref="category/java/errorprone.xml/AccessorClassGeneration" />
 ```
 
 ## AccessorMethodGeneration
@@ -107,7 +107,7 @@ public class OuterClass {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AccessorMethodGeneration" />
+<rule ref="category/java/errorprone.xml/AccessorMethodGeneration" />
 ```
 
 ## AssignmentInOperand
@@ -142,7 +142,7 @@ public void bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AssignmentInOperand" />
+<rule ref="category/java/errorprone.xml/AssignmentInOperand" />
 ```
 
 ## AssignmentToNonFinalStatic
@@ -168,7 +168,7 @@ public class StaticField {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AssignmentToNonFinalStatic" />
+<rule ref="category/java/errorprone.xml/AssignmentToNonFinalStatic" />
 ```
 
 ## AvoidAccessibilityAlteration
@@ -240,7 +240,7 @@ public class Violation {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidAccessibilityAlteration" />
+<rule ref="category/java/errorprone.xml/AvoidAccessibilityAlteration" />
 ```
 
 ## AvoidAssertAsIdentifier
@@ -267,7 +267,7 @@ public class A {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidAssertAsIdentifier" />
+<rule ref="category/java/errorprone.xml/AvoidAssertAsIdentifier" />
 ```
 
 ## AvoidBranchingStatementAsLastInLoop
@@ -310,7 +310,7 @@ for (int i = 0; i < 10; i++) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop" />
+<rule ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop" />
 ```
 
 ## AvoidCallingFinalize
@@ -335,7 +335,7 @@ void foo() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidCallingFinalize" />
+<rule ref="category/java/errorprone.xml/AvoidCallingFinalize" />
 ```
 
 ## AvoidCatchingNPE
@@ -367,7 +367,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidCatchingNPE" />
+<rule ref="category/java/errorprone.xml/AvoidCatchingNPE" />
 ```
 
 ## AvoidCatchingThrowable
@@ -395,7 +395,7 @@ public void bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidCatchingThrowable" />
+<rule ref="category/java/errorprone.xml/AvoidCatchingThrowable" />
 ```
 
 ## AvoidDecimalLiteralsInBigDecimalConstructor
@@ -448,7 +448,7 @@ BigDecimal bd = new BigDecimal(12);          // preferred approach, ok for integ
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor" />
+<rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor" />
 ```
 
 ## AvoidDuplicateLiterals
@@ -486,7 +486,7 @@ private void buz(String x) {}
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidDuplicateLiterals" />
+<rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals" />
 ```
 
 ## AvoidEnumAsIdentifier
@@ -513,7 +513,7 @@ public class A {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidEnumAsIdentifier" />
+<rule ref="category/java/errorprone.xml/AvoidEnumAsIdentifier" />
 ```
 
 ## AvoidFieldNameMatchingMethodName
@@ -541,7 +541,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidFieldNameMatchingMethodName" />
+<rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingMethodName" />
 ```
 
 ## AvoidFieldNameMatchingTypeName
@@ -565,7 +565,7 @@ public class Foo extends Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidFieldNameMatchingTypeName" />
+<rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingTypeName" />
 ```
 
 ## AvoidInstanceofChecksInCatchClause
@@ -605,7 +605,7 @@ try {  // Prefer this:
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidInstanceofChecksInCatchClause" />
+<rule ref="category/java/errorprone.xml/AvoidInstanceofChecksInCatchClause" />
 ```
 
 ## AvoidLiteralsInIfCondition
@@ -656,7 +656,7 @@ public void checkRequests() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidLiteralsInIfCondition" />
+<rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition" />
 ```
 
 ## AvoidLosingExceptionInformation
@@ -697,7 +697,7 @@ public void bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidLosingExceptionInformation" />
+<rule ref="category/java/errorprone.xml/AvoidLosingExceptionInformation" />
 ```
 
 ## AvoidMultipleUnaryOperators
@@ -735,7 +735,7 @@ int j = -~7;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidMultipleUnaryOperators" />
+<rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators" />
 ```
 
 ## AvoidProtectedFieldInFinalClass
@@ -765,7 +765,7 @@ public final class Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidProtectedFieldInFinalClass" />
+<rule ref="category/java/errorprone.xml/AvoidProtectedFieldInFinalClass" />
 ```
 
 ## AvoidProtectedMethodInFinalClassNotExtending
@@ -795,7 +795,7 @@ public final class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidProtectedMethodInFinalClassNotExtending" />
+<rule ref="category/java/errorprone.xml/AvoidProtectedMethodInFinalClassNotExtending" />
 ```
 
 ## AvoidUsingOctalValues
@@ -825,7 +825,7 @@ k = i * j;      // set k with 80 not 120
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/AvoidUsingOctalValues" />
+<rule ref="category/java/errorprone.xml/AvoidUsingOctalValues" />
 ```
 
 ## BadComparison
@@ -851,7 +851,7 @@ boolean x = (y == Double.NaN);
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/BadComparison" />
+<rule ref="category/java/errorprone.xml/BadComparison" />
 ```
 
 ## BeanMembersShouldSerialize
@@ -892,7 +892,7 @@ private int getMoreFoo(){
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/BeanMembersShouldSerialize" />
+<rule ref="category/java/errorprone.xml/BeanMembersShouldSerialize" />
 ```
 
 ## BooleanGetMethodName
@@ -931,7 +931,7 @@ public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/BooleanGetMethodName" />
+<rule ref="category/java/errorprone.xml/BooleanGetMethodName" />
 ```
 
 ## BrokenNullCheck
@@ -960,7 +960,7 @@ public String bar(String string) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/BrokenNullCheck" />
+<rule ref="category/java/errorprone.xml/BrokenNullCheck" />
 ```
 
 ## CallSuperFirst
@@ -1004,7 +1004,7 @@ public class DummyActivity extends Activity {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/CallSuperFirst" />
+<rule ref="category/java/errorprone.xml/CallSuperFirst" />
 ```
 
 ## CallSuperInConstructor
@@ -1041,7 +1041,7 @@ public class Foo extends Bar{
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/CallSuperInConstructor" />
+<rule ref="category/java/errorprone.xml/CallSuperInConstructor" />
 ```
 
 ## CallSuperLast
@@ -1083,7 +1083,7 @@ public class DummyActivity extends Activity {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/CallSuperLast" />
+<rule ref="category/java/errorprone.xml/CallSuperLast" />
 ```
 
 ## CheckResultSet
@@ -1116,7 +1116,7 @@ if (rst.next()) {    // result is properly examined and used
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/CheckResultSet" />
+<rule ref="category/java/errorprone.xml/CheckResultSet" />
 ```
 
 ## CheckSkipResult
@@ -1152,7 +1152,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/CheckSkipResult" />
+<rule ref="category/java/errorprone.xml/CheckSkipResult" />
 ```
 
 ## ClassCastExceptionWithToArray
@@ -1193,7 +1193,7 @@ Integer[] b = (Integer [])c.toArray(new Integer[c.size()]);
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/ClassCastExceptionWithToArray" />
+<rule ref="category/java/errorprone.xml/ClassCastExceptionWithToArray" />
 ```
 
 ## CloneMethodMustBePublic
@@ -1234,7 +1234,7 @@ public class Foo implements Cloneable {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/CloneMethodMustBePublic" />
+<rule ref="category/java/errorprone.xml/CloneMethodMustBePublic" />
 ```
 
 ## CloneMethodMustImplementCloneable
@@ -1262,7 +1262,7 @@ public class MyClass {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/CloneMethodMustImplementCloneable" />
+<rule ref="category/java/errorprone.xml/CloneMethodMustImplementCloneable" />
 ```
 
 ## CloneMethodReturnTypeMustMatchClassName
@@ -1305,7 +1305,7 @@ public class Foo implements Cloneable {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/CloneMethodReturnTypeMustMatchClassName" />
+<rule ref="category/java/errorprone.xml/CloneMethodReturnTypeMustMatchClassName" />
 ```
 
 ## CloneThrowsCloneNotSupportedException
@@ -1342,7 +1342,7 @@ public class MyClass implements Cloneable{
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/CloneThrowsCloneNotSupportedException" />
+<rule ref="category/java/errorprone.xml/CloneThrowsCloneNotSupportedException" />
 ```
 
 ## CloseResource
@@ -1383,7 +1383,7 @@ public class Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/CloseResource" />
+<rule ref="category/java/errorprone.xml/CloseResource" />
 ```
 
 ## CompareObjectsWithEquals
@@ -1408,7 +1408,7 @@ class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/CompareObjectsWithEquals" />
+<rule ref="category/java/errorprone.xml/CompareObjectsWithEquals" />
 ```
 
 ## ConfusingTernary
@@ -1442,7 +1442,7 @@ boolean bar(int x, int y) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/ConfusingTernary" />
+<rule ref="category/java/errorprone.xml/ConfusingTernary" />
 ```
 
 ## ConstantsInInterface
@@ -1491,7 +1491,7 @@ public interface YetAnotherConstantInterface {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/ConstantsInInterface" />
+<rule ref="category/java/errorprone.xml/ConstantsInInterface" />
 ```
 
 ## ConstructorCallsOverridableMethod
@@ -1535,7 +1535,7 @@ public class JuniorClass extends SeniorClass {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/ConstructorCallsOverridableMethod" />
+<rule ref="category/java/errorprone.xml/ConstructorCallsOverridableMethod" />
 ```
 
 ## DataflowAnomalyAnalysis
@@ -1573,7 +1573,7 @@ public void foo() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/DataflowAnomalyAnalysis" />
+<rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis" />
 ```
 
 ## DefaultLabelNotLastInSwitchStmt
@@ -1609,7 +1609,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/DefaultLabelNotLastInSwitchStmt" />
+<rule ref="category/java/errorprone.xml/DefaultLabelNotLastInSwitchStmt" />
 ```
 
 ## DoNotCallSystemExit
@@ -1642,7 +1642,7 @@ public void foo() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/DoNotCallSystemExit" />
+<rule ref="category/java/errorprone.xml/DoNotCallSystemExit" />
 ```
 
 ## DoNotExtendJavaLangError
@@ -1666,7 +1666,7 @@ public class Foo extends Error { }
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/DoNotExtendJavaLangError" />
+<rule ref="category/java/errorprone.xml/DoNotExtendJavaLangError" />
 ```
 
 ## DoNotExtendJavaLangThrowable
@@ -1690,7 +1690,7 @@ public class Foo extends Throwable { }
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/DoNotExtendJavaLangThrowable" />
+<rule ref="category/java/errorprone.xml/DoNotExtendJavaLangThrowable" />
 ```
 
 ## DoNotHardCodeSDCard
@@ -1719,7 +1719,7 @@ public class MyActivity extends Activity {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/DoNotHardCodeSDCard" />
+<rule ref="category/java/errorprone.xml/DoNotHardCodeSDCard" />
 ```
 
 ## DoNotThrowExceptionInFinally
@@ -1755,7 +1755,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/DoNotThrowExceptionInFinally" />
+<rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally" />
 ```
 
 ## DontImportJavaLang
@@ -1784,7 +1784,7 @@ public class Foo {}
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/DontImportJavaLang" />
+<rule ref="category/java/errorprone.xml/DontImportJavaLang" />
 ```
 
 ## DontImportSun
@@ -1806,7 +1806,7 @@ public class Foo {}
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/DontImportSun" />
+<rule ref="category/java/errorprone.xml/DontImportSun" />
 ```
 
 ## DontUseFloatTypeForLoopIndices
@@ -1842,7 +1842,7 @@ public class Count {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/DontUseFloatTypeForLoopIndices" />
+<rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices" />
 ```
 
 ## DuplicateImports
@@ -1865,7 +1865,7 @@ public class Foo {}
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/DuplicateImports" />
+<rule ref="category/java/errorprone.xml/DuplicateImports" />
 ```
 
 ## EmptyCatchBlock
@@ -1908,7 +1908,7 @@ public void doSomething() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/EmptyCatchBlock" />
+<rule ref="category/java/errorprone.xml/EmptyCatchBlock" />
 ```
 
 ## EmptyFinalizer
@@ -1934,7 +1934,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/EmptyFinalizer" />
+<rule ref="category/java/errorprone.xml/EmptyFinalizer" />
 ```
 
 ## EmptyFinallyBlock
@@ -1965,7 +1965,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/EmptyFinallyBlock" />
+<rule ref="category/java/errorprone.xml/EmptyFinallyBlock" />
 ```
 
 ## EmptyIfStmt
@@ -1995,7 +1995,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/EmptyIfStmt" />
+<rule ref="category/java/errorprone.xml/EmptyIfStmt" />
 ```
 
 ## EmptyInitializer
@@ -2024,7 +2024,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/EmptyInitializer" />
+<rule ref="category/java/errorprone.xml/EmptyInitializer" />
 ```
 
 ## EmptyStatementBlock
@@ -2056,7 +2056,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/EmptyStatementBlock" />
+<rule ref="category/java/errorprone.xml/EmptyStatementBlock" />
 ```
 
 ## EmptyStatementNotInLoop
@@ -2095,7 +2095,7 @@ public void doit() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/EmptyStatementNotInLoop" />
+<rule ref="category/java/errorprone.xml/EmptyStatementNotInLoop" />
 ```
 
 ## EmptyStaticInitializer
@@ -2122,7 +2122,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/EmptyStaticInitializer" />
+<rule ref="category/java/errorprone.xml/EmptyStaticInitializer" />
 ```
 
 ## EmptySwitchStatements
@@ -2151,7 +2151,7 @@ public void bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/EmptySwitchStatements" />
+<rule ref="category/java/errorprone.xml/EmptySwitchStatements" />
 ```
 
 ## EmptySynchronizedBlock
@@ -2180,7 +2180,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/EmptySynchronizedBlock" />
+<rule ref="category/java/errorprone.xml/EmptySynchronizedBlock" />
 ```
 
 ## EmptyTryBlock
@@ -2210,7 +2210,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/EmptyTryBlock" />
+<rule ref="category/java/errorprone.xml/EmptyTryBlock" />
 ```
 
 ## EmptyWhileStmt
@@ -2239,7 +2239,7 @@ void bar(int a, int b) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/EmptyWhileStmt" />
+<rule ref="category/java/errorprone.xml/EmptyWhileStmt" />
 ```
 
 ## EqualsNull
@@ -2282,7 +2282,7 @@ if (x == null) {        // preferred
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/EqualsNull" />
+<rule ref="category/java/errorprone.xml/EqualsNull" />
 ```
 
 ## ExtendsObject
@@ -2306,7 +2306,7 @@ public class Foo extends Object {     // not required
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/ExtendsObject" />
+<rule ref="category/java/errorprone.xml/ExtendsObject" />
 ```
 
 ## FinalizeDoesNotCallSuperFinalize
@@ -2345,7 +2345,7 @@ protected void finalize() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/FinalizeDoesNotCallSuperFinalize" />
+<rule ref="category/java/errorprone.xml/FinalizeDoesNotCallSuperFinalize" />
 ```
 
 ## FinalizeOnlyCallsSuperFinalize
@@ -2376,7 +2376,7 @@ protected void finalize() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/FinalizeOnlyCallsSuperFinalize" />
+<rule ref="category/java/errorprone.xml/FinalizeOnlyCallsSuperFinalize" />
 ```
 
 ## FinalizeOverloaded
@@ -2405,7 +2405,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/FinalizeOverloaded" />
+<rule ref="category/java/errorprone.xml/FinalizeOverloaded" />
 ```
 
 ## FinalizeShouldBeProtected
@@ -2433,7 +2433,7 @@ public void finalize() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/FinalizeShouldBeProtected" />
+<rule ref="category/java/errorprone.xml/FinalizeShouldBeProtected" />
 ```
 
 ## ForLoopCanBeForeach
@@ -2469,7 +2469,7 @@ public class MyClass {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/ForLoopCanBeForeach" />
+<rule ref="category/java/errorprone.xml/ForLoopCanBeForeach" />
 ```
 
 ## ForLoopShouldBeWhileLoop
@@ -2501,7 +2501,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/ForLoopShouldBeWhileLoop" />
+<rule ref="category/java/errorprone.xml/ForLoopShouldBeWhileLoop" />
 ```
 
 ## IdempotentOperations
@@ -2527,7 +2527,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/IdempotentOperations" />
+<rule ref="category/java/errorprone.xml/IdempotentOperations" />
 ```
 
 ## ImportFromSamePackage
@@ -2553,7 +2553,7 @@ public class Bar{}
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/ImportFromSamePackage" />
+<rule ref="category/java/errorprone.xml/ImportFromSamePackage" />
 ```
 
 ## InstantiationToGetClass
@@ -2585,7 +2585,7 @@ Class c = String.class;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/InstantiationToGetClass" />
+<rule ref="category/java/errorprone.xml/InstantiationToGetClass" />
 ```
 
 ## InvalidSlf4jMessageFormat
@@ -2608,7 +2608,7 @@ LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The except
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/InvalidSlf4jMessageFormat" />
+<rule ref="category/java/errorprone.xml/InvalidSlf4jMessageFormat" />
 ```
 
 ## JumbledIncrementer
@@ -2644,7 +2644,7 @@ public class JumbledIncrementerRule1 {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/JumbledIncrementer" />
+<rule ref="category/java/errorprone.xml/JumbledIncrementer" />
 ```
 
 ## JUnitSpelling
@@ -2677,7 +2677,7 @@ public class Foo extends TestCase {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/JUnitSpelling" />
+<rule ref="category/java/errorprone.xml/JUnitSpelling" />
 ```
 
 ## JUnitStaticSuite
@@ -2708,7 +2708,7 @@ public class Foo extends TestCase {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/JUnitStaticSuite" />
+<rule ref="category/java/errorprone.xml/JUnitStaticSuite" />
 ```
 
 ## LoggerIsNotStaticFinal
@@ -2740,7 +2740,7 @@ public class Foo{
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/LoggerIsNotStaticFinal" />
+<rule ref="category/java/errorprone.xml/LoggerIsNotStaticFinal" />
 ```
 
 ## MethodWithSameNameAsEnclosingClass
@@ -2766,7 +2766,7 @@ public class MyClass {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/MethodWithSameNameAsEnclosingClass" />
+<rule ref="category/java/errorprone.xml/MethodWithSameNameAsEnclosingClass" />
 ```
 
 ## MisplacedNullCheck
@@ -2818,7 +2818,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/MisplacedNullCheck" />
+<rule ref="category/java/errorprone.xml/MisplacedNullCheck" />
 ```
 
 ## MissingBreakInSwitch
@@ -2866,7 +2866,7 @@ public void bar(int status) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/MissingBreakInSwitch" />
+<rule ref="category/java/errorprone.xml/MissingBreakInSwitch" />
 ```
 
 ## MissingSerialVersionUID
@@ -2903,7 +2903,7 @@ public class Foo implements java.io.Serializable {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/MissingSerialVersionUID" />
+<rule ref="category/java/errorprone.xml/MissingSerialVersionUID" />
 ```
 
 ## MissingStaticMethodInNonInstantiatableClass
@@ -2956,7 +2956,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass" />
+<rule ref="category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass" />
 ```
 
 ## MoreThanOneLogger
@@ -2982,7 +2982,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/MoreThanOneLogger" />
+<rule ref="category/java/errorprone.xml/MoreThanOneLogger" />
 ```
 
 ## NonCaseLabelInSwitchStatement
@@ -3018,7 +3018,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/NonCaseLabelInSwitchStatement" />
+<rule ref="category/java/errorprone.xml/NonCaseLabelInSwitchStatement" />
 ```
 
 ## NonStaticInitializer
@@ -3048,7 +3048,7 @@ public class MyClass {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/NonStaticInitializer" />
+<rule ref="category/java/errorprone.xml/NonStaticInitializer" />
 ```
 
 ## OneDeclarationPerLine
@@ -3087,7 +3087,7 @@ String name,
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/OneDeclarationPerLine" />
+<rule ref="category/java/errorprone.xml/OneDeclarationPerLine" />
 ```
 
 ## OverrideBothEqualsAndHashcode
@@ -3127,7 +3127,7 @@ public class Foo {        // perfect, both methods provided
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/OverrideBothEqualsAndHashcode" />
+<rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode" />
 ```
 
 ## PreserveStackTrace
@@ -3170,7 +3170,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/PreserveStackTrace" />
+<rule ref="category/java/errorprone.xml/PreserveStackTrace" />
 ```
 
 ## ProperCloneImplementation
@@ -3205,7 +3205,7 @@ class Foo{
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/ProperCloneImplementation" />
+<rule ref="category/java/errorprone.xml/ProperCloneImplementation" />
 ```
 
 ## ProperLogger
@@ -3249,7 +3249,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/ProperLogger" />
+<rule ref="category/java/errorprone.xml/ProperLogger" />
 ```
 
 ## ReturnEmptyArrayRatherThanNull
@@ -3291,7 +3291,7 @@ public class Example {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/ReturnEmptyArrayRatherThanNull" />
+<rule ref="category/java/errorprone.xml/ReturnEmptyArrayRatherThanNull" />
 ```
 
 ## ReturnFromFinallyBlock
@@ -3324,7 +3324,7 @@ public class Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/ReturnFromFinallyBlock" />
+<rule ref="category/java/errorprone.xml/ReturnFromFinallyBlock" />
 ```
 
 ## SimpleDateFormatNeedsLocale
@@ -3353,7 +3353,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/SimpleDateFormatNeedsLocale" />
+<rule ref="category/java/errorprone.xml/SimpleDateFormatNeedsLocale" />
 ```
 
 ## SingleMethodSingleton
@@ -3390,7 +3390,7 @@ public class Singleton {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/SingleMethodSingleton" />
+<rule ref="category/java/errorprone.xml/SingleMethodSingleton" />
 ```
 
 ## SingletonClassReturningNewInstance
@@ -3420,7 +3420,7 @@ class Singleton {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/SingletonClassReturningNewInstance" />
+<rule ref="category/java/errorprone.xml/SingletonClassReturningNewInstance" />
 ```
 
 ## StaticEJBFieldShouldBeFinal
@@ -3468,7 +3468,7 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/StaticEJBFieldShouldBeFinal" />
+<rule ref="category/java/errorprone.xml/StaticEJBFieldShouldBeFinal" />
 ```
 
 ## StringBufferInstantiationWithChar
@@ -3519,7 +3519,7 @@ StringBuilder sb4 = new StringBuilder("c");
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/StringBufferInstantiationWithChar" />
+<rule ref="category/java/errorprone.xml/StringBufferInstantiationWithChar" />
 ```
 
 ## SuspiciousConstantFieldName
@@ -3551,7 +3551,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/SuspiciousConstantFieldName" />
+<rule ref="category/java/errorprone.xml/SuspiciousConstantFieldName" />
 ```
 
 ## SuspiciousEqualsMethodName
@@ -3603,7 +3603,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/SuspiciousEqualsMethodName" />
+<rule ref="category/java/errorprone.xml/SuspiciousEqualsMethodName" />
 ```
 
 ## SuspiciousHashcodeMethodName
@@ -3628,7 +3628,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/SuspiciousHashcodeMethodName" />
+<rule ref="category/java/errorprone.xml/SuspiciousHashcodeMethodName" />
 ```
 
 ## SuspiciousOctalEscape
@@ -3661,7 +3661,7 @@ public void foo() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/SuspiciousOctalEscape" />
+<rule ref="category/java/errorprone.xml/SuspiciousOctalEscape" />
 ```
 
 ## TestClassWithoutTestCases
@@ -3690,7 +3690,7 @@ public class CarTest {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/TestClassWithoutTestCases" />
+<rule ref="category/java/errorprone.xml/TestClassWithoutTestCases" />
 ```
 
 ## UnconditionalIfStatement
@@ -3721,7 +3721,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UnconditionalIfStatement" />
+<rule ref="category/java/errorprone.xml/UnconditionalIfStatement" />
 ```
 
 ## UnnecessaryBooleanAssertion
@@ -3761,7 +3761,7 @@ public class SimpleTest extends TestCase {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UnnecessaryBooleanAssertion" />
+<rule ref="category/java/errorprone.xml/UnnecessaryBooleanAssertion" />
 ```
 
 ## UnnecessaryCaseChange
@@ -3784,7 +3784,7 @@ boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");    // another unnec
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UnnecessaryCaseChange" />
+<rule ref="category/java/errorprone.xml/UnnecessaryCaseChange" />
 ```
 
 ## UnnecessaryConversionTemporary
@@ -3810,7 +3810,7 @@ public String convert(int x) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UnnecessaryConversionTemporary" />
+<rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary" />
 ```
 
 ## UnnecessaryFullyQualifiedName
@@ -3837,7 +3837,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UnnecessaryFullyQualifiedName" />
+<rule ref="category/java/errorprone.xml/UnnecessaryFullyQualifiedName" />
 ```
 
 ## UnnecessaryReturn
@@ -3863,7 +3863,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UnnecessaryReturn" />
+<rule ref="category/java/errorprone.xml/UnnecessaryReturn" />
 ```
 
 ## UnusedFormalParameter
@@ -3894,7 +3894,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UnusedFormalParameter" />
+<rule ref="category/java/errorprone.xml/UnusedFormalParameter" />
 ```
 
 ## UnusedImports
@@ -3919,7 +3919,7 @@ public class Foo {}
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UnusedImports" />
+<rule ref="category/java/errorprone.xml/UnusedImports" />
 ```
 
 ## UnusedLocalVariable
@@ -3944,7 +3944,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UnusedLocalVariable" />
+<rule ref="category/java/errorprone.xml/UnusedLocalVariable" />
 ```
 
 ## UnusedNullCheckInEquals
@@ -4007,7 +4007,7 @@ public class Test {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UnusedNullCheckInEquals" />
+<rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals" />
 ```
 
 ## UnusedPrivateField
@@ -4035,7 +4035,7 @@ public class Something {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UnusedPrivateField" />
+<rule ref="category/java/errorprone.xml/UnusedPrivateField" />
 ```
 
 ## UnusedPrivateMethod
@@ -4058,7 +4058,7 @@ public class Something {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UnusedPrivateMethod" />
+<rule ref="category/java/errorprone.xml/UnusedPrivateMethod" />
 ```
 
 ## UseAssertEqualsInsteadOfAssertTrue
@@ -4093,7 +4093,7 @@ public class FooTest extends TestCase {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UseAssertEqualsInsteadOfAssertTrue" />
+<rule ref="category/java/errorprone.xml/UseAssertEqualsInsteadOfAssertTrue" />
 ```
 
 ## UseAssertNullInsteadOfAssertTrue
@@ -4132,7 +4132,7 @@ public class FooTest extends TestCase {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UseAssertNullInsteadOfAssertTrue" />
+<rule ref="category/java/errorprone.xml/UseAssertNullInsteadOfAssertTrue" />
 ```
 
 ## UseAssertSameInsteadOfAssertTrue
@@ -4169,7 +4169,7 @@ public class FooTest extends TestCase {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UseAssertSameInsteadOfAssertTrue" />
+<rule ref="category/java/errorprone.xml/UseAssertSameInsteadOfAssertTrue" />
 ```
 
 ## UseAssertTrueInsteadOfAssertEquals
@@ -4212,7 +4212,7 @@ public class MyTestCase extends TestCase {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UseAssertTrueInsteadOfAssertEquals" />
+<rule ref="category/java/errorprone.xml/UseAssertTrueInsteadOfAssertEquals" />
 ```
 
 ## UseCollectionIsEmpty
@@ -4248,7 +4248,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UseCollectionIsEmpty" />
+<rule ref="category/java/errorprone.xml/UseCollectionIsEmpty" />
 ```
 
 ## UseCorrectExceptionLogging
@@ -4287,7 +4287,7 @@ public class Main {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UseCorrectExceptionLogging" />
+<rule ref="category/java/errorprone.xml/UseCorrectExceptionLogging" />
 ```
 
 ## UseEqualsToCompareStrings
@@ -4319,7 +4319,7 @@ public boolean test(String s) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UseEqualsToCompareStrings" />
+<rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings" />
 ```
 
 ## UselessOperationOnImmutable
@@ -4352,7 +4352,7 @@ class Test {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UselessOperationOnImmutable" />
+<rule ref="category/java/errorprone.xml/UselessOperationOnImmutable" />
 ```
 
 ## UseLocaleWithCaseConversions
@@ -4401,7 +4401,7 @@ class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UseLocaleWithCaseConversions" />
+<rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions" />
 ```
 
 ## UseProperClassLoader
@@ -4427,6 +4427,6 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/errorprone.xml/UseProperClassLoader" />
+<rule ref="category/java/errorprone.xml/UseProperClassLoader" />
 ```
 

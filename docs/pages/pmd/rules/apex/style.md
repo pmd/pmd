@@ -41,7 +41,7 @@ trigger AccountTrigger on Account (before insert, before update) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/style.xml/AvoidDirectAccessTriggerMap" />
+<rule ref="category/apex/style.xml/AvoidDirectAccessTriggerMap" />
 ```
 
 ## AvoidGlobalModifier
@@ -75,7 +75,7 @@ global class Unchangeable {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/style.xml/AvoidGlobalModifier" />
+<rule ref="category/apex/style.xml/AvoidGlobalModifier" />
 ```
 
 ## AvoidHardcodingId
@@ -115,7 +115,7 @@ public without sharing class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/style.xml/AvoidHardcodingId" />
+<rule ref="category/apex/style.xml/AvoidHardcodingId" />
 ```
 
 ## AvoidLogicInTrigger
@@ -159,7 +159,7 @@ trigger Accounts on Account (before insert, before update, before delete, after 
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/style.xml/AvoidLogicInTrigger" />
+<rule ref="category/apex/style.xml/AvoidLogicInTrigger" />
 ```
 
 ## ClassNamingConventions
@@ -188,7 +188,7 @@ public class Foo {}
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/style.xml/ClassNamingConventions" />
+<rule ref="category/apex/style.xml/ClassNamingConventions" />
 ```
 
 ## MethodNamingConventions
@@ -220,7 +220,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/style.xml/MethodNamingConventions" />
+<rule ref="category/apex/style.xml/MethodNamingConventions" />
 ```
 
 ## MethodWithSameNameAsEnclosingClass
@@ -254,7 +254,7 @@ public class MyClass {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/style.xml/MethodWithSameNameAsEnclosingClass" />
+<rule ref="category/apex/style.xml/MethodWithSameNameAsEnclosingClass" />
 ```
 
 ## VariableNamingConventions
@@ -300,6 +300,6 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/style.xml/VariableNamingConventions" />
+<rule ref="category/apex/style.xml/VariableNamingConventions" />
 ```
 

@@ -36,7 +36,7 @@ for (var i = 0; i < 42; i++)
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/braces.xml/ForLoopsMustUseBraces" />
+<rule ref="category/ecmascript/braces.xml/ForLoopsMustUseBraces" />
 ```
 
 ## IfElseStmtsMustUseBraces
@@ -72,7 +72,7 @@ else
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/braces.xml/IfElseStmtsMustUseBraces" />
+<rule ref="category/ecmascript/braces.xml/IfElseStmtsMustUseBraces" />
 ```
 
 ## IfStmtsMustUseBraces
@@ -102,7 +102,7 @@ if (foo)
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/braces.xml/IfStmtsMustUseBraces" />
+<rule ref="category/ecmascript/braces.xml/IfStmtsMustUseBraces" />
 ```
 
 ## WhileLoopsMustUseBraces
@@ -132,6 +132,6 @@ while (true)
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/braces.xml/WhileLoopsMustUseBraces" />
+<rule ref="category/ecmascript/braces.xml/WhileLoopsMustUseBraces" />
 ```
 

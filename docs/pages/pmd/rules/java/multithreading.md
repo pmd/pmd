@@ -4,7 +4,7 @@ summary: The Multithreading category contains rules that deal with programming e
 permalink: pmd_rules_java_multithreading.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
-editmepath: ../pmd-java/src/main/resources/rulesets/java/multithreading.xml
+editmepath: ../pmd-java/src/main/resources/category/java/multithreading.xml
 keywords: Multithreading, AvoidSynchronizedAtMethodLevel, AvoidThreadGroup, AvoidUsingVolatile, DoNotUseThreads, DontCallThreadRun, DoubleCheckedLocking, NonThreadSafeSingleton, UnsynchronizedStaticDateFormatter, UseConcurrentHashMap, UseNotifyAllInsteadOfNotify
 ---
 ## AvoidSynchronizedAtMethodLevel
@@ -48,7 +48,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/multithreading.xml/AvoidSynchronizedAtMethodLevel" />
+<rule ref="category/java/multithreading.xml/AvoidSynchronizedAtMethodLevel" />
 ```
 
 ## AvoidThreadGroup
@@ -80,7 +80,7 @@ public class Bar {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/multithreading.xml/AvoidThreadGroup" />
+<rule ref="category/java/multithreading.xml/AvoidThreadGroup" />
 ```
 
 ## AvoidUsingVolatile
@@ -108,7 +108,7 @@ public class ThrDeux {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/multithreading.xml/AvoidUsingVolatile" />
+<rule ref="category/java/multithreading.xml/AvoidUsingVolatile" />
 ```
 
 ## DoNotUseThreads
@@ -142,7 +142,7 @@ public class OtherThread implements Runnable {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/multithreading.xml/DoNotUseThreads" />
+<rule ref="category/java/multithreading.xml/DoNotUseThreads" />
 ```
 
 ## DontCallThreadRun
@@ -177,7 +177,7 @@ new Thread().run(); // same violation
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/multithreading.xml/DontCallThreadRun" />
+<rule ref="category/java/multithreading.xml/DontCallThreadRun" />
 ```
 
 ## DoubleCheckedLocking
@@ -217,7 +217,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/multithreading.xml/DoubleCheckedLocking" />
+<rule ref="category/java/multithreading.xml/DoubleCheckedLocking" />
 ```
 
 ## NonThreadSafeSingleton
@@ -263,7 +263,7 @@ public static Foo getFoo() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/multithreading.xml/NonThreadSafeSingleton" />
+<rule ref="category/java/multithreading.xml/NonThreadSafeSingleton" />
 ```
 
 ## UnsynchronizedStaticDateFormatter
@@ -294,7 +294,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/multithreading.xml/UnsynchronizedStaticDateFormatter" />
+<rule ref="category/java/multithreading.xml/UnsynchronizedStaticDateFormatter" />
 ```
 
 ## UseConcurrentHashMap
@@ -327,7 +327,7 @@ public class ConcurrentApp {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/multithreading.xml/UseConcurrentHashMap" />
+<rule ref="category/java/multithreading.xml/UseConcurrentHashMap" />
 ```
 
 ## UseNotifyAllInsteadOfNotify
@@ -364,6 +364,6 @@ void bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/multithreading.xml/UseNotifyAllInsteadOfNotify" />
+<rule ref="category/java/multithreading.xml/UseNotifyAllInsteadOfNotify" />
 ```
 

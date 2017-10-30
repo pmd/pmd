@@ -25,7 +25,7 @@ Avoid calling VF action upon page load as the action becomes vulnerable to CSRF.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vf/security.xml/VfCsrf" />
+<rule ref="category/vf/security.xml/VfCsrf" />
 ```
 
 ## VfUnescapeEl
@@ -46,6 +46,6 @@ Avoid unescaped user controlled content in EL as it results in XSS.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vf/security.xml/VfUnescapeEl" />
+<rule ref="category/vf/security.xml/VfUnescapeEl" />
 ```
 

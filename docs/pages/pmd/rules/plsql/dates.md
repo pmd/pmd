@@ -45,7 +45,7 @@ END date_utilities;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/dates.xml/TO_DATE_TO_CHAR" />
+<rule ref="category/plsql/dates.xml/TO_DATE_TO_CHAR" />
 ```
 
 ## TO_DATEWithoutDateFormat
@@ -93,7 +93,7 @@ END date_utilities;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/dates.xml/TO_DATEWithoutDateFormat" />
+<rule ref="category/plsql/dates.xml/TO_DATEWithoutDateFormat" />
 ```
 
 ## TO_TIMESTAMPWithoutDateFormat
@@ -141,6 +141,6 @@ END date_utilities;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/dates.xml/TO_TIMESTAMPWithoutDateFormat" />
+<rule ref="category/plsql/dates.xml/TO_TIMESTAMPWithoutDateFormat" />
 ```
 

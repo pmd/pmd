@@ -41,7 +41,7 @@ return z;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/unnecessary.xml/NoElseReturn" />
+<rule ref="category/ecmascript/unnecessary.xml/NoElseReturn" />
 ```
 
 ## UnnecessaryBlock
@@ -77,7 +77,7 @@ if (bar) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/unnecessary.xml/UnnecessaryBlock" />
+<rule ref="category/ecmascript/unnecessary.xml/UnnecessaryBlock" />
 ```
 
 ## UnnecessaryParentheses
@@ -102,6 +102,6 @@ var z = ((1 + 1)); // Bad
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/unnecessary.xml/UnnecessaryParentheses" />
+<rule ref="category/ecmascript/unnecessary.xml/UnnecessaryParentheses" />
 ```
 
