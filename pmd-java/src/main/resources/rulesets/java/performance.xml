@@ -743,6 +743,7 @@ public int convert(String s) {
 
     <rule name="UseArrayListInsteadOfVector"
           language="java"
+          minimumLanguageVersion="1.2"
           since="3.0"
           message="Use ArrayList instead of Vector"
           class="net.sourceforge.pmd.lang.rule.XPathRule"

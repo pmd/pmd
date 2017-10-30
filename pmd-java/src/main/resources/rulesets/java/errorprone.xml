@@ -1756,7 +1756,7 @@ public class Foo {}
           since="0.1"
           message="Avoid empty catch blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_empty.html#emptycatchblock">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptycatchblock">
         <description>
 Empty Catch Block finds instances where an exception is caught, but nothing is done.  
 In most circumstances, this swallows an exception which should either be acted on 
@@ -2048,7 +2048,7 @@ public void bar() {
           since="1.3"
           message="Avoid empty synchronized blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_empty.html#emptysynchronizedblock">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptysynchronizedblock">
         <description>
 Empty synchronized blocks serve no purpose and should be removed.
         </description>
@@ -2440,7 +2440,7 @@ public class Foo {
           since="1.02"
           message="No need to import a type that lives in the same package"
           class="net.sourceforge.pmd.lang.java.rule.imports.ImportFromSamePackageRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_imports.html#importfromsamepackage">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#importfromsamepackage">
         <description>
 There is no need to import a type that lives in the same package.
         </description>
@@ -3822,7 +3822,7 @@ public class Foo {
           since="3.5"
           message="Invoke equals() on the object you''ve already ensured is not null"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_unnecessary.html#unusednullcheckinequals">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unusednullcheckinequals">
         <description>
 After checking an object reference for null, you should invoke equals() on that object rather than passing it to another object's equals() method.
         </description>

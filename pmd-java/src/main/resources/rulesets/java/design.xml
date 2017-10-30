@@ -54,7 +54,7 @@ public class abstract Example {
           language="java"
           message="Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_strictexception.html#avoidcatchinggenericexception">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidcatchinggenericexception">
         <description>
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
         </description>
@@ -901,7 +901,7 @@ public class Foo extends Bar {
           message="The {0} ''{1}'' has a NCSS line count of {2}."
           since="6.0"
           class="net.sourceforge.pmd.lang.java.rule.codesize.NcssCountRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codesize.html#ncsscount">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#ncsscount">
         <description>
 This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines
 of code in a class, method or constructor. NCSS ignores comments, blank lines, and only counts actual

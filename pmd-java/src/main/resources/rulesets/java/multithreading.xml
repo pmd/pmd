@@ -153,7 +153,7 @@ public class OtherThread implements Runnable {
           message="Don't call Thread.run() explicitly, use Thread.start()"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           typeResolution="true"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#dontcallthreadrun">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#dontcallthreadrun">
         <description>
 Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.
         </description>
@@ -284,6 +284,7 @@ public class Foo {
 
     <rule name="UseConcurrentHashMap"
           language="java"
+          minimumLanguageVersion="1.5"
           since="4.2.6"
           message="If you run in Java5 or newer and have concurrent access, you should use the ConcurrentHashMap implementation"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
