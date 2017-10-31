@@ -8,7 +8,7 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class BracesRulesTest extends SimpleAggregatorTst {
 
-    private static final String RULESET = "ecmascript-braces";
+    private static final String RULESET = "rulesets/ecmascript/braces.xml";
 
     @Override
     public void setUp() {

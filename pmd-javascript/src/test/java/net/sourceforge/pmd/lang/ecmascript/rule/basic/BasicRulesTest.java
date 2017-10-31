@@ -8,7 +8,7 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class BasicRulesTest extends SimpleAggregatorTst {
 
-    private static final String RULESET = "ecmascript-basic";
+    private static final String RULESET = "rulesets/ecmascript/basic.xml";
 
     @Override
     public void setUp() {

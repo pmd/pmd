@@ -8,7 +8,7 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class UnnecessaryRulesTest extends SimpleAggregatorTst {
 
-    private static final String RULESET = "ecmascript-unnecessary";
+    private static final String RULESET = "rulesets/ecmascript/unnecessary.xml";
 
     @Override
     public void setUp() {

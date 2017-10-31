@@ -8,7 +8,7 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class ControversialRulesTest extends SimpleAggregatorTst {
 
-    private static final String RULESET = "ecmascript-controversial";
+    private static final String RULESET = "rulesets/ecmascript/controversial.xml";
 
     @Override
     public void setUp() {
