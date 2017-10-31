@@ -12,7 +12,6 @@ These rules provide some strict guidelines about throwing and catching exception
     <rule ref="category/java/errorprone.xml/AvoidCatchingNPE" deprecated="true" />
     <rule ref="category/java/errorprone.xml/AvoidCatchingThrowable" deprecated="true" />
     <rule ref="category/java/errorprone.xml/AvoidLosingExceptionInformation" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangError" deprecated="true" />
     <rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally" deprecated="true" />
 
     <rule ref="category/java/design.xml/AvoidCatchingGenericException" deprecated="true" />
@@ -20,6 +19,7 @@ These rules provide some strict guidelines about throwing and catching exception
     <rule ref="category/java/design.xml/AvoidThrowingNewInstanceOfSameException" deprecated="true" />
     <rule ref="category/java/design.xml/AvoidThrowingNullPointerException" deprecated="true" />
     <rule ref="category/java/design.xml/AvoidThrowingRawExceptionTypes" deprecated="true" />
+    <rule ref="category/java/design.xml/DoNotExtendJavaLangError" deprecated="true" />
     <rule ref="category/java/design.xml/ExceptionAsFlowControl" deprecated="true" />
     <rule ref="category/java/design.xml/SignatureDeclareThrowsException" deprecated="true" />
 

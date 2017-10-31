@@ -283,63 +283,6 @@ buf.append("Hello World");                          // good
         </example>
     </rule>
 
-    <rule name="DoNotCallGarbageCollectionExplicitly"
-          language="java"
-          since="4.2"
-          message="Do not explicitly trigger a garbage collection."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#donotcallgarbagecollectionexplicitly">
-        <description>
-Calls to System.gc(), Runtime.getRuntime().gc(), and System.runFinalization() are not advised. Code should have the
-same behavior whether the garbage collection is disabled using the option -Xdisableexplicitgc or not.
-Moreover, "modern" jvms do a very good job handling garbage collections. If memory usage issues unrelated to memory
-leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
-        </description>
-        <priority>2</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//Name[
-(starts-with(@Image, 'System.') and
-(starts-with(@Image, 'System.gc') or
-starts-with(@Image, 'System.runFinalization'))) or
-(
-starts-with(@Image,'Runtime.getRuntime') and
-../../PrimarySuffix[ends-with(@Image,'gc')]
-)
-]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class GCCall {
-    public GCCall() {
-        // Explicit gc call !
-        System.gc();
-    }
-
-    public void doSomething() {
-        // Explicit gc call !
-        Runtime.getRuntime().gc();
-    }
-
-    public explicitGCcall() {
-        // Explicit gc call !
-        System.gc();
-    }
-
-    public void doSomething() {
-        // Explicit gc call !
-        Runtime.getRuntime().gc();
-    }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="InefficientEmptyStringCheck"
           since="3.6"
           message="String.trim().length()==0 is an inefficient way to validate an empty String."
@@ -444,27 +387,6 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="LocalVariableCouldBeFinal"
-          since="2.2"
-          message="Local variable ''{0}'' could be declared final"
-          class="net.sourceforge.pmd.lang.java.rule.optimizations.LocalVariableCouldBeFinalRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#localvariablecouldbefinal">
-        <description>
-A local variable assigned only once can be declared final.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Bar {
-    public void foo () {
-    String txtA = "a";          // if txtA will not be assigned again it is better to do this:
-    final String txtB = "b";
-    }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="LongInstantiation"
           language="java"
           since="4.0"
@@ -493,28 +415,6 @@ or ClassOrInterfaceType/@Image='java.lang.Long')]
 <![CDATA[
 public class Foo {
     private Long i = new Long(0); // change to Long i = Long.valueOf(0);
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="MethodArgumentCouldBeFinal"
-          since="2.2"
-          message="Parameter ''{0}'' is not assigned and could be declared final"
-          class="net.sourceforge.pmd.lang.java.rule.optimizations.MethodArgumentCouldBeFinalRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#methodargumentcouldbefinal">
-        <description>
-A method argument that is never re-assigned within the method can be declared final.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public void foo1 (String param) {       // do stuff with param never assigning it
-
-}
-
-public void foo2 (final String param) { // better, do stuff with param never assigning it
-
 }
 ]]>
         </example>
@@ -705,6 +605,48 @@ Avoid calling toString() on objects already known to be string instances; this i
 private String baz() {
     String bar = "howdy";
     return bar.toString();
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="TooFewBranchesForASwitchStatement"
+          language="java"
+          since="4.2"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          message="A switch with less than three branches is inefficient, use a 'if statement' instead."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#toofewbranchesforaswitchstatement">
+        <description>
+Switch statements are intended to be used to support complex branching behaviour. Using a switch for only a few
+cases is ill-advised, since switches are not as easy to understand as if-then statements. In these cases use the
+if-then statement to increase code readability.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="minimumNumberCaseForASwitch" type="Integer" description="Minimum number of branches for a switch" min="1" max="100" value="3"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//SwitchStatement[
+    (count(.//SwitchLabel) < $minimumNumberCaseForASwitch)
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+// With a minimumNumberCaseForASwitch of 3
+public class Foo {
+    public void bar() {
+        switch (condition) {
+            case ONE:
+                instruction;
+                break;
+            default:
+                break; // not enough for a 'switch' stmt, a simple 'if' stmt would have been more appropriate
+        }
+    }
 }
 ]]>
         </example>

@@ -14,12 +14,9 @@ The Basic ruleset contains a collection of good practices which should be follow
     <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators" deprecated="true" />
     <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues" deprecated="true" />
     <rule ref="category/java/errorprone.xml/BrokenNullCheck" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/CheckResultSet" deprecated="true" />
     <rule ref="category/java/errorprone.xml/CheckSkipResult" deprecated="true" />
     <rule ref="category/java/errorprone.xml/ClassCastExceptionWithToArray" deprecated="true" />
     <rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/ExtendsObject" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/ForLoopShouldBeWhileLoop" deprecated="true" />
     <rule ref="category/java/errorprone.xml/JumbledIncrementer" deprecated="true" />
     <rule ref="category/java/errorprone.xml/MisplacedNullCheck" deprecated="true" />
     <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode" deprecated="true" />
@@ -31,6 +28,10 @@ The Basic ruleset contains a collection of good practices which should be follow
     <rule ref="category/java/multithreading.xml/DoubleCheckedLocking" deprecated="true" />
 
     <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/CheckResultSet" deprecated="true" />
+
+    <rule ref="category/java/codestyle.xml/ExtendsObject" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/ForLoopShouldBeWhileLoop" deprecated="true" />
 
     <rule ref="category/java/performance.xml/BigIntegerInstantiation" deprecated="true" />
     <rule ref="category/java/performance.xml/BooleanInstantiation" deprecated="true" />

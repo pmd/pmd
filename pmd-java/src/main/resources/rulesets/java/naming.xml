@@ -11,14 +11,13 @@ The Naming Ruleset contains rules regarding preferred usage of names and identif
     <!-- Rules, that have been moved into a category -->
     <rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingMethodName" deprecated="true" />
     <rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingTypeName" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/BooleanGetMethodName" deprecated="true" />
     <rule ref="category/java/errorprone.xml/MethodWithSameNameAsEnclosingClass" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/SuspiciousConstantFieldName" deprecated="true" />
     <rule ref="category/java/errorprone.xml/SuspiciousEqualsMethodName" deprecated="true" />
     <rule ref="category/java/errorprone.xml/SuspiciousHashcodeMethodName" deprecated="true" />
 
     <rule ref="category/java/codestyle.xml/AbstractNaming" deprecated="true" />
     <rule ref="category/java/codestyle.xml/AvoidDollarSigns" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/BooleanGetMethodName" deprecated="true" />
     <rule ref="category/java/codestyle.xml/ClassNamingConventions" deprecated="true" />
     <rule ref="category/java/codestyle.xml/GenericsNaming" deprecated="true" />
     <rule ref="category/java/codestyle.xml/LongVariable" deprecated="true" />
@@ -29,5 +28,6 @@ The Naming Ruleset contains rules regarding preferred usage of names and identif
     <rule ref="category/java/codestyle.xml/ShortClassName" deprecated="true" />
     <rule ref="category/java/codestyle.xml/ShortMethodName" deprecated="true" />
     <rule ref="category/java/codestyle.xml/ShortVariable" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/SuspiciousConstantFieldName" deprecated="true" />
     <rule ref="category/java/codestyle.xml/VariableNamingConventions" deprecated="true" />
 </ruleset>

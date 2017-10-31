@@ -192,6 +192,72 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="AvoidProtectedFieldInFinalClass"
+          language="java"
+          since="2.1"
+          message="Avoid protected fields in a final class.  Change to private or package access."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidprotectedfieldinfinalclass">
+        <description>
+Do not use protected fields in final classes since they cannot be subclassed.
+Clarify your intent by using private or package access modifiers instead.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration[@Final='true']
+/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+/FieldDeclaration[@Protected='true']
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public final class Bar {
+  private int x;
+  protected int y;  // bar cannot be subclassed, so is y really private or package visible?
+  Bar() {}
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidProtectedMethodInFinalClassNotExtending"
+          language="java"
+          since="5.1"
+          message="Avoid protected methods in a final class that doesn't extend anything other than Object.  Change to private or package access."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidprotectedmethodinfinalclassnotextending">
+        <description>
+Do not use protected methods in most final classes since they cannot be subclassed. This should
+only be allowed in final classes that extend other classes with protected methods (whose
+visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration[@Final='true' and not(ExtendsList)]
+/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+/MethodDeclaration[@Protected='true'][MethodDeclarator/@Image != 'finalize']
+ ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public final class Foo {
+  private int bar() {}
+  protected int baz() {} // Foo cannot be subclassed, and doesn't extend anything, so is baz() really private or package visible?
+}
+ ]]>
+        </example>
+    </rule>
+
     <rule name="AvoidUsingNativeCode"
           language="java"
           since="4.1"
@@ -223,6 +289,83 @@ public class SomeJNIClass {
      public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
          System.loadLibrary("nativelib");
      }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="BooleanGetMethodName"
+          language="java"
+          since="4.0"
+          message="A 'getX()' method which returns a boolean should be named 'isX()'"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#booleangetmethodname">
+        <description>
+Methods that return boolean results should be named as predicate statements to denote this.
+I.e, 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc.   Avoid the use of the 'get'
+prefix for these methods.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration[
+MethodDeclarator[count(FormalParameters/FormalParameter) = 0 or $checkParameterizedMethods = 'true']
+                [starts-with(@Image, 'get')]
+and
+ResultType/Type/PrimitiveType[@Image = 'boolean']
+and not(../Annotation//Name[@Image = 'Override'])
+]
+]]>
+                </value>
+            </property>
+            <property name="checkParameterizedMethods" type="Boolean" description="Check parameterized methods" value="false"/>
+        </properties>
+        <example>
+<![CDATA[
+public boolean getFoo();            // bad
+public boolean isFoo();             // ok
+public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
+]]>
+        </example>
+    </rule>
+
+    <rule name="CallSuperInConstructor"
+          language="java"
+          since="3.0"
+          message="It is a good practice to call super() in a constructor"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#callsuperinconstructor">
+        <description>
+It is a good practice to call super() in a constructor. If super() is not called but
+another constructor (such as an overloaded constructor) is called, this rule will not report it.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration[ count (ExtendsList/*) > 0 ]
+/ClassOrInterfaceBody
+ /ClassOrInterfaceBodyDeclaration
+ /ConstructorDeclaration[ count (.//ExplicitConstructorInvocation)=0 ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo extends Bar{
+  public Foo() {
+   // call the constructor of Bar
+   super();
+  }
+ public Foo(int code) {
+  // do something with code
+   this();
+   // no problem with this
+  }
 }
 ]]>
         </example>
@@ -290,6 +433,29 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="ConfusingTernary"
+          since="1.9"
+          message="Avoid if (x != y) ..; else ..;"
+          class="net.sourceforge.pmd.lang.java.rule.design.ConfusingTernaryRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#confusingternary">
+        <description>
+Avoid negation within an "if" expression with an "else" clause.  For example, rephrase:
+`if (x != y) diff(); else same();` as: `if (x == y) same(); else diff();`.
+
+Most "if (x != y)" cases without an "else" are often return cases, so consistent use of this
+rule makes the code easier to read.  Also, this resolves trivial ordering problems, such
+as "does the error case go first?" or "does the common case go first?".
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+boolean bar(int x, int y) {
+    return (x != y) ? diff : same;
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="DefaultPackage"
           language="java"
           since="3.4"
@@ -317,6 +483,48 @@ or MethodDeclaration[@PackagePrivate='true']
                 </value>
             </property>
         </properties>
+    </rule>
+
+    <rule name="DontImportJavaLang"
+          since="0.5"
+          message="Avoid importing anything from the package 'java.lang'"
+          class="net.sourceforge.pmd.lang.java.rule.imports.DontImportJavaLangRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#dontimportjavalang">
+        <description>
+Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
+        </description>
+        <priority>4</priority>
+        <example>
+<![CDATA[
+import java.lang.String;    // this is unnecessary
+
+public class Foo {}
+
+// --- in another source code file...
+
+import java.lang.*;         // this is bad
+
+public class Foo {}
+]]>
+        </example>
+    </rule>
+
+    <rule name="DuplicateImports"
+          since="0.5"
+          message="Avoid duplicate imports such as ''{0}''"
+          class="net.sourceforge.pmd.lang.java.rule.imports.DuplicateImportsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#duplicateimports">
+        <description>
+Duplicate or overlapping import statements should be avoided.
+        </description>
+        <priority>4</priority>
+        <example>
+<![CDATA[
+import java.lang.String;
+import java.lang.*;
+public class Foo {}
+]]>
+        </example>
     </rule>
 
     <rule name="EmptyMethodInAbstractClassShouldBeAbstract"
@@ -368,6 +576,31 @@ public abstract class ShouldBeAbstract {
         </example>
     </rule>
 
+    <rule name="ExtendsObject"
+          language="java"
+          since="5.0"
+          message="No need to explicitly extend Object."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#extendsobject">
+        <description>No need to explicitly extend Object.</description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ExtendsList/ClassOrInterfaceType[@Image='Object' or @Image='java.lang.Object']
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo extends Object {     // not required
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="FieldDeclarationsShouldBeAtStartOfClass"
           language="java"
           since="5.0"
@@ -391,6 +624,41 @@ public class HelloWorldBean {
 
   // Field declared after methods / inner classes - avoid this
   private String _fieldInWrongLocation;
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ForLoopShouldBeWhileLoop"
+          language="java"
+          since="1.02"
+          message="This for loop could be simplified to a while loop"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#forloopshouldbewhileloop">
+        <description>
+Some for loops can be simplified to while loops, this makes them more concise.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ForStatement
+  [count(*) > 1]
+  [not(LocalVariableDeclaration)]
+  [not(ForInit)]
+  [not(ForUpdate)]
+  [not(Type and Expression and Statement)]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    void bar() {
+        for (;true;) true; // No Init or Update part, may as well be: while (true)
+    }
 }
 ]]>
         </example>
@@ -613,6 +881,27 @@ public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}    // n
         </example>
     </rule>
 
+    <rule name="LocalVariableCouldBeFinal"
+          since="2.2"
+          message="Local variable ''{0}'' could be declared final"
+          class="net.sourceforge.pmd.lang.java.rule.optimizations.LocalVariableCouldBeFinalRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#localvariablecouldbefinal">
+        <description>
+A local variable assigned only once can be declared final.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Bar {
+    public void foo () {
+    String txtA = "a";          // if txtA will not be assigned again it is better to do this:
+    final String txtB = "b";
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="LongVariable"
           language="java"
           since="0.3"
@@ -684,6 +973,28 @@ The EJB Specification states that any MessageDrivenBean or SessionBean should be
 public class SomeBean implements SessionBean{}                  // proper name
 
 public class MissingTheProperSuffix implements SessionBean {}   // non-standard name
+]]>
+        </example>
+    </rule>
+
+    <rule name="MethodArgumentCouldBeFinal"
+          since="2.2"
+          message="Parameter ''{0}'' is not assigned and could be declared final"
+          class="net.sourceforge.pmd.lang.java.rule.optimizations.MethodArgumentCouldBeFinalRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#methodargumentcouldbefinal">
+        <description>
+A method argument that is never re-assigned within the method can be declared final.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public void foo1 (String param) {       // do stuff with param never assigning it
+
+}
+
+public void foo2 (final String param) { // better, do stuff with param never assigning it
+
+}
 ]]>
         </example>
     </rule>
@@ -1023,6 +1334,41 @@ public class Something {
         </example>
     </rule>
 
+    <rule name="SuspiciousConstantFieldName"
+          language="java"
+          since="2.0"
+          message="The field name indicates a constant but its modifiers do not"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#suspiciousconstantfieldname">
+        <description>
+Field names using all uppercase characters - Sun's Java naming conventions indicating constants - should
+be declared as final.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration[@Interface='false']
+ /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
+  [@Final='false']
+  [VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+ // this is bad, since someone could accidentally
+ // do PI = 2.71828; which is actually e
+ // final double PI = 3.16; is ok
+  double PI = 3.16;
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="TooManyStaticImports"
           language="java"
           since="4.1"
@@ -1132,6 +1478,29 @@ public final class Foo {
         </example>
     </rule>
 
+    <rule name="UnnecessaryFullyQualifiedName"
+          language="java"
+          since="5.0"
+          class="net.sourceforge.pmd.lang.java.rule.imports.UnnecessaryFullyQualifiedNameRule"
+          message="Unnecessary use of fully qualified name ''{0}'' due to existing {2}import ''{1}''"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">
+        <description>
+Import statements allow the use of non-fully qualified names.  The use of a fully qualified name
+which is covered by an import statement is redundant.  Consider using the non-fully qualified name.
+        </description>
+        <priority>4</priority>
+        <example>
+<![CDATA[
+import java.util.List;
+
+public class Foo {
+    private java.util.List list1;   // Unnecessary FQN
+    private List list2;             // More appropriate given import of 'java.util.List'
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UnnecessaryLocalBeforeReturn"
           since="3.3"
           message="Consider simply returning the value vs storing it in local variable ''{0}''"
@@ -1185,6 +1554,27 @@ public class Bar {
     public static interface Baz {}  // static ignored
     public static enum FoorBar {    // static ignored
         FOO;
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnnecessaryReturn"
+          since="1.3"
+          message="Avoid unnecessary return statements"
+          class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryReturnRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryreturn">
+        <description>
+Avoid the use of unnecessary return statements.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    public void bar() {
+        int x = 42;
+        return;
     }
 }
 ]]>

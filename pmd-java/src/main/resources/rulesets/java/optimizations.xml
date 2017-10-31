@@ -9,13 +9,13 @@ These rules deal with different optimizations that generally apply to best pract
   </description>
 
     <!-- Rules, that have been moved into a category -->
+    <rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal" deprecated="true" />
     <rule ref="category/java/codestyle.xml/PrematureDeclaration" deprecated="true" />
 
     <rule ref="category/java/performance.xml/AddEmptyString" deprecated="true" />
     <rule ref="category/java/performance.xml/AvoidArrayLoops" deprecated="true" />
     <rule ref="category/java/performance.xml/AvoidInstantiatingObjectsInLoops" deprecated="true" />
-    <rule ref="category/java/performance.xml/LocalVariableCouldBeFinal" deprecated="true" />
-    <rule ref="category/java/performance.xml/MethodArgumentCouldBeFinal" deprecated="true" />
     <rule ref="category/java/performance.xml/RedundantFieldInitializer" deprecated="true" />
     <rule ref="category/java/performance.xml/SimplifyStartsWith" deprecated="true" />
     <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation" deprecated="true" />

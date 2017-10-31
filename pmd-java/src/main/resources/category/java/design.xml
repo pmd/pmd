@@ -467,6 +467,33 @@ public class DataClass {
         </example>
     </rule>
 
+    <rule name="DoNotExtendJavaLangError"
+          language="java"
+          since="4.0"
+          message="Exceptions should not extend java.lang.Error"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#donotextendjavalangerror">
+        <description>
+Errors are system exceptions. Do not extend them.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
+  [@Image="Error" or @Image="java.lang.Error"]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo extends Error { }
+]]>
+        </example>
+    </rule>
+
     <rule name="ExceptionAsFlowControl"
           since="1.8"
           message="Avoid using exceptions as flow control."
@@ -1387,48 +1414,6 @@ public class Foo {
       }
     }
   }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="TooFewBranchesForASwitchStatement"
-          language="java"
-          since="4.2"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          message="A switch with less than three branches is inefficient, use a 'if statement' instead."
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#toofewbranchesforaswitchstatement">
-        <description>
-Switch statements are intended to be used to support complex branching behaviour. Using a switch for only a few
-cases is ill-advised, since switches are not as easy to understand as if-then statements. In these cases use the
-if-then statement to increase code readability.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="minimumNumberCaseForASwitch" type="Integer" description="Minimum number of branches for a switch" min="1" max="100" value="3"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//SwitchStatement[
-    (count(.//SwitchLabel) < $minimumNumberCaseForASwitch)
-]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-// With a minimumNumberCaseForASwitch of 3
-public class Foo {
-    public void bar() {
-        switch (condition) {
-            case ONE:
-                instruction;
-                break;
-            default:
-                break; // not enough for a 'switch' stmt, a simple 'if' stmt would have been more appropriate
-        }
-    }
 }
 ]]>
         </example>

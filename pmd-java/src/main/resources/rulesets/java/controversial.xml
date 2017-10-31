@@ -17,16 +17,17 @@ They are held here to allow people to include them as they see fit within their 
     <rule ref="category/java/errorprone.xml/AssignmentInOperand" deprecated="true" />
     <rule ref="category/java/errorprone.xml/AvoidAccessibilityAlteration" deprecated="true" />
     <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/CallSuperInConstructor" deprecated="true" />
     <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/DoNotCallGarbageCollectionExplicitly" deprecated="true" />
     <rule ref="category/java/errorprone.xml/DontImportSun" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/OneDeclarationPerLine" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/NullAssignment" deprecated="true" />
     <rule ref="category/java/errorprone.xml/SuspiciousOctalEscape" deprecated="true" />
 
     <rule ref="category/java/codestyle.xml/AtLeastOneConstructor" deprecated="true" />
     <rule ref="category/java/codestyle.xml/AvoidFinalLocalVariable" deprecated="true" />
     <rule ref="category/java/codestyle.xml/AvoidPrefixingMethodParameters" deprecated="true" />
     <rule ref="category/java/codestyle.xml/AvoidUsingNativeCode" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/CallSuperInConstructor" deprecated="true" />
     <rule ref="category/java/codestyle.xml/DefaultPackage" deprecated="true" />
     <rule ref="category/java/codestyle.xml/OnlyOneReturn" deprecated="true" />
     <rule ref="category/java/codestyle.xml/UnnecessaryConstructor" deprecated="true" />
@@ -34,10 +35,9 @@ They are held here to allow people to include them as they see fit within their 
     <rule ref="category/java/multithreading.xml/AvoidUsingVolatile" deprecated="true" />
     <rule ref="category/java/multithreading.xml/UseConcurrentHashMap" deprecated="true" />
 
-    <rule ref="category/java/bestpractices.xml/NullAssignment" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine" deprecated="true" />
 
     <rule ref="category/java/performance.xml/AvoidUsingShortType" deprecated="true" />
-    <rule ref="category/java/performance.xml/DoNotCallGarbageCollectionExplicitly" deprecated="true" />
 
     <rule ref="category/java/design.xml/UseObjectForClearerAPI" deprecated="true" />
 

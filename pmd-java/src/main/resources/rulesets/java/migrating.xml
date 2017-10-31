@@ -13,8 +13,8 @@ rather, use a wrapper ruleset such as migrating_to_13.xml.
     <!-- Rules, that have been moved into a category -->
     <rule ref="category/java/errorprone.xml/AvoidAssertAsIdentifier" deprecated="true" />
     <rule ref="category/java/errorprone.xml/AvoidEnumAsIdentifier" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/ForLoopCanBeForeach" deprecated="true" />
 
+    <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation" deprecated="true" />

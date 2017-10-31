@@ -24,23 +24,14 @@ are suggested.
     <rule ref="category/java/design.xml/SimplifyConditional" deprecated="true" />
     <rule ref="category/java/design.xml/SingularField" deprecated="true" />
     <rule ref="category/java/design.xml/SwitchDensity" deprecated="true" />
-    <rule ref="category/java/design.xml/TooFewBranchesForASwitchStatement" deprecated="true" />
     <rule ref="category/java/design.xml/UseUtilityClass" deprecated="true" />
 
-    <rule ref="category/java/errorprone.xml/AbstractClassWithoutAbstractMethod" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/AccessorClassGeneration" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/AccessorMethodGeneration" deprecated="true" />
     <rule ref="category/java/errorprone.xml/AssignmentToNonFinalStatic" deprecated="true" />
     <rule ref="category/java/errorprone.xml/AvoidInstanceofChecksInCatchClause" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/AvoidProtectedFieldInFinalClass" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/AvoidProtectedMethodInFinalClassNotExtending" deprecated="true" />
     <rule ref="category/java/errorprone.xml/BadComparison" deprecated="true" />
     <rule ref="category/java/errorprone.xml/CloseResource" deprecated="true" />
     <rule ref="category/java/errorprone.xml/CompareObjectsWithEquals" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/ConfusingTernary" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/ConstantsInInterface" deprecated="true" />
     <rule ref="category/java/errorprone.xml/ConstructorCallsOverridableMethod" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/DefaultLabelNotLastInSwitchStmt" deprecated="true" />
     <rule ref="category/java/errorprone.xml/EqualsNull" deprecated="true" />
     <rule ref="category/java/errorprone.xml/IdempotentOperations" deprecated="true" />
     <rule ref="category/java/errorprone.xml/InstantiationToGetClass" deprecated="true" />
@@ -48,14 +39,15 @@ are suggested.
     <rule ref="category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass" deprecated="true" />
     <rule ref="category/java/errorprone.xml/NonCaseLabelInSwitchStatement" deprecated="true" />
     <rule ref="category/java/errorprone.xml/NonStaticInitializer" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/PreserveStackTrace" deprecated="true" />
     <rule ref="category/java/errorprone.xml/ReturnEmptyArrayRatherThanNull" deprecated="true" />
     <rule ref="category/java/errorprone.xml/SimpleDateFormatNeedsLocale" deprecated="true" />
     <rule ref="category/java/errorprone.xml/SingleMethodSingleton" deprecated="true" />
     <rule ref="category/java/errorprone.xml/SingletonClassReturningNewInstance" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/UseCollectionIsEmpty" deprecated="true" />
     <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions" deprecated="true" />
 
+    <rule ref="category/java/codestyle.xml/AvoidProtectedFieldInFinalClass" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/AvoidProtectedMethodInFinalClassNotExtending" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/ConfusingTernary" deprecated="true" />
     <rule ref="category/java/codestyle.xml/EmptyMethodInAbstractClassShouldBeAbstract" deprecated="true" />
     <rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass" deprecated="true" />
     <rule ref="category/java/codestyle.xml/UnnecessaryLocalBeforeReturn" deprecated="true" />
@@ -65,13 +57,21 @@ are suggested.
     <rule ref="category/java/multithreading.xml/UnsynchronizedStaticDateFormatter" deprecated="true" />
     <rule ref="category/java/multithreading.xml/UseNotifyAllInsteadOfNotify" deprecated="true" />
 
+    <rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/AccessorClassGeneration" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/AccessorMethodGeneration" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/AvoidReassigningParameters" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/ConstantsInInterface" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/PositionLiteralsFirstInCaseInsensitiveComparisons" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/PositionLiteralsFirstInComparisons" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/PreserveStackTrace" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/UseCollectionIsEmpty" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/UseVarargs" deprecated="true" />
 
     <rule ref="category/java/performance.xml/OptimizableToArrayCall" deprecated="true" />
+    <rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement" deprecated="true" />
 
     <rule ref="category/java/documentation.xml/UncommentedEmptyConstructor" deprecated="true" />
     <rule ref="category/java/documentation.xml/UncommentedEmptyMethodBody" deprecated="true" />
