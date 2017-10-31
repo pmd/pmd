@@ -60,28 +60,28 @@ public boolean isBarEqualTo(int x) {
     </example>
   </rule>
 
-  <rule name="SimplifyBooleanExpressions"
-        language="java"
-        since="1.05"
-        message="Avoid unnecessary comparisons in boolean expressions"
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanexpressions">
-      <description>
-Avoid unnecessary comparisons in boolean expressions, they serve no purpose and impacts readability.
-      </description>
-      <priority>3</priority>
-      <properties>
-          <property name="xpath">
-              <value>
-<![CDATA[
+    <rule name="SimplifyBooleanExpressions"
+          language="java"
+          since="1.05"
+          message="Avoid unnecessary comparisons in boolean expressions"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanexpressions">
+        <description>
+            Avoid unnecessary comparisons in boolean expressions, they serve no purpose and impacts readability.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
 //EqualityExpression/PrimaryExpression
  /PrimaryPrefix/Literal/BooleanLiteral
 ]]>
-              </value>
-          </property>
-      </properties>
-      <example>
-  <![CDATA[
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
 public class Bar {
   // can be simplified to
   // bar = isFoo();
@@ -90,10 +90,10 @@ public class Bar {
   public isFoo() { return false;}
 }
   ]]>
-      </example>
+        </example>
     </rule>
 
-  <rule name="SwitchStmtsShouldHaveDefault"
+    <rule name="SwitchStmtsShouldHaveDefault"
         language="java"
         since="1.0"
         message="Switch statements should have a default label"

@@ -25,6 +25,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.settings.AppSetting;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.SettingsOwner;
 
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -164,4 +165,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     }
 
 
+    public ObservableValue<String> xpathExpressionProperty() {
+        return xpathExpressionArea.textProperty();
+    }
 }

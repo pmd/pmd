@@ -38,7 +38,10 @@ import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -56,6 +59,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 
@@ -155,6 +159,13 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         openFileMenuItem.setOnAction(this::onOpenFileClicked);
         openRecentMenu.setOnAction(e -> updateRecentFilesMenu());
         openRecentMenu.setOnShowing(e -> updateRecentFilesMenu());
+        exportXPathMenuItem.setOnAction(event -> {
+            try {
+                onExportXPathToRuleClicked(event);
+            } catch (IOException e) {
+                // pretend it didn't happen
+            }
+        });
         fileMenu.setOnShowing(this::onFileMenuShowing);
 
         sourceEditorController.refreshAST();
@@ -191,7 +202,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
         // gets captured in the closure
         final double defaultMainHorizontalSplitPaneDividerPosition
-                = mainHorizontalSplitPane.getDividerPositions()[0];
+            = mainHorizontalSplitPane.getDividerPositions()[0];
 
 
         // show/ hide bottom pane
@@ -229,7 +240,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     private void onRefreshASTClicked() {
         sourceEditorController.refreshAST();
         xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(),
-                                           sourceEditorController.getLanguageVersion());
+            sourceEditorController.getLanguageVersion());
     }
 
 
@@ -244,7 +255,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     }
 
 
-    public void onNameDeclarationSelected(NameDeclaration declaration) {        
+    public void onNameDeclarationSelected(NameDeclaration declaration) {
         sourceEditorController.clearNodeHighlight();
         sourceEditorController.highlightNodePrimary(declaration.getNode());
         sourceEditorController.highlightNodesSecondary(declaration.getNode().getScope()
@@ -270,6 +281,37 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
         licenseAlert.getDialogPane().setContent(scroll);
         licenseAlert.showAndWait();
+    }
+
+
+    private void onExportXPathToRuleClicked(Event event) throws IOException {
+        ExportXPathWizardController wizard
+            = new ExportXPathWizardController(xpathPanelController.xpathExpressionProperty());
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/xpath-export-wizard.fxml"));
+        loader.setControllerFactory(type -> {
+            if (type == ExportXPathWizardController.class) {
+                return wizard;
+            } else {
+                // default behavior for controllerFactory:
+                try {
+                    return type.newInstance();
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                    throw new RuntimeException(exc); // fatal, just bail...
+                }
+            }
+        });
+
+        Stage stage = new Stage();
+
+        stage.setOnCloseRequest(e -> wizard.shutdown());
+
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        //stage.setTitle("PMD Rule Designer (v " + PMD.VERSION + ')');
+        stage.setScene(scene);
+        stage.show();
     }
 
 
