@@ -14,7 +14,7 @@
           language="ecmascript"
           since="5.0.1"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_controversial.html#avoidwithstatement">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_bestpractices.html#avoidwithstatement">
         <description>Avoid using with - it's bad news</description>
         <priority>1</priority>
         <properties>
@@ -38,7 +38,7 @@ with (object) {
     <rule name="ConsistentReturn"
           since="5.0"
           message="A function should not mix 'return' statements with and without a result."
-          class="net.sourceforge.pmd.lang.ecmascript.rule.basic.ConsistentReturnRule"
+          class="net.sourceforge.pmd.lang.ecmascript.rule.bestpractices.ConsistentReturnRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_bestpractices.html#consistentreturn">
         <description>
 ECMAScript does provide for return types on functions, and therefore there is no solid rule as to their usage.

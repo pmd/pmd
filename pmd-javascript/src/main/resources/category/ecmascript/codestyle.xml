@@ -314,7 +314,7 @@ var z = ((1 + 1)); // Bad
           since="5.0"
           message="A ''return'', ''break'', ''continue'', or ''throw'' statement should be the last in a block."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_codestyle_basic.html#unreachablecode">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_codestyle.html#unreachablecode">
         <description>
 A 'return', 'break', 'continue', or 'throw' statement should be the last in a block. Statements after these
 will never execute.  This is a bug, or extremely poor style.
