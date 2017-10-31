@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+
+<ruleset name="Android"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>
+These rules deal with the Android SDK, mostly related to best practices.
+To get better results, make sure that the auxclasspath is defined for type resolution to work.
+  </description>
+
+  <rule name="CallSuperFirst"
+      since="4.2.5"
+      language="java"
+      message="super should be called at the start of the method"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_android.html#callsuperfirst">
+    <description>Super should be called at the start of the method</description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value><![CDATA[
+//MethodDeclaration[MethodDeclarator[
+  @Image='onCreate' or
+  @Image='onConfigurationChanged' or
+  @Image='onPostCreate' or
+  @Image='onPostResume' or
+  @Image='onRestart' or
+  @Image='onRestoreInstanceState' or
+  @Image='onResume' or
+  @Image='onStart'
+  ]]
+    /Block[not(
+      (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image]))]
+[ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
+  typeof(@Image, 'android.app.Activity', 'Activity') or
+  typeof(@Image, 'android.app.Application', 'Application') or
+  typeof(@Image, 'android.app.Service', 'Service')
+]]]
+]]>
+        </value>
+      </property>
+    </properties>
+    <example><![CDATA[
+public class DummyActivity extends Activity {
+    public void onCreate(Bundle bundle) {
+        // missing call to super.onCreate(bundle)
+        foo();
+    }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="CallSuperLast"
+      since="4.2.5"
+      language="java"
+      message="super should be called at the end of the method"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_android.html#callsuperlast">
+    <description>Super should be called at the end of the method</description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value>
+          <![CDATA[
+//MethodDeclaration[MethodDeclarator[
+  @Image='finish' or
+  @Image='onDestroy' or
+  @Image='onPause' or
+  @Image='onSaveInstanceState' or
+  @Image='onStop' or
+  @Image='onTerminate'
+  ]]
+   /Block/BlockStatement[last()]
+    [not(Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image])]
+[ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
+  typeof(@Image, 'android.app.Activity', 'Activity') or
+  typeof(@Image, 'android.app.Application', 'Application') or
+  typeof(@Image, 'android.app.Service', 'Service')
+]]]
+]]>
+        </value>
+      </property>
+    </properties>
+    <example>
+      <![CDATA[
+public class DummyActivity extends Activity {
+    public void onPause() {
+        foo();
+        // missing call to super.onPause()
+    }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="DoNotHardCodeSDCard"
+      since="4.2.6"
+      language="java"
+      message="Do not hardcode /sdcard."
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_android.html#donothardcodesdcard">
+    <description>Use Environment.getExternalStorageDirectory() instead of "/sdcard"</description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value>//Literal[starts-with(@Image,'"/sdcard')]</value>
+      </property>
+    </properties>
+    <example>
+      <![CDATA[
+public class MyActivity extends Activity {
+    protected void foo() {
+        String storageLocation = "/sdcard/mypackage";   // hard-coded, poor approach
+
+       storageLocation = Environment.getExternalStorageDirectory() + "/mypackage"; // preferred approach
+    }
+}
+]]>
+    </example>
+  </rule>
+
+</ruleset>

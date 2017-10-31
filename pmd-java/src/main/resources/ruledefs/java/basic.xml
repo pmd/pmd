@@ -1,0 +1,848 @@
+<?xml version="1.0"?>
+
+<ruleset name="Basic"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>
+The Basic ruleset contains a collection of good practices which should be followed.
+  </description>
+
+    <rule name="JumbledIncrementer"
+          language="java"
+          since="1.0"
+          message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#jumbledincrementer">
+     <description>
+Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
+     </description>
+     <priority>3</priority>
+     <properties>
+         <property name="xpath">
+             <value><![CDATA[
+//ForStatement
+  [
+    ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
+    =
+    ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
+  ]
+]]></value>
+         </property>
+     </properties>
+     <example>
+ <![CDATA[
+public class JumbledIncrementerRule1 {
+    public void foo() {
+        for (int i = 0; i < 10; i++) {          // only references 'i'
+            for (int k = 0; k < 20; i++) {      // references both 'i' and 'k'
+                System.out.println("Hello");
+            }
+        }
+    }
+}
+]]>
+     </example>
+     </rule>
+
+    <rule name="ForLoopShouldBeWhileLoop"
+          language="java"
+          since="1.02"
+          message="This for loop could be simplified to a while loop"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#forloopshouldbewhileloop">
+      <description>
+Some for loops can be simplified to while loops, this makes them more concise.
+      </description>
+      <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value><![CDATA[
+//ForStatement
+  [count(*) > 1]
+  [not(LocalVariableDeclaration)]
+  [not(ForInit)]
+  [not(ForUpdate)]
+  [not(Type and Expression and Statement)]
+]]></value>
+        </property>
+    </properties>
+      <example>
+  <![CDATA[
+public class Foo {
+    void bar() {
+        for (;true;) true; // No Init or Update part, may as well be: while (true)
+    }
+}
+ ]]>
+      </example>
+    </rule>
+
+    <rule name="OverrideBothEqualsAndHashcode"
+          language="java"
+          since="0.4"
+          message="Ensure you override both equals() and hashCode()"
+          class="net.sourceforge.pmd.lang.java.rule.basic.OverrideBothEqualsAndHashcodeRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#overridebothequalsandhashcode">
+      <description>
+Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+      </description>
+      <priority>3</priority>
+      <example>
+  <![CDATA[
+public class Bar {        // poor, missing a hashcode() method
+    public boolean equals(Object o) {
+      // do some comparison
+    }
+}
+
+public class Baz {        // poor, missing an equals() method
+    public int hashCode() {
+      // return some hash value
+    }
+}
+
+public class Foo {        // perfect, both methods provided
+    public boolean equals(Object other) {
+      // do some comparison
+    }
+    public int hashCode() {
+      // return some hash value
+    }
+}
+ ]]>
+      </example>
+    </rule>
+
+    <rule name="DoubleCheckedLocking"
+          language="java"
+          since="1.04"
+          message="Double checked locking is not thread safe in Java."
+          class="net.sourceforge.pmd.lang.java.rule.basic.DoubleCheckedLockingRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#doublecheckedlocking">
+      <description>
+Partially created objects can be returned by the Double Checked Locking pattern when used in Java.
+An optimizing JRE may assign a reference to the baz variable before it calls the constructor of the object the
+reference points to.
+
+Note: With Java 5, you can make Double checked locking work, if you declare the variable to be `volatile`.
+
+For more details refer to: &lt;http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html>
+or &lt;http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html>
+      </description>
+        <priority>1</priority>
+      <example>
+  <![CDATA[
+public class Foo {
+    /*volatile */ Object baz = null; // fix for Java5 and later: volatile
+    Object bar() {
+        if (baz == null) { // baz may be non-null yet not fully created
+            synchronized(this) {
+                if (baz == null) {
+                    baz = new Object();
+                }
+              }
+        }
+        return baz;
+    }
+}
+ ]]>
+      </example>
+    </rule>
+
+    <rule name="ReturnFromFinallyBlock"
+          language="java"
+          since="1.05"
+          message="Avoid returning from a finally block"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#returnfromfinallyblock">
+      <description>
+Avoid returning from a finally block, this can discard exceptions.
+      </description>
+      <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//FinallyStatement//ReturnStatement
+]]>
+              </value>
+          </property>
+      </properties>
+      <example>
+  <![CDATA[
+public class Bar {
+    public String foo() {
+        try {
+            throw new Exception( "My Exception" );
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            return "A. O. K."; // return not recommended here
+        }
+    }
+}
+]]>
+      </example>
+    </rule>
+
+    <rule name="UnconditionalIfStatement"
+          language="java"
+          since="1.5"
+          message="Do not use 'if' statements that are always true or always false"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#unconditionalifstatement">
+      <description>
+Do not use "if" statements whose conditionals are always true or always false.
+      </description>
+      <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+ <![CDATA[
+//IfStatement/Expression
+ [count(PrimaryExpression)=1]
+ /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
+]]>
+                </value>
+            </property>
+        </properties>
+      <example>
+  <![CDATA[
+public class Foo {
+    public void close() {
+        if (true) {        // fixed conditional, not recommended
+            // ...
+        }
+    }
+}
+]]>
+      </example>
+    </rule>
+
+    <rule name="BooleanInstantiation"
+          since="1.2"
+          message="Avoid instantiating Boolean objects; reference Boolean.TRUE or Boolean.FALSE or call Boolean.valueOf() instead."
+          class="net.sourceforge.pmd.lang.java.rule.basic.BooleanInstantiationRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#booleaninstantiation">
+   <description>
+Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
+   </description>
+      <priority>2</priority>
+   <example>
+   <![CDATA[
+Boolean bar = new Boolean("true");        // unnecessary creation, just reference Boolean.TRUE;
+Boolean buz = Boolean.valueOf(false);    // ...., just reference Boolean.FALSE;
+   ]]>
+   </example>
+   </rule>
+
+    <rule name="CollapsibleIfStatements"
+          language="java"
+          since="3.1"
+          message="These nested if statements could be combined"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#collapsibleifstatements">
+      <description>
+Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
+      </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+            <value>
+                <![CDATA[
+//IfStatement[@Else='false']/Statement
+ /IfStatement[@Else='false']
+ |
+//IfStatement[@Else='false']/Statement
+ /Block[count(BlockStatement)=1]/BlockStatement
+  /Statement/IfStatement[@Else='false']]]>
+            </value>
+        </property>
+      </properties>
+      <example>
+  <![CDATA[
+void bar() {
+    if (x) {            // original implementation
+        if (y) {
+            // do stuff
+        }
+    }
+}
+
+void bar() {
+    if (x && y) {        // optimized implementation
+        // do stuff
+    }
+}
+ ]]>
+      </example>
+    </rule>
+
+    <rule name="ClassCastExceptionWithToArray"
+          language="java"
+          since="3.4"
+          message="This usage of the Collection.toArray() method will throw a ClassCastException."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#classcastexceptionwithtoarray">
+  <description>
+When deriving an array of a specific class from your Collection, one should provide an array of
+the same class as the parameter of the toArray() method. Doing otherwise you will will result
+in a ClassCastException.
+  </description>
+  <priority>3</priority>
+  <properties>
+    <property name="xpath">
+    <value>
+<![CDATA[
+//CastExpression[Type/ReferenceType/ClassOrInterfaceType[@Image !=
+"Object"]]/PrimaryExpression
+[
+ PrimaryPrefix/Name[ends-with(@Image, '.toArray')]
+ and
+ PrimarySuffix/Arguments[count(*) = 0]
+and
+count(PrimarySuffix) = 1
+]
+]]>
+    </value>
+    </property>
+  </properties>
+  <example>
+<![CDATA[
+Collection c = new ArrayList();
+Integer obj = new Integer(1);
+c.add(obj);
+
+    // this would trigger the rule (and throw a ClassCastException if executed)
+Integer[] a = (Integer [])c.toArray();
+
+   // this is fine and will not trigger the rule
+Integer[] b = (Integer [])c.toArray(new Integer[c.size()]);
+]]>
+  </example>
+</rule>
+
+
+<rule  name="AvoidDecimalLiteralsInBigDecimalConstructor"
+       language="java"
+       since="3.4"
+       message="Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal"
+       class="net.sourceforge.pmd.lang.rule.XPathRule"
+       externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#avoiddecimalliteralsinbigdecimalconstructor">
+  <description>
+One might assume that the result of "new BigDecimal(0.1)" is exactly equal to 0.1, but it is actually
+equal to .1000000000000000055511151231257827021181583404541015625.
+This is because 0.1 cannot be represented exactly as a double (or as a binary fraction of any finite
+length). Thus, the long value that is being passed in to the constructor is not exactly equal to 0.1,
+appearances notwithstanding.
+
+The (String) constructor, on the other hand, is perfectly predictable: 'new BigDecimal("0.1")' is
+exactly equal to 0.1, as one would expect.  Therefore, it is generally recommended that the
+(String) constructor be used in preference to this one.
+  </description>
+  <priority>3</priority>
+  <properties>
+    <property name="xpath">
+    <value>
+<![CDATA[
+//AllocationExpression
+[ClassOrInterfaceType[@Image="BigDecimal"]]
+[Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix
+    [
+        Literal[(not(ends-with(@Image,'"'))) and contains(@Image,".")]
+        or
+        Name[ancestor::Block/BlockStatement/LocalVariableDeclaration
+                [Type[PrimitiveType[@Image='double' or @Image='float']
+                      or ReferenceType/ClassOrInterfaceType[@Image='Double' or @Image='Float']]]
+                /VariableDeclarator/VariableDeclaratorId/@Image = @Image
+            ]
+        or
+        Name[ancestor::MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter
+                [Type[PrimitiveType[@Image='double' or @Image='float']
+                      or ReferenceType/ClassOrInterfaceType[@Image='Double' or @Image='Float']]]
+                /VariableDeclaratorId/@Image = @Image
+            ]
+    ]
+]
+ ]]>
+    </value>
+    </property>
+  </properties>
+  <example>
+<![CDATA[
+BigDecimal bd = new BigDecimal(1.123);       // loss of precision, this would trigger the rule
+
+BigDecimal bd = new BigDecimal("1.123");     // preferred approach
+
+BigDecimal bd = new BigDecimal(12);          // preferred approach, ok for integer values
+]]>
+  </example>
+</rule>
+
+
+    <rule  name="MisplacedNullCheck"
+           language="java"
+           since="3.5"
+           message="The null check here is misplaced; if the variable is null there will be a NullPointerException"
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
+           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#misplacednullcheck">
+      <description>
+The null check here is misplaced. If the variable is null a NullPointerException will be thrown.
+Either the check is useless (the variable will never be "null") or it is incorrect.
+      </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+        <value>
+    <![CDATA[
+//Expression
+    /*[self::ConditionalOrExpression or self::ConditionalAndExpression]
+    /descendant::PrimaryExpression/PrimaryPrefix
+    /Name[starts-with(@Image,
+        concat(ancestor::PrimaryExpression/following-sibling::EqualityExpression
+            [./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+            /PrimaryExpression/PrimaryPrefix
+            /Name[count(../../PrimarySuffix)=0]/@Image,".")
+        )
+     ]
+     [count(ancestor::ConditionalAndExpression/EqualityExpression
+            [@Image='!=']
+            [./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+            [starts-with(following-sibling::*/PrimaryExpression/PrimaryPrefix/Name/@Image,
+                concat(./PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
+      ) = 0
+     ]
+    ]]>
+        </value>
+        </property>
+      </properties>
+      <example>
+    <![CDATA[
+public class Foo {
+    void bar() {
+        if (a.equals(baz) && a != null) {}
+        }
+}
+    ]]>
+      </example>
+      <example><![CDATA[
+public class Foo {
+    void bar() {
+        if (a.equals(baz) || a == null) {}
+    }
+}
+   ]]></example>
+    </rule>
+
+
+    <rule  name="AvoidThreadGroup"
+           language="java"
+           since="3.6"
+           message="Avoid using java.lang.ThreadGroup; it is not thread safe"
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
+           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#avoidthreadgroup"
+           typeResolution="true">
+      <description>
+Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment
+it contains methods that are not thread-safe.
+      </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+        <value>
+<![CDATA[
+//AllocationExpression/ClassOrInterfaceType[pmd-java:typeof(@Image, 'java.lang.ThreadGroup')]|
+//PrimarySuffix[contains(@Image, 'getThreadGroup')]
+]]>
+        </value>
+        </property>
+      </properties>
+      <example>
+    <![CDATA[
+public class Bar {
+    void buz() {
+        ThreadGroup tg = new ThreadGroup("My threadgroup");
+        tg = new ThreadGroup(tg, "my thread group");
+        tg = Thread.currentThread().getThreadGroup();
+        tg = System.getSecurityManager().getThreadGroup();
+    }
+}
+    ]]>
+      </example>
+    </rule>
+
+    <rule name="BrokenNullCheck"
+          since="3.8"
+          message="Method call on object which may be null"
+          class="net.sourceforge.pmd.lang.java.rule.basic.BrokenNullCheckRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#brokennullcheck">
+        <description>
+The null check is broken since it will throw a NullPointerException itself.
+It is likely that you used || instead of &amp;&amp; or vice versa.
+     </description>
+        <priority>2</priority>
+        <example>
+<![CDATA[
+public String bar(String string) {
+  // should be &&
+    if (string!=null || !string.equals(""))
+        return string;
+  // should be ||
+    if (string==null && string.equals(""))
+        return string;
+}
+        ]]>
+        </example>
+    </rule>
+
+    <rule name="BigIntegerInstantiation"
+          since="3.9"
+          message="Don't create instances of already existing BigInteger and BigDecimal (ZERO, ONE, TEN)"
+          class="net.sourceforge.pmd.lang.java.rule.basic.BigIntegerInstantiationRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#bigintegerinstantiation">
+  <description>
+Don't create instances of already existing BigInteger (BigInteger.ZERO, BigInteger.ONE) and
+for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN)
+  </description>
+  <priority>3</priority>
+  <example>
+<![CDATA[
+BigInteger bi = new BigInteger(1);       // reference BigInteger.ONE instead
+BigInteger bi2 = new BigInteger("0");    // reference BigInteger.ZERO instead
+BigInteger bi3 = new BigInteger(0.0);    // reference BigInteger.ZERO instead
+BigInteger bi4;
+bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
+]]>
+  </example>
+</rule>
+
+    <rule   name="AvoidUsingOctalValues"
+            since="3.9"
+            message="Do not start a literal by 0 unless it's an octal value"
+            class="net.sourceforge.pmd.lang.java.rule.basic.AvoidUsingOctalValuesRule"
+            externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#avoidusingoctalvalues">
+    <description>
+        <![CDATA[
+Integer literals should not start with zero since this denotes that the rest of literal will be
+interpreted as an octal value.
+        ]]>
+    </description>
+    <priority>3</priority>
+    <example>
+            <![CDATA[
+int i = 012;    // set i with 10 not 12
+int j = 010;    // set j with 8 not 10
+k = i * j;      // set k with 80 not 120
+            ]]>
+    </example>
+    </rule>
+
+    <rule   name="AvoidUsingHardCodedIP"
+            since="4.1"
+            message="Do not hard code the IP address ${variableName}"
+            class="net.sourceforge.pmd.lang.java.rule.basic.AvoidUsingHardCodedIPRule"
+            externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#avoidusinghardcodedip">
+        <description>
+            <![CDATA[
+Application with hard-coded IP addresses can become impossible to deploy in some cases.
+Externalizing IP adresses is preferable.
+            ]]>
+        </description>
+        <priority>3</priority>
+         <properties>
+            <property name="pattern" type="String" description="Regular Expression" value='^"[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"$'/>
+        </properties>
+        <example>
+        <![CDATA[
+public class Foo {
+    private String ip = "127.0.0.1";     // not recommended
+}
+        ]]>
+        </example>
+    </rule>
+
+  <rule name="CheckResultSet"
+        language="java"
+        since="4.1"
+        class="net.sourceforge.pmd.lang.java.rule.basic.CheckResultSetRule"
+        message="Always check the return of one of the navigation method (next,previous,first,last) of a ResultSet."
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#checkresultset">
+        <description>
+            <![CDATA[
+Always check the return values of navigation methods (next, previous, first, last) of a ResultSet.
+If the value return is 'false', it should be handled properly.
+            ]]>
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+Statement stat = conn.createStatement();
+ResultSet rst = stat.executeQuery("SELECT name FROM person");
+rst.next();     // what if it returns false? bad form
+String firstName = rst.getString(1);
+
+Statement stat = conn.createStatement();
+ResultSet rst = stat.executeQuery("SELECT name FROM person");
+if (rst.next()) {    // result is properly examined and used
+    String firstName = rst.getString(1);
+    } else  {
+        // handle missing data
+}
+            ]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidMultipleUnaryOperators"
+          since="4.2"
+          class="net.sourceforge.pmd.lang.java.rule.basic.AvoidMultipleUnaryOperatorsRule"
+          message="Using multiple unary operators may be a bug, and/or is confusing."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#avoidmultipleunaryoperators">
+        <description>
+            <![CDATA[
+The use of multiple unary operators may be problematic, and/or confusing.
+Ensure that the intended usage is not a bug, or consider simplifying the expression.
+            ]]>
+        </description>
+        <priority>2</priority>
+        <example>
+            <![CDATA[
+// These are typo bugs, or at best needlessly complex and confusing:
+int i = - -1;
+int j = + - +1;
+int z = ~~2;
+boolean b = !!true;
+boolean c = !!!true;
+
+// These are better:
+int i = 1;
+int j = -1;
+int z = 2;
+boolean b = true;
+boolean c = false;
+
+// And these just make your brain hurt:
+int i = ~-2;
+int j = -~7;
+            ]]>
+        </example>
+    </rule>
+
+  <rule name="ExtendsObject"
+        language="java"
+        since="5.0"
+        message="No need to explicitly extend Object."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#extendsobject">
+    <description>No need to explicitly extend Object.</description>
+    <priority>4</priority>
+    <properties>
+       <property name="xpath">
+          <value>
+          <![CDATA[
+//ExtendsList/ClassOrInterfaceType[@Image='Object' or @Image='java.lang.Object']
+          ]]>
+          </value>
+       </property>
+    </properties>
+    <example>
+    <![CDATA[
+public class Foo extends Object {     // not required
+}
+    ]]>
+    </example>
+  </rule>
+
+    <rule name="CheckSkipResult"
+          language="java"
+          since="5.0"
+          message="Check the value returned by the skip() method of an InputStream to see if the requested number of bytes has been skipped."
+          class="net.sourceforge.pmd.lang.java.rule.basic.CheckSkipResultRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#checkskipresult">
+        <description>The skip() method may skip a smaller number of bytes than requested. Check the returned value to find out if it was the case or not.</description>
+        <priority>3</priority>
+        <example>
+        <![CDATA[
+public class Foo {
+
+   private FileInputStream _s = new FileInputStream("file");
+
+   public void skip(int n) throws IOException {
+      _s.skip(n); // You are not sure that exactly n bytes are skipped
+   }
+
+   public void skipExactly(int n) throws IOException {
+      while (n != 0) {
+         long skipped = _s.skip(n);
+         if (skipped == 0)
+            throw new EOFException();
+         n -= skipped;
+      }
+   }
+        ]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidBranchingStatementAsLastInLoop"
+            since="5.0"
+          class="net.sourceforge.pmd.lang.java.rule.basic.AvoidBranchingStatementAsLastInLoopRule"
+          message="Avoid using a branching statement as the last in a loop."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#avoidbranchingstatementaslastinloop">
+        <description>
+            <![CDATA[
+Using a branching statement as the last part of a loop may be a bug, and/or is confusing.
+Ensure that the usage is not a bug, or consider using another approach.
+            ]]>
+        </description>
+        <priority>2</priority>
+        <example>
+            <![CDATA[
+  // unusual use of branching statement in a loop
+for (int i = 0; i < 10; i++) {
+    if (i*i <= 25) {
+        continue;
+    }
+    break;
+}
+
+  // this makes more sense...
+for (int i = 0; i < 10; i++) {
+    if (i*i > 25) {
+        break;
+    }
+}
+            ]]>
+        </example>
+    </rule>
+
+    <rule  name="DontCallThreadRun"
+           language="java"
+           since="4.3"
+           message="Don't call Thread.run() explicitly, use Thread.start()"
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
+           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#dontcallthreadrun">
+      <description>
+Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.
+      </description>
+      <priority>4</priority>
+      <properties>
+        <property name="xpath">
+          <value>
+<![CDATA[
+//StatementExpression/PrimaryExpression
+[
+    PrimaryPrefix
+    [
+        ./Name[ends-with(@Image, '.run') or @Image = 'run']
+        and substring-before(Name/@Image, '.') =//VariableDeclarator/VariableDeclaratorId/@Image
+        [../../../Type/ReferenceType[ClassOrInterfaceType/@Image = 'Thread']]
+        or (
+        ./AllocationExpression/ClassOrInterfaceType[@Image = 'Thread']
+        and ../PrimarySuffix[@Image = 'run'])
+    ]
+]
+]]>
+         </value>
+        </property>
+      </properties>
+      <example>
+<![CDATA[
+Thread t = new Thread();
+t.run();            // use t.start() instead
+new Thread().run(); // same violation
+]]>
+      </example>
+    </rule>
+
+  <rule  name="DontUseFloatTypeForLoopIndices"
+         language="java"
+         since="4.3"
+         message="Don't use floating point for loop indices. If you must use floating point, use double."
+         class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#dontusefloattypeforloopindices">
+    <description>
+Don't use floating point for loop indices. If you must use floating point, use double
+unless you're certain that float provides enough precision and you have a compelling
+performance need (space or time).
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value>
+<![CDATA[
+//ForStatement/ForInit/LocalVariableDeclaration
+/Type/PrimitiveType[@Image="float"]
+]]>
+       </value>
+      </property>
+    </properties>
+    <example>
+<![CDATA[
+public class Count {
+  public static void main(String[] args) {
+    final int START = 2000000000;
+    int count = 0;
+    for (float f = START; f < START + 50; f++)
+      count++;
+      //Prints 0 because (float) START == (float) (START + 50).
+      System.out.println(count);
+      //The termination test misbehaves due to floating point granularity.
+    }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="SimplifiedTernary"
+    language="java"
+    since="5.4.0"
+    message="Ternary operators that can be simplified with || or &amp;&amp;"
+    class="net.sourceforge.pmd.lang.rule.XPathRule"
+    externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_basic.html#simplifiedternary">
+    <description>
+        <![CDATA[
+Look for ternary operators with the form `condition ? literalBoolean : foo`
+or `condition ? foo : literalBoolean`.
+
+These expressions can be simplified respectively to
+`condition || foo`  when the literalBoolean is true
+`!condition && foo` when the literalBoolean is false
+or
+`!condition || foo` when the literalBoolean is true
+`condition && foo`  when the literalBoolean is false
+        ]]>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value><![CDATA[
+//ConditionalExpression[@Ternary='true'][not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
+|
+//ConditionalExpression[@Ternary='true'][not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+        <![CDATA[
+public class Foo {
+    public boolean test() {
+        return condition ? true : something(); // can be as simple as return condition || something();
+    }
+
+    public void test2() {
+        final boolean value = condition ? false : something(); // can be as simple as value = !condition && something();
+    }
+
+    public boolean test3() {
+        return condition ? something() : true; // can be as simple as return !condition || something();
+    }
+
+    public void test4() {
+        final boolean otherValue = condition ? something() : false; // can be as simple as condition && something();
+    }
+}
+        ]]>
+    </example>
+  </rule>
+</ruleset>
