@@ -105,7 +105,7 @@ public class ClasspathClassLoader extends URLClassLoader {
             try {
                 // checking local
                 c = findClass(name);
-            } catch (final ClassNotFoundException e) {
+            } catch (final ClassNotFoundException | SecurityException e) {
                 // checking parent
                 // This call to loadClass may eventually call findClass again, in case the parent doesn't find anything.
                 c = super.loadClass(name, resolve);
