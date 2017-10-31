@@ -5,7 +5,7 @@ permalink: pmd_rules_java_performance.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/performance.xml
-keywords: Performance, AddEmptyString, AppendCharacterWithChar, AvoidArrayLoops, AvoidInstantiatingObjectsInLoops, AvoidUsingShortType, BigIntegerInstantiation, BooleanInstantiation, ByteInstantiation, ConsecutiveAppendsShouldReuse, ConsecutiveLiteralAppends, DoNotCallGarbageCollectionExplicitly, InefficientEmptyStringCheck, InefficientStringBuffering, InsufficientStringBufferDeclaration, IntegerInstantiation, LocalVariableCouldBeFinal, LongInstantiation, MethodArgumentCouldBeFinal, OptimizableToArrayCall, RedundantFieldInitializer, SimplifyStartsWith, ShortInstantiation, StringInstantiation, StringToString, UnnecessaryWrapperObjectCreation, UseArrayListInsteadOfVector, UseArraysAsList, UseIndexOfChar, UselessStringValueOf, UseStringBufferForStringAppends, UseStringBufferLength
+keywords: Performance, AddEmptyString, AppendCharacterWithChar, AvoidArrayLoops, AvoidInstantiatingObjectsInLoops, AvoidUsingShortType, BigIntegerInstantiation, BooleanInstantiation, ByteInstantiation, ConsecutiveAppendsShouldReuse, ConsecutiveLiteralAppends, InefficientEmptyStringCheck, InefficientStringBuffering, InsufficientStringBufferDeclaration, IntegerInstantiation, LongInstantiation, OptimizableToArrayCall, RedundantFieldInitializer, SimplifyStartsWith, ShortInstantiation, StringInstantiation, StringToString, TooFewBranchesForASwitchStatement, UnnecessaryWrapperObjectCreation, UseArrayListInsteadOfVector, UseArraysAsList, UseIndexOfChar, UselessStringValueOf, UseStringBufferForStringAppends, UseStringBufferLength
 ---
 ## AddEmptyString
 
@@ -305,60 +305,6 @@ buf.append("Hello World");                          // good
 <rule ref="category/java/performance.xml/ConsecutiveLiteralAppends" />
 ```
 
-## DoNotCallGarbageCollectionExplicitly
-
-**Since:** PMD 4.2
-
-**Priority:** Medium High (2)
-
-Calls to System.gc(), Runtime.getRuntime().gc(), and System.runFinalization() are not advised. Code should have the
-same behavior whether the garbage collection is disabled using the option -Xdisableexplicitgc or not.
-Moreover, "modern" jvms do a very good job handling garbage collections. If memory usage issues unrelated to memory
-leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
-
-```
-//Name[
-(starts-with(@Image, 'System.') and
-(starts-with(@Image, 'System.gc') or
-starts-with(@Image, 'System.runFinalization'))) or
-(
-starts-with(@Image,'Runtime.getRuntime') and
-../../PrimarySuffix[ends-with(@Image,'gc')]
-)
-]
-```
-
-**Example(s):**
-
-``` java
-public class GCCall {
-    public GCCall() {
-        // Explicit gc call !
-        System.gc();
-    }
-
-    public void doSomething() {
-        // Explicit gc call !
-        Runtime.getRuntime().gc();
-    }
-
-    public explicitGCcall() {
-        // Explicit gc call !
-        System.gc();
-    }
-
-    public void doSomething() {
-        // Explicit gc call !
-        Runtime.getRuntime().gc();
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/performance.xml/DoNotCallGarbageCollectionExplicitly" />
-```
-
 ## InefficientEmptyStringCheck
 
 **Since:** PMD 3.6
@@ -475,32 +421,6 @@ public class Foo {
 <rule ref="category/java/performance.xml/IntegerInstantiation" />
 ```
 
-## LocalVariableCouldBeFinal
-
-**Since:** PMD 2.2
-
-**Priority:** Medium (3)
-
-A local variable assigned only once can be declared final.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.optimizations.LocalVariableCouldBeFinalRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/optimizations/LocalVariableCouldBeFinalRule.java)
-
-**Example(s):**
-
-``` java
-public class Bar {
-    public void foo () {
-    String txtA = "a";          // if txtA will not be assigned again it is better to do this:
-    final String txtB = "b";
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/performance.xml/LocalVariableCouldBeFinal" />
-```
-
 ## LongInstantiation
 
 **Since:** PMD 4.0
@@ -529,33 +449,6 @@ public class Foo {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/performance.xml/LongInstantiation" />
-```
-
-## MethodArgumentCouldBeFinal
-
-**Since:** PMD 2.2
-
-**Priority:** Medium (3)
-
-A method argument that is never re-assigned within the method can be declared final.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.optimizations.MethodArgumentCouldBeFinalRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/optimizations/MethodArgumentCouldBeFinalRule.java)
-
-**Example(s):**
-
-``` java
-public void foo1 (String param) {       // do stuff with param never assigning it
-
-}
-
-public void foo2 (final String param) { // better, do stuff with param never assigning it
-
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/performance.xml/MethodArgumentCouldBeFinal" />
 ```
 
 ## OptimizableToArrayCall
@@ -751,6 +644,50 @@ private String baz() {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/performance.xml/StringToString" />
+```
+
+## TooFewBranchesForASwitchStatement
+
+**Since:** PMD 4.2
+
+**Priority:** Medium (3)
+
+Switch statements are intended to be used to support complex branching behaviour. Using a switch for only a few
+cases is ill-advised, since switches are not as easy to understand as if-then statements. In these cases use the
+if-then statement to increase code readability.
+
+```
+//SwitchStatement[
+    (count(.//SwitchLabel) < $minimumNumberCaseForASwitch)
+]
+```
+
+**Example(s):**
+
+``` java
+// With a minimumNumberCaseForASwitch of 3
+public class Foo {
+    public void bar() {
+        switch (condition) {
+            case ONE:
+                instruction;
+                break;
+            default:
+                break; // not enough for a 'switch' stmt, a simple 'if' stmt would have been more appropriate
+        }
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|minimumNumberCaseForASwitch|3|Minimum number of branches for a switch|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement" />
 ```
 
 ## UnnecessaryWrapperObjectCreation

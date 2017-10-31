@@ -5,7 +5,7 @@ permalink: pmd_rules_java_design.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/design.xml
-keywords: Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, ClassWithOnlyPrivateConstructorsShouldBeFinal, CollapsibleIfStatements, CouplingBetweenObjects, CyclomaticComplexity, DataClass, ExceptionAsFlowControl, ExcessiveClassLength, ExcessiveImports, ExcessiveMethodLength, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, LawOfDemeter, LogicInversion, LoosePackageCoupling, ModifiedCyclomaticComplexity, NcssConstructorCount, NcssCount, NcssMethodCount, NcssTypeCount, NPathComplexity, SignatureDeclareThrowsException, SimplifiedTernary, SimplifyBooleanAssertion, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, StdCyclomaticComplexity, SwitchDensity, TooFewBranchesForASwitchStatement, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass
+keywords: Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, ClassWithOnlyPrivateConstructorsShouldBeFinal, CollapsibleIfStatements, CouplingBetweenObjects, CyclomaticComplexity, DataClass, DoNotExtendJavaLangError, ExceptionAsFlowControl, ExcessiveClassLength, ExcessiveImports, ExcessiveMethodLength, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, LawOfDemeter, LogicInversion, LoosePackageCoupling, ModifiedCyclomaticComplexity, NcssConstructorCount, NcssCount, NcssMethodCount, NcssTypeCount, NPathComplexity, SignatureDeclareThrowsException, SimplifiedTernary, SimplifyBooleanAssertion, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, StdCyclomaticComplexity, SwitchDensity, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass
 ---
 ## AbstractClassWithoutAnyMethod
 
@@ -474,6 +474,30 @@ public class DataClass {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/DataClass" />
+```
+
+## DoNotExtendJavaLangError
+
+**Since:** PMD 4.0
+
+**Priority:** Medium (3)
+
+Errors are system exceptions. Do not extend them.
+
+```
+//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
+  [@Image="Error" or @Image="java.lang.Error"]
+```
+
+**Example(s):**
+
+``` java
+public class Foo extends Error { }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/design.xml/DoNotExtendJavaLangError" />
 ```
 
 ## ExceptionAsFlowControl
@@ -1608,50 +1632,6 @@ public class Foo {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/SwitchDensity" />
-```
-
-## TooFewBranchesForASwitchStatement
-
-**Since:** PMD 4.2
-
-**Priority:** Medium (3)
-
-Switch statements are intended to be used to support complex branching behaviour. Using a switch for only a few
-cases is ill-advised, since switches are not as easy to understand as if-then statements. In these cases use the
-if-then statement to increase code readability.
-
-```
-//SwitchStatement[
-    (count(.//SwitchLabel) < $minimumNumberCaseForASwitch)
-]
-```
-
-**Example(s):**
-
-``` java
-// With a minimumNumberCaseForASwitch of 3
-public class Foo {
-    public void bar() {
-        switch (condition) {
-            case ONE:
-                instruction;
-                break;
-            default:
-                break; // not enough for a 'switch' stmt, a simple 'if' stmt would have been more appropriate
-        }
-    }
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|minimumNumberCaseForASwitch|3|Minimum number of branches for a switch|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/design.xml/TooFewBranchesForASwitchStatement" />
 ```
 
 ## TooManyFields

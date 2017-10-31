@@ -1,115 +1,12 @@
 ---
 title: Error Prone
-summary: The Error Prone category contains rules, that detect incorrect usages, missed checks, ...  It fully contains these previous rulesets:  *   android *   clone *   empty *   finalizers *   javabeans *   unusedcode
+summary: The Error Prone category contains rules, that detect incorrect usages, missed checks, ...  It fully contains these previous rulesets:  *   android *   clone *   empty *   finalizers *   javabeans
 permalink: pmd_rules_java_errorprone.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/errorprone.xml
-keywords: Error Prone, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingOctalValues, BadComparison, BeanMembersShouldSerialize, BooleanGetMethodName, BrokenNullCheck, CallSuperFirst, CallSuperInConstructor, CallSuperLast, CheckResultSet, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloneThrowsCloneNotSupportedException, CloseResource, CompareObjectsWithEquals, ConfusingTernary, ConstantsInInterface, ConstructorCallsOverridableMethod, DataflowAnomalyAnalysis, DefaultLabelNotLastInSwitchStmt, DoNotCallSystemExit, DoNotExtendJavaLangError, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotThrowExceptionInFinally, DontImportJavaLang, DontImportSun, DontUseFloatTypeForLoopIndices, DuplicateImports, EmptyCatchBlock, EmptyFinalizer, EmptyFinallyBlock, EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, EmptyStaticInitializer, EmptyStatementNotInLoop, EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, EmptyWhileStmt, EqualsNull, ExtendsObject, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, ForLoopCanBeForeach, ForLoopShouldBeWhileLoop, IdempotentOperations, ImportFromSamePackage, InstantiationToGetClass, InvalidSlf4jMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, LoggerIsNotStaticFinal, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingBreakInSwitch, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonStaticInitializer, OneDeclarationPerLine, OverrideBothEqualsAndHashcode, PreserveStackTrace, ProperCloneImplementation, ProperLogger, ReturnEmptyArrayRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousConstantFieldName, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnnecessaryFullyQualifiedName, UnnecessaryReturn, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedNullCheckInEquals, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader
+keywords: Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BadComparison, BeanMembersShouldSerialize, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloneThrowsCloneNotSupportedException, CloseResource, CompareObjectsWithEquals, ConstructorCallsOverridableMethod, DataflowAnomalyAnalysis, DoNotCallGarbageCollectionExplicitly, DoNotCallSystemExit, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EmptyFinallyBlock, EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, EmptyStaticInitializer, EmptyStatementNotInLoop, EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, EmptyWhileStmt, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImportFromSamePackage, InstantiationToGetClass, InvalidSlf4jMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, LoggerIsNotStaticFinal, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingBreakInSwitch, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, ProperCloneImplementation, ProperLogger, ReturnEmptyArrayRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader
 ---
-## AbstractClassWithoutAbstractMethod
-
-**Since:** PMD 3.0
-
-**Priority:** Medium (3)
-
-The abstract class does not contain any abstract methods. An abstract class suggests
-an incomplete implementation, which is to be completed by subclasses implementing the
-abstract methods. If the class is intended to be used as a base class only (not to be instantiated
-directly) a protected constructor can be provided prevent direct instantiation.
-
-```
-//ClassOrInterfaceDeclaration
- [@Abstract='true'
-  and count( .//MethodDeclaration[@Abstract='true'] )=0 ]
-  [count(ImplementsList)=0]
-  [count(.//ExtendsList)=0]
-```
-
-**Example(s):**
-
-``` java
-public abstract class Foo {
-  void int method1() { ... }
-  void int method2() { ... }
-  // consider using abstract methods or removing
-  // the abstract modifier and adding protected constructors
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/AbstractClassWithoutAbstractMethod" />
-```
-
-## AccessorClassGeneration
-
-**Since:** PMD 1.04
-
-**Priority:** Medium (3)
-
-Instantiation by way of private constructors from outside of the constructor's class often causes the
-generation of an accessor. A factory method, or non-privatization of the constructor can eliminate this
-situation. The generated class file is actually an interface.  It gives the accessing class the ability
-to invoke a new hidden package scope constructor that takes the interface as a supplementary parameter.
-This turns a private constructor effectively into one with package scope, and is challenging to discern.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AccessorClassGenerationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AccessorClassGenerationRule.java)
-
-**Example(s):**
-
-``` java
-public class Outer {
- void method(){
-  Inner ic = new Inner();//Causes generation of accessor class
- }
- public class Inner {
-  private Inner(){}
- }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/AccessorClassGeneration" />
-```
-
-## AccessorMethodGeneration
-
-**Since:** PMD 5.5.4
-
-**Priority:** Medium (3)
-
-When accessing a private field / method from another class, the Java compiler will generate a accessor methods
-with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
-be avoided by changing the visibility of the field / method from private to package-private.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AccessorMethodGenerationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AccessorMethodGenerationRule.java)
-
-**Example(s):**
-
-``` java
-public class OuterClass {
-    private int counter;
-    /* package */ int id;
-
-    public class InnerClass {
-        InnerClass() {
-            OuterClass.this.counter++; // wrong accessor method will be generated
-        }
-
-        public int getOuterClassId() {
-            return OuterClass.this.id; // id is package-private, no accessor method needed
-        }
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/AccessorMethodGeneration" />
-```
-
 ## AssignmentInOperand
 
 **Since:** PMD 1.03
@@ -178,7 +75,7 @@ public class StaticField {
 **Priority:** Medium (3)
 
 Methods such as getDeclaredConstructors(), getDeclaredConstructor(Class[]) and setAccessible(),
-as the interface PrivilegedAction, allows for the runtime alteration of variable, class, or
+as the interface PrivilegedAction, allow for the runtime alteration of variable, class, or
 method visibility, even if they are private. This violates the principle of encapsulation.
 
 ```
@@ -738,66 +635,6 @@ int j = -~7;
 <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators" />
 ```
 
-## AvoidProtectedFieldInFinalClass
-
-**Since:** PMD 2.1
-
-**Priority:** Medium (3)
-
-Do not use protected fields in final classes since they cannot be subclassed.
-Clarify your intent by using private or package access modifiers instead.
-
-```
-//ClassOrInterfaceDeclaration[@Final='true']
-/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/FieldDeclaration[@Protected='true']
-```
-
-**Example(s):**
-
-``` java
-public final class Bar {
-  private int x;
-  protected int y;  // bar cannot be subclassed, so is y really private or package visible?
-  Bar() {}
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/AvoidProtectedFieldInFinalClass" />
-```
-
-## AvoidProtectedMethodInFinalClassNotExtending
-
-**Since:** PMD 5.1
-
-**Priority:** Medium (3)
-
-Do not use protected methods in most final classes since they cannot be subclassed. This should
-only be allowed in final classes that extend other classes with protected methods (whose
-visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.
-
-```
-//ClassOrInterfaceDeclaration[@Final='true' and not(ExtendsList)]
-/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/MethodDeclaration[@Protected='true'][MethodDeclarator/@Image != 'finalize']
-```
-
-**Example(s):**
-
-``` java
-public final class Foo {
-  private int bar() {}
-  protected int baz() {} // Foo cannot be subclassed, and doesn't extend anything, so is baz() really private or package visible?
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/AvoidProtectedMethodInFinalClassNotExtending" />
-```
-
 ## AvoidUsingOctalValues
 
 **Since:** PMD 3.9
@@ -895,45 +732,6 @@ private int getMoreFoo(){
 <rule ref="category/java/errorprone.xml/BeanMembersShouldSerialize" />
 ```
 
-## BooleanGetMethodName
-
-**Since:** PMD 4.0
-
-**Priority:** Medium Low (4)
-
-Methods that return boolean results should be named as predicate statements to denote this.
-I.e, 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc.   Avoid the use of the 'get'
-prefix for these methods.
-
-```
-//MethodDeclaration[
-MethodDeclarator[count(FormalParameters/FormalParameter) = 0 or $checkParameterizedMethods = 'true']
-                [starts-with(@Image, 'get')]
-and
-ResultType/Type/PrimitiveType[@Image = 'boolean']
-and not(../Annotation//Name[@Image = 'Override'])
-]
-```
-
-**Example(s):**
-
-``` java
-public boolean getFoo();            // bad
-public boolean isFoo();             // ok
-public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|checkParameterizedMethods|false|Check parameterized methods|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/BooleanGetMethodName" />
-```
-
 ## BrokenNullCheck
 
 **Since:** PMD 3.8
@@ -1007,43 +805,6 @@ public class DummyActivity extends Activity {
 <rule ref="category/java/errorprone.xml/CallSuperFirst" />
 ```
 
-## CallSuperInConstructor
-
-**Since:** PMD 3.0
-
-**Priority:** Medium (3)
-
-It is a good practice to call super() in a constructor. If super() is not called but
-another constructor (such as an overloaded constructor) is called, this rule will not report it.
-
-```
-//ClassOrInterfaceDeclaration[ count (ExtendsList/*) > 0 ]
-/ClassOrInterfaceBody
- /ClassOrInterfaceBodyDeclaration
- /ConstructorDeclaration[ count (.//ExplicitConstructorInvocation)=0 ]
-```
-
-**Example(s):**
-
-``` java
-public class Foo extends Bar{
-  public Foo() {
-   // call the constructor of Bar
-   super();
-  }
- public Foo(int code) {
-  // do something with code
-   this();
-   // no problem with this
-  }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/CallSuperInConstructor" />
-```
-
 ## CallSuperLast
 
 **Since:** PMD 4.2.5
@@ -1084,39 +845,6 @@ public class DummyActivity extends Activity {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/CallSuperLast" />
-```
-
-## CheckResultSet
-
-**Since:** PMD 4.1
-
-**Priority:** Medium (3)
-
-Always check the return values of navigation methods (next, previous, first, last) of a ResultSet.
-If the value return is 'false', it should be handled properly.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.CheckResultSetRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/CheckResultSetRule.java)
-
-**Example(s):**
-
-``` java
-Statement stat = conn.createStatement();
-ResultSet rst = stat.executeQuery("SELECT name FROM person");
-rst.next();     // what if it returns false? bad form
-String firstName = rst.getString(1);
-
-Statement stat = conn.createStatement();
-ResultSet rst = stat.executeQuery("SELECT name FROM person");
-if (rst.next()) {    // result is properly examined and used
-    String firstName = rst.getString(1);
-    } else  {
-        // handle missing data
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/CheckResultSet" />
 ```
 
 ## CheckSkipResult
@@ -1411,89 +1139,6 @@ class Foo {
 <rule ref="category/java/errorprone.xml/CompareObjectsWithEquals" />
 ```
 
-## ConfusingTernary
-
-**Since:** PMD 1.9
-
-**Priority:** Medium (3)
-
-Avoid negation within an "if" expression with an "else" clause.  For example, rephrase:
-`if (x != y) diff(); else same();` as: `if (x == y) same(); else diff();`.
-
-Most "if (x != y)" cases without an "else" are often return cases, so consistent use of this
-rule makes the code easier to read.  Also, this resolves trivial ordering problems, such
-as "does the error case go first?" or "does the common case go first?".
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.ConfusingTernaryRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ConfusingTernaryRule.java)
-
-**Example(s):**
-
-``` java
-boolean bar(int x, int y) {
-    return (x != y) ? diff : same;
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoreElseIf|false|Ignore conditions with an else-if case|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/ConfusingTernary" />
-```
-
-## ConstantsInInterface
-
-**Since:** PMD 5.5
-
-**Priority:** Medium (3)
-
-Avoid constants in interfaces. Interfaces should define types, constants are implementation details
-better placed in classes or enums. See Effective Java, item 19.
-
-```
-//ClassOrInterfaceDeclaration[@Interface='true'][$ignoreIfHasMethods='false' or not(.//MethodDeclaration)]//FieldDeclaration
-```
-
-**Example(s):**
-
-``` java
-public interface ConstantInterface {
-    public static final int CONST1 = 1; // violation, no fields allowed in interface!
-    static final int CONST2 = 1;        // violation, no fields allowed in interface!
-    final int CONST3 = 1;               // violation, no fields allowed in interface!
-    int CONST4 = 1;                     // violation, no fields allowed in interface!
-}
-
-// with ignoreIfHasMethods = false
-public interface AnotherConstantInterface {
-    public static final int CONST1 = 1; // violation, no fields allowed in interface!
-
-    int anyMethod();
-}
-
-// with ignoreIfHasMethods = true
-public interface YetAnotherConstantInterface {
-    public static final int CONST1 = 1; // no violation
-
-    int anyMethod();
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoreIfHasMethods|true|Whether to ignore constants in interfaces if the interface defines any methods|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/ConstantsInInterface" />
-```
-
 ## ConstructorCallsOverridableMethod
 
 **Since:** PMD 1.04
@@ -1576,40 +1221,58 @@ public void foo() {
 <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis" />
 ```
 
-## DefaultLabelNotLastInSwitchStmt
+## DoNotCallGarbageCollectionExplicitly
 
-**Since:** PMD 1.5
+**Since:** PMD 4.2
 
-**Priority:** Medium (3)
+**Priority:** Medium High (2)
 
-By convention, the default label should be the last label in a switch statement.
+Calls to System.gc(), Runtime.getRuntime().gc(), and System.runFinalization() are not advised. Code should have the
+same behavior whether the garbage collection is disabled using the option -Xdisableexplicitgc or not.
+Moreover, "modern" jvms do a very good job handling garbage collections. If memory usage issues unrelated to memory
+leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
 
 ```
-//SwitchStatement
- [not(SwitchLabel[position() = last()][@Default='true'])]
- [SwitchLabel[@Default='true']]
+//Name[
+(starts-with(@Image, 'System.') and
+(starts-with(@Image, 'System.gc') or
+starts-with(@Image, 'System.runFinalization'))) or
+(
+starts-with(@Image,'Runtime.getRuntime') and
+../../PrimarySuffix[ends-with(@Image,'gc')]
+)
+]
 ```
 
 **Example(s):**
 
 ``` java
-public class Foo {
-  void bar(int a) {
-   switch (a) {
-    case 1:  // do something
-       break;
-    default:  // the default case should be last, by convention
-       break;
-    case 2:
-       break;
-   }
-  }
+public class GCCall {
+    public GCCall() {
+        // Explicit gc call !
+        System.gc();
+    }
+
+    public void doSomething() {
+        // Explicit gc call !
+        Runtime.getRuntime().gc();
+    }
+
+    public explicitGCcall() {
+        // Explicit gc call !
+        System.gc();
+    }
+
+    public void doSomething() {
+        // Explicit gc call !
+        Runtime.getRuntime().gc();
+    }
 }
 ```
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="category/java/errorprone.xml/DefaultLabelNotLastInSwitchStmt" />
+<rule ref="category/java/errorprone.xml/DoNotCallGarbageCollectionExplicitly" />
 ```
 
 ## DoNotCallSystemExit
@@ -1643,30 +1306,6 @@ public void foo() {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/DoNotCallSystemExit" />
-```
-
-## DoNotExtendJavaLangError
-
-**Since:** PMD 4.0
-
-**Priority:** Medium (3)
-
-Errors are system exceptions. Do not extend them.
-
-```
-//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
-  [@Image="Error" or @Image="java.lang.Error"]
-```
-
-**Example(s):**
-
-``` java
-public class Foo extends Error { }
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/DoNotExtendJavaLangError" />
 ```
 
 ## DoNotExtendJavaLangThrowable
@@ -1758,35 +1397,6 @@ public class Foo {
 <rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally" />
 ```
 
-## DontImportJavaLang
-
-**Since:** PMD 0.5
-
-**Priority:** Medium Low (4)
-
-Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.DontImportJavaLangRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/DontImportJavaLangRule.java)
-
-**Example(s):**
-
-``` java
-import java.lang.String;    // this is unnecessary
-
-public class Foo {}
-
-// --- in another source code file...
-
-import java.lang.*;         // this is bad
-
-public class Foo {}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/DontImportJavaLang" />
-```
-
 ## DontImportSun
 
 **Since:** PMD 1.5
@@ -1843,29 +1453,6 @@ public class Count {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices" />
-```
-
-## DuplicateImports
-
-**Since:** PMD 0.5
-
-**Priority:** Medium Low (4)
-
-Duplicate or overlapping import statements should be avoided.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.DuplicateImportsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/DuplicateImportsRule.java)
-
-**Example(s):**
-
-``` java
-import java.lang.String;
-import java.lang.*;
-public class Foo {}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/DuplicateImports" />
 ```
 
 ## EmptyCatchBlock
@@ -2285,30 +1872,6 @@ if (x == null) {        // preferred
 <rule ref="category/java/errorprone.xml/EqualsNull" />
 ```
 
-## ExtendsObject
-
-**Since:** PMD 5.0
-
-**Priority:** Medium Low (4)
-
-No need to explicitly extend Object.
-
-```
-//ExtendsList/ClassOrInterfaceType[@Image='Object' or @Image='java.lang.Object']
-```
-
-**Example(s):**
-
-``` java
-public class Foo extends Object {     // not required
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/ExtendsObject" />
-```
-
 ## FinalizeDoesNotCallSuperFinalize
 
 **Since:** PMD 1.5
@@ -2434,74 +1997,6 @@ public void finalize() {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/FinalizeShouldBeProtected" />
-```
-
-## ForLoopCanBeForeach
-
-**Since:** PMD 6.0
-
-**Priority:** Medium (3)
-
-**Minimum Language Version:** Java 1.5
-
-Reports loops that can be safely replaced with the foreach syntax. The rule considers loops over
-lists, arrays and iterators. A loop is safe to replace if it only uses the index variable to
-access an element of the list or array, only has one update statement, and loops through *every*
-element of the list or array left to right.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.migrating.ForLoopCanBeForeachRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/migrating/ForLoopCanBeForeachRule.java)
-
-**Example(s):**
-
-``` java
-public class MyClass {
-  void loop(List<String> l) {
-    for (int i = 0; i < l.size(); i++) { // pre Java 1.5
-      System.out.println(l.get(i));
-    }
-
-    for (String s : l) {        // post Java 1.5
-      System.out.println(s);
-    }
-  }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/ForLoopCanBeForeach" />
-```
-
-## ForLoopShouldBeWhileLoop
-
-**Since:** PMD 1.02
-
-**Priority:** Medium (3)
-
-Some for loops can be simplified to while loops, this makes them more concise.
-
-```
-//ForStatement
-  [count(*) > 1]
-  [not(LocalVariableDeclaration)]
-  [not(ForInit)]
-  [not(ForUpdate)]
-  [not(Type and Expression and Statement)]
-```
-
-**Example(s):**
-
-``` java
-public class Foo {
-    void bar() {
-        for (;true;) true; // No Init or Update part, may as well be: while (true)
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/ForLoopShouldBeWhileLoop" />
 ```
 
 ## IdempotentOperations
@@ -3051,43 +2546,34 @@ public class MyClass {
 <rule ref="category/java/errorprone.xml/NonStaticInitializer" />
 ```
 
-## OneDeclarationPerLine
+## NullAssignment
 
-**Since:** PMD 5.0
+**Since:** PMD 1.02
 
-**Priority:** Medium Low (4)
+**Priority:** Medium (3)
 
-Java allows the use of several variables declaration of the same type on one line. However, it
-can lead to quite messy code. This rule looks for several declarations on the same line.
+Assigning a "null" to a variable (outside of its declaration) is usually bad form.  Sometimes, this type
+of assignment is an indication that the programmer doesn't completely understand what is going on in the code.
 
-```
-//LocalVariableDeclaration
-   [count(VariableDeclarator) > 1]
-   [$strictMode or count(distinct-values(VariableDeclarator/@BeginLine)) != count(VariableDeclarator)]
-```
+NOTE: This sort of assignment may used in some cases to dereference objects and encourage garbage collection.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.controversial.NullAssignmentRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/controversial/NullAssignmentRule.java)
 
 **Example(s):**
 
 ``` java
-String name;            // separate declarations
-String lastname;
-
-String name, lastname;  // combined declaration, a violation
-
-String name,
-       lastname;        // combined declaration on multiple lines, no violation by default.
-                        // Set property strictMode to true to mark this as violation.
+public void bar() {
+  Object x = null; // this is OK
+  x = new Object();
+     // big, complex piece of code here
+  x = null; // this is not required
+     // big, complex piece of code here
+}
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|strictMode|false|If true, mark combined declaration even if the declarations are on separate lines.|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="category/java/errorprone.xml/OneDeclarationPerLine" />
+<rule ref="category/java/errorprone.xml/NullAssignment" />
 ```
 
 ## OverrideBothEqualsAndHashcode
@@ -3128,49 +2614,6 @@ public class Foo {        // perfect, both methods provided
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode" />
-```
-
-## PreserveStackTrace
-
-**Since:** PMD 3.7
-
-**Priority:** Medium (3)
-
-Throwing a new exception from a catch block without passing the original exception into the
-new exception will cause the original stack trace to be lost making it difficult to debug
-effectively.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.PreserveStackTraceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/PreserveStackTraceRule.java)
-
-**Example(s):**
-
-``` java
-public class Foo {
-    void good() {
-        try{
-            Integer.parseInt("a");
-        } catch (Exception e) {
-            throw new Exception(e); // first possibility to create exception chain
-        }
-        try {
-            Integer.parseInt("a");
-        } catch (Exception e) {
-            throw (IllegalStateException)new IllegalStateException().initCause(e); // second possibility to create exception chain.
-        }
-    }
-    void bad() {
-        try{
-            Integer.parseInt("a");
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/PreserveStackTrace" />
 ```
 
 ## ProperCloneImplementation
@@ -3522,38 +2965,6 @@ StringBuilder sb4 = new StringBuilder("c");
 <rule ref="category/java/errorprone.xml/StringBufferInstantiationWithChar" />
 ```
 
-## SuspiciousConstantFieldName
-
-**Since:** PMD 2.0
-
-**Priority:** Medium (3)
-
-Field names using all uppercase characters - Sun's Java naming conventions indicating constants - should
-be declared as final.
-
-```
-//ClassOrInterfaceDeclaration[@Interface='false']
- /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
-  [@Final='false']
-  [VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]]
-```
-
-**Example(s):**
-
-``` java
-public class Foo {
- // this is bad, since someone could accidentally
- // do PI = 2.71828; which is actually e
- // final double PI = 3.16; is ok
-  double PI = 3.16;
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/SuspiciousConstantFieldName" />
-```
-
 ## SuspiciousEqualsMethodName
 
 **Since:** PMD 2.0
@@ -3813,140 +3224,6 @@ public String convert(int x) {
 <rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary" />
 ```
 
-## UnnecessaryFullyQualifiedName
-
-**Since:** PMD 5.0
-
-**Priority:** Medium Low (4)
-
-Import statements allow the use of non-fully qualified names.  The use of a fully qualified name
-which is covered by an import statement is redundant.  Consider using the non-fully qualified name.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.UnnecessaryFullyQualifiedNameRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/UnnecessaryFullyQualifiedNameRule.java)
-
-**Example(s):**
-
-``` java
-import java.util.List;
-
-public class Foo {
-    private java.util.List list1;   // Unnecessary FQN
-    private List list2;             // More appropriate given import of 'java.util.List'
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/UnnecessaryFullyQualifiedName" />
-```
-
-## UnnecessaryReturn
-
-**Since:** PMD 1.3
-
-**Priority:** Medium (3)
-
-Avoid the use of unnecessary return statements.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryReturnRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unnecessary/UnnecessaryReturnRule.java)
-
-**Example(s):**
-
-``` java
-public class Foo {
-    public void bar() {
-        int x = 42;
-        return;
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/UnnecessaryReturn" />
-```
-
-## UnusedFormalParameter
-
-**Since:** PMD 0.8
-
-**Priority:** Medium (3)
-
-Avoid passing parameters to methods or constructors without actually referencing them in the method body.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedFormalParameterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedFormalParameterRule.java)
-
-**Example(s):**
-
-``` java
-public class Foo {
-    private void bar(String howdy) {
-        // howdy is not used
-    }
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|checkAll|false|Check all methods, including non-private ones|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/UnusedFormalParameter" />
-```
-
-## UnusedImports
-
-**Since:** PMD 1.0
-
-**Priority:** Medium Low (4)
-
-Avoid unused import statements to prevent unwanted dependencies.
-This rule will also find unused on demand imports, i.e. import com.foo.*.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.UnusedImportsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/UnusedImportsRule.java)
-
-**Example(s):**
-
-``` java
-import java.io.File;  // not referenced or required
-import java.util.*;   // not referenced or required
-
-public class Foo {}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/UnusedImports" />
-```
-
-## UnusedLocalVariable
-
-**Since:** PMD 0.1
-
-**Priority:** Medium (3)
-
-Detects when a local variable is declared and/or assigned, but not used.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedLocalVariableRule.java)
-
-**Example(s):**
-
-``` java
-public class Foo {
-    public void doSomething() {
-        int i = 5; // Unused
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/UnusedLocalVariable" />
-```
-
 ## UnusedNullCheckInEquals
 
 **Since:** PMD 3.5
@@ -4008,247 +3285,6 @@ public class Test {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals" />
-```
-
-## UnusedPrivateField
-
-**Since:** PMD 0.1
-
-**Priority:** Medium (3)
-
-Detects when a private field is declared and/or assigned a value, but not used.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateFieldRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedPrivateFieldRule.java)
-
-**Example(s):**
-
-``` java
-public class Something {
-    private static int FOO = 2; // Unused
-    private int i = 5; // Unused
-    private int j = 6;
-    public int addOne() {
-        return j++;
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/UnusedPrivateField" />
-```
-
-## UnusedPrivateMethod
-
-**Since:** PMD 0.7
-
-**Priority:** Medium (3)
-
-Unused Private Method detects when a private method is declared but is unused.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateMethodRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedPrivateMethodRule.java)
-
-**Example(s):**
-
-``` java
-public class Something {
-    private void foo() {} // unused
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/UnusedPrivateMethod" />
-```
-
-## UseAssertEqualsInsteadOfAssertTrue
-
-**Since:** PMD 3.1
-
-**Priority:** Medium (3)
-
-This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.
-
-```
-//PrimaryExpression[
-    PrimaryPrefix/Name[@Image = 'assertTrue']
-][
-    PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
-    [ends-with(@Image, '.equals')]
-]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
-```
-
-**Example(s):**
-
-``` java
-public class FooTest extends TestCase {
-    void testCode() {
-        Object a, b;
-        assertTrue(a.equals(b));                    // bad usage
-        assertEquals(?a should equals b?, a, b);    // good usage
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/UseAssertEqualsInsteadOfAssertTrue" />
-```
-
-## UseAssertNullInsteadOfAssertTrue
-
-**Since:** PMD 3.5
-
-**Priority:** Medium (3)
-
-This rule detects JUnit assertions in object references equality. These assertions should be made by 
-more specific methods, like assertNull, assertNotNull.
-
-```
-//PrimaryExpression[
- PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
-][
- PrimarySuffix/Arguments/ArgumentList[
-  Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
- ]
-]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
-```
-
-**Example(s):**
-
-``` java
-public class FooTest extends TestCase {
-    void testCode() {
-        Object a = doSomething();
-        assertTrue(a==null);    // bad usage
-        assertNull(a);          // good usage
-        assertTrue(a != null);  // bad usage
-        assertNotNull(a);       // good usage
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/UseAssertNullInsteadOfAssertTrue" />
-```
-
-## UseAssertSameInsteadOfAssertTrue
-
-**Since:** PMD 3.1
-
-**Priority:** Medium (3)
-
-This rule detects JUnit assertions in object references equality. These assertions should be made 
-by more specific methods, like assertSame, assertNotSame.
-
-```
-//PrimaryExpression[
-    PrimaryPrefix/Name
-     [@Image = 'assertTrue' or @Image = 'assertFalse']
-]
-[PrimarySuffix/Arguments
- /ArgumentList/Expression
- /EqualityExpression[count(.//NullLiteral) = 0]]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
-```
-
-**Example(s):**
-
-``` java
-public class FooTest extends TestCase {
-    void testCode() {
-        Object a, b;
-        assertTrue(a == b); // bad usage
-        assertSame(a, b);   // good usage
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/UseAssertSameInsteadOfAssertTrue" />
-```
-
-## UseAssertTrueInsteadOfAssertEquals
-
-**Since:** PMD 5.0
-
-**Priority:** Medium (3)
-
-When asserting a value is the same as a literal or Boxed boolean, use assertTrue/assertFalse, instead of assertEquals.
-
-```
-//PrimaryExpression[PrimaryPrefix/Name[@Image = 'assertEquals']]
-[
-  PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
-  or
-  PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix
-  /Name[(@Image = 'Boolean.TRUE' or @Image = 'Boolean.FALSE')]
-]
-```
-
-**Example(s):**
-
-``` java
-public class MyTestCase extends TestCase {
-    public void testMyCase() {
-        boolean myVar = true;
-        // Ok
-        assertTrue("myVar is true", myVar);
-        // Bad
-        assertEquals("myVar is true", true, myVar);
-        // Bad
-        assertEquals("myVar is false", false, myVar);
-        // Bad
-        assertEquals("myVar is true", Boolean.TRUE, myVar);
-        // Bad
-        assertEquals("myVar is false", Boolean.FALSE, myVar);
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/UseAssertTrueInsteadOfAssertEquals" />
-```
-
-## UseCollectionIsEmpty
-
-**Since:** PMD 3.9
-
-**Priority:** Medium (3)
-
-The isEmpty() method on java.util.Collection is provided to determine if a collection has any elements.
-Comparing the value of size() to 0 does not convey intent as well as the isEmpty() method.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.UseCollectionIsEmptyRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/UseCollectionIsEmptyRule.java)
-
-**Example(s):**
-
-``` java
-public class Foo {
-    void good() {
-        List foo = getList();
-        if (foo.isEmpty()) {
-            // blah
-        }
-    }
-
-    void bad() {
-        List foo = getList();
-        if (foo.size() == 0) {
-            // blah
-        }
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/errorprone.xml/UseCollectionIsEmpty" />
 ```
 
 ## UseCorrectExceptionLogging

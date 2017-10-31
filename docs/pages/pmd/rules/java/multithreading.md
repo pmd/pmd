@@ -303,6 +303,8 @@ public class Foo {
 
 **Priority:** Medium (3)
 
+**Minimum Language Version:** Java 1.5
+
 Since Java5 brought a new implementation of the Map designed for multi-threaded access, you can
 perform efficient map reads without blocking other threads.
 

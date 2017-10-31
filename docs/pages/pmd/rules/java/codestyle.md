@@ -5,7 +5,7 @@ permalink: pmd_rules_java_codestyle.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/codestyle.xml
-keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidUsingNativeCode, ClassNamingConventions, CommentDefaultAccessModifier, DefaultPackage, EmptyMethodInAbstractClassShouldBeAbstract, FieldDeclarationsShouldBeAtStartOfClass, ForLoopsMustUseBraces, GenericsNaming, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LongVariable, MDBAndSessionBeanNamingConvention, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, UnnecessaryConstructor, UnnecessaryFinalModifier, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
+keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, GenericsNaming, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryConstructor, UnnecessaryFinalModifier, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
 ---
 ## AbstractNaming
 
@@ -186,6 +186,66 @@ public class Foo {
 <rule ref="category/java/codestyle.xml/AvoidPrefixingMethodParameters" />
 ```
 
+## AvoidProtectedFieldInFinalClass
+
+**Since:** PMD 2.1
+
+**Priority:** Medium (3)
+
+Do not use protected fields in final classes since they cannot be subclassed.
+Clarify your intent by using private or package access modifiers instead.
+
+```
+//ClassOrInterfaceDeclaration[@Final='true']
+/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+/FieldDeclaration[@Protected='true']
+```
+
+**Example(s):**
+
+``` java
+public final class Bar {
+  private int x;
+  protected int y;  // bar cannot be subclassed, so is y really private or package visible?
+  Bar() {}
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/AvoidProtectedFieldInFinalClass" />
+```
+
+## AvoidProtectedMethodInFinalClassNotExtending
+
+**Since:** PMD 5.1
+
+**Priority:** Medium (3)
+
+Do not use protected methods in most final classes since they cannot be subclassed. This should
+only be allowed in final classes that extend other classes with protected methods (whose
+visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.
+
+```
+//ClassOrInterfaceDeclaration[@Final='true' and not(ExtendsList)]
+/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+/MethodDeclaration[@Protected='true'][MethodDeclarator/@Image != 'finalize']
+```
+
+**Example(s):**
+
+``` java
+public final class Foo {
+  private int bar() {}
+  protected int baz() {} // Foo cannot be subclassed, and doesn't extend anything, so is baz() really private or package visible?
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/AvoidProtectedMethodInFinalClassNotExtending" />
+```
+
 ## AvoidUsingNativeCode
 
 **Since:** PMD 4.1
@@ -221,6 +281,82 @@ public class SomeJNIClass {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/AvoidUsingNativeCode" />
+```
+
+## BooleanGetMethodName
+
+**Since:** PMD 4.0
+
+**Priority:** Medium Low (4)
+
+Methods that return boolean results should be named as predicate statements to denote this.
+I.e, 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc.   Avoid the use of the 'get'
+prefix for these methods.
+
+```
+//MethodDeclaration[
+MethodDeclarator[count(FormalParameters/FormalParameter) = 0 or $checkParameterizedMethods = 'true']
+                [starts-with(@Image, 'get')]
+and
+ResultType/Type/PrimitiveType[@Image = 'boolean']
+and not(../Annotation//Name[@Image = 'Override'])
+]
+```
+
+**Example(s):**
+
+``` java
+public boolean getFoo();            // bad
+public boolean isFoo();             // ok
+public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|checkParameterizedMethods|false|Check parameterized methods|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/BooleanGetMethodName" />
+```
+
+## CallSuperInConstructor
+
+**Since:** PMD 3.0
+
+**Priority:** Medium (3)
+
+It is a good practice to call super() in a constructor. If super() is not called but
+another constructor (such as an overloaded constructor) is called, this rule will not report it.
+
+```
+//ClassOrInterfaceDeclaration[ count (ExtendsList/*) > 0 ]
+/ClassOrInterfaceBody
+ /ClassOrInterfaceBodyDeclaration
+ /ConstructorDeclaration[ count (.//ExplicitConstructorInvocation)=0 ]
+```
+
+**Example(s):**
+
+``` java
+public class Foo extends Bar{
+  public Foo() {
+   // call the constructor of Bar
+   super();
+  }
+ public Foo(int code) {
+  // do something with code
+   this();
+   // no problem with this
+  }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/CallSuperInConstructor" />
 ```
 
 ## ClassNamingConventions
@@ -292,6 +428,40 @@ public class Foo {
 <rule ref="category/java/codestyle.xml/CommentDefaultAccessModifier" />
 ```
 
+## ConfusingTernary
+
+**Since:** PMD 1.9
+
+**Priority:** Medium (3)
+
+Avoid negation within an "if" expression with an "else" clause.  For example, rephrase:
+`if (x != y) diff(); else same();` as: `if (x == y) same(); else diff();`.
+
+Most "if (x != y)" cases without an "else" are often return cases, so consistent use of this
+rule makes the code easier to read.  Also, this resolves trivial ordering problems, such
+as "does the error case go first?" or "does the common case go first?".
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.ConfusingTernaryRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ConfusingTernaryRule.java)
+
+**Example(s):**
+
+``` java
+boolean bar(int x, int y) {
+    return (x != y) ? diff : same;
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|ignoreElseIf|false|Ignore conditions with an else-if case|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/ConfusingTernary" />
+```
+
 ## DefaultPackage
 
 **Since:** PMD 3.4
@@ -315,6 +485,58 @@ or MethodDeclaration[@PackagePrivate='true']
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/DefaultPackage" />
+```
+
+## DontImportJavaLang
+
+**Since:** PMD 0.5
+
+**Priority:** Medium Low (4)
+
+Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.DontImportJavaLangRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/DontImportJavaLangRule.java)
+
+**Example(s):**
+
+``` java
+import java.lang.String;    // this is unnecessary
+
+public class Foo {}
+
+// --- in another source code file...
+
+import java.lang.*;         // this is bad
+
+public class Foo {}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/DontImportJavaLang" />
+```
+
+## DuplicateImports
+
+**Since:** PMD 0.5
+
+**Priority:** Medium Low (4)
+
+Duplicate or overlapping import statements should be avoided.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.DuplicateImportsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/DuplicateImportsRule.java)
+
+**Example(s):**
+
+``` java
+import java.lang.String;
+import java.lang.*;
+public class Foo {}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/DuplicateImports" />
 ```
 
 ## EmptyMethodInAbstractClassShouldBeAbstract
@@ -363,6 +585,30 @@ public abstract class ShouldBeAbstract {
 <rule ref="category/java/codestyle.xml/EmptyMethodInAbstractClassShouldBeAbstract" />
 ```
 
+## ExtendsObject
+
+**Since:** PMD 5.0
+
+**Priority:** Medium Low (4)
+
+No need to explicitly extend Object.
+
+```
+//ExtendsList/ClassOrInterfaceType[@Image='Object' or @Image='java.lang.Object']
+```
+
+**Example(s):**
+
+``` java
+public class Foo extends Object {     // not required
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/ExtendsObject" />
+```
+
 ## FieldDeclarationsShouldBeAtStartOfClass
 
 **Since:** PMD 5.0
@@ -401,6 +647,38 @@ public class HelloWorldBean {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass" />
+```
+
+## ForLoopShouldBeWhileLoop
+
+**Since:** PMD 1.02
+
+**Priority:** Medium (3)
+
+Some for loops can be simplified to while loops, this makes them more concise.
+
+```
+//ForStatement
+  [count(*) > 1]
+  [not(LocalVariableDeclaration)]
+  [not(ForInit)]
+  [not(ForUpdate)]
+  [not(Type and Expression and Statement)]
+```
+
+**Example(s):**
+
+``` java
+public class Foo {
+    void bar() {
+        for (;true;) true; // No Init or Update part, may as well be: while (true)
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/ForLoopShouldBeWhileLoop" />
 ```
 
 ## ForLoopsMustUseBraces
@@ -605,6 +883,32 @@ public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}    // n
 <rule ref="category/java/codestyle.xml/LocalInterfaceSessionNamingConvention" />
 ```
 
+## LocalVariableCouldBeFinal
+
+**Since:** PMD 2.2
+
+**Priority:** Medium (3)
+
+A local variable assigned only once can be declared final.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.optimizations.LocalVariableCouldBeFinalRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/optimizations/LocalVariableCouldBeFinalRule.java)
+
+**Example(s):**
+
+``` java
+public class Bar {
+    public void foo () {
+    String txtA = "a";          // if txtA will not be assigned again it is better to do this:
+    final String txtB = "b";
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal" />
+```
+
 ## LongVariable
 
 **Since:** PMD 0.3
@@ -677,6 +981,33 @@ public class MissingTheProperSuffix implements SessionBean {}   // non-standard 
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/MDBAndSessionBeanNamingConvention" />
+```
+
+## MethodArgumentCouldBeFinal
+
+**Since:** PMD 2.2
+
+**Priority:** Medium (3)
+
+A method argument that is never re-assigned within the method can be declared final.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.optimizations.MethodArgumentCouldBeFinalRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/optimizations/MethodArgumentCouldBeFinalRule.java)
+
+**Example(s):**
+
+``` java
+public void foo1 (String param) {       // do stuff with param never assigning it
+
+}
+
+public void foo2 (final String param) { // better, do stuff with param never assigning it
+
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal" />
 ```
 
 ## MethodNamingConventions
@@ -1033,6 +1364,38 @@ public class Something {
 <rule ref="category/java/codestyle.xml/ShortVariable" />
 ```
 
+## SuspiciousConstantFieldName
+
+**Since:** PMD 2.0
+
+**Priority:** Medium (3)
+
+Field names using all uppercase characters - Sun's Java naming conventions indicating constants - should
+be declared as final.
+
+```
+//ClassOrInterfaceDeclaration[@Interface='false']
+ /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
+  [@Final='false']
+  [VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]]
+```
+
+**Example(s):**
+
+``` java
+public class Foo {
+ // this is bad, since someone could accidentally
+ // do PI = 2.71828; which is actually e
+ // final double PI = 3.16; is ok
+  double PI = 3.16;
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/SuspiciousConstantFieldName" />
+```
+
 ## TooManyStaticImports
 
 **Since:** PMD 4.1
@@ -1137,6 +1500,33 @@ public final class Foo {
 <rule ref="category/java/codestyle.xml/UnnecessaryFinalModifier" />
 ```
 
+## UnnecessaryFullyQualifiedName
+
+**Since:** PMD 5.0
+
+**Priority:** Medium Low (4)
+
+Import statements allow the use of non-fully qualified names.  The use of a fully qualified name
+which is covered by an import statement is redundant.  Consider using the non-fully qualified name.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.UnnecessaryFullyQualifiedNameRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/UnnecessaryFullyQualifiedNameRule.java)
+
+**Example(s):**
+
+``` java
+import java.util.List;
+
+public class Foo {
+    private java.util.List list1;   // Unnecessary FQN
+    private List list2;             // More appropriate given import of 'java.util.List'
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName" />
+```
+
 ## UnnecessaryLocalBeforeReturn
 
 **Since:** PMD 3.3
@@ -1209,6 +1599,32 @@ public class Bar {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/UnnecessaryModifier" />
+```
+
+## UnnecessaryReturn
+
+**Since:** PMD 1.3
+
+**Priority:** Medium (3)
+
+Avoid the use of unnecessary return statements.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryReturnRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unnecessary/UnnecessaryReturnRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo {
+    public void bar() {
+        int x = 42;
+        return;
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/UnnecessaryReturn" />
 ```
 
 ## UselessParentheses

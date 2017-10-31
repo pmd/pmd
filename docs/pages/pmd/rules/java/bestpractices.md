@@ -1,12 +1,115 @@
 ---
 title: Best Practices
-summary: The Best Practices category contains rules...  It fully contains these previous rulesets:  *   sunsecure
+summary: The Best Practices category contains rules...  It fully contains these previous rulesets:  *   sunsecure *   unusedcode
 permalink: pmd_rules_java_bestpractices.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/bestpractices.xml
-keywords: Best Practices, ArrayIsStoredDirectly, AvoidPrintStackTrace, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, GuardDebugLogging, GuardLogStatement, GuardLogStatementJavaUtil, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LooseCoupling, MethodReturnsInternalArray, NullAssignment, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UseVarargs
+keywords: Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidPrintStackTrace, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, ForLoopCanBeForeach, GuardDebugLogging, GuardLogStatement, GuardLogStatementJavaUtil, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LooseCoupling, MethodReturnsInternalArray, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseVarargs
 ---
+## AbstractClassWithoutAbstractMethod
+
+**Since:** PMD 3.0
+
+**Priority:** Medium (3)
+
+The abstract class does not contain any abstract methods. An abstract class suggests
+an incomplete implementation, which is to be completed by subclasses implementing the
+abstract methods. If the class is intended to be used as a base class only (not to be instantiated
+directly) a protected constructor can be provided prevent direct instantiation.
+
+```
+//ClassOrInterfaceDeclaration
+ [@Abstract='true'
+  and count( .//MethodDeclaration[@Abstract='true'] )=0 ]
+  [count(ImplementsList)=0]
+  [count(.//ExtendsList)=0]
+```
+
+**Example(s):**
+
+``` java
+public abstract class Foo {
+  void int method1() { ... }
+  void int method2() { ... }
+  // consider using abstract methods or removing
+  // the abstract modifier and adding protected constructors
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod" />
+```
+
+## AccessorClassGeneration
+
+**Since:** PMD 1.04
+
+**Priority:** Medium (3)
+
+Instantiation by way of private constructors from outside of the constructor's class often causes the
+generation of an accessor. A factory method, or non-privatization of the constructor can eliminate this
+situation. The generated class file is actually an interface.  It gives the accessing class the ability
+to invoke a new hidden package scope constructor that takes the interface as a supplementary parameter.
+This turns a private constructor effectively into one with package scope, and is challenging to discern.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AccessorClassGenerationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AccessorClassGenerationRule.java)
+
+**Example(s):**
+
+``` java
+public class Outer {
+ void method(){
+  Inner ic = new Inner();//Causes generation of accessor class
+ }
+ public class Inner {
+  private Inner(){}
+ }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/AccessorClassGeneration" />
+```
+
+## AccessorMethodGeneration
+
+**Since:** PMD 5.5.4
+
+**Priority:** Medium (3)
+
+When accessing a private field / method from another class, the Java compiler will generate a accessor methods
+with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
+be avoided by changing the visibility of the field / method from private to package-private.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AccessorMethodGenerationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AccessorMethodGenerationRule.java)
+
+**Example(s):**
+
+``` java
+public class OuterClass {
+    private int counter;
+    /* package */ int id;
+
+    public class InnerClass {
+        InnerClass() {
+            OuterClass.this.counter++; // wrong accessor method will be generated
+        }
+
+        public int getOuterClassId() {
+            return OuterClass.this.id; // id is package-private, no accessor method needed
+        }
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/AccessorMethodGeneration" />
+```
+
 ## ArrayIsStoredDirectly
 
 **Since:** PMD 2.2
@@ -148,6 +251,160 @@ public class Foo {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP" />
+```
+
+## CheckResultSet
+
+**Since:** PMD 4.1
+
+**Priority:** Medium (3)
+
+Always check the return values of navigation methods (next, previous, first, last) of a ResultSet.
+If the value return is 'false', it should be handled properly.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.CheckResultSetRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/CheckResultSetRule.java)
+
+**Example(s):**
+
+``` java
+Statement stat = conn.createStatement();
+ResultSet rst = stat.executeQuery("SELECT name FROM person");
+rst.next();     // what if it returns false? bad form
+String firstName = rst.getString(1);
+
+Statement stat = conn.createStatement();
+ResultSet rst = stat.executeQuery("SELECT name FROM person");
+if (rst.next()) {    // result is properly examined and used
+    String firstName = rst.getString(1);
+    } else  {
+        // handle missing data
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/CheckResultSet" />
+```
+
+## ConstantsInInterface
+
+**Since:** PMD 5.5
+
+**Priority:** Medium (3)
+
+Avoid constants in interfaces. Interfaces should define types, constants are implementation details
+better placed in classes or enums. See Effective Java, item 19.
+
+```
+//ClassOrInterfaceDeclaration[@Interface='true'][$ignoreIfHasMethods='false' or not(.//MethodDeclaration)]//FieldDeclaration
+```
+
+**Example(s):**
+
+``` java
+public interface ConstantInterface {
+    public static final int CONST1 = 1; // violation, no fields allowed in interface!
+    static final int CONST2 = 1;        // violation, no fields allowed in interface!
+    final int CONST3 = 1;               // violation, no fields allowed in interface!
+    int CONST4 = 1;                     // violation, no fields allowed in interface!
+}
+
+// with ignoreIfHasMethods = false
+public interface AnotherConstantInterface {
+    public static final int CONST1 = 1; // violation, no fields allowed in interface!
+
+    int anyMethod();
+}
+
+// with ignoreIfHasMethods = true
+public interface YetAnotherConstantInterface {
+    public static final int CONST1 = 1; // no violation
+
+    int anyMethod();
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|ignoreIfHasMethods|true|Whether to ignore constants in interfaces if the interface defines any methods|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/ConstantsInInterface" />
+```
+
+## DefaultLabelNotLastInSwitchStmt
+
+**Since:** PMD 1.5
+
+**Priority:** Medium (3)
+
+By convention, the default label should be the last label in a switch statement.
+
+```
+//SwitchStatement
+ [not(SwitchLabel[position() = last()][@Default='true'])]
+ [SwitchLabel[@Default='true']]
+```
+
+**Example(s):**
+
+``` java
+public class Foo {
+  void bar(int a) {
+   switch (a) {
+    case 1:  // do something
+       break;
+    default:  // the default case should be last, by convention
+       break;
+    case 2:
+       break;
+   }
+  }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt" />
+```
+
+## ForLoopCanBeForeach
+
+**Since:** PMD 6.0
+
+**Priority:** Medium (3)
+
+**Minimum Language Version:** Java 1.5
+
+Reports loops that can be safely replaced with the foreach syntax. The rule considers loops over
+lists, arrays and iterators. A loop is safe to replace if it only uses the index variable to
+access an element of the list or array, only has one update statement, and loops through *every*
+element of the list or array left to right.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.migrating.ForLoopCanBeForeachRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/migrating/ForLoopCanBeForeachRule.java)
+
+**Example(s):**
+
+``` java
+public class MyClass {
+  void loop(List<String> l) {
+    for (int i = 0; i < l.size(); i++) { // pre Java 1.5
+      System.out.println(l.get(i));
+    }
+
+    for (String s : l) {        // post Java 1.5
+      System.out.println(s);
+    }
+  }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach" />
 ```
 
 ## GuardDebugLogging
@@ -608,34 +865,43 @@ public class SecureSystem {
 <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray" />
 ```
 
-## NullAssignment
+## OneDeclarationPerLine
 
-**Since:** PMD 1.02
+**Since:** PMD 5.0
 
-**Priority:** Medium (3)
+**Priority:** Medium Low (4)
 
-Assigning a "null" to a variable (outside of its declaration) is usually bad form.  Sometimes, this type
-of assignment is an indication that the programmer doesn't completely understand what is going on in the code.
+Java allows the use of several variables declaration of the same type on one line. However, it
+can lead to quite messy code. This rule looks for several declarations on the same line.
 
-NOTE: This sort of assignment may used in some cases to dereference objects and encourage garbage collection.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.controversial.NullAssignmentRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/controversial/NullAssignmentRule.java)
+```
+//LocalVariableDeclaration
+   [count(VariableDeclarator) > 1]
+   [$strictMode or count(distinct-values(VariableDeclarator/@BeginLine)) != count(VariableDeclarator)]
+```
 
 **Example(s):**
 
 ``` java
-public void bar() {
-  Object x = null; // this is OK
-  x = new Object();
-     // big, complex piece of code here
-  x = null; // this is not required
-     // big, complex piece of code here
-}
+String name;            // separate declarations
+String lastname;
+
+String name, lastname;  // combined declaration, a violation
+
+String name,
+       lastname;        // combined declaration on multiple lines, no violation by default.
+                        // Set property strictMode to true to mark this as violation.
 ```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|strictMode|false|If true, mark combined declaration even if the declarations are on separate lines.|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="category/java/bestpractices.xml/NullAssignment" />
+<rule ref="category/java/bestpractices.xml/OneDeclarationPerLine" />
 ```
 
 ## PositionLiteralsFirstInCaseInsensitiveComparisons
@@ -714,6 +980,49 @@ class Foo {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/PositionLiteralsFirstInComparisons" />
+```
+
+## PreserveStackTrace
+
+**Since:** PMD 3.7
+
+**Priority:** Medium (3)
+
+Throwing a new exception from a catch block without passing the original exception into the
+new exception will cause the original stack trace to be lost making it difficult to debug
+effectively.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.PreserveStackTraceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/PreserveStackTraceRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo {
+    void good() {
+        try{
+            Integer.parseInt("a");
+        } catch (Exception e) {
+            throw new Exception(e); // first possibility to create exception chain
+        }
+        try {
+            Integer.parseInt("a");
+        } catch (Exception e) {
+            throw (IllegalStateException)new IllegalStateException().initCause(e); // second possibility to create exception chain.
+        }
+    }
+    void bad() {
+        try{
+            Integer.parseInt("a");
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/PreserveStackTrace" />
 ```
 
 ## ReplaceEnumerationWithIterator
@@ -865,6 +1174,328 @@ class Foo{
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/SystemPrintln" />
+```
+
+## UnusedFormalParameter
+
+**Since:** PMD 0.8
+
+**Priority:** Medium (3)
+
+Avoid passing parameters to methods or constructors without actually referencing them in the method body.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedFormalParameterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedFormalParameterRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo {
+    private void bar(String howdy) {
+        // howdy is not used
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|checkAll|false|Check all methods, including non-private ones|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/UnusedFormalParameter" />
+```
+
+## UnusedImports
+
+**Since:** PMD 1.0
+
+**Priority:** Medium Low (4)
+
+Avoid unused import statements to prevent unwanted dependencies.
+This rule will also find unused on demand imports, i.e. import com.foo.*.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.UnusedImportsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/UnusedImportsRule.java)
+
+**Example(s):**
+
+``` java
+import java.io.File;  // not referenced or required
+import java.util.*;   // not referenced or required
+
+public class Foo {}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/UnusedImports" />
+```
+
+## UnusedLocalVariable
+
+**Since:** PMD 0.1
+
+**Priority:** Medium (3)
+
+Detects when a local variable is declared and/or assigned, but not used.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedLocalVariableRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo {
+    public void doSomething() {
+        int i = 5; // Unused
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/UnusedLocalVariable" />
+```
+
+## UnusedPrivateField
+
+**Since:** PMD 0.1
+
+**Priority:** Medium (3)
+
+Detects when a private field is declared and/or assigned a value, but not used.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateFieldRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedPrivateFieldRule.java)
+
+**Example(s):**
+
+``` java
+public class Something {
+    private static int FOO = 2; // Unused
+    private int i = 5; // Unused
+    private int j = 6;
+    public int addOne() {
+        return j++;
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/UnusedPrivateField" />
+```
+
+## UnusedPrivateMethod
+
+**Since:** PMD 0.7
+
+**Priority:** Medium (3)
+
+Unused Private Method detects when a private method is declared but is unused.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateMethodRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedPrivateMethodRule.java)
+
+**Example(s):**
+
+``` java
+public class Something {
+    private void foo() {} // unused
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/UnusedPrivateMethod" />
+```
+
+## UseAssertEqualsInsteadOfAssertTrue
+
+**Since:** PMD 3.1
+
+**Priority:** Medium (3)
+
+This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.
+
+```
+//PrimaryExpression[
+    PrimaryPrefix/Name[@Image = 'assertTrue']
+][
+    PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
+    [ends-with(@Image, '.equals')]
+]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
+```
+
+**Example(s):**
+
+``` java
+public class FooTest extends TestCase {
+    void testCode() {
+        Object a, b;
+        assertTrue(a.equals(b));                    // bad usage
+        assertEquals(?a should equals b?, a, b);    // good usage
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/UseAssertEqualsInsteadOfAssertTrue" />
+```
+
+## UseAssertNullInsteadOfAssertTrue
+
+**Since:** PMD 3.5
+
+**Priority:** Medium (3)
+
+This rule detects JUnit assertions in object references equality. These assertions should be made by 
+more specific methods, like assertNull, assertNotNull.
+
+```
+//PrimaryExpression[
+ PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
+][
+ PrimarySuffix/Arguments/ArgumentList[
+  Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
+ ]
+]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
+```
+
+**Example(s):**
+
+``` java
+public class FooTest extends TestCase {
+    void testCode() {
+        Object a = doSomething();
+        assertTrue(a==null);    // bad usage
+        assertNull(a);          // good usage
+        assertTrue(a != null);  // bad usage
+        assertNotNull(a);       // good usage
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/UseAssertNullInsteadOfAssertTrue" />
+```
+
+## UseAssertSameInsteadOfAssertTrue
+
+**Since:** PMD 3.1
+
+**Priority:** Medium (3)
+
+This rule detects JUnit assertions in object references equality. These assertions should be made 
+by more specific methods, like assertSame, assertNotSame.
+
+```
+//PrimaryExpression[
+    PrimaryPrefix/Name
+     [@Image = 'assertTrue' or @Image = 'assertFalse']
+]
+[PrimarySuffix/Arguments
+ /ArgumentList/Expression
+ /EqualityExpression[count(.//NullLiteral) = 0]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
+```
+
+**Example(s):**
+
+``` java
+public class FooTest extends TestCase {
+    void testCode() {
+        Object a, b;
+        assertTrue(a == b); // bad usage
+        assertSame(a, b);   // good usage
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/UseAssertSameInsteadOfAssertTrue" />
+```
+
+## UseAssertTrueInsteadOfAssertEquals
+
+**Since:** PMD 5.0
+
+**Priority:** Medium (3)
+
+When asserting a value is the same as a literal or Boxed boolean, use assertTrue/assertFalse, instead of assertEquals.
+
+```
+//PrimaryExpression[PrimaryPrefix/Name[@Image = 'assertEquals']]
+[
+  PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
+  or
+  PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix
+  /Name[(@Image = 'Boolean.TRUE' or @Image = 'Boolean.FALSE')]
+]
+```
+
+**Example(s):**
+
+``` java
+public class MyTestCase extends TestCase {
+    public void testMyCase() {
+        boolean myVar = true;
+        // Ok
+        assertTrue("myVar is true", myVar);
+        // Bad
+        assertEquals("myVar is true", true, myVar);
+        // Bad
+        assertEquals("myVar is false", false, myVar);
+        // Bad
+        assertEquals("myVar is true", Boolean.TRUE, myVar);
+        // Bad
+        assertEquals("myVar is false", Boolean.FALSE, myVar);
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/UseAssertTrueInsteadOfAssertEquals" />
+```
+
+## UseCollectionIsEmpty
+
+**Since:** PMD 3.9
+
+**Priority:** Medium (3)
+
+The isEmpty() method on java.util.Collection is provided to determine if a collection has any elements.
+Comparing the value of size() to 0 does not convey intent as well as the isEmpty() method.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.UseCollectionIsEmptyRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/UseCollectionIsEmptyRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo {
+    void good() {
+        List foo = getList();
+        if (foo.isEmpty()) {
+            // blah
+        }
+    }
+
+    void bad() {
+        List foo = getList();
+        if (foo.size() == 0) {
+            // blah
+        }
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/UseCollectionIsEmpty" />
 ```
 
 ## UseVarargs
