@@ -38,6 +38,11 @@ public final class TypeInferenceResolver {
         List<Bound> newBounds = new ArrayList<>();
         while (!constraints.isEmpty()) {
             List<BoundOrConstraint> reduceResult = constraints.remove(constraints.size() - 1).reduce();
+            
+            // If null, the types are incompatible
+            if (reduceResult == null) {
+                return null;
+            }
 
             for (BoundOrConstraint boundOrConstraint : reduceResult) {
                 if (boundOrConstraint instanceof Bound) {

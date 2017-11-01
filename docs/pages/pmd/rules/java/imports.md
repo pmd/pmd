@@ -154,15 +154,17 @@ public class Foo {
 
 **Priority:** Medium Low (4)
 
-Avoid the use of unused import statements to prevent unwanted dependencies.
+Avoid unused import statements to prevent unwanted dependencies.
+This rule will also find unused on demand imports, i.e. import com.foo.*.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.UnusedImportsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/UnusedImportsRule.java)
 
 **Example(s):**
 
 ``` java
-// this is bad
-import java.io.File;
+import java.io.File;  // not referenced or required
+import java.util.*;   // not referenced or required
+
 public class Foo {}
 ```
 

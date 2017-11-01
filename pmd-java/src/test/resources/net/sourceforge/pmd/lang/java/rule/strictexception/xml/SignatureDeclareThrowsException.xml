@@ -62,6 +62,104 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
+JUnit 4 testcase
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.*;
+public class Foo {
+ @Before
+ void setUp() throws Exception {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip method in class that extends TestCase
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.*;
+public class Foo extends TestCase {
+ void setUp() throws Exception {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Don't skip other methods
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.*;
+public class Foo extends TestCase {
+ void bar() throws Exception {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Unless 
+     ]]></description>
+        <rule-property name="IgnoreJUnitCompletely">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.*;
+public class Foo extends TestCase {
+ void bar() throws Exception {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip junit setUp method where the superclass is TestCase
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo extends net.sourceforge.pmd.lang.java.rule.strictexception.MyTestCase {
+ void setUp() throws Exception {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip junit setUp method where the superclass is TestCase, imported explicitly
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.strictexception.MyTestCase;
+public class Foo extends MyTestCase {
+ void setUp() throws Exception {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip junit setUp method where the superclass is TestCase, but is imported implicitly
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.strictexception.*;
+public class Foo extends MyTestCase {
+ void setUp() throws Exception {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip junit setUp method where the superclass is TestCase  and is in the same package
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.strictexception;
+
+public class Foo extends MyTestCase {
+ void setUp() throws Exception {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
 Generics
      ]]></description>
         <expected-problems>0</expected-problems>

@@ -13,6 +13,8 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.util.ResourceLoader;
+
 public class RuleSetFactoryCompatibilityTest {
     private static final Charset ISO_8859_1 = Charset.forName("ISO-8859-1");
     private static final Charset UTF_8 = Charset.forName("UTF-8");
@@ -136,7 +138,7 @@ public class RuleSetFactoryCompatibilityTest {
             throws RuleSetNotFoundException {
         return factory.createRuleSet(new RuleSetReferenceId(null) {
             @Override
-            public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
+            public InputStream getInputStream(ResourceLoader resourceLoader) throws RuleSetNotFoundException {
                 return new ByteArrayInputStream(ruleset.getBytes(UTF_8));
             }
         });

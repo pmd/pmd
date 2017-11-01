@@ -59,43 +59,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <artifactSet>
-                <includes>
-                  <include>apex</include>
-                </includes>
-                <excludes>
-                  <exclude>${project.groupId}</exclude>
-                </excludes>
-              </artifactSet>
-              <relocations>
-                <!-- apex uses an older version of asm, hence we need to shaded it away -->
-                <relocation>
-                  <pattern>org.objectweb.asm</pattern>
-                  <shadedPattern>shaded.org.objectweb.asm</shadedPattern>
-                </relocation>
-                <!-- apex uses an older version of jackson, hence we need to shaded it away -->
-                <relocation>
-                  <pattern>com.fasterxml.jackson</pattern>
-                  <shadedPattern>shaded.com.fasterxml.jackson</shadedPattern>
-                </relocation>
-              </relocations>
-              <shadedArtifactAttached>true</shadedArtifactAttached>
-              <shadedClassifierName>apex-jorje-shaded</shadedClassifierName>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
   <dependencies>
@@ -165,6 +128,12 @@
     <dependency>
       <groupId>net.sourceforge.saxon</groupId>
       <artifactId>saxon</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <scope>runtime</scope>
     </dependency>
 
     <dependency>

@@ -10,6 +10,7 @@ This ruleset contains links to rules that are new in PMD v6.0.0
 
     <rule ref="rulesets/java/codesize.xml/NcssCount"/>
     <rule ref="rulesets/java/migrating.xml/ForLoopCanBeForeach"/>
+    <rule ref="rulesets/java/strictexception.xml/DoNotExtendJavaLangThrowable"/>
 
     <rule ref="rulesets/apex/empty.xml/EmptyCatchBlock"/>
     <rule ref="rulesets/apex/empty.xml/EmptyIfStmt"/>

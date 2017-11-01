@@ -46,7 +46,7 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
      * @param defaultStr     Default value
      * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
      * @deprecated will be removed in 7.0.0
      */
     public DoubleProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
@@ -84,7 +84,7 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
      * @param theDefault     Default value
      * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
      */
     public DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
                           float theUIOrder) {

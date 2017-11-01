@@ -24,6 +24,8 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import net.sourceforge.pmd.util.ResourceLoader;
+
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class RuleSetReferenceIdTest {
@@ -119,7 +121,7 @@ public class RuleSetReferenceIdTest {
         RuleSetReferenceId ruleSetReferenceId = new RuleSetReferenceId("  " + rulesetUrl + "  ");
         assertRuleSetReferenceId(true, rulesetUrl, true, null, rulesetUrl, ruleSetReferenceId);
 
-        try (InputStream inputStream = ruleSetReferenceId.getInputStream(RuleSetReferenceIdTest.class.getClassLoader());) {
+        try (InputStream inputStream = ruleSetReferenceId.getInputStream(new ResourceLoader())) {
             String loaded = IOUtils.toString(inputStream, "UTF-8");
             assertEquals("xyz", loaded);
         }
@@ -148,7 +150,7 @@ public class RuleSetReferenceIdTest {
         assertRuleSetReferenceId(true, hostpart + path, false, "DummyBasicMockRule", hostpart + completePath,
                 ruleSetReferenceId);
 
-        try (InputStream inputStream = ruleSetReferenceId.getInputStream(RuleSetReferenceIdTest.class.getClassLoader());) {
+        try (InputStream inputStream = ruleSetReferenceId.getInputStream(new ResourceLoader())) {
             String loaded = IOUtils.toString(inputStream, "UTF-8");
             assertEquals(basicRuleSet, loaded);
         }

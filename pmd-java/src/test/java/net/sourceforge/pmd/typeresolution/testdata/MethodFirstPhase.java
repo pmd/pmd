@@ -14,7 +14,7 @@ import java.util.Set;
 public class MethodFirstPhase {
     void test() {
         //  primitive, char, simple
-        int a = subtype(10, 'a', "");
+        int a = subtype(Long.valueOf(10), 'a', "");
         // TODO: add null, array types
 
         Exception b = vararg((Number) null);
@@ -46,7 +46,11 @@ public class MethodFirstPhase {
         return null;
     }
 
-    int subtype(long a, int b, String c) {
+    <T extends CharSequence> int subtype(T a, int b, String c) {
+        return 0;
+    }
+    
+    int subtype(Long a, int b, String c) {
         return 0;
     }
 

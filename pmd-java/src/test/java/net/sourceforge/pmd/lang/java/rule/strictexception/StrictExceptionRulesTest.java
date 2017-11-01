@@ -21,6 +21,7 @@ public class StrictExceptionRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "AvoidThrowingNullPointerException");
         addRule(RULESET, "AvoidThrowingRawExceptionTypes");
         addRule(RULESET, "DoNotExtendJavaLangError");
+        addRule(RULESET, "DoNotExtendJavaLangThrowable");
         addRule(RULESET, "ExceptionAsFlowControl");
         addRule(RULESET, "SignatureDeclareThrowsException");
         addRule(RULESET, "DoNotThrowExceptionInFinally");

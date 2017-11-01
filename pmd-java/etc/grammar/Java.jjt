@@ -2024,9 +2024,9 @@ void ArrayDimsAndInits() :
 {
 
   LOOKAHEAD(2)
-  ( LOOKAHEAD(2) (Annotation() {checkForBadTypeAnnotations();})* "[" Expression() "]" )+ ( LOOKAHEAD(2) "[" "]" )*
+  ( LOOKAHEAD(2) (Annotation() {checkForBadTypeAnnotations();})* "[" Expression() "]" {jjtThis.bumpArrayDepth();})+ ( LOOKAHEAD(2) "[" "]" {jjtThis.bumpArrayDepth();} )*
 |
-  ( "[" "]" )+ ArrayInitializer()
+  ( "[" "]" {jjtThis.bumpArrayDepth();})+ ArrayInitializer()
 }
 
 
@@ -2253,7 +2253,7 @@ void Resources() :
 void Resource() :
 {}
 {
-   LOOKAHEAD(2) ( ( "final" | Annotation() )* Type() VariableDeclaratorId() "=" Expression() )
+   LOOKAHEAD(2) ( ( "final" {jjtThis.setFinal(true);} | Annotation() )* Type() VariableDeclaratorId() "=" Expression() )
    |
    Name() {checkForBadConciseTryWithResourcesUsage();}
 }

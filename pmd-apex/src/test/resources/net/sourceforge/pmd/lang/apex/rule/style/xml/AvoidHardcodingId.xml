@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+	<test-code>
+		<description>Non compliant scenario: Hardcoded Id</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void method (ID newRecordID) {
+    for (Account current : listOfcounts){
+        if (current.getId == 'a002400000RG1nyAAD') {
+        }
+    }
+    	method('3266sd35435sd6a');
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Compliant scenario, getting ID dynamically</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void method (ID newRecordID) {
+    for (Account current : listOfcounts){
+        if (current.getId == newRecordID) {
+
+        }
+    }
+    
+    	otherMethod(newRecordID);
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Test for random string combinations</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	void foo() {
+		return 'jatuatzbtazi124';
+	}
+}
+		]]></code>
+	</test-code>
+</test-data>

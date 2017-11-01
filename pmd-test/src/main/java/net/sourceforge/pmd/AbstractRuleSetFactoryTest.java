@@ -243,7 +243,7 @@ public abstract class AbstractRuleSetFactoryTest {
         List<String> ruleSetFileNames = new ArrayList<>();
         try {
             Properties properties = new Properties();
-            try (InputStream is = ResourceLoader.loadResourceAsStream("rulesets/" + language + "/rulesets.properties")) {
+            try (InputStream is = new ResourceLoader().loadClassPathResourceAsStreamOrThrow("rulesets/" + language + "/rulesets.properties")) {
                 properties.load(is);
             }
             String fileNames = properties.getProperty("rulesets.filenames");
@@ -335,14 +335,7 @@ public abstract class AbstractRuleSetFactoryTest {
     }
 
     private static InputStream loadResourceAsStream(String resource) throws RuleSetNotFoundException {
-        InputStream inputStream = ResourceLoader.loadResourceAsStream(resource,
-                AbstractRuleSetFactoryTest.class.getClassLoader());
-        if (inputStream == null) {
-            throw new RuleSetNotFoundException("Can't find resource " + resource
-                    + "  Make sure the resource is a valid file or URL or is on the CLASSPATH.  Here's the current classpath: "
-                    + System.getProperty("java.class.path"));
-        }
-        return inputStream;
+        return new ResourceLoader().loadClassPathResourceAsStreamOrThrow(resource);
     }
 
     private void testRuleSet(String fileName)
@@ -477,7 +470,7 @@ public abstract class AbstractRuleSetFactoryTest {
     protected static RuleSetReferenceId createRuleSetReferenceId(final String ruleSetXml) {
         return new RuleSetReferenceId(null) {
             @Override
-            public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
+            public InputStream getInputStream(ResourceLoader resourceLoader) throws RuleSetNotFoundException {
                 try {
                     return new ByteArrayInputStream(ruleSetXml.getBytes("UTF-8"));
                 } catch (UnsupportedEncodingException e) {

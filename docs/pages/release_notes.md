@@ -114,20 +114,20 @@ providing configuration error reporting are:
 As we move forward we will be able to detect and report more configuration errors (ie: incomplete `auxclasspath`)
 and include them to such reports.
 
-#### Apex Rule Suppression		
-		
-Apex violations can now be suppressed very similarly to how it's done in Java, by making use of a		
-`@SuppressWarnings` annotation.		
-		
-Supported syntax includes:		
-		
-```		
-@SupressWarnings('PMD') // to supress all Apex rules		
-@SupressWarnings('all') // to supress all Apex rules		
-@SupressWarnings('PMD.ARuleName') // to supress only the rule named ARuleName		
-@SupressWarnings('PMD.ARuleName, PMD.AnotherRuleName') // to supress only the rule named ARuleName or AnotherRuleName		
-```		
-		
+#### Apex Rule Suppression
+
+Apex violations can now be suppressed very similarly to how it's done in Java, by making use of a
+`@SuppressWarnings` annotation.
+
+Supported syntax includes:
+
+```
+@SupressWarnings('PMD') // to supress all Apex rules
+@SupressWarnings('all') // to supress all Apex rules
+@SupressWarnings('PMD.ARuleName') // to supress only the rule named ARuleName
+@SupressWarnings('PMD.ARuleName, PMD.AnotherRuleName') // to supress only the rule named ARuleName or AnotherRuleName
+```
+
 Notice this last scenario is slightly different to the Java syntax. This is due to differences in the Apex grammar for annotations.
 
 #### New Rules
@@ -136,12 +136,19 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
     and "NcssTypeCount". The new rule uses the metrics framework to achieve the same. It has two properties, to
     define the report level for method and class sizes separately. Constructors and methods are considered the same.
 
+*   The new rule `DoNotExtendJavaLangThrowable` (ruleset `java-strictexception`) is a companion for the
+    `java-strictexception.xml/DoNotExtendJavaLangError`, detecting direct extensions of `java.lang.Throwable`.
+
 *   The new rule `ForLoopCanBeForeach` (ruleset `java-migration`) helps to identify those for-loops that can
     be safely refactored into for-each-loops available since java 1.5.
 
 *   The new rule `AvoidDirectAccessTriggerMap` (ruleset `apex-style`) helps to identify direct array access to triggers,
     which can produce bugs by iether accessing non-existing indexes, or them leaving out. You should use for-each-loops
     instead.
+
+*   The new rule `AvoidHardcodingId` (ruleset `apex-style`) detects hardcoded strings that look like identifiers
+    and flags them. Record IDs change between environments, meaning hardcoded ids are bound to fail under a different
+    setup.
 
 *   A whole new ruleset has been added to Apex, `apex-empty`. It currently migrates 5 rules from the equivalent
     `java-empty` ruleset for Apex. The ruleset includes:
@@ -172,10 +179,34 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
 
 *   The rule `GodClass` (ruleset `java-design`) has been revamped to use the new metrics framework.
 
+*   The rule `LooseCoupling` (ruleset `java-coupling`) has been replaced by the typeresolution-based implementation.
+
+*   The rule `CloneMethodMustImplementCloneable` (ruleset `java-clone`) has been replaced by the typeresolution-based
+    implementation and is now able to detect cases if a class implements or extends a Cloneable class/interface.
+
+*   The rule `UnusedImports` (ruleset `java-imports`) has been replaced by the typeresolution-based
+    implementation and is now able to detect unused on-demand imports.
+
+*   The rule `SignatureDeclareThrowsException` (ruleset 'java-strictexception') has been replaced by the
+    typeresolution-based implementation. It has a new property `IgnoreJUnitCompletely`, which allows all
+    methods in a JUnit testcase to throws exceptions.
+
 #### Deprecated Rules
 
 *   The rules `NcssConstructorCount`, `NcssMethodCount`, and `NcssTypeCount` (ruleset `java-codesize`) have been
     deprecated. They will be replaced by the new rule `NcssCount` in the same ruleset.
+
+*   The rule `LooseCoupling` in ruleset `java-typeresolution` is deprecated. Use the rule with the same name
+    from ruleset `java-coupling` instead.
+
+*   The rule `CloneMethodMustImplementCloneable` in ruleset `java-typeresolution` is deprecated. Use the rule with
+    the same name from ruleset `java-clone` instead.
+
+*   The rule `UnusedImports` in ruleset `java-typeresolution` is deprecated. Use the rule with
+    the same name from ruleset `java-imports` instead.
+
+*   The rule `SignatureDeclareThrowsException` in ruleset `java-typeresolution` is deprecated. Use the rule
+    with the same name from ruleset `java-strictexception` instead.
 
 #### Removed Rules
 
@@ -228,11 +259,13 @@ a warning will now be produced suggesting users to adopt it for better performan
     *   [#608](https://github.com/pmd/pmd/issues/608): \[core] Add DEBUG log when applying incremental analysis
     *   [#618](https://github.com/pmd/pmd/issues/618): \[core] Incremental Analysis doesn't close file correctly on Windows upon a cache hit
     *   [#643](https://github.com/pmd/pmd/issues/643): \[core] PMD Properties (dev-properties) breaks markup on CodeClimateRenderer
+    *   [#680](https://github.com/pmd/pmd/pull/680): \[core] Isolate classloaders for runtime and auxclasspath
 *   apex
     *   [#265](https://github.com/pmd/pmd/issues/265): \[apex] Make Rule suppression work
     *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
     *   [#489](https://github.com/pmd/pmd/pull/489): \[apex] Update Apex compiler
     *   [#500](https://github.com/pmd/pmd/issues/500): \[apex] Running through CLI shows jorje optimization messages
+    *   [#605](https://github.com/pmd/pmd/issues/605): \[apex] java.lang.NoClassDefFoundError in the latest build
     *   [#637](https://github.com/pmd/pmd/issues/637): \[apex] Avoid SOSL in loops
 *   cpp
     *   [#448](https://github.com/pmd/pmd/issues/448): \[cpp] Write custom CharStream to handle continuation characters
@@ -383,4 +416,10 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#632](https://github.com/pmd/pmd/pull/632): \[apex] Add AvoidDirectAccessTriggerMap rule to the style set - [Jan Aertgeerts](https://github.com/JAertgeerts)
 *   [#644](https://github.com/pmd/pmd/pull/644): \[core] Prevent internal dev-properties from being displayed on CodeClimate renderer - [Filipe Esperandio](https://github.com/filipesperandio)
 *   [#660](https://github.com/pmd/pmd/pull/660): \[apex] avoid sosl in loops - [Jan Aertgeerts](https://github.com/JAertgeerts)
+*   [#661](https://github.com/pmd/pmd/pull/661): \[apex] avoid hardcoding id's - [Jan Aertgeerts](https://github.com/JAertgeerts)
+*   [#666](https://github.com/pmd/pmd/pull/666): \[java] Add DoNotExtendJavaLangThrowable rule - [Robert Painsi](https://github.com/robertpainsi)
+*   [#668](https://github.com/pmd/pmd/pull/668): \[core] Fix javadoc warnings on pmd-core - [Clément Fournier](https://github.com/oowekyala)
+*   [#675](https://github.com/pmd/pmd/pull/675): \[java] Fix in Java grammar: Try with final resource node error - [Gonzalo Ibars Ingman](https://github.com/gibarsin)
+*   [#679](https://github.com/pmd/pmd/pull/679): \[core] Token scheme generalization - [Gonzalo Ibars Ingman](https://github.com/gibarsin)
+*   [#694](https://github.com/pmd/pmd/pull/694): \[core] Add minor fixes to root pom - [Matias Comercio](https://github.com/MatiasComercio)
 
