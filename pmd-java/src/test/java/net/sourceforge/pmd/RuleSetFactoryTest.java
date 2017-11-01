@@ -7,7 +7,6 @@ package net.sourceforge.pmd;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -44,11 +43,5 @@ public class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         RuleSet ruleset = ruleSetFactory.createRuleSet(ref);
         assertNotNull(ruleset);
-    }
-
-    @Test
-    @Ignore("Rule classes need to be moved into the correct packages corresponding to their categories")
-    public void testAllPMDBuiltInRulesMeetConventions() {
-        // disabled test from super class
     }
 }
