@@ -13,7 +13,6 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
     @Override
     public void setUp() {
         addRule(RULESET, "AssignmentInOperand");
-        addRule(RULESET, "AvoidTrailingComma");
         addRule(RULESET, "ForLoopsMustUseBraces");
         addRule(RULESET, "IfElseStmtsMustUseBraces");
         addRule(RULESET, "IfStmtsMustUseBraces");

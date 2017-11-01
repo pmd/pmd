@@ -61,42 +61,6 @@ function getX() {
         </example>
     </rule>
 
-    <rule name="AvoidTrailingComma"
-          message="Avoid trailing commas in object or array literals"
-          language="ecmascript"
-          since="5.1"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_codestyle.html#avoidtrailingcomma">
-        <description>
-This rule helps improve code portability due to differences in browser treatment of trailing commas in object or array literals.
-        </description>
-        <priority>1</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ObjectLiteral[$allowObjectLiteral = "false" and @TrailingComma = 'true']
-|
-//ArrayLiteral[$allowArrayLiteral = "false" and @TrailingComma = 'true']
-]]>
-                </value>
-            </property>
-            <property name="allowObjectLiteral" type="Boolean" value="false" description="Allow a trailing comma within an object literal" />
-            <property name="allowArrayLiteral" type="Boolean" value="false" description="Allow a trailing comma within an array literal" />
-        </properties>
-        <example>
-<![CDATA[
-function(arg) {
-    var obj1 = { a : 1 };   // Ok
-    var arr1 = [ 1, 2 ];    // Ok
-
-    var obj2 = { a : 1, };  // Syntax error in some browsers!
-    var arr2 = [ 1, 2, ];   // Length 2 or 3 depending on the browser!
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="ForLoopsMustUseBraces"
           language="ecmascript"
           since="5.0"

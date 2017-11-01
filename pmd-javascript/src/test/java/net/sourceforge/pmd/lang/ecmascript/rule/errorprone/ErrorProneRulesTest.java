@@ -12,6 +12,7 @@ public class ErrorProneRulesTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
+        addRule(RULESET, "AvoidTrailingComma");
         addRule(RULESET, "EqualComparison");
         addRule(RULESET, "InnaccurateNumericLiteral");
     }
