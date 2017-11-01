@@ -34,6 +34,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.settings.XMLSettingsSaver;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -146,6 +147,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
             // no big deal
         }
 
+      
         initializeLanguageVersionMenu();
         initializeViewAnimation();
 
@@ -169,6 +171,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         fileMenu.setOnShowing(this::onFileMenuShowing);
 
         sourceEditorController.refreshAST();
+        Platform.runLater(() -> sourceEditorController.moveCaret(0, 0));
     }
 
 

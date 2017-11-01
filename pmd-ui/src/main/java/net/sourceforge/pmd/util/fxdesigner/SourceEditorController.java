@@ -30,7 +30,6 @@ import net.sourceforge.pmd.util.fxdesigner.util.settings.SettingsOwner;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -84,7 +83,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private void initializeSyntaxHighlighting() {
 
         isSyntaxHighlightingEnabled.bind(codeEditorArea.syntaxHighlightingEnabledProperty());
-       /* toggleSyntaxHighlighting.setOnAction(e -> {
+        /* toggleSyntaxHighlighting.setOnAction(e -> {
             isSyntaxHighlightingEnabled.set(!isSyntaxHighlightingEnabled.get());
             toggleSyntaxHighlighting.setText((isSyntaxHighlightingEnabled.get() ? "Disable" : "Enable")
                                              + " syntax highlighting");
@@ -109,10 +108,6 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     private void initializeASTTreeView() {
         astTreeView.setCellFactory(param -> new ASTTreeCell());
-
-        ReadOnlyObjectProperty<TreeItem<Node>> selectedItemProperty
-                = astTreeView.getSelectionModel().selectedItemProperty();
-
 
         astTreeView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && newVal.getValue() != null) {
@@ -182,7 +177,8 @@ public class SourceEditorController implements Initializable, SettingsOwner {
             if (codeEditorArea.isInRange(node)) {
                 codeEditorArea.styleCss(node, cssClasses);
                 codeEditorArea.paintCss();
-                codeEditorArea.moveTo(node.getBeginLine(), node.getBeginColumn());
+                codeEditorArea.moveTo(node.getBeginLine() - 1, 0);
+                codeEditorArea.requestFollowCaret();
             } else {
                 codeEditorArea.clearPrimaryStyleLayer();
             }
@@ -208,6 +204,12 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     private void invalidateAST(boolean error) {
         astTitleLabel.setText("Abstract syntax tree (" + (error ? "error" : "outdated") + ")");
+    }
+
+
+    public void moveCaret(int line, int column) {
+        codeEditorArea.moveTo(line, column);
+        codeEditorArea.requestFollowCaret();
     }
 
 
@@ -260,7 +262,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     public List<AppSetting> getSettings() {
         List<AppSetting> settings = new ArrayList<>();
         settings.add(new AppSetting("langVersion", () -> getLanguageVersion().getTerseName(),
-                this::restoreLanguageVersion));
+            this::restoreLanguageVersion));
 
         settings.add(new AppSetting("code", () -> codeEditorArea.getText(),
             e -> codeEditorArea.replaceText(e)));
