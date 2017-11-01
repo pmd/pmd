@@ -221,7 +221,7 @@ public class Foo {
     <rule name="AvoidUsingHardCodedIP"
           since="4.1"
           message="Do not hard code the IP address ${variableName}"
-          class="net.sourceforge.pmd.lang.java.rule.basic.AvoidUsingHardCodedIPRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidUsingHardCodedIPRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidusinghardcodedip">
         <description>
 Application with hard-coded IP addresses can become impossible to deploy in some cases.
@@ -243,7 +243,7 @@ public class Foo {
     <rule name="CheckResultSet"
           language="java"
           since="4.1"
-          class="net.sourceforge.pmd.lang.java.rule.basic.CheckResultSetRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.CheckResultSetRule"
           message="Always check the return of one of the navigation method (next,previous,first,last) of a ResultSet."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#checkresultset">
         <description>
@@ -742,7 +742,7 @@ public class MyTest {
     <rule name="LooseCoupling"
           since="0.7"
           message="Avoid using implementation types like ''{0}''; use the interface instead"
-          class="net.sourceforge.pmd.lang.java.rule.coupling.LooseCouplingRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.LooseCouplingRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#loosecoupling">
         <description>

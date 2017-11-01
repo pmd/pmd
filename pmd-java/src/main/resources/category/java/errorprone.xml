@@ -19,7 +19,7 @@ It fully contains these previous rulesets:
     <rule name="AssignmentInOperand"
           since="1.03"
           message="Avoid assignments in operands"
-          class="net.sourceforge.pmd.lang.java.rule.controversial.AssignmentInOperandRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AssignmentInOperandRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#assignmentinoperand">
         <description>
 Avoid assignments in operands; this can make code more complicated and harder to read.
@@ -40,7 +40,7 @@ public void bar() {
     <rule name="AssignmentToNonFinalStatic"
           since="2.2"
           message="Possible unsafe assignment to a non-final static field in a constructor."
-          class="net.sourceforge.pmd.lang.java.rule.design.AssignmentToNonFinalStaticRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AssignmentToNonFinalStaticRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#assignmenttononfinalstatic">
         <description>
 Identifies a possible unsafe usage of a static field.
@@ -161,7 +161,7 @@ public class A {
 
     <rule name="AvoidBranchingStatementAsLastInLoop"
           since="5.0"
-          class="net.sourceforge.pmd.lang.java.rule.basic.AvoidBranchingStatementAsLastInLoopRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule"
           message="Avoid using a branching statement as the last in a loop."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidbranchingstatementaslastinloop">
         <description>
@@ -554,7 +554,7 @@ public void bar() {
 
     <rule name="AvoidMultipleUnaryOperators"
           since="4.2"
-          class="net.sourceforge.pmd.lang.java.rule.basic.AvoidMultipleUnaryOperatorsRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidMultipleUnaryOperatorsRule"
           message="Using multiple unary operators may be a bug, and/or is confusing."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidmultipleunaryoperators">
         <description>
@@ -588,7 +588,7 @@ int j = -~7;
     <rule name="AvoidUsingOctalValues"
           since="3.9"
           message="Do not start a literal by 0 unless it's an octal value"
-          class="net.sourceforge.pmd.lang.java.rule.basic.AvoidUsingOctalValuesRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidUsingOctalValuesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidusingoctalvalues">
         <description>
 Integer literals should not start with zero since this denotes that the rest of literal will be
@@ -666,7 +666,7 @@ private int getMoreFoo(){
     <rule name="BrokenNullCheck"
           since="3.8"
           message="Method call on object which may be null"
-          class="net.sourceforge.pmd.lang.java.rule.basic.BrokenNullCheckRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.BrokenNullCheckRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#brokennullcheck">
         <description>
 The null check is broken since it will throw a NullPointerException itself.
@@ -781,7 +781,7 @@ public class DummyActivity extends Activity {
           language="java"
           since="5.0"
           message="Check the value returned by the skip() method of an InputStream to see if the requested number of bytes has been skipped."
-          class="net.sourceforge.pmd.lang.java.rule.basic.CheckSkipResultRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.CheckSkipResultRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#checkskipresult">
         <description>
 The skip() method may skip a smaller number of bytes than requested. Check the returned value to find out if it was the case or not.
@@ -901,7 +901,7 @@ public class Foo implements Cloneable {
           language="java"
           since="1.9"
           message="clone() method should be implemented only if implementing Cloneable interface"
-          class="net.sourceforge.pmd.lang.java.rule.clone.CloneMethodMustImplementCloneableRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.CloneMethodMustImplementCloneableRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#clonemethodmustimplementcloneable">
         <description>
@@ -1010,7 +1010,7 @@ public class MyClass implements Cloneable{
     <rule name="CloseResource"
           since="1.2.2"
           message="Ensure that resources like this {0} object are closed after use"
-          class="net.sourceforge.pmd.lang.java.rule.design.CloseResourceRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.CloseResourceRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#closeresource">
         <description>
 Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use.
@@ -1038,7 +1038,7 @@ public class Bar {
     <rule name="CompareObjectsWithEquals"
           since="3.2"
           message="Use equals() to compare object references."
-          class="net.sourceforge.pmd.lang.java.rule.design.CompareObjectsWithEqualsRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.CompareObjectsWithEqualsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#compareobjectswithequals">
         <description>
 Use equals() to compare object references; avoid comparing them with ==.
@@ -1059,7 +1059,7 @@ class Foo {
     <rule name="ConstructorCallsOverridableMethod"
           since="1.04"
           message="Overridable {0} called during object construction"
-          class="net.sourceforge.pmd.lang.java.rule.design.ConstructorCallsOverridableMethodRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.ConstructorCallsOverridableMethodRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod">
         <description>
 Calling overridable methods during construction poses a risk of invoking methods on an incompletely
@@ -1098,7 +1098,7 @@ public class JuniorClass extends SeniorClass {
     <rule name="DataflowAnomalyAnalysis"
           since="3.9"
           message="Found ''{0}''-anomaly for variable ''{1}'' (lines ''{2}''-''{3}'')."
-          class="net.sourceforge.pmd.lang.java.rule.controversial.DataflowAnomalyAnalysisRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.DataflowAnomalyAnalysisRule"
           dfa="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#dataflowanomalyanalysis">
         <description>The dataflow analysis tracks local definitions, undefinitions and references to variables on different paths on the data flow.
@@ -1307,7 +1307,7 @@ public class Foo {
     <rule name="DontImportSun"
           since="1.5"
           message="Avoid importing anything from the 'sun.*' packages"
-          class="net.sourceforge.pmd.lang.java.rule.controversial.DontImportSunRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.DontImportSunRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#dontimportsun">
         <description>
 Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.
@@ -1935,7 +1935,7 @@ public void finalize() {
     <rule name="IdempotentOperations"
           since="2.0"
           message="Avoid idempotent operations (like assigning a variable to itself)."
-          class="net.sourceforge.pmd.lang.java.rule.design.IdempotentOperationsRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.IdempotentOperationsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#idempotentoperations">
         <description>
 Avoid idempotent operations - they have no effect.
@@ -2488,7 +2488,7 @@ public class MyClass {
     <rule name="NullAssignment"
           since="1.02"
           message="Assigning an Object to null is a code smell.  Consider refactoring."
-          class="net.sourceforge.pmd.lang.java.rule.controversial.NullAssignmentRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.NullAssignmentRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#nullassignment">
         <description>
 Assigning a "null" to a variable (outside of its declaration) is usually bad form.  Sometimes, this type
@@ -2514,7 +2514,7 @@ public void bar() {
           language="java"
           since="0.4"
           message="Ensure you override both equals() and hashCode()"
-          class="net.sourceforge.pmd.lang.java.rule.basic.OverrideBothEqualsAndHashcodeRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#overridebothequalsandhashcode">
         <description>
 Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
@@ -2738,7 +2738,7 @@ public class Foo {
     <rule name="SingleMethodSingleton"
           since="5.4"
           message="Class contains multiple getInstance methods. Please review."
-          class="net.sourceforge.pmd.lang.java.rule.design.SingleMethodSingletonRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.SingleMethodSingletonRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#singlemethodsingleton">
         <description>
 Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
@@ -2770,7 +2770,7 @@ public class Singleton {
     <rule name="SingletonClassReturningNewInstance"
           since="5.4"
           message="getInstance method always creates a new object and hence does not comply to Singleton Design Pattern behaviour. Please review"
-          class="net.sourceforge.pmd.lang.java.rule.design.SingletonClassReturningNewInstanceRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.SingletonClassReturningNewInstanceRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#singletonclassreturningnewinstance">
         <description>
 Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
@@ -2975,7 +2975,7 @@ public class Foo {
     <rule name="SuspiciousOctalEscape"
           since="1.5"
           message="Suspicious decimal characters following octal escape in string literal"
-          class="net.sourceforge.pmd.lang.java.rule.controversial.SuspiciousOctalEscapeRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.SuspiciousOctalEscapeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#suspiciousoctalescape">
         <description>
 A suspicious octal escape sequence was found inside a String literal.

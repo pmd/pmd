@@ -347,7 +347,7 @@ void bar() {
     <rule name="CouplingBetweenObjects"
           since="1.04"
           message="High amount of different objects as members denotes a high coupling"
-          class="net.sourceforge.pmd.lang.java.rule.coupling.CouplingBetweenObjectsRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.CouplingBetweenObjectsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#couplingbetweenobjects">
         <description>
 This rule counts the number of unique attributes, local variables, and return types within an object. 
@@ -379,7 +379,7 @@ public class Foo {
     <rule name="CyclomaticComplexity"
           since="1.03"
           message = "The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
-          class="net.sourceforge.pmd.lang.java.rule.codesize.CyclomaticComplexityRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.CyclomaticComplexityRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#cyclomaticcomplexity"
           deprecated="true">
         <description>
@@ -556,7 +556,7 @@ public class Foo {
     <rule name="ExcessiveImports"
           since="1.04"
           message="A high number of imports can indicate a high degree of coupling within an object."
-          class="net.sourceforge.pmd.lang.java.rule.coupling.ExcessiveImportsRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveImportsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessiveimports">
         <description>
 A high number of imports can indicate a high degree of coupling within an object. This rule 
@@ -579,7 +579,7 @@ public class Foo {
     <rule name="ExcessiveMethodLength"
           since="0.6"
           message="Avoid really long methods."
-          class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveMethodLengthRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveMethodLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessivemethodlength">
         <description>
 When methods are excessively long this usually indicates that the method is doing more than its
@@ -602,7 +602,7 @@ public void doSomething() {
     <rule name="ExcessiveParameterList"
           since="0.9"
           message="Avoid long parameter lists."
-          class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveParameterListRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveParameterListRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessiveparameterlist">
         <description>
 Methods with numerous parameters are a challenge to maintain, especially if most of them share the
@@ -629,7 +629,7 @@ public void addPerson(      // preferred approach
     <rule name="ExcessivePublicCount"
           since="1.04"
           message="This class has a bunch of public methods and attributes"
-          class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessivePublicCountRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.ExcessivePublicCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessivepubliccount">
         <description>
 Classes with large numbers of public methods and attributes require disproportionate testing efforts
@@ -737,7 +737,7 @@ public class Foo {
           language="java"
           since="5.0"
           message="Potential violation of Law of Demeter"
-          class="net.sourceforge.pmd.lang.java.rule.coupling.LawOfDemeterRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.LawOfDemeterRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#lawofdemeter">
         <description>
 The Law of Demeter is a simple rule, that says "only talk to friends". It helps to reduce coupling between classes
@@ -818,7 +818,7 @@ public boolean bar(int a, int b) {
     <rule name="LoosePackageCoupling"
           since="5.0"
           message="Use of ''{0}'' outside of package hierarchy ''{1}'' is not recommended; use recommended classes instead"
-          class="net.sourceforge.pmd.lang.java.rule.coupling.LoosePackageCouplingRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.LoosePackageCouplingRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#loosepackagecoupling">
         <description>
 Avoid using classes from the configured package hierarchy outside of the package hierarchy, 
@@ -841,7 +841,7 @@ public class Bar {
     <rule name="ModifiedCyclomaticComplexity"
           since="5.1.2"
           message = "The {0} ''{1}'' has a Modified Cyclomatic Complexity of {2}."
-          class="net.sourceforge.pmd.lang.java.rule.codesize.ModifiedCyclomaticComplexityRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.ModifiedCyclomaticComplexityRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#modifiedcyclomaticcomplexity"
           deprecated="true">
         <description>
@@ -898,7 +898,7 @@ public class Foo {    // This has a Cyclomatic Complexity = 9
           message="The constructor with {0} parameters has an NCSS line count of {1}"
           since="3.9"
           deprecated="true"
-          class="net.sourceforge.pmd.lang.java.rule.codesize.NcssConstructorCountRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.NcssConstructorCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#ncssconstructorcount">
         <description>
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
@@ -927,7 +927,7 @@ public class Foo extends Bar {
     <rule name="NcssCount"
           message="The {0} ''{1}'' has a NCSS line count of {2}."
           since="6.0"
-          class="net.sourceforge.pmd.lang.java.rule.codesize.NcssCountRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.NcssCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#ncsscount">
         <description>
 This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines
@@ -971,7 +971,7 @@ class Foo {                         // +1, total Ncss = 12
           message="The method {0}() has an NCSS line count of {1}"
           deprecated="true"
           since="3.9"
-          class="net.sourceforge.pmd.lang.java.rule.codesize.NcssMethodCountRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.NcssMethodCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#ncssmethodcount">
         <description>
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
@@ -1002,7 +1002,7 @@ public class Foo extends Bar {
           message="The type has an NCSS line count of {0}"
           since="3.9"
           deprecated="true"
-          class="net.sourceforge.pmd.lang.java.rule.codesize.NcssTypeCountRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.NcssTypeCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#ncsstypecount">
         <description>
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
@@ -1031,7 +1031,7 @@ public class Foo extends Bar {
     <rule name="NPathComplexity"
           since="3.9"
           message="The method {0}() has an NPath complexity of {1}"
-          class="net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.NPathComplexityRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#npathcomplexity">
         <description>
 The NPath complexity of a method is the number of acyclic execution paths through that method.
@@ -1337,7 +1337,7 @@ public class Foo {
     <rule name="StdCyclomaticComplexity"
           since="5.1.2"
           message = "The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
-          class="net.sourceforge.pmd.lang.java.rule.codesize.StdCyclomaticComplexityRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.StdCyclomaticComplexityRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#stdcyclomaticcomplexity"
           deprecated="true">
         <description>
@@ -1422,7 +1422,7 @@ public class Foo {
     <rule name="TooManyFields"
           since="3.0"
           message="Too many fields"
-          class="net.sourceforge.pmd.lang.java.rule.codesize.TooManyFieldsRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.TooManyFieldsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#toomanyfields">
         <description>
 Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,

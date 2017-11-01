@@ -389,7 +389,7 @@ public class Foo {}
 
     <rule name="CommentDefaultAccessModifier"
           since="5.4.0"
-          class="net.sourceforge.pmd.lang.java.rule.comments.CommentDefaultAccessModifierRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.CommentDefaultAccessModifierRule"
           message="Missing commented default access modifier"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#commentdefaultaccessmodifier">
         <description>
@@ -1078,7 +1078,7 @@ public class ClassInDefaultPackage {
     <rule name="OnlyOneReturn"
           since="1.0"
           message="A method should have only one exit point, and that should be the last statement in the method"
-          class="net.sourceforge.pmd.lang.java.rule.controversial.OnlyOneReturnRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.OnlyOneReturnRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#onlyonereturn">
         <description>
 A method should have only one exit point, and that should be the last statement in the method.

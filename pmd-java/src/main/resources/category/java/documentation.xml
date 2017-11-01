@@ -11,7 +11,7 @@ The Documentation category contains rules that deal with comments and code docum
     <rule name="CommentContent"
           since="5.0"
           message="Invalid words or phrases found"
-          class="net.sourceforge.pmd.lang.java.rule.comments.CommentContentRule"
+          class="net.sourceforge.pmd.lang.java.rule.documentation.CommentContentRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#commentcontent">
         <description>
 A rule for the politically correct... we don't want to offend anyone.
@@ -27,7 +27,7 @@ A rule for the politically correct... we don't want to offend anyone.
     <rule name="CommentRequired"
           since="5.1"
           message="Comment is required"
-          class="net.sourceforge.pmd.lang.java.rule.comments.CommentRequiredRule"
+          class="net.sourceforge.pmd.lang.java.rule.documentation.CommentRequiredRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#commentrequired">
         <description>
 Denotes whether comments are required (or unwanted) for specific language elements.
@@ -47,7 +47,7 @@ Denotes whether comments are required (or unwanted) for specific language elemen
     <rule name="CommentSize"
           since="5.0"
           message="Comment is too large"
-          class="net.sourceforge.pmd.lang.java.rule.comments.CommentSizeRule"
+          class="net.sourceforge.pmd.lang.java.rule.documentation.CommentSizeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#commentsize">
         <description>
 Determines whether the dimensions of non-header comments found are within the specified limits.

@@ -172,7 +172,7 @@ public class UsingShort {
     <rule name="BigIntegerInstantiation"
           since="3.9"
           message="Don't create instances of already existing BigInteger and BigDecimal (ZERO, ONE, TEN)"
-          class="net.sourceforge.pmd.lang.java.rule.basic.BigIntegerInstantiationRule"
+          class="net.sourceforge.pmd.lang.java.rule.performance.BigIntegerInstantiationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#bigintegerinstantiation">
         <description>
 Don't create instances of already existing BigInteger (BigInteger.ZERO, BigInteger.ONE) and
@@ -193,7 +193,7 @@ bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
     <rule name="BooleanInstantiation"
           since="1.2"
           message="Avoid instantiating Boolean objects; reference Boolean.TRUE or Boolean.FALSE or call Boolean.valueOf() instead."
-          class="net.sourceforge.pmd.lang.java.rule.basic.BooleanInstantiationRule"
+          class="net.sourceforge.pmd.lang.java.rule.performance.BooleanInstantiationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#booleaninstantiation">
         <description>
 Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.

@@ -190,7 +190,7 @@ new Thread().run(); // same violation
           language="java"
           since="1.04"
           message="Double checked locking is not thread safe in Java."
-          class="net.sourceforge.pmd.lang.java.rule.basic.DoubleCheckedLockingRule"
+          class="net.sourceforge.pmd.lang.java.rule.multithreading.DoubleCheckedLockingRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#doublecheckedlocking">
         <description>
 Partially created objects can be returned by the Double Checked Locking pattern when used in Java.
