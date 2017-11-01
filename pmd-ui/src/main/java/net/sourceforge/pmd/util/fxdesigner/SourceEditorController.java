@@ -84,12 +84,12 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private void initializeSyntaxHighlighting() {
 
         isSyntaxHighlightingEnabled.bind(codeEditorArea.syntaxHighlightingEnabledProperty());
-        toggleSyntaxHighlighting.setOnAction(e -> {
+       /* toggleSyntaxHighlighting.setOnAction(e -> {
             isSyntaxHighlightingEnabled.set(!isSyntaxHighlightingEnabled.get());
             toggleSyntaxHighlighting.setText((isSyntaxHighlightingEnabled.get() ? "Disable" : "Enable")
                                              + " syntax highlighting");
         });
-
+        */
         isSyntaxHighlightingEnabled.addListener(((observable, wasEnabled, isEnabled) -> {
             if (!wasEnabled && isEnabled) {
                 updateSyntaxHighlighter();
@@ -182,7 +182,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
             if (codeEditorArea.isInRange(node)) {
                 codeEditorArea.styleCss(node, cssClasses);
                 codeEditorArea.paintCss();
-                codeEditorArea.positionCaret(node.getBeginLine(), node.getBeginColumn());
+                codeEditorArea.moveTo(node.getBeginLine(), node.getBeginColumn());
             } else {
                 codeEditorArea.clearPrimaryStyleLayer();
             }

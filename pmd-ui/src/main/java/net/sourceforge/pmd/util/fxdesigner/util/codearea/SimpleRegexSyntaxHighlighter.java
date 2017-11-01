@@ -15,8 +15,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.fxmisc.richtext.StyleSpans;
-import org.fxmisc.richtext.StyleSpansBuilder;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
+
 
 /**
  * Language-specific engine for syntax highlighting. This implementation tokenises the text using regex, and assigns a
@@ -62,11 +63,11 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
         } catch (StackOverflowError so) {
             // matcher.find overflowed, might happen when coloring ginormous files with incorrect language
         }
-        
+
         if (lastKwEnd == 0) { // no spans found/ no text
             builder.add(Collections.emptySet(), text.length());
         }
-        
+
         return builder.create();
     }
 
@@ -140,7 +141,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
          */
         public RegexHighlightGrammar create() {
             return new RegexHighlightGrammar(Pattern.compile(getRegexString()),
-                                             getGroupNamesToCssClasses());
+                getGroupNamesToCssClasses());
         }
 
 
@@ -153,7 +154,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
          */
         public RegexHighlightGrammar create(int flags) {
             return new RegexHighlightGrammar(Pattern.compile(getRegexString(), flags),
-                                             getGroupNamesToCssClasses());
+                getGroupNamesToCssClasses());
         }
 
 
@@ -161,6 +162,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
             return Collections.unmodifiableMap(groupNameToCssClass);
         }
     }
+
 
     /**
      * Describes the tokens of the language that should be colored with a regular expression.

@@ -29,7 +29,7 @@
                                         AnchorPane.rightAnchor="0.0"
                                         AnchorPane.topAnchor="0.0"
                                         fx:id="xpathExpressionArea">
-                            <contextMenu>
+                           <!-- <contextMenu>
                                 <ContextMenu>
                                     <items>
                                         <MenuItem
@@ -37,7 +37,7 @@
                                                 text="Disable syntax highlighting"/>
                                     </items>
                                 </ContextMenu>
-                            </contextMenu>
+                            </contextMenu>-->
                         </CustomCodeArea>
                     </children>
                 </AnchorPane>

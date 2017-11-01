@@ -6,14 +6,16 @@ package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.fxmisc.richtext.Paragraph;
-import org.fxmisc.richtext.StyleSpans;
-import org.fxmisc.richtext.StyleSpansBuilder;
+import org.fxmisc.richtext.model.Paragraph;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
+
 
 /**
  * Represents a layer of styling in the text. Several layers are aggregated into a {@link StyleContext}, and can evolve
@@ -21,6 +23,7 @@ import org.fxmisc.richtext.StyleSpansBuilder;
  */
 class StyleLayer {
 
+    private static final Pattern TAB_INDENT = Pattern.compile("^(\t*).*$");
     private final String id;
     private Stack<StyleSpans<Collection<String>>> spans = new Stack<>();
     private CustomCodeArea codeArea;
@@ -74,8 +77,9 @@ class StyleLayer {
             throw new IllegalArgumentException("Cannot style, the region is out of bounds");
         }
 
-        int offset = lengthUntil(beginLine, beginColumn);
-        int spanLength = lengthBetween(beginLine, beginColumn, endLine, endColumn);
+        int offset = getAbsolutePosition(beginLine, beginColumn - 1);
+        int spanLength = getAbsolutePosition(endLine, endColumn) - offset;
+
 
         StyleSpansBuilder<Collection<String>> builder = new StyleSpansBuilder<>();
 
@@ -83,37 +87,24 @@ class StyleLayer {
         builder.add(cssClasses, spanLength);
         builder.add(Collections.emptySet(), codeArea.getLength() - (offset + spanLength));
 
+        
         spans.push(builder.create());
     }
 
 
-    /** Length in characters before the specified position. */
-    private int lengthUntil(int line, int column) {
-        List<Paragraph<Collection<String>>> paragraphs = codeArea.getParagraphs();
-        int length = 0;
-        for (int i = 0; i < line - 1; i++) {
-            length += paragraphs.get(i).length() + 1;
-        }
-        return length + column - 1;
+    private int getAbsolutePosition(int line, int column) {
+        return codeArea.getAbsolutePosition(line - 1, column) - indentationOffset(line - 1);
     }
 
-
-    /** Length in characters between the two positions. */
-    private int lengthBetween(int l1, int c1, int l2, int c2) {
-        int par1 = l1 - 1;
-        int par2 = l2 - 1;
-        if (l1 == l2) {
-            return c2 - c1 + 1;
-        } else if (l1 < l2) {
-            List<Paragraph<Collection<String>>> paragraphs = codeArea.getParagraphs();
-            int length = paragraphs.get(par1).length() - c1 + 1;
-            for (int i = par1 + 1; i < par2; i++) {
-                length += paragraphs.get(i).length() + 1;
-            }
-            return length + c2 + 1;
-        } else {
-            throw new IllegalArgumentException();
+    // CodeArea counts a tab as 1 column width but displays it as 8 columns width. 
+    // PMD counts it correctly as 8 columns, so we must offset the position
+    private int indentationOffset(int paragraph) {
+        Paragraph<Collection<String>, String, Collection<String>> p = codeArea.getParagraph(paragraph);
+        Matcher m = TAB_INDENT.matcher(p.getText());
+        if (m.matches()) {
+            return m.group(1).length() * 7;
         }
+        return 0;
     }
 
 
@@ -146,8 +137,8 @@ class StyleLayer {
     @Override
     public String toString() {
         return "StyleLayer{"
-            + "id='" + id + '\''
-            + ", spans=\"" + spans.size() + " spans\""
-            + '}';
+               + "id='" + id + '\''
+               + ", spans=\"" + spans.size() + " spans\""
+               + '}';
     }
 }

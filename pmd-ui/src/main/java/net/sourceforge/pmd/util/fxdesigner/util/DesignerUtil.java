@@ -6,20 +6,17 @@ package net.sourceforge.pmd.util.fxdesigner.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.fxmisc.richtext.CodeArea;
-import org.fxmisc.richtext.Paragraph;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
+
 
 /**
  * @author Clément Fournier
@@ -77,16 +74,5 @@ public class DesignerUtil {
             supportedLanguageVersions = languageVersions.toArray(new LanguageVersion[languageVersions.size()]);
         }
         return supportedLanguageVersions;
-    }
-
-
-    /** Length in characters before the specified position. */
-    public static int lengthUntil(int line, int column, CodeArea codeArea) {
-        List<Paragraph<Collection<String>>> paragraphs = codeArea.getParagraphs();
-        int length = 0;
-        for (int i = 0; i < line - 1; i++) {
-            length += paragraphs.get(i).length() + 1;
-        }
-        return length + column - 1;
     }
 }

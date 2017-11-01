@@ -14,16 +14,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.fxmisc.richtext.CodeArea;
-import org.fxmisc.richtext.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpans;
 import org.reactfx.Subscription;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+
 
 /**
  * Code area that can handle syntax highlighting as well as regular node highlighting. Regular node highlighting is
@@ -87,17 +87,6 @@ public class CustomCodeArea extends CodeArea {
 
 
     /**
-     * Positions the caret at the specified coordinates.
-     *
-     * @param line   Line
-     * @param column Column
-     */
-    public void positionCaret(int line, int column) {
-        this.positionCaret(DesignerUtil.lengthUntil(line, column, this));
-    }
-
-
-    /**
      * Replaces the styling of the primary layer by styling the node's position with the given css classes.
      *
      * @param node       The node to style
@@ -120,8 +109,8 @@ public class CustomCodeArea extends CodeArea {
      */
     public boolean isInRange(Node n) {
         return n.getEndLine() <= getParagraphs().size()
-            && (n.getEndLine() != getParagraphs().size()
-            || n.getEndColumn() <= getParagraph(n.getEndLine() - 1).length());
+               && (n.getEndLine() != getParagraphs().size()
+                   || n.getEndColumn() <= getParagraph(n.getEndLine() - 1).length());
     }
 
 
@@ -143,6 +132,11 @@ public class CustomCodeArea extends CodeArea {
     }
 
 
+    public boolean isSyntaxHighlightingEnabled() {
+        return isSyntaxHighlightingEnabled.get();
+    }
+
+
     /**
      * Enables syntax highlighting if disabled and sets it to use the given highlighter.
      *
@@ -161,11 +155,6 @@ public class CustomCodeArea extends CodeArea {
         } catch (Exception e) {
             // nevermind
         }
-    }
-
-
-    public boolean isSyntaxHighlightingEnabled() {
-        return isSyntaxHighlightingEnabled.get();
     }
 
 

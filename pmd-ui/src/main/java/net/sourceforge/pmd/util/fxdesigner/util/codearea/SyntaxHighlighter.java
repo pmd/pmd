@@ -6,7 +6,7 @@ package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
 import java.util.Collection;
 
-import org.fxmisc.richtext.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpans;
 
 /**
  * Language-specific engine for syntax highlighting.
