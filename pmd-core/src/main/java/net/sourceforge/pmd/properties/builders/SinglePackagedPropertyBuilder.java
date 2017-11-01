@@ -12,9 +12,14 @@ import java.util.Arrays;
  * @since 6.0.0
  */
 public abstract class SinglePackagedPropertyBuilder<V, T extends SinglePackagedPropertyBuilder<V, T>>
-        extends SingleValuePropertyBuilder<V, T> {
+    extends SingleValuePropertyBuilder<V, T> {
 
     protected String[] legalPackageNames;
+
+
+    public SinglePackagedPropertyBuilder(String name) {
+        super(name);
+    }
 
 
     @SuppressWarnings("unchecked")

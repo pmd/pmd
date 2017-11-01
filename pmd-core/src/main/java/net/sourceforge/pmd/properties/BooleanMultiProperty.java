@@ -69,20 +69,21 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
     static PropertyDescriptorBuilderConversionWrapper.MultiValue<Boolean, BooleanMultiPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.MultiValue<Boolean, BooleanMultiPBuilder>(Boolean.class, ValueParserConstants.BOOLEAN_PARSER) {
             @Override
-            protected BooleanMultiPBuilder newBuilder() {
-                return new BooleanMultiPBuilder();
+            protected BooleanMultiPBuilder newBuilder(String name) {
+                return new BooleanMultiPBuilder(name);
             }
         };
     }
 
 
     public static BooleanMultiPBuilder builder(String name) {
-        return new BooleanMultiPBuilder().name(name);
+        return new BooleanMultiPBuilder(name);
     }
 
 
     public static final class BooleanMultiPBuilder extends MultiValuePropertyBuilder<Boolean, BooleanMultiPBuilder> {
-        private BooleanMultiPBuilder() {
+        private BooleanMultiPBuilder(String name) {
+            super(name);
         }
 
 

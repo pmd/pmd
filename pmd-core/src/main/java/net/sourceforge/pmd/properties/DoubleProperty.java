@@ -91,20 +91,21 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
     static PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Double, DoublePBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Double, DoublePBuilder>(Double.class, ValueParserConstants.DOUBLE_PARSER) {
             @Override
-            protected DoublePBuilder newBuilder() {
-                return new DoublePBuilder();
+            protected DoublePBuilder newBuilder(String name) {
+                return new DoublePBuilder(name);
             }
         };
     }
 
 
     public static DoublePBuilder builder(String name) {
-        return new DoublePBuilder().name(name);
+        return new DoublePBuilder(name);
     }
 
 
     public static final class DoublePBuilder extends SingleNumericPropertyBuilder<Double, DoublePBuilder> {
-        private DoublePBuilder() {
+        private DoublePBuilder(String name) {
+            super(name);
         }
 
 

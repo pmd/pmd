@@ -30,7 +30,7 @@ import net.sourceforge.pmd.properties.ValueParserConstants;
  * @since 6.0.0
  */
 public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends PropertyDescriptorBuilder<E, T>>
-        implements PropertyDescriptorExternalBuilder<E> {
+    implements PropertyDescriptorExternalBuilder<E> {
 
     private final Class<?> valueType;
 
@@ -42,7 +42,6 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
 
     /** Populates the builder with extracted fields. To be overridden. */
     protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
-        builder.name(fields.get(PropertyDescriptorField.NAME));
         builder.desc(fields.get(PropertyDescriptorField.DESCRIPTION));
         if (fields.containsKey(PropertyDescriptorField.UI_ORDER)) {
             builder.uiOrder(Float.parseFloat(fields.get(PropertyDescriptorField.UI_ORDER)));
@@ -58,12 +57,12 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
     }
 
 
-    protected abstract T newBuilder(); // FUTURE 1.8: use a Supplier constructor parameter
+    protected abstract T newBuilder(String name); // FUTURE 1.8: use a Supplier constructor parameter
 
 
     @Override
     public PropertyDescriptor<E> build(Map<PropertyDescriptorField, String> fields) {
-        T builder = newBuilder();
+        T builder = newBuilder(fields.get(PropertyDescriptorField.NAME));
         populate(builder, fields);
         builder.isDefinedInXML = true;
         return builder.build();
@@ -100,7 +99,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
      * @param <T> Concrete type of the underlying builder
      */
     public abstract static class MultiValue<V, T extends MultiValuePropertyBuilder<V, T>>
-            extends PropertyDescriptorBuilderConversionWrapper<List<V>, T> {
+        extends PropertyDescriptorBuilderConversionWrapper<List<V>, T> {
 
         protected final ValueParser<V> parser;
 
@@ -115,8 +114,8 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
         protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
             super.populate(builder, fields);
             char delim = delimiterIn(fields, builder.multiValueDelimiter);
-            builder.delim(delim).defalt(ValueParserConstants.multi(parser, delim)
-                                                            .valueOf(fields.get(PropertyDescriptorField.DEFAULT_VALUE)));
+            builder.delim(delim).defaultValues(ValueParserConstants.multi(parser, delim)
+                                                                   .valueOf(fields.get(PropertyDescriptorField.DEFAULT_VALUE)));
         }
 
 
@@ -133,7 +132,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
          * @param <T> Concrete type of the underlying builder
          */
         public abstract static class Numeric<V, T extends MultiNumericPropertyBuilder<V, T>>
-                extends MultiValue<V, T> {
+            extends MultiValue<V, T> {
 
             protected Numeric(Class<V> valueType, ValueParser<V> parser) {
                 super(valueType, parser);
@@ -143,8 +142,9 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
             @Override
             protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
                 super.populate(builder, fields);
-                builder.min(parser.valueOf(fields.get(PropertyDescriptorField.MIN)));
-                builder.max(parser.valueOf(fields.get(PropertyDescriptorField.MAX)));
+                V min = parser.valueOf(fields.get(PropertyDescriptorField.MIN));
+                V max = parser.valueOf(fields.get(PropertyDescriptorField.MAX));
+                builder.range(min, max);
             }
         }
 
@@ -156,7 +156,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
          * @param <T> Concrete type of the underlying builder
          */
         public abstract static class Packaged<V, T extends MultiPackagedPropertyBuilder<V, T>>
-                extends MultiValue<V, T> {
+            extends MultiValue<V, T> {
 
             protected Packaged(Class<V> valueType, ValueParser<V> parser) {
                 super(valueType, parser);
@@ -167,7 +167,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
             protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
                 super.populate(builder, fields);
                 builder.legalPackages(legalPackageNamesIn(fields, PropertyDescriptorBuilderConversionWrapper.delimiterIn(fields,
-                        MultiValuePropertyDescriptor.DEFAULT_DELIMITER)));
+                    MultiValuePropertyDescriptor.DEFAULT_DELIMITER)));
             }
         }
 
@@ -181,7 +181,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
      * @param <T> Concrete type of the underlying builder
      */
     public abstract static class SingleValue<E, T extends SingleValuePropertyBuilder<E, T>>
-            extends PropertyDescriptorBuilderConversionWrapper<E, T> {
+        extends PropertyDescriptorBuilderConversionWrapper<E, T> {
 
         protected final ValueParser<E> parser;
 
@@ -195,7 +195,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
         @Override
         protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
             super.populate(builder, fields);
-            builder.defalt(parser.valueOf(fields.get(PropertyDescriptorField.DEFAULT_VALUE)));
+            builder.defaultValue(parser.valueOf(fields.get(PropertyDescriptorField.DEFAULT_VALUE)));
         }
 
 
@@ -208,13 +208,13 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
         /**
          * For single-value numeric properties.
          *
-         * @param <E> Element type of the list
+         * @param <V> Element type of the list
          * @param <T> Concrete type of the underlying builder
          */
-        public abstract static class Numeric<E, T extends SingleNumericPropertyBuilder<E, T>>
-                extends SingleValue<E, T> {
+        public abstract static class Numeric<V, T extends SingleNumericPropertyBuilder<V, T>>
+            extends SingleValue<V, T> {
 
-            protected Numeric(Class<E> valueType, ValueParser<E> parser) {
+            protected Numeric(Class<V> valueType, ValueParser<V> parser) {
                 super(valueType, parser);
             }
 
@@ -222,8 +222,9 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
             @Override
             protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
                 super.populate(builder, fields);
-                builder.min(parser.valueOf(fields.get(PropertyDescriptorField.MIN)));
-                builder.max(parser.valueOf(fields.get(PropertyDescriptorField.MAX)));
+                V min = parser.valueOf(fields.get(PropertyDescriptorField.MIN));
+                V max = parser.valueOf(fields.get(PropertyDescriptorField.MAX));
+                builder.range(min, max);
             }
         }
 
@@ -235,7 +236,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
          * @param <T> Concrete type of the underlying builder
          */
         public abstract static class Packaged<E, T extends SinglePackagedPropertyBuilder<E, T>>
-                extends SingleValue<E, T> {
+            extends SingleValue<E, T> {
 
             protected Packaged(Class<E> valueType, ValueParser<E> parser) {
                 super(valueType, parser);
@@ -246,7 +247,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
             protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
                 super.populate(builder, fields);
                 builder.legalPackageNames(legalPackageNamesIn(fields, PropertyDescriptorBuilderConversionWrapper.delimiterIn(fields,
-                        MultiValuePropertyDescriptor.DEFAULT_DELIMITER)));
+                    MultiValuePropertyDescriptor.DEFAULT_DELIMITER)));
             }
         }
 

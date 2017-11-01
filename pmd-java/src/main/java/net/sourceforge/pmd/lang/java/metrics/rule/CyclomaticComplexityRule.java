@@ -32,12 +32,12 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     private static final IntegerProperty CLASS_LEVEL_DESCRIPTOR
             = IntegerProperty.builder("classReportLevel")
                              .desc("Total class complexity reporting threshold")
-                             .min(1).max(600).defalt(80).uiOrder(1.0f).build();
+                             .range(1, 600).defaultValue(80).uiOrder(1.0f).build();
 
     private static final IntegerProperty METHOD_LEVEL_DESCRIPTOR
             = IntegerProperty.builder("methodReportLevel")
                              .desc("Cyclomatic complexity reporting threshold")
-                             .min(1).max(50).defalt(10).uiOrder(1.0f).build();
+                             .range(1, 50).defaultValue(10).uiOrder(1.0f).build();
 
     private static final Map<String, CycloOption> OPTION_MAP;
 
@@ -53,7 +53,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
             = EnumeratedMultiProperty.builder("cycloOptions", CycloOption.class)
                                      .desc("Choose options for the computation of Cyclo")
                                      .mappings(OPTION_MAP)
-                                     .defalt(Collections.<CycloOption>emptyList())
+                                     .defaultValues(Collections.<CycloOption>emptyList())
                                      .uiOrder(3.0f).build();
 
     private int methodReportLevel;

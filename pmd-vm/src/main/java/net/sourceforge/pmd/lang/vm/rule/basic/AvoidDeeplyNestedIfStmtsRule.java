@@ -19,7 +19,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractVmRule {
     private static final IntegerProperty PROBLEM_DEPTH_DESCRIPTOR 
             = IntegerProperty.builder("problemDepth")
                              .desc("The if statement depth reporting threshold")
-                             .min(1).max(25).defalt(3).uiOrder(1.0f).build();
+                             .range(1, 25).defaultValue(3).uiOrder(1.0f).build();
 
     public AvoidDeeplyNestedIfStmtsRule() {
         definePropertyDescriptor(PROBLEM_DEPTH_DESCRIPTOR);

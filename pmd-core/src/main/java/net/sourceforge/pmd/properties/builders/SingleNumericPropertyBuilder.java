@@ -9,37 +9,31 @@ package net.sourceforge.pmd.properties.builders;
  * @since 6.0.0
  */
 public abstract class SingleNumericPropertyBuilder<V, T extends SingleNumericPropertyBuilder<V, T>>
-        extends SingleValuePropertyBuilder<V, T> {
+    extends SingleValuePropertyBuilder<V, T> {
 
 
     protected V lowerLimit;
     protected V upperLimit;
 
 
-    /**
-     * Specify a minimum value.
-     *
-     * @param val Value
-     *
-     * @return The same builder
-     */
-    @SuppressWarnings("unchecked")
-    public T min(V val) {
-        this.lowerLimit = val;
-        return (T) this;
+    public SingleNumericPropertyBuilder(String name) {
+        super(name);
     }
 
 
     /**
-     * Specify a maximum value.
+     * Specify the range of acceptable values.
      *
-     * @param val Value
+     * @param min Lower bound
+     * @param max Upper bound
      *
      * @return The same builder
      */
     @SuppressWarnings("unchecked")
-    public T max(V val) {
-        this.upperLimit = val;
+    public T range(V min, V max) {
+        this.lowerLimit = min;
+        this.upperLimit = max;
         return (T) this;
     }
+    
 }

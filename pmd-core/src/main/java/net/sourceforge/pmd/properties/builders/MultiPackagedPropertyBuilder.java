@@ -17,6 +17,11 @@ public abstract class MultiPackagedPropertyBuilder<V, T extends MultiPackagedPro
     protected String[] legalPackageNames;
 
 
+    protected MultiPackagedPropertyBuilder(String name) {
+        super(name);
+    }
+
+
     @SuppressWarnings("unchecked")
     public T legalPackages(String[] packs) {
         if (packs != null) {

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.properties.builders;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
@@ -16,10 +17,15 @@ import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
  * @param <T> Concrete type of the underlying builder
  */
 public abstract class MultiValuePropertyBuilder<V, T extends MultiValuePropertyBuilder<V, T>>
-        extends PropertyDescriptorBuilder<List<V>, T> {
+    extends PropertyDescriptorBuilder<List<V>, T> {
 
     protected List<V> defaultValues;
     protected char multiValueDelimiter = MultiValuePropertyDescriptor.DEFAULT_DELIMITER;
+
+
+    protected MultiValuePropertyBuilder(String name) {
+        super(name);
+    }
 
 
     /**
@@ -30,8 +36,22 @@ public abstract class MultiValuePropertyBuilder<V, T extends MultiValuePropertyB
      * @return The same builder
      */
     @SuppressWarnings("unchecked")
-    public T defalt(List<V> val) {
+    public T defaultValues(List<V> val) {
         this.defaultValues = val;
+        return (T) this;
+    }
+
+
+    /**
+     * Specify default values.
+     *
+     * @param val List of values
+     *
+     * @return The same builder
+     */
+    @SuppressWarnings("unchecked")
+    public T defaultValues(V... val) {
+        this.defaultValues = Arrays.asList(val);
         return (T) this;
     }
 

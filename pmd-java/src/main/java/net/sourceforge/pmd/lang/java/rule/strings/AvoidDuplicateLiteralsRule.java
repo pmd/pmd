@@ -36,7 +36,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
     public static final IntegerProperty THRESHOLD_DESCRIPTOR 
             = IntegerProperty.builder("maxDuplicateLiterals")
                              .desc("Max duplicate literals")
-                             .min(1).max(20).defalt(4).uiOrder(1.0f).build();
+                             .range(1, 20).defaultValue(4).uiOrder(1.0f).build();
 
     public static final IntegerProperty MINIMUM_LENGTH_DESCRIPTOR = new IntegerProperty("minimumLength",
             "Minimum string length to check", 1, Integer.MAX_VALUE, 3, 1.5f);

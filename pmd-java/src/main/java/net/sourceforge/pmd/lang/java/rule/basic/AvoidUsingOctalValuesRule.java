@@ -18,7 +18,7 @@ public class AvoidUsingOctalValuesRule extends AbstractJavaRule {
 
     private static final BooleanProperty STRICT_METHODS_DESCRIPTOR = BooleanProperty.builder("strict")
                                                                                     .desc("Detect violations between 00 and 07")
-                                                                                    .defalt(false)
+                                                                                    .defaultValue(false)
                                                                                     .uiOrder(1.0f).build();
 
 

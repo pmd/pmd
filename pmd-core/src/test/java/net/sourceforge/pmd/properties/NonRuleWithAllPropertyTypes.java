@@ -34,7 +34,7 @@ public class NonRuleWithAllPropertyTypes extends AbstractRule {
     public static final StringProperty SINGLE_STR = new StringProperty("singleStr", "String value", "hello world", 3.0f);
     public static final StringMultiProperty MULTI_STR = new StringMultiProperty("multiStr", "Multiple string values",
                                                                                 new String[] {"hello", "world"}, 5.0f, '|');
-    public static final IntegerProperty SINGLE_INT = IntegerProperty.builder("singleInt").desc("Single integer value").min(1).max(10).defalt(8).uiOrder(3.0f).build();
+    public static final IntegerProperty SINGLE_INT = IntegerProperty.builder("singleInt").desc("Single integer value").range(1, 10).defaultValue(8).uiOrder(3.0f).build();
     public static final IntegerMultiProperty MULTI_INT = new IntegerMultiProperty("multiInt", "Multiple integer values",
                                                                                   0, 10, new Integer[] {1, 2, 3, 4}, 5.0f);
     public static final LongProperty SINGLE_LONG = new LongProperty("singleLong", "Single long value", 1L, 10L, 8L,

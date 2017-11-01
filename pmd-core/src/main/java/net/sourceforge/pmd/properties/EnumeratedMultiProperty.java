@@ -24,7 +24,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @version Refactored June 2017 (6.0.0)
  */
 public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E>
-        implements EnumeratedPropertyDescriptor<E, List<E>> {
+    implements EnumeratedPropertyDescriptor<E, List<E>> {
 
 
     private final EnumeratedPropertyModule<E> module;
@@ -43,13 +43,13 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
      * @param theUIOrder     UI order
      *
      * @deprecated Use {@link #EnumeratedMultiProperty(String, String, Map, List, Class, float)}. Will be removed in
-     *         7.0.0
+     *     7.0.0
      */
     @Deprecated
     public EnumeratedMultiProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
                                    int[] choiceIndices, Class<E> valueType, float theUIOrder) {
         this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices),
-                selection(choiceIndices, theChoices), valueType, theUIOrder, false);
+            selection(choiceIndices, theChoices), valueType, theUIOrder, false);
     }
 
 
@@ -65,13 +65,13 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
      * @param theUIOrder     UI order
      *
      * @deprecated Use {@link #EnumeratedMultiProperty(String, String, Map, List, Class, float)}. Will be removed in
-     *         7.0.0
+     *     7.0.0
      */
     @Deprecated
     public EnumeratedMultiProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
                                    int[] choiceIndices, float theUIOrder) {
         this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices),
-                selection(choiceIndices, theChoices), null, theUIOrder, false);
+            selection(choiceIndices, theChoices), null, theUIOrder, false);
     }
 
 
@@ -157,7 +157,7 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
 
 
     public static <E> EnumMultiPBuilder<E> builder(String name, Class<E> type) {
-        return new EnumMultiPBuilder<>(type).name(name);
+        return new EnumMultiPBuilder<>(name, type);
     }
 
 
@@ -167,11 +167,19 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
         private Map<String, E> mappings;
 
 
-        private EnumMultiPBuilder(Class<E> type) {
+        private EnumMultiPBuilder(String name, Class<E> type) {
+            super(name);
             this.valueType = type;
         }
 
 
+        /**
+         * Sets the key-value mappings.
+         *
+         * @param map A map of label to value
+         *
+         * @return The same builder
+         */
         public EnumMultiPBuilder<E> mappings(Map<String, E> map) {
             this.mappings = map;
             return this;

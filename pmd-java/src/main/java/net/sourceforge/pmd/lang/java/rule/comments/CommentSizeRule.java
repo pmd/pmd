@@ -24,12 +24,12 @@ public class CommentSizeRule extends AbstractCommentRule {
     public static final IntegerProperty MAX_LINES
             = IntegerProperty.builder("maxLines")
                              .desc("Maximum lines")
-                             .min(2).max(200).defalt(6).uiOrder(2.0f).build();
+                             .range(2, 200).defaultValue(6).uiOrder(2.0f).build();
     
     public static final IntegerProperty MAX_LINE_LENGTH
             = IntegerProperty.builder("maxLineLength")
                              .desc("Maximum line length")
-                             .min(1).max(200).defalt(80).uiOrder(2.0f).build();
+                             .range(1, 200).defaultValue(80).uiOrder(2.0f).build();
 
     private static final String CR = "\n";
 

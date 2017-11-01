@@ -31,7 +31,7 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
 
     /** Master constructor. */
     private StringProperty(String theName, String theDescription, String defaultValue, float theUIOrder, boolean
-            isDefinedExternally) {
+        isDefinedExternally) {
         super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);
     }
 
@@ -51,20 +51,21 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
     static PropertyDescriptorBuilderConversionWrapper.SingleValue<String, StringPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.SingleValue<String, StringPBuilder>(String.class, ValueParserConstants.STRING_PARSER) {
             @Override
-            protected StringPBuilder newBuilder() {
-                return new StringPBuilder();
+            protected StringPBuilder newBuilder(String name) {
+                return new StringPBuilder(name);
             }
         };
     }
 
 
     public static StringPBuilder builder(String name) {
-        return new StringPBuilder().name(name);
+        return new StringPBuilder(name);
     }
 
 
     public static final class StringPBuilder extends SingleValuePropertyBuilder<String, StringPBuilder> {
-        private StringPBuilder() {
+        private StringPBuilder(String name) {
+            super(name);
         }
 
 

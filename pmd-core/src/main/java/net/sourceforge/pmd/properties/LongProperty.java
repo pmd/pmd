@@ -78,20 +78,21 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
     static PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Long, LongPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Long, LongPBuilder>(Long.class, ValueParserConstants.LONG_PARSER) {
             @Override
-            protected LongPBuilder newBuilder() {
-                return new LongPBuilder();
+            protected LongPBuilder newBuilder(String name) {
+                return new LongPBuilder(name);
             }
         };
     }
 
 
     public static LongPBuilder builder(String name) {
-        return new LongPBuilder().name(name);
+        return new LongPBuilder(name);
     }
 
 
     public static final class LongPBuilder extends SingleNumericPropertyBuilder<Long, LongPBuilder> {
-        private LongPBuilder() {
+        private LongPBuilder(String name) {
+            super(name);
         }
 
 

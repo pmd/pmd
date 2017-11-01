@@ -58,20 +58,21 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
     static PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Integer, IntegerPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Integer, IntegerPBuilder>(Integer.class, ValueParserConstants.INTEGER_PARSER) {
             @Override
-            protected IntegerPBuilder newBuilder() {
-                return new IntegerPBuilder();
+            protected IntegerPBuilder newBuilder(String name) {
+                return new IntegerPBuilder(name);
             }
         };
     }
 
 
     public static IntegerPBuilder builder(String name) {
-        return new IntegerPBuilder().name(name);
+        return new IntegerPBuilder(name);
     }
 
 
     public static final class IntegerPBuilder extends SingleNumericPropertyBuilder<Integer, IntegerPBuilder> {
-        private IntegerPBuilder() {
+        private IntegerPBuilder(String name) {
+            super(name);
         }
 
 

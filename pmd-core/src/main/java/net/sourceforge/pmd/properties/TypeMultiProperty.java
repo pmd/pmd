@@ -43,7 +43,7 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
     private TypeMultiProperty(String theName, String theDescription, List<Class> theTypeDefaults,
                               String[] legalPackageNames, float theUIOrder, boolean isDefinedExternally) {
         super(theName, theDescription, theTypeDefaults, theUIOrder, isDefinedExternally,
-                new TypePropertyModule(legalPackageNames, theTypeDefaults));
+            new TypePropertyModule(legalPackageNames, theTypeDefaults));
     }
 
 
@@ -61,8 +61,8 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
     public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults,
                              String[] legalPackageNames, float theUIOrder) {
         this(theName, theDescription, typesFrom(theTypeDefaults),
-                legalPackageNames,
-                theUIOrder, false);
+            legalPackageNames,
+            theUIOrder, false);
 
     }
 
@@ -99,20 +99,22 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
     public static PropertyDescriptorBuilderConversionWrapper.MultiValue.Packaged<Class, TypeMultiPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.MultiValue.Packaged<Class, TypeMultiPBuilder>(Class.class, ValueParserConstants.CLASS_PARSER) {
             @Override
-            protected TypeMultiPBuilder newBuilder() {
-                return new TypeMultiPBuilder();
+            protected TypeMultiPBuilder newBuilder(String name) {
+                return new TypeMultiPBuilder(name);
             }
         };
     }
 
 
     public static TypeMultiPBuilder builder(String name) {
-        return new TypeMultiPBuilder().name(name);
+        return new TypeMultiPBuilder(name);
     }
 
 
     public static final class TypeMultiPBuilder extends MultiPackagedPropertyBuilder<Class, TypeMultiPBuilder> {
-        private TypeMultiPBuilder() {
+
+        private TypeMultiPBuilder(String name) {
+            super(name);
         }
 
 

@@ -14,42 +14,31 @@ import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
  * @param <T> Concrete type of the underlying builder
  */
 public abstract class MultiNumericPropertyBuilder<V, T extends MultiNumericPropertyBuilder<V, T>>
-        extends MultiValuePropertyBuilder<V, T> {
+    extends MultiValuePropertyBuilder<V, T> {
 
 
     protected V lowerLimit;
     protected V upperLimit;
 
 
-    protected MultiNumericPropertyBuilder() {
+    protected MultiNumericPropertyBuilder(String name) {
+        super(name);
         multiValueDelimiter = MultiValuePropertyDescriptor.DEFAULT_NUMERIC_DELIMITER;
     }
 
 
     /**
-     * Specify a minimum value.
+     * Specify the range of acceptable values.
      *
-     * @param val Value
-     *
-     * @return The same builder
-     */
-    @SuppressWarnings("unchecked")
-    public T min(V val) {
-        this.lowerLimit = val;
-        return (T) this;
-    }
-
-
-    /**
-     * Specify a maximum value.
-     *
-     * @param val Value
+     * @param min Lower bound
+     * @param max Upper bound
      *
      * @return The same builder
      */
     @SuppressWarnings("unchecked")
-    public T max(V val) {
-        this.upperLimit = val;
+    public T range(V min, V max) {
+        this.lowerLimit = min;
+        this.upperLimit = max;
         return (T) this;
     }
 

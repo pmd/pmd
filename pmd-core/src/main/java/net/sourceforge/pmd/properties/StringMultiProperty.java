@@ -140,20 +140,21 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
     static PropertyDescriptorBuilderConversionWrapper.MultiValue<String, StringMultiPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.MultiValue<String, StringMultiPBuilder>(String.class, ValueParserConstants.STRING_PARSER) {
             @Override
-            protected StringMultiPBuilder newBuilder() {
-                return new StringMultiPBuilder();
+            protected StringMultiPBuilder newBuilder(String name) {
+                return new StringMultiPBuilder(name);
             }
         };
     }
 
 
     public static StringMultiPBuilder builder(String name) {
-        return new StringMultiPBuilder().name(name);
+        return new StringMultiPBuilder(name);
     }
 
 
     public static final class StringMultiPBuilder extends MultiValuePropertyBuilder<String, StringMultiPBuilder> {
-        private StringMultiPBuilder() {
+        private StringMultiPBuilder(String name) {
+            super(name);
         }
 
 

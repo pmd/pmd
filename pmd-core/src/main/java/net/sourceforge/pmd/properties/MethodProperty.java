@@ -46,7 +46,7 @@ public final class MethodProperty extends AbstractPackagedProperty<Method> {
     private MethodProperty(String theName, String theDescription, Method theDefault, String[] legalPackageNames,
                            float theUIOrder, boolean isDefinedExternally) {
         super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally,
-                new MethodPropertyModule(legalPackageNames, Collections.singletonList(theDefault)));
+            new MethodPropertyModule(legalPackageNames, Collections.singletonList(theDefault)));
     }
 
 
@@ -64,7 +64,7 @@ public final class MethodProperty extends AbstractPackagedProperty<Method> {
     public MethodProperty(String theName, String theDescription, String defaultMethodStr, String[] legalPackageNames,
                           float theUIOrder) {
         this(theName, theDescription, METHOD_PARSER.valueOf(defaultMethodStr),
-                legalPackageNames, theUIOrder, false);
+            legalPackageNames, theUIOrder, false);
     }
 
 
@@ -89,20 +89,21 @@ public final class MethodProperty extends AbstractPackagedProperty<Method> {
     static PropertyDescriptorBuilderConversionWrapper.SingleValue.Packaged<Method, MethodPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.SingleValue.Packaged<Method, MethodPBuilder>(Method.class, ValueParserConstants.METHOD_PARSER) {
             @Override
-            protected MethodPBuilder newBuilder() {
-                return new MethodPBuilder();
+            protected MethodPBuilder newBuilder(String name) {
+                return new MethodPBuilder(name);
             }
         };
     }
 
 
     public static MethodPBuilder builder(String name) {
-        return new MethodPBuilder().name(name);
+        return new MethodPBuilder(name);
     }
 
 
     public static final class MethodPBuilder extends SinglePackagedPropertyBuilder<Method, MethodPBuilder> {
-        private MethodPBuilder() {
+        private MethodPBuilder(String name) {
+            super(name);
         }
 
 

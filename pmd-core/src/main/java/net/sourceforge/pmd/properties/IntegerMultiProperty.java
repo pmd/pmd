@@ -80,20 +80,21 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
     static PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Integer, IntegerMultiPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Integer, IntegerMultiPBuilder>(Integer.class, ValueParserConstants.INTEGER_PARSER) {
             @Override
-            protected IntegerMultiPBuilder newBuilder() {
-                return new IntegerMultiPBuilder();
+            protected IntegerMultiPBuilder newBuilder(String name) {
+                return new IntegerMultiPBuilder(name);
             }
         };
     }
 
 
     public static IntegerMultiPBuilder builder(String name) {
-        return new IntegerMultiPBuilder().name(name);
+        return new IntegerMultiPBuilder(name);
     }
 
 
     public static final class IntegerMultiPBuilder extends MultiNumericPropertyBuilder<Integer, IntegerMultiPBuilder> {
-        private IntegerMultiPBuilder() {
+        private IntegerMultiPBuilder(String name) {
+            super(name);
         }
 
 

@@ -77,20 +77,21 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
     static PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Double, DoubleMultiPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Double, DoubleMultiPBuilder>(Double.class, ValueParserConstants.DOUBLE_PARSER) {
             @Override
-            protected DoubleMultiPBuilder newBuilder() {
-                return new DoubleMultiPBuilder();
+            protected DoubleMultiPBuilder newBuilder(String name) {
+                return new DoubleMultiPBuilder(name);
             }
         };
     }
 
 
     public static DoubleMultiPBuilder builder(String name) {
-        return new DoubleMultiPBuilder().name(name);
+        return new DoubleMultiPBuilder(name);
     }
 
 
     public static final class DoubleMultiPBuilder extends MultiNumericPropertyBuilder<Double, DoubleMultiPBuilder> {
-        private DoubleMultiPBuilder() {
+        private DoubleMultiPBuilder(String name) {
+            super(name);
         }
 
 

@@ -78,25 +78,30 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
     static PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Long, LongMultiPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Long, LongMultiPBuilder>(Long.class, ValueParserConstants.LONG_PARSER) {
             @Override
-            protected LongMultiPBuilder newBuilder() {
-                return new LongMultiPBuilder();
+            protected LongMultiPBuilder newBuilder(String name) {
+                return new LongMultiPBuilder(name);
             }
         };
     }
 
 
     public static LongMultiPBuilder builder(String name) {
-        return new LongMultiPBuilder().name(name);
+        return new LongMultiPBuilder(name);
     }
 
 
     private static final class LongMultiPBuilder
-            extends MultiNumericPropertyBuilder<Long, LongMultiPBuilder> {
+        extends MultiNumericPropertyBuilder<Long, LongMultiPBuilder> {
+
+        protected LongMultiPBuilder(String name) {
+            super(name);
+        }
+
 
         @Override
         public LongMultiProperty build() {
             return new LongMultiProperty(name, description, lowerLimit, upperLimit,
-                    defaultValues, uiOrder, isDefinedInXML);
+                defaultValues, uiOrder, isDefinedInXML);
         }
     }
 

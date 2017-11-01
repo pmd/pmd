@@ -42,7 +42,7 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
     private TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames,
                          float theUIOrder, boolean isDefinedExternally) {
         super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally,
-                new TypePropertyModule(legalPackageNames, Collections.<Class>singletonList(theDefault)));
+            new TypePropertyModule(legalPackageNames, Collections.<Class>singletonList(theDefault)));
     }
 
 
@@ -82,20 +82,21 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
     static PropertyDescriptorBuilderConversionWrapper.SingleValue.Packaged<Class, TypePBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.SingleValue.Packaged<Class, TypePBuilder>(Class.class, ValueParserConstants.CLASS_PARSER) {
             @Override
-            protected TypePBuilder newBuilder() {
-                return new TypePBuilder();
+            protected TypePBuilder newBuilder(String name) {
+                return new TypePBuilder(name);
             }
         };
     }
 
 
     public static TypePBuilder builder(String name) {
-        return new TypePBuilder().name(name);
+        return new TypePBuilder(name);
     }
 
 
     public static final class TypePBuilder extends SinglePackagedPropertyBuilder<Class, TypePBuilder> {
-        private TypePBuilder() {
+        private TypePBuilder(String name) {
+            super(name);
         }
 
 

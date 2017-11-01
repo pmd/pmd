@@ -78,20 +78,21 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
     static PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Float, FloatMultiPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Float, FloatMultiPBuilder>(Float.class, ValueParserConstants.FLOAT_PARSER) {
             @Override
-            protected FloatMultiPBuilder newBuilder() {
-                return new FloatMultiPBuilder();
+            protected FloatMultiPBuilder newBuilder(String name) {
+                return new FloatMultiPBuilder(name);
             }
         };
     }
 
 
     public static FloatMultiPBuilder builder(String name) {
-        return new FloatMultiPBuilder().name(name);
+        return new FloatMultiPBuilder(name);
     }
 
 
     public static final class FloatMultiPBuilder extends MultiNumericPropertyBuilder<Float, FloatMultiPBuilder> {
-        private FloatMultiPBuilder() {
+        private FloatMultiPBuilder(String name) {
+            super(name);
         }
 
 

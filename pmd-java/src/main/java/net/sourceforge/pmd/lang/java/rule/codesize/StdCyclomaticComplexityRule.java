@@ -42,7 +42,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
     public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR 
             = IntegerProperty.builder("reportLevel")
                              .desc("Cyclomatic Complexity reporting threshold")
-                             .min(1).max(30).defalt(10).uiOrder(1.0f).build();
+                             .range(1, 30).defaultValue(10).uiOrder(1.0f).build();
 
     public static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
             "showClassesComplexity", "Add class average violations to the report", true, 2.0f);

@@ -55,20 +55,21 @@ public final class FileProperty extends AbstractSingleValueProperty<File> {
     static PropertyDescriptorBuilderConversionWrapper.SingleValue<File, FilePBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.SingleValue<File, FilePBuilder>(File.class, ValueParserConstants.FILE_PARSER) {
             @Override
-            protected FilePBuilder newBuilder() {
-                return new FilePBuilder();
+            protected FilePBuilder newBuilder(String name) {
+                return new FilePBuilder(name);
             }
         };
     }
 
 
     public static FilePBuilder builder(String name) {
-        return new FilePBuilder().name(name);
+        return new FilePBuilder(name);
     }
 
 
     public static final class FilePBuilder extends SinglePackagedPropertyBuilder<File, FilePBuilder> {
-        private FilePBuilder() {
+        private FilePBuilder(String name) {
+            super(name);
         }
 
 

@@ -67,21 +67,21 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
     static PropertyDescriptorBuilderConversionWrapper.SingleValue<Boolean, BooleanPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.SingleValue<Boolean, BooleanPBuilder>(Boolean.class, ValueParserConstants.BOOLEAN_PARSER) {
             @Override
-            protected BooleanPBuilder newBuilder() {
-                return new BooleanPBuilder();
+            protected BooleanPBuilder newBuilder(String name) {
+                return new BooleanPBuilder(name);
             }
         };
     }
 
 
     public static BooleanPBuilder builder(String name) {
-        return new BooleanPBuilder().name(name);
+        return new BooleanPBuilder(name);
     }
 
 
     public static final class BooleanPBuilder extends SingleValuePropertyBuilder<Boolean, BooleanPBuilder> {
-        private BooleanPBuilder() {
-
+        private BooleanPBuilder(String name) {
+            super(name);
         }
 
 

@@ -81,20 +81,21 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
     static PropertyDescriptorBuilderConversionWrapper.SingleValue<Character, CharacterPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.SingleValue<Character, CharacterPBuilder>(Character.class, ValueParserConstants.CHARACTER_PARSER) {
             @Override
-            protected CharacterPBuilder newBuilder() {
-                return new CharacterPBuilder();
+            protected CharacterPBuilder newBuilder(String name) {
+                return new CharacterPBuilder(name);
             }
         };
     }
 
 
     public static CharacterPBuilder builder(String name) {
-        return new CharacterPBuilder().name(name);
+        return new CharacterPBuilder(name);
     }
 
 
     public static final class CharacterPBuilder extends SingleValuePropertyBuilder<Character, CharacterPBuilder> {
-        private CharacterPBuilder() {
+        private CharacterPBuilder(String name) {
+            super(name);
         }
 
 

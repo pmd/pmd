@@ -63,7 +63,7 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
     private MethodMultiProperty(String theName, String theDescription, List<Method> theDefaults,
                                 String[] legalPackageNames, float theUIOrder, boolean isDefinedExternally) {
         super(theName, theDescription, theDefaults, theUIOrder, isDefinedExternally,
-                new MethodPropertyModule(legalPackageNames, theDefaults));
+            new MethodPropertyModule(legalPackageNames, theDefaults));
     }
 
 
@@ -82,9 +82,9 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
     public MethodMultiProperty(String theName, String theDescription, String methodDefaults,
                                String[] legalPackageNames, float theUIOrder) {
         this(theName, theDescription,
-                methodsFrom(methodDefaults),
-                legalPackageNames, theUIOrder,
-                false);
+            methodsFrom(methodDefaults),
+            legalPackageNames, theUIOrder,
+            false);
     }
 
 
@@ -120,20 +120,21 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
     static PropertyDescriptorBuilderConversionWrapper.MultiValue.Packaged<Method, MethodMultiPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.MultiValue.Packaged<Method, MethodMultiPBuilder>(Method.class, ValueParserConstants.METHOD_PARSER) {
             @Override
-            protected MethodMultiPBuilder newBuilder() {
-                return new MethodMultiPBuilder();
+            protected MethodMultiPBuilder newBuilder(String name) {
+                return new MethodMultiPBuilder(name);
             }
         };
     }
 
 
     public static MethodMultiPBuilder builder(String name) {
-        return new MethodMultiPBuilder().name(name);
+        return new MethodMultiPBuilder(name);
     }
 
 
     public static final class MethodMultiPBuilder extends MultiPackagedPropertyBuilder<Method, MethodMultiPBuilder> {
-        private MethodMultiPBuilder() {
+        private MethodMultiPBuilder(String name) {
+            super(name);
         }
 
 

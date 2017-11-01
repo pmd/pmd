@@ -79,20 +79,21 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
     static PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Float, FloatPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Float, FloatPBuilder>(Float.class, ValueParserConstants.FLOAT_PARSER) {
             @Override
-            protected FloatPBuilder newBuilder() {
-                return new FloatPBuilder();
+            protected FloatPBuilder newBuilder(String name) {
+                return new FloatPBuilder(name);
             }
         };
     }
 
 
     public static FloatPBuilder builder(String name) {
-        return new FloatPBuilder().name(name);
+        return new FloatPBuilder(name);
     }
 
 
     public static final class FloatPBuilder extends SingleNumericPropertyBuilder<Float, FloatPBuilder> {
-        private FloatPBuilder() {
+        private FloatPBuilder(String name) {
+            super(name);
         }
 
 

@@ -97,20 +97,21 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
     static PropertyDescriptorBuilderConversionWrapper.MultiValue<Character, CharacterMultiPBuilder> extractor() {
         return new PropertyDescriptorBuilderConversionWrapper.MultiValue<Character, CharacterMultiPBuilder>(Character.class, ValueParserConstants.CHARACTER_PARSER) {
             @Override
-            protected CharacterMultiPBuilder newBuilder() {
-                return new CharacterMultiPBuilder();
+            protected CharacterMultiPBuilder newBuilder(String name) {
+                return new CharacterMultiPBuilder(name);
             }
         };
     }
 
 
     public static CharacterMultiPBuilder builder(String name) {
-        return new CharacterMultiPBuilder().name(name);
+        return new CharacterMultiPBuilder(name);
     }
 
 
     public static final class CharacterMultiPBuilder extends MultiValuePropertyBuilder<Character, CharacterMultiPBuilder> {
-        private CharacterMultiPBuilder() {
+        private CharacterMultiPBuilder(String name) {
+            super(name);
         }
 
 

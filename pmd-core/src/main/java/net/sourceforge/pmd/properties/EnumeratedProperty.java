@@ -129,7 +129,7 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
 
 
     public static <E> EnumPBuilder<E> builder(String name, Class<E> type) {
-        return new EnumPBuilder<>(type).name(name);
+        return new EnumPBuilder<>(name, type);
     }
 
 
@@ -139,7 +139,8 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
         private Map<String, E> mappings;
 
 
-        private EnumPBuilder(Class<E> type) {
+        private EnumPBuilder(String name, Class<E> type) {
+            super(name);
             this.valueType = type;
         }
 

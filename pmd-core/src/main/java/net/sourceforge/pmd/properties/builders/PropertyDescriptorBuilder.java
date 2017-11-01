@@ -27,22 +27,13 @@ public abstract class PropertyDescriptorBuilder<E, T extends PropertyDescriptorB
     protected boolean isDefinedInXML = false;
 
 
-    /**
-     * Specify the name of the property.
-     *
-     * @param name The name
-     *
-     * @return The same builder
-     */
-    @SuppressWarnings("unchecked")
-    public T name(String name) {
+    protected PropertyDescriptorBuilder(String name) {
         if (StringUtils.isBlank(name)) {
             throw new IllegalArgumentException("Name must be provided");
         }
         this.name = name;
-        return (T) this;
     }
-
+    
 
     /**
      * Specify the description of the property.
