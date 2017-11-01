@@ -6,7 +6,7 @@
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
     <description>
-
+Rules which flag certain language construct which can lead to abnormal behavior at runtime.
     </description>
 
     <rule name="AvoidTrailingComma"
