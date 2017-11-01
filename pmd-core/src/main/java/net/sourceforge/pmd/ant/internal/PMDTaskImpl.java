@@ -43,6 +43,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.log.AntLogHandler;
@@ -101,9 +102,11 @@ public class PMDTaskImpl {
 
     private void doTask() {
         setupClassLoader();
-
+        
         // Setup RuleSetFactory and validate RuleSets
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration);
+        final ResourceLoader rl = setupResourceLoader();
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, rl);
+
         try {
             // This is just used to validate and display rules. Each thread will create its own ruleset
             String ruleSets = configuration.getRuleSets();
@@ -208,6 +211,27 @@ public class PMDTaskImpl {
         }
     }
 
+    private ResourceLoader setupResourceLoader() {
+        if (classpath == null) {
+            classpath = new Path(project);
+        }
+
+        /*
+         * 'basedir' is added to the path to make sure that relative paths such
+         * as "<ruleset>resources/custom_ruleset.xml</ruleset>" still work when
+         * ant is invoked from a different directory using "-f"
+         */
+        classpath.add(new Path(null, project.getBaseDir().toString()));
+
+        project.log("Using the AntClassLoader: " + classpath, Project.MSG_VERBOSE);
+        // must be true, otherwise you'll get ClassCastExceptions as classes
+        // are loaded twice
+        // and exist in multiple class loaders
+        final boolean parentFirst = true;
+        return new ResourceLoader(new AntClassLoader(Thread.currentThread().getContextClassLoader(),
+                project, classpath, parentFirst));
+    }
+
     private void handleError(RuleContext ctx, Report errorReport, RuntimeException pmde) {
 
         pmde.printStackTrace();
@@ -234,24 +258,6 @@ public class PMDTaskImpl {
     }
 
     private void setupClassLoader() {
-        if (classpath == null) {
-            classpath = new Path(project);
-        }
-        /*
-         * 'basedir' is added to the path to make sure that relative paths such
-         * as "<ruleset>resources/custom_ruleset.xml</ruleset>" still work when
-         * ant is invoked from a different directory using "-f"
-         */
-        classpath.add(new Path(null, project.getBaseDir().toString()));
-
-        project.log("Using the AntClassLoader: " + classpath, Project.MSG_VERBOSE);
-        // must be true, otherwise you'll get ClassCastExceptions as classes
-        // are loaded twice
-        // and exist in multiple class loaders
-        boolean parentFirst = true;
-        configuration.setClassLoader(
-                new AntClassLoader(Thread.currentThread().getContextClassLoader(), project, classpath, parentFirst));
-
         try {
             if (auxClasspath != null) {
                 project.log("Using auxclasspath: " + auxClasspath, Project.MSG_VERBOSE);

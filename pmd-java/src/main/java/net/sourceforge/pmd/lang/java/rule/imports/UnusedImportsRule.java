@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.imports;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.ImportWrapper;
 
@@ -108,18 +110,22 @@ public class UnusedImportsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
-        if (!node.isImportOnDemand()) {
+        if (node.isImportOnDemand()) {
             ASTName importedType = (ASTName) node.jjtGetChild(0);
-            String className;
-            if (isQualifiedName(importedType)) {
-                int lastDot = importedType.getImage().lastIndexOf('.') + 1;
-                className = importedType.getImage().substring(lastDot);
-            } else {
-                className = importedType.getImage();
+            imports.add(new ImportWrapper(importedType.getImage(), null, node, node.getType(), node.isStatic()));
+        } else {
+            if (!node.isImportOnDemand()) {
+                ASTName importedType = (ASTName) node.jjtGetChild(0);
+                String className;
+                if (isQualifiedName(importedType)) {
+                    int lastDot = importedType.getImage().lastIndexOf('.') + 1;
+                    className = importedType.getImage().substring(lastDot);
+                } else {
+                    className = importedType.getImage();
+                }
+                imports.add(new ImportWrapper(importedType.getImage(), className, node));
             }
-            imports.add(new ImportWrapper(importedType.getImage(), className, node));
         }
-
         return data;
     }
 
@@ -140,8 +146,22 @@ public class UnusedImportsRule extends AbstractJavaRule {
             return;
         }
         ImportWrapper candidate = getImportWrapper(node);
-        if (imports.contains(candidate)) {
-            imports.remove(candidate);
+        Iterator<ImportWrapper> it = imports.iterator();
+        while (it.hasNext()) {
+            ImportWrapper i = it.next();
+            if (i.matches(candidate)) {
+                it.remove();
+                return;
+            }
+        }
+        if (TypeNode.class.isAssignableFrom(node.getClass()) && ((TypeNode) node).getType() != null) {
+            Class<?> c = ((TypeNode) node).getType();
+            if (c.getPackage() != null) {
+                candidate = new ImportWrapper(c.getPackage().getName(), null);
+                if (imports.contains(candidate)) {
+                    imports.remove(candidate);
+                }
+            }
         }
     }
 

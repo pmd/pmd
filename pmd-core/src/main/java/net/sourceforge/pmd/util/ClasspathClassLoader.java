@@ -34,7 +34,7 @@ public class ClasspathClassLoader extends URLClassLoader {
     static {
         registerAsParallelCapable();
     }
-
+    
     public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
         super(initURLs(classpath), parent);
     }
@@ -95,5 +95,26 @@ public class ClasspathClassLoader extends URLClassLoader {
                 .append("[[")
                 .append(StringUtils.join(getURLs(), ":"))
                 .append("] parent: ").append(getParent()).append(']').toString();
+    }
+    
+    @Override
+    protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
+        // First, check if the class has already been loaded
+        Class<?> c = findLoadedClass(name);
+        if (c == null) {
+            try {
+                // checking local
+                c = findClass(name);
+            } catch (final ClassNotFoundException | SecurityException e) {
+                // checking parent
+                // This call to loadClass may eventually call findClass again, in case the parent doesn't find anything.
+                c = super.loadClass(name, resolve);
+            }
+        }
+
+        if (resolve) {
+            resolveClass(c);
+        }
+        return c;
     }
 }

@@ -30,7 +30,7 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
      * @param defaultValues  Array of defaults
      * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
      */
     public FloatMultiProperty(String theName, String theDescription, Float min, Float max,
                               Float[] defaultValues, float theUIOrder) {
@@ -55,7 +55,7 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
      * @param defaultValues  List of defaults
      * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
      */
     public FloatMultiProperty(String theName, String theDescription, Float min, Float max,
                               List<Float> defaultValues, float theUIOrder) {

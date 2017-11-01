@@ -138,7 +138,6 @@ global class Unchangeable {
     </example>
   </rule>
 
-
   <rule name="AvoidDirectAccessTriggerMap"
         since="6.0.0"
         message="Avoid directly accessing Trigger.old and Trigger.new"
@@ -166,6 +165,33 @@ trigger AccountTrigger on Account (before insert, before update) {
    foreach ( Account a : Trigger.new ){   
         //Good: Iterate through the trigger.new array instead.
    }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="AvoidHardcodingId"
+        since="6.0.0"
+        message="Hardcoding Id's is bound to break when changing environments."
+        class="net.sourceforge.pmd.lang.apex.rule.style.AvoidHardcodingIdRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_style.html#avoidhardcodingid">
+    <description>
+When deploying Apex code between sandbox and production environments, or installing Force.com AppExchange packages,
+it is essential to avoid hardcoding IDs in the Apex code. By doing so, if the record IDs change between environments,
+the logic can dynamically identify the proper data to operate against and not fail.
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
+public without sharing class Foo {
+    void foo() {
+        //Error - hardcoded the record type id
+        if(a.RecordTypeId == '012500000009WAr'){     	  	
+            //do some logic here.....
+        } else if(a.RecordTypeId == '0123000000095Km'){
+            //do some logic here for a different record type...
+        }
+    }
 }
 ]]>
     </example>

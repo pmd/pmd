@@ -209,12 +209,6 @@
                 </dependency>
                 <dependency>
                     <groupId>net.sourceforge.pmd</groupId>
-                    <artifactId>pmd-apex</artifactId>
-                    <version>${project.version}</version>
-                    <classifier>apex-jorje-shaded</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>net.sourceforge.pmd</groupId>
                     <artifactId>pmd-ui</artifactId>
                     <version>${project.version}</version>
                 </dependency>

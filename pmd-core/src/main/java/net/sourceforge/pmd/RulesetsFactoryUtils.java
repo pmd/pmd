@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
+import net.sourceforge.pmd.util.ResourceLoader;
 
 public final class RulesetsFactoryUtils {
 
@@ -72,8 +73,9 @@ public final class RulesetsFactoryUtils {
         return ruleSets;
     }
 
-    public static RuleSetFactory getRulesetFactory(final PMDConfiguration configuration) {
-        return new RuleSetFactory(configuration.getClassLoader(), configuration.getMinimumPriority(), true,
+    public static RuleSetFactory getRulesetFactory(final PMDConfiguration configuration,
+            final ResourceLoader resourceLoader) {
+        return new RuleSetFactory(resourceLoader, configuration.getMinimumPriority(), true,
                 configuration.isRuleSetFactoryCompatibilityEnabled());
     }
 

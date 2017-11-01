@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.typeresolution.xml;
+package net.sourceforge.pmd.lang.java.rule.strictexception;
 
 import org.junit.Ignore;
 
@@ -12,10 +12,8 @@ import junit.framework.TestCase;
  * Warning, this class IS NOT useless. It is used by the some regression tests.
  * 
  * See file: SignatureDeclareThrowsException.xml
- * 
- * The file is already excluded from maven/surefire.
  */
-@Ignore
+@Ignore("not a test case")
 public class MyTestCase extends TestCase {
 
 }

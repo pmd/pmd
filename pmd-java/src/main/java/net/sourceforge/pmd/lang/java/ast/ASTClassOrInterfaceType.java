@@ -61,4 +61,12 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
         }
         return false;
     }
+    
+    public int getArrayDepth() {
+        Node p = jjtGetParent();
+        if (p instanceof ASTReferenceType) {
+            return ((ASTReferenceType) p).getArrayDepth();
+        }
+        return 0;
+    }
 }

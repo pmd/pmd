@@ -68,27 +68,33 @@ public class Foo {
           since="0.7"
           message="Avoid using implementation types like ''{0}''; use the interface instead"
           class="net.sourceforge.pmd.lang.java.rule.coupling.LooseCouplingRule"
+          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_coupling.html#loosecoupling">
       <description>
-The use of implementation types as object references limits your ability to use alternate
-implementations in the future as requirements change. Whenever available, referencing objects 
-by their interface types provides much more flexibility.
+The use of implementation types (i.e., HashSet) as object references limits your ability to use alternate
+implementations in the future as requirements change. Whenever available, referencing objects
+by their interface types (i.e, Set) provides much more flexibility.
       </description>
         <priority>3</priority>
       <example>
 <![CDATA[
-// sub-optimal approach
-private ArrayList<SomeType> list = new ArrayList<>();
+import java.util.ArrayList;
+import java.util.HashSet;
 
-public HashSet<SomeType> getFoo() {
-    return new HashSet<SomeType>();
-}
+public class Bar {
+    // sub-optimal approach
+    private ArrayList<SomeType> list = new ArrayList<>();
 
-// preferred approach
-private List<SomeType> list = new ArrayList<>();
+    public HashSet<SomeType> getFoo() {
+        return new HashSet<SomeType>();
+    }
 
-public Set<SomeType> getFoo() {
-    return new HashSet<SomeType>();
+    // preferred approach
+    private List<SomeType> list = new ArrayList<>();
+
+    public Set<SomeType> getFoo() {
+        return new HashSet<SomeType>();
+    }
 }
 ]]>
       </example>

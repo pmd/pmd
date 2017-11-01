@@ -33,12 +33,15 @@ public void bar() {
 
   <rule name="SignatureDeclareThrowsException"
         since="1.2"
-        message="A method/constructor shouldn't explicitly throw java.lang.Exception"
+        message="A method/constructor should not explicitly throw java.lang.Exception"
         class="net.sourceforge.pmd.lang.java.rule.strictexception.SignatureDeclareThrowsExceptionRule"
+        typeResolution="true"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_strictexception.html#signaturedeclarethrowsexception">
     <description>
-Methods that declare the generic Exception as a possible throwable are not very helpful since their
-failure modes are unclear. Use a class derived from RuntimeException or a more specific checked exception.
+A method/constructor shouldn't explicitly throw the generic java.lang.Exception, since it
+is unclear which exceptions that can be thrown from the methods. It might be
+difficult to document and understand such vague interfaces. Use either a class
+derived from RuntimeException or a checked exception.
     </description>
     <priority>3</priority>
     <example>
@@ -240,6 +243,31 @@ Errors are system exceptions. Do not extend them.
     </properties>
     <example><![CDATA[
 public class Foo extends Error { }
+    ]]></example>
+  </rule>
+
+  <rule name="DoNotExtendJavaLangThrowable"
+        language="java"
+        since="6.0"
+        message="Exceptions should not extend java.lang.Throwable"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_strictexception.html#donotextendjavalangthrowable">
+    <description>
+Extend Exception or RuntimeException instead of Throwable.
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
+  [@Image="Throwable" or @Image="java.lang.Throwable"]
+]]>
+            </value>
+        </property>
+    </properties>
+    <example><![CDATA[
+public class Foo extends Throwable { }
     ]]></example>
   </rule>
 

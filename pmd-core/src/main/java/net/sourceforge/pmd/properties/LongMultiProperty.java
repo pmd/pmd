@@ -30,7 +30,7 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
      * @param defaultValues  Array of defaults
      * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
      */
     public LongMultiProperty(String theName, String theDescription, Long min, Long max,
                              Long[] defaultValues, float theUIOrder) {
@@ -55,7 +55,7 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
      * @param defaultValues  List of defaults
      * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
      */
     public LongMultiProperty(String theName, String theDescription, Long min, Long max,
                              List<Long> defaultValues, float theUIOrder) {

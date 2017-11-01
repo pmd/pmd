@@ -9,6 +9,7 @@ returning a HashSet, bad
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.HashSet;
 public class Foo {
  HashSet foo() {
   return new HashSet();
@@ -22,6 +23,8 @@ returning a Map, OK
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Map;
+import java.util.HashMap;
 public class Foo {
  Map getFoo() {
   return new HashMap();
@@ -61,6 +64,7 @@ field declared of type HashSet
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.HashSet;
 public class Foo {
  HashSet fooSet = new HashSet(); // NOT OK
 }
@@ -72,6 +76,7 @@ field, return type both HashSet
      ]]></description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
+import java.util.HashSet;
 public class Foo {
  HashSet fooSet = new HashSet(); // NOT OK
  HashSet foo() { // NOT OK
@@ -86,6 +91,8 @@ two fields
      ]]></description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
+import java.util.HashSet;
+import java.util.HashMap;
 public class Foo {
  HashSet fooSet = new HashSet();
  HashMap fooMap = new HashMap();
@@ -98,6 +105,7 @@ method param is HashMap
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.HashMap;
 public class Foo {
  void foo(HashMap bar) {}
 }
@@ -132,6 +140,8 @@ public class Foo {
         <description>#938 False positive on LooseCoupling for overriding methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.LinkedHashMap;
+
 public class Test {
     @Override
     public LinkedHashMap findGetters() {}

@@ -115,9 +115,10 @@ public class AbstractLanguageVersionTest {
             return;
         }
 
+        ResourceLoader rl = new ResourceLoader();
         Properties props = new Properties();
         String rulesetsProperties = "rulesets/" + simpleTerseName + "/rulesets.properties";
-        try (InputStream inputStream = ResourceLoader.loadResourceAsStream(rulesetsProperties);) {
+        try (InputStream inputStream = rl.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
             props.load(inputStream);
         }
         String rulesetFilenames = props.getProperty("rulesets.filenames");
@@ -131,7 +132,7 @@ public class AbstractLanguageVersionTest {
 
         String[] rulesets = rulesetFilenames.split(",");
         for (String r : rulesets) {
-            InputStream stream = ResourceLoader.loadResourceAsStream(r);
+            InputStream stream = rl.loadClassPathResourceAsStream(r);
             assertNotNull(stream);
             stream.close();
             RuleSet ruleset = factory.createRuleSet(r);
