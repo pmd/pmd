@@ -30,7 +30,7 @@ public class SwiftTokenizerTest extends AbstractTokenizerTest {
 
     @Test
     public void tokenizeTest() throws IOException {
-        this.expectedTokenCount = 3811;
+        this.expectedTokenCount = 3797;
         super.tokenizeTest();
     }
 }
