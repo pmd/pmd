@@ -15,11 +15,24 @@ public class BestPracticesRulesTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
+        addRule(RULESET, "AbstractClassWithoutAbstractMethod");
+        addRule(RULESET, "AccessorClassGeneration");
+        addRule(RULESET, "AccessorMethodGeneration");
+        addRule(RULESET, "AvoidReassigningParameters");
         addRule(RULESET, "AvoidUsingHardCodedIP");
         // addRule(RULESET, "AvoidUsingHardCodedURL");
         addRule(RULESET, "CheckResultSet");
+        addRule(RULESET, "ConstantsInInterface");
+        addRule(RULESET, "DefaultLabelNotLastInSwitchStmt");
         addRule(RULESET, "LooseCoupling");
         addRule(RULESET, "OneDeclarationPerLine");
+        addRule(RULESET, "PositionLiteralsFirstInComparisons");
+        addRule(RULESET, "PositionLiteralsFirstInCaseInsensitiveComparisons");
+        addRule(RULESET, "PreserveStackTrace");
+        addRule(RULESET, "SwitchStmtsShouldHaveDefault");
+        addRule(RULESET, "UnusedImports");
+        addRule(RULESET, "UseCollectionIsEmpty");
+        addRule(RULESET, "UseVarargs");
     }
 
 }

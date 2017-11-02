@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.imports;
+package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.HashSet;
 import java.util.Iterator;

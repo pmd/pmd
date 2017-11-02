@@ -18,6 +18,8 @@ public class DocumentationRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "CommentContent");
         addRule(RULESET, "CommentRequired");
         addRule(RULESET, "CommentSize");
+        addRule(RULESET, "UncommentedEmptyConstructor");
+        addRule(RULESET, "UncommentedEmptyMethodBody");
     }
 
 }

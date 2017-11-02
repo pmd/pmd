@@ -18,6 +18,8 @@ public class PerformanceRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "AvoidUsingShortType");
         addRule(RULESET, "BigIntegerInstantiation");
         addRule(RULESET, "BooleanInstantiation");
+        addRule(RULESET, "OptimizableToArrayCall");
+        addRule(RULESET, "TooFewBranchesForASwitchStatement");
     }
 
 }

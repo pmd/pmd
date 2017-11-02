@@ -436,7 +436,7 @@ public class Foo {
     <rule name="ConfusingTernary"
           since="1.9"
           message="Avoid if (x != y) ..; else ..;"
-          class="net.sourceforge.pmd.lang.java.rule.design.ConfusingTernaryRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.ConfusingTernaryRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#confusingternary">
         <description>
 Avoid negation within an "if" expression with an "else" clause.  For example, rephrase:
@@ -488,7 +488,7 @@ or MethodDeclaration[@PackagePrivate='true']
     <rule name="DontImportJavaLang"
           since="0.5"
           message="Avoid importing anything from the package 'java.lang'"
-          class="net.sourceforge.pmd.lang.java.rule.imports.DontImportJavaLangRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.DontImportJavaLangRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#dontimportjavalang">
         <description>
 Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
@@ -512,7 +512,7 @@ public class Foo {}
     <rule name="DuplicateImports"
           since="0.5"
           message="Avoid duplicate imports such as ''{0}''"
-          class="net.sourceforge.pmd.lang.java.rule.imports.DuplicateImportsRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.DuplicateImportsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#duplicateimports">
         <description>
 Duplicate or overlapping import statements should be avoided.
@@ -605,7 +605,7 @@ public class Foo extends Object {     // not required
           language="java"
           since="5.0"
           message="Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes."
-          class="net.sourceforge.pmd.lang.java.rule.design.FieldDeclarationsShouldBeAtStartOfClassRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.FieldDeclarationsShouldBeAtStartOfClassRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass">
         <description>
 Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
@@ -1481,7 +1481,7 @@ public final class Foo {
     <rule name="UnnecessaryFullyQualifiedName"
           language="java"
           since="5.0"
-          class="net.sourceforge.pmd.lang.java.rule.imports.UnnecessaryFullyQualifiedNameRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameRule"
           message="Unnecessary use of fully qualified name ''{0}'' due to existing {2}import ''{1}''"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">
         <description>
@@ -1504,7 +1504,7 @@ public class Foo {
     <rule name="UnnecessaryLocalBeforeReturn"
           since="3.3"
           message="Consider simply returning the value vs storing it in local variable ''{0}''"
-          class="net.sourceforge.pmd.lang.java.rule.design.UnnecessaryLocalBeforeReturnRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeReturnRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarylocalbeforereturn">
         <description>
 Avoid the creation of unnecessary local variables

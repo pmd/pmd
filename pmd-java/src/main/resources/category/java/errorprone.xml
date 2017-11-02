@@ -192,7 +192,7 @@ for (int i = 0; i < 10; i++) {
     <rule name="AvoidCallingFinalize"
           since="3.0"
           message="Avoid calling finalize() explicitly"
-          class="net.sourceforge.pmd.lang.java.rule.finalizers.AvoidCallingFinalizeRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCallingFinalizeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcallingfinalize">
         <description>
 The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
@@ -1956,7 +1956,7 @@ public class Foo {
     <rule name="ImportFromSamePackage"
           since="1.02"
           message="No need to import a type that lives in the same package"
-          class="net.sourceforge.pmd.lang.java.rule.imports.ImportFromSamePackageRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.ImportFromSamePackageRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#importfromsamepackage">
         <description>
 There is no need to import a type that lives in the same package.

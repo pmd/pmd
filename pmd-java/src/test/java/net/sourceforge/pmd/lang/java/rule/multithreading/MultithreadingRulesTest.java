@@ -15,11 +15,15 @@ public class MultithreadingRulesTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
+        addRule(RULESET, "AvoidSynchronizedAtMethodLevel");
         addRule(RULESET, "AvoidThreadGroup");
         addRule(RULESET, "AvoidUsingVolatile");
         addRule(RULESET, "DontCallThreadRun");
         addRule(RULESET, "DoubleCheckedLocking");
+        addRule(RULESET, "NonThreadSafeSingleton");
+        addRule(RULESET, "UnsynchronizedStaticDateFormatter");
         addRule(RULESET, "UseConcurrentHashMap");
+        addRule(RULESET, "UseNotifyAllInsteadOfNotify");
     }
 
     // Used by DontCallThreadRun test cases

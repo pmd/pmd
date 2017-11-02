@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.finalizers;
+package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import java.util.HashSet;
 import java.util.List;

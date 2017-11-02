@@ -225,7 +225,7 @@ public class Foo {
     <rule name="NonThreadSafeSingleton"
           since="3.4"
           message="Singleton is not thread safe"
-          class="net.sourceforge.pmd.lang.java.rule.design.NonThreadSafeSingletonRule"
+          class="net.sourceforge.pmd.lang.java.rule.multithreading.NonThreadSafeSingletonRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#nonthreadsafesingleton">
         <description>
 Non-thread safe singletons can result in bad state changes. Eliminate
@@ -259,7 +259,7 @@ public static Foo getFoo() {
     <rule name="UnsynchronizedStaticDateFormatter"
           since="3.6"
           message="Static DateFormatter objects should be accessed in a synchronized manner"
-          class="net.sourceforge.pmd.lang.java.rule.design.UnsynchronizedStaticDateFormatterRule"
+          class="net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticDateFormatterRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#unsynchronizedstaticdateformatter">
         <description>
 SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances
