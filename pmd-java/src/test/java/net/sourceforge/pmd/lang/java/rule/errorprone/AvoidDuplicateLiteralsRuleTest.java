@@ -11,8 +11,6 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.rule.errorprone.AvoidDuplicateLiteralsRule;
-
 public class AvoidDuplicateLiteralsRuleTest {
     @Test
     public void testStringParserEmptyString() {
