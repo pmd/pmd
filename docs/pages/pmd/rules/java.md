@@ -5,13 +5,13 @@ folder: pmd/rules
 ---
 List of rulesets and rules contained in each ruleset.
 
-*   [Best Practices](pmd_rules_java_bestpractices.html): The Best Practices category contains rules...  It fully contains these previous rulesets:  *   sunsecure *   unusedcode
-*   [Code Style](pmd_rules_java_codestyle.html): The Code Style category contains rules that enforce conventions like braces, naming, ...  It fully contains these previous rulesets:  *   braces
-*   [Design](pmd_rules_java_design.html): The Design category contains rules that flag suboptimal code implementations. Alternate approaches are suggested.  It fully contains these previous rulesets:  *   codesize
-*   [Documentation](pmd_rules_java_documentation.html): The Documentation category contains rules that deal with comments and code documentation.
-*   [Error Prone](pmd_rules_java_errorprone.html): The Error Prone category contains rules, that detect incorrect usages, missed checks, ...  It fully contains these previous rulesets:  *   android *   clone *   empty *   finalizers *   javabeans
-*   [Multithreading](pmd_rules_java_multithreading.html): The Multithreading category contains rules that deal with programming errors in multi-threaded environments.
-*   [Performance](pmd_rules_java_performance.html): The Performance category contains rules that deal with optimizations and performance issues.
+*   [Best Practices](pmd_rules_java_bestpractices.html): Rules which enforce generally accepted best practices.
+*   [Code Style](pmd_rules_java_codestyle.html): Rules which enforce a specific coding style.
+*   [Design](pmd_rules_java_design.html): Rules that help you discover design issues.
+*   [Documentation](pmd_rules_java_documentation.html): Rules that are related to code documentation.
+*   [Error Prone](pmd_rules_java_errorprone.html): Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
+*   [Multithreading](pmd_rules_java_multithreading.html): Rules that flag issues when dealing with multiple threads of execution.
+*   [Performance](pmd_rules_java_performance.html): Rules that flag suboptimal code.
 
 ## Best Practices
 *   [AbstractClassWithoutAbstractMethod](pmd_rules_java_bestpractices.html#abstractclasswithoutabstractmethod): The abstract class does not contain any abstract methods. An abstract class suggestsan incomplete...

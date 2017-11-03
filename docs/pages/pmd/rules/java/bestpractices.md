@@ -1,6 +1,6 @@
 ---
 title: Best Practices
-summary: The Best Practices category contains rules...  It fully contains these previous rulesets:  *   sunsecure *   unusedcode
+summary: Rules which enforce generally accepted best practices.
 permalink: pmd_rules_java_bestpractices.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
@@ -54,7 +54,7 @@ situation. The generated class file is actually an interface.  It gives the acce
 to invoke a new hidden package scope constructor that takes the interface as a supplementary parameter.
 This turns a private constructor effectively into one with package scope, and is challenging to discern.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AccessorClassGenerationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AccessorClassGenerationRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.AccessorClassGenerationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/AccessorClassGenerationRule.java)
 
 **Example(s):**
 
@@ -84,7 +84,7 @@ When accessing a private field / method from another class, the Java compiler wi
 with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
 be avoided by changing the visibility of the field / method from private to package-private.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AccessorMethodGenerationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AccessorMethodGenerationRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.AccessorMethodGenerationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/AccessorMethodGenerationRule.java)
 
 **Example(s):**
 
@@ -119,7 +119,7 @@ public class OuterClass {
 Constructors and methods receiving arrays should clone objects and store the copy.
 This prevents future changes from the user from affecting the original array.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.sunsecure.ArrayIsStoredDirectlyRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/sunsecure/ArrayIsStoredDirectlyRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.ArrayIsStoredDirectlyRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/ArrayIsStoredDirectlyRule.java)
 
 **Example(s):**
 
@@ -179,7 +179,7 @@ class Foo {
 
 Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AvoidReassigningParametersRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AvoidReassigningParametersRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningParametersRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/AvoidReassigningParametersRule.java)
 
 **Example(s):**
 
@@ -231,7 +231,7 @@ public class Foo {
 Application with hard-coded IP addresses can become impossible to deploy in some cases.
 Externalizing IP adresses is preferable.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.AvoidUsingHardCodedIPRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/AvoidUsingHardCodedIPRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidUsingHardCodedIPRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/AvoidUsingHardCodedIPRule.java)
 
 **Example(s):**
 
@@ -262,7 +262,7 @@ public class Foo {
 Always check the return values of navigation methods (next, previous, first, last) of a ResultSet.
 If the value return is 'false', it should be handled properly.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.CheckResultSetRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/CheckResultSetRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.CheckResultSetRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/CheckResultSetRule.java)
 
 **Example(s):**
 
@@ -384,7 +384,7 @@ lists, arrays and iterators. A loop is safe to replace if it only uses the index
 access an element of the list or array, only has one update statement, and loops through *every*
 element of the list or array left to right.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.migrating.ForLoopCanBeForeachRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/migrating/ForLoopCanBeForeachRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.ForLoopCanBeForeachRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/ForLoopCanBeForeachRule.java)
 
 **Example(s):**
 
@@ -416,7 +416,7 @@ public class MyClass {
 When log messages are composed by concatenating strings, the whole section should be guarded
 by a isDebugEnabled() check to avoid performance and memory issues.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.logging.GuardDebugLoggingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/logging/GuardDebugLoggingRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.GuardDebugLoggingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/GuardDebugLoggingRule.java)
 
 **Example(s):**
 
@@ -465,7 +465,7 @@ public class Test {
 Whenever using a log level, one should check if the loglevel is actually enabled, or
 otherwise skip the associate String creation and manipulation.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/logging/GuardLogStatementRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.GuardLogStatementRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/GuardLogStatementRule.java)
 
 **Example(s):**
 
@@ -496,7 +496,7 @@ otherwise skip the associate String creation and manipulation.
 Whenever using a log level, one should check if the loglevel is actually enabled, or
 otherwise skip the associate String creation and manipulation.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementJavaUtilRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/logging/GuardLogStatementJavaUtilRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.GuardLogStatementJavaUtilRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/GuardLogStatementJavaUtilRule.java)
 
 **Example(s):**
 
@@ -669,7 +669,7 @@ public class MyTest {
 JUnit assertions should include an informative message - i.e., use the three-argument version of 
 assertEquals(), not the two-argument version.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.junit.JUnitAssertionsShouldIncludeMessageRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/junit/JUnitAssertionsShouldIncludeMessageRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitAssertionsShouldIncludeMessageRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/JUnitAssertionsShouldIncludeMessageRule.java)
 
 **Example(s):**
 
@@ -742,7 +742,7 @@ public class MyTestCase extends TestCase {
 JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert 
 with messages provide the developer a clearer idea of what the test does.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.junit.JUnitTestsShouldIncludeAssertRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/junit/JUnitTestsShouldIncludeAssertRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitTestsShouldIncludeAssertRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/JUnitTestsShouldIncludeAssertRule.java)
 
 **Example(s):**
 
@@ -770,7 +770,7 @@ public class Foo extends TestCase {
 
 In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.migrating.JUnitUseExpectedRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/migrating/JUnitUseExpectedRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitUseExpectedRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/JUnitUseExpectedRule.java)
 
 **Example(s):**
 
@@ -807,7 +807,7 @@ The use of implementation types (i.e., HashSet) as object references limits your
 implementations in the future as requirements change. Whenever available, referencing objects
 by their interface types (i.e, Set) provides much more flexibility.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.coupling.LooseCouplingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/coupling/LooseCouplingRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.LooseCouplingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/LooseCouplingRule.java)
 
 **Example(s):**
 
@@ -846,7 +846,7 @@ public class Bar {
 Exposing internal arrays to the caller violates object encapsulation since elements can be 
 removed or replaced outside of the object that owns it. It is safer to return a copy of the array.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.sunsecure.MethodReturnsInternalArrayRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/sunsecure/MethodReturnsInternalArrayRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.MethodReturnsInternalArrayRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/MethodReturnsInternalArrayRule.java)
 
 **Example(s):**
 
@@ -992,7 +992,7 @@ Throwing a new exception from a catch block without passing the original excepti
 new exception will cause the original stack trace to be lost making it difficult to debug
 effectively.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.PreserveStackTraceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/PreserveStackTraceRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.PreserveStackTraceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/PreserveStackTraceRule.java)
 
 **Example(s):**
 
@@ -1184,7 +1184,7 @@ class Foo{
 
 Avoid passing parameters to methods or constructors without actually referencing them in the method body.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedFormalParameterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedFormalParameterRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedFormalParameterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedFormalParameterRule.java)
 
 **Example(s):**
 
@@ -1216,7 +1216,7 @@ public class Foo {
 Avoid unused import statements to prevent unwanted dependencies.
 This rule will also find unused on demand imports, i.e. import com.foo.*.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.UnusedImportsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/UnusedImportsRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedImportsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedImportsRule.java)
 
 **Example(s):**
 
@@ -1240,7 +1240,7 @@ public class Foo {}
 
 Detects when a local variable is declared and/or assigned, but not used.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedLocalVariableRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedLocalVariableRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedLocalVariableRule.java)
 
 **Example(s):**
 
@@ -1265,7 +1265,7 @@ public class Foo {
 
 Detects when a private field is declared and/or assigned a value, but not used.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateFieldRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedPrivateFieldRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedPrivateFieldRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedPrivateFieldRule.java)
 
 **Example(s):**
 
@@ -1293,7 +1293,7 @@ public class Something {
 
 Unused Private Method detects when a private method is declared but is unused.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateMethodRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedPrivateMethodRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedPrivateMethodRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedPrivateMethodRule.java)
 
 **Example(s):**
 
@@ -1471,7 +1471,7 @@ public class MyTestCase extends TestCase {
 The isEmpty() method on java.util.Collection is provided to determine if a collection has any elements.
 Comparing the value of size() to 0 does not convey intent as well as the isEmpty() method.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.UseCollectionIsEmptyRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/UseCollectionIsEmptyRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.UseCollectionIsEmptyRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UseCollectionIsEmptyRule.java)
 
 **Example(s):**
 

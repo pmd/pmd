@@ -1,6 +1,6 @@
 ---
 title: Code Style
-summary: The Code Style category contains rules that enforce conventions like braces, naming, ...  It fully contains these previous rulesets:  *   braces
+summary: Rules which enforce a specific coding style.
 permalink: pmd_rules_java_codestyle.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
@@ -86,7 +86,7 @@ public class Foo {
 
 Avoid using dollar signs in variable/method/class/interface names.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.naming.AvoidDollarSignsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/naming/AvoidDollarSignsRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.AvoidDollarSignsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/AvoidDollarSignsRule.java)
 
 **Example(s):**
 
@@ -367,7 +367,7 @@ public class Foo extends Bar{
 
 Class names should always begin with an upper case character.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.naming.ClassNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/naming/ClassNamingConventionsRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.ClassNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/ClassNamingConventionsRule.java)
 
 **Example(s):**
 
@@ -390,7 +390,7 @@ To avoid mistakes if we want that a Method, Constructor, Field or Nested class h
 we must add a comment at the beginning of it's declaration.
 By default the comment must be /* default */, if you want another, you have to provide a regexp.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.comments.CommentDefaultAccessModifierRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/comments/CommentDefaultAccessModifierRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.CommentDefaultAccessModifierRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/CommentDefaultAccessModifierRule.java)
 
 **Example(s):**
 
@@ -441,7 +441,7 @@ Most "if (x != y)" cases without an "else" are often return cases, so consistent
 rule makes the code easier to read.  Also, this resolves trivial ordering problems, such
 as "does the error case go first?" or "does the common case go first?".
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.ConfusingTernaryRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ConfusingTernaryRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.ConfusingTernaryRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/ConfusingTernaryRule.java)
 
 **Example(s):**
 
@@ -495,7 +495,7 @@ or MethodDeclaration[@PackagePrivate='true']
 
 Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.DontImportJavaLangRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/DontImportJavaLangRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.DontImportJavaLangRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/DontImportJavaLangRule.java)
 
 **Example(s):**
 
@@ -524,7 +524,7 @@ public class Foo {}
 
 Duplicate or overlapping import statements should be avoided.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.DuplicateImportsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/DuplicateImportsRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.DuplicateImportsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/DuplicateImportsRule.java)
 
 **Example(s):**
 
@@ -617,7 +617,7 @@ public class Foo extends Object {     // not required
 
 Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.FieldDeclarationsShouldBeAtStartOfClassRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/FieldDeclarationsShouldBeAtStartOfClassRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.FieldDeclarationsShouldBeAtStartOfClassRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/FieldDeclarationsShouldBeAtStartOfClassRule.java)
 
 **Example(s):**
 
@@ -891,7 +891,7 @@ public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}    // n
 
 A local variable assigned only once can be declared final.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.optimizations.LocalVariableCouldBeFinalRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/optimizations/LocalVariableCouldBeFinalRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableCouldBeFinalRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/LocalVariableCouldBeFinalRule.java)
 
 **Example(s):**
 
@@ -991,7 +991,7 @@ public class MissingTheProperSuffix implements SessionBean {}   // non-standard 
 
 A method argument that is never re-assigned within the method can be declared final.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.optimizations.MethodArgumentCouldBeFinalRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/optimizations/MethodArgumentCouldBeFinalRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.MethodArgumentCouldBeFinalRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/MethodArgumentCouldBeFinalRule.java)
 
 **Example(s):**
 
@@ -1018,7 +1018,7 @@ public void foo2 (final String param) { // better, do stuff with param never ass
 
 Method names should always begin with a lower case character, and should not contain underscores.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.naming.MethodNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/naming/MethodNamingConventionsRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.MethodNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/MethodNamingConventionsRule.java)
 
 **Example(s):**
 
@@ -1103,7 +1103,7 @@ public class ClassInDefaultPackage {
 
 A method should have only one exit point, and that should be the last statement in the method.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.controversial.OnlyOneReturnRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/controversial/OnlyOneReturnRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.OnlyOneReturnRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/OnlyOneReturnRule.java)
 
 **Example(s):**
 
@@ -1157,7 +1157,7 @@ public class SomeClass {
 
 Checks for variables that are defined before they might be used. A reference is deemed to be premature if it is created right before a block of code that doesn't use it that also has the ability to return or throw an exception.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.optimizations.PrematureDeclarationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/optimizations/PrematureDeclarationRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.PrematureDeclarationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/PrematureDeclarationRule.java)
 
 **Example(s):**
 
@@ -1509,7 +1509,7 @@ public final class Foo {
 Import statements allow the use of non-fully qualified names.  The use of a fully qualified name
 which is covered by an import statement is redundant.  Consider using the non-fully qualified name.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.UnnecessaryFullyQualifiedNameRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/UnnecessaryFullyQualifiedNameRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/UnnecessaryFullyQualifiedNameRule.java)
 
 **Example(s):**
 
@@ -1535,7 +1535,7 @@ public class Foo {
 
 Avoid the creation of unnecessary local variables
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.UnnecessaryLocalBeforeReturnRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/UnnecessaryLocalBeforeReturnRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeReturnRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/UnnecessaryLocalBeforeReturnRule.java)
 
 **Example(s):**
 
@@ -1571,7 +1571,7 @@ Classes, interfaces or annotations nested in an interface or annotation are auto
 Nested enums are automatically `static`.
 For historical reasons, modifiers which are implied by the context are accepted by the compiler, but are superfluous.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryModifierRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unnecessary/UnnecessaryModifierRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryModifierRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/UnnecessaryModifierRule.java)
 
 **Example(s):**
 
@@ -1609,7 +1609,7 @@ public class Bar {
 
 Avoid the use of unnecessary return statements.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryReturnRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unnecessary/UnnecessaryReturnRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryReturnRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/UnnecessaryReturnRule.java)
 
 **Example(s):**
 
@@ -1772,7 +1772,7 @@ A variable naming conventions rule - customize this to your liking.  Currently, 
 checks for final variables that should be fully capitalized and non-final variables
 that should not include underscores.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.naming.VariableNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/naming/VariableNamingConventionsRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.VariableNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/VariableNamingConventionsRule.java)
 
 **Example(s):**
 

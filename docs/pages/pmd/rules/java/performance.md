@@ -1,6 +1,6 @@
 ---
 title: Performance
-summary: The Performance category contains rules that deal with optimizations and performance issues.
+summary: Rules that flag suboptimal code.
 permalink: pmd_rules_java_performance.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
@@ -40,7 +40,7 @@ String t = Integer.toString(456);   // preferred approach
 
 Avoid concatenating characters as strings in StringBuffer/StringBuilder.append methods.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.AppendCharacterWithCharRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/AppendCharacterWithCharRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.AppendCharacterWithCharRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/AppendCharacterWithCharRule.java)
 
 **Example(s):**
 
@@ -117,7 +117,7 @@ public class Test {
 
 New objects created within loops should be checked to see if they can created outside them and reused.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.optimizations.AvoidInstantiatingObjectsInLoopsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/optimizations/AvoidInstantiatingObjectsInLoopsRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.AvoidInstantiatingObjectsInLoopsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/AvoidInstantiatingObjectsInLoopsRule.java)
 
 **Example(s):**
 
@@ -178,7 +178,7 @@ public class UsingShort {
 Don't create instances of already existing BigInteger (BigInteger.ZERO, BigInteger.ONE) and
 for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN)
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.BigIntegerInstantiationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/BigIntegerInstantiationRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.BigIntegerInstantiationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/BigIntegerInstantiationRule.java)
 
 **Example(s):**
 
@@ -203,7 +203,7 @@ bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
 
 Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.BooleanInstantiationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/BooleanInstantiationRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.BooleanInstantiationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/BooleanInstantiationRule.java)
 
 **Example(s):**
 
@@ -255,7 +255,7 @@ public class Foo {
 Consecutive calls to StringBuffer/StringBuilder .append should be chained, reusing the target object. This can improve the performance
 by producing a smaller bytecode, reducing overhead and improving inlining. A complete analysis can be found [here](https://github.com/pmd/pmd/issues/202#issuecomment-274349067)
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.ConsecutiveAppendsShouldReuseRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/ConsecutiveAppendsShouldReuseRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.ConsecutiveAppendsShouldReuseRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/ConsecutiveAppendsShouldReuseRule.java)
 
 **Example(s):**
 
@@ -284,7 +284,7 @@ buf.append("Hello").append(foo).append("World"); // good
 
 Consecutively calling StringBuffer/StringBuilder.append with String literals
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.ConsecutiveLiteralAppendsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/ConsecutiveLiteralAppendsRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.ConsecutiveLiteralAppendsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/ConsecutiveLiteralAppendsRule.java)
 
 **Example(s):**
 
@@ -318,7 +318,7 @@ false if a non-whitespace character is found. You can refer to Apache's StringUt
 Spring's StringUtils#hasText (in the Spring framework) or Google's CharMatcher#whitespace (in Guava) for
 existing implementations.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.InefficientEmptyStringCheckRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/InefficientEmptyStringCheckRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.InefficientEmptyStringCheckRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/InefficientEmptyStringCheckRule.java)
 
 **Example(s):**
 
@@ -344,7 +344,7 @@ public void bar(String string) {
 Avoid concatenating non-literals in a StringBuffer constructor or append() since intermediate buffers will
 need to be be created and destroyed by the JVM.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.InefficientStringBufferingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/InefficientStringBufferingRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.InefficientStringBufferingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/InefficientStringBufferingRule.java)
 
 **Example(s):**
 
@@ -374,7 +374,7 @@ passed into StringBuffer.append(), but represents a best guess "worst case" scen
 StringBuffer/StringBuilder constructor initializes the object to 16 characters. This default
 is assumed if the length of the constructor can not be determined.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.InsufficientStringBufferDeclarationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/InsufficientStringBufferDeclarationRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.InsufficientStringBufferDeclarationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/InsufficientStringBufferDeclarationRule.java)
 
 **Example(s):**
 
@@ -498,7 +498,7 @@ Foo[] fooArray = foos.toArray(new Foo[foos.size()]);
 Java will initialize fields with known default values so any explicit initialization of those same defaults
 is redundant and results in a larger class file (approximately three additional bytecode instructions per field).
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.optimizations.RedundantFieldInitializerRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/optimizations/RedundantFieldInitializerRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.RedundantFieldInitializerRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/RedundantFieldInitializerRule.java)
 
 **Example(s):**
 
@@ -609,7 +609,7 @@ public class Foo {
 
 Avoid instantiating String objects; this is usually unnecessary since they are immutable and can be safely shared.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.StringInstantiationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/StringInstantiationRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.StringInstantiationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/StringInstantiationRule.java)
 
 **Example(s):**
 
@@ -630,7 +630,7 @@ private String bar = new String("bar"); // just do a String bar = "bar";
 
 Avoid calling toString() on objects already known to be string instances; this is unnecessary.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.StringToStringRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/StringToStringRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.StringToStringRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/StringToStringRule.java)
 
 **Example(s):**
 
@@ -700,7 +700,7 @@ Most wrapper classes provide static conversion methods that avoid the need to cr
 just to create the primitive forms. Using these avoids the cost of creating objects that also need to be 
 garbage-collected later.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.optimizations.UnnecessaryWrapperObjectCreationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/optimizations/UnnecessaryWrapperObjectCreationRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.UnnecessaryWrapperObjectCreationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UnnecessaryWrapperObjectCreationRule.java)
 
 **Example(s):**
 
@@ -827,7 +827,7 @@ public class Test {
 
 Use String.indexOf(char) when checking for the index of a single character; it executes faster.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.UseIndexOfCharRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/UseIndexOfCharRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.UseIndexOfCharRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UseIndexOfCharRule.java)
 
 **Example(s):**
 
@@ -852,7 +852,7 @@ if (s.indexOf('d') {}
 
 No need to call String.valueOf to append to a string; just use the valueOf() argument directly.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.UselessStringValueOfRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/UselessStringValueOfRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.UselessStringValueOfRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UselessStringValueOfRule.java)
 
 **Example(s):**
 
@@ -880,7 +880,7 @@ The use of the '+=' operator for appending strings causes the JVM to create and 
 If a non-trivial number of these concatenations are being used then the explicit use of a StringBuilder or 
 threadsafe StringBuffer is recommended to avoid this.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.optimizations.UseStringBufferForStringAppendsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/optimizations/UseStringBufferForStringAppendsRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferForStringAppendsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UseStringBufferForStringAppendsRule.java)
 
 **Example(s):**
 
@@ -911,7 +911,7 @@ public class Foo {
 Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
 or StringBuffer.toString().length() == ...
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.UseStringBufferLengthRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/UseStringBufferLengthRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferLengthRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UseStringBufferLengthRule.java)
 
 **Example(s):**
 

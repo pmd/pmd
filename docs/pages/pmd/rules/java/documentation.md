@@ -1,6 +1,6 @@
 ---
 title: Documentation
-summary: The Documentation category contains rules that deal with comments and code documentation.
+summary: Rules that are related to code documentation.
 permalink: pmd_rules_java_documentation.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
@@ -15,7 +15,7 @@ keywords: Documentation, CommentContent, CommentRequired, CommentSize, Uncomment
 
 A rule for the politically correct... we don't want to offend anyone.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.comments.CommentContentRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/comments/CommentContentRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.documentation.CommentContentRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/documentation/CommentContentRule.java)
 
 **Example(s):**
 
@@ -44,7 +44,7 @@ A rule for the politically correct... we don't want to offend anyone.
 
 Denotes whether comments are required (or unwanted) for specific language elements.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.comments.CommentRequiredRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/comments/CommentRequiredRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.documentation.CommentRequiredRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/documentation/CommentRequiredRule.java)
 
 **Example(s):**
 
@@ -80,7 +80,7 @@ Denotes whether comments are required (or unwanted) for specific language elemen
 
 Determines whether the dimensions of non-header comments found are within the specified limits.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.comments.CommentSizeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/comments/CommentSizeRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.documentation.CommentSizeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/documentation/CommentSizeRule.java)
 
 **Example(s):**
 

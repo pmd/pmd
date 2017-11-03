@@ -1,6 +1,6 @@
 ---
 title: Multithreading
-summary: The Multithreading category contains rules that deal with programming errors in multi-threaded environments.
+summary: Rules that flag issues when dealing with multiple threads of execution.
 permalink: pmd_rules_java_multithreading.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
@@ -195,7 +195,7 @@ Note: With Java 5, you can make Double checked locking work, if you declare the 
 For more details refer to: <http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html>
 or <http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html>
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.DoubleCheckedLockingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/DoubleCheckedLockingRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.multithreading.DoubleCheckedLockingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/DoubleCheckedLockingRule.java)
 
 **Example(s):**
 
@@ -238,7 +238,7 @@ performance penalty. [Reference](http://www.cs.umd.edu/~pugh/java/memoryModel/Do
 
 See Effective Java, item 48.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.NonThreadSafeSingletonRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/NonThreadSafeSingletonRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.multithreading.NonThreadSafeSingletonRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/NonThreadSafeSingletonRule.java)
 
 **Example(s):**
 
@@ -276,7 +276,7 @@ SimpleDateFormat instances are not synchronized. Sun recommends using separate f
 for each thread. If multiple threads must access a static formatter, the formatter must be
 synchronized either on method or block level.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.UnsynchronizedStaticDateFormatterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/UnsynchronizedStaticDateFormatterRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticDateFormatterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/UnsynchronizedStaticDateFormatterRule.java)
 
 **Example(s):**
 

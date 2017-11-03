@@ -1,6 +1,6 @@
 ---
 title: Error Prone
-summary: The Error Prone category contains rules, that detect incorrect usages, missed checks, ...  It fully contains these previous rulesets:  *   android *   clone *   empty *   finalizers *   javabeans
+summary: Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
 permalink: pmd_rules_java_errorprone.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
@@ -15,7 +15,7 @@ keywords: Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAcc
 
 Avoid assignments in operands; this can make code more complicated and harder to read.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.controversial.AssignmentInOperandRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/controversial/AssignmentInOperandRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.AssignmentInOperandRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AssignmentInOperandRule.java)
 
 **Example(s):**
 
@@ -50,7 +50,7 @@ public void bar() {
 
 Identifies a possible unsafe usage of a static field.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AssignmentToNonFinalStaticRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AssignmentToNonFinalStaticRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.AssignmentToNonFinalStaticRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AssignmentToNonFinalStaticRule.java)
 
 **Example(s):**
 
@@ -176,7 +176,7 @@ public class A {
 Using a branching statement as the last part of a loop may be a bug, and/or is confusing.
 Ensure that the usage is not a bug, or consider using another approach.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.AvoidBranchingStatementAsLastInLoopRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/AvoidBranchingStatementAsLastInLoopRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.java)
 
 **Example(s):**
 
@@ -219,7 +219,7 @@ for (int i = 0; i < 10; i++) {
 The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
 that there are no more references to the object. It should not be invoked by application logic.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.finalizers.AvoidCallingFinalizeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/finalizers/AvoidCallingFinalizeRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCallingFinalizeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidCallingFinalizeRule.java)
 
 **Example(s):**
 
@@ -276,7 +276,7 @@ public class Foo {
 Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as 
 OutOfMemoryError that should be exposed and managed separately.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strictexception.AvoidCatchingThrowableRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strictexception/AvoidCatchingThrowableRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCatchingThrowableRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidCatchingThrowableRule.java)
 
 **Example(s):**
 
@@ -356,7 +356,7 @@ BigDecimal bd = new BigDecimal(12);          // preferred approach, ok for integ
 
 Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.AvoidDuplicateLiteralsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/AvoidDuplicateLiteralsRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.AvoidDuplicateLiteralsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidDuplicateLiteralsRule.java)
 
 **Example(s):**
 
@@ -423,7 +423,7 @@ It can be confusing to have a field name with the same name as a method. While t
 having information (field) and actions (method) is not clear naming. Developers versed in 
 Smalltalk often prefer this approach as the methods denote accessor methods.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingMethodNameRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/naming/AvoidFieldNameMatchingMethodNameRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.AvoidFieldNameMatchingMethodNameRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidFieldNameMatchingMethodNameRule.java)
 
 **Example(s):**
 
@@ -450,7 +450,7 @@ public class Foo {
 It is somewhat confusing to have a field name matching the declaring class name.
 This probably means that type and/or field names should be chosen more carefully.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingTypeNameRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/naming/AvoidFieldNameMatchingTypeNameRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.AvoidFieldNameMatchingTypeNameRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidFieldNameMatchingTypeNameRule.java)
 
 **Example(s):**
 
@@ -606,7 +606,7 @@ public void bar() {
 The use of multiple unary operators may be problematic, and/or confusing.
 Ensure that the intended usage is not a bug, or consider simplifying the expression.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.AvoidMultipleUnaryOperatorsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/AvoidMultipleUnaryOperatorsRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.AvoidMultipleUnaryOperatorsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidMultipleUnaryOperatorsRule.java)
 
 **Example(s):**
 
@@ -644,7 +644,7 @@ int j = -~7;
 Integer literals should not start with zero since this denotes that the rest of literal will be
 interpreted as an octal value.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.AvoidUsingOctalValuesRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/AvoidUsingOctalValuesRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.AvoidUsingOctalValuesRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidUsingOctalValuesRule.java)
 
 **Example(s):**
 
@@ -702,7 +702,7 @@ Member variables need to be marked as transient, static, or have accessor method
 variables as transient is the safest and easiest modification. Accessor methods should follow the Java 
 naming conventions, i.e. for a variable named foo, getFoo() and setFoo() accessor methods should be provided.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.javabeans.BeanMembersShouldSerializeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/javabeans/BeanMembersShouldSerializeRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.BeanMembersShouldSerializeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/BeanMembersShouldSerializeRule.java)
 
 **Example(s):**
 
@@ -741,7 +741,7 @@ private int getMoreFoo(){
 The null check is broken since it will throw a NullPointerException itself.
 It is likely that you used || instead of && or vice versa.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.BrokenNullCheckRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/BrokenNullCheckRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.BrokenNullCheckRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/BrokenNullCheckRule.java)
 
 **Example(s):**
 
@@ -855,7 +855,7 @@ public class DummyActivity extends Activity {
 
 The skip() method may skip a smaller number of bytes than requested. Check the returned value to find out if it was the case or not.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.CheckSkipResultRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/CheckSkipResultRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.CheckSkipResultRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/CheckSkipResultRule.java)
 
 **Example(s):**
 
@@ -976,7 +976,7 @@ a final method that only throws CloneNotSupportedException.
 
 The rule can also detect, if the class implements or extends a Cloneable class.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.clone.CloneMethodMustImplementCloneableRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/clone/CloneMethodMustImplementCloneableRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.CloneMethodMustImplementCloneableRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/CloneMethodMustImplementCloneableRule.java)
 
 **Example(s):**
 
@@ -1081,7 +1081,7 @@ public class MyClass implements Cloneable{
 
 Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.CloseResourceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/CloseResourceRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.CloseResourceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/CloseResourceRule.java)
 
 **Example(s):**
 
@@ -1122,7 +1122,7 @@ public class Bar {
 
 Use equals() to compare object references; avoid comparing them with ==.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.CompareObjectsWithEqualsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/CompareObjectsWithEqualsRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.CompareObjectsWithEqualsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/CompareObjectsWithEqualsRule.java)
 
 **Example(s):**
 
@@ -1153,7 +1153,7 @@ contains a call to an overridable method, the subclass may be completely uninsta
 this includes method calls throughout the control flow graph - i.e., if a constructor Foo() calls a
 private method bar() that calls a public method buz(), this denotes a problem.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.ConstructorCallsOverridableMethodRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ConstructorCallsOverridableMethodRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.ConstructorCallsOverridableMethodRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/ConstructorCallsOverridableMethodRule.java)
 
 **Example(s):**
 
@@ -1196,7 +1196,7 @@ From those informations there can be found various problems.
 2. DU - Anomaly: A recently defined variable is undefined. These anomalies may appear in normal source text.
 3. DD - Anomaly: A recently defined variable is redefined. This is ominous but don't have to be a bug.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.controversial.DataflowAnomalyAnalysisRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/controversial/DataflowAnomalyAnalysisRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.DataflowAnomalyAnalysisRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/DataflowAnomalyAnalysisRule.java)
 
 **Example(s):**
 
@@ -1405,7 +1405,7 @@ public class Foo {
 
 Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.controversial.DontImportSunRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/controversial/DontImportSunRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.DontImportSunRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/DontImportSunRule.java)
 
 **Example(s):**
 
@@ -2007,7 +2007,7 @@ public void finalize() {
 
 Avoid idempotent operations - they have no effect.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.IdempotentOperationsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/IdempotentOperationsRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.IdempotentOperationsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/IdempotentOperationsRule.java)
 
 **Example(s):**
 
@@ -2033,7 +2033,7 @@ public class Foo {
 
 There is no need to import a type that lives in the same package.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.ImportFromSamePackageRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/ImportFromSamePackageRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.ImportFromSamePackageRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/ImportFromSamePackageRule.java)
 
 **Example(s):**
 
@@ -2091,7 +2091,7 @@ Class c = String.class;
 
 Check for messages in slf4j loggers with non matching number of arguments and placeholders.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.logging.InvalidSlf4jMessageFormatRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/logging/InvalidSlf4jMessageFormatRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.InvalidSlf4jMessageFormatRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/InvalidSlf4jMessageFormatRule.java)
 
 **Example(s):**
 
@@ -2246,7 +2246,7 @@ public class Foo{
 
 Non-constructor methods should not have the same name as the enclosing class.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.naming.MethodWithSameNameAsEnclosingClassRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/naming/MethodWithSameNameAsEnclosingClassRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.MethodWithSameNameAsEnclosingClassRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/MethodWithSameNameAsEnclosingClassRule.java)
 
 **Example(s):**
 
@@ -2462,7 +2462,7 @@ public class Foo {
 
 Normally only one logger is used in each class.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.logging.MoreThanOneLoggerRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/logging/MoreThanOneLoggerRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.MoreThanOneLoggerRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/MoreThanOneLoggerRule.java)
 
 **Example(s):**
 
@@ -2557,7 +2557,7 @@ of assignment is an indication that the programmer doesn't completely understand
 
 NOTE: This sort of assignment may used in some cases to dereference objects and encourage garbage collection.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.controversial.NullAssignmentRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/controversial/NullAssignmentRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.NullAssignmentRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/NullAssignmentRule.java)
 
 **Example(s):**
 
@@ -2584,7 +2584,7 @@ public void bar() {
 
 Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.OverrideBothEqualsAndHashcodeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/OverrideBothEqualsAndHashcodeRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/OverrideBothEqualsAndHashcodeRule.java)
 
 **Example(s):**
 
@@ -2809,7 +2809,7 @@ Some classes contain overloaded getInstance. The problem with overloaded getInst
 is that the instance created using the overloaded method is not cached and so,
 for each call and new objects will be created for every invocation.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.SingleMethodSingletonRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SingleMethodSingletonRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.SingleMethodSingletonRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/SingleMethodSingletonRule.java)
 
 **Example(s):**
 
@@ -2846,7 +2846,7 @@ Some classes contain overloaded getInstance. The problem with overloaded getInst
 is that the instance created using the overloaded method is not cached and so,
 for each call and new objects will be created for every invocation.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.SingletonClassReturningNewInstanceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SingletonClassReturningNewInstanceRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.SingletonClassReturningNewInstanceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/SingletonClassReturningNewInstanceRule.java)
 
 **Example(s):**
 
@@ -3026,7 +3026,7 @@ public class Foo {
 The method name and return type are suspiciously close to hashCode(), which may denote an intention
 to override the hashCode() method.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.naming.SuspiciousHashcodeMethodNameRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/naming/SuspiciousHashcodeMethodNameRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.SuspiciousHashcodeMethodNameRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/SuspiciousHashcodeMethodNameRule.java)
 
 **Example(s):**
 
@@ -3059,7 +3059,7 @@ Any octal escape sequence followed by non-octal digits can be confusing,
 e.g. "\038" is interpreted as the octal escape sequence "\03" followed by
 the literal character "8".
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.controversial.SuspiciousOctalEscapeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/controversial/SuspiciousOctalEscapeRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.SuspiciousOctalEscapeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/SuspiciousOctalEscapeRule.java)
 
 **Example(s):**
 
@@ -3084,7 +3084,7 @@ public void foo() {
 Test classes end with the suffix Test. Having a non-test class with that name is not a good practice, 
 since most people will assume it is a test case. Test classes have test methods named testXXX.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.junit.TestClassWithoutTestCasesRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/junit/TestClassWithoutTestCasesRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.TestClassWithoutTestCasesRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/TestClassWithoutTestCasesRule.java)
 
 **Example(s):**
 
@@ -3183,7 +3183,7 @@ public class SimpleTest extends TestCase {
 
 Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.UnnecessaryCaseChangeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/UnnecessaryCaseChangeRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.UnnecessaryCaseChangeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/UnnecessaryCaseChangeRule.java)
 
 **Example(s):**
 
@@ -3207,7 +3207,7 @@ boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");    // another unnec
 Avoid the use temporary objects when converting primitives to Strings. Use the static conversion methods
 on the wrapper classes instead.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryConversionTemporaryRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unnecessary/UnnecessaryConversionTemporaryRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.UnnecessaryConversionTemporaryRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/UnnecessaryConversionTemporaryRule.java)
 
 **Example(s):**
 
@@ -3367,7 +3367,7 @@ public boolean test(String s) {
 An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself
 since the result of the operation is a new object. Therefore, ignoring the operation result is an error.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unnecessary.UselessOperationOnImmutableRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unnecessary/UselessOperationOnImmutableRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.UselessOperationOnImmutableRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/UselessOperationOnImmutableRule.java)
 
 **Example(s):**
 
