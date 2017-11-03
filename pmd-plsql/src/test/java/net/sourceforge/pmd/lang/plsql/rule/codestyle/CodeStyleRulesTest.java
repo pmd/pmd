@@ -2,13 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.plsql.rule.strictsyntax;
+package net.sourceforge.pmd.lang.plsql.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class StrictsyntaxRulesTest extends SimpleAggregatorTst {
+public class CodeStyleRulesTest extends SimpleAggregatorTst {
 
-    private static final String RULESET = "plsql-strictsyntax";
+    private static final String RULESET = "category/plsql/codestyle.xml";
 
     @Override
     public void setUp() {
