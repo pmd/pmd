@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+
+<ruleset name="Error Prone"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+    <description>
+Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
+    </description>
+
+    <rule name="AvoidDirectAccessTriggerMap"
+          since="6.0.0"
+          message="Avoid directly accessing Trigger.old and Trigger.new"
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoiddirectaccesstriggermap">
+        <description>
+Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Triggers should be bulkified and iterate through the map to handle the actions for each item separately.
+        </description>
+        <priority>3</priority>
+            <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ArrayLoadExpression/TriggerVariableExpression | //ArrayLoadExpression/LiteralExpression
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+trigger AccountTrigger on Account (before insert, before update) {
+   Account a = Trigger.new[0]; //Bad: Accessing the trigger array directly is not recommended.
+   
+   foreach ( Account a : Trigger.new ){   
+        //Good: Iterate through the trigger.new array instead.
+   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="EmptyCatchBlock"
+          language="apex"
+          since="6.0.0"
+          message="Avoid empty catch blocks"
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptycatchblock">
+        <description>
+Empty Catch Block finds instances where an exception is caught, but nothing is done.  
+In most circumstances, this swallows an exception which should either be acted on 
+or reported.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//CatchBlockStatement[./BlockStatement[count(*) = 0]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public void doSomething() {
+  ...
+  try {
+    insert accounts;
+  } catch (DmlException dmle) {
+    // not good
+  }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="EmptyIfStmt"
+          language="apex"
+          since="6.0.0"
+          message="Avoid empty 'if' statements"
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptyifstmt">
+        <description>
+Empty If Statement finds instances where a condition is checked but nothing is done about it.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//IfBlockStatement
+ [BlockStatement[count(*) = 0]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+  public void bar(Integer x) {
+    if (x == 0) {
+      // empty!
+    }
+  }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="EmptyStatementBlock"
+          language="apex"
+          since="6.0.0"
+          message="Avoid empty block statements."
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptystatementblock">
+        <description>
+Empty block statements serve no purpose and should be removed.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Method/ModifierNode[@Abstract!='true' and ../BlockStatement[count(*) = 0]]
+| //Method/BlockStatement//BlockStatement[count(*) = 0]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+
+   private int _bar;
+
+   public void setBar(int bar) {
+        // empty
+   }
+
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="EmptyTryOrFinallyBlock"
+          language="apex"
+          since="6.0.0"
+          message="Avoid empty try or finally blocks"
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptytryorfinallyblock">
+        <description>
+Avoid empty try or finally blocks - what's the point?
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//TryCatchFinallyBlockStatement[./BlockStatement[count(*) = 0]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    public void bar() {
+        try {
+          // empty !
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+public class Foo {
+    public void bar() {
+        try {
+            int x=2;
+        } finally {
+            // empty!
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="EmptyWhileStmt"
+          language="apex"
+          since="6.0.0"
+          message="Avoid empty 'while' statements"
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptywhilestmt">
+        <description>
+Empty While Statement finds all instances where a while statement does nothing.  
+If it is a timing loop, then you should use Thread.sleep() for it; if it is
+a while loop that does a lot in the exit expression, rewrite it to make it clearer.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//WhileLoopStatement[./BlockStatement[count(*) = 0]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public void bar(Integer a, Integer b) {
+  while (a == b) {
+    // empty!
+  }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="MethodWithSameNameAsEnclosingClass"
+          since="5.5.0"
+          message="Classes should not have non-constructor methods with the same name as the class"
+          class="net.sourceforge.pmd.lang.apex.rule.style.MethodWithSameNameAsEnclosingClassRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#methodwithsamenameasenclosingclass">
+        <description>
+Non-constructor methods should not have the same name as the enclosing class.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class MyClass {
+    // this is OK because it is a constructor
+    public MyClass() {}
+    // this is bad because it is a method
+    public void MyClass() {}
+}
+]]>
+        </example>
+    </rule>
+
+</ruleset>

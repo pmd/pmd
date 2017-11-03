@@ -12,12 +12,14 @@ This ruleset contains links to rules that are new in PMD v6.0.0
     <rule ref="rulesets/java/migrating.xml/ForLoopCanBeForeach"/>
     <rule ref="rulesets/java/strictexception.xml/DoNotExtendJavaLangThrowable"/>
 
-    <rule ref="rulesets/apex/empty.xml/EmptyCatchBlock"/>
-    <rule ref="rulesets/apex/empty.xml/EmptyIfStmt"/>
-    <rule ref="rulesets/apex/empty.xml/EmptyTryOrFinallyBlock"/>
-    <rule ref="rulesets/apex/empty.xml/EmptyWhileStmt"/>
-    <rule ref="rulesets/apex/empty.xml/EmptyStatementBlock"/>
-    <rule ref="rulesets/apex/performance.xml/AvoidSoslInLoops" />
-    <rule ref="rulesets/apex/style.xml/AvoidDirectAccessTriggerMap"/>
+    <rule ref="category/apex/bestpractices.xml/AvoidHardcodingId" />
+    <rule ref="category/apex/design.xml/CyclomaticComplexity" />
+    <rule ref="category/apex/errorprone.xml/AvoidDirectAccessTriggerMap"/>
+    <rule ref="category/apex/errorprone.xml/EmptyCatchBlock"/>
+    <rule ref="category/apex/errorprone.xml/EmptyIfStmt"/>
+    <rule ref="category/apex/errorprone.xml/EmptyStatementBlock"/>
+    <rule ref="category/apex/errorprone.xml/EmptyTryOrFinallyBlock"/>
+    <rule ref="category/apex/errorprone.xml/EmptyWhileStmt"/>
+    <rule ref="category/apex/performance.xml/AvoidSoslInLoops" />
 </ruleset>
 

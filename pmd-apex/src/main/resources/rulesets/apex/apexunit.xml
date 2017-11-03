@@ -8,51 +8,7 @@
         These rules deal with different problems that can occur with Apex unit tests.
     </description>
 
-    <rule name="ApexUnitTestClassShouldHaveAsserts"
-          since="5.5.1"
-          message="Apex unit tests should System.assert() or assertEquals() or assertNotEquals()"
-          class="net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestClassShouldHaveAssertsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_apexunit.html#apexunittestclassshouldhaveasserts">
-        <description>
-            Apex unit tests should include at least one assertion.  This makes the tests more robust, and using assert
-            with messages provide the developer a clearer idea of what the test does.
-        </description>
-        <priority>3</priority>
-        <example>
-            <![CDATA[
-@isTest
-public class Foo {
-   public static testMethod void testSomething() {
-      Account a = null;
-   // This is better than having a NullPointerException
-   // System.assertNotEquals(a, null, 'account not found');
-   a.toString();
-   }
-}
-    ]]>
-        </example>
-    </rule>
-    <rule name="ApexUnitTestShouldNotUseSeeAllDataTrue"
-          since="5.5.1"
-          message="Apex unit tests should not use @isTest(seeAllData = true)"
-          class="net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestShouldNotUseSeeAllDataTrueRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_apexunit.html#apexunittestshouldnotuseseealldatatrue">
-        <description>
-            Apex unit tests should not use @isTest(seeAllData=true) because it opens up the existing database data for unexpected modification by tests.
-        </description>
-        <priority>3</priority>
-        <example>
-            <![CDATA[
-@isTest(seeAllData = true)
-public class Foo {
-   public static testMethod void testSomething() {
-      Account a = null;
-   // This is better than having a NullPointerException
-   // System.assertNotEquals(a, null, 'account not found');
-   a.toString();
-   }
-}
-    ]]>
-        </example>
-    </rule>
+    <rule ref="category/apex/bestpractices.xml/ApexUnitTestClassShouldHaveAsserts" deprecated="true" />
+    <rule ref="category/apex/bestpractices.xml/ApexUnitTestShouldNotUseSeeAllDataTrue" deprecated="true" />
+
 </ruleset>
