@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.jsp.rule.basic;
+package net.sourceforge.pmd.lang.jsp.rule.security;
 
 import net.sourceforge.pmd.lang.jsp.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.jsp.ast.ASTElement;

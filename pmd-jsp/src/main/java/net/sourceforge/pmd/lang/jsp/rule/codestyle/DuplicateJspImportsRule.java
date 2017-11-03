@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.jsp.rule.basic;
+package net.sourceforge.pmd.lang.jsp.rule.codestyle;
 
 import java.util.HashSet;
 import java.util.List;
