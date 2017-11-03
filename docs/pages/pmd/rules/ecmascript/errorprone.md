@@ -1,12 +1,50 @@
 ---
 title: Error Prone
-summary: 
+summary: Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
 permalink: pmd_rules_ecmascript_errorprone.html
 folder: pmd/rules/ecmascript
 sidebaractiveurl: /pmd_rules_ecmascript.html
 editmepath: ../pmd-javascript/src/main/resources/category/ecmascript/errorprone.xml
-keywords: Error Prone, EqualComparison, InnaccurateNumericLiteral
+keywords: Error Prone, AvoidTrailingComma, EqualComparison, InnaccurateNumericLiteral
 ---
+## AvoidTrailingComma
+
+**Since:** PMD 5.1
+
+**Priority:** High (1)
+
+This rule helps improve code portability due to differences in browser treatment of trailing commas in object or array literals.
+
+```
+//ObjectLiteral[$allowObjectLiteral = "false" and @TrailingComma = 'true']
+|
+//ArrayLiteral[$allowArrayLiteral = "false" and @TrailingComma = 'true']
+```
+
+**Example(s):**
+
+``` javascript
+function(arg) {
+    var obj1 = { a : 1 };   // Ok
+    var arr1 = [ 1, 2 ];    // Ok
+
+    var obj2 = { a : 1, };  // Syntax error in some browsers!
+    var arr2 = [ 1, 2, ];   // Length 2 or 3 depending on the browser!
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|allowObjectLiteral|false|Allow a trailing comma within an object literal|
+|allowArrayLiteral|false|Allow a trailing comma within an array literal|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/ecmascript/errorprone.xml/AvoidTrailingComma" />
+```
+
 ## EqualComparison
 
 **Since:** PMD 5.0

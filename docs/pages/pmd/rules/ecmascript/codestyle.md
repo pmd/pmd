@@ -1,11 +1,11 @@
 ---
 title: Code Style
-summary: 
+summary: Rules which enforce a specific coding style.
 permalink: pmd_rules_ecmascript_codestyle.html
 folder: pmd/rules/ecmascript
 sidebaractiveurl: /pmd_rules_ecmascript.html
 editmepath: ../pmd-javascript/src/main/resources/category/ecmascript/codestyle.xml
-keywords: Code Style, AssignmentInOperand, AvoidTrailingComma, ForLoopsMustUseBraces, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, NoElseReturn, UnnecessaryBlock, UnnecessaryParentheses, UnreachableCode, WhileLoopsMustUseBraces
+keywords: Code Style, AssignmentInOperand, ForLoopsMustUseBraces, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, NoElseReturn, UnnecessaryBlock, UnnecessaryParentheses, UnreachableCode, WhileLoopsMustUseBraces
 ---
 ## AssignmentInOperand
 
@@ -58,44 +58,6 @@ function getX() {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="rulesets/ecmascript/codestyle.xml/AssignmentInOperand" />
-```
-
-## AvoidTrailingComma
-
-**Since:** PMD 5.1
-
-**Priority:** High (1)
-
-This rule helps improve code portability due to differences in browser treatment of trailing commas in object or array literals.
-
-```
-//ObjectLiteral[$allowObjectLiteral = "false" and @TrailingComma = 'true']
-|
-//ArrayLiteral[$allowArrayLiteral = "false" and @TrailingComma = 'true']
-```
-
-**Example(s):**
-
-``` javascript
-function(arg) {
-    var obj1 = { a : 1 };   // Ok
-    var arr1 = [ 1, 2 ];    // Ok
-
-    var obj2 = { a : 1, };  // Syntax error in some browsers!
-    var arr2 = [ 1, 2, ];   // Length 2 or 3 depending on the browser!
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|allowObjectLiteral|false|Allow a trailing comma within an object literal|
-|allowArrayLiteral|false|Allow a trailing comma within an array literal|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/ecmascript/codestyle.xml/AvoidTrailingComma" />
 ```
 
 ## ForLoopsMustUseBraces

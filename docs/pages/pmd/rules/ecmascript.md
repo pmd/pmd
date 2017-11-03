@@ -5,9 +5,9 @@ folder: pmd/rules
 ---
 List of rulesets and rules contained in each ruleset.
 
-*   [Best Practices](pmd_rules_ecmascript_bestpractices.html): 
-*   [Code Style](pmd_rules_ecmascript_codestyle.html): 
-*   [Error Prone](pmd_rules_ecmascript_errorprone.html): 
+*   [Best Practices](pmd_rules_ecmascript_bestpractices.html): Rules which enforce generally accepted best practices.
+*   [Code Style](pmd_rules_ecmascript_codestyle.html): Rules which enforce a specific coding style.
+*   [Error Prone](pmd_rules_ecmascript_errorprone.html): Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
 
 ## Best Practices
 *   [AvoidWithStatement](pmd_rules_ecmascript_bestpractices.html#avoidwithstatement): Avoid using with - it's bad news
@@ -18,7 +18,6 @@ List of rulesets and rules contained in each ruleset.
 
 ## Code Style
 *   [AssignmentInOperand](pmd_rules_ecmascript_codestyle.html#assignmentinoperand): Avoid assignments in operands; this can make code more complicated and harder to read.  This is s...
-*   [AvoidTrailingComma](pmd_rules_ecmascript_codestyle.html#avoidtrailingcomma): This rule helps improve code portability due to differences in browser treatment of trailing comm...
 *   [ForLoopsMustUseBraces](pmd_rules_ecmascript_codestyle.html#forloopsmustusebraces): Avoid using 'for' statements without using curly braces.
 *   [IfElseStmtsMustUseBraces](pmd_rules_ecmascript_codestyle.html#ifelsestmtsmustusebraces): Avoid using if..else statements without using curly braces.
 *   [IfStmtsMustUseBraces](pmd_rules_ecmascript_codestyle.html#ifstmtsmustusebraces): Avoid using if statements without using curly braces.
@@ -29,6 +28,7 @@ List of rulesets and rules contained in each ruleset.
 *   [WhileLoopsMustUseBraces](pmd_rules_ecmascript_codestyle.html#whileloopsmustusebraces): Avoid using 'while' statements without using curly braces.
 
 ## Error Prone
+*   [AvoidTrailingComma](pmd_rules_ecmascript_errorprone.html#avoidtrailingcomma): This rule helps improve code portability due to differences in browser treatment of trailing comm...
 *   [EqualComparison](pmd_rules_ecmascript_errorprone.html#equalcomparison): Using == in condition may lead to unexpected results, as the variables are automatically casted t...
 *   [InnaccurateNumericLiteral](pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral): The numeric literal will have a different value at runtime, which can happen if you provide too m...
 

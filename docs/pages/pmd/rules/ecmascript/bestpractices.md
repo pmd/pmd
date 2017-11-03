@@ -1,6 +1,6 @@
 ---
 title: Best Practices
-summary: 
+summary: Rules which enforce generally accepted best practices.
 permalink: pmd_rules_ecmascript_bestpractices.html
 folder: pmd/rules/ecmascript
 sidebaractiveurl: /pmd_rules_ecmascript.html
