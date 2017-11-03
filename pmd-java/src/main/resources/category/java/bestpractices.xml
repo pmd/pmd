@@ -113,7 +113,7 @@ public class OuterClass {
     <rule name="ArrayIsStoredDirectly"
           since="2.2"
           message="The user-supplied array ''{0}'' is stored directly."
-          class="net.sourceforge.pmd.lang.java.rule.sunsecure.ArrayIsStoredDirectlyRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.ArrayIsStoredDirectlyRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#arrayisstoreddirectly">
         <description>
 Constructors and methods receiving arrays should clone objects and store the copy.
@@ -361,7 +361,7 @@ public class Foo {
           message="This 'for' loop can be replaced by a 'foreach' loop"
           typeResolution="true"
           minimumLanguageVersion="1.5"
-          class="net.sourceforge.pmd.lang.java.rule.migrating.ForLoopCanBeForeachRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.ForLoopCanBeForeachRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#forloopcanbeforeach">
         <description>
 Reports loops that can be safely replaced with the foreach syntax. The rule considers loops over
@@ -391,7 +391,7 @@ public class MyClass {
           language="java"
           since="4.3"
           message="debug logging that involves string concatenation should be guarded with isDebugEnabled() checks"
-          class="net.sourceforge.pmd.lang.java.rule.logging.GuardDebugLoggingRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.GuardDebugLoggingRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#guarddebuglogging">
         <description>
 When log messages are composed by concatenating strings, the whole section should be guarded
@@ -429,7 +429,7 @@ public class Test {
           language="java"
           since="5.1.0"
           message="There is log block not surrounded by if"
-          class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.GuardLogStatementRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#guardlogstatement">
         <description>
 Whenever using a log level, one should check if the loglevel is actually enabled, or
@@ -449,7 +449,7 @@ otherwise skip the associate String creation and manipulation.
           language="java"
           since="5.1.0"
           message="There is log block not surrounded by if"
-          class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementJavaUtilRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.GuardLogStatementJavaUtilRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#guardlogstatementjavautil">
         <description>
 Whenever using a log level, one should check if the loglevel is actually enabled, or
@@ -622,7 +622,7 @@ public class MyTest {
     <rule name="JUnitAssertionsShouldIncludeMessage"
           since="1.04"
           message="JUnit assertions should include a message"
-          class="net.sourceforge.pmd.lang.java.rule.junit.JUnitAssertionsShouldIncludeMessageRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitAssertionsShouldIncludeMessageRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junitassertionsshouldincludemessage">
         <description>
 JUnit assertions should include an informative message - i.e., use the three-argument version of 
@@ -688,7 +688,7 @@ public class MyTestCase extends TestCase {
     <rule name="JUnitTestsShouldIncludeAssert"
           since="2.0"
           message="JUnit tests should include assert() or fail()"
-          class="net.sourceforge.pmd.lang.java.rule.junit.JUnitTestsShouldIncludeAssertRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitTestsShouldIncludeAssertRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junittestsshouldincludeassert">
         <description>
 JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert 
@@ -712,7 +712,7 @@ public class Foo extends TestCase {
     <rule name="JUnitUseExpected"
           since="4.0"
           message="In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions"
-          class="net.sourceforge.pmd.lang.java.rule.migrating.JUnitUseExpectedRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitUseExpectedRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junituseexpected">
         <description>
 In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions.
@@ -778,7 +778,7 @@ public class Bar {
     <rule name="MethodReturnsInternalArray"
           since="2.2"
           message="Returning ''{0}'' may expose an internal array."
-          class="net.sourceforge.pmd.lang.java.rule.sunsecure.MethodReturnsInternalArrayRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.MethodReturnsInternalArrayRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#methodreturnsinternalarray">
         <description>
 Exposing internal arrays to the caller violates object encapsulation since elements can be 
@@ -1117,7 +1117,7 @@ class Foo{
           language="java"
           since="0.8"
           message="Avoid unused {0} parameters such as ''{1}''."
-          class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedFormalParameterRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedFormalParameterRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedformalparameter">
         <description>
 Avoid passing parameters to methods or constructors without actually referencing them in the method body.
@@ -1159,7 +1159,7 @@ public class Foo {}
           language="java"
           since="0.1"
           message="Avoid unused local variables such as ''{0}''."
-          class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedLocalVariableRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedlocalvariable">
         <description>
 Detects when a local variable is declared and/or assigned, but not used.
@@ -1180,7 +1180,7 @@ public class Foo {
           since="0.1"
           language="java"
           message="Avoid unused private fields such as ''{0}''."
-          class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateFieldRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedPrivateFieldRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedprivatefield">
         <description>
 Detects when a private field is declared and/or assigned a value, but not used.
@@ -1204,7 +1204,7 @@ public class Something {
           language="java"
           since="0.7"
           message="Avoid unused private methods such as ''{0}''."
-          class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateMethodRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedPrivateMethodRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedprivatemethod">
         <description>
 Unused Private Method detects when a private method is declared but is unused.

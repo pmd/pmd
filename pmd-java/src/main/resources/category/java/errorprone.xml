@@ -247,7 +247,7 @@ public class Foo {
     <rule name="AvoidCatchingThrowable"
           since="1.2"
           message="A catch statement should never catch throwable since it includes errors."
-          class="net.sourceforge.pmd.lang.java.rule.strictexception.AvoidCatchingThrowableRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCatchingThrowableRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcatchingthrowable">
         <description>
 Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as 
@@ -326,7 +326,7 @@ BigDecimal bd = new BigDecimal(12);          // preferred approach, ok for integ
     <rule name="AvoidDuplicateLiterals"
           since="1.0"
           message="The String literal {0} appears {1} times in this file; the first occurrence is on line {2}"
-          class="net.sourceforge.pmd.lang.java.rule.strings.AvoidDuplicateLiteralsRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidDuplicateLiteralsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidduplicateliterals">
         <description>
 Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
@@ -374,7 +374,7 @@ public class A {
     <rule name="AvoidFieldNameMatchingMethodName"
           since="3.0"
           message="Field {0} has the same name as a method"
-          class="net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingMethodNameRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidFieldNameMatchingMethodNameRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidfieldnamematchingmethodname">
         <description>
 It can be confusing to have a field name with the same name as a method. While this is permitted, 
@@ -397,7 +397,7 @@ public class Foo {
     <rule name="AvoidFieldNameMatchingTypeName"
           since="3.0"
           message="It is somewhat confusing to have a field name matching the declaring class name"
-          class="net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingTypeNameRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidFieldNameMatchingTypeNameRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidfieldnamematchingtypename">
         <description>
 It is somewhat confusing to have a field name matching the declaring class name.
@@ -636,7 +636,7 @@ boolean x = (y == Double.NaN);
     <rule name="BeanMembersShouldSerialize"
           since="1.1"
           message="Found non-transient, non-static member. Please mark as transient or provide accessors."
-          class="net.sourceforge.pmd.lang.java.rule.javabeans.BeanMembersShouldSerializeRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.BeanMembersShouldSerializeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#beanmembersshouldserialize">
         <description>
 If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable. 
@@ -2013,7 +2013,7 @@ Class c = String.class;
           language="java"
           since="5.5.0"
           message="Invalid message format"
-          class="net.sourceforge.pmd.lang.java.rule.logging.InvalidSlf4jMessageFormatRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.InvalidSlf4jMessageFormatRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#invalidslf4jmessageformat">
         <description>
 Check for messages in slf4j loggers with non matching number of arguments and placeholders.
@@ -2174,7 +2174,7 @@ public class Foo{
     <rule name="MethodWithSameNameAsEnclosingClass"
           since="1.5"
           message="Classes should not have non-constructor methods with the same name as the class"
-          class="net.sourceforge.pmd.lang.java.rule.naming.MethodWithSameNameAsEnclosingClassRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.MethodWithSameNameAsEnclosingClassRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#methodwithsamenameasenclosingclass">
         <description>
 Non-constructor methods should not have the same name as the enclosing class.
@@ -2399,7 +2399,7 @@ public class Foo {
     <rule name="MoreThanOneLogger"
           since="2.0"
           message="Class contains more than one logger."
-          class="net.sourceforge.pmd.lang.java.rule.logging.MoreThanOneLoggerRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.MoreThanOneLoggerRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#morethanonelogger">
         <description>
 Normally only one logger is used in each class.
@@ -2955,7 +2955,7 @@ public class Foo {
     <rule name="SuspiciousHashcodeMethodName"
           since="1.5"
           message="The method name and return type are suspiciously close to hashCode()"
-          class="net.sourceforge.pmd.lang.java.rule.naming.SuspiciousHashcodeMethodNameRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.SuspiciousHashcodeMethodNameRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#suspicioushashcodemethodname">
         <description>
 The method name and return type are suspiciously close to hashCode(), which may denote an intention
@@ -3003,7 +3003,7 @@ public void foo() {
     <rule name="TestClassWithoutTestCases"
           since="3.0"
           message="This class name ends with 'Test' but contains no test cases"
-          class="net.sourceforge.pmd.lang.java.rule.junit.TestClassWithoutTestCasesRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.TestClassWithoutTestCasesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#testclasswithouttestcases">
         <description>
 Test classes end with the suffix Test. Having a non-test class with that name is not a good practice, 
@@ -3104,7 +3104,7 @@ public class SimpleTest extends TestCase {
     <rule name="UnnecessaryCaseChange"
           since="3.3"
           message="Using equalsIgnoreCase() is cleaner than using toUpperCase/toLowerCase().equals()."
-          class="net.sourceforge.pmd.lang.java.rule.strings.UnnecessaryCaseChangeRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.UnnecessaryCaseChangeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unnecessarycasechange">
         <description>
 Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
@@ -3122,7 +3122,7 @@ boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");    // another unnec
     <rule name="UnnecessaryConversionTemporary"
           since="0.1"
           message="Avoid unnecessary temporaries when converting primitives to Strings"
-          class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryConversionTemporaryRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.UnnecessaryConversionTemporaryRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unnecessaryconversiontemporary">
         <description>
 Avoid the use temporary objects when converting primitives to Strings. Use the static conversion methods
@@ -3286,7 +3286,7 @@ public boolean test(String s) {
     <rule name="UselessOperationOnImmutable"
           since="3.5"
           message="An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself"
-          class="net.sourceforge.pmd.lang.java.rule.unnecessary.UselessOperationOnImmutableRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.UselessOperationOnImmutableRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselessoperationonimmutable">
         <description>
 An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself

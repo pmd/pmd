@@ -434,8 +434,8 @@ public class Foo {      // This has a Cyclomatic Complexity = 12
     <rule name="DataClass"
           since="6.0"
           message="The class ''{0}'' is suspected to be a Data Class (WOC={1}, NOPA={2}, NOAM={3}, WMC={4})"
-          class="net.sourceforge.pmd.lang.java.metrics.rule.DataClassRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#DataClass">
+          class="net.sourceforge.pmd.lang.java.rule.design.DataClassRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#dataclass">
         <description>
 Data Classes are simple data holders, which reveal most of their state, and
 without complex functionality. The lack of functionality may indicate that
@@ -497,7 +497,7 @@ public class Foo extends Error { }
     <rule name="ExceptionAsFlowControl"
           since="1.8"
           message="Avoid using exceptions as flow control."
-          class="net.sourceforge.pmd.lang.java.rule.strictexception.ExceptionAsFlowControlRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.ExceptionAsFlowControlRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#exceptionasflowcontrol">
         <description>
 Using Exceptions as form of flow control is not recommended as they obscure true exceptions when debugging.
@@ -524,7 +524,7 @@ public void bar() {
     <rule name="ExcessiveClassLength"
           since="0.6"
           message="Avoid really long classes."
-          class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveClassLengthRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveClassLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessiveclasslength">
         <description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive 
@@ -1075,7 +1075,7 @@ void bar() {    // this is something more complex than it needs to be,
     <rule name="SignatureDeclareThrowsException"
           since="1.2"
           message="A method/constructor should not explicitly throw java.lang.Exception"
-          class="net.sourceforge.pmd.lang.java.rule.strictexception.SignatureDeclareThrowsExceptionRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.SignatureDeclareThrowsExceptionRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#signaturedeclarethrowsexception">
         <description>
@@ -1505,7 +1505,7 @@ complexity and find a way to have more fine grained objects.
     <rule name="UselessOverridingMethod"
           since="3.3"
           message="Overriding method merely calls super"
-          class="net.sourceforge.pmd.lang.java.rule.unnecessary.UselessOverridingMethodRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.UselessOverridingMethodRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#uselessoverridingmethod">
         <description>
 The overriding method merely calls the same method defined in a superclass.

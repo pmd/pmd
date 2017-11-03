@@ -18,6 +18,7 @@ public class MultithreadingRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "AvoidSynchronizedAtMethodLevel");
         addRule(RULESET, "AvoidThreadGroup");
         addRule(RULESET, "AvoidUsingVolatile");
+        addRule(RULESET, "DoNotUseThreads");
         addRule(RULESET, "DontCallThreadRun");
         addRule(RULESET, "DoubleCheckedLocking");
         addRule(RULESET, "NonThreadSafeSingleton");

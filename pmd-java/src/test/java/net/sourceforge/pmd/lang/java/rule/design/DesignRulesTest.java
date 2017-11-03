@@ -24,11 +24,19 @@ public class DesignRulesTest extends SimpleAggregatorTst {
     @Override
     public void setUp() {
         addRule(RULESET, "AbstractClassWithoutAnyMethod");
+        addRule(RULESET, "AvoidCatchingGenericException");
         addRule(RULESET, "AvoidDeeplyNestedIfStmts");
+        addRule(RULESET, "AvoidRethrowingException");
+        addRule(RULESET, "AvoidThrowingNewInstanceOfSameException");
+        addRule(RULESET, "AvoidThrowingNullPointerException");
+        addRule(RULESET, "AvoidThrowingRawExceptionTypes");
         addRule(RULESET, "ClassWithOnlyPrivateConstructorsShouldBeFinal");
         addRule(RULESET, "CollapsibleIfStatements");
         addRule(RULESET, "CouplingBetweenObjects");
         addRule(RULESET, "CyclomaticComplexity");
+        addRule(RULESET, "DataClass");
+        addRule(RULESET, "DoNotExtendJavaLangError");
+        addRule(RULESET, "ExceptionAsFlowControl");
         addRule(RULESET, "ExcessiveClassLength");
         addRule(RULESET, "ExcessiveImports");
         addRule(RULESET, "ExcessiveMethodLength");
@@ -46,7 +54,9 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "NcssMethodCount");
         addRule(RULESET, "NcssTypeCount");
         addRule(RULESET, "NPathComplexity");
+        addRule(RULESET, "SignatureDeclareThrowsException");
         addRule(RULESET, "SimplifiedTernary");
+        addRule(RULESET, "SimplifyBooleanAssertion");
         addRule(RULESET, "SimplifyBooleanExpressions");
         addRule(RULESET, "SimplifyBooleanReturns");
         addRule(RULESET, "SimplifyConditional");
@@ -55,6 +65,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "SwitchDensity");
         addRule(RULESET, "TooManyFields");
         addRule(RULESET, "TooManyMethods");
+        addRule(RULESET, "UselessOverridingMethod");
         addRule(RULESET, "UseObjectForClearerAPI");
         addRule(RULESET, "UseUtilityClass");
 

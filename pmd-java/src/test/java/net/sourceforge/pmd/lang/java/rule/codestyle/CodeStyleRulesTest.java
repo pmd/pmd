@@ -15,13 +15,17 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
+        addRule(RULESET, "AbstractNaming");
         addRule(RULESET, "AtLeastOneConstructor");
+        addRule(RULESET, "AvoidDollarSigns");
         addRule(RULESET, "AvoidFinalLocalVariable");
         addRule(RULESET, "AvoidPrefixingMethodParameters");
         addRule(RULESET, "AvoidProtectedFieldInFinalClass");
         addRule(RULESET, "AvoidProtectedMethodInFinalClassNotExtending");
         addRule(RULESET, "AvoidUsingNativeCode");
+        addRule(RULESET, "BooleanGetMethodName");
         addRule(RULESET, "CallSuperInConstructor");
+        addRule(RULESET, "ClassNamingConventions");
         addRule(RULESET, "CommentDefaultAccessModifier");
         addRule(RULESET, "ConfusingTernary");
         addRule(RULESET, "DefaultPackage");
@@ -32,13 +36,37 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "FieldDeclarationsShouldBeAtStartOfClass");
         addRule(RULESET, "ForLoopsMustUseBraces");
         addRule(RULESET, "ForLoopShouldBeWhileLoop");
+        addRule(RULESET, "GenericsNaming");
         addRule(RULESET, "IfElseStmtsMustUseBraces");
         addRule(RULESET, "IfStmtsMustUseBraces");
+        addRule(RULESET, "LocalHomeNamingConvention");
+        addRule(RULESET, "LocalInterfaceSessionNamingConvention");
+        addRule(RULESET, "LocalVariableCouldBeFinal");
+        addRule(RULESET, "LongVariable");
+        addRule(RULESET, "MDBAndSessionBeanNamingConvention");
+        addRule(RULESET, "MethodArgumentCouldBeFinal");
+        addRule(RULESET, "MethodNamingConventions");
+        addRule(RULESET, "MIsLeadingVariableName");
+        addRule(RULESET, "NoPackage");
         addRule(RULESET, "OnlyOneReturn");
+        addRule(RULESET, "PackageCase");
+        addRule(RULESET, "PrematureDeclaration");
+        addRule(RULESET, "RemoteInterfaceNamingConvention");
+        addRule(RULESET, "RemoteSessionInterfaceNamingConvention");
+        addRule(RULESET, "ShortClassName");
+        addRule(RULESET, "ShortMethodName");
+        addRule(RULESET, "ShortVariable");
+        addRule(RULESET, "SuspiciousConstantFieldName");
         addRule(RULESET, "TooManyStaticImports");
         addRule(RULESET, "UnnecessaryConstructor");
+        addRule(RULESET, "UnnecessaryFinalModifier");
         addRule(RULESET, "UnnecessaryFullyQualifiedName");
         addRule(RULESET, "UnnecessaryLocalBeforeReturn");
+        addRule(RULESET, "UnnecessaryModifier");
+        addRule(RULESET, "UnnecessaryReturn");
+        addRule(RULESET, "UselessParentheses");
+        addRule(RULESET, "UselessQualifiedThis");
+        addRule(RULESET, "VariableNamingConventions");
         addRule(RULESET, "WhileLoopsMustUseBraces");
     }
 
