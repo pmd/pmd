@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.vm.rule.basic;
+package net.sourceforge.pmd.lang.vm.rule.design;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

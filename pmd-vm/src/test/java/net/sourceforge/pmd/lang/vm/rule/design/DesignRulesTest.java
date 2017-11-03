@@ -2,23 +2,19 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.vm.rule.basic;
+package net.sourceforge.pmd.lang.vm.rule.design;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class BasicRulesTest extends SimpleAggregatorTst {
+public class DesignRulesTest extends SimpleAggregatorTst {
 
-    private static final String RULESET = "vm-basic";
+    private static final String RULESET = "category/vm/design.xml";
 
     @Override
     public void setUp() {
         addRule(RULESET, "AvoidDeeplyNestedIfStmts");
         addRule(RULESET, "CollapsibleIfStatements");
         addRule(RULESET, "ExcessiveTemplateLength");
-        addRule(RULESET, "AvoidReassigningParameters");
-        addRule(RULESET, "EmptyIfStmt");
-        addRule(RULESET, "EmptyForeachStmt");
-        addRule(RULESET, "UnusedMacroParameter");
         addRule(RULESET, "NoInlineJavaScript");
         addRule(RULESET, "NoInlineStyles");
     }
