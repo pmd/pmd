@@ -1,11 +1,11 @@
 ---
-title: XPath in XSL
-summary: This ruleset regroups a collection of good practices regarding XPath querying and functions inside an XSL.
-permalink: pmd_rules_xsl_xpath.html
+title: Performance
+summary: Rules that flag suboptimal code.
+permalink: pmd_rules_xsl_performance.html
 folder: pmd/rules/xsl
 sidebaractiveurl: /pmd_rules_xsl.html
-editmepath: ../pmd-xml/src/main/resources/rulesets/xsl/xpath.xml
-keywords: XPath in XSL, UseConcatOnce, AvoidAxisNavigation
+editmepath: ../pmd-xml/src/main/resources/category/xsl/performance.xml
+keywords: Performance, AvoidAxisNavigation
 ---
 ## AvoidAxisNavigation
 
@@ -49,31 +49,6 @@ cutting through 100% of the document.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/xsl/xpath.xml/AvoidAxisNavigation" />
-```
-
-## UseConcatOnce
-
-**Since:** PMD 5.0
-
-**Priority:** Medium (3)
-
-The XPath concat() functions accepts as many arguments as required so you can have
-"concat($a,'b',$c)" rather than "concat($a,concat('b',$c)".
-
-```
-//node()[contains(substring-after(@select,'concat'),'concat')]
-```
-
-**Example(s):**
-
-``` xsl
-<xsl:variable name="var" select="concat("Welcome",concat("to you ",$name))"/>
-<xsl:variable name="var" select="concat("Welcome","to you ",$name))">
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="rulesets/xsl/xpath.xml/UseConcatOnce" />
+<rule ref="rulesets/xsl/performance.xml/AvoidAxisNavigation" />
 ```
 

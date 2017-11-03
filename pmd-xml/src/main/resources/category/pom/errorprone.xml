@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<ruleset name="Errorprone"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+    <description>
+Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
+    </description>
+
+    <rule name="InvalidDependencyTypes"
+          language="pom"
+          since="5.4"
+          message="By default, Maven only recognized the following types: $validTypes."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_pom_errorprone.html#invaliddependencytypes">
+        <description>
+While Maven will not failed if you use an invalid type for a dependency in the
+dependency management section, it will not also uses the dependency.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//dependencyManagement/dependency/type/text[not(contains('pom, jar, maven-plugin, ejb, war, ear, rar, par',@Image))]
+]]>
+                </value>
+            </property>
+            <!-- FIXME: property injection seems to be failing with XML.... -->
+            <!-- property name="validTypes" value="pom, jar, maven-plugin, ejb, war, ear, rar, par" description="Set of valid types."-->
+        </properties>
+        <example>
+<![CDATA[
+<project...>
+  ...
+  <dependencyManagement>
+      ...
+    <dependency>
+      <groupId>org.jboss.arquillian</groupId>
+      <artifactId>arquillian-bom</artifactId>
+      <version>${arquillian.version}</version>
+      <type>bom</type> <!-- not a valid type ! 'pom' is ! -->
+      <scope>import</scope>
+    </dependency>
+    ...
+  </dependencyManagement>
+</project>
+ ]]>
+        </example>
+    </rule>
+
+</ruleset>
