@@ -151,7 +151,7 @@ skip junit setUp method where the superclass is TestCase  and is in the same pac
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-package net.sourceforge.pmd.lang.java.rule.strictexception;
+package net.sourceforge.pmd.lang.java.rule.design;
 
 public class Foo extends MyTestCase {
  void setUp() throws Exception {}
