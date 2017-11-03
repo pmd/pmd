@@ -4,8 +4,9 @@
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
     <description>
-The Documentation category contains rules that deal with comments and code documentation.
+Rules that are related to code documentation.
     </description>
 
     <rule name="CommentContent"

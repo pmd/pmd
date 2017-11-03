@@ -6,12 +6,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
     <description>
-The Design category contains rules that flag suboptimal code implementations. Alternate approaches
-are suggested.
-
-It fully contains these previous rulesets:
-
-*   codesize
+Rules that help you discover design issues.
     </description>
 
     <rule name="AbstractClassWithoutAnyMethod"

@@ -4,13 +4,9 @@
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
     <description>
-The Best Practices category contains rules...
-
-It fully contains these previous rulesets:
-
-*   sunsecure
-*   unusedcode
+Rules which enforce generally accepted best practices.
     </description>
 
     <rule name="AbstractClassWithoutAbstractMethod"

@@ -4,12 +4,9 @@
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
     <description>
-The Code Style category contains rules that enforce conventions like braces, naming, ...
-
-It fully contains these previous rulesets:
-
-*   braces
+Rules which enforce a specific coding style.
     </description>
 
     <rule name="AbstractNaming"

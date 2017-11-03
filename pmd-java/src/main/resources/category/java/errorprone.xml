@@ -4,16 +4,9 @@
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
     <description>
-The Error Prone category contains rules, that detect incorrect usages, missed checks, ...
-
-It fully contains these previous rulesets:
-
-*   android
-*   clone
-*   empty
-*   finalizers
-*   javabeans
+Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
     </description>
 
     <rule name="AssignmentInOperand"
