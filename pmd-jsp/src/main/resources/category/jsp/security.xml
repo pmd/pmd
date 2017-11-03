@@ -44,9 +44,9 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 
     <rule name="NoUnsanitizedJSPExpression"
           since="5.1.4"
-          class="net.sourceforge.pmd.lang.jsp.rule.basic.NoUnsanitizedJSPExpressionRule"
+          class="net.sourceforge.pmd.lang.jsp.rule.security.NoUnsanitizedJSPExpressionRule"
           message="Using unsanitized JSP expression can lead to Cross Site Scripting (XSS) attacks"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#nounsanitizedjspexpression">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_security.html#nounsanitizedjspexpression">
         <description>
 Avoid using expressions without escaping / sanitizing. This could lead to cross site scripting - as the expression
 would be interpreted by the browser directly (e.g. "&lt;script&gt;alert('hello');&lt;/script&gt;").

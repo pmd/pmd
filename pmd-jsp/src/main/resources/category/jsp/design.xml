@@ -34,7 +34,7 @@ Externalized script could be reused between pages.  Browsers can also cache the 
     <rule name="NoInlineStyleInformation"
           since="3.6"
           message="Avoid having style information in JSP files."
-          class="net.sourceforge.pmd.lang.jsp.rule.basic.NoInlineStyleInformationRule"
+          class="net.sourceforge.pmd.lang.jsp.rule.design.NoInlineStyleInformationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_design.html#noinlinestyleinformation">
         <description>
 Style information should be put in CSS files, not in JSPs. Therefore, don't use &lt;B> or &lt;FONT>

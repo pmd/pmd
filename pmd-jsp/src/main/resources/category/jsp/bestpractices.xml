@@ -76,7 +76,7 @@ Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
           since="3.6"
           message="Use JSP comments instead of HTML comments"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#nohtmlcomments">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_bestpractices.html#nohtmlcomments">
         <description>
 In a production system, HTML comments increase the payload
 between the application server to the client, and serve
@@ -110,7 +110,7 @@ little other purpose. Consider switching to JSP comments.
           since="3.6"
           message="Do not do a forward from within a JSP file."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#nojspforward">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_bestpractices.html#nojspforward">
         <description>
 Do not do a forward from within a JSP file.
         </description>
