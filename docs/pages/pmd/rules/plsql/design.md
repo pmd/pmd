@@ -1,11 +1,11 @@
 ---
-title: Code Size
-summary: The Code Size ruleset contains rules that find problems related to code size or complexity.
-permalink: pmd_rules_plsql_codesize.html
+title: Design
+summary: Rules that help you discover design issues.
+permalink: pmd_rules_plsql_design.html
 folder: pmd/rules/plsql
 sidebaractiveurl: /pmd_rules_plsql.html
-editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/codesize.xml
-keywords: Code Size, NPathComplexity, ExcessiveMethodLength, ExcessiveParameterList, ExcessiveObjectLength, ExcessiveTypeLength, ExcessivePackageBodyLength, ExcessivePackageSpecificationLength, CyclomaticComplexity, TooManyFields, NcssMethodCount, NcssObjectCount, TooManyMethods
+editmepath: ../pmd-plsql/src/main/resources/category/plsql/design.xml
+keywords: Design, CyclomaticComplexity, ExcessiveMethodLength, ExcessiveObjectLength, ExcessivePackageBodyLength, ExcessivePackageSpecificationLength, ExcessiveParameterList, ExcessiveTypeLength, NcssMethodCount, NcssObjectCount, NPathComplexity, TooManyFields, TooManyMethods
 ---
 ## CyclomaticComplexity
 
@@ -18,7 +18,7 @@ plus one for the method entry.  The decision points include 'if', 'while', 'for'
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.codesize.CyclomaticComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/codesize/CyclomaticComplexityRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.design.CyclomaticComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/design/CyclomaticComplexityRule.java)
 
 **Example(s):**
 
@@ -149,7 +149,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/codesize.xml/CyclomaticComplexity" />
+<rule ref="rulesets/plsql/design.xml/CyclomaticComplexity" />
 ```
 
 ## ExcessiveMethodLength
@@ -163,7 +163,7 @@ name/signature might suggest. They also become challenging for others to digest 
 scrolling causes readers to lose focus.
 Try to reduce the method length by creating helper methods and removing any copy/pasted code.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveMethodLengthRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/codesize/ExcessiveMethodLengthRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveMethodLengthRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/design/ExcessiveMethodLengthRule.java)
 
 **Example(s):**
 
@@ -186,7 +186,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/codesize.xml/ExcessiveMethodLength" />
+<rule ref="rulesets/plsql/design.xml/ExcessiveMethodLength" />
 ```
 
 ## ExcessiveObjectLength
@@ -199,7 +199,7 @@ Excessive object line lengths are usually indications that the object may be bur
 responsibilities that could be provided by other objects. In breaking these methods
 apart the code becomes more managable and ripe for reuse.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveObjectLengthRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/codesize/ExcessiveObjectLengthRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveObjectLengthRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/design/ExcessiveObjectLengthRule.java)
 
 **Example(s):**
 
@@ -233,7 +233,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/codesize.xml/ExcessiveObjectLength" />
+<rule ref="rulesets/plsql/design.xml/ExcessiveObjectLength" />
 ```
 
 ## ExcessivePackageBodyLength
@@ -246,7 +246,7 @@ Excessive class file lengths are usually indications that the class may be burde
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more managable and ripe for reuse.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessivePackageBodyLengthRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/codesize/ExcessivePackageBodyLengthRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.design.ExcessivePackageBodyLengthRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/design/ExcessivePackageBodyLengthRule.java)
 
 **Example(s):**
 
@@ -280,7 +280,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/codesize.xml/ExcessivePackageBodyLength" />
+<rule ref="rulesets/plsql/design.xml/ExcessivePackageBodyLength" />
 ```
 
 ## ExcessivePackageSpecificationLength
@@ -293,7 +293,7 @@ Excessive class file lengths are usually indications that the class may be burde
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more managable and ripe for reuse.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessivePackageSpecificationLengthRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/codesize/ExcessivePackageSpecificationLengthRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.design.ExcessivePackageSpecificationLengthRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/design/ExcessivePackageSpecificationLengthRule.java)
 
 **Example(s):**
 
@@ -320,7 +320,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/codesize.xml/ExcessivePackageSpecificationLength" />
+<rule ref="rulesets/plsql/design.xml/ExcessivePackageSpecificationLength" />
 ```
 
 ## ExcessiveParameterList
@@ -332,7 +332,7 @@ END;
 Methods with numerous parameters are a challenge to maintain, especially if most of them share the
 same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveParameterListRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/codesize/ExcessiveParameterListRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveParameterListRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/design/ExcessiveParameterListRule.java)
 
 **Example(s):**
 
@@ -362,7 +362,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/codesize.xml/ExcessiveParameterList" />
+<rule ref="rulesets/plsql/design.xml/ExcessiveParameterList" />
 ```
 
 ## ExcessiveTypeLength
@@ -375,7 +375,7 @@ Excessive class file lengths are usually indications that the class may be burde
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more managable and ripe for reuse.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveTypeLengthRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/codesize/ExcessiveTypeLengthRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveTypeLengthRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/design/ExcessiveTypeLengthRule.java)
 
 **Example(s):**
 
@@ -409,7 +409,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/codesize.xml/ExcessiveTypeLength" />
+<rule ref="rulesets/plsql/design.xml/ExcessiveTypeLength" />
 ```
 
 ## NcssMethodCount
@@ -422,7 +422,7 @@ This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determin
 of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.codesize.NcssMethodCountRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/codesize/NcssMethodCountRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.design.NcssMethodCountRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/design/NcssMethodCountRule.java)
 
 **Example(s):**
 
@@ -445,7 +445,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/codesize.xml/NcssMethodCount" />
+<rule ref="rulesets/plsql/design.xml/NcssMethodCount" />
 ```
 
 ## NcssObjectCount
@@ -458,7 +458,7 @@ This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determin
 of code for a given Oracle object. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.codesize.NcssObjectCountRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/codesize/NcssObjectCountRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.design.NcssObjectCountRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/design/NcssObjectCountRule.java)
 
 **Example(s):**
 
@@ -483,7 +483,7 @@ CREATE OR REPLACE PACKAGE pkg_
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/codesize.xml/NcssObjectCount" />
+<rule ref="rulesets/plsql/design.xml/NcssObjectCount" />
 ```
 
 ## NPathComplexity
@@ -496,7 +496,7 @@ The NPath complexity of a method is the number of acyclic execution paths throug
 A threshold of 200 is generally considered the point where measures should be taken to reduce 
 complexity and increase readability.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.codesize.NPathComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/codesize/NPathComplexityRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.design.NPathComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/design/NPathComplexityRule.java)
 
 **Example(s):**
 
@@ -545,7 +545,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/codesize.xml/NPathComplexity" />
+<rule ref="rulesets/plsql/design.xml/NPathComplexity" />
 ```
 
 ## TooManyFields
@@ -558,7 +558,7 @@ Classes that have too many fields can become unwieldy and could be redesigned to
 possibly through grouping related fields in new objects.  For example, a class with individual 
 city/state/zip fields could park them within a single Address field.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.codesize.TooManyFieldsRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/codesize/TooManyFieldsRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.plsql.rule.design.TooManyFieldsRule](https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/design/TooManyFieldsRule.java)
 
 **Example(s):**
 
@@ -579,7 +579,7 @@ END pkg_too_many_fields;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/codesize.xml/TooManyFields" />
+<rule ref="rulesets/plsql/design.xml/TooManyFields" />
 ```
 
 ## TooManyMethods
@@ -633,6 +633,6 @@ have more fine grained objects.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/codesize.xml/TooManyMethods" />
+<rule ref="rulesets/plsql/design.xml/TooManyMethods" />
 ```
 

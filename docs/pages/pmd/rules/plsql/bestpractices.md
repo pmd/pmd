@@ -1,11 +1,11 @@
 ---
-title: Tom Kyte's Despair
-summary: Rules based on Thomas Kyte's recommendations on http://asktom.oracle.com/ and http://tkyte.blogspot.com/.
-permalink: pmd_rules_plsql_TomKytesDespair.html
+title: Best Practices
+summary: Rules which enforce generally accepted best practices.
+permalink: pmd_rules_plsql_bestpractices.html
 folder: pmd/rules/plsql
 sidebaractiveurl: /pmd_rules_plsql.html
-editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/TomKytesDespair.xml
-keywords: Tom Kyte's Despair, TomKytesDespair
+editmepath: ../pmd-plsql/src/main/resources/category/plsql/bestpractices.xml
+keywords: Best Practices, TomKytesDespair
 ---
 ## TomKytesDespair
 
@@ -66,6 +66,6 @@ END update_planned_hrs;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/TomKytesDespair.xml/TomKytesDespair" />
+<rule ref="rulesets/plsql/bestpractices.xml/TomKytesDespair" />
 ```
 

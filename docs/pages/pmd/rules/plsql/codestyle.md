@@ -1,11 +1,11 @@
 ---
-title: Strict Syntax
-summary: The Strict Syntax ruleset contains rules that highlight invalid plsql syntax, which works, but should be avoided.
-permalink: pmd_rules_plsql_strictsyntax.html
+title: Codestyle
+summary: Rules which enforce a specific coding style.
+permalink: pmd_rules_plsql_codestyle.html
 folder: pmd/rules/plsql
 sidebaractiveurl: /pmd_rules_plsql.html
-editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/strictsyntax.xml
-keywords: Strict Syntax, MisplacedPragma
+editmepath: ../pmd-plsql/src/main/resources/category/plsql/codestyle.xml
+keywords: Codestyle, MisplacedPragma
 ---
 ## MisplacedPragma
 
@@ -44,6 +44,6 @@ end inline_pragma_error;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/strictsyntax.xml/MisplacedPragma" />
+<rule ref="rulesets/plsql/codestyle.xml/MisplacedPragma" />
 ```
 
