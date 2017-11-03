@@ -1,12 +1,49 @@
 ---
-title: Empty Code
-summary: The Empty Code ruleset contains rules that find empty statements of any kind (empty method, empty block statement, empty try or catch block,...).
-permalink: pmd_rules_apex_empty.html
+title: Error Prone
+summary: Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
+permalink: pmd_rules_apex_errorprone.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
-editmepath: ../pmd-apex/src/main/resources/rulesets/apex/empty.xml
-keywords: Empty Code, EmptyCatchBlock, EmptyIfStmt, EmptyTryOrFinallyBlock, EmptyWhileStmt, EmptyStatementBlock
+editmepath: ../pmd-apex/src/main/resources/category/apex/errorprone.xml
+keywords: Error Prone, AvoidDirectAccessTriggerMap, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass
 ---
+## AvoidDirectAccessTriggerMap
+
+**Since:** PMD 6.0.0
+
+**Priority:** Medium (3)
+
+Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Triggers should be bulkified and iterate through the map to handle the actions for each item separately.
+
+```
+//ArrayLoadExpression/TriggerVariableExpression | //ArrayLoadExpression/LiteralExpression
+```
+
+**Example(s):**
+
+``` java
+trigger AccountTrigger on Account (before insert, before update) {
+   Account a = Trigger.new[0]; //Bad: Accessing the trigger array directly is not recommended.
+   
+   foreach ( Account a : Trigger.new ){   
+        //Good: Iterate through the trigger.new array instead.
+   }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/errorprone.xml/AvoidDirectAccessTriggerMap" />
+```
+
 ## EmptyCatchBlock
 
 **Since:** PMD 6.0.0
@@ -44,7 +81,7 @@ public void doSomething() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/empty.xml/EmptyCatchBlock" />
+<rule ref="rulesets/apex/errorprone.xml/EmptyCatchBlock" />
 ```
 
 ## EmptyIfStmt
@@ -82,7 +119,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/empty.xml/EmptyIfStmt" />
+<rule ref="rulesets/apex/errorprone.xml/EmptyIfStmt" />
 ```
 
 ## EmptyStatementBlock
@@ -122,7 +159,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/empty.xml/EmptyStatementBlock" />
+<rule ref="rulesets/apex/errorprone.xml/EmptyStatementBlock" />
 ```
 
 ## EmptyTryOrFinallyBlock
@@ -171,7 +208,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/empty.xml/EmptyTryOrFinallyBlock" />
+<rule ref="rulesets/apex/errorprone.xml/EmptyTryOrFinallyBlock" />
 ```
 
 ## EmptyWhileStmt
@@ -208,6 +245,40 @@ public void bar(Integer a, Integer b) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/empty.xml/EmptyWhileStmt" />
+<rule ref="rulesets/apex/errorprone.xml/EmptyWhileStmt" />
+```
+
+## MethodWithSameNameAsEnclosingClass
+
+**Since:** PMD 5.5.0
+
+**Priority:** Medium (3)
+
+Non-constructor methods should not have the same name as the enclosing class.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.errorprone.MethodWithSameNameAsEnclosingClassRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/errorprone/MethodWithSameNameAsEnclosingClassRule.java)
+
+**Example(s):**
+
+``` java
+public class MyClass {
+    // this is OK because it is a constructor
+    public MyClass() {}
+    // this is bad because it is a method
+    public void MyClass() {}
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/errorprone.xml/MethodWithSameNameAsEnclosingClass" />
 ```
 
