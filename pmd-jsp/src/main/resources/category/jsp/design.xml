@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+
+<ruleset name="Design"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that help you discover design issues.
+    </description>
+
+    <rule name="NoInlineScript"
+          language="jsp"
+          since="4.0"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          message="Avoiding inlining HTML script content"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_design.html#noinlinescript">
+        <description>
+Avoid inlining HTML script content.  Consider externalizing the HTML script using the 'src' attribute on the "script" element.
+Externalized script could be reused between pages.  Browsers can also cache the script, reducing overall download bandwidth.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//HtmlScript[@Image != '']
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <rule name="NoInlineStyleInformation"
+          since="3.6"
+          message="Avoid having style information in JSP files."
+          class="net.sourceforge.pmd.lang.jsp.rule.basic.NoInlineStyleInformationRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_design.html#noinlinestyleinformation">
+        <description>
+Style information should be put in CSS files, not in JSPs. Therefore, don't use &lt;B> or &lt;FONT>
+tags, or attributes like "align='center'".
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+<html><body><p align='center'><b>text</b></p></body></html>
+]]>
+        </example>
+    </rule>
+
+    <rule name="NoLongScripts"
+          language="jsp"
+          since="3.6"
+          message="Avoid having long scripts (e.g. Javascript) inside a JSP file."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_design.html#nolongscripts">
+        <description>
+Scripts should be part of Tag Libraries, rather than part of JSP pages.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//HtmlScript[(@EndLine - @BeginLine > 10)]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+<HTML>
+<BODY>
+<!--Java Script-->
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function calcDays(){
+  var date1 = document.getElementById('d1').lastChild.data;
+  var date2 = document.getElementById('d2').lastChild.data;
+  date1 = date1.split("-");
+  date2 = date2.split("-");
+  var sDate = new Date(date1[0]+"/"+date1[1]+"/"+date1[2]);
+  var eDate = new Date(date2[0]+"/"+date2[1]+"/"+date2[2]);
+  var daysApart = Math.abs(Math.round((sDate-eDate)/86400000));
+  document.getElementById('diffDays').lastChild.data = daysApart;
+}
+
+onload=calcDays;
+//-->
+</SCRIPT>
+</BODY>
+</HTML>
+]]>
+        </example>
+    </rule>
+
+    <rule name="NoScriptlets"
+          language="jsp"
+          since="3.6"
+          message="Avoid having scriptlets inside a JSP file."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_design.html#noscriptlets">
+        <description>
+Scriptlets should be factored into Tag Libraries or JSP declarations, rather than being part of JSP pages.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//JspScriptlet
+|
+//Element[ upper-case(@Name)="JSP:SCRIPTLET" ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+<HTML>
+<HEAD>
+<%
+response.setHeader("Pragma", "No-cache");
+%>
+</HEAD>
+    <BODY>
+        <jsp:scriptlet>String title = "Hello world!";</jsp:scriptlet>
+    </BODY>
+</HTML>
+]]>
+        </example>
+    </rule>
+
+</ruleset>

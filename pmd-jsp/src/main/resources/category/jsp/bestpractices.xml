@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+
+<ruleset name="Best Practices"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+    <description>
+Rules which enforce generally accepted best practices.
+    </description>
+
+    <rule name="DontNestJsfInJstlIteration"
+          language="jsp"
+          since="3.6"
+          message="Do not nest JSF component custom actions inside a custom action that iterates over its body."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_bestpractices.html#dontnestjsfinjstliteration">
+        <description>
+Do not nest JSF component custom actions inside a custom action that iterates over its body.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Element[ @Name="c:forEach" ] // Element[ @NamespacePrefix="h" or @NamespacePrefix="f" ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+<html>
+  <body>
+    <ul>
+      <c:forEach items='${books}' var='b'>
+        <li> <h:outputText value='#{b}' /> </li>
+      </c:forEach>
+    </ul>
+  </body>
+</html>
+]]>
+        </example>
+    </rule>
+
+    <rule name="NoClassAttribute"
+          language="jsp"
+          since="3.6"
+          message="Do not use an attribute called 'class'."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_bestpractices.html#noclassattribute">
+        <description>
+Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Attribute[ upper-case(@Name)="CLASS" ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+<HTML> <BODY>
+<P class="MajorHeading">Some text</P>
+</BODY> </HTML>
+]]>
+        </example>
+    </rule>
+
+    <rule name="NoHtmlComments"
+          language="jsp"
+          since="3.6"
+          message="Use JSP comments instead of HTML comments"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#nohtmlcomments">
+        <description>
+In a production system, HTML comments increase the payload
+between the application server to the client, and serve
+little other purpose. Consider switching to JSP comments.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//CommentTag
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+<HTML><title>bad example><BODY>
+<!-- HTML comment -->
+</BODY> </HTML>
+
+<HTML><title>good example><BODY>
+<%-- JSP comment --%>
+</BODY> </HTML>
+]]>
+        </example>
+    </rule>
+
+    <rule name="NoJspForward"
+          language="jsp"
+          since="3.6"
+          message="Do not do a forward from within a JSP file."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#nojspforward">
+        <description>
+Do not do a forward from within a JSP file.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Element[ @Name="jsp:forward" ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+<jsp:forward page='UnderConstruction.jsp'/>
+]]>
+        </example>
+    </rule>
+
+</ruleset>
