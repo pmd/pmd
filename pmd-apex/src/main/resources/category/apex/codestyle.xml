@@ -12,7 +12,7 @@ Rules which enforce a specific coding style.
     <rule name="ClassNamingConventions"
           since="5.5.0"
           message="Class names should begin with an uppercase character"
-          class="net.sourceforge.pmd.lang.apex.rule.style.ClassNamingConventionsRule"
+          class="net.sourceforge.pmd.lang.apex.rule.codestyle.ClassNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#classnamingconventions">
         <description>
 Class names should always begin with an upper case character.
@@ -133,7 +133,7 @@ for (int i = 0; i < 42; i++) { // preferred approach
     <rule name="MethodNamingConventions"
           since="5.5.0"
           message="Method name does not begin with a lower case character."
-          class="net.sourceforge.pmd.lang.apex.rule.style.MethodNamingConventionsRule"
+          class="net.sourceforge.pmd.lang.apex.rule.codestyle.MethodNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#methodnamingconventions">
         <description>
 Method names should always begin with a lower case character, and should not contain underscores.
@@ -152,7 +152,7 @@ public class Foo {
     <rule name="VariableNamingConventions"
           since="5.5.0"
           message="{0} variable {1} should begin with {2}"
-          class="net.sourceforge.pmd.lang.apex.rule.style.VariableNamingConventionsRule"
+          class="net.sourceforge.pmd.lang.apex.rule.codestyle.VariableNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#variablenamingconventions">
         <description>
 A variable naming conventions rule - customize this to your liking.  Currently, it

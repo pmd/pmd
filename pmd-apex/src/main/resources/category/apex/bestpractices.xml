@@ -12,7 +12,7 @@ Rules which enforce generally accepted best practices.
     <rule name="ApexUnitTestClassShouldHaveAsserts"
           since="5.5.1"
           message="Apex unit tests should System.assert() or assertEquals() or assertNotEquals()"
-          class="net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestClassShouldHaveAssertsRule"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveAssertsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaveasserts">
         <description>
 Apex unit tests should include at least one assertion.  This makes the tests more robust, and using assert
@@ -37,7 +37,7 @@ public class Foo {
     <rule name="ApexUnitTestShouldNotUseSeeAllDataTrue"
           since="5.5.1"
           message="Apex unit tests should not use @isTest(seeAllData = true)"
-          class="net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestShouldNotUseSeeAllDataTrueRule"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestShouldNotUseSeeAllDataTrueRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue">
         <description>
 Apex unit tests should not use @isTest(seeAllData=true) because it opens up the existing database data for unexpected modification by tests.
@@ -61,7 +61,7 @@ public class Foo {
     <rule name="AvoidGlobalModifier"
           since="5.5.0"
           message="Avoid using global modifier"
-          class="net.sourceforge.pmd.lang.apex.rule.style.AvoidGlobalModifierRule"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidGlobalModifierRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#avoidglobalmodifier">
         <description>
 Global classes should be avoided (especially in managed packages) as they can never be deleted or changed in signature. Always check twice if something needs to be global.
@@ -82,7 +82,7 @@ global class Unchangeable {
     <rule name="AvoidHardcodingId"
           since="6.0.0"
           message="Hardcoding Id's is bound to break when changing environments."
-          class="net.sourceforge.pmd.lang.apex.rule.style.AvoidHardcodingIdRule"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidHardcodingIdRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#avoidhardcodingid">
         <description>
 When deploying Apex code between sandbox and production environments, or installing Force.com AppExchange packages,
@@ -95,7 +95,7 @@ the logic can dynamically identify the proper data to operate against and not fa
 public without sharing class Foo {
     void foo() {
         //Error - hardcoded the record type id
-        if(a.RecordTypeId == '012500000009WAr'){            
+        if(a.RecordTypeId == '012500000009WAr'){
             //do some logic here.....
         } else if(a.RecordTypeId == '0123000000095Km'){
             //do some logic here for a different record type...
@@ -109,7 +109,7 @@ public without sharing class Foo {
     <rule name="AvoidLogicInTrigger"
           since="5.5.0"
           message="Avoid logic in triggers"
-          class="net.sourceforge.pmd.lang.apex.rule.style.AvoidLogicInTriggerRule"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidLogicInTriggerRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#avoidlogicintrigger">
         <description>
 As triggers do not allow methods like regular classes they are less flexible and suited to apply good encapsulation style.

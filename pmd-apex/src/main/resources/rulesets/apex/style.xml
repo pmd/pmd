@@ -16,7 +16,7 @@ The Style Ruleset contains rules regarding preferred usage of names and identifi
     <rule ref="category/apex/errorprone.xml/MethodWithSameNameAsEnclosingClass" deprecated="true" />
 
     <rule ref="category/apex/bestpractices.xml/AvoidGlobalModifier" deprecated="true" />
-    <rule ref="category/apex/bestpractices.xml/AvoidLogicInTrigger" deprecated="true" />
     <rule ref="category/apex/bestpractices.xml/AvoidHardcodingId" deprecated="true" />
+    <rule ref="category/apex/bestpractices.xml/AvoidLogicInTrigger" deprecated="true" />
 
 </ruleset>

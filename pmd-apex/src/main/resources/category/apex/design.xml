@@ -12,7 +12,7 @@ Rules that help you discover design issues.
     <rule name="AvoidDeeplyNestedIfStmts"
           since="5.5.0"
           message="Deeply nested if..then statements are hard to read"
-          class="net.sourceforge.pmd.lang.apex.rule.complexity.AvoidDeeplyNestedIfStmtsRule"
+          class="net.sourceforge.pmd.lang.apex.rule.design.AvoidDeeplyNestedIfStmtsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#avoiddeeplynestedifstmts">
         <description>
 Avoid creating deeply nested if-then statements since they are harder to read and error-prone to maintain.
@@ -38,7 +38,7 @@ public class Foo {
     <rule name="CyclomaticComplexity"
           message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."
           since="6.0.0"
-          class="net.sourceforge.pmd.lang.apex.metrics.rule.CyclomaticComplexityRule"
+          class="net.sourceforge.pmd.lang.apex.rule.design.CyclomaticComplexityRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#cyclomaticcomplexity">
         <description>
 The complexity of methods directly affects maintenance costs and readability. Concentrating too much decisional logic
@@ -89,7 +89,7 @@ public class Complicated {
     <rule name="ExcessiveClassLength"
           since="5.5.0"
           message="Avoid really long classes."
-          class="net.sourceforge.pmd.lang.apex.rule.complexity.ExcessiveClassLengthRule"
+          class="net.sourceforge.pmd.lang.apex.rule.design.ExcessiveClassLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#excessiveclasslength">
         <description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive 
@@ -120,7 +120,7 @@ public class Foo {
     <rule name="ExcessiveParameterList"
           since="5.5.0"
           message="Avoid long parameter lists."
-          class="net.sourceforge.pmd.lang.apex.rule.complexity.ExcessiveParameterListRule"
+          class="net.sourceforge.pmd.lang.apex.rule.design.ExcessiveParameterListRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#excessiveparameterlist">
         <description>
 Methods with numerous parameters are a challenge to maintain, especially if most of them share the
@@ -144,7 +144,7 @@ public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
     <rule name="ExcessivePublicCount"
           since="5.5.0"
           message="This class has a bunch of public methods and attributes"
-          class="net.sourceforge.pmd.lang.apex.rule.complexity.ExcessivePublicCountRule"
+          class="net.sourceforge.pmd.lang.apex.rule.design.ExcessivePublicCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#excessivepubliccount">
         <description>
 Classes with large numbers of public methods and attributes require disproportionate testing efforts
@@ -173,7 +173,7 @@ public class Foo {
     <rule name="NcssConstructorCount"
           since="5.5.0"
           message="The constructor has an NCSS line count of {0}"
-          class="net.sourceforge.pmd.lang.apex.rule.complexity.NcssConstructorCountRule"
+          class="net.sourceforge.pmd.lang.apex.rule.design.NcssConstructorCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#ncssconstructorcount">
         <description>
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
@@ -201,7 +201,7 @@ public class Foo extends Bar {
     <rule name="NcssMethodCount"
           since="5.5.0"
           message="The method ''{0}()'' has an NCSS line count of {1}"
-          class="net.sourceforge.pmd.lang.apex.rule.complexity.NcssMethodCountRule"
+          class="net.sourceforge.pmd.lang.apex.rule.design.NcssMethodCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#ncssmethodcount">
         <description>
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
@@ -228,7 +228,7 @@ public class Foo extends Bar {
     <rule name="NcssTypeCount"
           since="5.5.0"
           message="The type has an NCSS line count of {0}"
-          class="net.sourceforge.pmd.lang.apex.rule.complexity.NcssTypeCountRule"
+          class="net.sourceforge.pmd.lang.apex.rule.design.NcssTypeCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#ncsstypecount">
         <description>
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
@@ -257,7 +257,7 @@ public class Foo extends Bar {
     <rule name="StdCyclomaticComplexity"
           since="5.5.0"
           message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
-          class="net.sourceforge.pmd.lang.apex.rule.complexity.StdCyclomaticComplexityRule"
+          class="net.sourceforge.pmd.lang.apex.rule.design.StdCyclomaticComplexityRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#stdcyclomaticcomplexity">
         <description>
 Complexity directly affects maintenance costs is determined by the number of decision points in a method 
@@ -311,7 +311,7 @@ public class Foo {
     <rule name="TooManyFields"
           since="5.5.0"
           message="Too many fields"
-          class="net.sourceforge.pmd.lang.apex.rule.complexity.TooManyFieldsRule"
+          class="net.sourceforge.pmd.lang.apex.rule.design.TooManyFieldsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#toomanyfields">
         <description>
 Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,

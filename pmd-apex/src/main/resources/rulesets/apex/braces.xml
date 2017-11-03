@@ -8,9 +8,9 @@
 The Braces ruleset contains rules regarding the use and placement of braces.
   </description>
 
+    <rule ref="category/apex/codestyle.xml/ForLoopsMustUseBraces" deprecated="true" />
     <rule ref="category/apex/codestyle.xml/IfElseStmtsMustUseBraces" deprecated="true" />
     <rule ref="category/apex/codestyle.xml/IfStmtsMustUseBraces" deprecated="true" />
-    <rule ref="category/apex/codestyle.xml/ForLoopsMustUseBraces" deprecated="true" />
     <rule ref="category/apex/codestyle.xml/WhileLoopsMustUseBraces" deprecated="true" />
 
 </ruleset>

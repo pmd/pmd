@@ -222,7 +222,7 @@ public void bar(Integer a, Integer b) {
     <rule name="MethodWithSameNameAsEnclosingClass"
           since="5.5.0"
           message="Classes should not have non-constructor methods with the same name as the class"
-          class="net.sourceforge.pmd.lang.apex.rule.style.MethodWithSameNameAsEnclosingClassRule"
+          class="net.sourceforge.pmd.lang.apex.rule.errorprone.MethodWithSameNameAsEnclosingClassRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#methodwithsamenameasenclosingclass">
         <description>
 Non-constructor methods should not have the same name as the enclosing class.
