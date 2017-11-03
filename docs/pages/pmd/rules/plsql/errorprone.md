@@ -1,11 +1,11 @@
 ---
-title: PLSQL DATETIME
-summary: The Dates ruleset deals with PLSQL DATETIME usages.
-permalink: pmd_rules_plsql_dates.html
+title: Error Prone
+summary: Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
+permalink: pmd_rules_plsql_errorprone.html
 folder: pmd/rules/plsql
 sidebaractiveurl: /pmd_rules_plsql.html
-editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/dates.xml
-keywords: PLSQL DATETIME, TO_DATEWithoutDateFormat, TO_DATE_TO_CHAR, TO_TIMESTAMPWithoutDateFormat
+editmepath: ../pmd-plsql/src/main/resources/category/plsql/errorprone.xml
+keywords: Error Prone, TO_DATE_TO_CHAR, TO_DATEWithoutDateFormat, TO_TIMESTAMPWithoutDateFormat
 ---
 ## TO_DATE_TO_CHAR
 
@@ -13,7 +13,7 @@ keywords: PLSQL DATETIME, TO_DATEWithoutDateFormat, TO_DATE_TO_CHAR, TO_TIMESTAM
 
 **Priority:** Medium (3)
 
-TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-veriable)
+TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-variable)
 
 ```
 //PrimaryExpression
@@ -30,8 +30,8 @@ TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-v
 ``` sql
 CREATE OR REPLACE PACKAGE BODY date_utilities
 IS
- 
--- Take single parameter, relyimg on current default NLS date format
+
+-- Take single parameter, relying on current default NLS date format
 FUNCTION strip_time (p_date IN DATE) RETURN DATE
 IS
 BEGIN
@@ -45,7 +45,7 @@ END date_utilities;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/dates.xml/TO_DATE_TO_CHAR" />
+<rule ref="rulesets/plsql/errorprone.xml/TO_DATE_TO_CHAR" />
 ```
 
 ## TO_DATEWithoutDateFormat
@@ -66,7 +66,7 @@ TO_DATE without date format- use TO_DATE(expression, date-format)
 CREATE OR REPLACE PACKAGE BODY date_utilities
 IS
 
--- Take single parameter, relyimg on current default NLS date format
+-- Take single parameter, relying on current default NLS date format
 FUNCTION to_date_single_parameter (p_date_string IN VARCHAR2) RETURN DATE
 IS
 BEGIN
@@ -93,7 +93,7 @@ END date_utilities;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/dates.xml/TO_DATEWithoutDateFormat" />
+<rule ref="rulesets/plsql/errorprone.xml/TO_DATEWithoutDateFormat" />
 ```
 
 ## TO_TIMESTAMPWithoutDateFormat
@@ -114,7 +114,7 @@ TO_TIMESTAMP without date format- use TO_TIMESTAMP(expression, date-format)
 CREATE OR REPLACE PACKAGE BODY date_utilities
 IS
 
--- Take single parameter, relyimg on current default NLS date format
+-- Take single parameter, relying on current default NLS date format
 FUNCTION to_timestamp_single_parameter (p_date_string IN VARCHAR2) RETURN DATE
 IS
 BEGIN
@@ -141,6 +141,6 @@ END date_utilities;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/dates.xml/TO_TIMESTAMPWithoutDateFormat" />
+<rule ref="rulesets/plsql/errorprone.xml/TO_TIMESTAMPWithoutDateFormat" />
 ```
 
