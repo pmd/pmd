@@ -5,7 +5,7 @@ permalink: pmd_rules_apex_errorprone.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/category/apex/errorprone.xml
-keywords: Error Prone, AvoidDirectAccessTriggerMap, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass
+keywords: Error Prone, AvoidDirectAccessTriggerMap, AvoidHardcodingId, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass
 ---
 ## AvoidDirectAccessTriggerMap
 
@@ -42,6 +42,46 @@ trigger AccountTrigger on Account (before insert, before update) {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="rulesets/apex/errorprone.xml/AvoidDirectAccessTriggerMap" />
+```
+
+## AvoidHardcodingId
+
+**Since:** PMD 6.0.0
+
+**Priority:** Medium (3)
+
+When deploying Apex code between sandbox and production environments, or installing Force.com AppExchange packages,
+it is essential to avoid hardcoding IDs in the Apex code. By doing so, if the record IDs change between environments,
+the logic can dynamically identify the proper data to operate against and not fail.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidHardcodingIdRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/errorprone/AvoidHardcodingIdRule.java)
+
+**Example(s):**
+
+``` java
+public without sharing class Foo {
+    void foo() {
+        //Error - hardcoded the record type id
+        if(a.RecordTypeId == '012500000009WAr'){
+            //do some logic here.....
+        } else if(a.RecordTypeId == '0123000000095Km'){
+            //do some logic here for a different record type...
+        }
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/errorprone.xml/AvoidHardcodingId" />
 ```
 
 ## EmptyCatchBlock
