@@ -120,8 +120,6 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements
         setModifier(isDefault, DEFAULT);
     }
 
-    // TODO: fix the rule - around binary expressions the parentheses are needed...
-    @SuppressWarnings("PMD.UselessParentheses") 
     private boolean isModifier(int mask) {
         return (modifiers & mask) == mask;
     }

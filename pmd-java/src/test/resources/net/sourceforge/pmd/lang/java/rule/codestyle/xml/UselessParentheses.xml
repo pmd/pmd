@@ -460,4 +460,15 @@ public class Useless {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>FP on binary operator</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private boolean isModifier(int mask) {
+        return (modifiers & mask) == mask;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

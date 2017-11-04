@@ -49,10 +49,12 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         arrayDepth++;
     }
 
+    @Override
     public int getArrayDepth() {
         return arrayDepth;
     }
 
+    @Override
     public boolean isArray() {
         return arrayDepth > 0;
     }

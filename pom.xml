@@ -291,7 +291,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <artifactId>antlr4-maven-plugin</artifactId>
                     <version>${antlr.version}</version>
                     <configuration>
-                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
                     </configuration>
                     <executions>
                         <execution>
@@ -340,6 +340,8 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.7.0</version>
                     <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
                         <release>${java.version}</release>
                     </configuration>
                 </plugin>
@@ -645,7 +647,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>${pmd.plugin.version}</version>
                 <configuration>
-                    <linkXref>true</linkXref>
+                    <linkXRef>true</linkXRef>
                     <minimumTokens>100</minimumTokens>
                     <targetJdk>1.${java.version}</targetJdk>
                     <rulesets>

@@ -641,11 +641,10 @@ Some for loops can be simplified to while loops, this makes them more concise.
                 <value>
 <![CDATA[
 //ForStatement
-  [count(*) > 1]
   [not(LocalVariableDeclaration)]
   [not(ForInit)]
   [not(ForUpdate)]
-  [not(Type and Expression and Statement)]
+  [Expression]
 ]]>
                 </value>
             </property>
