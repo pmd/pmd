@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
@@ -417,5 +418,29 @@ public abstract class AbstractNode implements Node {
 
     public void jjtSetLastToken(GenericToken token) {
         this.lastToken = token;
+    }
+
+    @Override
+    public void remove() {
+        // Detach current node of its parent, if any
+        final Node parent = jjtGetParent();
+        if (parent != null) {
+            parent.removeChildAtIndex(jjtGetChildIndex());
+            jjtSetParent(null);
+        }
+
+        // TODO [autofix]: Notify action for handling text edition
+    }
+
+    @Override
+    public void removeChildAtIndex(final int childIndex) {
+        if (0 <= childIndex && childIndex < jjtGetNumChildren()) {
+            // Remove the child at the given index
+            children = ArrayUtils.remove(children, childIndex);
+            // Update the remaining & left-shifted children indexes
+            for (int i = childIndex; i < jjtGetNumChildren(); i++) {
+                jjtGetChild(i).jjtSetChildIndex(i);
+            }
+        }
     }
 }
