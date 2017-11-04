@@ -44,6 +44,39 @@ public class Something {
 <rule ref="rulesets/apex/performance.xml/AvoidDmlStatementsInLoops" />
 ```
 
+## AvoidNonRestrictiveQueries
+
+**Since:** PMD 6.0.0
+
+**Priority:** Medium (3)
+
+When working with very large amounts of data, unfiltered SOQL queries can quickly cause governor limit exceptions.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.performance.AvoidNonRestrictiveQueriesRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/performance/AvoidNonRestrictiveQueriesRule.java)
+
+**Example(s):**
+
+``` java
+public class Something {
+    public static void main( String as[] ) {
+        Account[] accs = [ select id from account ];  //Bad
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/apex/performance.xml/AvoidNonRestrictiveQueries" />
+```
+
 ## AvoidSoqlInLoops
 
 **Since:** PMD 5.5.0

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Query without a where statement</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Something {
+    public static void main( String as[] ) {
+        Account[] accs = [ select id from account ];  //Bad
+    }
+}
+		]]></code>
+	</test-code>
+    
+	<test-code>
+        <description>Query with where and limit statement</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Something {
+    public static void main( String as[] ) {
+        Account[] accs = [ select id from account where id = 1 limit 1];  //Bad
+    }
+}
+		]]></code>
+    </test-code>
+    
+	<test-code>
+        <description>Subquery without limit</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Something {
+    public static void main( String as[] ) {
+        Account[] accs = [ select id, (SELECT Id FROM Contact) from account where id = 1];  //Bad
+    }
+}
+		]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple non restrictive queries</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Something {
+    public static Account[] main( String as[] ) {
+        Account[] accs = [ select id from account ];
+		Account[] accs2 = [ select id from account ];
+		return [SELECT Id FROM Contact];
+    }
+}
+		]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Restrictive queries</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Something {
+    public static Account[] main( String as[] ) {
+        Account[] accs = [ select id from account where 5=1 and 1=1 LIMIT 5 ];
+		Account[] accs2 = [ select id from account where id > 1 ];
+		return [SELECT Id FROM Contact limit 1];
+    }
+}
+		]]></code>
+    </test-code>
+
+</test-data>
