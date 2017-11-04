@@ -4,10 +4,6 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.PropertyDescriptorField.LEGAL_PACKAGES;
-
-import java.util.Map;
-
 /**
  * Defines a property descriptor type whose values can be described by qualified names and thus restricted to only some
  * packages. These typically use values such as {@link Class} and {@link java.lang.reflect.Method}.
@@ -17,11 +13,6 @@ import java.util.Map;
  * @author Clément Fournier
  */
 public interface PackagedPropertyDescriptor<T> extends PropertyDescriptor<T> {
-
-    /** Required additional fields. */
-    Map<PropertyDescriptorField, Boolean> PACKAGED_FIELD_TYPES_BY_KEY
-        = AbstractPropertyDescriptorFactory.expectedFieldTypesWith(new PropertyDescriptorField[] {LEGAL_PACKAGES},
-                                                                   new Boolean[] {false});
 
     /** Delimiter used to separate package names. */
     char PACKAGE_NAME_DELIMITER = ' ';

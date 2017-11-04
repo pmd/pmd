@@ -10,6 +10,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.util.ClassUtil;
 
+
 /**
  * Factorises common functionality for method properties.
  *

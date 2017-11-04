@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.properties.modules.MethodPropertyModule.CLASS_
 import static net.sourceforge.pmd.properties.modules.MethodPropertyModule.METHOD_ARG_DELIMITER;
 import static net.sourceforge.pmd.properties.modules.MethodPropertyModule.METHOD_GROUP_DELIMITERS;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -18,105 +19,16 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.util.ClassUtil;
 
+
 /**
  * @author Clément Fournier
  * @since 6.0.0
  */
-//TODO: make package-private when we move everything to n.s.pmd.properties
 public final class ValueParserConstants {
 
 
-    /** Extracts characters. */
-    static final ValueParser<Character> CHARACTER_PARSER = new ValueParser<Character>() {
-        @Override
-        public Character valueOf(String value) {
-            if (value == null || value.length() != 1) {
-                throw new IllegalArgumentException("missing/ambiguous character value");
-            }
-            return value.charAt(0);
-        }
-    };
-
-
-    /** Extracts strings. That's a dummy used to return a list in StringMultiProperty. */
-    static final ValueParser<String> STRING_PARSER = new ValueParser<String>() {
-        @Override
-        public String valueOf(String value) {
-            return value;
-        }
-    };
-
-
-    /** Extracts integers. */
-    static final ValueParser<Integer> INTEGER_PARSER = new ValueParser<Integer>() {
-        @Override
-        public Integer valueOf(String value) {
-            return Integer.valueOf(value);
-        }
-    };
-
-
-    /** Extracts booleans. */
-    static final ValueParser<Boolean> BOOLEAN_PARSER = new ValueParser<Boolean>() {
-        @Override
-        public Boolean valueOf(String value) {
-            return Boolean.valueOf(value);
-        }
-    };
-
-
-    /** Extracts floats. */
-    static final ValueParser<Float> FLOAT_PARSER = new ValueParser<Float>() {
-        @Override
-        public Float valueOf(String value) {
-            return Float.valueOf(value);
-        }
-    };
-
-
-    /** Extracts longs. */
-    static final ValueParser<Long> LONG_PARSER = new ValueParser<Long>() {
-        @Override
-        public Long valueOf(String value) {
-            return Long.valueOf(value);
-        }
-    };
-
-
-    /** Extracts doubles. */
-    static final ValueParser<Double> DOUBLE_PARSER = new ValueParser<Double>() {
-        @Override
-        public Double valueOf(String value) {
-            return Double.valueOf(value);
-        }
-    };
-
-
-    /** Extract classes. */
-    static final ValueParser<Class> CLASS_PARSER = new ValueParser<Class>() {
-        @Override
-        public Class valueOf(String value) throws IllegalArgumentException {
-            if (StringUtils.isBlank(value)) {
-                return null;
-            }
-
-            Class<?> cls = ClassUtil.getTypeFor(value);
-            if (cls != null) {
-                return cls;
-            }
-
-            try {
-                return Class.forName(value);
-            } catch (ClassNotFoundException ex) {
-                throw new IllegalArgumentException(value);
-            }
-        }
-    };
-
-
     /** Extracts methods. */
-    // TODO: make package-private when we move everything to n.s.pmd.properties
-    public static final ValueParser<Method> METHOD_PARSER = new ValueParser<Method>() {
+    static final ValueParser<Method> METHOD_PARSER = new ValueParser<Method>() {
         @Override
         public Method valueOf(String value) throws IllegalArgumentException {
             return methodFrom(value, CLASS_METHOD_DELIMITER, METHOD_ARG_DELIMITER);
@@ -223,10 +135,109 @@ public final class ValueParserConstants {
         }
 
     };
+    /** Extracts characters. */
+    static final ValueParser<Character> CHARACTER_PARSER = new ValueParser<Character>() {
+        @Override
+        public Character valueOf(String value) {
+            if (value == null || value.length() != 1) {
+                throw new IllegalArgumentException("missing/ambiguous character value");
+            }
+            return value.charAt(0);
+        }
+    };
+    /** Extracts strings. That's a dummy used to return a list in StringMultiProperty. */
+    static final ValueParser<String> STRING_PARSER = new ValueParser<String>() {
+        @Override
+        public String valueOf(String value) {
+            return value;
+        }
+    };
+    /** Extracts integers. */
+    static final ValueParser<Integer> INTEGER_PARSER = new ValueParser<Integer>() {
+        @Override
+        public Integer valueOf(String value) {
+            return Integer.valueOf(value);
+        }
+    };
+    /** Extracts booleans. */
+    static final ValueParser<Boolean> BOOLEAN_PARSER = new ValueParser<Boolean>() {
+        @Override
+        public Boolean valueOf(String value) {
+            return Boolean.valueOf(value);
+        }
+    };
+    /** Extracts floats. */
+    static final ValueParser<Float> FLOAT_PARSER = new ValueParser<Float>() {
+        @Override
+        public Float valueOf(String value) {
+            return Float.valueOf(value);
+        }
+    };
+    /** Extracts longs. */
+    static final ValueParser<Long> LONG_PARSER = new ValueParser<Long>() {
+        @Override
+        public Long valueOf(String value) {
+            return Long.valueOf(value);
+        }
+    };
+    /** Extracts doubles. */
+    static final ValueParser<Double> DOUBLE_PARSER = new ValueParser<Double>() {
+        @Override
+        public Double valueOf(String value) {
+            return Double.valueOf(value);
+        }
+    };
+    /** Extracts files */
+    static final ValueParser<File> FILE_PARSER = new ValueParser<File>() {
+        @Override
+        public File valueOf(String value) throws IllegalArgumentException {
+            return new File(value);
+        }
+    };
+
+    /** Extract classes. */
+    static final ValueParser<Class> CLASS_PARSER = new ValueParser<Class>() {
+        @Override
+        public Class valueOf(String value) throws IllegalArgumentException {
+            if (StringUtils.isBlank(value)) {
+                return null;
+            }
+
+            Class<?> cls = ClassUtil.getTypeFor(value);
+            if (cls != null) {
+                return cls;
+            }
+
+            try {
+                return Class.forName(value);
+            } catch (ClassNotFoundException ex) {
+                throw new IllegalArgumentException(value);
+            }
+        }
+    };
 
 
     private ValueParserConstants() {
 
+    }
+
+
+    /**
+     * Returns a value parser parsing lists of values of type U.
+     *
+     * @param parser    Parser used to parse a single value
+     * @param delimiter Char delimiting values
+     * @param <U>       Element type of the target list
+     *
+     * @return A list of values
+     */
+    public static <U> ValueParser<List<U>> multi(final ValueParser<U> parser, final char delimiter) {
+        return new ValueParser<List<U>>() {
+            @Override
+            public List<U> valueOf(String value) throws IllegalArgumentException {
+                return parsePrimitives(value, delimiter, parser);
+            }
+        };
     }
 
 
@@ -242,7 +253,7 @@ public final class ValueParserConstants {
      */
     // FUTURE 1.8 : use java.util.function.Function<String, U> in place of ValueParser<U>,
     // replace ValueParser constants with static functions
-    public static <U> List<U> parsePrimitives(String toParse, char delimiter, ValueParser<U> extractor) {
+    static <U> List<U> parsePrimitives(String toParse, char delimiter, ValueParser<U> extractor) {
         String[] values = StringUtils.split(toParse, delimiter);
         List<U> result = new ArrayList<>();
         for (String s : values) {

@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.properties;
 
-import java.util.Enumeration;
 import java.util.Map;
 
+import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
 import net.sourceforge.pmd.properties.modules.EnumeratedPropertyModule;
 import net.sourceforge.pmd.util.CollectionUtil;
+
 
 /**
  * Property which can take only a fixed set of values of any type, then selected via String labels. The mappings method
@@ -23,26 +24,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @version Refactored June 2017 (6.0.0)
  */
 public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
-    implements EnumeratedPropertyDescriptor<E, E> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<? extends Enumeration> FACTORY // @formatter:off
-        = new SingleValuePropertyDescriptorFactory<Enumeration>(Enumeration.class) { // TODO:cf Enumeration? Object?
-
-            @Override
-            public EnumeratedProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                Map<String, Object> labelsToChoices = CollectionUtil.mapFrom(labelsIn(valuesById),   // this is not implemented
-                                                                            choicesIn(valuesById));  // ditto
-                return new EnumeratedProperty<>(nameIn(valuesById),
-                                                descriptionIn(valuesById),
-                                                labelsToChoices,
-                                                choicesIn(valuesById)[indexIn(valuesById)],
-                                                classIn(valuesById),
-                                                0f,
-                                                isDefinedExternally);
-            }
-        }; // @formatter:on
-
+        implements EnumeratedPropertyDescriptor<E, E> {
 
     private final EnumeratedPropertyModule<E> module;
 
@@ -65,7 +47,7 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
     public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
                               int defaultIndex, Class<E> valueType, float theUIOrder) {
         this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices),
-             theChoices[defaultIndex], valueType, theUIOrder, false);
+                theChoices[defaultIndex], valueType, theUIOrder, false);
     }
 
 
@@ -86,7 +68,7 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
     public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
                               int defaultIndex, float theUIOrder) {
         this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices),
-             theChoices[defaultIndex], null, theUIOrder, false);
+                theChoices[defaultIndex], null, theUIOrder, false);
     }
 
 
@@ -145,5 +127,36 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
         return module.getChoicesByLabel(); // unmodifiable
     }
 
+
+    public static <E> EnumPBuilder<E> named(String name) {
+        return new EnumPBuilder<>(name);
+    }
+
+    public static final class EnumPBuilder<E> extends SingleValuePropertyBuilder<E, EnumPBuilder<E>> {
+
+        private Class<E> valueType;
+        private Map<String, E> mappings;
+
+
+        private EnumPBuilder(String name) {
+            super(name);
+        }
+
+        public EnumPBuilder<E> type(Class<E> type) {
+            this.valueType = type;
+            return this;
+        }
+
+        public EnumPBuilder<E> mappings(Map<String, E> map) {
+            this.mappings = map;
+            return this;
+        }
+
+
+        @Override
+        public EnumeratedProperty<E> build() {
+            return new EnumeratedProperty<>(this.name, this.description, mappings, this.defaultValue, valueType, this.uiOrder, isDefinedInXML);
+        }
+    }
 
 }

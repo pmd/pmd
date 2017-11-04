@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 
+
 /**
  * Factorises common functionality for packaged properties.
  *
@@ -55,7 +56,7 @@ public abstract class PackagedPropertyModule<T> {
         for (String name : legalNamePrefixes) {
             if (name == null) {
                 throw new IllegalArgumentException("Null is not allowed in the legal package names:"
-                                                       + Arrays.toString(legalNamePrefixes));
+                                                   + Arrays.toString(legalNamePrefixes));
             } else if (!PACKAGE_NAME_PATTERN.matcher(name).matches()) {
                 throw new IllegalArgumentException("One name is not a package: '" + name + "'");
 

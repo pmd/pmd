@@ -6,6 +6,7 @@ package net.sourceforge.pmd.properties.modules;
 
 import java.util.List;
 
+
 /**
  * Factorises common functionality for type properties.
  *

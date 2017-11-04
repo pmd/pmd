@@ -8,17 +8,18 @@ import java.util.Map;
 
 import net.sourceforge.pmd.properties.modules.NumericPropertyModule;
 
+
 /**
- * Maintains a pair of boundary limit values between which all values managed by
- * the subclasses must fit.
+ * Maintains a pair of boundary limit values between which all values managed by the subclasses must fit.
  *
  * @param <T> The type of value.
  *
  * @author Brian Remedios
+ * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
 /* default */ abstract class AbstractNumericProperty<T extends Number> extends AbstractSingleValueProperty<T>
-    implements NumericPropertyDescriptor<T> {
+        implements NumericPropertyDescriptor<T> {
 
 
     private final NumericPropertyModule<T> module;

@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.ValueParserConstants.INTEGER_PARSER;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+
+import net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
+
 
 /**
  * Multi-valued integer property.
@@ -17,25 +18,6 @@ import java.util.Map;
  * @version Refactored June 2017 (6.0.0)
  */
 public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<List<Integer>> FACTORY // @formatter:off
-        = new MultiValuePropertyDescriptorFactory<Integer>(Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
-            @Override
-            public IntegerMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean
-                isDefinedExternally) {
-                String[] minMax = minMaxFrom(valuesById);
-                char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Integer> defaultValues = ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, INTEGER_PARSER);
-                return new IntegerMultiProperty(nameIn(valuesById),
-                                                descriptionIn(valuesById),
-                                                INTEGER_PARSER.valueOf(minMax[0]),
-                                                INTEGER_PARSER.valueOf(minMax[1]),
-                                                defaultValues,
-                                                0f,
-                                                isDefinedExternally);
-            }
-        }; // @formatter:on
 
 
     /**
@@ -92,5 +74,33 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
     @Override
     protected Integer createFrom(String toParse) {
         return Integer.valueOf(toParse);
+    }
+
+
+    static PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Integer, IntegerMultiPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Integer, IntegerMultiPBuilder>(Integer.class, ValueParserConstants.INTEGER_PARSER) {
+            @Override
+            protected IntegerMultiPBuilder newBuilder(String name) {
+                return new IntegerMultiPBuilder(name);
+            }
+        };
+    }
+
+
+    public static IntegerMultiPBuilder named(String name) {
+        return new IntegerMultiPBuilder(name);
+    }
+
+
+    public static final class IntegerMultiPBuilder extends MultiNumericPropertyBuilder<Integer, IntegerMultiPBuilder> {
+        private IntegerMultiPBuilder(String name) {
+            super(name);
+        }
+
+
+        @Override
+        public IntegerMultiProperty build() {
+            return new IntegerMultiProperty(name, description, lowerLimit, upperLimit, defaultValues, uiOrder, isDefinedInXML);
+        }
     }
 }

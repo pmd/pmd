@@ -6,6 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import net.sourceforge.pmd.Rule;
 
+
 /**
  * Single value property.
  *
@@ -14,7 +15,7 @@ import net.sourceforge.pmd.Rule;
  * @author Clément Fournier
  */
 /* default */ abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
-    implements SingleValuePropertyDescriptor<T> {
+        implements SingleValuePropertyDescriptor<T> {
 
     /** Default value. */
     private T defaultValue;
@@ -85,12 +86,10 @@ import net.sourceforge.pmd.Rule;
     }
 
 
-    private String typeErrorFor(T value) { // TODO:cf consider subtypes?
-
+    private String typeErrorFor(T value) {
         if (value != null && !type().isAssignableFrom(value.getClass())) {
             return value + " is not an instance of " + type();
         }
-
         return null;
     }
 

@@ -14,8 +14,10 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractApexRule {
     private int depth;
     private int depthLimit;
 
-    private static final IntegerProperty PROBLEM_DEPTH_DESCRIPTOR = new IntegerProperty("problemDepth",
-            "The if statement depth reporting threshold", 1, 25, 3, 1.0f);
+    private static final IntegerProperty PROBLEM_DEPTH_DESCRIPTOR 
+            = IntegerProperty.named("problemDepth")
+                             .desc("The if statement depth reporting threshold")
+                             .range(1, 25).defaultValue(3).uiOrder(1.0f).build();
 
     public AvoidDeeplyNestedIfStmtsRule() {
         definePropertyDescriptor(PROBLEM_DEPTH_DESCRIPTOR);

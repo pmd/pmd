@@ -8,7 +8,10 @@ import static net.sourceforge.pmd.properties.ValueParserConstants.BOOLEAN_PARSER
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+
+import net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
+
 
 /**
  * Defines a property type that supports multiple Boolean values.
@@ -16,20 +19,6 @@ import java.util.Map;
  * @author Brian Remedios
  */
 public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boolean> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<List<Boolean>> FACTORY // @formatter:off
-        = new MultiValuePropertyDescriptorFactory<Boolean>(Boolean.class) {
-            @Override
-            public BooleanMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                char delimiter = delimiterIn(valuesById);
-                return new BooleanMultiProperty(nameIn(valuesById),
-                                                descriptionIn(valuesById),
-                                                ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, BOOLEAN_PARSER),
-                                                0f,
-                                                isDefinedExternally);
-            }
-        }; // @formatter:on
 
 
     /**
@@ -74,6 +63,34 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
     @Override
     public Class<Boolean> type() {
         return Boolean.class;
+    }
+
+
+    static PropertyDescriptorBuilderConversionWrapper.MultiValue<Boolean, BooleanMultiPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.MultiValue<Boolean, BooleanMultiPBuilder>(Boolean.class, ValueParserConstants.BOOLEAN_PARSER) {
+            @Override
+            protected BooleanMultiPBuilder newBuilder(String name) {
+                return new BooleanMultiPBuilder(name);
+            }
+        };
+    }
+
+
+    public static BooleanMultiPBuilder named(String name) {
+        return new BooleanMultiPBuilder(name);
+    }
+
+
+    public static final class BooleanMultiPBuilder extends MultiValuePropertyBuilder<Boolean, BooleanMultiPBuilder> {
+        private BooleanMultiPBuilder(String name) {
+            super(name);
+        }
+
+
+        @Override
+        public BooleanMultiProperty build() {
+            return new BooleanMultiProperty(this.name, this.description, this.defaultValues, this.uiOrder, isDefinedInXML);
+        }
     }
 
 }

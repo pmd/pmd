@@ -71,8 +71,10 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         BLOCK_PARENTS.add(ASTMethodDeclaration.class);
     }
 
-    private static final IntegerProperty THRESHOLD_DESCRIPTOR = new IntegerProperty("threshold",
-            "Max consecutive appends", 1, 10, 1, 1.0f);
+    private static final IntegerProperty THRESHOLD_DESCRIPTOR 
+            = IntegerProperty.named("threshold")
+                             .desc("Max consecutive appends")
+                             .range(1, 10).defaultValue(1).uiOrder(1.0f).build();
 
     private int threshold = 1;
 
