@@ -1,11 +1,11 @@
 ---
 title: Security
-summary: These rules deal with different security problems that can occur within Apex.
+summary: Rules that flag potential security flaws.
 permalink: pmd_rules_apex_security.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
-editmepath: ../pmd-apex/src/main/resources/rulesets/apex/security.xml
-keywords: Security, ApexSharingViolations, ApexOpenRedirect, ApexInsecureEndpoint, ApexXSSFromURLParam, ApexXSSFromEscapeFalse, ApexBadCrypto, ApexCSRF, ApexSOQLInjection, ApexCRUDViolation, ApexDangerousMethods, ApexSuggestUsingNamedCred
+editmepath: ../pmd-apex/src/main/resources/category/apex/security.xml
+keywords: Security, ApexBadCrypto, ApexCRUDViolation, ApexCSRF, ApexDangerousMethods, ApexInsecureEndpoint, ApexOpenRedirect, ApexSharingViolations, ApexSOQLInjection, ApexSuggestUsingNamedCred, ApexXSSFromEscapeFalse, ApexXSSFromURLParam
 ---
 ## ApexBadCrypto
 
