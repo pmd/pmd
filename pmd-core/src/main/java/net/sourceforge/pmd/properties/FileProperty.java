@@ -62,7 +62,7 @@ public final class FileProperty extends AbstractSingleValueProperty<File> {
     }
 
 
-    public static FilePBuilder builder(String name) {
+    public static FilePBuilder named(String name) {
         return new FilePBuilder(name);
     }
 

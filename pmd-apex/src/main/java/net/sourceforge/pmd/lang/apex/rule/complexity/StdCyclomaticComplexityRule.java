@@ -38,7 +38,7 @@ import net.sourceforge.pmd.properties.IntegerProperty;
 public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
     public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR 
-            = IntegerProperty.builder("reportLevel")
+            = IntegerProperty.named("reportLevel")
                              .desc("Cyclomatic Complexity reporting threshold")
                              .range(1, 30).defaultValue(10).uiOrder(1.0f).build();
 

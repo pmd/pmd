@@ -84,7 +84,7 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
     }
 
 
-    public static DoubleMultiPBuilder builder(String name) {
+    public static DoubleMultiPBuilder named(String name) {
         return new DoubleMultiPBuilder(name);
     }
 

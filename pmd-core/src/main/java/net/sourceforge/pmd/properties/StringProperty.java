@@ -58,7 +58,7 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
     }
 
 
-    public static StringPBuilder builder(String name) {
+    public static StringPBuilder named(String name) {
         return new StringPBuilder(name);
     }
 

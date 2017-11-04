@@ -34,7 +34,7 @@ import net.sourceforge.pmd.properties.StringProperty;
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
     public static final IntegerProperty THRESHOLD_DESCRIPTOR 
-            = IntegerProperty.builder("maxDuplicateLiterals")
+            = IntegerProperty.named("maxDuplicateLiterals")
                              .desc("Max duplicate literals")
                              .range(1, 20).defaultValue(4).uiOrder(1.0f).build();
 

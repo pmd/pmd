@@ -76,7 +76,7 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
     }
 
 
-    public static BooleanMultiPBuilder builder(String name) {
+    public static BooleanMultiPBuilder named(String name) {
         return new BooleanMultiPBuilder(name);
     }
 

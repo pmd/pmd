@@ -87,7 +87,7 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
     }
 
 
-    public static IntegerMultiPBuilder builder(String name) {
+    public static IntegerMultiPBuilder named(String name) {
         return new IntegerMultiPBuilder(name);
     }
 

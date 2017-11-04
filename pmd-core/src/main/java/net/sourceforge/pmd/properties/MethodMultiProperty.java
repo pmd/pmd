@@ -127,7 +127,7 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
     }
 
 
-    public static MethodMultiPBuilder builder(String name) {
+    public static MethodMultiPBuilder named(String name) {
         return new MethodMultiPBuilder(name);
     }
 

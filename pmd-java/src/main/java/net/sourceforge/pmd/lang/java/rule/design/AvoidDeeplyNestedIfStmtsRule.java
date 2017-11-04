@@ -15,7 +15,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractJavaRule {
     private int depthLimit;
 
     private static final IntegerProperty PROBLEM_DEPTH_DESCRIPTOR 
-            = IntegerProperty.builder("problemDepth")
+            = IntegerProperty.named("problemDepth")
                              .desc("The if statement depth reporting threshold")
                              .range(1, 25).defaultValue(3).uiOrder(1.0f).build();
 

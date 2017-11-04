@@ -96,7 +96,7 @@ public final class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
 
-    public static MethodPBuilder builder(String name) {
+    public static MethodPBuilder named(String name) {
         return new MethodPBuilder(name);
     }
 

@@ -104,7 +104,7 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
     }
 
 
-    public static CharacterMultiPBuilder builder(String name) {
+    public static CharacterMultiPBuilder named(String name) {
         return new CharacterMultiPBuilder(name);
     }
 

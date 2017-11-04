@@ -85,7 +85,7 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
     }
 
 
-    public static LongPBuilder builder(String name) {
+    public static LongPBuilder named(String name) {
         return new LongPBuilder(name);
     }
 

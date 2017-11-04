@@ -98,7 +98,7 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
     }
 
 
-    public static DoublePBuilder builder(String name) {
+    public static DoublePBuilder named(String name) {
         return new DoublePBuilder(name);
     }
 

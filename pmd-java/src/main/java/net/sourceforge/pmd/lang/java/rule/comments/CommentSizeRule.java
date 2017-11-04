@@ -22,12 +22,12 @@ import net.sourceforge.pmd.util.StringUtil;
 public class CommentSizeRule extends AbstractCommentRule {
 
     public static final IntegerProperty MAX_LINES
-            = IntegerProperty.builder("maxLines")
+            = IntegerProperty.named("maxLines")
                              .desc("Maximum lines")
                              .range(2, 200).defaultValue(6).uiOrder(2.0f).build();
     
     public static final IntegerProperty MAX_LINE_LENGTH
-            = IntegerProperty.builder("maxLineLength")
+            = IntegerProperty.named("maxLineLength")
                              .desc("Maximum line length")
                              .range(1, 200).defaultValue(80).uiOrder(2.0f).build();
 

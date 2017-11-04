@@ -88,7 +88,7 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
     }
 
 
-    public static CharacterPBuilder builder(String name) {
+    public static CharacterPBuilder named(String name) {
         return new CharacterPBuilder(name);
     }
 

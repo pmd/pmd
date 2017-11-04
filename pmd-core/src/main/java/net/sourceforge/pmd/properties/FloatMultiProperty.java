@@ -85,7 +85,7 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
     }
 
 
-    public static FloatMultiPBuilder builder(String name) {
+    public static FloatMultiPBuilder named(String name) {
         return new FloatMultiPBuilder(name);
     }
 

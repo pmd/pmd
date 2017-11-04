@@ -16,7 +16,7 @@ public class AvoidUsingOctalValuesRule extends AbstractJavaRule {
 
     public static final Pattern STRICT_OCTAL_PATTERN = Pattern.compile("0[0-7]+[lL]?");
 
-    private static final BooleanProperty STRICT_METHODS_DESCRIPTOR = BooleanProperty.builder("strict")
+    private static final BooleanProperty STRICT_METHODS_DESCRIPTOR = BooleanProperty.named("strict")
                                                                                     .desc("Detect violations between 00 and 07")
                                                                                     .defaultValue(false)
                                                                                     .uiOrder(1.0f).build();

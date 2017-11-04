@@ -86,7 +86,7 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
     }
 
 
-    public static FloatPBuilder builder(String name) {
+    public static FloatPBuilder named(String name) {
         return new FloatPBuilder(name);
     }
 

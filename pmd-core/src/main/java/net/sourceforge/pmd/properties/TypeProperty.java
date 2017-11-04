@@ -89,7 +89,7 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
 
-    public static TypePBuilder builder(String name) {
+    public static TypePBuilder named(String name) {
         return new TypePBuilder(name);
     }
 

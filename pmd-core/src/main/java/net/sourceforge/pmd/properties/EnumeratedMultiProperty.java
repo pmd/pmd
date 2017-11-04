@@ -156,22 +156,25 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
     }
 
 
-    public static <E> EnumMultiPBuilder<E> builder(String name, Class<E> type) {
-        return new EnumMultiPBuilder<>(name, type);
+    public static <E> EnumMultiPBuilder<E> named(String name) {
+        return new EnumMultiPBuilder<>(name);
     }
 
 
     public static final class EnumMultiPBuilder<E> extends MultiValuePropertyBuilder<E, EnumMultiPBuilder<E>> {
 
-        private final Class<E> valueType;
+        private Class<E> valueType;
         private Map<String, E> mappings;
 
 
-        private EnumMultiPBuilder(String name, Class<E> type) {
+        private EnumMultiPBuilder(String name) {
             super(name);
-            this.valueType = type;
         }
 
+        public EnumMultiPBuilder<E> type(Class<E> type) {
+            this.valueType = type;
+            return this;
+        }
 
         /**
          * Sets the key-value mappings.

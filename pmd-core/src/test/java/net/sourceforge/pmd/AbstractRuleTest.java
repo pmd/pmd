@@ -96,7 +96,7 @@ public class AbstractRuleTest {
     @Test
     public void testRuleWithVariableInMessage() {
         MyRule r = new MyRule();
-        r.definePropertyDescriptor(IntegerProperty.builder("testInt").desc("description").range(0, 100).defaultValue(10).uiOrder(0).build());
+        r.definePropertyDescriptor(IntegerProperty.named("testInt").desc("description").range(0, 100).defaultValue(10).uiOrder(0).build());
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
         RuleContext ctx = new RuleContext();
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());

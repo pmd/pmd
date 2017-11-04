@@ -147,7 +147,7 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
     }
 
 
-    public static StringMultiPBuilder builder(String name) {
+    public static StringMultiPBuilder named(String name) {
         return new StringMultiPBuilder(name);
     }
 

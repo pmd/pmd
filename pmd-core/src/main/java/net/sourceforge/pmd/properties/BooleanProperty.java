@@ -74,7 +74,7 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
     }
 
 
-    public static BooleanPBuilder builder(String name) {
+    public static BooleanPBuilder named(String name) {
         return new BooleanPBuilder(name);
     }
 

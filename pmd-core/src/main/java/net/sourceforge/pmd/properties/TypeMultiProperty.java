@@ -106,7 +106,7 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
     }
 
 
-    public static TypeMultiPBuilder builder(String name) {
+    public static TypeMultiPBuilder named(String name) {
         return new TypeMultiPBuilder(name);
     }
 

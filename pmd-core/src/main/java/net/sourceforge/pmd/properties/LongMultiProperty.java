@@ -85,7 +85,7 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
     }
 
 
-    public static LongMultiPBuilder builder(String name) {
+    public static LongMultiPBuilder named(String name) {
         return new LongMultiPBuilder(name);
     }
 

@@ -65,7 +65,7 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
     }
 
 
-    public static IntegerPBuilder builder(String name) {
+    public static IntegerPBuilder named(String name) {
         return new IntegerPBuilder(name);
     }
 
