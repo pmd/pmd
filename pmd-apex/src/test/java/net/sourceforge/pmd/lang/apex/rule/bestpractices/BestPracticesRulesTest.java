@@ -18,7 +18,6 @@ public class BestPracticesRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ApexUnitTestClassShouldHaveAsserts");
         addRule(RULESET, "ApexUnitTestShouldNotUseSeeAllDataTrue");
         addRule(RULESET, "AvoidGlobalModifier");
-        addRule(RULESET, "AvoidHardcodingId");
         addRule(RULESET, "AvoidLogicInTrigger");
     }
 }

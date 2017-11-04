@@ -13,6 +13,7 @@ public class ErrorProneRulesTest extends SimpleAggregatorTst {
     @Override
     public void setUp() {
         addRule(RULESET, "AvoidDirectAccessTriggerMap");
+        addRule(RULESET, "AvoidHardcodingId");
         addRule(RULESET, "EmptyCatchBlock");
         addRule(RULESET, "EmptyIfStmt");
         addRule(RULESET, "EmptyStatementBlock");
