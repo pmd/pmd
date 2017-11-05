@@ -60,6 +60,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
@@ -147,7 +148,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
             // no big deal
         }
 
-      
+
         initializeLanguageVersionMenu();
         initializeViewAnimation();
 
@@ -288,6 +289,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
 
     private void onExportXPathToRuleClicked(Event event) throws IOException {
+        // doesn't work for some reason
         ExportXPathWizardController wizard
             = new ExportXPathWizardController(xpathPanelController.xpathExpressionProperty());
 
@@ -306,15 +308,16 @@ public class MainDesignerController implements Initializable, SettingsOwner {
             }
         });
 
-        Stage stage = new Stage();
-
-        stage.setOnCloseRequest(e -> wizard.shutdown());
+        final Stage dialog = new Stage();
+        dialog.initOwner(designerApp.getMainStage());
+        dialog.setOnCloseRequest(e -> wizard.shutdown());
+        dialog.initModality(Modality.WINDOW_MODAL);
 
         Parent root = loader.load();
         Scene scene = new Scene(root);
         //stage.setTitle("PMD Rule Designer (v " + PMD.VERSION + ')');
-        stage.setScene(scene);
-        stage.show();
+        dialog.setScene(scene);
+        dialog.show();
     }
 
 

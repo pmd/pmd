@@ -20,6 +20,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+
 /**
  * Main class for the designer.
  *
@@ -28,10 +29,21 @@ import javafx.stage.Stage;
  */
 public class Designer extends Application {
 
+    private void parseParameters(Parameters params) {
+        List<String> raw = params.getRaw();
+        if (!raw.contains("-v")
+            && !raw.contains("--verbose")) {
+            // error output is disabled by default
+            System.err.close();
+        }
+
+    }
+
+
     @Override
     public void start(Stage stage) throws IOException {
-
-        // System.err.close();
+        
+        parseParameters(getParameters());
 
         FXMLLoader loader
             = new FXMLLoader(getClass().getResource("fxml/designer.fxml"));
