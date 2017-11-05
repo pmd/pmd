@@ -44,7 +44,7 @@ import javafx.util.StringConverter;
  */
 public class XPathPanelController implements Initializable, SettingsOwner {
 
-    private final DesignerApp designerApp;
+    private final DesignerRoot designerRoot;
     private final MainDesignerController parent;
 
     private final XPathEvaluator xpathEvaluator = new XPathEvaluator();
@@ -59,8 +59,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     private ChoiceBox<String> xpathVersionChoiceBox;
 
 
-    XPathPanelController(DesignerApp owner, MainDesignerController mainController) {
-        this.designerApp = owner;
+    XPathPanelController(DesignerRoot owner, MainDesignerController mainController) {
+        this.designerRoot = owner;
         parent = mainController;
     }
 
@@ -126,7 +126,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
             violationsTitledPane.setText("Matched nodes\t(" + results.size() + ")");
         } catch (XPathEvaluationException e) {
             invalidateResults(true);
-            designerApp.getLogger().logEvent(new LogEntry(e, Category.XPATH_EVALUATION_EXCEPTION));
+            designerRoot.getLogger().logEvent(new LogEntry(e, Category.XPATH_EVALUATION_EXCEPTION));
         }
 
         xpathResultListView.refresh();

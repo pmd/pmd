@@ -78,15 +78,10 @@ import javafx.util.StringConverter;
  */
 public class MainDesignerController implements Initializable, SettingsOwner {
 
-
-    private static final String SETTINGS_FILE_NAME = System.getProperty("user.home")
-                                                     + System.getProperty("file.separator") + ".pmd_new_designer.xml";
-
-
     /**
      * Callback to the owner.
      */
-    private final DesignerApp designerApp;
+    private final DesignerRoot designerRoot;
 
     /* Menu bar */
     @FXML
@@ -133,8 +128,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     private Stack<File> recentFiles = new LimitedSizeStack<>(5);
 
 
-    public MainDesignerController(DesignerApp owner) {
-        this.designerApp = owner;
+    public MainDesignerController(DesignerRoot owner) {
+        this.designerRoot = owner;
     }
 
 
@@ -142,7 +137,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     public void initialize(URL location, ResourceBundle resources) {
 
         try {
-            XMLSettingsLoader loader = new XMLSettingsLoader(SETTINGS_FILE_NAME);
+            XMLSettingsLoader loader = new XMLSettingsLoader(DesignerUtil.getSettingsFile());
             loadSettings(loader.getSettings());
         } catch (IOException ioe) {
             // no big deal
@@ -229,7 +224,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
     public void shutdown() {
         try {
-            XMLSettingsSaver saver = XMLSettingsSaver.forFile(SETTINGS_FILE_NAME);
+            XMLSettingsSaver saver = XMLSettingsSaver.forFile(DesignerUtil.getSettingsFile());
             this.saveSettings(saver);
             saver.save();
         } catch (IOException ioe) {
@@ -309,7 +304,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         });
 
         final Stage dialog = new Stage();
-        dialog.initOwner(designerApp.getMainStage());
+        dialog.initOwner(designerRoot.getMainStage());
         dialog.setOnCloseRequest(e -> wizard.shutdown());
         dialog.initModality(Modality.WINDOW_MODAL);
 
@@ -329,7 +324,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     private void onOpenFileClicked(ActionEvent event) {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Load source from file");
-        File file = chooser.showOpenDialog(designerApp.getMainStage());
+        File file = chooser.showOpenDialog(designerRoot.getMainStage());
         loadSourceFromFile(file);
         sourceEditorController.clearStyleLayers();
     }
@@ -448,14 +443,14 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
 
     private String isMaximized() {
-        return Boolean.toString(designerApp.getMainStage().isMaximized());
+        return Boolean.toString(designerRoot.getMainStage().isMaximized());
     }
 
 
     private void setIsMaximized(String bool) {
         boolean b = Boolean.parseBoolean(bool);
-        designerApp.getMainStage().setMaximized(!b); // trigger change listener anyway
-        designerApp.getMainStage().setMaximized(b);
+        designerRoot.getMainStage().setMaximized(!b); // trigger change listener anyway
+        designerRoot.getMainStage().setMaximized(b);
     }
 
 

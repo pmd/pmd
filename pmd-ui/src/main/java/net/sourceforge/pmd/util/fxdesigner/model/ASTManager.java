@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.fxdesigner.DesignerApp;
+import net.sourceforge.pmd.util.fxdesigner.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 
 import javafx.beans.property.ObjectProperty;
@@ -28,7 +28,7 @@ import javafx.beans.property.SimpleObjectProperty;
  */
 public class ASTManager {
 
-    private final DesignerApp designerApp;
+    private final DesignerRoot designerRoot;
 
     /**
      * Last valid source that was compiled, corresponds to {@link #compilationUnit}.
@@ -52,8 +52,8 @@ public class ASTManager {
     }
 
 
-    public ASTManager(DesignerApp owner) {
-        this.designerApp = owner;
+    public ASTManager(DesignerRoot owner) {
+        this.designerRoot = owner;
     }
 
 
@@ -95,18 +95,18 @@ public class ASTManager {
         try {
             node = parser.parse(null, new StringReader(source));
         } catch (Exception e) {
-            designerApp.getLogger().logEvent(new LogEntry(e, Category.PARSE_EXCEPTION));
+            designerRoot.getLogger().logEvent(new LogEntry(e, Category.PARSE_EXCEPTION));
             throw new ParseAbortedException(e);
         }
         try {
             languageVersionHandler.getSymbolFacade().start(node);
         } catch (Exception e) {
-            designerApp.getLogger().logEvent(new LogEntry(e, Category.SYMBOL_FACADE_EXCEPTION));
+            designerRoot.getLogger().logEvent(new LogEntry(e, Category.SYMBOL_FACADE_EXCEPTION));
         }
         try {
             languageVersionHandler.getTypeResolutionFacade(ASTManager.class.getClassLoader()).start(node);
         } catch (Exception e) {
-            designerApp.getLogger().logEvent(new LogEntry(e, Category.TYPERESOLUTION_EXCEPTION));
+            designerRoot.getLogger().logEvent(new LogEntry(e, Category.TYPERESOLUTION_EXCEPTION));
         }
 
         compilationUnit.setValue(node);

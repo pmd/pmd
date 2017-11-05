@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,6 +28,10 @@ import net.sourceforge.pmd.lang.Parser;
 public class DesignerUtil {
 
 
+    private static final Path PMD_SETTINGS_DIR = Paths.get(System.getProperty("user.home"), ".pmd");
+    private static final File DESIGNER_SETTINGS_FILE = PMD_SETTINGS_DIR.resolve("pmd_new_designer.xml").toFile();
+
+
     private static LanguageVersion[] supportedLanguageVersions;
     private static Map<String, LanguageVersion> extensionsToLanguage;
 
@@ -33,7 +40,7 @@ public class DesignerUtil {
 
     }
 
-    
+
     private static Map<String, LanguageVersion> getExtensionsToLanguageMap() {
         Map<String, LanguageVersion> result = new HashMap<>();
         Arrays.stream(getSupportedLanguageVersions())
@@ -56,6 +63,16 @@ public class DesignerUtil {
         }
 
         return null;
+    }
+
+
+    /**
+     * Name of the designer's settings file.
+     *
+     * @return The name
+     */
+    public static File getSettingsFile() {
+        return DESIGNER_SETTINGS_FILE;
     }
 
 

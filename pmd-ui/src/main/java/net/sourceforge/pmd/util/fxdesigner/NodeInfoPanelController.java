@@ -40,7 +40,7 @@ import javafx.scene.control.TreeView;
  */
 public class NodeInfoPanelController implements Initializable {
 
-    private final DesignerApp designerApp;
+    private final DesignerRoot designerRoot;
     private final MainDesignerController parent;
 
     @FXML
@@ -60,8 +60,8 @@ public class NodeInfoPanelController implements Initializable {
     private MetricEvaluator metricEvaluator = new MetricEvaluator();
 
 
-    NodeInfoPanelController(DesignerApp root, MainDesignerController mainController) {
-        this.designerApp = root;
+    NodeInfoPanelController(DesignerRoot root, MainDesignerController mainController) {
+        this.designerRoot = root;
         parent = mainController;
     }
 

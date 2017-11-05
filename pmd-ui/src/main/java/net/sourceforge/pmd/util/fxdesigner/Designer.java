@@ -48,7 +48,7 @@ public class Designer extends Application {
         FXMLLoader loader
             = new FXMLLoader(getClass().getResource("fxml/designer.fxml"));
 
-        DesignerApp owner = new DesignerApp(stage);
+        DesignerRoot owner = new DesignerRoot(stage);
         MainDesignerController mainController = new MainDesignerController(owner);
 
         NodeInfoPanelController nodeInfoPanelController = new NodeInfoPanelController(owner, mainController);

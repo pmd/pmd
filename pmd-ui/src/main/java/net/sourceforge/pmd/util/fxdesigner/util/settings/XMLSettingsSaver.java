@@ -22,6 +22,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+
 /**
  * Saves settings to disk as key-value pairs. This implementation stores them into an XML file.
  *
@@ -30,12 +31,12 @@ import org.w3c.dom.Element;
  */
 public class XMLSettingsSaver {
 
-    private final String fileName;
+    private final File outputFile;
     private Document document;
 
 
-    private XMLSettingsSaver(String fileName) throws IOException {
-        this.fileName = fileName;
+    private XMLSettingsSaver(File output) throws IOException {
+        this.outputFile = output;
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder;
@@ -76,7 +77,8 @@ public class XMLSettingsSaver {
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
             Source source = new DOMSource(document);
-            Result result = new StreamResult(new FileWriter(new File(fileName)));
+            outputFile.getParentFile().mkdirs();
+            Result result = new StreamResult(new FileWriter(outputFile));
             transformer.transform(source, result);
         } catch (TransformerException e) {
             throw new IOException("Failed to save settings", e);
@@ -90,8 +92,8 @@ public class XMLSettingsSaver {
      *
      * @throws IOException if initialisation fails
      */
-    public static XMLSettingsSaver forFile(String fileName) throws IOException {
-        return new XMLSettingsSaver(fileName);
+    public static XMLSettingsSaver forFile(File file) throws IOException {
+        return new XMLSettingsSaver(file);
     }
 
 

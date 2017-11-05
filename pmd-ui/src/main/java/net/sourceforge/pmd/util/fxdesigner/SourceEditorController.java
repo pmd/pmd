@@ -49,7 +49,7 @@ import javafx.scene.control.TreeView;
  */
 public class SourceEditorController implements Initializable, SettingsOwner {
 
-    private final DesignerApp designerApp;
+    private final DesignerRoot designerRoot;
     private final MainDesignerController parent;
 
     @FXML
@@ -64,10 +64,10 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private ASTManager astManager;
 
 
-    public SourceEditorController(DesignerApp owner, MainDesignerController mainController) {
-        this.designerApp = owner;
+    public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
+        this.designerRoot = owner;
         parent = mainController;
-        astManager = new ASTManager(designerApp);
+        astManager = new ASTManager(designerRoot);
     }
 
 

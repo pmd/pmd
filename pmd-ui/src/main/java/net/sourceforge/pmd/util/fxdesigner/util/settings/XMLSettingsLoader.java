@@ -24,6 +24,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+
 /**
  * Loads settings stored in the format of {@link XMLSettingsSaver}.
  *
@@ -32,11 +33,11 @@ import org.xml.sax.SAXException;
  */
 public class XMLSettingsLoader {
 
-    private final String fileName;
+    private final File settingsFile;
 
 
-    public XMLSettingsLoader(String fileName) {
-        this.fileName = fileName;
+    public XMLSettingsLoader(File settingsPath) {
+        this.settingsFile = settingsPath;
     }
 
 
@@ -54,19 +55,19 @@ public class XMLSettingsLoader {
     public Map<String, String> getSettings() throws IOException {
         InputStream stream = null;
         try {
-            File file = new File(fileName);
+            
 
-            if (file.exists()) {
+            if (settingsFile.exists()) {
 
                 DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-                stream = new FileInputStream(file);
+                stream = new FileInputStream(settingsFile);
                 Document document = builder.parse(stream);
 
                 Set<Element> settings = getSettingNodes(document);
 
                 return settings.stream()
                                .collect(Collectors.toMap((elt) -> elt.getAttribute("key"),
-                                                         Node::getTextContent));
+                                   Node::getTextContent));
 
             }
         } catch (SAXException | ParserConfigurationException | IOException e) {
