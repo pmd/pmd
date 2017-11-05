@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +26,11 @@ public final class LanguageRegistry {
     private LanguageRegistry() {
         List<Language> languagesList = new ArrayList<>();
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class);
-        for (Language aLanguageLoader : languageLoader) {
+        Iterator<Language> iterator = languageLoader.iterator();
+        while (iterator.hasNext()) {
             try {
-                languagesList.add(aLanguageLoader);
+                Language language = iterator.next();
+                languagesList.add(language);
             } catch (UnsupportedClassVersionError e) {
                 // Some languages require java8 and are therefore only available
                 // if java8 or later is used as runtime.
