@@ -5,7 +5,7 @@ permalink: pmd_rules_pom_errorprone.html
 folder: pmd/rules/pom
 sidebaractiveurl: /pmd_rules_pom.html
 editmepath: ../pmd-xml/src/main/resources/category/pom/errorprone.xml
-keywords: Errorprone, InvalidDependencyTypes
+keywords: Errorprone, InvalidDependencyTypes, ProjectVersionAsDependencyVersion
 ---
 ## InvalidDependencyTypes
 
@@ -13,8 +13,10 @@ keywords: Errorprone, InvalidDependencyTypes
 
 **Priority:** Medium (3)
 
-While Maven will not failed if you use an invalid type for a dependency in the
-dependency management section, it will not also uses the dependency.
+If you use an invalid dependency type in the dependency management section, Maven doesn't fail. Instead,
+the entry is just ignored, which might have the effect, that the wrong version of the dependency is used.
+
+The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear, rar, par.
 
 ```
 //dependencyManagement/dependency/type/text[not(contains('pom, jar, maven-plugin, ejb, war, ear, rar, par',@Image))]
@@ -42,5 +44,35 @@ dependency management section, it will not also uses the dependency.
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="rulesets/pom/errorprone.xml/InvalidDependencyTypes" />
+```
+
+## ProjectVersionAsDependencyVersion
+
+**Since:** PMD 5.4
+
+**Priority:** Medium (3)
+
+Using that expression in dependency declarations seems like a shortcut, but it can go wrong.
+By far the most common problem is the use of 6.0.0-SNAPSHOT in a BOM or parent POM.
+
+```
+//dependency/version/text[contains(@Image,'{project.version}')]
+```
+
+**Example(s):**
+
+``` xml
+<project...>
+  ...
+  <dependency>
+    ...
+    <version>${project.dependency}</version>
+  </dependency>
+</project>
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="rulesets/pom/errorprone.xml/ProjectVersionAsDependencyVersion" />
 ```
 
