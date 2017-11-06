@@ -69,6 +69,14 @@
     -fx-fill: #317ECC;
 }
 
+.styled-text-area .null {
+    -fx-fill: #317ECC;
+}
+
+.styled-text-area .boolean {
+    -fx-fill: #317ECC;
+}
+
 .styled-text-area .multi-line-comment {
     -fx-fill: #93A1A1;
     -fx-font-style: italic;

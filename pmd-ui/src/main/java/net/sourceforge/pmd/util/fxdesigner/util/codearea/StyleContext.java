@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 
+
 /**
  * Stores the current style layers and can overlay them into a {@link StyleSpans} to style the text.
  */
@@ -35,12 +36,12 @@ class StyleContext implements Iterable<StyleLayer> {
     }
 
 
-    void addLayer(String id, StyleLayer layer) {
+    public void addLayer(String id, StyleLayer layer) {
         layersById.put(id, layer);
     }
 
 
-    StyleLayer getLayer(String id) {
+    public StyleLayer getLayer(String id) {
         return layersById.get(id);
     }
 
@@ -55,7 +56,7 @@ class StyleContext implements Iterable<StyleLayer> {
 
 
     /** Removes a layer entirely. */
-    void dropLayer(String id) {
+    public void dropLayer(String id) {
         layersById.remove(id);
     }
 
@@ -65,7 +66,7 @@ class StyleContext implements Iterable<StyleLayer> {
      *
      * @return The style spans
      */
-    StyleSpans<Collection<String>> getStyleSpans() {
+    public StyleSpans<Collection<String>> getStyleSpans() {
 
         List<StyleSpans<Collection<String>>> allSpans = layersById.values()
                                                                   .stream()
@@ -88,11 +89,11 @@ class StyleContext implements Iterable<StyleLayer> {
                        .filter(spans -> spans != base)
                        .filter(spans -> spans.length() <= codeArea.getLength())
                        .reduce(allSpans.get(0),
-                               (accumulator, elt) -> accumulator.overlay(elt, (style1, style2) -> {
-                                   Set<String> styles = new HashSet<>(style1);
-                                   styles.addAll(style2);
-                                   return styles;
-                               })
+                           (accumulator, elt) -> accumulator.overlay(elt, (style1, style2) -> {
+                               Set<String> styles = new HashSet<>(style1);
+                               styles.addAll(style2);
+                               return styles;
+                           })
                        );
 
     }

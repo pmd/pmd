@@ -34,6 +34,7 @@ public class Designer extends Application {
         if (!raw.contains("-v")
             && !raw.contains("--verbose")) {
             // error output is disabled by default
+            
             System.err.close();
         }
 

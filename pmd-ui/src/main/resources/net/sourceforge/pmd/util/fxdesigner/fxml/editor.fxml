@@ -30,16 +30,6 @@
                                         prefHeight="346.0" prefWidth="445.0"
                                         stylesheets="@../css/editor-theme.css"
                                         BorderPane.alignment="CENTER">
-                            <!--<contextMenu> <- Fails ->
-                                <ContextMenu>
-                                    <items>
-                                        <MenuItem
-                                                fx:id="toggleSyntaxHighlighting"
-                                                mnemonicParsing="false"
-                                                text="Disable syntax highlighting"/>
-                                    </items>
-                                </ContextMenu>
-                            </contextMenu>-->
                             <BorderPane.margin>
                                 <Insets/>
                             </BorderPane.margin>

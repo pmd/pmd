@@ -122,7 +122,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
 
 
         private String namedGroup(String name, String regex) {
-            return "(?<" + name + ">" + regex + ")";
+            return "(?<" + name + ">(?:" + regex + "))";
         }
 
 

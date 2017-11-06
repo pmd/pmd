@@ -60,6 +60,7 @@ public class ApexSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         .or("brace", "[{}]")
         .or("bracket", "[\\[]]")
         .or("semicolon", ";")
+        .or("boolean", "true|false")
         .or("string", "'[^'\\\\]*(\\\\.[^'\\\\]*)*'")
         .create(Pattern.DOTALL);
 

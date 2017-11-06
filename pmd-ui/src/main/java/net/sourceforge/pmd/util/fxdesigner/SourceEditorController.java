@@ -35,7 +35,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -56,8 +55,6 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private Label astTitleLabel;
     @FXML
     private TreeView<Node> astTreeView;
-    @FXML
-    private MenuItem toggleSyntaxHighlighting;
     @FXML
     private CustomCodeArea codeEditorArea;
     private BooleanProperty isSyntaxHighlightingEnabled = new SimpleBooleanProperty(true);
@@ -83,12 +80,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private void initializeSyntaxHighlighting() {
 
         isSyntaxHighlightingEnabled.bind(codeEditorArea.syntaxHighlightingEnabledProperty());
-        /* toggleSyntaxHighlighting.setOnAction(e -> {
-            isSyntaxHighlightingEnabled.set(!isSyntaxHighlightingEnabled.get());
-            toggleSyntaxHighlighting.setText((isSyntaxHighlightingEnabled.get() ? "Disable" : "Enable")
-                                             + " syntax highlighting");
-        });
-        */
+       
         isSyntaxHighlightingEnabled.addListener(((observable, wasEnabled, isEnabled) -> {
             if (!wasEnabled && isEnabled) {
                 updateSyntaxHighlighter();

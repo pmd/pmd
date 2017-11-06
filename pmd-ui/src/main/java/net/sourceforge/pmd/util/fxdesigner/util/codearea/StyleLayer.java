@@ -41,7 +41,7 @@ class StyleLayer {
      *
      * @return The stack of all spans
      */
-    Stack<StyleSpans<Collection<String>>> getSpans() {
+    public Stack<StyleSpans<Collection<String>>> getSpans() {
         return spans;
     }
 
@@ -51,7 +51,7 @@ class StyleLayer {
      *
      * @param replacement The new spans
      */
-    void reset(StyleSpans<Collection<String>> replacement) {
+    public void reset(StyleSpans<Collection<String>> replacement) {
         spans.clear();
         spans.push(replacement);
     }
@@ -87,7 +87,7 @@ class StyleLayer {
         builder.add(cssClasses, spanLength);
         builder.add(Collections.emptySet(), codeArea.getLength() - (offset + spanLength));
 
-        
+
         spans.push(builder.create());
     }
 
@@ -95,6 +95,7 @@ class StyleLayer {
     private int getAbsolutePosition(int line, int column) {
         return codeArea.getAbsolutePosition(line - 1, column) - indentationOffset(line - 1);
     }
+
 
     // CodeArea counts a tab as 1 column width but displays it as 8 columns width. 
     // PMD counts it correctly as 8 columns, so we must offset the position
