@@ -7,7 +7,7 @@ package net.sourceforge.pmd.util.fxdesigner.model;
 /** Exception during XPath evaluation. */
 public class XPathEvaluationException extends RuntimeException {
 
-    XPathEvaluationException(Throwable cause) {
+    public XPathEvaluationException(Throwable cause) {
         super(cause);
     }
 

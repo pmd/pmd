@@ -34,7 +34,7 @@ public class XPathEvaluator {
     private final StringProperty xpathVersion = new SimpleStringProperty(XPathRuleQuery.XPATH_2_0);
 
 
-    String getXpathVersion() {
+    public String getXpathVersion() {
         return xpathVersion.get();
     }
 
