@@ -12,12 +12,14 @@ Rules to detect constructs that are either broken, extremely confusing or prone 
     <rule name="InvalidDependencyTypes"
           language="pom"
           since="5.4"
-          message="By default, Maven only recognized the following types: $validTypes."
+          message="By default, Maven only recognizes the following types: pom, jar, maven-plugin, ejb, war, ear, rar, par."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_pom_errorprone.html#invaliddependencytypes">
         <description>
-While Maven will not failed if you use an invalid type for a dependency in the
-dependency management section, it will not also uses the dependency.
+If you use an invalid dependency type in the dependency management section, Maven doesn't fail. Instead,
+the entry is just ignored, which might have the effect, that the wrong version of the dependency is used.
+
+The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear, rar, par.
         </description>
         <priority>3</priority>
         <properties>
@@ -30,6 +32,7 @@ dependency management section, it will not also uses the dependency.
             </property>
             <!-- FIXME: property injection seems to be failing with XML.... -->
             <!-- property name="validTypes" value="pom, jar, maven-plugin, ejb, war, ear, rar, par" description="Set of valid types."-->
+            <!-- Then use as message: "By default, Maven only recognizes the following types: $validTypes." -->
         </properties>
         <example>
 <![CDATA[
@@ -48,6 +51,39 @@ dependency management section, it will not also uses the dependency.
   </dependencyManagement>
 </project>
  ]]>
+        </example>
+    </rule>
+
+    <rule name="ProjectVersionAsDependencyVersion"
+          language="pom"
+          since="5.4"
+          message="Do not use project's version to express a dependency's version."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_pom_errorprone.html#projectversionasdependencyversion">
+        <description>
+Using that expression in dependency declarations seems like a shortcut, but it can go wrong.
+By far the most common problem is the use of ${project.version} in a BOM or parent POM.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//dependency/version/text[contains(@Image,'{project.version}')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+<project...>
+  ...
+  <dependency>
+    ...
+    <version>${project.dependency}</version>
+  </dependency>
+</project>
+]]>
         </example>
     </rule>
 

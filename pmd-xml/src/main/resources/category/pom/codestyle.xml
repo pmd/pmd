@@ -9,37 +9,4 @@
 Rules which enforce a specific coding style.
     </description>
 
-    <rule name="ProjectVersionAsDependencyVersion"
-          language="pom"
-          since="5.4"
-          message="Do not use project's version to express a dependency's version."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_pom_codestyle.html#projectversionasdependencyversion">
-        <description>
-Using that expression in dependency declarations seems like a shortcut, but it can go wrong.
-By far the most common problem is the use of ${project.version} in a BOM or parent POM.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//dependency/version/text[contains(@Image,'{project.version}')]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-<project...>
-  ...
-  <dependency>
-    ...
-    <version>${project.dependency}</version>
-  </dependency>
-</project>
-]]>
-        </example>
-    </rule>
-
 </ruleset>

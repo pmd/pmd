@@ -8,7 +8,7 @@
 The Basic POM Ruleset contains a collection of good practices regarding Maven's POM files.
   </description>
 
-    <rule ref="category/pom/codestyle.xml/ProjectVersionAsDependencyVersion" deprecated="true" />
     <rule ref="category/pom/errorprone.xml/InvalidDependencyTypes" deprecated="true" />
+    <rule ref="category/pom/errorprone.xml/ProjectVersionAsDependencyVersion" deprecated="true" />
 
 </ruleset>

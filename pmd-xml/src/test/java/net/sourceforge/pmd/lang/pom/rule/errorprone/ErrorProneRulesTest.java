@@ -13,5 +13,6 @@ public class ErrorProneRulesTest extends SimpleAggregatorTst {
     @Override
     public void setUp() {
         addRule(RULESET, "InvalidDependencyTypes");
+        addRule(RULESET, "ProjectVersionAsDependencyVersion");
     }
 }
