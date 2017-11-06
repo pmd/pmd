@@ -2,17 +2,16 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.xsl.rule.xpath;
+package net.sourceforge.pmd.lang.xsl.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class XPathRulesTest extends SimpleAggregatorTst {
+public class CodeStyleRulesTest extends SimpleAggregatorTst {
 
-    private static final String RULESET = "xsl-xpath";
+    private static final String RULESET = "category/xsl/codestyle.xml";
 
     @Override
     public void setUp() {
         addRule(RULESET, "UseConcatOnce");
-        addRule(RULESET, "AvoidAxisNavigation");
     }
 }

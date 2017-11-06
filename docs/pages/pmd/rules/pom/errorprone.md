@@ -1,11 +1,11 @@
 ---
-title: Basic POM
-summary: The Basic POM Ruleset contains a collection of good practices regarding Maven's POM files.
-permalink: pmd_rules_pom_basic.html
+title: Errorprone
+summary: Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
+permalink: pmd_rules_pom_errorprone.html
 folder: pmd/rules/pom
 sidebaractiveurl: /pmd_rules_pom.html
-editmepath: ../pmd-xml/src/main/resources/rulesets/pom/basic.xml
-keywords: Basic POM, ProjectVersionAsDependencyVersion, InvalidDependencyTypes
+editmepath: ../pmd-xml/src/main/resources/category/pom/errorprone.xml
+keywords: Errorprone, InvalidDependencyTypes, ProjectVersionAsDependencyVersion
 ---
 ## InvalidDependencyTypes
 
@@ -13,8 +13,10 @@ keywords: Basic POM, ProjectVersionAsDependencyVersion, InvalidDependencyTypes
 
 **Priority:** Medium (3)
 
-While Maven will not failed if you use an invalid type for a dependency in the
-dependency management section, it will not also uses the dependency.
+If you use an invalid dependency type in the dependency management section, Maven doesn't fail. Instead,
+the entry is just ignored, which might have the effect, that the wrong version of the dependency is used.
+
+The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear, rar, par.
 
 ```
 //dependencyManagement/dependency/type/text[not(contains('pom, jar, maven-plugin, ejb, war, ear, rar, par',@Image))]
@@ -41,7 +43,7 @@ dependency management section, it will not also uses the dependency.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="category/pom/basic.xml/InvalidDependencyTypes" />
+<rule ref="category/pom/errorprone.xml/InvalidDependencyTypes" />
 ```
 
 ## ProjectVersionAsDependencyVersion
@@ -71,6 +73,6 @@ By far the most common problem is the use of 6.0.0-SNAPSHOT in a BOM or parent P
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="category/pom/basic.xml/ProjectVersionAsDependencyVersion" />
+<rule ref="category/pom/errorprone.xml/ProjectVersionAsDependencyVersion" />
 ```
 

@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+
+<ruleset name="Errorprone"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+    <description>
+Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
+    </description>
+
+    <rule name="InvalidDependencyTypes"
+          language="pom"
+          since="5.4"
+          message="By default, Maven only recognizes the following types: pom, jar, maven-plugin, ejb, war, ear, rar, par."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_pom_errorprone.html#invaliddependencytypes">
+        <description>
+If you use an invalid dependency type in the dependency management section, Maven doesn't fail. Instead,
+the entry is just ignored, which might have the effect, that the wrong version of the dependency is used.
+
+The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear, rar, par.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//dependencyManagement/dependency/type/text[not(contains('pom, jar, maven-plugin, ejb, war, ear, rar, par',@Image))]
+]]>
+                </value>
+            </property>
+            <!-- FIXME: property injection seems to be failing with XML.... -->
+            <!-- property name="validTypes" value="pom, jar, maven-plugin, ejb, war, ear, rar, par" description="Set of valid types."-->
+            <!-- Then use as message: "By default, Maven only recognizes the following types: $validTypes." -->
+        </properties>
+        <example>
+<![CDATA[
+<project...>
+  ...
+  <dependencyManagement>
+      ...
+    <dependency>
+      <groupId>org.jboss.arquillian</groupId>
+      <artifactId>arquillian-bom</artifactId>
+      <version>${arquillian.version}</version>
+      <type>bom</type> <!-- not a valid type ! 'pom' is ! -->
+      <scope>import</scope>
+    </dependency>
+    ...
+  </dependencyManagement>
+</project>
+ ]]>
+        </example>
+    </rule>
+
+    <rule name="ProjectVersionAsDependencyVersion"
+          language="pom"
+          since="5.4"
+          message="Do not use project's version to express a dependency's version."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_pom_errorprone.html#projectversionasdependencyversion">
+        <description>
+Using that expression in dependency declarations seems like a shortcut, but it can go wrong.
+By far the most common problem is the use of ${project.version} in a BOM or parent POM.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//dependency/version/text[contains(@Image,'{project.version}')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+<project...>
+  ...
+  <dependency>
+    ...
+    <version>${project.dependency}</version>
+  </dependency>
+</project>
+]]>
+        </example>
+    </rule>
+
+</ruleset>

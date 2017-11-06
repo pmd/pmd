@@ -1,11 +1,11 @@
 ---
-title: Basic XML
-summary: The Basic XML Ruleset contains a collection of good practices which everyone should follow.
-permalink: pmd_rules_xml_basic.html
+title: Errorprone
+summary: Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
+permalink: pmd_rules_xml_errorprone.html
 folder: pmd/rules/xml
 sidebaractiveurl: /pmd_rules_xml.html
-editmepath: ../pmd-xml/src/main/resources/rulesets/xml/basic.xml
-keywords: Basic XML, MistypedCDATASection
+editmepath: ../pmd-xml/src/main/resources/category/xml/errorprone.xml
+keywords: Errorprone, MistypedCDATASection
 ---
 ## MistypedCDATASection
 
@@ -27,6 +27,6 @@ An extra [ looks like &lt;!CDATA[[]]&gt;, and an extra ] looks like &lt;!CDATA[]
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="category/xml/basic.xml/MistypedCDATASection" />
+<rule ref="category/xml/errorprone.xml/MistypedCDATASection" />
 ```
 
