@@ -25,7 +25,7 @@ Avoid creating deeply nested if-then statements since they are harder to read an
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/design.xml/AvoidDeeplyNestedIfStmts" />
+<rule ref="category/vm/design.xml/AvoidDeeplyNestedIfStmts" />
 ```
 
 ## CollapsibleIfStatements
@@ -40,7 +40,7 @@ Sometimes two consecutive 'if' statements can be consolidated by separating thei
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/design.xml/CollapsibleIfStatements" />
+<rule ref="category/vm/design.xml/CollapsibleIfStatements" />
 ```
 
 ## ExcessiveTemplateLength
@@ -63,7 +63,7 @@ The template is too long. It should be broken up into smaller pieces.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/design.xml/ExcessiveTemplateLength" />
+<rule ref="category/vm/design.xml/ExcessiveTemplateLength" />
 ```
 
 ## NoInlineJavaScript
@@ -78,7 +78,7 @@ Avoid inline JavaScript. Import .js files instead.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/design.xml/NoInlineJavaScript" />
+<rule ref="category/vm/design.xml/NoInlineJavaScript" />
 ```
 
 ## NoInlineStyles
@@ -95,6 +95,6 @@ Avoid inline styles. Use css classes instead.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/design.xml/NoInlineStyles" />
+<rule ref="category/vm/design.xml/NoInlineStyles" />
 ```
 

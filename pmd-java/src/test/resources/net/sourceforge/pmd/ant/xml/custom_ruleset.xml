@@ -8,7 +8,7 @@
 Custom ruleset
   </description>
 
-  <rule ref="rulesets/java/codesize.xml/ExcessiveMethodLength"/>
+  <rule ref="category/java/design.xml/ExcessiveMethodLength"/>
 
 </ruleset>
   

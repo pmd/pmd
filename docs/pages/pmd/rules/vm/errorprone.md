@@ -19,7 +19,7 @@ Empty foreach statements should be deleted.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/errorprone.xml/EmptyForeachStmt" />
+<rule ref="category/vm/errorprone.xml/EmptyForeachStmt" />
 ```
 
 ## EmptyIfStmt
@@ -34,6 +34,6 @@ Empty if statements should be deleted.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/errorprone.xml/EmptyIfStmt" />
+<rule ref="category/vm/errorprone.xml/EmptyIfStmt" />
 ```
 

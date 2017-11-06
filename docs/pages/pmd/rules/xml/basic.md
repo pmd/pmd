@@ -27,6 +27,6 @@ An extra [ looks like &lt;!CDATA[[]]&gt;, and an extra ] looks like &lt;!CDATA[]
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/xml/basic.xml/MistypedCDATASection" />
+<rule ref="category/xml/basic.xml/MistypedCDATASection" />
 ```
 

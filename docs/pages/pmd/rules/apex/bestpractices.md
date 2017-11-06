@@ -42,7 +42,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/bestpractices.xml/ApexUnitTestClassShouldHaveAsserts" />
+<rule ref="category/apex/bestpractices.xml/ApexUnitTestClassShouldHaveAsserts" />
 ```
 
 ## ApexUnitTestShouldNotUseSeeAllDataTrue
@@ -79,7 +79,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/bestpractices.xml/ApexUnitTestShouldNotUseSeeAllDataTrue" />
+<rule ref="category/apex/bestpractices.xml/ApexUnitTestShouldNotUseSeeAllDataTrue" />
 ```
 
 ## AvoidGlobalModifier
@@ -113,7 +113,7 @@ global class Unchangeable {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/bestpractices.xml/AvoidGlobalModifier" />
+<rule ref="category/apex/bestpractices.xml/AvoidGlobalModifier" />
 ```
 
 ## AvoidLogicInTrigger
@@ -157,6 +157,6 @@ trigger Accounts on Account (before insert, before update, before delete, after 
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/bestpractices.xml/AvoidLogicInTrigger" />
+<rule ref="category/apex/bestpractices.xml/AvoidLogicInTrigger" />
 ```
 

@@ -22,7 +22,7 @@ Externalized script could be reused between pages.  Browsers can also cache the 
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/design.xml/NoInlineScript" />
+<rule ref="category/jsp/design.xml/NoInlineScript" />
 ```
 
 ## NoInlineStyleInformation
@@ -44,7 +44,7 @@ tags, or attributes like "align='center'".
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/design.xml/NoInlineStyleInformation" />
+<rule ref="category/jsp/design.xml/NoInlineStyleInformation" />
 ```
 
 ## NoLongScripts
@@ -87,7 +87,7 @@ onload=calcDays;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/design.xml/NoLongScripts" />
+<rule ref="category/jsp/design.xml/NoLongScripts" />
 ```
 
 ## NoScriptlets
@@ -121,6 +121,6 @@ response.setHeader("Pragma", "No-cache");
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/design.xml/NoScriptlets" />
+<rule ref="category/jsp/design.xml/NoScriptlets" />
 ```
 

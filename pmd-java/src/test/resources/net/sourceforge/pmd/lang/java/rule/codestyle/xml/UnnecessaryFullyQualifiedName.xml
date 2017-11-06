@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+1, nothing wrong
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+   private List list;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+2, valid implements
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo implements List {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+3, invalid implements
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo implements java.util.List {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+4, valid extends
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+public class Foo implements ArrayList {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+5, invalid extends
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+public class Foo implements java.util.ArrayList {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+6, valid field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+   private List list;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+7, invalid field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+   private java.util.List list;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+8, valid return type
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+   private List list();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+9, invalid return type
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+   private java.util.List list();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+10, valid formal parameter
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+   private void list(List list);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+11, invalid formal parameter
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+   private void list(java.util.List list);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+12, valid static method call
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+public class Foo {
+   List list = Arrays.asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+13, invalid static method call
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+public class Foo {
+   List list = java.util.Arrays.asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+14, valid static import method call
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.util.Arrays.asList;
+public class Foo {
+   List list = asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+15, invalid static import method call
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import static java.util.Arrays.asList;
+public class Foo {
+   List list = java.util.Arrays.asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+16, valid static import method call with class import
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+import static java.util.Arrays.asList;
+public class Foo {
+   List list = asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+17, invalid static import method call with class import
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+import static java.util.Arrays.asList;
+public class Foo {
+   List list = Arrays.asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+18, on-demand, valid field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+   private List list;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+19, on-demand, invalid field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+   private java.util.List list;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+20, on-demand, valid static import method call 
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.util.Arrays.asList;
+public class Foo {
+   List list = asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+21, on-demand, invalid static import method call
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import static java.util.Arrays.*;
+public class Foo {
+   List list = java.util.Arrays.asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+22, valid on-demand static import method call with class import
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+import static java.util.Arrays.*;
+public class Foo {
+   List list = asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+23, invalid on-demand static import method call with class import
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+import static java.util.Arrays.*;
+public class Foo {
+   List list = Arrays.asList("one");
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1078 Package statement introduces false positive UnnecessaryFullyQualifiedName violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package a.b;
+
+import a.*;
+
+public class Test {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1404 Java8 'Unnecessary use of fully qualified name' in Streams Collector</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>17</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary use of fully qualified name 'Collectors.toList' due to existing static import 'java.util.stream.Collectors.toList'</message>
+        </expected-messages>
+        <code><![CDATA[
+// https://github.com/FenixEdu/fenixedu-learning/blob/master/src/main/java/org/fenixedu/learning/domain/executionCourse/components/InitialPageComponent.java#L50
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
+
+public class InitialPageComponent extends BaseExecutionCourseComponent {
+    public void handle(Page page, TemplateContext componentContext, TemplateContext globalContext) {
+        ExecutionCourse executionCourse = ((ExecutionCourseSite) page.getSite()).getExecutionCourse();
+        globalContext.put(
+                "professorships",
+                executionCourse
+                        .getProfessorshipsSet()
+                        .stream()
+                        .sorted(Comparator.comparing(Professorship::isResponsibleFor).reversed()
+                                .thenComparing(Professorship.COMPARATOR_BY_PERSON_NAME)).collect(Collectors.toList()));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1436 UnnecessaryFullyQualifiedName false positive on clashing static imports with enums</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.codestyle.CodeStyleRulesTest.ENUM2;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.CodeStyleRulesTest.ENUM1.*;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.CodeStyleRulesTest.ENUM2.*;
+
+public class UnnecessaryFullyQualifiedName {
+    public static void main(String[] args) {
+        System.out.println(A);
+        System.out.println(D);
+        System.out.println(ENUM2.values());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1546 part 1 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyMockito;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyMockito.*;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyPowerMockito.*;
+
+public class Foo {
+  private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) is ambiguous (compile error)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1546 part 2 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyMockito;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyMockito.*;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyPowerMockito.mock;
+
+public class Foo {
+  private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) would use a differen method than intended
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1555 - UnnecessaryFullyQualifiedName for conflict resolution with inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+final class Test {
+  private Test() { }
+
+  private static class Locale {
+    public final java.util.Locale locale; // Here we need to fully qualify
+    public Locale(final String tag) {
+      this.locale = java.util.Locale.forLanguageTag(tag);
+    }
+  }
+
+  public static void main(String[] args) {
+    final Locale l = new Locale("fr-CA");
+    System.out.println(l.toString());
+  }
+}
+        ]]></code>
+    </test-code>
+</test-data>

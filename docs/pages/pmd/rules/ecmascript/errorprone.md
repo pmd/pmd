@@ -42,7 +42,7 @@ function(arg) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/errorprone.xml/AvoidTrailingComma" />
+<rule ref="category/ecmascript/errorprone.xml/AvoidTrailingComma" />
 ```
 
 ## EqualComparison
@@ -86,7 +86,7 @@ if (someVar != 3) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/errorprone.xml/EqualComparison" />
+<rule ref="category/ecmascript/errorprone.xml/EqualComparison" />
 ```
 
 ## InnaccurateNumericLiteral
@@ -120,6 +120,6 @@ var z = 1.12345678901234567; // Not good
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/errorprone.xml/InnaccurateNumericLiteral" />
+<rule ref="category/ecmascript/errorprone.xml/InnaccurateNumericLiteral" />
 ```
 

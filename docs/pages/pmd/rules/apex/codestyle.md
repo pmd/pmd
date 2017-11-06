@@ -33,7 +33,7 @@ public class Foo {}
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/codestyle.xml/ClassNamingConventions" />
+<rule ref="category/apex/codestyle.xml/ClassNamingConventions" />
 ```
 
 ## ForLoopsMustUseBraces
@@ -73,7 +73,7 @@ for (int i = 0; i < 42; i++) { // preferred approach
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/codestyle.xml/ForLoopsMustUseBraces" />
+<rule ref="category/apex/codestyle.xml/ForLoopsMustUseBraces" />
 ```
 
 ## IfElseStmtsMustUseBraces
@@ -115,7 +115,7 @@ else
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/codestyle.xml/IfElseStmtsMustUseBraces" />
+<rule ref="category/apex/codestyle.xml/IfElseStmtsMustUseBraces" />
 ```
 
 ## IfStmtsMustUseBraces
@@ -153,7 +153,7 @@ if (foo) {  // preferred approach
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/codestyle.xml/IfStmtsMustUseBraces" />
+<rule ref="category/apex/codestyle.xml/IfStmtsMustUseBraces" />
 ```
 
 ## MethodNamingConventions
@@ -185,7 +185,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/codestyle.xml/MethodNamingConventions" />
+<rule ref="category/apex/codestyle.xml/MethodNamingConventions" />
 ```
 
 ## VariableNamingConventions
@@ -231,7 +231,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/codestyle.xml/VariableNamingConventions" />
+<rule ref="category/apex/codestyle.xml/VariableNamingConventions" />
 ```
 
 ## WhileLoopsMustUseBraces
@@ -269,6 +269,6 @@ while (true) {  // preferred approach
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/codestyle.xml/WhileLoopsMustUseBraces" />
+<rule ref="category/apex/codestyle.xml/WhileLoopsMustUseBraces" />
 ```
 

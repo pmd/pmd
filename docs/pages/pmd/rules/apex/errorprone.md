@@ -41,7 +41,7 @@ trigger AccountTrigger on Account (before insert, before update) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/errorprone.xml/AvoidDirectAccessTriggerMap" />
+<rule ref="category/apex/errorprone.xml/AvoidDirectAccessTriggerMap" />
 ```
 
 ## AvoidHardcodingId
@@ -81,7 +81,7 @@ public without sharing class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/errorprone.xml/AvoidHardcodingId" />
+<rule ref="category/apex/errorprone.xml/AvoidHardcodingId" />
 ```
 
 ## EmptyCatchBlock
@@ -121,7 +121,7 @@ public void doSomething() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/errorprone.xml/EmptyCatchBlock" />
+<rule ref="category/apex/errorprone.xml/EmptyCatchBlock" />
 ```
 
 ## EmptyIfStmt
@@ -159,7 +159,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/errorprone.xml/EmptyIfStmt" />
+<rule ref="category/apex/errorprone.xml/EmptyIfStmt" />
 ```
 
 ## EmptyStatementBlock
@@ -199,7 +199,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/errorprone.xml/EmptyStatementBlock" />
+<rule ref="category/apex/errorprone.xml/EmptyStatementBlock" />
 ```
 
 ## EmptyTryOrFinallyBlock
@@ -248,7 +248,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/errorprone.xml/EmptyTryOrFinallyBlock" />
+<rule ref="category/apex/errorprone.xml/EmptyTryOrFinallyBlock" />
 ```
 
 ## EmptyWhileStmt
@@ -285,7 +285,7 @@ public void bar(Integer a, Integer b) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/errorprone.xml/EmptyWhileStmt" />
+<rule ref="category/apex/errorprone.xml/EmptyWhileStmt" />
 ```
 
 ## MethodWithSameNameAsEnclosingClass
@@ -319,6 +319,6 @@ public class MyClass {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/errorprone.xml/MethodWithSameNameAsEnclosingClass" />
+<rule ref="category/apex/errorprone.xml/MethodWithSameNameAsEnclosingClass" />
 ```
 

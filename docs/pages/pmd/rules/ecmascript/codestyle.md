@@ -57,7 +57,7 @@ function getX() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/codestyle.xml/AssignmentInOperand" />
+<rule ref="category/ecmascript/codestyle.xml/AssignmentInOperand" />
 ```
 
 ## ForLoopsMustUseBraces
@@ -89,7 +89,7 @@ for (var i = 0; i < 42; i++)
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/codestyle.xml/ForLoopsMustUseBraces" />
+<rule ref="category/ecmascript/codestyle.xml/ForLoopsMustUseBraces" />
 ```
 
 ## IfElseStmtsMustUseBraces
@@ -125,7 +125,7 @@ else
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/codestyle.xml/IfElseStmtsMustUseBraces" />
+<rule ref="category/ecmascript/codestyle.xml/IfElseStmtsMustUseBraces" />
 ```
 
 ## IfStmtsMustUseBraces
@@ -155,7 +155,7 @@ if (foo)
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/codestyle.xml/IfStmtsMustUseBraces" />
+<rule ref="category/ecmascript/codestyle.xml/IfStmtsMustUseBraces" />
 ```
 
 ## NoElseReturn
@@ -192,7 +192,7 @@ return z;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/codestyle.xml/NoElseReturn" />
+<rule ref="category/ecmascript/codestyle.xml/NoElseReturn" />
 ```
 
 ## UnnecessaryBlock
@@ -228,7 +228,7 @@ if (bar) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/codestyle.xml/UnnecessaryBlock" />
+<rule ref="category/ecmascript/codestyle.xml/UnnecessaryBlock" />
 ```
 
 ## UnnecessaryParentheses
@@ -253,7 +253,7 @@ var z = ((1 + 1)); // Bad
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/codestyle.xml/UnnecessaryParentheses" />
+<rule ref="category/ecmascript/codestyle.xml/UnnecessaryParentheses" />
 ```
 
 ## UnreachableCode
@@ -292,7 +292,7 @@ function bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/codestyle.xml/UnreachableCode" />
+<rule ref="category/ecmascript/codestyle.xml/UnreachableCode" />
 ```
 
 ## WhileLoopsMustUseBraces
@@ -322,6 +322,6 @@ while (true)
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/codestyle.xml/WhileLoopsMustUseBraces" />
+<rule ref="category/ecmascript/codestyle.xml/WhileLoopsMustUseBraces" />
 ```
 

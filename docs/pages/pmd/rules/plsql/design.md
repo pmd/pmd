@@ -149,7 +149,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/design.xml/CyclomaticComplexity" />
+<rule ref="category/plsql/design.xml/CyclomaticComplexity" />
 ```
 
 ## ExcessiveMethodLength
@@ -186,7 +186,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/design.xml/ExcessiveMethodLength" />
+<rule ref="category/plsql/design.xml/ExcessiveMethodLength" />
 ```
 
 ## ExcessiveObjectLength
@@ -233,7 +233,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/design.xml/ExcessiveObjectLength" />
+<rule ref="category/plsql/design.xml/ExcessiveObjectLength" />
 ```
 
 ## ExcessivePackageBodyLength
@@ -280,7 +280,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/design.xml/ExcessivePackageBodyLength" />
+<rule ref="category/plsql/design.xml/ExcessivePackageBodyLength" />
 ```
 
 ## ExcessivePackageSpecificationLength
@@ -320,7 +320,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/design.xml/ExcessivePackageSpecificationLength" />
+<rule ref="category/plsql/design.xml/ExcessivePackageSpecificationLength" />
 ```
 
 ## ExcessiveParameterList
@@ -362,7 +362,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/design.xml/ExcessiveParameterList" />
+<rule ref="category/plsql/design.xml/ExcessiveParameterList" />
 ```
 
 ## ExcessiveTypeLength
@@ -409,7 +409,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/design.xml/ExcessiveTypeLength" />
+<rule ref="category/plsql/design.xml/ExcessiveTypeLength" />
 ```
 
 ## NcssMethodCount
@@ -445,7 +445,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/design.xml/NcssMethodCount" />
+<rule ref="category/plsql/design.xml/NcssMethodCount" />
 ```
 
 ## NcssObjectCount
@@ -483,7 +483,7 @@ CREATE OR REPLACE PACKAGE pkg_
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/design.xml/NcssObjectCount" />
+<rule ref="category/plsql/design.xml/NcssObjectCount" />
 ```
 
 ## NPathComplexity
@@ -545,7 +545,7 @@ END;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/design.xml/NPathComplexity" />
+<rule ref="category/plsql/design.xml/NPathComplexity" />
 ```
 
 ## TooManyFields
@@ -579,7 +579,7 @@ END pkg_too_many_fields;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/design.xml/TooManyFields" />
+<rule ref="category/plsql/design.xml/TooManyFields" />
 ```
 
 ## TooManyMethods
@@ -633,6 +633,6 @@ have more fine grained objects.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/design.xml/TooManyMethods" />
+<rule ref="category/plsql/design.xml/TooManyMethods" />
 ```
 

@@ -34,7 +34,7 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/security.xml/IframeMissingSrcAttribute" />
+<rule ref="category/jsp/security.xml/IframeMissingSrcAttribute" />
 ```
 
 ## NoUnsanitizedJSPExpression
@@ -60,6 +60,6 @@ ${fn:escapeXml(expression)}      <!-- instead, escape it -->
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/security.xml/NoUnsanitizedJSPExpression" />
+<rule ref="category/jsp/security.xml/NoUnsanitizedJSPExpression" />
 ```
 

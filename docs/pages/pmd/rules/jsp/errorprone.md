@@ -37,6 +37,6 @@ Most browsers should be able to interpret the following headers:
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/errorprone.xml/JspEncoding" />
+<rule ref="category/jsp/errorprone.xml/JspEncoding" />
 ```
 

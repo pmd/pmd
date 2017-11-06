@@ -25,6 +25,6 @@ Avoid duplicate import statements inside JSP's.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/codestyle.xml/DuplicateJspImports" />
+<rule ref="category/jsp/codestyle.xml/DuplicateJspImports" />
 ```
 

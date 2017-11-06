@@ -49,7 +49,7 @@ cutting through 100% of the document.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/xsl/xpath.xml/AvoidAxisNavigation" />
+<rule ref="category/xsl/xpath.xml/AvoidAxisNavigation" />
 ```
 
 ## UseConcatOnce
@@ -74,6 +74,6 @@ The XPath concat() functions accepts as many arguments as required so you can ha
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/xsl/xpath.xml/UseConcatOnce" />
+<rule ref="category/xsl/xpath.xml/UseConcatOnce" />
 ```
 

@@ -29,7 +29,7 @@ with (object) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/bestpractices.xml/AvoidWithStatement" />
+<rule ref="category/ecmascript/bestpractices.xml/AvoidWithStatement" />
 ```
 
 ## ConsistentReturn
@@ -74,7 +74,7 @@ function bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/bestpractices.xml/ConsistentReturn" />
+<rule ref="category/ecmascript/bestpractices.xml/ConsistentReturn" />
 ```
 
 ## GlobalVariable
@@ -104,7 +104,7 @@ function(arg) {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/bestpractices.xml/GlobalVariable" />
+<rule ref="category/ecmascript/bestpractices.xml/GlobalVariable" />
 ```
 
 ## ScopeForInVariable
@@ -157,7 +157,7 @@ function bar() {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/bestpractices.xml/ScopeForInVariable" />
+<rule ref="category/ecmascript/bestpractices.xml/ScopeForInVariable" />
 ```
 
 ## UseBaseWithParseInt
@@ -190,6 +190,6 @@ parseInt("10", 10); // good
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/ecmascript/bestpractices.xml/UseBaseWithParseInt" />
+<rule ref="category/ecmascript/bestpractices.xml/UseBaseWithParseInt" />
 ```
 

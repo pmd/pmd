@@ -35,7 +35,7 @@ Do not nest JSF component custom actions inside a custom action that iterates ov
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/bestpractices.xml/DontNestJsfInJstlIteration" />
+<rule ref="category/jsp/bestpractices.xml/DontNestJsfInJstlIteration" />
 ```
 
 ## NoClassAttribute
@@ -60,7 +60,7 @@ Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/bestpractices.xml/NoClassAttribute" />
+<rule ref="category/jsp/bestpractices.xml/NoClassAttribute" />
 ```
 
 ## NoHtmlComments
@@ -91,7 +91,7 @@ little other purpose. Consider switching to JSP comments.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/bestpractices.xml/NoHtmlComments" />
+<rule ref="category/jsp/bestpractices.xml/NoHtmlComments" />
 ```
 
 ## NoJspForward
@@ -114,6 +114,6 @@ Do not do a forward from within a JSP file.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/jsp/bestpractices.xml/NoJspForward" />
+<rule ref="category/jsp/bestpractices.xml/NoJspForward" />
 ```
 

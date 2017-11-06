@@ -44,6 +44,6 @@ end inline_pragma_error;
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/plsql/codestyle.xml/MisplacedPragma" />
+<rule ref="category/plsql/codestyle.xml/MisplacedPragma" />
 ```
 

@@ -19,7 +19,7 @@ Reassigning values to incoming parameters is not recommended.  Use temporary loc
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/bestpractices.xml/AvoidReassigningParameters" />
+<rule ref="category/vm/bestpractices.xml/AvoidReassigningParameters" />
 ```
 
 ## UnusedMacroParameter
@@ -34,6 +34,6 @@ Avoid unused macro parameters. They should be deleted.
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/vm/bestpractices.xml/UnusedMacroParameter" />
+<rule ref="category/vm/bestpractices.xml/UnusedMacroParameter" />
 ```
 
