@@ -1435,45 +1435,6 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="UnnecessaryFinalModifier"
-          language="java"
-          since="3.0"
-          message="Unnecessary final modifier in final class / private methods"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryfinalmodifier">
-        <description>
-When a class has the final modifier, all the methods are automatically final and do not need to be
-tagged as such. Similarly, methods that can't be overridden (private methods, methods of anonymous classes,
-methods of enum instance) do not need to be tagged either.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration[@Final='true' and @Interface='false']
-    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-        [count(./Annotation/MarkerAnnotation/Name[@Image='SafeVarargs' or @Image='java.lang.SafeVarargs']) = 0]
-    /MethodDeclaration[@Final='true']
-| //MethodDeclaration[@Final='true' and @Private='true']
-| //EnumConstant/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
-| //AllocationExpression/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public final class Foo {
-    // This final modifier is not necessary, since the class is final
-    // and thus, all methods are final
-    private final void foo() {
-    }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="UnnecessaryFullyQualifiedName"
           language="java"
           since="5.0"

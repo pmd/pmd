@@ -5,16 +5,31 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class UnnecessaryModifierRule extends AbstractJavaRule {
 
+    public UnnecessaryModifierRule() {
+        addRuleChainVisit(ASTEnumDeclaration.class);
+        addRuleChainVisit(ASTAnnotationTypeDeclaration.class);
+        addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
+        addRuleChainVisit(ASTMethodDeclaration.class);
+        addRuleChainVisit(ASTResource.class);
+        addRuleChainVisit(ASTFieldDeclaration.class);
+        addRuleChainVisit(ASTAnnotationMethodDeclaration.class);
+    }
+    
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
         if (node.isStatic()) {
@@ -22,7 +37,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
             addViolation(data, node, getMessage());
         }
 
-        return super.visit(node, data);
+        return data;
     }
 
     public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
@@ -32,7 +47,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
         }
 
         if (!node.isNested()) {
-            return super.visit(node, data);
+            return data;
         }
 
         Node parent = node.jjtGetParent().jjtGetParent().jjtGetParent();
@@ -49,7 +64,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
             addViolation(data, node, getMessage());
         }
 
-        return super.visit(node, data);
+        return data;
     }
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
@@ -59,7 +74,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
         }
 
         if (!node.isNested()) {
-            return super.visit(node, data);
+            return data;
         }
 
         Node parent = node.jjtGetParent().jjtGetParent().jjtGetParent();
@@ -81,28 +96,67 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
             addViolation(data, node, getMessage());
         }
 
-        return super.visit(node, data);
+        return data;
     }
-
-    public Object visit(ASTMethodDeclaration node, Object data) {
+    
+    public Object visit(final ASTMethodDeclaration node, Object data) {
         if (node.isSyntacticallyPublic() || node.isSyntacticallyAbstract()) {
             check(node, data);
         }
-        return super.visit(node, data);
+        
+        if (node.isFinal()) {
+            // If the method is annotated by @SafeVarargs then it's ok
+            if (!isSafeVarargs(node)) {
+                if (node.isPrivate()) {
+                    addViolation(data, node);
+                } else {
+                    final Node n = node.getNthParent(3);
+                    // A final method of an anonymous class / enum constant. Neither can be extended / overridden
+                    if (n instanceof ASTAllocationExpression || n instanceof ASTEnumConstant) {
+                        addViolation(data, node);
+                    } else if (n instanceof ASTClassOrInterfaceDeclaration
+                            && ((ASTClassOrInterfaceDeclaration) n).isFinal()) {
+                        addViolation(data, node);
+                    }
+                }
+            }
+        }
+        
+        return data;
+    }
+    
+    public Object visit(final ASTResource node, final Object data) {
+        if (node.isFinal()) {
+            addViolation(data, node);
+        }
+        
+        return data;
     }
 
     public Object visit(ASTFieldDeclaration node, Object data) {
         if (node.isSyntacticallyPublic() || node.isSyntacticallyStatic() || node.isSyntacticallyFinal()) {
             check(node, data);
         }
-        return super.visit(node, data);
+        return data;
     }
 
     public Object visit(ASTAnnotationMethodDeclaration node, Object data) {
         if (node.isPublic() || node.isAbstract()) {
             check(node, data);
         }
-        return super.visit(node, data);
+        return data;
+    }
+    
+    private boolean isSafeVarargs(final ASTMethodDeclaration node) {
+        for (final ASTAnnotation annotation : node.jjtGetParent().findChildrenOfType(ASTAnnotation.class)) {
+            final Node childAnnotation = annotation.jjtGetChild(0);
+            if (childAnnotation instanceof ASTMarkerAnnotation
+                    && SafeVarargs.class.isAssignableFrom(((ASTMarkerAnnotation) childAnnotation).getType())) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     private void check(Node fieldOrMethod, Object data) {
