@@ -55,14 +55,14 @@ public class ApexSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
     public static final RegexHighlightGrammar GRAMMAR
         = grammarBuilder("single-line-comment", "//[^\r\n]*")
         .or("multi-line-comment", "/\\*.*?\\*/")
-        .or("keyword", "\\b(?=[" + KEYWORDS_START_CHARS + "])(" + String.join("|", KEYWORDS) + ")\\b")
+        .or("keyword", "\\b(?i)(?=[" + KEYWORDS_START_CHARS + "])(" + String.join("|", KEYWORDS) + ")\\b")
         .or("paren", "[()]")
         .or("brace", "[{}]")
         .or("bracket", "[\\[]]")
         .or("semicolon", ";")
-        .or("boolean", "true|false")
+        .or("boolean", "\\b(?i)true|false\\b")
         .or("string", "'[^'\\\\]*(\\\\.[^'\\\\]*)*'")
-        .create(Pattern.DOTALL);
+        .create(Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
     public ApexSyntaxHighlighter() {
         super("apex", GRAMMAR);

@@ -29,7 +29,7 @@ public class JavaSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         "switch", "synchronized", "transient", "try", "volatile",
         "do", "strictfp", "goto", "const", "open", 
         "module", "requires", "transitive", "exports", 
-        "opens", "to", "uses", "provides", "with"
+        "opens", "to", "uses", "provides", "with",
         };
 
 
@@ -52,8 +52,8 @@ public class JavaSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         .or("keyword", "\\b(?=[" + KEYWORDS_START_CHARS + "])(?:" + String.join("|", KEYWORDS) + ")\\b")
         .or("string", "\"[^\"\\\\]*(\\\\.[^\"\\\\]*)*\"")
         .or("string", "'(?:[^']|\\\\(?:'|u\\w{4}))'") // char
-        .or("null", "null") 
-        .or("boolean", "true|false") 
+        .or("null", "\\bnull\\b") 
+        .or("boolean", "\\btrue|false\\b") 
         .or("annotation", "@[\\w]+")
         .or("class-ident", "\\b[A-Z][\\w_$]*\\b")
         .create(Pattern.DOTALL);
