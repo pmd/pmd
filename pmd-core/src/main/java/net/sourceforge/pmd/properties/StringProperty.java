@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.properties;
 
-import java.util.Map;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
 
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Defines a datatype that supports single String values.
@@ -15,26 +15,6 @@ import org.apache.commons.lang3.StringUtils;
  * @version Refactored June 2017 (6.0.0)
  */
 public final class StringProperty extends AbstractSingleValueProperty<String> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<String> FACTORY // @formatter:off
-        = new SingleValuePropertyDescriptorFactory<String>(String.class) {
-
-            @Override
-            protected boolean isValueMissing(String value) {
-                return StringUtils.isEmpty(value);
-            }
-
-            @Override
-            public StringProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                return new StringProperty(nameIn(valuesById),
-                                          descriptionIn(valuesById),
-                                          defaultValueIn(valuesById),
-                                          0f,
-                                          isDefinedExternally);
-            }
-        }; // @formatter:on
-
 
     /**
      * Constructor.
@@ -65,5 +45,33 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
     @Override
     public String createFrom(String valueString) {
         return valueString;
+    }
+
+
+    static PropertyDescriptorBuilderConversionWrapper.SingleValue<String, StringPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.SingleValue<String, StringPBuilder>(String.class, ValueParserConstants.STRING_PARSER) {
+            @Override
+            protected StringPBuilder newBuilder(String name) {
+                return new StringPBuilder(name);
+            }
+        };
+    }
+
+
+    public static StringPBuilder named(String name) {
+        return new StringPBuilder(name);
+    }
+
+
+    public static final class StringPBuilder extends SingleValuePropertyBuilder<String, StringPBuilder> {
+        private StringPBuilder(String name) {
+            super(name);
+        }
+
+
+        @Override
+        public StringProperty build() {
+            return new StringProperty(this.name, this.description, this.defaultValue, this.uiOrder, isDefinedInXML);
+        }
     }
 }

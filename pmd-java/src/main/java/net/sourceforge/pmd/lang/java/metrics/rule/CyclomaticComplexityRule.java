@@ -29,11 +29,15 @@ import net.sourceforge.pmd.properties.IntegerProperty;
  */
 public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
-    private static final IntegerProperty CLASS_LEVEL_DESCRIPTOR = new IntegerProperty(
-        "classReportLevel", "Total class complexity reporting threshold", 1, 600, 80, 1.0f);
+    private static final IntegerProperty CLASS_LEVEL_DESCRIPTOR
+            = IntegerProperty.named("classReportLevel")
+                             .desc("Total class complexity reporting threshold")
+                             .range(1, 600).defaultValue(80).uiOrder(1.0f).build();
 
-    private static final IntegerProperty METHOD_LEVEL_DESCRIPTOR = new IntegerProperty(
-        "methodReportLevel", "Cyclomatic complexity reporting threshold", 1, 50, 10, 1.0f);
+    private static final IntegerProperty METHOD_LEVEL_DESCRIPTOR
+            = IntegerProperty.named("methodReportLevel")
+                             .desc("Cyclomatic complexity reporting threshold")
+                             .range(1, 50).defaultValue(10).uiOrder(1.0f).build();
 
     private static final Map<String, CycloOption> OPTION_MAP;
 
@@ -45,9 +49,12 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     }
 
 
-    private static final EnumeratedMultiProperty<CycloOption> CYCLO_OPTIONS_DESCRIPTOR = new EnumeratedMultiProperty<>(
-        "cycloOptions", "Choose options for the computation of Cyclo",
-        OPTION_MAP, Collections.<CycloOption>emptyList(), CycloOption.class, 3.0f);
+    private static final EnumeratedMultiProperty<CycloOption> CYCLO_OPTIONS_DESCRIPTOR
+            = EnumeratedMultiProperty.<CycloOption>named("cycloOptions").type(CycloOption.class)
+                                     .desc("Choose options for the computation of Cyclo")
+                                     .mappings(OPTION_MAP)
+                                     .defaultValues(Collections.<CycloOption>emptyList())
+                                     .uiOrder(3.0f).build();
 
     private int methodReportLevel;
     private int classReportLevel;

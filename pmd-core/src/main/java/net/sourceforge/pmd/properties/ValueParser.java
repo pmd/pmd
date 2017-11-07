@@ -18,7 +18,6 @@ public interface ValueParser<U> {
      * @param value The string to parse
      *
      * @return The primitive found
-     *
      * @throws IllegalArgumentException if the value couldn't be parsed
      */
     U valueOf(String value) throws IllegalArgumentException;

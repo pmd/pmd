@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+
+<ruleset name="Design"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that help you discover design issues.
+    </description>
+
+    <rule name="AvoidDeeplyNestedIfStmts"
+          since="5.1"
+          message="Deeply nested if..then statements are hard to read"
+          class="net.sourceforge.pmd.lang.vm.rule.design.AvoidDeeplyNestedIfStmtsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_vm_design.html#avoiddeeplynestedifstmts">
+        <description>
+Avoid creating deeply nested if-then statements since they are harder to read and error-prone to maintain.
+        </description>
+        <priority>3</priority>
+    </rule>
+
+    <rule name="CollapsibleIfStatements"
+          since="5.1"
+          message="These nested if statements could be combined"
+          class="net.sourceforge.pmd.lang.vm.rule.design.CollapsibleIfStatementsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_vm_design.html#collapsibleifstatements">
+        <description>
+Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
+        </description>
+        <priority>3</priority>
+    </rule>
+
+    <rule name="ExcessiveTemplateLength"
+          since="5.1"
+          message="Template is too long"
+          class="net.sourceforge.pmd.lang.vm.rule.design.ExcessiveTemplateLengthRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_vm_design.html#excessivetemplatelength">
+        <description>
+The template is too long. It should be broken up into smaller pieces.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="minimum" value="1000"/>
+        </properties>
+    </rule>
+
+    <rule name="NoInlineJavaScript"
+          since="5.1"
+          message="Avoid inline JavaScript"
+          class="net.sourceforge.pmd.lang.vm.rule.design.NoInlineJavaScriptRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_vm_design.html#noinlinejavascript">
+        <description>
+Avoid inline JavaScript. Import .js files instead.
+        </description>
+        <priority>2</priority>
+    </rule>
+
+    <rule name="NoInlineStyles"
+          since="5.1"
+          message="Avoid inline styles"
+          language="vm" 
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_vm_design.html#noinlinestyles">
+        <description>
+Avoid inline styles. Use css classes instead.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Text[matches(@literal, "<[^>]+\s[sS][tT][yY][lL][eE]\s*=")]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+</ruleset>

@@ -606,11 +606,10 @@ Some for loops can be simplified to while loops, this makes them more concise.
 
 ```
 //ForStatement
-  [count(*) > 1]
   [not(LocalVariableDeclaration)]
   [not(ForInit)]
   [not(ForUpdate)]
-  [not(Type and Expression and Statement)]
+  [Expression]
 ```
 
 **Example(s):**

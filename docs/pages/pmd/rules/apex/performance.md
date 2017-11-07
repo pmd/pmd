@@ -1,11 +1,11 @@
 ---
 title: Performance
-summary: The Performance ruleset contains a collection of good practices which should be followed.
+summary: Rules that flag suboptimal code.
 permalink: pmd_rules_apex_performance.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
-editmepath: ../pmd-apex/src/main/resources/rulesets/apex/performance.xml
-keywords: Performance, AvoidSoqlInLoops, AvoidSoslInLoops, AvoidDmlStatementsInLoops
+editmepath: ../pmd-apex/src/main/resources/category/apex/performance.xml
+keywords: Performance, AvoidDmlStatementsInLoops, AvoidSoqlInLoops, AvoidSoslInLoops
 ---
 ## AvoidDmlStatementsInLoops
 
@@ -41,7 +41,7 @@ public class Something {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/performance.xml/AvoidDmlStatementsInLoops" />
+<rule ref="category/apex/performance.xml/AvoidDmlStatementsInLoops" />
 ```
 
 ## AvoidSoqlInLoops
@@ -76,7 +76,7 @@ public class Something {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/performance.xml/AvoidSoqlInLoops" />
+<rule ref="category/apex/performance.xml/AvoidSoqlInLoops" />
 ```
 
 ## AvoidSoslInLoops
@@ -111,6 +111,6 @@ public class Something {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/performance.xml/AvoidSoslInLoops" />
+<rule ref="category/apex/performance.xml/AvoidSoslInLoops" />
 ```
 

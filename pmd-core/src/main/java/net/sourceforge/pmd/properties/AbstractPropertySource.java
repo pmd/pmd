@@ -15,9 +15,9 @@ import java.util.Set;
 
 import net.sourceforge.pmd.util.CollectionUtil;
 
+
 /**
- * Base class for objects which can be configured through properties. Rules and
- * Reports are such objects.
+ * Base class for objects which can be configured through properties. Rules and Reports are such objects.
  *
  * @author Brian Remedios
  */
@@ -61,7 +61,7 @@ public abstract class AbstractPropertySource implements PropertySource {
         for (PropertyDescriptor<?> descriptor : propertyDescriptors) {
             if (descriptor.name().equals(propertyDescriptor.name())) {
                 throw new IllegalArgumentException("There is already a PropertyDescriptor with name '"
-                        + propertyDescriptor.name() + "' defined on Rule " + getName() + ".");
+                                                   + propertyDescriptor.name() + "' defined on Rule " + getName() + ".");
             }
         }
         propertyDescriptors.add(propertyDescriptor);
@@ -71,8 +71,7 @@ public abstract class AbstractPropertySource implements PropertySource {
 
 
     /**
-     * Gets the name of the property source. This is e.g. the rule name or the
-     * report name.
+     * Gets the name of the property source. This is e.g. the rule name or the report name.
      *
      * @return the name
      */
@@ -147,7 +146,7 @@ public abstract class AbstractPropertySource implements PropertySource {
     private void checkValidPropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
         if (!propertyDescriptors.contains(propertyDescriptor)) {
             throw new IllegalArgumentException(
-                "Property descriptor not defined for Rule " + getName() + ": " + propertyDescriptor);
+                    "Property descriptor not defined for Rule " + getName() + ": " + propertyDescriptor);
         }
     }
 

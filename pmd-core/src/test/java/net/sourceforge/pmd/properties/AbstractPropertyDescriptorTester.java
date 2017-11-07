@@ -18,10 +18,12 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
+
+
 /**
- * Base functionality for all concrete subclasses that evaluate type-specific
- * property descriptors. Checks for error conditions during construction, error
- * value detection, serialization, etc.
+ * Base functionality for all concrete subclasses that evaluate type-specific property descriptors. Checks for error
+ * conditions during construction, error value detection, serialization, etc.
  *
  * @author Brian Remedios
  */
@@ -47,20 +49,19 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
     @Test
     public void testFactorySingleValue() {
-        PropertyDescriptor<T> prop = getSingleFactory().createWith(getPropertyDescriptorValues());
+        PropertyDescriptor<T> prop = getSingleFactory().build(getPropertyDescriptorValues());
         T originalValue = createValue();
         T value = prop.valueFrom(
-            originalValue instanceof Class ? ((Class) originalValue).getName() : String.valueOf(originalValue));
+                originalValue instanceof Class ? ((Class) originalValue).getName() : String.valueOf(originalValue));
         String asDelimitedString = prop.asDelimitedString(value);
         Object value2 = prop.valueFrom(asDelimitedString);
         assertEquals(value, value2);
     }
 
 
-
     @SuppressWarnings("unchecked")
-    protected final PropertyDescriptorFactory<T> getSingleFactory() {
-        return (PropertyDescriptorFactory<T>) PropertyDescriptorUtil.factoryFor(typeName);
+    protected final PropertyDescriptorExternalBuilder<T> getSingleFactory() {
+        return (PropertyDescriptorExternalBuilder<T>) PropertyDescriptorUtil.factoryFor(typeName);
     }
 
 
@@ -83,8 +84,8 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
     @Test
     public void testFactoryMultiValueDefaultDelimiter() {
-        PropertyDescriptorFactory<List<T>> multiFactory = getMultiFactory();
-        PropertyDescriptor<List<T>> prop = multiFactory.createWith(getPropertyDescriptorValues());
+        PropertyDescriptorExternalBuilder<List<T>> multiFactory = getMultiFactory();
+        PropertyDescriptor<List<T>> prop = multiFactory.build(getPropertyDescriptorValues());
         List<T> originalValue = createMultipleValues(MULTI_VALUE_COUNT);
         String asDelimitedString = prop.asDelimitedString(originalValue);
         List<T> value2 = prop.valueFrom(asDelimitedString);
@@ -93,8 +94,8 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @SuppressWarnings("unchecked")
-    protected final PropertyDescriptorFactory<List<T>> getMultiFactory() {
-        return (PropertyDescriptorFactory<List<T>>) PropertyDescriptorUtil.factoryFor("List<" + typeName + ">");
+    protected final PropertyDescriptorExternalBuilder<List<T>> getMultiFactory() {
+        return (PropertyDescriptorExternalBuilder<List<T>>) PropertyDescriptorUtil.factoryFor("List<" + typeName + ">");
     }
 
 
@@ -110,12 +111,12 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
     @Test
     public void testFactoryMultiValueCustomDelimiter() {
-        PropertyDescriptorFactory<List<T>> multiFactory = getMultiFactory();
+        PropertyDescriptorExternalBuilder<List<T>> multiFactory = getMultiFactory();
         Map<PropertyDescriptorField, String> valuesById = getPropertyDescriptorValues();
         String customDelimiter = "ä";
         assertFalse(ALL_CHARS.contains(customDelimiter));
         valuesById.put(PropertyDescriptorField.DELIMITER, customDelimiter);
-        PropertyDescriptor<List<T>> prop = multiFactory.createWith(valuesById);
+        PropertyDescriptor<List<T>> prop = multiFactory.build(valuesById);
         List<T> originalValue = createMultipleValues(MULTI_VALUE_COUNT);
         String asDelimitedString = prop.asDelimitedString(originalValue);
         List<T> value2 = prop.valueFrom(asDelimitedString);
@@ -149,8 +150,8 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     /**
-     * Attempt to create a property with faulty configuration values. This
-     * method should throw an IllegalArgumentException if done correctly.
+     * Attempt to create a property with faulty configuration values. This method should throw an
+     * IllegalArgumentException if done correctly.
      *
      * @return PropertyDescriptor
      */
@@ -219,8 +220,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     /**
-     * Return a value(s) that is known to be faulty per the general scope of the
-     * descriptor.
+     * Return a value(s) that is known to be faulty per the general scope of the descriptor.
      *
      * @return Object
      */
@@ -346,7 +346,6 @@ public abstract class AbstractPropertyDescriptorTester<T> {
      * Method randomChoice.
      *
      * @param items Object[]
-     *
      * @return Object
      */
     public static <T> T randomChoice(T[] items) {
@@ -359,7 +358,6 @@ public abstract class AbstractPropertyDescriptorTester<T> {
      *
      * @param chars      char[]
      * @param removeChar char
-     *
      * @return char[]
      */
     protected static final char[] filter(char[] chars, char removeChar) {

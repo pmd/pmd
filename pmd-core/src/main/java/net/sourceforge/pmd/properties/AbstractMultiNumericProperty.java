@@ -9,16 +9,18 @@ import java.util.Map;
 
 import net.sourceforge.pmd.properties.modules.NumericPropertyModule;
 
+
 /**
  * Base class for multi-valued numeric properties.
  *
  * @param <T> The type of number
  *
  * @author Brian Remedios
+ * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
 /* default */ abstract class AbstractMultiNumericProperty<T extends Number> extends AbstractMultiValueProperty<T>
-    implements NumericPropertyDescriptor<List<T>> {
+        implements NumericPropertyDescriptor<List<T>> {
 
     private final NumericPropertyModule<T> module;
 

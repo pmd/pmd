@@ -26,8 +26,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -40,11 +42,10 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.properties.AbstractPropertyDescriptorFactory;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyDescriptorFactory;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
@@ -872,20 +873,18 @@ public class RuleSetFactory {
             return;
         }
 
-        PropertyDescriptorFactory<?> pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
+        PropertyDescriptorExternalBuilder<?> pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
         if (pdFactory == null) {
             throw new RuntimeException("No property descriptor factory for type: " + typeId);
         }
 
-        Set<PropertyDescriptorField> valueKeys = pdFactory.expectableFields();
-        Map<PropertyDescriptorField, String> values = new HashMap<>(valueKeys.size());
+        Map<PropertyDescriptorField, String> values = new HashMap<>();
+        NamedNodeMap atts = propertyElement.getAttributes();
 
         // populate a map of values for an individual descriptor
-        for (PropertyDescriptorField field : valueKeys) {
-            String valueStr = propertyElement.getAttribute(field.attributeName());
-            if (valueStr != null) {
-                values.put(field, valueStr);
-            }
+        for (int i = 0; i < atts.getLength(); i++) {
+            Attr a = (Attr) atts.item(i);
+            values.put(PropertyDescriptorField.getConstant(a.getName()), a.getValue());
         }
 
         if (StringUtils.isBlank(values.get(DEFAULT_VALUE))) {
@@ -898,7 +897,7 @@ public class RuleSetFactory {
         }
 
         // casting is not pretty but prevents the interface from having this method
-        PropertyDescriptor<?> desc = ((AbstractPropertyDescriptorFactory<?>) pdFactory).createExternalWith(values);
+        PropertyDescriptor<?> desc = pdFactory.build(values);
 
         rule.definePropertyDescriptor(desc);
         setValue(rule, desc, strValue);

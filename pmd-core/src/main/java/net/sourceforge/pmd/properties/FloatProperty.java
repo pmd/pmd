@@ -6,31 +6,16 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.properties.ValueParserConstants.FLOAT_PARSER;
 
-import java.util.Map;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
+
 
 /**
- * Defines a property type that supports single float property values within an
- * upper and lower boundary.
+ * Defines a property type that supports single float property values within an upper and lower boundary.
  *
  * @author Brian Remedios
  */
 public final class FloatProperty extends AbstractNumericProperty<Float> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<Float> FACTORY // @formatter:off
-        = new SingleValuePropertyDescriptorFactory<Float>(Float.class, NUMBER_FIELD_TYPES_BY_KEY) {
-            @Override
-            public FloatProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                final String[] minMax = minMaxFrom(valuesById);
-                return new FloatProperty(nameIn(valuesById),
-                                         descriptionIn(valuesById),
-                                         FLOAT_PARSER.valueOf(minMax[0]),
-                                         FLOAT_PARSER.valueOf(minMax[1]),
-                                         FLOAT_PARSER.valueOf(defaultValueIn(valuesById)),
-                                         0f,
-                                         isDefinedExternally);
-            }
-        }; // @formatter:on
 
 
     /**
@@ -50,7 +35,7 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
     public FloatProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
                          float theUIOrder) {
         this(theName, theDescription, FLOAT_PARSER.valueOf(minStr),
-             FLOAT_PARSER.valueOf(maxStr), FLOAT_PARSER.valueOf(defaultStr), theUIOrder, false);
+                FLOAT_PARSER.valueOf(maxStr), FLOAT_PARSER.valueOf(defaultStr), theUIOrder, false);
     }
 
 
@@ -88,6 +73,34 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
     @Override
     protected Float createFrom(String value) {
         return FLOAT_PARSER.valueOf(value);
+    }
+
+
+    static PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Float, FloatPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Float, FloatPBuilder>(Float.class, ValueParserConstants.FLOAT_PARSER) {
+            @Override
+            protected FloatPBuilder newBuilder(String name) {
+                return new FloatPBuilder(name);
+            }
+        };
+    }
+
+
+    public static FloatPBuilder named(String name) {
+        return new FloatPBuilder(name);
+    }
+
+
+    public static final class FloatPBuilder extends SingleNumericPropertyBuilder<Float, FloatPBuilder> {
+        private FloatPBuilder(String name) {
+            super(name);
+        }
+
+
+        @Override
+        public FloatProperty build() {
+            return new FloatProperty(name, description, lowerLimit, upperLimit, defaultValue, uiOrder, isDefinedInXML);
+        }
     }
 
 

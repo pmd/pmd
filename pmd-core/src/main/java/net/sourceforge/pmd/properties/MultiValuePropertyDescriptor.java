@@ -6,6 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import java.util.List;
 
+
 /**
  * Specializes property descriptors for multi valued descriptors. For this type of property, the return value of the
  * {@link #type()} method must be the class literal of the type parameter of this interface, which is the type of the

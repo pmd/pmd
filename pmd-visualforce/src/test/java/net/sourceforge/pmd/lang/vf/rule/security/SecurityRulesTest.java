@@ -8,11 +8,11 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class SecurityRulesTest extends SimpleAggregatorTst {
 
-    private static final String RULESET = "vf-security";
+    private static final String RULESET = "category/vf/security.xml";
 
     @Override
     public void setUp() {
-        addRule(RULESET, "VfUnescapeEl");
         addRule(RULESET, "VfCsrf");
+        addRule(RULESET, "VfUnescapeEl");
     }
 }

@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.ValueParserConstants.FLOAT_PARSER;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+
+import net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
+
 
 /**
  * Multi-valued float property.
@@ -17,25 +18,6 @@ import java.util.Map;
  * @version Refactored June 2017 (6.0.0)
  */
 public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<List<Float>> FACTORY // @formatter:off
-        = new MultiValuePropertyDescriptorFactory<Float>(Float.class, NUMBER_FIELD_TYPES_BY_KEY) {
-            @Override
-            public FloatMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById,
-                                                 boolean isDefinedExternally) {
-                String[] minMax = minMaxFrom(valuesById);
-                char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Float> defaultValues = ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, FLOAT_PARSER);
-                return new FloatMultiProperty(nameIn(valuesById),
-                                              descriptionIn(valuesById),
-                                              FLOAT_PARSER.valueOf(minMax[0]),
-                                              FLOAT_PARSER.valueOf(minMax[1]),
-                                              defaultValues,
-                                              0f,
-                                              isDefinedExternally);
-            }
-        }; // @formatter:on
 
 
     /**
@@ -91,4 +73,34 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
     protected Float createFrom(String value) {
         return Float.valueOf(value);
     }
+
+
+    static PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Float, FloatMultiPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Float, FloatMultiPBuilder>(Float.class, ValueParserConstants.FLOAT_PARSER) {
+            @Override
+            protected FloatMultiPBuilder newBuilder(String name) {
+                return new FloatMultiPBuilder(name);
+            }
+        };
+    }
+
+
+    public static FloatMultiPBuilder named(String name) {
+        return new FloatMultiPBuilder(name);
+    }
+
+
+    public static final class FloatMultiPBuilder extends MultiNumericPropertyBuilder<Float, FloatMultiPBuilder> {
+        private FloatMultiPBuilder(String name) {
+            super(name);
+        }
+
+
+        @Override
+        public FloatMultiProperty build() {
+            return new FloatMultiProperty(name, description, lowerLimit, upperLimit, defaultValues, uiOrder, isDefinedInXML);
+        }
+    }
+
+
 }

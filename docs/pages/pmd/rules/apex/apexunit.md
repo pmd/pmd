@@ -42,7 +42,7 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/apexunit.xml/ApexUnitTestClassShouldHaveAsserts" />
+<rule ref="category/apex/apexunit.xml/ApexUnitTestClassShouldHaveAsserts" />
 ```
 
 ## ApexUnitTestShouldNotUseSeeAllDataTrue
@@ -79,6 +79,6 @@ public class Foo {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/apexunit.xml/ApexUnitTestShouldNotUseSeeAllDataTrue" />
+<rule ref="category/apex/apexunit.xml/ApexUnitTestShouldNotUseSeeAllDataTrue" />
 ```
 

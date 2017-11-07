@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorDecorator;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
-import net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule;
+import net.sourceforge.pmd.lang.java.rule.design.NPathComplexityRule;
 
 /**
  * Decorator which counts the complexity of boolean expressions for Cyclo.

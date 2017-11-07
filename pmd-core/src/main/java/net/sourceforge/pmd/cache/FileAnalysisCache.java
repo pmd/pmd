@@ -55,7 +55,8 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                     
                     // Get checksums
                     rulesetChecksum = inputStream.readLong();
-                    classpathChecksum = inputStream.readLong();
+                    auxClassPathChecksum = inputStream.readLong();
+                    executionClassPathChecksum = inputStream.readLong();
                     
                     // Cached results
                     while (inputStream.available() > 0) {
@@ -95,12 +96,13 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
 
         try (
             DataOutputStream outputStream = new DataOutputStream(
-                new BufferedOutputStream(new FileOutputStream(cacheFile)));
+                new BufferedOutputStream(new FileOutputStream(cacheFile)))
         ) {
             outputStream.writeUTF(pmdVersion);
             
             outputStream.writeLong(rulesetChecksum);
-            outputStream.writeLong(classpathChecksum);
+            outputStream.writeLong(auxClassPathChecksum);
+            outputStream.writeLong(executionClassPathChecksum);
             
             for (final Map.Entry<String, AnalysisResult> resultEntry : updatedResultsCache.entrySet()) {
                 final List<RuleViolation> violations = resultEntry.getValue().getViolations();

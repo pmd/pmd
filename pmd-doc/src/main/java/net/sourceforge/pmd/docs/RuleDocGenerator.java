@@ -354,7 +354,7 @@ public class RuleDocGenerator {
 
                     lines.add("**Use this rule by referencing it:**");
                     lines.add("``` xml");
-                    lines.add("<rule ref=\"rulesets/" + languageTersename + "/" + rulesetFilename + ".xml/" + rule.getName() + "\" />");
+                    lines.add("<rule ref=\"category/" + languageTersename + "/" + rulesetFilename + ".xml/" + rule.getName() + "\" />");
                     lines.add("```");
                     lines.add("");
                 }

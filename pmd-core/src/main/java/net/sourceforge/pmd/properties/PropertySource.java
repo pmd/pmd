@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
 /**
- * Any entity that manages a list of properties is a {@link PropertySource}.
- * These are e.g. Rules and Renderers.
+ * Any entity that manages a list of properties is a {@link PropertySource}. These are e.g. Rules and Renderers.
  *
  * @author Brian Remedios
  */
@@ -37,8 +37,7 @@ public interface PropertySource {
 
 
     /**
-     * Get the PropertyDescriptors for all defined properties. The properties
-     * are returned sorted by UI order.
+     * Get the PropertyDescriptors for all defined properties. The properties are returned sorted by UI order.
      *
      * @return The PropertyDescriptors in UI order.
      */
@@ -77,8 +76,7 @@ public interface PropertySource {
 
 
     /**
-     * Returns all the current property values for the receiver or an immutable
-     * empty map if none are specified.
+     * Returns all the current property values for the receiver or an immutable empty map if none are specified.
      *
      * @return all current property values or a empty map.
      */
@@ -104,8 +102,7 @@ public interface PropertySource {
 
 
     /**
-     * Clears out any user-specified value for the property allowing it to use
-     * the default value in the descriptor.
+     * Clears out any user-specified value for the property allowing it to use the default value in the descriptor.
      *
      * @param desc the property to clear out
      */
@@ -113,9 +110,8 @@ public interface PropertySource {
 
 
     /**
-     * Return the properties that are effectively ignored due to the
-     * configuration of the rule and values held by other properties. This can
-     * be used to disable corresponding widgets in a UI.
+     * Return the properties that are effectively ignored due to the configuration of the rule and values held by other
+     * properties. This can be used to disable corresponding widgets in a UI.
      *
      * @return the properties that are ignored
      */
@@ -123,9 +119,8 @@ public interface PropertySource {
 
 
     /**
-     * Returns a description of why the receiver may be dysfunctional. Usually
-     * due to missing property values or some kind of conflict between values.
-     * Returns null if the receiver is ok.
+     * Returns a description of why the receiver may be dysfunctional. Usually due to missing property values or some
+     * kind of conflict between values. Returns null if the receiver is ok.
      *
      * @return String
      */

@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+failure case, return statement
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public int bar() {
+      return (0);
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case, assignment
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public int bar(int x) {
+      int y = (x + 5);
+      return y;
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case, condition 1
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public int bar(int x) {
+      if ((x % 2 == 0)) {
+         return x;
+      }
+      return 0;
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case, condition 2
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public int bar(int x) {
+      if ((x % 2) == 0) {
+         return x;
+      }
+      return 0;
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+useful parentheses, arithmetic
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public int bar(int x) {
+      return (x + 2) * 5;
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+useful parentheses, logic
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public int bar(int x) {
+   // actually, the inner parentheses wouldn't be necessary,
+   // as the "||" operator has the lowest priority, followed by "=="
+   // and by "%" with the highest priority here...
+   // But for readability, it is better to have the parentheses as in
+   // this example.
+      if ((x % 2 == 0) || (x % 2 == 1)) {
+         return x;
+      } else {
+         // it's the same with this extra parentheses
+         return (x %2 == 0) ? x : -x;
+      }
+      return -x;
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+typecast, ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public String bar(Object o) {
+	    return ((Exception) o).getMessage();
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+typecast with extra, bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public String bar(Object o) {
+	    return (((Exception) o)).getMessage();
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+false negatives
+     ]]></description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   private boolean isSimpleReturn(Node node) {
+      return 
+         ( node instanceof ASTReturnStatement ) // rule triggeres here
+         &&
+         ( node.jjtGetNumChildren() == 0 );     // and here
+    }
+    public String getLocalName() {
+        int colonIndex = name.indexOf(':');
+        return (colonIndex >= 0)                // and here
+                ? name.substring(colonIndex + 1)
+                : name;
+    }
+    public void viewerModelChanged(ViewerModelEvent e) {
+        int startOffset =
+          // and here for the following parentheses once
+          (sourceCodeArea.getLineStartOffset(node.getBeginLine() - 1) +
+          node.getBeginColumn()) - 1;
+        }
+
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Parentheses around binary expressions are really necessary
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final boolean isModifier(int mask) {
+        return (modifiers & mask) == mask;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+3526992, false +. In this case the parentheses must stay.
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void testMethod() {
+        String oneDay = "day";
+        String moreDays = "days";
+        int dayCount = 4;
+        String description = dayCount + " " + (dayCount == 1 ? oneDay : moreDays);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1012 False positive: Useless parentheses.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void testMethod() {
+        if((lookahead.type == Keyword.STRING || lookahead.type == Keyword.NUMBER) && lookahead.type != baseType)
+            throw new IncompatibleAttributeTypeException(attribute);
+        System.out.println( "number " + ( 1 + 2 ) );
+
+        if(lookahead.type != baseType && (lookahead.type == Keyword.STRING || lookahead.type == Keyword.NUMBER))
+            throw new IncompatibleAttributeTypeException(attribute);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1111 False positive: Useless parentheses</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test { public String check() {
+return (absolute ? amount.abs() : amount).toString();
+} }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1102 False positive: shift operator parenthesis</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void foo() {
+        xCoord = e.getX() - (MainFrame.TILESIZE >> 1);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1243 Useless Parentheses False Positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static int thisShouldBreak(final int x, final int y, final int z) {
+        return x - (y + z);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1282 False Positive with implicit String.valuesOf() (Java)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.mycompany.mavenproject1;
+
+import java.io.IOException;
+
+public class NewClass {
+
+    public void falsePositive(Boolean b) throws IOException {
+        System.out.write(( "" + b ).getBytes());
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1366 UselessParentheses false positive on multiple equality operators</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Useless {
+    public boolean test(Object a, Object b) {
+        return (a == null) == (b == null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1407 UselessParentheses "&amp;" and "+" operator precedence</description>
+        <expected-problems>12</expected-problems>
+        <expected-linenumbers>3,4,5,6,7,8,9,10,11,12,13,14</expected-linenumbers>
+        <code><![CDATA[
+class ExampleClass {
+  void exampleExpressions() {
+    eUseless = (a++) + b;
+    eUseless = (a--) + b;
+    eUseless = (++a) + b;
+    eUseless = (--a) + b;
+    eUseless = (+a) + b;
+    eUseless = (-a) + b;
+    eUseless = (~a) + b;
+    eUseless = (!a) + b;
+    eUseless = (a * b) + c;
+    eUseless = (a / b) + c;
+    eUseless = (a % b) + c;
+    eUseless = (a + b) + c;
+    eGood = (a - b) + c;
+    eGood = (a << b) + c;
+    eGood = (a >> b) + c;
+    eGood = (a >>> b) + c;
+    eGood = (a < b) + c;
+    eGood = (a > b) + c;
+    eGood = (a <= b) + c;
+    eGood = (a >= b) + c;
+    eGood = (a instanceof b) + c;
+    eGood = (a == b) + c;
+    eGood = (a != b) + c;
+    eGood = (a & b) + c;
+    eGood = (a ^ b) + c;
+    eGood = (a | b) + c;
+    eGood = (a && b) + c;
+    eGood = (a || b) + c;
+    eGood = (a ? b : c) + d;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>http://stackoverflow.com/questions/34911230/pmd-uselessparentheses-violation: false + with &amp; and &lt;&lt;</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+    private int calculate() {
+        return (bytes[0] & 0xff) + ((bytes[1] & 0xff) << 8);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Verify #1519 [java] UselessParenthesis: False Positive: "Prohibits the use of useless parentheses" when more than one line</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,7</expected-linenumbers>
+        <code><![CDATA[
+public class Useless {
+    public void method() {
+        boolean isSkipped = (pokeNick.equals(pokemon.getNickname())
+            && renameResult.getNumber() == NicknamePokemonResponse.Result.UNSET_VALUE);
+
+        // now the same in one line
+        boolean isSkipped2 = (pokeNick.equals(pokemon.getNickname()) && renameResult.getNumber() == NicknamePokemonResponse.Result.UNSET_VALUE);
+
+        // now without the outer parenthesis - no additional violation.
+        boolean isSkipped3 = pokeNick.equals(pokemon.getNickname()) && renameResult.getNumber() == NicknamePokemonResponse.Result.UNSET_VALUE;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#199 UselessParentheses false positive on multiple logical and operators</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Useless {
+    public boolean test(Useless team) {
+        return (mNumber != null ? mNumber.equals(team.mNumber) : team.mNumber == null)
+            && (mKey != null ? mKey.equals(team.mKey) : team.mKey == null)
+            && (mTemplateKey != null ? mTemplateKey.equals(team.mTemplateKey) : team.mTemplateKey == null)
+            && (mName != null ? mName.equals(team.mName) : team.mName == null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#199 UselessParentheses false positive on multiple logical or operators</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Useless {
+    public boolean test(Useless team) {
+        return (mNumber != null ? mNumber.equals(team.mNumber) : team.mNumber == null)
+            || (mKey != null ? mKey.equals(team.mKey) : team.mKey == null)
+            || (mTemplateKey != null ? mTemplateKey.equals(team.mTemplateKey) : team.mTemplateKey == null)
+            || (mName != null ? mName.equals(team.mName) : team.mName == null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#199 UselessParentheses false positive on equals operator</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Useless {
+    public boolean test(Useless team) {
+        return (mNumber != null ? mNumber : team.mNumber)
+            == (mKey != null ? mKey : team.mKey);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: #537 Trivial case with additive expression</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+          public class Foo {
+            private String getData(final String header) {
+              String result = ("[" + header + ":" + Utils.decode(header) + "]");
+              return result;
+            }
+          }
+         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: #537 Trivial case with additive expression modified</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+          public class Foo {
+            private String getData(final String header) {
+              String result = ("[" + header + ":" + Utils.decode(header) + "]").foo();
+              return result;
+            }
+          }
+         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: Parentheses around cast</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          public void bar(Object o) {
+            return ((String) "doo");
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: Parentheses around call chain</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          public void bar(Object o) {
+             return (a.bar()).foo();
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: Unreported call chain</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          public void bar(Object o) {
+             return a.bar().foo();
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: bad, returning variable in parens</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          int bar(int y) {
+            return (y);
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: Failure case, returning literal</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          int bar() {
+            String a = ((String) "foo");
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FP on binary operator</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private boolean isModifier(int mask) {
+        return (modifiers & mask) == mask;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

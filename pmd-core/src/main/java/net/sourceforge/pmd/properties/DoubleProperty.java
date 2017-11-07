@@ -6,33 +6,17 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.properties.ValueParserConstants.DOUBLE_PARSER;
 
-import java.util.Map;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
+import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
+
 
 /**
- * Defines a property type that support single double-type property values
- * within an upper and lower boundary.
+ * Defines a property type that support single double-type property values within an upper and lower boundary.
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
 public final class DoubleProperty extends AbstractNumericProperty<Double> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<Double> FACTORY // @formatter:off
-            = new SingleValuePropertyDescriptorFactory<Double>(Double.class, NUMBER_FIELD_TYPES_BY_KEY) {
-                @Override
-                public DoubleProperty createWith(Map<PropertyDescriptorField, String> valuesById,
-                                                 boolean isDefinedExternally) {
-                    final String[] minMax = minMaxFrom(valuesById);
-                    return new DoubleProperty(nameIn(valuesById),
-                                              descriptionIn(valuesById),
-                                              doubleFrom(minMax[0]),
-                                              doubleFrom(minMax[1]),
-                                              doubleFrom(defaultValueIn(valuesById)),
-                                              0f,
-                                              isDefinedExternally);
-                }
-            }; // @formatter:on
 
 
     /**
@@ -59,18 +43,6 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
     private DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
                            float theUIOrder, boolean isDefinedExternally) {
         super(theName, theDescription, min, max, theDefault, theUIOrder, isDefinedExternally);
-    }
-
-
-    /**
-     * Parses a String into a Double.
-     *
-     * @param numberString String to parse
-     *
-     * @return Parsed Double
-     */
-    private static Double doubleFrom(String numberString) {
-        return DOUBLE_PARSER.valueOf(numberString);
     }
 
 
@@ -102,4 +74,45 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
     protected Double createFrom(String value) {
         return doubleFrom(value);
     }
+
+
+    /**
+     * Parses a String into a Double.
+     *
+     * @param numberString String to parse
+     *
+     * @return Parsed Double
+     */
+    private static Double doubleFrom(String numberString) {
+        return DOUBLE_PARSER.valueOf(numberString);
+    }
+
+
+    static PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Double, DoublePBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric<Double, DoublePBuilder>(Double.class, ValueParserConstants.DOUBLE_PARSER) {
+            @Override
+            protected DoublePBuilder newBuilder(String name) {
+                return new DoublePBuilder(name);
+            }
+        };
+    }
+
+
+    public static DoublePBuilder named(String name) {
+        return new DoublePBuilder(name);
+    }
+
+
+    public static final class DoublePBuilder extends SingleNumericPropertyBuilder<Double, DoublePBuilder> {
+        private DoublePBuilder(String name) {
+            super(name);
+        }
+
+
+        @Override
+        public DoubleProperty build() {
+            return new DoubleProperty(name, description, lowerLimit, upperLimit, defaultValue, uiOrder, isDefinedInXML);
+        }
+    }
+
 }

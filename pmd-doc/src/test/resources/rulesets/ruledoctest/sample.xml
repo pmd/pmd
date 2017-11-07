@@ -12,7 +12,7 @@ Sample ruleset to test rule doc generation.
           language="java"
           since="0.4"
           message="Ensure you override both equals() and hashCode()"
-          class="net.sourceforge.pmd.lang.java.rule.basic.OverrideBothEqualsAndHashcodeRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_sample.html#overridebothequalsandhashcode"
           minimumLanguageVersion="1.5">
       <description>
@@ -111,6 +111,6 @@ Just some description of a deprecated rule.
 
 <rule name="RenamedRule" ref="JumbledIncrementer"/>
 
-<rule name="MovedRule" ref="rulesets/java/basic.xml/JumbledIncrementer"/>
+<rule name="MovedRule" ref="rulesets/ruledoctest/sample2.xml/JumbledIncrementer"/>
 
 </ruleset>

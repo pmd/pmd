@@ -6,6 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Map;
 
+
 /**
  * Interface defining an enumerated property descriptor.
  *
