@@ -5,7 +5,7 @@ permalink: pmd_rules_java_codestyle.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/codestyle.xml
-keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, GenericsNaming, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryConstructor, UnnecessaryFinalModifier, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
+keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, GenericsNaming, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
 ---
 ## AbstractNaming
 
@@ -1461,42 +1461,6 @@ public class Foo {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/UnnecessaryConstructor" />
-```
-
-## UnnecessaryFinalModifier
-
-**Since:** PMD 3.0
-
-**Priority:** Medium (3)
-
-When a class has the final modifier, all the methods are automatically final and do not need to be
-tagged as such. Similarly, methods that can't be overridden (private methods, methods of anonymous classes,
-methods of enum instance) do not need to be tagged either.
-
-```
-//ClassOrInterfaceDeclaration[@Final='true' and @Interface='false']
-    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-        [count(./Annotation/MarkerAnnotation/Name[@Image='SafeVarargs' or @Image='java.lang.SafeVarargs']) = 0]
-    /MethodDeclaration[@Final='true']
-| //MethodDeclaration[@Final='true' and @Private='true']
-| //EnumConstant/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
-| //AllocationExpression/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
-```
-
-**Example(s):**
-
-``` java
-public final class Foo {
-    // This final modifier is not necessary, since the class is final
-    // and thus, all methods are final
-    private final void foo() {
-    }
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/codestyle.xml/UnnecessaryFinalModifier" />
 ```
 
 ## UnnecessaryFullyQualifiedName
