@@ -13,7 +13,7 @@ The Unnecessary Ruleset contains a collection of rules for unnecessary code.
     <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals" deprecated="true" />
     <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable" deprecated="true" />
 
-    <rule ref="category/java/codestyle.xml/UnnecessaryFinalModifier" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/UnnecessaryModifier" name="UnnecessaryFinalModifier" deprecated="true" />
     <rule ref="category/java/codestyle.xml/UnnecessaryModifier" deprecated="true" />
     <rule ref="category/java/codestyle.xml/UnnecessaryReturn" deprecated="true" />
     <rule ref="category/java/codestyle.xml/UselessParentheses" deprecated="true" />

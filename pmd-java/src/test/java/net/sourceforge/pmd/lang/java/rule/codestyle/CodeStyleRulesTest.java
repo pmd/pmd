@@ -59,7 +59,6 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "SuspiciousConstantFieldName");
         addRule(RULESET, "TooManyStaticImports");
         addRule(RULESET, "UnnecessaryConstructor");
-        addRule(RULESET, "UnnecessaryFinalModifier");
         addRule(RULESET, "UnnecessaryFullyQualifiedName");
         addRule(RULESET, "UnnecessaryLocalBeforeReturn");
         addRule(RULESET, "UnnecessaryModifier");

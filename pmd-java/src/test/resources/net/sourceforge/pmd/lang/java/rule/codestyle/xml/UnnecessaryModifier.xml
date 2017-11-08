@@ -431,4 +431,161 @@ public abstract @interface TestAnnotation {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+final method on non-final class is ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public final void foo() { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+final and non-final methods mixed
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public final void foo() { }
+ public void foo2() { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+final method on a final class
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+ public final void foo() { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+mixed final and non-final methods on final class
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+ public final void foo() { }
+ public void foo2() { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+multiple final methods on final class
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+ public final void fooA() { }
+ public final void fooS() { }
+ public final void fooD() { }
+ public void foo2() { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+final method in inner class of non-final outer class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+ public static class Bar {
+  public final void buz() {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+final method in inner final class 
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+ public final class Bar {
+  public final void buz() {}
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1464 UnnecessaryFinalModifier false positive on a @SafeVarargs method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class InboxContents<T> {
+    @SafeVarargs
+    public final InboxContents<T> conflateWith(T... values) { // false positive
+        return conflateWith(ImmutableList.copyOf(values));
+    }
+}
+public final class InboxContents2 {
+    @java.lang.SafeVarargs
+    public final InboxContents conflateWith(String... values) {
+        return conflateWith(ImmutableList.copyOf(values));
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+    <description>Unnecessary final of private method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class TestClass {
+	private final int getValue() {
+		return 0;
+	}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+    <description>Unnecessary final of enum method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public enum Foo {
+    BAR {
+        @Override
+        public final void magic() {}
+    };
+
+    public void magic() {}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+    <description>Unnecessary final of anonymous class method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void stuff() {
+        Listener list = new Listener() {
+            @Override
+            public final void onEvent() {}
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+    <description>Unnecessary final of try-with-resources resource</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void stuff() {
+        try (final FileWriter fw = new FileWriter(new File("something.txt"))) {
+            // do something on fw
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

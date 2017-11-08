@@ -164,9 +164,10 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
 
 #### Modified Rules
 
-*   The rule `UnnecessaryFinalModifier` (ruleset `java-unnecessarycode`) has been revamped to detect more cases.
+*   The rule `UnnecessaryFinalModifier` (ruleset `java-unnecessarycode`) has been merged into the rule
+    `UnnecessaryModifier` of the same ruleset. As part of this, the rule  has been revamped to detect more cases.
     It will now flag anonymous class' methods marked as final (can't be overridden, so it's pointless), along with
-    final methods overridden / defined within enum instances.
+    final methods overridden / defined within enum instances. It will also flag `final` modifiers on try-with-resources.
 
 *   The rule `UnnecessaryParentheses` (ruleset `java-controversial`) has been merged into `UselessParentheses`
     (ruleset `java-unnecessary`). The rule covers all scenarios previously covered by either rule.
@@ -300,6 +301,7 @@ a warning will now be produced suggesting users to adopt it for better performan
     *   [#521](https://github.com/pmd/pmd/issues/521): \[java] UnusedPrivateMethod returns false positives with primitive data type in map argument
 *   java-unnecessarycode
     *   [#412](https://github.com/pmd/pmd/issues/412): \[java] java-unnecessarycode/UnnecessaryFinalModifier missing cases
+    *   [#676](https://github.com/pmd/pmd/issues/676): \[java] java-unnecessarycode/UnnecessaryFinalModifier on try-with-resources
 
 ### API Changes
 
