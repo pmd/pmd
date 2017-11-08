@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.ruledef;
+package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.properties.PropertyDescriptorField.DEFAULT_VALUE;
 
@@ -20,8 +20,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
