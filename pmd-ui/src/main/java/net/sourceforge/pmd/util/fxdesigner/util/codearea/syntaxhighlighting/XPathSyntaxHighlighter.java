@@ -4,6 +4,12 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting;
 
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BRACKET;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.KEYWORD;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.PAREN;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.SINGLEL_COMMENT;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.STRING;
+
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SimpleRegexSyntaxHighlighter;
 
 /**
@@ -26,13 +32,13 @@ public class XPathSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
     private static final RegexHighlightGrammar GRAMMAR
         = grammarBuilder("attribute", "@[\\w]+")
         .or("axis", "(" + String.join("|", AXIS_NAMES) + ")(?=::)")
-        .or("keyword", "\\b(" + String.join("|", KEYWORDS) + ")\\b")
+        .or(KEYWORD.css, "\\b(" + String.join("|", KEYWORDS) + ")\\b")
         .or("function", "[\\w-]+?(?=\\()")
         .or("path", "//?")
-        .or("paren", "[()]")
-        .or("bracket", "[\\[\\]]")
-        .or("string", "('([^'\\\\]|\\\\.)*')|(\"([^\"\\\\]|\\\\.)*\")")
-        .or("single-line-comment", "\\(:.*:\\)")
+        .or(PAREN.css, "[()]")
+        .or(BRACKET.css, "[\\[\\]]")
+        .or(STRING.css, "('([^'\\\\]|\\\\.)*')|(\"([^\"\\\\]|\\\\.)*\")")
+        .or(SINGLEL_COMMENT.css, "\\(:.*:\\)")
         .create();
 
 

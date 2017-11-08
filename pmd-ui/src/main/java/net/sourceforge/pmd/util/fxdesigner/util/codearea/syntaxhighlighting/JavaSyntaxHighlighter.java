@@ -4,6 +4,19 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting;
 
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BOOLEAN;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BRACE;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BRACKET;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.CHAR;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.KEYWORD;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.MULTIL_COMMENT;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.NULL;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.NUMBER;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.PAREN;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.SEMICOLON;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.SINGLEL_COMMENT;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.STRING;
+
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -42,18 +55,18 @@ public class JavaSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
 
 
     private static final RegexHighlightGrammar GRAMMAR
-        = grammarBuilder("single-line-comment", "//[^\n]*")
-        .or("multi-line-comment", "/\\*.*?\\*/")
-        .or("paren", "[()]")
-        .or("number", "\\b\\d+[fdlFDL]*\\b")
-        .or("brace", "[{}]")
-        .or("bracket", "[\\[]]")
-        .or("semicolon", ";")
-        .or("keyword", "\\b(?=[" + KEYWORDS_START_CHARS + "])(?:" + String.join("|", KEYWORDS) + ")\\b")
-        .or("string", "\"[^\"\\\\]*(\\\\.[^\"\\\\]*)*\"")
-        .or("string", "'(?:[^']|\\\\(?:'|u\\w{4}))'") // char
-        .or("null", "\\bnull\\b") 
-        .or("boolean", "\\btrue|false\\b") 
+        = grammarBuilder(SINGLEL_COMMENT.css, "//[^\n]*")
+        .or(MULTIL_COMMENT.css, "/\\*.*?\\*/")
+        .or(PAREN.css, "[()]")
+        .or(NUMBER.css, "\\b\\d+[fdlFDL]*\\b")
+        .or(BRACE.css, "[{}]")
+        .or(BRACKET.css, "[\\[]]")
+        .or(SEMICOLON.css, ";")
+        .or(KEYWORD.css, "\\b(?=[" + KEYWORDS_START_CHARS + "])(?:" + String.join("|", KEYWORDS) + ")\\b")
+        .or(STRING.css, "\"[^\"\\\\]*(\\\\.[^\"\\\\]*)*\"")
+        .or(CHAR.css, "'(?:[^']|\\\\(?:'|u\\w{4}))'") // char
+        .or(NULL.css, "\\bnull\\b") 
+        .or(BOOLEAN.css, "\\btrue|false\\b") 
         .or("annotation", "@[\\w]+")
         .or("class-ident", "\\b[A-Z][\\w_$]*\\b")
         .create(Pattern.DOTALL);

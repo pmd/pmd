@@ -4,6 +4,16 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting;
 
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BOOLEAN;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BRACE;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BRACKET;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.KEYWORD;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.MULTIL_COMMENT;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.PAREN;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.SEMICOLON;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.SINGLEL_COMMENT;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.STRING;
+
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -52,20 +62,21 @@ public class ApexSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
                                                              .reduce((s1, s2) -> s1 + s2)
                                                              .get();
 
-    public static final RegexHighlightGrammar GRAMMAR
-        = grammarBuilder("single-line-comment", "//[^\r\n]*")
-        .or("multi-line-comment", "/\\*.*?\\*/")
-        .or("keyword", "\\b(?i)(?=[" + KEYWORDS_START_CHARS + "])(" + String.join("|", KEYWORDS) + ")\\b")
-        .or("paren", "[()]")
-        .or("brace", "[{}]")
-        .or("bracket", "[\\[]]")
-        .or("semicolon", ";")
-        .or("boolean", "\\b(?i)true|false\\b")
-        .or("string", "'[^'\\\\]*(\\\\.[^'\\\\]*)*'")
+    private static final RegexHighlightGrammar GRAMMAR
+        = grammarBuilder(SINGLEL_COMMENT.css, "//[^\r\n]*")
+        .or(MULTIL_COMMENT.css, "/\\*.*?\\*/")
+        .or(KEYWORD.css, "\\b(?i)(?=[" + KEYWORDS_START_CHARS + "])(" + String.join("|", KEYWORDS) + ")\\b")
+        .or(PAREN.css, "[()]")
+        .or(BRACE.css, "[{}]")
+        .or(BRACKET.css, "[\\[]]")
+        .or(SEMICOLON.css, ";")
+        .or(BOOLEAN.css, "\\b(?i)true|false\\b")
+        .or(STRING.css, "'[^'\\\\]*(\\\\.[^'\\\\]*)*'")
         .create(Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
     public ApexSyntaxHighlighter() {
         super("apex", GRAMMAR);
     }
+
 
 }

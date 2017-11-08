@@ -77,6 +77,10 @@
     -fx-fill: #317ECC;
 }
 
+.styled-text-area .char {
+    -fx-fill: #317ECC;
+}
+
 .styled-text-area .multi-line-comment {
     -fx-fill: #93A1A1;
     -fx-font-style: italic;
