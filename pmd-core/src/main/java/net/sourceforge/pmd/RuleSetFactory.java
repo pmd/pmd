@@ -113,7 +113,7 @@ public class RuleSetFactory {
 
     /**
      * Returns an Iterator of RuleSet objects loaded from descriptions from the
-     * "rulesets.properties" resource for each Language with Rule support.
+     * "categories.properties" resource for each Language with Rule support.
      *
      * @return An Iterator of RuleSet objects.
      *
@@ -125,7 +125,7 @@ public class RuleSetFactory {
             List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<>();
             for (Language language : LanguageRegistry.findWithRuleSupport()) {
                 Properties props = new Properties();
-                rulesetsProperties = "rulesets/" + language.getTerseName() + "/rulesets.properties";
+                rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
                 try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
                     props.load(inputStream);
                 }
@@ -135,7 +135,7 @@ public class RuleSetFactory {
             return createRuleSets(ruleSetReferenceIds).getRuleSetsIterator();
         } catch (IOException ioe) {
             throw new RuntimeException("Couldn't find " + rulesetsProperties
-                    + "; please ensure that the rulesets directory is on the classpath. The current classpath is: "
+                    + "; please ensure that the directory is on the classpath. The current classpath is: "
                     + System.getProperty("java.class.path"));
         }
     }
