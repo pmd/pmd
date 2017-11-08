@@ -4,27 +4,29 @@
 
 package net.sourceforge.pmd.ruledef;
 
+import static net.sourceforge.pmd.properties.PropertyDescriptorField.DEFAULT_VALUE;
+
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.properties.AbstractPropertyDescriptorFactory;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyDescriptorFactory;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
 
 
 /**
@@ -156,7 +158,8 @@ public class RuleFactory {
         builder.setDeprecated(hasAttributeSetTrue(ruleElement, DEPRECATED));
         builder.usesDFA(hasAttributeSetTrue(ruleElement, "dfa"));
         builder.usesTyperesolution(hasAttributeSetTrue(ruleElement, "typeResolution"));
-        builder.usesMetrics(hasAttributeSetTrue(ruleElement, "metrics"));
+        // Disabled until it's safe
+        // builder.usesMultifile(hasAttributeSetTrue(ruleElement, "multifile"));
 
 
         Element propertiesElement = null;
@@ -322,40 +325,38 @@ public class RuleFactory {
 
         String typeId = propertyElement.getAttribute(PropertyDescriptorField.TYPE.attributeName());
 
-        PropertyDescriptorFactory<?> pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
+        PropertyDescriptorExternalBuilder<?> pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
         if (pdFactory == null) {
             throw new RuntimeException("No property descriptor factory for type: " + typeId);
         }
 
-        Set<PropertyDescriptorField> valueKeys = pdFactory.expectableFields();
-        Map<PropertyDescriptorField, String> values = new HashMap<>(valueKeys.size());
+        Map<PropertyDescriptorField, String> values = new HashMap<>();
+        NamedNodeMap atts = propertyElement.getAttributes();
 
-        // populate a map of values for an individual descriptor
-        for (PropertyDescriptorField field : valueKeys) {
-            String valueStr = propertyElement.getAttribute(field.attributeName());
-            if (valueStr != null) {
-                values.put(field, valueStr);
-            }
+        /// populate a map of values for an individual descriptor
+        for (int i = 0; i < atts.getLength(); i++) {
+            Attr a = (Attr) atts.item(i);
+            values.put(PropertyDescriptorField.getConstant(a.getName()), a.getValue());
         }
-
-        if (StringUtils.isBlank(values.get(PropertyDescriptorField.DEFAULT_VALUE))) {
-            NodeList children = propertyElement.getElementsByTagName(PropertyDescriptorField.DEFAULT_VALUE.attributeName());
+        
+        if (StringUtils.isBlank(values.get(DEFAULT_VALUE))) {
+            NodeList children = propertyElement.getElementsByTagName(DEFAULT_VALUE.attributeName());
             if (children.getLength() == 1) {
-                values.put(PropertyDescriptorField.DEFAULT_VALUE, children.item(0).getTextContent());
+                values.put(DEFAULT_VALUE, children.item(0).getTextContent());
             } else {
                 throw new RuntimeException("No value defined!");
             }
         }
 
         // casting is not pretty but prevents the interface from having this method
-        return (PropertyDescriptor<?>) ((AbstractPropertyDescriptorFactory) pdFactory).createExternalWith(values);
+        return pdFactory.build(values);
     }
 
 
     /** Gets the string value from a property node. */
     private static String valueFrom(Element propertyNode) {
 
-        String strValue = propertyNode.getAttribute(PropertyDescriptorField.DEFAULT_VALUE.attributeName());
+        String strValue = propertyNode.getAttribute(DEFAULT_VALUE.attributeName());
 
         if (StringUtils.isNotBlank(strValue)) {
             return strValue;
