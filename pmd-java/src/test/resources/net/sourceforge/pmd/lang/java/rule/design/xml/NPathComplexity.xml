@@ -196,4 +196,26 @@ class Bar {
         }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>Backwards compatibility with minimum property</description>
+        <rule-property name="minimum">300</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class Foo {
+          Foo() {
+            boolean a, b;
+            int j = 23;
+            switch(j) {
+              case 1:
+              case 2: break;
+              case 3: j = 5; break;
+              case 4: if (b && a) { bar(); } break;
+              default: break;
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+    
 </test-data>
