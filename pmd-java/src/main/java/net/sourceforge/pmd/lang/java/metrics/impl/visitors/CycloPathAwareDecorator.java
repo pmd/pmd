@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorDecorator;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
-import net.sourceforge.pmd.lang.java.rule.design.NPathComplexityRule;
 
 /**
  * Decorator which counts the complexity of boolean expressions for Cyclo.
@@ -94,7 +93,7 @@ public class CycloPathAwareDecorator extends JavaParserVisitorDecorator {
         super.visit(node, data);
 
         if (node.isTernary()) {
-            int boolCompTern = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+            int boolCompTern = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
             ((MutableInt) data).add(1 + boolCompTern);
         }
         return data;
