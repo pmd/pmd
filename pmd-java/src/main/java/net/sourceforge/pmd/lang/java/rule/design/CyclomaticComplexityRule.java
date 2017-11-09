@@ -11,6 +11,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
+
 
 /**
  * @author Donald A. Leckie,
@@ -25,7 +27,7 @@ public class CyclomaticComplexityRule extends StdCyclomaticComplexityRule {
     public Object visit(ASTIfStatement node, Object data) {
         super.visit(node, data);
 
-        int boolCompIf = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompIf = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
         entryStack.peek().bumpDecisionPoints(boolCompIf);
         return data;
     }
@@ -34,8 +36,7 @@ public class CyclomaticComplexityRule extends StdCyclomaticComplexityRule {
     public Object visit(ASTForStatement node, Object data) {
         super.visit(node, data);
 
-        int boolCompFor = NPathComplexityRule
-                .sumExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
+        int boolCompFor = CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
         entryStack.peek().bumpDecisionPoints(boolCompFor);
         return data;
     }
@@ -44,7 +45,7 @@ public class CyclomaticComplexityRule extends StdCyclomaticComplexityRule {
     public Object visit(ASTDoStatement node, Object data) {
         super.visit(node, data);
 
-        int boolCompDo = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompDo = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
         entryStack.peek().bumpDecisionPoints(boolCompDo);
         return data;
     }
@@ -53,7 +54,7 @@ public class CyclomaticComplexityRule extends StdCyclomaticComplexityRule {
     public Object visit(ASTSwitchStatement node, Object data) {
         super.visit(node, data);
 
-        int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompSwitch = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
         entryStack.peek().bumpDecisionPoints(boolCompSwitch);
         return data;
     }
@@ -62,7 +63,7 @@ public class CyclomaticComplexityRule extends StdCyclomaticComplexityRule {
     public Object visit(ASTWhileStatement node, Object data) {
         super.visit(node, data);
 
-        int boolCompWhile = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompWhile = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
         entryStack.peek().bumpDecisionPoints(boolCompWhile);
         return data;
     }
@@ -72,8 +73,7 @@ public class CyclomaticComplexityRule extends StdCyclomaticComplexityRule {
         super.visit(node, data);
 
         if (node.isTernary()) {
-            int boolCompTern = NPathComplexityRule
-                    .sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+            int boolCompTern = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
             entryStack.peek().bumpDecisionPoints(boolCompTern);
         }
         return data;

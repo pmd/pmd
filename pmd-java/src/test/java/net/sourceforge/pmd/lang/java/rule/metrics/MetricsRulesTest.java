@@ -26,6 +26,5 @@ public class MetricsRulesTest extends SimpleAggregatorTst {
     @Override
     public void setUp() {
         addRule(RULESET, "CyclomaticComplexity");
-        addRule(RULESET, "NPathComplexity");
     }
 }
