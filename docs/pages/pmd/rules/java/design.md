@@ -1198,40 +1198,52 @@ public class Foo extends Bar {
 **Priority:** Medium (3)
 
 The NPath complexity of a method is the number of acyclic execution paths through that method.
-A threshold of 200 is generally considered the point where measures should be taken to reduce 
-complexity and increase readability.
+            While cyclomatic complexity counts the number of decision points in a method, NPath counts the number of
+            full paths from the beginning to the end of the block of the method. That metric grows exponentially, as
+            it multiplies the complexity of statements in the same block. For more details on the calculation, see the
+            documentation of the [NPath metric](/pmd_java_metrics_index.html#npath-complexity-npath).
+
+            A threshold of 200 is generally considered the point where measures should be taken to reduce
+            complexity and increase readability.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.NPathComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/NPathComplexityRule.java)
 
 **Example(s):**
 
 ``` java
-void bar() {    // this is something more complex than it needs to be,
-    if (y) {   // it should be broken down into smaller methods or functions
-        for (j = 0; j < m; j++) {
-            if (j > r) {
-                doSomething();
-                while (f < 5 ) {
-                    anotherThing();
-                    f -= 27;
-                }
-            } else {
-                tryThis();
-            }
-        }
+public class Foo {
+  public static void bar() { // Ncss = 252: reported!
+    boolean a, b = true;
+    try { // 2 * 2 + 2 = 6
+      if (true) { // 2
+        List buz = new ArrayList();
+      }
+
+      for(int i = 0; i < 19; i++) { // * 2
+        List buz = new ArrayList();
+      }
+    } catch(Exception e) {
+      if (true) { // 2
+        e.printStackTrace();
+      }
     }
-    if ( r - n > 45) {
-       while (doMagic()) {
-          findRabbits();
-       }
+
+    while (j++ < 20) { //  * 2
+      List buz = new ArrayList();
     }
-    try {
-        doSomethingDangerous();
-    } catch (Exception ex) {
-        makeAmends();
-    } finally {
-        dontDoItAgain();
+
+    switch(j) { // * 7
+      case 1:
+      case 2: break;
+      case 3: j = 5; break;
+      case 4: if (b && a) { bar(); } break;
+      default: break;
     }
+
+    do { // * 3
+        List buz = new ArrayList();
+    } while (a && j++ < 30);
+  }
 }
 ```
 
@@ -1239,9 +1251,8 @@ void bar() {    // this is something more complex than it needs to be,
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
+|minimum|200.0|Deprecated! Minimum reporting threshold|
+|reportLevel|200|N-Path Complexity reporting threshold|
 
 **Use this rule by referencing it:**
 ``` xml
