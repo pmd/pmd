@@ -43,7 +43,7 @@ import net.sourceforge.pmd.properties.modules.NumericPropertyModule;
         super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
 
         module = new NumericPropertyModule<>(lower, upper);
-
+        module.checkNumber(theDefault);
 
     }
 

@@ -10,6 +10,10 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder;
+import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
+
+
 /**
  * @author Clément Fournier
  */
@@ -40,8 +44,8 @@ public abstract class AbstractNumericPropertyDescriptorTester<T> extends Abstrac
     @Override
     protected Map<PropertyDescriptorField, String> getPropertyDescriptorValues() {
         Map<PropertyDescriptorField, String> attributes = super.getPropertyDescriptorValues();
-        attributes.put(PropertyDescriptorField.MIN, "0");
-        attributes.put(PropertyDescriptorField.MAX, "10");
+        attributes.put(PropertyDescriptorField.MIN, min().toString());
+        attributes.put(PropertyDescriptorField.MAX, max().toString());
         return attributes;
     }
 
@@ -53,4 +57,27 @@ public abstract class AbstractNumericPropertyDescriptorTester<T> extends Abstrac
         getSingleFactory().build(attributes);
 
     }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testBadDefaultValue() {
+        singleBuilder().defaultValue(createBadValue()).build();
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    @SuppressWarnings("unchecked")
+    public void testMultiBadDefaultValue() {
+        multiBuilder().defaultValues(createValue(), createBadValue()).build();
+    }
+
+
+    protected abstract SingleNumericPropertyBuilder<T, ?> singleBuilder();
+
+    protected abstract MultiNumericPropertyBuilder<T, ?> multiBuilder();
+
+
+    protected abstract T min();
+
+    protected abstract T max();
 }
