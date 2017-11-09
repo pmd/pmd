@@ -26,6 +26,7 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
 
     private static final Logger LOG = Logger.getLogger(NPathComplexityRule.class.getName());
 
+    @Deprecated
     private static final DoubleProperty MINIMUM_DESCRIPTOR
         = DoubleProperty.named("minimum").desc("Deprecated! Minimum reporting threshold")
                         .range(0d, 2000d).defaultValue(200d).uiOrder(2.0f).build();
@@ -56,7 +57,7 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
 
     private int getReportLevel() {
         double oldProp = getProperty(MINIMUM_DESCRIPTOR);
-        if (oldProp != 200.0) {
+        if (oldProp != MINIMUM_DESCRIPTOR.defaultValue()) {
             LOG.warning("Rule NPathComplexity uses deprecated property 'minimum'. Future versions of PMD will remove support for this property. Please use 'reportLevel' instead!");
             return (int) oldProp;
         }
