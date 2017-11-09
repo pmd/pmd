@@ -191,6 +191,10 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
     typeresolution-based implementation. It has a new property `IgnoreJUnitCompletely`, which allows all
     methods in a JUnit testcase to throws exceptions.
 
+*   The rule `NPathComplexity` (ruleset `java-codesize`) has been revamped to use the new metrics framework.
+    Its report threshold can be configured via the property `reportLevel`, which replaces the now
+    deprecated property `minimum`.
+
 #### Deprecated Rules
 
 *   The rules `NcssConstructorCount`, `NcssMethodCount`, and `NcssTypeCount` (ruleset `java-codesize`) have been
@@ -428,4 +432,5 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#679](https://github.com/pmd/pmd/pull/679): \[core] Token scheme generalization - [Gonzalo Ibars Ingman](https://github.com/gibarsin)
 *   [#694](https://github.com/pmd/pmd/pull/694): \[core] Add minor fixes to root pom - [Matias Comercio](https://github.com/MatiasComercio)
 *   [#696](https://github.com/pmd/pmd/pull/696): \[core] Add remove operation over nodes - [Matias Comercio](https://github.com/MatiasComercio)
+*   [#722](https://github.com/pmd/pmd/pull/722): \[java] Move NPathComplexity from metrics to design - [Clément Fournier](https://github.com/oowekyala)
 
