@@ -184,31 +184,11 @@ public class RuleDocGenerator {
             lines.add("folder: pmd/rules");
             lines.add("---");
 
-            lines.add("List of rulesets and rules contained in each ruleset.");
-            lines.add("");
-
-            for (RuleSet ruleset : entry.getValue()) {
-                String link = RULESET_INDEX_PERMALINK_PATTERN
-                        .replace("${language.tersename}", languageTersename)
-                        .replace("${ruleset.name}", RuleSetUtils.getRuleSetFilename(ruleset));
-                lines.add("*   [" + ruleset.getName() + "](" + link + "): " + getRuleSetDescriptionSingleLine(ruleset));
-            }
-            lines.add("");
-
-            List<RuleSet> additionalRulesetsForLanguage = sortedAdditionalRulesets.get(entry.getKey());
-            if (additionalRulesetsForLanguage != null) {
-                lines.add("List of additional rulesets");
-                for (RuleSet ruleset : additionalRulesetsForLanguage) {
-                    String deprecation = isRuleSetDeprecated(ruleset) ? DEPRECATION_LABEL_SMALL : "";
-                    lines.add("*    " + ruleset.getName() + ": "
-                            + deprecation
-                            + getRuleSetDescriptionSingleLine(ruleset));
-                }
-                lines.add("");
-            }
-
             for (RuleSet ruleset : entry.getValue()) {
                 lines.add("## " + ruleset.getName());
+                lines.add("");
+                lines.add("{% include callout.html content=\"" + getRuleSetDescriptionSingleLine(ruleset).replaceAll("\"", "'") + "\" %}");
+                lines.add("");
 
                 for (Rule rule : getSortedRules(ruleset)) {
                     String link = RULESET_INDEX_PERMALINK_PATTERN
@@ -238,6 +218,20 @@ public class RuleDocGenerator {
                                 + (rule.isDeprecated() ? DEPRECATION_LABEL_SMALL : "")
                                 + getShortRuleDescription(rule));
                     }
+                }
+                lines.add("");
+            }
+
+            List<RuleSet> additionalRulesetsForLanguage = sortedAdditionalRulesets.get(entry.getKey());
+            if (additionalRulesetsForLanguage != null) {
+                lines.add("## Additional rulesets");
+                lines.add("");
+
+                for (RuleSet ruleset : additionalRulesetsForLanguage) {
+                    String deprecation = isRuleSetDeprecated(ruleset) ? DEPRECATION_LABEL_SMALL : "";
+                    lines.add("*    " + ruleset.getName() + ": "
+                            + deprecation
+                            + getRuleSetDescriptionSingleLine(ruleset));
                 }
                 lines.add("");
             }
