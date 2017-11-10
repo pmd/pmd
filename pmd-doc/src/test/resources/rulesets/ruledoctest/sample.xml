@@ -16,9 +16,15 @@ Sample ruleset to test rule doc generation.
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_sample.html#overridebothequalsandhashcode"
           minimumLanguageVersion="1.5">
       <description>
-Override both `public boolean Object.equals(Object other)`, and `public int Object.hashCode()`, or override neither.
-Even if you are inheriting a `hashCode()` from a parent class, consider implementing hashCode and explicitly
-delegating to your superclass.
+            Override both `public boolean Object.equals(Object other)`, and `public int Object.hashCode()`, or override neither.
+            Even if you are inheriting a `hashCode()` from a parent class, consider implementing hashCode and explicitly
+            delegating to your superclass.
+
+            Second paragraph.
+
+                Code sample
+
+            Third paragraph.
       </description>
       <priority>3</priority>
       <example>
