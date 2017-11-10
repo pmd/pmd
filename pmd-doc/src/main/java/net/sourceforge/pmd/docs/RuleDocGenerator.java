@@ -42,13 +42,11 @@ public class RuleDocGenerator {
 
     private static final String DEPRECATION_LABEL_SMALL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;\">Deprecated</span> ";
     private static final String DEPRECATION_LABEL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span> ";
+    private static final String DEPRECATED_RULE_PROPERTY_MARKER = "deprecated!";
 
     private static final String GITHUB_SOURCE_LINK = "https://github.com/pmd/pmd/blob/master/";
 
-    private final Path root;
-    private final FileWriter writer;
-
-    /** Maintains mapping from pmd terse language name to rouge highlighter language */
+    /** Maintains mapping from pmd terse language name to rouge highlighter language. */
     private static final Map<String, String> LANGUAGE_HIGHLIGHT_MAPPER = new HashMap<>();
 
     static {
@@ -57,6 +55,9 @@ public class RuleDocGenerator {
         LANGUAGE_HIGHLIGHT_MAPPER.put("apex", "java");
         LANGUAGE_HIGHLIGHT_MAPPER.put("plsql", "sql");
     }
+
+    private final Path root;
+    private final FileWriter writer;
 
     public RuleDocGenerator(FileWriter writer, Path root) {
         this.root = Objects.requireNonNull(root, "Root directory must be provided");
@@ -344,9 +345,14 @@ public class RuleDocGenerator {
                         lines.add("|Name|Default Value|Description|");
                         lines.add("|----|-------------|-----------|");
                         for (PropertyDescriptor<?> propertyDescriptor : properties) {
+                            String description = propertyDescriptor.description();
+                            if (description != null && description.toLowerCase(Locale.ROOT).startsWith(DEPRECATED_RULE_PROPERTY_MARKER)) {
+                                description = DEPRECATION_LABEL_SMALL
+                                        + description.substring(DEPRECATED_RULE_PROPERTY_MARKER.length());
+                            }
                             lines.add("|" + propertyDescriptor.name()
                                 + "|" + (propertyDescriptor.defaultValue() != null ? String.valueOf(propertyDescriptor.defaultValue()) : "")
-                                + "|" + propertyDescriptor.description()
+                                + "|" + description
                                 + "|");
                         }
                         lines.add("");

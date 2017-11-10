@@ -62,6 +62,7 @@ public class JumbledIncrementerRule1 {
 |Name|Default Value|Description|
 |----|-------------|-----------|
 |sampleAdditionalProperty|the value|This is a additional property for tests|
+|sampleDeprecatedProperty|test|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This is a sample deprecated property for tests|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -192,6 +193,7 @@ public class JumbledIncrementerRule1 {
 |Name|Default Value|Description|
 |----|-------------|-----------|
 |sampleAdditionalProperty|the value|This is a additional property for tests|
+|sampleDeprecatedProperty|test|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This is a sample deprecated property for tests|
 
 **Use this rule by referencing it:**
 ``` xml
