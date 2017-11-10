@@ -22,12 +22,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -35,6 +38,8 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class RuleDocGenerator {
+    private static final Logger LOG = Logger.getLogger(RuleDocGenerator.class.getName());
+
     private static final String LANGUAGE_INDEX_FILENAME_PATTERN = "docs/pages/pmd/rules/${language.tersename}.md";
     private static final String LANGUAGE_INDEX_PERMALINK_PATTERN = "pmd_rules_${language.tersename}.html";
     private static final String RULESET_INDEX_FILENAME_PATTERN = "docs/pages/pmd/rules/${language.tersename}/${ruleset.name}.md";
@@ -69,16 +74,41 @@ public class RuleDocGenerator {
         }
     }
 
-    public void generate(Iterator<RuleSet> rulesets) {
+    public void generate(Iterator<RuleSet> registeredRulesets, List<String> additionalRulesets) {
         Map<Language, List<RuleSet>> sortedRulesets;
+        Map<Language, List<RuleSet>> sortedAdditionalRulesets;
         try {
-            sortedRulesets = sortRulesets(rulesets);
-            generateLanguageIndex(sortedRulesets);
+            sortedRulesets = sortRulesets(registeredRulesets);
+            sortedAdditionalRulesets = sortRulesets(resolveAdditionalRulesets(additionalRulesets));
+            generateLanguageIndex(sortedRulesets, sortedAdditionalRulesets);
             generateRuleSetIndex(sortedRulesets);
 
         } catch (RuleSetNotFoundException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Iterator<RuleSet> resolveAdditionalRulesets(List<String> additionalRulesets) throws RuleSetNotFoundException {
+        if (additionalRulesets == null) {
+            return Collections.emptyIterator();
+        }
+
+        List<RuleSet> rulesets = new ArrayList<>();
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        for (String filename : additionalRulesets) {
+            try {
+                // do not take rulesets from pmd-test or pmd-core
+                if (!filename.contains("pmd-test/") && !filename.contains("pmd-core/")) {
+                    rulesets.add(ruleSetFactory.createRuleSet(filename));
+                } else {
+                    LOG.fine("Ignoring ruleset " + filename);
+                }
+            } catch (IllegalArgumentException e) {
+                // ignore rulesets, we can't read
+                LOG.log(Level.WARNING, "ruleset file " + filename + " ignored (" + e.getMessage() + ")", e);
+            }
+        }
+        return rulesets.iterator();
     }
 
     private Path getAbsoluteOutputPath(String filename) {
@@ -127,10 +157,11 @@ public class RuleDocGenerator {
     /**
      * Writes for each language an index file, which lists the rulesets, the rules
      * and links to the ruleset pages.
-     * @param rulesets all rulesets
+     * @param rulesets all registered/built-in rulesets
+     * @param sortedAdditionalRulesets additional rulesets
      * @throws IOException
      */
-    private void generateLanguageIndex(Map<Language, List<RuleSet>> rulesets) throws IOException {
+    private void generateLanguageIndex(Map<Language, List<RuleSet>> rulesets, Map<Language, List<RuleSet>> sortedAdditionalRulesets) throws IOException {
         for (Map.Entry<Language, List<RuleSet>> entry : rulesets.entrySet()) {
             String languageTersename = entry.getKey().getTerseName();
             String filename = LANGUAGE_INDEX_FILENAME_PATTERN
@@ -154,6 +185,18 @@ public class RuleDocGenerator {
                 lines.add("*   [" + ruleset.getName() + "](" + link + "): " + getRuleSetDescriptionSingleLine(ruleset));
             }
             lines.add("");
+
+            List<RuleSet> additionalRulesetsForLanguage = sortedAdditionalRulesets.get(entry.getKey());
+            if (additionalRulesetsForLanguage != null) {
+                lines.add("List of additional rulesets");
+                for (RuleSet ruleset : additionalRulesetsForLanguage) {
+                    String deprecation = isRuleSetDeprecated(ruleset) ? DEPRECATION_LABEL_SMALL : "";
+                    lines.add("*    " + ruleset.getName() + ": "
+                            + deprecation
+                            + getRuleSetDescriptionSingleLine(ruleset));
+                }
+                lines.add("");
+            }
 
             for (RuleSet ruleset : entry.getValue()) {
                 lines.add("## " + ruleset.getName());
@@ -193,6 +236,24 @@ public class RuleDocGenerator {
             System.out.println("Generated " + path);
             writer.write(path, lines);
         }
+    }
+
+    /**
+     * A ruleset is considered deprecated, if it only contains rule references
+     * and all rule references are deprecated.
+     *
+     * @param ruleset
+     * @return
+     */
+    private boolean isRuleSetDeprecated(RuleSet ruleset) {
+        boolean result = true;
+        for (Rule rule : ruleset.getRules()) {
+            if (!(rule instanceof RuleReference) || !rule.isDeprecated()) {
+                result = false;
+                break;
+            }
+        }
+        return result;
     }
 
     /**

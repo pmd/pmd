@@ -44,11 +44,11 @@ public class RuleDocGeneratorTest {
     @Test
     public void testSingleRuleset() throws RuleSetNotFoundException, IOException {
         RuleDocGenerator generator = new RuleDocGenerator(writer, root);
-        
+
         RuleSetFactory rsf = new RuleSetFactory();
         RuleSet ruleset = rsf.createRuleSet("rulesets/ruledoctest/sample.xml");
-        
-        generator.generate(Arrays.asList(ruleset).iterator());
+
+        generator.generate(Arrays.asList(ruleset).iterator(), Arrays.asList("rulesets/ruledoctest/sample-deprecated.xml"));
 
         assertEquals(2, writer.getData().size());
         FileEntry languageIndex = writer.getData().get(0);

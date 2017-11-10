@@ -4,9 +4,17 @@
 
 package net.sourceforge.pmd.docs;
 
+import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -21,12 +29,34 @@ public class GenerateRuleDocsCmd {
         long start = System.currentTimeMillis();
         Path output = FileSystems.getDefault().getPath(args[0]).resolve("..").toAbsolutePath().normalize();
         System.out.println("Generating docs into " + output);
-        RuleDocGenerator generator = new RuleDocGenerator(new DefaultFileWriter(), output);
 
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         Iterator<RuleSet> registeredRuleSets = ruleSetFactory.getRegisteredRuleSets();
+        List<String> additionalRulesets = findAdditionalRulesets(output);
 
-        generator.generate(registeredRuleSets);
+        RuleDocGenerator generator = new RuleDocGenerator(new DefaultFileWriter(), output);
+        generator.generate(registeredRuleSets, additionalRulesets);
+
         System.out.println("Generated docs in " + (System.currentTimeMillis() - start) + " ms");
+    }
+
+    public static List<String> findAdditionalRulesets(Path basePath) {
+        try {
+            List<String> additionalRulesets = new ArrayList<>();
+            Pattern rulesetPattern = Pattern.compile("^.+/pmd-\\w+/src/main/resources/rulesets/\\w+/\\w+.xml$");
+            Files.walkFileTree(basePath, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    if (rulesetPattern.matcher(file.toString()).matches()) {
+                        additionalRulesets.add(file.toString());
+                    }
+
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+            return additionalRulesets;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
