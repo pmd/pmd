@@ -23,6 +23,8 @@ The Naming Ruleset contains rules regarding preferred usage of names and identif
     <rule ref="category/java/codestyle.xml/LongVariable" deprecated="true" />
     <rule ref="category/java/codestyle.xml/MethodNamingConventions" deprecated="true" />
     <rule ref="category/java/codestyle.xml/MIsLeadingVariableName" name="MisleadingVariableName" deprecated="true" /> <!-- also renamed -->
+    <!-- providing also the new name, since RuleSetFactoryCompatibility will change existing rulesets to use the new rulename -->
+    <rule ref="category/java/codestyle.xml/MIsLeadingVariableName" deprecated="true" />
     <rule ref="category/java/codestyle.xml/NoPackage" deprecated="true" />
     <rule ref="category/java/codestyle.xml/PackageCase" deprecated="true" />
     <rule ref="category/java/codestyle.xml/ShortClassName" deprecated="true" />
