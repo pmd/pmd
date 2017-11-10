@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,8 +67,8 @@ public class RuleDocGenerator {
     private final FileWriter writer;
 
     public RuleDocGenerator(FileWriter writer, Path root) {
-        this.root = Objects.requireNonNull(root, "Root directory must be provided");
         this.writer = Objects.requireNonNull(writer, "A file writer must be provided");
+        this.root = Objects.requireNonNull(root, "Root directory must be provided");
 
         Path docsDir = root.resolve("docs");
         if (!Files.exists(docsDir) || !Files.isDirectory(docsDir)) {
@@ -83,9 +85,16 @@ public class RuleDocGenerator {
             generateLanguageIndex(sortedRulesets, sortedAdditionalRulesets);
             generateRuleSetIndex(sortedRulesets);
 
+            generateSidebar(sortedRulesets);
+
         } catch (RuleSetNotFoundException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void generateSidebar(Map<Language, List<RuleSet>> sortedRulesets) throws IOException {
+        SidebarGenerator generator = new SidebarGenerator(writer, root);
+        generator.generateSidebar(sortedRulesets);
     }
 
     private Iterator<RuleSet> resolveAdditionalRulesets(List<String> additionalRulesets) throws RuleSetNotFoundException {
@@ -116,7 +125,7 @@ public class RuleDocGenerator {
     }
 
     private Map<Language, List<RuleSet>> sortRulesets(Iterator<RuleSet> rulesets) throws RuleSetNotFoundException {
-        Map<Language, List<RuleSet>> rulesetsByLanguage = new HashMap<>();
+        SortedMap<Language, List<RuleSet>> rulesetsByLanguage = new TreeMap<>();
 
         while (rulesets.hasNext()) {
             RuleSet ruleset = rulesets.next();
@@ -181,7 +190,7 @@ public class RuleDocGenerator {
             for (RuleSet ruleset : entry.getValue()) {
                 String link = RULESET_INDEX_PERMALINK_PATTERN
                         .replace("${language.tersename}", languageTersename)
-                        .replace("${ruleset.name}", getRuleSetFilename(ruleset));
+                        .replace("${ruleset.name}", RuleSetUtils.getRuleSetFilename(ruleset));
                 lines.add("*   [" + ruleset.getName() + "](" + link + "): " + getRuleSetDescriptionSingleLine(ruleset));
             }
             lines.add("");
@@ -204,7 +213,7 @@ public class RuleDocGenerator {
                 for (Rule rule : getSortedRules(ruleset)) {
                     String link = RULESET_INDEX_PERMALINK_PATTERN
                             .replace("${language.tersename}", languageTersename)
-                            .replace("${ruleset.name}", getRuleSetFilename(ruleset));
+                            .replace("${ruleset.name}", RuleSetUtils.getRuleSetFilename(ruleset));
                     if (rule instanceof RuleReference) {
                         RuleReference ref = (RuleReference) rule;
                         if (ruleset.getFileName().equals(ref.getRuleSetReference().getRuleSetFileName())) {
@@ -217,7 +226,7 @@ public class RuleDocGenerator {
                             // rule moved to another ruleset...
                             String otherLink = RULESET_INDEX_PERMALINK_PATTERN
                                     .replace("${language.tersename}", languageTersename)
-                                    .replace("${ruleset.name}", getRuleSetFilename(ref.getRuleSetReference().getRuleSetFileName()));
+                                    .replace("${ruleset.name}", RuleSetUtils.getRuleSetFilename(ref.getRuleSetReference().getRuleSetFileName()));
                             lines.add("*   [" + rule.getName() + "](" + link + "#" + rule.getName().toLowerCase(Locale.ROOT) + "): "
                                     + DEPRECATION_LABEL_SMALL
                                     + "The rule has been moved to another ruleset. Use instead "
@@ -269,20 +278,6 @@ public class RuleDocGenerator {
                         .replaceAll("`", "'")
                         .replaceAll("\\*", "")), 100);
     }
-    
-    /**
-     * Gets the sanitized base name of the ruleset.
-     * For some reason, the filename might contain some newlines, which are removed.
-     * @param ruleset
-     * @return
-     */
-    private static String getRuleSetFilename(RuleSet ruleset) {
-        return getRuleSetFilename(ruleset.getFileName());
-    }
-
-    private static String getRuleSetFilename(String rulesetFileName) {
-        return FilenameUtils.getBaseName(StringUtils.chomp(rulesetFileName));
-    }
 
     private static String getRuleSetDescriptionSingleLine(RuleSet ruleset) {
         String description = ruleset.getDescription();
@@ -301,7 +296,7 @@ public class RuleDocGenerator {
         for (Map.Entry<Language, List<RuleSet>> entry : rulesets.entrySet()) {
             String languageTersename = entry.getKey().getTerseName();
             for (RuleSet ruleset : entry.getValue()) {
-                String rulesetFilename = getRuleSetFilename(ruleset);
+                String rulesetFilename = RuleSetUtils.getRuleSetFilename(ruleset);
                 String filename = RULESET_INDEX_FILENAME_PATTERN
                     .replace("${language.tersename}", languageTersename)
                     .replace("${ruleset.name}", rulesetFilename);
@@ -340,7 +335,7 @@ public class RuleDocGenerator {
                             // rule moved to another ruleset
                             String otherLink = RULESET_INDEX_PERMALINK_PATTERN
                                     .replace("${language.tersename}", languageTersename)
-                                    .replace("${ruleset.name}", getRuleSetFilename(ref.getRuleSetReference().getRuleSetFileName()));
+                                    .replace("${ruleset.name}", RuleSetUtils.getRuleSetFilename(ref.getRuleSetReference().getRuleSetFileName()));
                             lines.add(DEPRECATION_LABEL);
                             lines.add("");
                             lines.add("The rule has been moved to another ruleset. Use instead: ["

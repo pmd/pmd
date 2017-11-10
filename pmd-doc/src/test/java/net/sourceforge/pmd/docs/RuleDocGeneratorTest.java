@@ -8,8 +8,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
@@ -32,13 +37,27 @@ public class RuleDocGeneratorTest {
         writer.reset();
 
         root = Files.createTempDirectory("pmd-ruledocgenerator-test");
-        Files.createDirectory(root.resolve("docs"));
+        Files.createDirectories(root.resolve("docs/_data/sidebars"));
+        try (Writer out = Files.newBufferedWriter(root.resolve("docs/_data/sidebars/pmd_sidebar.yml"), StandardCharsets.UTF_8)) {
+            IOUtils.write("entries:\n- title: sidebar\n  folders:\n  - title: 1\n  - title: 2\n  - title: Rules\n", out);
+        }
     }
 
     @After
     public void cleanup() throws IOException {
-        Files.delete(root.resolve("docs"));
-        Files.delete(root);
+        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
     @Test
@@ -50,15 +69,20 @@ public class RuleDocGeneratorTest {
 
         generator.generate(Arrays.asList(ruleset).iterator(), Arrays.asList("rulesets/ruledoctest/sample-deprecated.xml"));
 
-        assertEquals(2, writer.getData().size());
+        assertEquals(3, writer.getData().size());
         FileEntry languageIndex = writer.getData().get(0);
         assertTrue(languageIndex.getFilename().endsWith("docs/pages/pmd/rules/java.md"));
         assertEquals(IOUtils.toString(RuleDocGeneratorTest.class.getResourceAsStream("/expected/java.md")),
                 languageIndex.getContent());
-        
+
         FileEntry ruleSetIndex = writer.getData().get(1);
         assertTrue(ruleSetIndex.getFilename().endsWith("docs/pages/pmd/rules/java/sample.md"));
         assertEquals(IOUtils.toString(RuleDocGeneratorTest.class.getResourceAsStream("/expected/sample.md")),
                 ruleSetIndex.getContent());
+
+        FileEntry sidebar = writer.getData().get(2);
+        assertTrue(sidebar.getFilename().endsWith("docs/_data/sidebars/pmd_sidebar.yml"));
+        assertEquals(IOUtils.toString(RuleDocGeneratorTest.class.getResourceAsStream("/expected/pmd_sidebar.yml")),
+                sidebar.getContent());
     }
 }
