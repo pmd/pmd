@@ -4,12 +4,13 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -42,6 +43,8 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
     protected SimpleRegexSyntaxHighlighter(String languageName, final RegexHighlightGrammar grammar) {
         this.grammar = grammar;
         this.languageName = languageName;
+
+        grammar.addCommonClass(languageName);
     }
 
 
@@ -51,12 +54,13 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
         Matcher matcher = grammar.getMatcher(text);
         int lastKwEnd = 0;
 
+        final Set<String> onlyLang = Collections.singleton(languageName);
         try {
             while (matcher.find()) {
-                String styleClass = grammar.getCssClassOfLastGroup(matcher);
+                Set<String> styleClasses = grammar.getCssClassesOfLastGroup(matcher);
 
-                builder.add(Collections.singleton(languageName), matcher.start() - lastKwEnd);
-                builder.add(Arrays.asList(languageName, styleClass), matcher.end() - matcher.start());
+                builder.add(onlyLang, matcher.start() - lastKwEnd);
+                builder.add(styleClasses, matcher.end() - matcher.start());
 
                 lastKwEnd = matcher.end();
             }
@@ -65,7 +69,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
         }
 
         if (lastKwEnd == 0) { // no spans found/ no text
-            builder.add(Collections.emptySet(), text.length());
+            builder.add(onlyLang, text.length());
         }
 
         return builder.create();
@@ -86,7 +90,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
      *
      * @return A builder
      */
-    protected static RegexHighlightGrammarBuilder grammarBuilder(String cssClass, String pattern) {
+    protected static RegexHighlightGrammarBuilder grammarBuilder(Collection<String> cssClass, String pattern) {
         return new RegexHighlightGrammarBuilder(cssClass, pattern);
     }
 
@@ -97,10 +101,10 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
     protected static class RegexHighlightGrammarBuilder {
 
         private Map<String, String> groupNameToRegex = new LinkedHashMap<>();
-        private Map<String, String> groupNameToCssClass = new LinkedHashMap<>();
+        private Map<String, Set<String>> groupNameToCssClasses = new LinkedHashMap<>();
 
 
-        RegexHighlightGrammarBuilder(String cssClass, String regex) {
+        RegexHighlightGrammarBuilder(Collection<String> cssClass, String regex) {
             or(cssClass, regex);
         }
 
@@ -113,10 +117,10 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
          *
          * @return The same builder
          */
-        public RegexHighlightGrammarBuilder or(String cssClass, String regex) {
+        public RegexHighlightGrammarBuilder or(Collection<String> cssClass, String regex) {
             String groupName = RandomStringUtils.randomAlphabetic(8);
             groupNameToRegex.put(groupName, regex);
-            groupNameToCssClass.put(groupName, cssClass);
+            groupNameToCssClasses.put(groupName, new HashSet<>(cssClass));
             return this;
         }
 
@@ -158,8 +162,8 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
         }
 
 
-        private Map<String, String> getGroupNamesToCssClasses() {
-            return Collections.unmodifiableMap(groupNameToCssClass);
+        private Map<String, Set<String>> getGroupNamesToCssClasses() {
+            return Collections.unmodifiableMap(groupNameToCssClasses);
         }
     }
 
@@ -170,10 +174,10 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
     protected static class RegexHighlightGrammar {
 
         private final Pattern pattern;
-        private final Map<String, String> namesToCssClass;
+        private final Map<String, Set<String>> namesToCssClass;
 
 
-        RegexHighlightGrammar(Pattern pattern, Map<String, String> namesToCssClass) {
+        RegexHighlightGrammar(Pattern pattern, Map<String, Set<String>> namesToCssClass) {
             this.pattern = pattern;
             this.namesToCssClass = namesToCssClass;
         }
@@ -190,20 +194,32 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
 
 
         /**
+         * Adds a css class to all the tokens described by this grammar.
+         *
+         * @param css The css class to add
+         */
+        void addCommonClass(String css) {
+            for (String key : namesToCssClass.keySet()) {
+                namesToCssClass.get(key).add(css);
+            }
+        }
+
+
+        /**
          * Gets the css class that should be applied to the last matched group (token), according to this grammar.
          *
          * @param matcher The matcher in which to look
          *
          * @return The name of the css class corresponding to the token
          */
-        String getCssClassOfLastGroup(Matcher matcher) {
-            for (Entry<String, String> groupToClass : namesToCssClass.entrySet()) {
+        Set<String> getCssClassesOfLastGroup(Matcher matcher) {
+            for (Entry<String, Set<String>> groupToClass : namesToCssClass.entrySet()) {
                 if (matcher.group(groupToClass.getKey()) != null) {
                     return groupToClass.getValue();
                 }
             }
 
-            return "";
+            return Collections.emptySet();
         }
 
     }

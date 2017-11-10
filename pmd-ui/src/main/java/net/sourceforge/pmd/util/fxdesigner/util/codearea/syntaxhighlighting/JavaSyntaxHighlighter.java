@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting;
 
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.ANNOTATION;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BOOLEAN;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BRACE;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BRACKET;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.CHAR;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.CLASS_IDENTIFIER;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.KEYWORD;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.MULTIL_COMMENT;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.NULL;
@@ -67,8 +69,8 @@ public class JavaSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         .or(CHAR.css, "'(?:[^']|\\\\(?:'|u\\w{4}))'") // char
         .or(NULL.css, "\\bnull\\b") 
         .or(BOOLEAN.css, "\\btrue|false\\b") 
-        .or("annotation", "@[\\w]+")
-        .or("class-ident", "\\b[A-Z][\\w_$]*\\b")
+        .or(ANNOTATION.css, "@[\\w]+")
+        .or(CLASS_IDENTIFIER.css, "\\b[A-Z][\\w_$]*\\b")
         .create(Pattern.DOTALL);
 
 

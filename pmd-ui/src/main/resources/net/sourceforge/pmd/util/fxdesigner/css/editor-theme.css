@@ -10,7 +10,9 @@
     -fx-fill: lightgreen !important;
 }
 
+/********/
 /* Base */
+/*******/
 
 .styled-text-area {
     -fx-background-color: whitesmoke;
@@ -46,62 +48,37 @@
     -fx-font-weight: normal;
 }
 
+/****************************/
 /* Syntax highlighting base */
+/****************************/
 
 .styled-text-area .keyword {
     -fx-fill: #B58900;
     /* -fx-font-weight: bold; */
 }
 
-.styled-text-area .paren {
+.styled-text-area .punctuation {
 
 }
 
-.styled-text-area .brace {
 
-}
-
-.styled-text-area .string {
+.styled-text-area .literal {
     -fx-fill: #317ECC;
 }
 
-.styled-text-area .number {
-    -fx-fill: #317ECC;
-}
 
-.styled-text-area .null {
-    -fx-fill: #317ECC;
-}
-
-.styled-text-area .boolean {
-    -fx-fill: #317ECC;
-}
-
-.styled-text-area .char {
-    -fx-fill: #317ECC;
-}
-
-.styled-text-area .multi-line-comment {
-    -fx-fill: #93A1A1;
-    -fx-font-style: italic;
-}
-
-.styled-text-area .single-line-comment {
+.styled-text-area .comment {
     -fx-fill: #93A1A1;
     -fx-font-style: italic; /* doesn't work... */
 }
-
-.styled-text-area .semicolon {
-
-}
-
-/* Java specific */
 
 .styled-text-area .annotation {
     -fx-fill: #d30102;
 }
 
-.styled-text-area .class-ident {
+/* Java specific */
+
+.styled-text-area .java.class-identifier {
     -fx-fill: #B05A65;
 }
 

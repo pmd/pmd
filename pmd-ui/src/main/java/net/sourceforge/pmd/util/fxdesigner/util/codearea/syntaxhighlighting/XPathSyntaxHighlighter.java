@@ -9,6 +9,10 @@ import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighti
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.PAREN;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.SINGLEL_COMMENT;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.STRING;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.XPATH_ATTRIBUTE;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.XPATH_AXIS;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.XPATH_FUNCTION;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.XPATH_PATH;
 
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SimpleRegexSyntaxHighlighter;
 
@@ -30,11 +34,11 @@ public class XPathSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
 
 
     private static final RegexHighlightGrammar GRAMMAR
-        = grammarBuilder("attribute", "@[\\w]+")
-        .or("axis", "(" + String.join("|", AXIS_NAMES) + ")(?=::)")
+        = grammarBuilder(XPATH_ATTRIBUTE.css, "@[\\w]+")
+        .or(XPATH_AXIS.css, "(" + String.join("|", AXIS_NAMES) + ")(?=::)")
         .or(KEYWORD.css, "\\b(" + String.join("|", KEYWORDS) + ")\\b")
-        .or("function", "[\\w-]+?(?=\\()")
-        .or("path", "//?")
+        .or(XPATH_FUNCTION.css, "[\\w-]+?(?=\\()")
+        .or(XPATH_PATH.css, "//?")
         .or(PAREN.css, "[()]")
         .or(BRACKET.css, "[\\[\\]]")
         .or(STRING.css, "('([^'\\\\]|\\\\.)*')|(\"([^\"\\\\]|\\\\.)*\")")
