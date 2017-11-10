@@ -15,4 +15,19 @@ folder: pmd/rules
 
 ## Additional rulesets
 
-*    Sample Deprecated: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Sample ruleset which only contains deprecated rule references.
+*   Other ruleset (`rulesets/ruledoctest/other-ruleset.xml`):
+
+    Ruleset which serves a specific use case, such as Getting Started.
+
+    It contains the following rules:
+
+    [JumbledIncrementer](pmd_rules_java_sample.html#jumbledincrementer), [OverrideBothEqualsAndHashcode](pmd_rules_java_sample.html#overridebothequalsandhashcode)
+
+*   Sample Deprecated (`rulesets/ruledoctest/sample-deprecated.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [JumbledIncrementer](pmd_rules_java_sample.html#jumbledincrementer), [OverrideBothEqualsAndHashcode](pmd_rules_java_sample.html#overridebothequalsandhashcode)
+

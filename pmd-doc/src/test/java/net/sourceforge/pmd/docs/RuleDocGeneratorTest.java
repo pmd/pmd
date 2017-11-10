@@ -67,7 +67,10 @@ public class RuleDocGeneratorTest {
         RuleSetFactory rsf = new RuleSetFactory();
         RuleSet ruleset = rsf.createRuleSet("rulesets/ruledoctest/sample.xml");
 
-        generator.generate(Arrays.asList(ruleset).iterator(), Arrays.asList("rulesets/ruledoctest/sample-deprecated.xml"));
+        generator.generate(Arrays.asList(ruleset).iterator(),
+                Arrays.asList(
+                        "rulesets/ruledoctest/sample-deprecated.xml",
+                        "rulesets/ruledoctest/other-ruleset.xml"));
 
         assertEquals(3, writer.getData().size());
         FileEntry languageIndex = writer.getData().get(0);

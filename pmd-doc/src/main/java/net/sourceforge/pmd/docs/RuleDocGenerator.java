@@ -228,10 +228,48 @@ public class RuleDocGenerator {
                 lines.add("");
 
                 for (RuleSet ruleset : additionalRulesetsForLanguage) {
-                    String deprecation = isRuleSetDeprecated(ruleset) ? DEPRECATION_LABEL_SMALL : "";
-                    lines.add("*    " + ruleset.getName() + ": "
-                            + deprecation
-                            + getRuleSetDescriptionSingleLine(ruleset));
+                    boolean deprecated = RuleSetUtils.isRuleSetDeprecated(ruleset);
+
+                    String rulesetName = ruleset.getName() + " (`" + RuleSetUtils.getRuleSetClasspath(ruleset) + "`)";
+
+                    if (!deprecated) {
+                        lines.add("*   " + rulesetName + ":");
+                        lines.add("");
+                        lines.add("    " + getRuleSetDescriptionSingleLine(ruleset));
+                        lines.add("");
+                    } else {
+                        lines.add("*   " + rulesetName + ":");
+                        lines.add("");
+                        lines.add("    " + DEPRECATION_LABEL_SMALL + " This ruleset is for backwards compatibility.");
+                        lines.add("");
+                    }
+
+                    lines.add("    It contains the following rules:");
+                    lines.add("");
+                    StringBuilder rules = new StringBuilder();
+                    for (Rule rule : getSortedRules(ruleset)) {
+                        if (rules.length() == 0) {
+                            rules.append("    ");
+                        } else {
+                            rules.append(", ");
+                        }
+
+                        Rule resolvedRule = RuleSetUtils.resolveRuleReferences(rule);
+                        if (resolvedRule instanceof RuleReference) {
+                            // Note: deprecated rulesets contain by definition only rule references
+                            RuleReference ref = (RuleReference) resolvedRule;
+                            String otherLink = RULESET_INDEX_PERMALINK_PATTERN
+                                    .replace("${language.tersename}", languageTersename)
+                                    .replace("${ruleset.name}", RuleSetUtils.getRuleSetFilename(ref.getRuleSetReference().getRuleSetFileName()));
+
+                            rules.append("[").append(ref.getRule().getName()).append("](");
+                            rules.append(otherLink).append("#").append(ref.getName().toLowerCase(Locale.ROOT)).append(")");
+                        } else {
+                            rules.append(rule.getName());
+                        }
+                    }
+                    lines.add(rules.toString());
+                    lines.add("");
                 }
                 lines.add("");
             }
@@ -239,24 +277,6 @@ public class RuleDocGenerator {
             System.out.println("Generated " + path);
             writer.write(path, lines);
         }
-    }
-
-    /**
-     * A ruleset is considered deprecated, if it only contains rule references
-     * and all rule references are deprecated.
-     *
-     * @param ruleset
-     * @return
-     */
-    private boolean isRuleSetDeprecated(RuleSet ruleset) {
-        boolean result = true;
-        for (Rule rule : ruleset.getRules()) {
-            if (!(rule instanceof RuleReference) || !rule.isDeprecated()) {
-                result = false;
-                break;
-            }
-        }
-        return result;
     }
 
     /**
