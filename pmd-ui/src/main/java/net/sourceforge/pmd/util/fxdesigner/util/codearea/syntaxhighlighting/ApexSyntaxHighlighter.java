@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting;
 
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.ANNOTATION;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BOOLEAN;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BRACE;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BRACKET;
@@ -70,8 +71,9 @@ public class ApexSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         .or(BRACE.css, "[{}]")
         .or(BRACKET.css, "[\\[]]")
         .or(SEMICOLON.css, ";")
-        .or(BOOLEAN.css, "\\b(?i)true|false\\b")
         .or(STRING.css, "'[^'\\\\]*(\\\\.[^'\\\\]*)*'")
+        .or(BOOLEAN.css, "\\b(?i)true|false\\b")
+        .or(ANNOTATION.css, "@[\\w]+")
         .create(Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
     public ApexSyntaxHighlighter() {

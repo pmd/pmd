@@ -47,8 +47,7 @@ public enum HighlightClasses {
     XML_PROLOG("xml-prolog", Constants.XML),
     XML_LT_GT("lt-gt", Constants.XML),
     XML_TAG_NAME("tag-name", Constants.XML),
-    XML_ATTRIBUTE_NAME("attribute-name", Constants.XML),
-    ;
+    XML_ATTRIBUTE_NAME("attribute-name", Constants.XML);
 
 
     /** Name of the css class. */
