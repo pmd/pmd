@@ -7,9 +7,8 @@ package net.sourceforge.pmd.lang.java.rule.documentation;
 import static net.sourceforge.pmd.lang.java.rule.documentation.CommentRequiredRule.CommentRequirement.Ignored;
 import static net.sourceforge.pmd.lang.java.rule.documentation.CommentRequiredRule.CommentRequirement.Required;
 import static net.sourceforge.pmd.lang.java.rule.documentation.CommentRequiredRule.CommentRequirement.mappings;
-import static net.sourceforge.pmd.lang.java.rule.documentation.CommentRequiredRule.CommentRequirement.values;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -205,6 +204,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
     enum CommentRequirement {
         Required("Required"), Ignored("Ignored"), Unwanted("Unwanted");
 
+        private static final List<String> LABELS = buildValueLabels();
         private static final Map<String, CommentRequirement> MAPPINGS;
         private final String label;
 
@@ -216,9 +216,22 @@ public class CommentRequiredRule extends AbstractCommentRule {
             MAPPINGS = Collections.unmodifiableMap(tmp);
         }
 
-
         CommentRequirement(String theLabel) {
             label = theLabel;
+        }
+
+
+        private static List<String> buildValueLabels() {
+            List<String> labels = new ArrayList<>(values().length);
+            for (CommentRequirement r : values()) {
+                labels.add(r.label);
+            }
+            return Collections.unmodifiableList(labels);
+        }
+
+
+        public static List<String> labels() {
+            return LABELS;
         }
 
 
@@ -232,7 +245,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
     private static EnumPBuilder<CommentRequirement> requirementPropertyBuilder(String name, String commentType) {
         DESCRIPTOR_NAME_TO_COMMENT_TYPE.put(name, commentType);
         return EnumeratedProperty.<CommentRequirement>named(name)
-            .desc(commentType + ". Possible values: " + Arrays.toString(values()))
+            .desc(commentType + ". Possible values: " + CommentRequirement.labels())
             .mappings(mappings())
             .defaultValue(Required)
             .type(CommentRequirement.class);
