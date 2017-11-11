@@ -122,15 +122,24 @@ public class RuleSet implements ChecksumAware {
          * Add a new rule to this ruleset. Note that this method does not check
          * for duplicates.
          *
-         * @param rule
+         * @param newRule
          *            the rule to be added
          * @return The same builder, for a fluid programming interface
          */
-        public RuleSetBuilder addRule(final Rule rule) {
-            if (rule == null) {
+        public RuleSetBuilder addRule(final Rule newRule) {
+            if (newRule == null) {
                 throw new IllegalArgumentException(MISSING_RULE);
             }
-            rules.add(rule);
+
+            // check for duplicates - adding more than one rule with the same name will
+            // be problematic - see #RuleSet.getRuleByName(String)
+            for (Rule rule : rules) {
+                if (rule.getName().equals(newRule.getName()) && rule.getLanguage() == newRule.getLanguage()) {
+                    LOG.warning("Duplicated rule: " + newRule.getName());
+                }
+            }
+
+            rules.add(newRule);
             return this;
         }
 
@@ -386,6 +395,17 @@ public class RuleSet implements ChecksumAware {
 
         public RuleSet build() {
             return new RuleSet(this);
+        }
+
+        public void filterRulesByPriority(RulePriority minimumPriority) {
+            Iterator<Rule> iterator = rules.iterator();
+            while (iterator.hasNext()) {
+                Rule rule = iterator.next();
+                if (rule.getPriority().compareTo(minimumPriority) > 0) {
+                    LOG.fine("Removing rule " + rule.getName() + " due to priority: " + rule.getPriority() + " required: " + minimumPriority);
+                    iterator.remove();
+                }
+            }
         }
     }
 

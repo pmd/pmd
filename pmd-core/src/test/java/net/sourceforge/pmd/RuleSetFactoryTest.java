@@ -364,6 +364,45 @@ public class RuleSetFactoryTest {
     }
 
     @Test
+    public void testOverridePriorityLoadWithMinimum() throws RuleSetNotFoundException {
+        RuleSetFactory rsf = new RuleSetFactory(new ResourceLoader(), RulePriority.MEDIUM_LOW, true, true);
+        RuleSet ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
+        // only one rule should remain, since we filter out the other rules by minimum priority
+        assertEquals("Number of Rules", 1, ruleset.getRules().size());
+
+        // Priority is overridden and applied, rule is missing
+        assertNull(ruleset.getRuleByName("DummyBasicMockRule"));
+
+        // that's the remaining rule
+        assertNotNull(ruleset.getRuleByName("SampleXPathRule"));
+
+        // now, load with default minimum priority
+        rsf = new RuleSetFactory();
+        ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
+        assertEquals("Number of Rules", 2, ruleset.getRules().size());
+        Rule dummyBasicMockRule = ruleset.getRuleByName("DummyBasicMockRule");
+        assertEquals("Wrong Priority", RulePriority.LOW, dummyBasicMockRule.getPriority());
+    }
+
+    @Test
+    public void testExcludeWithMinimumPriority() throws RuleSetNotFoundException {
+        RuleSetFactory rsf = new RuleSetFactory(new ResourceLoader(), RulePriority.HIGH, true, true);
+        RuleSet ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
+        // no rules should be loaded
+        assertEquals("Number of Rules", 0, ruleset.getRules().size());
+
+        // now, load with default minimum priority
+        rsf = new RuleSetFactory();
+        ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
+        // only one rule, we have excluded one...
+        assertEquals("Number of Rules", 1, ruleset.getRules().size());
+        // rule is excluded
+        assertNull(ruleset.getRuleByName("DummyBasicMockRule"));
+        // that's the remaining rule
+        assertNotNull(ruleset.getRuleByName("SampleXPathRule"));
+    }
+
+    @Test
     public void testOverrideMessage() throws RuleSetNotFoundException {
         Rule r = loadFirstRule(REF_OVERRIDE_ORIGINAL_NAME);
         assertEquals("TestMessageOverride", r.getMessage());

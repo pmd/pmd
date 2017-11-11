@@ -380,6 +380,8 @@ public class RuleSetFactory {
                 ruleSetBuilder.withDescription("Missing description");
             }
 
+            ruleSetBuilder.filterRulesByPriority(minimumPriority);
+
             return ruleSetBuilder.build();
         } catch (ClassNotFoundException cnfe) {
             return classNotFoundProblem(cnfe);
@@ -496,7 +498,9 @@ public class RuleSetFactory {
         }
         final RuleSetReference ruleSetReference = new RuleSetReference(ref, true, excludedRulesCheck);
 
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(this, warnDeprecated);
+        // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
+        // minimum priority will be applied again, before constructing the final ruleset
+        RuleSetFactory ruleSetFactory = new RuleSetFactory(resourceLoader, RulePriority.LOW, warnDeprecated, this.compatibilityFilter != null);
         RuleSet otherRuleSet = ruleSetFactory.createRuleSet(RuleSetReferenceId.parse(ref).get(0));
         for (Rule rule : otherRuleSet.getRules()) {
             excludedRulesCheck.remove(rule.getName());
@@ -504,12 +508,12 @@ public class RuleSetFactory {
                 RuleReference ruleReference = new RuleReference();
                 ruleReference.setRuleSetReference(ruleSetReference);
                 ruleReference.setRule(rule);
-                ruleSetBuilder.addRuleIfNotExists(ruleReference);
-
                 // override the priority
                 if (priority != null) {
                     ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(priority)));
                 }
+
+                ruleSetBuilder.addRuleIfNotExists(ruleReference);
             }
         }
         if (!excludedRulesCheck.isEmpty()) {
@@ -639,12 +643,9 @@ public class RuleSetFactory {
                 throw new IllegalArgumentException(UNEXPECTED_ELEMENT + nodeName
                         + "> encountered as child of <rule> element for Rule " + rule.getName());
             }
+        }
 
-        }
-        if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
-                || rule.getPriority().compareTo(minimumPriority) <= 0) {
-            ruleSetBuilder.addRule(rule);
-        }
+        ruleSetBuilder.addRule(rule);
     }
 
     private static boolean hasAttributeSetTrue(Element element, String attributeId) {
@@ -679,7 +680,9 @@ public class RuleSetFactory {
             return;
         }
 
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(this, warnDeprecated);
+        // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
+        // minimum priority will be applied again, before constructing the final ruleset
+        RuleSetFactory ruleSetFactory = new RuleSetFactory(resourceLoader, RulePriority.LOW, warnDeprecated, this.compatibilityFilter != null);
 
         boolean isSameRuleSet = false;
         RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0);
@@ -756,11 +759,8 @@ public class RuleSetFactory {
             }
         }
 
-        if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
-                || referencedRule.getPriority().compareTo(minimumPriority) <= 0) {
-            if (withDeprecatedRuleReferences || !isSameRuleSet || !ruleReference.isDeprecated()) {
-                ruleSetBuilder.addRuleReplaceIfExists(ruleReference);
-            }
+        if (withDeprecatedRuleReferences || !isSameRuleSet || !ruleReference.isDeprecated()) {
+            ruleSetBuilder.addRuleReplaceIfExists(ruleReference);
         }
     }
 
