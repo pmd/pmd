@@ -232,34 +232,9 @@ public class Foo
             import org.slf4j.Logger;
         
             public class LoggerHelper {
-                public LoggerHelper(int entriesCount, long sleepingInterval, String loggerName, String message) {
+                public LoggerHelper(String loggerName) {
                     Logger logger = LoggerFactory.getLogger(loggerName);
-            
-                    for (int i = 0; i < entriesCount; i++) {
-                        logger.info(message);
-            
-                        try {
-                            Thread.sleep(sleepingInterval);
-                        }
-                        catch(InterruptedException e) {
-                            // nothing to do here!
-                        }
-                    }
-                }
-            
-                public static void main(String[] args) {
-                    if (args.length != 4) {
-                        System.err.println("Invalid command line parameters ...");
-                        System.out.println("USAGE: LoggerHelper <count of log entries> <sleeping interval> <logger-name> <message>");
-                        System.exit(-1);
-                    }
-            
-                    int entriesCount = Integer.parseInt(args[0]);
-                    long sleepingInterval = Long.parseLong(args[1]);
-                    String loggerName = args[2];
-                    String logMessage = args[3];
-            
-                    new LoggerHelper(entriesCount, sleepingInterval, loggerName, logMessage);
+                    logger.info(message);
                 }
             }
         ]]></code>
