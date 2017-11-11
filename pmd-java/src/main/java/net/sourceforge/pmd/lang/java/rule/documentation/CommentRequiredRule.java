@@ -33,33 +33,32 @@ import net.sourceforge.pmd.properties.EnumeratedProperty.EnumPBuilder;
  * @author Brian Remedios
  */
 public class CommentRequiredRule extends AbstractCommentRule {
-    
+
     // Used to pretty print a message
     private static final Map<String, String> DESCRIPTOR_NAME_TO_COMMENT_TYPE = new HashMap<>();
 
-    public static final EnumeratedProperty<CommentRequirement> IGNORE_OVERRIDE_DESCRIPTOR
+    private static final EnumeratedProperty<CommentRequirement> OVERRIDE_CMT_DESCRIPTOR
         = requirementPropertyBuilder("methodWithOverrideRequirement", "Comments on @Override methods")
         .defaultValue(Ignored).build();
-    public static final EnumeratedProperty<CommentRequirement> HEADER_CMT_REQUIREMENT_DESCRIPTOR
+    private static final EnumeratedProperty<CommentRequirement> HEADER_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("headerCommentRequirement", "Header comments").uiOrder(1.0f).build();
-    public static final EnumeratedProperty<CommentRequirement> FIELD_CMT_REQUIREMENT_DESCRIPTOR
+    private static final EnumeratedProperty<CommentRequirement> FIELD_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("fieldCommentRequirement", "Field comments").uiOrder(2.0f).build();
-    public static final EnumeratedProperty<CommentRequirement> PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR
+    private static final EnumeratedProperty<CommentRequirement> PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("publicMethodCommentRequirement", "Public method and constructor comments")
         .uiOrder(3.0f).build();
-    public static final EnumeratedProperty<CommentRequirement> PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR
+    private static final EnumeratedProperty<CommentRequirement> PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("protectedMethodCommentRequirement", "Protected method constructor comments")
         .uiOrder(4.0f).build();
-    public static final EnumeratedProperty<CommentRequirement> ENUM_CMT_REQUIREMENT_DESCRIPTOR
+    private static final EnumeratedProperty<CommentRequirement> ENUM_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("enumCommentRequirement", "Enum comments").uiOrder(5.0f).build();
-    public static final EnumeratedProperty<CommentRequirement> SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR
+    private static final EnumeratedProperty<CommentRequirement> SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("serialVersionUIDCommentRequired", "Serial version UID comments")
         .defaultValue(Ignored).uiOrder(6.0f).build();
-    private boolean ignoreOverrideMethods = true;
 
 
     public CommentRequiredRule() {
-        definePropertyDescriptor(IGNORE_OVERRIDE_DESCRIPTOR);
+        definePropertyDescriptor(OVERRIDE_CMT_DESCRIPTOR);
         definePropertyDescriptor(HEADER_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(FIELD_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
@@ -89,13 +88,13 @@ public class CommentRequiredRule extends AbstractCommentRule {
         }
     }
 
+
     // Adds a violation
     private void commentRequiredViolation(Object data, AbstractJavaNode node,
                                           EnumeratedProperty<CommentRequirement> descriptor) {
-        
-        
-        
-        addViolationWithMessage(data, node, 
+
+
+        addViolationWithMessage(data, node,
             DESCRIPTOR_NAME_TO_COMMENT_TYPE.get(descriptor.name()) + " are " + getProperty(descriptor).label.toLowerCase());
     }
 
@@ -116,16 +115,11 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
     @Override
     public Object visit(ASTMethodDeclaration decl, Object data) {
-        if (ignoreOverrideMethods) {
-            List<ASTMarkerAnnotation> annotations = decl.jjtGetParent().findDescendantsOfType(ASTMarkerAnnotation.class);
-            for (ASTMarkerAnnotation ann : annotations) { // TODO consider making a method to get the annotations of a method
-                if (ann.getFirstChildOfType(ASTName.class).getImage().equals("Override")) {
-                    return super.visit(decl, data);
-                }
-            }
+        if (isAnnotatedOverride(decl)) {
+            checkCommentMeetsRequirement(data, decl, OVERRIDE_CMT_DESCRIPTOR);
+        } else {
+            checkMethodOrConstructorComment(decl, data);
         }
-
-        checkMethodOrConstructorComment(decl, data);
         return super.visit(decl, data);
     }
 
@@ -136,6 +130,17 @@ public class CommentRequiredRule extends AbstractCommentRule {
         } else if (decl.isProtected()) {
             checkCommentMeetsRequirement(data, decl, PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         }
+    }
+
+
+    private boolean isAnnotatedOverride(ASTMethodDeclaration decl) {
+        List<ASTMarkerAnnotation> annotations = decl.jjtGetParent().findDescendantsOfType(ASTMarkerAnnotation.class);
+        for (ASTMarkerAnnotation ann : annotations) { // TODO consider making a method to get the annotations of a method
+            if (ann.getFirstChildOfType(ASTName.class).getImage().equals("Override")) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -169,8 +174,6 @@ public class CommentRequiredRule extends AbstractCommentRule {
     @Override
     public Object visit(ASTCompilationUnit cUnit, Object data) {
         assignCommentsToDeclarations(cUnit);
-        // ignoreOverrideMethods = getProperty(IGNORE_OVERRIDE_DESCRIPTOR);
-
         return super.visit(cUnit, data);
     }
 

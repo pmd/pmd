@@ -241,7 +241,7 @@ public class CommentRequired {
 
     <test-code>
         <description>Test @override methods reporting</description>
-        <rule-property name="ignoreOverride">false</rule-property>
+        <rule-property name="methodWithOverrideRequirement">Required</rule-property>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 /**
@@ -264,7 +264,7 @@ public class CommentRequired {
 
     <test-code>
         <description>Test @override methods reporting #2</description>
-        <rule-property name="ignoreOverride">false</rule-property>
+        <rule-property name="methodWithOverrideRequirement">Required</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
