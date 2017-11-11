@@ -260,6 +260,7 @@ a warning will now be produced suggesting users to adopt it for better performan
 ### Fixed Issues
 
 *   all
+    *   [#394](https://github.com/pmd/pmd/issues/394): \[core] PMD exclude rules are failing with IllegalArgumentException with non-default minimumPriority
     *   [#532](https://github.com/pmd/pmd/issues/532): \[core] security concerns on URL-based rulesets
     *   [#538](https://github.com/pmd/pmd/issues/538): \[core] Provide an XML Schema for XML reports
     *   [#600](https://github.com/pmd/pmd/issues/600): \[core] Nullpointer while creating cache File
