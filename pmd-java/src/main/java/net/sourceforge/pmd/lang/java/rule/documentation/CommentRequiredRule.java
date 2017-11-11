@@ -5,14 +5,18 @@
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
 import java.util.Arrays;
+import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
+import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.EnumeratedProperty;
 import net.sourceforge.pmd.properties.PropertySource;
 
@@ -39,6 +43,14 @@ public class CommentRequiredRule extends AbstractCommentRule {
             return labels;
         }
     }
+
+    private boolean ignoreOverrideMethods = true;
+
+    public static final BooleanProperty IGNORE_OVERRIDE_DESCRIPTOR =
+        BooleanProperty.named("ignoreOverride")
+                       .desc("Ignore methods marked with @Override")
+                       .defaultValue(true)
+                       .build();
 
     public static final EnumeratedProperty<CommentRequirement> HEADER_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<>(
             "headerCommentRequirement",
@@ -70,6 +82,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
         CommentRequirement.labels(), CommentRequirement.values(), 1, CommentRequirement.class, 6.0f);
 
     public CommentRequiredRule() {
+        definePropertyDescriptor(IGNORE_OVERRIDE_DESCRIPTOR);
         definePropertyDescriptor(HEADER_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(FIELD_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
@@ -122,6 +135,15 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
     @Override
     public Object visit(ASTMethodDeclaration decl, Object data) {
+        if (ignoreOverrideMethods) {
+            List<ASTMarkerAnnotation> annotations = decl.jjtGetParent().findDescendantsOfType(ASTMarkerAnnotation.class);
+            for (ASTMarkerAnnotation ann : annotations) {
+                if (ann.getFirstChildOfType(ASTName.class).getImage().equals("Override")) {
+                    return super.visit(decl, data);
+                }
+            }
+        }
+
         checkComment(decl, data);
         return super.visit(decl, data);
     }
@@ -249,6 +271,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
     @Override
     public Object visit(ASTCompilationUnit cUnit, Object data) {
         assignCommentsToDeclarations(cUnit);
+        ignoreOverrideMethods = getProperty(IGNORE_OVERRIDE_DESCRIPTOR);
 
         return super.visit(cUnit, data);
     }

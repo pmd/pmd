@@ -216,4 +216,79 @@ public class PmdMissingHeaderCommentTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Comment required ignores @override methods by default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * Comment required test class.
+ */
+public class CommentRequired {
+    @Override
+    public void noComment() {
+        Object o = new Object() {
+           
+            @Override
+            public String toString() {
+                return "Inner Class";
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test @override methods reporting</description>
+        <rule-property name="ignoreOverride">false</rule-property>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+/**
+ * Comment required test class.
+ */
+public class CommentRequired {
+    @Override
+    public void noComment() {
+        Object o = new Object() {
+           
+            @Override
+            public String toString() {
+                return "Inner Class";
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test @override methods reporting #2</description>
+        <rule-property name="ignoreOverride">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * Comment required test class.
+ */
+public class CommentRequired {
+    /**
+     * Comment provided
+     */  
+    @Override
+    public void noComment() {
+        Object o = new Object() {
+           
+            /**
+             * @inheritDoc
+             */
+            @Override
+            public String toString() {
+                return "Inner Class";
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
