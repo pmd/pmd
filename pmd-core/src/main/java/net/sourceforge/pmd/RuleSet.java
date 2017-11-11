@@ -172,13 +172,20 @@ public class RuleSet implements ChecksumAware {
          * same language was added before, so that the existent rule
          * configuration won't be overridden.
          *
-         * @param rule
+         * @param ruleOrRef
          *            the new rule to add
          * @return The same builder, for a fluid programming interface
          */
-        public RuleSetBuilder addRuleIfNotExists(final Rule rule) {
-            if (rule == null) {
+        public RuleSetBuilder addRuleIfNotExists(final Rule ruleOrRef) {
+            if (ruleOrRef == null) {
                 throw new IllegalArgumentException(MISSING_RULE);
+            }
+
+            // resolve the underlying rule, to avoid adding duplicated rules
+            // if the rule has been renamed/merged and moved at the same time
+            Rule rule = ruleOrRef;
+            while (rule instanceof RuleReference) {
+                rule = ((RuleReference) rule).getRule();
             }
 
             boolean exists = false;
@@ -189,7 +196,7 @@ public class RuleSet implements ChecksumAware {
                 }
             }
             if (!exists) {
-                addRule(rule);
+                addRule(ruleOrRef);
             }
             return this;
         }

@@ -491,12 +491,19 @@ public class RuleSetFactoryTest {
         assertNotNull("RuleSet", ruleSet);
         assertFalse("RuleSet empty", ruleSet.getRules().isEmpty());
         // No deprecated Rules should be loaded when loading an entire RuleSet
-        // by reference.
+        // by reference - unless it contains only deprecated rules - then all rules would be added
         Rule r = ruleSet.getRuleByName(DEPRECATED_RULE_NAME);
         assertNull("Deprecated Rule Reference", r);
         for (Rule rule : ruleSet.getRules()) {
             assertFalse("Rule not deprecated", rule.isDeprecated());
         }
+    }
+
+    @Test
+    public void testDeprecatedRuleSetReference() throws RuleSetNotFoundException {
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        RuleSet ruleSet = ruleSetFactory.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-deprecated.xml");
+        assertEquals(2, ruleSet.getRules().size());
     }
 
     @Test

@@ -512,9 +512,11 @@ public class RuleSetFactory {
         // minimum priority will be applied again, before constructing the final ruleset
         RuleSetFactory ruleSetFactory = new RuleSetFactory(resourceLoader, RulePriority.LOW, warnDeprecated, this.compatibilityFilter != null);
         RuleSet otherRuleSet = ruleSetFactory.createRuleSet(RuleSetReferenceId.parse(ref).get(0));
+        List<RuleReference> potentialRules = new ArrayList<>();
+        int countDeprecated = 0;
         for (Rule rule : otherRuleSet.getRules()) {
             excludedRulesCheck.remove(rule.getName());
-            if (!ruleSetReference.getExcludes().contains(rule.getName()) && !rule.isDeprecated()) {
+            if (!ruleSetReference.getExcludes().contains(rule.getName())) {
                 RuleReference ruleReference = new RuleReference();
                 ruleReference.setRuleSetReference(ruleSetReference);
                 ruleReference.setRule(rule);
@@ -523,9 +525,29 @@ public class RuleSetFactory {
                     ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(priority)));
                 }
 
-                ruleSetBuilder.addRuleIfNotExists(ruleReference);
+                if (rule.isDeprecated()) {
+                    countDeprecated++;
+                }
+                potentialRules.add(ruleReference);
             }
         }
+
+        boolean rulesetDeprecated = false;
+        if (potentialRules.size() == countDeprecated) {
+            // all rules in the ruleset have been deprecated - the ruleset itself is considered to be deprecated
+            rulesetDeprecated = true;
+            LOG.warning("The RuleSet " + ref + " has been deprecated.");
+        }
+
+        for (RuleReference r : potentialRules) {
+            if (rulesetDeprecated || !r.getRule().isDeprecated()) {
+                // add the rule, if either the ruleset itself is deprecated (then we add all rules)
+                // or if the rule is not deprecated (in that case, the ruleset might contain deprecated as well
+                // as valid references to rules)
+                ruleSetBuilder.addRuleIfNotExists(r);
+            }
+        }
+
         if (!excludedRulesCheck.isEmpty()) {
             throw new IllegalArgumentException(
                     "Unable to exclude rules " + excludedRulesCheck + "; perhaps the rule name is mispelled?");
