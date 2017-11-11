@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.properties.EnumeratedProperty;
 import net.sourceforge.pmd.properties.EnumeratedProperty.EnumPBuilder;
 
@@ -37,8 +38,12 @@ public class CommentRequiredRule extends AbstractCommentRule {
     // Used to pretty print a message
     private static final Map<String, String> DESCRIPTOR_NAME_TO_COMMENT_TYPE = new HashMap<>();
 
+
+    private static final EnumeratedProperty<CommentRequirement> ACCESSOR_CMT_DESCRIPTOR
+        = requirementPropertyBuilder("accessorCommentRequirement", "Comments on getters and setters\"")
+        .defaultValue(Ignored).build();
     private static final EnumeratedProperty<CommentRequirement> OVERRIDE_CMT_DESCRIPTOR
-        = requirementPropertyBuilder("methodWithOverrideRequirement", "Comments on @Override methods")
+        = requirementPropertyBuilder("methodWithOverrideCommentRequirement", "Comments on @Override methods")
         .defaultValue(Ignored).build();
     private static final EnumeratedProperty<CommentRequirement> HEADER_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("headerCommentRequirement", "Header comments").uiOrder(1.0f).build();
@@ -59,6 +64,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
     public CommentRequiredRule() {
         definePropertyDescriptor(OVERRIDE_CMT_DESCRIPTOR);
+        definePropertyDescriptor(ACCESSOR_CMT_DESCRIPTOR);
         definePropertyDescriptor(HEADER_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(FIELD_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
@@ -117,6 +123,8 @@ public class CommentRequiredRule extends AbstractCommentRule {
     public Object visit(ASTMethodDeclaration decl, Object data) {
         if (isAnnotatedOverride(decl)) {
             checkCommentMeetsRequirement(data, decl, OVERRIDE_CMT_DESCRIPTOR);
+        } else if (decl.getSignature().role == JavaOperationSignature.Role.GETTER_OR_SETTER) {
+            checkCommentMeetsRequirement(data, decl, ACCESSOR_CMT_DESCRIPTOR);
         } else {
             checkMethodOrConstructorComment(decl, data);
         }
