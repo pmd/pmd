@@ -33,6 +33,9 @@ import net.sourceforge.pmd.properties.EnumeratedProperty.EnumPBuilder;
  * @author Brian Remedios
  */
 public class CommentRequiredRule extends AbstractCommentRule {
+    
+    // Used to pretty print a message
+    private static final Map<String, String> DESCRIPTOR_NAME_TO_COMMENT_TYPE = new HashMap<>();
 
     public static final EnumeratedProperty<CommentRequirement> IGNORE_OVERRIDE_DESCRIPTOR
         = requirementPropertyBuilder("methodWithOverrideRequirement", "Comments on @Override methods")
@@ -89,7 +92,11 @@ public class CommentRequiredRule extends AbstractCommentRule {
     // Adds a violation
     private void commentRequiredViolation(Object data, AbstractJavaNode node,
                                           EnumeratedProperty<CommentRequirement> descriptor) {
-        addViolationWithMessage(data, node, descriptor.name() + " " + getProperty(descriptor));
+        
+        
+        
+        addViolationWithMessage(data, node, 
+            DESCRIPTOR_NAME_TO_COMMENT_TYPE.get(descriptor.name()) + " are " + getProperty(descriptor).label.toLowerCase());
     }
 
 
@@ -212,6 +219,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
     // pre-filled builder
     private static EnumPBuilder<CommentRequirement> requirementPropertyBuilder(String name, String commentType) {
+        DESCRIPTOR_NAME_TO_COMMENT_TYPE.put(name, commentType);
         return EnumeratedProperty.<CommentRequirement>named(name)
             .desc(commentType + ". Possible values: " + Arrays.toString(values()))
             .mappings(mappings())
