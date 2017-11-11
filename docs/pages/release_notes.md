@@ -367,6 +367,9 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   The class `net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition` is now abstract, and has been enhanced
     to provide several new methods.
 
+*   The constructor of `net.sourceforge.pmd.RuleSetFactory`, which took a `ClassLoader` is deprecated.
+    Please use the alternative constructor with the `net.sourceforge.pmd.util.ResourceLoader` instead.
+
 ### External Contributions
 
 *   [#287](https://github.com/pmd/pmd/pull/287): \[apex] Make Rule suppression work - [Robert Sösemann](https://github.com/up2go-rsoesemann)

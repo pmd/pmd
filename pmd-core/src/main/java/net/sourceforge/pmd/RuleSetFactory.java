@@ -75,6 +75,16 @@ public class RuleSetFactory {
         this(new ResourceLoader(), RulePriority.LOW, false, true);
     }
 
+    /**
+     * @deprecated Use {@link #RuleSetFactory(ResourceLoader, RulePriority, boolean, boolean)} with
+     * {@link ResourceLoader} instead of a {@link ClassLoader}.
+     */
+    @Deprecated // to be removed with PMD 7.0.0.
+    public RuleSetFactory(final ClassLoader classLoader, final RulePriority minimumPriority,
+            final boolean warnDeprecated, final boolean enableCompatibility) {
+        this(new ResourceLoader(classLoader), minimumPriority, warnDeprecated, enableCompatibility);
+    }
+
     public RuleSetFactory(final ResourceLoader resourceLoader, final RulePriority minimumPriority,
             final boolean warnDeprecated, final boolean enableCompatibility) {
         this.resourceLoader = resourceLoader;
