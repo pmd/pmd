@@ -136,6 +136,62 @@ There are several things to notice here:
 
 ### For XPath rules
 
+XPath rules can also define their own properties. To do so, you must add a `property` element in the `properties` element of your rule, which **declares the `type` attribute**. This attribute conditions what type the underlying property has, and can have the following values:
+
+| `type` attribute | Property type|
+|----------|----------|
+|Integer|IntegerProperty
+|Double | DoubleProperty
+|Float|FloatProperty
+|Long| LongProperty
+|String|StringProperty
+|Character|CharacterProperty
+|Boolean|BooleanProperty
+|File|FileProperty
+|Class|TypeProperty
+|Method|MethodProperty
+
+Note that enumerated properties are not available in XPath rules (yet).
+
+Properties defined in XPath also *must* declare the `description` attribute. Numeric properties also expect the `min` and `max` attributes. Here are a few examples to sum it up:
+
+```xml
+<property name="stringProp" type="Boolean" value="true" description="A BooleanProperty."/>
+<property name="intProp" type="Integer" value="3" min="1" max="20" description="An IntegerProperty."/>
+```
+
+You can then use the property in XPath with the syntax `$propertyName`.
+
+#### Multivalued properties
+
+
+Multivalued properties are also allowed and their `type` attribute has the form `List[Boolean]` or `List[Character]`, with every above type allowed (except `File`). These properties **require XPath 2.0** to work properly, and make use of the **sequence datatype** provided by that language. You thus need to set the `version` property to `2.0` to use them. Properties can also declare the `delimiter` attribute.
+
+
+
+```xml
+<rule name="MyXpathRule" ...>
+  <properties>
+    <property name="version" value="2.0" />
+    <property name="i" type="List[Integer]" value="1,2,5" description="An IntegerMultiProperty." />
+    <property name="reportedIdentifiers" type="List[String]" value="foo$bar" delimiter="$" 
+              description="A StringMultiProperty." />
+    <property name="xpath">
+    <![CDATA[
+      //VariableDeclaratorId[@Image = $reportedIdentifiers]
+    ]]></property>          
+  </properties>
+</rule>    
+```
+
+Notice that in the example above, `@Image = $reportedIdentifiers` doesn't test `@Image` for equality with the whole sequence `('foo', 'bar')`, it tests whether the sequence *contains* `@Image`. That is, the above rule will report all variables named `foo` or `bar`. All other XPath 2.0 [functions operating on sequences](https://www.w3.org/TR/xpath-functions/#sequence-functions) are supported.
+
+
+
+
+
+# Old article
+
 The new PMD properties subsystem is intended to bring some rigor and expanded functionality to the wild world of rule properies. It defines a value type template that can be used by IDE plugins to enumerate the properties specified by individual rules and provides validation and serialization services for multi-value properties. It uses custom serialization routines to generate human-readable values that can be edited in the XML files.
 
 The subsystem implements the following property constructors with the leading name and description arguments not shown:
