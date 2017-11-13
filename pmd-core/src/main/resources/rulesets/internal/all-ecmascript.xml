@@ -6,7 +6,14 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
     <description>Every ECMAScript Rule in PMD</description>
 
-    <rule ref="rulesets/ecmascript/basic.xml"/>
-    <rule ref="rulesets/ecmascript/braces.xml"/>
-    <rule ref="rulesets/ecmascript/unnecessary.xml"/>
+    <rule ref="category/ecmascript/bestpractices.xml" />
+    <rule ref="category/ecmascript/codestyle.xml" />
+    <rule ref="category/ecmascript/errorprone.xml" />
+
+<!--     <rule ref="category/ecmascript/design.xml "/> -->
+<!--     <rule ref="category/ecmascript/documentation.xml "/> -->
+<!--     <rule ref="category/ecmascript/multithreading.xml "/> -->
+<!--     <rule ref="category/ecmascript/performance.xml "/> -->
+<!--     <rule ref="category/ecmascript/security.xml "/> -->
+
 </ruleset>

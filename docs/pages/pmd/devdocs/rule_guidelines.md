@@ -51,8 +51,8 @@ See [Test Framework](pmd_devdocs_testing.html) for the general documentation
 
 ### … for a rule I want to submit (in a patch)
 
-Figure out the ruleset to which you want to the rule. Then add your rule to the appropriate test class for
-the ruleset and add the XML test data in the correct xml subpackage.
+Figure out the category to which you want to the rule. Then add your rule to the appropriate test class for
+the category and add the XML test data in the correct xml subpackage.
 
 ### … for something too specific, that I won’t be able to submit
 

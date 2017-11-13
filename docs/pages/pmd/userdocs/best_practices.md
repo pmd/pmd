@@ -2,23 +2,30 @@
 title: Best Practices
 permalink: pmd_userdocs_best_practices.html
 author: Tom Copeland <tom@infoether.com>
+last_updated: November 2017
 ---
 
 ## Choose the rules that are right for you
 
-Running every ruleset will result in a huge number of rule violations, most of which will be unimportant.
+Running every existing rule will result in a huge number of rule violations, most of which will be unimportant.
 Having to sort through a thousand line report to find the few you're really interested in takes
 all the fun out of things.
 
-Instead, start with some of the obvious rulesets - just run [unusedcode](/pmd_rules_java.html#unused-code) and fix any unused locals and fields.
-Then, run [empty](/pmd_rules_java.html#empty-code) and fix all the empty `if` statements and such-like. After that, take [unnecessary](/pmd_rules_java.html#unnecessary)
-and fix these violations. Then, run [basic](/pmd_rules_java.html#basic) and fix the remaining violations.
-Then peruse the [design](/pmd_rules_java.html#design) and [controversial](/pmd_rules_java.html#controversial) rulesets and use the ones
-you like [via a custom ruleset](/pmd_userdocs_understanding_rulesets.html).
+Instead, start with some selected specific rules, e.g. the rules that detect unused code from
+the category [Best Practices](pmd_rules_java_bestpractices.html) and fix any unused locals and fields.
+
+Then, run rules, that detect empty `if` statements and such-like. You can find these rules in the category
+[Error Prone](pmd_rules_java_errorprone.html).
+
+After that, look at all the categories and select the rules, that are useful for your project.
+You can find an overview of the rules on the [Rule Index](pmd_rules_java.html).
+
+Use the rules you like [via a custom ruleset](pmd_userdocs_understanding_rulesets.html).
 
 ## PMD rules are not set in stone
 
-Generally, pick the ones you like, and ignore or [suppress](/pmd_userdocs_suppressing.html) the warnings you don't like. It's just a tool.
+Generally, pick the ones you like, and ignore or [suppress](pmd_userdocs_suppressing.html)
+the warnings you don't like. It's just a tool.
 
 ## PMD IDE plugins are nice
 

@@ -8,13 +8,13 @@ last_updated: September 2017
 There are two major use cases:
 
 1.  When defining a new rule, the rule needs to be defined in a ruleset. PMD's built-in rules
-    are defined in specific rulesets from which the rule reference documentation is generated,
+    are defined in special rulesets from which the rule reference documentation is generated,
     see [Java Rules](pmd_rules_java.html) for an example.
 
-    Similar rules are grouped together into the same ruleset, like the [Java Braces Ruleset](pmd_rules_java_braces.html)
-    which contains rules that all deal with missing braces.
+    Similar rules are grouped together into the same category, like [Java Best Practices](pmd_rules_java_bestpractices.html)
+    which contains rules which enforce generally accepted best practices.
 
-2.  When executing PMD you need to tell, which rules should be executed. You could directly point to the
+2.  When executing PMD, you need to tell, which rules should be executed. You could directly point to the
     built-in rulesets, but then you might be overwhelmed by the found violations. As described
     in [Best Practices](pmd_userdocs_best_practices.html), it's better to define an own custom ruleset.
 
@@ -42,11 +42,11 @@ Custom rules
 ```
 
 Now start to add rule by **referencing** them. Let's say, you want to start with finding
-[Empty Catch Blocks](pmd_rules_java_empty.html#emptycatchblock). Then you'd add the following
+[Empty Catch Blocks](pmd_rules_java_errorprone.html#emptycatchblock). Then you'd add the following
 rule reference inside the `ruleset` elements:
 
 ```xml
-    <rule ref="rulesets/java/empty.xml/EmptyCatchBlock" />
+    <rule ref="category/java/errorprone.xml/EmptyCatchBlock" />
 ```
 
 ## Adjusting rule properties
@@ -56,7 +56,7 @@ of `ignored` will not raise a violation. Therefore you would reference the rule 
 the appropriate property value:
 
 ```xml
-    <rule ref="rulesets/java/empty.xml/EmptyCatchBlock">
+    <rule ref="category/java/errorprone.xml/EmptyCatchBlock">
         <properties>
             <property name="allowExceptionNameRegex">
                 <value>^ignored$</value>

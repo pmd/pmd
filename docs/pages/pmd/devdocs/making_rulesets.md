@@ -18,12 +18,12 @@ Use one of the current rulesets as an example. Copy and paste it into your new f
 ```xml
 <?xml version="1.0"?>
 <ruleset name="Custom ruleset"
-		xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
-	<description>
-		This ruleset checks my code for bad stuff
-	</description>
+        xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    <description>
+        This ruleset checks my code for bad stuff
+    </description>
 </ruleset>
 ````
 
@@ -42,31 +42,31 @@ After you add these references it’ll look something like this:
 		This ruleset checks my code for bad stuff
 	</description>
 
-	<!-- We'll use the entire 'strings' ruleset -->
-	<rule ref="rulesets/java/strings.xml"/>
+	<!-- We'll use the entire 'getting started' ruleset -->
+	<rule ref="rulesets/java/gettingstarted.xml"/>
 
 	<!-- Here's some rules we'll specify one at a time -->
-	<rule ref="rulesets/java/unusedcode.xml/UnusedLocalVariable"/>
-	<rule ref="rulesets/java/unusedcode.xml/UnusedPrivateField"/>
-	<rule ref="rulesets/java/imports.xml/DuplicateImports"/>
-	<rule ref="rulesets/java/basic.xml/UnnecessaryConversionTemporary"/>
+	<rule ref="category/java/bestpractices.xml/UnusedLocalVariable"/>
+	<rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
+	<rule ref="category/java/codestyle.xml/DuplicateImports"/>
+	<rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary"/>
 
 	<!-- We want to customize this rule a bit, change the message and raise the priority  -->
 	<rule
-			ref="rulesets/java/basic.xml/EmptyCatchBlock"
+			ref="category/java/errorprone.xml/EmptyCatchBlock"
 			message="Must handle exceptions">
 		<priority>2</priority>
 	</rule>
 
 	<!-- Now we'll customize a rule's property value -->
-	<rule ref="rulesets/java/codesize.xml/CyclomaticComplexity">
+	<rule ref="category/java/design.xml/CyclomaticComplexity">
 		<properties>
 			<property name="reportLevel" value="5"/>
 		</properties>
 	</rule>
 
-	<!-- We want everything from braces.xml except WhileLoopsMustUseBraces -->
-	<rule ref="rulesets/java/braces.xml">
+	<!-- We want everything from category Code Style except WhileLoopsMustUseBraces -->
+	<rule ref="category/java/codestyle.xml">
 		<exclude name="WhileLoopsMustUseBraces"/>
 	</rule>
 </ruleset>
@@ -85,7 +85,7 @@ You can also make a custom ruleset that excludes rules, like this:
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>Just the braces rules I like</description>
-  <rule ref="rulesets/java/braces.xml">
+  <rule ref="category/java/codestyle.xml">
     <exclude name="WhileLoopsMustUseBraces"/>
     <exclude name="IfElseStmtsMustUseBraces"/>
   </rule>
@@ -123,9 +123,9 @@ You can specify the full path to your custom ruleset name alongside of the built
 </pmd>
 ```
 
-## To see it in your IDE, add it to rulesets/rulesets.properties
+## To see it in your IDE
 
-At least, that’s the way some of the IDE plugins do it. Some have other ways of adding custom rulesets.
+You'll need to point the IDE plugin to the location of your custom ruleset.
 
 ## Send us feedback
 
