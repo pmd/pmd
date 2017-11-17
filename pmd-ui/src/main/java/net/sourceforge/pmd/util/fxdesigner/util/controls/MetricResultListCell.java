@@ -9,6 +9,9 @@ import java.util.Locale;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.util.Callback;
+
 
 /**
  * List cell for a metric result.
@@ -39,6 +42,11 @@ public class MetricResultListCell extends ListCell<MetricResult> {
         } else {
             return String.format(Locale.ROOT, "%.4f", val);
         }
+    }
+
+
+    public static Callback<ListView<MetricResult>, MetricResultListCell> callback() {
+        return param -> new MetricResultListCell();
     }
 
 

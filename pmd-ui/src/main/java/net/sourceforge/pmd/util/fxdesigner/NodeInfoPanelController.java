@@ -16,8 +16,6 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
-import net.sourceforge.pmd.util.fxdesigner.util.controls.MetricResultListCell;
-import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeItem;
 
 import javafx.collections.FXCollections;
@@ -68,8 +66,6 @@ public class NodeInfoPanelController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        metricResultsListView.setCellFactory(param -> new MetricResultListCell());
-        scopeHierarchyTreeView.setCellFactory(param -> new ScopeHierarchyTreeCell());
         scopeHierarchyTreeView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && newVal.getValue() instanceof NameDeclaration) {
                 parent.onNameDeclarationSelected((NameDeclaration) newVal.getValue());

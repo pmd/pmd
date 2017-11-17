@@ -7,6 +7,9 @@ package net.sourceforge.pmd.util.fxdesigner.util.controls;
 import net.sourceforge.pmd.lang.ast.Node;
 
 import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeView;
+import javafx.util.Callback;
+
 
 /**
  * Formats the cell for AST nodes in the main AST TreeView.
@@ -26,5 +29,10 @@ public class ASTTreeCell extends TreeCell<Node> {
         } else {
             setText(item.toString() + (item.getImage() == null ? "" : " \"" + item.getImage() + "\""));
         }
+    }
+
+
+    public static Callback<TreeView<Node>, ASTTreeCell> callback() {
+        return p -> new ASTTreeCell();
     }
 }

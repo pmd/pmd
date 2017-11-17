@@ -20,7 +20,6 @@ import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
-import net.sourceforge.pmd.util.fxdesigner.util.controls.XpathViolationListCell;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.AppSetting;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.SettingsOwner;
 
@@ -68,7 +67,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         xpathExpressionArea.setSyntaxHighlightingEnabled(new XPathSyntaxHighlighter());
-        xpathResultListView.setCellFactory(param -> new XpathViolationListCell());
 
         xpathResultListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {

@@ -22,7 +22,6 @@ import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
-import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.AppSetting;
 import net.sourceforge.pmd.util.fxdesigner.util.settings.SettingsOwner;
@@ -80,7 +79,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private void initializeSyntaxHighlighting() {
 
         isSyntaxHighlightingEnabled.bind(codeEditorArea.syntaxHighlightingEnabledProperty());
-       
+
         isSyntaxHighlightingEnabled.addListener(((observable, wasEnabled, isEnabled) -> {
             if (!wasEnabled && isEnabled) {
                 updateSyntaxHighlighter();
@@ -99,7 +98,6 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
 
     private void initializeASTTreeView() {
-        astTreeView.setCellFactory(param -> new ASTTreeCell());
 
         astTreeView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && newVal.getValue() != null) {

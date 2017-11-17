@@ -12,6 +12,8 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeView;
+import javafx.util.Callback;
 
 
 /**
@@ -67,6 +69,11 @@ public class ScopeHierarchyTreeCell extends TreeCell<Object> {
         sb.append(" (l. ").append(declaration.getNode().getBeginLine()).append(")");
 
         return sb.toString();
+    }
+
+
+    public static Callback<TreeView<Object>, ScopeHierarchyTreeCell> callback() {
+        return param -> new ScopeHierarchyTreeCell();
     }
 
 }

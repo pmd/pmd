@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- One editor, ie source + ast view -->
+
 <?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TreeView?>
@@ -58,7 +58,11 @@
                     <center>
                         <TreeView fx:id="astTreeView" prefHeight="200.0"
                                   prefWidth="200.0" styleClass="secondary-panel"
-                                  BorderPane.alignment="CENTER"/>
+                                  BorderPane.alignment="CENTER">
+                            <cellFactory>
+                                <ASTTreeCell fx:factory="callback"/>
+                            </cellFactory>
+                        </TreeView>
                     </center>
                     <top>
                         <ToolBar prefHeight="40.0" prefWidth="200.0"

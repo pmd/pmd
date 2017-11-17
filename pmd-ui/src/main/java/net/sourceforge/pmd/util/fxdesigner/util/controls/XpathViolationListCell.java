@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
+
 import net.sourceforge.pmd.lang.ast.Node;
 
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.util.Callback;
+
 
 /**
  * @author Clément Fournier
@@ -25,6 +29,11 @@ public class XpathViolationListCell extends ListCell<Node> {
         } else {
             setText(item.toString() + " (l. " + item.getBeginLine() + ", c. " + item.getBeginColumn() + ")");
         }
+    }
+
+
+    public static Callback<ListView<Node>, XpathViolationListCell> callback() {
+        return p -> new XpathViolationListCell();
     }
 
 }

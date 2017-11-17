@@ -51,7 +51,11 @@
                                     AnchorPane.topAnchor="0.0">
                             <content>
                                 <ListView
-                                        fx:id="xpathResultListView"/>
+                                        fx:id="xpathResultListView">
+                                <cellFactory>
+                                    
+                                </cellFactory>
+                                </ListView>
                             </content>
                         </TitledPane>
                     </children>

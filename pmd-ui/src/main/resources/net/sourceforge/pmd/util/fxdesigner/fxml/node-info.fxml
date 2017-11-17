@@ -10,6 +10,10 @@
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.MetricResultListCell?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell?>
+
+
 <TabPane xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
          fx:id="nodeInfoTabPane"
@@ -57,7 +61,11 @@
                                     AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <center>
                                 <ListView fx:id="metricResultsListView" styleClass="secondary-panel"
-                                          BorderPane.alignment="CENTER"/>
+                                          BorderPane.alignment="CENTER">
+                                    <cellFactory>
+                                        <MetricResultListCell fx:factory="callback"/>
+                                    </cellFactory>
+                                </ListView>
                             </center>
                             <top>
                                 <ToolBar styleClass="info-title-bar" BorderPane.alignment="CENTER">
@@ -79,7 +87,11 @@
                                     AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <center>
                                 <TreeView fx:id="scopeHierarchyTreeView" styleClass="secondary-panel"
-                                          BorderPane.alignment="CENTER"/>
+                                          BorderPane.alignment="CENTER">
+                                    <cellFactory>
+                                        <ScopeHierarchyTreeCell fx:factory="callback"/>
+                                    </cellFactory>
+                                </TreeView>
                             </center>
                             <top>
                                 <ToolBar styleClass="info-title-bar" BorderPane.alignment="CENTER">
