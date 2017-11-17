@@ -39,7 +39,7 @@ public class PropertyDescriptorUtil {
         temp.put("List[Float]", FloatMultiProperty.extractor());
         temp.put("Double", DoubleProperty.extractor());
         temp.put("List[Double]", DoubleMultiProperty.extractor());
-        //    temp.put("Enum", EnumeratedProperty.FACTORY); // TODO:cf implement that
+        //    temp.put("Enum", EnumeratedProperty.FACTORY); // TODO:cf we need new syntax in the xml to support that
         //    temp.put("List[Enum]", EnumeratedMultiProperty.FACTORY);
 
         temp.put("Class", TypeProperty.extractor());
