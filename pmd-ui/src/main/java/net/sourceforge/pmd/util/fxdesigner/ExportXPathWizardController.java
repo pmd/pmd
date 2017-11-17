@@ -114,6 +114,7 @@ public class ExportXPathWizardController implements Initializable {
 
 
     private String getUpToDateRuleElement() {
+        // TODO very inefficient, can we do better?
 
         final String template = "<rule name=\"%s\"\n"
                                 + "      language=\"%s\"\n"
@@ -128,7 +129,7 @@ public class ExportXPathWizardController implements Initializable {
                                 + "        <property name=\"xpath\">\n"
                                 + "            <value>\n"
                                 + "<![CDATA[\n"
-                                + "%s"
+                                + "%s\n"
                                 + "]]>\n"
                                 + "            </value>\n"
                                 + "        </property>\n"

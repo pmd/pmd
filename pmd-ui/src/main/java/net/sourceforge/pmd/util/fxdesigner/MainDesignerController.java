@@ -36,8 +36,6 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -153,18 +151,19 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         xpathPanelController.xpathVersionProperty().bind(xpathVersionChoiceBox.getSelectionModel().selectedItemProperty());
 
         refreshASTButton.setOnAction(e -> onRefreshASTClicked());
-        licenseMenuItem.setOnAction(this::showLicensePopup);
-        openFileMenuItem.setOnAction(this::onOpenFileClicked);
+        licenseMenuItem.setOnAction(e -> showLicensePopup());
+        openFileMenuItem.setOnAction(e -> onOpenFileClicked());
         openRecentMenu.setOnAction(e -> updateRecentFilesMenu());
         openRecentMenu.setOnShowing(e -> updateRecentFilesMenu());
-        exportXPathMenuItem.setOnAction(event -> {
+        fileMenu.setOnShowing(e -> onFileMenuShowing());
+        exportXPathMenuItem.setOnAction(e -> {
             try {
-                onExportXPathToRuleClicked(event);
-            } catch (IOException e) {
+                onExportXPathToRuleClicked();
+            } catch (IOException ex) {
+                ex.printStackTrace();
                 // pretend it didn't happen
             }
         });
-        fileMenu.setOnShowing(this::onFileMenuShowing);
 
         sourceEditorController.refreshAST();
         Platform.runLater(() -> sourceEditorController.moveCaret(0, 0));
@@ -266,7 +265,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     }
 
 
-    private void showLicensePopup(ActionEvent event) {
+    private void showLicensePopup() {
         Alert licenseAlert = new Alert(AlertType.INFORMATION);
         licenseAlert.setWidth(500);
         licenseAlert.setHeaderText("License");
@@ -283,25 +282,13 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     }
 
 
-    private void onExportXPathToRuleClicked(Event event) throws IOException {
+    private void onExportXPathToRuleClicked() throws IOException {
         // doesn't work for some reason
         ExportXPathWizardController wizard
             = new ExportXPathWizardController(xpathPanelController.xpathExpressionProperty());
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/xpath-export-wizard.fxml"));
-        loader.setControllerFactory(type -> {
-            if (type == ExportXPathWizardController.class) {
-                return wizard;
-            } else {
-                // default behavior for controllerFactory:
-                try {
-                    return type.newInstance();
-                } catch (Exception exc) {
-                    exc.printStackTrace();
-                    throw new RuntimeException(exc); // fatal, just bail...
-                }
-            }
-        });
+        loader.setController(wizard);
 
         final Stage dialog = new Stage();
         dialog.initOwner(designerRoot.getMainStage());
@@ -316,12 +303,12 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     }
 
 
-    private void onFileMenuShowing(Event event) {
+    private void onFileMenuShowing() {
         openRecentMenu.setDisable(recentFiles.size() == 0);
     }
 
 
-    private void onOpenFileClicked(ActionEvent event) {
+    private void onOpenFileClicked() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Load source from file");
         File file = chooser.showOpenDialog(designerRoot.getMainStage());
