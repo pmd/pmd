@@ -5,12 +5,18 @@
 package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.symboltable.ClassNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 import javafx.scene.control.TreeCell;
 
+
 /**
+ * Renders scope nodes and declaration in the scope treeview.
+ *
  * @author Clément Fournier
  * @since 6.0.0
  */
@@ -25,7 +31,7 @@ public class ScopeHierarchyTreeCell extends TreeCell<Object> {
             setGraphic(null);
         } else {
             setText(item instanceof Scope ? getTextForScope((Scope) item)
-                    : getTextForDeclaration((NameDeclaration) item));
+                                          : getTextForDeclaration((NameDeclaration) item));
         }
     }
 
@@ -37,10 +43,30 @@ public class ScopeHierarchyTreeCell extends TreeCell<Object> {
 
     private String getTextForDeclaration(NameDeclaration declaration) {
 
-        Class<?> type = declaration.getNode() instanceof TypeNode ? ((TypeNode) declaration.getNode()).getType()
-                : null;
+        StringBuilder sb = new StringBuilder();
+        if (declaration instanceof MethodNameDeclaration
+            || declaration instanceof net.sourceforge.pmd.lang.plsql.symboltable.MethodNameDeclaration) {
+            sb.append("Method ");
+        } else if (declaration instanceof VariableNameDeclaration
+                   || declaration instanceof net.sourceforge.pmd.lang.plsql.symboltable.VariableNameDeclaration) {
+            sb.append("Variable ");
+        } else if (declaration instanceof ClassNameDeclaration
+                   || declaration instanceof net.sourceforge.pmd.lang.plsql.symboltable.ClassNameDeclaration) {
+            sb.append("Class ");
+        }
 
-        return declaration.getName() + (type != null ? " : " + type.getSimpleName() : "");
+        Class<?> type = declaration.getNode() instanceof TypeNode ? ((TypeNode) declaration.getNode()).getType()
+                                                                  : null;
+
+        sb.append(declaration.getName());
+
+        if (type != null) {
+            sb.append(" : ").append(type.getSimpleName());
+        }
+
+        sb.append(" (l. ").append(declaration.getNode().getBeginLine()).append(")");
+
+        return sb.toString();
     }
 
 }
