@@ -95,7 +95,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
     @SuppressWarnings("unchecked")
     protected final PropertyDescriptorExternalBuilder<List<T>> getMultiFactory() {
-        return (PropertyDescriptorExternalBuilder<List<T>>) PropertyDescriptorUtil.factoryFor("List<" + typeName + ">");
+        return (PropertyDescriptorExternalBuilder<List<T>>) PropertyDescriptorUtil.factoryFor("List[" + typeName + "]");
     }
 
 

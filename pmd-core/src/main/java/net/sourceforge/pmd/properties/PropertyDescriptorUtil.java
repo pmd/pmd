@@ -23,29 +23,29 @@ public class PropertyDescriptorUtil {
     static {
         Map<String, PropertyDescriptorExternalBuilder<?>> temp = new HashMap<>(18);
         temp.put("Boolean", BooleanProperty.extractor());
-        temp.put("List<Boolean>", BooleanMultiProperty.extractor());
+        temp.put("List[Boolean]", BooleanMultiProperty.extractor());
 
         temp.put("String", StringProperty.extractor());
-        temp.put("List<String>", StringMultiProperty.extractor());
+        temp.put("List[String]", StringMultiProperty.extractor());
         temp.put("Character", CharacterProperty.extractor());
-        temp.put("List<Character>", CharacterMultiProperty.extractor());
+        temp.put("List[Character]", CharacterMultiProperty.extractor());
 
 
         temp.put("Integer", IntegerProperty.extractor());
-        temp.put("List<Integer>", IntegerMultiProperty.extractor());
+        temp.put("List[Integer]", IntegerMultiProperty.extractor());
         temp.put("Long", LongProperty.extractor());
-        temp.put("List<Long>", LongMultiProperty.extractor());
+        temp.put("List[Long]", LongMultiProperty.extractor());
         temp.put("Float", FloatProperty.extractor());
-        temp.put("List<Float>", FloatMultiProperty.extractor());
+        temp.put("List[Float]", FloatMultiProperty.extractor());
         temp.put("Double", DoubleProperty.extractor());
-        temp.put("List<Double>", DoubleMultiProperty.extractor());
+        temp.put("List[Double]", DoubleMultiProperty.extractor());
         //    temp.put("Enum", EnumeratedProperty.FACTORY); // TODO:cf implement that
-        //    temp.put("List<Enum>", EnumeratedMultiProperty.FACTORY);
+        //    temp.put("List[Enum]", EnumeratedMultiProperty.FACTORY);
 
         temp.put("Class", TypeProperty.extractor());
-        temp.put("List<Class>", TypeMultiProperty.extractor());
+        temp.put("List[Class]", TypeMultiProperty.extractor());
         temp.put("Method", MethodProperty.extractor());
-        temp.put("List<Method>", MethodMultiProperty.extractor());
+        temp.put("List[Method]", MethodMultiProperty.extractor());
 
         temp.put("File", FileProperty.extractor());
 
