@@ -1,11 +1,11 @@
 ---
-title: PMD Info for Developers
-short_title: Info for Developers
+title: Working with properties
+short_title: Working with properties
 tags: [customizing, properties, property]
-summary: Info for PMD Developers
-last_updated: July 3, 2016
-permalink: pmd_devdocs_info_for_developers.html
-author: Hooper Bloob <hooperbloob@users.sourceforge.net>, Romain Pelisse <rpelisse@users.sourceforge.net>
+summary: "Properties are a way to parameterise the behaviour of PMD rules and your own directly from the ruleset XML, which greatly improves their reusability. This page explains how to use existing properties, and how to define your own both for Java and XPath rules."
+last_updated: November 2017 (6.0.0)
+permalink: pmd_devdocs_working_with_properties.html
+author: Hooper Bloob <hooperbloob@users.sourceforge.net>, Romain Pelisse <rpelisse@users.sourceforge.net>, Clément Fournier <clement.fournier76@gmail.com>
 ---
 
 # Working with properties
