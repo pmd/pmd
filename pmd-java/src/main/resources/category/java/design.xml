@@ -377,21 +377,21 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.design.CyclomaticComplexityRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#cyclomaticcomplexity">
         <description><![CDATA[
-            The complexity of methods directly affects maintenance costs and readability. Concentrating too much decisional logic
-            in a single method makes its behaviour hard to read and change.
+The complexity of methods directly affects maintenance costs and readability. Concentrating too much decisional logic
+in a single method makes its behaviour hard to read and change.
 
-            Cyclomatic complexity assesses the complexity of a method by counting the number of decision points in a method,
-            plus one for the method entry. Decision points are places where the control flow jumps to another place in the
-            program. As such, they include all control flow statements, such as `if`, `while`, `for`, and `case`. For more
-            details on the calculation, see the documentation of the [Cyclo metric](/pmd_java_metrics_index.html#cyclomatic-complexity-cyclo).
+Cyclomatic complexity assesses the complexity of a method by counting the number of decision points in a method,
+plus one for the method entry. Decision points are places where the control flow jumps to another place in the
+program. As such, they include all control flow statements, such as `if`, `while`, `for`, and `case`. For more
+details on the calculation, see the documentation of the [Cyclo metric](/pmd_java_metrics_index.html#cyclomatic-complexity-cyclo).
 
-            Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
-            high complexity, and 11+ is very high complexity. By default, this rule reports methods with a complexity >= 10.
-            Additionnally, classes with many methods of moderate complexity get reported as well once the total of their
-            methods' complexities reaches 80, even if none of the methods was directly reported.
+Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+high complexity, and 11+ is very high complexity. By default, this rule reports methods with a complexity >= 10.
+Additionnally, classes with many methods of moderate complexity get reported as well once the total of their
+methods' complexities reaches 80, even if none of the methods was directly reported.
 
-            Reported methods should be broken down into several smaller methods. Reported classes should probably be broken down
-            into subcomponents.]]>
+Reported methods should be broken down into several smaller methods. Reported classes should probably be broken down
+into subcomponents.]]>
         </description>
         <priority>3</priority>
         <example>
