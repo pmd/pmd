@@ -85,20 +85,22 @@ You can then retrieve the value of the property at any time using `getProperty(<
 
 #### Creating a descriptor
 
-From version 6.0.0 on, properties can be built using specific builders. For example, to build a string property, you'd call
+From version 6.0.0 on, properties can be built using specific **builders**. For example, to build a string property, you'd call
 ```java
 StringProperty.named("myProperty")
-              .description("This is my property")
+              .desc("This is my property")
               .defaultValue("foo")
               .build();
 ```
 
-This is fairly more readable than a constructor call, but keep in mind the description and the default value are not optional.
+This is fairly more readable than a constructor call, but keep in mind the description and the default value are not optional. 
+
+{%include note.html content="The constructors may be deprecated in a future release, so please use the builders instead." %}
 
 For numeric properties, you'd add a call to `range` to define the range of acceptable values, e.g.
 ```java
 IntegerProperty.named("myIntProperty")
-               .description("This is my property")
+               .desc("This is my property")
                .defaultValue(3)
                .range(0, 100)
                .build();
@@ -115,7 +117,7 @@ static {
 
 static EnumeratedProperty<ModeStrategy> modeProperty
  = EnumeratedProperty.<ModeStrategy>named("modeProperty")
-                     .description("This is my property")
+                     .desc("This is my property")
                      .defaultValue(new EasyStrategy())
                      .mappings(map)
                      .type(ModeStrategy.class)
@@ -173,7 +175,7 @@ Multivalued properties are also allowed and their `type` attribute has the form 
 <rule name="MyXpathRule" ...>
   <properties>
     <property name="version" value="2.0" />
-    <property name="i" type="List[Integer]" value="1,2,5" description="An IntegerMultiProperty." />
+    <property name="intProp" type="List[Integer]" value="1,2,5" description="An IntegerMultiProperty." />
     <property name="reportedIdentifiers" type="List[String]" value="foo$bar" delimiter="$" 
               description="A StringMultiProperty." />
     <property name="xpath">
@@ -200,7 +202,7 @@ In order to assemble an effective UI to manage the rule properties the following
 
 *   If the property supports more than one value then you may opt to use a single text field and parse the entries after the user leaves or hits the return key or you can create a read-only widget and add/remove values via a popup dialog.
 
-*   All multi-value properties make use of a character to delimit the values in their serialized form so you will need to ensure that you prevent the user from entering values containing it. Retrieve the delimiter via the multivaluedelimiter() method.
+*   All multivalued properties make use of a character to delimit the values in their serialized form so you will need to ensure that you prevent the user from entering values containing it. Retrieve the delimiter via the multiValueDelimiter() method.
 
 You can use the errorFor(value) method to validate the values entered by the user or check the values held by the rule configuration file. It returns null or an error message as appropriate. It would be best to flag and disable rules that have invalid property values.
 
