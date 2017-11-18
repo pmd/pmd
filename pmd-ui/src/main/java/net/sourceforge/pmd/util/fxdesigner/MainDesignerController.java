@@ -339,7 +339,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         List<MenuItem> items = new ArrayList<>();
 
         for (final File f : recentFiles) {
-            if (f.exists()) {
+            if (f.exists() && f.isFile()) {
                 CustomMenuItem item = new CustomMenuItem(new Label(f.getName()));
                 item.setOnAction(e -> loadSourceFromFile(f));
                 item.setMnemonicParsing(false);
