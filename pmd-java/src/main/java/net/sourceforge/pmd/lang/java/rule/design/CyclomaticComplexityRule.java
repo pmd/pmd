@@ -37,9 +37,10 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     private static final Logger LOG = Logger.getLogger(CyclomaticComplexityRule.class.getName());
 
     // Deprecated, kept for backwards compatibility (6.0.0)
+    @Deprecated
     private static final IntegerProperty REPORT_LEVEL_DESCRIPTOR
         = IntegerProperty.named("reportLevel")
-                         .desc("Cyclomatic Complexity reporting threshold")
+                         .desc("Deprecated! Cyclomatic Complexity reporting threshold")
                          .range(1, 30).defaultValue(10).uiOrder(1.0f).build();
 
 
