@@ -1198,13 +1198,13 @@ public class Foo extends Bar {
 **Priority:** Medium (3)
 
 The NPath complexity of a method is the number of acyclic execution paths through that method.
-            While cyclomatic complexity counts the number of decision points in a method, NPath counts the number of
-            full paths from the beginning to the end of the block of the method. That metric grows exponentially, as
-            it multiplies the complexity of statements in the same block. For more details on the calculation, see the
-            documentation of the [NPath metric](/pmd_java_metrics_index.html#npath-complexity-npath).
+While cyclomatic complexity counts the number of decision points in a method, NPath counts the number of
+full paths from the beginning to the end of the block of the method. That metric grows exponentially, as
+it multiplies the complexity of statements in the same block. For more details on the calculation, see the
+documentation of the [NPath metric](/pmd_java_metrics_index.html#npath-complexity-npath).
 
-            A threshold of 200 is generally considered the point where measures should be taken to reduce
-            complexity and increase readability.
+A threshold of 200 is generally considered the point where measures should be taken to reduce
+complexity and increase readability.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.NPathComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/NPathComplexityRule.java)
 
