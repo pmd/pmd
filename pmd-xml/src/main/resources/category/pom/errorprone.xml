@@ -23,16 +23,16 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//dependencyManagement/dependency/type/text[not(contains('pom, jar, maven-plugin, ejb, war, ear, rar, par',@Image))]
+//dependencyManagement/dependency/type/text[not(@Image = $validTypes)]
 ]]>
                 </value>
             </property>
-            <!-- FIXME: property injection seems to be failing with XML.... -->
-            <!-- property name="validTypes" value="pom, jar, maven-plugin, ejb, war, ear, rar, par" description="Set of valid types."-->
-            <!-- Then use as message: "By default, Maven only recognizes the following types: $validTypes." -->
+            <property name="validTypes" value="pom|jar|maven-plugin|ejb|war|ear|rar|par" type="List[String]" description="Set of valid types."/>
+            <!-- TODO: Then use as message: "By default, Maven only recognizes the following types: $validTypes." -->
         </properties>
         <example>
 <![CDATA[

@@ -140,8 +140,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             return new FloatValue((Float) value);
         } else {
             // We could maybe use UntypedAtomicValue
-            throw new RuntimeException("Unable to create ValueRepresentation "
-                                       + "for value of type: " + (value == null ? null : value.getClass()));
+            throw new RuntimeException("Unable to create ValueRepresentation for value of type: " + value.getClass());
         }
     }
 
