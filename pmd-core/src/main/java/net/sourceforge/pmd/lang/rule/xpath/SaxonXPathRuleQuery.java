@@ -26,6 +26,7 @@ import net.sf.saxon.sxpath.XPathExpression;
 import net.sf.saxon.sxpath.XPathStaticContext;
 import net.sf.saxon.sxpath.XPathVariable;
 import net.sf.saxon.trans.XPathException;
+import net.sf.saxon.value.AtomicValue;
 import net.sf.saxon.value.BigIntegerValue;
 import net.sf.saxon.value.BooleanValue;
 import net.sf.saxon.value.DoubleValue;
@@ -42,18 +43,19 @@ import net.sf.saxon.value.UntypedAtomicValue;
  */
 public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
 
-    // Mapping from Node name to applicable XPath queries
-    private XPathExpression xpathExpression;
-    private List<XPathVariable> xpathVariables;
-
     private static final int MAX_CACHE_SIZE = 20;
     private static final Map<Node, DocumentNode> CACHE = new LinkedHashMap<Node, DocumentNode>(MAX_CACHE_SIZE) {
         private static final long serialVersionUID = -7653916493967142443L;
+
 
         protected boolean removeEldestEntry(final Map.Entry<Node, DocumentNode> eldest) {
             return size() > MAX_CACHE_SIZE;
         }
     };
+    // Mapping from Node name to applicable XPath queries
+    private XPathExpression xpathExpression;
+    private List<XPathVariable> xpathVariables;
+
 
     /**
      * {@inheritDoc}
@@ -62,6 +64,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     public boolean isSupportedVersion(String version) {
         return XPATH_1_0_COMPATIBILITY.equals(version) || XPATH_2_0.equals(version);
     }
+
 
     /**
      * {@inheritDoc}
@@ -112,38 +115,14 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             }
             Item[] converted = new Item[val.size()];
             for (int i = 0; i < val.size(); i++) {
-                converted[i] = getItemRepresentation(val.get(i));
+                converted[i] = getAtomicRepresentation(val.get(i));
             }
             return new SequenceExtent(converted);
         } else {
-            return getItemRepresentation(value);
+            return getAtomicRepresentation(value);
         }
     }
-
-
-    private Item getItemRepresentation(Object value) {
-        if (value == null) {
-            return UntypedAtomicValue.ZERO_LENGTH_UNTYPED;
-        } else if (value instanceof String) {
-            return new StringValue((String) value);
-        } else if (value instanceof Boolean) {
-            return BooleanValue.get((Boolean) value);
-        } else if (value instanceof Integer) {
-            return Int64Value.makeIntegerValue((Integer) value);
-        } else if (value instanceof Long) {
-            return new BigIntegerValue((Long) value);
-        } else if (value instanceof Double) {
-            return new DoubleValue((Double) value);
-        } else if (value instanceof Character) {
-            return new StringValue(value.toString());
-        } else if (value instanceof Float) {
-            return new FloatValue((Float) value);
-        } else {
-            // We could maybe use UntypedAtomicValue
-            throw new RuntimeException("Unable to create ValueRepresentation for value of type: " + value.getClass());
-        }
-    }
-
+    
 
     private DocumentNode getDocumentNode(Node node) {
         // Get the root AST node
@@ -163,6 +142,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         }
         return documentNode;
     }
+
 
     private void initializeXPathExpression() {
         if (xpathExpression != null) {
@@ -198,6 +178,38 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             xpathExpression = xpathEvaluator.createExpression(super.xpath);
         } catch (XPathException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+
+    /**
+     * Gets the Saxon representation of the parameter, if its type corresponds 
+     * to an XPath 2.0 atomic datatype.
+     *
+     * @param value The value to convert
+     *
+     * @return The converted AtomicValue
+     */
+    public static AtomicValue getAtomicRepresentation(Object value) {
+        if (value == null) {
+            return UntypedAtomicValue.ZERO_LENGTH_UNTYPED;
+        } else if (value instanceof String) {
+            return new StringValue((String) value);
+        } else if (value instanceof Boolean) {
+            return BooleanValue.get((Boolean) value);
+        } else if (value instanceof Integer) {
+            return Int64Value.makeIntegerValue((Integer) value);
+        } else if (value instanceof Long) {
+            return new BigIntegerValue((Long) value);
+        } else if (value instanceof Double) {
+            return new DoubleValue((Double) value);
+        } else if (value instanceof Character) {
+            return new StringValue(value.toString());
+        } else if (value instanceof Float) {
+            return new FloatValue((Float) value);
+        } else {
+            // We could maybe use UntypedAtomicValue
+            throw new RuntimeException("Unable to create ValueRepresentation for value of type: " + value.getClass());
         }
     }
 }

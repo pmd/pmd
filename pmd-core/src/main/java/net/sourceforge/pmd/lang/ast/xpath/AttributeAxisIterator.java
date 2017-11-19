@@ -6,8 +6,11 @@ package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -98,17 +101,20 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         return new Attribute(node, m.name, m.method);
     }
 
+    private static final Set<Class<?>> CONSIDERED_RETURN_TYPES 
+        = new HashSet<>(Arrays.<Class<?>>asList(Integer.TYPE, Boolean.TYPE, Double.TYPE, String.class, Long.TYPE, Character.TYPE, Float.TYPE));
+    
+    private static final Set<String> FILTERED_OUT_NAMES 
+        = new HashSet<>(Arrays.asList("toString", "getClass", "getTypeNameNode", "hashCode", "getImportedNameNode", "getScope"));
+    
     protected boolean isAttributeAccessor(Method method) {
-
         String methodName = method.getName();
         boolean deprecated = method.getAnnotation(Deprecated.class) != null;
 
         return !deprecated
-                && (Integer.TYPE == method.getReturnType() || Boolean.TYPE == method.getReturnType()
-                        || Double.TYPE == method.getReturnType() || String.class == method.getReturnType())
-                && method.getParameterTypes().length == 0 && Void.TYPE != method.getReturnType()
-                && !methodName.startsWith("jjt") && !"toString".equals(methodName) && !"getScope".equals(methodName)
-                && !"getClass".equals(methodName) && !"getTypeNameNode".equals(methodName)
-                && !"getImportedNameNode".equals(methodName) && !"hashCode".equals(methodName);
+               && CONSIDERED_RETURN_TYPES.contains(method.getReturnType())
+               && method.getParameterTypes().length == 0
+               && !methodName.startsWith("jjt")
+               && !FILTERED_OUT_NAMES.contains(methodName);
     }
 }
