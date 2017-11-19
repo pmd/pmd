@@ -2,7 +2,7 @@
 title:  PMD Making Rulesets
 tags: [customizing]
 summary: Making Custom Rulesets for PMD
-last_updated: July 3, 2016
+last_updated: November 2017
 permalink: pmd_devdocs_making_rulesets.html
 author: Tom Copeland <tomcopeland@users.sourceforge.net>
 ---
@@ -42,9 +42,6 @@ After you add these references it’ll look something like this:
 		This ruleset checks my code for bad stuff
 	</description>
 
-	<!-- We'll use the entire 'getting started' ruleset -->
-	<rule ref="rulesets/java/gettingstarted.xml"/>
-
 	<!-- Here's some rules we'll specify one at a time -->
 	<rule ref="category/java/bestpractices.xml/UnusedLocalVariable"/>
 	<rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
@@ -52,8 +49,7 @@ After you add these references it’ll look something like this:
 	<rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary"/>
 
 	<!-- We want to customize this rule a bit, change the message and raise the priority  -->
-	<rule
-			ref="category/java/errorprone.xml/EmptyCatchBlock"
+	<rule ref="category/java/errorprone.xml/EmptyCatchBlock"
 			message="Must handle exceptions">
 		<priority>2</priority>
 	</rule>
@@ -76,15 +72,15 @@ After you add these references it’ll look something like this:
 
 ## Excluding rules from a ruleset
 
-You can also make a custom ruleset that excludes rules, like this:
+You can also make a custom ruleset by referencing a complete category and exclude certain rules, like this:
 
 ```xml
 <?xml version="1.0"?>
-<ruleset name="mybraces"
+<ruleset name="myruleset"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
-  <description>Just the braces rules I like</description>
+  <description>All codestyle rules, but with just the braces rules I like</description>
   <rule ref="category/java/codestyle.xml">
     <exclude name="WhileLoopsMustUseBraces"/>
     <exclude name="IfElseStmtsMustUseBraces"/>
