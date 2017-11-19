@@ -196,6 +196,11 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
     Its report threshold can be configured via the property `reportLevel`, which replaces the now
     deprecated property `minimum`.
 
+*   The rule `CyclomaticComplexity` (ruleset `java-codesize`) has been revamped to use the new metrics framework.
+    Its report threshold can be configured via the properties `classReportLevel` and `methodReportLevel` separately.
+    The old property `reportLevel`, which configured the level for both total class and method complexity,
+    is deprecated.
+
 #### Deprecated Rules
 
 *   The rules `NcssConstructorCount`, `NcssMethodCount`, and `NcssTypeCount` (ruleset `java-codesize`) have been
@@ -435,4 +440,5 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#694](https://github.com/pmd/pmd/pull/694): \[core] Add minor fixes to root pom - [Matias Comercio](https://github.com/MatiasComercio)
 *   [#696](https://github.com/pmd/pmd/pull/696): \[core] Add remove operation over nodes - [Matias Comercio](https://github.com/MatiasComercio)
 *   [#722](https://github.com/pmd/pmd/pull/722): \[java] Move NPathComplexity from metrics to design - [Clément Fournier](https://github.com/oowekyala)
+*   [#734](https://github.com/pmd/pmd/pull/734): \[java] Move CyclomaticComplexity from metrics to design - [Clément Fournier](https://github.com/oowekyala)
 
