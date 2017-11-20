@@ -3,17 +3,10 @@ title: Java Rules
 permalink: pmd_rules_java.html
 folder: pmd/rules
 ---
-List of rulesets and rules contained in each ruleset.
-
-*   [Best Practices](pmd_rules_java_bestpractices.html): Rules which enforce generally accepted best practices.
-*   [Code Style](pmd_rules_java_codestyle.html): Rules which enforce a specific coding style.
-*   [Design](pmd_rules_java_design.html): Rules that help you discover design issues.
-*   [Documentation](pmd_rules_java_documentation.html): Rules that are related to code documentation.
-*   [Error Prone](pmd_rules_java_errorprone.html): Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
-*   [Multithreading](pmd_rules_java_multithreading.html): Rules that flag issues when dealing with multiple threads of execution.
-*   [Performance](pmd_rules_java_performance.html): Rules that flag suboptimal code.
-
 ## Best Practices
+
+{% include callout.html content="Rules which enforce generally accepted best practices." %}
+
 *   [AbstractClassWithoutAbstractMethod](pmd_rules_java_bestpractices.html#abstractclasswithoutabstractmethod): The abstract class does not contain any abstract methods. An abstract class suggestsan incomplete...
 *   [AccessorClassGeneration](pmd_rules_java_bestpractices.html#accessorclassgeneration): Instantiation by way of private constructors from outside of the constructor's class often causes...
 *   [AccessorMethodGeneration](pmd_rules_java_bestpractices.html#accessormethodgeneration): When accessing a private field / method from another class, the Java compiler will generate a acc...
@@ -61,6 +54,9 @@ List of rulesets and rules contained in each ruleset.
 *   [UseVarargs](pmd_rules_java_bestpractices.html#usevarargs): Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic...
 
 ## Code Style
+
+{% include callout.html content="Rules which enforce a specific coding style." %}
+
 *   [AbstractNaming](pmd_rules_java_codestyle.html#abstractnaming): Abstract classes should be named 'AbstractXXX'.
 *   [AtLeastOneConstructor](pmd_rules_java_codestyle.html#atleastoneconstructor): Each class should declare at least one constructor.
 *   [AvoidDollarSigns](pmd_rules_java_codestyle.html#avoiddollarsigns): Avoid using dollar signs in variable/method/class/interface names.
@@ -115,6 +111,9 @@ List of rulesets and rules contained in each ruleset.
 *   [WhileLoopsMustUseBraces](pmd_rules_java_codestyle.html#whileloopsmustusebraces): Avoid using 'while' statements without using braces to surround the code block. If the code forma...
 
 ## Design
+
+{% include callout.html content="Rules that help you discover design issues." %}
+
 *   [AbstractClassWithoutAnyMethod](pmd_rules_java_design.html#abstractclasswithoutanymethod): If an abstract class does not provides any methods, it may be acting as a simple data containerth...
 *   [AvoidCatchingGenericException](pmd_rules_java_design.html#avoidcatchinggenericexception): Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in tr...
 *   [AvoidDeeplyNestedIfStmts](pmd_rules_java_design.html#avoiddeeplynestedifstmts): Avoid creating deeply nested if-then statements since they are harder to read and error-prone to ...
@@ -162,6 +161,9 @@ List of rulesets and rules contained in each ruleset.
 *   [UseUtilityClass](pmd_rules_java_design.html#useutilityclass): For classes that only have static methods, consider making them utility classes.Note that this do...
 
 ## Documentation
+
+{% include callout.html content="Rules that are related to code documentation." %}
+
 *   [CommentContent](pmd_rules_java_documentation.html#commentcontent): A rule for the politically correct... we don't want to offend anyone.
 *   [CommentRequired](pmd_rules_java_documentation.html#commentrequired): Denotes whether comments are required (or unwanted) for specific language elements.
 *   [CommentSize](pmd_rules_java_documentation.html#commentsize): Determines whether the dimensions of non-header comments found are within the specified limits.
@@ -169,6 +171,9 @@ List of rulesets and rules contained in each ruleset.
 *   [UncommentedEmptyMethodBody](pmd_rules_java_documentation.html#uncommentedemptymethodbody): Uncommented Empty Method Body finds instances where a method body does not containstatements, but...
 
 ## Error Prone
+
+{% include callout.html content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors." %}
+
 *   [AssignmentInOperand](pmd_rules_java_errorprone.html#assignmentinoperand): Avoid assignments in operands; this can make code more complicated and harder to read.
 *   [AssignmentToNonFinalStatic](pmd_rules_java_errorprone.html#assignmenttononfinalstatic): Identifies a possible unsafe usage of a static field.
 *   [AvoidAccessibilityAlteration](pmd_rules_java_errorprone.html#avoidaccessibilityalteration): Methods such as getDeclaredConstructors(), getDeclaredConstructor(Class[]) and setAccessible(),as...
@@ -269,6 +274,9 @@ List of rulesets and rules contained in each ruleset.
 *   [UseProperClassLoader](pmd_rules_java_errorprone.html#useproperclassloader): In J2EE, the getClassLoader() method might not work as expected. Use Thread.currentThread().getCo...
 
 ## Multithreading
+
+{% include callout.html content="Rules that flag issues when dealing with multiple threads of execution." %}
+
 *   [AvoidSynchronizedAtMethodLevel](pmd_rules_java_multithreading.html#avoidsynchronizedatmethodlevel): Method-level synchronization can cause problems when new code is added to the method.Block-level ...
 *   [AvoidThreadGroup](pmd_rules_java_multithreading.html#avoidthreadgroup): Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environmentit...
 *   [AvoidUsingVolatile](pmd_rules_java_multithreading.html#avoidusingvolatile): Use of the keyword 'volatile' is generally used to fine tune a Java application, and therefore, r...
@@ -281,6 +289,9 @@ List of rulesets and rules contained in each ruleset.
 *   [UseNotifyAllInsteadOfNotify](pmd_rules_java_multithreading.html#usenotifyallinsteadofnotify): Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, th...
 
 ## Performance
+
+{% include callout.html content="Rules that flag suboptimal code." %}
+
 *   [AddEmptyString](pmd_rules_java_performance.html#addemptystring): The conversion of literals to strings by concatenating them with empty strings is inefficient.It ...
 *   [AppendCharacterWithChar](pmd_rules_java_performance.html#appendcharacterwithchar): Avoid concatenating characters as strings in StringBuffer/StringBuilder.append methods.
 *   [AvoidArrayLoops](pmd_rules_java_performance.html#avoidarrayloops): Instead of manually copying data between two arrays, use the efficient System.arraycopy method in...
@@ -310,4 +321,239 @@ List of rulesets and rules contained in each ruleset.
 *   [UselessStringValueOf](pmd_rules_java_performance.html#uselessstringvalueof): No need to call String.valueOf to append to a string; just use the valueOf() argument directly.
 *   [UseStringBufferForStringAppends](pmd_rules_java_performance.html#usestringbufferforstringappends): The use of the '+=' operator for appending strings causes the JVM to create and use an internal S...
 *   [UseStringBufferLength](pmd_rules_java_performance.html#usestringbufferlength): Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toStrin...
+
+## Additional rulesets
+
+*   Android (`rulesets/java/android.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [CallSuperFirst](pmd_rules_java_errorprone.html#callsuperfirst), [CallSuperLast](pmd_rules_java_errorprone.html#callsuperlast), [DoNotHardCodeSDCard](pmd_rules_java_errorprone.html#donothardcodesdcard)
+
+*   Basic (`rulesets/java/basic.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [AvoidBranchingStatementAsLastInLoop](pmd_rules_java_errorprone.html#avoidbranchingstatementaslastinloop), [AvoidDecimalLiteralsInBigDecimalConstructor](pmd_rules_java_errorprone.html#avoiddecimalliteralsinbigdecimalconstructor), [AvoidMultipleUnaryOperators](pmd_rules_java_errorprone.html#avoidmultipleunaryoperators), [AvoidThreadGroup](pmd_rules_java_multithreading.html#avoidthreadgroup), [AvoidUsingHardCodedIP](pmd_rules_java_bestpractices.html#avoidusinghardcodedip), [AvoidUsingOctalValues](pmd_rules_java_errorprone.html#avoidusingoctalvalues), [BigIntegerInstantiation](pmd_rules_java_performance.html#bigintegerinstantiation), [BooleanInstantiation](pmd_rules_java_performance.html#booleaninstantiation), [BrokenNullCheck](pmd_rules_java_errorprone.html#brokennullcheck), [CheckResultSet](pmd_rules_java_bestpractices.html#checkresultset), [CheckSkipResult](pmd_rules_java_errorprone.html#checkskipresult), [ClassCastExceptionWithToArray](pmd_rules_java_errorprone.html#classcastexceptionwithtoarray), [CollapsibleIfStatements](pmd_rules_java_design.html#collapsibleifstatements), [DontCallThreadRun](pmd_rules_java_multithreading.html#dontcallthreadrun), [DontUseFloatTypeForLoopIndices](pmd_rules_java_errorprone.html#dontusefloattypeforloopindices), [DoubleCheckedLocking](pmd_rules_java_multithreading.html#doublecheckedlocking), [ExtendsObject](pmd_rules_java_codestyle.html#extendsobject), [ForLoopShouldBeWhileLoop](pmd_rules_java_codestyle.html#forloopshouldbewhileloop), [JumbledIncrementer](pmd_rules_java_errorprone.html#jumbledincrementer), [MisplacedNullCheck](pmd_rules_java_errorprone.html#misplacednullcheck), [OverrideBothEqualsAndHashcode](pmd_rules_java_errorprone.html#overridebothequalsandhashcode), [ReturnFromFinallyBlock](pmd_rules_java_errorprone.html#returnfromfinallyblock), [SimplifiedTernary](pmd_rules_java_design.html#simplifiedternary), [UnconditionalIfStatement](pmd_rules_java_errorprone.html#unconditionalifstatement)
+
+*   Braces (`rulesets/java/braces.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [ForLoopsMustUseBraces](pmd_rules_java_codestyle.html#forloopsmustusebraces), [IfElseStmtsMustUseBraces](pmd_rules_java_codestyle.html#ifelsestmtsmustusebraces), [IfStmtsMustUseBraces](pmd_rules_java_codestyle.html#ifstmtsmustusebraces), [WhileLoopsMustUseBraces](pmd_rules_java_codestyle.html#whileloopsmustusebraces)
+
+*   Clone Implementation (`rulesets/java/clone.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [CloneMethodMustBePublic](pmd_rules_java_errorprone.html#clonemethodmustbepublic), [CloneMethodMustImplementCloneable](pmd_rules_java_errorprone.html#clonemethodmustimplementcloneable), [CloneMethodReturnTypeMustMatchClassName](pmd_rules_java_errorprone.html#clonemethodreturntypemustmatchclassname), [CloneThrowsCloneNotSupportedException](pmd_rules_java_errorprone.html#clonethrowsclonenotsupportedexception), [ProperCloneImplementation](pmd_rules_java_errorprone.html#propercloneimplementation)
+
+*   Code Size (`rulesets/java/codesize.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [CyclomaticComplexity](pmd_rules_java_design.html#cyclomaticcomplexity), [ExcessiveClassLength](pmd_rules_java_design.html#excessiveclasslength), [ExcessiveMethodLength](pmd_rules_java_design.html#excessivemethodlength), [ExcessiveParameterList](pmd_rules_java_design.html#excessiveparameterlist), [ExcessivePublicCount](pmd_rules_java_design.html#excessivepubliccount), [ModifiedCyclomaticComplexity](pmd_rules_java_design.html#modifiedcyclomaticcomplexity), [NcssConstructorCount](pmd_rules_java_design.html#ncssconstructorcount), [NcssCount](pmd_rules_java_design.html#ncsscount), [NcssMethodCount](pmd_rules_java_design.html#ncssmethodcount), [NcssTypeCount](pmd_rules_java_design.html#ncsstypecount), [NPathComplexity](pmd_rules_java_design.html#npathcomplexity), [StdCyclomaticComplexity](pmd_rules_java_design.html#stdcyclomaticcomplexity), [TooManyFields](pmd_rules_java_design.html#toomanyfields), [TooManyMethods](pmd_rules_java_design.html#toomanymethods)
+
+*   Comments (`rulesets/java/comments.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [CommentContent](pmd_rules_java_documentation.html#commentcontent), [CommentDefaultAccessModifier](pmd_rules_java_codestyle.html#commentdefaultaccessmodifier), [CommentRequired](pmd_rules_java_documentation.html#commentrequired), [CommentSize](pmd_rules_java_documentation.html#commentsize)
+
+*   Controversial (`rulesets/java/controversial.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [AssignmentInOperand](pmd_rules_java_errorprone.html#assignmentinoperand), [AtLeastOneConstructor](pmd_rules_java_codestyle.html#atleastoneconstructor), [AvoidAccessibilityAlteration](pmd_rules_java_errorprone.html#avoidaccessibilityalteration), [AvoidFinalLocalVariable](pmd_rules_java_codestyle.html#avoidfinallocalvariable), [AvoidLiteralsInIfCondition](pmd_rules_java_errorprone.html#avoidliteralsinifcondition), [AvoidPrefixingMethodParameters](pmd_rules_java_codestyle.html#avoidprefixingmethodparameters), [AvoidUsingNativeCode](pmd_rules_java_codestyle.html#avoidusingnativecode), [AvoidUsingShortType](pmd_rules_java_performance.html#avoidusingshorttype), [AvoidUsingVolatile](pmd_rules_java_multithreading.html#avoidusingvolatile), [CallSuperInConstructor](pmd_rules_java_codestyle.html#callsuperinconstructor), [DataflowAnomalyAnalysis](pmd_rules_java_errorprone.html#dataflowanomalyanalysis), [DefaultPackage](pmd_rules_java_codestyle.html#defaultpackage), [DoNotCallGarbageCollectionExplicitly](pmd_rules_java_errorprone.html#donotcallgarbagecollectionexplicitly), [DontImportSun](pmd_rules_java_errorprone.html#dontimportsun), [NullAssignment](pmd_rules_java_errorprone.html#nullassignment), [OneDeclarationPerLine](pmd_rules_java_bestpractices.html#onedeclarationperline), [OnlyOneReturn](pmd_rules_java_codestyle.html#onlyonereturn), [SuspiciousOctalEscape](pmd_rules_java_errorprone.html#suspiciousoctalescape), [UnnecessaryConstructor](pmd_rules_java_codestyle.html#unnecessaryconstructor), [UselessParentheses](pmd_rules_java_codestyle.html#uselessparentheses), [UseConcurrentHashMap](pmd_rules_java_multithreading.html#useconcurrenthashmap), [UseObjectForClearerAPI](pmd_rules_java_design.html#useobjectforclearerapi)
+
+*   Coupling (`rulesets/java/coupling.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [CouplingBetweenObjects](pmd_rules_java_design.html#couplingbetweenobjects), [ExcessiveImports](pmd_rules_java_design.html#excessiveimports), [LawOfDemeter](pmd_rules_java_design.html#lawofdemeter), [LooseCoupling](pmd_rules_java_bestpractices.html#loosecoupling), [LoosePackageCoupling](pmd_rules_java_design.html#loosepackagecoupling)
+
+*   Design (`rulesets/java/design.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [AbstractClassWithoutAbstractMethod](pmd_rules_java_bestpractices.html#abstractclasswithoutabstractmethod), [AbstractClassWithoutAnyMethod](pmd_rules_java_design.html#abstractclasswithoutanymethod), [AccessorClassGeneration](pmd_rules_java_bestpractices.html#accessorclassgeneration), [AccessorMethodGeneration](pmd_rules_java_bestpractices.html#accessormethodgeneration), [AssignmentToNonFinalStatic](pmd_rules_java_errorprone.html#assignmenttononfinalstatic), [AvoidDeeplyNestedIfStmts](pmd_rules_java_design.html#avoiddeeplynestedifstmts), [AvoidInstanceofChecksInCatchClause](pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause), [AvoidProtectedFieldInFinalClass](pmd_rules_java_codestyle.html#avoidprotectedfieldinfinalclass), [AvoidProtectedMethodInFinalClassNotExtending](pmd_rules_java_codestyle.html#avoidprotectedmethodinfinalclassnotextending), [AvoidReassigningParameters](pmd_rules_java_bestpractices.html#avoidreassigningparameters), [AvoidSynchronizedAtMethodLevel](pmd_rules_java_multithreading.html#avoidsynchronizedatmethodlevel), [BadComparison](pmd_rules_java_errorprone.html#badcomparison), [ClassWithOnlyPrivateConstructorsShouldBeFinal](pmd_rules_java_design.html#classwithonlyprivateconstructorsshouldbefinal), [CloseResource](pmd_rules_java_errorprone.html#closeresource), [CompareObjectsWithEquals](pmd_rules_java_errorprone.html#compareobjectswithequals), [ConfusingTernary](pmd_rules_java_codestyle.html#confusingternary), [ConstantsInInterface](pmd_rules_java_bestpractices.html#constantsininterface), [ConstructorCallsOverridableMethod](pmd_rules_java_errorprone.html#constructorcallsoverridablemethod), [DataClass](pmd_rules_java_design.html#dataclass), [DefaultLabelNotLastInSwitchStmt](pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitchstmt), [EmptyMethodInAbstractClassShouldBeAbstract](pmd_rules_java_codestyle.html#emptymethodinabstractclassshouldbeabstract), [EqualsNull](pmd_rules_java_errorprone.html#equalsnull), [FieldDeclarationsShouldBeAtStartOfClass](pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass), [FinalFieldCouldBeStatic](pmd_rules_java_design.html#finalfieldcouldbestatic), [GodClass](pmd_rules_java_design.html#godclass), [IdempotentOperations](pmd_rules_java_errorprone.html#idempotentoperations), [ImmutableField](pmd_rules_java_design.html#immutablefield), [InstantiationToGetClass](pmd_rules_java_errorprone.html#instantiationtogetclass), [LogicInversion](pmd_rules_java_design.html#logicinversion), [MissingBreakInSwitch](pmd_rules_java_errorprone.html#missingbreakinswitch), [MissingStaticMethodInNonInstantiatableClass](pmd_rules_java_errorprone.html#missingstaticmethodinnoninstantiatableclass), [NonCaseLabelInSwitchStatement](pmd_rules_java_errorprone.html#noncaselabelinswitchstatement), [NonStaticInitializer](pmd_rules_java_errorprone.html#nonstaticinitializer), [NonThreadSafeSingleton](pmd_rules_java_multithreading.html#nonthreadsafesingleton), [OptimizableToArrayCall](pmd_rules_java_performance.html#optimizabletoarraycall), [PositionLiteralsFirstInCaseInsensitiveComparisons](pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons), [PositionLiteralsFirstInComparisons](pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons), [PreserveStackTrace](pmd_rules_java_bestpractices.html#preservestacktrace), [ReturnEmptyArrayRatherThanNull](pmd_rules_java_errorprone.html#returnemptyarrayratherthannull), [SimpleDateFormatNeedsLocale](pmd_rules_java_errorprone.html#simpledateformatneedslocale), [SimplifyBooleanExpressions](pmd_rules_java_design.html#simplifybooleanexpressions), [SimplifyBooleanReturns](pmd_rules_java_design.html#simplifybooleanreturns), [SimplifyConditional](pmd_rules_java_design.html#simplifyconditional), [SingleMethodSingleton](pmd_rules_java_errorprone.html#singlemethodsingleton), [SingletonClassReturningNewInstance](pmd_rules_java_errorprone.html#singletonclassreturningnewinstance), [SingularField](pmd_rules_java_design.html#singularfield), [SwitchDensity](pmd_rules_java_design.html#switchdensity), [SwitchStmtsShouldHaveDefault](pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault), [TooFewBranchesForASwitchStatement](pmd_rules_java_performance.html#toofewbranchesforaswitchstatement), [UncommentedEmptyConstructor](pmd_rules_java_documentation.html#uncommentedemptyconstructor), [UncommentedEmptyMethodBody](pmd_rules_java_documentation.html#uncommentedemptymethodbody), [UnnecessaryLocalBeforeReturn](pmd_rules_java_codestyle.html#unnecessarylocalbeforereturn), [UnsynchronizedStaticDateFormatter](pmd_rules_java_multithreading.html#unsynchronizedstaticdateformatter), [UseCollectionIsEmpty](pmd_rules_java_bestpractices.html#usecollectionisempty), [UseLocaleWithCaseConversions](pmd_rules_java_errorprone.html#uselocalewithcaseconversions), [UseNotifyAllInsteadOfNotify](pmd_rules_java_multithreading.html#usenotifyallinsteadofnotify), [UseUtilityClass](pmd_rules_java_design.html#useutilityclass), [UseVarargs](pmd_rules_java_bestpractices.html#usevarargs)
+
+*   Design (`rulesets/java/metrics.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [CyclomaticComplexity](pmd_rules_java_design.html#cyclomaticcomplexity)
+
+*   Empty Code (`rulesets/java/empty.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [EmptyCatchBlock](pmd_rules_java_errorprone.html#emptycatchblock), [EmptyFinallyBlock](pmd_rules_java_errorprone.html#emptyfinallyblock), [EmptyIfStmt](pmd_rules_java_errorprone.html#emptyifstmt), [EmptyInitializer](pmd_rules_java_errorprone.html#emptyinitializer), [EmptyStatementBlock](pmd_rules_java_errorprone.html#emptystatementblock), [EmptyStatementNotInLoop](pmd_rules_java_errorprone.html#emptystatementnotinloop), [EmptyStaticInitializer](pmd_rules_java_errorprone.html#emptystaticinitializer), [EmptySwitchStatements](pmd_rules_java_errorprone.html#emptyswitchstatements), [EmptySynchronizedBlock](pmd_rules_java_errorprone.html#emptysynchronizedblock), [EmptyTryBlock](pmd_rules_java_errorprone.html#emptytryblock), [EmptyWhileStmt](pmd_rules_java_errorprone.html#emptywhilestmt)
+
+*   Finalizer (`rulesets/java/finalizers.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [AvoidCallingFinalize](pmd_rules_java_errorprone.html#avoidcallingfinalize), [EmptyFinalizer](pmd_rules_java_errorprone.html#emptyfinalizer), [FinalizeDoesNotCallSuperFinalize](pmd_rules_java_errorprone.html#finalizedoesnotcallsuperfinalize), [FinalizeOnlyCallsSuperFinalize](pmd_rules_java_errorprone.html#finalizeonlycallssuperfinalize), [FinalizeOverloaded](pmd_rules_java_errorprone.html#finalizeoverloaded), [FinalizeShouldBeProtected](pmd_rules_java_errorprone.html#finalizeshouldbeprotected)
+
+*   Import Statements (`rulesets/java/imports.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [DontImportJavaLang](pmd_rules_java_codestyle.html#dontimportjavalang), [DuplicateImports](pmd_rules_java_codestyle.html#duplicateimports), [ImportFromSamePackage](pmd_rules_java_errorprone.html#importfromsamepackage), [TooManyStaticImports](pmd_rules_java_codestyle.html#toomanystaticimports), [UnnecessaryFullyQualifiedName](pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname), [UnusedImports](pmd_rules_java_bestpractices.html#unusedimports)
+
+*   J2EE (`rulesets/java/j2ee.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [DoNotCallSystemExit](pmd_rules_java_errorprone.html#donotcallsystemexit), [DoNotUseThreads](pmd_rules_java_multithreading.html#donotusethreads), [LocalHomeNamingConvention](pmd_rules_java_codestyle.html#localhomenamingconvention), [LocalInterfaceSessionNamingConvention](pmd_rules_java_codestyle.html#localinterfacesessionnamingconvention), [MDBAndSessionBeanNamingConvention](pmd_rules_java_codestyle.html#mdbandsessionbeannamingconvention), [RemoteInterfaceNamingConvention](pmd_rules_java_codestyle.html#remoteinterfacenamingconvention), [RemoteSessionInterfaceNamingConvention](pmd_rules_java_codestyle.html#remotesessioninterfacenamingconvention), [StaticEJBFieldShouldBeFinal](pmd_rules_java_errorprone.html#staticejbfieldshouldbefinal), [UseProperClassLoader](pmd_rules_java_errorprone.html#useproperclassloader)
+
+*   JavaBeans (`rulesets/java/javabeans.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [BeanMembersShouldSerialize](pmd_rules_java_errorprone.html#beanmembersshouldserialize), [MissingSerialVersionUID](pmd_rules_java_errorprone.html#missingserialversionuid)
+
+*   JUnit (`rulesets/java/junit.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [JUnitAssertionsShouldIncludeMessage](pmd_rules_java_bestpractices.html#junitassertionsshouldincludemessage), [JUnitSpelling](pmd_rules_java_errorprone.html#junitspelling), [JUnitStaticSuite](pmd_rules_java_errorprone.html#junitstaticsuite), [JUnitTestContainsTooManyAsserts](pmd_rules_java_bestpractices.html#junittestcontainstoomanyasserts), [JUnitTestsShouldIncludeAssert](pmd_rules_java_bestpractices.html#junittestsshouldincludeassert), [SimplifyBooleanAssertion](pmd_rules_java_design.html#simplifybooleanassertion), [TestClassWithoutTestCases](pmd_rules_java_errorprone.html#testclasswithouttestcases), [UnnecessaryBooleanAssertion](pmd_rules_java_errorprone.html#unnecessarybooleanassertion), [UseAssertEqualsInsteadOfAssertTrue](pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue), [UseAssertNullInsteadOfAssertTrue](pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue), [UseAssertSameInsteadOfAssertTrue](pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue), [UseAssertTrueInsteadOfAssertEquals](pmd_rules_java_bestpractices.html#useasserttrueinsteadofassertequals)
+
+*   MigratingToJUnit4 (`rulesets/java/migrating_to_junit4.xml`):
+
+    Contains rules for migrating to JUnit 4
+
+    It contains the following rules:
+
+    [JUnit4SuitesShouldUseSuiteAnnotation](pmd_rules_java_bestpractices.html#junit4suitesshouldusesuiteannotation), [JUnit4TestShouldUseAfterAnnotation](pmd_rules_java_bestpractices.html#junit4testshoulduseafterannotation), [JUnit4TestShouldUseBeforeAnnotation](pmd_rules_java_bestpractices.html#junit4testshouldusebeforeannotation), [JUnit4TestShouldUseTestAnnotation](pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation), [JUnitUseExpected](pmd_rules_java_bestpractices.html#junituseexpected)
+
+*   Migration (`rulesets/java/migrating.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [AvoidAssertAsIdentifier](pmd_rules_java_errorprone.html#avoidassertasidentifier), [AvoidEnumAsIdentifier](pmd_rules_java_errorprone.html#avoidenumasidentifier), [ByteInstantiation](pmd_rules_java_performance.html#byteinstantiation), [ForLoopCanBeForeach](pmd_rules_java_bestpractices.html#forloopcanbeforeach), [IntegerInstantiation](pmd_rules_java_performance.html#integerinstantiation), [JUnit4SuitesShouldUseSuiteAnnotation](pmd_rules_java_bestpractices.html#junit4suitesshouldusesuiteannotation), [JUnit4TestShouldUseAfterAnnotation](pmd_rules_java_bestpractices.html#junit4testshoulduseafterannotation), [JUnit4TestShouldUseBeforeAnnotation](pmd_rules_java_bestpractices.html#junit4testshouldusebeforeannotation), [JUnit4TestShouldUseTestAnnotation](pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation), [JUnitUseExpected](pmd_rules_java_bestpractices.html#junituseexpected), [LongInstantiation](pmd_rules_java_performance.html#longinstantiation), [ReplaceEnumerationWithIterator](pmd_rules_java_bestpractices.html#replaceenumerationwithiterator), [ReplaceHashtableWithMap](pmd_rules_java_bestpractices.html#replacehashtablewithmap), [ReplaceVectorWithList](pmd_rules_java_bestpractices.html#replacevectorwithlist), [ShortInstantiation](pmd_rules_java_performance.html#shortinstantiation)
+
+*   Migration13 (`rulesets/java/migrating_to_13.xml`):
+
+    Contains rules for migrating to JDK 1.3
+
+    It contains the following rules:
+
+    [ReplaceEnumerationWithIterator](pmd_rules_java_bestpractices.html#replaceenumerationwithiterator), [ReplaceHashtableWithMap](pmd_rules_java_bestpractices.html#replacehashtablewithmap), [ReplaceVectorWithList](pmd_rules_java_bestpractices.html#replacevectorwithlist)
+
+*   Migration14 (`rulesets/java/migrating_to_14.xml`):
+
+    Contains rules for migrating to JDK 1.4
+
+    It contains the following rules:
+
+    [AvoidAssertAsIdentifier](pmd_rules_java_errorprone.html#avoidassertasidentifier)
+
+*   Migration15 (`rulesets/java/migrating_to_15.xml`):
+
+    Contains rules for migrating to JDK 1.5
+
+    It contains the following rules:
+
+    [AvoidEnumAsIdentifier](pmd_rules_java_errorprone.html#avoidenumasidentifier), [ByteInstantiation](pmd_rules_java_performance.html#byteinstantiation), [IntegerInstantiation](pmd_rules_java_performance.html#integerinstantiation), [LongInstantiation](pmd_rules_java_performance.html#longinstantiation), [ShortInstantiation](pmd_rules_java_performance.html#shortinstantiation)
+
+*   Naming (`rulesets/java/naming.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [AbstractNaming](pmd_rules_java_codestyle.html#abstractnaming), [AvoidDollarSigns](pmd_rules_java_codestyle.html#avoiddollarsigns), [AvoidFieldNameMatchingMethodName](pmd_rules_java_errorprone.html#avoidfieldnamematchingmethodname), [AvoidFieldNameMatchingTypeName](pmd_rules_java_errorprone.html#avoidfieldnamematchingtypename), [BooleanGetMethodName](pmd_rules_java_codestyle.html#booleangetmethodname), [ClassNamingConventions](pmd_rules_java_codestyle.html#classnamingconventions), [GenericsNaming](pmd_rules_java_codestyle.html#genericsnaming), [LongVariable](pmd_rules_java_codestyle.html#longvariable), [MethodNamingConventions](pmd_rules_java_codestyle.html#methodnamingconventions), [MethodWithSameNameAsEnclosingClass](pmd_rules_java_errorprone.html#methodwithsamenameasenclosingclass), [MIsLeadingVariableName](pmd_rules_java_codestyle.html#misleadingvariablename), [MIsLeadingVariableName](pmd_rules_java_codestyle.html#misleadingvariablename), [NoPackage](pmd_rules_java_codestyle.html#nopackage), [PackageCase](pmd_rules_java_codestyle.html#packagecase), [ShortClassName](pmd_rules_java_codestyle.html#shortclassname), [ShortMethodName](pmd_rules_java_codestyle.html#shortmethodname), [ShortVariable](pmd_rules_java_codestyle.html#shortvariable), [SuspiciousConstantFieldName](pmd_rules_java_codestyle.html#suspiciousconstantfieldname), [SuspiciousEqualsMethodName](pmd_rules_java_errorprone.html#suspiciousequalsmethodname), [SuspiciousHashcodeMethodName](pmd_rules_java_errorprone.html#suspicioushashcodemethodname), [VariableNamingConventions](pmd_rules_java_codestyle.html#variablenamingconventions)
+
+*   Optimization (`rulesets/java/optimizations.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [AddEmptyString](pmd_rules_java_performance.html#addemptystring), [AvoidArrayLoops](pmd_rules_java_performance.html#avoidarrayloops), [AvoidInstantiatingObjectsInLoops](pmd_rules_java_performance.html#avoidinstantiatingobjectsinloops), [LocalVariableCouldBeFinal](pmd_rules_java_codestyle.html#localvariablecouldbefinal), [MethodArgumentCouldBeFinal](pmd_rules_java_codestyle.html#methodargumentcouldbefinal), [PrematureDeclaration](pmd_rules_java_codestyle.html#prematuredeclaration), [RedundantFieldInitializer](pmd_rules_java_performance.html#redundantfieldinitializer), [SimplifyStartsWith](pmd_rules_java_performance.html#simplifystartswith), [UnnecessaryWrapperObjectCreation](pmd_rules_java_performance.html#unnecessarywrapperobjectcreation), [UseArrayListInsteadOfVector](pmd_rules_java_performance.html#usearraylistinsteadofvector), [UseArraysAsList](pmd_rules_java_performance.html#usearraysaslist), [UseStringBufferForStringAppends](pmd_rules_java_performance.html#usestringbufferforstringappends)
+
+*   Security Code Guidelines (`rulesets/java/sunsecure.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [ArrayIsStoredDirectly](pmd_rules_java_bestpractices.html#arrayisstoreddirectly), [MethodReturnsInternalArray](pmd_rules_java_bestpractices.html#methodreturnsinternalarray)
+
+*   Strict Exceptions (`rulesets/java/strictexception.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [AvoidCatchingGenericException](pmd_rules_java_design.html#avoidcatchinggenericexception), [AvoidCatchingNPE](pmd_rules_java_errorprone.html#avoidcatchingnpe), [AvoidCatchingThrowable](pmd_rules_java_errorprone.html#avoidcatchingthrowable), [AvoidLosingExceptionInformation](pmd_rules_java_errorprone.html#avoidlosingexceptioninformation), [AvoidRethrowingException](pmd_rules_java_design.html#avoidrethrowingexception), [AvoidThrowingNewInstanceOfSameException](pmd_rules_java_design.html#avoidthrowingnewinstanceofsameexception), [AvoidThrowingNullPointerException](pmd_rules_java_design.html#avoidthrowingnullpointerexception), [AvoidThrowingRawExceptionTypes](pmd_rules_java_design.html#avoidthrowingrawexceptiontypes), [DoNotExtendJavaLangError](pmd_rules_java_design.html#donotextendjavalangerror), [DoNotThrowExceptionInFinally](pmd_rules_java_errorprone.html#donotthrowexceptioninfinally), [ExceptionAsFlowControl](pmd_rules_java_design.html#exceptionasflowcontrol), [SignatureDeclareThrowsException](pmd_rules_java_design.html#signaturedeclarethrowsexception)
+
+*   String and StringBuffer (`rulesets/java/strings.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [AppendCharacterWithChar](pmd_rules_java_performance.html#appendcharacterwithchar), [AvoidDuplicateLiterals](pmd_rules_java_errorprone.html#avoidduplicateliterals), [AvoidStringBufferField](pmd_rules_java_bestpractices.html#avoidstringbufferfield), [ConsecutiveAppendsShouldReuse](pmd_rules_java_performance.html#consecutiveappendsshouldreuse), [ConsecutiveLiteralAppends](pmd_rules_java_performance.html#consecutiveliteralappends), [InefficientEmptyStringCheck](pmd_rules_java_performance.html#inefficientemptystringcheck), [InefficientStringBuffering](pmd_rules_java_performance.html#inefficientstringbuffering), [InsufficientStringBufferDeclaration](pmd_rules_java_performance.html#insufficientstringbufferdeclaration), [StringBufferInstantiationWithChar](pmd_rules_java_errorprone.html#stringbufferinstantiationwithchar), [StringInstantiation](pmd_rules_java_performance.html#stringinstantiation), [StringToString](pmd_rules_java_performance.html#stringtostring), [UnnecessaryCaseChange](pmd_rules_java_errorprone.html#unnecessarycasechange), [UseEqualsToCompareStrings](pmd_rules_java_errorprone.html#useequalstocomparestrings), [UseIndexOfChar](pmd_rules_java_performance.html#useindexofchar), [UselessStringValueOf](pmd_rules_java_performance.html#uselessstringvalueof), [UseStringBufferLength](pmd_rules_java_performance.html#usestringbufferlength)
+
+*   Type Resolution (`rulesets/java/typeresolution.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [CloneMethodMustImplementCloneable](pmd_rules_java_errorprone.html#clonemethodmustimplementcloneable), [LooseCoupling](pmd_rules_java_bestpractices.html#loosecoupling), [SignatureDeclareThrowsException](pmd_rules_java_design.html#signaturedeclarethrowsexception), [UnusedImports](pmd_rules_java_bestpractices.html#unusedimports)
+
+*   Unnecessary (`rulesets/java/unnecessary.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [UnnecessaryConversionTemporary](pmd_rules_java_errorprone.html#unnecessaryconversiontemporary), [UnnecessaryModifier](pmd_rules_java_codestyle.html#unnecessaryfinalmodifier), [UnnecessaryModifier](pmd_rules_java_codestyle.html#unnecessarymodifier), [UnnecessaryReturn](pmd_rules_java_codestyle.html#unnecessaryreturn), [UnusedNullCheckInEquals](pmd_rules_java_errorprone.html#unusednullcheckinequals), [UselessOperationOnImmutable](pmd_rules_java_errorprone.html#uselessoperationonimmutable), [UselessOverridingMethod](pmd_rules_java_design.html#uselessoverridingmethod), [UselessParentheses](pmd_rules_java_codestyle.html#uselessparentheses), [UselessQualifiedThis](pmd_rules_java_codestyle.html#uselessqualifiedthis)
+
+*   Unused Code (`rulesets/java/unusedcode.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [UnusedFormalParameter](pmd_rules_java_bestpractices.html#unusedformalparameter), [UnusedLocalVariable](pmd_rules_java_bestpractices.html#unusedlocalvariable), [UnusedPrivateField](pmd_rules_java_bestpractices.html#unusedprivatefield), [UnusedPrivateMethod](pmd_rules_java_bestpractices.html#unusedprivatemethod)
+
 

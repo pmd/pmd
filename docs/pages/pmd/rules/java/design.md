@@ -426,7 +426,7 @@ class Foo {
 |cycloOptions|[]|Choose options for the computation of Cyclo|
 |classReportLevel|80|Total class complexity reporting threshold|
 |methodReportLevel|10|Cyclomatic complexity reporting threshold|
-|reportLevel|10|Deprecated! Cyclomatic Complexity reporting threshold|
+|reportLevel|10|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Cyclomatic Complexity reporting threshold|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1249,7 +1249,7 @@ public class Foo {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|minimum|200.0|Deprecated! Minimum reporting threshold|
+|minimum|200.0|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Minimum reporting threshold|
 |reportLevel|200|N-Path Complexity reporting threshold|
 
 **Use this rule by referencing it:**
