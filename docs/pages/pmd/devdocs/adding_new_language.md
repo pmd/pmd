@@ -75,7 +75,7 @@ folder: pmd/devdocs
 *   All other rules for your language should extend this class. The purpose of this class is to implement visit methods for all AST types to simply delegate to default behavior. This is useful because most rules care only about specific AST nodes, but PMD needs to know what to do with each node - so this just lets you use default behavior for nodes you don’t care about.
 
 ## 13. Create rules
-*   Rules are ceated by extending the abstract rule class created in step 12 *(see `EmptyForeachStmtRule` for example)*
+*   Rules are created by extending the abstract rule class created in step 12 *(see `EmptyForeachStmtRule` for example)*
 *   Creating rules is already pretty well documented in PMD - and it’s no different for a new language, except you may have different AST nodes.
 
 ## 14. Test the rules

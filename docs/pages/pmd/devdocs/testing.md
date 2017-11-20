@@ -41,37 +41,37 @@ The XML file is a test resource, so it is searched in the tree under `src/test/r
 The sub package `xml` of the test class's package should contain a file with the same name as the rule's name
 which is under test.
 
-For example, to test the "Java Basic Ruleset", the fully qualified test class is:
+For example, to test the "Java Error Prone Category", the fully qualified test class is:
 
-    net.sourceforge.pmd.lang.java.rule.basic.BasicRulesTest
+    net.sourceforge.pmd.lang.java.rule.errorprone.ErrorProneRulesTest
 
 The test code for the rule "AvoidBranchingStatementAsLastInLoop" can be found in the file:
 
-    src/test/resources/net/sourceforge/pmd/lang/java/rule/basic/xml/AvoidBranchingStatementAsLastInLoop.xml
+    src/test/resources/net/sourceforge/pmd/lang/java/rule/errorprone/xml/AvoidBranchingStatementAsLastInLoop.xml
 
 In general, the class name and file name pattern for the test class and data is this:
 
-    net.sourceforge.pmd.lang.<Language Terse Name>.rule.<Ruleset Name>.<Ruleset Name>RulesTest
-    src/test/resources/net/sourceforge/pmd/lang/<Language Terse Name>/rule/<Ruleset Name>/xml/<Rule Name>.xml
+    net.sourceforge.pmd.lang.<Language Terse Name>.rule.<Category Name>.<Category Name>RulesTest
+    src/test/resources/net/sourceforge/pmd/lang/<Language Terse Name>/rule/<Category Name>/xml/<Rule Name>.xml
 
 {%include tip.html content="This convention allows you to quickly find the test cases for a given rule:
 Just search in the project for a file `<RuleName>.xml`. Looking at the path of the file, you can figure
-out the ruleset name. Searching for a class `<Ruleset Name>RulesTest` gives you the test class." %}
+out the category. Searching for a class `<Category Name>RulesTest` gives you the test class." %}
 
 ## Simple example
 
-### Test Class: BasicRulesTest
+### Test Class: ErrorProneRulesTest
 
-This is a stripped down example for the Java Basic Ruleset:
+This is a stripped down example for the Java Error Prone Category:
 
 ``` java
-package net.sourceforge.pmd.lang.java.rule.basic;
+package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class BasicRulesTest extends SimpleAggregatorTst {
+public class ErrorProneRulesTest extends SimpleAggregatorTst {
 
-    private static final String RULESET = "java-basic";
+    private static final String RULESET = "category/java/errorprone.xml";
 
     @Override
     public void setUp() {
@@ -83,9 +83,6 @@ public class BasicRulesTest extends SimpleAggregatorTst {
 
 This test class overrides the method `setUp` in order to register test cases for the two rules. If there
 are more rules, just add additional `addRule(...)` calls.
-
-{%include note.html content="The `RULESET` constant points to `java-basic` which is just a shortcut
-for `rulesets/java/basic.xml`. " %}
 
 {%include note.html content="You can also add additionally standard JUnit test methods annotated with `@Test` to
 this test class." %}
