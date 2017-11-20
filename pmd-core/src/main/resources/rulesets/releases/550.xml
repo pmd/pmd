@@ -20,7 +20,7 @@ This ruleset contains links to rules that are new in PMD v5.5.0
     <rule ref="rulesets/apex/complexity.xml/StdCyclomaticComplexity" />
     <rule ref="rulesets/apex/complexity.xml/TooManyFields" />
     <rule ref="rulesets/apex/complexity.xml/ExcessivePublicCount" />
-    <rule ref="rulesets/apex/complexity.xml/AvoidDmlStatementsInLoops" />
+    <rule ref="rulesets/apex/performance.xml/AvoidDmlStatementsInLoops" />
     <rule ref="rulesets/apex/performance.xml/AvoidSoqlInLoops" />
     <rule ref="rulesets/apex/style.xml/VariableNamingConventions" />
     <rule ref="rulesets/apex/style.xml/MethodNamingConventions" />

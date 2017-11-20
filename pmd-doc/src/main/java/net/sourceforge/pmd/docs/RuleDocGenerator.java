@@ -22,12 +22,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -35,6 +40,8 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class RuleDocGenerator {
+    private static final Logger LOG = Logger.getLogger(RuleDocGenerator.class.getName());
+
     private static final String LANGUAGE_INDEX_FILENAME_PATTERN = "docs/pages/pmd/rules/${language.tersename}.md";
     private static final String LANGUAGE_INDEX_PERMALINK_PATTERN = "pmd_rules_${language.tersename}.html";
     private static final String RULESET_INDEX_FILENAME_PATTERN = "docs/pages/pmd/rules/${language.tersename}/${ruleset.name}.md";
@@ -42,13 +49,11 @@ public class RuleDocGenerator {
 
     private static final String DEPRECATION_LABEL_SMALL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;\">Deprecated</span> ";
     private static final String DEPRECATION_LABEL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span> ";
+    private static final String DEPRECATED_RULE_PROPERTY_MARKER = "deprecated!";
 
     private static final String GITHUB_SOURCE_LINK = "https://github.com/pmd/pmd/blob/master/";
 
-    private final Path root;
-    private final FileWriter writer;
-
-    /** Maintains mapping from pmd terse language name to rouge highlighter language */
+    /** Maintains mapping from pmd terse language name to rouge highlighter language. */
     private static final Map<String, String> LANGUAGE_HIGHLIGHT_MAPPER = new HashMap<>();
 
     static {
@@ -58,9 +63,12 @@ public class RuleDocGenerator {
         LANGUAGE_HIGHLIGHT_MAPPER.put("plsql", "sql");
     }
 
+    private final Path root;
+    private final FileWriter writer;
+
     public RuleDocGenerator(FileWriter writer, Path root) {
-        this.root = Objects.requireNonNull(root, "Root directory must be provided");
         this.writer = Objects.requireNonNull(writer, "A file writer must be provided");
+        this.root = Objects.requireNonNull(root, "Root directory must be provided");
 
         Path docsDir = root.resolve("docs");
         if (!Files.exists(docsDir) || !Files.isDirectory(docsDir)) {
@@ -68,16 +76,48 @@ public class RuleDocGenerator {
         }
     }
 
-    public void generate(Iterator<RuleSet> rulesets) {
+    public void generate(Iterator<RuleSet> registeredRulesets, List<String> additionalRulesets) {
         Map<Language, List<RuleSet>> sortedRulesets;
+        Map<Language, List<RuleSet>> sortedAdditionalRulesets;
         try {
-            sortedRulesets = sortRulesets(rulesets);
-            generateLanguageIndex(sortedRulesets);
+            sortedRulesets = sortRulesets(registeredRulesets);
+            sortedAdditionalRulesets = sortRulesets(resolveAdditionalRulesets(additionalRulesets));
+            generateLanguageIndex(sortedRulesets, sortedAdditionalRulesets);
             generateRuleSetIndex(sortedRulesets);
+
+            generateSidebar(sortedRulesets);
 
         } catch (RuleSetNotFoundException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void generateSidebar(Map<Language, List<RuleSet>> sortedRulesets) throws IOException {
+        SidebarGenerator generator = new SidebarGenerator(writer, root);
+        generator.generateSidebar(sortedRulesets);
+    }
+
+    private Iterator<RuleSet> resolveAdditionalRulesets(List<String> additionalRulesets) throws RuleSetNotFoundException {
+        if (additionalRulesets == null) {
+            return Collections.emptyIterator();
+        }
+
+        List<RuleSet> rulesets = new ArrayList<>();
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        for (String filename : additionalRulesets) {
+            try {
+                // do not take rulesets from pmd-test or pmd-core
+                if (!filename.contains("pmd-test/") && !filename.contains("pmd-core/")) {
+                    rulesets.add(ruleSetFactory.createRuleSet(filename));
+                } else {
+                    LOG.fine("Ignoring ruleset " + filename);
+                }
+            } catch (IllegalArgumentException e) {
+                // ignore rulesets, we can't read
+                LOG.log(Level.WARNING, "ruleset file " + filename + " ignored (" + e.getMessage() + ")", e);
+            }
+        }
+        return rulesets.iterator();
     }
 
     private Path getAbsoluteOutputPath(String filename) {
@@ -85,7 +125,7 @@ public class RuleDocGenerator {
     }
 
     private Map<Language, List<RuleSet>> sortRulesets(Iterator<RuleSet> rulesets) throws RuleSetNotFoundException {
-        Map<Language, List<RuleSet>> rulesetsByLanguage = new HashMap<>();
+        SortedMap<Language, List<RuleSet>> rulesetsByLanguage = new TreeMap<>();
 
         while (rulesets.hasNext()) {
             RuleSet ruleset = rulesets.next();
@@ -126,10 +166,11 @@ public class RuleDocGenerator {
     /**
      * Writes for each language an index file, which lists the rulesets, the rules
      * and links to the ruleset pages.
-     * @param rulesets all rulesets
+     * @param rulesets all registered/built-in rulesets
+     * @param sortedAdditionalRulesets additional rulesets
      * @throws IOException
      */
-    private void generateLanguageIndex(Map<Language, List<RuleSet>> rulesets) throws IOException {
+    private void generateLanguageIndex(Map<Language, List<RuleSet>> rulesets, Map<Language, List<RuleSet>> sortedAdditionalRulesets) throws IOException {
         for (Map.Entry<Language, List<RuleSet>> entry : rulesets.entrySet()) {
             String languageTersename = entry.getKey().getTerseName();
             String filename = LANGUAGE_INDEX_FILENAME_PATTERN
@@ -143,24 +184,16 @@ public class RuleDocGenerator {
             lines.add("folder: pmd/rules");
             lines.add("---");
 
-            lines.add("List of rulesets and rules contained in each ruleset.");
-            lines.add("");
-
-            for (RuleSet ruleset : entry.getValue()) {
-                String link = RULESET_INDEX_PERMALINK_PATTERN
-                        .replace("${language.tersename}", languageTersename)
-                        .replace("${ruleset.name}", getRuleSetFilename(ruleset));
-                lines.add("*   [" + ruleset.getName() + "](" + link + "): " + getRuleSetDescriptionSingleLine(ruleset));
-            }
-            lines.add("");
-
             for (RuleSet ruleset : entry.getValue()) {
                 lines.add("## " + ruleset.getName());
+                lines.add("");
+                lines.add("{% include callout.html content=\"" + getRuleSetDescriptionSingleLine(ruleset).replaceAll("\"", "'") + "\" %}");
+                lines.add("");
 
                 for (Rule rule : getSortedRules(ruleset)) {
                     String link = RULESET_INDEX_PERMALINK_PATTERN
                             .replace("${language.tersename}", languageTersename)
-                            .replace("${ruleset.name}", getRuleSetFilename(ruleset));
+                            .replace("${ruleset.name}", RuleSetUtils.getRuleSetFilename(ruleset));
                     if (rule instanceof RuleReference) {
                         RuleReference ref = (RuleReference) rule;
                         if (ruleset.getFileName().equals(ref.getRuleSetReference().getRuleSetFileName())) {
@@ -173,7 +206,7 @@ public class RuleDocGenerator {
                             // rule moved to another ruleset...
                             String otherLink = RULESET_INDEX_PERMALINK_PATTERN
                                     .replace("${language.tersename}", languageTersename)
-                                    .replace("${ruleset.name}", getRuleSetFilename(ref.getRuleSetReference().getRuleSetFileName()));
+                                    .replace("${ruleset.name}", RuleSetUtils.getRuleSetFilename(ref.getRuleSetReference().getRuleSetFileName()));
                             lines.add("*   [" + rule.getName() + "](" + link + "#" + rule.getName().toLowerCase(Locale.ROOT) + "): "
                                     + DEPRECATION_LABEL_SMALL
                                     + "The rule has been moved to another ruleset. Use instead "
@@ -185,6 +218,58 @@ public class RuleDocGenerator {
                                 + (rule.isDeprecated() ? DEPRECATION_LABEL_SMALL : "")
                                 + getShortRuleDescription(rule));
                     }
+                }
+                lines.add("");
+            }
+
+            List<RuleSet> additionalRulesetsForLanguage = sortedAdditionalRulesets.get(entry.getKey());
+            if (additionalRulesetsForLanguage != null) {
+                lines.add("## Additional rulesets");
+                lines.add("");
+
+                for (RuleSet ruleset : additionalRulesetsForLanguage) {
+                    boolean deprecated = RuleSetUtils.isRuleSetDeprecated(ruleset);
+
+                    String rulesetName = ruleset.getName() + " (`" + RuleSetUtils.getRuleSetClasspath(ruleset) + "`)";
+
+                    if (!deprecated) {
+                        lines.add("*   " + rulesetName + ":");
+                        lines.add("");
+                        lines.add("    " + getRuleSetDescriptionSingleLine(ruleset));
+                        lines.add("");
+                    } else {
+                        lines.add("*   " + rulesetName + ":");
+                        lines.add("");
+                        lines.add("    " + DEPRECATION_LABEL_SMALL + " This ruleset is for backwards compatibility.");
+                        lines.add("");
+                    }
+
+                    lines.add("    It contains the following rules:");
+                    lines.add("");
+                    StringBuilder rules = new StringBuilder();
+                    for (Rule rule : getSortedRules(ruleset)) {
+                        if (rules.length() == 0) {
+                            rules.append("    ");
+                        } else {
+                            rules.append(", ");
+                        }
+
+                        Rule resolvedRule = RuleSetUtils.resolveRuleReferences(rule);
+                        if (resolvedRule instanceof RuleReference) {
+                            // Note: deprecated rulesets contain by definition only rule references
+                            RuleReference ref = (RuleReference) resolvedRule;
+                            String otherLink = RULESET_INDEX_PERMALINK_PATTERN
+                                    .replace("${language.tersename}", languageTersename)
+                                    .replace("${ruleset.name}", RuleSetUtils.getRuleSetFilename(ref.getRuleSetReference().getRuleSetFileName()));
+
+                            rules.append("[").append(ref.getRule().getName()).append("](");
+                            rules.append(otherLink).append("#").append(ref.getName().toLowerCase(Locale.ROOT)).append(")");
+                        } else {
+                            rules.append(rule.getName());
+                        }
+                    }
+                    lines.add(rules.toString());
+                    lines.add("");
                 }
                 lines.add("");
             }
@@ -207,20 +292,6 @@ public class RuleDocGenerator {
                         .replaceAll("`", "'")
                         .replaceAll("\\*", "")), 100);
     }
-    
-    /**
-     * Gets the sanitized base name of the ruleset.
-     * For some reason, the filename might contain some newlines, which are removed.
-     * @param ruleset
-     * @return
-     */
-    private static String getRuleSetFilename(RuleSet ruleset) {
-        return getRuleSetFilename(ruleset.getFileName());
-    }
-
-    private static String getRuleSetFilename(String rulesetFileName) {
-        return FilenameUtils.getBaseName(StringUtils.chomp(rulesetFileName));
-    }
 
     private static String getRuleSetDescriptionSingleLine(RuleSet ruleset) {
         String description = ruleset.getDescription();
@@ -239,7 +310,7 @@ public class RuleDocGenerator {
         for (Map.Entry<Language, List<RuleSet>> entry : rulesets.entrySet()) {
             String languageTersename = entry.getKey().getTerseName();
             for (RuleSet ruleset : entry.getValue()) {
-                String rulesetFilename = getRuleSetFilename(ruleset);
+                String rulesetFilename = RuleSetUtils.getRuleSetFilename(ruleset);
                 String filename = RULESET_INDEX_FILENAME_PATTERN
                     .replace("${language.tersename}", languageTersename)
                     .replace("${ruleset.name}", rulesetFilename);
@@ -278,7 +349,7 @@ public class RuleDocGenerator {
                             // rule moved to another ruleset
                             String otherLink = RULESET_INDEX_PERMALINK_PATTERN
                                     .replace("${language.tersename}", languageTersename)
-                                    .replace("${ruleset.name}", getRuleSetFilename(ref.getRuleSetReference().getRuleSetFileName()));
+                                    .replace("${ruleset.name}", RuleSetUtils.getRuleSetFilename(ref.getRuleSetReference().getRuleSetFileName()));
                             lines.add(DEPRECATION_LABEL);
                             lines.add("");
                             lines.add("The rule has been moved to another ruleset. Use instead: ["
@@ -304,7 +375,7 @@ public class RuleDocGenerator {
                         lines.add("");
                     }
 
-                    lines.add(StringUtils.stripToEmpty(rule.getDescription()));
+                    lines.add(stripIndentation(rule.getDescription()));
                     lines.add("");
 
                     if (rule instanceof XPathRule || rule instanceof RuleReference && ((RuleReference) rule).getRule() instanceof XPathRule) {
@@ -344,9 +415,14 @@ public class RuleDocGenerator {
                         lines.add("|Name|Default Value|Description|");
                         lines.add("|----|-------------|-----------|");
                         for (PropertyDescriptor<?> propertyDescriptor : properties) {
+                            String description = propertyDescriptor.description();
+                            if (description != null && description.toLowerCase(Locale.ROOT).startsWith(DEPRECATED_RULE_PROPERTY_MARKER)) {
+                                description = DEPRECATION_LABEL_SMALL
+                                        + description.substring(DEPRECATED_RULE_PROPERTY_MARKER.length());
+                            }
                             lines.add("|" + propertyDescriptor.name()
                                 + "|" + (propertyDescriptor.defaultValue() != null ? String.valueOf(propertyDescriptor.defaultValue()) : "")
-                                + "|" + propertyDescriptor.description()
+                                + "|" + description
                                 + "|");
                         }
                         lines.add("");
@@ -363,6 +439,38 @@ public class RuleDocGenerator {
                 System.out.println("Generated " + path);
             }
         }
+    }
+
+    private static String stripIndentation(String description) {
+        if (description == null || description.isEmpty()) {
+            return "";
+        }
+
+        String stripped = StringUtils.stripStart(description, "\n\r");
+        stripped = StringUtils.stripEnd(stripped, "\n\r ");
+
+        int indentation = 0;
+        int strLen = stripped.length();
+        while (Character.isWhitespace(stripped.charAt(indentation)) && indentation < strLen) {
+            indentation++;
+        }
+
+        String[] lines = stripped.split("\\n");
+        String prefix = StringUtils.repeat(' ', indentation);
+        StringBuilder result = new StringBuilder(stripped.length());
+
+        if (StringUtils.isNotEmpty(prefix)) {
+            for (int i = 0; i < lines.length; i++) {
+                String line = lines[i];
+                if (i > 0) {
+                    result.append(StringUtils.LF);
+                }
+                result.append(StringUtils.removeStart(line, prefix));
+            }
+        } else {
+            result.append(stripped);
+        }
+        return result.toString();
     }
 
     /**

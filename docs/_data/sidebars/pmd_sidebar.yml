@@ -45,6 +45,8 @@ entries:
     - title: Suppressing
       url: /pmd_userdocs_suppressing.html
       output: web, pdf
+    - title: null
+      output: web, pdf
       subfolders:
       - title: Tools / Integrations
         output: web, pdf
