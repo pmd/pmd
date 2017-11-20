@@ -90,7 +90,7 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
     }
 
 
-    private static final class LongMultiPBuilder
+    public static final class LongMultiPBuilder
         extends MultiNumericPropertyBuilder<Long, LongMultiPBuilder> {
 
         protected LongMultiPBuilder(String name) {
