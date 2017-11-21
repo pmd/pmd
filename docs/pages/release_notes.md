@@ -479,6 +479,7 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#694](https://github.com/pmd/pmd/pull/694): \[core] Add minor fixes to root pom - [Matias Comercio](https://github.com/MatiasComercio)
 *   [#696](https://github.com/pmd/pmd/pull/696): \[core] Add remove operation over nodes - [Matias Comercio](https://github.com/MatiasComercio)
 *   [#722](https://github.com/pmd/pmd/pull/722): \[java] Move NPathComplexity from metrics to design - [Clément Fournier](https://github.com/oowekyala)
+*   [#723](https://github.com/pmd/pmd/pull/723): \[core] Rule factory refactoring - [Clément Fournier](https://github.com/oowekyala)
 *   [#726](https://github.com/pmd/pmd/pull/726): \[java] Fix issue #721 (NPE in InvalidSlf4jMessageFormat) - [Clément Fournier](https://github.com/oowekyala)
 *   [#727](https://github.com/pmd/pmd/pull/727): \[core] Fix #725: numeric property descriptors now check their default value - [Clément Fournier](https://github.com/oowekyala)
 *   [#733](https://github.com/pmd/pmd/pull/733): \[java] Some improvements to CommentRequired - [Clément Fournier](https://github.com/oowekyala)
