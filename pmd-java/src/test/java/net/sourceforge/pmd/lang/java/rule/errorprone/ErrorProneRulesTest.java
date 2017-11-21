@@ -62,7 +62,6 @@ public class ErrorProneRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "EmptyInitializer");
         addRule(RULESET, "EmptyStatementBlock");
         addRule(RULESET, "EmptyStatementNotInLoop");
-        addRule(RULESET, "EmptyStaticInitializer");
         addRule(RULESET, "EmptySwitchStatements");
         addRule(RULESET, "EmptySynchronizedBlock");
         addRule(RULESET, "EmptyTryBlock");

@@ -77,6 +77,7 @@ public class RuleSetFactoryCompatibility {
         addFilterRuleMoved("java", "typeresolution", "strictexception", "SignatureDeclareThrowsException");
         addFilterRuleRenamed("java", "naming", "MisleadingVariableName", "MIsLeadingVariableName");
         addFilterRuleRenamed("java", "unnecessary", "UnnecessaryFinalModifier", "UnnecessaryModifier");
+        addFilterRuleRenamed("java", "empty", "EmptyStaticInitializer", "EmptyInitializer");
     }
 
     void addFilterRuleRenamed(String language, String ruleset, String oldName, String newName) {

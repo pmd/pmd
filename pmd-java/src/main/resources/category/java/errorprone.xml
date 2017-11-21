@@ -1549,32 +1549,6 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="EmptyStaticInitializer"
-          language="java"
-          since="1.5"
-          message="Empty static initializer was found"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptystaticinitializer">
-        <description>
-An empty static initializer serve no purpose and should be removed.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>//Initializer[@Static='true']/Block[count(*)=0]</value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class Foo {
-    static {
-        // empty
-    }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="EmptyStatementNotInLoop"
           language="java"
           since="1.5"
