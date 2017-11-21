@@ -196,6 +196,10 @@ Notice this last scenario is slightly different to the Java syntax. This is due 
     Its report threshold can be configured via the property `reportLevel`, which replaces the now
     deprecated property `minimum`.
 
+*   The Java rule `CommentRequired` (category `documentation`) has been revamped to include 2 new properties:
+    * `accessorCommentRequirement` to specify documentation requirements for getters and setters (default to `ignored`)
+    * `methodWithOverrideCommentRequirement` to specify documentation requirements for methods annotated with `@Override` (default to `ignored`)
+
 #### Deprecated Rules
 
 *   The rules `NcssConstructorCount`, `NcssMethodCount`, and `NcssTypeCount` (ruleset `java-codesize`) have been
@@ -290,6 +294,7 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   java-basic
     *   [#565](https://github.com/pmd/pmd/pull/565): \[java] False negative on DontCallThreadRun when extending Thread
 *   java-comments
+    *   [#396](https://github.com/pmd/pmd/issues/396): \[java] CommentRequired: add properties to ignore @Override method and getters / setters
     *   [#536](https://github.com/pmd/pmd/issues/536): \[java] CommentDefaultAccessModifierRule ignores constructors
 *   java-controversial
     *   [#388](https://github.com/pmd/pmd/issues/388): \[java] controversial.AvoidLiteralsInIfCondition 0.0 false positive
@@ -435,4 +440,5 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#694](https://github.com/pmd/pmd/pull/694): \[core] Add minor fixes to root pom - [Matias Comercio](https://github.com/MatiasComercio)
 *   [#696](https://github.com/pmd/pmd/pull/696): \[core] Add remove operation over nodes - [Matias Comercio](https://github.com/MatiasComercio)
 *   [#722](https://github.com/pmd/pmd/pull/722): \[java] Move NPathComplexity from metrics to design - [Clément Fournier](https://github.com/oowekyala)
+*   [#733](https://github.com/pmd/pmd/pull/733): \[java] Some improvements to CommentRequired - [Clément Fournier](https://github.com/oowekyala)
 
