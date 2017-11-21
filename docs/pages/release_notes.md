@@ -226,10 +226,16 @@ The rule reference documentation has been updated to reflect these changes.
     Its report threshold can be configured via the property `reportLevel`, which replaces the now
     deprecated property `minimum`.
 
-*   The rule `CyclomaticComplexity` (ruleset `java-codesize`) has been revamped to use the new metrics framework.
+*   The Java rule `CyclomaticComplexity` (category `design`, former ruleset `java-codesize`) has been
+    revamped to use the new metrics framework.
     Its report threshold can be configured via the properties `classReportLevel` and `methodReportLevel` separately.
     The old property `reportLevel`, which configured the level for both total class and method complexity,
     is deprecated.
+
+*   The Java rule `CommentRequired` (category `documentation`, former ruleset `java-comments`)
+    has been revamped to include 2 new properties:
+    *   `accessorCommentRequirement` to specify documentation requirements for getters and setters (default to `ignored`)
+    *   `methodWithOverrideCommentRequirement` to specify documentation requirements for methods annotated with `@Override` (default to `ignored`)
 
 #### Deprecated Rules
 
@@ -325,6 +331,7 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   java-basic
     *   [#565](https://github.com/pmd/pmd/pull/565): \[java] False negative on DontCallThreadRun when extending Thread
 *   java-comments
+    *   [#396](https://github.com/pmd/pmd/issues/396): \[java] CommentRequired: add properties to ignore @Override method and getters / setters
     *   [#536](https://github.com/pmd/pmd/issues/536): \[java] CommentDefaultAccessModifierRule ignores constructors
 *   java-controversial
     *   [#388](https://github.com/pmd/pmd/issues/388): \[java] controversial.AvoidLiteralsInIfCondition 0.0 false positive
@@ -474,6 +481,7 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#722](https://github.com/pmd/pmd/pull/722): \[java] Move NPathComplexity from metrics to design - [Clément Fournier](https://github.com/oowekyala)
 *   [#726](https://github.com/pmd/pmd/pull/726): \[java] Fix issue #721 (NPE in InvalidSlf4jMessageFormat) - [Clément Fournier](https://github.com/oowekyala)
 *   [#727](https://github.com/pmd/pmd/pull/727): \[core] Fix #725: numeric property descriptors now check their default value - [Clément Fournier](https://github.com/oowekyala)
+*   [#733](https://github.com/pmd/pmd/pull/733): \[java] Some improvements to CommentRequired - [Clément Fournier](https://github.com/oowekyala)
 *   [#734](https://github.com/pmd/pmd/pull/734): \[java] Move CyclomaticComplexity from metrics to design - [Clément Fournier](https://github.com/oowekyala)
 *   [#737](https://github.com/pmd/pmd/pull/737): \[doc] Fix NPathComplexity documentation bad rendering - [Clément Fournier](https://github.com/oowekyala)
 
