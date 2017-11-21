@@ -60,12 +60,14 @@ Denotes whether comments are required (or unwanted) for specific language elemen
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|serialVersionUIDCommentRequired|Ignored|serial version UID commts. Possible values: [Required, Ignored, Unwanted]|
+|serialVersionUIDCommentRequired|Ignored|Serial version UID comments. Possible values: [Required, Ignored, Unwanted]|
 |enumCommentRequirement|Required|Enum comments. Possible values: [Required, Ignored, Unwanted]|
 |protectedMethodCommentRequirement|Required|Protected method constructor comments. Possible values: [Required, Ignored, Unwanted]|
 |publicMethodCommentRequirement|Required|Public method and constructor comments. Possible values: [Required, Ignored, Unwanted]|
 |fieldCommentRequirement|Required|Field comments. Possible values: [Required, Ignored, Unwanted]|
 |headerCommentRequirement|Required|Header comments. Possible values: [Required, Ignored, Unwanted]|
+|methodWithOverrideCommentRequirement|Ignored|Comments on @Override methods. Possible values: [Required, Ignored, Unwanted]|
+|accessorCommentRequirement|Ignored|Comments on getters and setters". Possible values: [Required, Ignored, Unwanted]|
 
 **Use this rule by referencing it:**
 ``` xml
