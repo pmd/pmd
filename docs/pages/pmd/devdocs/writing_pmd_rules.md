@@ -72,7 +72,7 @@ CompilationUnit
 
 You can generate this yourself by:
 
-*   Run the batch file bin/designer.bat
+*   Run the batch file `bin/designer.bat`
 *   Paste the code into the left text area and click the “Go” button
 *   Note that there’s another panel and a textfield to test out XPath expressions; more on that later.
 *   Here’s a screenshot: {% include image.html file="devdocs/designer_screenshot.png" alt="Designer Screenshot" %}
@@ -154,7 +154,7 @@ We stuck a `println()` in there for now so we can see when our rule gets hit.
 
 ## Put the WhileLoopsMustUseBracesRule rule in a ruleset file
 
-Now our rule is written - at least, the shell of it is - and now we need to tell PMD about it. We need to add it to a ruleset XML file. Look at `pmd-java/src/main/resources/rulesets/java/basic.xml`; it’s got lots of rule definitions in it. Copy and paste one of these rules into a new ruleset - call it `mycustomrules.xml` or something. Then fill in the elements and attributes:
+Now our rule is written - at least, the shell of it is - and now we need to tell PMD about it. We need to add it to a ruleset XML file. Look at `pmd-java/src/main/resources/category/java/bestpractices.xml`; it’s got lots of rule definitions in it. Copy and paste one of these rules into a new ruleset - call it `mycustomrules.xml` or something. Then fill in the elements and attributes:
 
 *   name - WhileLoopsMustUseBracesRule
 *   message - Use braces for while loops

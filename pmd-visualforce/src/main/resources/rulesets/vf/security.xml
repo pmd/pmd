@@ -8,7 +8,7 @@
 Rules concerning basic VF guidelines.
   </description>
 
-    <rule ref="category/vf/VfCsrf" deprecated="true" />
-    <rule ref="category/vf/VfUnescapeEl" deprecated="true" />
+    <rule ref="category/vf/security.xml/VfCsrf" deprecated="true" />
+    <rule ref="category/vf/security.xml/VfUnescapeEl" deprecated="true" />
 
 </ruleset>

@@ -32,6 +32,24 @@ Just for test
 
     <rule name="MockRule3" deprecated="true" ref="net/sourceforge/pmd/TestRuleset2.xml/TestRule"/>
 
+    <rule name="MockRule4" language="dummy" since="1.0" message="Test Rule"
+          class="net.sourceforge.pmd.lang.rule.MockRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/test/TestRuleset1.xml#MockRule">
+        <description>
+            Just for test
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="test2" type="String" description="test 2" value="foo"/>
+            <property name="test3" type="String" description="test 3" value="bar"/>
+        </properties>
+        <example>
+            <![CDATA[
+ ]]>
+        </example>
+    </rule>
+
+
     <rule name="TestRuleRef" ref="net/sourceforge/pmd/TestRuleset2.xml/TestRule"/>
 
 </ruleset>

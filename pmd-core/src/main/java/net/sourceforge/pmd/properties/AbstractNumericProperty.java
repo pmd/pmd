@@ -43,8 +43,10 @@ import net.sourceforge.pmd.properties.modules.NumericPropertyModule;
         super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
 
         module = new NumericPropertyModule<>(lower, upper);
-
-
+        if (theDefault == null) {
+            return; // TODO: remove me when you scrap StatisticalRule (see pull #727)
+        }
+        module.checkNumber(theDefault);
     }
 
 

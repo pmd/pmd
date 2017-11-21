@@ -33,12 +33,10 @@ public class NumericPropertyModule<T extends Number> {
         if (lowerLimit.doubleValue() > upperLimit.doubleValue()) {
             throw new IllegalArgumentException("Lower limit cannot be greater than the upper limit");
         }
-
-
     }
 
 
-    private void checkNumber(T number) {
+    public void checkNumber(T number) {
         String error = valueErrorFor(number);
         if (error != null) {
             throw new IllegalArgumentException(error);

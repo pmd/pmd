@@ -368,57 +368,54 @@ public class Foo {
 
 ## CyclomaticComplexity
 
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
 **Since:** PMD 1.03
 
 **Priority:** Medium (3)
 
-Complexity directly affects maintenance costs is determined by the number of decision points in a method 
-plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+The complexity of methods directly affects maintenance costs and readability. Concentrating too much decisional logic
+in a single method makes its behaviour hard to read and change.
+
+Cyclomatic complexity assesses the complexity of a method by counting the number of decision points in a method,
+plus one for the method entry. Decision points are places where the control flow jumps to another place in the
+program. As such, they include all control flow statements, such as `if`, `while`, `for`, and `case`. For more
+details on the calculation, see the documentation of the [Cyclo metric](/pmd_java_metrics_index.html#cyclomatic-complexity-cyclo).
+
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
-high complexity, and 11+ is very high complexity.
+high complexity, and 11+ is very high complexity. By default, this rule reports methods with a complexity >= 10.
+Additionnally, classes with many methods of moderate complexity get reported as well once the total of their
+methods' complexities reaches 80, even if none of the methods was directly reported.
+
+Reported methods should be broken down into several smaller methods. Reported classes should probably be broken down
+into subcomponents.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.CyclomaticComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/CyclomaticComplexityRule.java)
 
 **Example(s):**
 
 ``` java
-public class Foo {      // This has a Cyclomatic Complexity = 12
-1   public void example()  {
-2       if (a == b)  {
-3           if (a1 == b1) {
-                fiddle();
-4           } else if a2 == b2) {
-                fiddle();
-            }  else {
-                fiddle();
-            }
-5       } else if (c == d) {
-6           while (c == d) {
-                fiddle();
-            }
-7        } else if (e == f) {
-8           for (int n = 0; n < h; n++) {
-                fiddle();
-            }
-        } else{
-            switch (z) {
-9               case 1:
-                    fiddle();
-                    break;
-10              case 2:
-                    fiddle();
-                    break;
-11              case 3:
-                    fiddle();
-                    break;
-12              default:
-                    fiddle();
-                    break;
-            }
+class Foo {
+  void baseCyclo() {                // Cyclo = 1
+    highCyclo();
+  }
+
+  void highCyclo() {                // Cyclo = 10: reported!
+    int x = 0, y = 2;
+    boolean a = false, b = true;
+
+    if (a && (y == 1 ? b : true)) { // +3
+      if (y == x) {                 // +1
+        while (true) {              // +1
+          if (x++ < 20) {           // +1
+            break;                  // +1
+          }
         }
+      } else if (y == t && !d) {    // +2
+        x = a ? y : x;              // +1
+      } else {
+        x = 2;
+      }
     }
+  }
 }
 ```
 
@@ -426,9 +423,10 @@ public class Foo {      // This has a Cyclomatic Complexity = 12
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|showMethodsComplexity|true|Add method average violations to the report|
-|showClassesComplexity|true|Add class average violations to the report|
-|reportLevel|10|Cyclomatic Complexity reporting threshold|
+|cycloOptions|[]|Choose options for the computation of Cyclo|
+|classReportLevel|80|Total class complexity reporting threshold|
+|methodReportLevel|10|Cyclomatic complexity reporting threshold|
+|reportLevel|10|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Cyclomatic Complexity reporting threshold|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1198,13 +1196,13 @@ public class Foo extends Bar {
 **Priority:** Medium (3)
 
 The NPath complexity of a method is the number of acyclic execution paths through that method.
-            While cyclomatic complexity counts the number of decision points in a method, NPath counts the number of
-            full paths from the beginning to the end of the block of the method. That metric grows exponentially, as
-            it multiplies the complexity of statements in the same block. For more details on the calculation, see the
-            documentation of the [NPath metric](/pmd_java_metrics_index.html#npath-complexity-npath).
+While cyclomatic complexity counts the number of decision points in a method, NPath counts the number of
+full paths from the beginning to the end of the block of the method. That metric grows exponentially, as
+it multiplies the complexity of statements in the same block. For more details on the calculation, see the
+documentation of the [NPath metric](/pmd_java_metrics_index.html#npath-complexity-npath).
 
-            A threshold of 200 is generally considered the point where measures should be taken to reduce
-            complexity and increase readability.
+A threshold of 200 is generally considered the point where measures should be taken to reduce
+complexity and increase readability.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.NPathComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/NPathComplexityRule.java)
 
@@ -1251,7 +1249,7 @@ public class Foo {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|minimum|200.0|Deprecated! Minimum reporting threshold|
+|minimum|200.0|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Minimum reporting threshold|
 |reportLevel|200|N-Path Complexity reporting threshold|
 
 **Use this rule by referencing it:**

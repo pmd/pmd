@@ -345,7 +345,7 @@ PMD comes with many different renderer types:
     *   outputDir: Output directory.
 
 
-### Incremenal Analysis
+### Incremental Analysis
 
 Ever since PMD 5.6.0, PMD has been able to perform Incremental Analysis.
 

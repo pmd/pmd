@@ -8,7 +8,7 @@
 This ruleset contains links to rules that are new in PMD v6.0.0
   </description>
 
-    <rule ref="category/java/errorprone.xml/ForLoopCanBeForeach"/>
+    <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach"/>
     <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangThrowable"/>
     <rule ref="category/java/design.xml/DataClass"/>
     <rule ref="category/java/design.xml/NcssCount"/>

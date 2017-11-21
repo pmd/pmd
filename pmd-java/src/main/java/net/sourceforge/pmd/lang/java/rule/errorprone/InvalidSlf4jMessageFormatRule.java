@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
@@ -158,9 +158,9 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         } else if (node.getFirstDescendantOfType(ASTName.class) != null) {
             final String variableName = node.getFirstDescendantOfType(ASTName.class).getImage();
             // look if the message is defined locally
-            final List<ASTVariableDeclarator> localValiables = node.getFirstParentOfType(ASTMethodDeclaration.class)
+            final List<ASTVariableDeclarator> localVariables = node.getFirstParentOfType(ASTMethodOrConstructorDeclaration.class)
                     .findDescendantsOfType(ASTVariableDeclarator.class);
-            count = getAmountOfExpectedArguments(variableName, localValiables);
+            count = getAmountOfExpectedArguments(variableName, localVariables);
 
             if (count == 0) {
                 // look if the message is defined in a field
