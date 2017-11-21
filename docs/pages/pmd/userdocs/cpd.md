@@ -243,22 +243,25 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 
 ### Supported Languages
 
-* apex
-* cs
-* cpp
-* ecmascript (JavaScript)
-* fortran
-* go
-* java
-* jsp
-* matlab
-* objectivec
-* php
-* plsql
-* python
-* ruby
-* scala
-* swift
+* Apex
+* C#
+* C/C++
+* EcmaScript (JavaScript)
+* Fortran
+* Go
+* Groovy
+* Java
+* Jsp
+* Matlab
+* Objective-C
+* Perl
+* PHP
+* PL/SQL
+* Python
+* Ruby
+* Scala
+* Swift
+* Visualforce
 
 
 ### Available formats
