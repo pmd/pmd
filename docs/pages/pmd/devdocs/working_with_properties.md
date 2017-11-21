@@ -106,7 +106,7 @@ IntegerProperty.named("myIntProperty")
                .build();
 ```
 
-Enumerated properties are a bit less straightforward to define, though they are arguably more powerful. These properties don't have a specific value type, instead, you can choose any type of value, provided the values are from a closed set. To make that actionable, you give string labels to each of the acceptable values, and the user will provide one of those labels as a value. The property will give you back the correct value, not just the label. Here's an example:
+Enumerated properties are a bit less straightforward to define, though they are arguably more powerful. These properties don't have a specific value type, instead, you can choose any type of value, provided the values are from a closed set. To make that actionable, you give string labels to each of the acceptable values, and the user will provide one of those labels as a value in the XML. The property will give you back the associated value, not just the label. Here's an example:
 ```java
 static Map<String, ModeStrategy> map = new HashMap<>();
 
@@ -187,38 +187,3 @@ Multivalued properties are also allowed and their `type` attribute has the form 
 ```
 
 Notice that in the example above, `@Image = $reportedIdentifiers` doesn't test `@Image` for equality with the whole sequence `('foo', 'bar')`, it tests whether the sequence *contains* `@Image`. That is, the above rule will report all variables named `foo` or `bar`. All other XPath 2.0 [functions operating on sequences](https://www.w3.org/TR/xpath-functions/#sequence-functions) are supported.
-
-
-<!-- Below is part of the old article -->
-## For IDE Plugin Developers
-
-In order to assemble an effective UI to manage the rule properties the following setup sequence is suggested:
-
-*   Determine whether the value is open-ended or enumerated. For example, can the user type in their own values or should they pick them from a list? Invoke the choices() method that may return a 2D array of label-value pairs you can use to populate your list widget. If the method returns null then jump to step #2.
-
-    You may need to maintain a mapping of the label-value pairs to translate between them depending on the capabilities of your list widget. The first pair in the array represents the default property value.
-
-*   For open-ended values, determine the cardinality of the property via the maxValueCount() method. If it returns a value of one then use the type() method to determine the type-specific entry field could use next. I.e. a checkbox for booleans, text field for strings, spin buttons for ints, etc.
-
-*   If the property supports more than one value then you may opt to use a single text field and parse the entries after the user leaves or hits the return key or you can create a read-only widget and add/remove values via a popup dialog.
-
-*   All multivalued properties make use of a character to delimit the values in their serialized form so you will need to ensure that you prevent the user from entering values containing it. Retrieve the delimiter via the multiValueDelimiter() method.
-
-You can use the errorFor(value) method to validate the values entered by the user or check the values held by the rule configuration file. It returns null or an error message as appropriate. It would be best to flag and disable rules that have invalid property values.
-
-Use the defaultValue() method to reset the rule properties to their default value.
-
-The two serialization methods, valueFrom() and asDelimitedString(), are to be used to retrive and store property values respectively.
-
-Widgets should be ordered vertically according to the values returned by the uiOrder() method with lower-valued properties appearing above the ones with higher values. The order of the property descriptors returned from the rule cannot be guaranteed to be the same as the presentation order. If the two or more widgets share the same integer value then you can use the fractional portions to place their widgets in a horizontal sequence (if possible).
-
-For types that can have null values, such as strings, then use the isRequired() method to flag any possible missing values.
-
-If a property field is multivalued then the maximum number of values it can hold is set to largest possible int value unless set explicitly in a rule property constructor.
-
-## ToDo items
-
-1.  Expand this note with further examples
-2.  Internationalize error strings in the code
-3.  Provide for additional datatypes such as Date
-4.  Figure out the best way to add the rowCount value to the StringProperty constructor
