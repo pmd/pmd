@@ -22,7 +22,7 @@ public class NoopAnalysisCache implements AnalysisCache {
     
     public NoopAnalysisCache() {
         LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
-                + "https://pmd.github.io/pmd/pmd_userdocs_getting_started.html#incremenal-analysis");
+                + "https://pmd.github.io/pmd/pmd_userdocs_getting_started.html#incremental-analysis");
     }
     
     @Override
