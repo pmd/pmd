@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
-import static net.sourceforge.pmd.lang.java.rule.documentation.CommentRequiredRule.CommentRequirement.Ignored;
-import static net.sourceforge.pmd.lang.java.rule.documentation.CommentRequiredRule.CommentRequirement.Required;
-import static net.sourceforge.pmd.lang.java.rule.documentation.CommentRequiredRule.CommentRequirement.mappings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,10 +37,10 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
     private static final EnumeratedProperty<CommentRequirement> ACCESSOR_CMT_DESCRIPTOR
         = requirementPropertyBuilder("accessorCommentRequirement", "Comments on getters and setters\"")
-        .defaultValue(Ignored).build();
+        .defaultValue(CommentRequirement.Ignored).build();
     private static final EnumeratedProperty<CommentRequirement> OVERRIDE_CMT_DESCRIPTOR
         = requirementPropertyBuilder("methodWithOverrideCommentRequirement", "Comments on @Override methods")
-        .defaultValue(Ignored).build();
+        .defaultValue(CommentRequirement.Ignored).build();
     private static final EnumeratedProperty<CommentRequirement> HEADER_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("headerCommentRequirement", "Header comments").uiOrder(1.0f).build();
     private static final EnumeratedProperty<CommentRequirement> FIELD_CMT_REQUIREMENT_DESCRIPTOR
@@ -58,7 +55,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
         = requirementPropertyBuilder("enumCommentRequirement", "Enum comments").uiOrder(5.0f).build();
     private static final EnumeratedProperty<CommentRequirement> SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("serialVersionUIDCommentRequired", "Serial version UID comments")
-        .defaultValue(Ignored).uiOrder(6.0f).build();
+        .defaultValue(CommentRequirement.Ignored).uiOrder(6.0f).build();
 
 
     public CommentRequiredRule() {
@@ -185,13 +182,13 @@ public class CommentRequiredRule extends AbstractCommentRule {
     }
 
 
-    public boolean allCommentsAreIgnored() {
+    private boolean allCommentsAreIgnored() {
 
-        return getProperty(HEADER_CMT_REQUIREMENT_DESCRIPTOR) == Ignored
-               && getProperty(FIELD_CMT_REQUIREMENT_DESCRIPTOR) == Ignored
-               && getProperty(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == Ignored
-               && getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == Ignored
-               && getProperty(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR) == Ignored;
+        return getProperty(HEADER_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
+               && getProperty(FIELD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
+               && getProperty(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
+               && getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
+               && getProperty(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored;
     }
 
 
@@ -201,7 +198,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
     }
 
 
-    enum CommentRequirement {
+    private enum CommentRequirement {
         Required("Required"), Ignored("Ignored"), Unwanted("Unwanted");
 
         private static final List<String> LABELS = buildValueLabels();
@@ -246,8 +243,8 @@ public class CommentRequiredRule extends AbstractCommentRule {
         DESCRIPTOR_NAME_TO_COMMENT_TYPE.put(name, commentType);
         return EnumeratedProperty.<CommentRequirement>named(name)
             .desc(commentType + ". Possible values: " + CommentRequirement.labels())
-            .mappings(mappings())
-            .defaultValue(Required)
+            .mappings(CommentRequirement.mappings())
+            .defaultValue(CommentRequirement.Required)
             .type(CommentRequirement.class);
     }
 }
