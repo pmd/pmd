@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
