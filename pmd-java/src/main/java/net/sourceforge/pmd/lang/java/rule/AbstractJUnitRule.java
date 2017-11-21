@@ -22,41 +22,13 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
 public abstract class AbstractJUnitRule extends AbstractJavaRule {
 
-    public static final Class<?> JUNIT3_CLASS;
-    private static final String JUNIT3_CLASS_NAME = "junit.framework.TestCase";
-    public static final Class<?> JUNIT4_CLASS;
-    private static final String JUNIT4_CLASS_NAME = "org.junit.Test";
-    public static final Class<?> JUNIT5_CLASS;
-    private static final String JUNIT5_CLASS_NAME = "org.junit.jupiter.api.Test";
+    protected static final String JUNIT3_CLASS_NAME = "junit.framework.TestCase";
+    protected static final String JUNIT4_CLASS_NAME = "org.junit.Test";
+    protected static final String JUNIT5_CLASS_NAME = "org.junit.jupiter.api.Test";
 
     private boolean isJUnit3Class;
     private boolean isJUnit4Class;
     private boolean isJUnit5Class;
-
-    static {
-        Class<?> c;
-
-        try {
-            c = Class.forName(JUNIT3_CLASS_NAME);
-        } catch (ClassNotFoundException | NoClassDefFoundError t) {
-            c = null;
-        }
-        JUNIT3_CLASS = c;
-
-        try {
-            c = Class.forName(JUNIT4_CLASS_NAME);
-        } catch (ClassNotFoundException | NoClassDefFoundError t) {
-            c = null;
-        }
-        JUNIT4_CLASS = c;
-
-        try {
-            c = Class.forName(JUNIT5_CLASS_NAME);
-        } catch (ClassNotFoundException | NoClassDefFoundError t) {
-            c = null;
-        }
-        JUNIT5_CLASS = c;
-    }
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
@@ -112,11 +84,11 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     }
 
     private boolean isJUnit4Method(ASTMethodDeclaration method) {
-        return doesNodeContainJUnitAnnotation(method.jjtGetParent(), JUNIT4_CLASS, JUNIT4_CLASS_NAME);
+        return doesNodeContainJUnitAnnotation(method.jjtGetParent(), JUNIT4_CLASS_NAME);
     }
 
     private boolean isJUnit5Method(ASTMethodDeclaration method) {
-        return doesNodeContainJUnitAnnotation(method.jjtGetParent(), JUNIT5_CLASS, JUNIT5_CLASS_NAME);
+        return doesNodeContainJUnitAnnotation(method.jjtGetParent(), JUNIT5_CLASS_NAME);
     }
 
     private boolean isJUnit3Method(ASTMethodDeclaration method) {
@@ -133,7 +105,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
             return false;
         }
 
-        if (node.getType() != null && TypeHelper.isA(node, JUNIT3_CLASS)) {
+        if (node.getType() != null && TypeHelper.isA(node, JUNIT3_CLASS_NAME)) {
             return true;
         } else if (node.getType() == null) {
             ASTExtendsList extendsList = cid.getFirstChildOfType(ASTExtendsList.class);
@@ -152,14 +124,14 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     }
 
     private boolean isJUnit4Class(ASTCompilationUnit node) {
-        return doesNodeContainJUnitAnnotation(node, JUNIT4_CLASS, JUNIT4_CLASS_NAME);
+        return doesNodeContainJUnitAnnotation(node, JUNIT4_CLASS_NAME);
     }
 
     private boolean isJUnit5Class(ASTCompilationUnit node) {
-        return doesNodeContainJUnitAnnotation(node, JUNIT5_CLASS, JUNIT5_CLASS_NAME);
+        return doesNodeContainJUnitAnnotation(node, JUNIT5_CLASS_NAME);
     }
 
-    private boolean doesNodeContainJUnitAnnotation(Node node, Class<?> annotationTypeClass, String annotationTypeClassName) {
+    private boolean doesNodeContainJUnitAnnotation(Node node, String annotationTypeClassName) {
         List<ASTAnnotation> annotations = node.findDescendantsOfType(ASTAnnotation.class);
         for (ASTAnnotation annotation : annotations) {
             Node annotationTypeNode = annotation.jjtGetChild(0);
@@ -169,7 +141,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
                 if (name != null && (name.hasImageEqualTo("Test") || name.hasImageEqualTo(annotationTypeClassName))) {
                     return true;
                 }
-            } else if (annotationType.getType().equals(annotationTypeClass)) {
+            } else if (TypeHelper.isA(annotationType, annotationTypeClassName)) {
                 return true;
             }
         }
