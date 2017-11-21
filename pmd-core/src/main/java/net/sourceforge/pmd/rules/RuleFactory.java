@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +59,6 @@ public class RuleFactory {
     
     private static final List<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(NAME, CLASS));
 
-
     /**
      * Decorates a referenced rule with the metadata that are overriden in the given rule element.
      *
@@ -74,7 +74,6 @@ public class RuleFactory {
         RuleReference ruleReference = new RuleReference();
         ruleReference.setRule(referencedRule);
 
-
         if (ruleElement.hasAttribute(DEPRECATED)) {
             ruleReference.setDeprecated(Boolean.parseBoolean(ruleElement.getAttribute(DEPRECATED)));
         }
@@ -87,7 +86,6 @@ public class RuleFactory {
         if (ruleElement.hasAttribute(EXTERNAL_INFO_URL)) {
             ruleReference.setExternalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
         }
-
 
         for (int i = 0; i < ruleElement.getChildNodes().getLength(); i++) {
             Node node = ruleElement.getChildNodes().item(i);
@@ -109,15 +107,12 @@ public class RuleFactory {
                     throw new IllegalArgumentException("Unexpected element <" + node.getNodeName()
                                                        + "> encountered as child of <rule> element for Rule "
                                                        + ruleReference.getName());
-
                 }
             }
         }
 
-
         return ruleReference;
     }
-
 
     /**
      * Parses a rule element and returns a new rule instance.
@@ -131,7 +126,6 @@ public class RuleFactory {
      * @throws IllegalArgumentException if the element doesn't describe a valid rule.
      */
     public Rule buildRule(Element ruleElement) {
-
         checkRequiredAttributesArePresent(ruleElement);
 
         String name = ruleElement.getAttribute(NAME);
@@ -139,7 +133,6 @@ public class RuleFactory {
         RuleBuilder builder = new RuleBuilder(name,
                 ruleElement.getAttribute(CLASS),
                 ruleElement.getAttribute("language"));
-
 
         if (ruleElement.hasAttribute(MINIMUM_LANGUAGE_VERSION)) {
             builder.minimumLanguageVersion(ruleElement.getAttribute(MINIMUM_LANGUAGE_VERSION));
@@ -160,7 +153,6 @@ public class RuleFactory {
         builder.usesTyperesolution(hasAttributeSetTrue(ruleElement, "typeResolution"));
         // Disabled until it's safe
         // builder.usesMultifile(hasAttributeSetTrue(ruleElement, "multifile"));
-
 
         Element propertiesElement = null;
 
@@ -196,11 +188,9 @@ public class RuleFactory {
         try {
             rule = builder.build();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            LOG.severe(e.getMessage());
-            LOG.severe(ExceptionUtils.getStackTrace(e));
+            LOG.log(Level.SEVERE, "Error instantiating a rule", e);
             throw new RuntimeException(e);
         }
-
 
         if (propertiesElement != null) {
             setPropertyValues(rule, propertiesElement);
@@ -208,7 +198,6 @@ public class RuleFactory {
 
         return rule;
     }
-
 
     private void checkRequiredAttributesArePresent(Element ruleElement) {
         // add an attribute name here to make it required
@@ -219,7 +208,6 @@ public class RuleFactory {
             }
         }
     }
-
 
     /**
      * Parses a properties element looking only for the values of the properties defined or overridden.
@@ -242,7 +230,6 @@ public class RuleFactory {
         return overridenProperties;
     }
 
-
     /**
      * Parses the properties node and adds property definitions to the builder. Doesn't care for value overriding, that
      * will be handled after the rule instantiation.
@@ -251,7 +238,6 @@ public class RuleFactory {
      * @param propertiesNode Node to parse
      */
     private void parsePropertiesForDefinitions(RuleBuilder builder, Node propertiesNode) {
-
         for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
             Node node = propertiesNode.getChildNodes().item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE && PROPERTY.equals(node.getNodeName())
@@ -261,7 +247,6 @@ public class RuleFactory {
             }
         }
     }
-
 
     /**
      * Gets a mapping of property name to its value from the given property element.
@@ -274,7 +259,6 @@ public class RuleFactory {
         String name = propertyElement.getAttribute(PropertyDescriptorField.NAME.attributeName());
         return new SimpleEntry<>(name, valueFrom(propertyElement));
     }
-
 
     /**
      * Overrides the rule's properties with the values defined in the element.
@@ -296,11 +280,9 @@ public class RuleFactory {
         }
     }
 
-
     private <T> void setRulePropertyCapture(Rule rule, PropertyDescriptor<T> descriptor, String value) {
         rule.setProperty(descriptor, descriptor.valueFrom(value));
     }
-
 
     /**
      * Finds out if the property element defines a property.
@@ -313,7 +295,6 @@ public class RuleFactory {
         return node.hasAttribute(PropertyDescriptorField.TYPE.attributeName());
     }
 
-
     /**
      * Parses a property definition node and returns the defined property descriptor.
      *
@@ -322,7 +303,6 @@ public class RuleFactory {
      * @return The property descriptor
      */
     private static PropertyDescriptor<?> parsePropertyDefinition(Element propertyElement) {
-
         String typeId = propertyElement.getAttribute(PropertyDescriptorField.TYPE.attributeName());
 
         PropertyDescriptorExternalBuilder<?> pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
@@ -352,10 +332,8 @@ public class RuleFactory {
         return pdFactory.build(values);
     }
 
-
     /** Gets the string value from a property node. */
     private static String valueFrom(Element propertyNode) {
-
         String strValue = propertyNode.getAttribute(DEFAULT_VALUE.attributeName());
 
         if (StringUtils.isNotBlank(strValue)) {
@@ -373,11 +351,9 @@ public class RuleFactory {
         return null;
     }
 
-
     private static boolean hasAttributeSetTrue(Element element, String attributeId) {
         return element.hasAttribute(attributeId) && "true".equalsIgnoreCase(element.getAttribute(attributeId));
     }
-
 
     /**
      * Parse a String from a textually type node.
@@ -387,7 +363,6 @@ public class RuleFactory {
      * @return The String.
      */
     private static String parseTextNode(Node node) {
-
         final int nodeCount = node.getChildNodes().getLength();
         if (nodeCount == 0) {
             return "";
@@ -403,5 +378,4 @@ public class RuleFactory {
         }
         return buffer.toString();
     }
-
 }

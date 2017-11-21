@@ -35,7 +35,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
     private String maximumVersion;
     private String since;
     private String message;
-    private String rulesetName;
     private String externalInfoUrl;
     private String description;
     private List<String> examples = new ArrayList<>(1);
@@ -45,28 +44,23 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
     private boolean isUsesMultifile;
     private boolean isUsesTyperesolution;
 
-
     /* default */ RuleBuilder(String name, String clazz, String language) {
         this.name = name;
         language(language);
         className(clazz);
     }
 
-
     public void usesDFA(boolean usesDFA) {
         isUsesDfa = usesDFA;
     }
-
 
     public void usesMultifile(boolean usesMultifile) {
         isUsesMultifile = usesMultifile;
     }
 
-
     public void usesTyperesolution(boolean usesTyperesolution) {
         isUsesTyperesolution = usesTyperesolution;
     }
-
 
     private void language(String languageName) {
         if (StringUtils.isBlank(languageName)) {
@@ -84,7 +78,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
         language = lang;
     }
 
-
     private void className(String className) {
         if (StringUtils.isBlank(className)) {
             throw new IllegalArgumentException("The 'class' field of rule can't be null, nor empty.");
@@ -93,16 +86,13 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
         this.clazz = className;
     }
 
-
     public void minimumLanguageVersion(String minimum) {
         minimumVersion = minimum;
     }
 
-
     public void maximumLanguageVersion(String maximum) {
         maximumVersion = maximum;
     }
-
 
     private void checkLanguageVersionsAreOrdered(Rule rule) {
         if (rule.getMinimumLanguageVersion() != null && rule.getMaximumLanguageVersion() != null
@@ -115,28 +105,19 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
         }
     }
 
-
     public void since(String sinceStr) {
         if (StringUtils.isNotBlank(sinceStr)) {
             since = sinceStr;
         }
     }
 
-
     public void externalInfoUrl(String externalInfoUrl) {
         this.externalInfoUrl = externalInfoUrl;
     }
 
-
-    public void rulesetName(String rulesetName) {
-        this.rulesetName = rulesetName;
-    }
-
-
     public void message(String message) {
         this.message = message;
     }
-
 
     public void defineProperty(PropertyDescriptor<?> descriptor) {
         definedProperties.add(descriptor);
@@ -162,7 +143,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
         this.priority = RulePriority.valueOf(priorityString);
     }
 
-
     // Must be loaded after rule construction to know the Language
     private void loadLanguageMinMaxVersions(Rule rule) {
 
@@ -187,7 +167,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
         checkLanguageVersionsAreOrdered(rule);
     }
 
-
     private void throwUnknownLanguageVersionException(String minOrMax, String unknownVersion) {
         throw new IllegalArgumentException("Unknown " + minOrMax + " Language Version '" + unknownVersion
                                            + "' for Language '" + language.getTerseName()
@@ -196,10 +175,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
                                            + LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
     }
 
-
     public Rule build() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-
-
         Rule rule = (Rule) RuleBuilder.class.getClassLoader().loadClass(clazz).newInstance();
 
         rule.setName(name);
@@ -221,7 +197,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
             rule.addExample(example);
         }
 
-
         if (isUsesDfa) {
             rule.setUsesDFA();
         }
@@ -240,9 +215,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
             }
         }
 
-
         return rule;
     }
-
-
 }
