@@ -237,6 +237,9 @@ The rule reference documentation has been updated to reflect these changes.
     *   `accessorCommentRequirement` to specify documentation requirements for getters and setters (default to `ignored`)
     *   `methodWithOverrideCommentRequirement` to specify documentation requirements for methods annotated with `@Override` (default to `ignored`)
 
+*   The Java rule `EmptyCatchBlock` (category `errorprone`, former ruleset `java-empty`) has been changed to ignore
+    exceptions named `ignore` or `expected` by default. You can still override this behaviour by setting the `allowExceptionNameRegex` property.
+
 #### Deprecated Rules
 
 *   The Java rules `NcssConstructorCount`, `NcssMethodCount`, and `NcssTypeCount` (ruleset `java-codesize`) have been
