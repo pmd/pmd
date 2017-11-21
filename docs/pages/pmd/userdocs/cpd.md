@@ -243,6 +243,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 
 ### Supported Languages
 
+* apex
 * cs
 * cpp
 * ecmascript (JavaScript)
