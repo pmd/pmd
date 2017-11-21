@@ -2,16 +2,18 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.rules;
 
 import static net.sourceforge.pmd.properties.PropertyDescriptorField.DEFAULT_VALUE;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Attr;
@@ -20,6 +22,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
@@ -35,6 +39,7 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder
  */
 public class RuleFactory {
 
+    private static final Logger LOG = Logger.getLogger(RuleFactory.class.getName());
 
     private static final String DEPRECATED = "deprecated";
     private static final String NAME = "name";
@@ -49,12 +54,8 @@ public class RuleFactory {
     private static final String DESCRIPTION = "description";
     private static final String PROPERTY = "property";
     private static final String CLASS = "class";
-
-
-    /** Create a new rule factory. */
-    public RuleFactory() {
-
-    }
+    
+    public static final List<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(NAME, CLASS));
 
 
     /**
@@ -194,8 +195,8 @@ public class RuleFactory {
         try {
             rule = builder.build();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            e.printStackTrace();
-            return null;
+            LOG.severe(e.getMessage());
+            throw new RuntimeException(e);
         }
 
 
@@ -209,9 +210,8 @@ public class RuleFactory {
 
     private void checkRequiredAttributesArePresent(Element ruleElement) {
         // add an attribute name here to make it required
-        final List<String> required = Arrays.asList(NAME, CLASS);
 
-        for (String att : required) {
+        for (String att : REQUIRED_ATTRIBUTES) {
             if (!ruleElement.hasAttribute(att)) {
                 throw new IllegalArgumentException("Missing '" + att + "' attribute");
             }
@@ -308,7 +308,7 @@ public class RuleFactory {
      * @return True if this element defines a new property, false if this is just stating a value
      */
     private static boolean isPropertyDefinition(Element node) {
-        return StringUtils.isNotBlank(node.getAttribute(PropertyDescriptorField.TYPE.attributeName()));
+        return node.hasAttribute(PropertyDescriptorField.TYPE.attributeName());
     }
 
 
@@ -325,7 +325,7 @@ public class RuleFactory {
 
         PropertyDescriptorExternalBuilder<?> pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
         if (pdFactory == null) {
-            throw new RuntimeException("No property descriptor factory for type: " + typeId);
+            throw new IllegalArgumentException("No property descriptor factory for type: " + typeId);
         }
 
         Map<PropertyDescriptorField, String> values = new HashMap<>();
@@ -342,7 +342,7 @@ public class RuleFactory {
             if (children.getLength() == 1) {
                 values.put(DEFAULT_VALUE, children.item(0).getTextContent());
             } else {
-                throw new RuntimeException("No value defined!");
+                throw new IllegalArgumentException("No value defined!");
             }
         }
 

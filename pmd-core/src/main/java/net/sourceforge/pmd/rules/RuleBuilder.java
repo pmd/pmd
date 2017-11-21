@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.rules;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,8 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -44,7 +46,7 @@ class RuleBuilder {
     private boolean isUsesTyperesolution;
 
 
-    RuleBuilder(String name, String clazz, String language) {
+    /* default */ RuleBuilder(String name, String clazz, String language) {
         this.name = name;
         language(language);
         className(clazz);
@@ -113,11 +115,10 @@ class RuleBuilder {
     }
 
 
-    public RuleBuilder since(String sinceStr) {
+    public void since(String sinceStr) {
         if (StringUtils.isNotBlank(sinceStr)) {
             since = sinceStr;
         }
-        return this;
     }
 
 
@@ -213,7 +214,7 @@ class RuleBuilder {
         rule.setExternalInfoUrl(externalInfoUrl);
         rule.setDeprecated(isDeprecated);
         rule.setDescription(description);
-        rule.setPriority(priority == null ? RulePriority.valueOf(666) : priority);
+        rule.setPriority(priority == null ? RulePriority.LOW : priority);
 
         for (String example : examples) {
             rule.addExample(example);
