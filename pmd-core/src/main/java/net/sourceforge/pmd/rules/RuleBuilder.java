@@ -25,7 +25,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @author Clément Fournier
  * @since 6.0.0
  */
-class RuleBuilder {
+/* default */ class RuleBuilder {
 
     private List<PropertyDescriptor<?>> definedProperties = new ArrayList<>();
     private String name;
@@ -70,8 +70,9 @@ class RuleBuilder {
 
     private void language(String languageName) {
         if (StringUtils.isBlank(languageName)) {
+            // Some languages don't need the attribute because the rule's
+            // constructor calls setLanguage, see e.g. AbstractJavaRule
             return;
-            // throw new IllegalArgumentException("Blank language attribute");
         }
 
         Language lang = LanguageRegistry.findLanguageByTerseName(languageName);

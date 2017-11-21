@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -55,7 +56,7 @@ public class RuleFactory {
     private static final String PROPERTY = "property";
     private static final String CLASS = "class";
     
-    public static final List<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(NAME, CLASS));
+    private static final List<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(NAME, CLASS));
 
 
     /**
@@ -196,6 +197,7 @@ public class RuleFactory {
             rule = builder.build();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             LOG.severe(e.getMessage());
+            LOG.severe(ExceptionUtils.getStackTrace(e));
             throw new RuntimeException(e);
         }
 
