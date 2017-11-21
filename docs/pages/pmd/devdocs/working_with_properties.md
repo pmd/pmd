@@ -30,13 +30,15 @@ Properties are assigned a value with a `property` element, which should mention 
 
 All property assignements must be enclosed in a `properties` element, which is itself inside a `rule` element.
 
-{%include tip.html content="The properties of a rule are documented with the rule, e.g. [here](pmd_rules_java_design.html#npathcomplexity) for NPathComplexity. Note that assigning a value to a property that does not exist throws an error!" %}
+{%include tip.html content="The properties of a rule are documented with the rule, e.g. [here](pmd_rules_java_design.html#npathcomplexity) for NPathComplexity. Note that **assigning a value to a property that does not exist throws an error!**" %}
 
 Some properties take multiple values (a list), in which case you can provide them all by delimiting them with a delimiter character. It is usually a pipe ('\|'), or a comma (',') for numeric properties, e.g.
 ```xml
- <property name="legalListTypes"
+ <property name="legalCollectionTypes"
            value="java.util.ArrayList|java.util.Vector|java.util.HashMap"/>
 ```
+
+These properties are referred to as **multivalued properties** in this documentation.
 
 ## Defining properties
 
@@ -97,7 +99,7 @@ This is fairly more readable than a constructor call, but keep in mind the descr
 
 {%include note.html content="The constructors may be deprecated in a future release, so please use the builders instead." %}
 
-For numeric properties, you'd add a call to `range` to define the range of acceptable values, e.g.
+For **numeric properties**, you'd add a call to `range` to define the range of acceptable values, e.g.
 ```java
 IntegerProperty.named("myIntProperty")
                .desc("This is my property")
@@ -106,7 +108,7 @@ IntegerProperty.named("myIntProperty")
                .build();
 ```
 
-Enumerated properties are a bit less straightforward to define, though they are arguably more powerful. These properties don't have a specific value type, instead, you can choose any type of value, provided the values are from a closed set. To make that actionable, you give string labels to each of the acceptable values, and the user will provide one of those labels as a value in the XML. The property will give you back the associated value, not just the label. Here's an example:
+**Enumerated properties** are a bit less straightforward to define, though they are arguably more powerful. These properties don't have a specific value type, instead, you can choose any type of value, provided the values are from a closed set. To make that actionable, you give string labels to each of the acceptable values, and the user will provide one of those labels as a value in the XML. The property will give you back the associated value, not the label. Here's an example:
 ```java
 static Map<String, ModeStrategy> map = new HashMap<>();
 
@@ -153,7 +155,7 @@ XPath rules can also define their own properties. To do so, you must add a `prop
 |Class|TypeProperty
 |Method|MethodProperty
 
-Note that enumerated properties are not available in XPath rules (yet).
+Note that enumerated properties are not available in XPath rules (yet?).
 
 Properties defined in XPath also *must* declare the `description` attribute. Numeric properties also expect the `min` and `max` attributes. Here are a few examples to sum it up:
 
@@ -162,9 +164,24 @@ Properties defined in XPath also *must* declare the `description` attribute. Num
 <property name="intProp" type="Integer" value="3" min="1" max="20" description="An IntegerProperty."/>
 ```
 
-You can then use the property in XPath with the syntax `$propertyName`.
+You can then use the property in XPath with the syntax `$propertyName`, for example:
+
+```xml
+<rule name="MyXpathRule" ...>
+  <properties>
+    <property name="maxStatements" type="Integer" value="10" min="1" max="40" 
+              description="Max number of statements per method"/>
+    <property name="xpath">
+    <![CDATA[
+      //MethodDeclaration/Block[count(//BlockStatement) > $maxStatements]
+    ]]></property>          
+  </properties>
+</rule>    
+```
 
 #### Multivalued properties
+
+{%include important.html content="The features described in this section are planned to be released with PMD 6.1.0. Previous versions of PMD don't support multivalued properties for XPath rules." %}
 
 
 Multivalued properties are also allowed and their `type` attribute has the form `List[Boolean]` or `List[Character]`, with every above type allowed (except `File`). These properties **require XPath 2.0** to work properly, and make use of the **sequence datatype** provided by that language. You thus need to set the `version` property to `2.0` to use them. Properties can also declare the `delimiter` attribute.
