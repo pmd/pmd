@@ -62,6 +62,16 @@ public class RuleSetFactory {
         this(new ResourceLoader(), RulePriority.LOW, false, true);
     }
 
+    /**
+     * @deprecated Use {@link #RuleSetFactory(ResourceLoader, RulePriority, boolean, boolean)} with
+     * {@link ResourceLoader} instead of a {@link ClassLoader}.
+     */
+    @Deprecated // to be removed with PMD 7.0.0.
+    public RuleSetFactory(final ClassLoader classLoader, final RulePriority minimumPriority,
+            final boolean warnDeprecated, final boolean enableCompatibility) {
+        this(new ResourceLoader(classLoader), minimumPriority, warnDeprecated, enableCompatibility);
+    }
+
     public RuleSetFactory(final ResourceLoader resourceLoader, final RulePriority minimumPriority,
             final boolean warnDeprecated, final boolean enableCompatibility) {
         this.resourceLoader = resourceLoader;
@@ -367,6 +377,8 @@ public class RuleSetFactory {
                 ruleSetBuilder.withDescription("Missing description");
             }
 
+            ruleSetBuilder.filterRulesByPriority(minimumPriority);
+
             return ruleSetBuilder.build();
         } catch (ClassNotFoundException cnfe) {
             return classNotFoundProblem(cnfe);
@@ -483,22 +495,46 @@ public class RuleSetFactory {
         }
         final RuleSetReference ruleSetReference = new RuleSetReference(ref, true, excludedRulesCheck);
 
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(this, warnDeprecated);
+        // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
+        // minimum priority will be applied again, before constructing the final ruleset
+        RuleSetFactory ruleSetFactory = new RuleSetFactory(resourceLoader, RulePriority.LOW, warnDeprecated, this.compatibilityFilter != null);
         RuleSet otherRuleSet = ruleSetFactory.createRuleSet(RuleSetReferenceId.parse(ref).get(0));
+        List<RuleReference> potentialRules = new ArrayList<>();
+        int countDeprecated = 0;
         for (Rule rule : otherRuleSet.getRules()) {
             excludedRulesCheck.remove(rule.getName());
-            if (!ruleSetReference.getExcludes().contains(rule.getName()) && !rule.isDeprecated()) {
+            if (!ruleSetReference.getExcludes().contains(rule.getName())) {
                 RuleReference ruleReference = new RuleReference();
                 ruleReference.setRuleSetReference(ruleSetReference);
                 ruleReference.setRule(rule);
-                ruleSetBuilder.addRuleIfNotExists(ruleReference);
-
                 // override the priority
                 if (priority != null) {
                     ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(priority)));
                 }
+
+                if (rule.isDeprecated()) {
+                    countDeprecated++;
+                }
+                potentialRules.add(ruleReference);
             }
         }
+
+        boolean rulesetDeprecated = false;
+        if (potentialRules.size() == countDeprecated) {
+            // all rules in the ruleset have been deprecated - the ruleset itself is considered to be deprecated
+            rulesetDeprecated = true;
+            LOG.warning("The RuleSet " + ref + " has been deprecated.");
+        }
+
+        for (RuleReference r : potentialRules) {
+            if (rulesetDeprecated || !r.getRule().isDeprecated()) {
+                // add the rule, if either the ruleset itself is deprecated (then we add all rules)
+                // or if the rule is not deprecated (in that case, the ruleset might contain deprecated as well
+                // as valid references to rules)
+                ruleSetBuilder.addRuleIfNotExists(r);
+            }
+        }
+
         if (!excludedRulesCheck.isEmpty()) {
             throw new IllegalArgumentException(
                     "Unable to exclude rules " + excludedRulesCheck + "; perhaps the rule name is mispelled?");
@@ -529,10 +565,7 @@ public class RuleSetFactory {
         Rule rule = new RuleFactory().buildRule(ruleElement);
         rule.setRuleSetName(ruleSetBuilder.getName());
 
-        if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
-                || rule.getPriority().compareTo(minimumPriority) <= 0) {
-            ruleSetBuilder.addRule(rule);
-        }
+        ruleSetBuilder.addRule(rule);
     }
 
 
@@ -564,7 +597,9 @@ public class RuleSetFactory {
             return;
         }
 
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(this, warnDeprecated);
+        // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
+        // minimum priority will be applied again, before constructing the final ruleset
+        RuleSetFactory ruleSetFactory = new RuleSetFactory(resourceLoader, RulePriority.LOW, warnDeprecated, this.compatibilityFilter != null);
 
         boolean isSameRuleSet = false;
         RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0);
@@ -611,11 +646,8 @@ public class RuleSetFactory {
         ruleReference.setRuleSetReference(ruleSetReference);
 
 
-        if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
-                || referencedRule.getPriority().compareTo(minimumPriority) <= 0) {
-            if (withDeprecatedRuleReferences || !isSameRuleSet || !ruleReference.isDeprecated()) {
-                ruleSetBuilder.addRuleReplaceIfExists(ruleReference);
-            }
+        if (withDeprecatedRuleReferences || !isSameRuleSet || !ruleReference.isDeprecated()) {
+            ruleSetBuilder.addRuleReplaceIfExists(ruleReference);
         }
     }
 

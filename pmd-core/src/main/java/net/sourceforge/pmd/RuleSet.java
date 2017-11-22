@@ -122,15 +122,26 @@ public class RuleSet implements ChecksumAware {
          * Add a new rule to this ruleset. Note that this method does not check
          * for duplicates.
          *
-         * @param rule
+         * @param newRule
          *            the rule to be added
          * @return The same builder, for a fluid programming interface
          */
-        public RuleSetBuilder addRule(final Rule rule) {
-            if (rule == null) {
+        public RuleSetBuilder addRule(final Rule newRule) {
+            if (newRule == null) {
                 throw new IllegalArgumentException(MISSING_RULE);
             }
-            rules.add(rule);
+
+            // check for duplicates - adding more than one rule with the same name will
+            // be problematic - see #RuleSet.getRuleByName(String)
+            for (Rule rule : rules) {
+                if (rule.getName().equals(newRule.getName()) && rule.getLanguage() == newRule.getLanguage()) {
+                    LOG.warning("The rule with name " + newRule.getName() + " is duplicated. "
+                            + "Future versions of PMD will reject to load such rulesets.");
+                    break;
+                }
+            }
+
+            rules.add(newRule);
             return this;
         }
 
@@ -163,13 +174,20 @@ public class RuleSet implements ChecksumAware {
          * same language was added before, so that the existent rule
          * configuration won't be overridden.
          *
-         * @param rule
+         * @param ruleOrRef
          *            the new rule to add
          * @return The same builder, for a fluid programming interface
          */
-        public RuleSetBuilder addRuleIfNotExists(final Rule rule) {
-            if (rule == null) {
+        public RuleSetBuilder addRuleIfNotExists(final Rule ruleOrRef) {
+            if (ruleOrRef == null) {
                 throw new IllegalArgumentException(MISSING_RULE);
+            }
+
+            // resolve the underlying rule, to avoid adding duplicated rules
+            // if the rule has been renamed/merged and moved at the same time
+            Rule rule = ruleOrRef;
+            while (rule instanceof RuleReference) {
+                rule = ((RuleReference) rule).getRule();
             }
 
             boolean exists = false;
@@ -180,7 +198,7 @@ public class RuleSet implements ChecksumAware {
                 }
             }
             if (!exists) {
-                addRule(rule);
+                addRule(ruleOrRef);
             }
             return this;
         }
@@ -386,6 +404,17 @@ public class RuleSet implements ChecksumAware {
 
         public RuleSet build() {
             return new RuleSet(this);
+        }
+
+        public void filterRulesByPriority(RulePriority minimumPriority) {
+            Iterator<Rule> iterator = rules.iterator();
+            while (iterator.hasNext()) {
+                Rule rule = iterator.next();
+                if (rule.getPriority().compareTo(minimumPriority) > 0) {
+                    LOG.fine("Removing rule " + rule.getName() + " due to priority: " + rule.getPriority() + " required: " + minimumPriority);
+                    iterator.remove();
+                }
+            }
         }
     }
 
