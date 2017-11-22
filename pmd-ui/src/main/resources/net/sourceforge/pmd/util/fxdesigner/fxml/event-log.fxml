@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<SplitPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="net.sourceforge.pmd.util.fxdesigner.EventLogController"
+           dividerPositions="0.6"
+           styleClass="bottom-pane-split-pane">
+    <items>
+        <AnchorPane>
+            <children>
+                <TableView fx:id="eventLogTableView"
+                           layoutX="31.0" layoutY="-79.0"
+                           prefHeight="200.0" prefWidth="200.0"
+                           AnchorPane.bottomAnchor="0.0"
+                           AnchorPane.leftAnchor="0.0"
+                           AnchorPane.rightAnchor="0.0"
+                           AnchorPane.topAnchor="0.0">
+                    <columns>
+                        <TableColumn fx:id="logDateColumn"
+                                     editable="false"
+                                     prefWidth="97.0"
+                                     resizable="false"
+                                     sortType="DESCENDING"
+                                     text="Date"/>
+                        <TableColumn fx:id="logCategoryColumn"
+                                     editable="false"
+                                     prefWidth="174.0"
+                                     resizable="false"
+                                     text="Category"/>
+                        <TableColumn fx:id="logMessageColumn"
+                                     editable="false"
+                                     prefWidth="123.0"
+                                     text="Message"/>
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView
+                                fx:constant="UNCONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                </TableView>
+            </children>
+        </AnchorPane>
+        <AnchorPane prefWidth="300.0">
+            <children>
+                <TitledPane collapsible="false"
+                            prefWidth="300.0" text="Details"
+                            AnchorPane.bottomAnchor="0.0"
+                            AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0"
+                            AnchorPane.topAnchor="0.0">
+                    <content>
+                        <TextArea fx:id="logDetailsTextArea"
+                                  editable="false"
+                                  prefHeight="200.0"
+                                  prefWidth="300.0"/>
+                    </content>
+                </TitledPane>
+            </children>
+        </AnchorPane>
+    </items>
+</SplitPane>

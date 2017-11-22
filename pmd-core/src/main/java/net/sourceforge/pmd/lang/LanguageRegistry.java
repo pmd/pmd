@@ -120,9 +120,7 @@ public final class LanguageRegistry {
     public static List<LanguageVersion> findAllVersions() {
         List<LanguageVersion> versions = new ArrayList<>();
         for (Language language : getLanguages()) {
-            for (LanguageVersion languageVersion : language.getVersions()) {
-                versions.add(languageVersion);
-            }
+            versions.addAll(language.getVersions());
         }
         return versions;
     }
