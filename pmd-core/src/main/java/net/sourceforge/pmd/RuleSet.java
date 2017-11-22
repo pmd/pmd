@@ -135,7 +135,9 @@ public class RuleSet implements ChecksumAware {
             // be problematic - see #RuleSet.getRuleByName(String)
             for (Rule rule : rules) {
                 if (rule.getName().equals(newRule.getName()) && rule.getLanguage() == newRule.getLanguage()) {
-                    LOG.warning("Duplicated rule: " + newRule.getName());
+                    LOG.warning("The rule with name " + newRule.getName() + " is duplicated. "
+                            + "Future versions of PMD will reject to load such rulesets.");
+                    break;
                 }
             }
 
