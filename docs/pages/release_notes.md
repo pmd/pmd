@@ -13,6 +13,7 @@ This is a major release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
+    *   [New Rule Designer](#new-rule-designer)
     *   [Java 9 support](#java-9-support)
     *   [Revamped Apex CPD](#revamped-apex-cpd)
     *   [Java Type Resolution](#java-type-resolution)
@@ -31,6 +32,17 @@ This is a major release.
 * [External Contributions](#external-contributions)
 
 ### New and noteworthy
+
+#### New Rule Designer
+
+Thanks to [Clément Fournier](https://github.com/oowekyala), we now have a new rule designer GUI, which
+is based on JavaFX. It replaces the old designer and can be started via
+
+*   `bin/run.sh designer` (on Unix-like platform such as Linux and Mac OS X)
+*   `bin\\designer.bat` (on Windows)
+
+Note: At least Java8 is required for the designer. The old designer is still available
+as `designerold` but will be removed with the next major release.
 
 #### Java 9 support
 
@@ -428,4 +440,5 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#679](https://github.com/pmd/pmd/pull/679): \[core] Token scheme generalization - [Gonzalo Ibars Ingman](https://github.com/gibarsin)
 *   [#694](https://github.com/pmd/pmd/pull/694): \[core] Add minor fixes to root pom - [Matias Comercio](https://github.com/MatiasComercio)
 *   [#696](https://github.com/pmd/pmd/pull/696): \[core] Add remove operation over nodes - [Matias Comercio](https://github.com/MatiasComercio)
+*   [#711](https://github.com/pmd/pmd/pull/711): \[ui] New rule designer - [Clément Fournier](https://github.com/oowekyala)
 
