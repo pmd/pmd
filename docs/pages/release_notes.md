@@ -266,6 +266,9 @@ The rule reference documentation has been updated to reflect these changes.
 *   The Java rule `SignatureDeclareThrowsException` in ruleset `java-typeresolution` is deprecated. Use the rule
     with the same name from category `design` instead.
 
+*   The Java rule `EmptyStaticInitializer` in ruleset `java-empty` is deprecated. Use the rule `EmptyInitializer`
+    from the category `errorprone`, which covers both static and non-static empty initializers.`
+
 #### Removed Rules
 
 *   The deprecated Java rule `UseSingleton` has been removed from the ruleset `java-design`. The rule has been renamed

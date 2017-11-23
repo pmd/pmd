@@ -16,7 +16,7 @@ empty block statement, empty try or catch block,...).
     <rule ref="category/java/errorprone.xml/EmptyInitializer" deprecated="true" />
     <rule ref="category/java/errorprone.xml/EmptyStatementBlock" deprecated="true" />
     <rule ref="category/java/errorprone.xml/EmptyStatementNotInLoop" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/EmptyStaticInitializer" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/EmptyInitializer" name="EmptyStaticInitializer" deprecated="true" />
     <rule ref="category/java/errorprone.xml/EmptySwitchStatements" deprecated="true" />
     <rule ref="category/java/errorprone.xml/EmptySynchronizedBlock" deprecated="true" />
     <rule ref="category/java/errorprone.xml/EmptyTryBlock" deprecated="true" />

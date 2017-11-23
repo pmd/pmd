@@ -49,4 +49,17 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+static initializer not empty
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static {
+  x++;
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>
