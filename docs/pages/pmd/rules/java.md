@@ -221,7 +221,6 @@ folder: pmd/rules
 *   [EmptyInitializer](pmd_rules_java_errorprone.html#emptyinitializer): Empty initializers serve no purpose and should be removed.
 *   [EmptyStatementBlock](pmd_rules_java_errorprone.html#emptystatementblock): Empty block statements serve no purpose and should be removed.
 *   [EmptyStatementNotInLoop](pmd_rules_java_errorprone.html#emptystatementnotinloop): An empty statement (or a semicolon by itself) that is not used as the sole body of a 'for' or 'wh...
-*   [EmptyStaticInitializer](pmd_rules_java_errorprone.html#emptystaticinitializer): An empty static initializer serve no purpose and should be removed.
 *   [EmptySwitchStatements](pmd_rules_java_errorprone.html#emptyswitchstatements): Empty switch statements serve no purpose and should be removed.
 *   [EmptySynchronizedBlock](pmd_rules_java_errorprone.html#emptysynchronizedblock): Empty synchronized blocks serve no purpose and should be removed.
 *   [EmptyTryBlock](pmd_rules_java_errorprone.html#emptytryblock): Avoid empty try blocks - what's the point?
@@ -402,7 +401,7 @@ folder: pmd/rules
 
     It contains the following rules:
 
-    [EmptyCatchBlock](pmd_rules_java_errorprone.html#emptycatchblock), [EmptyFinallyBlock](pmd_rules_java_errorprone.html#emptyfinallyblock), [EmptyIfStmt](pmd_rules_java_errorprone.html#emptyifstmt), [EmptyInitializer](pmd_rules_java_errorprone.html#emptyinitializer), [EmptyStatementBlock](pmd_rules_java_errorprone.html#emptystatementblock), [EmptyStatementNotInLoop](pmd_rules_java_errorprone.html#emptystatementnotinloop), [EmptyStaticInitializer](pmd_rules_java_errorprone.html#emptystaticinitializer), [EmptySwitchStatements](pmd_rules_java_errorprone.html#emptyswitchstatements), [EmptySynchronizedBlock](pmd_rules_java_errorprone.html#emptysynchronizedblock), [EmptyTryBlock](pmd_rules_java_errorprone.html#emptytryblock), [EmptyWhileStmt](pmd_rules_java_errorprone.html#emptywhilestmt)
+    [EmptyCatchBlock](pmd_rules_java_errorprone.html#emptycatchblock), [EmptyFinallyBlock](pmd_rules_java_errorprone.html#emptyfinallyblock), [EmptyIfStmt](pmd_rules_java_errorprone.html#emptyifstmt), [EmptyInitializer](pmd_rules_java_errorprone.html#emptyinitializer), [EmptyStatementBlock](pmd_rules_java_errorprone.html#emptystatementblock), [EmptyStatementNotInLoop](pmd_rules_java_errorprone.html#emptystatementnotinloop), [EmptyInitializer](pmd_rules_java_errorprone.html#emptystaticinitializer), [EmptySwitchStatements](pmd_rules_java_errorprone.html#emptyswitchstatements), [EmptySynchronizedBlock](pmd_rules_java_errorprone.html#emptysynchronizedblock), [EmptyTryBlock](pmd_rules_java_errorprone.html#emptytryblock), [EmptyWhileStmt](pmd_rules_java_errorprone.html#emptywhilestmt)
 
 *   Finalizer (`rulesets/java/finalizers.xml`):
 
