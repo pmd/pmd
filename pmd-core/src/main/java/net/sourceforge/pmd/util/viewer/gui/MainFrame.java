@@ -35,7 +35,7 @@ import net.sourceforge.pmd.util.viewer.util.NLS;
  *
  * @author Boris Gruschko ( boris at gruschko.org )
  */
-
+@Deprecated // to be removed with PMD 7.0.0
 public class MainFrame extends JFrame implements ActionListener, ViewerModelListener {
     private ViewerModel model;
     private SourceCodePanel sourcePanel;

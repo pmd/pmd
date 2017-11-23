@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.util.designer;
 
-@Deprecated
+@Deprecated // to be removed with PMD 7.0.0
 public interface LineGetter {
     String getLine(int number);
 }

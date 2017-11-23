@@ -427,6 +427,35 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   The constructor of `net.sourceforge.pmd.RuleSetFactory`, which took a `ClassLoader` is deprecated.
     Please use the alternative constructor with the `net.sourceforge.pmd.util.ResourceLoader` instead.
 
+*   The following GUI related classes have been deprecated and will be removed in PMD 7.0.0.
+    The tool "bgastviewer", that could be started via the script `bgastviewer.bat` or `run.sh bgastviewer` is
+    deprecated, too, and will be removed in PMD 7.0.0.
+    Both the "old designer" and "bgastviewer" are replaced by the [New Rule Designer](#new-rule-designer).
+    *   `net.sourceforge.pmd.util.designer.CodeEditorTextPane`
+    *   `net.sourceforge.pmd.util.designer.CreateXMLRulePanel`
+    *   `net.sourceforge.pmd.util.designer.Designer`
+    *   `net.sourceforge.pmd.util.designer.DFAPanel`
+    *   `net.sourceforge.pmd.util.designer.LineGetter`
+    *   `net.sourceforge.pmd.util.viewer.Viewer`
+    *   `net.sourceforge.pmd.util.viewer.gui.ActionCommands`
+    *   `net.sourceforge.pmd.util.viewer.gui.ASTPanel`
+    *   `net.sourceforge.pmd.util.viewer.gui.EvaluationResultsPanel`
+    *   `net.sourceforge.pmd.util.viewer.gui.MainFrame`
+    *   `net.sourceforge.pmd.util.viewer.gui.ParseExceptionHandler`
+    *   `net.sourceforge.pmd.util.viewer.gui.SourceCodePanel`
+    *   `net.sourceforge.pmd.util.viewer.gui.XPathPanel`
+    *   `net.sourceforge.pmd.util.viewer.gui.menu.ASTNodePopupMenu`
+    *   `net.sourceforge.pmd.util.viewer.gui.menu.AttributesSubMenu`
+    *   `net.sourceforge.pmd.util.viewer.gui.menu.SimpleNodeSubMenu`
+    *   `net.sourceforge.pmd.util.viewer.gui.menu.XPathFragmentAddingItem`
+    *   `net.sourceforge.pmd.util.viewer.model.ASTModel`
+    *   `net.sourceforge.pmd.util.viewer.model.AttributeToolkit`
+    *   `net.sourceforge.pmd.util.viewer.model.SimpleNodeTreeNodeAdapter`
+    *   `net.sourceforge.pmd.util.viewer.model.ViewerModel`
+    *   `net.sourceforge.pmd.util.viewer.model.ViewerModelEvent`
+    *   `net.sourceforge.pmd.util.viewer.model.ViewerModelListener`
+    *   `net.sourceforge.pmd.util.viewer.util.NLS`
+
 ### External Contributions
 
 *   [#287](https://github.com/pmd/pmd/pull/287): \[apex] Make Rule suppression work - [Robert Sösemann](https://github.com/up2go-rsoesemann)

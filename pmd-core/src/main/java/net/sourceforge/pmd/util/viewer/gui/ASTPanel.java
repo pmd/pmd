@@ -35,7 +35,7 @@ import net.sourceforge.pmd.util.viewer.util.NLS;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
-
+@Deprecated // to be removed with PMD 7.0.0
 public class ASTPanel extends JPanel implements ViewerModelListener, TreeSelectionListener {
     private ViewerModel model;
     private JTree tree;

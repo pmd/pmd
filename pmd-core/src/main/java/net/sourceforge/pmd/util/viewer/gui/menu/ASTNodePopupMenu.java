@@ -15,6 +15,7 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModel;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
+@Deprecated // to be removed with PMD 7.0.0
 public class ASTNodePopupMenu extends JPopupMenu {
     private ViewerModel model;
     private Node node;

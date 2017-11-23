@@ -13,6 +13,7 @@ import net.sourceforge.pmd.util.viewer.gui.MainFrame;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
+@Deprecated // to be removed with PMD 7.0.0
 public class Viewer {
 
     private Viewer() { }
