@@ -124,6 +124,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 
+@Deprecated
 public class Designer implements ClipboardOwner {
 
     private boolean exitOnClose = true;

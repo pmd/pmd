@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.VariableAccess;
 import net.sourceforge.pmd.util.StringUtil;
 
+@Deprecated
 public class DFAPanel extends JComponent implements ListSelectionListener {
 
     public static class DFACanvas extends JPanel {

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.designer;
 
+@Deprecated
 public interface LineGetter {
     String getLine(int number);
 }
