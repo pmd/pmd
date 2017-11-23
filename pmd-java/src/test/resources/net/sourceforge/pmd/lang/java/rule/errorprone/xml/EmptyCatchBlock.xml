@@ -172,9 +172,8 @@ Javadoc comment is not OK
     <!-- END Commented blocks -->
     <test-code>
         <description><![CDATA[
-Allow to ignore exceptions by name
+Exceptions named "ignored" and "expected" are ignored by default
      ]]></description>
-        <rule-property name="allowExceptionNameRegex">^(ignored|expected)$</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -182,6 +181,22 @@ public class Foo {
   try {
   } catch (NullPointerException expected) {
   } catch (IllegalArgumentException ignored) {
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Allow to ignore exceptions by name
+     ]]></description>
+        <rule-property name="allowExceptionNameRegex">^idontcare$</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  try {
+  } catch (NullPointerException idontcare) {
   }
  }
 }
