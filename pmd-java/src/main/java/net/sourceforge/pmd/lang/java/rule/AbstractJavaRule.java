@@ -19,7 +19,7 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     public AbstractJavaRule() {
         super.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
         // Enable Type Resolution on Java Rules by default
-        super.setUsesTypeResolution();
+        super.setTypeResolution(true);
     }
 
     @Override
