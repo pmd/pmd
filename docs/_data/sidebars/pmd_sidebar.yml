@@ -337,8 +337,8 @@ entries:
     - title: Rule Guidelines
       url: /pmd_devdocs_rule_guidelines.html
       output: web, pdf
-    - title: Info for Developers
-      url: /pmd_devdocs_info_for_developers.html
+    - title: Working with properties
+      url: /pmd_devdocs_working_with_properties.html
       output: web, pdf
     - title: Adding a New Language
       url: /pmd_devdocs_adding_new_language.html
