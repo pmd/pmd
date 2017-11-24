@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -106,7 +107,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         for (ASTNormalAnnotation annotation : annotations) {
             ASTName name = annotation.getFirstChildOfType(ASTName.class);
             if (name != null && ("Test".equals(name.getImage())
-                    || name.getType() != null && name.getType().equals(JUNIT4_CLASS))) {
+                    || name.getType() != null && TypeHelper.isA(name, JUNIT4_CLASS_NAME))) {
                 List<ASTMemberValuePair> memberValues = annotation.findDescendantsOfType(ASTMemberValuePair.class);
                 for (ASTMemberValuePair pair : memberValues) {
                     if ("expected".equals(pair.getImage())) {

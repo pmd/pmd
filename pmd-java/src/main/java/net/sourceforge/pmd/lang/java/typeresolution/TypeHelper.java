@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
@@ -17,6 +14,29 @@ public final class TypeHelper {
         // utility class
     }
 
+    public static boolean isA(final TypeNode n, final String clazzName) {
+        if (n.getType() != null) {
+            try {
+                ClassLoader classLoader = n.getType().getClassLoader();
+                if (classLoader == null) {
+                    // Using the system classloader then
+                    classLoader = ClassLoader.getSystemClassLoader();
+                }
+
+                // If the requested type is in the classpath, using the same classloader should work
+                final Class<?> clazz = classLoader.loadClass(clazzName);
+
+                if (clazz != null) {
+                    return isA(n, clazz);
+                }
+            } catch (final ClassNotFoundException e) {
+                // The requested type is not on the auxclasspath
+            }
+        }
+        
+        return clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage());
+    }
+    
     public static boolean isA(TypeNode n, Class<?> clazz) {
         return subclasses(n, clazz);
     }
@@ -45,21 +65,6 @@ public final class TypeHelper {
             return clazz.getSimpleName().equals(((Node) n).getImage()) || clazz.getName().equals(((Node) n).getImage());
         }
 
-        if (type.equals(clazz)) {
-            return true;
-        }
-
-        List<Class<?>> implementors = Arrays.asList(type.getInterfaces());
-        if (implementors.contains(clazz)) {
-            return true;
-        }
-        Class<?> superC = type.getSuperclass();
-        while (superC != null && !superC.equals(Object.class)) {
-            if (superC.equals(clazz)) {
-                return true;
-            }
-            superC = superC.getSuperclass();
-        }
-        return false;
+        return clazz.isAssignableFrom(type);
     }
 }
