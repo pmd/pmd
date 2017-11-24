@@ -322,6 +322,7 @@ a warning will now be produced suggesting users to adopt it for better performan
     *   [#534](https://github.com/pmd/pmd/issues/534): \[java] NPE in MethodTypeResolution for static methods
     *   [#603](https://github.com/pmd/pmd/issues/603): \[core] incremental analysis should invalidate upon Java rule plugin changes
     *   [#650](https://github.com/pmd/pmd/issues/650): \[java] ProcesingError analyzing code under 5.8.1
+    *   [#732](https://github.com/pmd/pmd/issues/732): \[java] LinkageError with aux classpath
 *   java-basic
     *   [#565](https://github.com/pmd/pmd/pull/565): \[java] False negative on DontCallThreadRun when extending Thread
 *   java-comments
