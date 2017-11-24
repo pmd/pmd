@@ -22,7 +22,7 @@ Properties make it easy to customise the behaviour of a rule directly from the x
 </rule>
 ```
 
-Properties are assigned a value with a `property` element, which should mention the name of a property as an attribute. The value of the property can be specified either in the content of the element, like above, or in the `value` attribute, e.g. 
+Properties are assigned a value with a `property` element, which should mention the name of a property as an attribute. The value of the property can be specified either in the content of the element, like above, or in the `value` attribute, e.g.
 
 ```xml
 <property name="reportLevel" value="150"/>
@@ -66,8 +66,8 @@ Without further ado, here is the list of available (single-value) properties:
 |BooleanProperty|boolean
 |CharacterProperty|char
 |FileProperty|java.io.File
-|MethodProperty|java.reflect.Method
-|TypeProperty|java.reflect.Class\<?\>
+|MethodProperty|java.lang.reflect.Method
+|TypeProperty|java.lang.Class\<?\>
 
 Each of these is complemented by a multivalued variant, whose name ends with "MultiProperty", and which returns a list of values, e.g.
 
@@ -95,7 +95,7 @@ StringProperty.named("myProperty")
               .build();
 ```
 
-This is fairly more readable than a constructor call, but keep in mind the description and the default value are not optional. 
+This is fairly more readable than a constructor call, but keep in mind the description and the default value are not optional.
 
 {%include note.html content="The constructors may be deprecated in a future release, so please use the builders instead." %}
 
@@ -133,8 +133,8 @@ Note that you're required to fill in the type of the values too, using `type()`.
 You can see an example of properties used in a PMD rule [here](https://github.com/pmd/pmd/blob/ac2ff0f6af8d16f739584ba8d00b7ea1a6311ccc/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/complexity/AvoidDeeplyNestedIfStmtsRule.java#L17).
 There are several things to notice here:
 * The property descriptor is declared `static final`, which should generally be the case, as descriptors are immutable and can be shared between instances of the same rule;
-* The property is declared using `definePropertyDescriptor` *in the constructor*, which ensures the property gets recognised by PMD; 
-* The value of the property is *not retrieved in the constructor*, but in one of the `visit` methods (typically on the highest node in the tree, since the property doesn't change). 
+* The property is declared using `definePropertyDescriptor` *in the constructor*, which ensures the property gets recognised by PMD;
+* The value of the property is *not retrieved in the constructor*, but in one of the `visit` methods (typically on the highest node in the tree, since the property doesn't change).
 
 
 
@@ -169,7 +169,7 @@ You can then use the property in XPath with the syntax `$propertyName`, for exam
 ```xml
 <rule name="MyXpathRule" ...>
   <properties>
-    <property name="maxStatements" type="Integer" value="10" min="1" max="40" 
+    <property name="maxStatements" type="Integer" value="10" min="1" max="40"
               description="Max number of statements per method"/>
     <property name="xpath">
     <![CDATA[
@@ -193,7 +193,7 @@ Multivalued properties are also allowed and their `type` attribute has the form 
   <properties>
     <property name="version" value="2.0" />
     <property name="intProp" type="List[Integer]" value="1,2,5" description="An IntegerMultiProperty." />
-    <property name="reportedIdentifiers" type="List[String]" value="foo$bar" delimiter="$" 
+    <property name="reportedIdentifiers" type="List[String]" value="foo$bar" delimiter="$"
               description="A StringMultiProperty." />
     <property name="xpath">
     <![CDATA[
