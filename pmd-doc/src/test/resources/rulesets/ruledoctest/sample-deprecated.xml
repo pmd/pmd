@@ -11,4 +11,7 @@ Sample ruleset which only contains deprecated rule references.
     <rule ref="rulesets/ruledoctest/sample.xml/OverrideBothEqualsAndHashcode" deprecated="true" />
     <rule ref="rulesets/ruledoctest/sample.xml/JumbledIncrementer" deprecated="true" />
 
+    <!-- both moved and renamed: -->
+    <rule ref="rulesets/ruledoctest/sample.xml/JumbledIncrementer" name="OldNameOfJumbledIncrementer" deprecated="true" />
+
 </ruleset>

@@ -29,5 +29,5 @@ folder: pmd/rules
 
     It contains the following rules:
 
-    [JumbledIncrementer](pmd_rules_java_sample.html#jumbledincrementer), [OverrideBothEqualsAndHashcode](pmd_rules_java_sample.html#overridebothequalsandhashcode)
+    [JumbledIncrementer](pmd_rules_java_sample.html#jumbledincrementer), [OldNameOfJumbledIncrementer](pmd_rules_java_sample.html#jumbledincrementer), [OverrideBothEqualsAndHashcode](pmd_rules_java_sample.html#overridebothequalsandhashcode)
 
