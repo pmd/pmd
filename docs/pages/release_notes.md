@@ -463,6 +463,16 @@ a warning will now be produced suggesting users to adopt it for better performan
     *   `net.sourceforge.pmd.util.viewer.model.ViewerModelListener`
     *   `net.sourceforge.pmd.util.viewer.util.NLS`
 
+*   The following methods in `net.sourceforge.pmd.Rule` have been deprecated and will be removed in PMD 7.0.0.
+    All methods are replaced by their bean-like counterparts
+    *   `void setUsesDFA()`. Use `void setDfa(boolean)` instead.
+    *   `boolean usesDFA()`. Use `boolean isDfa()` instead.
+    *   `void setUsesTypeResolution()`. Use `void setTypeResolution(boolean)` instead.
+    *   `boolean usesTypeResolution()`. Use `boolean isTypeResolution()` instead.
+    *   `void setUsesMultifile()`. Use `void setMultifile(boolean)` instead.
+    *   `boolean usesMultifile()`. Use `boolean isMultifile()` instead.
+    *   `boolean usesRuleChain()`. Use `boolean isRuleChain()` instead.
+
 ### External Contributions
 
 *   [#287](https://github.com/pmd/pmd/pull/287): \[apex] Make Rule suppression work - [Robert Sösemann](https://github.com/up2go-rsoesemann)
