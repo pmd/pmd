@@ -249,12 +249,12 @@ public class RuleSetFactoryTest {
     @Test
     public void testFacadesOffByDefault() throws RuleSetNotFoundException {
         Rule r = loadFirstRule(XPATH);
-        assertFalse(r.usesDFA());
+        assertFalse(r.isDfa());
     }
 
     @Test
     public void testDFAFlag() throws RuleSetNotFoundException {
-        assertTrue(loadFirstRule(DFA).usesDFA());
+        assertTrue(loadFirstRule(DFA).isDfa());
     }
 
     @Test

@@ -63,7 +63,7 @@ public class RuleSetTest {
     public void testIncludesRuleWithDFA() {
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
         mock.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        mock.setUsesDFA();
+        mock.setDfa(true);
         RuleSet rs = new RuleSetFactory().createSingleRuleRuleSet(mock);
         assertTrue(rs.usesDFA(LanguageRegistry.getLanguage(DummyLanguageModule.NAME)));
     }
@@ -416,7 +416,7 @@ public class RuleSetTest {
         rule.setName("FooRule1");
         rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         rule.addRuleChainVisit("dummyNode");
-        assertTrue("RuleChain rule", rule.usesRuleChain());
+        assertTrue("RuleChain rule", rule.isRuleChain());
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
                 .addRule(rule)
                 .build();

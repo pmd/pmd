@@ -169,7 +169,7 @@ public class FileAnalysisCacheTest {
         Files.write(Paths.get(classpathFile.getAbsolutePath()), "some text".getBytes());
         
         final net.sourceforge.pmd.Rule r = mock(net.sourceforge.pmd.Rule.class);
-        when(r.usesDFA()).thenReturn(true);
+        when(r.isDfa()).thenReturn(true);
         when(rs.getAllRules()).thenReturn(Collections.singleton(r));
         reloadedCache.checkValidity(rs, cl);
         assertFalse("Cache believes unmodified file is up to date after auxclasspath changed",
@@ -185,7 +185,7 @@ public class FileAnalysisCacheTest {
         when(cl.getURLs()).thenReturn(new URL[] { classpathFile.toURI().toURL(), });
         
         final net.sourceforge.pmd.Rule r = mock(net.sourceforge.pmd.Rule.class);
-        when(r.usesDFA()).thenReturn(true);
+        when(r.isDfa()).thenReturn(true);
         when(rs.getAllRules()).thenReturn(Collections.singleton(r));
         
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
