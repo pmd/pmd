@@ -262,8 +262,8 @@ public class RuleDocGenerator {
                                     .replace("${language.tersename}", languageTersename)
                                     .replace("${ruleset.name}", RuleSetUtils.getRuleSetFilename(ref.getRuleSetReference().getRuleSetFileName()));
 
-                            rules.append("[").append(ref.getRule().getName()).append("](");
-                            rules.append(otherLink).append("#").append(ref.getName().toLowerCase(Locale.ROOT)).append(")");
+                            rules.append("[").append(ref.getName()).append("](");
+                            rules.append(otherLink).append("#").append(ref.getRule().getName().toLowerCase(Locale.ROOT)).append(")");
                         } else {
                             rules.append(rule.getName());
                         }
