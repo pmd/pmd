@@ -115,7 +115,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
             if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
                 // Do we even care?
                 for (final Rule r : ruleSets.getAllRules()) {
-                    if (r.usesDFA() || r.usesTypeResolution()) {
+                    if (r.isDfa() || r.isTypeResolution()) {
                         LOG.info("Analysis cache invalidated, auxclasspath changed.");
                         cacheIsValid = false;
                         break;

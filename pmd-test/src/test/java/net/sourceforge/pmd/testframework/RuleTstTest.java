@@ -37,10 +37,10 @@ public class RuleTstTest {
         verify(rule).start(any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
         verify(rule, times(5)).getLanguage();
-        verify(rule).usesDFA();
-        verify(rule).usesTypeResolution();
-        verify(rule).usesMultifile();
-        verify(rule, times(2)).usesRuleChain();
+        verify(rule).isDfa();
+        verify(rule).isTypeResolution();
+        verify(rule).isMultifile();
+        verify(rule, times(2)).isRuleChain();
         verify(rule).getMinimumLanguageVersion();
         verify(rule).getMaximumLanguageVersion();
         verify(rule).apply(anyList(), any(RuleContext.class));

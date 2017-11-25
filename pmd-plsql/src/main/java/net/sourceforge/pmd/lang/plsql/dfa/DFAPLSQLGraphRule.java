@@ -21,8 +21,7 @@ public class DFAPLSQLGraphRule extends AbstractPLSQLRule implements DFAGraphRule
     private List<DFAGraphMethod> executables;
 
     public DFAPLSQLGraphRule() {
-        super();
-        super.setUsesDFA();
+        super.setDfa(true);
     }
 
     public List<DFAGraphMethod> getMethods() {

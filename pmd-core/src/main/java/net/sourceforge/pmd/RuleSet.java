@@ -498,7 +498,7 @@ public class RuleSet implements ChecksumAware {
         long start = System.nanoTime();
         for (Rule rule : rules) {
             try {
-                if (!rule.usesRuleChain() && applies(rule, ctx.getLanguageVersion())) {
+                if (!rule.isRuleChain() && applies(rule, ctx.getLanguageVersion())) {
                     rule.apply(acuList, ctx);
                     long end = System.nanoTime();
                     Benchmarker.mark(Benchmark.Rule, rule.getName(), end - start, 1);
@@ -609,7 +609,7 @@ public class RuleSet implements ChecksumAware {
      */
     public boolean usesDFA(Language language) {
         for (Rule r : rules) {
-            if (r.getLanguage().equals(language) && r.usesDFA()) {
+            if (r.getLanguage().equals(language) && r.isDfa()) {
                 return true;
             }
         }
@@ -626,7 +626,7 @@ public class RuleSet implements ChecksumAware {
      */
     public boolean usesTypeResolution(Language language) {
         for (Rule r : rules) {
-            if (r.getLanguage().equals(language) && r.usesTypeResolution()) {
+            if (r.getLanguage().equals(language) && r.isTypeResolution()) {
                 return true;
             }
         }
@@ -645,7 +645,7 @@ public class RuleSet implements ChecksumAware {
      */
     public boolean usesMultifile(Language language) {
         for (Rule r : rules) {
-            if (r.getLanguage().equals(language) && r.usesMultifile()) {
+            if (r.getLanguage().equals(language) && r.isMultifile()) {
                 return true;
             }
         }

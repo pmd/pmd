@@ -47,7 +47,7 @@ public class RuleSetWriter {
     /**
      * @deprecated use {@link #RULESET_2_0_0_NS_URI} instead
      */
-    @Deprecated
+    @Deprecated // To be removed in PMD 7.0.0
     public static final String RULESET_NS_URI = RULESET_2_0_0_NS_URI;
 
     private final OutputStream outputStream;
@@ -196,7 +196,7 @@ public class RuleSetWriter {
             return createSingleRuleElement(rule instanceof ImmutableLanguage ? null : rule.getLanguage(),
                     rule.getMinimumLanguageVersion(), rule.getMaximumLanguageVersion(), rule.isDeprecated(),
                     rule.getName(), rule.getSince(), null, rule.getMessage(), rule.getExternalInfoUrl(),
-                    rule.getRuleClass(), rule.usesDFA(), rule.usesTypeResolution(), rule.usesMultifile(),
+                    rule.getRuleClass(), rule.isDfa(), rule.isTypeResolution(), rule.isMultifile(),
                     rule.getDescription(),
                     rule.getPriority(), rule.getPropertyDescriptors(), rule.getPropertiesByPropertyDescriptor(),
                     rule.getExamples());

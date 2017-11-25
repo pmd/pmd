@@ -198,15 +198,13 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
         }
 
         if (isUsesDfa) {
-            rule.setUsesDFA();
+            rule.setDfa(isUsesDfa);
         }
-
         if (isUsesMultifile) {
-            rule.setUsesMultifile();
+            rule.setMultifile(isUsesMultifile);
         }
-
         if (isUsesTyperesolution) {
-            rule.setUsesTypeResolution();
+            rule.setTypeResolution(isUsesTyperesolution);
         }
 
         for (PropertyDescriptor<?> descriptor : definedProperties) {

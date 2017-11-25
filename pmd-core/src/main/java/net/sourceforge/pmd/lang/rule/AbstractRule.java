@@ -229,37 +229,79 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     }
 
     @Override
+    @Deprecated // To be removed in PMD 7.0.0
     public void setUsesDFA() {
-        usesDFA = true;
+        setDfa(true);
     }
 
     @Override
+    public void setDfa(boolean isDfa) {
+        usesDFA = isDfa;
+    }
+
+    @Override
+    @Deprecated // To be removed in PMD 7.0.0
     public boolean usesDFA() {
+        return isDfa();
+    }
+
+    @Override
+    public boolean isDfa() {
         return usesDFA;
     }
 
     @Override
+    @Deprecated // To be removed in PMD 7.0.0
     public void setUsesTypeResolution() {
-        usesTypeResolution = true;
+        setTypeResolution(true);
     }
 
     @Override
+    public void setTypeResolution(boolean usingTypeResolution) {
+        usesTypeResolution = usingTypeResolution;
+    }
+
+    @Override
+    @Deprecated // To be removed in PMD 7.0.0
     public boolean usesTypeResolution() {
+        return isTypeResolution();
+    }
+
+    @Override
+    public boolean isTypeResolution() {
         return usesTypeResolution;
     }
 
     @Override
+    @Deprecated // To be removed in PMD 7.0.0
     public void setUsesMultifile() {
-        usesMultifile = true;
+        setMultifile(true);
     }
 
     @Override
+    public void setMultifile(boolean multifile) {
+        usesMultifile = multifile;
+    }
+
+    @Override
+    @Deprecated // To be removed in PMD 7.0.0
     public boolean usesMultifile() {
+        return isMultifile();
+    }
+
+    @Override
+    public boolean isMultifile() {
         return usesMultifile;
     }
 
     @Override
+    @Deprecated // To be removed in PMD 7.0.0
     public boolean usesRuleChain() {
+        return isRuleChain();
+    }
+
+    @Override
+    public boolean isRuleChain() {
         return !getRuleChainVisits().isEmpty();
     }
 
@@ -407,15 +449,9 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         rule.setMessage(getMessage());
         rule.setRuleSetName(getRuleSetName());
         rule.setExternalInfoUrl(getExternalInfoUrl());
-        if (usesDFA()) {
-            rule.setUsesDFA();
-        }
-        if (usesTypeResolution()) {
-            rule.setUsesTypeResolution();
-        }
-        if (usesMultifile()) {
-            rule.setUsesMultifile();
-        }
+        rule.setDfa(isDfa());
+        rule.setTypeResolution(isTypeResolution());
+        rule.setMultifile(isMultifile());
         rule.setDescription(getDescription());
         for (final String example : getExamples()) {
             rule.addExample(example);

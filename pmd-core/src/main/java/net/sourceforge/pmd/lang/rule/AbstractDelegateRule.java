@@ -220,38 +220,80 @@ public abstract class AbstractDelegateRule implements Rule {
     }
 
     @Override
+    @Deprecated // To be removed in PMD 7.0.0
     public void setUsesDFA() {
-        rule.setUsesDFA();
+        rule.setDfa(true);
     }
 
     @Override
+    public void setDfa(boolean isDfa) {
+        rule.setDfa(isDfa);
+    }
+
+    @Override
+    @Deprecated // To be removed in PMD 7.0.0
     public boolean usesDFA() {
-        return rule.usesDFA();
+        return rule.isDfa();
     }
 
     @Override
+    public boolean isDfa() {
+        return rule.isDfa();
+    }
+
+    @Override
+    @Deprecated // To be removed in PMD 7.0.0
     public void setUsesTypeResolution() {
-        rule.setUsesTypeResolution();
+        rule.setTypeResolution(true);
     }
 
     @Override
+    public void setTypeResolution(boolean usingTypeResolution) {
+        rule.setTypeResolution(usingTypeResolution);
+    }
+
+    @Override
+    @Deprecated // To be removed in PMD 7.0.0
     public boolean usesTypeResolution() {
-        return rule.usesTypeResolution();
+        return rule.isTypeResolution();
     }
 
     @Override
+    public boolean isTypeResolution() {
+        return rule.isTypeResolution();
+    }
+
+    @Override
+    @Deprecated // To be removed in PMD 7.0.0
     public void setUsesMultifile() {
-        rule.setUsesMultifile();
+        rule.setMultifile(true);
     }
 
     @Override
+    public void setMultifile(boolean multifile) {
+        rule.setMultifile(multifile);
+    }
+
+    @Override
+    @Deprecated // To be removed in PMD 7.0.0
     public boolean usesMultifile() {
-        return rule.usesMultifile();
+        return rule.isMultifile();
     }
 
     @Override
+    public boolean isMultifile() {
+        return rule.isMultifile();
+    }
+
+    @Override
+    @Deprecated // To be removed in PMD 7.0.0
     public boolean usesRuleChain() {
-        return rule.usesRuleChain();
+        return rule.isRuleChain();
+    }
+
+    @Override
+    public boolean isRuleChain() {
+        return rule.isRuleChain();
     }
 
     @Override

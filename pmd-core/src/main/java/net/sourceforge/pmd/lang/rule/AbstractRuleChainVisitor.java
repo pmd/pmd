@@ -138,7 +138,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
             Map.Entry<RuleSet, List<Rule>> entry = entryIterator.next();
             for (Iterator<Rule> ruleIterator = entry.getValue().iterator(); ruleIterator.hasNext();) {
                 Rule rule = ruleIterator.next();
-                if (rule.usesRuleChain()) {
+                if (rule.isRuleChain()) {
                     visitedNodes.addAll(rule.getRuleChainVisits());
                 } else {
                     // Drop rules which do not participate in the rule chain.
