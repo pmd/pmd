@@ -335,6 +335,7 @@ a warning will now be produced suggesting users to adopt it for better performan
     *   [#500](https://github.com/pmd/pmd/issues/500): \[apex] Running through CLI shows jorje optimization messages
     *   [#605](https://github.com/pmd/pmd/issues/605): \[apex] java.lang.NoClassDefFoundError in the latest build
     *   [#637](https://github.com/pmd/pmd/issues/637): \[apex] Avoid SOSL in loops
+    *   [#760](https://github.com/pmd/pmd/issues/760): \[apex] EmptyStatementBlock complains about missing rather than empty block
 *   cpp
     *   [#448](https://github.com/pmd/pmd/issues/448): \[cpp] Write custom CharStream to handle continuation characters
 *   java
