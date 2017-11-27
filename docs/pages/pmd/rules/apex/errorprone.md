@@ -172,7 +172,7 @@ Empty block statements serve no purpose and should be removed.
 
 ```
 //Method/ModifierNode[@Abstract!='true' and ../BlockStatement[count(*) = 0]]
-| //Method/BlockStatement//BlockStatement[count(*) = 0]
+| //Method/BlockStatement//BlockStatement[count(*) = 0 and @Location != parent::*/@Location]
 ```
 
 **Example(s):**
