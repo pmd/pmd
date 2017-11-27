@@ -547,7 +547,9 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#727](https://github.com/pmd/pmd/pull/727): \[core] Fix #725: numeric property descriptors now check their default value - [Clément Fournier](https://github.com/oowekyala)
 *   [#733](https://github.com/pmd/pmd/pull/733): \[java] Some improvements to CommentRequired - [Clément Fournier](https://github.com/oowekyala)
 *   [#734](https://github.com/pmd/pmd/pull/734): \[java] Move CyclomaticComplexity from metrics to design - [Clément Fournier](https://github.com/oowekyala)
+*   [#736](https://github.com/pmd/pmd/pull/736): \[core] Make Saxon support multi valued XPath properties - [Clément Fournier](https://github.com/oowekyala)
 *   [#737](https://github.com/pmd/pmd/pull/737): \[doc] Fix NPathComplexity documentation bad rendering - [Clément Fournier](https://github.com/oowekyala)
 *   [#744](https://github.com/pmd/pmd/pull/744): \[doc] Added Apex to supported languages - [Michał Kuliński](https://github.com/coola)
 *   [#746](https://github.com/pmd/pmd/pull/746): \[doc] Fix typo in incremental analysis log message - [Clément Fournier](https://github.com/oowekyala)
 *   [#749](https://github.com/pmd/pmd/pull/749): \[doc] Update the documentation for properties - [Clément Fournier](https://github.com/oowekyala)
+
