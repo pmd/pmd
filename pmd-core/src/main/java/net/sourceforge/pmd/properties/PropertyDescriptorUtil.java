@@ -56,6 +56,16 @@ public class PropertyDescriptorUtil {
     private PropertyDescriptorUtil() {
     }
 
+    
+    /**
+     * Returns the full mappings from type ids to extractors.
+     *
+     * @return The full mapping.
+     */
+    public static Map<String, PropertyDescriptorExternalBuilder<?>> typeIdsToExtractors() {
+        return DESCRIPTOR_FACTORIES_BY_TYPE;
+    }
+
 
     /**
      * Gets the factory for the descriptor identified by the string id.
