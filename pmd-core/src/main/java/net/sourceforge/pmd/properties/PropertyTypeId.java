@@ -14,9 +14,9 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder
 
 /**
  * Enumerates the properties that can be built from the XML. Defining a property in
- * the XML requires the {@code type} attribute, and the mapping between the values of
- * this attribute and the concrete property that is built is encoded in the constants
- * of this enum.
+ * the XML requires the {@code type} attribute, which acts as a mnemonic for the type
+ * of the property that should be built. The mapping between the values of this attribute
+ * and the concrete property that is built is encoded in the constants of this enum.
  *
  * @author Clément Fournier
  * @see PropertyDescriptorExternalBuilder
@@ -46,21 +46,21 @@ public enum PropertyTypeId {
     CLASS_LIST("List[Class]", TypeMultiProperty.extractor());
 
 
-    private static final Map<String, PropertyDescriptorExternalBuilder<?>> DESCRIPTOR_FACTORIES_BY_TYPE;
-    private final String typeId;
+    private static final Map<String, PropertyTypeId> CONSTANTS_BY_MNEMONIC;
+    private final String stringId;
     private final PropertyDescriptorExternalBuilder<?> factory;
 
     static {
-        Map<String, PropertyDescriptorExternalBuilder<?>> temp = new HashMap<>();
+        Map<String, PropertyTypeId> temp = new HashMap<>();
         for (PropertyTypeId id : values()) {
-            temp.put(id.typeId, id.factory);
+            temp.put(id.stringId, id);
         }
-        DESCRIPTOR_FACTORIES_BY_TYPE = Collections.unmodifiableMap(temp);
+        CONSTANTS_BY_MNEMONIC = Collections.unmodifiableMap(temp);
     }
-    
+
 
     PropertyTypeId(String id, PropertyDescriptorExternalBuilder<?> factory) {
-        this.typeId = id;
+        this.stringId = id;
         this.factory = factory;
     }
 
@@ -68,10 +68,10 @@ public enum PropertyTypeId {
     /**
      * Gets the value of the type attribute represented by this constant.
      *
-     * @return The type id
+     * @return The string id
      */
-    public String getTypeId() {
-        return typeId;
+    public String getStringId() {
+        return stringId;
     }
 
 
@@ -133,39 +133,53 @@ public enum PropertyTypeId {
 
 
     /**
-     * Returns the full mappings from type ids to factory.
+     * Returns the full mappings from type ids to enum constants.
      *
      * @return The full mapping.
      */
-    public static Map<String, PropertyDescriptorExternalBuilder<?>> typeIdsToExtractors() {
-        return DESCRIPTOR_FACTORIES_BY_TYPE;
+    public static Map<String, PropertyTypeId> typeIdsToConstants() {
+        return CONSTANTS_BY_MNEMONIC;
     }
 
 
     /**
      * Gets the factory for the descriptor identified by the string id.
      *
-     * @param typeId The identifier of the type
+     * @param stringId The identifier of the type
      *
      * @return The factory used to build new instances of a descriptor
      */
-    public static PropertyDescriptorExternalBuilder<?> factoryFor(String typeId) {
-        return DESCRIPTOR_FACTORIES_BY_TYPE.get(typeId);
+    public static PropertyDescriptorExternalBuilder<?> factoryFor(String stringId) {
+        PropertyTypeId cons = CONSTANTS_BY_MNEMONIC.get(stringId);
+        return cons == null ? null : cons.factory;
     }
 
 
     /**
-     * Gets the string representation of this type, as it should be given 
+     * Gets the enum constant corresponding to the given mnemonic.
+     *
+     * @param stringId A mnemonic for the property type
+     *
+     * @return A PropertyTypeId
+     */
+    public static PropertyTypeId lookupMnemonic(String stringId) {
+        return CONSTANTS_BY_MNEMONIC.get(stringId);
+    }
+
+
+    /**
+     * Gets the string representation of this type, as it should be given
      * when defining a descriptor in the xml.
      *
      * @param valueType  The type to look for
      * @param multiValue Whether the descriptor is multivalued or not
      *
-     * @return The type id
+     * @return The string id
      */
     public static String typeIdFor(Class<?> valueType, boolean multiValue) {
-        for (Map.Entry<String, PropertyDescriptorExternalBuilder<?>> entry : DESCRIPTOR_FACTORIES_BY_TYPE.entrySet()) {
-            if (entry.getValue().valueType() == valueType && entry.getValue().isMultiValue() == multiValue) {
+        for (Map.Entry<String, PropertyTypeId> entry : CONSTANTS_BY_MNEMONIC.entrySet()) {
+            if (entry.getValue().propertyValueType() == valueType
+                && entry.getValue().isPropertyMultivalue() == multiValue) {
                 return entry.getKey();
             }
         }
