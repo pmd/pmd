@@ -34,7 +34,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
-import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
+import net.sourceforge.pmd.properties.PropertyTypeId;
 
 /**
  * This class represents a way to serialize a RuleSet to an XML configuration
@@ -348,7 +348,7 @@ public class RuleSetWriter {
         final Element propertyElement = createPropertyValueElement(propertyDescriptor,
                 propertyDescriptor.defaultValue());
         propertyElement.setAttribute(PropertyDescriptorField.TYPE.attributeName(),
-                                     PropertyDescriptorUtil.typeIdFor(propertyDescriptor.type(),
+                                     PropertyTypeId.typeIdFor(propertyDescriptor.type(),
                                                                       propertyDescriptor.isMultiValue()));
 
         Map<PropertyDescriptorField, String> propertyValuesById = propertyDescriptor.attributeValuesById();

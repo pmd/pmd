@@ -28,7 +28,7 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
-import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
+import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
 
 
@@ -304,7 +304,7 @@ public class RuleFactory {
     private static PropertyDescriptor<?> parsePropertyDefinition(Element propertyElement) {
         String typeId = propertyElement.getAttribute(PropertyDescriptorField.TYPE.attributeName());
 
-        PropertyDescriptorExternalBuilder<?> pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
+        PropertyDescriptorExternalBuilder<?> pdFactory = PropertyTypeId.factoryFor(typeId);
         if (pdFactory == null) {
             throw new IllegalArgumentException("No property descriptor factory for type: " + typeId);
         }

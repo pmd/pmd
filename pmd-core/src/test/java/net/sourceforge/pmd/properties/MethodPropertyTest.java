@@ -36,7 +36,7 @@ public class MethodPropertyTest extends AbstractPackagedPropertyDescriptorTester
 
     private static final String[] METHOD_SIGNATURES = {"String#indexOf(int)", "String#substring(int,int)",
                                                        "java.lang.String#substring(int,int)", "Integer#parseInt(String)", "java.util.HashMap#put(Object,Object)",
-                                                       "HashMap#containsKey(Object)",};
+                                                       "HashMap#containsKey(Object)", };
 
 
     public MethodPropertyTest() {
