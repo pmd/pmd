@@ -15,13 +15,14 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder
  * @author Clément Fournier
  * @since 6.0.0
  */
+// TODO make an enum
 public class PropertyDescriptorUtil {
 
     private static final Map<String, PropertyDescriptorExternalBuilder<?>> DESCRIPTOR_FACTORIES_BY_TYPE;
 
 
     static {
-        Map<String, PropertyDescriptorExternalBuilder<?>> temp = new HashMap<>(18);
+        Map<String, PropertyDescriptorExternalBuilder<?>> temp = new HashMap<>(16);
         temp.put("Boolean", BooleanProperty.extractor());
         temp.put("List[Boolean]", BooleanMultiProperty.extractor());
 
@@ -29,7 +30,6 @@ public class PropertyDescriptorUtil {
         temp.put("List[String]", StringMultiProperty.extractor());
         temp.put("Character", CharacterProperty.extractor());
         temp.put("List[Character]", CharacterMultiProperty.extractor());
-
 
         temp.put("Integer", IntegerProperty.extractor());
         temp.put("List[Integer]", IntegerMultiProperty.extractor());
@@ -44,10 +44,10 @@ public class PropertyDescriptorUtil {
 
         temp.put("Class", TypeProperty.extractor());
         temp.put("List[Class]", TypeMultiProperty.extractor());
-        temp.put("Method", MethodProperty.extractor());
-        temp.put("List[Method]", MethodMultiProperty.extractor());
 
-        temp.put("File", FileProperty.extractor());
+        // temp.put("Method", MethodProperty.extractor());              // hidden, see #762 
+        // temp.put("List[Method]", MethodMultiProperty.extractor());   // ditto
+        // temp.put("File", FileProperty.extractor());                  // ditto
 
         DESCRIPTOR_FACTORIES_BY_TYPE = Collections.unmodifiableMap(temp);
     }
@@ -56,7 +56,7 @@ public class PropertyDescriptorUtil {
     private PropertyDescriptorUtil() {
     }
 
-    
+
     /**
      * Returns the full mappings from type ids to extractors.
      *
