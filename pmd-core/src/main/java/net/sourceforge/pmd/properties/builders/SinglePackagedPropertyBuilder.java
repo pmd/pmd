@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.properties.builders;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 
 /**
@@ -22,10 +23,33 @@ public abstract class SinglePackagedPropertyBuilder<V, T extends SinglePackagedP
     }
 
 
+    /**
+     * Specify the allowed package prefixes.
+     *
+     * @param packs The package prefixes
+     *
+     * @return The same builder
+     */
     @SuppressWarnings("unchecked")
-    public T legalPackageNames(String[] packs) {
+    public T legalPackageNames(String... packs) {
         if (packs != null) {
             this.legalPackageNames = Arrays.copyOf(packs, packs.length);
+        }
+        return (T) this;
+    }
+
+
+    /**
+     * Specify the allowed package prefixes.
+     *
+     * @param packs The package prefixes
+     *
+     * @return The same builder
+     */
+    @SuppressWarnings("unchecked")
+    public T legalPackageNames(Collection<String> packs) {
+        if (packs != null) {
+            this.legalPackageNames = packs.toArray(new String[0]);
         }
         return (T) this;
     }
