@@ -4,74 +4,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description><![CDATA[
-Guarded call - OK
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-
- private void foo(Logger logger) { 
- 	if ( logger.isLoggable(Level.FINE) ) {
- 		logger.fine("debug message" + ""); 
- 	} 
- }  
-}
-     ]]></code>
-    </test-code>
-        <test-code>
-        <description><![CDATA[
-Unguarded call - KO
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
-
- private void foo(Logger logger) { 
- 	logger.fine("debug message" + ""); 
- }  
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description>#1203 GuardLogStatementJavaUtil issues warning for severe level not being specified as property</description>
-        <rule-property name="logLevels">finest,finer,fine,info</rule-property>
-        <rule-property name="guardsMethods">isLoggable</rule-property>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import java.util.logging.Logger;
-import java.util.logging.Level;
-
-public class Foo {
-    Logger LOGGER;
-
-    public void foo() {
-        LOGGER.severe("This is a severe message" + " and concat");
-    }
-}
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>#1227 GuardLogStatementJavaUtil doesn't catch log(Level.FINE, "msg" + " msg") calls</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
-        <code><![CDATA[
-import java.util.logging.Logger;
-import java.util.logging.Level;
-
-public class Foo {
-    Logger LOGGER;
-
-    public void foo() {
-        LOGGER.log(Level.FINE, "This is a severe message" + " and concat"); // violation
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.log(Level.FINE, "This is a severe message" + " and concat"); // no violation
-        }
-    }
-}
-        ]]></code>
-    </test-code>
-    <test-code>
         <description>#1335 GuardLogStatementJavaUtil should not apply to SLF4J Logger</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -86,37 +18,5 @@ public class GuardLogTest {
     }
 }
         ]]></code>
-    </test-code>
-    <test-code>
-        <description>#1347 False positive for GuardLogStatementJavaUtil</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import org.slf4j.Logger;
-
-public class GuardLogTest {
-    Logger LOG;
-    public void foo() {
-        if (LOG.isInfoEnabled()) {
-            LOG.info("update: After spool map size: " + map.size());
-        }
-    }
-}
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>#1398 False positive for GuardLogStatementJavaUtil with Log4j</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import org.apache.log4j.Logger;
-
-public class GuardLogTest {
-    Logger LOG;
-    public void foo() {
-        if (LOG.isInfoEnabled()) {
-            LOG.info("update: After spool map size: " + map.size());
-        }
-    }
-}
-]]></code>
     </test-code>
 </test-data>
