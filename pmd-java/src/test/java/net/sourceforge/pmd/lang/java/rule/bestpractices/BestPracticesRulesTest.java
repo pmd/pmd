@@ -28,9 +28,7 @@ public class BestPracticesRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ConstantsInInterface");
         addRule(RULESET, "DefaultLabelNotLastInSwitchStmt");
         addRule(RULESET, "ForLoopCanBeForeach");
-        addRule(RULESET, "GuardDebugLogging");
         addRule(RULESET, "GuardLogStatement");
-        addRule(RULESET, "GuardLogStatementJavaUtil");
         addRule(RULESET, "JUnit4SuitesShouldUseSuiteAnnotation");
         addRule(RULESET, "JUnit4TestShouldUseAfterAnnotation");
         addRule(RULESET, "JUnit4TestShouldUseBeforeAnnotation");

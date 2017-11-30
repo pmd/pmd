@@ -50,16 +50,16 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
      * warning -> isLoggable
      * severe  -> isLoggable
      */
-    public static final StringMultiProperty LOG_LEVELS = new StringMultiProperty("logLevels", "LogLevels to guard",
+    private static final StringMultiProperty LOG_LEVELS = new StringMultiProperty("logLevels", "LogLevels to guard",
             new String[] {"trace", "debug", "info", "warn", "error",
-                "log", "finest", "finer", "fine", "info", "warning", "severe"}, 1.0f, ',');
+                "log", "finest", "finer", "fine", "info", "warning", "severe", }, 1.0f, ',');
 
-    public static final StringMultiProperty GUARD_METHODS = new StringMultiProperty("guardsMethods",
+    private static final StringMultiProperty GUARD_METHODS = new StringMultiProperty("guardsMethods",
             "method use to guard the log statement",
             new String[] {"isTraceEnabled", "isDebugEnabled", "isInfoEnabled", "isWarnEnabled", "isErrorEnabled",
-                "isLoggable"}, 2.0f, ',');
+                "isLoggable", }, 2.0f, ',');
 
-    protected Map<String, String> guardStmtByLogLevel = new HashMap<>(5);
+    private Map<String, String> guardStmtByLogLevel = new HashMap<>(12);
 
     private static final String XPATH_EXPRESSION =
             // first part deals with log4j / apache commons logging
@@ -98,7 +98,7 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
     }
 
 
-    protected void findViolationForEachLogStatement(ASTCompilationUnit unit, Object data, String xpathExpression) {
+    private void findViolationForEachLogStatement(ASTCompilationUnit unit, Object data, String xpathExpression) {
         for (Entry<String, String> entry : guardStmtByLogLevel.entrySet()) {
             List<Node> nodes = findViolations(unit, entry.getKey(), entry.getValue(), xpathExpression);
             for (Node node : nodes) {
@@ -120,7 +120,7 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
         return Collections.EMPTY_LIST;
     }
 
-    protected void extractProperties() {
+    private void extractProperties() {
         if (guardStmtByLogLevel.isEmpty()) {
 
             List<String> logLevels = new ArrayList<>(super.getProperty(LOG_LEVELS));
@@ -145,7 +145,7 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
         }
     }
 
-    protected void buildGuardStatementMap(List<String> logLevels, List<String> guardMethods) {
+    private void buildGuardStatementMap(List<String> logLevels, List<String> guardMethods) {
         for (int i = 0; i < logLevels.size(); i++) {
             String logLevel = "." + logLevels.get(i);
             if (guardStmtByLogLevel.containsKey(logLevel)) {
