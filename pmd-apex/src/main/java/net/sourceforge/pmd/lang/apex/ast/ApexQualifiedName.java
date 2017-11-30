@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.ast.QualifiedName;
 
 import apex.jorje.semantic.symbol.type.TypeInfo;
 
+
 /**
  * Qualified name of an apex class or method.
  *
@@ -69,7 +70,7 @@ public class ApexQualifiedName implements QualifiedName {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(nameSpace).append("__");
+        sb.append(nameSpace).append("::");
         sb.append(classes[0]);
 
         if (classes.length > 1) {
@@ -106,9 +107,9 @@ public class ApexQualifiedName implements QualifiedName {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof ApexQualifiedName
-            && Objects.deepEquals(classes, ((ApexQualifiedName) obj).classes)
-            && Objects.equals(operation, ((ApexQualifiedName) obj).operation)
-            && Objects.equals(nameSpace, ((ApexQualifiedName) obj).nameSpace);
+               && Objects.deepEquals(classes, ((ApexQualifiedName) obj).classes)
+               && Objects.equals(operation, ((ApexQualifiedName) obj).operation)
+               && Objects.equals(nameSpace, ((ApexQualifiedName) obj).nameSpace);
 
     }
 
@@ -118,15 +119,15 @@ public class ApexQualifiedName implements QualifiedName {
      *
      * <p>Here are some examples of the format:
      * <ul>
-     * <li> {@code namespace__OuterClass.InnerClass}: name of an inner class
-     * <li> {@code namespace__Class#method(String, int)}: name of an operation
+     * <li> {@code namespace::OuterClass.InnerClass}: name of an inner class
+     * <li> {@code namespace::Class#method(String, int)}: name of an operation
      * </ul>
      *
      * @param toParse The string to parse
      *
      * @return An ApexQualifiedName, or null if the string couldn't be parsed
      */
-    // private static final Pattern FORMAT = Pattern.compile("(\\w+)__(\\w+)(.(\\w+))?(#(\\w+))?"); // TODO
+    // private static final Pattern FORMAT = Pattern.compile("(\\w+)::(\\w+)(.(\\w+))?(#(\\w+))?"); // TODO
     public static ApexQualifiedName ofString(String toParse) {
         throw new UnsupportedOperationException();
     }
@@ -170,8 +171,18 @@ public class ApexQualifiedName implements QualifiedName {
 
 
     static ApexQualifiedName ofMethod(ASTMethod node) {
-        ApexQualifiedName parent = node.getFirstParentOfType(ASTUserClassOrInterface.class).getQualifiedName();
+        ASTUserClassOrInterface<?> parent = node.getFirstParentOfType(ASTUserClassOrInterface.class);
+        if (parent == null) {
+            ASTUserTrigger trigger = node.getFirstParentOfType(ASTUserTrigger.class);
+            String ns = trigger.getNode().getDefiningType().getNamespace().toString();
+            String targetObj = trigger.getNode().getTargetName().get(0).value;
 
-        return new ApexQualifiedName(parent.nameSpace, parent.classes, getOperationString(node));
+            return new ApexQualifiedName(StringUtils.isEmpty(ns) ? "c" : ns, new String[]{"trigger", targetObj}, trigger.getImage()); // uses a reserved word as a class name to prevent clashes
+
+        } else {
+            ApexQualifiedName baseName = parent.getQualifiedName();
+
+            return new ApexQualifiedName(baseName.nameSpace, baseName.classes, getOperationString(node));
+        }
     }
 }
