@@ -78,6 +78,10 @@ public class RuleSetFactoryCompatibility {
         addFilterRuleRenamed("java", "naming", "MisleadingVariableName", "MIsLeadingVariableName");
         addFilterRuleRenamed("java", "unnecessary", "UnnecessaryFinalModifier", "UnnecessaryModifier");
         addFilterRuleRenamed("java", "empty", "EmptyStaticInitializer", "EmptyInitializer");
+        // GuardLogStatementJavaUtil moved and renamed...
+        addFilterRuleMoved("java", "logging-java", "logging-jakarta-commons", "GuardLogStatementJavaUtil");
+        addFilterRuleRenamed("java", "logging-jakarta-commons", "GuardLogStatementJavaUtil", "GuardLogStatement");
+        addFilterRuleRenamed("java", "logging-jakarta-commons", "GuardDebugLogging", "GuardLogStatement");
     }
 
     void addFilterRuleRenamed(String language, String ruleset, String oldName, String newName) {
