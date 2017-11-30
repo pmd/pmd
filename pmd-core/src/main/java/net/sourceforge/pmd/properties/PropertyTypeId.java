@@ -23,32 +23,33 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder
  * @since 6.0.0
  */
 public enum PropertyTypeId {
-    BOOLEAN("Boolean", BooleanProperty.extractor()),
-    BOOLEAN_LIST("List[Boolean]", BooleanMultiProperty.extractor()),
+    BOOLEAN("Boolean", BooleanProperty.extractor(), ValueParserConstants.BOOLEAN_PARSER),
+    BOOLEAN_LIST("List[Boolean]", BooleanMultiProperty.extractor(), ValueParserConstants.BOOLEAN_PARSER),
 
-    STRING("String", StringProperty.extractor()),
-    STRING_LIST("List[String]", StringMultiProperty.extractor()),
-    CHARACTER("Character", CharacterProperty.extractor()),
-    CHARACTER_LIST("List[Character]", CharacterMultiProperty.extractor()),
+    STRING("String", StringProperty.extractor(), ValueParserConstants.STRING_PARSER),
+    STRING_LIST("List[String]", StringMultiProperty.extractor(), ValueParserConstants.STRING_PARSER),
+    CHARACTER("Character", CharacterProperty.extractor(), ValueParserConstants.CHARACTER_PARSER),
+    CHARACTER_LIST("List[Character]", CharacterMultiProperty.extractor(), ValueParserConstants.CHARACTER_PARSER),
 
-    INTEGER("Integer", IntegerProperty.extractor()),
-    INTEGER_LIST("List[Integer]", IntegerMultiProperty.extractor()),
-    LONG("Long", LongProperty.extractor()),
-    LONG_LIST("List[Long]", LongMultiProperty.extractor()),
-    FLOAT("Float", FloatProperty.extractor()),
-    FLOAT_LIST("List[Float]", FloatMultiProperty.extractor()),
-    DOUBLE("Double", DoubleProperty.extractor()),
-    DOUBLE_LIST("List[Double]", DoubleMultiProperty.extractor()),
+    INTEGER("Integer", IntegerProperty.extractor(), ValueParserConstants.INTEGER_PARSER),
+    INTEGER_LIST("List[Integer]", IntegerMultiProperty.extractor(), ValueParserConstants.INTEGER_PARSER),
+    LONG("Long", LongProperty.extractor(), ValueParserConstants.LONG_PARSER),
+    LONG_LIST("List[Long]", LongMultiProperty.extractor(), ValueParserConstants.LONG_PARSER),
+    FLOAT("Float", FloatProperty.extractor(), ValueParserConstants.FLOAT_PARSER),
+    FLOAT_LIST("List[Float]", FloatMultiProperty.extractor(), ValueParserConstants.FLOAT_PARSER),
+    DOUBLE("Double", DoubleProperty.extractor(), ValueParserConstants.DOUBLE_PARSER),
+    DOUBLE_LIST("List[Double]", DoubleMultiProperty.extractor(), ValueParserConstants.DOUBLE_PARSER),
     //    ENUM("Enum", EnumeratedProperty.FACTORY),                     // TODO:cf we need new syntax in the xml to support that
     //    ENUM_LIST("List[Enum]", EnumeratedMultiProperty.FACTORY),
 
-    CLASS("Class", TypeProperty.extractor()),
-    CLASS_LIST("List[Class]", TypeMultiProperty.extractor());
+    CLASS("Class", TypeProperty.extractor(), ValueParserConstants.CLASS_PARSER),
+    CLASS_LIST("List[Class]", TypeMultiProperty.extractor(), ValueParserConstants.CLASS_PARSER);
 
 
     private static final Map<String, PropertyTypeId> CONSTANTS_BY_MNEMONIC;
     private final String stringId;
     private final PropertyDescriptorExternalBuilder<?> factory;
+    private final ValueParser<?> valueParser;
 
     static {
         Map<String, PropertyTypeId> temp = new HashMap<>();
@@ -59,9 +60,10 @@ public enum PropertyTypeId {
     }
 
 
-    PropertyTypeId(String id, PropertyDescriptorExternalBuilder<?> factory) {
+    PropertyTypeId(String id, PropertyDescriptorExternalBuilder<?> factory, ValueParser<?> valueParser) {
         this.stringId = id;
         this.factory = factory;
+        this.valueParser = valueParser;
     }
 
 
@@ -129,6 +131,18 @@ public enum PropertyTypeId {
      */
     public Class<?> propertyValueType() {
         return factory.valueType();
+    }
+
+
+    /**
+     * Gets the object used to parse the values of this property from a string.
+     * If the property is multivalued, the parser only parses individual components
+     * of the list. A list parser can be obtained with {@link ValueParserConstants#multi(ValueParser, char)}.
+     *
+     * @return The value parser
+     */
+    public ValueParser<?> getValueParser() {
+        return valueParser;
     }
 
 
