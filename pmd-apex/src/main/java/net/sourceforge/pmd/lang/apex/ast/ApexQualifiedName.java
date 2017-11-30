@@ -70,7 +70,7 @@ public class ApexQualifiedName implements QualifiedName {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(nameSpace).append("::");
+        sb.append(nameSpace).append("__");
         sb.append(classes[0]);
 
         if (classes.length > 1) {
