@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
 
+import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.compilation.Compilation;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserEnum;
@@ -41,6 +42,7 @@ public class ApexParser {
     public Compilation parseApex(final String sourceCode) throws ParseException {
 
         TopLevelVisitor visitor = new TopLevelVisitor();
+        Locations.useIndexFactory();
         CompilerService.INSTANCE.visitAstFromString(sourceCode, visitor);
 
         Compilation astRoot = visitor.getTopLevel();
