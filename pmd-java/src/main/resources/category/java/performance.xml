@@ -428,9 +428,17 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#optimizabletoarraycall">
         <description>
-Calls to a collection's toArray() method should specify target arrays sized to match the size of the
-collection. Initial arrays that are too small are discarded in favour of new ones that have to be created
-that are the proper size.
+Calls to a collection's `toArray(E[])` method should specify a target array of zero size. This allows the JVM
+to optimize the memory allocation and copying as much as possible.
+
+Previous versions of this rule (pre PMD 6.0.0) suggested the opposite, but current JVM implementations
+perform always better, when they have full control over the target array. And allocation an array via
+reflection is nowadays as fast as the direct allocation.
+
+See also [Arrays of Wisdom of the Ancients](https://shipilev.net/blog/2016/arrays-wisdom-ancients/)
+
+Note: If you don't need an array of the correct type, then the simple `toArray()` method without an array
+is faster, but returns only an array of type `Object[]`.
         </description>
         <priority>3</priority>
         <properties>
@@ -442,7 +450,7 @@ that are the proper size.
 [
 PrimarySuffix/Arguments/ArgumentList/Expression
  /PrimaryExpression/PrimaryPrefix/AllocationExpression
- /ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image='0']
+ /ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix[not(Literal[@Image='0'])]
 ]
 ]]>
                 </value>
@@ -450,13 +458,13 @@ PrimarySuffix/Arguments/ArgumentList/Expression
         </properties>
         <example>
 <![CDATA[
-List foos = getFoos();
+List<Foo> foos = getFoos();
 
-    // inefficient, the array will be discarded
+// much better; this one allows the jvm to allocate an array of the correct size and effectively skip
+// the zeroing, since each array element will be overridden anyways
 Foo[] fooArray = foos.toArray(new Foo[0]);
 
-    // much better; this one sizes the destination array,
-    // avoiding of a new one via reflection
+// inefficient, the array needs to be zeroed out by the jvm before it is handed over to the toArray method
 Foo[] fooArray = foos.toArray(new Foo[foos.size()]);
 ]]>
         </example>
