@@ -112,6 +112,123 @@ public class Test {
         </example>
     </rule>
 
+    <rule name="AvoidFileInputStream"
+          since="5.8.2"
+          message="Avoid instantiating FileInputStream"
+          language="java"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidfileinputstream">
+        <description>
+Use Files.newInputStream(Paths.get(fileName)) in place of new FileInputStream(fileName).
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[typeof(@Image, 'java.io.FileInputStream', 'FileInputStream')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+    FileInputStream fis = new FileInputStream(fileName);  // causes garbage collection pauses, even if properly closed
+
+    try(InputStream is = Files.newInputStream(Paths.get(fileName))) { // prevent GC pauses, no finalization
+    }
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidFileOutputStream"
+          since="5.8.2"
+          message="Avoid instantiating FileOutputStream"
+          language="java"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidfileoutputstream">
+        <description>
+Use Files.newOutputStream(Paths.get(fileName)) in place of new FileOutputStream(fileName).
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[typeof(@Image, 'java.io.FileOutputStream', 'FileOutputStream')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+    FileOutputStream fos = new FileOutputStream(fileName);  // causes garbage collection pauses, even if properly closed
+
+    try(OutputStream os = Files.newOutputStream(Paths.get(fileName))) { // prevent GC pauses, no finalization
+    }
+]]>
+        </example>
+    </rule>
+
+
+    <rule name="AvoidFileReader"
+          since="5.8.2"
+          message="Avoid instantiating FileReader"
+          language="java"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidfilereader">
+        <description>
+Use Files.newBufferedReader(Paths.get(fileName)) in place of new FileReader(fileName).
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[typeof(@Image, 'java.io.FileReader', 'FileReader')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+    FileReader fr = new FileReader(fileName);  // causes garbage collection pauses, even if properly closed
+
+    try(BufferedReader br = Files.newBufferedReader(Paths.get(fileName), StandardCharsets.UTF_8)) { // prevent GC pauses, no finalization
+    }
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidFileWriter"
+          since="5.8.2"
+          message="Avoid instantiating FileWriter"
+          language="java"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidfilewriter">
+        <description>
+Use Files.newBufferedWriter(Paths.get(fileName)) in place of new FileWriter(fileName).
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[typeof(@Image, 'java.io.FileWriter', 'FileWriter')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+    FileWriter fw = new FileWriter(fileName);  // causes garbage collection pauses, even if properly closed
+
+    try(BufferedWriter bw = Files.newBufferedWriter(Paths.get(fileName), StandardCharsets.UTF_8)) { // prevent GC pauses, no finalization
+    }
+]]>
+        </example>
+    </rule>
+
     <rule name="AvoidInstantiatingObjectsInLoops"
           since="2.2"
           message="Avoid instantiating new objects inside loops"

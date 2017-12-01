@@ -109,6 +109,136 @@ public class Test {
 <rule ref="category/java/performance.xml/AvoidArrayLoops" />
 ```
 
+## AvoidFileInputStream
+
+**Since:** PMD 5.8.2
+
+**Priority:** High (1)
+
+Use Files.newInputStream(Paths.get(fileName)) in place of new FileInputStream(fileName).
+The FileInputStream class contains a finalizer method which will cause garbage collection pauses.
+See [JDK-8080225](https://bugs.openjdk.java.net/browse/JDK-8080225) for details.
+
+```
+//PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[typeof(@Image, 'java.io.FileInputStream', 'FileInputStream')]
+```
+
+**Example(s):**
+
+``` java
+public class Sample {
+    public void method( ) {
+        FileInputStream bad = new FileInputStream(fileName);  // causes garbage collection pauses, even if properly closed
+    
+        try(InputStream good = Files.newInputStream(Paths.get(fileName))) { // prevent GC pauses, no finalize method
+        }
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/performance.xml/AvoidFileInputStream" />
+```
+
+## AvoidFileOutputStream
+
+**Since:** PMD 5.8.2
+
+**Priority:** High (1)
+
+Use Files.newOutputStream(Paths.get(fileName)) in place of new FileOutputStream(fileName).
+The FileOutputStream class contains a finalizer method which will cause garbage collection pauses.
+See [JDK-8080225](https://bugs.openjdk.java.net/browse/JDK-8080225) for details.
+
+```
+//PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[typeof(@Image, 'java.io.FileOutputStream', 'FileOutputStream')]
+```
+
+**Example(s):**
+
+``` java
+public class Sample {
+    public void method( ) {
+        FileOutputStream bad = new FileOutputStream(fileName);  // causes garbage collection pauses, even if properly closed
+    
+        try(OutputStream good = Files.newOutputStream(Paths.get(fileName))) { // prevent GC pauses, no finalize method
+        }
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/performance.xml/AvoidFileOutputStream" />
+```
+
+## AvoidFileReader
+
+**Since:** PMD 5.8.2
+
+**Priority:** High (1)
+
+Use Files.newBufferedReader(Paths.get(fileName)) in place of new FileReader(fileName).
+The FileReader constructor creates a FileInputStream instance.
+The FileInputStream class contains a finalizer method which will cause garbage collection pauses.
+See [JDK-8080225](https://bugs.openjdk.java.net/browse/JDK-8080225) for details.
+
+```
+//PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[typeof(@Image, 'java.io.FileReader', 'FileReader')]
+```
+
+**Example(s):**
+
+``` java
+public class Sample {
+    public void method( ) {
+        FileReader bad = new FileReader(fileName);  // causes garbage collection pauses, even if properly closed
+    
+        try(BufferedReader good = Files.newBufferedReader(Paths.get(fileName), StandardCharsets.UTF_8)) { // prevent GC pauses, no finalization
+        }
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/performance.xml/AvoidFileReader" />
+```
+
+## AvoidFileWriter
+
+**Since:** PMD 5.8.2
+
+**Priority:** High (1)
+
+Use Files.newBufferedWriter(Paths.get(fileName)) in place of new FileWriter(fileName).
+The FileWriter constructors create a FileOutputStream instance.
+The FileOutputStream class contains a finalizer method which will cause garbage collection pauses.
+See [JDK-8080225](https://bugs.openjdk.java.net/browse/JDK-8080225) for details.
+
+```
+//PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[typeof(@Image, 'java.io.FileWriter', 'FileWriter')]
+```
+
+**Example(s):**
+
+``` java
+public class Sample {
+    public void method( ) {
+        FileWriter bad = new FileWriter(fileName);  // causes garbage collection pauses, even if properly closed
+    
+        try(BufferedWriter good = Files.newBufferedWriter(Paths.get(fileName), StandardCharsets.UTF_8)) { // prevent GC pauses, no finalization
+        }
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/performance.xml/AvoidFileWriter" />
+```
+
 ## AvoidInstantiatingObjectsInLoops
 
 **Since:** PMD 2.2

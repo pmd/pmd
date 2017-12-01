@@ -18,6 +18,10 @@ public class PerformanceRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "AddEmptyString");
         addRule(RULESET, "AppendCharacterWithChar");
         addRule(RULESET, "AvoidArrayLoops");
+        addRule(RULESET, "AvoidFileInputStream");
+        addRule(RULESET, "AvoidFileOutputStream");
+        addRule(RULESET, "AvoidFileReader");
+        addRule(RULESET, "AvoidFileWriter");
         addRule(RULESET, "AvoidInstantiatingObjectsInLoops");
         addRule(RULESET, "AvoidUsingShortType");
         addRule(RULESET, "BigIntegerInstantiation");
