@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.regex.Matcher;
@@ -66,6 +64,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private final ListMultimap<String, String> typeToDMLOperationMapping = ArrayListMultimap.create();
     private final HashMap<String, String> checkedTypeToDMLOperationViaESAPI = new HashMap<>();
     private final WeakHashMap<String, ASTMethod> classMethods = new WeakHashMap<>();
+    private String className;
 
     private static final String IS_CREATEABLE = "isCreateable";
     private static final String IS_DELETABLE = "isDeletable";
@@ -100,6 +99,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             return data; // stops all the rules
         }
 
+        className = node.getImage();
+
         for (ASTMethod n : node.findDescendantsOfType(ASTMethod.class)) {
             StringBuilder sb = new StringBuilder().append(n.getNode().getDefiningType().getApexName()).append(":")
                     .append(n.getNode().getMethodInfo().getCanonicalName()).append(":")
@@ -107,8 +108,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             classMethods.put(sb.toString(), n);
         }
 
-        node.childrenAccept(this, data);
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
@@ -176,42 +176,28 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     public Object visit(final ASTFieldDeclaration node, Object data) {
         ASTFieldDeclarationStatements field = node.getFirstParentOfType(ASTFieldDeclarationStatements.class);
         if (field != null) {
-            try {
-                TypeRef a = field.getNode().getTypeName();
-                Field classNameField = a.getClass().getDeclaredField("className");
-                Field typeArgsField = a.getClass().getDeclaredField("typeArguments");
-                classNameField.setAccessible(true);
-                typeArgsField.setAccessible(true);
+            TypeRef a = field.getNode().getTypeName();
+            List<Identifier> names = a.getNames();
+            List<TypeRef> typeArgs = a.getTypeArguments();
 
-                if (classNameField.get(a) instanceof ArrayList<?>) {
-                    @SuppressWarnings("unchecked")
-                    ArrayList<Identifier> innerField = (ArrayList<Identifier>) classNameField.get(a);
-                    if (!innerField.isEmpty()) {
-                        StringBuffer sb = new StringBuffer();
-                        for (Identifier id : innerField) {
-                            sb.append(id.getValue()).append(".");
-                        }
-                        sb.deleteCharAt(sb.length() - 1);
+            if (!names.isEmpty()) {
+                StringBuffer sb = new StringBuffer();
+                for (Identifier id : names) {
+                    sb.append(id.getValue()).append(".");
+                }
+                sb.deleteCharAt(sb.length() - 1);
 
-                        switch (sb.toString().toLowerCase()) {
-                        case "list":
-                        case "map":
-                            if (typeArgsField.get(a) instanceof Optional<?>) {
-                                addParametersToMapping(node, a, typeArgsField);
-                            }
-                            break;
-                        default:
-                            varToTypeMapping.put(Helper.getFQVariableName(node), getSimpleType(sb.toString()));
-                            break;
-                        }
-
-                    }
+                switch (sb.toString().toLowerCase()) {
+                case "list":
+                case "map":
+                    addParametersToMapping(node, typeArgs);
+                    break;
+                default:
+                    varToTypeMapping.put(Helper.getFQVariableName(node), getSimpleType(sb.toString()));
+                    break;
                 }
 
-            } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException | SecurityException e) {
-                e.printStackTrace();
             }
-
         }
         final ASTSoqlExpression soql = node.getFirstChildOfType(ASTSoqlExpression.class);
         if (soql != null) {
@@ -222,22 +208,16 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     }
 
-    private void addParametersToMapping(final ASTFieldDeclaration node, TypeRef a, Field typeArgsField)
-            throws IllegalAccessException {
-        Optional<?> optionalContainer = (Optional<?>) typeArgsField.get(a);
-        if (optionalContainer.isPresent()) {
-            ArrayList<?> inner = (ArrayList<?>) optionalContainer.get();
-            for (int i = 0; i < inner.size(); i++) {
-                if (inner.get(i) instanceof ClassTypeRef) {
-                    innerAddParametrizedClassToMapping(node, (ClassTypeRef) inner.get(i));
+    private void addParametersToMapping(final ASTFieldDeclaration node, List<TypeRef> typeArgs) {
+        for (int i = 0; i < typeArgs.size(); i++) {
+            if (typeArgs.get(i) instanceof ClassTypeRef) {
+                innerAddParametrizedClassToMapping(node, (ClassTypeRef) typeArgs.get(i));
+            }
+            if (typeArgs.get(i) instanceof ArrayTypeRef) {
+                ArrayTypeRef atr = (ArrayTypeRef) typeArgs.get(i);
+                if (atr.getHeldType() instanceof ClassTypeRef) {
+                    innerAddParametrizedClassToMapping(node, (ClassTypeRef) atr.getHeldType());
                 }
-                if (inner.get(i) instanceof ArrayTypeRef) {
-                    ArrayTypeRef atr = (ArrayTypeRef) inner.get(i);
-                    if (atr.getHeldType() instanceof ClassTypeRef) {
-                        innerAddParametrizedClassToMapping(node, (ClassTypeRef) atr.getHeldType());
-                    }
-                }
-
             }
         }
     }
@@ -470,7 +450,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private List<ASTMethod> findConstructorlMethods(final AbstractApexNode<?> node) {
         final ArrayList<ASTMethod> ret = new ArrayList<>();
         final Set<String> constructors = classMethods.keySet().stream()
-                .filter(p -> (p.contains("<init>") || p.contains("<clinit>"))).collect(Collectors.toSet());
+                .filter(p -> (p.contains("<init>") || p.contains("<clinit>")
+                        || p.startsWith(className + ":" + className + ":"))).collect(Collectors.toSet());
 
         for (String c : constructors) {
             ret.add(classMethods.get(c));
