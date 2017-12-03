@@ -251,5 +251,52 @@
         </expected-messages>
         <code-ref id="many-small-methods"/>
     </test-code>
+    
+    
+    <code-fragment id="trigger">
+        <![CDATA[
+            trigger CaseAssignLevel on CaseAssignLevel__c (after delete, after insert, after undelete, after update, before delete, before insert, before update) {
+            
+            if(Trigger.isBefore) {
+                if(Trigger.isInsert || Trigger.isUpdate) {
+                    CaseAssignLevel_tr.doIsNotTrigger(Trigger.new);
+                }
+            }
+            
+            
+            
+            if(Trigger.isBefore && !CaseAssignLevel_tr.isNotTrigger) {
+                if(Trigger.isInsert || Trigger.isUpdate) {
+                    CaseAssignLevel_tr.doCreateKeyValue(Trigger.new, Trigger.oldMap);	
+                }
+            }
+            
+            
+            else if(Trigger.isAfter && !CaseAssignLevel_tr.isNotTrigger) {
+                if(Trigger.isInsert || Trigger.isUpdate) {
+                    
+                }
+            }
+            
+            }
+        ]]>
+    </code-fragment>
+    
+    <test-code>
+        <description>#768 NPE caused by exception in ApexQualifiedName.ofMethod because of trigger</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The trigger 'CaseAssignLevel' has a cyclomatic complexity of 12.</message>
+        </expected-messages>
+        <code-ref id="trigger"/>
+    </test-code>
+
+    <test-code>
+        <description>#768 NPE caused by exception in ApexQualifiedName.ofMethod because of trigger</description>
+        <rule-property name="methodReportLevel">13</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="trigger"/>
+    </test-code>
+
 
 </test-data>

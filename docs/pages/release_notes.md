@@ -336,6 +336,7 @@ a warning will now be produced suggesting users to adopt it for better performan
     *   [#605](https://github.com/pmd/pmd/issues/605): \[apex] java.lang.NoClassDefFoundError in the latest build
     *   [#637](https://github.com/pmd/pmd/issues/637): \[apex] Avoid SOSL in loops
     *   [#760](https://github.com/pmd/pmd/issues/760): \[apex] EmptyStatementBlock complains about missing rather than empty block
+    *   [#768](https://github.com/pmd/pmd/issues/768): \[apex] java.lang.NullPointerException from PMD
 *   cpp
     *   [#448](https://github.com/pmd/pmd/issues/448): \[cpp] Write custom CharStream to handle continuation characters
 *   java
@@ -554,4 +555,5 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#746](https://github.com/pmd/pmd/pull/746): \[doc] Fix typo in incremental analysis log message - [Clément Fournier](https://github.com/oowekyala)
 *   [#749](https://github.com/pmd/pmd/pull/749): \[doc] Update the documentation for properties - [Clément Fournier](https://github.com/oowekyala)
 *   [#758](https://github.com/pmd/pmd/pull/758): \[core] Expose the full mapping from property type id to property extractor - [Clément Fournier](https://github.com/oowekyala)
+*   [#771](https://github.com/pmd/pmd/pull/771): \[apex] Fix Apex metrics framework failing on triggers, refs #768 - [Clément Fournier](https://github.com/oowekyala)
 

@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
 
+
 /**
  * @author Clément Fournier
  */
@@ -69,9 +70,9 @@ public class ApexQualifiedNameTest {
     @Test
     public void testOverLoads() {
         ApexNode<Compilation> root = ApexParserTestHelpers.parse("public class Foo { "
-                                                                     + "String foo(String h) {} "
-                                                                     + "String foo(int c) {}"
-                                                                     + "String foo(Foo c) {}}");
+                                                                 + "String foo(String h) {} "
+                                                                 + "String foo(int c) {}"
+                                                                 + "String foo(Foo c) {}}");
 
         List<ASTMethod> methods = root.findDescendantsOfType(ASTMethod.class);
 
@@ -81,6 +82,19 @@ public class ApexQualifiedNameTest {
                     assertNotEquals(m1.getQualifiedName(), m2.getQualifiedName());
                 }
             }
+        }
+    }
+
+
+    @Test
+    public void testTrigger() {
+        ApexNode<Compilation> root = ApexParserTestHelpers.parse("trigger myAccountTrigger on Account (before insert, before update) {}");
+
+
+        List<ASTMethod> methods = root.findDescendantsOfType(ASTMethod.class);
+
+        for (ASTMethod m : methods) {
+            assertEquals("c__trigger.Account#myAccountTrigger", m.getQualifiedName().toString());
         }
     }
 }
