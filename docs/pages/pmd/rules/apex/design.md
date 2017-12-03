@@ -102,11 +102,11 @@ public class Complicated {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
+|methodReportLevel|10|Cyclomatic complexity reporting threshold|
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 |classReportLevel|40|Total class complexity reporting threshold|
-|methodReportLevel|10|Cyclomatic complexity reporting threshold|
 
 **Use this rule by referencing it:**
 ``` xml
