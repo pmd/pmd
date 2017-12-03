@@ -121,7 +121,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
 
                 } catch (NoSuchFieldException | SecurityException | IllegalArgumentException
                         | IllegalAccessException e) {
-                    // preventing exceptions from this code
+                    throw new RuntimeException(e);
                 }
             }
         }

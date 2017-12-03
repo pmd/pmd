@@ -33,10 +33,9 @@ public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClas
             field.setAccessible(true);
             Identifier name = (Identifier) field.get(node);
             return name.getValue();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
-        return super.getImage();
     }
 
     @Override

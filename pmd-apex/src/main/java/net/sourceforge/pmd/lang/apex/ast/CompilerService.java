@@ -125,6 +125,7 @@ public class CompilerService {
                 operation.invoke(compilerContext, unit);
             }
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
     }
 }

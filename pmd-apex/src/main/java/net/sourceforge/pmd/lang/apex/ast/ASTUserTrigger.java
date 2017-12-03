@@ -26,9 +26,8 @@ public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
             field.setAccessible(true);
             Identifier name = (Identifier) field.get(node);
             return name.getValue();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
-        return super.getImage();
     }
 }

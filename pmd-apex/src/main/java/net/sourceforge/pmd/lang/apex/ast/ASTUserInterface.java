@@ -31,10 +31,9 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> implements AST
             field.setAccessible(true);
             Identifier name = (Identifier) field.get(node);
             return name.getValue();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
-        return super.getImage();
     }
 
     @Override
