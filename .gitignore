@@ -10,3 +10,5 @@ bin/
 .idea
 *.patch
 */src/site/site.xml
+pmd-apex/dependency-reduced-pom.xml
+
