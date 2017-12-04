@@ -14,6 +14,7 @@ import apex.jorje.semantic.ast.modifier.Annotation;
 import apex.jorje.semantic.ast.modifier.AnnotationParameter;
 import apex.jorje.semantic.ast.modifier.ModifierOrAnnotation;
 import apex.jorje.semantic.symbol.type.AnnotationTypeInfos;
+import apex.jorje.semantic.symbol.type.ModifierOrAnnotationTypeInfo;
 import apex.jorje.semantic.symbol.type.TypeInfoEquivalence;
 import apex.jorje.services.Version;
 
@@ -55,9 +56,10 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrueRule extends AbstractApexUnit
         final ASTModifierNode modifierNode = node.getFirstChildOfType(ASTModifierNode.class);
 
         if (modifierNode != null) {
-            for (final ModifierOrAnnotation modifierOrAnnotation : modifierNode.getNode().getModifiers().allNodes()) {
+            for (final ModifierOrAnnotationTypeInfo modifierOrAnnotationTypeInfo : modifierNode.getNode().getModifiers().all()) {
+                ModifierOrAnnotation modifierOrAnnotation = modifierNode.getNode().getModifiers().get(modifierOrAnnotationTypeInfo);
                 if (modifierOrAnnotation instanceof Annotation && TypeInfoEquivalence
-                        .isEquivalent(modifierOrAnnotation.getType(), AnnotationTypeInfos.IS_TEST)) {
+                        .isEquivalent(modifierOrAnnotationTypeInfo, AnnotationTypeInfos.IS_TEST)) {
                     final Annotation annotation = (Annotation) modifierOrAnnotation;
                     final AnnotationParameter parameter = annotation.getParameter("seeAllData");
 

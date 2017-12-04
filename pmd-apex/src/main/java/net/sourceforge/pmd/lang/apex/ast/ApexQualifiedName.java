@@ -175,7 +175,7 @@ public class ApexQualifiedName implements QualifiedName {
         if (parent == null) {
             ASTUserTrigger trigger = node.getFirstParentOfType(ASTUserTrigger.class);
             String ns = trigger.getNode().getDefiningType().getNamespace().toString();
-            String targetObj = trigger.getNode().getTargetName().get(0).value;
+            String targetObj = trigger.getNode().getTargetName().get(0).getValue();
 
             return new ApexQualifiedName(StringUtils.isEmpty(ns) ? "c" : ns, new String[]{"trigger", targetObj}, trigger.getImage()); // uses a reserved word as a class name to prevent clashes
 

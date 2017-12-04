@@ -65,6 +65,7 @@ public class TestAccessEvaluator implements AccessEvaluator {
     private boolean isReallyRunningTests;
     private boolean hasApexGenericTypes;
     private boolean hasRemoteActionPerm;
+    private boolean hasPersonAccountApiAvailable;
 
     public TestAccessEvaluator() {
         validPageVersions = HashMultimap.create();
@@ -77,6 +78,7 @@ public class TestAccessEvaluator implements AccessEvaluator {
         globalComponents = new HashSet<>();
         typesWithConnectApiDeserializers = new HashSet<>();
         hasRemoteActionPerm = true;
+        hasPersonAccountApiAvailable = true;
     }
 
     @Override
@@ -87,6 +89,11 @@ public class TestAccessEvaluator implements AccessEvaluator {
     @Override
     public boolean hasPermissionForPermGuard(final Namespace referencingNamespace, final String orgPerm) {
         return allowedPermGuards.contains(new AllowedPermGuard(referencingNamespace, orgPerm));
+    }
+
+    @Override
+    public boolean hasPersonAccountApiAvailable() {
+        return hasPersonAccountApiAvailable;
     }
 
     @Override
@@ -105,7 +112,7 @@ public class TestAccessEvaluator implements AccessEvaluator {
     }
 
     @Override
-    public boolean isTrustedApplication() {
+    public boolean isTrustedApplication(TypeInfo arg0) {
         return isTrustedApplication;
     }
 

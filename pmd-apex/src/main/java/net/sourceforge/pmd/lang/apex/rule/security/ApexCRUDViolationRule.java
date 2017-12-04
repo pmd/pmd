@@ -44,10 +44,10 @@ import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.ast.Node;
 
-import apex.jorje.data.ast.Identifier;
+import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
-import apex.jorje.data.ast.TypeRef.ArrayTypeRef;
-import apex.jorje.data.ast.TypeRef.ClassTypeRef;
+import apex.jorje.data.ast.TypeRefs.ArrayTypeRef;
+import apex.jorje.data.ast.TypeRefs.ClassTypeRef;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
@@ -189,7 +189,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                     if (!innerField.isEmpty()) {
                         StringBuffer sb = new StringBuffer();
                         for (Identifier id : innerField) {
-                            sb.append(id.value).append(".");
+                            sb.append(id.getValue()).append(".");
                         }
                         sb.deleteCharAt(sb.length() - 1);
 
@@ -233,8 +233,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 }
                 if (inner.get(i) instanceof ArrayTypeRef) {
                     ArrayTypeRef atr = (ArrayTypeRef) inner.get(i);
-                    if (atr.heldType instanceof ClassTypeRef) {
-                        innerAddParametrizedClassToMapping(node, (ClassTypeRef) atr.heldType);
+                    if (atr.getHeldType() instanceof ClassTypeRef) {
+                        innerAddParametrizedClassToMapping(node, (ClassTypeRef) atr.getHeldType());
                     }
                 }
 
@@ -243,10 +243,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void innerAddParametrizedClassToMapping(final ASTFieldDeclaration node, final ClassTypeRef innerClassRef) {
-        List<Identifier> ids = innerClassRef.className;
+        List<Identifier> ids = innerClassRef.getNames();
         StringBuffer argType = new StringBuffer();
         for (Identifier id : ids) {
-            argType.append(id.value).append(".");
+            argType.append(id.getValue()).append(".");
         }
         argType.deleteCharAt(argType.length() - 1);
         addVariableToMapping(Helper.getFQVariableName(node), argType.toString());
@@ -303,7 +303,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             return;
         }
 
-        List<Identifier> a = ref.getNode().getJadtIdentifiers();
+        List<Identifier> a = ref.getNode().getNames();
         if (!a.isEmpty()) {
             extractObjectAndFields(a, method, node.getNode().getDefiningType().getApexName());
         } else {
@@ -342,8 +342,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private boolean isLastMethodName(final ASTMethodCallExpression methodNode, final String className,
             final String methodName) {
         final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
-        if (reference.getNode().getJadtIdentifiers().size() > 0) {
-            if (reference.getNode().getJadtIdentifiers().get(reference.getNode().getJadtIdentifiers().size() - 1).value
+        if (reference.getNode().getNames().size() > 0) {
+            if (reference.getNode().getNames().get(reference.getNode().getNames().size() - 1).getValue()
                     .equalsIgnoreCase(className) && Helper.isMethodName(methodNode, methodName)) {
                 return true;
             }
@@ -354,16 +354,16 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private String getType(final ASTMethodCallExpression methodNode) {
         final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
-        if (reference.getNode().getJadtIdentifiers().size() > 0) {
+        if (reference.getNode().getNames().size() > 0) {
             return new StringBuilder().append(reference.getNode().getDefiningType().getApexName()).append(":")
-                    .append(reference.getNode().getJadtIdentifiers().get(0).value).toString();
+                    .append(reference.getNode().getNames().get(0).getValue()).toString();
         }
         return "";
     }
 
     private void extractObjectAndFields(final List<Identifier> listIdentifiers, final String method,
             final String definingType) {
-        final List<String> strings = listIdentifiers.stream().map(id -> id.value).collect(Collectors.toList());
+        final List<String> strings = listIdentifiers.stream().map(id -> id.getValue()).collect(Collectors.toList());
 
         int flsIndex = Collections.lastIndexOfSubList(strings, Arrays.asList(RESERVED_KEYS_FLS));
         if (flsIndex != -1) {
@@ -504,10 +504,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         if (var != null) {
             final ASTReferenceExpression reference = var.getFirstChildOfType(ASTReferenceExpression.class);
             if (reference != null) {
-                List<Identifier> identifiers = reference.getNode().getJadtIdentifiers();
+                List<Identifier> identifiers = reference.getNode().getNames();
                 if (identifiers.size() == 1) {
                     StringBuilder sb = new StringBuilder().append(node.getNode().getDefiningType().getApexName())
-                            .append(":").append(identifiers.get(0).value);
+                            .append(":").append(identifiers.get(0).getValue());
                     checkedTypeToDMLOperationViaESAPI.put(sb.toString(), dmlOperation);
                 }
 

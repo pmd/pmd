@@ -20,7 +20,7 @@ public class ASTParameter extends AbstractApexNode<Parameter> implements CanSupp
 
     @Override
     public String getImage() {
-        return node.getName().value;
+        return node.getName().getValue();
     }
 
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {

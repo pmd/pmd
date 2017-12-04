@@ -1,58 +1,17 @@
 # Local Maven Repo for the Apex Jorje Parser library
 
 You can download the needed libraries from:
-<https://github.com/forcedotcom/idecore/tree/master/com.salesforce.ide.apex.core/lib>
+<https://github.com/forcedotcom/salesforcedx-vscode/tree/develop/packages/salesforcedx-vscode-apex/out>
 
 Apex Reference:
 <https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_reference.htm>
 
 <https://resources.docs.salesforce.com/sfdc/pdf/salesforce_apex_language_reference.pdf>
 
-In order to add a the jar files to the local repo, use the following commands:
+In order to download the jar file, minimize it and add a the jar files to the local repo, use the following script:
 
-    mvn install:install-file -Dfile=apex-jorje-data-1.0-sfdc-224-SNAPSHOT.jar \
-                             -DgroupId=apex \
-                             -DartifactId=apex-jorje-data \
-                             -Dversion=1.0-sfdc-224-SNAPSHOT \
-                             -Dpackaging=jar \
-                             -DlocalRepositoryPath=./repo
-    
-    mvn install:install-file -Dfile=apex-jorje-ide-1.0-sfdc-224-SNAPSHOT.jar \
-                             -DgroupId=apex \
-                             -DartifactId=apex-jorje-ide \
-                             -Dversion=1.0-sfdc-224-SNAPSHOT-3083815933 \
-                             -Dpackaging=jar \
-                             -DlocalRepositoryPath=./repo
-    
-    mvn install:install-file -Dfile=apex-jorje-parser-1.0-sfdc-224-SNAPSHOT.jar \
-                             -DgroupId=apex \
-                             -DartifactId=apex-jorje-parser \
-                             -Dversion=1.0-sfdc-224-SNAPSHOT-3083815933 \
-                             -Dpackaging=jar \
-                             -DlocalRepositoryPath=./repo
-    
-    mvn install:install-file -Dfile=apex-jorje-semantic-1.0-sfdc-224-SNAPSHOT.jar \
-                             -DgroupId=apex \
-                             -DartifactId=apex-jorje-semantic \
-                             -Dversion=1.0-sfdc-224-SNAPSHOT-3083815933 \
-                             -Dpackaging=jar \
-                             -DlocalRepositoryPath=./repo
-    
-    mvn install:install-file -Dfile=apex-jorje-services-1.0-sfdc-224-SNAPSHOT.jar \
-                             -DgroupId=apex \
-                             -DartifactId=apex-jorje-services \
-                             -Dversion=1.0-sfdc-224-SNAPSHOT-3083815933 \
-                             -Dpackaging=jar \
-                             -DlocalRepositoryPath=./repo
-    
-    mvn install:install-file -Dfile=apex-jorje-tools-1.0-sfdc-224-SNAPSHOT.jar \
-                             -DgroupId=apex \
-                             -DartifactId=apex-jorje-tools \
-                             -Dversion=1.0-sfdc-224-SNAPSHOT-3083815933 \
-                             -Dpackaging=jar \
-                             -DlocalRepositoryPath=./repo
-    
+    ./create-local-repo.sh
 
 For the PMD 6.0.0 Release, the versions from
-<https://github.com/forcedotcom/idecore/tree/3083815933c2d015d03417986f57bd25786d58ce/com.salesforce.ide.apex.core/lib>
+<https://github.com/forcedotcom/salesforcedx-vscode/tree/54b127925eebfcfd14cd9988018438ba49ec3d43/packages/salesforcedx-vscode-apex/out>
 have been taken.

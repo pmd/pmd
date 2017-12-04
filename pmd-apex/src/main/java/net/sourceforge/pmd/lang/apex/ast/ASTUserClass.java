@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 
 import net.sourceforge.pmd.Rule;
 
-import apex.jorje.data.ast.Identifier;
+import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.compilation.UserClass;
 
 public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClassOrInterface<UserClass>,
@@ -32,7 +32,7 @@ public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClas
             Field field = node.getClass().getDeclaredField("name");
             field.setAccessible(true);
             Identifier name = (Identifier) field.get(node);
-            return name.value;
+            return name.getValue();
         } catch (Exception e) {
             e.printStackTrace();
         }
