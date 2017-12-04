@@ -15,7 +15,8 @@ The Java Logging ruleset contains a collection of rules that find questionable u
     <rule ref="category/java/errorprone.xml/MoreThanOneLogger" deprecated="true" />
 
     <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace" deprecated="true" />
-    <rule ref="category/java/bestpractices.xml/GuardLogStatementJavaUtil" deprecated="true" />
+    <!-- GuardLogStatementJavaUtil has been merged into GuardLogStatement -->
+    <rule ref="category/java/bestpractices.xml/GuardLogStatement" name="GuardLogStatementJavaUtil" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/SystemPrintln" deprecated="true" />
 
 </ruleset>

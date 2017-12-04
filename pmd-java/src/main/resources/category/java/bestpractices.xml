@@ -383,44 +383,6 @@ public class MyClass {
         </example>
     </rule>
 
-    <rule name="GuardDebugLogging"
-          language="java"
-          since="4.3"
-          message="debug logging that involves string concatenation should be guarded with isDebugEnabled() checks"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.GuardDebugLoggingRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#guarddebuglogging">
-        <description>
-When log messages are composed by concatenating strings, the whole section should be guarded
-by a isDebugEnabled() check to avoid performance and memory issues.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Test {
-    private static final Log __log = LogFactory.getLog(Test.class);
-    public void test() {
-        // okay:
-        __log.debug("log something");
-
-        // okay:
-        __log.debug("log something with exception", e);
-
-        // bad:
-        __log.debug("log something" + " and " + "concat strings");
-
-        // bad:
-        __log.debug("log something" + " and " + "concat strings", e);
-
-        // good:
-        if (__log.isDebugEnabled()) {
-        __log.debug("bla" + "",e );
-        }
-    }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="GuardLogStatement"
           language="java"
           since="5.1.0"
@@ -437,28 +399,6 @@ otherwise skip the associate String creation and manipulation.
     // Add this for performance
     if (log.isDebugEnabled() { ...
         log.debug("log something" + " and " + "concat strings");
-]]>
-        </example>
-    </rule>
-
-    <rule name="GuardLogStatementJavaUtil"
-          language="java"
-          since="5.1.0"
-          message="There is log block not surrounded by if"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.GuardLogStatementJavaUtilRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#guardlogstatementjavautil">
-        <description>
-Whenever using a log level, one should check if the loglevel is actually enabled, or
-otherwise skip the associate String creation and manipulation.
-        </description>
-        <priority>2</priority>
-        <example>
- <![CDATA[
-//...
-// Add this for performance
-if (log.isLoggable(Level.FINE)) {
-    log.fine("log something" + " and " + "concat strings");
-}
 ]]>
         </example>
     </rule>

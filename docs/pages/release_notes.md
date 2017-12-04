@@ -272,6 +272,10 @@ The rule reference documentation has been updated to reflect these changes.
 *   The Java rule `EmptyStaticInitializer` in ruleset `java-empty` is deprecated. Use the rule `EmptyInitializer`
     from the category `errorprone`, which covers both static and non-static empty initializers.`
 
+*   The Java rules `GuardDebugLogging` (ruleset `java-logging-jakarta-commons`) and `GuardLogStatementJavaUtil`
+    (ruleset `java-logging-java`) have been deprecated. Use the rule `GuardLogStatement` from the
+    category `bestpractices`, which covers all cases regardless of the logging framework.
+
 #### Removed Rules
 
 *   The deprecated Java rule `UseSingleton` has been removed from the ruleset `java-design`. The rule has been renamed
@@ -364,6 +368,7 @@ a warning will now be produced suggesting users to adopt it for better performan
     *   [#438](https://github.com/pmd/pmd/issues/438): \[java] Relax AbstractClassWithoutAnyMethod when class is annotated by @AutoValue
     *   [#590](https://github.com/pmd/pmd/issues/590): \[java] False positive on MissingStaticMethodInNonInstantiatableClass
 *    java-logging
+    *   [#457](https://github.com/pmd/pmd/issues/457): \[java] Merge all log guarding rules
     *   [#721](https://github.com/pmd/pmd/issues/721): \[java] NPE in PMD 5.8.1 InvalidSlf4jMessageFormat
 *   java-sunsecure
     *   [#468](https://github.com/pmd/pmd/issues/468): \[java] ArrayIsStoredDirectly false positive

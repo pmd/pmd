@@ -12,7 +12,8 @@ The Jakarta Commons Logging ruleset contains a collection of rules that find que
     <rule ref="category/java/errorprone.xml/ProperLogger" deprecated="true" />
     <rule ref="category/java/errorprone.xml/UseCorrectExceptionLogging" deprecated="true" />
 
-    <rule ref="category/java/bestpractices.xml/GuardDebugLogging" deprecated="true" />
+    <!-- GuardDebugLogging has been merged into GuardLogStatement -->
+    <rule ref="category/java/bestpractices.xml/GuardLogStatement" name="GuardDebugLogging" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/GuardLogStatement" deprecated="true" />
 
 </ruleset>
