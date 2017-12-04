@@ -5,7 +5,7 @@ permalink: pmd_rules_java_bestpractices.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/bestpractices.xml
-keywords: Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidPrintStackTrace, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, ForLoopCanBeForeach, GuardDebugLogging, GuardLogStatement, GuardLogStatementJavaUtil, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LooseCoupling, MethodReturnsInternalArray, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseVarargs
+keywords: Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidPrintStackTrace, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, ForLoopCanBeForeach, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LooseCoupling, MethodReturnsInternalArray, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseVarargs
 ---
 ## AbstractClassWithoutAbstractMethod
 
@@ -407,55 +407,6 @@ public class MyClass {
 <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach" />
 ```
 
-## GuardDebugLogging
-
-**Since:** PMD 4.3
-
-**Priority:** Medium (3)
-
-When log messages are composed by concatenating strings, the whole section should be guarded
-by a isDebugEnabled() check to avoid performance and memory issues.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.GuardDebugLoggingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/GuardDebugLoggingRule.java)
-
-**Example(s):**
-
-``` java
-public class Test {
-    private static final Log __log = LogFactory.getLog(Test.class);
-    public void test() {
-        // okay:
-        __log.debug("log something");
-
-        // okay:
-        __log.debug("log something with exception", e);
-
-        // bad:
-        __log.debug("log something" + " and " + "concat strings");
-
-        // bad:
-        __log.debug("log something" + " and " + "concat strings", e);
-
-        // good:
-        if (__log.isDebugEnabled()) {
-        __log.debug("bla" + "",e );
-        }
-    }
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|guardsMethods|[]|method use to guard the log statement|
-|logLevels|[]|LogLevels to guard|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/bestpractices.xml/GuardDebugLogging" />
-```
-
 ## GuardLogStatement
 
 **Since:** PMD 5.1.0
@@ -479,45 +430,12 @@ otherwise skip the associate String creation and manipulation.
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|guardsMethods|[]|method use to guard the log statement|
-|logLevels|[]|LogLevels to guard|
+|guardsMethods|[isTraceEnabled, isDebugEnabled, isInfoEnabled, isWarnEnabled, isErrorEnabled, isLoggable]|method use to guard the log statement|
+|logLevels|[trace, debug, info, warn, error, log, finest, finer, fine, info, warning, severe]|LogLevels to guard|
 
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/GuardLogStatement" />
-```
-
-## GuardLogStatementJavaUtil
-
-**Since:** PMD 5.1.0
-
-**Priority:** Medium High (2)
-
-Whenever using a log level, one should check if the loglevel is actually enabled, or
-otherwise skip the associate String creation and manipulation.
-
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.GuardLogStatementJavaUtilRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/GuardLogStatementJavaUtilRule.java)
-
-**Example(s):**
-
-``` java
-//...
-// Add this for performance
-if (log.isLoggable(Level.FINE)) {
-    log.fine("log something" + " and " + "concat strings");
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|guardsMethods|[]|method use to guard the log statement|
-|logLevels|[]|LogLevels to guard|
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/bestpractices.xml/GuardLogStatementJavaUtil" />
 ```
 
 ## JUnit4SuitesShouldUseSuiteAnnotation
