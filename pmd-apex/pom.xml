@@ -14,6 +14,7 @@
   <properties>
     <config.basedir>${basedir}/../pmd-core</config.basedir>
     <java.version>8</java.version>
+    <apex.jorje.version>2017-11-17</apex.jorje.version>
   </properties>
 
   <build>
@@ -59,6 +60,30 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+            <execution>
+                <id>attach-apex-jorje</id>
+                <phase>package</phase>
+                <goals>
+                    <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                    <artifacts>
+                        <artifact>
+                            <file>${basedir}/repo/apex/apex-jorje-lsp-minimized/${apex.jorje.version}/apex-jorje-lsp-minimized-${apex.jorje.version}.jar</file>
+                            <type>jar</type>
+                            <classifier>apex-jorje</classifier>
+                        </artifact>
+                    </artifacts>
+                </configuration>
+            </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
@@ -70,7 +95,7 @@
     <dependency>
       <groupId>apex</groupId>
       <artifactId>apex-jorje-lsp-minimized</artifactId>
-      <version>2017-11-17</version>
+      <version>${apex.jorje.version}</version>
     </dependency>
     <!-- transitive dependencies of apex-jorje -->
     <dependency>
