@@ -14,7 +14,6 @@
   <properties>
     <config.basedir>${basedir}/../pmd-core</config.basedir>
     <java.version>8</java.version>
-    <apex.jorje.version>2017-11-17</apex.jorje.version>
   </properties>
 
   <build>
@@ -60,30 +59,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.0.0</version>
-        <executions>
-            <execution>
-                <id>attach-apex-jorje</id>
-                <phase>package</phase>
-                <goals>
-                    <goal>attach-artifact</goal>
-                </goals>
-                <configuration>
-                    <artifacts>
-                        <artifact>
-                            <file>${basedir}/repo/apex/apex-jorje-lsp-minimized/${apex.jorje.version}/apex-jorje-lsp-minimized-${apex.jorje.version}.jar</file>
-                            <type>jar</type>
-                            <classifier>apex-jorje</classifier>
-                        </artifact>
-                    </artifacts>
-                </configuration>
-            </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
   <dependencies>
@@ -93,98 +68,18 @@
     </dependency>
 
     <dependency>
-      <groupId>apex</groupId>
-      <artifactId>apex-jorje-lsp-minimized</artifactId>
-      <version>${apex.jorje.version}</version>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pmd-apex-jorje</artifactId>
+      <version>${project.version}</version>
+      <classifier>lib</classifier>
     </dependency>
-    <!-- transitive dependencies of apex-jorje -->
+
     <dependency>
-        <groupId>cglib</groupId>
-        <artifactId>cglib</artifactId>
-        <version>3.2.0</version>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pmd-apex-jorje</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
     </dependency>
-    <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>1.1.7</version>
-    </dependency>
-    <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-core</artifactId>
-        <version>1.1.7</version>
-    </dependency>
-    <dependency>
-        <groupId>com.google.code.findbugs</groupId>
-        <artifactId>jsr305</artifactId>
-        <version>3.0.1</version>
-    </dependency>
-    <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>2.7</version>
-    </dependency>
-    <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>22.0</version>
-    </dependency>
-    <dependency>
-        <groupId>org.antlr</groupId>
-        <artifactId>antlr-runtime</artifactId>
-        <version>3.5.2</version>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.0</version>
-    </dependency>
-    <dependency>
-        <groupId>org.eclipse.xtend</groupId>
-        <artifactId>org.eclipse.xtend.lib</artifactId>
-        <version>2.10.0</version>
-    </dependency>
-    <dependency>
-        <groupId>org.eclipse.xtend</groupId>
-        <artifactId>org.eclipse.xtend.lib.macro</artifactId>
-        <version>2.10.0</version>
-    </dependency>
-    <dependency>
-        <groupId>org.eclipse.xtext</groupId>
-        <artifactId>org.eclipse.xtext.xbase.lib</artifactId>
-        <version>2.10.0</version>
-    </dependency>
-    <dependency>
-        <groupId>org.openjdk.jol</groupId>
-        <artifactId>jol-core</artifactId>
-        <version>0.4</version>
-    </dependency>
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>1.7.20</version>
-    </dependency>
-    <dependency>
-        <groupId>org.yaml</groupId>
-        <artifactId>snakeyaml</artifactId>
-        <version>1.17</version>
-    </dependency>
-    <dependency>
-        <groupId>aopalliance</groupId>
-        <artifactId>aopalliance</artifactId>
-        <version>1.0</version>
-    </dependency>
-    <dependency>
-        <groupId>javax.inject</groupId>
-        <artifactId>javax.inject</artifactId>
-        <version>1</version>
-    </dependency>
-    <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm</artifactId>
-        <version>5.0.3</version>
-        <scope>runtime</scope>
-    </dependency>
-    <!--  end transitive dependencies of apex-jorje -->
 
     <dependency>
       <groupId>commons-io</groupId>
@@ -208,15 +103,7 @@
       <artifactId>pmd-test</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
-
-  <repositories>
-    <repository>
-      <id>local-apex-repo</id>
-      <url>file://${basedir}/repo</url>
-    </repository>
-  </repositories>
 
   <profiles>
     <profile>

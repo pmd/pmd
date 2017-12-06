@@ -931,6 +931,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <jdk>[1.8,</jdk>
             </activation>
             <modules>
+                <module>pmd-apex-jorje</module>
                 <module>pmd-apex</module>
                 <module>pmd-java8</module>
                 <module>pmd-ui</module>
