@@ -982,3 +982,24 @@ func useSomeGenericFromExtension() {
     // Set subscript value
     let nameAndMoons2 = earthData[Set(["moons", "name"])]  // [1, "Earth"]
 }
+
+// Associated Type Constraints
+
+protocol MyProtocol {
+  associatedtype Element
+  associatedtype SubSequence : Sequence where SubSequence.Iterator.Element == Iterator.Element
+}
+
+// Class and Protocol Existential
+
+protocol MyProtocol { }
+class View { }
+class ViewSubclass: View, MyProtocol { }
+
+class MyClass {
+  var delegate: (View & MyProtocol)?
+}
+
+let myClass = MyClass()
+//myClass.delegate = View() // error: cannot assign value of type 'View' to type '(View & MyProtocol)?'
+myClass.delegate = ViewSubclass()
