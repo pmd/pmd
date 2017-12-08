@@ -252,6 +252,11 @@ The rule reference documentation has been updated to reflect these changes.
 *   The Java rule `EmptyCatchBlock` (category `errorprone`, former ruleset `java-empty`) has been changed to ignore
     exceptions named `ignore` or `expected` by default. You can still override this behaviour by setting the `allowExceptionNameRegex` property.
 
+*   The Java rule `OptimizableToArrayCall` (category `performance`, former ruleset `design`) has been
+    modified to fit for the current JVM implementations: It basically detects now the opposite and suggests to
+    use `Collection.toArray(new E[0])` with a zero-sized array.
+    See [Arrays of Wisdom of the Ancients](https://shipilev.net/blog/2016/arrays-wisdom-ancients/).
+
 #### Deprecated Rules
 
 *   The Java rules `NcssConstructorCount`, `NcssMethodCount`, and `NcssTypeCount` (ruleset `java-codesize`) have been
@@ -344,6 +349,7 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   cpp
     *   [#448](https://github.com/pmd/pmd/issues/448): \[cpp] Write custom CharStream to handle continuation characters
 *   java
+    *   [#1454](https://sourceforge.net/p/pmd/bugs/1454/): \[java] OptimizableToArrayCall is outdated and invalid in current JVMs
     *   [#1513](https://sourceforge.net/p/pmd/bugs/1513/): \[java] Remove deprecated rule UseSingleton
     *   [#328](https://github.com/pmd/pmd/issues/328): \[java] java.lang.ClassFormatError: Absent Code attribute in method that is not native or abstract in class file javax/servlet/jsp/PageContext
     *   [#487](https://github.com/pmd/pmd/pull/487): \[java] Fix typeresolution for anonymous extending object
