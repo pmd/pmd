@@ -424,6 +424,7 @@ public class Foo {
     <rule name="OptimizableToArrayCall"
           language="java"
           since="1.8"
+	  minimumLanguageVersion="1.6"
           message="This call to Collection.toArray() may be optimizable"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#optimizabletoarraycall">
