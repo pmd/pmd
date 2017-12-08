@@ -675,7 +675,7 @@ selectorExpression
 // GRAMMAR OF A KEY PATH EXPRESSION
 
 keyPathExpression
- : '#keyPath' '(' expression ')' 
+ : '#keyPath' '(' expression ')'
  | '\\' expression
 ;
 
@@ -903,7 +903,7 @@ swiftVersion: FloatingPointLiteral ;
 lineControlStatement: '#sourceLocation' '(' 'file' ':' fileName ',' 'line' ':' lineNumber ')'
  | '#sourceLocation' '(' ')' ;
 lineNumber: integerLiteral ;
-fileName: StringLiteral ;
+fileName: SingleStringLiteral ;
 
 // ---------- Lexical Structure -----------
 
@@ -1013,7 +1013,7 @@ ImplicitParameterName : '$' DecimalLiteral ; // TODO: don't allow '_' here
 // GRAMMAR OF A LITERAL
 
 booleanLiteral: BooleanLiteral ;
-literal : numericLiteral | StringLiteral | BooleanLiteral | NilLiteral ;
+literal : numericLiteral | MultiStringLiteral | SingleStringLiteral | BooleanLiteral | NilLiteral ;
 
 // GRAMMAR OF AN INTEGER LITERAL
 
@@ -1064,13 +1064,24 @@ VersionLiteral: DecimalLiteral DecimalFraction DecimalFraction ;
 
 // GRAMMAR OF A STRING LITERAL
 
-StringLiteral : '"' QuotedText? '"' ;
+TRIPLEDQUOTES : '"""' ;
+
+MultiStringLiteral : TRIPLEDQUOTES '\n' .*? '\n' TRIPLEDQUOTES ;
+fragment MultiQuotedText : MultiQuotedTextItem+ ;
+fragment MultiQuotedTextItem : MultiInterpolatedString
+ | ~[\\\u000A\u000D]
+ ;
+fragment MultiInterpolatedString: '\\(' (MultiQuotedTextItem | SingleStringLiteral)* ')';
+
+// StringLiteral : '"' QuotedText? '"' ;
+SingleStringLiteral : '"' QuotedText? '"' ;
+fragment SingleDoubleQuote : '"' | ~["] ;
 fragment QuotedText : QuotedTextItem+ ;
 fragment QuotedTextItem : EscapedCharacter | InterpolatedString
 // | '\\(' expression ')'
  | ~["\\\u000A\u000D]
  ;
-fragment InterpolatedString: '\\(' (QuotedTextItem | StringLiteral)* ')';
+fragment InterpolatedString: '\\(' (QuotedTextItem | SingleStringLiteral)* ')';
 
 EscapedCharacter : '\\' [0\\tnr"']
  | '\\x' HexadecimalDigit HexadecimalDigit
