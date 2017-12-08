@@ -5,7 +5,7 @@ permalink: pmd_rules_java_performance.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/performance.xml
-keywords: Performance, AddEmptyString, AppendCharacterWithChar, AvoidArrayLoops, AvoidInstantiatingObjectsInLoops, AvoidUsingShortType, BigIntegerInstantiation, BooleanInstantiation, ByteInstantiation, ConsecutiveAppendsShouldReuse, ConsecutiveLiteralAppends, InefficientEmptyStringCheck, InefficientStringBuffering, InsufficientStringBufferDeclaration, IntegerInstantiation, LongInstantiation, OptimizableToArrayCall, RedundantFieldInitializer, SimplifyStartsWith, ShortInstantiation, StringInstantiation, StringToString, TooFewBranchesForASwitchStatement, UnnecessaryWrapperObjectCreation, UseArrayListInsteadOfVector, UseArraysAsList, UseIndexOfChar, UselessStringValueOf, UseStringBufferForStringAppends, UseStringBufferLength
+keywords: Performance, AddEmptyString, AppendCharacterWithChar, AvoidArrayLoops, AvoidFileStream, AvoidInstantiatingObjectsInLoops, AvoidUsingShortType, BigIntegerInstantiation, BooleanInstantiation, ByteInstantiation, ConsecutiveAppendsShouldReuse, ConsecutiveLiteralAppends, InefficientEmptyStringCheck, InefficientStringBuffering, InsufficientStringBufferDeclaration, IntegerInstantiation, LongInstantiation, OptimizableToArrayCall, RedundantFieldInitializer, SimplifyStartsWith, ShortInstantiation, StringInstantiation, StringToString, TooFewBranchesForASwitchStatement, UnnecessaryWrapperObjectCreation, UseArrayListInsteadOfVector, UseArraysAsList, UseIndexOfChar, UselessStringValueOf, UseStringBufferForStringAppends, UseStringBufferLength
 ---
 ## AddEmptyString
 
@@ -115,17 +115,13 @@ public class Test {
 
 **Priority:** High (1)
 
-Avoid instantiating FileInputStream, FileOutputStream, FileReader, or FileWriter.
-- Use Files.newInputStream(Paths.get(fileName)) in place of new FileInputStream(fileName).
-- Use Files.newOutputStream(Paths.get(fileName)) instead of new FileOutputStream(fileName).
-- Use Files.newBufferedReader(Paths.get(fileName)) instead of new FileReader(fileName).
-- Use Files.newBufferedWriter(Paths.get(fileName)) instead of new FileWriter(fileName).
+**Minimum Language Version:** Java 1.7
 
-The FileInputStream and FileOutputStream classes contains a finalizer method which will cause garbage collection pauses.
-See [JDK-8080225](https://bugs.openjdk.java.net/browse/JDK-8080225) for details.
+Use Files.newInputStream(Paths.get(fileName)) instead of new FileInputStream(fileName).
+Use Files.newOutputStream(Paths.get(fileName)) instead of new FileOutputStream(fileName).
+Use Files.newBufferedReader(Paths.get(fileName)) instead of new FileReader(fileName).
+Use Files.newBufferedWriter(Paths.get(fileName)) instead of new FileWriter(fileName).
 
-The FileReader and FileWriter constructors instantiate FileInputStream and FileOutputStream,
-again causing garbage collection issues while finalizer methods are called.
 ```
 //PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[
        typeof(@Image, 'java.io.FileInputStream', 'FileInputStream')
@@ -138,32 +134,23 @@ again causing garbage collection issues while finalizer methods are called.
 **Example(s):**
 
 ``` java
-public class Sample {
- 
-    // these instantiations cause garbage collection pauses, even if properly closed
-    public void badMethods( ) {
-        FileInputStream fis = new FileInputStream(fileName);
-        FileOutputStream fos = new FileOutputStream(fileName);
-        FileReader fr = new FileReader(fileName);
-        FileWriter fw = new FileWriter(fileName);
-    }
- 
+// these instantiations cause garbage collection pauses, even if properly closed
+
+    FileInputStream fis = new FileInputStream(fileName);
+    FileOutputStream fos = new FileOutputStream(fileName);
+    FileReader fr = new FileReader(fileName);
+    FileWriter fw = new FileWriter(fileName);
+
     // the following instantiations help prevent Garbage Collection pauses, no finalization
-    public void goodMethods( ) {
- 
-        try(InputStream is = Files.newInputStream(Paths.get(fileName))) {
-        }
- 
-        try(OutputStream os = Files.newOutputStream(Paths.get(fileName))) {
-        }
- 
-        try(BufferedReader br = Files.newBufferedReader(Paths.get(fileName), StandardCharsets.UTF_8)) {
-        }
- 
-        try(BufferedWriter wr = Files.newBufferedWriter(Paths.get(fileName), StandardCharsets.UTF_8)) {
-        }
+
+    try(InputStream is = Files.newInputStream(Paths.get(fileName))) {
     }
-}
+    try(OutputStream os = Files.newOutputStream(Paths.get(fileName))) {
+    }
+    try(BufferedReader br = Files.newBufferedReader(Paths.get(fileName), StandardCharsets.UTF_8)) {
+    }
+    try(BufferedWriter wr = Files.newBufferedWriter(Paths.get(fileName), StandardCharsets.UTF_8)) {
+    }
 ```
 
 **Use this rule by referencing it:**
