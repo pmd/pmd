@@ -23,7 +23,7 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
 
     @Override
     public String getImage() {
-        return node.getMethodInfo().getIdentifier().value;
+        return node.getMethodInfo().getCanonicalName();
     }
 
     @Override

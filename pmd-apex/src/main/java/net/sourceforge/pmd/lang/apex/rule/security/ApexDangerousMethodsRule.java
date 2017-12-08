@@ -89,7 +89,7 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
     private void validateParameters(ASTMethodCallExpression methodCall, Object data) {
         List<ASTVariableExpression> variables = methodCall.findDescendantsOfType(ASTVariableExpression.class);
         for (ASTVariableExpression var : variables) {
-            if (REGEXP.matcher(var.getNode().getIdentifier().value).matches()) {
+            if (REGEXP.matcher(var.getNode().getIdentifier().getValue()).matches()) {
                 if (!whiteListedVariables.contains(Helper.getFQVariableName(var))) {
                     addViolation(data, methodCall);
                 }

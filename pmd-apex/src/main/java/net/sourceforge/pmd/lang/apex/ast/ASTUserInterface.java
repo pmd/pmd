@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 
 import net.sourceforge.pmd.Rule;
 
-import apex.jorje.data.ast.Identifier;
+import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.compilation.UserInterface;
 
 public class ASTUserInterface extends ApexRootNode<UserInterface> implements ASTUserClassOrInterface<UserInterface>,
@@ -30,11 +30,10 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> implements AST
             Field field = node.getClass().getDeclaredField("name");
             field.setAccessible(true);
             Identifier name = (Identifier) field.get(node);
-            return name.value;
-        } catch (Exception e) {
-            e.printStackTrace();
+            return name.getValue();
+        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
-        return super.getImage();
     }
 
     @Override

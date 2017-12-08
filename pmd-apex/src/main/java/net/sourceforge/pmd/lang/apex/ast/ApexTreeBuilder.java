@@ -87,7 +87,6 @@ import apex.jorje.semantic.ast.statement.DoLoopStatement;
 import apex.jorje.semantic.ast.statement.ExpressionStatement;
 import apex.jorje.semantic.ast.statement.FieldDeclaration;
 import apex.jorje.semantic.ast.statement.FieldDeclarationStatements;
-import apex.jorje.semantic.ast.statement.ForEachStatement;
 import apex.jorje.semantic.ast.statement.ForLoopStatement;
 import apex.jorje.semantic.ast.statement.IfBlockStatement;
 import apex.jorje.semantic.ast.statement.IfElseBlockStatement;
@@ -102,6 +101,7 @@ import apex.jorje.semantic.ast.statement.TryCatchFinallyBlockStatement;
 import apex.jorje.semantic.ast.statement.VariableDeclaration;
 import apex.jorje.semantic.ast.statement.VariableDeclarationStatements;
 import apex.jorje.semantic.ast.statement.WhileLoopStatement;
+import apex.jorje.semantic.ast.statement.foreachstatement.ForEachStatement;
 import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
 import apex.jorje.semantic.exception.Errors;
@@ -225,7 +225,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
     }
 
-    AdditionalPassScope scope = new AdditionalPassScope(new Errors());
+    AdditionalPassScope scope = new AdditionalPassScope(Errors.createErrors());
 
     static <T extends AstNode> AbstractApexNode<T> createNodeAdapter(T node) {
         try {

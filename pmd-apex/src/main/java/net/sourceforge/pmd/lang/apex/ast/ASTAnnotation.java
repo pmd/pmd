@@ -7,16 +7,12 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.Rule;
 
 import apex.jorje.semantic.ast.modifier.Annotation;
 
 public class ASTAnnotation extends AbstractApexNode<Annotation> {
-
-    private static final Pattern IMAGE_EXTRACTOR = Pattern.compile("value = ([^\\)]*)\\)");
 
     public ASTAnnotation(Annotation annotation) {
         super(annotation);
@@ -28,11 +24,7 @@ public class ASTAnnotation extends AbstractApexNode<Annotation> {
 
     @Override
     public String getImage() {
-        final Matcher m = IMAGE_EXTRACTOR.matcher(node.toString());
-        if (m.find()) {
-            return m.group(1);
-        }
-        return null;
+        return node.getType().getApexName();
     }
 
     public boolean suppresses(Rule rule) {

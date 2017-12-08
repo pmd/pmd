@@ -76,4 +76,9 @@ public class EmptySymbolProvider implements SymbolProvider {
     public String getQuickAction(TypeInfo arg0, String arg1, String arg2) {
         return null;
     }
+
+    @Override
+    public TypeInfo getAggregateResultType(TypeInfo arg0) {
+        return null;
+    }
 }

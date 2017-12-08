@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.lang.reflect.Field;
 
-import apex.jorje.data.ast.Identifier;
+import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.compilation.UserTrigger;
 
 public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
@@ -25,10 +25,9 @@ public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
             Field field = node.getClass().getDeclaredField("name");
             field.setAccessible(true);
             Identifier name = (Identifier) field.get(node);
-            return name.value;
-        } catch (Exception e) {
-            e.printStackTrace();
+            return name.getValue();
+        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
-        return super.getImage();
     }
 }

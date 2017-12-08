@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,9 +26,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 
-import apex.jorje.data.ast.Identifier;
+import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
-import apex.jorje.data.ast.TypeRef.ClassTypeRef;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
 import apex.jorje.semantic.ast.expression.NewKeyValueObjectExpression;
 import apex.jorje.semantic.ast.expression.VariableExpression;
@@ -106,8 +104,8 @@ public final class Helper {
     static boolean isMethodName(final ASTMethodCallExpression methodNode, final String className,
             final String methodName) {
         final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
-        if (reference.getNode().getJadtIdentifiers().size() == 1) {
-            if (reference.getNode().getJadtIdentifiers().get(0).value.equalsIgnoreCase(className)) {
+        if (reference != null && reference.getNode().getNames().size() == 1) {
+            if (reference.getNode().getNames().get(0).getValue().equalsIgnoreCase(className)) {
                 if (methodName.equals(ANY_METHOD) || isMethodName(methodNode, methodName)) {
                     return true;
                 }
@@ -152,14 +150,14 @@ public final class Helper {
         final ASTReferenceExpression ref = variable.getFirstChildOfType(ASTReferenceExpression.class);
         String objectName = "";
         if (ref != null) {
-            if (ref.getNode().getJadtIdentifiers().size() == 1) {
-                objectName = ref.getNode().getJadtIdentifiers().get(0).value + ".";
+            if (ref.getNode().getNames().size() == 1) {
+                objectName = ref.getNode().getNames().get(0).getValue() + ".";
             }
         }
 
         VariableExpression n = variable.getNode();
         StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":").append(objectName)
-                .append(n.getIdentifier().value);
+                .append(n.getIdentifier().getValue());
         return sb.toString();
     }
 
@@ -192,9 +190,10 @@ public final class Helper {
             java.lang.reflect.Field f = n.getClass().getDeclaredField("name");
             f.setAccessible(true);
             Identifier nameField = (Identifier) f.get(n);
-            name = nameField.value;
+            name = nameField.getValue();
 
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
 
         StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":").append(name);
@@ -203,15 +202,8 @@ public final class Helper {
 
     static String getFQVariableName(final ASTNewKeyValueObjectExpression variable) {
         NewKeyValueObjectExpression n = variable.getNode();
-        String objType = "";
-        try {
-            // no other way to get this field, Apex Jorje does not expose it
-            java.lang.reflect.Field f = n.getClass().getDeclaredField("typeRef");
-            f.setAccessible(true);
-            ClassTypeRef hiddenField = (ClassTypeRef) f.get(n);
-            objType = hiddenField.className.get(0).value;
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-        }
+        TypeRef typeRef = n.getTypeRef();
+        String objType = typeRef.getNames().get(0).getValue();
 
         StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":").append(objType);
         return sb.toString();
@@ -220,18 +212,7 @@ public final class Helper {
     static boolean isSystemLevelClass(ASTUserClass node) {
         List<TypeRef> interfaces = node.getNode().getDefiningType().getCodeUnitDetails().getInterfaceTypeRefs();
         for (TypeRef intObject : interfaces) {
-            try {
-                java.lang.reflect.Field f = intObject.getClass().getDeclaredField("className");
-                f.setAccessible(true);
-                @SuppressWarnings("unchecked")
-                ArrayList<Identifier> ids = (ArrayList<Identifier>) f.get(intObject);
-                if (isWhitelisted(ids)) {
-                    return true;
-                }
-
-            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            }
-
+            return isWhitelisted(intObject.getNames());
         }
 
         return false;
@@ -241,7 +222,7 @@ public final class Helper {
         StringBuffer sb = new StringBuffer();
 
         for (int i = 0; i < ids.size(); i++) {
-            sb.append(ids.get(i).value);
+            sb.append(ids.get(i).getValue());
 
             if (i != (ids.size() - 1)) {
                 sb.append(".");
@@ -260,8 +241,8 @@ public final class Helper {
     }
 
     public static String getFQVariableName(Parameter p) {
-        StringBuffer sb = new StringBuffer();        
-        sb.append(p.getDefiningType()).append(":").append(p.getName().value);        
+        StringBuffer sb = new StringBuffer();
+        sb.append(p.getDefiningType()).append(":").append(p.getName().getValue());
         return sb.toString();
     }
 
