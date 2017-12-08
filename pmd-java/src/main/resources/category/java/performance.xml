@@ -112,6 +112,61 @@ public class Test {
         </example>
     </rule>
 
+    <rule name="AvoidFileStream"
+          since="6.0.0"
+          message="Avoid instantiating FileInputStream, FileOutputStream, FileReader, or FileWriter"
+          language="java"
+          minimumLanguageVersion="1.7"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidfilestream">
+        <description>
+The FileInputStream and FileOutputStream classes contains a finalizer method which will cause garbage collection pauses. See [JDK-8080225](https://bugs.openjdk.java.net/browse/JDK-8080225) for details.
+
+The FileReader and FileWriter constructors instantiate FileInputStream and FileOutputStream, again causing garbage collection issues while finalizer methods are called.
+
+* Use `Files.newInputStream(Paths.get(fileName))` instead of `new FileInputStream(fileName)`.
+* Use `Files.newOutputStream(Paths.get(fileName))` instead of `new FileOutputStream(fileName)`.
+* Use `Files.newBufferedReader(Paths.get(fileName))` instead of `new FileReader(fileName)`.
+* Use `Files.newBufferedWriter(Paths.get(fileName))` instead of `new FileWriter(fileName)`.
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[
+       typeof(@Image, 'java.io.FileInputStream', 'FileInputStream')
+    or typeof(@Image, 'java.io.FileOutputStream', 'FileOutputStream')
+    or typeof(@Image, 'java.io.FileReader', 'FileReader')
+    or typeof(@Image, 'java.io.FileWriter', 'FileWriter')
+  ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+    // these instantiations cause garbage collection pauses, even if properly closed
+
+    FileInputStream fis = new FileInputStream(fileName);
+    FileOutputStream fos = new FileOutputStream(fileName);
+    FileReader fr = new FileReader(fileName);
+    FileWriter fw = new FileWriter(fileName);
+
+    // the following instantiations help prevent Garbage Collection pauses, no finalization
+
+    try(InputStream is = Files.newInputStream(Paths.get(fileName))) {
+    }
+    try(OutputStream os = Files.newOutputStream(Paths.get(fileName))) {
+    }
+    try(BufferedReader br = Files.newBufferedReader(Paths.get(fileName), StandardCharsets.UTF_8)) {
+    }
+    try(BufferedWriter wr = Files.newBufferedWriter(Paths.get(fileName), StandardCharsets.UTF_8)) {
+    }
+]]>
+        </example>
+    </rule>
+
     <rule name="AvoidInstantiatingObjectsInLoops"
           since="2.2"
           message="Avoid instantiating new objects inside loops"

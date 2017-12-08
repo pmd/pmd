@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description><![CDATA[
+instantiating FileInputStream
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+public class Foo {
+ public void bar() {
+    FileInputStream is = new FileInputStream(fileName);
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+instantiating java.io.FileInputStream
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+    java.io.FileInputStream is = new java.io.FileInputStream(fileName);
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+instantiating FileOutputStream
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.FileOutputStream;
+public class Foo {
+ public void bar() {
+    FileOutputStream os = new FileOutputStream(fileName);
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+instantiating java.io.FileOutputStream
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+    java.io.FileOutputStream os = new java.io.FileOutputStream(fileName);
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+instantiating FileReader
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.FileReader;
+public class Foo {
+ public void bar() {
+    FileReader rd = new FileReader(fileName);
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+instantiating java.io.FileReader
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+    java.io.FileReader rd = new java.io.FileReader(fileName);
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+instantiating FileWriter
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.FileWriter;
+public class Foo {
+ public void bar() {
+    FileWriter wr = new FileWriter(fileName);
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+instantiating java.io.FileWriter
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+    java.io.FileWriter wr = new java.io.FileWriter(fileName);
+ }
+}
+     ]]></code>
+    </test-code>
+
+</test-data>

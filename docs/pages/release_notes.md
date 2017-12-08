@@ -177,6 +177,10 @@ The rule reference documentation has been updated to reflect these changes.
 *   The new Java rule `ForLoopCanBeForeach` (category `errorprone`) helps to identify those for-loops that can
     be safely refactored into for-each-loops available since java 1.5.
 
+*   The new Java rule `AvoidFileStream` (category `performance`) helps to identify code relying on `FileInputStream` / `FileOutputStream`
+    which, by using a finalizer, produces extra / unnecessary overhead to garbage collection, and should be replaced with
+    `Files.newInputStream` / `Files.newOutputStream` available since java 1.7.
+
 *   The new Apex rule `AvoidDirectAccessTriggerMap` (category `errorprone`) helps to identify direct array access to triggers,
     which can produce bugs by either accessing non-existing indexes, or leaving them out. You should use for-each-loops
     instead.
@@ -567,4 +571,5 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#749](https://github.com/pmd/pmd/pull/749): \[doc] Update the documentation for properties - [Clément Fournier](https://github.com/oowekyala)
 *   [#758](https://github.com/pmd/pmd/pull/758): \[core] Expose the full mapping from property type id to property extractor - [Clément Fournier](https://github.com/oowekyala)
 *   [#771](https://github.com/pmd/pmd/pull/771): \[apex] Fix Apex metrics framework failing on triggers, refs #768 - [Clément Fournier](https://github.com/oowekyala)
+*   [#774](https://github.com/pmd/pmd/pull/774): \[java] Avoid using FileInput/Output - see JDK-8080225 - [Chas Honton](https://github.com/chonton)
 
