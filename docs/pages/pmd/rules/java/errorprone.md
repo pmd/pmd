@@ -1310,7 +1310,7 @@ public void foo() {
 
 ## DoNotExtendJavaLangThrowable
 
-**Since:** PMD 6.0
+**Since:** PMD 6.0.0
 
 **Priority:** Medium (3)
 

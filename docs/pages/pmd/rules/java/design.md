@@ -435,7 +435,7 @@ class Foo {
 
 ## DataClass
 
-**Since:** PMD 6.0
+**Since:** PMD 6.0.0
 
 **Priority:** Medium (3)
 
@@ -1046,7 +1046,7 @@ public class Foo extends Bar {
 
 ## NcssCount
 
-**Since:** PMD 6.0
+**Since:** PMD 6.0.0
 
 **Priority:** Medium (3)
 
