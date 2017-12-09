@@ -28,6 +28,7 @@ This is a major release.
     *   [Java Symbol Table](#java-symbol-table)
     *   [Apex Parser Update](#apex-parser-update)
     *   [Incremental Analysis](#incremental-analysis)
+    *   [Rule and Report Properties](#rule-and-report-properties)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
 * [External Contributions](#external-contributions)
