@@ -298,7 +298,7 @@ rule, but other rules may now produce improved results as consequence of this fi
 
 #### Apex Parser Update
 
-The Apex parser version was bumped, from `1.0-sfdc-187` to `1.0-sfdc-224`. This update let us take full advantage
+The Apex parser version was bumped, from `1.0-sfdc-187` to `210-SNAPSHOT`. This update let us take full advantage
 of the latest improvements from Salesforce, but introduces some breaking changes:
 
 *   `BlockStatements` are now created for all control structures, even if no brace is used. We have therefore added
@@ -310,6 +310,9 @@ of the latest improvements from Salesforce, but introduces some breaking changes
     (replaced by `NewKeyValueObjectExpression`)
 
 All existing rules have been updated to reflect these changes. If you have custom rules, be sure to update them.
+
+For more info about the included Apex parser, see the new pmd module "pmd-apex-jorje", which packages and provides
+the parser as a binary.
 
 #### Incremental Analysis
 
@@ -349,6 +352,7 @@ a warning will now be produced suggesting users to adopt it for better performan
     *   [#605](https://github.com/pmd/pmd/issues/605): \[apex] java.lang.NoClassDefFoundError in the latest build
     *   [#637](https://github.com/pmd/pmd/issues/637): \[apex] Avoid SOSL in loops
     *   [#760](https://github.com/pmd/pmd/issues/760): \[apex] EmptyStatementBlock complains about missing rather than empty block
+    *   [#766](https://github.com/pmd/pmd/issues/766): \[apex] Replace old Jorje parser with new one
     *   [#768](https://github.com/pmd/pmd/issues/768): \[apex] java.lang.NullPointerException from PMD
 *   cpp
     *   [#448](https://github.com/pmd/pmd/issues/448): \[cpp] Write custom CharStream to handle continuation characters
