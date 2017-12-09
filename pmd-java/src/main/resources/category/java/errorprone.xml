@@ -1209,7 +1209,7 @@ public void foo() {
 
     <rule name="DoNotExtendJavaLangThrowable"
           language="java"
-          since="6.0"
+          since="6.0.0"
           message="Exceptions should not extend java.lang.Throwable"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donotextendjavalangthrowable">

@@ -181,6 +181,10 @@ The rule reference documentation has been updated to reflect these changes.
     which, by using a finalizer, produces extra / unnecessary overhead to garbage collection, and should be replaced with
     `Files.newInputStream` / `Files.newOutputStream` available since java 1.7.
 
+*   The new Java rule `DataClass` (category `design`) detects simple data-holders without behaviour. This might indicate
+    that the behaviour is scattered elsewhere and the data class exposes the internal data structure,
+    which breaks encapsulation.
+
 *   The new Apex rule `AvoidDirectAccessTriggerMap` (category `errorprone`) helps to identify direct array access to triggers,
     which can produce bugs by either accessing non-existing indexes, or leaving them out. You should use for-each-loops
     instead.
@@ -188,6 +192,9 @@ The rule reference documentation has been updated to reflect these changes.
 *   The new Apex rule `AvoidHardcodingId` (category `errorprone`) detects hardcoded strings that look like identifiers
     and flags them. Record IDs change between environments, meaning hardcoded ids are bound to fail under a different
     setup.
+
+*   The new Apex rule `CyclomaticComplexity` (category `design`) detects overly complex classes and methods. The
+    report threshold can be configured separately for classes and methods.
 
 *   A whole bunch of new rules has been added to Apex. They all fit into the category `errorprone`.
     The 5 rules are migrated for Apex from the equivalent Java rules and include:

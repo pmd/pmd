@@ -353,7 +353,7 @@ public class Foo {
 
     <rule name="ForLoopCanBeForeach"
           language="java"
-          since="6.0"
+          since="6.0.0"
           message="This 'for' loop can be replaced by a 'foreach' loop"
           typeResolution="true"
           minimumLanguageVersion="1.5"

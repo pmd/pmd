@@ -12,6 +12,7 @@ This ruleset contains links to rules that are new in PMD v6.0.0
     <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangThrowable"/>
     <rule ref="category/java/design.xml/DataClass"/>
     <rule ref="category/java/design.xml/NcssCount"/>
+    <rule ref="category/java/performance.xml/AvoidFileStream"/>
 
     <rule ref="category/apex/design.xml/CyclomaticComplexity" />
     <rule ref="category/apex/errorprone.xml/AvoidDirectAccessTriggerMap"/>

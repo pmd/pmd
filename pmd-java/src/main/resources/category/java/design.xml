@@ -425,7 +425,7 @@ class Foo {
     </rule>
 
     <rule name="DataClass"
-          since="6.0"
+          since="6.0.0"
           message="The class ''{0}'' is suspected to be a Data Class (WOC={1}, NOPA={2}, NOAM={3}, WMC={4})"
           class="net.sourceforge.pmd.lang.java.rule.design.DataClassRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#dataclass">
@@ -919,7 +919,7 @@ public class Foo extends Bar {
 
     <rule name="NcssCount"
           message="The {0} ''{1}'' has a NCSS line count of {2}."
-          since="6.0"
+          since="6.0.0"
           class="net.sourceforge.pmd.lang.java.rule.design.NcssCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#ncsscount">
         <description>
