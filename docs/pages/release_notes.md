@@ -316,6 +316,16 @@ under debug / verbose builds you can even see individual hits / misses to the ca
 Finally, as this feature keeps maturing, we are gently pushing this forward. If not using incremental analysis,
 a warning will now be produced suggesting users to adopt it for better performance.
 
+#### Rule and Report Properties
+
+The implementation around the properties support for rule properties and report properties has been revamped
+to be fully typesafe. Along with that change, the support classes have been moved into an own
+package `net.sourceforge.pmd.properties`. While there is no change necessary in the ruleset XML files,
+when using/setting values for rules, there are adjustments necessary when declaring properties in Java-implemented
+rules.
+
+The properties are now very well documented: [Working with properties](pmd_devdocs_working_with_properties.html).
+
 ### Fixed Issues
 
 *   all
@@ -328,6 +338,8 @@ a warning will now be produced suggesting users to adopt it for better performan
     *   [#618](https://github.com/pmd/pmd/issues/618): \[core] Incremental Analysis doesn't close file correctly on Windows upon a cache hit
     *   [#643](https://github.com/pmd/pmd/issues/643): \[core] PMD Properties (dev-properties) breaks markup on CodeClimateRenderer
     *   [#680](https://github.com/pmd/pmd/pull/680): \[core] Isolate classloaders for runtime and auxclasspath
+    *   [#762](https://github.com/pmd/pmd/issues/762): \[core] Remove method and file property from available property descriptors for XPath rules
+    *   [#763](https://github.com/pmd/pmd/issues/763): \[core] Turn property descriptor util into an enum and enrich its interface
 *   apex
     *   [#265](https://github.com/pmd/pmd/issues/265): \[apex] Make Rule suppression work
     *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
@@ -377,13 +389,16 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   The class `net.sourceforge.pmd.lang.dfa.NodeType` has been converted to an enum.
     All node types are enum members now instead of int constants. The names for node types are retained.
 
-*   The properties API (rule and report properties) have been revamped to be fully typesafe. This is everything
-    around `net.sourceforge.pmd.PropertyDescriptor`.
+*   The *Properties API* (rule and report properties) has been revamped to be fully typesafe. This is everything
+    around `net.sourceforge.pmd.properties.PropertyDescriptor`.
+
+    Note: All classes related to properties have been moved into the package `net.sourceforge.pmd.properties`.
 
 *   The rule classes `net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestClassShouldHaveAsserts`
     and `net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestShouldNotUseSeeAllDataTrue` have been
     renamed to `ApexUnitTestClassShouldHaveAssertsRule` and `ApexUnitTestShouldNotUseSeeAllDataTrueRule`,
     respectively. This is to comply with the naming convention, that each rule class should be suffixed with "Rule".
+
     This change has no impact on custom rulesets, since the rule names themselves didn't change.
 
 *   The never implemented method `PMD.processFiles(PMDConfiguration, RuleSetFactory, Collection<File>, RuleContext, ProgressMonitor)` along with the interface `ProgressMonitor` has been removed.
@@ -554,4 +569,5 @@ a warning will now be produced suggesting users to adopt it for better performan
 *   [#746](https://github.com/pmd/pmd/pull/746): \[doc] Fix typo in incremental analysis log message - [Clément Fournier](https://github.com/oowekyala)
 *   [#749](https://github.com/pmd/pmd/pull/749): \[doc] Update the documentation for properties - [Clément Fournier](https://github.com/oowekyala)
 *   [#758](https://github.com/pmd/pmd/pull/758): \[core] Expose the full mapping from property type id to property extractor - [Clément Fournier](https://github.com/oowekyala)
+*   [#764](https://github.com/pmd/pmd/pull/764): \[core] Prevent method and file property use in XPath rules - [Clément Fournier](https://github.com/oowekyala)#
 
