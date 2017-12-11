@@ -151,9 +151,7 @@ XPath rules can also define their own properties. To do so, you must add a `prop
 |String|StringProperty
 |Character|CharacterProperty
 |Boolean|BooleanProperty
-|File|FileProperty
 |Class|TypeProperty
-|Method|MethodProperty
 
 Note that enumerated properties are not available in XPath rules (yet?).
 
@@ -181,7 +179,7 @@ You can then use the property in XPath with the syntax `$propertyName`, for exam
 
 #### Multivalued properties
 
-Multivalued properties are also allowed and their `type` attribute has the form `List[Boolean]` or `List[Character]`, with every above type allowed (except `File`). These properties **require XPath 2.0** to work properly, and make use of the **sequence datatype** provided by that language. You thus need to set the `version` property to `2.0` to use them. Properties can also declare the `delimiter` attribute.
+Multivalued properties are also allowed and their `type` attribute has the form `List[Boolean]` or `List[Character]`, with every above type allowed. These properties **require XPath 2.0** to work properly, and make use of the **sequence datatype** provided by that language. You thus need to set the `version` property to `2.0` to use them. Properties can also declare the `delimiter` attribute.
 
 
 

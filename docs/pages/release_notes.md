@@ -348,7 +348,10 @@ package `net.sourceforge.pmd.properties`. While there is no change necessary in 
 when using/setting values for rules, there are adjustments necessary when declaring properties in Java-implemented
 rules.
 
-The properties are now very well documented: [Working with properties](pmd_devdocs_working_with_properties.html).
+Rule properties can be declared both for Java based rules and XPath rules.
+This is now very well documented in [Working with properties](pmd_devdocs_working_with_properties.html).
+
+With PMD 6.0.0, multivalued properties are now also possible with XPath rules.
 
 ### Fixed Issues
 
