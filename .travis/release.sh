@@ -46,9 +46,9 @@ fi
 fi
 
 
-if [ "${BUILD}" = "site" ]; then
+if [ "${BUILD}" = "doc" ]; then
 
-echo "Adding the site to pmd.github.io..."
+echo "Adding the new doc to pmd.github.io..."
 # clone pmd.github.io. Note: This uses the ssh key setup earlier
 # In order to speed things up, we use a sparse checkout - no need to checkout all directories here
 mkdir pmd.github.io
@@ -61,7 +61,7 @@ mkdir pmd.github.io
     git remote add origin git@github.com:pmd/pmd.github.io.git
     echo "latest/" > .git/info/sparse-checkout
     git pull --depth=1 origin master
-    rsync -a ../target/pmd-doc-${RELEASE_VERSION}/ pmd-${RELEASE_VERSION}/
+    rsync -a ../docs/pmd-doc-${RELEASE_VERSION}/ pmd-${RELEASE_VERSION}/
     git add pmd-${RELEASE_VERSION}
     git commit -q -m "Added pmd-${RELEASE_VERSION}"
     git rm -qr latest
