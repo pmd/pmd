@@ -64,10 +64,14 @@ echo "*   Update version/release info in **docs/pages/release_notes.md**."
 echo
 echo "    ## $(date -u +%d-%B-%Y) - ${RELEASE_VERSION}"
 echo
+echo "*   Update date info in **docs/_config.yml**.
+echo
 echo "*   Ensure all the new rules are listed in a the proper file:"
 echo "    pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION}.xml file."
 echo
-echo "*   Update **../pmd.github.io/index.html** to mention the new release"
+echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
+echo
+echo "*   Add **../pmd.github.io/_posts/$(date -u +%d-%m-%Y)-PMD-${RELEASE_VERSION}.md"
 echo
 echo "Press enter to continue..."
 read
@@ -76,6 +80,7 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 (
     echo "Committing current changes (pmd.github.io)"
     cd ../pmd.github.io
+    git add _posts/$(date -u +%d-%m-%Y)-PMD-${RELEASE_VERSION}.md
     git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     git push
 )

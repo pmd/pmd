@@ -23,12 +23,21 @@ Make sure code is up to date and everything is committed and pushed with git:
 
 
 
-### The Release Notes
+### The Release Notes and docs
 
-At a very minimum, the current date must be noted in the release notes. Also, the version
+At a very minimum, the current date must be noted in the release notes and the download section. Also, the version
 must be adjusted. E.g. by removing "-SNAPSHOT".
 
 You can find the release notes here: `docs/pages/release_notes.md`.
+
+The date for the download section is to be entered in `docs/_config.yml`, e.g.
+
+```
+pmd:
+    version: 6.0.0
+    date: 2017-12-15
+```
+
 
 The release notes usual mention any new rules that have been added since the last release.
 Please double check the file `pmd-core/src/main/resources/rulesets/releases/<version>.xml`, so
@@ -43,12 +52,19 @@ Check in all (version) changes to branch master or any other branch, from which 
 ### The Homepage
 
 The github repo `pmd.github.io` hosts the homepage for [https://pmd.github.io](https://pmd.github.io).
-The `index.html` page needes to be updated to display the new release. The new release is mentioned
 
-*   on the start page
-*   in the announcements
-*   and in the previous releases section
+The new version needs to be entered into `_config.yml`, e.g.:
 
+```
+pmd:
+  latestVersion: 6.0.0
+  latestVersionDate: 15th December 2017
+```
+
+Also move the previous version down into the "downloads" section.
+
+Then create a new page for the new release, e.g. `_posts/2017-12-15-PMD-6.0.0.md` and copy
+the release notes into this page. This will appear under the news section.
 
 Check in all (version) changes to branch master:
 
@@ -191,6 +207,6 @@ At some point, it might be time for a new maintenance branch. Such a branch is u
 the `master` branch. Here are the steps:
 
 *   Create a new branch: `git branch pmd/5.6.x master`
-*   Update the version in both the new branch and master, e.g. `mvn versions:set -Dversion=5.6.0-SNAPSHOT`
-    and `mvn versions:set -Dversion=5.7.0-SNAPSHOT`.
+*   Update the version in both the new branch and master, e.g. `mvn versions:set -DnewVersion=5.6.1-SNAPSHOT`
+    and `mvn versions:set -DnewVersion=5.7.0-SNAPSHOT`.
 *   Update the release notes on both the new branch and master
