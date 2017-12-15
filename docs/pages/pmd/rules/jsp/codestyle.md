@@ -1,11 +1,11 @@
 ---
-title: Codestyle
+title: Code Style
 summary: Rules which enforce a specific coding style.
 permalink: pmd_rules_jsp_codestyle.html
 folder: pmd/rules/jsp
 sidebaractiveurl: /pmd_rules_jsp.html
 editmepath: ../pmd-jsp/src/main/resources/category/jsp/codestyle.xml
-keywords: Codestyle, DuplicateJspImports
+keywords: Code Style, DuplicateJspImports
 ---
 ## DuplicateJspImports
 

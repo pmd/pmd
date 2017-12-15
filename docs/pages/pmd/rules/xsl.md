@@ -3,7 +3,7 @@ title: XSL Rules
 permalink: pmd_rules_xsl.html
 folder: pmd/rules
 ---
-## Codestyle
+## Code Style
 
 {% include callout.html content="Rules which enforce a specific coding style." %}
 

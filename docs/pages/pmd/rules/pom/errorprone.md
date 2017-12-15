@@ -1,11 +1,11 @@
 ---
-title: Errorprone
+title: Error Prone
 summary: Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
 permalink: pmd_rules_pom_errorprone.html
 folder: pmd/rules/pom
 sidebaractiveurl: /pmd_rules_pom.html
 editmepath: ../pmd-xml/src/main/resources/category/pom/errorprone.xml
-keywords: Errorprone, InvalidDependencyTypes, ProjectVersionAsDependencyVersion
+keywords: Error Prone, InvalidDependencyTypes, ProjectVersionAsDependencyVersion
 ---
 ## InvalidDependencyTypes
 

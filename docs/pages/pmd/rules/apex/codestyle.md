@@ -1,11 +1,11 @@
 ---
-title: Codestyle
+title: Code Style
 summary: Rules which enforce a specific coding style.
 permalink: pmd_rules_apex_codestyle.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/category/apex/codestyle.xml
-keywords: Codestyle, ClassNamingConventions, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, ForLoopsMustUseBraces, MethodNamingConventions, VariableNamingConventions, WhileLoopsMustUseBraces
+keywords: Code Style, ClassNamingConventions, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, ForLoopsMustUseBraces, MethodNamingConventions, VariableNamingConventions, WhileLoopsMustUseBraces
 ---
 ## ClassNamingConventions
 

@@ -97,7 +97,7 @@ entries:
         - title: Best Practices
           output: web, pdf
           url: /pmd_rules_apex_bestpractices.html
-        - title: Codestyle
+        - title: Code Style
           output: web, pdf
           url: /pmd_rules_apex_codestyle.html
         - title: Design
@@ -172,7 +172,7 @@ entries:
         - title: Best Practices
           output: web, pdf
           url: /pmd_rules_jsp_bestpractices.html
-        - title: Codestyle
+        - title: Code Style
           output: web, pdf
           url: /pmd_rules_jsp_codestyle.html
         - title: Design
@@ -193,7 +193,7 @@ entries:
         - title: Index
           output: web, pdf
           url: /pmd_rules_pom.html
-        - title: Errorprone
+        - title: Error Prone
           output: web, pdf
           url: /pmd_rules_pom_errorprone.html
     - title: null
@@ -208,7 +208,7 @@ entries:
         - title: Best Practices
           output: web, pdf
           url: /pmd_rules_plsql_bestpractices.html
-        - title: Codestyle
+        - title: Code Style
           output: web, pdf
           url: /pmd_rules_plsql_codestyle.html
         - title: Design
@@ -244,7 +244,7 @@ entries:
         - title: Design
           output: web, pdf
           url: /pmd_rules_vm_design.html
-        - title: Errorprone
+        - title: Error Prone
           output: web, pdf
           url: /pmd_rules_vm_errorprone.html
     - title: null
@@ -256,7 +256,7 @@ entries:
         - title: Index
           output: web, pdf
           url: /pmd_rules_xml.html
-        - title: Errorprone
+        - title: Error Prone
           output: web, pdf
           url: /pmd_rules_xml_errorprone.html
     - title: null
@@ -268,7 +268,7 @@ entries:
         - title: Index
           output: web, pdf
           url: /pmd_rules_xsl.html
-        - title: Codestyle
+        - title: Code Style
           output: web, pdf
           url: /pmd_rules_xsl_codestyle.html
         - title: Performance

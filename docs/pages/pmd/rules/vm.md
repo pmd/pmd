@@ -20,7 +20,7 @@ folder: pmd/rules
 *   [NoInlineJavaScript](pmd_rules_vm_design.html#noinlinejavascript): Avoid inline JavaScript. Import .js files instead.
 *   [NoInlineStyles](pmd_rules_vm_design.html#noinlinestyles): Avoid inline styles. Use css classes instead.
 
-## Errorprone
+## Error Prone
 
 {% include callout.html content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors." %}
 

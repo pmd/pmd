@@ -3,7 +3,7 @@ title: Maven POM Rules
 permalink: pmd_rules_pom.html
 folder: pmd/rules
 ---
-## Errorprone
+## Error Prone
 
 {% include callout.html content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors." %}
 

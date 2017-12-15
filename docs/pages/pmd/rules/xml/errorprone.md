@@ -1,11 +1,11 @@
 ---
-title: Errorprone
+title: Error Prone
 summary: Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
 permalink: pmd_rules_xml_errorprone.html
 folder: pmd/rules/xml
 sidebaractiveurl: /pmd_rules_xml.html
 editmepath: ../pmd-xml/src/main/resources/category/xml/errorprone.xml
-keywords: Errorprone, MistypedCDATASection
+keywords: Error Prone, MistypedCDATASection
 ---
 ## MistypedCDATASection
 

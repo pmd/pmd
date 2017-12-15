@@ -1,11 +1,11 @@
 ---
-title: Codestyle
+title: Code Style
 summary: Rules which enforce a specific coding style.
 permalink: pmd_rules_xsl_codestyle.html
 folder: pmd/rules/xsl
 sidebaractiveurl: /pmd_rules_xsl.html
 editmepath: ../pmd-xml/src/main/resources/category/xsl/codestyle.xml
-keywords: Codestyle, UseConcatOnce
+keywords: Code Style, UseConcatOnce
 ---
 ## UseConcatOnce
 

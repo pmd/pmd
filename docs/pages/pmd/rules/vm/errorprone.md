@@ -1,11 +1,11 @@
 ---
-title: Errorprone
+title: Error Prone
 summary: Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
 permalink: pmd_rules_vm_errorprone.html
 folder: pmd/rules/vm
 sidebaractiveurl: /pmd_rules_vm.html
 editmepath: ../pmd-vm/src/main/resources/category/vm/errorprone.xml
-keywords: Errorprone, EmptyForeachStmt, EmptyIfStmt
+keywords: Error Prone, EmptyForeachStmt, EmptyIfStmt
 ---
 ## EmptyForeachStmt
 

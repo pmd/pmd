@@ -12,7 +12,7 @@ folder: pmd/rules
 *   [NoHtmlComments](pmd_rules_jsp_bestpractices.html#nohtmlcomments): In a production system, HTML comments increase the payloadbetween the application server to the c...
 *   [NoJspForward](pmd_rules_jsp_bestpractices.html#nojspforward): Do not do a forward from within a JSP file.
 
-## Codestyle
+## Code Style
 
 {% include callout.html content="Rules which enforce a specific coding style." %}
 
