@@ -217,7 +217,7 @@
         <profile>
             <id>jdk9-disabled</id>
             <activation>
-                <jdk>!1.9</jdk>
+                <jdk>!9</jdk>
             </activation>
             <dependencies>
                 <!--
