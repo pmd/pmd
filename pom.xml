@@ -342,7 +342,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
-                        <release>${java.version}</release>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -480,7 +479,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>[9,)</version>
+                                    <version>[1.8,)</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
@@ -937,6 +936,26 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <module>pmd-ui</module>
                 <module>pmd-doc</module>
             </modules>
+        </profile>
+
+        <profile>
+            <id>jdk9-config</id>
+            <activation>
+                <jdk>[9,</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-compiler-plugin</artifactId>
+                            <configuration>
+                                <release>${java.version}</release>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
         </profile>
 
         <profile>
