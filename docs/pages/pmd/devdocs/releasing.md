@@ -136,6 +136,7 @@ the following template:
 
 ### Prepare the new release notes
 
+*   Update version in **docs/_config.yml**
 *   Move version/release info from **docs/pages/release_notes.md** to **docs/pages/release_notes_old.md**.
 *   Update version/release info in **docs/pages/release_notes.md**. Use the following template:
 
