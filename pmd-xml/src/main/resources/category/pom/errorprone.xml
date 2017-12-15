@@ -62,7 +62,7 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_pom_errorprone.html#projectversionasdependencyversion">
         <description>
 Using that expression in dependency declarations seems like a shortcut, but it can go wrong.
-By far the most common problem is the use of ${project.version} in a BOM or parent POM.
+By far the most common problem is the use of &#x24;{project.version} in a BOM or parent POM.
         </description>
         <priority>3</priority>
         <properties>

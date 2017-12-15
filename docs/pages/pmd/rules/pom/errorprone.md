@@ -53,7 +53,7 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
 **Priority:** Medium (3)
 
 Using that expression in dependency declarations seems like a shortcut, but it can go wrong.
-By far the most common problem is the use of 6.1.0-SNAPSHOT in a BOM or parent POM.
+By far the most common problem is the use of ${project.version} in a BOM or parent POM.
 
 ```
 //dependency/version/text[contains(@Image,'{project.version}')]
