@@ -2,7 +2,7 @@ repository: pmd/pmd
 
 pmd:
     version: 6.0.0
-    date: to-be-defined
+    date: 2017-12-15
 
 output: web
 # this property is useful for conditional filtering of content that is separate from the PDF.
