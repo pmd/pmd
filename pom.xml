@@ -259,7 +259,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <surefire.version>2.20.1</surefire.version>
         <checkstyle.version>2.17</checkstyle.version>
         <pmd.plugin.version>3.8</pmd.plugin.version>
-        <pmdVersion>5.8.1</pmdVersion> <!-- used for maven-pmd-plugin -->
         <java.version>7</java.version>
         <ant.version>1.10.1</ant.version>
         <javadoc.plugin.version>3.0.0-M1</javadoc.plugin.version>
@@ -533,15 +532,16 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <skipPmdError>false</skipPmdError>
                 </configuration>
                 <dependencies>
+                    <!-- Note: we can't use a property for the version here due to https://issues.apache.org/jira/browse/MRELEASE-932 -->
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
                         <artifactId>pmd-core</artifactId>
-                        <version>${pmdVersion}</version>
+                        <version>5.8.1</version>
                     </dependency>
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
                         <artifactId>pmd-java</artifactId>
-                        <version>${pmdVersion}</version>
+                        <version>5.8.1</version>
                     </dependency>
                 </dependencies>
             </plugin>
