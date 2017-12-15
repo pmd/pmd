@@ -25,7 +25,7 @@
     <rule ref="category/java/design.xml" />
     <rule ref="category/java/documentation.xml" />
     <rule ref="category/java/errorprone.xml" />
-    <rule ref="category/java/multihreading.xml" />
+    <rule ref="category/java/multithreading.xml" />
     <rule ref="category/java/performance.xml" />
 <!--     <rule ref="category/java/security.xml" /> -->
 
