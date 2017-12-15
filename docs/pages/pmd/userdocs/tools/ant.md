@@ -151,8 +151,7 @@ and the associated version (1.5, 1.6,...)
 The specific version of a language to be used for parsing is selected via the `sourceLanguage`
 nested element. Possible values are:
 
-    <sourceLanguage name="cpp" version=""/>
-    <sourceLanguage name="fortran" version=""/>
+    <sourceLanguage name="apex" version=""/>
     <sourceLanguage name="ecmascript" version="3"/>
     <sourceLanguage name="java" version="1.3"/>
     <sourceLanguage name="java" version="1.4"/>
@@ -160,12 +159,13 @@ nested element. Possible values are:
     <sourceLanguage name="java" version="1.6"/>
     <sourceLanguage name="java" version="1.7"/>
     <sourceLanguage name="java" version="1.8"/>
+    <sourceLanguage name="java" version="9"/>
     <sourceLanguage name="jsp" version=""/>
-    <sourceLanguage name="php" version=""/>
-    <sourceLanguage name="ruby" version=""/>
+    <sourceLanguage name="pom" version=""/>
     <sourceLanguage name="plsql" version=""/>
     <sourceLanguage name="xsl" version=""/>
     <sourceLanguage name="xml" version=""/>
+    <sourceLanguage name="vf" version=""/>
     <sourceLanguage name="vm" version=""/>
 
 ### Postprocessing the report file with XSLT

@@ -261,12 +261,13 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 
 ### Supported Languages
 
-*   [apex](/pmd_rules_apex.html)
-*   [java](/pmd_rules_java.html)
-*   [ecmascript](/pmd_rules_javascript.html) (JavaScript)
-*   [jsp](/pmd_rules_jsp.html)
-*   [plsql](/pmd_rules_plsql.html)
-*   [vm](/pmd_rules_vm.html) (Apache Velocity)
+*   [apex](pmd_rules_apex.html) (Salesforce Apex)
+*   [java](pmd_rules_java.html)
+*   [ecmascript](pmd_rules_javascript.html) (JavaScript)
+*   [jsp](pmd_rules_jsp.html)
+*   [plsql](pmd_rules_plsql.html)
+*   [vf](pmd_rules_vf.html) (Salesforce VisualForce)
+*   [vm](pmd_rules_vm.html) (Apache Velocity)
 *   [xml and xsl](/pmd_rules_xml.html)
 
 

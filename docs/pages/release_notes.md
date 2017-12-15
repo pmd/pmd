@@ -41,7 +41,7 @@ Thanks to [Clément Fournier](https://github.com/oowekyala), we now have a new r
 is based on JavaFX. It replaces the old designer and can be started via
 
 *   `bin/run.sh designer` (on Unix-like platform such as Linux and Mac OS X)
-*   `bin\\designer.bat` (on Windows)
+*   `bin\designer.bat` (on Windows)
 
 Note: At least Java8 is required for the designer. The old designer is still available
 as `designerold` but will be removed with the next major release.
@@ -70,21 +70,23 @@ CPD will therefore have less false positives and false negatives.
 
 #### Java Type Resolution
 
-As part of Google Summer of Code 2017, [Bendegúz Nagy](https://github.com/WinterGrascph)'s work on type resolution for Java continues.
-For this release he has extended support for method calls for both instance and static methods.
+As part of Google Summer of Code 2017, [Bendegúz Nagy](https://github.com/WinterGrascph) worked on type resolution
+for Java. For this release he has extended support for method calls for both instance and static methods.
 
-Method shadowing and overloading are supported, as are varargs. However, the selection of the target method upon the presence
-of generics and type inference is still work in progress. Expect it in forecoming releases.
+Method shadowing and overloading are supported, as are varargs. However, the selection of the target method upon
+the presence of generics and type inference is still work in progress. Expect it in forecoming releases.
 
 As for fields, the basic support was in place for release 5.8.0, but has now been expanded to support static fields.
 
 #### Metrics Framework
 
-As part of Google Summer of Code 2017, [Clément Fournier](https://github.com/oowekyala) is continuing his work
+As part of Google Summer of Code 2017, [Clément Fournier](https://github.com/oowekyala) is worked
 on the new metrics framework for object-oriented metrics.
 
 There are already a couple of metrics (e.g. ATFD, WMC, Cyclo, LoC) implemented. More metrics are planned.
-Based on those metrics, rules like "GodClass" detection can be implemented more easily.
+Based on those metrics, rules like "GodClass" detection could be implemented more easily.
+The following rules benefit from the metrics framework: NcssCount (java), NPathComplexity (java),
+CyclomaticComplexity (both java and apex).
 
 The Metrics framework has been abstracted and is available in `pmd-core` for other languages. With this
 PMD release, the metrics framework is supported for both Java and Apex.

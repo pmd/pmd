@@ -17,7 +17,7 @@ through the release process.
 
 Make sure code is up to date and everything is committed and pushed with git:
 
-    $ mvn clean
+    $ ./mvnw clean
     $ git pull
     $ git status
 
