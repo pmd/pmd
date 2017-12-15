@@ -42,6 +42,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -275,7 +276,11 @@ public class PMDTaskImpl {
             doTask();
         } finally {
             logManager.close();
-            IOUtil.tryCloseClassLoader(configuration.getClassLoader());
+            // only close the classloader, if it is ours. Otherwise we end up with class not found
+            // exceptions
+            if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
+                IOUtil.tryCloseClassLoader(configuration.getClassLoader());
+            }
         }
     }
 
