@@ -213,5 +213,20 @@ public class TestDescriptor {
         </expected-messages>
         <code-ref id="testDescriptor"/>
     </test-code>
+    
+    <code-fragment id="issue785">
+        <![CDATA[
+public abstract class KeyedItem extends TaggingPresetItem {
+    ;;
+}
+        ]]>
+    </code-fragment>
+
+
+    <test-code>
+        <description>[java] [6.0.0] NPE in DataClass rule caused by empty declaration #785</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="issue785"/>
+    </test-code>
 
 </test-data>
