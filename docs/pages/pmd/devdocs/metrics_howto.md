@@ -1,19 +1,16 @@
 ---
 title:  Using code metrics in custom rules
 tags: [customizing]
-summary: "PMD was recently enhanced with the ability to compute code metrics on Java and Apex source (the so-called
+summary: "Since 6.0.0, PMD is enhanced with the ability to compute code metrics on Java and Apex source (the so-called
 Metrics Framework). This framework provides developers with a straightforward interface to use code metrics in their
 rules, and to extend the framework with their own custom metrics."
-last_updated: July 20, 2017
+last_updated: December 18, 2017
 permalink: pmd_devdocs_metrics_howto.html
 author: Clément Fournier <clement.fournier76@gmail.com>
 ---
 # Using code metrics in custom rules
 
 ## Using the metrics framework
-
-{%include note.html content="Using the metrics framework is for now restricted to Java rules (with plans to support
-XPath rules later)." %}
 
 {%include note.html content="The following explains how to use the Java metrics framework. The Apex framework 
 differs only by the name of its classes." %}
@@ -53,8 +50,6 @@ or `ConstructorDeclaration`.
   CYCLO's only defined for methods and constructors.
 
 ## For Java Rules
-
-First, similarly to XPath rules, you should add the `metrics="true"` attribute to your rule's XML element.
 
 The static façade class `JavaMetrics` is the single entry point to compute metrics in the Java framework. 
 
@@ -104,7 +99,7 @@ public Object visit(ASTMethodDeclaration method, Object data) {
 ### Metric options
 
 Some metrics define options that can be used to slightly modify the computation. You'll typically see these options
-gathered inside an enum in the implementation class of the metric, for example `CycloMetric.CycloOptions`. They're
+gathered inside an enum in the implementation class of the metric, for example `CycloMetric.CycloOption`. They're
 also documented on the [index of metrics](pmd_java_metrics_index.html).
 
 To use options with a metric, you must first bundle them into a `MetricOptions` object. `MetricOptions` provides the
@@ -123,7 +118,7 @@ public Object visit(ASTMethodDeclaration method, Object data) {
 
 The version of `MetricOptions.ofOptions` using a collection is useful when you're building a `MetricOptions` from eg
 the value of an `EnumeratedMultiProperty`, which gives users control of the options they use. See
-[CyclomaticComplexityRule]( https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/rule/CyclomaticComplexityRule.java)
+[CyclomaticComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/CyclomaticComplexityRule.java#L35)
 for an example usage.
 
 ### Result options
@@ -150,17 +145,18 @@ option too.
 The following is a sample code for a rule reporting methods with a cyclomatic
 complexity over 10 and classes with a total cyclo over 50. A metric option can be
 user-configured with a rule property. More complete examples can be found in
-[CyclomaticComplexityRule]( https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/rule/CyclomaticComplexityRule.java),
-[NcssCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/rule/NcssCountRule.java),
-or [GodClassRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/GodClassRule.java).
+[CyclomaticComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/CyclomaticComplexityRule.java#L35),
+[NcssCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/NcssCountRule.java#L30),
+or [GodClassRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/GodClassRule.java#L24).
 
 
 ```java
 public class CycloRule extends AbstractJavaMetricsRule {
 
   public static final BooleanProperty COUNT_BOOLEAN_PATHS
-      = new BooleanProperty("countBooleanPaths", "Count boolean paths",
-                            true, 0f);
+      = BooleanProperty.named("countBooleanPaths")
+                       .desc("Count boolean paths")
+                       .defaultValue(true).build();
 
   private static final MetricOptions options;
 
@@ -272,9 +268,10 @@ concrete node types you can target with class and operation metrics, by language
 
 Language   | Java | Apex |
 -----------|------|------|
-Operation declaration|`ASTMethodOrConstructorDeclaration`<br/>>: `ASTMethodDeclaration`, `ASTConstructorDeclaration`| `ASTMethod`
+Operation declaration|`ASTMethodOrConstructorDeclaration`<br/>>: `ASTMethodDeclaration`, `ASTConstructorDeclaration`| `ASTMethod`*
 Type declaration|`ASTAnyTypeDeclaration` >: `ASTEnumDeclaration`, <br> `ASTAnnotationDeclaration`, `ASTClassOrInterfaceDeclaration`| `ASTUserClassOrInterface` >: `ASTUserClass`, `ASTUserInterface`
 
+*Apex method metrics are also applied to triggers by default (see [#771](https://github.com/pmd/pmd/pull/771)). Finer capability checking is not available out of the box for now.
 
 What if you don't want such a generalisation? The `supports` method lets you
 define a predicate to check that the node is supported by your metric. For example,
@@ -297,5 +294,5 @@ classes. Here's the default behaviour by language and type of metric:
 
 Language   | Java | Apex |
 -----------|------|------|
-Operation metrics| supports constructors and non abstract methods| supports any non abstract method except `<init>`, `<clinit>`, and `clone`
+Operation metrics| supports constructors and non abstract methods| supports any non abstract method (including triggers), except `<init>`, `<clinit>`, and `clone`
 Type declaration|supports classes and enums|supports classes
