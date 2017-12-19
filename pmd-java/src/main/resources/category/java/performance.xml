@@ -64,7 +64,7 @@ sb.append('a');     // use this instead
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidarrayloops">
         <description>
-Instead of manually copying data between two arrays, use the efficient System.arraycopy method instead.
+Instead of manually copying data between two arrays, use the efficient Arrays.copyOf or System.arraycopy method instead.
         </description>
         <priority>3</priority>
         <properties>
