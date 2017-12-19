@@ -419,6 +419,7 @@ good.append("This is a long string, which is pre-sized");
         <description>
 Calling new Integer() causes memory allocation that can be avoided by the static Integer.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+Note that new Integer() is deprecated since JDK 9 for that reason.
         </description>
         <priority>2</priority>
         <properties>
@@ -452,6 +453,7 @@ public class Foo {
         <description>
 Calling new Long() causes memory allocation that can be avoided by the static Long.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+Note that new Long() is deprecated since JDK 9 for that reason.
         </description>
         <priority>2</priority>
         <properties>
