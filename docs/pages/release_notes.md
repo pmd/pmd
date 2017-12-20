@@ -21,6 +21,9 @@ This is a bug fixing release.
 
 ### Fixed Issues
 
+*   java
+    *   [#793](https://github.com/pmd/pmd/issues/793): \[java] Parser error with private method in nested classes in interfaces
+
 ### API Changes
 
 ### External Contributions

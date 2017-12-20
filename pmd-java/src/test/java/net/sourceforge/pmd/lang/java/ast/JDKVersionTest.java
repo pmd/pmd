@@ -10,6 +10,7 @@ import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava15;
 import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava17;
 import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava18;
 import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava9;
+import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -266,5 +267,12 @@ public class JDKVersionTest {
     @Test
     public final void jdk9TryWithResources() {
         parseJava9(loadSource("jdk9_try_with_resources.java"));
+    }
+
+    @Test
+    public final void jdk7PrivateMethodInnerClassInterface() {
+        ASTCompilationUnit acu = parseJava17(loadSource("private_method_in_inner_class_interface.java"));
+        ASTMethodDeclaration privateMethod = acu.getFirstDescendantOfType(ASTMethodDeclaration.class);
+        assertFalse(privateMethod.isInterfaceMember());
     }
 }
