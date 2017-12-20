@@ -1,6 +1,9 @@
-Please, prefix the report title with the language it applies to within brackets, such as *[java]* or *[apex]*. If not specific to a language, you can use *[core]*
+Please, prefix the report title with the language it applies to within brackets, such as [java] or [apex].
+If not specific to a language, you can use [core].
 
-**Rule Set:**
+**Affects PMD Version:** 
+
+**Rule:**
 
 **Description:**
 
