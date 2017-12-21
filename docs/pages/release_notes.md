@@ -21,6 +21,9 @@ This is a bug fixing release.
 
 ### Fixed Issues
 
+*   java-design
+    *    [#785](https://github.com/pmd/pmd/issues/785): \[java] NPE in DataClass rule
+
 ### API Changes
 
 ### External Contributions
