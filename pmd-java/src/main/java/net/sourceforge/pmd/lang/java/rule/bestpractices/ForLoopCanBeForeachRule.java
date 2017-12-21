@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
@@ -102,10 +103,15 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     }
 
 
-    /* Finds the declaration of the index variable and its occurrences */
+    /* Finds the declaration of the index variable and its occurrences, null to abort */
     private Entry<VariableNameDeclaration, List<NameOccurrence>> getIndexVarDeclaration(ASTForInit init, ASTForUpdate update) {
         if (init == null) {
             return guessIndexVarFromUpdate(update);
+        }
+
+        int numDeclaredVars = init.getFirstChildOfType(ASTLocalVariableDeclaration.class).findChildrenOfType(ASTVariableDeclarator.class).size();
+        if (numDeclaredVars > 1) {
+            return null; // will abort in the calling function
         }
 
         Map<VariableNameDeclaration, List<NameOccurrence>> decls = init.getScope().getDeclarations(VariableNameDeclaration.class);
