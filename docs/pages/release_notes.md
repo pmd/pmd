@@ -23,6 +23,8 @@ This is a bug fixing release.
 
 *   apex-errorprone
     *   [#792](https://github.com/pmd/pmd/issues/792): \[apex] AvoidDirectAccessTriggerMap incorrectly detects array access in classes
+*   java-design
+    *    [#785](https://github.com/pmd/pmd/issues/785): \[java] NPE in DataClass rule
 
 ### API Changes
 
