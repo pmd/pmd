@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -47,7 +48,7 @@ public class Designer extends Application {
         parseParameters(getParameters());
 
         FXMLLoader loader
-            = new FXMLLoader(getClass().getResource("fxml/designer.fxml"));
+            = new FXMLLoader(DesignerUtil.getFxml("designer.fxml"));
 
         DesignerRoot owner = new DesignerRoot(stage);
         MainDesignerController mainController = new MainDesignerController(owner);

@@ -1,66 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
-<?import javafx.scene.control.ContextMenu?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="net.sourceforge.pmd.util.fxdesigner.XPathPanelController"
-
-            minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1200.0"
+            stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/9"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="net.sourceforge.pmd.util.fxdesigner.XPathPanelController">
     <children>
-        <SplitPane dividerPositions="1.0"
-                   styleClass="bottom-pane-split-pane"
-                   AnchorPane.bottomAnchor="0.0"
-                   AnchorPane.leftAnchor="0.0"
-                   AnchorPane.rightAnchor="0.0"
+        <SplitPane dividerPositions="0.2, 0.8" AnchorPane.bottomAnchor="0.0"
+                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                    AnchorPane.topAnchor="0.0">
             <items>
                 <AnchorPane>
                     <children>
-                        <CustomCodeArea styleClass="code"
-                                        stylesheets="@../css/editor-theme.css"
-                                        AnchorPane.bottomAnchor="0.0"
-                                        AnchorPane.leftAnchor="0.0"
-                                        AnchorPane.rightAnchor="0.0"
-                                        AnchorPane.topAnchor="0.0"
-                                        fx:id="xpathExpressionArea">
-                        </CustomCodeArea>
-                    </children>
-                </AnchorPane>
-                <AnchorPane maxWidth="-Infinity"
-                            minWidth="-Infinity"
-                            prefWidth="300.0">
-                    <children>
-                        <TitledPane fx:id="violationsTitledPane"
-                                    animated="false"
-                                    collapsible="false"
-                                    maxHeight="600.0"
-                                    maxWidth="-Infinity"
-                                    minHeight="0.0"
-                                    minWidth="-Infinity"
-                                    prefWidth="300.0"
-                                    text="Matched Nodes"
-                                    AnchorPane.bottomAnchor="0.0"
-                                    AnchorPane.leftAnchor="0.0"
-                                    AnchorPane.rightAnchor="0.0"
+                        <TitledPane animated="false" collapsible="false" styleClass="accent-header"
+                                    text="Properties" AnchorPane.bottomAnchor="0.0"
+                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                     AnchorPane.topAnchor="0.0">
                             <content>
-                                <ListView
-                                        fx:id="xpathResultListView">
-                                <cellFactory>
-                                    
-                                </cellFactory>
+                                <AnchorPane>
+                                    <PropertyTableView fx:id="propertyView"
+                                                       AnchorPane.bottomAnchor="0.0"
+                                                       AnchorPane.leftAnchor="0.0"
+                                                       AnchorPane.rightAnchor="0.0"
+                                                       AnchorPane.topAnchor="0.0"/>
+                                    <padding>
+                                        <Insets bottom="-0.5" left="-0.5" right="-0.5" top="-0.5"/>
+                                    </padding>
+                                </AnchorPane>
+                            </content>
+                        </TitledPane>
+                    </children>
+                </AnchorPane>
+                <AnchorPane>
+                    <children>
+                        <TitledPane collapsible="false" styleClass="accent-header"
+                                    text="XPath Expression" AnchorPane.bottomAnchor="0.0"
+                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                    AnchorPane.topAnchor="0.0">
+                            <content>
+                                <CustomCodeArea stylesheets="@../css/editor-theme.css"
+                                                fx:id="xpathExpressionArea">
+                                </CustomCodeArea>
+                            </content>
+                        </TitledPane>
+                    </children>
+                </AnchorPane>
+                <AnchorPane>
+                    <children>
+                        <TitledPane fx:id="violationsTitledPane" animated="false"
+                                    collapsible="false" styleClass="accent-header"
+                                    text="Matched Nodes" AnchorPane.bottomAnchor="0.0"
+                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                    AnchorPane.topAnchor="0.0">
+                            <content>
+                                <ListView fx:id="xpathResultListView">
+                                    <cellFactory>
+
+                                    </cellFactory>
                                 </ListView>
                             </content>
                         </TitledPane>
                     </children>
                 </AnchorPane>
             </items>
+            <styleClass>
+                <String fx:value="bottom-pane-split-pane"/>
+                <String fx:value="accent-header"/>
+            </styleClass>
         </SplitPane>
     </children>
 </AnchorPane>

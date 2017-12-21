@@ -32,6 +32,7 @@ public class ScopeHierarchyTreeItem extends TreeItem<Object> {
      * Gets the scope hierarchy of a node.
      *
      * @param node Node
+     *
      * @return Root of the tree
      */
     public static ScopeHierarchyTreeItem buildAscendantHierarchy(Node node) {
@@ -67,7 +68,9 @@ public class ScopeHierarchyTreeItem extends TreeItem<Object> {
         if (parent == null) {
             return scopeTreeNode;
         } else {
-            parent.getChildren().add(scopeTreeNode);
+            if (scopeTreeNode.getChildren().size() > 0) { // hides empty scopes
+                parent.getChildren().add(scopeTreeNode);
+            }
             return scopeTreeNode;
         }
     }
@@ -79,5 +82,5 @@ public class ScopeHierarchyTreeItem extends TreeItem<Object> {
         }
         return null;
     }
- 
+
 }

@@ -10,10 +10,11 @@ import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.util.fxdesigner.MainDesignerController;
 
 import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeView;
-import javafx.util.Callback;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 
 /**
@@ -24,6 +25,13 @@ import javafx.util.Callback;
  */
 public class ScopeHierarchyTreeCell extends TreeCell<Object> {
 
+    private final MainDesignerController controller;
+
+
+    public ScopeHierarchyTreeCell(MainDesignerController controller) {
+        this.controller = controller;
+    }
+    
     @Override
     protected void updateItem(Object item, boolean empty) {
         super.updateItem(item, empty);
@@ -35,6 +43,15 @@ public class ScopeHierarchyTreeCell extends TreeCell<Object> {
             setText(item instanceof Scope ? getTextForScope((Scope) item)
                                           : getTextForDeclaration((NameDeclaration) item));
         }
+
+        this.addEventHandler(MouseEvent.MOUSE_CLICKED, t -> {
+            if (t.getButton() == MouseButton.PRIMARY 
+                && getTreeView().getSelectionModel().getSelectedItem() == item) {
+                if (item instanceof NameDeclaration) {
+                    controller.onNodeItemSelected(((NameDeclaration) item).getNode());
+                }
+            }
+        });
     }
 
 
@@ -69,11 +86,6 @@ public class ScopeHierarchyTreeCell extends TreeCell<Object> {
         sb.append(" (l. ").append(declaration.getNode().getBeginLine()).append(")");
 
         return sb.toString();
-    }
-
-
-    public static Callback<TreeView<Object>, ScopeHierarchyTreeCell> callback() {
-        return param -> new ScopeHierarchyTreeCell();
     }
 
 }
