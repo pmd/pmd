@@ -25,8 +25,10 @@ This is a bug fixing release.
     *   [#792](https://github.com/pmd/pmd/issues/792): \[apex] AvoidDirectAccessTriggerMap incorrectly detects array access in classes
 *   apex-security
     *   [#788](https://github.com/pmd/pmd/issues/788): \[apex] Method chaining breaks ApexCRUDViolation
+*   java
+    *   [#793](https://github.com/pmd/pmd/issues/793): \[java] Parser error with private method in nested classes in interfaces
 *   java-design
-    *    [#785](https://github.com/pmd/pmd/issues/785): \[java] NPE in DataClass rule
+    *   [#785](https://github.com/pmd/pmd/issues/785): \[java] NPE in DataClass rule
 
 ### API Changes
 

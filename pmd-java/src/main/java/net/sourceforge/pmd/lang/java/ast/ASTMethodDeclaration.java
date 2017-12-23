@@ -75,8 +75,14 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
 
 
     public boolean isInterfaceMember() {
-        ASTClassOrInterfaceDeclaration clz = getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        return clz != null && clz.isInterface();
+        // for a real class/interface the 3rd parent is a ClassOrInterfaceDeclaration,
+        // for anonymous classes, the parent is e.g. a AllocationExpression
+        Node potentialTypeDeclaration = getNthParent(3);
+
+        if (potentialTypeDeclaration instanceof ASTClassOrInterfaceDeclaration) {
+            return ((ASTClassOrInterfaceDeclaration) potentialTypeDeclaration).isInterface();
+        }
+        return false;
     }
 
     public boolean isVoid() {
