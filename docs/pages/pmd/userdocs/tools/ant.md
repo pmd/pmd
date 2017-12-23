@@ -76,7 +76,7 @@ Runs a set of static code analysis rules on some source code files and generates
       <td>cacheLocation</td>
       <td>
         The location of the analysis cache file to be used.
-        The cache can greatly improve analysis time without loosing analysis quality.
+        Setting this property enables Incremental Analysis, which can greatly improve analysis time without loosing analysis quality.
         <b>It's use is strongly recommended.</b>
       </td>
       <td>No</td>

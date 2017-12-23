@@ -36,7 +36,7 @@ Unzip it into any directory:
     [tom@hal tmp]$
 
 
-Note that the PMD binary distribution file contains both [PMD](#running-pmd-via-command-line) and [CPD](/pmd_userdocs_cpd.html).
+Note that the PMD binary distribution file contains both [PMD](#running-pmd-via-command-line) and [CPD](pmd_userdocs_cpd.html).
 
 
 ## Running PMD via command line
@@ -364,6 +364,6 @@ untouched, files with violations will be listed with full detail.
 
 Incremental analysis is enabled automatically once a location to store the cache has been defined.
 From Command Line that is done through the `-cache` argument, but support for the feature is
-available for tools integrating PMD such as [Ant](/pmd_userdocs_tools_ant.html),
-[Maven](/pmd_userdocs_tools_maven.html), and Gradle.
+available for tools integrating PMD such as [Ant](pmd_userdocs_tools_ant.html),
+[Maven](pmd_userdocs_tools_maven.html), and Gradle.
 
