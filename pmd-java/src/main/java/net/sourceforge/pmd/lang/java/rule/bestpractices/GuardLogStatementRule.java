@@ -5,18 +5,23 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.StringMultiProperty;
 
@@ -61,22 +66,6 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
 
     private Map<String, String> guardStmtByLogLevel = new HashMap<>(12);
 
-    private static final String XPATH_EXPRESSION =
-            // first part deals with log4j / apache commons logging
-            "//StatementExpression/PrimaryExpression/PrimaryPrefix[ends-with(Name/@Image, 'LOG_LEVEL')]\n"
-            + "[..//AdditiveExpression]\n"
-            + "[not(ancestor::IfStatement) or\n"
-            + " not(ancestor::IfStatement/Expression/PrimaryExpression/PrimaryPrefix/Name[contains('GUARD', substring-after(@Image, '.'))])]\n"
-            + "|\n"
-            // this part deals with java util
-            + "//StatementExpression/PrimaryExpression/PrimaryPrefix[ends-with(Name/@Image, 'LOG_LEVEL_UPPERCASE')]\n"
-            + "[../../..//AdditiveExpression]\n"
-            + "[not(ancestor::IfStatement) or\n"
-            + " not(ancestor::IfStatement/Expression/PrimaryExpression\n"
-            + "    [contains('GUARD', substring-after(PrimaryPrefix/Name/@Image, '.'))]\n"
-            + "    [ends-with(PrimarySuffix//Name/@Image, 'LOG_LEVEL_UPPERCASE')])\n"
-            + "]";
-
     public GuardLogStatementRule() {
         definePropertyDescriptor(LOG_LEVELS);
         definePropertyDescriptor(GUARD_METHODS);
@@ -85,7 +74,6 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
     @Override
     public Object visit(ASTCompilationUnit unit, Object data) {
         extractProperties();
-        findViolationForEachLogStatement(unit, data, XPATH_EXPRESSION);
         return super.visit(unit, data);
     }
 
@@ -97,27 +85,117 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
         return super.visit(node, data);
     }
 
+    @Override
+    public Object visit(ASTPrimaryExpression node, Object data) {
+        if (node.jjtGetNumChildren() >= 2 && node.jjtGetChild(0) instanceof ASTPrimaryPrefix) {
+            ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.jjtGetChild(0);
+            String methodCall = getMethodCallName(prefix);
+            String logLevel = getLogLevelName(node, methodCall);
 
-    private void findViolationForEachLogStatement(ASTCompilationUnit unit, Object data, String xpathExpression) {
-        for (Entry<String, String> entry : guardStmtByLogLevel.entrySet()) {
-            List<Node> nodes = findViolations(unit, entry.getKey(), entry.getValue(), xpathExpression);
-            for (Node node : nodes) {
-                super.addViolation(data, node);
+            if (guardStmtByLogLevel.containsKey(methodCall)
+                    && node.jjtGetChild(1) instanceof ASTPrimarySuffix
+                    && node.jjtGetChild(1).hasDescendantOfType(ASTAdditiveExpression.class)) {
+
+                if (!hasGuard(node, methodCall, logLevel)) {
+                    super.addViolation(data, node);
+                }
             }
         }
+        return super.visit(node, data);
     }
 
-    @SuppressWarnings("unchecked")
-    private List<Node> findViolations(ASTCompilationUnit unit, String logLevel, String guard,
-            String xpathExpression) {
-        try {
-            String xpath = xpathExpression.replaceAll("LOG_LEVEL_UPPERCASE", logLevel.toUpperCase())
-                    .replaceAll("LOG_LEVEL", logLevel).replaceAll("GUARD", guard);
-            return unit.findChildNodesWithXPath(xpath);
-        } catch (JaxenException e) {
-            e.printStackTrace();
+    private boolean hasGuard(ASTPrimaryExpression node, String methodCall, String logLevel) {
+        ASTIfStatement ifStatement = node.getFirstParentOfType(ASTIfStatement.class);
+        if (ifStatement == null) {
+            return false;
         }
-        return Collections.EMPTY_LIST;
+
+        // an if statement always has an expression
+        ASTExpression expr = ifStatement.getFirstChildOfType(ASTExpression.class);
+        List<ASTPrimaryPrefix> guardCalls = expr.findDescendantsOfType(ASTPrimaryPrefix.class);
+        if (guardCalls.isEmpty()) {
+            return false;
+        }
+
+        boolean foundGuard = false;
+        // check all conditions in the if expression
+        for (ASTPrimaryPrefix guardCall : guardCalls) {
+            if (guardCall.jjtGetNumChildren() < 1
+                    || guardCall.jjtGetChild(0).getImage() == null) {
+                continue;
+            }
+
+            String guardMethodCall = getLastPartOfName(guardCall.jjtGetChild(0).getImage());
+            boolean guardMethodCallMatches = guardStmtByLogLevel.get(methodCall).contains(guardMethodCall);
+            boolean hasArguments = guardCall.jjtGetParent().hasDescendantOfType(ASTArgumentList.class);
+
+            if (guardMethodCallMatches && !hasArguments) {
+                // simple case: guard method without arguments found
+                foundGuard = true;
+            } else if (guardMethodCallMatches && hasArguments) {
+                // java.util.logging: guard method with argument. Verify the log level
+                String guardArgLogLevel = getLogLevelName(guardCall.jjtGetParent(), guardMethodCall);
+                foundGuard = logLevel.equals(guardArgLogLevel);
+            }
+
+            if (foundGuard) {
+                break;
+            }
+        }
+
+        return foundGuard;
+    }
+
+    /**
+     * Extracts the method name of the method call.
+     * @param prefix the method call
+     * @return the name of the called method
+     */
+    private String getMethodCallName(ASTPrimaryPrefix prefix) {
+        String result = "";
+        if (prefix.jjtGetNumChildren() == 1 && prefix.jjtGetChild(0) instanceof ASTName) {
+            result = getLastPartOfName(prefix.jjtGetChild(0).getImage());
+        }
+        return result;
+    }
+
+    private String getLastPartOfName(String name) {
+        String result = "";
+        if (name != null) {
+            result = name;
+        }
+        int dotIndex = result.lastIndexOf('.');
+        if (dotIndex > -1 && result.length() > dotIndex + 1) {
+            result = result.substring(dotIndex + 1);
+        }
+        return result;
+    }
+
+    /**
+     * Determines the log level, that is used. It is either the called method name
+     * itself or - if the method has a first argument a primary prefix - the first argument.
+     *
+     * @param node the method call
+     * @param methodCallName the called method name previously determined
+     * @return the log level
+     */
+    private String getLogLevelName(Node node, String methodCallName) {
+        String logLevel = methodCallName;
+
+        ASTPrimarySuffix suffix = node.getFirstDescendantOfType(ASTPrimarySuffix.class);
+        if (suffix != null) {
+            ASTArgumentList argumentList = suffix.getFirstDescendantOfType(ASTArgumentList.class);
+            if (argumentList != null && argumentList.hasDescendantOfType(ASTName.class)) {
+                ASTName name = argumentList.getFirstDescendantOfType(ASTName.class);
+                String lastPart = getLastPartOfName(name.getImage());
+                lastPart = lastPart.toLowerCase(Locale.ROOT);
+                if (!lastPart.isEmpty()) {
+                    logLevel = lastPart;
+                }
+            }
+        }
+
+        return logLevel;
     }
 
     private void extractProperties() {
@@ -147,7 +225,7 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
 
     private void buildGuardStatementMap(List<String> logLevels, List<String> guardMethods) {
         for (int i = 0; i < logLevels.size(); i++) {
-            String logLevel = "." + logLevels.get(i);
+            String logLevel = logLevels.get(i);
             if (guardStmtByLogLevel.containsKey(logLevel)) {
                 String combinedGuard = guardStmtByLogLevel.get(logLevel);
                 combinedGuard += "|" + guardMethods.get(i);
