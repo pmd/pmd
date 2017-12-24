@@ -1,6 +1,6 @@
 ---
 title: Getting Help
-permalink: pmd_userdocs_help.html
+permalink: pmd_about_help.html
 author: Andreas Dangel <andreas.dangel@adangel.org>
 last_updated: September 2017
 ---

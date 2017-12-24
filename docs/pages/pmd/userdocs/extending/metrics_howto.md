@@ -1,14 +1,13 @@
 ---
-title:  Using code metrics in custom rules
-tags: [customizing]
-summary: "Since 6.0.0, PMD is enhanced with the ability to compute code metrics on Java and Apex source (the so-called
+title:  Using and defining code metrics for custom rules
+tags: [customizing, metrics]
+summary: "Since version 6.0.0, PMD is enhanced with the ability to compute code metrics on Java and Apex source (the so-called
 Metrics Framework). This framework provides developers with a straightforward interface to use code metrics in their
 rules, and to extend the framework with their own custom metrics."
 last_updated: December 18, 2017
-permalink: pmd_devdocs_metrics_howto.html
+permalink: pmd_userdocs_extending_metrics_howto.html
 author: Clément Fournier <clement.fournier76@gmail.com>
 ---
-# Using code metrics in custom rules
 
 ## Using the metrics framework
 

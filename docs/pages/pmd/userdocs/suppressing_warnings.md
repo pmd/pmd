@@ -1,6 +1,7 @@
 ---
 title: Suppressing warnings
-permalink: pmd_userdocs_suppressing.html
+tags: [suppressing, warnings]
+permalink: pmd_userdocs_suppressing_warnings.html
 author: Tom Copeland <tom@infoether.com>
 ---
 

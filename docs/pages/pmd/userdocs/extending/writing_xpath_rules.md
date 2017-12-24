@@ -1,9 +1,9 @@
 ---
 title:  Writing XPath Rules
-tags: [customizing]
+tags: [customizing, rule, xpath]
 summary: "Writing XPath rules for PMD"
 last_updated: July 3, 2016
-permalink: pmd_devdocs_writing_xpath_rules.html
+permalink: pmd_userdocs_extending_writing_xpath_rules.html
 author: Miguel Griffa <mikkey@users.sourceforge.net>
 ---
 

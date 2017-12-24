@@ -1,6 +1,6 @@
 ---
 title: Products/books related to PMD
-permalink: pmd_userdocs_products.html
+permalink: pmd_projectdocs_trivia_products.html
 author: Tom Copeland <tom@infoether.org>
 ---
 

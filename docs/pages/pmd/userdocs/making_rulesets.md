@@ -1,9 +1,9 @@
 ---
 title:  PMD Making Rulesets
-tags: [customizing]
+tags: [customizing, rulesets]
 summary: Making Custom Rulesets for PMD
 last_updated: November 2017
-permalink: pmd_devdocs_making_rulesets.html
+permalink: pmd_userdocs_making_rulesets.html
 author: Tom Copeland <tomcopeland@users.sourceforge.net>
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: Understanding Rulesets
+tags: [rulesets]
 permalink: pmd_userdocs_understanding_rulesets.html
 summary: Rules belong to categories and rulesets are custom collections of rules
 last_updated: November 2017

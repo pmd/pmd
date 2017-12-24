@@ -1,6 +1,6 @@
 ---
 title: Continuous Integrations plugins
-permalink: pmd_userdocs_ci.html
+permalink: pmd_userdocs_tools_ci.html
 author: Romain PELISSE <belaran@gmail.com>
 ---
 
