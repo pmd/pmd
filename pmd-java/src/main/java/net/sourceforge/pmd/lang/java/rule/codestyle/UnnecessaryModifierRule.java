@@ -150,9 +150,11 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     private boolean isSafeVarargs(final ASTMethodDeclaration node) {
         for (final ASTAnnotation annotation : node.jjtGetParent().findChildrenOfType(ASTAnnotation.class)) {
             final Node childAnnotation = annotation.jjtGetChild(0);
-            if (childAnnotation instanceof ASTMarkerAnnotation
-                    && SafeVarargs.class.isAssignableFrom(((ASTMarkerAnnotation) childAnnotation).getType())) {
-                return true;
+            if (childAnnotation instanceof ASTMarkerAnnotation) {
+                final ASTMarkerAnnotation marker = (ASTMarkerAnnotation) childAnnotation;
+                if (marker.getType() != null && SafeVarargs.class.isAssignableFrom(marker.getType())) {
+                    return true;
+                }
             }
         }
         
