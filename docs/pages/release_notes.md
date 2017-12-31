@@ -30,6 +30,8 @@ This is a bug fixing release.
 *   java
     *   [#783](https://github.com/pmd/pmd/issues/783): \[java] GuardLogStatement regression
     *   [#793](https://github.com/pmd/pmd/issues/793): \[java] Parser error with private method in nested classes in interfaces
+*   java-codestyle
+    *   [#817](https://github.com/pmd/pmd/issues/817): \[java] UnnecessaryModifierRule crashes on valid code
 *   java-design
     *   [#785](https://github.com/pmd/pmd/issues/785): \[java] NPE in DataClass rule
 
