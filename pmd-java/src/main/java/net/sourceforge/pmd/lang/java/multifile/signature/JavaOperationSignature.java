@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,7 +30,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  */
 public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConstructorDeclaration> {
 
-    private static final Map<Integer, JavaOperationSignature> POOL = new HashMap<>();
+    private static final Map<Integer, JavaOperationSignature> POOL = new ConcurrentHashMap<>();
     public final Role role;
     public final boolean isAbstract;
 
