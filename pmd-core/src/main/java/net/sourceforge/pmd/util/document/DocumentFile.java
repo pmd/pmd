@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * Implementation that handles a Document as a file in the filesystem and receives operations in a sorted manner
@@ -141,7 +140,9 @@ public class DocumentFile implements Document, Closeable {
     }
 
     private void writeUntilEOF() throws IOException {
-        for (final String line : reader.lines().collect(Collectors.toList())) {
+        String line;
+
+        while ((line = reader.readLine()) != null) {
             writer.write(line);
         }
     }

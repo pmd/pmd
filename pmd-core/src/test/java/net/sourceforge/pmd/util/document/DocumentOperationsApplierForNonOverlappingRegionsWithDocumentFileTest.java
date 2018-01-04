@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,9 +53,42 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
         }
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
-            final String actualContent = new String(stream.readAllBytes());
+            final String actualContent = new String(readAllBytes(stream));
             assertEquals("public static void main(String[] args) {}", actualContent);
         }
+    }
+
+    private byte[] readAllBytes(final FileInputStream stream) throws IOException {
+        final int defaultBufferSize = 8192;
+        final int maxBufferSize = Integer.MAX_VALUE - 8;
+
+        byte[] buf = new byte[defaultBufferSize];
+        int capacity = buf.length;
+        int nread = 0;
+        int n;
+        while (true) {
+            // read to EOF which may read more or less than initial buffer size
+            while ((n = stream.read(buf, nread, capacity - nread)) > 0) {
+                nread += n;
+            }
+
+            // if the last call to read returned -1, then we're done
+            if (n < 0) {
+                break;
+            }
+
+            // need to allocate a larger buffer
+            if (capacity <= maxBufferSize - capacity) {
+                capacity = capacity << 1;
+            } else {
+                if (capacity == maxBufferSize) {
+                    throw new OutOfMemoryError("Required array size too large");
+                }
+                capacity = maxBufferSize;
+            }
+            buf = Arrays.copyOf(buf, capacity);
+        }
+        return (capacity == nread) ? buf : Arrays.copyOf(buf, nread);
     }
 
     @Test
@@ -69,7 +103,7 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
         }
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
-            final String actualContent = new String(stream.readAllBytes());
+            final String actualContent = new String(readAllBytes(stream));
             assertEquals("public  void main(String[] args) {}", actualContent);
         }
     }
@@ -88,7 +122,7 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
         }
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
-            final String actualContent = new String(stream.readAllBytes());
+            final String actualContent = new String(readAllBytes(stream));
             assertEquals("public static void main(String[] args) {}", actualContent);
         }
     }
@@ -111,7 +145,7 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
         }
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
-            final String actualContent = new String(stream.readAllBytes());
+            final String actualContent = new String(readAllBytes(stream));
             assertEquals("public static  main(final String[] args) ", actualContent);
         }
     }
@@ -130,7 +164,7 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
         }
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
-            final String actualContent = new String(stream.readAllBytes());
+            final String actualContent = new String(readAllBytes(stream));
             assertEquals("void main(String[] args) {}", actualContent);
         }
     }
@@ -148,7 +182,7 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
         shuffleAndApplyOperations(documentOperations);
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
-            final String actualContent = new String(stream.readAllBytes());
+            final String actualContent = new String(readAllBytes(stream));
             assertEquals("void foo(CharSequence[] args) {}", actualContent);
         }
     }
@@ -158,7 +192,10 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
             applier = new DocumentOperationsApplierForNonOverlappingRegions(documentFile);
 
             Collections.shuffle(documentOperations);
-            documentOperations.forEach(op -> applier.addDocumentOperation(op));
+
+            for (final DocumentOperation operation : documentOperations) {
+                applier.addDocumentOperation(operation);
+            }
 
             applier.apply();
         }
@@ -179,7 +216,7 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
         shuffleAndApplyOperations(documentOperations);
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
-            final String actualContent = new String(stream.readAllBytes());
+            final String actualContent = new String(readAllBytes(stream));
             assertEquals("public void main(final String[] args) {}", actualContent);
         }
     }

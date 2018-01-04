@@ -59,11 +59,10 @@ public class DocumentOperationsApplierForNonOverlappingRegions {
     public void apply() {
         assertOperationsHaveNotBeenApplied();
         applied = true;
-        applyInReverseOrder();
-    }
 
-    private void applyInReverseOrder() {
-        operations.forEach(op -> op.apply(document));
+        for (final DocumentOperation operation : operations) {
+            operation.apply(document);
+        }
     }
 
     private class DocumentOperationNonOverlappingRegionsComparator implements Comparator<DocumentOperation> {
