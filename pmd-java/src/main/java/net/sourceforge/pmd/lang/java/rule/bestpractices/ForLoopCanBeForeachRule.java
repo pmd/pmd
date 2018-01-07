@@ -35,6 +35,10 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  */
 public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
+    public ForLoopCanBeForeachRule() {
+        addRuleChainVisit(ASTForStatement.class);
+    }
+    
     @Override
     public Object visit(ASTForStatement node, Object data) {
 
@@ -43,13 +47,13 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
         final ASTExpression guardCondition = node.getFirstChildOfType(ASTExpression.class);
 
         if (init == null && update == null || guardCondition == null) {
-            return super.visit(node, data);
+            return data;
         }
 
         Entry<VariableNameDeclaration, List<NameOccurrence>> indexDecl = getIndexVarDeclaration(init, update);
 
         if (indexDecl == null) {
-            return super.visit(node, data);
+            return data;
         }
 
 
@@ -67,7 +71,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
 
         if (occurrences == null || !"int".equals(index.getTypeImage()) || !indexStartsAtZero(index)) {
-            return super.visit(node, data);
+            return data;
         }
 
 
@@ -76,14 +80,14 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
 
         if (!isForUpdateSimpleEnough(update, itName) || iterableName == null) {
-            return super.visit(node, data);
+            return data;
         }
 
         Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo = findDeclaration(iterableName, node.getScope());
         VariableNameDeclaration iterableDeclaration = iterableInfo == null ? null : iterableInfo.getKey();
 
         if (iterableDeclaration == null) {
-            return super.visit(node, data);
+            return data;
         }
 
         if (iterableDeclaration.isArray() && isReplaceableArrayLoop(node, occurrences, iterableDeclaration)) {
@@ -94,7 +98,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             addViolation(data, node);
         }
 
-        return super.visit(node, data);
+        return data;
     }
 
 
@@ -240,8 +244,13 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             return null;
         }
 
-        String name = initializer.getFirstDescendantOfType(ASTName.class)
-                                 .getImage();
+        ASTName nameNode = initializer.getFirstDescendantOfType(ASTName.class);
+        if (nameNode == null) {
+            // TODO : This can happen if we are calling a local / statically imported method that returns the iterable - currently unhandled
+            return null;
+        }
+        
+        String name = nameNode.getImage();
         int dotIndex = name.indexOf('.');
 
         if (dotIndex > 0) {
