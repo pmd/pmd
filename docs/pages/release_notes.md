@@ -54,6 +54,7 @@ at <https://pmd.github.io/latest/>.
     *   [#793](https://github.com/pmd/pmd/issues/793): \[java] Parser error with private method in nested classes in interfaces
     *   [#812](https://github.com/pmd/pmd/issues/812): \[java] Exception applying rule DataClass
     *   [#814](https://github.com/pmd/pmd/issues/814): \[java] UnsupportedClassVersionError is failure instead of a warning
+    *   [#831](https://github.com/pmd/pmd/issues/831): \[java] StackOverflow in JavaTypeDefinitionSimple.toString
 *   java-bestpractices
     *   [#783](https://github.com/pmd/pmd/issues/783): \[java] GuardLogStatement regression
     *   [#800](https://github.com/pmd/pmd/issues/800): \[java] ForLoopCanBeForeach NPE when looping on `this` object
