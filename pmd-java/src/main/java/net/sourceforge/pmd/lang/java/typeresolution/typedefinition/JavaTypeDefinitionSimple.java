@@ -21,8 +21,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 /* default */ class JavaTypeDefinitionSimple extends JavaTypeDefinition {
@@ -243,7 +245,21 @@ import java.util.logging.Logger;
     public String toString() {
         return new StringBuilder("JavaTypeDefinition [clazz=").append(clazz)
                 .append(", definitionType=").append(getDefinitionType())
-                .append(", genericArgs=").append(genericArgs)
+                .append(", genericArgs=").append(genericArgs.stream().map(new Function<JavaTypeDefinition, String>() {
+
+                    @Override
+                    public String apply(final JavaTypeDefinition jtd) {
+                        return jtd.shallowString();
+                    }
+                }).collect(Collectors.toList()))
+                .append(", isGeneric=").append(isGeneric)
+                .append("]\n").toString();
+    }
+    
+    @Override
+    public String shallowString() {
+        return new StringBuilder("JavaTypeDefinition [clazz=").append(clazz)
+                .append(", definitionType=").append(getDefinitionType())
                 .append(", isGeneric=").append(isGeneric)
                 .append("]\n").toString();
     }
