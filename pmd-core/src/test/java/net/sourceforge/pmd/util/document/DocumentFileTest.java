@@ -6,21 +6,20 @@ package net.sourceforge.pmd.util.document;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
-
-
-
 
 public class DocumentFileTest {
 
@@ -33,11 +32,6 @@ public class DocumentFileTest {
     @Before
     public void setUpTemporaryFiles() throws IOException {
         temporaryFile = temporaryFolder.newFile(FILE_PATH);
-    }
-
-    @After
-    public void deleteTemporaryFiles() {
-        temporaryFile.delete();
     }
 
     @Test
@@ -218,8 +212,59 @@ public class DocumentFileTest {
         }
     }
 
+    @Test
+    public void lineToOffsetMappingWithLineFeedShouldSucceed() throws IOException {
+        final String code = "public static int main(String[] args) {" + '\n'
+                + "int var;" + '\n'
+                + "}";
+        writeContentToTemporaryFile(code);
+
+        final List<Integer> expectedLineToOffset = new ArrayList<>();
+        expectedLineToOffset.add(0);
+        expectedLineToOffset.add(40);
+        expectedLineToOffset.add(49);
+
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+            assertEquals(expectedLineToOffset, documentFile.getLineToOffset());
+        }
+    }
+
+    @Test
+    public void lineToOffsetMappingWithCarriageReturnFeedLineFeedShouldSucceed() throws IOException {
+        final String code = "public static int main(String[] args) {" + "\r\n"
+                + "int var;" + "\r\n"
+                + "}";
+        writeContentToTemporaryFile(code);
+
+        final List<Integer> expectedLineToOffset = new ArrayList<>();
+        expectedLineToOffset.add(0);
+        expectedLineToOffset.add(41);
+        expectedLineToOffset.add(51);
+
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+            assertEquals(expectedLineToOffset, documentFile.getLineToOffset());
+        }
+    }
+
+    @Test
+    public void lineToOffsetMappingWithMixedLineSeparatorsShouldSucceed() throws IOException {
+        final String code = "public static int main(String[] args) {" + "\r\n"
+                + "int var;" + "\n"
+                + "}";
+        writeContentToTemporaryFile(code);
+
+        final List<Integer> expectedLineToOffset = new ArrayList<>();
+        expectedLineToOffset.add(0);
+        expectedLineToOffset.add(41);
+        expectedLineToOffset.add(50);
+
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+            assertEquals(expectedLineToOffset, documentFile.getLineToOffset());
+        }
+    }
+
     private void writeContentToTemporaryFile(final String content) throws IOException {
-        try (FileWriter writer = new FileWriter(temporaryFile)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(temporaryFile.toPath(), StandardCharsets.UTF_8)) {
             writer.write(content);
         }
     }

@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,11 +33,6 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
     @Before
     public void setUpTemporaryFiles() throws IOException {
         temporaryFile = temporaryFolder.newFile(FILE_PATH);
-    }
-
-    @After
-    public void deleteTemporaryFiles() {
-        temporaryFile.delete();
     }
 
     @Test

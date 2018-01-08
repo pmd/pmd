@@ -12,15 +12,15 @@ import java.util.Objects;
 
 public class DocumentOperationsApplierForNonOverlappingRegions {
 
+    private static final Comparator<DocumentOperation> COMPARATOR = new DocumentOperationNonOverlappingRegionsComparator();
+
     private final Document document;
     private final List<DocumentOperation> operations;
-    private final Comparator<DocumentOperation> comparator;
 
     private boolean applied;
 
     public DocumentOperationsApplierForNonOverlappingRegions(final Document document) {
         this.document = Objects.requireNonNull(document);
-        comparator = new DocumentOperationNonOverlappingRegionsComparator();
         operations = new ArrayList<>();
         applied = false;
     }
@@ -39,7 +39,7 @@ public class DocumentOperationsApplierForNonOverlappingRegions {
     }
 
     private int getIndexForDocumentOperation(final DocumentOperation documentOperation) {
-        int potentialIndex = Collections.binarySearch(operations, documentOperation, comparator);
+        int potentialIndex = Collections.binarySearch(operations, documentOperation, COMPARATOR);
 
         if (potentialIndex < 0) {
             return ~potentialIndex;
@@ -53,7 +53,7 @@ public class DocumentOperationsApplierForNonOverlappingRegions {
     }
 
     private boolean areSiblingsEqual(final int index) {
-        return comparator.compare(operations.get(index), operations.get(index + 1)) == 0;
+        return COMPARATOR.compare(operations.get(index), operations.get(index + 1)) == 0;
     }
 
     public void apply() {
@@ -65,7 +65,7 @@ public class DocumentOperationsApplierForNonOverlappingRegions {
         }
     }
 
-    private class DocumentOperationNonOverlappingRegionsComparator implements Comparator<DocumentOperation> {
+    private static class DocumentOperationNonOverlappingRegionsComparator implements Comparator<DocumentOperation> {
 
         @Override
         public int compare(final DocumentOperation o1, final DocumentOperation o2) {
@@ -73,7 +73,7 @@ public class DocumentOperationsApplierForNonOverlappingRegions {
             final RegionByLine r2 = Objects.requireNonNull(o2).getRegionByLine();
 
             final int comparison;
-            if (areInsertOperations(r1, r2)) {
+            if (areInsertOperationsAtTheSameOffset(r1, r2)) {
                 comparison = 0;
             } else if (doesFirstRegionEndBeforeSecondRegionBegins(r1, r2)) {
                 comparison = -1;
@@ -85,7 +85,7 @@ public class DocumentOperationsApplierForNonOverlappingRegions {
             return comparison;
         }
 
-        private boolean areInsertOperations(final RegionByLine r1, final RegionByLine r2) {
+        private boolean areInsertOperationsAtTheSameOffset(final RegionByLine r1, final RegionByLine r2) {
             return r1.getBeginLine() == r2.getBeginLine() && r1.getBeginColumn() == r2.getBeginColumn()
                     && r1.getBeginLine() == r1.getEndLine() && r1.getBeginColumn() == r1.getEndColumn();
         }

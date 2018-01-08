@@ -7,14 +7,12 @@ package net.sourceforge.pmd.util.document;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -36,24 +34,40 @@ public class DocumentFile implements Document, Closeable {
     private final BufferedReader reader;
     private int currentPosition = 0;
 
-    private final Path temporaryPath = Files.createTempFile("pmd-", null);
-    private final Writer writer = new FileWriter(temporaryPath.toFile());
+    private final Path temporaryPath = Files.createTempFile("pmd-", ".tmp");
+    private final Writer writer = Files.newBufferedWriter(temporaryPath, StandardCharsets.UTF_8);
 
     public DocumentFile(final File file) throws IOException {
-        reader = new BufferedReader(new FileReader(file));
+        reader = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8);
         this.filePath = file.getAbsolutePath();
         mapLinesToOffsets();
     }
 
     private void mapLinesToOffsets() throws IOException {
-        try (Scanner scanner = new Scanner(filePath)) {
+        try (Scanner scanner = new Scanner(Paths.get(filePath))) {
             int currentGlobalOffset = 0;
 
             while (scanner.hasNextLine()) {
                 lineToOffset.add(currentGlobalOffset);
-                currentGlobalOffset += scanner.nextLine().length();
+                currentGlobalOffset += getLineLengthWithLineSeparator(scanner);
             }
         }
+    }
+
+    /**
+     * Sums the line length without the line separation and the characters which matched the line separation pattern
+     * @param scanner the scanner from which to read the line's length
+     * @return the length of the line with the line separator.
+     */
+    private int getLineLengthWithLineSeparator(final Scanner scanner) {
+        int lineLength = scanner.nextLine().length();
+        final String lineSeparationMatch = scanner.match().group(1);
+
+        if (lineSeparationMatch != null) {
+            lineLength += lineSeparationMatch.length();
+        }
+
+        return lineLength;
     }
 
     @Override
@@ -135,7 +149,10 @@ public class DocumentFile implements Document, Closeable {
         }
         reader.close();
         writer.close();
-        Files.copy(temporaryPath, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+
+        if (!temporaryPath.toFile().renameTo(new File(filePath))) {
+            throw new IOException("Fixed file could not be renamed. Original path = " + filePath);
+        }
         temporaryPath.toFile().delete();
     }
 
@@ -145,5 +162,9 @@ public class DocumentFile implements Document, Closeable {
         while ((line = reader.readLine()) != null) {
             writer.write(line);
         }
+    }
+
+    public List<Integer> getLineToOffset() {
+        return lineToOffset;
     }
 }
