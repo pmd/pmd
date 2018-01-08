@@ -164,7 +164,7 @@ public class DocumentFile implements Document, Closeable {
         }
     }
 
-    public List<Integer> getLineToOffset() {
+    /* package-private */ List<Integer> getLineToOffset() {
         return lineToOffset;
     }
 }

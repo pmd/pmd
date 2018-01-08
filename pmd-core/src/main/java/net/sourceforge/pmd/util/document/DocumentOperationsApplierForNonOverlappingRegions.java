@@ -73,7 +73,7 @@ public class DocumentOperationsApplierForNonOverlappingRegions {
             final RegionByLine r2 = Objects.requireNonNull(o2).getRegionByLine();
 
             final int comparison;
-            if (areInsertOperationsAtTheSameOffset(r1, r2)) {
+            if (operationsStartAtTheSameOffsetAndHaveZeroLength(r1, r2)) {
                 comparison = 0;
             } else if (doesFirstRegionEndBeforeSecondRegionBegins(r1, r2)) {
                 comparison = -1;
@@ -85,7 +85,7 @@ public class DocumentOperationsApplierForNonOverlappingRegions {
             return comparison;
         }
 
-        private boolean areInsertOperationsAtTheSameOffset(final RegionByLine r1, final RegionByLine r2) {
+        private boolean operationsStartAtTheSameOffsetAndHaveZeroLength(final RegionByLine r1, final RegionByLine r2) {
             return r1.getBeginLine() == r2.getBeginLine() && r1.getBeginColumn() == r2.getBeginColumn()
                     && r1.getBeginLine() == r1.getEndLine() && r1.getBeginColumn() == r1.getEndColumn();
         }
