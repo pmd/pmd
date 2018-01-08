@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -39,7 +40,7 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
     public void insertAtStartOfTheDocumentShouldSucceed() throws IOException {
         writeContentToTemporaryFile("static void main(String[] args) {}");
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             applier = new DocumentOperationsApplierForNonOverlappingRegions(documentFile);
             applier.addDocumentOperation(new InsertDocumentOperation(0, 0, "public "));
 
@@ -89,7 +90,7 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
     public void removeTokenShouldSucceed() throws IOException {
         writeContentToTemporaryFile("public static void main(String[] args) {}");
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             applier = new DocumentOperationsApplierForNonOverlappingRegions(documentFile);
             applier.addDocumentOperation(new DeleteDocumentOperation(0, 0, 7, 13));
 
@@ -107,7 +108,7 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
         final String code = "static void main(final String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             applier = new DocumentOperationsApplierForNonOverlappingRegions(documentFile);
             applier.addDocumentOperation(new InsertDocumentOperation(0, 0, "public "));
             applier.addDocumentOperation(new DeleteDocumentOperation(0, 0, 17, 23));
@@ -126,7 +127,7 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
         final String code = "void main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             applier = new DocumentOperationsApplierForNonOverlappingRegions(documentFile);
 
             applier.addDocumentOperation(new InsertDocumentOperation(0, 0, "public "));
@@ -149,7 +150,7 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
         final String code = "int main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             applier = new DocumentOperationsApplierForNonOverlappingRegions(documentFile);
 
             applier.addDocumentOperation(new ReplaceDocumentOperation(0, 0, 0, "int".length(), "void"));
@@ -182,7 +183,7 @@ public class DocumentOperationsApplierForNonOverlappingRegionsWithDocumentFileTe
     }
 
     private void shuffleAndApplyOperations(List<DocumentOperation> documentOperations) throws IOException {
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             applier = new DocumentOperationsApplierForNonOverlappingRegions(documentFile);
 
             Collections.shuffle(documentOperations);

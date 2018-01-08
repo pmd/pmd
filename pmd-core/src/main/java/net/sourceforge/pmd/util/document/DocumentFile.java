@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.util.document;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -35,10 +36,11 @@ public class DocumentFile implements Document, Closeable {
     private int currentPosition = 0;
 
     private final Path temporaryPath = Files.createTempFile("pmd-", ".tmp");
-    private final Writer writer = Files.newBufferedWriter(temporaryPath, StandardCharsets.UTF_8);
+    private final Writer writer;
 
-    public DocumentFile(final File file) throws IOException {
-        reader = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8);
+    public DocumentFile(final File file, final Charset charset) throws IOException {
+        reader = Files.newBufferedReader(requireNonNull(file).toPath(), requireNonNull(charset));
+        writer = Files.newBufferedWriter(temporaryPath, charset);
         this.filePath = file.toPath();
         mapLinesToOffsets();
     }

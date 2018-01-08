@@ -38,7 +38,7 @@ public class DocumentFileTest {
     public void insertAtStartOfTheFileShouldSucceed() throws IOException {
         writeContentToTemporaryFile("static void main(String[] args) {}");
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(0, 0, "public ");
         }
 
@@ -85,7 +85,7 @@ public class DocumentFileTest {
     public void insertVariousTokensIntoTheFileShouldSucceed() throws IOException {
         writeContentToTemporaryFile("static void main(String[] args) {}");
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(0, 0, "public ");
             documentFile.insert(0, 17, "final ");
         }
@@ -101,7 +101,7 @@ public class DocumentFileTest {
         final String code = "public static void main(String[] args)";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(0, code.length(), "{}");
         }
 
@@ -116,7 +116,7 @@ public class DocumentFileTest {
         final String code = "public static void main(final String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.delete(new RegionByLineImp(0, 0, 24, 30));
         }
 
@@ -131,7 +131,7 @@ public class DocumentFileTest {
         final String code = "static void main(final String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(0, 0, "public ");
             documentFile.delete(new RegionByLineImp(0, 0, 17, 23));
         }
@@ -147,7 +147,7 @@ public class DocumentFileTest {
         final String code = "void main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(0, 0, "public ");
             documentFile.insert(0, 0, "static ");
             documentFile.delete(new RegionByLineImp(0, 0, 0, 4));
@@ -166,7 +166,7 @@ public class DocumentFileTest {
         final String code = "int main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.replace(new RegionByLineImp(0, 0, 0, 3), "void");
         }
 
@@ -181,7 +181,7 @@ public class DocumentFileTest {
         final String code = "int main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.replace(new RegionByLineImp(0, 0, 0, "int".length()), "void");
             documentFile.replace(new RegionByLineImp(0, 0, 4, 4 + "main".length()), "foo");
             documentFile.replace(new RegionByLineImp(0, 0, 9, 9 + "String".length()), "CharSequence");
@@ -198,7 +198,7 @@ public class DocumentFileTest {
         final String code = "static int main(CharSequence[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(0, 0, "public");
             documentFile.delete(new RegionByLineImp(0, 0, 0, 6));
             documentFile.replace(new RegionByLineImp(0, 0, 7, 7 + "int".length()), "void");
@@ -224,7 +224,7 @@ public class DocumentFileTest {
         expectedLineToOffset.add(40);
         expectedLineToOffset.add(49);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             assertEquals(expectedLineToOffset, documentFile.getLineToOffset());
         }
     }
@@ -241,7 +241,7 @@ public class DocumentFileTest {
         expectedLineToOffset.add(41);
         expectedLineToOffset.add(51);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             assertEquals(expectedLineToOffset, documentFile.getLineToOffset());
         }
     }
@@ -258,7 +258,7 @@ public class DocumentFileTest {
         expectedLineToOffset.add(41);
         expectedLineToOffset.add(50);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile)) {
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
             assertEquals(expectedLineToOffset, documentFile.getLineToOffset());
         }
     }
