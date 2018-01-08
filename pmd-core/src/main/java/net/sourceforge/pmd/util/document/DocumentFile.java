@@ -30,7 +30,7 @@ public class DocumentFile implements Document, Closeable {
 
     private List<Integer> lineToOffset = new ArrayList<>();
 
-    private final String filePath;
+    private final Path filePath;
     private final BufferedReader reader;
     private int currentPosition = 0;
 
@@ -39,12 +39,12 @@ public class DocumentFile implements Document, Closeable {
 
     public DocumentFile(final File file) throws IOException {
         reader = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8);
-        this.filePath = file.getAbsolutePath();
+        this.filePath = file.toPath();
         mapLinesToOffsets();
     }
 
     private void mapLinesToOffsets() throws IOException {
-        try (Scanner scanner = new Scanner(Paths.get(filePath))) {
+        try (Scanner scanner = new Scanner(filePath)) {
             int currentGlobalOffset = 0;
 
             while (scanner.hasNextLine()) {
@@ -109,7 +109,7 @@ public class DocumentFile implements Document, Closeable {
         try {
             tryToReplaceInFile(mapToRegionByOffset(regionByLine), textToReplace);
         } catch (final IOException e) {
-            LOG.log(Level.WARNING, "An exception occurred when replacing in file " + filePath);
+            LOG.log(Level.WARNING, "An exception occurred when replacing in file " + filePath.toAbsolutePath());
         }
     }
 
@@ -132,7 +132,7 @@ public class DocumentFile implements Document, Closeable {
         try {
             tryToDeleteFromFile(mapToRegionByOffset(regionByOffset));
         } catch (final IOException e) {
-            LOG.log(Level.WARNING, "An exception occurred when deleting from file " + filePath);
+            LOG.log(Level.WARNING, "An exception occurred when deleting from file " + filePath.toAbsolutePath());
         }
     }
 
@@ -150,8 +150,8 @@ public class DocumentFile implements Document, Closeable {
         reader.close();
         writer.close();
 
-        if (!temporaryPath.toFile().renameTo(new File(filePath))) {
-            throw new IOException("Fixed file could not be renamed. Original path = " + filePath);
+        if (!temporaryPath.toFile().renameTo(filePath.toFile())) {
+            throw new IOException("Fixed file could not be renamed. Original path = " + filePath.toAbsolutePath());
         }
         temporaryPath.toFile().delete();
     }
