@@ -26,7 +26,7 @@ import net.sourceforge.pmd.RuleViolation;
 public class FileAnalysisCache extends AbstractAnalysisCache {
 
     private final File cacheFile;
-    
+
     /**
      * Creates a new cache backed by the given file, and attempts to load pre-existing data from it.
      * @param cache The file on which to store analysis cache

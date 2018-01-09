@@ -29,5 +29,4 @@ public final class JavaRuleViolationFactory extends AbstractRuleViolationFactory
             int beginLine, int endLine) {
         return new JavaRuleViolation(rule, ruleContext, (JavaNode) node, message, beginLine, endLine);
     }
-
 }

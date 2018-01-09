@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.rule;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolationFix;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -31,4 +32,16 @@ public interface RuleViolationFactory {
 
     void addViolation(RuleContext ruleContext, Rule rule, Node node, String message, int beginLine, int endLine,
             Object[] args);
+
+    /**
+     * Create a rule violation with the appropriate fixer. Note that the rule is dissociated from the fixer class.
+     *
+     * @param ruleContext the context of the rule at the moment of the violation
+     * @param rule the rule which reported the violation
+     * @param node the node in which the fixes to that rule violation will be applied
+     * @param message the message to put in the report
+     * @param autoFixerClass the class in which the fixes to that rule violation will be applied
+     */
+    void addViolationWithAutoFixer(RuleContext ruleContext, Rule rule, Node node, String message,
+                                   Class<? extends RuleViolationFix> autoFixerClass);
 }

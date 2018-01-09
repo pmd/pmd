@@ -31,7 +31,8 @@ public class PMDCommandLineInterface {
 
     private PMDCommandLineInterface() { }
 
-    public static PMDParameters extractParameters(PMDParameters arguments, String[] args, String progName) {
+    public static PMDParameters extractParameters(final PMDParameters arguments, final String[] args,
+                                                  final String progName) {
         JCommander jcommander = new JCommander(arguments);
         jcommander.setProgramName(progName);
 
@@ -42,7 +43,7 @@ public class PMDCommandLineInterface {
                 System.out.println(buildUsageText(jcommander));
                 setStatusCodeOrExit(ERROR_STATUS);
             }
-        } catch (ParameterException e) {
+        } catch (final ParameterException e) {
             jcommander.usage();
             System.out.println(buildUsageText(jcommander));
             System.err.println(e.getMessage());

@@ -14,7 +14,7 @@ import net.sourceforge.pmd.RuleViolation;
 /**
  * A {@link RuleViolation} implementation that is immutable, and therefore cache friendly
  */
-public final class CachedRuleViolation implements RuleViolation {
+public class CachedRuleViolation implements RuleViolation {
 
     private final CachedRuleMapper mapper;
 
@@ -118,8 +118,8 @@ public final class CachedRuleViolation implements RuleViolation {
      * @return The loaded rule violation.
      * @throws IOException
      */
-    /* package */ static CachedRuleViolation loadFromStream(final DataInputStream stream,
-            final String fileName, final CachedRuleMapper mapper) throws IOException {
+    /* package */ static CachedRuleViolation loadFromStream(final DataInputStream stream, final String fileName,
+                                                            final CachedRuleMapper mapper) throws IOException {
         final String description = stream.readUTF();
         final String ruleClassName = stream.readUTF();
         final int beginLine = stream.readInt();
@@ -132,7 +132,7 @@ public final class CachedRuleViolation implements RuleViolation {
         final String variableName = stream.readUTF();
 
         return new CachedRuleViolation(mapper, description, fileName, ruleClassName, beginLine, beginColumn,
-                endLine, endColumn, packageName, className, methodName, variableName);
+                    endLine, endColumn, packageName, className, methodName, variableName);
     }
 
     /**
@@ -157,7 +157,7 @@ public final class CachedRuleViolation implements RuleViolation {
         stream.writeUTF(getValueOrEmpty(violation.getVariableName()));
     }
 
-    private static String getValueOrEmpty(final String value) {
+    static String getValueOrEmpty(final String value) {
         return value == null ? "" : value;
     }
 }

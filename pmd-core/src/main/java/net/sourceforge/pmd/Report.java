@@ -397,17 +397,12 @@ public class Report implements Iterable<RuleViolation> {
         while (m.hasNext()) {
             addMetric(m.next());
         }
-        Iterator<RuleViolation> v = r.iterator();
-        while (v.hasNext()) {
-            RuleViolation violation = v.next();
+        for (final RuleViolation violation : r) {
             int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
             violations.add(index < 0 ? -index - 1 : index, violation);
             violationTree.addRuleViolation(violation);
         }
-        Iterator<SuppressedViolation> s = r.getSuppressedRuleViolations().iterator();
-        while (s.hasNext()) {
-            suppressedRuleViolations.add(s.next());
-        }
+        suppressedRuleViolations.addAll(r.getSuppressedRuleViolations());
     }
 
     /**

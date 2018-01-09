@@ -395,6 +395,12 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
                 this, node, message, args);
     }
 
+    public void addViolationWithAutoFixerClass(Object data, Node node, String message, Class autoFixerClass) {
+        final RuleContext ruleContext = (RuleContext) data;
+        ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory()
+                .addViolationWithAutoFixer(ruleContext, this, node, message, autoFixerClass);
+    }
+
     /**
      * Rules are equal if:
      * <ol>
