@@ -55,6 +55,8 @@ at <https://pmd.github.io/latest/>.
 *   java-bestpractices
     *   [#783](https://github.com/pmd/pmd/issues/783): \[java] GuardLogStatement regression
     *   [#800](https://github.com/pmd/pmd/issues/800): \[java] ForLoopCanBeForeach NPE when looping on `this` object
+*   java-codestyle
+    *   [#817](https://github.com/pmd/pmd/issues/817): \[java] UnnecessaryModifierRule crashes on valid code
 *   java-design
     *   [#785](https://github.com/pmd/pmd/issues/785): \[java] NPE in DataClass rule
 

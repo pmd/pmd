@@ -588,4 +588,14 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#817 [java] UnnecessaryModifierRule crashes on valid code</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    @Bar
+    final void method() { }
+}
+        ]]></code>
+    </test-code>
 </test-data>
