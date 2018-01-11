@@ -49,9 +49,11 @@ at <https://pmd.github.io/latest/>.
     *   [#782](https://github.com/pmd/pmd/issues/782): \[doc] Wrong information in the Release Notes about the Security ruleset
     *   [#794](https://github.com/pmd/pmd/issues/794): \[doc] Broken documentation links for 6.0.0
 *   java
-    *   [#783](https://github.com/pmd/pmd/issues/783): \[java] GuardLogStatement regression
     *   [#793](https://github.com/pmd/pmd/issues/793): \[java] Parser error with private method in nested classes in interfaces
     *   [#812](https://github.com/pmd/pmd/issues/812): \[java] Exception applying rule DataClass
+    *   [#814](https://github.com/pmd/pmd/issues/814): \[java] UnsupportedClassVersionError is failure instead of a warning
+*   java-bestpractices
+    *   [#783](https://github.com/pmd/pmd/issues/783): \[java] GuardLogStatement regression
     *   [#800](https://github.com/pmd/pmd/issues/800): \[java] ForLoopCanBeForeach NPE when looping on `this` object
 *   java-design
     *   [#785](https://github.com/pmd/pmd/issues/785): \[java] NPE in DataClass rule
