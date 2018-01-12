@@ -539,4 +539,20 @@ public class Bug {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+    <description>#543 False negative with String concatenation</description>
+    <expected-problems>1</expected-problems>
+    <code><![CDATA[
+public class Foo {
+    public void foo(String a) throws Exception {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw new Exception("something bad:" + e);
+        }
+    }
+}
+    ]]></code>
+</test-code>
 </test-data>
