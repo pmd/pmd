@@ -141,12 +141,12 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
             List<ASTName> nameNodes = baseNode.findDescendantsOfType(ASTName.class);
             for (ASTName nameNode : nameNodes) {
                 if (target.equals(nameNode.getImage())) {
-                	boolean isPartOfStringConcatenation = 
-                		(nameNode.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTAdditiveExpression);
-                	if (!isPartOfStringConcatenation) {
-	                    match = true;
-	                    break;
-                	}
+                    boolean isPartOfStringConcatenation = 
+                        (nameNode.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTAdditiveExpression);
+                    if (!isPartOfStringConcatenation) {
+                        match = true;
+                        break;
+                    }
                 }
             }
         }
