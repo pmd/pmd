@@ -1056,5 +1056,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <module>pmd-visualforce</module>
         <module>pmd-vm</module>
         <module>pmd-xml</module>
+        <module>pmd-scala</module>
     </modules>
 </project>
