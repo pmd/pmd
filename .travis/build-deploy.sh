@@ -25,8 +25,11 @@ function push_docs() {
 VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 echo "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
+# determine java 7 path
+JAVA7_HOME=$(jdk_switcher home openjdk7)
+
 # TODO : Once we release PMD 6.0.0 and have a compatible PMD plugin, enable PMD once again
-MVN_BUILD_FLAGS="-B -V -Djava7.home=/usr/lib/jvm/java-7-openjdk -Dpmd.skip=true"
+MVN_BUILD_FLAGS="-B -V -Djava7.home=${JAVA7_HOME} -Dpmd.skip=true"
 
 if travis_isPullRequest; then
 
