@@ -41,6 +41,8 @@ at <https://pmd.github.io/latest/>.
 
 ### Fixed Issues
 
+*   all
+    *   [#842](https://github.com/pmd/pmd/issues/842): \[core] Use correct java bootclasspath for compiling
 *   apex-errorprone
     *   [#792](https://github.com/pmd/pmd/issues/792): \[apex] AvoidDirectAccessTriggerMap incorrectly detects array access in classes
 *   apex-security
