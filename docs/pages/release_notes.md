@@ -61,6 +61,8 @@ at <https://pmd.github.io/latest/>.
     *   [#817](https://github.com/pmd/pmd/issues/817): \[java] UnnecessaryModifierRule crashes on valid code
 *   java-design
     *   [#785](https://github.com/pmd/pmd/issues/785): \[java] NPE in DataClass rule
+*   java-performance
+    *   [#841](https://github.com/pmd/pmd/issues/841): \[java] InsufficientStringBufferDeclaration NumberFormatException
 
 ### API Changes
 
