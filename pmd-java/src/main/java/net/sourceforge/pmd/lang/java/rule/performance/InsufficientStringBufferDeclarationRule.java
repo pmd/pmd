@@ -273,11 +273,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                 // characters
                 // don't add the constructor's length
                 iConstructorLength = 14 + str.length();
-            } else if (literal.isIntLiteral() && str.startsWith("0x")) {
-                // bug 3516101 - the string could be a hex number
-                iConstructorLength = Integer.parseInt(str.substring(2), 16);
-            } else {
-                iConstructorLength = Integer.parseInt(str);
+            } else if (literal.isIntLiteral()) {
+                iConstructorLength = literal.getValueAsInt();
             }
         } else {
             iConstructorLength = -1;

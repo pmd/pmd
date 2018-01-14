@@ -96,6 +96,69 @@ public class ASTLiteral extends AbstractJavaTypeNode {
         }
         return false;
     }
+    
+    private String stripIntValue() {
+        String image = getImage().toLowerCase().replaceAll("_", "");
+        
+        boolean isNegative = false;
+        if (image.charAt(0) == '-') {
+            isNegative = true;
+            image = image.substring(1);
+        }
+        
+        if (image.endsWith("l")) {
+            image = image.substring(0, image.length() - 1);
+        }
+        
+        // ignore base prefix if any
+        if (image.charAt(0) == '0' && image.length() > 1) {
+            if (image.charAt(1) == 'x' || image.charAt(1) == 'b') {
+                image = image.substring(2);
+            } else {
+                image = image.substring(1);
+            }
+        }
+        
+        if (isNegative) {
+            return "-" + image;
+        }
+        return image;
+    }
+    
+    private String stripFloatValue() {
+        return getImage().toLowerCase().replaceAll("_", "");
+    }
+    
+    private int getIntBase() {
+        final String image = getImage().toLowerCase();
+        final int offset = image.charAt(0) == '-' ? 1 : 0;
+        if (image.startsWith("0x", offset)) {
+            return 16;
+        }
+        if (image.startsWith("0b", offset)) {
+            return 2;
+        }
+        if (image.startsWith("0", offset) && image.length() > 1) {
+            return 8;
+        }
+        return 10;
+    }
+    
+    public int getValueAsInt() {
+        return (int) getValueAsLong(); // the downcast allows to parse 0x80000000+ numbers as negative instead of a NumberFormatException
+    }
+    
+    public long getValueAsLong() {
+        return Long.parseLong(stripIntValue(), getIntBase());
+    }
+    
+    public float getValueAsFloat() {
+        return Float.parseFloat(stripFloatValue());
+    }
+    
+    public double getValueAsDouble() {
+        return Double.parseDouble(stripFloatValue());
+    }
 
     public void setCharLiteral() {
         this.isChar = true;

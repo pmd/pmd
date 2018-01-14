@@ -60,6 +60,46 @@ public class ASTLiteralTest {
     }
 
     @Test
+    public void testIntValueParsing() {
+        ASTLiteral literal = new ASTLiteral(1);
+        literal.setIntLiteral();
+        literal.setImage("1___234");
+        literal.testingOnlySetBeginColumn(1);
+        literal.testingOnlySetEndColumn(7);
+        assertEquals(1234, literal.getValueAsInt());
+    }
+    
+    @Test
+    public void testIntValueParsingBinary() {
+        ASTLiteral literal = new ASTLiteral(1);
+        literal.setIntLiteral();
+        literal.setImage("0b0000_0010");
+        literal.testingOnlySetBeginColumn(1);
+        literal.testingOnlySetEndColumn(7);
+        assertEquals(2, literal.getValueAsInt());
+    }
+    
+    @Test
+    public void testIntValueParsingNegativeHexa() {
+        ASTLiteral literal = new ASTLiteral(1);
+        literal.setIntLiteral();
+        literal.setImage("-0X0000_000f");
+        literal.testingOnlySetBeginColumn(1);
+        literal.testingOnlySetEndColumn(7);
+        assertEquals(-15, literal.getValueAsInt());
+    }
+    
+    @Test
+    public void testFloatValueParsingNegative() {
+        ASTLiteral literal = new ASTLiteral(1);
+        literal.setIntLiteral();
+        literal.setImage("-3_456.123_456");
+        literal.testingOnlySetBeginColumn(1);
+        literal.testingOnlySetEndColumn(7);
+        assertEquals(-3456.123456f, literal.getValueAsFloat(), 0);
+    }
+    
+    @Test
     public void testStringUnicodeEscapesNotEscaped() {
         ASTLiteral literal = new ASTLiteral(1);
         literal.setStringLiteral();
