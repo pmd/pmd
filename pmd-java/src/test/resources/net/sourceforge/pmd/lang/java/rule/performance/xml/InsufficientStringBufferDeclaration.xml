@@ -310,7 +310,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-15, Append int, incorrect presize
+15, Append long, incorrect presize
      ]]></description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
@@ -318,11 +318,11 @@ public class Foo {
    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
    public void bar() {
        StringBuffer sb = new StringBuffer();
-       sb.append(12345678901234567890);
+       sb.append(12345678901234567890L);
  }
    public void bar2() {
        StringBuilder sb = new StringBuilder();
-       sb.append(12345678901234567890);
+       sb.append(12345678901234567890L);
  }
 }
      ]]></code>
@@ -1058,6 +1058,19 @@ public final class test {
             "### Testing report" + NEWLINE +
             "# Testing" + NEWLINE +
             "# More Contents" + NEWLINE);
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#841 InsufficientStringBufferDeclaration NumberFormatException</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+
+    public static void main(final String ... args) {
+        StringBuilder report = new StringBuilder(10_000).append("test");
     }
 }
         ]]></code>
