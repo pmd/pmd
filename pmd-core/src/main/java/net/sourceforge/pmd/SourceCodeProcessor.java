@@ -115,15 +115,6 @@ public class SourceCodeProcessor {
         Benchmarker.mark(Benchmark.SymbolTable, end - start, 0);
     }
 
-    // private ParserOptions getParserOptions(final LanguageVersionHandler
-    // languageVersionHandler) {
-    // // TODO Handle Rules having different parser options.
-    // ParserOptions parserOptions =
-    // languageVersionHandler.getDefaultParserOptions();
-    // parserOptions.setSuppressMarker(configuration.getSuppressMarker());
-    // return parserOptions;
-    // }
-
     private void usesDFA(LanguageVersion languageVersion, Node rootNode, RuleSets ruleSets, Language language) {
         if (ruleSets.usesDFA(language)) {
             long start = System.nanoTime();
@@ -172,7 +163,12 @@ public class SourceCodeProcessor {
         usesMultifile(rootNode, languageVersionHandler, ruleSets, language);
 
         final List<Node> applicableCompilationUnits = Collections.singletonList(rootNode);
-        ruleSets.apply(applicableCompilationUnits, ctx, language);
+
+        if (configuration.isAutoFixes()) {
+            ruleSets.applyWithAutoFixes(applicableCompilationUnits, ctx, language);
+        } else {
+            ruleSets.apply(applicableCompilationUnits, ctx, language);
+        }
     }
 
     private void determineLanguage(RuleContext ctx) {
