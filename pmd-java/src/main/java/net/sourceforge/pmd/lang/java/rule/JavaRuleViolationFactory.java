@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.rule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.autofix.AutoFixableRuleViolation;
+import net.sourceforge.pmd.autofix.RuleViolationFix;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
@@ -22,6 +24,16 @@ public final class JavaRuleViolationFactory extends AbstractRuleViolationFactory
     @Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
         return new JavaRuleViolation(rule, ruleContext, (JavaNode) node, message);
+    }
+
+    @Override
+    protected AutoFixableRuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, Class<? extends RuleViolationFix> ruleViolationFixClass) {
+        return new AutoFixableJavaRuleViolation(rule, ruleContext, (JavaNode) node, message, ruleViolationFixClass);
+    }
+
+    @Override
+    protected AutoFixableRuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine, Class<? extends RuleViolationFix> ruleViolationFixClass) {
+        return new AutoFixableJavaRuleViolation(rule, ruleContext, (JavaNode) node, message, beginLine, endLine, ruleViolationFixClass);
     }
 
     @Override

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -78,8 +77,8 @@ public class SourceCodeProcessor {
 
         // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
         if (ruleSets.applies(ctx.getSourceCodeFile())) {
-            if (!configuration.isAutoFixes() && isCacheUpToDate(ctx)) {
-                for (final RuleViolation rv : getCachedViolationsForFile(ctx.getSourceCodeFile())) {
+            if (!configuration.isAutoFixes() && configuration.getAnalysisCache().isUpToDate(ctx.getSourceCodeFile())) {
+                for (final RuleViolation rv : configuration.getAnalysisCache().getCachedViolations(ctx.getSourceCodeFile())) {
                     ctx.getReport().addRuleViolation(rv);
                 }
                 return;
@@ -98,14 +97,6 @@ public class SourceCodeProcessor {
                 ruleSets.end(ctx);
             }
         }
-    }
-
-    private boolean isCacheUpToDate(final RuleContext context) {
-        return configuration.getAnalysisCache().isUpToDate(context.getSourceCodeFile());
-    }
-
-    private Iterable<RuleViolation> getCachedViolationsForFile(final File sourceCodeFile) {
-        return configuration.getAnalysisCache().getCachedViolations(sourceCodeFile);
     }
 
     private Node parse(RuleContext ctx, Reader sourceCode, Parser parser) {

@@ -20,9 +20,8 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
  * <li>Variable name</li>
  * <li>Suppression indicator</li>
  * </ul>
- * @param <T>
  */
-public class ApexRuleViolation<T> extends ParametricRuleViolation<Node> {
+public class ApexRuleViolation extends ParametricRuleViolation<Node> {
 
     public ApexRuleViolation(Rule rule, RuleContext ctx, Node node, String message, int beginLine, int endLine) {
         this(rule, ctx, node, message);

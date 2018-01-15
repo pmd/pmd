@@ -14,6 +14,8 @@ import java.util.Map;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.autofix.AutoFixableRuleViolation;
+import net.sourceforge.pmd.autofix.RuleViolationFix;
 import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
@@ -24,6 +26,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.AutoFixableParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
 
@@ -107,6 +110,23 @@ public class DummyLanguageModule extends BaseLanguageModule {
         @Override
         protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
             return createRuleViolation(rule, ruleContext, node, message, 0, 0);
+        }
+
+        @Override
+        protected AutoFixableRuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, Class<? extends RuleViolationFix> ruleViolationFixClass) {
+            return createRuleViolation(rule, ruleContext, node, message, 0, 0, ruleViolationFixClass);
+        }
+
+        @Override
+        protected AutoFixableRuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine, Class<? extends RuleViolationFix> ruleViolationFixClass) {
+            AutoFixableParametricRuleViolation<Node> rv = new AutoFixableParametricRuleViolation<Node>(rule, ruleContext, node, message, ruleViolationFixClass) {
+                {
+                    // just for testing variable expansion
+                    this.packageName = "foo";
+                }
+            };
+            rv.setLines(beginLine, endLine);
+            return rv;
         }
 
         @Override

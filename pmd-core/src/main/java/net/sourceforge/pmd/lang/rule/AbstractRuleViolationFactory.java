@@ -8,11 +8,11 @@ import java.text.MessageFormat;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.AutoFixableRuleViolation;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.RuleViolationFix;
+import net.sourceforge.pmd.autofix.AutoFixableRuleViolation;
+import net.sourceforge.pmd.autofix.RuleViolationFix;
 import net.sourceforge.pmd.lang.ast.Node;
 
 public abstract class AbstractRuleViolationFactory implements RuleViolationFactory {
@@ -50,10 +50,16 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
     }
 
     @Override
-    public void addViolationWithAutoFixer(final RuleContext ruleContext, final Rule rule, final Node node,
-                                          final String message, final Class<? extends RuleViolationFix> autoFixerClass) {
-        ruleContext.getReport().addRuleViolation(createRuleViolationWithAutoFixer(rule, ruleContext, node, message,
-                autoFixerClass));
+    public void addViolation(final RuleContext ruleContext, final Rule rule, final Node node, final String message,
+                             final Class<? extends RuleViolationFix> ruleViolationFixClass) {
+        ruleContext.getReport().addRuleViolation(createRuleViolation(rule, ruleContext, node, message, ruleViolationFixClass));
+    }
+
+    @Override
+    public void addViolation(final RuleContext ruleContext, final Rule rule, final Node node, final String message,
+                             final int beginLine, final int endLine,
+                             final Class<? extends RuleViolationFix> ruleViolationFixClass, final Object[] args) {
+        ruleContext.getReport().addRuleViolation(createRuleViolation(rule, ruleContext, node, message, beginLine, endLine, ruleViolationFixClass));
     }
 
     protected abstract RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
@@ -63,20 +69,32 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
 
     /**
      * Default method to create a new AutoFixableRuleViolation. This is called by the
-     * {@link #addViolationWithAutoFixer(RuleContext, Rule, Node, String, Class)}. Any language which wants to provide
-     * auto fixable capability must override this method in its corresponding factory. The reason to throw an
-     * UnsupportedOperationException is to not oblige all the languages factories to implement this method.
-     * @param rule the rule which reported the violation
-     * @param ruleContext the context of the rule at the moment of the violation
-     * @param node the node in which the fixes to that rule violation will be applied
-     * @param message the message to put in the report
-     * @param autoFixerClass the class in which the fixes to that rule violation will be applied
-     * @return a RuleViolation with the capability of telling its fixer class
+     * {@link #addViolation(RuleContext, Rule, Node, String, Class)}. Any language which wants to provide
+     * auto fixable capability must override this method in its corresponding factory.
+     *
+     * @param rule                  the rule which reported the violation
+     * @param ruleContext           the context of the rule at the moment of the violation
+     * @param node                  the node in which the fixes to that rule violation will be applied
+     * @param message               the message to put in the report
+     * @param ruleViolationFixClass the class in which the fixes to that rule violation will be applied
+     * @return a RuleViolation with the capability of telling its rule violation fix class
      */
-    protected AutoFixableRuleViolation createRuleViolationWithAutoFixer(final Rule rule, final RuleContext ruleContext,
-                                                                        final Node node, final String message,
-                                                                        final Class<? extends RuleViolationFix> autoFixerClass) {
-        throw new UnsupportedOperationException("Subclasses of AbstractRuleViolationFactory should override "
-                + "createRuleViolationWithAutoFixer abstract class to create auto fixable violations");
-    }
+    protected abstract AutoFixableRuleViolation createRuleViolation(Rule rule, RuleContext ruleContext,
+                                                                               Node node, String message,
+                                                                               Class<? extends RuleViolationFix> ruleViolationFixClass);
+
+    /**
+     * Default method to create a new AutoFixableRuleViolation. This is called by the
+     * {@link #addViolation(RuleContext, Rule, Node, String, Class)}. Any language which wants to provide
+     * auto fixable capability must override this method in its corresponding factory.
+     *
+     * @param rule                  the rule which reported the violation
+     * @param ruleContext           the context of the rule at the moment of the violation
+     * @param node                  the node in which the fixes to that rule violation will be applied
+     * @param message               the message to put in the report
+     * @param ruleViolationFixClass the class in which the fixes to that rule violation will be applied
+     * @return a RuleViolation with the capability of telling its rule violation fix class
+     */
+    protected abstract AutoFixableRuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
+                                                         int beginLine, int endLine, Class<? extends RuleViolationFix> ruleViolationFixClass);
 }
