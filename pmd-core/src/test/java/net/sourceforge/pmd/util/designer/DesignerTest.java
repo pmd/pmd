@@ -28,6 +28,7 @@ public class DesignerTest {
         String xml = Designer.getXmlTreeCode(compilationUnit);
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<dummyNode BeginColumn=\"1\" BeginLine=\"1\" EndColumn=\"0\" EndLine=\"0\" FindBoundary=\"false\"\n"
-                + "           Image=\"Foo\"\n" + "           SingleLine=\"false\"/>", xml);
+                + "           Image=\"Foo\"\n" + "           SingleLine=\"false\"\n"
+                + "           haveChildrenChanged=\"false\"/>", xml);
     }
 }

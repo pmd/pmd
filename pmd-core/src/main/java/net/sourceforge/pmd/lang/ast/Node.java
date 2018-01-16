@@ -10,6 +10,7 @@ import java.util.List;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
+import net.sourceforge.pmd.autofix.rewriteevents.RewriteEvent;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 /**
@@ -316,4 +317,16 @@ public interface Node {
      * @throws NullPointerException if {@code newChild} is null
      */
     void replace(Node newChild, int index);
+
+    /**
+     *
+     * @return {@code true} if any of this node's children have been modified; {@code false} otherwise
+     */
+    boolean haveChildrenChanged();
+
+    /**
+     *
+     * @return A copy of all the {@link RewriteEvent}s that occurred over this node's children (may be null).
+     */
+    RewriteEvent[] getChildrenRewriteEvents();
 }
