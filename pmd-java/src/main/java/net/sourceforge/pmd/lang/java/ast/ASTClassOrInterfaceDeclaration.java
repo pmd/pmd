@@ -82,10 +82,13 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
     @Override
     public JavaQualifiedName getQualifiedName() {
         if (qualifiedName == null) {
-            if (isNested()) {
+            if (isNested() || isLocal()) {
                 ASTAnyTypeDeclaration parent = this.getFirstParentOfType(ASTAnyTypeDeclaration.class);
                 JavaQualifiedName parentQN = parent.getQualifiedName();
-                qualifiedName = JavaQualifiedName.ofNestedClass(parentQN, this.getImage());
+
+                qualifiedName = isLocal()
+                        ? JavaQualifiedName.ofLocalClass(parentQN, this.getImage())
+                        : JavaQualifiedName.ofNestedClass(parentQN, this.getImage());
                 return qualifiedName;
             }
 
