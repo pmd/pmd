@@ -270,15 +270,50 @@ public interface Node {
     void setUserData(Object userData);
 
     /**
-     * Remove the current node from its parent.
+     * Remove the current node from its parent, if any.
      */
     void remove();
 
     /**
-     * This method tells the node to remove the child node at the given index from the node's list of
-     * children, if any; if not, no changes are done.
-     * @param childIndex
+     * Remove the child node at the given index from the node's children
+     * list, if any; if not, no changes are done.
+     * @param index
      *          The index of the child to be removed
      */
-    void removeChildAtIndex(int childIndex);
+    void remove(int index);
+
+    /**
+     * <p>
+     *  Insert the given new child node using the given index.
+     * </p>
+     * <p>
+     *  If the index is negative, no operation is performed.
+     *  If it is non-negative, the insertion index is computed as:
+     *  <pre>
+     *    insertionIndex = index <= numChildren ? index : numChildren;
+     *  </pre>
+     *  so as to ensure that the current node has no empty spaces (i.e., null children) in its internal structure.
+     * </p>
+     * All existing nodes from index position on are right-shifted.
+     *
+     * @param newChild The node to be inserted, not null
+     * @param index The position where to insert the new child node.
+     * @return The insertion index where the node was definitely inserted;
+     *          or a negative value if no operation have been performed.
+     * @throws NullPointerException if {@code newChild} is null
+     */
+    int insert(Node newChild, int index);
+
+    /**
+     * Replace the child in the given index with this new child.
+     *<p>
+     *  If the given index is invalid - i.e., <code>index < 0 || index >= jjtGetNumChildren()</code> -,
+     *  no operation is performed.
+     *</p>
+     *
+     * @param newChild The node that will replace the current child, not null
+     * @param index The position where to replace the current child with the new one
+     * @throws NullPointerException if {@code newChild} is null
+     */
+    void replace(Node newChild, int index);
 }

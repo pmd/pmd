@@ -48,7 +48,7 @@ public class AbstractNodeTest {
         int i = 0;
         for (final int childIndex : childrenIndexes) {
             for (final int grandChildIndex : grandChildrenIndexes) {
-                indexes[i++] = new Integer[] { childIndex, grandChildIndex };
+                indexes[i++] = new Integer[] {childIndex, grandChildIndex};
             }
         }
         return indexes;
@@ -85,8 +85,10 @@ public class AbstractNodeTest {
         }
     }
 
+    // ----------------- Remove Test Cases ----------------- //
+
     /**
-     * Explicitly tests the {@code remove} method, and implicitly the {@code removeChildAtIndex} method
+     * Explicitly tests the {@code remove} method, and implicitly the {@code remove(index)} method
      */
     @Test
     @Parameters(method = "childrenIndexes")
@@ -112,7 +114,7 @@ public class AbstractNodeTest {
     }
 
     /**
-     * Explicitly tests the {@code remove} method, and implicitly the {@code removeChildAtIndex} method.
+     * Explicitly tests the {@code remove} method, and implicitly the {@code remove(index)} method.
      * This is a border case as the root node does not have any parent.
      */
     @Test
@@ -137,7 +139,7 @@ public class AbstractNodeTest {
     }
 
     /**
-     * Explicitly tests the {@code remove} method, and implicitly the {@code removeChildAtIndex} method.
+     * Explicitly tests the {@code remove} method, and implicitly the {@code remove(index)} method.
      * These are border cases as grandchildren nodes do not have any child.
      */
     @Test
@@ -156,7 +158,7 @@ public class AbstractNodeTest {
     }
 
     /**
-     * Explicitly tests the {@code removeChildAtIndex} method.
+     * Explicitly tests the {@code remove(index)} method.
      */
     @Test
     @Parameters(method = "childrenIndexes")
@@ -168,7 +170,7 @@ public class AbstractNodeTest {
         }
 
         // Do the actual removal
-        rootNode.removeChildAtIndex(childIndex);
+        rootNode.remove(childIndex);
 
         // Check that conditions have been successfully changed
         assertEquals(NUM_CHILDREN - 1, rootNode.jjtGetNumChildren());
@@ -186,21 +188,21 @@ public class AbstractNodeTest {
     }
 
     /**
-     * Explicitly tests the {@code removeChildAtIndex} method.
+     * Explicitly tests the {@code remove(index)} method.
      * Test that invalid indexes cases are handled without exception.
      */
     @Test
     public void testRemoveChildAtIndexWithInvalidIndex() {
         try {
-            rootNode.removeChildAtIndex(-1);
-            rootNode.removeChildAtIndex(rootNode.jjtGetNumChildren());
+            rootNode.remove(-1);
+            rootNode.remove(rootNode.jjtGetNumChildren());
         } catch (final Exception e) {
             fail("No exception was expected.");
         }
     }
 
     /**
-     * Explicitly tests the {@code removeChildAtIndex} method.
+     * Explicitly tests the {@code remove(index)} method.
      * This is a border case as the method invocation should do nothing.
      */
     @Test
@@ -210,10 +212,172 @@ public class AbstractNodeTest {
         final Node grandChild = rootNode.jjtGetChild(grandChildIndex).jjtGetChild(grandChildIndex);
 
         // Do the actual removal
-        grandChild.removeChildAtIndex(0);
+        grandChild.remove(0);
 
         // If here, no exception has been thrown
         // Check that this node still does not have any children
         assertEquals(0, grandChild.jjtGetNumChildren());
+    }
+
+    // ----------------- Insert Test Cases ----------------- //
+
+    @SuppressWarnings("unused") // Used by JUnitParams in `testInsertChild` test case
+    private Object testInsertParameters() {
+        final DummyNode node = new DummyNode(0);
+        return new Object[] {
+            new Object[] {node, -5, -5, false},
+            new Object[] {node, -1, -1, false},
+            new Object[] {node, 0, 0, true},
+            new Object[] {node, NUM_CHILDREN, NUM_CHILDREN, true},
+            new Object[] {node, NUM_CHILDREN + 5, NUM_CHILDREN, true},
+        };
+    }
+
+    /**
+     * Explicitly tests the {@code insert} method
+     */
+    @Test
+    @Parameters(method = "testInsertParameters")
+    public void testInsert(final Node newNode, final int index,
+                           final int expectedInsertionIndex, final boolean expectedInsertion) {
+        final int oldNumChildren = rootNode.jjtGetNumChildren();
+        final int expectedNumChildren = expectedInsertion ? oldNumChildren + 1 : oldNumChildren;
+
+        final Node[] originalChildren = new Node[rootNode.jjtGetNumChildren()];
+
+        for (int i = 0; i < originalChildren.length; i++) {
+            originalChildren[i] = rootNode.jjtGetChild(i);
+        }
+
+        // Do the actual insertion
+        final int insertionIndex = rootNode.insert(newNode, index);
+        // Check state conditions
+        assertEquals(expectedInsertionIndex, insertionIndex);
+        assertEquals(expectedNumChildren, rootNode.jjtGetNumChildren());
+        // Children context have been correctly updated
+        int originalIndex = 0;
+        int newIndex = 0;
+        while (newIndex < rootNode.jjtGetNumChildren()) {
+            final Node iNode = rootNode.jjtGetChild(newIndex);
+            // Check that the child index has been updated
+            assertEquals(newIndex, iNode.jjtGetChildIndex());
+            // Check that the node's parent has been updated
+            assertEquals(rootNode, iNode.jjtGetParent());
+
+            if (expectedInsertion && newIndex == expectedInsertionIndex) {
+                // Check that the new child has been rightly inserted, if expected
+                assertEquals(newNode, iNode);
+            } else {
+                // Check that the original nodes have been rightly shifted
+                assertEquals(originalChildren[originalIndex], iNode);
+                originalIndex++;
+            }
+            newIndex++;
+        }
+    }
+
+    /**
+     * Explicitly tests the {@code insert} method
+     */
+    @Test
+    public void testInsertWithInvalidChild() {
+        final int expectedNumChildren = rootNode.jjtGetNumChildren();
+        final Node[] originalChildren = new Node[rootNode.jjtGetNumChildren()];
+
+        for (int i = 0; i < originalChildren.length; i++) {
+            originalChildren[i] = rootNode.jjtGetChild(i);
+        }
+
+        // Do the actual insertion
+        try {
+            // Check that even with invalid index, the first check is over the newChild variable.
+            // Invalid index cases only are already tested in method `testInsert`.
+            rootNode.insert(null, -1);
+            fail("Should have thrown an exception because null new child has been passed as argument");
+        } catch (final RuntimeException ignored) {
+            // Expected flow due to newChild == null
+        }
+
+        // Check that original children context have not been updated
+        assertEquals(expectedNumChildren, rootNode.jjtGetNumChildren());
+        for (int i = 0; i < rootNode.jjtGetNumChildren(); i++) {
+            final Node iNode = rootNode.jjtGetChild(i);
+            assertEquals(i, iNode.jjtGetChildIndex());
+            assertEquals(rootNode, iNode.jjtGetParent());
+            assertEquals(originalChildren[i], iNode);
+        }
+    }
+
+    // ----------------- Replace Test Cases ----------------- //
+
+    @SuppressWarnings("unused") // Used by JUnitParams in `testInsertChild` test case
+    private Object testReplaceParameters() {
+        final DummyNode node = new DummyNode(0);
+        return new Object[] {
+            new Object[] {node, -5, false},
+            new Object[] {node, -1, false},
+            new Object[] {node, 0, true},
+            new Object[] {node, NUM_CHILDREN - 1, true},
+            new Object[] {node, NUM_CHILDREN, false},
+            new Object[] {node, NUM_CHILDREN + 1, false},
+        };
+    }
+
+    /**
+     * Explicitly tests the {@code replace} method
+     */
+    @Test
+    @Parameters(method = "testReplaceParameters")
+    public void testReplace(final Node newNode, final int index, final boolean expectedReplacement) {
+        final int expectedNumChildren = rootNode.jjtGetNumChildren();
+        final Node[] originalChildren = new Node[rootNode.jjtGetNumChildren()];
+        for (int i = 0; i < originalChildren.length; i++) {
+            originalChildren[i] = rootNode.jjtGetChild(i);
+        }
+
+        // Do the actual replacement
+        rootNode.replace(newNode, index);
+
+        // Check state conditions
+        assertEquals(expectedNumChildren, rootNode.jjtGetNumChildren());
+        // Children context have been correctly updated
+        for (int i = 0; i < rootNode.jjtGetNumChildren(); i++) {
+            final Node iNode = rootNode.jjtGetChild(i);
+            assertEquals(i, iNode.jjtGetChildIndex());
+            assertEquals(rootNode, iNode.jjtGetParent());
+            final Node expectedNode = expectedReplacement && i == index ? newNode : originalChildren[i];
+            assertEquals(expectedNode, iNode);
+        }
+    }
+
+    /**
+     * Explicitly tests the {@code replace} method
+     */
+    @Test
+    public void testReplaceWithInvalidChild() {
+        final int expectedNumChildren = rootNode.jjtGetNumChildren();
+        final Node[] originalChildren = new Node[rootNode.jjtGetNumChildren()];
+        for (int i = 0; i < originalChildren.length; i++) {
+            originalChildren[i] = rootNode.jjtGetChild(i);
+        }
+
+        // Do the actual replacement
+        try {
+            // Check that even with invalid index, the first check is over the newChild variable.
+            // Invalid index cases only are already tested in method `testReplace`.
+            rootNode.replace(null, -1);
+            fail("Should have thrown an exception because null new child has been passed as argument");
+        } catch (final RuntimeException ignored) {
+            // Expected flow due to newChild == null
+        }
+
+        // Check that original children context have not been updated
+        assertEquals(expectedNumChildren, rootNode.jjtGetNumChildren());
+        for (int i = 0; i < rootNode.jjtGetNumChildren(); i++) {
+            final Node iNode = rootNode.jjtGetChild(i);
+            assertEquals(i, iNode.jjtGetChildIndex());
+            assertEquals(rootNode, iNode.jjtGetParent());
+            assertEquals(originalChildren[i], iNode);
+        }
     }
 }
