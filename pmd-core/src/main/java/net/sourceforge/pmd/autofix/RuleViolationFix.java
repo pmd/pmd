@@ -15,5 +15,5 @@ public interface RuleViolationFix {
      * Apply one or more operations to a node.
      * @param node the node in the AST on which to apply operations
      */
-    void applyFixesToNode(Node node);
+    void applyToNode(Node node);
 }

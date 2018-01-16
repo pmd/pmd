@@ -14,7 +14,7 @@ import net.sourceforge.pmd.RuleViolation;
 /**
  * A {@link RuleViolation} implementation that is immutable, and therefore cache friendly
  */
-public class CachedRuleViolation implements RuleViolation {
+public final class CachedRuleViolation implements RuleViolation {
 
     private final CachedRuleMapper mapper;
 

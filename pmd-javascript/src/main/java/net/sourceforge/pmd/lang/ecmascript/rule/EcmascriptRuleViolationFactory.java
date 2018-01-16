@@ -35,11 +35,15 @@ public final class EcmascriptRuleViolationFactory extends AbstractRuleViolationF
     }
 
     protected AutoFixableRuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine, Class<? extends RuleViolationFix> ruleViolationFixClass) {
-        return null;
+        AutoFixableParametricRuleViolation<EcmascriptNode> rViolation = new AutoFixableParametricRuleViolation<>(rule, ruleContext, (EcmascriptNode) node, message, ruleViolationFixClass);
+        rViolation.setLines(beginLine, endLine);
+        return rViolation;
     }
 
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
             int beginLine, int endLine) {
-        return null; // FIXME
+        ParametricRuleViolation<EcmascriptNode> rViolation = new ParametricRuleViolation<>(rule, ruleContext, (EcmascriptNode) node, message);
+        rViolation.setLines(beginLine, endLine);
+        return rViolation;
     }
 }

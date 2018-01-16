@@ -35,11 +35,15 @@ public final class JspRuleViolationFactory extends AbstractRuleViolationFactory 
 
     @Override
     protected AutoFixableRuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine, Class<? extends RuleViolationFix> ruleViolationFixClass) {
-        return null;
+        AutoFixableParametricRuleViolation<JspNode> rViolation = new AutoFixableParametricRuleViolation<>(rule, ruleContext, (JspNode) node, message, ruleViolationFixClass);
+        rViolation.setLines(beginLine, endLine);
+        return rViolation;
     }
 
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
             int beginLine, int endLine) {
-        return null; // FIXME
+        ParametricRuleViolation<JspNode> rViolation = new ParametricRuleViolation<>(rule, ruleContext, (JspNode) node, message);
+        rViolation.setLines(beginLine, endLine);
+        return rViolation;
     }
 }
