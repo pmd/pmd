@@ -163,7 +163,7 @@ public abstract class RuleTst {
      *
      * @param rule The rule to reinitialise
      *
-     * @return The rule once it has be reinitialised
+     * @return The rule once it has been reinitialised
      */
     protected Rule reinitializeRule(Rule rule) {
         return findRule(rule.getRuleSetName(), rule.getName());

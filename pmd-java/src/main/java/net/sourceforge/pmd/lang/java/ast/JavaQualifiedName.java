@@ -95,6 +95,12 @@ public final class JavaQualifiedName implements QualifiedName {
         localIndices[0] = NOTLOCAL_PLACEHOLDER;
     }
 
+
+    /* default, test only */ static void resetLocalIndicesCounter() {
+        LOCAL_INDICES.clear();
+    }
+
+
     /**
      * Builds the qualified name of a method declaration.
      *

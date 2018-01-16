@@ -25,6 +25,11 @@ import net.sourceforge.pmd.lang.java.ParserTstUtil;
  */
 public class QualifiedNameTest {
 
+    /** Provides a hook into the package-private reset method for the local indices counter. */
+    public static void resetLocalIndicesCounterHook() {
+        JavaQualifiedName.resetLocalIndicesCounter();
+    }
+
 
     @Test
     public void testEmptyPackage() {
