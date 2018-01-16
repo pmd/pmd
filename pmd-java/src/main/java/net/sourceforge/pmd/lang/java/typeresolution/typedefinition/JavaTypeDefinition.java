@@ -158,4 +158,6 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
     public abstract JavaTypeDefinition getJavaType(int index);
 
     public abstract int getJavaTypeCount();
+
+    protected abstract String shallowString();
 }

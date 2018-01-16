@@ -241,9 +241,23 @@ import java.util.logging.Logger;
 
     @Override
     public String toString() {
+        final StringBuilder sb = new StringBuilder("JavaTypeDefinition [clazz=").append(clazz)
+                .append(", definitionType=").append(getDefinitionType())
+                .append(", genericArgs=[");
+        
+        for (final JavaTypeDefinition jtd : genericArgs) {
+            sb.append(jtd.shallowString()).append(", ");
+        }
+        
+        return sb.replace(sb.length() - 3, sb.length() - 1, "]") // last comma to bracket
+            .append(", isGeneric=").append(isGeneric)
+            .append("]\n").toString();
+    }
+    
+    @Override
+    public String shallowString() {
         return new StringBuilder("JavaTypeDefinition [clazz=").append(clazz)
                 .append(", definitionType=").append(getDefinitionType())
-                .append(", genericArgs=").append(genericArgs)
                 .append(", isGeneric=").append(isGeneric)
                 .append("]\n").toString();
     }

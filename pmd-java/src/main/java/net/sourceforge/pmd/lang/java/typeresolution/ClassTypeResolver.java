@@ -572,7 +572,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 }
             } catch (final NoSuchFieldException ignored) {
                 // swallow
-            } catch (final NoClassDefFoundError e) {
+            } catch (final LinkageError e) {
+                if (LOG.isLoggable(Level.WARNING)) {
+                    LOG.log(Level.WARNING, "Error during type resolution due to: " + e);
+                }
                 // TODO : report a missing class once we start doing that...
                 return null;
             }

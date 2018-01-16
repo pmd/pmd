@@ -520,7 +520,7 @@ public class RuleSetFactory {
         }
 
         boolean rulesetDeprecated = false;
-        if (potentialRules.size() == countDeprecated) {
+        if (!potentialRules.isEmpty() && potentialRules.size() == countDeprecated) {
             // all rules in the ruleset have been deprecated - the ruleset itself is considered to be deprecated
             rulesetDeprecated = true;
             LOG.warning("The RuleSet " + ref + " has been deprecated.");

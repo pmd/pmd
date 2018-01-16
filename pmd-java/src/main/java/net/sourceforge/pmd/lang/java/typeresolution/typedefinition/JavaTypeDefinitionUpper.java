@@ -111,14 +111,19 @@ import java.util.Set;
     public String toString() {
         StringBuilder builder = new StringBuilder()
                 .append("JavaTypeDefinition ")
-                .append(getDefinitionType().toString())
+                .append(getDefinitionType())
                 .append(" [")
                 .append(typeList[0]);
         for (int index = 1; index < typeList.length; ++index) {
-            builder.append(" && ");
-            builder.append(typeList[index]);
+            builder.append(" && ")
+                .append(typeList[index]);
         }
         return builder.append("]").toString();
+    }
+    
+    @Override
+    protected String shallowString() {
+        return toString();
     }
 
     @Override

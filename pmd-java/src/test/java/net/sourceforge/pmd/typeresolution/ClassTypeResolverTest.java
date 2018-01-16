@@ -102,6 +102,7 @@ import net.sourceforge.pmd.typeresolution.testdata.MethodThirdPhase;
 import net.sourceforge.pmd.typeresolution.testdata.NestedAnonymousClass;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.OverloadedMethodsUsage;
+import net.sourceforge.pmd.typeresolution.testdata.PmdStackOverflow;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
 import net.sourceforge.pmd.typeresolution.testdata.SubTypeUsage;
 import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
@@ -123,6 +124,12 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB2;
 
 public class ClassTypeResolverTest {
 
+    @Test
+    public void stackOverflowTest() {
+        // See #831 https://github.com/pmd/pmd/issues/831 - [java] StackOverflow in JavaTypeDefinitionSimple.toString
+        parseAndTypeResolveForClass15(PmdStackOverflow.class);
+    }
+    
     @Test
     public void testClassNameExists() {
         ClassTypeResolver classTypeResolver = new ClassTypeResolver();

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import java.math.BigInteger;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
@@ -83,21 +81,13 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
                                 // code.
                                 Number value = -1;
                                 if (literal.isIntLiteral()) {
-                                    value = parseInteger(literal.getImage());
+                                    value = literal.getValueAsInt();
                                 } else if (literal.isLongLiteral()) {
-                                    String s = literal.getImage();
-                                    // remove the ending "l" or "L" for long
-                                    // values
-                                    s = s.substring(0, s.length() - 1);
-                                    value = parseInteger(s);
+                                    value = literal.getValueAsLong();
                                 } else if (literal.isFloatLiteral()) {
-                                    String s = literal.getImage();
-                                    // remove the ending "f" or "F" for float
-                                    // values
-                                    s = s.substring(0, s.length() - 1);
-                                    value = Float.valueOf(s.replaceAll("_", ""));
+                                    value = literal.getValueAsFloat();
                                 } else if (literal.isDoubleLiteral()) {
-                                    value = Double.valueOf(literal.getImage().replaceAll("_", ""));
+                                    value = literal.getValueAsDouble();
                                 } else if (literal.isCharLiteral()) {
                                     value = (int) literal.getImage().charAt(1);
                                 }
@@ -151,28 +141,5 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
 
     private void addViolation(Object data, ASTVariableDeclarator variableDeclarator) {
         super.addViolation(data, variableDeclarator, variableDeclarator.jjtGetChild(0).getImage());
-    }
-
-    private Number parseInteger(String s) {
-        boolean negative = false;
-        String number = s;
-        if (number.charAt(0) == '-') {
-            negative = true;
-            number = number.substring(1);
-        }
-        BigInteger result;
-        if (number.startsWith("0x") || number.startsWith("0X")) {
-            result = new BigInteger(number.substring(2).replaceAll("_", ""), 16);
-        } else if (number.startsWith("0b") || number.startsWith("0B")) {
-            result = new BigInteger(number.substring(2).replaceAll("_", ""), 8);
-        } else if (number.charAt(0) == '0' && number.length() > 1) {
-            result = new BigInteger(number.substring(1).replaceAll("_", ""), 8);
-        } else {
-            result = new BigInteger(number.replaceAll("_", ""));
-        }
-        if (negative) {
-            result = result.negate();
-        }
-        return result;
     }
 }
