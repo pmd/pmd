@@ -7,7 +7,13 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
+
 public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
+
+    private boolean isLocal;
+    private boolean isLocalComputed; // guard for lazy evaluation of isLocal()
 
     private boolean isInterface;
     private JavaQualifiedName qualifiedName;
@@ -36,6 +42,33 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
     public boolean isNested() {
         return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
             || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
+    }
+
+
+    /**
+     * Returns true if the class is declared inside a block other
+     * than the body of another class, or the top level.
+     */
+    public boolean isLocal() {
+        if (!isLocalComputed) {
+            Node current = jjtGetParent();
+            while (current != null) {
+                if (current instanceof ASTAnyTypeDeclaration) {
+                    isLocal = false;
+                    break;
+                } else if (current instanceof ASTMethodOrConstructorDeclaration
+                        || current instanceof ASTInitializer) {
+                    isLocal = true;
+                    break;
+                }
+                current = current.jjtGetParent();
+            }
+            if (current == null) {
+                isLocal = false;
+            }
+            isLocalComputed = true;
+        }
+        return isLocal;
     }
 
     public boolean isInterface() {
