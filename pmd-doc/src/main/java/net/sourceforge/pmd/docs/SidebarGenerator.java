@@ -15,8 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
+import org.yaml.snakeyaml.DumperOptions.LineBreak;
 import org.yaml.snakeyaml.Yaml;
 
 import net.sourceforge.pmd.RuleSet;
@@ -92,6 +94,9 @@ public class SidebarGenerator {
     public void writeSidebar(Map<String, Object> sidebar) throws IOException {
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(FlowStyle.BLOCK);
+        if (SystemUtils.IS_OS_WINDOWS) {
+            options.setLineBreak(LineBreak.WIN);
+        }
         Yaml yaml = new Yaml(options);
         writer.write(sidebarPath, Arrays.asList(yaml.dump(sidebar)));
         System.out.println("Generated " + sidebarPath);
