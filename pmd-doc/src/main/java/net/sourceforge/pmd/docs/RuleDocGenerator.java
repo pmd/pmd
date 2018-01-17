@@ -109,7 +109,7 @@ public class RuleDocGenerator {
         for (String filename : additionalRulesets) {
             try {
                 // do not take rulesets from pmd-test or pmd-core
-                if (!filename.contains("pmd-test/") && !filename.contains("pmd-core/")) {
+                if (!filename.contains("pmd-test") && !filename.contains("pmd-core")) {
                     rulesets.add(ruleSetFactory.createRuleSet(filename));
                 } else {
                     LOG.fine("Ignoring ruleset " + filename);
@@ -539,7 +539,9 @@ public class RuleDocGenerator {
         if (!foundPathResult.isEmpty()) {
             Path foundPath = foundPathResult.get(0);
             foundPath = root.relativize(foundPath);
-            return foundPath.toString();
+            // Note: the path is normalized to unix path separators, so that the editme link
+            // uses forward slashes
+            return FilenameUtils.normalize(foundPath.toString(), true);
         }
 
         return StringUtils.chomp(ruleset.getFileName());
