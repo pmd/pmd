@@ -542,14 +542,18 @@ public class Bug {
     
     <test-code>
     <description>#543 False negative with String concatenation</description>
-    <expected-problems>1</expected-problems>
+    <expected-problems>3</expected-problems>
     <code><![CDATA[
 public class Foo {
     public void foo(String a) throws Exception {
         try {
             int i = Integer.parseInt(a);
-        } catch(Exception e){
-            throw new Exception("something bad:" + e);
+        } catch(java.io.FileNotFoundException e) {
+            throw new Exception("file not found:" + e.toString());
+        } catch(java.io.IOException e) {
+            throw new Exception("I/O error:" + e);
+        } catch(Exception e) {
+            throw new Exception("something bad:" + (e));
         }
     }
 }

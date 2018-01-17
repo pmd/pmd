@@ -140,9 +140,8 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
         if (target != null && baseNode != null) {
             List<ASTName> nameNodes = baseNode.findDescendantsOfType(ASTName.class);
             for (ASTName nameNode : nameNodes) {
-                if (target.equals(nameNode.getImage())) {
-                    boolean isPartOfStringConcatenation = 
-                        (nameNode.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTAdditiveExpression);
+                if (target.equals(nameNode.getImage())) {                	
+                    boolean isPartOfStringConcatenation = isStringConcat(nameNode, baseNode);                        
                     if (!isPartOfStringConcatenation) {
                         match = true;
                         break;
@@ -151,6 +150,23 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
             }
         }
         return match;
+    }
+    /**
+     * Checks whether the given childNode is part of an additive expression (String concatenation) limiting search to base Node.
+     * @param childNode
+     * @param baseNode
+     * @return
+     */
+    private boolean isStringConcat(Node childNode, Node baseNode) {
+    	Node currentNode = childNode;
+    	// limit to 10 levels
+    	for (int i = 0; i < 10 && currentNode != null && currentNode != baseNode; i++) {
+    		currentNode = currentNode.jjtGetParent();
+    		if (currentNode instanceof ASTAdditiveExpression) {
+    			return true;
+    		}
+    	}
+    	return false;
     }
 
     private void ck(Object data, String target, ASTThrowStatement throwStatement, Node baseNode) {
