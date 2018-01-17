@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.docs;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -85,10 +86,12 @@ public class SidebarGenerator {
     }
 
     public Map<String, Object> loadSidebar() throws IOException {
-        Yaml yaml = new Yaml();
-        @SuppressWarnings("unchecked")
-        Map<String, Object> sidebar = (Map<String, Object>) yaml.load(Files.newBufferedReader(sidebarPath, StandardCharsets.UTF_8));
-        return sidebar;
+        try (Reader reader = Files.newBufferedReader(sidebarPath, StandardCharsets.UTF_8)) {
+            Yaml yaml = new Yaml();
+            @SuppressWarnings("unchecked")
+            Map<String, Object> sidebar = (Map<String, Object>) yaml.load(reader);
+            return sidebar;
+        }
     }
 
     public void writeSidebar(Map<String, Object> sidebar) throws IOException {
