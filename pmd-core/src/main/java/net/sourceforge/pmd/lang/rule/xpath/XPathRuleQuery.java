@@ -14,12 +14,14 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 /**
  * This interface captures the logic needed by XPathRule to implement an XPath
  * based query on an AST Node.
+ *
  * <p>
  * Implementations of this class do not need to be thread-safe, but they will be
  * reused to query against different AST Nodes. Therefore, internal state should
  * be maintained in a fashion consistent with reuse. Further, implementations
  * are recommended to manage internal state that is invariant over AST Nodes in
  * a fashion which facilities high performance (e.g. caching).
+ * </p>
  */
 public interface XPathRuleQuery {
 

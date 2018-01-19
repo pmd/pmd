@@ -41,7 +41,7 @@ public abstract class AbstractXPathRuleQuery implements XPathRuleQuery {
      * {@inheritDoc}
      */
     @Override
-    public void setXPath(String xpath) {
+    public void setXPath(final String xpath) {
         this.xpath = xpath;
     }
 

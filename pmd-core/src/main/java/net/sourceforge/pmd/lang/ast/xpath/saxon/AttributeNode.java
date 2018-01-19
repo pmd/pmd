@@ -44,7 +44,7 @@ public class AttributeNode extends AbstractNodeInfo {
     @Override
     public Value atomize() throws XPathException {
         if (value == null) {
-            Object v = attribute.getValue();
+            final Object v = attribute.getValue();
             value = SaxonXPathRuleQuery.getAtomicRepresentation(v);
         }
         return value;

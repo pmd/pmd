@@ -115,8 +115,9 @@ public abstract class AbstractNode implements Node {
     }
 
     /**
-     * Subclasses should implement this method to return a name usable with
-     * XPathRule for evaluating Element Names.
+     * fixme Remove dependency on method regarding {@link net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery}.
+     *
+     * <p>Subclasses should implement this method to return a name usable with XPathRule for evaluating Element Names.</p>
      */
     @Override
     public abstract String toString();

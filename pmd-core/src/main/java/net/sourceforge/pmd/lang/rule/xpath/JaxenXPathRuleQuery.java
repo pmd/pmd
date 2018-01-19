@@ -8,7 +8,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -52,84 +51,95 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
 
     private static final String AST_ROOT = "_AST_ROOT_";
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isSupportedVersion(String version) {
         return XPATH_1_0.equals(version);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Node> evaluate(Node node, RuleContext data) {
-        List<Node> results = new ArrayList<>();
+    public List<Node> evaluate(final Node node, final RuleContext data) {
+        final List<Node> results = new ArrayList<>();
+
         try {
-            initializeXPathExpression(
-                    data.getLanguageVersion().getLanguageVersionHandler().getXPathHandler().getNavigator());
-            List<XPath> xpaths = nodeNameToXPaths.get(node.toString());
-            if (xpaths == null) {
-                xpaths = nodeNameToXPaths.get(AST_ROOT);
+            initializeExpressionIfStatusIsNoneOrPartial(data.getLanguageVersion().getLanguageVersionHandler().getXPathHandler().getNavigator());
+
+            List<XPath> xPaths = getXPathsForNodeOrDefault(node.toString());
+            for (final XPath xpath : xPaths) {
+                final List<Node> matchedNodes = xpath.selectNodes(node);
+                results.addAll(matchedNodes);
             }
-            for (XPath xpath : xpaths) {
-                List<Node> nodes = xpath.selectNodes(node);
-                results.addAll(nodes);
-            }
-        } catch (JaxenException ex) {
-            throw new RuntimeException(ex);
+        } catch (final JaxenException e) {
+            throw new RuntimeException(e);
         }
         return results;
     }
 
     /**
-     * {@inheritDoc}
+     * Get the XPath queries associated with the node name. If there are none, the XPath queries for the {@link #AST_ROOT}
+     * are obtained.
+     *
+     * @param nodeName the id of the node
+     * @return the list of XPath queries that match the node name
      */
+    private List<XPath> getXPathsForNodeOrDefault(final String nodeName) {
+        List<XPath> xPaths = nodeNameToXPaths.get(nodeName);
+        if (xPaths == null) {
+            xPaths = nodeNameToXPaths.get(AST_ROOT);
+        }
+        return xPaths;
+    }
+
     @Override
     public List<String> getRuleChainVisits() {
         try {
             // No Navigator available in this context
-            initializeXPathExpression(null);
+            initializeExpressionIfStatusIsNoneOrPartial(null);
             return super.getRuleChainVisits();
-        } catch (JaxenException ex) {
+        } catch (final JaxenException ex) {
             throw new RuntimeException(ex);
         }
     }
 
+    /**
+     *
+     * @param navigator the navigator which is required to be non-null if the {@link #initializationStatus} is PARTIAL.
+     * @throws JaxenException
+     */
     @SuppressWarnings("unchecked")
-    private void initializeXPathExpression(Navigator navigator) throws JaxenException {
+    private void initializeExpressionIfStatusIsNoneOrPartial(final Navigator navigator) throws JaxenException {
         if (initializationStatus == InitializationStatus.FULL) {
             return;
-        } else if (initializationStatus == InitializationStatus.PARTIAL && navigator == null) {
-            if (LOG.isLoggable(Level.SEVERE)) {
-                LOG.severe("XPathRule is not initialized because no navigator was provided. "
-                        + "Please make sure to implement getXPathHandler in the handler of the language. "
-                        + "See also AbstractLanguageVersionHandler.");
-            }
+        }
+        if (initializationStatus == InitializationStatus.PARTIAL && navigator == null) {
+            LOG.severe("XPathRule is not initialized because no navigator was provided. "
+                    + "Please make sure to implement getXPathHandler in the handler of the language. "
+                    + "See also AbstractLanguageVersionHandler.");
             return;
         }
+        initializeXPathExpression(navigator);
+    }
 
-        //
-        // Attempt to use the RuleChain with this XPath query. To do so, the
-        // queries
-        // should generally look like //TypeA or //TypeA | //TypeB. We will look
-        // at the
-        // parsed XPath AST using the Jaxen APIs to make this determination.
-        // If the query is not exactly what we are looking for, do not use the
-        // RuleChain.
-        //
+    private void initializeXPathExpression(final Navigator navigator) throws JaxenException {
+        /*
+        Attempt to use the RuleChain with this XPath query.
+
+        To do so, the queries should generally look like //TypeA or //TypeA | //TypeB. We will look at the parsed XPath
+        AST using the Jaxen APIs to make this determination.
+
+        If the query is not exactly what we are looking for, do not use the
+        RuleChain.
+        */
         nodeNameToXPaths = new HashMap<>();
 
-        BaseXPath originalXPath = createXPath(xpath, navigator);
-        indexXPath(originalXPath, AST_ROOT);
+        final BaseXPath originalXPath = createXPath(xpath, navigator);
+        addQueryToNode(originalXPath, AST_ROOT);
 
         boolean useRuleChain = true;
-        Deque<Expr> pending = new ArrayDeque<>();
+        final Deque<Expr> pending = new ArrayDeque<>();
         pending.push(originalXPath.getRootExpr());
         while (!pending.isEmpty()) {
-            Expr node = pending.pop();
+            final Expr node = pending.pop();
 
             // Need to prove we can handle this part of the query
             boolean valid = false;
@@ -161,8 +171,9 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
                                 Step allNodeStep = xpathFactory.createAllNodeStep(Axis.SELF);
                                 // Retain all predicates from the original name
                                 // step
-                                for (Iterator<Predicate> i = step2.getPredicates().iterator(); i.hasNext();) {
-                                    allNodeStep.addPredicate(i.next());
+                                final List<Predicate> predicates = step2.getPredicates();
+                                for (Predicate predicate : predicates) {
+                                    allNodeStep.addPredicate(predicate);
                                 }
                                 relativeLocationPath.addStep(allNodeStep);
 
@@ -172,8 +183,8 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
                                     relativeLocationPath.addStep(steps.get(i));
                                 }
 
-                                BaseXPath xpath = createXPath(relativeLocationPath.getText(), navigator);
-                                indexXPath(xpath, ((NameStep) step2).getLocalName());
+                                final BaseXPath xpath = createXPath(relativeLocationPath.getText(), navigator);
+                                addQueryToNode(xpath, ((NameStep) step2).getLocalName());
                                 valid = true;
                             }
                         }
@@ -200,7 +211,7 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
         } else {
             // Use original XPath if we cannot use the RuleChain
             nodeNameToXPaths.clear();
-            indexXPath(originalXPath, AST_ROOT);
+            addQueryToNode(originalXPath, AST_ROOT);
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "Unable to use RuleChain for for XPath: " + xpath);
             }
@@ -213,27 +224,32 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
         } else {
             this.initializationStatus = InitializationStatus.FULL;
         }
-
     }
 
-    private void indexXPath(XPath xpath, String nodeName) {
-        List<XPath> xpaths = nodeNameToXPaths.get(nodeName);
-        if (xpaths == null) {
-            xpaths = new ArrayList<>();
-            nodeNameToXPaths.put(nodeName, xpaths);
+    /**
+     * Relates an XPath query to a node by adding the query to the {@link #nodeNameToXPaths}.
+     *
+     * @param xPath    the query to do over a node
+     * @param nodeName the node on which to do the query
+     */
+    private void addQueryToNode(final XPath xPath, final String nodeName) {
+        List<XPath> xPaths = nodeNameToXPaths.get(nodeName);
+        if (xPaths == null) {
+            xPaths = new ArrayList<>();
+            nodeNameToXPaths.put(nodeName, xPaths);
         }
-        xpaths.add(xpath);
+        xPaths.add(xPath);
     }
 
-    private BaseXPath createXPath(String xpathQueryString, Navigator navigator) throws JaxenException {
+    private BaseXPath createXPath(final String xpathQueryString, final Navigator navigator) throws JaxenException {
+        final BaseXPath xpath = new BaseXPath(xpathQueryString, navigator);
 
-        BaseXPath xpath = new BaseXPath(xpathQueryString, navigator);
         if (properties.size() > 1) {
-            SimpleVariableContext vc = new SimpleVariableContext();
+            final SimpleVariableContext vc = new SimpleVariableContext();
             for (Entry<PropertyDescriptor<?>, Object> e : properties.entrySet()) {
-                String propName = e.getKey().name();
+                final String propName = e.getKey().name();
                 if (!"xpath".equals(propName)) {
-                    Object value = e.getValue();
+                    final Object value = e.getValue();
                     vc.setVariableValue(propName, value != null ? value.toString() : null);
                 }
             }

@@ -21,13 +21,12 @@ import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.properties.EnumeratedProperty;
-import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * Rule that tries to match an XPath expression against a DOM view of an AST.
- *
- * <p>This rule needs a "xpath" property value in order to function.
+ * <p>
+ * <p>This rule needs a "xpath" property value in order to function.</p>
  */
 public class XPathRule extends AbstractRule {
 
@@ -43,29 +42,41 @@ public class XPathRule extends AbstractRule {
         XPATH_VERSIONS = Collections.unmodifiableMap(tmp);
     }
 
-
-
     public static final EnumeratedProperty<String> VERSION_DESCRIPTOR
-        = new EnumeratedProperty<>("version",
-                                   "XPath specification version", XPATH_VERSIONS, XPATH_1_0, String.class, 2.0f);
+            = new EnumeratedProperty<>("version",
+            "XPath specification version", XPATH_VERSIONS, XPATH_1_0, String.class, 2.0f);
 
+    /**
+     * This is initialized only once when calling {@link #evaluate(Node, RuleContext)} or {@link #getRuleChainVisits()}.
+     */
     private XPathRuleQuery xpathRuleQuery;
 
+    /**
+     * Creates a new XPathRule without the corresponding XPath query.
+     */
     public XPathRule() {
         definePropertyDescriptor(XPATH_DESCRIPTOR);
         definePropertyDescriptor(VERSION_DESCRIPTOR);
     }
 
-    public XPathRule(String xPath) {
+    /**
+     * Creates a new XPathRule and associates the XPath query.
+     */
+    public XPathRule(final String xPath) {
         this();
         setXPath(xPath);
     }
 
-    public void setXPath(String xPath) {
+    /**
+     * Sets the XPath to query against the desired nodes in {@link #apply(List, RuleContext)}.
+     *
+     * @param xPath the XPath query
+     */
+    public void setXPath(final String xPath) {
         setProperty(XPathRule.XPATH_DESCRIPTOR, xPath);
     }
 
-    public void setVersion(String version) {
+    public void setVersion(final String version) {
         setProperty(XPathRule.VERSION_DESCRIPTOR, version);
     }
 
@@ -73,68 +84,79 @@ public class XPathRule extends AbstractRule {
      * Apply the rule to all nodes.
      */
     @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        for (Node node : nodes) {
+    public void apply(final List<? extends Node> nodes, final RuleContext ctx) {
+        for (final Node node : nodes) {
             evaluate(node, ctx);
         }
     }
 
     /**
-     * Evaluate the XPath query with the AST node. All matches are reported as
-     * violations.
+     * Evaluate the XPath query with the AST node. All matches are reported as violations.
      *
-     * @param node
-     *            The Node that to be checked.
-     * @param data
-     *            The RuleContext.
+     * @param node The Node that to be checked.
+     * @param data The RuleContext.
      */
-    public void evaluate(Node node, RuleContext data) {
-        init();
-        List<Node> nodes = xpathRuleQuery.evaluate(node, data);
-        if (nodes != null) {
-            for (Node n : nodes) {
-                addViolation(data, n, n.getImage());
-            }
-        }
+    public void evaluate(final Node node, final RuleContext data) {
+        initXPathRuleQuery();
 
+        final List<Node> nodesWithViolation = xpathRuleQuery.evaluate(node, data);
+        for (final Node nodeWithViolation : nodesWithViolation) {
+            addViolation(data, nodeWithViolation, nodeWithViolation.getImage());
+        }
+    }
+
+    /**
+     * Initializes {@link #xpathRuleQuery} iff {@link #xPathRuleQueryNeedsInitialization()} is true. To select the
+     * engine in which the query will be run it looks at the XPath version.
+     */
+    private void initXPathRuleQuery() {
+        if (xPathRuleQueryNeedsInitialization()) {
+            final String xpath = getProperty(XPATH_DESCRIPTOR);
+            final String version = getProperty(VERSION_DESCRIPTOR);
+
+            initRuleQueryBasedOnVersion(version);
+
+            xpathRuleQuery.setXPath(xpath);
+            xpathRuleQuery.setVersion(version);
+            xpathRuleQuery.setProperties(getPropertiesByPropertyDescriptor());
+        }
+    }
+
+    /**
+     * Checks if the {@link #xpathRuleQuery} is null and therefore requires initialization;
+     *
+     * @return true if {@link #xpathRuleQuery} is null
+     */
+    private boolean xPathRuleQueryNeedsInitialization() {
+        return xpathRuleQuery == null;
+    }
+
+    private void initRuleQueryBasedOnVersion(final String version) {
+        if (XPATH_1_0.equals(version)) {
+            xpathRuleQuery = new JaxenXPathRuleQuery();
+        } else {
+            xpathRuleQuery = new SaxonXPathRuleQuery();
+        }
     }
 
     @Override
     public List<String> getRuleChainVisits() {
-        if (init()) {
-            for (String nodeName : xpathRuleQuery.getRuleChainVisits()) {
+        if (xPathRuleQueryNeedsInitialization()) {
+            initXPathRuleQuery();
+
+            for (final String nodeName : xpathRuleQuery.getRuleChainVisits()) {
                 super.addRuleChainVisit(nodeName);
             }
         }
         return super.getRuleChainVisits();
     }
 
-    private boolean init() {
-        if (xpathRuleQuery == null) {
-            String xpath = getProperty(XPATH_DESCRIPTOR);
-            String version = getProperty(VERSION_DESCRIPTOR);
-            if (XPATH_1_0.equals(version)) {
-                xpathRuleQuery = new JaxenXPathRuleQuery();
-            } else {
-                xpathRuleQuery = new SaxonXPathRuleQuery();
-            }
-            xpathRuleQuery.setXPath(xpath);
-            xpathRuleQuery.setVersion(version);
-            xpathRuleQuery.setProperties(this.getPropertiesByPropertyDescriptor());
-            return true;
-        }
-        return false;
-    }
-
-    public boolean hasXPathExpression() {
-        return StringUtils.isNotBlank(getProperty(XPATH_DESCRIPTOR));
-    }
-
-    /**
-     * @see PropertySource#dysfunctionReason()
-     */
     @Override
     public String dysfunctionReason() {
         return hasXPathExpression() ? null : "Missing xPath expression";
+    }
+
+    private boolean hasXPathExpression() {
+        return StringUtils.isNotBlank(getProperty(XPATH_DESCRIPTOR));
     }
 }
