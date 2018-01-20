@@ -24,8 +24,8 @@ public final class JavaQualifiedName implements QualifiedName {
      * Pattern specifying the format.
      *
      * <pre>
-     *    ((\w+\.)+|\.)             # packages
-     *    (                         # classes
+     *     ((\w+\.)+|\.)            # packages
+     *     (                        # classes
      *       (\w+)                  # primary class
      *       (
      *         \$                   # separator

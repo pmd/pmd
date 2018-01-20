@@ -6,19 +6,33 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+
 /**
  * Groups enums, classes and interface declarations.
  *
  * @author Clément Fournier
  */
-public interface ASTAnyTypeDeclaration extends JavaQualifiableNode, AccessNode, JavaNode {
+public abstract class ASTAnyTypeDeclaration extends AbstractJavaAccessTypeNode implements JavaQualifiableNode, AccessNode, JavaNode {
+
+    private JavaQualifiedName qualifiedName;
+
+
+    public ASTAnyTypeDeclaration(int i) {
+        super(i);
+    }
+
+
+    public ASTAnyTypeDeclaration(JavaParser parser, int i) {
+        super(parser, i);
+    }
+
 
     /**
      * Finds the type kind of this declaration.
      *
      * @return The type kind of this declaration.
      */
-    TypeKind getTypeKind();
+    public abstract TypeKind getTypeKind();
 
 
     /**
@@ -26,13 +40,44 @@ public interface ASTAnyTypeDeclaration extends JavaQualifiableNode, AccessNode, 
      *
      * @return The member declarations declared in this type declaration
      */
-    List<ASTAnyTypeBodyDeclaration> getDeclarations();
+    public abstract List<ASTAnyTypeBodyDeclaration> getDeclarations();
+
+
+    /**
+     * Returns true if this type declaration is nested inside an interface, class or annotation.
+     */
+    public final boolean isNested() {
+        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
+                || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
+    }
+
+
+    @Override
+    public final JavaQualifiedName getQualifiedName() {
+        if (qualifiedName == null) {
+            qualifiedName = buildQualifiedName();
+        }
+
+        return qualifiedName;
+    }
+
+
+    /** Create the qualified name, which is then cached in the node. */
+    protected JavaQualifiedName buildQualifiedName() {
+        if (isNested()) {
+            ASTAnyTypeDeclaration parent = this.getFirstParentOfType(ASTAnyTypeDeclaration.class);
+            JavaQualifiedName parentQN = parent.getQualifiedName();
+            return JavaQualifiedName.ofNestedClass(parentQN, this.getImage());
+        }
+
+        return JavaQualifiedName.ofOuterClass(this);
+    }
 
 
     /**
      * The kind of type this node declares.
      */
-    enum TypeKind {
+    public enum TypeKind {
         CLASS, INTERFACE, ENUM, ANNOTATION
     }
 
