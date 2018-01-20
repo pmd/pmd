@@ -132,7 +132,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
         if (val == (int) val) {
             return String.valueOf((int) val);
         } else {
-            return String.format(Locale.ROOT, "%." + 4 + "f", val);
+            return String.format(Locale.ROOT, "%.4f", val);
         }
     }
 
@@ -165,6 +165,6 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
                                                        "" + niceDoubleString(methodValue), });
             }
         }
-        return data;
+        return super.visit(node, data);
     }
 }

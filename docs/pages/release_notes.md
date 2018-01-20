@@ -52,7 +52,6 @@ at <https://pmd.github.io/latest/>.
     *   [#794](https://github.com/pmd/pmd/issues/794): \[doc] Broken documentation links for 6.0.0
 *   java
     *   [#793](https://github.com/pmd/pmd/issues/793): \[java] Parser error with private method in nested classes in interfaces
-    *   [#812](https://github.com/pmd/pmd/issues/812): \[java] Exception applying rule DataClass
     *   [#814](https://github.com/pmd/pmd/issues/814): \[java] UnsupportedClassVersionError is failure instead of a warning
     *   [#831](https://github.com/pmd/pmd/issues/831): \[java] StackOverflow in JavaTypeDefinitionSimple.toString
 *   java-bestpractices
@@ -62,6 +61,8 @@ at <https://pmd.github.io/latest/>.
     *   [#817](https://github.com/pmd/pmd/issues/817): \[java] UnnecessaryModifierRule crashes on valid code
 *   java-design
     *   [#785](https://github.com/pmd/pmd/issues/785): \[java] NPE in DataClass rule
+    *   [#812](https://github.com/pmd/pmd/issues/812): \[java] Exception applying rule DataClass
+    *   [#827](https://github.com/pmd/pmd/issues/827): \[java] GodClass crashes with java.lang.NullPointerException
 *   java-performance
     *   [#841](https://github.com/pmd/pmd/issues/841): \[java] InsufficientStringBufferDeclaration NumberFormatException
 
