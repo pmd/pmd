@@ -76,6 +76,7 @@ public final class JavaQualifiedName implements QualifiedName {
 
     // maps class names to the names of their local classes, to the count of local classes with the same name
     private static final Map<JavaQualifiedName, Map<String, Integer>> LOCAL_INDICES = new WeakHashMap<>();
+    private static final Pattern LOCAL_INDEX_PATTERN = Pattern.compile("(\\d+)(\\w+)");
 
     private String[] packages = null; // unnamed package
     private String[] classes = new String[1];
@@ -292,10 +293,9 @@ public final class JavaQualifiedName implements QualifiedName {
 
         qname.classes = matcher.group(CLASSES_GROUP_INDEX).split("\\$");
         qname.localIndices = new int[qname.classes.length];
-        Pattern localIndexPattern = Pattern.compile("(\\d+)(\\w+)");
 
         for (int i = 0; i < qname.classes.length; i++) {
-            Matcher localIndexMatcher = localIndexPattern.matcher(qname.classes[i]);
+            Matcher localIndexMatcher = LOCAL_INDEX_PATTERN.matcher(qname.classes[i]);
             if (localIndexMatcher.matches()) {
                 qname.localIndices[i] = Integer.parseInt(localIndexMatcher.group(1));
                 qname.classes[i] = localIndexMatcher.group(2);
