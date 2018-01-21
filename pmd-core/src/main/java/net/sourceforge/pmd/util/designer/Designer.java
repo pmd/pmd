@@ -102,6 +102,7 @@ import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -135,7 +136,7 @@ public class Designer implements ClipboardOwner {
     private final JTextArea xpathQueryArea = new JTextArea(15, 30);
     private final ButtonGroup xpathVersionButtonGroup = new ButtonGroup();
     private final TreeWidget symbolTableTreeWidget = new TreeWidget(new Object[0]);
-    private final JFrame frame = new JFrame("PMD Rule Designer (v " + PMD.VERSION + ')');
+    private final JFrame frame = new JFrame("PMD Rule Designer (v " + PMDVersion.VERSION + ')');
     private final DFAPanel dfaPanel = new DFAPanel();
     private final JRadioButtonMenuItem[] languageVersionMenuItems = new JRadioButtonMenuItem[getSupportedLanguageVersions().length];
     private static final String SETTINGS_FILE_NAME = System.getProperty("user.home")

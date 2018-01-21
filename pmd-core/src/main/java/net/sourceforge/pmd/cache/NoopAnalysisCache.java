@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.stat.Metric;
@@ -24,7 +24,7 @@ public class NoopAnalysisCache implements AnalysisCache {
     
     public NoopAnalysisCache() {
         if (LOG.isLoggable(Level.WARNING)) {
-            final String version = "unknown".equals(PMD.VERSION) || PMD.VERSION.endsWith("-SNAPSHOT") ? "latest" : "pmd-" + PMD.VERSION;
+            final String version = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
             LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
                 + "https://pmd.github.io/" + version + "/pmd_userdocs_getting_started.html#incremental-analysis");
         }

@@ -21,7 +21,7 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -53,7 +53,7 @@ public class MainFrame extends JFrame implements ActionListener, ViewerModelList
      * constructs and shows the frame
      */
     public MainFrame() {
-        super(NLS.nls("MAIN.FRAME.TITLE") + " (v " + PMD.VERSION + ')');
+        super(NLS.nls("MAIN.FRAME.TITLE") + " (v " + PMDVersion.VERSION + ')');
         init();
     }
 

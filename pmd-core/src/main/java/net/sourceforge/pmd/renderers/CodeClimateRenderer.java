@@ -17,6 +17,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -45,9 +46,9 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     }
 
     private static String getPmdDeveloperURL() {
-        String url = "http://pmd.github.io/pmd-" + PMD.VERSION + "/customizing/pmd-developer.html";
-        if (PMD.VERSION.contains("SNAPSHOT") || "unknown".equals(PMD.VERSION)) {
-            url = "http://pmd.sourceforge.net/snapshot/customizing/pmd-developer.html";
+        String url = "https://pmd.github.io/pmd-" + PMDVersion.VERSION + "/customizing/pmd-developer.html";
+        if (PMDVersion.isSnapshot() || PMDVersion.isUnknown()) {
+            url = "https://pmd.github.io/latest/customizing/pmd-developer.html";
         }
         return url;
     }

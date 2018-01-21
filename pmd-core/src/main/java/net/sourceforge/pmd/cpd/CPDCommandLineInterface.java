@@ -13,12 +13,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.util.FileUtil;
-import net.sourceforge.pmd.util.database.DBURI;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.util.FileUtil;
+import net.sourceforge.pmd.util.database.DBURI;
 
 public class CPDCommandLineInterface {
     private static final Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
@@ -177,12 +178,12 @@ public class CPDCommandLineInterface {
     public static String buildUsageText() {
         String helpText = " For example on Windows:" + PMD.EOL;
 
-        helpText += " C:\\>" + "pmd-bin-" + PMD.VERSION + "\\bin\\cpd.bat"
+        helpText += " C:\\>" + "pmd-bin-" + PMDVersion.VERSION + "\\bin\\cpd.bat"
                 + " --minimum-tokens 100 --files c:\\jdk18\\src\\java" + PMD.EOL;
         helpText += PMD.EOL;
 
         helpText += " For example on *nix:" + PMD.EOL;
-        helpText += " $ " + "pmd-bin-" + PMD.VERSION + "/bin/run.sh cpd"
+        helpText += " $ " + "pmd-bin-" + PMDVersion.VERSION + "/bin/run.sh cpd"
                 + " --minimum-tokens 100 --files /path/to/java/code" + PMD.EOL;
         helpText += PMD.EOL;
 

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cli;
 import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -93,7 +94,7 @@ public class PMDCommandLineInterface {
 
     private static String getWindowsLaunchCmd() {
         final String WINDOWS_PROMPT = "C:\\>";
-        final String launchCmd = "pmd-bin-" + PMD.VERSION + "\\bin\\pmd.bat";
+        final String launchCmd = "pmd-bin-" + PMDVersion.VERSION + "\\bin\\pmd.bat";
         return WINDOWS_PROMPT + launchCmd;
     }
 
@@ -112,7 +113,7 @@ public class PMDCommandLineInterface {
 
     private static String getUnixExample() {
         final String UNIX_PROMPT = "$ ";
-        final String launchCmd = "pmd-bin-" + PMD.VERSION + "/bin/run.sh pmd";
+        final String launchCmd = "pmd-bin-" + PMDVersion.VERSION + "/bin/run.sh pmd";
         return "For example on *nix: " + PMD.EOL + UNIX_PROMPT + launchCmd
                 + " -dir /home/workspace/src/main/java/code -f html -rulesets java-basic,java-design" + PMD.EOL
                 + UNIX_PROMPT + launchCmd
@@ -138,7 +139,7 @@ public class PMDCommandLineInterface {
     }
 
     public static String jarName() {
-        return "pmd-" + PMD.VERSION + ".jar";
+        return "pmd-" + PMDVersion.VERSION + ".jar";
     }
 
     private static String getReports() {
