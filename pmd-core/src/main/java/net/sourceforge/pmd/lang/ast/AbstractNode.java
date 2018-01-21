@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import java.util.Objects;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -36,8 +37,8 @@ public abstract class AbstractNode implements Node {
     protected int endColumn;
     private DataFlowNode dataFlowNode;
     private Object userData;
-    protected GenericToken firstToken;
-    protected GenericToken lastToken;
+    private GenericToken firstToken;
+    private GenericToken lastToken;
 
     public AbstractNode(int id) {
         this.id = id;
@@ -251,7 +252,7 @@ public abstract class AbstractNode implements Node {
     }
 
     private static <T> void findDescendantsOfType(Node node, Class<T> targetType, List<T> results,
-            boolean crossFindBoundaries) {
+                                                  boolean crossFindBoundaries) {
 
         if (!crossFindBoundaries && node.isFindBoundary()) {
             return;
@@ -362,7 +363,6 @@ public abstract class AbstractNode implements Node {
     }
 
     /**
-     *
      * @param types
      * @return boolean
      */
@@ -425,22 +425,91 @@ public abstract class AbstractNode implements Node {
         // Detach current node of its parent, if any
         final Node parent = jjtGetParent();
         if (parent != null) {
-            parent.removeChildAtIndex(jjtGetChildIndex());
-            jjtSetParent(null);
+            parent.remove(jjtGetChildIndex());
         }
-
-        // TODO [autofix]: Notify action for handling text edition
     }
 
     @Override
-    public void removeChildAtIndex(final int childIndex) {
-        if (0 <= childIndex && childIndex < jjtGetNumChildren()) {
-            // Remove the child at the given index
-            children = ArrayUtils.remove(children, childIndex);
-            // Update the remaining & left-shifted children indexes
-            for (int i = childIndex; i < jjtGetNumChildren(); i++) {
-                jjtGetChild(i).jjtSetChildIndex(i);
-            }
+    public void remove(final int index) {
+        if (0 > index || index >= jjtGetNumChildren()) {
+            return;
+        }
+
+        // Null child may have been caused due to an invalid insertion/addition
+        final Node oldChild = Objects.requireNonNull(children[index]);
+
+        // Remove the child at the given index
+        children = ArrayUtils.remove(children, index);
+        // Update the remaining & left-shifted children indexes
+        for (int i = childIndex; i < jjtGetNumChildren(); i++) {
+            jjtGetChild(i).jjtSetChildIndex(i);
+        }
+
+        // Detach old child node of its parent, if any
+        oldChild.jjtSetParent(null);
+
+        // Finally, report the remove event
+        // removeChildEvent(this, oldChild, index); // TODO [autofix]
+    }
+
+    @Override
+    public int insert(final Node newChild, final int index) {
+        Objects.requireNonNull(newChild);
+        if (index < 0) {
+            return index;
+        }
+        final int numChildren = jjtGetNumChildren();
+        final int insertionIndex = index <= numChildren ? index : numChildren;
+        // Ensure that the given index position is empty
+        makeSpaceForNewChild(insertionIndex);
+        // Once shifted, the given index is empty. Let's add it as a new child
+        children[insertionIndex] = newChild;
+        newChild.jjtSetChildIndex(insertionIndex);
+        newChild.jjtSetParent(this);
+        // Finally, report the insert event
+        // insertChildEvent(this, newChild, insertionIndex); // TODO [autofix]
+        return insertionIndex;
+    }
+
+    @Override
+    public void replace(final Node newChild, final int index) {
+        Objects.requireNonNull(newChild);
+        if (0 > index || index >= jjtGetNumChildren()) {
+            return;
+        }
+
+        // Replace the old child with the new one
+        // Null child may have been caused due to an invalid insertion/addition
+        final Node oldChild = Objects.requireNonNull(children[index]);
+        children[index] = newChild;
+        newChild.jjtSetChildIndex(index);
+        // Attach new child node to its parent
+        newChild.jjtSetParent(this);
+        // Detach old child node of its parent
+        oldChild.jjtSetParent(null);
+        // Finally, report the replace event
+        // replaceChildEvent(this, oldChild, newChild, index); // TODO [autofix]
+    }
+
+    private void makeSpaceForNewChild(final int index) {
+        if (children == null) {
+            children = new Node[index + 1];
+            return; // The children's array is already empty, so there is space for the new child
+        }
+
+        // If there is no child in this index, there is space for the new child
+        if (index < children.length && children[index] == null) {
+            return;
+        }
+
+        // If there is already a child in this index, let's shift them all to the right
+        Node[] newChildren = new Node[children.length + 1];
+        System.arraycopy(children, 0, newChildren, 0, index);
+        System.arraycopy(children, index, newChildren, index + 1, children.length - index);
+        children = newChildren;
+        // Update indexes & right-shifted children indexes
+        for (int i = index + 1; i < jjtGetNumChildren(); i++) {
+            jjtGetChild(i).jjtSetChildIndex(i);
         }
     }
 }
