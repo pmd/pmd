@@ -27,3 +27,6 @@ This is a minor release.
 ### API Changes
 
 ### External Contributions
+
+*   [#830](https://github.com/pmd/pmd/pull/830): \[java] UseArraysAsList: Description added - [Tobias Weimer](https://github.com/tweimer)
+
