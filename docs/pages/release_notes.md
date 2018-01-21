@@ -21,6 +21,9 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   doc
+    *   [#791](https://github.com/pmd/pmd/issues/791): \[doc] Documentation site reorganisation
+
 ### API Changes
 
 ### External Contributions
