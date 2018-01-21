@@ -125,6 +125,7 @@ echo
 echo
 echo "Prepare Next development version:"
 echo "*   Move version/release info from **docs/pages/release_notes.md** to **docs/pages/release_notes_old.md**."
+echo "*   Update version/date info in **docs/_config.yml**."
 echo "*   Update version/release info in **docs/pages/release_notes.md**."
 echo
 cat <<EOF
