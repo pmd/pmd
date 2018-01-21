@@ -63,7 +63,7 @@ sb.append('a');     // use this instead
 
 **Priority:** Medium (3)
 
-Instead of manually copying data between two arrays, use the efficient System.arraycopy method instead.
+Instead of manually copying data between two arrays, use the efficient Arrays.copyOf or System.arraycopy method instead.
 
 ```
 //Statement[(ForStatement or WhileStatement) and
@@ -255,6 +255,7 @@ bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
 **Priority:** Medium High (2)
 
 Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
+Note that new Boolean() is deprecated since JDK 9 for that reason.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.BooleanInstantiationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/BooleanInstantiationRule.java)
 
@@ -278,6 +279,7 @@ Boolean buz = Boolean.valueOf(false);    // ...., just reference Boolean.FALSE;
 
 Calling new Byte() causes memory allocation that can be avoided by the static Byte.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+Note that new Byte() is deprecated since JDK 9 for that reason.
 
 ```
 //PrimaryPrefix/AllocationExpression
@@ -452,6 +454,7 @@ good.append("This is a long string, which is pre-sized");
 
 Calling new Integer() causes memory allocation that can be avoided by the static Integer.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+Note that new Integer() is deprecated since JDK 9 for that reason.
 
 ```
 //PrimaryPrefix
@@ -482,6 +485,7 @@ public class Foo {
 
 Calling new Long() causes memory allocation that can be avoided by the static Long.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+Note that new Long() is deprecated since JDK 9 for that reason.
 
 ```
 //PrimaryPrefix
@@ -600,6 +604,7 @@ public class C {
 
 Calling new Short() causes memory allocation that can be avoided by the static Short.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+Note that new Short() is deprecated since JDK 9 for that reason.
 
 ```
 //PrimaryPrefix
@@ -825,8 +830,16 @@ public class SimpleTest extends TestCase {
 
 **Priority:** Medium (3)
 
+ 
 The java.util.Arrays class has a "asList" method that should be used when you want to create a new List from
 an array of objects. It is faster than executing a loop to copy all the elements of the array one by one.
+
+Note that the result of Arrays.asList() is backed by the specified array,
+changes in the returned list will result in the array to be modified.
+For that reason, it is not possible to add new elements to the returned list of Arrays.asList() (UnsupportedOperationException).
+You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you (e.g. because of concurrent access).
+
+	
 
 ```
 //Statement[
@@ -866,7 +879,7 @@ an array of objects. It is faster than executing a loop to copy all the elements
 public class Test {
     public void foo(Integer[] ints) {
         // could just use Arrays.asList(ints)
-        List l= new ArrayList(10);
+        List<Integer> l= new ArrayList<>(100);
         for (int i=0; i< 100; i++) {
             l.add(ints[i]);
         }

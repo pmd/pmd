@@ -15,8 +15,6 @@ entries:
       url: /tocpage
       output: pdf
       type: frontmatter
-
-# ABOUT
   - title: About
     output: web, pdf
     folderitems:
@@ -30,8 +28,6 @@ entries:
     - title: Getting help
       url: /pmd_about_help.html
       output: web, pdf
-
-# USER DOCUMENTATION
   - title: User Documentation
     output: web, pdf
     folderitems:
@@ -98,8 +94,6 @@ entries:
         - title: Other Tools / Integrations
           output: web, pdf
           url: /pmd_userdocs_tools.html
-
-# RULE REFERENCE
   - title: Rule Reference
     output: web, pdf
     folderitems:
@@ -292,8 +286,6 @@ entries:
         - title: Performance
           output: web, pdf
           url: /pmd_rules_xsl_performance.html
-
-# LANGUAGE SPECIFIC DOCUMENTATION
   - title: Language Specific Documentation
     output: web, pdf
     folderitems:
@@ -306,8 +298,6 @@ entries:
     - title: Apex code metrics
       url: /pmd_apex_metrics_index.html
       output: web, pdf
-
-# DEVELOPER DOCUMENTATION
   - title: Developer Documentation
     output: web, pdf
     folderitems:
@@ -335,17 +325,15 @@ entries:
       - title: Major contributions
         output: web, pdf
         subfolderitems:
-          - title: Adding a new language
-            url: /pmd_devdocs_major_adding_new_language.html
-            output: web, pdf
-          - title: Adding a new CPD language
-            url: /pmd_devdocs_major_adding_new_cpd_language.html
-            output: web, pdf
-          - title: Adding metrics support to a language
-            url: /pmd_devdocs_major_adding_new_metrics_framework.html
-            output: web, pdf
-
-  # PROJECT DOCUMENTATION
+        - title: Adding a new language
+          url: /pmd_devdocs_major_adding_new_language.html
+          output: web, pdf
+        - title: Adding a new CPD language
+          url: /pmd_devdocs_major_adding_new_cpd_language.html
+          output: web, pdf
+        - title: Adding metrics support to a language
+          url: /pmd_devdocs_major_adding_new_metrics_framework.html
+          output: web, pdf
   - title: Project documentation
     output: web, pdf
     folderitems:
@@ -391,5 +379,4 @@ entries:
         - title: Merging pull requests
           url: /pmd_projectdocs_committers_merging_pull_requests.html
           output: web, pdf
-
 

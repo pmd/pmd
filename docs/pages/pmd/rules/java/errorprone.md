@@ -218,6 +218,8 @@ for (int i = 0; i < 10; i++) {
 
 The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
 that there are no more references to the object. It should not be invoked by application logic.
+            
+Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCallingFinalizeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidCallingFinalizeRule.java)
 
@@ -1504,7 +1506,7 @@ public void doSomething() {
 
 **Priority:** Medium (3)
 
-Empty finalize methods serve no purpose and should be removed.
+Empty finalize methods serve no purpose and should be removed. Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 
 ```
 //MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]
@@ -1851,7 +1853,7 @@ if (x == null) {        // preferred
 
 **Priority:** Medium (3)
 
-If the finalize() is implemented, its last action should be to call super.finalize.
+If the finalize() is implemented, its last action should be to call super.finalize. Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 
 ```
 //MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]
@@ -1890,7 +1892,7 @@ protected void finalize() {
 
 **Priority:** Medium (3)
 
-If the finalize() is implemented, it should do something besides just calling super.finalize().
+If the finalize() is implemented, it should do something besides just calling super.finalize(). Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 
 ```
 //MethodDeclaration[MethodDeclarator[@Image="finalize"][not(FormalParameters/*)]]
@@ -1923,6 +1925,8 @@ protected void finalize() {
 
 Methods named finalize() should not have parameters.  It is confusing and most likely an attempt to
 overload Object.finalize(). It will not be called by the VM.
+            
+Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 
 ```
 //MethodDeclaration
@@ -1952,6 +1956,8 @@ public class Foo {
 
 When overriding the finalize(), the new method should be set as protected.  If made public, 
 other classes may invoke it at inappropriate times.
+            
+Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 
 ```
 //MethodDeclaration[@Protected="false"]
