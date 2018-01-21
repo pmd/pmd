@@ -13,13 +13,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.database.DBURI;
+
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 
 public class CPDCommandLineInterface {
     private static final Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
