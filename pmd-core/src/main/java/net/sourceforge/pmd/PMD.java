@@ -6,7 +6,6 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,14 +13,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
@@ -79,8 +75,10 @@ public class PMD {
 
     /**
      * Constant that contains always the current version of PMD.
+     * @deprecated Use {@link PMDVersion#VERSION} instead.
      */
-    public static final String VERSION;
+    @Deprecated // to be removed with PMD 7.0.0.
+    public static final String VERSION = PMDVersion.VERSION;
 
     /**
      * Create a PMD instance using a default Configuration. Changes to the
@@ -475,29 +473,5 @@ public class PMD {
             }
         }
         return status;
-    }
-
-    /**
-     * Determines the version from maven's generated pom.properties file.
-     */
-    static {
-        String pmdVersion = null;
-        InputStream stream = PMD.class
-                .getResourceAsStream("/META-INF/maven/net.sourceforge.pmd/pmd-core/pom.properties");
-        if (stream != null) {
-            try {
-                Properties properties = new Properties();
-                properties.load(stream);
-                pmdVersion = properties.getProperty("version");
-            } catch (IOException e) {
-                LOG.log(Level.FINE, "Couldn't determine version of PMD", e);
-            } finally {
-                IOUtils.closeQuietly(stream);
-            }
-        }
-        if (pmdVersion == null) {
-            pmdVersion = "unknown";
-        }
-        VERSION = pmdVersion;
     }
 }
