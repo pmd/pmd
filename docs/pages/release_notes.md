@@ -4,22 +4,20 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## ????? - 6.0.1-SNAPSHOT
+## 21-January-2018 - 6.0.1
 
-The PMD team is pleased to announce PMD 6.0.1-SNAPSHOT.
+The PMD team is pleased to announce PMD 6.0.1.
 
 This is a bug fixing release.
 
 ### Table Of Contents
 
-* [New and noteworthy](#new-and-noteworthy)
+* [Additional information about the new introduced rule categories](#additional-information-about-the-new-introduced-rule-categories)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
 * [External Contributions](#external-contributions)
 
-### New and noteworthy
-
-#### Additional information about the new introduced rule categories
+### Additional information about the new introduced rule categories
 
 With the release of PMD 6.0.0, all rules have been sorted into one of the following eight categories:
 
@@ -74,6 +72,9 @@ to migrate your current ruleset. That backwards compatibility will be maintained
     *   [#866](https://github.com/pmd/pmd/issues/866): \[java] rulesets/java/typeresolution.xml lists non-existent rules
 
 ### API Changes
+
+*   The constant `net.sourceforge.pmd.PMD.VERSION` has been deprecated and will be removed with PMD 7.0.0.
+    Please use `net.sourceforge.pmd.PMDVersion.VERSION` instead.
 
 ### External Contributions
 
