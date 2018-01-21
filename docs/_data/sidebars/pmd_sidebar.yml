@@ -15,6 +15,8 @@ entries:
       url: /tocpage
       output: pdf
       type: frontmatter
+
+# ABOUT
   - title: About
     output: web, pdf
     folderitems:
@@ -28,198 +30,76 @@ entries:
     - title: Getting help
       url: /pmd_about_help.html
       output: web, pdf
+
+# USER DOCUMENTATION
   - title: User Documentation
     output: web, pdf
     folderitems:
+    - title: Getting started
+      url: /pmd_userdocs_getting_started.html
+      output: web, pdf
+    - title: Understanding rulesets
+      url: /pmd_userdocs_understanding_rulesets.html
+      output: web, pdf
+    - title: Making rulesets
+      url: /pmd_userdocs_making_rulesets.html
+      output: web, pdf
+    - title: Using rule properties
+      url: /pmd_userdocs_using_properties.html
+      output: web, pdf
+    - title: Best practices
+      url: /pmd_userdocs_best_practices.html
+      output: web, pdf
+    - title: Suppressing warnings
+      url: /pmd_userdocs_suppressing_warnings.html
+      output: web, pdf
     - title: null
       output: web, pdf
       subfolders:
-      - title: Apex Rules
+      - title: Extending PMD
         output: web, pdf
         subfolderitems:
-        - title: Index
+        - title: Writing a rule
+          url: /pmd_userdocs_extending_writing_pmd_rules.html
           output: web, pdf
-          url: /pmd_rules_apex.html
-        - title: Best Practices
+        - title: Writing XPath rules
+          url: /pmd_userdocs_extending_writing_xpath_rules.html
           output: web, pdf
-          url: /pmd_rules_apex_bestpractices.html
-        - title: Code Style
+        - title: Defining rule properties
+          url: /pmd_userdocs_extending_defining_properties.html
           output: web, pdf
-          url: /pmd_rules_apex_codestyle.html
-        - title: Design
+        - title: Using and defining code metrics
+          url: /pmd_userdocs_extending_metrics_howto.html
           output: web, pdf
-          url: /pmd_rules_apex_design.html
-        - title: Error Prone
+        - title: Rule guidelines
+          url: /pmd_userdocs_extending_rule_guidelines.html
           output: web, pdf
-          url: /pmd_rules_apex_errorprone.html
-        - title: Performance
+        - title: Testing your rules
+          url: /pmd_userdocs_extending_testing.html
           output: web, pdf
-          url: /pmd_rules_apex_performance.html
-        - title: Security
-          output: web, pdf
-          url: /pmd_rules_apex_security.html
+    - title: Copy-paste detection
+      url: /pmd_userdocs_cpd.html
+      output: web, pdf
     - title: null
       output: web, pdf
       subfolders:
-      - title: Ecmascript Rules
+      - title: Tools / Integrations
         output: web, pdf
         subfolderitems:
-        - title: Index
+        - title: Maven PMD plugin
           output: web, pdf
-          url: /pmd_rules_ecmascript.html
-        - title: Best Practices
+          url: /pmd_userdocs_tools_maven.html
+        - title: Ant
           output: web, pdf
-          url: /pmd_rules_ecmascript_bestpractices.html
-        - title: Code Style
+          url: /pmd_userdocs_tools_ant.html
+        - title: CI integrations
           output: web, pdf
-          url: /pmd_rules_ecmascript_codestyle.html
-        - title: Error Prone
+          url: /pmd_userdocs_tools_ci.html
+        - title: Other Tools / Integrations
           output: web, pdf
-          url: /pmd_rules_ecmascript_errorprone.html
-    - title: null
-      output: web, pdf
-      subfolders:
-      - title: Java Rules
-        output: web, pdf
-        subfolderitems:
-        - title: Index
-          output: web, pdf
-          url: /pmd_rules_java.html
-        - title: Best Practices
-          output: web, pdf
-          url: /pmd_rules_java_bestpractices.html
-        - title: Code Style
-          output: web, pdf
-          url: /pmd_rules_java_codestyle.html
-        - title: Design
-          output: web, pdf
-          url: /pmd_rules_java_design.html
-        - title: Documentation
-          output: web, pdf
-          url: /pmd_rules_java_documentation.html
-        - title: Error Prone
-          output: web, pdf
-          url: /pmd_rules_java_errorprone.html
-        - title: Multithreading
-          output: web, pdf
-          url: /pmd_rules_java_multithreading.html
-        - title: Performance
-          output: web, pdf
-          url: /pmd_rules_java_performance.html
-    - title: null
-      output: web, pdf
-      subfolders:
-      - title: Java Server Pages Rules
-        output: web, pdf
-        subfolderitems:
-        - title: Index
-          output: web, pdf
-          url: /pmd_rules_jsp.html
-        - title: Best Practices
-          output: web, pdf
-          url: /pmd_rules_jsp_bestpractices.html
-        - title: Code Style
-          output: web, pdf
-          url: /pmd_rules_jsp_codestyle.html
-        - title: Design
-          output: web, pdf
-          url: /pmd_rules_jsp_design.html
-        - title: Error Prone
-          output: web, pdf
-          url: /pmd_rules_jsp_errorprone.html
-        - title: Security
-          output: web, pdf
-          url: /pmd_rules_jsp_security.html
-    - title: null
-      output: web, pdf
-      subfolders:
-      - title: Maven POM Rules
-        output: web, pdf
-        subfolderitems:
-        - title: Index
-          output: web, pdf
-          url: /pmd_rules_pom.html
-        - title: Error Prone
-          output: web, pdf
-          url: /pmd_rules_pom_errorprone.html
-    - title: null
-      output: web, pdf
-      subfolders:
-      - title: PLSQL Rules
-        output: web, pdf
-        subfolderitems:
-        - title: Index
-          output: web, pdf
-          url: /pmd_rules_plsql.html
-        - title: Best Practices
-          output: web, pdf
-          url: /pmd_rules_plsql_bestpractices.html
-        - title: Code Style
-          output: web, pdf
-          url: /pmd_rules_plsql_codestyle.html
-        - title: Design
-          output: web, pdf
-          url: /pmd_rules_plsql_design.html
-        - title: Error Prone
-          output: web, pdf
-          url: /pmd_rules_plsql_errorprone.html
-    - title: null
-      output: web, pdf
-      subfolders:
-      - title: Salesforce VisualForce Rules
-        output: web, pdf
-        subfolderitems:
-        - title: Index
-          output: web, pdf
-          url: /pmd_rules_vf.html
-        - title: Security
-          output: web, pdf
-          url: /pmd_rules_vf_security.html
-    - title: null
-      output: web, pdf
-      subfolders:
-      - title: VM Rules
-        output: web, pdf
-        subfolderitems:
-        - title: Index
-          output: web, pdf
-          url: /pmd_rules_vm.html
-        - title: Best Practices
-          output: web, pdf
-          url: /pmd_rules_vm_bestpractices.html
-        - title: Design
-          output: web, pdf
-          url: /pmd_rules_vm_design.html
-        - title: Error Prone
-          output: web, pdf
-          url: /pmd_rules_vm_errorprone.html
-    - title: null
-      output: web, pdf
-      subfolders:
-      - title: XML Rules
-        output: web, pdf
-        subfolderitems:
-        - title: Index
-          output: web, pdf
-          url: /pmd_rules_xml.html
-        - title: Error Prone
-          output: web, pdf
-          url: /pmd_rules_xml_errorprone.html
-    - title: null
-      output: web, pdf
-      subfolders:
-      - title: XSL Rules
-        output: web, pdf
-        subfolderitems:
-        - title: Index
-          output: web, pdf
-          url: /pmd_rules_xsl.html
-        - title: Code Style
-          output: web, pdf
-          url: /pmd_rules_xsl_codestyle.html
-        - title: Performance
-          output: web, pdf
-          url: /pmd_rules_xsl_performance.html
+          url: /pmd_userdocs_tools.html
+
+# RULE REFERENCE
   - title: Rule Reference
     output: web, pdf
     folderitems:
@@ -412,6 +292,8 @@ entries:
         - title: Performance
           output: web, pdf
           url: /pmd_rules_xsl_performance.html
+
+# LANGUAGE SPECIFIC DOCUMENTATION
   - title: Language Specific Documentation
     output: web, pdf
     folderitems:
@@ -424,6 +306,8 @@ entries:
     - title: Apex code metrics
       url: /pmd_apex_metrics_index.html
       output: web, pdf
+
+# DEVELOPER DOCUMENTATION
   - title: Developer Documentation
     output: web, pdf
     folderitems:
@@ -451,15 +335,17 @@ entries:
       - title: Major contributions
         output: web, pdf
         subfolderitems:
-        - title: Adding a new language
-          url: /pmd_devdocs_major_adding_new_language.html
-          output: web, pdf
-        - title: Adding a new CPD language
-          url: /pmd_devdocs_major_adding_new_cpd_language.html
-          output: web, pdf
-        - title: Adding metrics support to a language
-          url: /pmd_devdocs_major_adding_new_metrics_framework.html
-          output: web, pdf
+          - title: Adding a new language
+            url: /pmd_devdocs_major_adding_new_language.html
+            output: web, pdf
+          - title: Adding a new CPD language
+            url: /pmd_devdocs_major_adding_new_cpd_language.html
+            output: web, pdf
+          - title: Adding metrics support to a language
+            url: /pmd_devdocs_major_adding_new_metrics_framework.html
+            output: web, pdf
+
+  # PROJECT DOCUMENTATION
   - title: Project documentation
     output: web, pdf
     folderitems:
@@ -505,4 +391,5 @@ entries:
         - title: Merging pull requests
           url: /pmd_projectdocs_committers_merging_pull_requests.html
           output: web, pdf
+
 
