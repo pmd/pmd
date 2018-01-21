@@ -38,7 +38,8 @@ They are held here to allow people to include them as they see fit within their 
 
     <rule ref="category/java/design.xml/UseObjectForClearerAPI" deprecated="true" />
 
-    <!-- The rule UnnecessaryParentheses has been merged into unnecessary.xml/UselessParentheses -->
-    <rule name="UnnecessaryParentheses" deprecated="true" ref="rulesets/java/unnecessary.xml/UselessParentheses" />
+    <!-- The rule UnnecessaryParentheses has been merged into unnecessary.xml/UselessParentheses,
+         which now lives in codestyle -->
+    <rule name="UnnecessaryParentheses" deprecated="true" ref="category/java/codestyle.xml/UselessParentheses" />
 
 </ruleset>
