@@ -1,6 +1,7 @@
 ---
-title: Finding duplicated code
-summary: Or how to find copied and pasted code
+title: Finding duplicated code with CPD
+tags: [cpd]
+summary: "Learn how to use CPD, the copy-paste detector shipped with PMD."
 permalink: pmd_userdocs_cpd.html
 author: Tom Copeland <tom@infoether.com>
 ---

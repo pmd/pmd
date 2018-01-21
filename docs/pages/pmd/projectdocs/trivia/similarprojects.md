@@ -1,6 +1,6 @@
 ---
 title: Similar projects
-permalink: pmd_userdocs_similarprojects.html
+permalink: pmd_projectdocs_trivia_similarprojects.html
 author: Tom Copeland <tom@infoether.org>, David Dixon-Peugh <ddp@apache.org>
 ---
 

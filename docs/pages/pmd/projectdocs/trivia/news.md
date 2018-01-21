@@ -1,6 +1,6 @@
 ---
 title: PMD in the press
-permalink: pmd_userdocs_news.html
+permalink: pmd_projectdocs_trivia_news.html
 author: Tom Copeland <tom@infoether.org>
 ---
 

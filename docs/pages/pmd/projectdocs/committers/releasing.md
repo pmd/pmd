@@ -1,6 +1,6 @@
 ---
 title: Releasing
-permalink: pmd_devdocs_releasing.html
+permalink: pmd_projectdocs_committers_releasing.html
 author: Romain Pelisse <rpelisse@users.sourceforge.net>, Andreas Dangel <adangel@users.sourceforge.net>
 ---
 

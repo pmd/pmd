@@ -1,9 +1,9 @@
 ---
 title: PMD Rule Guidelines
-tags: [customizing]
+tags: [customizing, rule]
 summary: Rule Guidelines
 last_updated: July 3, 2016
-permalink: pmd_devdocs_rule_guidelines.html
+permalink: pmd_userdocs_extending_rule_guidelines.html
 author: Xavier Le Vourch, Ryan Gustafson, Romain Pelisse
 ---
 

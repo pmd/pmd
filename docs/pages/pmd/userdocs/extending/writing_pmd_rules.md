@@ -1,9 +1,9 @@
 ---
 title:  PMD Writing a Custom Rule
-tags: [customizing]
+tags: [customizing, rule, java]
 summary: Writing a Custom Rule for PMD
 last_updated: July 3, 2016
-permalink: pmd_devdocs_writing_pmd_rules.html
+permalink: pmd_userdocs_extending_writing_pmd_rules.html
 author: Tom Copeland <tomcopeland@users.sourceforge.net>
 ---
 
