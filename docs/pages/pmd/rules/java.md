@@ -376,7 +376,7 @@ folder: pmd/rules
 
     It contains the following rules:
 
-    [AssignmentInOperand](pmd_rules_java_errorprone.html#assignmentinoperand), [AtLeastOneConstructor](pmd_rules_java_codestyle.html#atleastoneconstructor), [AvoidAccessibilityAlteration](pmd_rules_java_errorprone.html#avoidaccessibilityalteration), [AvoidFinalLocalVariable](pmd_rules_java_codestyle.html#avoidfinallocalvariable), [AvoidLiteralsInIfCondition](pmd_rules_java_errorprone.html#avoidliteralsinifcondition), [AvoidPrefixingMethodParameters](pmd_rules_java_codestyle.html#avoidprefixingmethodparameters), [AvoidUsingNativeCode](pmd_rules_java_codestyle.html#avoidusingnativecode), [AvoidUsingShortType](pmd_rules_java_performance.html#avoidusingshorttype), [AvoidUsingVolatile](pmd_rules_java_multithreading.html#avoidusingvolatile), [CallSuperInConstructor](pmd_rules_java_codestyle.html#callsuperinconstructor), [DataflowAnomalyAnalysis](pmd_rules_java_errorprone.html#dataflowanomalyanalysis), [DefaultPackage](pmd_rules_java_codestyle.html#defaultpackage), [DoNotCallGarbageCollectionExplicitly](pmd_rules_java_errorprone.html#donotcallgarbagecollectionexplicitly), [DontImportSun](pmd_rules_java_errorprone.html#dontimportsun), [NullAssignment](pmd_rules_java_errorprone.html#nullassignment), [OneDeclarationPerLine](pmd_rules_java_bestpractices.html#onedeclarationperline), [OnlyOneReturn](pmd_rules_java_codestyle.html#onlyonereturn), [SuspiciousOctalEscape](pmd_rules_java_errorprone.html#suspiciousoctalescape), [UnnecessaryConstructor](pmd_rules_java_codestyle.html#unnecessaryconstructor), [UselessParentheses](pmd_rules_java_codestyle.html#uselessparentheses), [UseConcurrentHashMap](pmd_rules_java_multithreading.html#useconcurrenthashmap), [UseObjectForClearerAPI](pmd_rules_java_design.html#useobjectforclearerapi)
+    [AssignmentInOperand](pmd_rules_java_errorprone.html#assignmentinoperand), [AtLeastOneConstructor](pmd_rules_java_codestyle.html#atleastoneconstructor), [AvoidAccessibilityAlteration](pmd_rules_java_errorprone.html#avoidaccessibilityalteration), [AvoidFinalLocalVariable](pmd_rules_java_codestyle.html#avoidfinallocalvariable), [AvoidLiteralsInIfCondition](pmd_rules_java_errorprone.html#avoidliteralsinifcondition), [AvoidPrefixingMethodParameters](pmd_rules_java_codestyle.html#avoidprefixingmethodparameters), [AvoidUsingNativeCode](pmd_rules_java_codestyle.html#avoidusingnativecode), [AvoidUsingShortType](pmd_rules_java_performance.html#avoidusingshorttype), [AvoidUsingVolatile](pmd_rules_java_multithreading.html#avoidusingvolatile), [CallSuperInConstructor](pmd_rules_java_codestyle.html#callsuperinconstructor), [DataflowAnomalyAnalysis](pmd_rules_java_errorprone.html#dataflowanomalyanalysis), [DefaultPackage](pmd_rules_java_codestyle.html#defaultpackage), [DoNotCallGarbageCollectionExplicitly](pmd_rules_java_errorprone.html#donotcallgarbagecollectionexplicitly), [DontImportSun](pmd_rules_java_errorprone.html#dontimportsun), [NullAssignment](pmd_rules_java_errorprone.html#nullassignment), [OneDeclarationPerLine](pmd_rules_java_bestpractices.html#onedeclarationperline), [OnlyOneReturn](pmd_rules_java_codestyle.html#onlyonereturn), [SuspiciousOctalEscape](pmd_rules_java_errorprone.html#suspiciousoctalescape), [UnnecessaryConstructor](pmd_rules_java_codestyle.html#unnecessaryconstructor), [UnnecessaryParentheses](pmd_rules_java_codestyle.html#uselessparentheses), [UseConcurrentHashMap](pmd_rules_java_multithreading.html#useconcurrenthashmap), [UseObjectForClearerAPI](pmd_rules_java_design.html#useobjectforclearerapi)
 
 *   Coupling (`rulesets/java/coupling.xml`):
 
@@ -452,7 +452,7 @@ folder: pmd/rules
 
 *   MigratingToJUnit4 (`rulesets/java/migrating_to_junit4.xml`):
 
-    Contains rules for migrating to JUnit 4
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
 
     It contains the following rules:
 
@@ -468,7 +468,7 @@ folder: pmd/rules
 
 *   Migration13 (`rulesets/java/migrating_to_13.xml`):
 
-    Contains rules for migrating to JDK 1.3
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
 
     It contains the following rules:
 
@@ -476,7 +476,7 @@ folder: pmd/rules
 
 *   Migration14 (`rulesets/java/migrating_to_14.xml`):
 
-    Contains rules for migrating to JDK 1.4
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
 
     It contains the following rules:
 
@@ -484,7 +484,7 @@ folder: pmd/rules
 
 *   Migration15 (`rulesets/java/migrating_to_15.xml`):
 
-    Contains rules for migrating to JDK 1.5
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
 
     It contains the following rules:
 
