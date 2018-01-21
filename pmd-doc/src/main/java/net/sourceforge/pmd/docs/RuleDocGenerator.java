@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,6 +27,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -107,7 +109,7 @@ public class RuleDocGenerator {
         for (String filename : additionalRulesets) {
             try {
                 // do not take rulesets from pmd-test or pmd-core
-                if (!filename.contains("pmd-test/") && !filename.contains("pmd-core/")) {
+                if (!filename.contains("pmd-test") && !filename.contains("pmd-core")) {
                     rulesets.add(ruleSetFactory.createRuleSet(filename));
                 } else {
                     LOG.fine("Ignoring ruleset " + filename);
@@ -300,6 +302,10 @@ public class RuleDocGenerator {
         return description;
     }
 
+    private static List<String> toLines(String s) {
+        return Arrays.asList(s.split("\r\n|\n"));
+    }
+
     /**
      * Generates for each ruleset a page. The page contains the details for each rule.
      *
@@ -375,12 +381,12 @@ public class RuleDocGenerator {
                         lines.add("");
                     }
 
-                    lines.add(stripIndentation(rule.getDescription()));
+                    lines.addAll(toLines(stripIndentation(rule.getDescription())));
                     lines.add("");
 
                     if (rule instanceof XPathRule || rule instanceof RuleReference && ((RuleReference) rule).getRule() instanceof XPathRule) {
                         lines.add("```");
-                        lines.add(StringUtils.stripToEmpty(rule.getProperty(XPathRule.XPATH_DESCRIPTOR)));
+                        lines.addAll(toLines(StringUtils.stripToEmpty(rule.getProperty(XPathRule.XPATH_DESCRIPTOR))));
                         lines.add("```");
                         lines.add("");
                     } else {
@@ -396,7 +402,7 @@ public class RuleDocGenerator {
                         lines.add("");
                         for (String example : rule.getExamples()) {
                             lines.add("``` " + mapLanguageForHighlighting(languageTersename));
-                            lines.add(StringUtils.stripToEmpty(example));
+                            lines.addAll(toLines(StringUtils.stripToEmpty(example)));
                             lines.add("```");
                             lines.add("");
                         }
@@ -533,14 +539,17 @@ public class RuleDocGenerator {
         if (!foundPathResult.isEmpty()) {
             Path foundPath = foundPathResult.get(0);
             foundPath = root.relativize(foundPath);
-            return foundPath.toString();
+            // Note: the path is normalized to unix path separators, so that the editme link
+            // uses forward slashes
+            return FilenameUtils.normalize(foundPath.toString(), true);
         }
 
         return StringUtils.chomp(ruleset.getFileName());
     }
 
     private String getRuleClassSourceFilepath(String ruleClass) throws IOException {
-        final String relativeSourceFilename = ruleClass.replaceAll("\\.", File.separator) + ".java";
+        final String relativeSourceFilename = ruleClass.replaceAll("\\.", Matcher.quoteReplacement(File.separator))
+                + ".java";
         final List<Path> foundPathResult = new LinkedList<>();
 
         Files.walkFileTree(root, new SimpleFileVisitor<Path>() {

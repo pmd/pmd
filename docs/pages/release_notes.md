@@ -21,6 +21,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   all
+    *   [#848](https://github.com/pmd/pmd/issues/848): \[doc] Test failures when building pmd-doc under Windows
 *   doc
     *   [#791](https://github.com/pmd/pmd/issues/791): \[doc] Documentation site reorganisation
 
