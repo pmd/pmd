@@ -16,6 +16,7 @@ author: Tom Copeland <tom@infoether.org>, David Dixon-Peugh <ddp@apache.org>
     Uses Java Modeling Language annotations.
 *   <a href="http://findbugs.sourceforge.net/">FindBugs</a> - works on bytecode, uses BCEL.  Source code uses
     templates, nifty stuff!
+*   <a href="https://spotbugs.github.io/">SpotBugs</a> - SpotBugs is the spiritual successor of FindBugs, carrying on from the point where it left off with support of its community. 
 *   <a href="http://www.hammurapi.biz/hammurapi-biz/ef/xmenu/hammurapi-group/products/hammurapi/index.html">Hammurapi</a> -
     Uses ANTLR, excellent documentation, lots of rules
 *   <a href="http://grothoff.org/christian/xtc/jamit/">Jamit</a> - bytecode analyzer, nice graphs
