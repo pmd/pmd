@@ -37,7 +37,12 @@ rules at all, such as `category/java/security.xml`, which has currently no rules
 There are even languages, which only have rules of one category (e.g. `category/xml/errorprone.xml`).
 
 You can find the information about available rules in the generated rule documentation, available
-at <https://pmd.github.io/latest/>.
+at <https://pmd.github.io/6.0.1/>.
+
+In order to help migrate to the new category scheme, the new name for the old, deprecated rule names will
+be logged as a warning. See [PR #865](https://github.com/pmd/pmd/pull/865). Please note, that the deprecated
+rule names will keep working throughout PMD 6. You can upgrade to PMD 6 without the immediate need
+to migrate your current ruleset. That backwards compatibility will be maintained until PMD 7.0.0 is released.
 
 ### Fixed Issues
 
