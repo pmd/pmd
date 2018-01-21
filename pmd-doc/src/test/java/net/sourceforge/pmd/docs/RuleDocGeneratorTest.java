@@ -44,6 +44,7 @@ public class RuleDocGeneratorTest {
                 "  folders:",
                 "  - title: 1",
                 "  - title: 2",
+                "  - title: 3",
                 "  - title: Rules");
         Files.write(root.resolve("docs/_data/sidebars/pmd_sidebar.yml"), mockedSidebar);
     }
