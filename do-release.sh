@@ -40,6 +40,12 @@ fi
 DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.$NEXT_PATCH"
 DEVELOPMENT_VERSION="${DEVELOPMENT_VERSION}-SNAPSHOT"
 
+# allow to override the next version, e.g. via "NEXT_VERSION=7.0.0 ./do-release.sh"
+if [ "$NEXT_VERSION" != "" ]; then
+    DEVELOPMENT_VERSION="${NEXT_VERSION}-SNAPSHOT"
+fi
+
+
 # http://stackoverflow.com/questions/1593051/how-to-programmatically-determine-the-current-checked-out-git-branch
 CURRENT_BRANCH=$(git symbolic-ref -q HEAD)
 CURRENT_BRANCH=${CURRENT_BRANCH##refs/heads/}
@@ -64,7 +70,7 @@ echo "*   Update version/release info in **docs/pages/release_notes.md**."
 echo
 echo "    ## $(date -u +%d-%B-%Y) - ${RELEASE_VERSION}"
 echo
-echo "*   Update date info in **docs/_config.yml**.
+echo "*   Update date info in **docs/_config.yml**."
 echo
 echo "*   Ensure all the new rules are listed in a the proper file:"
 echo "    pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION}.xml file."
