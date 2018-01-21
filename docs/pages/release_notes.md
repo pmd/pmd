@@ -65,6 +65,8 @@ at <https://pmd.github.io/latest/>.
     *   [#827](https://github.com/pmd/pmd/issues/827): \[java] GodClass crashes with java.lang.NullPointerException
 *   java-performance
     *   [#841](https://github.com/pmd/pmd/issues/841): \[java] InsufficientStringBufferDeclaration NumberFormatException
+*   java-typeresolution
+    *   [#866](https://github.com/pmd/pmd/issues/866): \[java] rulesets/java/typeresolution.xml lists non-existent rules
 
 ### API Changes
 
