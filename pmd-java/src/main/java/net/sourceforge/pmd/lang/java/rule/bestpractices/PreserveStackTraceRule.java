@@ -160,8 +160,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
      */
     private boolean isStringConcat(Node childNode, Node baseNode) {
         Node currentNode = childNode;
-        // limit to 10 levels
-        for (int i = 0; i < 10 && currentNode != null && currentNode != baseNode; i++) {
+        while (currentNode != baseNode) {
             currentNode = currentNode.jjtGetParent();
             if (currentNode instanceof ASTAdditiveExpression) {
                 return true;
