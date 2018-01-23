@@ -1,7 +1,8 @@
 ---
-title: Testing / Test Framework
-permalink: pmd_devdocs_testing.html
-summary: "PMD provides a simple test framework for unit testing rules"
+title: Testing your rules
+tags: [customizing, testing]
+summary: "Learn how to use PMD's simple test framework for unit testing rules."
+permalink: pmd_userdocs_extending_testing.html
 last_updated: September 2017
 author: Andreas Dangel <andreas.dangel@adangel.org>
 ---

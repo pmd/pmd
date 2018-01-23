@@ -4,6 +4,9 @@ permalink: pmd_devdocs_building.html
 author: Tom Copeland, Xavier Le Vourch <xlv@users.sourceforge.net>
 ---
 
+<!-- Gives visibility -->
+{%include note.html content="TODO add IDE specific indications" %}
+
 # Compiling PMD
 
 *   JDK 9 or higher

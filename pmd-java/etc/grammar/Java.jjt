@@ -1,4 +1,7 @@
 /**
+ * Fixes #793 [java] Parser error with private method in nested classes in interfaces
+ * Andreas Dangel 12/2017
+ *====================================================================
  * Add support for Java 9 changes:
  * Private interface methods are only allowed with java9.
  * A single underscore "_" is an invalid identifier in java9.
@@ -340,6 +343,7 @@ public class JavaParser {
    * Keeps track whether we are dealing with an interface or not. Needed since the tree is
    * is not fully constructed yet, when we check for private interface methods.
    * The flag is updated, if entering ClassOrInterfaceDeclaration and reset when leaving.
+   * The flag is also reset, if entering a anonymous inner class or enums.
    */
   private boolean inInterface = false;
   private void checkForBadPrivateInterfaceMethod(ASTMethodDeclaration node) {
@@ -1413,6 +1417,7 @@ void ClassOrInterfaceDeclaration(int modifiers):
 {
     Token t = null;
     jjtThis.setModifiers(modifiers);
+    boolean inInterfaceOld = inInterface;
     inInterface = false;
 }
 {
@@ -1423,7 +1428,7 @@ void ClassOrInterfaceDeclaration(int modifiers):
   [ ExtendsList() ]
   [ ImplementsList() ]
   ClassOrInterfaceBody()
-  { inInterface = false; } // always reset the flag after leaving the node
+  { inInterface = inInterfaceOld; } // always restore the flag after leaving the node
 }
 
 void ExtendsList():
@@ -1464,13 +1469,18 @@ jjtThis.setModifiers(modifiers);
 }
 
 void EnumBody():
-{}
+{
+    boolean inInterfaceOld = inInterface;
+    inInterface = false;
+}
 {
    "{"
    [( Annotation() )* EnumConstant() ( LOOKAHEAD(2) "," ( Annotation() )* EnumConstant() )* ]
 	[ "," ]
    [ ";" ( ClassOrInterfaceBodyDeclaration() )* ]
    "}"
+
+   { inInterface = inInterfaceOld; } // always restore the flag after leaving the node
 }
 
 void EnumConstant():
@@ -2009,7 +2019,12 @@ void AllocationExpression():
      (
       ArrayDimsAndInits()
      |
-      Arguments() [ ClassOrInterfaceBody() ]
+      Arguments()
+        [
+            { boolean inInterfaceOld = inInterface; inInterface = false; /* a anonymous class is not a interface */ }
+            ClassOrInterfaceBody()
+            { inInterface = inInterfaceOld; } // always restore the flag after leaving the node
+        ]
      )
   )
   { checkForBadAnonymousDiamondUsage(); }

@@ -213,7 +213,7 @@ folder: pmd/rules
 *   [DontImportSun](pmd_rules_java_errorprone.html#dontimportsun): Avoid importing anything from the 'sun.' packages.  These packages are not portable and are likel...
 *   [DontUseFloatTypeForLoopIndices](pmd_rules_java_errorprone.html#dontusefloattypeforloopindices): Don't use floating point for loop indices. If you must use floating point, use doubleunless you'r...
 *   [EmptyCatchBlock](pmd_rules_java_errorprone.html#emptycatchblock): Empty Catch Block finds instances where an exception is caught, but nothing is done.  In most cir...
-*   [EmptyFinalizer](pmd_rules_java_errorprone.html#emptyfinalizer): Empty finalize methods serve no purpose and should be removed.
+*   [EmptyFinalizer](pmd_rules_java_errorprone.html#emptyfinalizer): Empty finalize methods serve no purpose and should be removed. Note that Oracle has declared Obje...
 *   [EmptyFinallyBlock](pmd_rules_java_errorprone.html#emptyfinallyblock): Empty finally blocks serve no purpose and should be removed.
 *   [EmptyIfStmt](pmd_rules_java_errorprone.html#emptyifstmt): Empty If Statement finds instances where a condition is checked but nothing is done about it.
 *   [EmptyInitializer](pmd_rules_java_errorprone.html#emptyinitializer): Empty initializers serve no purpose and should be removed.
@@ -224,8 +224,8 @@ folder: pmd/rules
 *   [EmptyTryBlock](pmd_rules_java_errorprone.html#emptytryblock): Avoid empty try blocks - what's the point?
 *   [EmptyWhileStmt](pmd_rules_java_errorprone.html#emptywhilestmt): Empty While Statement finds all instances where a while statement does nothing.  If it is a timin...
 *   [EqualsNull](pmd_rules_java_errorprone.html#equalsnull): Tests for null should not use the equals() method. The '==' operator should be used instead.
-*   [FinalizeDoesNotCallSuperFinalize](pmd_rules_java_errorprone.html#finalizedoesnotcallsuperfinalize): If the finalize() is implemented, its last action should be to call super.finalize.
-*   [FinalizeOnlyCallsSuperFinalize](pmd_rules_java_errorprone.html#finalizeonlycallssuperfinalize): If the finalize() is implemented, it should do something besides just calling super.finalize().
+*   [FinalizeDoesNotCallSuperFinalize](pmd_rules_java_errorprone.html#finalizedoesnotcallsuperfinalize): If the finalize() is implemented, its last action should be to call super.finalize. Note that Ora...
+*   [FinalizeOnlyCallsSuperFinalize](pmd_rules_java_errorprone.html#finalizeonlycallssuperfinalize): If the finalize() is implemented, it should do something besides just calling super.finalize(). N...
 *   [FinalizeOverloaded](pmd_rules_java_errorprone.html#finalizeoverloaded): Methods named finalize() should not have parameters.  It is confusing and most likely an attempt ...
 *   [FinalizeShouldBeProtected](pmd_rules_java_errorprone.html#finalizeshouldbeprotected): When overriding the finalize(), the new method should be set as protected.  If made public, other...
 *   [IdempotentOperations](pmd_rules_java_errorprone.html#idempotentoperations): Avoid idempotent operations - they have no effect.
@@ -291,7 +291,7 @@ folder: pmd/rules
 
 *   [AddEmptyString](pmd_rules_java_performance.html#addemptystring): The conversion of literals to strings by concatenating them with empty strings is inefficient.It ...
 *   [AppendCharacterWithChar](pmd_rules_java_performance.html#appendcharacterwithchar): Avoid concatenating characters as strings in StringBuffer/StringBuilder.append methods.
-*   [AvoidArrayLoops](pmd_rules_java_performance.html#avoidarrayloops): Instead of manually copying data between two arrays, use the efficient System.arraycopy method in...
+*   [AvoidArrayLoops](pmd_rules_java_performance.html#avoidarrayloops): Instead of manually copying data between two arrays, use the efficient Arrays.copyOf or System.ar...
 *   [AvoidFileStream](pmd_rules_java_performance.html#avoidfilestream): The FileInputStream and FileOutputStream classes contains a finalizer method which will cause gar...
 *   [AvoidInstantiatingObjectsInLoops](pmd_rules_java_performance.html#avoidinstantiatingobjectsinloops): New objects created within loops should be checked to see if they can created outside them and re...
 *   [AvoidUsingShortType](pmd_rules_java_performance.html#avoidusingshorttype): Java uses the 'short' type to reduce memory usage, not to optimize calculation. In fact, the JVM ...
@@ -376,7 +376,7 @@ folder: pmd/rules
 
     It contains the following rules:
 
-    [AssignmentInOperand](pmd_rules_java_errorprone.html#assignmentinoperand), [AtLeastOneConstructor](pmd_rules_java_codestyle.html#atleastoneconstructor), [AvoidAccessibilityAlteration](pmd_rules_java_errorprone.html#avoidaccessibilityalteration), [AvoidFinalLocalVariable](pmd_rules_java_codestyle.html#avoidfinallocalvariable), [AvoidLiteralsInIfCondition](pmd_rules_java_errorprone.html#avoidliteralsinifcondition), [AvoidPrefixingMethodParameters](pmd_rules_java_codestyle.html#avoidprefixingmethodparameters), [AvoidUsingNativeCode](pmd_rules_java_codestyle.html#avoidusingnativecode), [AvoidUsingShortType](pmd_rules_java_performance.html#avoidusingshorttype), [AvoidUsingVolatile](pmd_rules_java_multithreading.html#avoidusingvolatile), [CallSuperInConstructor](pmd_rules_java_codestyle.html#callsuperinconstructor), [DataflowAnomalyAnalysis](pmd_rules_java_errorprone.html#dataflowanomalyanalysis), [DefaultPackage](pmd_rules_java_codestyle.html#defaultpackage), [DoNotCallGarbageCollectionExplicitly](pmd_rules_java_errorprone.html#donotcallgarbagecollectionexplicitly), [DontImportSun](pmd_rules_java_errorprone.html#dontimportsun), [NullAssignment](pmd_rules_java_errorprone.html#nullassignment), [OneDeclarationPerLine](pmd_rules_java_bestpractices.html#onedeclarationperline), [OnlyOneReturn](pmd_rules_java_codestyle.html#onlyonereturn), [SuspiciousOctalEscape](pmd_rules_java_errorprone.html#suspiciousoctalescape), [UnnecessaryConstructor](pmd_rules_java_codestyle.html#unnecessaryconstructor), [UselessParentheses](pmd_rules_java_codestyle.html#uselessparentheses), [UseConcurrentHashMap](pmd_rules_java_multithreading.html#useconcurrenthashmap), [UseObjectForClearerAPI](pmd_rules_java_design.html#useobjectforclearerapi)
+    [AssignmentInOperand](pmd_rules_java_errorprone.html#assignmentinoperand), [AtLeastOneConstructor](pmd_rules_java_codestyle.html#atleastoneconstructor), [AvoidAccessibilityAlteration](pmd_rules_java_errorprone.html#avoidaccessibilityalteration), [AvoidFinalLocalVariable](pmd_rules_java_codestyle.html#avoidfinallocalvariable), [AvoidLiteralsInIfCondition](pmd_rules_java_errorprone.html#avoidliteralsinifcondition), [AvoidPrefixingMethodParameters](pmd_rules_java_codestyle.html#avoidprefixingmethodparameters), [AvoidUsingNativeCode](pmd_rules_java_codestyle.html#avoidusingnativecode), [AvoidUsingShortType](pmd_rules_java_performance.html#avoidusingshorttype), [AvoidUsingVolatile](pmd_rules_java_multithreading.html#avoidusingvolatile), [CallSuperInConstructor](pmd_rules_java_codestyle.html#callsuperinconstructor), [DataflowAnomalyAnalysis](pmd_rules_java_errorprone.html#dataflowanomalyanalysis), [DefaultPackage](pmd_rules_java_codestyle.html#defaultpackage), [DoNotCallGarbageCollectionExplicitly](pmd_rules_java_errorprone.html#donotcallgarbagecollectionexplicitly), [DontImportSun](pmd_rules_java_errorprone.html#dontimportsun), [NullAssignment](pmd_rules_java_errorprone.html#nullassignment), [OneDeclarationPerLine](pmd_rules_java_bestpractices.html#onedeclarationperline), [OnlyOneReturn](pmd_rules_java_codestyle.html#onlyonereturn), [SuspiciousOctalEscape](pmd_rules_java_errorprone.html#suspiciousoctalescape), [UnnecessaryConstructor](pmd_rules_java_codestyle.html#unnecessaryconstructor), [UnnecessaryParentheses](pmd_rules_java_codestyle.html#uselessparentheses), [UseConcurrentHashMap](pmd_rules_java_multithreading.html#useconcurrenthashmap), [UseObjectForClearerAPI](pmd_rules_java_design.html#useobjectforclearerapi)
 
 *   Coupling (`rulesets/java/coupling.xml`):
 
@@ -452,7 +452,7 @@ folder: pmd/rules
 
 *   MigratingToJUnit4 (`rulesets/java/migrating_to_junit4.xml`):
 
-    Contains rules for migrating to JUnit 4
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
 
     It contains the following rules:
 
@@ -468,7 +468,7 @@ folder: pmd/rules
 
 *   Migration13 (`rulesets/java/migrating_to_13.xml`):
 
-    Contains rules for migrating to JDK 1.3
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
 
     It contains the following rules:
 
@@ -476,7 +476,7 @@ folder: pmd/rules
 
 *   Migration14 (`rulesets/java/migrating_to_14.xml`):
 
-    Contains rules for migrating to JDK 1.4
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
 
     It contains the following rules:
 
@@ -484,7 +484,7 @@ folder: pmd/rules
 
 *   Migration15 (`rulesets/java/migrating_to_15.xml`):
 
-    Contains rules for migrating to JDK 1.5
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
 
     It contains the following rules:
 

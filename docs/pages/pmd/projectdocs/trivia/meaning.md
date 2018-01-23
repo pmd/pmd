@@ -1,6 +1,6 @@
 ---
 title: What does 'PMD' mean?
-permalink: pmd_userdocs_meaning.html
+permalink: pmd_projectdocs_trivia_meaning.html
 author: David Dixon-Peugh
 ---
 

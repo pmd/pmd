@@ -8,7 +8,7 @@
 Contains rules for migrating to JDK 1.4
   </description>
 
-    <rule ref="rulesets/java/migrating.xml/AvoidAssertAsIdentifier"/>
+    <rule ref="category/java/errorprone.xml/AvoidAssertAsIdentifier" deprecated="true" />
 
 </ruleset>
 

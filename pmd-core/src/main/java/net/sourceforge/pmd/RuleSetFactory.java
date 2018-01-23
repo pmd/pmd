@@ -520,10 +520,10 @@ public class RuleSetFactory {
         }
 
         boolean rulesetDeprecated = false;
-        if (potentialRules.size() == countDeprecated) {
+        if (!potentialRules.isEmpty() && potentialRules.size() == countDeprecated) {
             // all rules in the ruleset have been deprecated - the ruleset itself is considered to be deprecated
             rulesetDeprecated = true;
-            LOG.warning("The RuleSet " + ref + " has been deprecated.");
+            LOG.warning("The RuleSet " + ref + " has been deprecated and will be removed in PMD " + PMDVersion.getNextMajorRelease());
         }
 
         for (RuleReference r : potentialRules) {
@@ -623,19 +623,22 @@ public class RuleSetFactory {
                     LOG.warning("Use Rule name " + ruleReference.getRuleSetReference().getRuleSetFileName() + "/"
                             + ruleReference.getOriginalName() + " instead of the deprecated Rule name "
                             + otherRuleSetReferenceId
-                            + ". Future versions of PMD will remove support for this deprecated Rule name usage.");
+                            + ". PMD " + PMDVersion.getNextMajorRelease()
+                            + " will remove support for this deprecated Rule name usage.");
                 }
             } else if (referencedRule instanceof MockRule) {
                 if (LOG.isLoggable(Level.WARNING)) {
                     LOG.warning("Discontinue using Rule name " + otherRuleSetReferenceId
                             + " as it has been removed from PMD and no longer functions."
-                            + " Future versions of PMD will remove support for this Rule.");
+                            + " PMD " + PMDVersion.getNextMajorRelease()
+                            + " will remove support for this Rule.");
                 }
             } else {
                 if (LOG.isLoggable(Level.WARNING)) {
                     LOG.warning("Discontinue using Rule name " + otherRuleSetReferenceId
                             + " as it is scheduled for removal from PMD."
-                            + " Future versions of PMD will remove support for this Rule.");
+                            + " PMD " + PMDVersion.getNextMajorRelease()
+                            + " will remove support for this Rule.");
                 }
             }
         }
@@ -645,6 +648,15 @@ public class RuleSetFactory {
         RuleReference ruleReference = new RuleFactory().decorateRule(referencedRule, ruleElement);
         ruleReference.setRuleSetReference(ruleSetReference);
 
+        if (warnDeprecated && ruleReference.isDeprecated()) {
+            if (LOG.isLoggable(Level.WARNING)) {
+                LOG.warning("Use Rule name " + ruleReference.getRuleSetReference().getRuleSetFileName() + "/"
+                        + ruleReference.getOriginalName() + " instead of the deprecated Rule name "
+                        + ruleSetReferenceId.getRuleSetFileName() + "/" + ruleReference.getName()
+                        + ". PMD " + PMDVersion.getNextMajorRelease()
+                        + " will remove support for this deprecated Rule name usage.");
+            }
+        }
 
         if (withDeprecatedRuleReferences || !isSameRuleSet || !ruleReference.isDeprecated()) {
             ruleSetBuilder.addRuleReplaceIfExists(ruleReference);

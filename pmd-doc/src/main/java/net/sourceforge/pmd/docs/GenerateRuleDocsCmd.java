@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.docs;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.FilenameUtils;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -43,7 +46,9 @@ public class GenerateRuleDocsCmd {
     public static List<String> findAdditionalRulesets(Path basePath) {
         try {
             List<String> additionalRulesets = new ArrayList<>();
-            Pattern rulesetPattern = Pattern.compile("^.+/pmd-\\w+/src/main/resources/rulesets/\\w+/\\w+.xml$");
+            Pattern rulesetPattern = Pattern.compile("^.+" + Pattern.quote(File.separator) + "pmd-\\w+"
+                    + Pattern.quote(FilenameUtils.normalize("/src/main/resources/rulesets/"))
+                    + "\\w+" + Pattern.quote(File.separator) + "\\w+.xml$");
             Files.walkFileTree(basePath, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {

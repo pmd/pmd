@@ -6,7 +6,9 @@ author: >
     Juan Martín Sotuyo Dodero <juansotuyo@gmail.com>, Andreas Dangel <adangel@users.sourceforge.net>
 ---
 
+TODO:
 
+* Update
 * Future direction
 * projects, plans
 * Google Summer of Code

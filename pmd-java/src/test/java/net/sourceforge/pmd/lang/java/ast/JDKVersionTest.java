@@ -10,9 +10,14 @@ import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava15;
 import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava17;
 import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava18;
 import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava9;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -266,5 +271,25 @@ public class JDKVersionTest {
     @Test
     public final void jdk9TryWithResources() {
         parseJava9(loadSource("jdk9_try_with_resources.java"));
+    }
+
+    @Test
+    public final void jdk7PrivateMethodInnerClassInterface1() {
+        ASTCompilationUnit acu = parseJava17(loadSource("private_method_in_inner_class_interface1.java"));
+        List<ASTMethodDeclaration> methods = acu.findDescendantsOfType(ASTMethodDeclaration.class);
+        assertEquals(3, methods.size());
+        for (ASTMethodDeclaration method : methods) {
+            assertFalse(method.isInterfaceMember());
+        }
+    }
+
+    @Test
+    public final void jdk7PrivateMethodInnerClassInterface2() {
+        try {
+            ASTCompilationUnit acu = parseJava17(loadSource("private_method_in_inner_class_interface2.java"));
+            fail("Expected exception");
+        } catch (ParseException e) {
+            assertTrue(e.getMessage().startsWith("Line 19"));
+        }
     }
 }

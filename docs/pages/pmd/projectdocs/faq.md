@@ -1,7 +1,7 @@
 ---
 title: FAQ
 sidebar: pmd_sidebar
-permalink: pmd_userdocs_faq.html
+permalink: pmd_projectdocs_faq.html
 folder: pmd/userdocs
 ---
 

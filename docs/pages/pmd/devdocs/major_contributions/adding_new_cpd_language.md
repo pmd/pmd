@@ -1,14 +1,12 @@
 ---
-title: PMD How to Add a New CPD Language
-short_title: Add a New CPD Language
+title: How to add a new CPD language
+short_title: Add a new CPD language
 tags: [customizing]
-summary: How to Add a New CPD Language
+summary: How to add a new CPD language
 last_updated: July 3, 2016
-permalink: pmd_devdocs_adding_new_cpd_language.html
+permalink: pmd_devdocs_major_adding_new_cpd_language.html
 author: Romain PELISSE <belaran@gmail.com>
 ---
-
-# How to Add a New Language to CPD
 
 If you wish CPD to parse a unsupported language, you can easily develop a new parser for CPD. All you need to is implements the following interface:
 

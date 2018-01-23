@@ -1,6 +1,6 @@
 ---
 title: Credits
-permalink: pmd_userdocs_credits.html
+permalink: pmd_projectdocs_credits.html
 author: Tom Copeland <tom@infoether.org>
 ---
 

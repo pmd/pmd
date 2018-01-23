@@ -7,15 +7,15 @@
 
     <test-code>
         <description>Directly accessing the Trigger.old map.</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 trigger AccountTrigger on Account (before insert, before update) {
    Account a = Trigger.new[0]; //Bad: Accessing the trigger array directly is not recommended.
 }
 		]]></code>
 	</test-code>
-    
-	<test-code>
+
+    <test-code>
         <description>Looping through map, best practice</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -25,6 +25,19 @@ trigger AccountTrigger on Account (before insert, before update) {
         system.debug(a);
    }
 }
+		]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Regression issue #792</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class NotATrigger {
+   void foo(){
+        Account[] accounts = opportunity.Accounts[0];
+   }
+}
+
 		]]></code>
     </test-code>
     

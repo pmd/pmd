@@ -6,18 +6,29 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
+
+import net.sourceforge.pmd.lang.java.ParserTstUtil;
+
 
 /**
  * @author Clément Fournier
  */
 public class QualifiedNameTest {
+
+    /** Provides a hook into the package-private reset method for the local indices counter. */
+    public static void resetLocalIndicesCounterHook() {
+        JavaQualifiedName.resetLocalIndicesCounter();
+    }
 
 
     @Test
@@ -251,6 +262,23 @@ public class QualifiedNameTest {
     }
 
     @Test
+    public void testParseLocalClasses() {
+        final String SIMPLE = "foo.bar.Bzaz$1Local";
+        final String NESTED = "foo.Bar$1Local$Nested";
+        JavaQualifiedName simple = JavaQualifiedName.ofString(SIMPLE);
+        JavaQualifiedName nested = JavaQualifiedName.ofString(NESTED);
+
+        assertNotNull(simple);
+        assertTrue(simple.isLocalClass());
+        assertNotNull(nested);
+        assertFalse(nested.isLocalClass());
+
+        assertEquals(SIMPLE, simple.toString());
+        assertEquals(NESTED, nested.toString());
+
+    }
+
+    @Test
     public void testParseMalformed() {
         assertNull(JavaQualifiedName.ofString(".foo.bar.Bzaz"));
         assertNull(JavaQualifiedName.ofString("foo.bar."));
@@ -260,6 +288,57 @@ public class QualifiedNameTest {
         assertNull(JavaQualifiedName.ofString("foo.bar.Bzaz#foo(String , int)"));
     }
 
+
+
+    @Test
+    public void testSimpleLocalClass() {
+        final String TEST = "package bar; class Boron { public void foo(String j) { class Local {} } }";
+
+        List<ASTClassOrInterfaceDeclaration> classes
+                = ParserTstUtil.getOrderedNodes(ASTClassOrInterfaceDeclaration.class, TEST);
+
+        JavaQualifiedName qname = JavaQualifiedName.ofString("bar.Boron$1Local");
+
+        assertEquals(qname, classes.get(1).getQualifiedName());
+    }
+
+    @Test
+    public void testLocalClassNameClash() {
+        final String TEST = "package bar; class Bzaz{ void foo() { class Local {} } {// initializer\n class Local {}}}";
+
+        List<ASTClassOrInterfaceDeclaration> classes
+                = ParserTstUtil.getOrderedNodes(ASTClassOrInterfaceDeclaration.class, TEST);
+
+        assertNotEquals(classes.get(1).getQualifiedName(), classes.get(2).getQualifiedName());
+
+        assertEquals(JavaQualifiedName.ofString("bar.Bzaz$1Local"), classes.get(1).getQualifiedName());
+        assertEquals(JavaQualifiedName.ofString("bar.Bzaz$2Local"), classes.get(2).getQualifiedName());
+    }
+
+
+    @Test
+    public void testLocalClassDeepNesting() {
+        final String TEST
+                = "class Bzaz{ void foo() { "
+                + "  class Local { "
+                + "    class Nested {"
+                + "      {"
+                + "        class InnerLocal{}"
+                + "      }"
+                + "    }"
+                + "  }"
+                + "}}";
+
+
+        List<ASTClassOrInterfaceDeclaration> classes
+                = ParserTstUtil.getOrderedNodes(ASTClassOrInterfaceDeclaration.class, TEST);
+
+        assertNotEquals(classes.get(1).getQualifiedName(), classes.get(2).getQualifiedName());
+
+        assertEquals(JavaQualifiedName.ofString(".Bzaz$1Local"), classes.get(1).getQualifiedName());
+        assertEquals(JavaQualifiedName.ofString(".Bzaz$1Local$Nested"), classes.get(2).getQualifiedName());
+        assertEquals(JavaQualifiedName.ofString(".Bzaz$1Local$Nested$1InnerLocal"), classes.get(3).getQualifiedName());
+    }
 
 }
 

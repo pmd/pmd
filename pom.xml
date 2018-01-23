@@ -255,11 +255,13 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
     </issueManagement>
 
     <properties>
+        <java.version>7</java.version>
+        <java.home>${env.JAVA_HOME}</java.home>
+
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.20.1</surefire.version>
         <checkstyle.version>2.17</checkstyle.version>
         <pmd.plugin.version>3.8</pmd.plugin.version>
-        <java.version>7</java.version>
         <ant.version>1.10.1</ant.version>
         <javadoc.plugin.version>3.0.0-M1</javadoc.plugin.version>
         <antlr.version>4.7</antlr.version>
@@ -341,6 +343,9 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
+                        <compilerArguments>
+                            <bootclasspath>${java.home}/jre/lib/rt.jar</bootclasspath>
+                        </compilerArguments>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -922,6 +927,18 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <profile>
+            <id>jdk7-settings</id>
+            <activation>
+                <property>
+                    <name>java7.home</name>
+                </property>
+            </activation>
+            <properties>
+                <java.home>${java7.home}</java.home>
+            </properties>
         </profile>
 
         <profile>

@@ -1,15 +1,14 @@
 ---
-title: PMD Adding a New Language
-short_title: Adding a New Language
+title: Adding PMD support for a new language
+short_title: Adding a new language
 tags: [customizing]
-summary: Adding a New Language to PMD
+summary: "How to add a new language to PMD."
 last_updated: July 3, 2016
 sidebar: pmd_sidebar
-permalink: pmd_devdocs_adding_new_language.html
+permalink: pmd_devdocs_major_adding_new_language.html
 folder: pmd/devdocs
 ---
 
-# How to Add a New Language to PMD
 
 ## 1.  Start with a new sub-module.
 *    See pmd-java or pmd-vm for examples.

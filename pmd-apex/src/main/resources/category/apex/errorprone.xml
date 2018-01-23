@@ -22,7 +22,7 @@ Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Tr
             <property name="xpath">
                 <value>
 <![CDATA[
-//ArrayLoadExpression/TriggerVariableExpression | //ArrayLoadExpression/LiteralExpression
+//ArrayLoadExpression[TriggerVariableExpression and LiteralExpression]
 ]]>
                 </value>
             </property>

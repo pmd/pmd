@@ -199,16 +199,17 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                             anticipatedLength += str.length() - 2;
                         } else if (literal.isCharLiteral()) {
                             anticipatedLength += 1;
-                        } else if (literal.isIntLiteral() && str.startsWith("0x")) {
+                        } else if (literal.isIntLiteral()) {
                             // but only if we are not inside a cast expression
                             Node parentNode = literal.jjtGetParent().jjtGetParent().jjtGetParent();
                             if (parentNode instanceof ASTCastExpression
                                     && ((ASTCastExpression) parentNode).getType() == char.class) {
                                 anticipatedLength += 1;
                             } else {
+                                // any number, regardless of the base will be converted to base 10
                                 // e.g. 0xdeadbeef -> will be converted to a
                                 // base 10 integer string: 3735928559
-                                anticipatedLength += String.valueOf(Long.parseLong(str.substring(2), 16)).length();
+                                anticipatedLength += String.valueOf(literal.getValueAsLong()).length();
                             }
                         } else {
                             anticipatedLength += str.length();
@@ -273,11 +274,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                 // characters
                 // don't add the constructor's length
                 iConstructorLength = 14 + str.length();
-            } else if (literal.isIntLiteral() && str.startsWith("0x")) {
-                // bug 3516101 - the string could be a hex number
-                iConstructorLength = Integer.parseInt(str.substring(2), 16);
-            } else {
-                iConstructorLength = Integer.parseInt(str);
+            } else if (literal.isIntLiteral()) {
+                iConstructorLength = literal.getValueAsInt();
             }
         } else {
             iConstructorLength = -1;

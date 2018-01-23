@@ -14,6 +14,7 @@
   <properties>
     <config.basedir>${basedir}/../pmd-core</config.basedir>
     <java.version>8</java.version>
+    <java.home>${env.JAVA_HOME}</java.home>
     <apex.jorje.version>2017-11-17</apex.jorje.version>
   </properties>
 

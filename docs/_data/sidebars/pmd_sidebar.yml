@@ -15,30 +15,66 @@ entries:
       url: /tocpage
       output: pdf
       type: frontmatter
-  - title: User Documentation
+  - title: About
     output: web, pdf
     folderitems:
     - title: Introduction
       url: /index.html
       output: web, pdf
       type: homepage
-    - title: Release Notes
+    - title: Release notes
       url: /pmd_release_notes.html
       output: web, pdf
-    - title: Getting Started
+    - title: Getting help
+      url: /pmd_about_help.html
+      output: web, pdf
+  - title: User Documentation
+    output: web, pdf
+    folderitems:
+    - title: Getting started
       url: /pmd_userdocs_getting_started.html
       output: web, pdf
-    - title: Understanding Rulesets
+    - title: Understanding rulesets
       url: /pmd_userdocs_understanding_rulesets.html
       output: web, pdf
-    - title: Best Pratices
+    - title: Making rulesets
+      url: /pmd_userdocs_making_rulesets.html
+      output: web, pdf
+    - title: Using rule properties
+      url: /pmd_userdocs_using_properties.html
+      output: web, pdf
+    - title: Best practices
       url: /pmd_userdocs_best_practices.html
       output: web, pdf
-    - title: Copy-Paste Detection
-      url: /pmd_userdocs_cpd.html
+    - title: Suppressing warnings
+      url: /pmd_userdocs_suppressing_warnings.html
       output: web, pdf
-    - title: Suppressing
-      url: /pmd_userdocs_suppressing.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Extending PMD
+        output: web, pdf
+        subfolderitems:
+        - title: Writing a rule
+          url: /pmd_userdocs_extending_writing_pmd_rules.html
+          output: web, pdf
+        - title: Writing XPath rules
+          url: /pmd_userdocs_extending_writing_xpath_rules.html
+          output: web, pdf
+        - title: Defining rule properties
+          url: /pmd_userdocs_extending_defining_properties.html
+          output: web, pdf
+        - title: Using and defining code metrics
+          url: /pmd_userdocs_extending_metrics_howto.html
+          output: web, pdf
+        - title: Rule guidelines
+          url: /pmd_userdocs_extending_rule_guidelines.html
+          output: web, pdf
+        - title: Testing your rules
+          url: /pmd_userdocs_extending_testing.html
+          output: web, pdf
+    - title: Copy-paste detection
+      url: /pmd_userdocs_cpd.html
       output: web, pdf
     - title: null
       output: web, pdf
@@ -46,42 +82,18 @@ entries:
       - title: Tools / Integrations
         output: web, pdf
         subfolderitems:
-        - title: Maven PMD Plugin
+        - title: Maven PMD plugin
           output: web, pdf
           url: /pmd_userdocs_tools_maven.html
         - title: Ant
           output: web, pdf
           url: /pmd_userdocs_tools_ant.html
+        - title: CI integrations
+          output: web, pdf
+          url: /pmd_userdocs_tools_ci.html
         - title: Other Tools / Integrations
           output: web, pdf
           url: /pmd_userdocs_tools.html
-    - title: FAQ
-      url: /pmd_userdocs_faq.html
-      output: web, pdf
-    - title: Getting Help
-      url: /pmd_userdocs_help.html
-      output: web, pdf
-    - title: PMD in the press
-      url: /pmd_userdocs_news.html
-      output: web, pdf
-    - title: Products/books related to PMD
-      url: /pmd_userdocs_products.html
-      output: web, pdf
-    - title: Similar Projects
-      url: /pmd_userdocs_similarprojects.html
-      output: web, pdf
-    - title: License
-      url: /license.html
-      output: web, pdf
-    - title: Credits
-      url: /pmd_userdocs_credits.html
-      output: web, pdf
-    - title: What does 'PMD' mean?
-      url: /pmd_userdocs_meaning.html
-      output: web, pdf
-    - title: Old Release Notes
-      url: /pmd_release_notes_old.html
-      output: web, pdf
   - title: Rule Reference
     output: web, pdf
     folderitems:
@@ -289,64 +301,82 @@ entries:
   - title: Developer Documentation
     output: web, pdf
     folderitems:
-    - title: Developer Resources
+    - title: Developer resources
       url: /pmd_devdocs_development.html
-      output: web, pdf
-    - title: Writing Documentation
-      url: /pmd_devdocs_writing_documentation.html
-      output: web, pdf
-    - title: Code Style
-      url: /pmd_devdocs_codestyle.html
-      output: web, pdf
-    - title: Setting up your IDE
-      url: /pmd_devdocs_setting_up_ide.html
-      output: web, pdf
-    - title: Pull Requests
-      url: /pmd_devdocs_pull_requests.html
       output: web, pdf
     - title: Building PMD from source
       url: /pmd_devdocs_building.html
       output: web, pdf
-    - title: Testing / Test Framework
-      url: /pmd_devdocs_testing.html
+    - title: Contributing
+      url: /pmd_devdocs_contributing.html
       output: web, pdf
-    - title: Releasing
-      url: /pmd_devdocs_releasing.html
-      output: web, pdf
-    - title: Architecture
-      url: /pmd_devdocs_architecture.html
+    - title: Writing documentation
+      url: /pmd_devdocs_writing_documentation.html
       output: web, pdf
     - title: Roadmap
       url: /pmd_devdocs_roadmap.html
       output: web, pdf
-    - title: How PMD Works
+    - title: How PMD works
       url: /pmd_devdocs_how_pmd_works.html
       output: web, pdf
-    - title: Writing a Rule
-      url: /pmd_devdocs_writing_pmd_rules.html
+    - title: null
       output: web, pdf
-    - title: Writing XPath Rules
-      url: /pmd_devdocs_writing_xpath_rules.html
+      subfolders:
+      - title: Major contributions
+        output: web, pdf
+        subfolderitems:
+        - title: Adding a new language
+          url: /pmd_devdocs_major_adding_new_language.html
+          output: web, pdf
+        - title: Adding a new CPD language
+          url: /pmd_devdocs_major_adding_new_cpd_language.html
+          output: web, pdf
+        - title: Adding metrics support to a language
+          url: /pmd_devdocs_major_adding_new_metrics_framework.html
+          output: web, pdf
+  - title: Project documentation
+    output: web, pdf
+    folderitems:
+    - title: null
       output: web, pdf
-    - title: Using code metrics in custom rules
-      url: /pmd_devdocs_metrics_howto.html
+      subfolders:
+      - title: Trivia about PMD
+        output: web, pdf
+        subfolderitems:
+        - title: PMD in the press
+          url: /pmd_projectdocs_trivia_news.html
+          output: web, pdf
+        - title: Products & books related to PMD
+          url: /pmd_projectdocs_trivia_products.html
+          output: web, pdf
+        - title: Similar projects
+          url: /pmd_projectdocs_trivia_similarprojects.html
+          output: web, pdf
+        - title: What does 'PMD' mean?
+          url: /pmd_projectdocs_trivia_meaning.html
+          output: web, pdf
+    - title: FAQ
+      url: /pmd_projectdocs_faq.html
       output: web, pdf
-    - title: Making Rulesets
-      url: /pmd_devdocs_making_rulesets.html
+    - title: License
+      url: /license.html
       output: web, pdf
-    - title: Rule Guidelines
-      url: /pmd_devdocs_rule_guidelines.html
+    - title: Credits
+      url: /pmd_projectdocs_credits.html
       output: web, pdf
-    - title: Working with properties
-      url: /pmd_devdocs_working_with_properties.html
+    - title: Old release notes
+      url: /pmd_release_notes_old.html
       output: web, pdf
-    - title: Adding a New Language
-      url: /pmd_devdocs_adding_new_language.html
+    - title: null
       output: web, pdf
-    - title: Adding a New CPD Language
-      url: /pmd_devdocs_adding_new_cpd_language.html
-      output: web, pdf
-    - title: Adding metrics support to a language
-      url: /pmd_devdocs_adding_metrics_support_to_language.html
-      output: web, pdf
+      subfolders:
+      - title: Project management
+        output: web, pdf
+        subfolderitems:
+        - title: Release process
+          url: /pmd_projectdocs_committers_releasing.html
+          output: web, pdf
+        - title: Merging pull requests
+          url: /pmd_projectdocs_committers_merging_pull_requests.html
+          output: web, pdf
 

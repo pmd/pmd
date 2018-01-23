@@ -8,13 +8,10 @@
 Contains rules for migrating to JUnit 4
   </description>
 
-  <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseBeforeAnnotation"/>
-  <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseTestAnnotation"/>
-  <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseAfterAnnotation"/>
-  <rule ref="rulesets/java/migrating.xml/JUnit4SuitesShouldUseSuiteAnnotation"/>
-  <rule ref="rulesets/java/migrating.xml/JUnitUseExpected"/>
+    <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseTestAnnotation" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnitUseExpected" deprecated="true" />
 
 </ruleset>
-
-
-

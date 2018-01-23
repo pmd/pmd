@@ -9,6 +9,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
@@ -140,12 +141,32 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
             List<ASTName> nameNodes = baseNode.findDescendantsOfType(ASTName.class);
             for (ASTName nameNode : nameNodes) {
                 if (target.equals(nameNode.getImage())) {
-                    match = true;
-                    break;
+                    boolean isPartOfStringConcatenation = isStringConcat(nameNode, baseNode);
+                    if (!isPartOfStringConcatenation) {
+                        match = true;
+                        break;
+                    }
                 }
             }
         }
         return match;
+    }
+    
+    /**
+     * Checks whether the given childNode is part of an additive expression (String concatenation) limiting search to base Node.
+     * @param childNode
+     * @param baseNode
+     * @return
+     */
+    private boolean isStringConcat(Node childNode, Node baseNode) {
+        Node currentNode = childNode;
+        while (currentNode != baseNode) {
+            currentNode = currentNode.jjtGetParent();
+            if (currentNode instanceof ASTAdditiveExpression) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void ck(Object data, String target, ASTThrowStatement throwStatement, Node baseNode) {

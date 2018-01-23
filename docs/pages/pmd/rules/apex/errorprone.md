@@ -16,7 +16,7 @@ keywords: Error Prone, AvoidDirectAccessTriggerMap, AvoidHardcodingId, EmptyCatc
 Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Triggers should be bulkified and iterate through the map to handle the actions for each item separately.
 
 ```
-//ArrayLoadExpression/TriggerVariableExpression | //ArrayLoadExpression/LiteralExpression
+//ArrayLoadExpression[TriggerVariableExpression and LiteralExpression]
 ```
 
 **Example(s):**

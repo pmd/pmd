@@ -10,9 +10,9 @@ All rules in this ruleset have been moved to other rulesets. Please use the othe
 directly and don't use this ruleset anymore.
   </description>
 
-  <rule ref="java-coupling/LooseCoupling" deprecated="true" />
-  <rule ref="java-clone/CloneMethodMustImplementCloneable" deprecated="true" />
-  <rule ref="java-imports/UnusedImports" deprecated="true" />
-  <rule ref="java-strictexception/SignatureDeclareThrowsException" deprecated="true" />
+  <rule ref="category/java/bestpractices.xml/LooseCoupling" deprecated="true" />
+  <rule ref="category/java/errorprone.xml/CloneMethodMustImplementCloneable" deprecated="true" />
+  <rule ref="category/java/bestpractices.xml/UnusedImports" deprecated="true" />
+  <rule ref="category/java/design.xml/SignatureDeclareThrowsException" deprecated="true" />
 
 </ruleset>
