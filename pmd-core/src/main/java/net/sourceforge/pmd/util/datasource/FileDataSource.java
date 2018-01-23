@@ -37,14 +37,19 @@ public class FileDataSource implements DataSource {
     }
 
     private String glomName(boolean shortNames, String inputFileName, File file) {
-        if (shortNames && inputFileName.indexOf(',') == -1) {
-            if (new File(inputFileName).isDirectory()) {
-                return trimAnyPathSep(file.getPath().substring(inputFileName.length()));
-            } else {
-                if (inputFileName.indexOf(FILE_SEPARATOR.charAt(0)) == -1) {
-                    return inputFileName;
+        if (shortNames) {
+            if (inputFileName != null && inputFileName.indexOf(',') == -1) {
+                if (new File(inputFileName).isDirectory()) {
+                    return trimAnyPathSep(file.getPath().substring(inputFileName.length()));
+                } else {
+                    if (inputFileName.indexOf(FILE_SEPARATOR.charAt(0)) == -1) {
+                        return inputFileName;
+                    }
+                    return trimAnyPathSep(inputFileName.substring(inputFileName.lastIndexOf(FILE_SEPARATOR)));
                 }
-                return trimAnyPathSep(inputFileName.substring(inputFileName.lastIndexOf(FILE_SEPARATOR)));
+            } else {
+                // if the 'master' file is not specified, just use the file name
+                return file.getName();
             }
         }
 
