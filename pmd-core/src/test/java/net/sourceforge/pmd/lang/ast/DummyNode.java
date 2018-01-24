@@ -9,6 +9,10 @@ public class DummyNode extends AbstractNode {
         super(id);
     }
 
+    public static Node newInstance() {
+        return new DummyNode(0);
+    }
+
     @Override
     public String toString() {
         return "dummyNode";
