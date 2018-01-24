@@ -25,12 +25,17 @@ import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * Rule that tries to match an XPath expression against a DOM view of an AST.
- * <p>
+ *
  * <p>This rule needs a "xpath" property value in order to function.</p>
  */
 public class XPathRule extends AbstractRule {
 
-    public static final StringProperty XPATH_DESCRIPTOR = new StringProperty("xpath", "XPath expression", "", 1.0f);
+    public static final StringProperty XPATH_DESCRIPTOR = new StringProperty.StringPropertyBuilder()
+            .name("xpath")
+            .description("XPath expression")
+            .defaultValue("")
+            .uiOrder(1.0f)
+            .build();
 
     private static final Map<String, String> XPATH_VERSIONS;
 
@@ -42,9 +47,14 @@ public class XPathRule extends AbstractRule {
         XPATH_VERSIONS = Collections.unmodifiableMap(tmp);
     }
 
-    public static final EnumeratedProperty<String> VERSION_DESCRIPTOR
-            = new EnumeratedProperty<>("version",
-            "XPath specification version", XPATH_VERSIONS, XPATH_1_0, String.class, 2.0f);
+    public static final EnumeratedProperty<String> VERSION_DESCRIPTOR = new EnumeratedProperty.EnumeratedPropertyBuilder<String>()
+            .name("version")
+            .description("XPath specification version")
+            .labelsToChoices(XPATH_VERSIONS)
+            .defaultValue(XPATH_1_0)
+            .valueType(String.class)
+            .uiOrder(2.0f)
+            .build();
 
     /**
      * This is initialized only once when calling {@link #evaluate(Node, RuleContext)} or {@link #getRuleChainVisits()}.
@@ -84,8 +94,8 @@ public class XPathRule extends AbstractRule {
      * Apply the rule to all nodes.
      */
     @Override
-    public void apply(final List<? extends Node> nodes, final RuleContext ctx) {
-        for (final Node node : nodes) {
+    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+        for (Node node : nodes) {
             evaluate(node, ctx);
         }
     }
@@ -97,10 +107,12 @@ public class XPathRule extends AbstractRule {
      * @param data The RuleContext.
      */
     public void evaluate(final Node node, final RuleContext data) {
-        initXPathRuleQuery();
+        if (xPathRuleQueryNeedsInitialization()) {
+            initXPathRuleQuery();
+        }
 
-        final List<Node> nodesWithViolation = xpathRuleQuery.evaluate(node, data);
-        for (final Node nodeWithViolation : nodesWithViolation) {
+        List<Node> nodesWithViolation = xpathRuleQuery.evaluate(node, data);
+        for (Node nodeWithViolation : nodesWithViolation) {
             addViolation(data, nodeWithViolation, nodeWithViolation.getImage());
         }
     }
@@ -110,20 +122,18 @@ public class XPathRule extends AbstractRule {
      * engine in which the query will be run it looks at the XPath version.
      */
     private void initXPathRuleQuery() {
-        if (xPathRuleQueryNeedsInitialization()) {
-            final String xpath = getProperty(XPATH_DESCRIPTOR);
-            final String version = getProperty(VERSION_DESCRIPTOR);
+        String xpath = getProperty(XPATH_DESCRIPTOR);
+        String version = getProperty(VERSION_DESCRIPTOR);
 
-            initRuleQueryBasedOnVersion(version);
+        initRuleQueryBasedOnVersion(version);
 
-            xpathRuleQuery.setXPath(xpath);
-            xpathRuleQuery.setVersion(version);
-            xpathRuleQuery.setProperties(getPropertiesByPropertyDescriptor());
-        }
+        xpathRuleQuery.setXPath(xpath);
+        xpathRuleQuery.setVersion(version);
+        xpathRuleQuery.setProperties(getPropertiesByPropertyDescriptor());
     }
 
     /**
-     * Checks if the {@link #xpathRuleQuery} is null and therefore requires initialization;
+     * Checks if the {@link #xpathRuleQuery} is null and therefore requires initialization.
      *
      * @return true if {@link #xpathRuleQuery} is null
      */
@@ -132,11 +142,7 @@ public class XPathRule extends AbstractRule {
     }
 
     private void initRuleQueryBasedOnVersion(final String version) {
-        if (XPATH_1_0.equals(version)) {
-            xpathRuleQuery = new JaxenXPathRuleQuery();
-        } else {
-            xpathRuleQuery = new SaxonXPathRuleQuery();
-        }
+        xpathRuleQuery = XPATH_1_0.equals(version) ? new JaxenXPathRuleQuery() : new SaxonXPathRuleQuery();
     }
 
     @Override
@@ -144,7 +150,7 @@ public class XPathRule extends AbstractRule {
         if (xPathRuleQueryNeedsInitialization()) {
             initXPathRuleQuery();
 
-            for (final String nodeName : xpathRuleQuery.getRuleChainVisits()) {
+            for (String nodeName : xpathRuleQuery.getRuleChainVisits()) {
                 super.addRuleChainVisit(nodeName);
             }
         }

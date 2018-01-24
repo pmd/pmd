@@ -37,7 +37,6 @@ import net.sf.saxon.value.SequenceExtent;
 import net.sf.saxon.value.StringValue;
 import net.sf.saxon.value.UntypedAtomicValue;
 
-
 /**
  * This is a Saxon based XPathRule query.
  */
@@ -66,7 +65,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     private List<XPathVariable> xpathVariables;
 
     @Override
-    public boolean isSupportedVersion(final String version) {
+    public boolean isSupportedVersion(String version) {
         return XPATH_1_0_COMPATIBILITY.equals(version) || XPATH_2_0.equals(version);
     }
 

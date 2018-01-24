@@ -15,7 +15,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * Property which can take only a fixed set of values of any type, then selected via String labels. The mappings method
  * returns the set of mappings between the labels and their values.
  *
- * <p>This property currently doesn't support serialization and cannot be defined in a ruleset file.z
+ * <p>This property currently doesn't support serialization and cannot be defined in a ruleset file.z </p>
  *
  * @param <E> Type of the values
  *
@@ -159,4 +159,53 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
         }
     }
 
+    public static class EnumeratedPropertyBuilder<E> {
+        boolean isDefinedExternally = false;
+        Class<E> valueType;
+        E defaultValue;
+        float theUIOrder;
+        Map<String, E> labelsToChoices;
+        String theName;
+        String theDescription;
+
+        public EnumeratedProperty<E> build() {
+            return new EnumeratedProperty<E>(theName, theDescription, labelsToChoices, defaultValue, valueType,
+                    theUIOrder, isDefinedExternally);
+        }
+
+        public EnumeratedPropertyBuilder<E> name(String theName) {
+            this.theName = theName;
+            return this;
+        }
+
+        public EnumeratedPropertyBuilder<E> description(String theDescription) {
+            this.theDescription = theDescription;
+            return this;
+        }
+
+        public EnumeratedPropertyBuilder<E> labelsToChoices(Map<String, E> labelsToChoices) {
+            this.labelsToChoices = labelsToChoices;
+            return this;
+        }
+
+        public EnumeratedPropertyBuilder<E> defaultValue(E defaultValue) {
+            this.defaultValue = defaultValue;
+            return this;
+        }
+
+        public EnumeratedPropertyBuilder<E> valueType(Class<E> valueType) {
+            this.valueType = valueType;
+            return this;
+        }
+
+        public EnumeratedPropertyBuilder<E> uiOrder(float theUIOrder) {
+            this.theUIOrder = theUIOrder;
+            return this;
+        }
+
+        public EnumeratedPropertyBuilder<E> setDefinedExternally(boolean definedExternally) {
+            isDefinedExternally = definedExternally;
+            return this;
+        }
+    }
 }

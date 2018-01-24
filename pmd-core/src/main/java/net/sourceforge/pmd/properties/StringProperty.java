@@ -74,4 +74,35 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
             return new StringProperty(this.name, this.description, this.defaultValue, this.uiOrder, isDefinedInXML);
         }
     }
+
+    public static class StringPropertyBuilder {
+        float theUIOrder;
+        String theName;
+        String theDescription;
+        String defaultValue;
+
+        public StringProperty build() {
+            return new StringProperty(theName, theDescription, defaultValue, theUIOrder);
+        }
+
+        public StringPropertyBuilder uiOrder(float theUIOrder) {
+            this.theUIOrder = theUIOrder;
+            return this;
+        }
+
+        public StringPropertyBuilder name(String theName) {
+            this.theName = theName;
+            return this;
+        }
+
+        public StringPropertyBuilder description(String theDescription) {
+            this.theDescription = theDescription;
+            return this;
+        }
+
+        public StringPropertyBuilder defaultValue(String defaultValue) {
+            this.defaultValue = defaultValue;
+            return this;
+        }
+    }
 }

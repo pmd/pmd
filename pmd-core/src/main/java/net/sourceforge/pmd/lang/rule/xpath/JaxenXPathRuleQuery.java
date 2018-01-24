@@ -57,7 +57,6 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Node> evaluate(final Node node, final RuleContext data) {
         final List<Node> results = new ArrayList<>();
 
@@ -65,7 +64,8 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
             initializeExpressionIfStatusIsNoneOrPartial(data.getLanguageVersion().getLanguageVersionHandler().getXPathHandler().getNavigator());
 
             List<XPath> xPaths = getXPathsForNodeOrDefault(node.toString());
-            for (final XPath xpath : xPaths) {
+            for (XPath xpath : xPaths) {
+                @SuppressWarnings("unchecked")
                 final List<Node> matchedNodes = xpath.selectNodes(node);
                 results.addAll(matchedNodes);
             }
@@ -146,32 +146,36 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
 
             // Must be a LocationPath... that is something like //Type
             if (node instanceof LocationPath) {
-                LocationPath locationPath = (LocationPath) node;
+                final LocationPath locationPath = (LocationPath) node;
                 if (locationPath.isAbsolute()) {
                     // Should be at least two steps
-                    List<Step> steps = locationPath.getSteps();
+                    @SuppressWarnings("unchecked")
+                    final List<Step> steps = locationPath.getSteps();
+
                     if (steps.size() >= 2) {
-                        Step step1 = steps.get(0);
-                        Step step2 = steps.get(1);
+                        final Step step1 = steps.get(0);
+                        final Step step2 = steps.get(1);
                         // First step should be an AllNodeStep using the
                         // descendant or self axis
                         if (step1 instanceof AllNodeStep
-                                && ((AllNodeStep) step1).getAxis() == Axis.DESCENDANT_OR_SELF) {
+                                && step1.getAxis() == Axis.DESCENDANT_OR_SELF) {
                             // Second step should be a NameStep using the child
                             // axis.
-                            if (step2 instanceof NameStep && ((NameStep) step2).getAxis() == Axis.CHILD) {
+                            if (step2 instanceof NameStep && step2.getAxis() == Axis.CHILD) {
                                 // Construct a new expression that is
                                 // appropriate for RuleChain use
-                                XPathFactory xpathFactory = new DefaultXPathFactory();
+                                final XPathFactory xpathFactory = new DefaultXPathFactory();
 
                                 // Instead of an absolute location path, we'll
                                 // be using a relative path
-                                LocationPath relativeLocationPath = xpathFactory.createRelativeLocationPath();
+                                final LocationPath relativeLocationPath = xpathFactory.createRelativeLocationPath();
                                 // The first step will be along the self axis
-                                Step allNodeStep = xpathFactory.createAllNodeStep(Axis.SELF);
+                                final Step allNodeStep = xpathFactory.createAllNodeStep(Axis.SELF);
                                 // Retain all predicates from the original name
                                 // step
+                                @SuppressWarnings("unchecked")
                                 final List<Predicate> predicates = step2.getPredicates();
+
                                 for (Predicate predicate : predicates) {
                                     allNodeStep.addPredicate(predicate);
                                 }
@@ -213,7 +217,7 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
             nodeNameToXPaths.clear();
             addQueryToNode(originalXPath, AST_ROOT);
             if (LOG.isLoggable(Level.FINE)) {
-                LOG.log(Level.FINE, "Unable to use RuleChain for for XPath: " + xpath);
+                LOG.log(Level.FINE, "Unable to use RuleChain for XPath: " + xpath);
             }
         }
 
@@ -233,12 +237,12 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
      * @param nodeName the node on which to do the query
      */
     private void addQueryToNode(final XPath xPath, final String nodeName) {
-        List<XPath> xPaths = nodeNameToXPaths.get(nodeName);
-        if (xPaths == null) {
-            xPaths = new ArrayList<>();
-            nodeNameToXPaths.put(nodeName, xPaths);
+        List<XPath> xPathsForNode = nodeNameToXPaths.get(nodeName);
+        if (xPathsForNode == null) {
+            xPathsForNode = new ArrayList<>();
+            nodeNameToXPaths.put(nodeName, xPathsForNode);
         }
-        xPaths.add(xPath);
+        xPathsForNode.add(xPath);
     }
 
     private BaseXPath createXPath(final String xpathQueryString, final Navigator navigator) throws JaxenException {
