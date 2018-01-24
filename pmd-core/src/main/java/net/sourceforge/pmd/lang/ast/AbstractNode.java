@@ -114,13 +114,6 @@ public abstract class AbstractNode implements Node {
         return id;
     }
 
-    /**
-     * Subclasses should implement this method to return a name usable with
-     * XPathRule for evaluating Element Names.
-     */
-    @Override
-    public abstract String toString();
-
     @Override
     public String getImage() {
         return image;
@@ -442,5 +435,19 @@ public abstract class AbstractNode implements Node {
                 jjtGetChild(i).jjtSetChildIndex(i);
             }
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This default implementation adds compatibility with the previous
+     * way to get the xpath node name, which used {@link Object#toString()}.
+     *
+     * <p>Please override it. It may be removed in a future major version.
+     */
+    @Override
+    public String getXPathNodeName() {
+        return toString();
     }
 }

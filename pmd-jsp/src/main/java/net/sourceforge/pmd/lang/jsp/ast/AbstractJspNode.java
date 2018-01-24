@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 
-public class AbstractJspNode extends AbstractNode implements JspNode {
+public abstract class AbstractJspNode extends AbstractNode implements JspNode {
 
     protected JspParser parser;
 
@@ -57,6 +57,12 @@ public class AbstractJspNode extends AbstractNode implements JspNode {
     }
 
     public String toString() {
+        return getXPathNodeName();
+    }
+
+
+    @Override
+    public String getXPathNodeName() {
         return JspParserTreeConstants.jjtNodeName[id];
     }
 }

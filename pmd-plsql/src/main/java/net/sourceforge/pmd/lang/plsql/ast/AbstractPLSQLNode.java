@@ -64,6 +64,12 @@ public abstract class AbstractPLSQLNode extends net.sourceforge.pmd.lang.ast.Abs
         return data;
     }
 
+
+    @Override
+    public String getXPathNodeName() {
+        return PLSQLParserTreeConstants.jjtNodeName[id];
+    }
+
     /*
      * You can override these two methods in subclasses of SimpleNode to
      * customize the way the node appears when the tree is dumped. If your
@@ -72,7 +78,7 @@ public abstract class AbstractPLSQLNode extends net.sourceforge.pmd.lang.ast.Abs
      */
 
     public String toString() {
-        return PLSQLParserTreeConstants.jjtNodeName[id];
+        return getXPathNodeName();
     }
 
     public String toString(String prefix) {

@@ -70,6 +70,12 @@ public abstract class AbstractEcmascriptNode<T extends AstNode> extends Abstract
 
     @Override
     public String toString() {
+        return getXPathNodeName();
+    }
+
+
+    @Override
+    public String getXPathNodeName() {
         return node.shortName();
     }
 }

@@ -121,6 +121,12 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
         return data;
     }
 
+
+    @Override
+    public String getXPathNodeName() {
+        return VmParserTreeConstants.jjtNodeName[id];
+    }
+
     /*
      * You can override these two methods in subclasses of SimpleNode to
      * customize the way the node appears when the tree is dumped. If your
@@ -129,7 +135,7 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
      */
 
     public String toString() {
-        return VmParserTreeConstants.jjtNodeName[id];
+        return getXPathNodeName();
     }
 
     /**

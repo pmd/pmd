@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 
-public class AbstractVFNode extends AbstractNode implements VfNode {
+public abstract class AbstractVFNode extends AbstractNode implements VfNode {
 
     protected VfParser parser;
 
@@ -57,6 +57,12 @@ public class AbstractVFNode extends AbstractNode implements VfNode {
     }
 
     public String toString() {
+        return getXPathNodeName();
+    }
+
+
+    @Override
+    public String getXPathNodeName() {
         return VfParserTreeConstants.jjtNodeName[id];
     }
 }
