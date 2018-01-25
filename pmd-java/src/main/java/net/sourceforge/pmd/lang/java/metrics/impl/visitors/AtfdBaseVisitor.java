@@ -63,7 +63,7 @@ public class AtfdBaseVisitor extends JavaParserVisitorAdapter {
             result = false;
         } else if (nameImage == null && node.getFirstDescendantOfType(ASTPrimaryPrefix.class).usesThisModifier()) {
             result = false;
-        } else if (nameImage == null && node.hasDecendantOfAnyType(ASTLiteral.class, ASTAllocationExpression.class)) {
+        } else if (nameImage == null && node.hasDescendantOfAnyType(ASTLiteral.class, ASTAllocationExpression.class)) {
             result = false;
         } else {
             result = true;
