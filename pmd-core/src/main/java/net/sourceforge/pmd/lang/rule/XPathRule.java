@@ -30,7 +30,7 @@ import net.sourceforge.pmd.properties.StringProperty;
  */
 public class XPathRule extends AbstractRule {
 
-    public static final StringProperty XPATH_DESCRIPTOR = StringProperty.<String>named("xpath")
+    public static final StringProperty XPATH_DESCRIPTOR = StringProperty.named("xpath")
             .desc("XPath expression")
             .defaultValue("")
             .uiOrder(1.0f)
