@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 
 /**
  * This rule detects when a class exceeds a certain threshold. i.e. if a class
@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
  */
 public class ExcessiveClassLengthRule extends ExcessiveLengthRule {
     public ExcessiveClassLengthRule() {
-        super(ASTClassOrInterfaceDeclaration.class);
+        super(ASTAnyTypeDeclaration.class);
         setProperty(MINIMUM_DESCRIPTOR, 1000d);
     }
 }

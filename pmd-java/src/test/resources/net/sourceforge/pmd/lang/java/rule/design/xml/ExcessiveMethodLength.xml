@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 short
@@ -43,17 +43,13 @@ long, normal range
         <code-ref id="long"/>
     </test-code>
     <test-code>
-        <description><![CDATA[
-long, minimum with longer range
-     ]]></description>
+        <description>long, minimum with longer range</description>
         <rule-property name="minimum">20</rule-property>
         <expected-problems>0</expected-problems>
         <code-ref id="long"/>
     </test-code>
     <test-code>
-        <description><![CDATA[
-not quite long
-     ]]></description>
+        <description>not quite long</description>
         <rule-property name="minimum">10</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -72,14 +68,12 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-long
-     ]]></description>
+        <description>Consider constructors, refs #825</description>
         <rule-property name="minimum">10</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public static void main(String args[]) {
+    public Foo(String args[]) {
 	  bar();
 	  bar();
 	  bar();
@@ -95,7 +89,11 @@ public class Foo {
 	  bar();
 	  bar();
 	  bar();
-    } // > 10 lines - Not a violation
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+    }
 }
      ]]></code>
     </test-code>

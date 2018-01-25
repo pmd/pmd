@@ -26,6 +26,8 @@ This is a minor release.
     *   [#569](https://github.com/pmd/pmd/issues/569): \[core] XPath support requires specific toString implementations
 *   doc
     *   [#791](https://github.com/pmd/pmd/issues/791): \[doc] Documentation site reorganisation
+*   java
+    *   [#825](https://github.com/pmd/pmd/issues/825): \[java] Excessive*Length ignores too much
 
 ### API Changes
 
