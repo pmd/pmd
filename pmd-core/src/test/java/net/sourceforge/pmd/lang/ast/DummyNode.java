@@ -9,7 +9,6 @@ public class DummyNode extends AbstractNode {
         super(id);
     }
 
-    @Deprecated
     @Override
     public String toString() {
         return "dummyNode";

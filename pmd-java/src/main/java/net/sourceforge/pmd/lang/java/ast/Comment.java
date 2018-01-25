@@ -23,7 +23,6 @@ public abstract class Comment extends AbstractNode {
         }
     }
 
-    @Deprecated
     public String toString() {
         return getImage();
     }
