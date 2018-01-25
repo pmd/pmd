@@ -37,18 +37,17 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     // Note: required by https://github.com/codeclimate/spec/blob/master/SPEC.md
     protected static final String NULL_CHARACTER = "\u0000";
     protected static final List<String> INTERNAL_DEV_PROPERTIES = Arrays.asList("version", "xpath");
-    private final String pmdDeveloperUrl;
+    private static final String PMD_PROPERTIES_URL = getPmdPropertiesURL();
     private Rule rule;
 
     public CodeClimateRenderer() {
         super(NAME, "Code Climate integration.");
-        pmdDeveloperUrl = getPmdDeveloperURL();
     }
 
-    private static String getPmdDeveloperURL() {
-        String url = "https://pmd.github.io/pmd-" + PMDVersion.VERSION + "/customizing/pmd-developer.html";
+    private static String getPmdPropertiesURL() {
+        String url = "https://pmd.github.io/pmd-" + PMDVersion.VERSION + "/pmd_devdocs_working_with_properties.html";
         if (PMDVersion.isSnapshot() || PMDVersion.isUnknown()) {
-            url = "https://pmd.github.io/latest/customizing/pmd-developer.html";
+            url = "https://pmd.github.io/latest/pmd_devdocs_working_with_properties.html";
         }
         return url;
     }
@@ -167,7 +166,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         }
 
         if (!rule.getPropertyDescriptors().isEmpty()) {
-            result += "\\n\\n### [PMD properties](" + pmdDeveloperUrl + ")\\n\\n";
+            result += "\\n\\n### [PMD properties](" + PMD_PROPERTIES_URL + ")\\n\\n";
             result += "Name | Value | Description\\n";
             result += "--- | --- | ---\\n";
 
