@@ -15,7 +15,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * Property which can take only a fixed set of values of any type, then selected via String labels. The mappings method
  * returns the set of mappings between the labels and their values.
  *
- * <p>This property currently doesn't support serialization and cannot be defined in a ruleset file.z
+ * <p>This property currently doesn't support serialization and cannot be defined in a ruleset file.z </p>
  *
  * @param <E> Type of the values
  *
@@ -158,5 +158,4 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
             return new EnumeratedProperty<>(this.name, this.description, mappings, this.defaultValue, valueType, this.uiOrder, isDefinedInXML);
         }
     }
-
 }
