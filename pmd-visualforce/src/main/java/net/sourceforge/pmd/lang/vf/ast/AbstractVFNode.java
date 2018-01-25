@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 
-public abstract class AbstractVFNode extends AbstractNode implements VfNode {
+public class AbstractVFNode extends AbstractNode implements VfNode {
 
     protected VfParser parser;
 
