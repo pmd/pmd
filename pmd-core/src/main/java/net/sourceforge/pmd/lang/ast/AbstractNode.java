@@ -451,6 +451,7 @@ public abstract class AbstractNode implements Node {
      * <p>Please override it. It may be removed in a future major version.
      */
     @Override
+    // @Deprecated // FUTURE 7.0.0 make abstract
     public String getXPathNodeName() {
         LOG.warning("getXPathNodeName should be overriden in classes derived from AbstractNode. " +
                             "The implementation is provided for compatibility with existing implementors," +
