@@ -70,7 +70,7 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
         try {
             initializeXPathExpression(
                     data.getLanguageVersion().getLanguageVersionHandler().getXPathHandler().getNavigator());
-            List<XPath> xpaths = nodeNameToXPaths.get(node.toString());
+            List<XPath> xpaths = nodeNameToXPaths.get(node.getXPathNodeName());
             if (xpaths == null) {
                 xpaths = nodeNameToXPaths.get(AST_ROOT);
             }

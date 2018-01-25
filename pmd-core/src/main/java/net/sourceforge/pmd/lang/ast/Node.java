@@ -281,4 +281,12 @@ public interface Node {
      *          The index of the child to be removed
      */
     void removeChildAtIndex(int childIndex);
+
+
+    /**
+     * Gets the name of the node that is used to match it with XPath queries.
+     *
+     * @return The XPath node name
+     */
+    String getXPathNodeName();
 }

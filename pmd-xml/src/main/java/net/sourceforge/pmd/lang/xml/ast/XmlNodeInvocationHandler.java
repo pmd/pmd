@@ -121,17 +121,16 @@ public class XmlNodeInvocationHandler implements InvocationHandler {
                 return null;
             } else if ("isFindBoundary".equals(method.getName())) {
                 return false;
+            } else if ("getXPathNodeName".equals(method.getName())) {
+                return node.getNodeName().replace("#", "");
             }
             throw new UnsupportedOperationException("Method not supported for XmlNode: " + method);
         } else {
             if ("toString".equals(method.getName())) {
-                String s = node.getNodeName();
-                s = s.replace("#", "");
-                return s;
+                return node.getNodeName().replace("#", "");
             }
             // Delegate method
-            Object result = method.invoke(node, args);
-            return result;
+            return method.invoke(node, args);
         }
     }
 
