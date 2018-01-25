@@ -46,12 +46,34 @@ public final class PMDVersion {
         throw new AssertionError("Can't instantiate utility classes");
     }
     
+    /**
+     * Retrieves the next major release to be expected.
+     * Useful when logging deprecation messages to indicate when support will be removed.
+     * 
+     * @return The next major release to be expected.
+     */
     public static String getNextMajorRelease() {
-        if (UNKNOWN_VERSION.equals(VERSION)) {
+        if (isUnknown()) {
             return UNKNOWN_VERSION;
         }
         
         final int major = Integer.parseInt(VERSION.split("\\.")[0]);
         return (major + 1) + ".0.0";
+    }
+    
+    /**
+     * Checks if the current version is unknown.
+     * @return True if an unknown version, false otherwise
+     */
+    public static boolean isUnknown() {
+        return UNKNOWN_VERSION.equals(VERSION);
+    }
+    
+    /**
+     * Checks if the current version is a snapshot.
+     * @return True if a snapshot release, false otherwise
+     */
+    public static boolean isSnapshot() {
+        return VERSION.endsWith("-SNAPSHOT");
     }
 }

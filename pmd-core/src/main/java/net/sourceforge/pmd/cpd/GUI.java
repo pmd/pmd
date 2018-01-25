@@ -67,7 +67,7 @@ import javax.swing.table.TableModel;
 
 import org.apache.commons.io.IOUtils;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 
 public class GUI implements CPDListener {
 
@@ -362,7 +362,7 @@ public class GUI implements CPDListener {
     }
 
     public GUI() {
-        frame = new JFrame("PMD Duplicate Code Detector (v " + PMD.VERSION + ')');
+        frame = new JFrame("PMD Duplicate Code Detector (v " + PMDVersion.VERSION + ')');
 
         timeField.setEditable(false);
 

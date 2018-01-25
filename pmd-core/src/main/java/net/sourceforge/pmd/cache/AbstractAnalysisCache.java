@@ -27,7 +27,7 @@ import java.util.zip.CheckedInputStream;
 
 import org.apache.commons.io.IOUtils;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
@@ -51,7 +51,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
      * Creates a new empty cache
      */
     public AbstractAnalysisCache() {
-        pmdVersion = PMD.VERSION;
+        pmdVersion = PMDVersion.VERSION;
         fileResultsCache = new ConcurrentHashMap<>();
         updatedResultsCache = new ConcurrentHashMap<>();
     }

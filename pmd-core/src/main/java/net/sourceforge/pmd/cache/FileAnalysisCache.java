@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleViolation;
 
 /**
@@ -50,7 +50,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
             ) {
                 final String cacheVersion = inputStream.readUTF();
                 
-                if (PMD.VERSION.equals(cacheVersion)) {
+                if (PMDVersion.VERSION.equals(cacheVersion)) {
                     // Cache seems valid, load the rest
                     
                     // Get checksums
