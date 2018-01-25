@@ -137,7 +137,8 @@ public interface Node {
 
     /**
      * Traverses up the tree to find all of the parent instances of type
-     * parentType or one of its subclasses.
+     * parentType or one of its subclasses. The nodes are ordered
+     * deepest-first.
      *
      * @param parentType Class literal of the type you want to find
      * @param <T>        The type you want to find
