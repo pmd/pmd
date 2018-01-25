@@ -56,9 +56,7 @@ public abstract class AbstractJspNode extends AbstractNode implements JspNode {
         return data;
     }
 
-    public String toString() {
-        return getXPathNodeName();
-    }
+
 
 
     @Override

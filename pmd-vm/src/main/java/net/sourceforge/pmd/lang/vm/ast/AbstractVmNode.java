@@ -134,9 +134,7 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
      * otherwise overriding toString() is probably all you need to do.
      */
 
-    public String toString() {
-        return getXPathNodeName();
-    }
+
 
     /**
      * @param prefix

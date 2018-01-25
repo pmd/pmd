@@ -78,10 +78,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         return comment;
     }
 
-    @Override
-    public String toString() {
-        return getXPathNodeName();
-    }
+
 
     @Override
     public final String getXPathNodeName() {

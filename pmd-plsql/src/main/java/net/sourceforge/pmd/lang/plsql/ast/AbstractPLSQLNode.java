@@ -77,9 +77,7 @@ public abstract class AbstractPLSQLNode extends net.sourceforge.pmd.lang.ast.Abs
      * otherwise overriding toString() is probably all you need to do.
      */
 
-    public String toString() {
-        return getXPathNodeName();
-    }
+
 
     public String toString(String prefix) {
         return prefix + toString();

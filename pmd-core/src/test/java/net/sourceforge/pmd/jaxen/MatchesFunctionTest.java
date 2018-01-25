@@ -26,6 +26,7 @@ public class MatchesFunctionTest {
             super(1);
         }
 
+        @Deprecated
         @Override
         public String toString() {
             return "MyNode";

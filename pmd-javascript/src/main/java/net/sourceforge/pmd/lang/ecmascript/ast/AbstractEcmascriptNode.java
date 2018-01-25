@@ -68,10 +68,7 @@ public abstract class AbstractEcmascriptNode<T extends AstNode> extends Abstract
         return node.hasSideEffects();
     }
 
-    @Override
-    public String toString() {
-        return getXPathNodeName();
-    }
+
 
 
     @Override

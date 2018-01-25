@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,11 +18,15 @@ import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 public abstract class AbstractNode implements Node {
+
+    private static final Logger LOG = Logger.getLogger(AbstractNode.class.getName());
+
 
     protected Node parent;
     protected Node[] children;
@@ -448,6 +452,23 @@ public abstract class AbstractNode implements Node {
      */
     @Override
     public String getXPathNodeName() {
+        LOG.warning("getXPathNodeName should be overriden in classes derived from AbstractNode. " +
+                            "The implementation is provided for compatibility with existing implementors," +
+                            "but could be declared abstract as soon as release " + PMDVersion.getNextMajorRelease()
+                            + ".");
         return toString();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated The equivalence between toString and a node's name could be broken as soon as release 7.0.0.
+     *  Use getXPathNodeName for that purpose. The use for debugging purposes is not deprecated.
+     */
+    @Deprecated
+    @Override
+    public String toString() {
+        return getXPathNodeName();
     }
 }

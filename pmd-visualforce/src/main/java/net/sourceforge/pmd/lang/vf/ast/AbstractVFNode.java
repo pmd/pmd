@@ -56,9 +56,7 @@ public abstract class AbstractVFNode extends AbstractNode implements VfNode {
         return data;
     }
 
-    public String toString() {
-        return getXPathNodeName();
-    }
+
 
 
     @Override
