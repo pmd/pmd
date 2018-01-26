@@ -18,12 +18,21 @@ import net.sourceforge.pmd.lang.ast.QualifiedName;
 
 
 /**
- * Represents Qualified Names for use within the java metrics framework.
+ * Unambiguous identifier for a java method or class. This implementation
+ * approaches the qualified name format found in stack traces for example,
+ * using a custom format specification (see {@link #ofString(String)}).
  *
- * <p>Refer to https://docs.oracle.com/javase/specs/jls/se9/html/jls-13.html#jls-13.1
+ * <p>Instances of this class are immutable. They can be obtained from the
+ * factory methods of this class, or from {@link JavaQualifiableNode#getQualifiedName()}
+ * on AST nodes that support it.
  *
- * TODO consider anonymous classes
+ * <p>Class qualified names follow the <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-13.html#jls-13.1">binary name spec</a>.
+ *
+ * <p>Method qualified names don't follow a specification but allow to
+ * distinguish overloads of the same method, using parameter types and order.
+ *
  */
+// TODO consider anonymous classes
 public final class JavaQualifiedName implements QualifiedName {
 
     /**
@@ -66,7 +75,7 @@ public final class JavaQualifiedName implements QualifiedName {
                                                                   + "  \\("
                                                                   + "    (                     # parameters\n"
                                                                   + "      (\\w+)"
-                                                                  + "      (,\\040\\w+)*        # \040 is a space\n"
+                                                                  + "      (,\\040\\w+)*       # \040 is a space\n"
                                                                   + "    )?"
                                                                   + "  \\)"
                                                                   + ")?", Pattern.COMMENTS);
@@ -154,7 +163,8 @@ public final class JavaQualifiedName implements QualifiedName {
 
 
     /**
-     * Builds the qualified name of a nested class using the qualified name of its immediate parent.
+     * Builds the qualified name of a nested class using
+     * the qualified name of its immediate parent.
      *
      * @param parent    The qname of the immediate parent
      * @param className The name of the class
@@ -167,8 +177,10 @@ public final class JavaQualifiedName implements QualifiedName {
 
 
     /**
-     * Builds the qualified name of a local class using the qualified name of its immediate parent.
-     * Local classes use a random suffix to prevent qualified name collisions.
+     * Builds the qualified name of a local class using
+     * the qualified name of its immediate parent. Local
+     * classes use a random suffix to prevent qualified
+     * name collisions.
      *
      * @param parent    The qname of the immediate parent
      * @param className The name of the class
@@ -359,8 +371,9 @@ public final class JavaQualifiedName implements QualifiedName {
 
 
     /**
-     * Returns the packages. This is specific to Java's package structure.
-     * If the outer class is in the unnamed package, returns null.
+     * Returns the packages in order. This is specific to
+     * Java's package structure. If the outer class is in
+     * the unnamed package, returns {@code null}.
      *
      * @return The packages.
      */
@@ -370,8 +383,11 @@ public final class JavaQualifiedName implements QualifiedName {
 
 
     /**
-     * Returns the class specific part of the name. It identifies a class in the namespace it's declared in. If the
-     * class is nested inside another, then the array returned contains all enclosing classes in order.
+     * Returns the class specific part of the name. It
+     * identifies a class in the namespace it's declared
+     * in. If the class is nested inside another, then
+     * the array returned contains all enclosing classes
+     * in order.
      *
      * @return The class names array.
      */
@@ -381,9 +397,11 @@ public final class JavaQualifiedName implements QualifiedName {
 
 
     /**
-     * Returns the operation specific part of the name. It identifies an operation in its namespace.
+     * Returns the operation specific part of the name. It
+     * identifies an operation in its namespace. Returns
+     * {@code null} if {@link #isOperation()} returns false.
      *
-     * @return The operation string.
+     * @return The operation string, or {@code null}.
      */
     public String getOperation() {
         return operation;
@@ -429,6 +447,11 @@ public final class JavaQualifiedName implements QualifiedName {
     }
 
 
+    /**
+     * Returns the string representation of this qualified
+     * name. The representation follows the format defined
+     * for {@link #ofString(String)}.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
