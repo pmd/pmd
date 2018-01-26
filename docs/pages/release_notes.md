@@ -29,6 +29,8 @@ This is a minor release.
     *   [#791](https://github.com/pmd/pmd/issues/791): \[doc] Documentation site reorganisation
 *   java
     *   [#825](https://github.com/pmd/pmd/issues/825): \[java] Excessive*Length ignores too much
+*   java-documentation
+    *   [#877](https://github.com/pmd/pmd/issues/877): \[java] CommentRequired valid rule configuration causes PMD error
 
 ### API Changes
 
