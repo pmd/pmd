@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.ParserTstUtil;
 /**
  * @author Clément Fournier
  */
-public class QualifiedNameTest {
+public class JavaQualifiedNameTest {
 
     /** Provides a hook into the package-private reset method for the local indices counter. */
     public static void resetLocalIndicesCounterHook() {
@@ -38,7 +38,7 @@ public class QualifiedNameTest {
                                                              TEST);
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
-            assertEquals(".Foo", qname.toString());
+            assertEquals("Foo", qname.toString());
             assertNull(qname.getPackages());
             assertEquals(1, qname.getClasses().length);
             assertNull(qname.getOperation());
@@ -139,7 +139,7 @@ public class QualifiedNameTest {
             JavaQualifiedName qname = coid.getQualifiedName();
             switch (coid.getImage()) {
             case "Foo":
-                assertEquals(".Bzaz$Bor$Foo",
+                assertEquals("Bzaz$Bor$Foo",
                              qname.toString());
                 assertNull(qname.getPackages());
                 assertEquals(3, qname.getClasses().length);
@@ -243,7 +243,7 @@ public class QualifiedNameTest {
     @Test
     public void testParsePackages() {
         JavaQualifiedName packs = JavaQualifiedName.ofString("foo.bar.Bzaz$Bolg");
-        JavaQualifiedName nopacks = JavaQualifiedName.ofString(".Bzaz");
+        JavaQualifiedName nopacks = JavaQualifiedName.ofString("Bzaz");
 
         assertNotNull(packs.getPackages());
         assertEquals("foo", packs.getPackages()[0]);
@@ -335,9 +335,9 @@ public class QualifiedNameTest {
 
         assertNotEquals(classes.get(1).getQualifiedName(), classes.get(2).getQualifiedName());
 
-        assertEquals(JavaQualifiedName.ofString(".Bzaz$1Local"), classes.get(1).getQualifiedName());
-        assertEquals(JavaQualifiedName.ofString(".Bzaz$1Local$Nested"), classes.get(2).getQualifiedName());
-        assertEquals(JavaQualifiedName.ofString(".Bzaz$1Local$Nested$1InnerLocal"), classes.get(3).getQualifiedName());
+        assertEquals(JavaQualifiedName.ofString("Bzaz$1Local"), classes.get(1).getQualifiedName());
+        assertEquals(JavaQualifiedName.ofString("Bzaz$1Local$Nested"), classes.get(2).getQualifiedName());
+        assertEquals(JavaQualifiedName.ofString("Bzaz$1Local$Nested$1InnerLocal"), classes.get(3).getQualifiedName());
     }
 
 }

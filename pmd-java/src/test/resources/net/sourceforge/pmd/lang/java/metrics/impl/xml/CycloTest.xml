@@ -73,8 +73,8 @@
         <description>Full example - No options</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'.Complicated#exception()' has value 4.</message>
-            <message>'.Complicated#example()' has value 23.</message>
+            <message>'Complicated#exception()' has value 4.</message>
+            <message>'Complicated#example()' has value 23.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -84,8 +84,8 @@
         <rule-property name="metricOptions">ignoreBooleanPaths</rule-property>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'.Complicated#exception()' has value 4.</message>
-            <message>'.Complicated#example()' has value 14.</message>
+            <message>'Complicated#exception()' has value 4.</message>
+            <message>'Complicated#example()' has value 14.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -95,8 +95,8 @@
         <rule-property name="metricOptions">considerAssert</rule-property>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'.Complicated#exception()' has value 4.</message>
-            <message>'.Complicated#example()' has value 28.</message>
+            <message>'Complicated#exception()' has value 4.</message>
+            <message>'Complicated#example()' has value 28.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -106,8 +106,8 @@
         <rule-property name="metricOptions">ignoreBooleanPaths|considerAssert</rule-property>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'.Complicated#exception()' has value 4.</message>
-            <message>'.Complicated#example()' has value 18.</message>
+            <message>'Complicated#exception()' has value 4.</message>
+            <message>'Complicated#example()' has value 18.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -117,7 +117,7 @@
         <rule-property name="reportClasses">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#foo()' has value 1.</message>
+            <message>'Foo#foo()' has value 1.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -149,7 +149,7 @@
         <rule-property name="reportClasses">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Test#Test()' has value 4.</message>
+            <message>'Test#Test()' has value 4.</message>
         </expected-messages>
         <code-ref id="constructor-violation"/>
     </test-code>
@@ -177,7 +177,7 @@
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#foo()' has value 3.</message>
+            <message>'Foo#foo()' has value 3.</message>
         </expected-messages>
         <code-ref id="fallthroughSwitch"/>
     </test-code>
@@ -204,7 +204,7 @@
         <rule-property name="reportClasses">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#foo()' has value 8.</message>
+            <message>'Foo#foo()' has value 8.</message>
         </expected-messages>
         <code-ref id="manyBooleanOps"/>
     </test-code>
@@ -213,7 +213,7 @@
         <description>Ternary expression counts 1 + boolean complexity</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#bar()' has value 3.</message>
+            <message>'Foo#bar()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -232,7 +232,7 @@
         <rule-property name="metricOptions">considerAssert</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#bar()' has value 5.</message>
+            <message>'Foo#bar()' has value 5.</message>
         </expected-messages>
         <code>
             <![CDATA[

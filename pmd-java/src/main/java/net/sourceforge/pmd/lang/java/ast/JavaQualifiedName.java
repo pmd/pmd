@@ -12,11 +12,17 @@ import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.ast.QualifiedName;
 
 
 /**
  * Represents Qualified Names for use within the java metrics framework.
+ *
+ * <p>Refer to https://docs.oracle.com/javase/specs/jls/se9/html/jls-13.html#jls-13.1
+ *
+ * TODO consider anonymous classes
  */
 public final class JavaQualifiedName implements QualifiedName {
 
@@ -24,7 +30,7 @@ public final class JavaQualifiedName implements QualifiedName {
      * Pattern specifying the format.
      *
      * <pre>
-     *     ((\w+\.)+|\.)            # packages
+     *     ((\w+\.)*)               # packages
      *     (                        # classes
      *       (\w+)                  # primary class
      *       (
@@ -45,7 +51,7 @@ public final class JavaQualifiedName implements QualifiedName {
      *     )?
      * </pre>
      */
-    private static final Pattern FORMAT = Pattern.compile("((\\w+\\.)+|\\.)              # packages\n"
+    private static final Pattern FORMAT = Pattern.compile("((\\w+\\.)*)                  # packages\n"
                                                                   + "(                         # classes\n"
                                                                   + "  (\\w+)                  # primary class\n"
                                                                   + "  ("
@@ -264,9 +270,9 @@ public final class JavaQualifiedName implements QualifiedName {
      * <li> Method arguments are separated by a comma and a single space.
      * </ul>
      *
-     * <p>{@code .MyClass$Nested}
+     * <p>{@code MyClass$Nested}
      * <ul>
-     * <li> A class in the unnamed package is preceded by a single full stop.
+     * <li> The qualified name of a class in the unnamed package starts with the class name.
      * </ul>
      *
      * <p>{@code com.foo.Class$1LocalClass}
@@ -288,7 +294,7 @@ public final class JavaQualifiedName implements QualifiedName {
             return null;
         }
 
-        qname.packages = ".".equals(matcher.group(PACKAGES_GROUP_INDEX)) ? null : matcher.group(PACKAGES_GROUP_INDEX).split("\\.");
+        qname.packages = StringUtils.isBlank(matcher.group(PACKAGES_GROUP_INDEX)) ? null : matcher.group(PACKAGES_GROUP_INDEX).split("\\.");
         qname.operation = matcher.group(OPERATION_GROUP_INDEX) == null ? null : matcher.group(OPERATION_GROUP_INDEX).substring(1);
 
         qname.classes = matcher.group(CLASSES_GROUP_INDEX).split("\\$");
@@ -354,6 +360,7 @@ public final class JavaQualifiedName implements QualifiedName {
 
     /**
      * Returns the packages. This is specific to Java's package structure.
+     * If the outer class is in the unnamed package, returns null.
      *
      * @return The packages.
      */
@@ -427,14 +434,10 @@ public final class JavaQualifiedName implements QualifiedName {
         StringBuilder sb = new StringBuilder();
 
         if (packages != null) {
-            int last = packages.length - 1;
-            for (int i = 0; i < last; i++) {
-                sb.append(packages[i]).append('.');
+            for (String aPackage : packages) {
+                sb.append(aPackage).append('.');
             }
-
-            sb.append(packages[last]);
         }
-        sb.append('.'); // this dot is there even if package is null
 
         sb.append(classes[0]);
 

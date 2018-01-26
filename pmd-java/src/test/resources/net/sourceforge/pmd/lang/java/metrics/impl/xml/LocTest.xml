@@ -71,9 +71,9 @@
         <description>Full example</description>
         <expected-problems>3</expected-problems>
         <expected-messages>
-            <message>'.Foo' has value 58 highest 40.</message>
-            <message>'.Foo#foo()' has value 1.</message>
-            <message>'.Foo#main(String)' has value 40.</message>
+            <message>'Foo' has value 58 highest 40.</message>
+            <message>'Foo#foo()' has value 1.</message>
+            <message>'Foo#main(String)' has value 40.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -82,8 +82,8 @@
         <description>Empty method</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'.Foo' has value 5 highest 3.</message>
-            <message>'.Foo#foo()' has value 3.</message>
+            <message>'Foo' has value 5 highest 3.</message>
+            <message>'Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -100,7 +100,7 @@
         <description>Empty class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo' has value 2 highest 0.</message>
+            <message>'Foo' has value 2 highest 0.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -114,8 +114,8 @@
         <description>Switch</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'.Foo' has value 12 highest 10.</message>
-            <message>'.Foo#foo()' has value 10.</message>
+            <message>'Foo' has value 12 highest 10.</message>
+            <message>'Foo#foo()' has value 10.</message>
         </expected-messages>
         <code>
             <![CDATA[
