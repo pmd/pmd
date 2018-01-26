@@ -84,7 +84,9 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
                 ASTReferenceType type1 = ((Node) nd1.getAccessNodeParent())
                         .getFirstDescendantOfType(ASTReferenceType.class);
                 // skip, if it is an enum
-                if (type0.getType() != null && type0.getType().equals(type1.getType()) && type0.getType().isEnum()) {
+                if (type0.getType() != null && type0.getType().equals(type1.getType())
+                    // It may be a custom enum class or an explicit Enum class usage
+                    && (type0.getType().isEnum() || type0.getType() == java.lang.Enum.class)) {
                     return data;
                 }
 
