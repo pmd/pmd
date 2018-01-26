@@ -22,8 +22,9 @@ This is a minor release.
 ### Fixed Issues
 
 *   all
-    *   [#848](https://github.com/pmd/pmd/issues/848): \[doc] Test failures when building pmd-doc under Windows
     *   [#569](https://github.com/pmd/pmd/issues/569): \[core] XPath support requires specific toString implementations
+    *   [#848](https://github.com/pmd/pmd/issues/848): \[doc] Test failures when building pmd-doc under Windows
+    *   [#872](https://github.com/pmd/pmd/issues/872): \[core] NullPointerException at FileDataSource.glomName()
 *   doc
     *   [#791](https://github.com/pmd/pmd/issues/791): \[doc] Documentation site reorganisation
 *   java
@@ -50,4 +51,5 @@ e.g. to produce a more useful message for debugging.
 *   [#830](https://github.com/pmd/pmd/pull/830): \[java] UseArraysAsList: Description added - [Tobias Weimer](https://github.com/tweimer)
 *   [#845](https://github.com/pmd/pmd/pull/845): \[java] Fix false negative PreserveStackTrace on string concatenation - [Alberto Fernández](https://github.com/albfernandez)
 *   [#868](https://github.com/pmd/pmd/pull/868): \[core] Improve XPath documentation && make small refactors - [Gonzalo Ibars Ingman](https://github.com/gibarsin)
+*   [#875](https://github.com/pmd/pmd/pull/875): \[core] Support shortnames when using filelist - [John Zhang](https://github.com/johnjiabinzhang)
 
