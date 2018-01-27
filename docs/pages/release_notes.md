@@ -28,9 +28,11 @@ This is a minor release.
 *   doc
     *   [#791](https://github.com/pmd/pmd/issues/791): \[doc] Documentation site reorganisation
 *   java
-    *   [#825](https://github.com/pmd/pmd/issues/825): \[java] Excessive*Length ignores too much
+    *   [#825](https://github.com/pmd/pmd/issues/825): \[java] Excessive\*Length ignores too much
 *   java-documentation
     *   [#877](https://github.com/pmd/pmd/issues/877): \[java] CommentRequired valid rule configuration causes PMD error
+*   java-errorprone
+    *   [#885](https://github.com/pmd/pmd/issues/885): \[java] CompareObjectsWithEqualsRule trigger by enum1 != enum2
 
 ### API Changes
 
@@ -54,4 +56,5 @@ e.g. to produce a more useful message for debugging.
 *   [#845](https://github.com/pmd/pmd/pull/845): \[java] Fix false negative PreserveStackTrace on string concatenation - [Alberto Fernández](https://github.com/albfernandez)
 *   [#868](https://github.com/pmd/pmd/pull/868): \[core] Improve XPath documentation && make small refactors - [Gonzalo Ibars Ingman](https://github.com/gibarsin)
 *   [#875](https://github.com/pmd/pmd/pull/875): \[core] Support shortnames when using filelist - [John Zhang](https://github.com/johnjiabinzhang)
+*   [#886](https://github.com/pmd/pmd/pull/886): \[java] Fix #885 - [Matias Comercio](https://github.com/MatiasComercio)
 
