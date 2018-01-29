@@ -29,7 +29,7 @@ public class JavaQualifiedNameTest {
 
     /** Provides a hook into the package-private reset method for the local indices counter. */
     public static void resetLocalIndicesCounterHook() {
-        JavaQualifiedName.resetGlobalIndexCounters();
+        QualifiedNameFactory.resetGlobalIndexCounters();
     }
 
 
@@ -244,8 +244,8 @@ public class JavaQualifiedNameTest {
 
     @Test
     public void testParseClass() {
-        JavaQualifiedName outer = JavaQualifiedName.ofString("foo.bar.Bzaz");
-        JavaQualifiedName nested = JavaQualifiedName.ofString("foo.bar.Bzaz$Bolg");
+        JavaQualifiedName outer = QualifiedNameFactory.ofString("foo.bar.Bzaz");
+        JavaQualifiedName nested = QualifiedNameFactory.ofString("foo.bar.Bzaz$Bolg");
 
         assertEquals(1, outer.getClasses().size());
         assertEquals("Bzaz", outer.getClasses().head());
@@ -258,8 +258,8 @@ public class JavaQualifiedNameTest {
 
     @Test
     public void testParsePackages() {
-        JavaQualifiedName packs = JavaQualifiedName.ofString("foo.bar.Bzaz$Bolg");
-        JavaQualifiedName nopacks = JavaQualifiedName.ofString("Bzaz");
+        JavaQualifiedName packs = QualifiedNameFactory.ofString("foo.bar.Bzaz$Bolg");
+        JavaQualifiedName nopacks = QualifiedNameFactory.ofString("Bzaz");
 
         assertNotNull(packs.getPackages());
         assertEquals("foo", packs.getPackages().get(0));
@@ -271,8 +271,8 @@ public class JavaQualifiedNameTest {
 
     @Test
     public void testParseOperation() {
-        JavaQualifiedName noparams = JavaQualifiedName.ofString("foo.bar.Bzaz$Bolg#bar()");
-        JavaQualifiedName params = JavaQualifiedName.ofString("foo.bar.Bzaz#bar(String, int)");
+        JavaQualifiedName noparams = QualifiedNameFactory.ofString("foo.bar.Bzaz$Bolg#bar()");
+        JavaQualifiedName params = QualifiedNameFactory.ofString("foo.bar.Bzaz#bar(String, int)");
 
         assertEquals("bar()", noparams.getOperation());
         assertEquals("bar(String, int)", params.getOperation());
@@ -283,8 +283,8 @@ public class JavaQualifiedNameTest {
     public void testParseLocalClasses() {
         final String SIMPLE = "foo.bar.Bzaz$1Local";
         final String NESTED = "foo.Bar$1Local$Nested";
-        JavaQualifiedName simple = JavaQualifiedName.ofString(SIMPLE);
-        JavaQualifiedName nested = JavaQualifiedName.ofString(NESTED);
+        JavaQualifiedName simple = QualifiedNameFactory.ofString(SIMPLE);
+        JavaQualifiedName nested = QualifiedNameFactory.ofString(NESTED);
 
         assertNotNull(simple);
         assertTrue(simple.isLocalClass());
@@ -303,7 +303,7 @@ public class JavaQualifiedNameTest {
     public void testParseAnonymousClass() {
         final String SIMPLE = "Bzaz$12$13";
 
-        JavaQualifiedName simple = JavaQualifiedName.ofString(SIMPLE);
+        JavaQualifiedName simple = QualifiedNameFactory.ofString(SIMPLE);
 
         assertNotNull(simple);
         assertTrue(simple.isAnonymousClass());
@@ -318,12 +318,12 @@ public class JavaQualifiedNameTest {
 
     @Test
     public void testParseMalformed() {
-        assertNull(JavaQualifiedName.ofString(".foo.bar.Bzaz"));
-        assertNull(JavaQualifiedName.ofString("foo.bar."));
-        assertNull(JavaQualifiedName.ofString("foo.bar.Bzaz#foo"));
-        assertNull(JavaQualifiedName.ofString("foo.bar.Bzaz()"));
-        assertNull(JavaQualifiedName.ofString("foo.bar.Bzaz#foo(String,)"));
-        assertNull(JavaQualifiedName.ofString("foo.bar.Bzaz#foo(String , int)"));
+        assertNull(QualifiedNameFactory.ofString(".foo.bar.Bzaz"));
+        assertNull(QualifiedNameFactory.ofString("foo.bar."));
+        assertNull(QualifiedNameFactory.ofString("foo.bar.Bzaz#foo"));
+        assertNull(QualifiedNameFactory.ofString("foo.bar.Bzaz()"));
+        assertNull(QualifiedNameFactory.ofString("foo.bar.Bzaz#foo(String,)"));
+        assertNull(QualifiedNameFactory.ofString("foo.bar.Bzaz#foo(String , int)"));
     }
 
 
@@ -334,7 +334,7 @@ public class JavaQualifiedNameTest {
         List<ASTClassOrInterfaceDeclaration> classes
                 = ParserTstUtil.getOrderedNodes(ASTClassOrInterfaceDeclaration.class, TEST);
 
-        JavaQualifiedName qname = JavaQualifiedName.ofString("bar.Boron$1Local");
+        JavaQualifiedName qname = QualifiedNameFactory.ofString("bar.Boron$1Local");
 
         assertEquals(qname, classes.get(1).getQualifiedName());
     }
@@ -349,8 +349,8 @@ public class JavaQualifiedNameTest {
 
         assertNotEquals(classes.get(1).getQualifiedName(), classes.get(2).getQualifiedName());
 
-        assertEquals(JavaQualifiedName.ofString("bar.Bzaz$1Local"), classes.get(1).getQualifiedName());
-        assertEquals(JavaQualifiedName.ofString("bar.Bzaz$2Local"), classes.get(2).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("bar.Bzaz$1Local"), classes.get(1).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("bar.Bzaz$2Local"), classes.get(2).getQualifiedName());
     }
 
 
@@ -372,9 +372,9 @@ public class JavaQualifiedNameTest {
 
         assertNotEquals(classes.get(1).getQualifiedName(), classes.get(2).getQualifiedName());
 
-        assertEquals(JavaQualifiedName.ofString("Bzaz$1Local"), classes.get(1).getQualifiedName());
-        assertEquals(JavaQualifiedName.ofString("Bzaz$1Local$Nested"), classes.get(2).getQualifiedName());
-        assertEquals(JavaQualifiedName.ofString("Bzaz$1Local$Nested$1InnerLocal"), classes.get(3).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1Local"), classes.get(1).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1Local$Nested"), classes.get(2).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1Local$Nested$1InnerLocal"), classes.get(3).getQualifiedName());
     }
 
 
@@ -389,10 +389,10 @@ public class JavaQualifiedNameTest {
 
         List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
 
-        assertEquals(JavaQualifiedName.ofString("Bzaz$1"), JavaQualifiedName.ofAnonymousClass(classes.get(0)));
-        assertFalse(JavaQualifiedName.ofAnonymousClass(classes.get(0)).isLocalClass());
-        assertTrue(JavaQualifiedName.ofAnonymousClass(classes.get(0)).isAnonymousClass());
-        assertTrue("1".equals(JavaQualifiedName.ofAnonymousClass(classes.get(0)).getClassSimpleName()));
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), QualifiedNameFactory.ofAnonymousClass(classes.get(0)));
+        assertFalse(QualifiedNameFactory.ofAnonymousClass(classes.get(0)).isLocalClass());
+        assertTrue(QualifiedNameFactory.ofAnonymousClass(classes.get(0)).isAnonymousClass());
+        assertTrue("1".equals(QualifiedNameFactory.ofAnonymousClass(classes.get(0)).getClassSimpleName()));
     }
 
 
@@ -411,8 +411,8 @@ public class JavaQualifiedNameTest {
         List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
 
         assertNotEquals(classes.get(0), classes.get(1));
-        assertEquals(JavaQualifiedName.ofString("Bzaz$1"), JavaQualifiedName.ofAnonymousClass(classes.get(0)));
-        assertEquals(JavaQualifiedName.ofString("Bzaz$2"), JavaQualifiedName.ofAnonymousClass(classes.get(1)));
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), QualifiedNameFactory.ofAnonymousClass(classes.get(0)));
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$2"), QualifiedNameFactory.ofAnonymousClass(classes.get(1)));
     }
 
 
@@ -432,8 +432,8 @@ public class JavaQualifiedNameTest {
         List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
 
         assertNotEquals(classes.get(0), classes.get(1));
-        assertEquals(JavaQualifiedName.ofString("Bzaz$1"), JavaQualifiedName.ofAnonymousClass(classes.get(0)));
-        assertEquals(JavaQualifiedName.ofString("Bzaz$1$1"), JavaQualifiedName.ofAnonymousClass(classes.get(1)));
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), QualifiedNameFactory.ofAnonymousClass(classes.get(0)));
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1$1"), QualifiedNameFactory.ofAnonymousClass(classes.get(1)));
     }
 
 
@@ -451,7 +451,7 @@ public class JavaQualifiedNameTest {
         List<ASTClassOrInterfaceDeclaration> classes = ParserTstUtil.getOrderedNodes(ASTClassOrInterfaceDeclaration.class, TEST);
 
         assertTrue(classes.get(1).isLocal());
-        assertEquals(JavaQualifiedName.ofString("Bzaz$1$1FooRunnable"), classes.get(1).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1$1FooRunnable"), classes.get(1).getQualifiedName());
     }
 }
 

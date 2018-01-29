@@ -127,7 +127,7 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
     @Override
     public JavaQualifiedName getQualifiedName() {
         if (qualifiedName == null) {
-            qualifiedName = JavaQualifiedName.ofOperation(this);
+            qualifiedName = QualifiedNameFactory.ofOperation(this);
         }
         return qualifiedName;
     }

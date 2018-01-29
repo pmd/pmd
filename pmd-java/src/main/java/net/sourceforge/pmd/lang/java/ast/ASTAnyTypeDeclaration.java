@@ -64,7 +64,7 @@ public abstract class ASTAnyTypeDeclaration extends AbstractJavaAccessTypeNode i
 
     /** Create the qualified name, which is then cached in the node. */
     protected final JavaQualifiedName buildQualifiedName() {
-        return JavaQualifiedName.ofClass(this);
+        return QualifiedNameFactory.ofClass(this);
     }
 
 
