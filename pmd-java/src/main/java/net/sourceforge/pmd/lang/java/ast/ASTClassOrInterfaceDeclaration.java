@@ -73,22 +73,6 @@ public class ASTClassOrInterfaceDeclaration extends ASTAnyTypeDeclaration {
         this.isInterface = true;
     }
 
-
-    @Override
-    protected JavaQualifiedName buildQualifiedName() {
-        if (isNested() || isLocal()) {
-            ASTAnyTypeDeclaration parent = this.getFirstParentOfType(ASTAnyTypeDeclaration.class);
-            JavaQualifiedName parentQN = parent.getQualifiedName();
-
-            return isLocal()
-                    ? JavaQualifiedName.ofLocalClass(parentQN, this.getImage())
-                    : JavaQualifiedName.ofNestedClass(parentQN, this.getImage());
-        }
-
-        return JavaQualifiedName.ofOuterClass(this);
-    }
-
-
     @Override
     public TypeKind getTypeKind() {
         return isInterface() ? TypeKind.INTERFACE : TypeKind.CLASS;

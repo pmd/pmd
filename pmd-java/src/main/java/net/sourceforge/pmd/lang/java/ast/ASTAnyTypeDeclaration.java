@@ -8,7 +8,7 @@ import java.util.List;
 
 
 /**
- * Groups enums, classes and interface declarations.
+ * Groups enum, class, annotation and interface declarations.
  *
  * @author Clément Fournier
  */
@@ -63,14 +63,8 @@ public abstract class ASTAnyTypeDeclaration extends AbstractJavaAccessTypeNode i
 
 
     /** Create the qualified name, which is then cached in the node. */
-    protected JavaQualifiedName buildQualifiedName() {
-        if (isNested()) {
-            ASTAnyTypeDeclaration parent = this.getFirstParentOfType(ASTAnyTypeDeclaration.class);
-            JavaQualifiedName parentQN = parent.getQualifiedName();
-            return JavaQualifiedName.ofNestedClass(parentQN, this.getImage());
-        }
-
-        return JavaQualifiedName.ofOuterClass(this);
+    protected final JavaQualifiedName buildQualifiedName() {
+        return JavaQualifiedName.ofClass(this);
     }
 
 

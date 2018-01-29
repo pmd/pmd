@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.QualifiedName;
 
 
@@ -30,9 +31,7 @@ import net.sourceforge.pmd.lang.ast.QualifiedName;
  *
  * <p>Method qualified names don't follow a specification but allow to
  * distinguish overloads of the same method, using parameter types and order.
- *
  */
-// TODO consider anonymous classes
 public final class JavaQualifiedName implements QualifiedName {
 
     /**
@@ -44,8 +43,8 @@ public final class JavaQualifiedName implements QualifiedName {
      *       (\w+)                  # primary class
      *       (
      *         \$                   # separator
-     *         (\d+)?               # optional local class index
-     *         \w+
+     *         \d*+                 # optional local/anonymous class index
+     *         (\D\w*+)?            # regular class name, absent for anonymous class
      *       )*
      *     )
      *     (                        # optional operation suffix
@@ -65,8 +64,8 @@ public final class JavaQualifiedName implements QualifiedName {
                                                                   + "  (\\w+)                  # primary class\n"
                                                                   + "  ("
                                                                   + "    \\$                   # separator\n"
-                                                                  + "    (\\d+)?               # optional local class index\n"
-                                                                  + "    \\w+"
+                                                                  + "    \\d*+                 # optional local/anonymous class index\n"
+                                                                  + "    (\\D\\w*+)?           # regular class name, absent for anonymous class\n"
                                                                   + "  )*"
                                                                   + ")"
                                                                   + "(                         # optional operation suffix\n"
@@ -91,11 +90,18 @@ public final class JavaQualifiedName implements QualifiedName {
 
     // maps class names to the names of their local classes, to the count of local classes with the same name
     private static final Map<JavaQualifiedName, Map<String, Integer>> LOCAL_INDICES = new WeakHashMap<>();
-    private static final Pattern LOCAL_INDEX_PATTERN = Pattern.compile("(\\d+)(\\w+)");
+    // maps class names to the current count of anonymous classes
+    private static final Map<JavaQualifiedName, Integer> ANONYMOUS_INDICES = new WeakHashMap<>();
+    // maps nodes of anonymous classes to their qualified name
+    private static final Map<Node, JavaQualifiedName> ANONYMOUS_QNAMES = new WeakHashMap<>();
+
+    private static final Pattern LOCAL_INDEX_PATTERN = Pattern.compile("(\\d+)(\\D\\w+)");
 
     private String[] packages = null; // unnamed package
     private String[] classes = new String[1];
     private String operation = null;
+    // toString cache
+    private String toString;
 
 
     /**
@@ -112,8 +118,9 @@ public final class JavaQualifiedName implements QualifiedName {
     }
 
 
-    /* default, test only */ static void resetLocalIndicesCounter() {
+    /* test only */ static void resetGlobalIndexCounters() {
         LOCAL_INDICES.clear();
+        ANONYMOUS_INDICES.clear();
     }
 
 
@@ -124,7 +131,7 @@ public final class JavaQualifiedName implements QualifiedName {
      *
      * @return The qualified name of the node
      */
-    /* default */ static JavaQualifiedName ofOperation(ASTMethodDeclaration node) {
+    static JavaQualifiedName ofOperation(ASTMethodDeclaration node) {
         JavaQualifiedName parentQname = node.getFirstParentOfType(ASTAnyTypeDeclaration.class)
                                             .getQualifiedName();
 
@@ -141,7 +148,7 @@ public final class JavaQualifiedName implements QualifiedName {
      *
      * @return The qualified name of the node
      */
-    /* default */ static JavaQualifiedName ofOperation(ASTConstructorDeclaration node) {
+    static JavaQualifiedName ofOperation(ASTConstructorDeclaration node) {
         ASTAnyTypeDeclaration parent = node.getFirstParentOfType(ASTAnyTypeDeclaration.class);
 
         return ofOperation(parent.getQualifiedName(),
@@ -163,16 +170,33 @@ public final class JavaQualifiedName implements QualifiedName {
 
 
     /**
+     * Builds the qualified name of a type declaration.
+     *
+     * @param node The type declaration node.
+     *
+     * @return The qualified name of the declared type
+     */
+    static JavaQualifiedName ofClass(ASTAnyTypeDeclaration node) {
+        if (node instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) node).isLocal()) {
+            return ofLocalClass((ASTClassOrInterfaceDeclaration) node);
+        }
+        return node.isNested() ? ofNestedClass(node) : ofOuterClass(node);
+    }
+
+
+    /**
      * Builds the qualified name of a nested class using
      * the qualified name of its immediate parent.
      *
-     * @param parent    The qname of the immediate parent
-     * @param className The name of the class
+     * @param node Nested class declaration
      *
      * @return The qualified name of the nested class
      */
-    /* default */ static JavaQualifiedName ofNestedClass(JavaQualifiedName parent, String className) {
-        return nestedOrLocalClassQualifiedNameHelper(parent, className, NOTLOCAL_PLACEHOLDER);
+    private static JavaQualifiedName ofNestedClass(ASTAnyTypeDeclaration node) {
+        ASTAnyTypeDeclaration parent = node.getFirstParentOfType(ASTAnyTypeDeclaration.class);
+        return notOuterClassQualifiedNameHelper(parent.getQualifiedName(),
+                                                node.getImage(),
+                                                NOTLOCAL_PLACEHOLDER);
     }
 
 
@@ -182,19 +206,19 @@ public final class JavaQualifiedName implements QualifiedName {
      * classes use a random suffix to prevent qualified
      * name collisions.
      *
-     * @param parent    The qname of the immediate parent
-     * @param className The name of the class
+     * @param node Local class declaration
      *
      * @return The qualified name of the local class
      */
-    /* default */ static JavaQualifiedName ofLocalClass(JavaQualifiedName parent, String className) {
-        return nestedOrLocalClassQualifiedNameHelper(parent, className, addLocal(parent, className));
+    private static JavaQualifiedName ofLocalClass(ASTClassOrInterfaceDeclaration node) {
+        JavaQualifiedName parent = findInnermostEnclosingTypeName(node);
+        return notOuterClassQualifiedNameHelper(parent, node.getImage(), addLocal(parent, node.getImage()));
     }
 
 
-    // works from the parent class qualified name to create a nested or local class name
+    // works from the parent class qualified name to create a nested, anonymous or local class name
     // use NOTLOCAL_PLACEHOLDER if the class is not local
-    private static JavaQualifiedName nestedOrLocalClassQualifiedNameHelper(JavaQualifiedName parent, String className, int localIndex) {
+    private static JavaQualifiedName notOuterClassQualifiedNameHelper(JavaQualifiedName parent, String className, int localIndex) {
         JavaQualifiedName toBuild = new JavaQualifiedName();
 
         toBuild.packages = parent.packages;
@@ -237,7 +261,7 @@ public final class JavaQualifiedName implements QualifiedName {
      *
      * @return The qualified name of the node
      */
-    /* default */ static JavaQualifiedName ofOuterClass(ASTAnyTypeDeclaration node) {
+    private static JavaQualifiedName ofOuterClass(ASTAnyTypeDeclaration node) {
         ASTPackageDeclaration pkg = node.getFirstParentOfType(ASTCompilationUnit.class)
                                         .getFirstChildOfType(ASTPackageDeclaration.class);
 
@@ -246,6 +270,116 @@ public final class JavaQualifiedName implements QualifiedName {
         qname.classes[0] = node.getImage();
 
         return qname;
+    }
+
+
+    /**
+     * Gets the qualified name of this allocation expression's anonymous class.
+     * This implementation gives a numeric identifier to the anonymous class.
+     *
+     * <p>This implementation only guarantees that
+     * {@code (n1 == n2) entails (buildQNameOfAnonymousClass(n1) == buildQNameOfAnonymousClass(n2))}.
+     * In particular, we do not guarantee that the number assigned to a class
+     * will stay the same from a run to another. We do not provide a way to retrieve
+     * the node from the qualified name.
+     *
+     * @param node Allocation expression declaring an anonymous class
+     *
+     * @return The qualified name of the class
+     */
+    public static JavaQualifiedName ofAnonymousClass(ASTAllocationExpression node) {
+        return ofAnonymousClass((Node) node);
+    }
+
+
+    /**
+     * Gets the qualified name of an enum constant declaring an anonymous class.
+     * This implementation gives a numeric identifier to the anonymous class.
+     *
+     * @param node Enum constant declaring an anonymous class
+     *
+     * @return The qualified name of the class
+     *
+     * @see #ofAnonymousClass(ASTAllocationExpression)
+     */
+    public static JavaQualifiedName ofAnonymousClass(ASTEnumConstant node) {
+        return ofAnonymousClass((Node) node);
+    }
+
+
+    /** Factorises factories. They both are kept separate to allow for node type specific documentation. */
+    private static JavaQualifiedName ofAnonymousClass(Node node) {
+        final JavaQualifiedName cached = ANONYMOUS_QNAMES.get(node);
+        if (cached != null) {
+            return cached;
+        }
+
+        JavaQualifiedName parentQName = node instanceof ASTAllocationExpression
+                ? findInnermostEnclosingTypeName(node)
+                : node.getFirstParentOfType(ASTEnumDeclaration.class).getQualifiedName();
+
+        JavaQualifiedName newQName = buildQNameOfAnonymousClass(parentQName);
+        ANONYMOUS_QNAMES.put(node, newQName); // cache result
+        return newQName;
+    }
+
+
+    /**
+     * Finds the qualified name of the directly enclosing type definition,
+     * even if it's an anonymous class. This method must only be called if
+     * such a parent exists.
+     *
+     * <p>Anonymous classes can only contain local classes, other anonymous
+     * classes, and non-static (inner) classes. We therefore only call this
+     * method in those cases.
+     *
+     * @param node Node of the type declaration whose enclosing type must be found.
+     */
+    private static JavaQualifiedName findInnermostEnclosingTypeName(Node node) {
+        Node parent = node.jjtGetParent();
+        while (parent != null
+                && !(parent instanceof ASTClassOrInterfaceBody)
+                && !(parent instanceof ASTEnumBody)) {
+            parent = parent.jjtGetParent();
+        }
+
+        if (parent == null) {
+            throw new IllegalStateException("The enclosing type declaration must exist.");
+        }
+
+        parent = parent.jjtGetParent();
+        // The parent may now be an ASTEnumConstant, an ASTAllocationExpression,
+        // an ASTEnumDeclaration or an ASTClassOrInterfaceDeclaration
+
+        if (parent instanceof ASTAllocationExpression) {
+            return ofAnonymousClass((ASTAllocationExpression) parent); // indirect recursive call
+        } else if (parent instanceof ASTAnyTypeDeclaration) {
+            return ((JavaQualifiableNode) parent).getQualifiedName();
+        } else { // ASTEnumConstant
+            return ofAnonymousClass((ASTEnumConstant) parent);
+        }
+    }
+
+
+    /**
+     * Create a new qualified name for an anonymous class using its parent.
+     * The result is cached by the caller.
+     */
+    private static JavaQualifiedName buildQNameOfAnonymousClass(JavaQualifiedName parent) {
+        // the class name of an anonymous class is entirely numeric
+        return notOuterClassQualifiedNameHelper(parent, "" + getNextAnonymousIndex(parent), NOTLOCAL_PLACEHOLDER);
+    }
+
+
+    private static int getNextAnonymousIndex(JavaQualifiedName qname) {
+        Integer count = ANONYMOUS_INDICES.get(qname);
+        if (count == null) {
+            ANONYMOUS_INDICES.put(qname, 1);
+            return 1;
+        } else {
+            ANONYMOUS_INDICES.put(qname, count + 1);
+            return count + 1;
+        }
     }
 
 
@@ -314,7 +448,7 @@ public final class JavaQualifiedName implements QualifiedName {
 
         for (int i = 0; i < qname.classes.length; i++) {
             Matcher localIndexMatcher = LOCAL_INDEX_PATTERN.matcher(qname.classes[i]);
-            if (localIndexMatcher.matches()) {
+            if (localIndexMatcher.matches()) { // anonymous classes don't match, because there needs to be at least one non-digit
                 qname.localIndices[i] = Integer.parseInt(localIndexMatcher.group(1));
                 qname.classes[i] = localIndexMatcher.group(2);
             } else {
@@ -367,6 +501,22 @@ public final class JavaQualifiedName implements QualifiedName {
      */
     public boolean isLocalClass() {
         return localIndices[localIndices.length - 1] != NOTLOCAL_PLACEHOLDER;
+    }
+
+
+    /**
+     * Returns true if this qname identifies an anonymous class.
+     */
+    public boolean isAnonymousClass() {
+        return !isLocalClass() && StringUtils.isNumeric(getClassSimpleName());
+    }
+
+
+    /**
+     * Get the simple name of the class.
+     */
+    public String getClassSimpleName() {
+        return classes[classes.length - 1];
     }
 
 
@@ -454,6 +604,10 @@ public final class JavaQualifiedName implements QualifiedName {
      */
     @Override
     public String toString() {
+        if (toString != null) {
+            return toString;
+        }
+
         StringBuilder sb = new StringBuilder();
 
         if (packages != null) {
@@ -477,7 +631,7 @@ public final class JavaQualifiedName implements QualifiedName {
         if (operation != null) {
             sb.append('#').append(operation);
         }
-
+        toString = sb.toString();
         return sb.toString();
     }
 }

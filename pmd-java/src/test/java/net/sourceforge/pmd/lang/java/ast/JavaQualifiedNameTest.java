@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.ParserTstUtil;
@@ -27,9 +28,13 @@ public class JavaQualifiedNameTest {
 
     /** Provides a hook into the package-private reset method for the local indices counter. */
     public static void resetLocalIndicesCounterHook() {
-        JavaQualifiedName.resetLocalIndicesCounter();
+        JavaQualifiedName.resetGlobalIndexCounters();
     }
 
+    @Before
+    public void setUp() {
+        resetLocalIndicesCounterHook();
+    }
 
     @Test
     public void testEmptyPackage() {
@@ -270,12 +275,30 @@ public class JavaQualifiedNameTest {
 
         assertNotNull(simple);
         assertTrue(simple.isLocalClass());
+        assertFalse(simple.isAnonymousClass());
         assertNotNull(nested);
         assertFalse(nested.isLocalClass());
+        assertFalse(simple.isAnonymousClass());
 
         assertEquals(SIMPLE, simple.toString());
         assertEquals(NESTED, nested.toString());
 
+    }
+
+    @Test
+    public void testParseAnonymousClass() {
+        final String SIMPLE = "Bzaz$12$13";
+
+        JavaQualifiedName simple = JavaQualifiedName.ofString(SIMPLE);
+
+        assertNotNull(simple);
+        assertTrue(simple.isAnonymousClass());
+        assertFalse(simple.isLocalClass());
+
+        assertEquals("12", simple.getClasses()[1]);
+        assertEquals("13", simple.getClasses()[2]);
+
+        assertEquals(SIMPLE, simple.toString());
     }
 
     @Test
@@ -340,5 +363,77 @@ public class JavaQualifiedNameTest {
         assertEquals(JavaQualifiedName.ofString("Bzaz$1Local$Nested$1InnerLocal"), classes.get(3).getQualifiedName());
     }
 
+    @Test
+    public void testAnonymousClass() {
+        final String TEST
+                = "class Bzaz{ void foo() { "
+                + "  new Runnable() {"
+                + "      public void run() {}"
+                + "  };"
+                + "}}";
+
+        List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
+
+        assertEquals(JavaQualifiedName.ofString("Bzaz$1"), JavaQualifiedName.ofAnonymousClass(classes.get(0)));
+        assertFalse(JavaQualifiedName.ofAnonymousClass(classes.get(0)).isLocalClass());
+        assertTrue(JavaQualifiedName.ofAnonymousClass(classes.get(0)).isAnonymousClass());
+        assertTrue("1".equals(JavaQualifiedName.ofAnonymousClass(classes.get(0)).getClassSimpleName()));
+    }
+
+    @Test
+    public void testMultipleAnonymousClasses() {
+        final String TEST
+                = "class Bzaz{ void foo() { "
+                + "  new Runnable() {"
+                + "      public void run() {}"
+                + "  };"
+                + "  new Runnable() {"
+                + "      public void run() {}"
+                + "  };"
+                + "}}";
+
+        List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
+
+        assertNotEquals(classes.get(0), classes.get(1));
+        assertEquals(JavaQualifiedName.ofString("Bzaz$1"), JavaQualifiedName.ofAnonymousClass(classes.get(0)));
+        assertEquals(JavaQualifiedName.ofString("Bzaz$2"), JavaQualifiedName.ofAnonymousClass(classes.get(1)));
+    }
+
+    @Test
+    public void testNestedAnonymousClass() {
+        final String TEST
+                = "class Bzaz{ void foo() {"
+                + "  new Runnable() {"
+                + "    public void run() {"
+                + "      new Runnable() {"
+                + "        public void run() {}"
+                + "      };"
+                + "    }"
+                + "  };"
+                + "}}";
+
+        List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
+
+        assertNotEquals(classes.get(0), classes.get(1));
+        assertEquals(JavaQualifiedName.ofString("Bzaz$1"), JavaQualifiedName.ofAnonymousClass(classes.get(0)));
+        assertEquals(JavaQualifiedName.ofString("Bzaz$1$1"), JavaQualifiedName.ofAnonymousClass(classes.get(1)));
+    }
+
+    @Test
+    public void testLocalInAnonymousClass() {
+        final String TEST
+                = "class Bzaz{ void foo() {"
+                + "  new Runnable() {"
+                + "    public void run() {"
+                + "      class FooRunnable {}"
+                + "    }"
+                + "  };"
+                + "}}";
+
+        List<ASTClassOrInterfaceDeclaration> classes = ParserTstUtil.getOrderedNodes(ASTClassOrInterfaceDeclaration.class, TEST);
+
+        assertTrue(classes.get(1).isLocal());
+        assertEquals(JavaQualifiedName.ofString("Bzaz$1$1FooRunnable"), classes.get(1).getQualifiedName());
+    }
 }
 
