@@ -47,8 +47,9 @@ public class JavaQualifiedNameTest {
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
             assertEquals("Foo", qname.toString());
-            assertNull(qname.getPackages());
-            assertEquals(1, qname.getClasses().length);
+            assertTrue(qname.getPackages().isEmpty());
+            assertTrue(qname.isUnnamedPackage());
+            assertEquals(1, qname.getClasses().size());
             assertNull(qname.getOperation());
         }
     }
@@ -63,8 +64,8 @@ public class JavaQualifiedNameTest {
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
             assertEquals("foo.bar.Bzaz", qname.toString());
-            assertEquals(2, qname.getPackages().length);
-            assertEquals(1, qname.getClasses().length);
+            assertEquals(2, qname.getPackages().size());
+            assertEquals(1, qname.getClasses().size());
             assertNull(qname.getOperation());
         }
     }
@@ -83,7 +84,7 @@ public class JavaQualifiedNameTest {
             case "Foo":
                 assertEquals("foo.bar.Bzaz$Bor$Foo",
                              qname.toString());
-                assertEquals(3, qname.getClasses().length);
+                assertEquals(3, qname.getClasses().size());
                 break;
             default:
                 break;
@@ -101,8 +102,8 @@ public class JavaQualifiedNameTest {
         for (ASTEnumDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
             assertEquals("foo.bar.Foo$Bzaz", qname.toString());
-            assertEquals(2, qname.getPackages().length);
-            assertEquals(2, qname.getClasses().length);
+            assertEquals(2, qname.getPackages().size());
+            assertEquals(2, qname.getClasses().size());
             assertNull(qname.getOperation());
         }
     }
@@ -117,8 +118,8 @@ public class JavaQualifiedNameTest {
         for (ASTEnumDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
             assertEquals("foo.bar.Bzaz", qname.toString());
-            assertEquals(2, qname.getPackages().length);
-            assertEquals(1, qname.getClasses().length);
+            assertEquals(2, qname.getPackages().size());
+            assertEquals(1, qname.getClasses().size());
             assertNull(qname.getOperation());
         }
     }
@@ -133,8 +134,8 @@ public class JavaQualifiedNameTest {
         for (ASTMethodDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
             assertEquals("foo.bar.Bzaz#foo()", qname.toString());
-            assertEquals(2, qname.getPackages().length);
-            assertEquals(1, qname.getClasses().length);
+            assertEquals(2, qname.getPackages().size());
+            assertEquals(1, qname.getClasses().size());
             assertEquals("foo()", qname.getOperation());
         }
     }
@@ -153,8 +154,9 @@ public class JavaQualifiedNameTest {
             case "Foo":
                 assertEquals("Bzaz$Bor$Foo",
                              qname.toString());
-                assertNull(qname.getPackages());
-                assertEquals(3, qname.getClasses().length);
+                assertTrue(qname.getPackages().isEmpty());
+                assertTrue(qname.isUnnamedPackage());
+                assertEquals(3, qname.getClasses().size());
                 break;
             default:
                 break;
@@ -245,12 +247,12 @@ public class JavaQualifiedNameTest {
         JavaQualifiedName outer = JavaQualifiedName.ofString("foo.bar.Bzaz");
         JavaQualifiedName nested = JavaQualifiedName.ofString("foo.bar.Bzaz$Bolg");
 
-        assertEquals(1, outer.getClasses().length);
-        assertEquals("Bzaz", outer.getClasses()[0]);
+        assertEquals(1, outer.getClasses().size());
+        assertEquals("Bzaz", outer.getClasses().head());
 
-        assertEquals(2, nested.getClasses().length);
-        assertEquals("Bzaz", nested.getClasses()[0]);
-        assertEquals("Bolg", nested.getClasses()[1]);
+        assertEquals(2, nested.getClasses().size());
+        assertEquals("Bzaz", nested.getClasses().head());
+        assertEquals("Bolg", nested.getClasses().get(1));
     }
 
 
@@ -260,10 +262,10 @@ public class JavaQualifiedNameTest {
         JavaQualifiedName nopacks = JavaQualifiedName.ofString("Bzaz");
 
         assertNotNull(packs.getPackages());
-        assertEquals("foo", packs.getPackages()[0]);
-        assertEquals("bar", packs.getPackages()[1]);
+        assertEquals("foo", packs.getPackages().get(0));
+        assertEquals("bar", packs.getPackages().get(1));
 
-        assertNull(nopacks.getPackages());
+        assertTrue(nopacks.getPackages().isEmpty());
     }
 
 
@@ -307,8 +309,8 @@ public class JavaQualifiedNameTest {
         assertTrue(simple.isAnonymousClass());
         assertFalse(simple.isLocalClass());
 
-        assertEquals("12", simple.getClasses()[1]);
-        assertEquals("13", simple.getClasses()[2]);
+        assertEquals("12", simple.getClasses().get(1));
+        assertEquals("13", simple.getClasses().get(2));
 
         assertEquals(SIMPLE, simple.toString());
     }
