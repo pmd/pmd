@@ -59,7 +59,7 @@ public final class JavaQualifiedName implements QualifiedName {
      *     )?
      * </pre>
      */
-    private static final Pattern FORMAT = Pattern.compile("((\\w+\\.)*)                  # packages\n"
+    private static final Pattern FORMAT = Pattern.compile("((\\w+\\.)*)                        # packages\n"
                                                                   + "(                         # classes\n"
                                                                   + "  (\\w+)                  # primary class\n"
                                                                   + "  ("
@@ -118,12 +118,174 @@ public final class JavaQualifiedName implements QualifiedName {
     }
 
 
+    /**
+     * Resets global index counters, like anonymous and local class index counters.
+     * Important to cleanup after a test, if some test cases have the same name.
+     */
     /* test only */ static void resetGlobalIndexCounters() {
         LOCAL_INDICES.clear();
         ANONYMOUS_INDICES.clear();
     }
 
 
+
+    @Override
+    public boolean isClass() {
+        return classes[0] != null && operation == null;
+    }
+
+
+    @Override
+    public boolean isOperation() {
+        return operation != null;
+    }
+
+
+    /**
+     * Returns true if this qname identifies a local class.
+     */
+    public boolean isLocalClass() {
+        return localIndices[localIndices.length - 1] != NOTLOCAL_PLACEHOLDER;
+    }
+
+
+    /**
+     * Returns true if this qname identifies an anonymous class.
+     */
+    public boolean isAnonymousClass() {
+        return !isLocalClass() && StringUtils.isNumeric(getClassSimpleName());
+    }
+
+
+    /**
+     * Get the simple name of the class.
+     */
+    public String getClassSimpleName() {
+        return classes[classes.length - 1];
+    }
+
+
+    /**
+     * Returns the packages in order. This is specific to
+     * Java's package structure. If the outer class is in
+     * the unnamed package, returns {@code null}.
+     *
+     * @return The packages.
+     */
+    public String[] getPackages() {
+        return packages == null ? null : Arrays.copyOf(packages, packages.length);
+    }
+
+
+    /**
+     * Returns the class specific part of the name. It
+     * identifies a class in the namespace it's declared
+     * in. If the class is nested inside another, then
+     * the array returned contains all enclosing classes
+     * in order.
+     *
+     * @return The class names array.
+     */
+    public String[] getClasses() {
+        return Arrays.copyOf(classes, classes.length);
+    }
+
+
+    /**
+     * Returns the operation specific part of the name. It
+     * identifies an operation in its namespace. Returns
+     * {@code null} if {@link #isOperation()} returns false.
+     *
+     * @return The operation string, or {@code null}.
+     */
+    public String getOperation() {
+        return operation;
+    }
+
+
+    @Override
+    public JavaQualifiedName getClassName() {
+        if (isClass()) {
+            return this;
+        }
+
+        JavaQualifiedName qname = new JavaQualifiedName();
+        qname.classes = this.classes;
+        qname.packages = this.packages;
+        return qname;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        JavaQualifiedName that = (JavaQualifiedName) o;
+        return Arrays.equals(packages, that.packages)
+                && Arrays.equals(classes, that.classes)
+                && Objects.equals(operation, that.operation)
+                && Arrays.equals(localIndices, that.localIndices);
+    }
+
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(operation);
+        result = 31 * result + Arrays.hashCode(packages);
+        result = 31 * result + Arrays.hashCode(classes);
+        result = 31 * result + Arrays.hashCode(localIndices);
+        return result;
+    }
+
+
+    /**
+     * Returns the string representation of this qualified
+     * name. The representation follows the format defined
+     * for {@link #ofString(String)}.
+     */
+    @Override
+    public String toString() {
+        if (toString != null) {
+            return toString;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        if (packages != null) {
+            for (String aPackage : packages) {
+                sb.append(aPackage).append('.');
+            }
+        }
+
+        sb.append(classes[0]);
+
+        for (int i = 1; i < classes.length; i++) {
+            sb.append('$');
+
+            if (localIndices[i] != NOTLOCAL_PLACEHOLDER) {
+                sb.append(localIndices[i]);
+            }
+
+            sb.append(classes[i]);
+        }
+
+        if (operation != null) {
+            sb.append('#').append(operation);
+        }
+        toString = sb.toString();
+        return sb.toString();
+    }
+
+
+    //*****************
+    // STATIC FACTORIES
+    //*****************
+
+    
     /**
      * Builds the qualified name of a method declaration.
      *
@@ -480,158 +642,6 @@ public final class JavaQualifiedName implements QualifiedName {
 
         sb.append(')');
 
-        return sb.toString();
-    }
-
-
-    @Override
-    public boolean isClass() {
-        return classes[0] != null && operation == null;
-    }
-
-
-    @Override
-    public boolean isOperation() {
-        return operation != null;
-    }
-
-
-    /**
-     * Returns true if this qname identifies a local class.
-     */
-    public boolean isLocalClass() {
-        return localIndices[localIndices.length - 1] != NOTLOCAL_PLACEHOLDER;
-    }
-
-
-    /**
-     * Returns true if this qname identifies an anonymous class.
-     */
-    public boolean isAnonymousClass() {
-        return !isLocalClass() && StringUtils.isNumeric(getClassSimpleName());
-    }
-
-
-    /**
-     * Get the simple name of the class.
-     */
-    public String getClassSimpleName() {
-        return classes[classes.length - 1];
-    }
-
-
-    /**
-     * Returns the packages in order. This is specific to
-     * Java's package structure. If the outer class is in
-     * the unnamed package, returns {@code null}.
-     *
-     * @return The packages.
-     */
-    public String[] getPackages() {
-        return packages == null ? null : Arrays.copyOf(packages, packages.length);
-    }
-
-
-    /**
-     * Returns the class specific part of the name. It
-     * identifies a class in the namespace it's declared
-     * in. If the class is nested inside another, then
-     * the array returned contains all enclosing classes
-     * in order.
-     *
-     * @return The class names array.
-     */
-    public String[] getClasses() {
-        return Arrays.copyOf(classes, classes.length);
-    }
-
-
-    /**
-     * Returns the operation specific part of the name. It
-     * identifies an operation in its namespace. Returns
-     * {@code null} if {@link #isOperation()} returns false.
-     *
-     * @return The operation string, or {@code null}.
-     */
-    public String getOperation() {
-        return operation;
-    }
-
-
-    @Override
-    public JavaQualifiedName getClassName() {
-        if (isClass()) {
-            return this;
-        }
-
-        JavaQualifiedName qname = new JavaQualifiedName();
-        qname.classes = this.classes;
-        qname.packages = this.packages;
-        return qname;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        JavaQualifiedName that = (JavaQualifiedName) o;
-        return Arrays.equals(packages, that.packages)
-                && Arrays.equals(classes, that.classes)
-                && Objects.equals(operation, that.operation)
-                && Arrays.equals(localIndices, that.localIndices);
-    }
-
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(operation);
-        result = 31 * result + Arrays.hashCode(packages);
-        result = 31 * result + Arrays.hashCode(classes);
-        result = 31 * result + Arrays.hashCode(localIndices);
-        return result;
-    }
-
-
-    /**
-     * Returns the string representation of this qualified
-     * name. The representation follows the format defined
-     * for {@link #ofString(String)}.
-     */
-    @Override
-    public String toString() {
-        if (toString != null) {
-            return toString;
-        }
-
-        StringBuilder sb = new StringBuilder();
-
-        if (packages != null) {
-            for (String aPackage : packages) {
-                sb.append(aPackage).append('.');
-            }
-        }
-
-        sb.append(classes[0]);
-
-        for (int i = 1; i < classes.length; i++) {
-            sb.append('$');
-
-            if (localIndices[i] != NOTLOCAL_PLACEHOLDER) {
-                sb.append(localIndices[i]);
-            }
-
-            sb.append(classes[i]);
-        }
-
-        if (operation != null) {
-            sb.append('#').append(operation);
-        }
-        toString = sb.toString();
         return sb.toString();
     }
 }

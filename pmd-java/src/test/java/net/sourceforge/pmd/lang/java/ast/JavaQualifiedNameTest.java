@@ -26,15 +26,18 @@ import net.sourceforge.pmd.lang.java.ParserTstUtil;
  */
 public class JavaQualifiedNameTest {
 
+
     /** Provides a hook into the package-private reset method for the local indices counter. */
     public static void resetLocalIndicesCounterHook() {
         JavaQualifiedName.resetGlobalIndexCounters();
     }
 
+
     @Before
     public void setUp() {
         resetLocalIndicesCounterHook();
     }
+
 
     @Test
     public void testEmptyPackage() {
@@ -49,6 +52,7 @@ public class JavaQualifiedNameTest {
             assertNull(qname.getOperation());
         }
     }
+
 
     @Test
     public void testPackage() {
@@ -65,10 +69,10 @@ public class JavaQualifiedNameTest {
         }
     }
 
+
     @Test
     public void testNestedClass() {
         final String TEST = "package foo.bar; class Bzaz{ class Bor{ class Foo{}}}";
-
 
         Set<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class,
                                                              TEST);
@@ -87,6 +91,7 @@ public class JavaQualifiedNameTest {
         }
     }
 
+
     @Test
     public void testNestedEnum() {
         final String TEST = "package foo.bar; class Foo { enum Bzaz{HOO;}}";
@@ -101,6 +106,7 @@ public class JavaQualifiedNameTest {
             assertNull(qname.getOperation());
         }
     }
+
 
     @Test
     public void testEnum() {
@@ -117,6 +123,7 @@ public class JavaQualifiedNameTest {
         }
     }
 
+
     @Test
     public void testEnumMethodMember() {
         final String TEST = "package foo.bar; enum Bzaz{HOO; void foo(){}}";
@@ -132,10 +139,10 @@ public class JavaQualifiedNameTest {
         }
     }
 
+
     @Test
     public void testNestedEmptyPackage() {
         final String TEST = "class Bzaz{ class Bor{ class Foo{}}}";
-
 
         Set<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class,
                                                              TEST);
@@ -155,10 +162,10 @@ public class JavaQualifiedNameTest {
         }
     }
 
+
     @Test
     public void testMethod() {
         final String TEST = "package bar; class Bzaz{ public void foo(){}}";
-
 
         Set<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class,
                                                    TEST);
@@ -172,10 +179,10 @@ public class JavaQualifiedNameTest {
         }
     }
 
+
     @Test
     public void testConstructor() {
         final String TEST = "package bar; class Bzaz{ public Bzaz(){}}";
-
 
         Set<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class,
                                                         TEST);
@@ -190,10 +197,10 @@ public class JavaQualifiedNameTest {
         }
     }
 
+
     @Test
     public void testConstructorWithParams() {
         final String TEST = "package bar; class Bzaz{ public Bzaz(int j, String k){}}";
-
 
         Set<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class,
                                                         TEST);
@@ -207,6 +214,7 @@ public class JavaQualifiedNameTest {
         }
     }
 
+
     @Test
     public void testConstructorOverload() {
         final String TEST = "package bar; class Bzaz{ public Bzaz(int j) {} public Bzaz(int j, String k){}}";
@@ -218,10 +226,11 @@ public class JavaQualifiedNameTest {
         assertNotEquals(arr[0].getQualifiedName(), arr[1].getQualifiedName());
     }
 
+
     @Test
     public void testMethodOverload() {
         final String TEST = "package bar; class Bzaz{ public void foo(String j) {} "
-            + "public void foo(int j){} public void foo(double k){}}";
+                + "public void foo(int j){} public void foo(double k){}}";
 
         Set<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class, TEST);
 
@@ -257,6 +266,7 @@ public class JavaQualifiedNameTest {
         assertNull(nopacks.getPackages());
     }
 
+
     @Test
     public void testParseOperation() {
         JavaQualifiedName noparams = JavaQualifiedName.ofString("foo.bar.Bzaz$Bolg#bar()");
@@ -265,6 +275,7 @@ public class JavaQualifiedNameTest {
         assertEquals("bar()", noparams.getOperation());
         assertEquals("bar(String, int)", params.getOperation());
     }
+
 
     @Test
     public void testParseLocalClasses() {
@@ -285,6 +296,7 @@ public class JavaQualifiedNameTest {
 
     }
 
+
     @Test
     public void testParseAnonymousClass() {
         final String SIMPLE = "Bzaz$12$13";
@@ -301,6 +313,7 @@ public class JavaQualifiedNameTest {
         assertEquals(SIMPLE, simple.toString());
     }
 
+
     @Test
     public void testParseMalformed() {
         assertNull(JavaQualifiedName.ofString(".foo.bar.Bzaz"));
@@ -310,7 +323,6 @@ public class JavaQualifiedNameTest {
         assertNull(JavaQualifiedName.ofString("foo.bar.Bzaz#foo(String,)"));
         assertNull(JavaQualifiedName.ofString("foo.bar.Bzaz#foo(String , int)"));
     }
-
 
 
     @Test
@@ -324,6 +336,7 @@ public class JavaQualifiedNameTest {
 
         assertEquals(qname, classes.get(1).getQualifiedName());
     }
+
 
     @Test
     public void testLocalClassNameClash() {
@@ -352,7 +365,6 @@ public class JavaQualifiedNameTest {
                 + "  }"
                 + "}}";
 
-
         List<ASTClassOrInterfaceDeclaration> classes
                 = ParserTstUtil.getOrderedNodes(ASTClassOrInterfaceDeclaration.class, TEST);
 
@@ -362,6 +374,7 @@ public class JavaQualifiedNameTest {
         assertEquals(JavaQualifiedName.ofString("Bzaz$1Local$Nested"), classes.get(2).getQualifiedName());
         assertEquals(JavaQualifiedName.ofString("Bzaz$1Local$Nested$1InnerLocal"), classes.get(3).getQualifiedName());
     }
+
 
     @Test
     public void testAnonymousClass() {
@@ -379,6 +392,7 @@ public class JavaQualifiedNameTest {
         assertTrue(JavaQualifiedName.ofAnonymousClass(classes.get(0)).isAnonymousClass());
         assertTrue("1".equals(JavaQualifiedName.ofAnonymousClass(classes.get(0)).getClassSimpleName()));
     }
+
 
     @Test
     public void testMultipleAnonymousClasses() {
@@ -399,6 +413,7 @@ public class JavaQualifiedNameTest {
         assertEquals(JavaQualifiedName.ofString("Bzaz$2"), JavaQualifiedName.ofAnonymousClass(classes.get(1)));
     }
 
+
     @Test
     public void testNestedAnonymousClass() {
         final String TEST
@@ -418,6 +433,7 @@ public class JavaQualifiedNameTest {
         assertEquals(JavaQualifiedName.ofString("Bzaz$1"), JavaQualifiedName.ofAnonymousClass(classes.get(0)));
         assertEquals(JavaQualifiedName.ofString("Bzaz$1$1"), JavaQualifiedName.ofAnonymousClass(classes.get(1)));
     }
+
 
     @Test
     public void testLocalInAnonymousClass() {
