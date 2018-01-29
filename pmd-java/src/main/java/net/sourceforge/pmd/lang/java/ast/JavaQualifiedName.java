@@ -39,9 +39,9 @@ public final class JavaQualifiedName implements QualifiedName {
      * Pattern specifying the format.
      *
      * <pre>
-     *     ((\w+\.)*)               # packages
+     *     ((\w++\.)*)              # packages
      *     (                        # classes
-     *       (\w+)                  # primary class
+     *       (\w++)                 # primary class
      *       (
      *         \$                   # separator
      *         \d*+                 # optional local/anonymous class index
@@ -50,19 +50,19 @@ public final class JavaQualifiedName implements QualifiedName {
      *     )
      *     (                        # optional operation suffix
      *       \#
-     *       (\w+)                  # method name
+     *       (\w++)                 # method name
      *       \(
      *       (                      # parameters
-     *         (\w+)
-     *         (,\040\w+)*          # \040 is a space
+     *         (\w++)
+     *         (,\040\w++)*         # \040 is a space
      *       )?
      *       \)
      *     )?
      * </pre>
      */
-    private static final Pattern FORMAT = Pattern.compile("((\\w+\\.)*)                        # packages\n"
+    private static final Pattern FORMAT = Pattern.compile("((\\w++\\.)*)                       # packages\n"
                                                                   + "(                         # classes\n"
-                                                                  + "  (\\w+)                  # primary class\n"
+                                                                  + "  (\\w++)                 # primary class\n"
                                                                   + "  ("
                                                                   + "    \\$                   # separator\n"
                                                                   + "    \\d*+                 # optional local/anonymous class index\n"
@@ -71,11 +71,11 @@ public final class JavaQualifiedName implements QualifiedName {
                                                                   + ")"
                                                                   + "(                         # optional operation suffix\n"
                                                                   + "  \\#"
-                                                                  + "  (\\w+)                  # method name\n"
+                                                                  + "  (\\w++)                 # method name\n"
                                                                   + "  \\("
                                                                   + "    (                     # parameters\n"
-                                                                  + "      (\\w+)"
-                                                                  + "      (,\\040\\w+)*       # \040 is a space\n"
+                                                                  + "      (\\w++)"
+                                                                  + "      (,\\040\\w++)*      # \040 is a space\n"
                                                                   + "    )?"
                                                                   + "  \\)"
                                                                   + ")?", Pattern.COMMENTS);
