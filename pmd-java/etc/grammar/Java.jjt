@@ -1,4 +1,7 @@
 /**
+ * Fixes #888 [java] ParseException occurs with valid '<>' in Java 1.8 mode
+ * Juan Martin Sotuyo Dodero 01/2018
+ *====================================================================
  * Fixes #793 [java] Parser error with private method in nested classes in interfaces
  * Andreas Dangel 12/2017
  *====================================================================
@@ -333,9 +336,9 @@ public class JavaParser {
   private void checkForBadAnonymousDiamondUsage() {
     if (jdkVersion < 9) {
       ASTAllocationExpression node = (ASTAllocationExpression)jjtree.peekNode();
-      ASTTypeArguments types = node.getFirstDescendantOfType(ASTTypeArguments.class);
+      ASTTypeArguments types = node.getFirstChildOfType(ASTClassOrInterfaceType.class).getFirstChildOfType(ASTTypeArguments.class);
       if (node.isAnonymousClass() && types != null && types.isDiamond()) {
-          throwParseException("Cannot use '<>' with anonymous inner classes when running in JDK inferior to 9 mode!");
+        throwParseException("Cannot use '<>' with anonymous inner classes when running in JDK inferior to 9 mode!");
       }
     }
   }
@@ -2026,8 +2029,8 @@ void AllocationExpression():
             { inInterface = inInterfaceOld; } // always restore the flag after leaving the node
         ]
      )
+    { checkForBadAnonymousDiamondUsage(); }
   )
-  { checkForBadAnonymousDiamondUsage(); }
 }
 
 /*

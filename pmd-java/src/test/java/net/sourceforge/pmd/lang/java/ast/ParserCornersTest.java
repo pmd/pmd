@@ -35,6 +35,33 @@ public class ParserCornersTest {
                 + "                TestInnerClassCallsOuterParent.super.toString();\n" + "            }\n"
                 + "        };\n" + "    }\n" + "}\n");
     }
+    
+    /**
+     * #888 PMD 6.0.0 can't parse valid <> under 1.8.
+     */
+    @Test
+    public void testDiamondUsageJava8() {
+        parseJava18("public class PMDExceptionTest {\n"
+                + "  private Component makeUI() {\n"
+                + "    String[] model = {\"123456\", \"7890\"};\n"
+                + "    JComboBox<String> comboBox = new JComboBox<>(model);\n"
+                + "    comboBox.setEditable(true);\n"
+                + "    comboBox.setEditor(new BasicComboBoxEditor() {\n"
+                + "      private Component editorComponent;\n"
+                + "      @Override public Component getEditorComponent() {\n"
+                + "        if (editorComponent == null) {\n"
+                + "          JTextField tc = (JTextField) super.getEditorComponent();\n"
+                + "          editorComponent = new JLayer<>(tc, new ValidationLayerUI<>());\n"
+                + "        }\n"
+                + "        return editorComponent;\n"
+                + "      }\n"
+                + "    });\n"
+                + "    JPanel p = new JPanel();\n"
+                + "    p.add(comboBox);\n"
+                + "    return p;\n"
+                + "  }\n"
+                + "}");
+    }
 
     @Test
     public final void testGetFirstASTNameImageNull() {
