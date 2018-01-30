@@ -39,7 +39,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     public ForLoopCanBeForeachRule() {
         addRuleChainVisit(ASTForStatement.class);
     }
-    
+
     @Override
     public Object visit(ASTForStatement node, Object data) {
 
@@ -109,7 +109,12 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             return guessIndexVarFromUpdate(update);
         }
 
-        int numDeclaredVars = init.getFirstChildOfType(ASTLocalVariableDeclaration.class).findChildrenOfType(ASTVariableDeclarator.class).size();
+        ASTLocalVariableDeclaration decl = init.getFirstChildOfType(ASTLocalVariableDeclaration.class);
+        if (decl == null) {
+            return null;
+        }
+
+        int numDeclaredVars = decl.findChildrenOfType(ASTVariableDeclarator.class).size();
         if (numDeclaredVars > 1) {
             return null; // will abort in the calling function
         }
@@ -255,7 +260,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             // TODO : This can happen if we are calling a local / statically imported method that returns the iterable - currently unhandled
             return null;
         }
-        
+
         String name = nameNode.getImage();
         int dotIndex = name.indexOf('.');
 
