@@ -261,7 +261,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.20.1</surefire.version>
         <checkstyle.version>2.17</checkstyle.version>
-        <pmd.plugin.version>3.8</pmd.plugin.version>
+        <pmd.plugin.version>3.9.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
         <javadoc.plugin.version>3.0.0-M1</javadoc.plugin.version>
         <antlr.version>4.7</antlr.version>
@@ -541,12 +541,12 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
                         <artifactId>pmd-core</artifactId>
-                        <version>5.8.1</version>
+                        <version>6.0.1</version>
                     </dependency>
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
                         <artifactId>pmd-java</artifactId>
-                        <version>5.8.1</version>
+                        <version>6.0.1</version>
                     </dependency>
                 </dependencies>
             </plugin>
