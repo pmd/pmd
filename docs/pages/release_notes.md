@@ -22,12 +22,20 @@ This is a minor release.
 ### Fixed Issues
 
 *   all
-    *   [#848](https://github.com/pmd/pmd/issues/848): \[doc] Test failures when building pmd-doc under Windows
     *   [#569](https://github.com/pmd/pmd/issues/569): \[core] XPath support requires specific toString implementations
+    *   [#848](https://github.com/pmd/pmd/issues/848): \[doc] Test failures when building pmd-doc under Windows
+    *   [#872](https://github.com/pmd/pmd/issues/872): \[core] NullPointerException at FileDataSource.glomName()
 *   doc
     *   [#791](https://github.com/pmd/pmd/issues/791): \[doc] Documentation site reorganisation
 *   java
     *   [#784](https://github.com/pmd/pmd/issues/784): \[java] ForLoopCanBeForeach false-positive
+    *   [#825](https://github.com/pmd/pmd/issues/825): \[java] Excessive\*Length ignores too much
+    *   [#888](https://github.com/pmd/pmd/issues/888): \[java] ParseException occurs with valid '<>' in Java 1.8 mode
+*   java-documentation
+    *   [#877](https://github.com/pmd/pmd/issues/877): \[java] CommentRequired valid rule configuration causes PMD error
+*   java-errorprone
+    *   [#885](https://github.com/pmd/pmd/issues/885): \[java] CompareObjectsWithEqualsRule trigger by enum1 != enum2
+
 
 ### API Changes
 
@@ -44,9 +52,12 @@ e.g. to produce a more useful message for debugging.
 
 ### External Contributions
 
-
 *   [#790](https://github.com/pmd/pmd/pull/790): \[java] Added some comments for JDK 9 - [Tobias Weimer](https://github.com/tweimer)
 *   [#803](https://github.com/pmd/pmd/pull/803): \[doc] Added SpotBugs as successor of FindBugs - [Tobias Weimer](https://github.com/tweimer)
+*   [#828](https://github.com/pmd/pmd/pull/828): \[core] Add operations to manipulate a document - [Gonzalo Ibars Ingman](https://github.com/gibarsin)
 *   [#830](https://github.com/pmd/pmd/pull/830): \[java] UseArraysAsList: Description added - [Tobias Weimer](https://github.com/tweimer)
 *   [#845](https://github.com/pmd/pmd/pull/845): \[java] Fix false negative PreserveStackTrace on string concatenation - [Alberto Fernández](https://github.com/albfernandez)
 *   [#868](https://github.com/pmd/pmd/pull/868): \[core] Improve XPath documentation && make small refactors - [Gonzalo Ibars Ingman](https://github.com/gibarsin)
+*   [#875](https://github.com/pmd/pmd/pull/875): \[core] Support shortnames when using filelist - [John Zhang](https://github.com/johnjiabinzhang)
+*   [#886](https://github.com/pmd/pmd/pull/886): \[java] Fix #885 - [Matias Comercio](https://github.com/MatiasComercio)
+

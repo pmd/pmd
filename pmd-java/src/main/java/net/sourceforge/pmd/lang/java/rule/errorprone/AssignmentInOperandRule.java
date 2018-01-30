@@ -53,8 +53,8 @@ public class AssignmentInOperandRule extends AbstractJavaRule {
                         && !getProperty(ALLOW_FOR_DESCRIPTOR))
                 && (node.hasDescendantOfType(ASTAssignmentOperator.class)
                         || !getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR)
-                                && (node.hasDecendantOfAnyType(ASTPreIncrementExpression.class,
-                                        ASTPreDecrementExpression.class, ASTPostfixExpression.class)))) {
+                                && (node.hasDescendantOfAnyType(ASTPreIncrementExpression.class,
+                                                                ASTPreDecrementExpression.class, ASTPostfixExpression.class)))) {
 
             addViolation(data, node);
             return data;

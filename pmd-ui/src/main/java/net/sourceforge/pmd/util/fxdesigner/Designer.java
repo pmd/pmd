@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -84,7 +84,7 @@ public class Designer extends Application {
         Parent root = loader.load();
         Scene scene = new Scene(root);
 
-        stage.setTitle("PMD Rule Designer (v " + PMD.VERSION + ')');
+        stage.setTitle("PMD Rule Designer (v " + PMDVersion.VERSION + ')');
         setIcons(stage);
 
         stage.setScene(scene);

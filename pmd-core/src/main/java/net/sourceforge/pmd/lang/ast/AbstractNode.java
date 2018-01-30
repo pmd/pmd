@@ -23,6 +23,10 @@ import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
+
+/**
+ * Base class for all implementations of the Node interface.
+ */
 public abstract class AbstractNode implements Node {
 
     private static final Logger LOG = Logger.getLogger(AbstractNode.class.getName());
@@ -216,7 +220,7 @@ public abstract class AbstractNode implements Node {
         while (parentNode != null && !parentType.isInstance(parentNode)) {
             parentNode = parentNode.jjtGetParent();
         }
-        return (T) parentNode;
+        return parentType.cast(parentNode);
     }
 
 
@@ -226,7 +230,7 @@ public abstract class AbstractNode implements Node {
         Node parentNode = jjtGetParent();
         while (parentNode != null) {
             if (parentType.isInstance(parentNode)) {
-                parents.add((T) parentNode);
+                parents.add(parentType.cast(parentNode));
             }
             parentNode = parentNode.jjtGetParent();
         }
@@ -254,11 +258,10 @@ public abstract class AbstractNode implements Node {
             return;
         }
 
-        int n = node.jjtGetNumChildren();
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node child = node.jjtGetChild(i);
             if (child.getClass() == targetType) {
-                results.add((T) child);
+                results.add(targetType.cast(child));
             }
 
             findDescendantsOfType(child, targetType, results, crossFindBoundaries);
@@ -269,11 +272,10 @@ public abstract class AbstractNode implements Node {
     @Override
     public <T> List<T> findChildrenOfType(Class<T> targetType) {
         List<T> list = new ArrayList<>();
-        int n = jjtGetNumChildren();
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < jjtGetNumChildren(); i++) {
             Node child = jjtGetChild(i);
             if (targetType.isInstance(child)) {
-                list.add((T) child);
+                list.add(targetType.cast(child));
             }
         }
         return list;
@@ -331,18 +333,19 @@ public abstract class AbstractNode implements Node {
         for (int i = 0; i < n; i++) {
             Node child = jjtGetChild(i);
             if (child.getClass() == childType) {
-                return (T) child;
+                return childType.cast(child);
             }
         }
         return null;
     }
+
 
     private static <T> T getFirstDescendantOfType(Class<T> descendantType, Node node) {
         int n = node.jjtGetNumChildren();
         for (int i = 0; i < n; i++) {
             Node n1 = node.jjtGetChild(i);
             if (n1.getClass() == descendantType) {
-                return (T) n1;
+                return descendantType.cast(n1);
             }
             T n2 = getFirstDescendantOfType(descendantType, n1);
             if (n2 != null) {
@@ -358,12 +361,26 @@ public abstract class AbstractNode implements Node {
         return getFirstDescendantOfType(type) != null;
     }
 
+
     /**
+     * Returns true if this node has a descendant of any type among the provided types.
      *
-     * @param types
-     * @return boolean
+     * @param types Types to test
+     *
+     * @deprecated Use {@link #hasDescendantOfAnyType(Class[])}
      */
+    @Deprecated
     public final boolean hasDecendantOfAnyType(Class<?>... types) {
+        return hasDescendantOfAnyType(types);
+    }
+
+
+    /**
+     * Returns true if this node has a descendant of any type among the provided types.
+     *
+     * @param types Types to test
+     */
+    public final boolean hasDescendantOfAnyType(Class<?>... types) {
         for (Class<?> type : types) {
             if (hasDescendantOfType(type)) {
                 return true;
