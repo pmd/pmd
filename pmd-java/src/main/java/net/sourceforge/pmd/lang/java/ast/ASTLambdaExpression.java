@@ -6,23 +6,31 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTLambdaExpression extends AbstractJavaAccessNode {
+public class ASTLambdaExpression extends MethodLike {
     public ASTLambdaExpression(int id) {
         super(id);
     }
 
+
     public ASTLambdaExpression(JavaParser p, int id) {
         super(p, id);
     }
-  
+
+
     @Override
     public boolean isFindBoundary() {
         return true;
     }
 
+
     /** Accept the visitor. **/
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    @Override
+    public MethodLikeKind getKind() {
+        return MethodLikeKind.LAMBDA;
     }
 }
 /*

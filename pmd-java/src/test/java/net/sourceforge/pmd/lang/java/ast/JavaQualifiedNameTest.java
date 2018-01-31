@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -315,6 +316,22 @@ public class JavaQualifiedNameTest {
         assertEquals(SIMPLE, simple.toString());
     }
 
+    @Test
+    public void testParseLambdaName() {
+        final String IN_LAMBDA = "foo.bar.Bzaz$1Local#lambda$null$12";
+        final String STATIC = "foo.bar.Bzaz#lambda$static$12";
+        final String NEW = "foo.bar.Bzaz#lambda$new$1";
+        final String IN_METHOD = "Bzaz#lambda$myMethod$4";
+
+        for (String s : Arrays.asList(IN_LAMBDA, STATIC, NEW, IN_METHOD)) {
+            JavaQualifiedName qname = QualifiedNameFactory.ofString(s);
+            assertNotNull(qname);
+            assertTrue(qname.isLambda());
+            assertEquals(s, qname.toString());
+            assertEquals(qname, QualifiedNameFactory.ofString(qname.toString()));
+        }
+    }
+
 
     @Test
     public void testParseMalformed() {
@@ -324,6 +341,9 @@ public class JavaQualifiedNameTest {
         assertNull(QualifiedNameFactory.ofString("foo.bar.Bzaz()"));
         assertNull(QualifiedNameFactory.ofString("foo.bar.Bzaz#foo(String,)"));
         assertNull(QualifiedNameFactory.ofString("foo.bar.Bzaz#foo(String , int)"));
+        assertNull(QualifiedNameFactory.ofString("foo.bar.Bzaz#lambda$static$23(String)"));
+        assertNull(QualifiedNameFactory.ofString("foo.bar.Bzaz#lambda$static$"));
+        assertNull(QualifiedNameFactory.ofString("foo.bar.Bzaz#lambda$$0"));
     }
 
 
@@ -453,5 +473,205 @@ public class JavaQualifiedNameTest {
         assertTrue(classes.get(1).isLocal());
         assertEquals(QualifiedNameFactory.ofString("Bzaz$1$1FooRunnable"), classes.get(1).getQualifiedName());
     }
+
+    @Test
+    public void testLambdaInStaticInitializer() {
+        final String TEST
+                = "import java.util.function.*;"
+                + "class Bzaz{ "
+                + "  static {"
+                + "     Consumer<String> l = s -> {"
+                + "         System.out.println(s);"
+                + "     };"
+                + "     l.accept(\"foo\");"
+                + "  }"
+                + "}";
+
+
+        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+
+        assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$static$0"), lambdas.get(0).getQualifiedName());
+    }
+
+
+    @Test
+    public void testLambdaInInitializerAndConstructor() {
+        final String TEST
+                = "import java.util.function.*;"
+                + "class Bzaz{ "
+                + "  {"
+                + "     Consumer<String> l = s -> {"
+                + "         System.out.println(s);"
+                + "     };"
+                + "     l.accept(\"foo\");"
+                + "  }"
+                + "  public Bzaz() {"
+                + "     Consumer<String> l = s -> {"
+                + "         System.out.println(s);"
+                + "     };"
+                + "     l.accept(\"foo\");"
+                + "  }"
+                + "}";
+
+        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+
+        assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$new$0"), lambdas.get(0).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$new$1"), lambdas.get(1).getQualifiedName());
+    }
+
+
+    @Test
+    public void testLambdaField() {
+        final String TEST
+                = "import java.util.function.*;"
+                + "public class Bzaz { "
+                + "     Consumer<String> l = s -> {"
+                + "         System.out.println(s);"
+                + "     };"
+                + "     public static Consumer<String> k = s -> {"
+                + "         System.out.println(s);"
+                + "     };"
+                + "}";
+
+        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+
+        assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$new$0"), lambdas.get(0).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$static$1"), lambdas.get(1).getQualifiedName());
+    }
+
+
+    @Test
+    public void testLambdaInterfaceField() {
+        final String TEST
+                = "import java.util.function.*;"
+                + "public interface Bzaz { "
+                + "     Consumer<String> l = s -> {"
+                + "         System.out.println(s);"
+                + "     };"
+                + "     public static Consumer<String> k = s -> {"
+                + "         System.out.println(s);"
+                + "     };"
+                + "}";
+
+        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+
+        assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$static$0"), lambdas.get(0).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$static$1"), lambdas.get(1).getQualifiedName());
+    }
+
+
+    @Test
+    public void testLambdaLocalClassField() {
+        final String TEST
+                = "import java.util.function.*;"
+                + "public class Bzaz { "
+                + "  public void boo() {"
+                + "     class Local {"
+                + "         Consumer<String> l = s -> {"
+                + "             System.out.println(s);"
+                + "         };"
+                + "     }"
+                + "  }"
+                + "}";
+
+        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1Local#lambda$Local$0"), lambdas.get(0).getQualifiedName());
+    }
+
+
+    @Test
+    public void testLambdaAnonymousClassField() {
+        final String TEST
+                = "import java.util.function.*;"
+                + "public class Bzaz { "
+                + "  public void boo() {"
+                + "     new Anonymous() {"
+                + "         Consumer<String> l = s -> {"
+                + "             System.out.println(s);"
+                + "         };"
+                + "     };"
+                + "  }"
+                + "}";
+
+        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1#lambda$$0"), lambdas.get(0).getQualifiedName());
+    }
+
+
+    @Test
+    public void testLambdasInMethod() {
+        final String TEST
+                = "import java.util.function.*;"
+                + "class Bzaz{ "
+                + "  public void bar() {"
+                + "     Consumer<String> l = s -> {"
+                + "         System.out.println(s);"
+                + "     };"
+                + "     l.accept(\"foo\");"
+                + "  }"
+                + "  public void fooBar() {"
+                + "     Consumer<String> l = s -> {"
+                + "         System.out.println(s);"
+                + "     };"
+                + "     l.accept(\"foo\");"
+                + "  }"
+                + "  public void gollum() {"
+                + "     Consumer<String> l = s -> {"
+                + "         System.out.println(s);"
+                + "     };"
+                + "     l.accept(\"foo\");"
+                + "  }"
+                + "}";
+
+        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+
+        assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$bar$0"), lambdas.get(0).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$fooBar$1"), lambdas.get(1).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$gollum$2"), lambdas.get(2).getQualifiedName());
+    }
+
+
+    @Test
+    public void testLambdaCounterBelongsToClass() {
+        final String TEST
+                = "import java.util.function.*;"
+                + "class Bzaz{ "
+                + "  static {"
+                + "     Consumer<String> l = s -> {"
+                + "         System.out.println(s);"
+                + "     };"
+                + "     l.accept(\"foo\");"
+                + "  }"
+                + "  public Bzaz() {"
+                + "     Consumer<String> l = s -> {"
+                + "         System.out.println(s);"
+                + "     };"
+                + "     l.accept(\"foo\");"
+                + "  }"
+                + "  public void gollum() {"
+                + "     Consumer<String> l = s -> {"
+                + "         System.out.println(s);"
+                + "     };"
+                + "     l.accept(\"foo\");"
+                + "     new Runnable() {"
+                + "       public void run() {"
+                + "         Runnable r = () -> {};"
+                + "         r.run();"
+                + "       }"
+                + "     }.run();"
+                + "  }"
+                + "}";
+
+        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+
+        assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$static$0"), lambdas.get(0).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$new$1"), lambdas.get(1).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$gollum$2"), lambdas.get(2).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1#lambda$run$0"), lambdas.get(3).getQualifiedName()); // counter starts over for anon class
+    }
+
+
 }
 

@@ -46,15 +46,17 @@ public final class JavaQualifiedName implements QualifiedName {
      */
     private final ImmutableList<Integer> localIndices;
     private final String operation;
+    private final boolean isLambda;
     // toString cache
     private String toString;
 
 
-    JavaQualifiedName(ImmutableList<String> packages, ImmutableList<String> classes, ImmutableList<Integer> localIndices, String operation) {
+    JavaQualifiedName(ImmutableList<String> packages, ImmutableList<String> classes, ImmutableList<Integer> localIndices, String operation, boolean isLambda) {
         this.packages = packages;
         this.classes = classes;
         this.localIndices = localIndices;
         this.operation = operation;
+        this.isLambda = isLambda;
     }
 
 
@@ -67,6 +69,14 @@ public final class JavaQualifiedName implements QualifiedName {
     @Override
     public boolean isOperation() {
         return operation != null;
+    }
+
+
+    /**
+     * Returns true if this qualified name identifies a lambda expression.
+     */
+    public boolean isLambda() {
+        return isLambda;
     }
 
 
@@ -154,7 +164,7 @@ public final class JavaQualifiedName implements QualifiedName {
             return this;
         }
 
-        return new JavaQualifiedName(packages, classes, localIndices, null);
+        return new JavaQualifiedName(packages, classes, localIndices, null, false);
     }
 
 
@@ -232,8 +242,8 @@ public final class JavaQualifiedName implements QualifiedName {
      *
      * @return A new qualified name
      */
-    static JavaQualifiedName operationName(JavaQualifiedName parent, String operation) {
-        return new JavaQualifiedName(parent.packages, parent.classes, parent.localIndices, operation);
+    static JavaQualifiedName operationName(JavaQualifiedName parent, String operation, boolean isLambda) {
+        return new JavaQualifiedName(parent.packages, parent.classes, parent.localIndices, operation, isLambda);
     }
 
 
@@ -251,7 +261,8 @@ public final class JavaQualifiedName implements QualifiedName {
         return new JavaQualifiedName(parent.packages,
                                      parent.classes.prepend(className),
                                      parent.localIndices.prepend(localIndex),
-                                     null);
+                                     null,
+                                     false);
     }
 
 }
