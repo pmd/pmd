@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics;
 
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.MethodLike;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
@@ -79,7 +79,7 @@ public final class JavaMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node) {
+    public static double get(MetricKey<MethodLike> key, MethodLike node) {
         return FACADE.computeForOperation(key, node, MetricOptions.emptyOptions());
     }
 
@@ -93,8 +93,7 @@ public final class JavaMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node,
-                             MetricOptions options) {
+    public static double get(MetricKey<MethodLike> key, MethodLike node, MetricOptions options) {
         return FACADE.computeForOperation(key, node, options);
     }
 
@@ -107,10 +106,9 @@ public final class JavaMetrics {
      * @param node         The node on which to compute the metric
      * @param resultOption The result option to use
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed or {@code option} is
-     * {@code null}
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node, ResultOption resultOption) {
+    public static double get(MetricKey<MethodLike> key, ASTAnyTypeDeclaration node, ResultOption resultOption) {
         return FACADE.computeWithResultOption(key, node, MetricOptions.emptyOptions(), resultOption);
     }
 
@@ -124,10 +122,9 @@ public final class JavaMetrics {
      * @param resultOption The result option to use
      * @param options      The version of the metric
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed or {@code option} is
-     * {@code null}
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node,
+    public static double get(MetricKey<MethodLike> key, ASTAnyTypeDeclaration node,
                              MetricOptions options, ResultOption resultOption) {
         return FACADE.computeWithResultOption(key, node, options, resultOption);
     }

@@ -12,8 +12,8 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserDecoratedVisitor;
+import net.sourceforge.pmd.lang.java.ast.MethodLike;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloAssertAwareDecorator;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloBaseVisitor;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloPathAwareDecorator;
@@ -34,7 +34,7 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
 
 
     @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
+    public double computeFor(final MethodLike node, MetricOptions options) {
         Set<MetricOption> opts = options.getOptions();
         JavaParserDecoratedVisitor visitor = new JavaParserDecoratedVisitor(CycloBaseVisitor.INSTANCE);
 

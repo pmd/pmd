@@ -9,8 +9,8 @@ import java.util.Set;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserDecoratedVisitor;
+import net.sourceforge.pmd.lang.java.ast.MethodLike;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NcssBaseVisitor;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NcssCountImportsDecorator;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
@@ -73,13 +73,13 @@ public final class NcssMetric {
     public static final class NcssOperationMetric extends AbstractJavaOperationMetric {
 
         @Override
-        public boolean supports(ASTMethodOrConstructorDeclaration node) {
+        public boolean supports(MethodLike node) {
             return true;
         }
 
 
         @Override
-        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions version) {
+        public double computeFor(MethodLike node, MetricOptions version) {
             Set<MetricOption> options = version.getOptions();
             JavaParserDecoratedVisitor visitor = new JavaParserDecoratedVisitor(NcssBaseVisitor.INSTANCE);
 

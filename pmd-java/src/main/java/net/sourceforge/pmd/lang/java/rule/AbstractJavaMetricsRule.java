@@ -9,9 +9,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.MethodLike;
+
 
 /**
  * Java Rule with convenient visit methods to e.g. treat contructors and methods the same.
@@ -54,10 +57,19 @@ public abstract class AbstractJavaMetricsRule extends AbstractJavaRule {
         return visit((ASTMethodOrConstructorDeclaration) node, data);
     }
 
-
-    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-        return visit((JavaNode) node, data);
+    @Override
+    public final Object visit(ASTLambdaExpression node, Object data) {
+        return visit((MethodLike) node, data);
     }
 
+
+    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+        return visit((MethodLike) node, data);
+    }
+
+
+    public Object visit(MethodLike node, Object data) {
+        return visit((JavaNode) node, data);
+    }
 
 }

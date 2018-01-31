@@ -10,18 +10,23 @@ import java.util.Map;
 import org.apache.commons.lang3.EnumUtils;
 import org.jaxen.Context;
 import org.jaxen.Function;
-import org.jaxen.FunctionCallException;
 import org.jaxen.SimpleFunctionContext;
 import org.jaxen.XPathFunctionContext;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.MethodLike;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 
+
 /**
+ * Implements the {@code metric()} XPath function. Takes the
+ * string name of a metric and the context node and returns
+ * the result if the metric can be computed, otherwise returns
+ * {@link Double#NaN}.
+ *
  * @author Clément Fournier
  * @since 6.0.0
  */
@@ -33,9 +38,7 @@ public class MetricFunction implements Function {
 
 
     @Override
-    public Object call(Context context, List args) throws FunctionCallException {
-
-        String metricKeyName = null;
+    public Object call(Context context, List args) {
 
         if (args.size() == 0) {
             throw new IllegalArgumentException(badMetricKeyArgMessage());
@@ -45,9 +48,9 @@ public class MetricFunction implements Function {
             throw new IllegalArgumentException(badMetricKeyArgMessage());
         }
 
-        metricKeyName = (String) args.get(0);
-
+        String metricKeyName = (String) args.get(0);
         Node n = (Node) context.getNodeSet().get(0);
+
         return getMetric(n, metricKeyName);
     }
 
@@ -75,8 +78,8 @@ public class MetricFunction implements Function {
     public static double getMetric(Node n, String metricKeyName) {
         if (n instanceof ASTAnyTypeDeclaration) {
             return getClassMetric((ASTAnyTypeDeclaration) n, getClassMetricKey(metricKeyName));
-        } else if (n instanceof ASTMethodOrConstructorDeclaration) {
-            return getOpMetric((ASTMethodOrConstructorDeclaration) n, getOperationMetricKey(metricKeyName));
+        } else if (n instanceof MethodLike) {
+            return getOpMetric((MethodLike) n, getOperationMetricKey(metricKeyName));
         } else {
             throw new IllegalStateException(genericBadNodeMessage());
         }
@@ -101,7 +104,7 @@ public class MetricFunction implements Function {
     }
 
 
-    private static double getOpMetric(ASTMethodOrConstructorDeclaration node, JavaOperationMetricKey key) {
+    private static double getOpMetric(MethodLike node, JavaOperationMetricKey key) {
         return JavaMetrics.get(key, node);
     }
 

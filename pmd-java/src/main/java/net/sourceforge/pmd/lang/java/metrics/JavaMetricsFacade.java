@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.MethodLike;
 import net.sourceforge.pmd.lang.metrics.AbstractMetricsFacade;
 import net.sourceforge.pmd.lang.metrics.MetricsComputer;
 
@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.metrics.MetricsComputer;
  *
  * @author Clément Fournier
  */
-class JavaMetricsFacade extends AbstractMetricsFacade<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> {
+class JavaMetricsFacade extends AbstractMetricsFacade<ASTAnyTypeDeclaration, MethodLike> {
 
     private final JavaProjectMemoizer memoizer = new JavaProjectMemoizer();
 
@@ -32,7 +32,7 @@ class JavaMetricsFacade extends AbstractMetricsFacade<ASTAnyTypeDeclaration, AST
 
 
     @Override
-    protected MetricsComputer<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> getLanguageSpecificComputer() {
+    protected MetricsComputer<ASTAnyTypeDeclaration, MethodLike> getLanguageSpecificComputer() {
         return JavaMetricsComputer.INSTANCE;
     }
 

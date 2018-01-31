@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
 
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.MethodLike;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NpathBaseVisitor;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 public class NpathMetric extends AbstractJavaOperationMetric {
 
     @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
+    public double computeFor(MethodLike node, MetricOptions options) {
         return (Integer) node.jjtAccept(NpathBaseVisitor.INSTANCE, null);
     }
 

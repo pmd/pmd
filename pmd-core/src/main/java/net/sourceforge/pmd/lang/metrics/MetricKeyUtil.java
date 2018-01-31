@@ -22,7 +22,7 @@ public class MetricKeyUtil {
 
 
     /**
-     * Creates a new metric key holding a metric which can be computed on a class.
+     * Creates a new metric key from its metric and name.
      *
      * @param name   The name of the metric
      * @param metric The metric to use

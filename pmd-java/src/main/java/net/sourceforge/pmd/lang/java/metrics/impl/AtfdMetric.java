@@ -8,7 +8,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.MethodLike;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.AtfdBaseVisitor;
@@ -27,13 +27,13 @@ public final class AtfdMetric {
     public static final class AtfdOperationMetric extends AbstractJavaOperationMetric {
 
         @Override
-        public boolean supports(ASTMethodOrConstructorDeclaration node) {
+        public boolean supports(MethodLike node) {
             return node instanceof ASTMethodDeclaration && super.supports(node);
         }
 
 
         @Override
-        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
+        public double computeFor(MethodLike node, MetricOptions options) {
             return ((MutableInt) node.jjtAccept(new AtfdBaseVisitor(), new MutableInt(0))).getValue();
         }
 
