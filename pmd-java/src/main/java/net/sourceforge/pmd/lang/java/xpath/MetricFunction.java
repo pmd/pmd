@@ -37,7 +37,7 @@ public class MetricFunction implements Function {
 
         String metricKeyName = null;
 
-        if (args.size() == 0) {
+        if (args.isEmpty()) {
             throw new IllegalArgumentException(badMetricKeyArgMessage());
         }
 
