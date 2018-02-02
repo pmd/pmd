@@ -68,7 +68,7 @@ public class CurrentPath implements Iterable<DataFlowNode> {
     }
 
     public boolean isEndNode() {
-        return this.getLast().getChildren().size() == 0;
+        return this.getLast().getChildren().isEmpty();
         // return inode instanceof StartOrEndDataFlowNode;
     }
 

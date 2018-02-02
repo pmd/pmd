@@ -158,7 +158,7 @@ public class MetricOptions {
 
 
         MetricOptions build() {
-            if (opts.size() == 0) {
+            if (opts.isEmpty()) {
                 return emptyOptions();
             }
 
