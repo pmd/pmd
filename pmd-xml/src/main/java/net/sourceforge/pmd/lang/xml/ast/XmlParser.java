@@ -7,12 +7,8 @@ package net.sourceforge.pmd.lang.xml.ast;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.lang.reflect.Proxy;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,13 +23,16 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 
+
 public class XmlParser {
     protected final XmlParserOptions parserOptions;
-    protected Map<Node, XmlNode> nodeCache = new HashMap<>();
+    protected Map<org.w3c.dom.Node, XmlNode> nodeCache = new HashMap<>();
+
 
     public XmlParser(XmlParserOptions parserOptions) {
         this.parserOptions = parserOptions;
     }
+
 
     protected Document parseDocument(Reader reader) throws ParseException {
         nodeCache.clear();
@@ -65,35 +64,31 @@ public class XmlParser {
         }
     }
 
+
     public XmlNode parse(Reader reader) {
         Document document = parseDocument(reader);
-        return createProxy(document);
+        XmlNode root = new RootXmlNode(this, document);
+        nodeCache.put(document, root);
+        return root;
     }
 
-    public XmlNode createProxy(Node node) {
-        XmlNode proxy = nodeCache.get(node);
-        if (proxy != null) {
-            return proxy;
-        }
 
-        // TODO Change Parser interface to take ClassLoader?
-        LinkedHashSet<Class<?>> interfaces = new LinkedHashSet<>();
-        interfaces.add(XmlNode.class);
-        if (node instanceof Document) {
-            interfaces.add(RootNode.class);
+    public XmlNode wrapDomNode(org.w3c.dom.Node domNode) {
+        XmlNode wrapper = nodeCache.get(domNode);
+        if (wrapper == null) {
+            wrapper = new XmlNodeWrapper(this, domNode);
+            nodeCache.put(domNode, wrapper);
         }
-        addAllInterfaces(interfaces, node.getClass());
-
-        proxy = (XmlNode) Proxy.newProxyInstance(XmlParser.class.getClassLoader(),
-                interfaces.toArray(new Class[interfaces.size()]), new XmlNodeInvocationHandler(this, node));
-        nodeCache.put(node, proxy);
-        return proxy;
+        return wrapper;
     }
 
-    public void addAllInterfaces(Set<Class<?>> interfaces, Class<?> clazz) {
-        interfaces.addAll(Arrays.asList(clazz.getInterfaces()));
-        if (clazz.getSuperclass() != null) {
-            addAllInterfaces(interfaces, clazz.getSuperclass());
+
+    /**
+     * The root should implement {@link RootNode}.
+     */
+    public class RootXmlNode extends XmlNodeWrapper implements RootNode {
+        public RootXmlNode(XmlParser parser, Node domNode) {
+            super(parser, domNode);
         }
     }
 
