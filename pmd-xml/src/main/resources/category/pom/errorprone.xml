@@ -25,11 +25,12 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
         <properties>
             <property name="xpath">
                 <value>
-                    <![CDATA[
+<![CDATA[
 //dependencyManagement/dependency/type/text[not(@Image = $validTypes)]
 ]]>
                 </value>
             </property>
+            <!-- XPath 2.0 is needed to use a multi-valued property. -->
             <property name="version" value="2.0"/>
             <property name="validTypes"
                       value="pom,jar,maven-plugin,ejb,war,ear,rar,par"

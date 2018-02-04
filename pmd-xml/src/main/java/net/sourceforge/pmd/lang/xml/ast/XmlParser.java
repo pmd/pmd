@@ -55,11 +55,7 @@ public class XmlParser {
             DOMLineNumbers lineNumbers = new DOMLineNumbers(document, xmlData);
             lineNumbers.determine();
             return document;
-        } catch (ParserConfigurationException e) {
-            throw new ParseException(e);
-        } catch (SAXException e) {
-            throw new ParseException(e);
-        } catch (IOException e) {
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new ParseException(e);
         }
     }
@@ -73,7 +69,14 @@ public class XmlParser {
     }
 
 
-    public XmlNode wrapDomNode(org.w3c.dom.Node domNode) {
+    /**
+     * Gets the wrapper for a DOM node, implementing PMD interfaces.
+     *
+     * @param domNode The node to wrap
+     *
+     * @return The wrapper
+     */
+    XmlNode wrapDomNode(Node domNode) {
         XmlNode wrapper = nodeCache.get(domNode);
         if (wrapper == null) {
             wrapper = new XmlNodeWrapper(this, domNode);
@@ -86,8 +89,8 @@ public class XmlParser {
     /**
      * The root should implement {@link RootNode}.
      */
-    public class RootXmlNode extends XmlNodeWrapper implements RootNode {
-        public RootXmlNode(XmlParser parser, Node domNode) {
+    public static class RootXmlNode extends XmlNodeWrapper implements RootNode {
+        RootXmlNode(XmlParser parser, Node domNode) {
             super(parser, domNode);
         }
     }
