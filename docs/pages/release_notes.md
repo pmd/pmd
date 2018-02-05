@@ -58,4 +58,5 @@ e.g. to produce a more useful message for debugging.
 *   [#868](https://github.com/pmd/pmd/pull/868): \[core] Improve XPath documentation && make small refactors - [Gonzalo Ibars Ingman](https://github.com/gibarsin)
 *   [#875](https://github.com/pmd/pmd/pull/875): \[core] Support shortnames when using filelist - [John Zhang](https://github.com/johnjiabinzhang)
 *   [#886](https://github.com/pmd/pmd/pull/886): \[java] Fix #885 - [Matias Comercio](https://github.com/MatiasComercio)
+*   [#900](https://github.com/pmd/pmd/pull/900): \[core] Use the isEmpty method instead of comparing the value of size() to 0 - [reudismam](https://github.com/reudismam)
 
