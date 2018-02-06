@@ -35,8 +35,6 @@ public class MetricFunction implements Function {
     @Override
     public Object call(Context context, List args) throws FunctionCallException {
 
-        String metricKeyName = null;
-
         if (args.isEmpty()) {
             throw new IllegalArgumentException(badMetricKeyArgMessage());
         }
@@ -45,7 +43,7 @@ public class MetricFunction implements Function {
             throw new IllegalArgumentException(badMetricKeyArgMessage());
         }
 
-        metricKeyName = (String) args.get(0);
+        String metricKeyName = (String) args.get(0);
 
         Node n = (Node) context.getNodeSet().get(0);
         return getMetric(n, metricKeyName);
