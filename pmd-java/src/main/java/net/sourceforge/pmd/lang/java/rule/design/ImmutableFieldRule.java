@@ -98,6 +98,8 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
                     }
                     if (inAnonymousInnerClass(node)) {
                         methodInitCount++;
+                    } else if (node.getFirstParentOfType(ASTLambdaExpression.class) != null) {
+                        lambdaUsage++;
                     } else {
                         consSet.add(constructor);
                     }
