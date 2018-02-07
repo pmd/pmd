@@ -360,14 +360,7 @@ public final class QualifiedNameFactory {
             LOCAL_INDICES.get(parent).put(localClassName, 1);
             return 1;
         } else {
-            Integer count = siblings.get(localClassName);
-            if (count == null) {
-                siblings.put(localClassName, 1);
-                return 1;
-            } else {
-                siblings.put(localClassName, count + 1);
-                return count + 1;
-            }
+            return getNextIndexFromHistogram(siblings, localClassName, 1);
         }
     }
 

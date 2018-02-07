@@ -30,6 +30,11 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
     List<ASTAnyTypeBodyDeclaration> getDeclarations();
 
 
+
+    @Override
+    JavaQualifiedName getQualifiedName();
+
+
     /**
      * Returns true if this type declaration is nested inside an interface, class or annotation.
      */
