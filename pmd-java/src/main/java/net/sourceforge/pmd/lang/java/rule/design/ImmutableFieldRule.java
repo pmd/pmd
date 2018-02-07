@@ -40,7 +40,7 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
         /** Variable is not changed outside the constructor. */
         IMMUTABLE,
         /** Variable is only written during declaration, if at all. */
-        CHECKDECL;
+        CHECKDECL
     }
 
     @Override
@@ -71,14 +71,14 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
     }
 
     private boolean initializedWhenDeclared(VariableNameDeclaration field) {
-        return ((Node) field.getAccessNodeParent()).hasDescendantOfType(ASTVariableInitializer.class);
+        return field.getAccessNodeParent().hasDescendantOfType(ASTVariableInitializer.class);
     }
 
     private FieldImmutabilityType initializedInConstructor(List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
         FieldImmutabilityType result = FieldImmutabilityType.MUTABLE;
         int methodInitCount = 0;
         int lambdaUsage = 0;
-        Set<Node> consSet = new HashSet<>();
+        Set<ASTConstructorDeclaration> consSet = new HashSet<>(); // set of constructors accessing the field
         for (NameOccurrence occ : usages) {
             JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
             if (jocc.isOnLeftHandSide() || jocc.isSelfAssignment()) {

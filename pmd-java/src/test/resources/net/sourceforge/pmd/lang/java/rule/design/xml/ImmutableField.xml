@@ -4,9 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description><![CDATA[
-could be immutable, only assigned in constructor
-     ]]></description>
+        <description>Could be immutable, only assigned in constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -18,9 +16,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-could be immutable, only assigned in decl
-     ]]></description>
+        <description>Could be immutable, only assigned in decl</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -29,9 +25,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-ok, assigned twice
-     ]]></description>
+        <description>Ok, assigned twice</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -46,9 +40,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-ok, static field 
-     ]]></description>
+        <description>Ok, static field </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -62,9 +54,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-ok, one constructor assigns, one doesn't
-     ]]></description>
+        <description>Ok, one constructor assigns, one doesn't</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -77,9 +67,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-ok, assignment via postfix expression
-     ]]></description>
+        <description>Ok, assignment via postfix expression</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -90,9 +78,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-postfix expressions imply mutability
-     ]]></description>
+        <description>Postfix expressions imply mutability</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -104,9 +90,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-compound assignment
-     ]]></description>
+        <description>Compound assignment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -123,9 +107,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-preincrement
-     ]]></description>
+        <description>Preincrement</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -137,9 +119,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-predecrement
-     ]]></description>
+        <description>Predecrement</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -151,9 +131,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-compound assignment 2
-     ]]></description>
+        <description>Compound assignment 2</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -165,9 +143,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-rhs 2
-     ]]></description>
+        <description>Rhs 2</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -179,9 +155,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-assignment in constructor is in try block
-     ]]></description>
+        <description>Assignment in constructor is in try block</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -195,9 +169,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-assignment in method is in try block
-     ]]></description>
+        <description>Assignment in method is in try block</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -211,9 +183,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-assignment in constructor in loop is ok
-     ]]></description>
+        <description>Assignment in constructor in loop is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -225,9 +195,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-assignment in anonymous inner class method is OK
-     ]]></description>
+        <description>Assignment in anonymous inner class method is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -244,9 +212,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-assignment through this
-     ]]></description>
+        <description>Assignment through this</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo{
@@ -265,9 +231,7 @@ public class Foo{
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-volatile variables can't be final
-     ]]></description>
+        <description>Volatile variables can't be final</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public final class Foo {
@@ -277,9 +241,7 @@ public final class Foo {
 }     ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Bug 1740480, optional override of default value based on constructor argument check
-     ]]></description>
+        <description>Bug 1740480, optional override of default value based on constructor argument check</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MyClass {
@@ -295,9 +257,7 @@ public class MyClass {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Bug 1740480, assignment in single constructor based on constructor argument check
-     ]]></description>
+        <description>Bug 1740480, assignment in single constructor based on constructor argument check</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MyClass {
@@ -314,9 +274,7 @@ public class MyClass {
      ]]></code>
     </test-code>
     <test-code>
-        <description>
-3526212, pmd-5.0.0: ImmutableField false positive on self-inc/dec
-        </description>
+        <description>3526212, pmd-5.0.0: ImmutableField false positive on self-inc/dec</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class pmd_inc {
