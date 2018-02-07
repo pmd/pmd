@@ -30,6 +30,8 @@ This is a minor release.
 *   java
     *   [#825](https://github.com/pmd/pmd/issues/825): \[java] Excessive\*Length ignores too much
     *   [#888](https://github.com/pmd/pmd/issues/888): \[java] ParseException occurs with valid '<>' in Java 1.8 mode
+*   java-design
+    *   [#855](https://github.com/pmd/pmd/issues/855): \[java] ImmutableField false-positive with lambdas
 *   java-documentation
     *   [#877](https://github.com/pmd/pmd/issues/877): \[java] CommentRequired valid rule configuration causes PMD error
 *   java-errorprone
