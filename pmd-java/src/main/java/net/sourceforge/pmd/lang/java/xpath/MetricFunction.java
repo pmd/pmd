@@ -38,9 +38,9 @@ public class MetricFunction implements Function {
 
 
     @Override
-    public Object call(Context context, List args) {
+    public Object call(Context context, List args) throws FunctionCallException {
 
-        if (args.size() == 0) {
+        if (args.isEmpty()) {
             throw new IllegalArgumentException(badMetricKeyArgMessage());
         }
 

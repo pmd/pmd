@@ -304,7 +304,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
 
     private void onFileMenuShowing() {
-        openRecentMenu.setDisable(recentFiles.size() == 0);
+        openRecentMenu.setDisable(recentFiles.isEmpty());
     }
 
 
