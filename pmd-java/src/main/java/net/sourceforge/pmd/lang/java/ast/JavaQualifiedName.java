@@ -58,7 +58,7 @@ public final class JavaQualifiedName implements QualifiedName {
         this.localIndices = localIndices;
         this.operation = operation;
         this.isLambda = isLambda;
-        this.hashCode= Objects.hash(packages, classes, localIndices, operation, isLambda);
+        this.hashCode = Objects.hash(packages, classes, localIndices, operation, isLambda);
     }
 
 
