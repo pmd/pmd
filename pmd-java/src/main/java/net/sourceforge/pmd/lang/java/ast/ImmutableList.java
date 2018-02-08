@@ -254,7 +254,7 @@ public interface ImmutableList<E> extends Iterable<E> {
 
 
         private static <E> ImmutableList<E> fromArray(E[] arr) {
-            ImmutableList<E> cur = new Nil<>();
+            ImmutableList<E> cur = emptyList();
             if (arr != null) {
                 for (E item : arr) {
                     cur = cur.prepend(item);
@@ -296,7 +296,7 @@ public interface ImmutableList<E> extends Iterable<E> {
             public final <T> ImmutableList<Entry<E, T>> zip(ImmutableList<T> right) {
                 Iterator<E> thisIt = this.iterator();
                 Iterator<T> rightIt = right.iterator();
-                AbstractImmutableList<Entry<E, T>> result = new Nil<>();
+                ImmutableList<Entry<E, T>> result = emptyList();
                 while (thisIt.hasNext() && rightIt.hasNext()) {
                     result = result.prepend(new SimpleImmutableEntry<>(thisIt.next(), rightIt.next()));
                 }
@@ -305,11 +305,18 @@ public interface ImmutableList<E> extends Iterable<E> {
         }
 
         /**
-         * Empty list.
+         * Empty list. Uses reference equality since there's only one instance around.
          *
          * @param <E> Element type
          */
         private static class Nil<E> extends AbstractImmutableList<E> {
+
+            /**
+             * You should not use that, use {@link #emptyList()}.
+             */
+            Nil() {
+
+            }
 
             @Override
             public Iterator<E> iterator() {
@@ -342,7 +349,7 @@ public interface ImmutableList<E> extends Iterable<E> {
 
 
             @Override
-            public AbstractImmutableList<E> tail() {
+            public ImmutableList<E> tail() {
                 throw new IndexOutOfBoundsException("Empty list!");
             }
 
@@ -378,7 +385,7 @@ public interface ImmutableList<E> extends Iterable<E> {
          */
         private static class ListNode<E> extends AbstractImmutableList<E> {
             private final E head;
-            private final AbstractImmutableList<E> tail;
+            private final ImmutableList<E> tail;
             private final int size;
             private SoftReference<ImmutableList<E>> reverseCache;
 
@@ -443,7 +450,7 @@ public interface ImmutableList<E> extends Iterable<E> {
 
 
             private ImmutableList<E> buildReverse() {
-                ImmutableList<E> cur = new Nil<>();
+                ImmutableList<E> cur = emptyList();
                 for (E item : this) {
                     cur = cur.prepend(item);
                 }
@@ -478,6 +485,27 @@ public interface ImmutableList<E> extends Iterable<E> {
                     sb.append(", ").append(elem);
                 }
                 return sb.append(")").toString();
+            }
+
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) {
+                    return true;
+                }
+                if (o == null || getClass() != o.getClass()) {
+                    return false;
+                }
+                ListNode<?> listNode = (ListNode<?>) o;
+                return size == listNode.size
+                        && Objects.equals(head, listNode.head)
+                        && Objects.equals(tail, listNode.tail);
+            }
+
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(head, tail, size);
             }
 
 

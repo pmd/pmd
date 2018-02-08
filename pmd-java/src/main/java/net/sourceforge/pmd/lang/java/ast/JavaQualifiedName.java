@@ -49,6 +49,7 @@ public final class JavaQualifiedName implements QualifiedName {
     private final boolean isLambda;
     // toString cache
     private String toString;
+    private final int hashCode;
 
 
     JavaQualifiedName(ImmutableList<String> packages, ImmutableList<String> classes, ImmutableList<Integer> localIndices, String operation, boolean isLambda) {
@@ -57,6 +58,7 @@ public final class JavaQualifiedName implements QualifiedName {
         this.localIndices = localIndices;
         this.operation = operation;
         this.isLambda = isLambda;
+        this.hashCode= Objects.hash(packages, classes, localIndices, operation, isLambda);
     }
 
 
@@ -177,13 +179,18 @@ public final class JavaQualifiedName implements QualifiedName {
             return false;
         }
         JavaQualifiedName that = (JavaQualifiedName) o;
-        return Objects.equals(toString(), that.toString());
+        return Objects.equals(toString(), that.toString())
+                && isLambda == that.isLambda
+                && Objects.equals(operation, that.operation)
+                && Objects.equals(packages, that.packages)
+                && Objects.equals(classes, that.classes)
+                && Objects.equals(localIndices, that.localIndices);
     }
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(toString());
+        return hashCode;
     }
 
 
