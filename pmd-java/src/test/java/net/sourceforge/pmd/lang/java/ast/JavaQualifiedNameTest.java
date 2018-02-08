@@ -343,7 +343,6 @@ public class JavaQualifiedNameTest {
         assertNull(QualifiedNameFactory.ofString("foo.bar.Bzaz#foo(String , int)"));
         assertNull(QualifiedNameFactory.ofString("foo.bar.Bzaz#lambda$static$23(String)"));
         assertNull(QualifiedNameFactory.ofString("foo.bar.Bzaz#lambda$static$"));
-        assertNull(QualifiedNameFactory.ofString("foo.bar.Bzaz#lambda$$0"));
     }
 
 
@@ -597,6 +596,13 @@ public class JavaQualifiedNameTest {
         List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
 
         assertEquals(QualifiedNameFactory.ofString("Bzaz$1#lambda$$0"), lambdas.get(0).getQualifiedName());
+
+        // This is here because of a bug with the regex parsing, which failed on "Bzaz$1#lambda$$0"
+        // because the second segment of the lambda name was the empty string
+
+        assertTrue(lambdas.get(0).getQualifiedName().isLambda());
+        assertEquals("lambda$$0", lambdas.get(0).getQualifiedName().getOperation());
+        assertEquals(2, lambdas.get(0).getQualifiedName().getClasses().size());
     }
 
 
@@ -670,6 +676,15 @@ public class JavaQualifiedNameTest {
         assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$new$1"), lambdas.get(1).getQualifiedName());
         assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$gollum$2"), lambdas.get(2).getQualifiedName());
         assertEquals(QualifiedNameFactory.ofString("Bzaz$1#lambda$run$0"), lambdas.get(3).getQualifiedName()); // counter starts over for anon class
+
+        // This is here because of a bug with the regex parsing, which caused "Bzaz$1#lambda$run$0"
+        // to be parsed as
+        // * classes == List("Bzaz", "#lambda", "run", "0").reverse()
+        // * localIndices == List(-1, 1, -1, -1)
+        // * operation == null
+        assertTrue(lambdas.get(3).getQualifiedName().isLambda());
+        assertEquals("lambda$run$0", lambdas.get(3).getQualifiedName().getOperation());
+        assertEquals(2, lambdas.get(3).getQualifiedName().getClasses().size());
     }
 
 

@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.MethodLike.MethodLikeKind;
 public class QualifiedNameFactory {
 
     /** Operation part of a lambda. */
-    private static final String LAMBDA_PATTERN = "lambda\\$(\\w++)\\$\\d++";
+    private static final String LAMBDA_PATTERN = "lambda\\$(\\w++)?\\$\\d++";
     private static final Pattern COMPILED_LAMBDA_PATTERN = Pattern.compile(LAMBDA_PATTERN);
 
 
@@ -65,7 +65,7 @@ public class QualifiedNameFactory {
                                                                   + "  ("
                                                                   + "    \\$                   # separator\n"
                                                                   + "    \\d*+                 # optional local/anonymous class index\n"
-                                                                  + "    (\\D\\w*+)?           # regular class name, absent for anonymous class\n"
+                                                                  + "    ([a-zA-Z]\\w*+)?      # regular class name, absent for anonymous class\n"
                                                                   + "  )*"
                                                                   + ")"
                                                                   + "(                         # optional operation suffix\n"
