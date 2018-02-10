@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -14,7 +13,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,11 +38,14 @@ public class JavaQualifiedNameTest {
     }
 
 
+    private <T> List<T> getNodes(Class<T> nodeType, String source) {
+        return ParserTstUtil.getOrderedNodes(nodeType, source);
+    }
+
     @Test
     public void testEmptyPackage() {
         final String TEST = "class Foo {}";
-        Set<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class,
-                                                             TEST);
+        List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
             assertEquals("Foo", qname.toString());
@@ -60,7 +61,7 @@ public class JavaQualifiedNameTest {
     public void testPackage() {
         final String TEST = "package foo.bar; class Bzaz{}";
 
-        Set<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class,
+        List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class,
                                                              TEST);
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
@@ -76,8 +77,7 @@ public class JavaQualifiedNameTest {
     public void testNestedClass() {
         final String TEST = "package foo.bar; class Bzaz{ class Bor{ class Foo{}}}";
 
-        Set<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class,
-                                                             TEST);
+        List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
 
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
@@ -98,7 +98,7 @@ public class JavaQualifiedNameTest {
     public void testNestedEnum() {
         final String TEST = "package foo.bar; class Foo { enum Bzaz{HOO;}}";
 
-        Set<ASTEnumDeclaration> nodes = getNodes(ASTEnumDeclaration.class, TEST);
+        List<ASTEnumDeclaration> nodes = getNodes(ASTEnumDeclaration.class, TEST);
 
         for (ASTEnumDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
@@ -114,7 +114,7 @@ public class JavaQualifiedNameTest {
     public void testEnum() {
         final String TEST = "package foo.bar; enum Bzaz{HOO;}";
 
-        Set<ASTEnumDeclaration> nodes = getNodes(ASTEnumDeclaration.class, TEST);
+        List<ASTEnumDeclaration> nodes = getNodes(ASTEnumDeclaration.class, TEST);
 
         for (ASTEnumDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
@@ -130,7 +130,7 @@ public class JavaQualifiedNameTest {
     public void testEnumMethodMember() {
         final String TEST = "package foo.bar; enum Bzaz{HOO; void foo(){}}";
 
-        Set<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class, TEST);
+        List<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class, TEST);
 
         for (ASTMethodDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
@@ -146,8 +146,7 @@ public class JavaQualifiedNameTest {
     public void testNestedEmptyPackage() {
         final String TEST = "class Bzaz{ class Bor{ class Foo{}}}";
 
-        Set<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class,
-                                                             TEST);
+        List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
 
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
@@ -170,8 +169,7 @@ public class JavaQualifiedNameTest {
     public void testMethod() {
         final String TEST = "package bar; class Bzaz{ public void foo(){}}";
 
-        Set<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class,
-                                                   TEST);
+        List<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class, TEST);
 
         for (ASTMethodDeclaration declaration : nodes) {
             JavaQualifiedName qname = declaration.getQualifiedName();
@@ -187,8 +185,7 @@ public class JavaQualifiedNameTest {
     public void testConstructor() {
         final String TEST = "package bar; class Bzaz{ public Bzaz(){}}";
 
-        Set<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class,
-                                                        TEST);
+        List<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class, TEST);
 
         for (ASTConstructorDeclaration declaration : nodes) {
             JavaQualifiedName qname = declaration.getQualifiedName();
@@ -205,8 +202,7 @@ public class JavaQualifiedNameTest {
     public void testConstructorWithParams() {
         final String TEST = "package bar; class Bzaz{ public Bzaz(int j, String k){}}";
 
-        Set<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class,
-                                                        TEST);
+        List<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class, TEST);
 
         for (ASTConstructorDeclaration declaration : nodes) {
             JavaQualifiedName qname = declaration.getQualifiedName();
@@ -222,7 +218,7 @@ public class JavaQualifiedNameTest {
     public void testConstructorOverload() {
         final String TEST = "package bar; class Bzaz{ public Bzaz(int j) {} public Bzaz(int j, String k){}}";
 
-        Set<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class,
+        List<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class,
                                                         TEST);
 
         ASTConstructorDeclaration[] arr = nodes.toArray(new ASTConstructorDeclaration[2]);
@@ -235,7 +231,7 @@ public class JavaQualifiedNameTest {
         final String TEST = "package bar; class Bzaz{ public void foo(String j) {} "
                 + "public void foo(int j){} public void foo(double k){}}";
 
-        Set<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class, TEST);
+        List<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class, TEST);
 
         ASTMethodDeclaration[] arr = nodes.toArray(new ASTMethodDeclaration[3]);
         assertNotEquals(arr[0].getQualifiedName(), arr[1].getQualifiedName());

@@ -96,5 +96,14 @@ public interface LanguageVersionHandler {
     VisitorStarter getMultifileFacade();
 
 
+    /**
+     * Gets the visitor that populates the qualified names of the
+     * nodes.
+     *
+     * @return The visitor starter
+     */
+    VisitorStarter getQualifiedNameResolutionFacade();
+
+
     DFAGraphRule getDFAGraphRule();
 }

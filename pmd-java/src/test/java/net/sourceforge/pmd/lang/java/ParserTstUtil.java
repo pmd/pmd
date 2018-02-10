@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
+import net.sourceforge.pmd.lang.java.ast.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 
@@ -65,6 +66,9 @@ public class ParserTstUtil {
         }
     }
 
+    // TODO provide a configurable api to choose which visitors to invoke
+    // it makes no sense
+
     public static <E> Set<E> getNodes(Class<E> clazz, String javaCode) {
         return getNodes(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion(), clazz, javaCode);
     }
@@ -89,10 +93,9 @@ public class ParserTstUtil {
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(),
                 new Class[] { JavaParserVisitor.class }, coll);
         jpv.visit(cu, null);
-        SymbolFacade sf = new SymbolFacade();
-        sf.initializeWith(cu);
-        DataFlowFacade dff = new DataFlowFacade();
-        dff.initializeWith(languageVersionHandler.getDataFlowHandler(), cu);
+        new QualifiedNameResolver().initializeWith(cu);
+        new SymbolFacade().initializeWith(cu);
+        new DataFlowFacade().initializeWith(languageVersionHandler.getDataFlowHandler(), cu);
 
         return (List<E>) coll.getCollection();
     }
@@ -211,6 +214,7 @@ public class ParserTstUtil {
     public static ASTCompilationUnit parseJava(LanguageVersionHandler languageVersionHandler, String code) {
         ASTCompilationUnit rootNode = (ASTCompilationUnit) languageVersionHandler
                 .getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));
+        languageVersionHandler.getQualifiedNameResolutionFacade().start(rootNode);
         languageVersionHandler.getSymbolFacade().start(rootNode);
         return rootNode;
     }

@@ -60,6 +60,13 @@ public abstract class AbstractLanguageVersionHandler implements LanguageVersionH
         return VisitorStarter.DUMMY;
     }
 
+
+    @Override
+    public VisitorStarter getQualifiedNameResolutionFacade() {
+        return VisitorStarter.DUMMY;
+    }
+
+
     @Override
     public DFAGraphRule getDFAGraphRule() {
         return null;

@@ -121,6 +121,13 @@ public class SourceCodeProcessor {
         Benchmarker.mark(Benchmark.SymbolTable, end - start, 0);
     }
 
+    private void resolveQualifiedNames(Node rootNode, LanguageVersionHandler handler) {
+        long start = System.nanoTime();
+        handler.getQualifiedNameResolutionFacade().start(rootNode);
+        long end = System.nanoTime();
+        Benchmarker.mark(Benchmark.QualifiedNameResolution, end - start, 0);
+    }
+
     // private ParserOptions getParserOptions(final LanguageVersionHandler
     // languageVersionHandler) {
     // // TODO Handle Rules having different parser options.
@@ -171,6 +178,7 @@ public class SourceCodeProcessor {
         Parser parser = PMD.parserFor(languageVersion, configuration);
 
         Node rootNode = parse(ctx, sourceCode, parser);
+        resolveQualifiedNames(rootNode, languageVersionHandler);
         symbolFacade(rootNode, languageVersionHandler);
         Language language = languageVersion.getLanguage();
         usesDFA(languageVersion, rootNode, ruleSets, language);

@@ -25,7 +25,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
     // Allows reusing the same list instance for the same packages.
     // Package prefixes are also shared.
     private final Map<String, ImmutableList<String>> FOUND_PACKAGES = new HashMap<>(128);
-    
+
     // The following stacks stack some counter of the
     // visited classes. A new entry is pushed when
     // we enter a new class, and popped when we get
@@ -75,6 +75,11 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
     private ImmutableList<String> classNames;
 
 
+    public void initializeWith(ASTCompilationUnit rootNode) {
+        rootNode.jjtAccept(this, null);
+    }
+
+
     public Object visit(ASTCompilationUnit node, Object data) {
 
         // update the package list
@@ -99,7 +104,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
      */
     private ImmutableList<String> getPackageList(ASTPackageDeclaration pack) {
         if (pack == null) {
-            return ListFactory.<String>emptyList();
+            return ListFactory.emptyList();
         }
 
         final String image = pack.getPackageNameImage();
@@ -184,7 +189,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
     }
 
 
-    /** Rollback the context to the state we were in the enclosing class. */
+    /** Rollback the context to the state of the enclosing class. */
     private void rollbackClassContext() {
         localIndices = localIndices.tail();
         classNames = classNames.tail();

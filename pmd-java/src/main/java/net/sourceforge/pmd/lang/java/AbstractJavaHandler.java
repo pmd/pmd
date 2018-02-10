@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.DumpFacade;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
 import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
@@ -119,6 +120,18 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
             }
         };
     }
+
+
+    @Override
+    public VisitorStarter getQualifiedNameResolutionFacade() {
+        return new VisitorStarter() {
+            @Override
+            public void start(Node rootNode) {
+                new QualifiedNameResolver().initializeWith(((ASTCompilationUnit) rootNode));
+            }
+        };
+    }
+
 
     @Override
     public DFAGraphRule getDFAGraphRule() {
