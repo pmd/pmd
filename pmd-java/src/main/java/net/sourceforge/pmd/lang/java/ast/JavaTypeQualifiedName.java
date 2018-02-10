@@ -9,8 +9,12 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
+
 
 /**
+ * Specialises {@link JavaQualifiedName} for type names.
+ *
  * @author Clément Fournier
  * @since 6.1.0
  */
@@ -18,6 +22,9 @@ public class JavaTypeQualifiedName extends JavaQualifiedName {
 
     /** Local index value for when the class is not local. */
     static final int NOTLOCAL_PLACEHOLDER = -1;
+
+    // Should we share that with ClassTypeResolver?
+    private static final PMDASMClassLoader CLASS_LOADER = PMDASMClassLoader.getInstance(JavaTypeQualifiedName.class.getClassLoader());
 
     // since we prepend each time, these lists are in the reversed order (innermost elem first).
     // we use ImmutableList.reverse() to get them in their usual, user-friendly order
@@ -32,6 +39,9 @@ public class JavaTypeQualifiedName extends JavaQualifiedName {
      * <p>If a class is not local, its local index is {@link #NOTLOCAL_PLACEHOLDER}.
      */
     protected final ImmutableList<Integer> localIndices;
+
+    private Class<?> representedType;
+    private boolean typeLoaded;
 
 
     JavaTypeQualifiedName(ImmutableList<String> packages, ImmutableList<String> classes, ImmutableList<Integer> localIndices) {
@@ -145,6 +155,56 @@ public class JavaTypeQualifiedName extends JavaQualifiedName {
      */
     public ImmutableList<String> getClassList() {
         return classes.reverse();
+    }
+
+
+    /**
+     * Gets the Class instance identified by this qualified name.
+     *
+     * @return A class instance, or null if the classloader threw a {@link ClassNotFoundException}
+     */
+    public final Class<?> getType() {
+        synchronized (this) {
+            if (typeLoaded) {
+                return representedType;
+            } else {
+                typeLoaded = true;
+                try {
+                    representedType = loadType();
+                } catch (ClassNotFoundException e) {
+                    representedType = null;
+                }
+                return representedType;
+            }
+        }
+    }
+
+
+    /**
+     * Gets the Class instance identified by this qualified name.
+     *
+     * @return A class instance
+     *
+     * @throws ClassNotFoundException if the class is not found
+     */
+    private Class<?> loadType() throws ClassNotFoundException {
+        // hence why the toString should follow binary name specification
+        return CLASS_LOADER.loadClass(getBinaryName());
+    }
+
+
+    /**
+     * Returns the binary name of the type identified by this qualified name.
+     * The binary name can be used to load a {@link Class} using a {@link ClassLoader}.
+     * Contrary to this method, {@link #toString()} is not guaranteed to return
+     * a binary name. For most purposes, you should avoid using this method
+     * directly and use {@link #getType()} instead. Just don't build a
+     * dependency on the toString if you want a binary name.
+     *
+     * @return The binary name of the type identified by this qualified name
+     */
+    public String getBinaryName() {
+        return toString();
     }
 
 

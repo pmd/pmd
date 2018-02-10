@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+
+
 /**
  * Abstract class for type declarations nodes.
  */
@@ -40,6 +43,7 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
 
     public void setQualifiedName(JavaTypeQualifiedName qualifiedName) {
         this.qualifiedName = qualifiedName;
+        this.typeDefinition = JavaTypeDefinition.forClass(qualifiedName.getType());
     }
 }
 

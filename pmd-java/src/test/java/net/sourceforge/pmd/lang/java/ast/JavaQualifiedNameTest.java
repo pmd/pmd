@@ -666,5 +666,12 @@ public class JavaQualifiedNameTest {
     }
 
 
+    @Test
+    public void testGetType() {
+        JavaTypeQualifiedName qname = QualifiedNameFactory.ofClass(ASTAdditiveExpression.class);
+        assertEquals(qname.getType(), ASTAdditiveExpression.class);
+    }
+
+
 }
 
