@@ -9,7 +9,7 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
 
-    private JavaQualifiedName qualifiedName;
+    private JavaTypeQualifiedName qualifiedName;
 
 
     AbstractAnyTypeDeclaration(int i) {
@@ -33,12 +33,12 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
 
 
     @Override
-    public final JavaQualifiedName getQualifiedName() {
+    public final JavaTypeQualifiedName getQualifiedName() {
         return qualifiedName;
     }
 
 
-    public void setQualifiedName(JavaQualifiedName qualifiedName) {
+    public void setQualifiedName(JavaTypeQualifiedName qualifiedName) {
         this.qualifiedName = qualifiedName;
     }
 }

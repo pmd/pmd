@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiableNode {
 
-    private JavaQualifiedName qualifiedName;
+    private JavaTypeQualifiedName qualifiedName;
 
     public ASTEnumConstant(int id) {
         super(id);
@@ -32,12 +32,12 @@ public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiable
      *
      * @see #isAnonymousClass()
      */
-    public JavaQualifiedName getQualifiedName() {
+    public JavaTypeQualifiedName getQualifiedName() {
         return qualifiedName;
     }
 
 
-    void setQualifiedName(JavaQualifiedName qname) {
+    void setQualifiedName(JavaTypeQualifiedName qname) {
         this.qualifiedName = qname;
     }
 

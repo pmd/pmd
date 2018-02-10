@@ -1,0 +1,174 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.java.ast;
+
+import java.util.Map.Entry;
+import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
+
+
+/**
+ * @author Clément Fournier
+ * @since 6.1.0
+ */
+public class JavaTypeQualifiedName extends JavaQualifiedName {
+
+    /** Local index value for when the class is not local. */
+    static final int NOTLOCAL_PLACEHOLDER = -1;
+
+    // since we prepend each time, these lists are in the reversed order (innermost elem first).
+    // we use ImmutableList.reverse() to get them in their usual, user-friendly order
+
+    protected final ImmutableList<String> packages; // unnamed package == Nil
+    protected final ImmutableList<String> classes;
+
+    /**
+     * Local indices of the parents and of this class, in order.
+     * They can be zipped with the {@link #classes} list.
+     *
+     * <p>If a class is not local, its local index is {@link #NOTLOCAL_PLACEHOLDER}.
+     */
+    protected final ImmutableList<Integer> localIndices;
+
+
+    JavaTypeQualifiedName(ImmutableList<String> packages, ImmutableList<String> classes, ImmutableList<Integer> localIndices) {
+        Objects.requireNonNull(packages);
+        Objects.requireNonNull(classes);
+        Objects.requireNonNull(localIndices);
+
+        if (classes.isEmpty() || localIndices.size() != classes.size()) {
+            throw new IllegalArgumentException("Error building a type qualified name");
+        }
+
+        this.packages = packages;
+        this.classes = classes;
+        this.localIndices = localIndices;
+    }
+
+
+    @Override
+    public JavaTypeQualifiedName getClassName() {
+        return this;
+    }
+
+
+    @Override
+    protected boolean structurallyEquals(JavaQualifiedName qname) {
+        JavaTypeQualifiedName that = (JavaTypeQualifiedName) qname;
+        return this.packages.equals(that.packages)
+                && this.classes.equals(that.classes)
+                && this.localIndices.equals(that.localIndices);
+    }
+
+
+    @Override
+    protected int buildHashCode() {
+        return Objects.hash(packages, classes, localIndices);
+    }
+
+
+    @Override
+    public boolean isClass() {
+        return true;
+    }
+
+
+    @Override
+    public boolean isOperation() {
+        return false;
+    }
+
+
+    /**
+     * Returns true if this qualified name identifies a
+     * local class.
+     */
+    public boolean isLocalClass() {
+        return localIndices.head() != NOTLOCAL_PLACEHOLDER;
+    }
+
+
+    /**
+     * Returns true if this qualified name identifies an
+     * anonymous class.
+     */
+    public boolean isAnonymousClass() {
+        return !isLocalClass() && StringUtils.isNumeric(getClassSimpleName());
+    }
+
+
+    /**
+     * Get the simple name of the class.
+     */
+    public String getClassSimpleName() {
+        return classes.head();
+    }
+
+
+    /**
+     * Returns true if the class represented by this
+     * qualified name is in the unnamed package.
+     */
+    public boolean isUnnamedPackage() {
+        return packages.isEmpty();
+    }
+
+
+    /**
+     * Returns the packages in outer-to-inner order. This
+     * is specific to Java's package structure. If the
+     * outer class is in the unnamed package, returns an
+     * empty list.
+     *
+     * <p>{@literal @NotNull}
+     *
+     * @return The packages.
+     */
+    public ImmutableList<String> getPackageList() {
+        return packages.reverse();
+    }
+
+
+    /**
+     * Returns the class specific part of the name. It
+     * identifies a class in the namespace it's declared
+     * in. If the class is nested inside another, then
+     * the list returned contains all enclosing classes
+     * in order, from outermost to innermost.
+     *
+     * <p>{@literal @NotNull}
+     *
+     * @return The class names.
+     */
+    public ImmutableList<String> getClassList() {
+        return classes.reverse();
+    }
+
+
+    @Override
+    protected String buildToString() {
+        StringBuilder sb = new StringBuilder();
+
+        for (String aPackage : packages.reverse()) {
+            sb.append(aPackage).append('.');
+        }
+
+        // this in the normal order
+        ImmutableList<String> reversed = classes.reverse();
+        sb.append(reversed.head());
+        for (Entry<String, Integer> classAndLocalIdx : reversed.tail().zip(localIndices.reverse().tail())) {
+            sb.append('$');
+
+            if (classAndLocalIdx.getValue() != JavaTypeQualifiedName.NOTLOCAL_PLACEHOLDER) {
+                sb.append(classAndLocalIdx.getValue());
+            }
+
+            sb.append(classAndLocalIdx.getKey());
+        }
+
+        return sb.toString();
+    }
+}

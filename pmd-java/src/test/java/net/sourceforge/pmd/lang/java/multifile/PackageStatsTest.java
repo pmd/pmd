@@ -16,7 +16,8 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaOperationQualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.ast.QualifiedNameFactory;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
@@ -42,7 +43,7 @@ public class PackageStatsTest {
 
     @Test
     public void testAddClass() {
-        JavaQualifiedName qname = QualifiedNameFactory.ofString("org.foo.Boo");
+        JavaTypeQualifiedName qname = (JavaTypeQualifiedName) QualifiedNameFactory.ofString("org.foo.Boo");
 
         assertNull(pack.getClassStats(qname, false));
         assertNotNull(pack.getClassStats(qname, true));
@@ -59,12 +60,12 @@ public class PackageStatsTest {
 
         ASTMethodOrConstructorDeclaration node = getOrderedNodes(ASTMethodDeclaration.class, TEST).get(0);
 
-        JavaQualifiedName qname = node.getQualifiedName();
+        JavaOperationQualifiedName qname = node.getQualifiedName();
         JavaOperationSignature signature = JavaOperationSignature.buildFor(node);
 
         assertFalse(pack.hasMatchingSig(qname, new JavaOperationSigMask()));
 
-        ClassStats clazz = pack.getClassStats(qname, true);
+        ClassStats clazz = pack.getClassStats(qname.getClassName(), true);
         clazz.addOperation("foo()", signature);
         assertTrue(pack.hasMatchingSig(qname, new JavaOperationSigMask()));
     }
@@ -77,7 +78,7 @@ public class PackageStatsTest {
 
         ASTFieldDeclaration node = getOrderedNodes(ASTFieldDeclaration.class, TEST).get(0);
 
-        JavaQualifiedName qname = QualifiedNameFactory.ofString("org.foo.Boo");
+        JavaTypeQualifiedName qname = (JavaTypeQualifiedName) QualifiedNameFactory.ofString("org.foo.Boo");
         String fieldName = "bar";
         JavaFieldSignature signature = JavaFieldSignature.buildFor(node);
 

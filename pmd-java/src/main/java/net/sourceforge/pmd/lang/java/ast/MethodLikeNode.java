@@ -23,6 +23,10 @@ public interface MethodLikeNode extends AccessNode, JavaQualifiableNode, JavaNod
     MethodLikeKind getKind();
 
 
+    @Override
+    JavaOperationQualifiedName getQualifiedName();
+
+
     /** Kind of method-like. */
     enum MethodLikeKind {
         METHOD,

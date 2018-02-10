@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTAllocationExpression extends AbstractJavaTypeNode implements JavaQualifiableNode {
 
-    private JavaQualifiedName qualifiedName;
+    private JavaTypeQualifiedName qualifiedName;
 
     public ASTAllocationExpression(int id) {
         super(id);
@@ -45,11 +45,11 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode implements Jav
      *
      * @see #isAnonymousClass()
      */
-    public JavaQualifiedName getQualifiedName() {
+    public JavaTypeQualifiedName getQualifiedName() {
         return qualifiedName;
     }
 
-    void setQualifiedName(JavaQualifiedName qname) {
+    void setQualifiedName(JavaTypeQualifiedName qname) {
         this.qualifiedName = qname;
     }
 

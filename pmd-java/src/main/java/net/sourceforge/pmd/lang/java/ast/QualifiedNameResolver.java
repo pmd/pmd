@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ast.JavaQualifiedName.NOTLOCAL_PLACEHOLDER;
+import static net.sourceforge.pmd.lang.java.ast.JavaTypeQualifiedName.NOTLOCAL_PLACEHOLDER;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
 
     private final Stack<MutableInt> lambdaCounters = new Stack<>();
 
-    private final Stack<JavaQualifiedName> innermostEnclosingTypeName = new Stack<>();
+    private final Stack<JavaTypeQualifiedName> innermostEnclosingTypeName = new Stack<>();
 
     /**
      * Package list of the current file.
@@ -323,14 +323,14 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
     }
 
     /** Creates a new class qname from the current context (fields). */
-    private JavaQualifiedName contextClassQName() {
-        return new JavaQualifiedName(packages, classNames, localIndices, null, false);
+    private JavaTypeQualifiedName contextClassQName() {
+        return new JavaTypeQualifiedName(packages, classNames, localIndices);
     }
 
 
     /** Creates a new operation qname, using the current context for the class part. */
-    private JavaQualifiedName contextOperationQName(String op, boolean isLambda) {
-        return new JavaQualifiedName(packages, classNames, localIndices, op, isLambda);
+    private JavaOperationQualifiedName contextOperationQName(String op, boolean isLambda) {
+        return new JavaOperationQualifiedName(innermostEnclosingTypeName.peek(), op, isLambda);
     }
 
 

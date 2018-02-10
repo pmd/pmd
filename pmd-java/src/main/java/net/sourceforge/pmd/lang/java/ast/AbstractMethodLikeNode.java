@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public abstract class AbstractMethodLikeNode extends AbstractJavaAccessNode implements MethodLikeNode {
-    private JavaQualifiedName qualifiedName;
+    private JavaOperationQualifiedName qualifiedName;
 
 
     AbstractMethodLikeNode(int i) {
@@ -18,14 +18,14 @@ public abstract class AbstractMethodLikeNode extends AbstractJavaAccessNode impl
     }
 
 
-    void setQualifiedName(JavaQualifiedName qualifiedName) {
+    void setQualifiedName(JavaOperationQualifiedName qualifiedName) {
         this.qualifiedName = qualifiedName;
     }
 
 
     // TODO refine that type to be more specific when we split JavaQualifiedName into a hierarchy
     @Override
-    public JavaQualifiedName getQualifiedName() {
+    public JavaOperationQualifiedName getQualifiedName() {
         return qualifiedName;
     }
 

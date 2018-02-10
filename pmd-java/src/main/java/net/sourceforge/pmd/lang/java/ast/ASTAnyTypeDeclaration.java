@@ -32,7 +32,7 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
 
 
     @Override
-    JavaQualifiedName getQualifiedName();
+    JavaTypeQualifiedName getQualifiedName();
 
 
     /**

@@ -9,7 +9,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ImmutableList;
-import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaOperationQualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 
@@ -56,7 +57,7 @@ final class PackageStats implements ProjectMirror {
      *
      * @return The new ClassStats, or the one that was found. Can return null only if createIfNotFound is unset
      */
-    /* default */ ClassStats getClassStats(JavaQualifiedName qname, boolean createIfNotFound) {
+    /* default */ ClassStats getClassStats(JavaTypeQualifiedName qname, boolean createIfNotFound) {
         PackageStats container = getSubPackage(qname, createIfNotFound);
 
         if (container == null) {
@@ -94,8 +95,8 @@ final class PackageStats implements ProjectMirror {
      *
      * @return The deepest package that contains this resource. Can only return null if createIfNotFound is unset
      */
-    private PackageStats getSubPackage(JavaQualifiedName qname, boolean createIfNotFound) {
-        if (qname.getPackageList() == null) {
+    private PackageStats getSubPackage(JavaTypeQualifiedName qname, boolean createIfNotFound) {
+        if (qname.getPackageList().isEmpty()) {
             return this; // the toplevel
         }
 
@@ -116,15 +117,15 @@ final class PackageStats implements ProjectMirror {
 
 
     @Override
-    public boolean hasMatchingSig(JavaQualifiedName qname, JavaOperationSigMask sigMask) {
-        ClassStats clazz = getClassStats(qname, false);
+    public boolean hasMatchingSig(JavaOperationQualifiedName qname, JavaOperationSigMask sigMask) {
+        ClassStats clazz = getClassStats(qname.getClassName(), false);
 
         return clazz != null && clazz.hasMatchingOpSig(qname.getOperation(), sigMask);
     }
 
 
     @Override
-    public boolean hasMatchingSig(JavaQualifiedName qname, String fieldName, JavaFieldSigMask sigMask) {
+    public boolean hasMatchingSig(JavaTypeQualifiedName qname, String fieldName, JavaFieldSigMask sigMask) {
         ClassStats clazz = getClassStats(qname, false);
 
         return clazz != null && clazz.hasMatchingFieldSig(fieldName, sigMask);
@@ -132,7 +133,7 @@ final class PackageStats implements ProjectMirror {
 
 
     @Override
-    public ClassMirror getClassMirror(JavaQualifiedName className) {
+    public ClassMirror getClassMirror(JavaTypeQualifiedName className) {
         return getClassStats(className, false);
     }
 

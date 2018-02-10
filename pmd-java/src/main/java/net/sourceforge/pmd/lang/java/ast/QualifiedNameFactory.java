@@ -98,7 +98,7 @@ public final class QualifiedNameFactory {
      *
      * @return The qualified name of the class, or null if the class is null
      */
-    public static JavaQualifiedName ofClass(Class<?> clazz) {
+    public static JavaTypeQualifiedName ofClass(Class<?> clazz) {
         if (clazz == null) {
             return null;
         }
@@ -108,7 +108,7 @@ public final class QualifiedNameFactory {
             name = '.' + name; // unnamed package, marked by a full stop. See ofString's format below
         }
 
-        return ofString(name);
+        return (JavaTypeQualifiedName) ofString(name);
     }
 
 
@@ -164,11 +164,12 @@ public final class QualifiedNameFactory {
                 localIndices = localIndices.prepend(Integer.parseInt(localIndexMatcher.group(1)));
                 classes = classes.prepend(localIndexMatcher.group(2));
             } else {
-                localIndices = localIndices.prepend(JavaQualifiedName.NOTLOCAL_PLACEHOLDER);
+                localIndices = localIndices.prepend(JavaTypeQualifiedName.NOTLOCAL_PLACEHOLDER);
                 classes = classes.prepend(clazz);
             }
         }
 
-        return new JavaQualifiedName(packages, classes, localIndices, operation, isLambda);
+        JavaTypeQualifiedName parent = new JavaTypeQualifiedName(packages, classes, localIndices);
+        return operation == null ? parent : new JavaOperationQualifiedName(parent, operation, isLambda);
     }
 }

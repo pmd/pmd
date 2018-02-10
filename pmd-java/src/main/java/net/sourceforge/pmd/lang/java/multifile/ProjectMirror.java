@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.multifile;
 
-import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaOperationQualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 
@@ -24,7 +25,7 @@ interface ProjectMirror {
      *
      * @return True if the signature of the operation designated by the qualified name is covered by the mask
      */
-    boolean hasMatchingSig(JavaQualifiedName qname, JavaOperationSigMask sigMask);
+    boolean hasMatchingSig(JavaOperationQualifiedName qname, JavaOperationSigMask sigMask);
 
 
     /**
@@ -37,7 +38,7 @@ interface ProjectMirror {
      *
      * @return True if the signature of the field is covered by the mask
      */
-    boolean hasMatchingSig(JavaQualifiedName qname, String fieldName, JavaFieldSigMask sigMask);
+    boolean hasMatchingSig(JavaTypeQualifiedName qname, String fieldName, JavaFieldSigMask sigMask);
 
 
     /**
@@ -47,6 +48,6 @@ interface ProjectMirror {
      *
      * @return The class mirror
      */
-    ClassMirror getClassMirror(JavaQualifiedName className);
+    ClassMirror getClassMirror(JavaTypeQualifiedName className);
 
 }

@@ -33,12 +33,11 @@ public class JavaQualifiedNameTest {
         final String TEST = "class Foo {}";
         List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
-            JavaQualifiedName qname = coid.getQualifiedName();
+            JavaTypeQualifiedName qname = coid.getQualifiedName();
             assertEquals("Foo", qname.toString());
             assertTrue(qname.getPackageList().isEmpty());
             assertTrue(qname.isUnnamedPackage());
             assertEquals(1, qname.getClassList().size());
-            assertNull(qname.getOperation());
         }
     }
 
@@ -50,11 +49,10 @@ public class JavaQualifiedNameTest {
         List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class,
                                                              TEST);
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
-            JavaQualifiedName qname = coid.getQualifiedName();
+            JavaTypeQualifiedName qname = coid.getQualifiedName();
             assertEquals("foo.bar.Bzaz", qname.toString());
             assertEquals(2, qname.getPackageList().size());
             assertEquals(1, qname.getClassList().size());
-            assertNull(qname.getOperation());
         }
     }
 
@@ -66,7 +64,7 @@ public class JavaQualifiedNameTest {
         List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
 
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
-            JavaQualifiedName qname = coid.getQualifiedName();
+            JavaTypeQualifiedName qname = coid.getQualifiedName();
             switch (coid.getImage()) {
             case "Foo":
                 assertEquals("foo.bar.Bzaz$Bor$Foo",
@@ -87,11 +85,10 @@ public class JavaQualifiedNameTest {
         List<ASTEnumDeclaration> nodes = getNodes(ASTEnumDeclaration.class, TEST);
 
         for (ASTEnumDeclaration coid : nodes) {
-            JavaQualifiedName qname = coid.getQualifiedName();
+            JavaTypeQualifiedName qname = coid.getQualifiedName();
             assertEquals("foo.bar.Foo$Bzaz", qname.toString());
             assertEquals(2, qname.getPackageList().size());
             assertEquals(2, qname.getClassList().size());
-            assertNull(qname.getOperation());
         }
     }
 
@@ -103,11 +100,10 @@ public class JavaQualifiedNameTest {
         List<ASTEnumDeclaration> nodes = getNodes(ASTEnumDeclaration.class, TEST);
 
         for (ASTEnumDeclaration coid : nodes) {
-            JavaQualifiedName qname = coid.getQualifiedName();
+            JavaTypeQualifiedName qname = coid.getQualifiedName();
             assertEquals("foo.bar.Bzaz", qname.toString());
             assertEquals(2, qname.getPackageList().size());
             assertEquals(1, qname.getClassList().size());
-            assertNull(qname.getOperation());
         }
     }
 
@@ -119,10 +115,10 @@ public class JavaQualifiedNameTest {
         List<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class, TEST);
 
         for (ASTMethodDeclaration coid : nodes) {
-            JavaQualifiedName qname = coid.getQualifiedName();
+            JavaOperationQualifiedName qname = coid.getQualifiedName();
             assertEquals("foo.bar.Bzaz#foo()", qname.toString());
-            assertEquals(2, qname.getPackageList().size());
-            assertEquals(1, qname.getClassList().size());
+            assertEquals(2, qname.getClassName().getPackageList().size());
+            assertEquals(1, qname.getClassName().getClassList().size());
             assertEquals("foo()", qname.getOperation());
         }
     }
@@ -135,7 +131,7 @@ public class JavaQualifiedNameTest {
         List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
 
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
-            JavaQualifiedName qname = coid.getQualifiedName();
+            JavaTypeQualifiedName qname = coid.getQualifiedName();
             switch (coid.getImage()) {
             case "Foo":
                 assertEquals("Bzaz$Bor$Foo",
@@ -158,7 +154,7 @@ public class JavaQualifiedNameTest {
         List<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class, TEST);
 
         for (ASTMethodDeclaration declaration : nodes) {
-            JavaQualifiedName qname = declaration.getQualifiedName();
+            JavaOperationQualifiedName qname = declaration.getQualifiedName();
             assertEquals("bar.Bzaz#foo()", qname.toString());
             assertNotNull(qname.getOperation());
             assertEquals("foo()", qname.getOperation());
@@ -174,7 +170,7 @@ public class JavaQualifiedNameTest {
         List<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class, TEST);
 
         for (ASTConstructorDeclaration declaration : nodes) {
-            JavaQualifiedName qname = declaration.getQualifiedName();
+            JavaOperationQualifiedName qname = declaration.getQualifiedName();
             assertEquals("bar.Bzaz#Bzaz()",
                          qname.toString());
             assertNotNull(qname.getOperation());
@@ -191,7 +187,7 @@ public class JavaQualifiedNameTest {
         List<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class, TEST);
 
         for (ASTConstructorDeclaration declaration : nodes) {
-            JavaQualifiedName qname = declaration.getQualifiedName();
+            JavaOperationQualifiedName qname = declaration.getQualifiedName();
             assertEquals("bar.Bzaz#Bzaz(int, String)", qname.toString());
             assertNotNull(qname.getOperation());
             assertEquals("Bzaz(int, String)", qname.getOperation());
@@ -227,8 +223,8 @@ public class JavaQualifiedNameTest {
 
     @Test
     public void testParseClass() {
-        JavaQualifiedName outer = QualifiedNameFactory.ofString("foo.bar.Bzaz");
-        JavaQualifiedName nested = QualifiedNameFactory.ofString("foo.bar.Bzaz$Bolg");
+        JavaTypeQualifiedName outer = (JavaTypeQualifiedName) QualifiedNameFactory.ofString("foo.bar.Bzaz");
+        JavaTypeQualifiedName nested = (JavaTypeQualifiedName) QualifiedNameFactory.ofString("foo.bar.Bzaz$Bolg");
 
         assertEquals(1, outer.getClassList().size());
         assertEquals("Bzaz", outer.getClassList().head());
@@ -241,8 +237,8 @@ public class JavaQualifiedNameTest {
 
     @Test
     public void testParsePackages() {
-        JavaQualifiedName packs = QualifiedNameFactory.ofString("foo.bar.Bzaz$Bolg");
-        JavaQualifiedName nopacks = QualifiedNameFactory.ofString("Bzaz");
+        JavaTypeQualifiedName packs = (JavaTypeQualifiedName) QualifiedNameFactory.ofString("foo.bar.Bzaz$Bolg");
+        JavaTypeQualifiedName nopacks = (JavaTypeQualifiedName) QualifiedNameFactory.ofString("Bzaz");
 
         assertNotNull(packs.getPackageList());
         assertEquals("foo", packs.getPackageList().get(0));
@@ -254,8 +250,8 @@ public class JavaQualifiedNameTest {
 
     @Test
     public void testParseOperation() {
-        JavaQualifiedName noparams = QualifiedNameFactory.ofString("foo.bar.Bzaz$Bolg#bar()");
-        JavaQualifiedName params = QualifiedNameFactory.ofString("foo.bar.Bzaz#bar(String, int)");
+        JavaOperationQualifiedName noparams = (JavaOperationQualifiedName) QualifiedNameFactory.ofString("foo.bar.Bzaz$Bolg#bar()");
+        JavaOperationQualifiedName params = (JavaOperationQualifiedName) QualifiedNameFactory.ofString("foo.bar.Bzaz#bar(String, int)");
 
         assertEquals("bar()", noparams.getOperation());
         assertEquals("bar(String, int)", params.getOperation());
@@ -266,8 +262,8 @@ public class JavaQualifiedNameTest {
     public void testParseLocalClasses() {
         final String SIMPLE = "foo.bar.Bzaz$1Local";
         final String NESTED = "foo.Bar$1Local$Nested";
-        JavaQualifiedName simple = QualifiedNameFactory.ofString(SIMPLE);
-        JavaQualifiedName nested = QualifiedNameFactory.ofString(NESTED);
+        JavaTypeQualifiedName simple = (JavaTypeQualifiedName) QualifiedNameFactory.ofString(SIMPLE);
+        JavaTypeQualifiedName nested = (JavaTypeQualifiedName) QualifiedNameFactory.ofString(NESTED);
 
         assertNotNull(simple);
         assertTrue(simple.isLocalClass());
@@ -286,7 +282,7 @@ public class JavaQualifiedNameTest {
     public void testParseAnonymousClass() {
         final String SIMPLE = "Bzaz$12$13";
 
-        JavaQualifiedName simple = QualifiedNameFactory.ofString(SIMPLE);
+        JavaTypeQualifiedName simple = (JavaTypeQualifiedName) QualifiedNameFactory.ofString(SIMPLE);
 
         assertNotNull(simple);
         assertTrue(simple.isAnonymousClass());
@@ -306,7 +302,7 @@ public class JavaQualifiedNameTest {
         final String IN_METHOD = "Bzaz#lambda$myMethod$4";
 
         for (String s : Arrays.asList(IN_LAMBDA, STATIC, NEW, IN_METHOD)) {
-            JavaQualifiedName qname = QualifiedNameFactory.ofString(s);
+            JavaOperationQualifiedName qname = (JavaOperationQualifiedName) QualifiedNameFactory.ofString(s);
             assertNotNull(qname);
             assertTrue(qname.isLambda());
             assertEquals(s, qname.toString());
@@ -584,7 +580,7 @@ public class JavaQualifiedNameTest {
 
         assertTrue(lambdas.get(0).getQualifiedName().isLambda());
         assertEquals("lambda$$0", lambdas.get(0).getQualifiedName().getOperation());
-        assertEquals(2, lambdas.get(0).getQualifiedName().getClassList().size());
+        assertEquals(2, lambdas.get(0).getQualifiedName().getClassName().getClassList().size());
     }
 
 
@@ -666,7 +662,7 @@ public class JavaQualifiedNameTest {
         // * operation == null
         assertTrue(lambdas.get(3).getQualifiedName().isLambda());
         assertEquals("lambda$run$0", lambdas.get(3).getQualifiedName().getOperation());
-        assertEquals(2, lambdas.get(3).getQualifiedName().getClassList().size());
+        assertEquals(2, lambdas.get(3).getQualifiedName().getClassName().getClassList().size());
     }
 
 
