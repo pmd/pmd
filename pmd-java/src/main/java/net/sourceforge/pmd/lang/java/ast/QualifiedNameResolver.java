@@ -12,6 +12,7 @@ import java.util.Stack;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ImmutableList.ListFactory;
 
 
@@ -45,6 +46,10 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
      * anonymous classes of the currently visited class.
      */
     private final Stack<MutableInt> anonymousCounters = new Stack<>();
+    
+    private final Stack<MutableInt> lambdaCounters = new Stack<>();
+
+    private final Stack<JavaQualifiedName> innermostEnclosingTypeName = new Stack<>();
 
     /**
      * Package list of the current file.
@@ -214,6 +219,83 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
     }
 
 
+    @Override
+    public Object visit(ASTMethodDeclaration node, Object data) {
+        String opname = getOperationName(node.getMethodName(), node.getFirstDescendantOfType(ASTFormalParameters.class));
+        node.setQualifiedName(contextOperationQName(opname, false));
+        return super.visit(node, data);
+    }
+
+
+    @Override
+    public Object visit(ASTConstructorDeclaration node, Object data) {
+        String opname = getOperationName(classNames.head(), node.getFirstDescendantOfType(ASTFormalParameters.class));
+        node.setQualifiedName(contextOperationQName(opname, false));
+        return super.visit(node, data);
+    }
+
+    // @formatter:off
+    /**
+     * Populates the qualified name of a lambda expression. The
+     * qualified name of a lambda is made up:
+     * <ul>
+     *     <li>Of the qualified name of the innermost enclosing
+     *     type (considering anonymous classes too);</li>
+     *     <li>The operation string is composed of the following
+     *     segments, separated with a dollar ({@literal $}) symbol:
+     *     <ul>
+     *         <li>The {@code lambda} keyword;</li>
+     *         <li>A keyword identifying the scope the lambda
+     *         was declared in. It can be:
+     *         <ul>
+     *             <li>{@code new}, if the lambda is declared in an
+     *             instance initializer, or a constructor, or in the
+     *             initializer of an instance field of an outer or
+     *             nested class</li>
+     *             <li>{@code static}, if the lambda is declared in a
+     *             static initializer, or in the initializer of a
+     *             static field (including interface constants),</li>
+     *             <li>{@code null}, if the lambda is declared inside
+     *             another lambda,</li>
+     *             <li>The innermost enclosing type's simple name, if the
+     *             lambda is declared in the field initializer of a local
+     *             class,</li>
+     *             <li>The innermost enclosing method's name, if the
+     *             lambda is declared inside a method,</li>
+     *             <li>Nothing (empty string), if the lambda is declared
+     *             in the initializer of the field of an anonymous class;</li>
+     *         </ul>
+     *         </li>
+     *         <li>A numeric index, unique for each lambda declared
+     *         within the same type declaration.</li>
+     *     </ul>
+     *     </li>
+     * </ul>
+     *
+     * <p>The operation string of a lambda does not contain any formal parameters.
+     *
+     * <p>This specification was worked out from stack traces. The precise order in
+     * which the numeric index is assigned does not conform to the way javac assigns
+     * them. Doing that could allow us to retrieve the Method instance associated
+     * with the lambda. TODO
+     *
+     * <p>See <a href="https://stackoverflow.com/a/34655312/6245827">
+     * this stackoverflow answer</a> for more info about how lambdas are compiled.
+     *
+     * @param node Lambda expression node
+     */
+    // @formatter:on
+    @Override
+    public Object visit(ASTLambdaExpression node, Object data) {
+
+        String opname = "lambda$" + findLambdaScopeNameSegment(node)
+                + "$" + lambdaCounters.peek().getAndIncrement();
+
+        node.setQualifiedName(contextOperationQName(opname, true));
+        return super.visit(node, data);
+    }
+
+
     private void updateContextForAnonymousClass() {
         updateClassContext("" + anonymousCounters.peek().incrementAndGet(), NOTLOCAL_PLACEHOLDER);
     }
@@ -224,7 +306,9 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
         localIndices = localIndices.prepend(localIndex);
         classNames = classNames.prepend(className);
         anonymousCounters.push(new MutableInt(0));
+        lambdaCounters.push(new MutableInt(0));
         currentLocalIndices.push(new HashMap<String, Integer>());
+        innermostEnclosingTypeName.push(contextClassQName());
     }
 
 
@@ -233,7 +317,9 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
         localIndices = localIndices.tail();
         classNames = classNames.tail();
         anonymousCounters.pop();
+        lambdaCounters.pop();
         currentLocalIndices.pop();
+        innermostEnclosingTypeName.pop();
     }
 
     /** Creates a new class qname from the current context (fields). */
@@ -246,6 +332,68 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
     private JavaQualifiedName contextOperationQName(String op, boolean isLambda) {
         return new JavaQualifiedName(packages, classNames, localIndices, op, isLambda);
     }
+
+
+    private String findLambdaScopeNameSegment(ASTLambdaExpression node) {
+        Node parent = node.jjtGetParent();
+        while (parent != null
+                && !(parent instanceof ASTFieldDeclaration)
+                && !(parent instanceof ASTInitializer)
+                && !(parent instanceof MethodLike)) {
+            parent = parent.jjtGetParent();
+        }
+
+        if (parent == null) {
+            throw new IllegalStateException("The enclosing scope must exist.");
+        }
+
+        if (parent instanceof ASTInitializer) {
+            return ((ASTInitializer) parent).isStatic() ? "static" : "new";
+        } else if (parent instanceof ASTConstructorDeclaration) {
+            return "new";
+        } else if (parent instanceof ASTLambdaExpression) {
+            return "null";
+        } else if (parent instanceof ASTFieldDeclaration) {
+            ASTFieldDeclaration field = (ASTFieldDeclaration) parent;
+            if (field.isStatic() || field.isInterfaceMember()) {
+                return "static";
+            }
+            if (innermostEnclosingTypeName.peek().isAnonymousClass()) {
+                return "";
+            } else if (innermostEnclosingTypeName.peek().isLocalClass()) {
+                return classNames.head();
+            } else { // other type
+                return "new";
+            }
+        } else { // ASTMethodDeclaration
+            return ((ASTMethodDeclaration) parent).getMethodName();
+        }
+    }
+
+
+    /** Returns a normalized method name (not Java-canonical!). */
+    private static String getOperationName(String methodName, ASTFormalParameters params) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(methodName);
+        sb.append('(');
+
+        int last = params.getParameterCount() - 1;
+        for (int i = 0; i < last; i++) {
+            // append type image of param. TODO use FQCN instead!
+            sb.append(params.jjtGetChild(i).getFirstDescendantOfType(ASTType.class).getTypeImage());
+            sb.append(", ");
+        }
+
+        if (last > -1) {
+            sb.append(params.jjtGetChild(last).getFirstDescendantOfType(ASTType.class).getTypeImage());
+        }
+
+        sb.append(')');
+
+        return sb.toString();
+    }
+
 
     /**
      * Gets the next available index based on a key and a histogram (map of keys to int counters).

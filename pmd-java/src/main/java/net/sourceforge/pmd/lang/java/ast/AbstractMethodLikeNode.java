@@ -18,12 +18,14 @@ public abstract class AbstractMethodLikeNode extends AbstractJavaAccessNode impl
     }
 
 
+    void setQualifiedName(JavaQualifiedName qualifiedName) {
+        this.qualifiedName = qualifiedName;
+    }
+
+
     // TODO refine that type to be more specific when we split JavaQualifiedName into a hierarchy
     @Override
     public JavaQualifiedName getQualifiedName() {
-        if (qualifiedName == null) {
-            qualifiedName = QualifiedNameFactory.ofOperation(this);
-        }
         return qualifiedName;
     }
 
