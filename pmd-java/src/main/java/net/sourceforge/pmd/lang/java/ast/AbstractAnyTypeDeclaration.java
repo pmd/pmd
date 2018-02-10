@@ -34,17 +34,12 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
 
     @Override
     public final JavaQualifiedName getQualifiedName() {
-        if (qualifiedName == null) {
-            qualifiedName = buildQualifiedName();
-        }
-
         return qualifiedName;
     }
 
 
-    /** Create the qualified name, which is then cached in the node. */
-    private JavaQualifiedName buildQualifiedName() {
-        return QualifiedNameFactory.ofClass(this);
+    public void setQualifiedName(JavaQualifiedName qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
 }
 

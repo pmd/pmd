@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.ParserTstUtil;
@@ -24,19 +23,6 @@ import net.sourceforge.pmd.lang.java.ParserTstUtil;
  * @author Clément Fournier
  */
 public class JavaQualifiedNameTest {
-
-
-    /** Provides a hook into the package-private reset method for the local indices counter. */
-    public static void resetLocalIndicesCounterHook() {
-        QualifiedNameFactory.resetGlobalIndexCounters();
-    }
-
-
-    @Before
-    public void setUp() {
-        resetLocalIndicesCounterHook();
-    }
-
 
     private <T> List<T> getNodes(Class<T> nodeType, String source) {
         return ParserTstUtil.getOrderedNodes(nodeType, source);

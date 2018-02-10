@@ -46,7 +46,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
      * anonymous classes of the currently visited class.
      */
     private final Stack<MutableInt> anonymousCounters = new Stack<>();
-    
+
     private final Stack<MutableInt> lambdaCounters = new Stack<>();
 
     private final Stack<JavaQualifiedName> innermostEnclosingTypeName = new Stack<>();
@@ -176,7 +176,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
 
         updateClassContext(node.getImage(), localIndex);
 
-        node.setQualifiedName(contextClassQName());
+        ((AbstractAnyTypeDeclaration) node).setQualifiedName(contextClassQName());
 
         super.visit(node, data);
 
@@ -339,7 +339,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
         while (parent != null
                 && !(parent instanceof ASTFieldDeclaration)
                 && !(parent instanceof ASTInitializer)
-                && !(parent instanceof MethodLike)) {
+                && !(parent instanceof MethodLikeNode)) {
             parent = parent.jjtGetParent();
         }
 
@@ -378,15 +378,17 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
         sb.append(methodName);
         sb.append('(');
 
-        int last = params.getParameterCount() - 1;
-        for (int i = 0; i < last; i++) {
-            // append type image of param. TODO use FQCN instead!
-            sb.append(params.jjtGetChild(i).getFirstDescendantOfType(ASTType.class).getTypeImage());
-            sb.append(", ");
-        }
+        boolean first = true;
+        for (ASTFormalParameter param : params) {
+            if (!first) {
+                sb.append(", ");
+            }
+            first = false;
 
-        if (last > -1) {
-            sb.append(params.jjtGetChild(last).getFirstDescendantOfType(ASTType.class).getTypeImage());
+            sb.append(param.getTypeNode().getTypeImage());
+            if (param.isVarargs()) {
+                sb.append("...");
+            }
         }
 
         sb.append(')');

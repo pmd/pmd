@@ -36,7 +36,6 @@ public final class JavaQualifiedName implements QualifiedName {
     static final int NOTLOCAL_PLACEHOLDER = -1;
     // since we prepend each time, these lists are in the reversed order (innermost elem first).
     // we use ImmutableList.reverse() to get them in their usual, user-friendly order
-    // TODO packages is not shared! if we used a dedicated visitor, we could make this happen
     private final ImmutableList<String> packages; // unnamed package == Nil
     private final ImmutableList<String> classes;
     /**
