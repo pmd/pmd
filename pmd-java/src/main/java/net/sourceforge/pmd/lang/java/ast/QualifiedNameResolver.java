@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ast.JavaQualifiedName.NOTLOCAL_PLACEHOLDER;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -160,7 +162,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
 
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
-        int localIndex = JavaQualifiedName.NOTLOCAL_PLACEHOLDER;
+        int localIndex = NOTLOCAL_PLACEHOLDER;
         if (node instanceof ASTClassOrInterfaceDeclaration
                 && ((ASTClassOrInterfaceDeclaration) node).isLocal()) {
 
@@ -177,6 +179,43 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
         rollbackClassContext();
 
         return data;
+    }
+
+
+    @Override
+    public Object visit(ASTAllocationExpression node, Object data) {
+        if (!node.isAnonymousClass()) {
+            return super.visit(node, data);
+        }
+
+        updateContextForAnonymousClass();
+        node.setQualifiedName(contextClassQName());
+
+        super.visit(node, data);
+        rollbackClassContext();
+
+        return data;
+    }
+
+
+    @Override
+    public Object visit(ASTEnumConstant node, Object data) {
+        if (!node.isAnonymousClass()) {
+            return super.visit(node, data);
+        }
+
+        updateContextForAnonymousClass();
+        node.setQualifiedName(contextClassQName());
+
+        super.visit(node, data);
+        rollbackClassContext();
+
+        return data;
+    }
+
+
+    private void updateContextForAnonymousClass() {
+        updateClassContext("" + anonymousCounters.peek().incrementAndGet(), NOTLOCAL_PLACEHOLDER);
     }
 
 

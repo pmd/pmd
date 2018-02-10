@@ -5,7 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTAllocationExpression extends AbstractJavaTypeNode {
+public class ASTAllocationExpression extends AbstractJavaTypeNode implements JavaQualifiableNode {
+
+    private JavaQualifiedName qualifiedName;
+
     public ASTAllocationExpression(int id) {
         super(id);
     }
@@ -21,6 +24,12 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode {
         return visitor.visit(this, data);
     }
 
+    /**
+     * Returns true if this expression defines a body,
+     * which is compiled to an anonymous class. If this
+     * method returns false, then {@link #getQualifiedName()}
+     * returns {@code null}.
+     */
     public boolean isAnonymousClass() {
         if (jjtGetNumChildren() > 1) {
             // check the last child
@@ -28,4 +37,20 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode {
         }
         return false;
     }
+
+    /**
+     * Gets the qualified name of the anonymous class
+     * declared by this node, or null if this node
+     * doesn't declare any.
+     *
+     * @see #isAnonymousClass()
+     */
+    public JavaQualifiedName getQualifiedName() {
+        return qualifiedName;
+    }
+
+    void setQualifiedName(JavaQualifiedName qname) {
+        this.qualifiedName = qname;
+    }
+
 }

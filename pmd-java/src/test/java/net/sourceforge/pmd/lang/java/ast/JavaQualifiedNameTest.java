@@ -404,10 +404,10 @@ public class JavaQualifiedNameTest {
 
         List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
 
-        assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), QualifiedNameFactory.ofAnonymousClass(classes.get(0)));
-        assertFalse(QualifiedNameFactory.ofAnonymousClass(classes.get(0)).isLocalClass());
-        assertTrue(QualifiedNameFactory.ofAnonymousClass(classes.get(0)).isAnonymousClass());
-        assertTrue("1".equals(QualifiedNameFactory.ofAnonymousClass(classes.get(0)).getClassSimpleName()));
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), classes.get(0).getQualifiedName());
+        assertFalse(classes.get(0).getQualifiedName().isLocalClass());
+        assertTrue(classes.get(0).getQualifiedName().isAnonymousClass());
+        assertTrue("1".equals(classes.get(0).getQualifiedName().getClassSimpleName()));
     }
 
 
@@ -426,8 +426,8 @@ public class JavaQualifiedNameTest {
         List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
 
         assertNotEquals(classes.get(0), classes.get(1));
-        assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), QualifiedNameFactory.ofAnonymousClass(classes.get(0)));
-        assertEquals(QualifiedNameFactory.ofString("Bzaz$2"), QualifiedNameFactory.ofAnonymousClass(classes.get(1)));
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), classes.get(0).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$2"), classes.get(1).getQualifiedName());
     }
 
 
@@ -447,8 +447,8 @@ public class JavaQualifiedNameTest {
         List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
 
         assertNotEquals(classes.get(0), classes.get(1));
-        assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), QualifiedNameFactory.ofAnonymousClass(classes.get(0)));
-        assertEquals(QualifiedNameFactory.ofString("Bzaz$1$1"), QualifiedNameFactory.ofAnonymousClass(classes.get(1)));
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), classes.get(0).getQualifiedName());
+        assertEquals(QualifiedNameFactory.ofString("Bzaz$1$1"), classes.get(1).getQualifiedName());
     }
 
 
