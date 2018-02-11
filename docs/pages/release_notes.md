@@ -12,10 +12,12 @@ This is a bug fixing release.
 
 ### Table Of Contents
 
-* [New and noteworthy](#new-and-noteworthy)
-* [Fixed Issues](#fixed-issues)
-* [API Changes](#api-changes)
-* [External Contributions](#external-contributions)
+*   [New and noteworthy](#new-and-noteworthy)
+*   [Fixed Issues](#fixed-issues)
+    *   [Ecmascript (JavaScript)](#ecmascript-javascript)
+    *   [Modified Rules](#modified-rules)
+*   [API Changes](#api-changes)
+*   [External Contributions](#external-contributions)
 
 ### New and noteworthy
 
@@ -28,6 +30,11 @@ Detailed changes for changed in Rhino can be found:
 * [For 1.7.7.1](https://github.com/mozilla/rhino/blob/master/RELEASE-NOTES.md#rhino-1771)
 
 Both are bugfixing releases.
+
+#### Modified Rules
+
+*   The rule "CommentContentRule" (java-documentation) previously had the property `wordsAreRegex`. But this 
+    property never had been implemented and is removed now.
 
 ### Fixed Issues
 

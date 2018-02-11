@@ -68,7 +68,6 @@ public final class JavaQualifiedName implements QualifiedName {
     private static final int PACKAGES_GROUP_INDEX = 1;
     private static final int CLASSES_GROUP_INDEX = 3;
     private static final int OPERATION_GROUP_INDEX = 7;
-    private static final int PARAMETERS_GROUP_INDEX = 9;
 
 
     /** Local index value for when the class is not local. */

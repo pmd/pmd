@@ -24,8 +24,6 @@ public abstract class MemberNode<S extends MemberNode<S, T>, T extends Member>
 
     private List<MemberNode> users;
 
-    private Object decoration;
-
     public MemberNode(ClassNode classNode, String name, String desc) {
         this.classNode = classNode;
         this.name = name;

@@ -28,15 +28,10 @@ public class ApexParser {
     protected final ApexParserOptions parserOptions;
 
     private Map<Integer, String> suppressMap;
-    private String suppressMarker = "NOPMD";
 
     public ApexParser(ApexParserOptions parserOptions) {
         ApexJorjeLogging.disableLogging();
         this.parserOptions = parserOptions;
-
-        if (parserOptions.getSuppressMarker() != null) {
-            suppressMarker = parserOptions.getSuppressMarker();
-        }
     }
 
     public Compilation parseApex(final String sourceCode) throws ParseException {

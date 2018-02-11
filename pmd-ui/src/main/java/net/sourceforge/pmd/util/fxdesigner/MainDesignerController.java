@@ -66,6 +66,7 @@ import javafx.util.Duration;
  * @see XPathPanelController
  * @since 6.0.0
  */
+@SuppressWarnings("PMD.UnusedPrivateField")
 public class MainDesignerController implements Initializable, SettingsOwner {
 
     /**
