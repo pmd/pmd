@@ -5,6 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
@@ -124,6 +127,21 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
     }
 
 
+    public List<ASTAnnotation> getDeclaredAnnotations() {
+
+        List<ASTAnnotation> result = new ArrayList<>();
+        ASTClassOrInterfaceBodyDeclaration decl = ((ASTClassOrInterfaceBodyDeclaration) jjtGetParent());
+        for (int i = 0; i < decl.jjtGetNumChildren() - 1; i++) {
+            if (!(decl.jjtGetChild(i) instanceof ASTAnnotation)) {
+                break;
+            }
+            result.add((ASTAnnotation) decl.jjtGetChild(i));
+        }
+
+        return result;
+    }
+
+
     @Override
     public JavaQualifiedName getQualifiedName() {
         if (qualifiedName == null) {
@@ -140,5 +158,11 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
         }
 
         return signature;
+    }
+
+
+    @Override
+    public ASTFormalParameters getFormalParameters() {
+        return getFirstChildOfType(ASTMethodDeclarator.class).getFirstChildOfType(ASTFormalParameters.class);
     }
 }

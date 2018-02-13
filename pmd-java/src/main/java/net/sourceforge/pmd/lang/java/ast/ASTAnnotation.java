@@ -27,6 +27,12 @@ public class ASTAnnotation extends AbstractJavaNode {
         super(p, id);
     }
 
+
+    public String getAnnotationName() {
+        return jjtGetChild(0).jjtGetChild(0).getImage();
+    }
+
+
     public boolean suppresses(Rule rule) {
         final String ruleAnno = "\"PMD." + rule.getName() + "\"";
 
