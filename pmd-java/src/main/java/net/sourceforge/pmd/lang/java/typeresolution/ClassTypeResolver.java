@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
@@ -1370,11 +1371,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     private String getClassName(ASTCompilationUnit node) {
-        ASTClassOrInterfaceDeclaration classDecl = node.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
+        ASTAnyTypeDeclaration classDecl = node.getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
         if (classDecl == null) {
-            // Happens if this compilation unit only contains an enum
+            // package-info.java?
             return null;
         }
+
+
         if (node.declarationsAreInDefaultPackage()) {
             return classDecl.getImage();
         }
