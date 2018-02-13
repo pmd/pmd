@@ -185,9 +185,9 @@
     <test-code>
         <description>Consider methods with array parameters</description>
         <expected-problems>0</expected-problems> <!-- FIXME should be 1 - caused by #910 -->
-        <expected-messages>
-            <message>The method 'arrayParams(String, int[], StringBuilder[])' is missing an @Override annotation.</message>
-        </expected-messages>
+        <!--<expected-messages>-->
+            <!--<message>The method 'arrayParams(String, int[], StringBuilder[])' is missing an @Override annotation.</message>-->
+        <!--</expected-messages>-->
         <code><![CDATA[
             package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 

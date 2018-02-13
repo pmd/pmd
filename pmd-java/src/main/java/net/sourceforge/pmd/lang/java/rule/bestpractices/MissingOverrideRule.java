@@ -96,7 +96,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
         }
 
         for (ASTAnnotation annot : node.getDeclaredAnnotations()) {
-            if ("Override".equals(annot.getAnnotationName()) || "java.lang.Override".equals(annot.getAnnotationName())) {
+            if (Override.class.equals(annot.getType())) {
                 // we assume the compiler has already checked it, so it's correct
                 return super.visit(node, data);
             }
