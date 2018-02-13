@@ -138,9 +138,9 @@ public abstract class RuleTst {
 
                 report = processUsingStringReader(test, rule);
                 res = report.size();
-            } catch (Throwable t) {
-                t.printStackTrace();
-                throw new RuntimeException('"' + test.getDescription() + "\" failed", t);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException('"' + test.getDescription() + "\" failed", e);
             }
             if (test.getNumberOfProblemsExpected() != res) {
                 printReport(test, report);
