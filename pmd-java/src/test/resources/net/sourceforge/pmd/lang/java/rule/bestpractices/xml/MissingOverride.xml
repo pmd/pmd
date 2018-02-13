@@ -231,7 +231,7 @@
     </test-code>
 
     <test-code>
-        <description>Consider generic methods</description>
+        <description>Consider method inherited from generic supertype</description>
         <expected-problems>0</expected-problems> <!-- FIXME should be 1 - very hard-->
         <!--<expected-linenumbers>11</expected-linenumbers>-->
         <code><![CDATA[
@@ -250,6 +250,26 @@
                 }
             }
             ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Consider generic method</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code>
+            <![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
+
+            public class SubclassWithGenericMethod extends AbstractClass {
+
+                // missing
+                public <P, Q> Q generic(P t, Q r) { // generic param names are different from superclass
+                    return super.generic(t, r);
+                }
+            }
+            ]]>
+        </code>
     </test-code>
 
 </test-data>
