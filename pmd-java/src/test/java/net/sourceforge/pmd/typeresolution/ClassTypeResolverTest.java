@@ -204,7 +204,7 @@ public class ClassTypeResolverTest {
                      outerClassDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
         // Method parameter as inner class
         ASTFormalParameter formalParameter = typeDeclaration.getFirstDescendantOfType(ASTFormalParameter.class);
-        assertEquals(theInnerClass, formalParameter.getTypeNode().getType());
+        assertEquals(theInnerClass, formalParameter.getType());
     }
 
     /**

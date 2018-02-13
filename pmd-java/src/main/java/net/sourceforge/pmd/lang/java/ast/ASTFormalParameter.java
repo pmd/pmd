@@ -7,7 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.Rule;
 
-public class ASTFormalParameter extends AbstractJavaAccessNode implements Dimensionable, CanSuppressWarnings {
+
+public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Dimensionable, CanSuppressWarnings {
 
     private boolean isVarargs;
 

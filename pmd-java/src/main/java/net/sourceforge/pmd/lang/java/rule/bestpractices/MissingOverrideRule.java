@@ -106,7 +106,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
         Class<?>[] paramTypes = new Class[params.getParameterCount()];
         int i = 0;
         for (ASTFormalParameter p : params) {
-            Class<?> pType = p.getTypeNode().getType();
+            Class<?> pType = p.getType();
             if (pType == null) {
                 // fail, couldn't resolve one parameter
                 return super.visit(node, data);
