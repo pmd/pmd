@@ -80,7 +80,6 @@
         ]]></code>
     </test-code>
 
-
     <test-code>
         <description>Consider anonymous classes</description>
         <expected-problems>1</expected-problems>
@@ -184,10 +183,10 @@
 
     <test-code>
         <description>Consider methods with array parameters</description>
-        <expected-problems>0</expected-problems> <!-- FIXME should be 1 - caused by #910 -->
-        <!--<expected-messages>-->
-            <!--<message>The method 'arrayParams(String, int[], StringBuilder[])' is missing an @Override annotation.</message>-->
-        <!--</expected-messages>-->
+        <expected-problems>1</expected-problems>
+        <expected-messages>&lt;!&ndash;FIXME should be arrayParams(String, int[], StringBuilder[]) - caused by #910&ndash;&gt;
+            <message>The method 'arrayParams(String, int, StringBuilder)' is missing an @Override annotation.</message>
+        </expected-messages>
         <code><![CDATA[
             package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
@@ -217,6 +216,12 @@
             public enum EnumWithAnonClass {
                 Foo {
                     // missing
+                    public String toString() {
+                        return super.toString();
+                    }
+
+
+                    // missing
                     public String getSomething() {
                         return null;
                     }
@@ -232,8 +237,10 @@
 
     <test-code>
         <description>Consider method inherited from generic supertype</description>
-        <expected-problems>0</expected-problems> <!-- FIXME should be 1 - very hard-->
-        <!--<expected-linenumbers>11</expected-linenumbers>-->
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'supports(ASTAnyTypeDeclaration)' is missing an @Override annotation.</message>
+        </expected-messages>
         <code><![CDATA[
             package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
@@ -245,6 +252,7 @@
                 Foo;
 
                 // missing
+                // this is determined from the bridge method, but only works if there are no overloads
                 public boolean supports(ASTAnyTypeDeclaration node) {
                     return false;
                 }
@@ -256,7 +264,9 @@
     <test-code>
         <description>Consider generic method</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The method 'generic(P, Q)' is missing an @Override annotation.</message>
+        </expected-messages>
         <code>
             <![CDATA[
             package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
