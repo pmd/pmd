@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
 
@@ -200,7 +201,9 @@ public class MissingOverrideRule extends AbstractJavaRule {
                 overridden = b;
             }
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            // may happen in the body of an enum constant,
+            // because the method lookup used is the one of
+            // the parent class.
             super.visit(node, data);
         }
 
@@ -240,6 +243,50 @@ public class MissingOverrideRule extends AbstractJavaRule {
         private MethodLookup(Map<String, Map<Integer, List<Method>>> map, Set<Method> overridden) {
             this.map = map;
             this.overridden = overridden;
+
+            for (Map<Integer, List<Method>> overloadSet : map.values()) {
+                for (Entry<Integer, List<Method>> sameParamCountMethods : overloadSet.entrySet()) {
+                    // bridges have the same name and param count as the bridged method
+                    resolveBridges(sameParamCountMethods.getValue(), sameParamCountMethods.getKey());
+                }
+            }
+        }
+
+
+        private void resolveBridges(List<Method> overloads, int paramCount) {
+            if (overloads.size() <= 1) {
+                return;
+            }
+
+            // partition the overloads
+            List<Method> bridges = new ArrayList<>();
+            List<Method> notBridges = new ArrayList<>();
+
+            for (Method m : overloads) {
+                if (m.isBridge()) {
+                    bridges.add(m);
+                } else {
+                    notBridges.add(m);
+                }
+            }
+
+            if (bridges.isEmpty()) {
+                return;
+            }
+
+            // each bridge necessarily calls another non-bridge method, which is overridden
+
+            if (notBridges.size() == bridges.size()) {
+                // no non-overridden overloads, bridges is one-to-one to notBridges
+                // In particular, this is necessarily the case if the method has
+                // 0 parameters, in which case the bridge is made for return type covariance
+
+                overloads.removeAll(bridges);
+                overridden.addAll(notBridges);
+                return;
+            }
+
+            // TODO handle overloads defined in subclass (not inherited), where there is no bridge method
         }
 
 

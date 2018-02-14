@@ -184,7 +184,7 @@
     <test-code>
         <description>Consider methods with array parameters</description>
         <expected-problems>1</expected-problems>
-        <expected-messages>&lt;!&ndash;FIXME should be arrayParams(String, int[], StringBuilder[]) - caused by #910&ndash;&gt;
+        <expected-messages><!--FIXME should be arrayParams(String, int[], StringBuilder[]) - caused by #910 -->
             <message>The method 'arrayParams(String, int, StringBuilder)' is missing an @Override annotation.</message>
         </expected-messages>
         <code><![CDATA[
@@ -260,6 +260,39 @@
             ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>Consider method inherited from generic supertype with overloads</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The method 'visit(ASTCompilationUnit, String)' is missing an @Override annotation.</message>
+            <message>The method 'visit(ASTPackageDeclaration, String)' is missing an @Override annotation.</message>
+        </expected-messages>
+        <code><![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
+
+            import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+            import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
+
+
+            public class GenericWithOverloadsImpl implements GenericInterfaceWithOverloads<String, Integer> {
+
+                // a bridge method is generated for each of these
+
+
+                // missing
+                public String visit(ASTCompilationUnit node, String data) {
+                    return null;
+                }
+
+
+                // missing
+                public String visit(ASTPackageDeclaration node, String data) {
+                    return null;
+                }
+            }
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>Consider generic method</description>
