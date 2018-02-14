@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -196,6 +197,9 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
             if (b == null) { // try harder
                 Class<?>[] paramTypes = getParameterTypes(node);
+                if (paramTypes == null) {
+                    return super.visit(node, data);
+                }
                 overridden = currentLookup.peek().isOverridden(node.getName(), paramTypes);
             } else {
                 overridden = b;
@@ -225,6 +229,10 @@ public class MissingOverrideRule extends AbstractJavaRule {
             if (pType == null) {
                 // fail, couldn't resolve one parameter
                 return null;
+            }
+
+            if (p.isVarargs()) {
+                pType = Array.newInstance(pType, 1).getClass();
             }
 
             paramTypes[i++] = pType;
@@ -303,14 +311,6 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
             if (methods.size() == 1) { // only one method with this name and parameter count, we can conclude
                 return overridden.contains(methods.get(0));
-            } else if (methods.size() == 2) { // maybe one of them is a bridge method
-                // TODO scale that up
-                int bridgeIndex = methods.get(0).isBridge() ? 0 : methods.get(1).isBridge() ? 1 : -1;
-                if (bridgeIndex >= 0) {
-                    return overridden.contains(methods.get(bridgeIndex));
-                } else {
-                    return null;
-                }
             } else { // several overloads with same name and count, cannot be determined without comparing parameters
                 return null;
             }

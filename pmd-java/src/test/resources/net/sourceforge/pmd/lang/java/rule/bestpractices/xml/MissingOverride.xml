@@ -315,4 +315,33 @@
         </code>
     </test-code>
 
+
+    <test-code>
+        <description>Consider varargs parameter</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'setProperty(MultiValuePropertyDescriptor, V...)' is missing an @Override annotation.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            package net.sourceforge.pmd.lang.rule;
+
+            import net.sourceforge.pmd.Rule;
+            import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
+
+            /**
+             * Base class for Rule implementations which delegate to another Rule instance.
+             */
+            public abstract class AbstractDelegateRule implements Rule {
+
+                // missing
+                public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values) {
+                    rule.setProperty(propertyDescriptor, values);
+                }
+
+            }
+            ]]>
+        </code>
+    </test-code>
+
 </test-data>
