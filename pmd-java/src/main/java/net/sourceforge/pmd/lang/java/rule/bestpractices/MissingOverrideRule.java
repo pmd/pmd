@@ -174,6 +174,13 @@ public class MissingOverrideRule extends AbstractJavaRule {
             overriddenMethodsRec(iface, false, candidates, result, alreadyExplored);
         }
 
+        if (exploredType.isInterface() && exploredType.getInterfaces().length == 0) {
+            // implicit object member declarations
+            if (!alreadyExplored.contains(Object.class)) {
+                overriddenMethodsRec(Object.class, false, candidates, result, alreadyExplored);
+            }
+        }
+
         return result;
     }
 

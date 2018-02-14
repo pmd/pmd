@@ -344,4 +344,24 @@
         </code>
     </test-code>
 
+    <test-code>
+        <description>Consider Object methods inherited into interfaces</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'toString()' is missing an @Override annotation.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
+
+            public interface InterfaceWithNoSuperClass {
+
+                // missing
+                public String toString();
+            }
+
+            ]]>
+        </code>
+    </test-code>
+
 </test-data>
