@@ -136,7 +136,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
      * @param exploredType The type to explore
      */
     private Set<Method> overriddenMethods(Class<?> exploredType) {
-        return overriddenMethodsRec(exploredType, true, new HashSet<Method>(Arrays.asList(exploredType.getDeclaredMethods())), new HashSet<Method>(), new HashSet<Class<?>>());
+        return overriddenMethodsRec(exploredType, true, new HashSet<>(Arrays.asList(exploredType.getDeclaredMethods())), new HashSet<Method>(), new HashSet<Class<?>>());
     }
 
 
@@ -198,54 +198,20 @@ public class MissingOverrideRule extends AbstractJavaRule {
             }
         }
 
-        boolean overridden = false;
         try {
-            Boolean b = currentLookup.peek().isOverridden(node.getName(), node.getFormalParameters().getParameterCount());
+            boolean overridden = currentLookup.peek().isOverridden(node.getName(), node.getFormalParameters());
+            if (overridden) {
 
-            if (b == null) { // try harder
-                Class<?>[] paramTypes = getParameterTypes(node);
-                if (paramTypes == null) {
-                    return super.visit(node, data);
-                }
-                overridden = currentLookup.peek().isOverridden(node.getName(), paramTypes);
-            } else {
-                overridden = b;
+                addViolation(data, node, new Object[]{node.getQualifiedName().getOperation()});
             }
         } catch (NoSuchMethodException e) {
             // may happen in the body of an enum constant,
             // because the method lookup used is the one of
             // the parent class.
-            super.visit(node, data);
         }
-
-        if (overridden) {
-            // this method lacks an @Override annotation
-            addViolation(data, node, new Object[]{node.getQualifiedName().getOperation()});
-        }
-
         return super.visit(node, data);
     }
 
-
-    private Class<?>[] getParameterTypes(ASTMethodDeclaration node) {
-        ASTFormalParameters params = node.getFormalParameters();
-        Class<?>[] paramTypes = new Class[params.getParameterCount()];
-        int i = 0;
-        for (ASTFormalParameter p : params) {
-            Class<?> pType = p.getType();
-            if (pType == null) {
-                // fail, couldn't resolve one parameter
-                return null;
-            }
-
-            if (p.isVarargs()) {
-                pType = Array.newInstance(pType, 1).getClass();
-            }
-
-            paramTypes[i++] = pType;
-        }
-        return paramTypes;
-    }
 
 
     private static class MethodLookup {
@@ -292,36 +258,38 @@ public class MissingOverrideRule extends AbstractJavaRule {
             // each bridge necessarily calls another non-bridge method, which is overridden
 
             if (notBridges.size() == bridges.size()) {
-                // no non-overridden overloads, bridges is one-to-one to notBridges
-                // In particular, this is necessarily the case if the method has
-                // 0 parameters, in which case the bridge is made for return type covariance
+                // This is a good heuristic, though not perfect.
+
+                // Most of the time, bridges is one-to-one to notBridges, and we can safely assume that
+                // all non-bridge methods are overridden, since they need a bridge method
+
+                // This chokes on overloads which don't override a previous definition, in which case there's no
+                // generated bridge for that overload. Short of statically analysing type parameters, or reading
+                // the bytecode to find the delegation call, we have no way to find out which of the overloads is
+                // overridden. An example of that is in RuleViolationComparator: there's one bridge
+                // compare(Object, Object) for the overload compare(RV, RV), but we can't know because there's
+                // another overload, compare(String, String) which is equally eligible
+
+                // It's also possible that several bridges are generated for the same method, when the method
+                // was already redefined several times with a different bound. An example of that is in
+                // PropertyDescriptorConversionWrapper.SingleValue.Packaged and similar subclasses: each of the
+                // levels of the hierarchy redefine the original method with a tighter bound on the type parameter.
+                // Three bridges are generated for populate() on concrete builder classes.
+
+                // The two situations could happen together, and if they balance out, that gives a false positive
+                // with the current test (size are equal). If they don't balance out, then we don't report anything,
+                // which is why this test seems the safest.
+
+                // Depending on the real-world frequency of those two situations happening together, we may rather
+                // use notBridges.size() <= bridges.size(), to remove FNs caused by additional bridges.
 
                 overloads.removeAll(bridges);
                 overridden.addAll(notBridges);
-                return;
-            }
-
-            // TODO handle overloads defined in subclass (not inherited), where there is no bridge method
-        }
-
-
-        /**
-         * Tries to determine if the method with the given name and parameter count is overridden
-         *
-         * @return True or false if the method succeeds, null if there was an ambiguity.
-         * In that case, try harder using {@link #isOverridden(String, Class[])}.
-         *
-         * @throws NoSuchMethodException if no method is registered with this name and paramcount, which is a bug
-         */
-        public Boolean isOverridden(String name, int paramCount) throws NoSuchMethodException {
-            List<Method> methods = getMethods(name, paramCount);
-
-            if (methods.size() == 1) { // only one method with this name and parameter count, we can conclude
-                return overridden.contains(methods.get(0));
-            } else { // several overloads with same name and count, cannot be determined without comparing parameters
-                return null;
             }
         }
+
+
+
 
 
         private List<Method> getMethods(String name, int paramCount) throws NoSuchMethodException {
@@ -337,23 +305,53 @@ public class MissingOverrideRule extends AbstractJavaRule {
             return methods;
         }
 
-
         /**
-         * Tries to determine if the method with the given name and parameter types is overridden
+         * Tries to determine if the method with the given name and parameter count is overridden
          *
-         * @return True or false. Returns false if there was an ambiguity.
+         * @return True or false
          *
          * @throws NoSuchMethodException if no method is registered with this name and paramcount, which is a bug
          */
-        public boolean isOverridden(String name, Class<?>[] paramTypes) throws NoSuchMethodException {
-            for (Method m : getMethods(name, paramTypes.length)) {
-                if (Arrays.equals(m.getParameterTypes(), paramTypes)) {
-                    // we found our overload
-                    return overridden.contains(m);
+        Boolean isOverridden(String name, ASTFormalParameters params) throws NoSuchMethodException {
+            List<Method> methods = getMethods(name, params.getParameterCount());
+
+            if (methods.size() == 1) { // only one method with this name and parameter count, we can conclude
+                return overridden.contains(methods.get(0));
+            } else { // several overloads with same name and count, cannot be determined without comparing parameters
+                Class<?>[] paramTypes = getParameterTypes(params);
+                if (paramTypes == null) {
+                    return false;
                 }
+                for (Method m : getMethods(name, paramTypes.length)) {
+                    if (Arrays.equals(m.getParameterTypes(), paramTypes)) {
+                        // we found our overload
+                        return overridden.contains(m);
+                    }
+                }
+                return false;
             }
-            return false;
         }
+
+
+        private static Class<?>[] getParameterTypes(ASTFormalParameters params) {
+            Class<?>[] paramTypes = new Class[params.getParameterCount()];
+            int i = 0;
+            for (ASTFormalParameter p : params) {
+                Class<?> pType = p.getType();
+                if (pType == null) {
+                    // fail, couldn't resolve one parameter
+                    return null;
+                }
+
+                if (p.isVarargs()) {
+                    pType = Array.newInstance(pType, 1).getClass();
+                }
+
+                paramTypes[i++] = pType;
+            }
+            return paramTypes;
+        }
+
 
     }
 

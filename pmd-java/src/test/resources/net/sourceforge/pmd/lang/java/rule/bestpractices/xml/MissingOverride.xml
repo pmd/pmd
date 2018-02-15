@@ -364,4 +364,75 @@
         </code>
     </test-code>
 
+    <test-code>
+        <description>Avoid false positives when in ambiguous situation</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            package net.sourceforge.pmd;
+
+            import java.util.Comparator;
+
+            // this test case uses the production class file
+            public final class RuleViolationComparator implements Comparator<RuleViolation> {
+
+                // there's one bridge: compare(Object, Object)
+
+                // missing
+                public int compare(final RuleViolation r1, final RuleViolation r2) {
+                    return 1;
+                }
+
+                // not overridden
+                private static int compare(final String s1, final String s2) {
+                    return 1;
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Avoid false positives when in ambiguous situation</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
+
+            import net.sourceforge.pmd.lang.ast.Node;
+            import net.sourceforge.pmd.lang.java.ast.ASTType;
+            import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
+            import net.sourceforge.pmd.lang.java.ast.JavaNode;
+
+            public abstract class HierarchyWithSeveralBridges<T extends Node> {
+
+                abstract void foo(T node);
+
+                public static abstract class SubclassOne<T extends JavaNode> extends HierarchyWithSeveralBridges<T> {
+
+                    // this one could be resolved
+                    // @Override
+                    // abstract void foo(T node);
+
+                }
+
+                public static abstract class SubclassTwo<T extends AbstractJavaTypeNode> extends SubclassOne<T> {
+
+                }
+
+
+                public static class Concrete extends SubclassTwo<ASTType> {
+
+                    // bridges: foo(AbstractJavaTypeNode), foo(JavaNode), foo(Node)
+
+                    // missing
+                    void foo(ASTType node) {
+
+                    }
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
 </test-data>
