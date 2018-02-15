@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -347,10 +346,6 @@ public class MissingOverrideRule extends AbstractJavaRule {
                 if (pType == null) {
                     // fail, couldn't resolve one parameter
                     return null;
-                }
-
-                if (p.isVarargs()) {
-                    pType = Array.newInstance(pType, 1).getClass();
                 }
 
                 paramTypes[i++] = pType;

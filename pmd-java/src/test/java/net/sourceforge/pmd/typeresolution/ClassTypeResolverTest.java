@@ -609,14 +609,6 @@ public class ClassTypeResolverTest {
         assertEquals("All expressions not tested", index, expressions.size());
     }
 
-    private static <T> List<T> convertList(List<Node> nodes, Class<T> target) {
-        List<T> converted = new ArrayList<>();
-        for (Node n : nodes) {
-            converted.add(target.cast(n));
-        }
-        return converted;
-    }
-
     @Test
     public void testBinaryNumericOperators() throws JaxenException {
         ASTCompilationUnit acu = parseAndTypeResolveForClass15(Operators.class);
@@ -1863,5 +1855,14 @@ public class ClassTypeResolverTest {
         languageVersionHandler.getSymbolFacade().start(acu);
         languageVersionHandler.getTypeResolutionFacade(ClassTypeResolverTest.class.getClassLoader()).start(acu);
         return acu;
+    }
+
+
+    private static <T> List<T> convertList(List<Node> nodes, Class<T> target) {
+        List<T> converted = new ArrayList<>();
+        for (Node n : nodes) {
+            converted.add(target.cast(n));
+        }
+        return converted;
     }
 }

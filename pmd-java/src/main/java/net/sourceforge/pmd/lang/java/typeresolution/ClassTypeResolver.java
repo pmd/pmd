@@ -1165,6 +1165,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTFormalParameter node, Object data) {
         super.visit(node, data);
         node.setTypeDefinition(node.getTypeNode().getTypeDefinition());
+        if (node.isVarargs() && node.getType() != null) {
+            node.setType(Array.newInstance(node.getType(), 0).getClass());
+        }
+
         return data;
     }
 
