@@ -23,7 +23,6 @@ public abstract class AbstractMethodLikeNode extends AbstractJavaAccessNode impl
     }
 
 
-    // TODO refine that type to be more specific when we split JavaQualifiedName into a hierarchy
     @Override
     public JavaOperationQualifiedName getQualifiedName() {
         return qualifiedName;
