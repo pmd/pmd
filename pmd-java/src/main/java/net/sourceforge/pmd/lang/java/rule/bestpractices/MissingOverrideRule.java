@@ -149,20 +149,25 @@ public class MissingOverrideRule extends AbstractJavaRule {
         alreadyExplored.add(exploredType);
 
         if (!skip) {
-            Method toRemove = null;
+            Set<Method> toRemove = new HashSet<>();
             for (Method dm : exploredType.getDeclaredMethods()) {
                 for (Method cand : candidates) {
                     if (cand.getName().equals(dm.getName()) && Arrays.equals(cand.getParameterTypes(), dm.getParameterTypes())) {
                         // cand is overriden
                         result.add(cand);
-                        toRemove = cand;
-                        break;
+                        toRemove.add(cand);
+                        // Several methods are eligible, because of return type covariance
+                        // We could do away with adding only the first one to the result,
+                        // but then the other would stay in the candidates and we'd explore
+                        // the rest of the tree unnecessarily
                     }
                 }
-                if (toRemove != null) {
-                    candidates.remove(toRemove); // no need to look for it elsewhere
-                }
+                candidates.removeAll(toRemove); // no need to look for it elsewhere
             }
+        }
+
+        if (candidates.isEmpty()) {
+            return result;
         }
 
         Class<?> superClass = exploredType.getSuperclass();
@@ -228,13 +233,13 @@ public class MissingOverrideRule extends AbstractJavaRule {
             for (Map<Integer, List<Method>> overloadSet : map.values()) {
                 for (Entry<Integer, List<Method>> sameParamCountMethods : overloadSet.entrySet()) {
                     // bridges have the same name and param count as the bridged method
-                    resolveBridges(sameParamCountMethods.getValue(), sameParamCountMethods.getKey());
+                    resolveBridges(sameParamCountMethods.getValue());
                 }
             }
         }
 
 
-        private void resolveBridges(List<Method> overloads, int paramCount) {
+        private void resolveBridges(List<Method> overloads) {
             if (overloads.size() <= 1) {
                 return;
             }
@@ -283,9 +288,10 @@ public class MissingOverrideRule extends AbstractJavaRule {
                 // Depending on the real-world frequency of those two situations happening together, we may rather
                 // use notBridges.size() <= bridges.size(), to remove FNs caused by additional bridges.
 
-                overloads.removeAll(bridges);
                 overridden.addAll(notBridges);
             }
+
+            overloads.removeAll(bridges); // better prune the candidate overloads anyway
         }
 
 
@@ -312,7 +318,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
          *
          * @throws NoSuchMethodException if no method is registered with this name and paramcount, which is a bug
          */
-        Boolean isOverridden(String name, ASTFormalParameters params) throws NoSuchMethodException {
+        boolean isOverridden(String name, ASTFormalParameters params) throws NoSuchMethodException {
             List<Method> methods = getMethods(name, params.getParameterCount());
 
             if (methods.size() == 1) { // only one method with this name and parameter count, we can conclude
@@ -322,7 +328,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
                 if (paramTypes == null) {
                     return false;
                 }
-                for (Method m : getMethods(name, paramTypes.length)) {
+                for (Method m : methods) {
                     if (Arrays.equals(m.getParameterTypes(), paramTypes)) {
                         // we found our overload
                         return overridden.contains(m);
