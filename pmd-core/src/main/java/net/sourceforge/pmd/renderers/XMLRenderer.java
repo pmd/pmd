@@ -43,9 +43,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         return "xml";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void start() throws IOException {
         String encoding = getProperty(ENCODING);
@@ -64,9 +61,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         writer.write(buf.toString());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
@@ -119,9 +113,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void end() throws IOException {
         Writer writer = getWriter();

@@ -32,24 +32,15 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
         super(name, description);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void start() throws IOException {
         report = new Report();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void startFileAnalysis(DataSource dataSource) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void renderFileReport(Report report) throws IOException {
         this.report.merge(report);

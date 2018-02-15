@@ -58,9 +58,6 @@ public class XSLTRenderer extends XMLRenderer {
         return "xsl";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void start() throws IOException {
         String xsltFilenameProperty = getProperty(XSLT_FILENAME);
@@ -113,9 +110,6 @@ public class XSLTRenderer extends XMLRenderer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void end() throws IOException {
         // First we finish the XML report

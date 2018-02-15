@@ -132,9 +132,6 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
         return csvWriter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void start() throws IOException {
         csvWriter().writeTitles(getWriter());
@@ -145,9 +142,6 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
         return "csv";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         csvWriter().writeData(getWriter(), violations);

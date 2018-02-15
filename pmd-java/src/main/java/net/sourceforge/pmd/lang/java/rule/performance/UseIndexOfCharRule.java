@@ -35,9 +35,6 @@ public class UseIndexOfCharRule extends AbstractPoorMethodCall {
         return METHOD_NAMES;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected boolean isViolationArgument(Node arg) {
         return ((ASTLiteral) arg).isSingleCharacterStringLiteral();
     }

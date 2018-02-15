@@ -45,23 +45,14 @@ public abstract class AbstractIncrementingRenderer extends AbstractRenderer {
         super(name, description);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void start() throws IOException {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void startFileAnalysis(DataSource dataSource) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void renderFileReport(Report report) throws IOException {
         Iterator<RuleViolation> violations = report.iterator();
@@ -92,9 +83,6 @@ public abstract class AbstractIncrementingRenderer extends AbstractRenderer {
      */
     public abstract void renderFileViolations(Iterator<RuleViolation> violations) throws IOException;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void end() throws IOException {
     }

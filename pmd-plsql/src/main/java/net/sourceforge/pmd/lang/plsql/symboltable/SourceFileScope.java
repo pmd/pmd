@@ -27,7 +27,7 @@ public class SourceFileScope extends AbstractScope {
     }
 
     /**
-     * {@inheritDoc}
+     *
      * 
      * @throws IllegalArgumentException
      *             if declaration is not a {@link ClassNameDeclaration}

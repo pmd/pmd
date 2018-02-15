@@ -75,9 +75,6 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         glomConfigurationErrors(writer, configErrors);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void start() throws IOException {
         Writer writer = getWriter();
@@ -88,18 +85,12 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
                 + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
         glomRuleViolations(writer, violations);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void end() throws IOException {
         Writer writer = getWriter();

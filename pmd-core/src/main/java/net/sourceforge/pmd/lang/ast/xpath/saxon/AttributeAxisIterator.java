@@ -27,17 +27,11 @@ public class AttributeAxisIterator extends Navigator.BaseEnumeration {
         this.iterator = new net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator(startNodeInfo.node);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public SequenceIterator getAnother() {
         return new AttributeAxisIterator(startNodeInfo);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void advance() {
         if (this.iterator.hasNext()) {

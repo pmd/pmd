@@ -28,16 +28,10 @@ public class TextRenderer extends AbstractIncrementingRenderer {
         return "txt";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void start() throws IOException {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
@@ -53,9 +47,6 @@ public class TextRenderer extends AbstractIncrementingRenderer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void end() throws IOException {
         Writer writer = getWriter();

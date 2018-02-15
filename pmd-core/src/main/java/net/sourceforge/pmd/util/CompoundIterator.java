@@ -29,17 +29,11 @@ public class CompoundIterator<T> implements Iterator<T> {
         this.index = 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasNext() {
         return getNextIterator() != null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public T next() {
         Iterator<T> iterator = getNextIterator();
@@ -50,9 +44,6 @@ public class CompoundIterator<T> implements Iterator<T> {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void remove() {
         Iterator<T> iterator = getNextIterator();

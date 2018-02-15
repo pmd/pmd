@@ -81,9 +81,6 @@ public class ClasspathClassLoader extends URLClassLoader {
         return file.getAbsoluteFile().toURI().toURL();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return new StringBuilder(getClass().getSimpleName())

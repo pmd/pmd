@@ -31,9 +31,6 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
         return "html";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void end() throws IOException {
         String outputDir = getProperty(OUTPUT_DIR);
