@@ -1439,15 +1439,15 @@ void ExtendsList():
    boolean extendsMoreThanOne = false;
 }
 {
-   "extends" (Annotation() {checkForBadTypeAnnotations();})* ClassOrInterfaceType()
-   ( "," (Annotation() {checkForBadTypeAnnotations();})* ClassOrInterfaceType() { extendsMoreThanOne = true; } )*
+   "extends" (TypeAnnotation())* ClassOrInterfaceType()
+   ( "," (TypeAnnotation())* ClassOrInterfaceType() { extendsMoreThanOne = true; } )*
 }
 
 void ImplementsList():
 {}
 {
-   "implements" (Annotation() {checkForBadTypeAnnotations();})* ClassOrInterfaceType()
-   ( "," (Annotation() {checkForBadTypeAnnotations();})* ClassOrInterfaceType() )*
+   "implements" (TypeAnnotation())* ClassOrInterfaceType()
+   ( "," (TypeAnnotation())* ClassOrInterfaceType() )*
 }
 
 void EnumDeclaration(int modifiers):
@@ -1501,14 +1501,14 @@ void TypeParameters():
 void TypeParameter():
 {Token t;}
 {
-   (Annotation() {checkForBadTypeAnnotations();})*
+   (TypeAnnotation())*
    t=<IDENTIFIER> {jjtThis.setImage(t.image);} [ TypeBound() ]
 }
 
 void TypeBound():
 {}
 {
-   "extends" (Annotation() {checkForBadTypeAnnotations();})* ClassOrInterfaceType() ( "&" (Annotation() {checkForBadTypeAnnotations();})* ClassOrInterfaceType() )*
+   "extends" (TypeAnnotation())* ClassOrInterfaceType() ( "&" (TypeAnnotation())* ClassOrInterfaceType() )*
 }
 
 void ClassOrInterfaceBody():
@@ -1585,7 +1585,7 @@ void MethodDeclaration(int modifiers) :
 }
 {
   [ TypeParameters() ]
-  (Annotation() {checkForBadTypeAnnotations();})* ResultType() MethodDeclarator() [ "throws" NameList() ]
+  (TypeAnnotation())* ResultType() MethodDeclarator() [ "throws" NameList() ]
   ( Block() | ";" )
 }
 
@@ -1661,9 +1661,9 @@ void Type():
 void ReferenceType():
 {}
 {
-   PrimitiveType() (Annotation() {checkForBadTypeAnnotations();})* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
+   PrimitiveType() (TypeAnnotation())* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
   |
-   ( ClassOrInterfaceType()) (Annotation() {checkForBadTypeAnnotations();})* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
+   ( ClassOrInterfaceType()) (TypeAnnotation())* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
 }
 
 void ClassOrInterfaceType():
@@ -1690,13 +1690,13 @@ void TypeArguments():
 void TypeArgument():
 {}
 {
-   (Annotation() {checkForBadTypeAnnotations();})* (ReferenceType() | "?" [ WildcardBounds() ])
+   (TypeAnnotation())* (ReferenceType() | "?" [ WildcardBounds() ])
 }
 
 void WildcardBounds():
 {}
 {
-   ("extends" | "super") (Annotation() {checkForBadTypeAnnotations();})* ReferenceType()
+   ("extends" | "super") (TypeAnnotation())* ReferenceType()
 }
 
 void PrimitiveType() :
@@ -1742,8 +1742,8 @@ void Name() :
 void NameList() :
 {}
 {
-  (Annotation() {checkForBadTypeAnnotations();})* Name()
-  ( "," (Annotation() {checkForBadTypeAnnotations();})* Name()
+  (TypeAnnotation())* Name()
+  ( "," (TypeAnnotation())* Name()
   )*
 }
 
@@ -1916,8 +1916,8 @@ void CastExpression() :
 {
   LOOKAHEAD(
     "(" (Annotation())* PrimitiveType() ")"
-  ) "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ")" UnaryExpression()
-| "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ( "&" {checkForBadIntersectionTypesInCasts(); jjtThis.setIntersectionTypes(true);} ReferenceType() )* ")" UnaryExpressionNotPlusMinus()
+  ) "(" (TypeAnnotation())* Type() ")" UnaryExpression()
+| "(" (TypeAnnotation())* Type() ( "&" {checkForBadIntersectionTypesInCasts(); jjtThis.setIntersectionTypes(true);} ReferenceType() )* ")" UnaryExpressionNotPlusMinus()
 }
 
 void PrimaryExpression() :
@@ -2014,7 +2014,7 @@ void ArgumentList() :
 void AllocationExpression():
 {}
 {
-  "new" (Annotation() {checkForBadTypeAnnotations();})*
+  "new" (TypeAnnotation())*
   (LOOKAHEAD(2)
     PrimitiveType() ArrayDimsAndInits()
   |
@@ -2042,7 +2042,7 @@ void ArrayDimsAndInits() :
 {
 
   LOOKAHEAD(2)
-  ( LOOKAHEAD(2) (Annotation() {checkForBadTypeAnnotations();})* "[" Expression() "]" {jjtThis.bumpArrayDepth();})+ ( LOOKAHEAD(2) "[" "]" {jjtThis.bumpArrayDepth();} )*
+  ( LOOKAHEAD(2) (TypeAnnotation())* "[" Expression() "]" {jjtThis.bumpArrayDepth();})+ ( LOOKAHEAD(2) "[" "]" {jjtThis.bumpArrayDepth();} )*
 |
   ( "[" "]" {jjtThis.bumpArrayDepth();})+ ArrayInitializer()
 }
@@ -2380,6 +2380,15 @@ void  MemberValueArrayInitializer():
 {}
 {
   "{" (MemberValue() ( LOOKAHEAD(2) "," MemberValue() )* [ "," ])? "}"
+}
+
+/*
+ * We use that ghost production to factorise the check for JDK >= 1.8.
+ */
+void TypeAnnotation() #void:
+{}
+{
+    Annotation() {checkForBadTypeAnnotations();}
 }
 
 
