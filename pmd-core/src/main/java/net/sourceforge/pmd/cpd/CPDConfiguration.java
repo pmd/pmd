@@ -239,7 +239,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             if (method != null) {
                 method.invoke(renderer, encoding);
             }
-        } catch (IntrospectionException e) {
+        } catch (IntrospectionException ignored) {
             // ignored - maybe this renderer doesn't have a encoding property
         }
     }

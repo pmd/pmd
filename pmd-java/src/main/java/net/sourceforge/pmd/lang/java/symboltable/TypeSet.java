@@ -128,7 +128,8 @@ public class TypeSet {
                 try {
                     return pmdClassLoader.loadClass(className);
                 } catch (final ClassNotFoundException e) {
-                    // Ignored, can never actually happen
+                    // Ignored, can never actually happen, since we loaded the class at least once before...
+                    throw new RuntimeException(e); // in case it happens anyway
                 }
             }
 
@@ -144,8 +145,8 @@ public class TypeSet {
                             // Update the mapping
                             classNames.put(name, actualClassName);
                             return c;
-                        } catch (final ClassNotFoundException e) {
-                            // Ignored
+                        } catch (final ClassNotFoundException ignored) {
+                            // Ignored, we'll try again with a different class name, assuming inner classes
                         }
                     }
 
@@ -366,8 +367,8 @@ public class TypeSet {
                 if (pmdClassLoader.couldResolve(fqClassName)) {
                     try {
                         return pmdClassLoader.loadClass(fqClassName);
-                    } catch (ClassNotFoundException e) {
-                        // ignored
+                    } catch (ClassNotFoundException ignored) {
+                        // ignored, we'll throw a custom exception later
                     }
                 }
             }
@@ -530,7 +531,7 @@ public class TypeSet {
             if (resolver.couldResolve(name)) {
                 try {
                     return resolver.resolve(name);
-                } catch (ClassNotFoundException cnfe) {
+                } catch (ClassNotFoundException ignored) {
                     // ignored, maybe another resolver will find the class
                 } catch (LinkageError le) {
                     // we found the class, but there is a problem with it (see https://github.com/pmd/pmd/issues/328)

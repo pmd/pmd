@@ -367,7 +367,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                         + "  [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]");
                 return !nodes.isEmpty();
             } catch (JaxenException e) {
-                // no boolean literals or other condition
+                throw new RuntimeException(e);
             }
         }
         return true;

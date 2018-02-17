@@ -4,11 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 
 public final class TypeHelper {
+    private static final Logger LOG = Logger.getLogger(TypeHelper.class.getName());
 
     private TypeHelper() {
         // utility class
@@ -31,6 +35,7 @@ public final class TypeHelper {
                 }
             } catch (final ClassNotFoundException e) {
                 // The requested type is not on the auxclasspath
+                LOG.log(Level.WARNING, "Incomplete auxclasspath: The class " + clazzName + " was not found");
             }
         }
         

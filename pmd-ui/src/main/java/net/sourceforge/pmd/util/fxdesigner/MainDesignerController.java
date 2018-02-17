@@ -217,6 +217,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
             SettingsPersistenceUtil.persistProperties(this, DesignerUtil.getSettingsFile());
         } catch (IOException ioe) {
             // nevermind
+            ioe.printStackTrace();
         }
 
         sourceEditorController.shutdown(); // shutdown syntax highlighting

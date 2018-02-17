@@ -912,6 +912,7 @@ public class Designer implements ClipboardOwner {
                         undoManager.undo();
                     }
                 } catch (CannotUndoException e) {
+                    throw new RuntimeException(e);
                 }
             }
         });
@@ -925,6 +926,7 @@ public class Designer implements ClipboardOwner {
                         undoManager.redo();
                     }
                 } catch (CannotRedoException e) {
+                    throw new RuntimeException(e);
                 }
             }
         });

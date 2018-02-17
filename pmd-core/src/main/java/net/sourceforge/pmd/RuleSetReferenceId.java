@@ -228,7 +228,7 @@ public class RuleSetReferenceId {
         if (name != null) {
             try (InputStream resource = new ResourceLoader().loadClassPathResourceAsStreamOrThrow(name)) {
                 resourceFound = true;
-            } catch (Exception e) {
+            } catch (Exception ignored) {
                 // ignored
             }
         }

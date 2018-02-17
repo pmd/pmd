@@ -346,8 +346,9 @@ public class RuleReference extends AbstractDelegateRule {
         RuleReference rule = null;
         try {
             rule = getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException ignored) {
             // Can't happen... we already have an instance
+            throw new RuntimeException(ignored); // in case it happens anyway, then something is really wrong...
         }
         rule.setRule(this.getRule().deepCopy());
         

@@ -426,6 +426,7 @@ public class RuleSetFactory {
             dbf.setExpandEntityReferences(false);
         } catch (final ParserConfigurationException e) {
             // an unsupported feature... too bad, but won't fail execution due to this
+            LOG.log(Level.WARNING, "Ignored unsupported XML Parser Feature for parsing rulesets", e);
         }
         
         return dbf.newDocumentBuilder();

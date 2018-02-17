@@ -128,6 +128,7 @@ public class TestDescriptor {
                 inRegressionMode = Boolean.parseBoolean(property);
             }
         } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid system property 'pmd.regress'", e);
         }
 
         return inRegressionMode;
