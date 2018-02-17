@@ -28,7 +28,7 @@ import net.sourceforge.pmd.util.CompoundIterator;
  * @author Clément Fournier
  * @since 6.1.0
  */
-public class XmlNodeWrapper extends AbstractDomNodeProxy implements XmlNode, org.w3c.dom.Node {
+public class XmlNodeWrapper extends AbstractDomNodeProxy implements XmlNode {
 
     private final XmlParser parser;
     private Object userData;

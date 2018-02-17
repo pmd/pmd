@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.ast.AbstractNode;
  * @author Clément Fournier
  * @since 6.1.0
  */
-abstract class AbstractDomNodeProxy extends AbstractNode implements org.w3c.dom.Node {
+public abstract class AbstractDomNodeProxy extends AbstractNode implements org.w3c.dom.Node {
 
     protected final org.w3c.dom.Node node;
 
