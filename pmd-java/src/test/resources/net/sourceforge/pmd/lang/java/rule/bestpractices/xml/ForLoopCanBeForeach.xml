@@ -287,4 +287,48 @@
         }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Iterating on multiple iterators should whitelist the loop, refs #784</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class Foo {
+          void loop() {
+            Iterable<E> it;
+            Iterable<E> other;
+            for (Iterator<E> iterator = it.iterator(), otherIterator = other.iterator(); iterator.hasNext();) {
+	            E item = iterator.next();
+	            E otherItem = otherIterator.next();
+	            doStuff();
+            }
+          }
+        }
+        ]]></code>
+    </test-code>  <test-code>
+        <description>NPE when for init is there, but not a local var declaration, refs #884</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+        public class ExceptionAsFlowControlRule extends AbstractJavaRule {
+
+            @Override
+            public Object visit(ASTThrowStatement node, Object data) {
+                ASTTryStatement parent = node.getFirstParentOfType(ASTTryStatement.class);
+                if (parent == null) {
+                    return data;
+                }
+                for (parent = parent.getFirstParentOfType(ASTTryStatement.class); parent != null; parent = parent
+                        .getFirstParentOfType(ASTTryStatement.class)) {
+
+                    List<ASTCatchStatement> list = parent.findDescendantsOfType(ASTCatchStatement.class);
+                    // ...
+                }
+                return data;
+            }
+
+        }
+        ]]></code>
+    </test-code>
+
+
 </test-data>

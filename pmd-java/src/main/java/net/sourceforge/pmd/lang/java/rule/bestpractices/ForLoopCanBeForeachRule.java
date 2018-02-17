@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
@@ -38,7 +39,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     public ForLoopCanBeForeachRule() {
         addRuleChainVisit(ASTForStatement.class);
     }
-    
+
     @Override
     public Object visit(ASTForStatement node, Object data) {
 
@@ -102,10 +103,20 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     }
 
 
-    /* Finds the declaration of the index variable and its occurrences */
+    /* Finds the declaration of the index variable and its occurrences, null to abort */
     private Entry<VariableNameDeclaration, List<NameOccurrence>> getIndexVarDeclaration(ASTForInit init, ASTForUpdate update) {
         if (init == null) {
             return guessIndexVarFromUpdate(update);
+        }
+
+        ASTLocalVariableDeclaration decl = init.getFirstChildOfType(ASTLocalVariableDeclaration.class);
+        if (decl == null) {
+            return null;
+        }
+
+        int numDeclaredVars = decl.findChildrenOfType(ASTVariableDeclarator.class).size();
+        if (numDeclaredVars > 1) {
+            return null; // will abort in the calling function
         }
 
         Map<VariableNameDeclaration, List<NameOccurrence>> decls = init.getScope().getDeclarations(VariableNameDeclaration.class);
@@ -249,7 +260,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             // TODO : This can happen if we are calling a local / statically imported method that returns the iterable - currently unhandled
             return null;
         }
-        
+
         String name = nameNode.getImage();
         int dotIndex = name.indexOf('.');
 
