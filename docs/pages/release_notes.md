@@ -28,9 +28,10 @@ This is a minor release.
 *   doc
     *   [#791](https://github.com/pmd/pmd/issues/791): \[doc] Documentation site reorganisation
 *   java
-    *   [#784](https://github.com/pmd/pmd/issues/784): \[java] ForLoopCanBeForeach false-positive
     *   [#825](https://github.com/pmd/pmd/issues/825): \[java] Excessive\*Length ignores too much
     *   [#888](https://github.com/pmd/pmd/issues/888): \[java] ParseException occurs with valid '<>' in Java 1.8 mode
+*   java-bestpractices
+    *   [#784](https://github.com/pmd/pmd/issues/784): \[java] ForLoopCanBeForeach false-positive
 *   java-documentation
     *   [#877](https://github.com/pmd/pmd/issues/877): \[java] CommentRequired valid rule configuration causes PMD error
 *   java-errorprone
