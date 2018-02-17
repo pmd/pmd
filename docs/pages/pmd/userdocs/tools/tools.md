@@ -49,6 +49,13 @@ author: David Dixon-Peugh <dpeugh@users.sourceforge.net>
         <td><a href="https://github.com/pmd/pmd-eclipse-plugin">github: pmd/pmd-eclipse</a></td>
         <td>Philippe Herlin</td>
     </tr>
+    
+    <tr>
+    <td>qa-Eclipse</td>
+    <td></td>
+    <td><a href="https://github.com/ChristianWulf/qa-eclipse-plugin">qa-Eclipse</a></td>
+    <td>Christian Wulf</td>       
+    </tr>
 
     <tr>
         <td>eclipse-pmd</td>
