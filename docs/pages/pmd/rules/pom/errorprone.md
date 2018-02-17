@@ -19,7 +19,7 @@ the entry is just ignored, which might have the effect, that the wrong version o
 The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear, rar, par.
 
 ```
-//dependencyManagement/dependency/type/text[not(contains('pom, jar, maven-plugin, ejb, war, ear, rar, par',@Image))]
+//dependencyManagement/dependency/type/text[not(@Image = $validTypes)]
 ```
 
 **Example(s):**
@@ -40,6 +40,12 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
   </dependencyManagement>
 </project>
 ```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|validTypes|[pom, jar, maven-plugin, ejb, war, ear, rar, par]|Set of valid types.|
 
 **Use this rule by referencing it:**
 ``` xml
