@@ -4,12 +4,16 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.util.StringUtil;
 
-public class SimpleRenderer implements Renderer {
+public class SimpleRenderer implements Renderer, CPDRenderer {
 
     private String separator;
     private boolean trimLeadingWhitespace;
@@ -29,19 +33,18 @@ public class SimpleRenderer implements Renderer {
         separator = theSeparator;
     }
 
-    private void renderOn(StringBuilder rpt, Match match) {
+    private void renderOn(Writer writer, Match match) throws IOException {
 
-        rpt.append("Found a ").append(match.getLineCount()).append(" line (").append(match.getTokenCount())
+        writer.append("Found a ").append(String.valueOf(match.getLineCount())).append(" line (").append(String.valueOf(match.getTokenCount()))
                 .append(" tokens) duplication in the following files: ").append(PMD.EOL);
 
         for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
             Mark mark = occurrences.next();
-            rpt.append("Starting at line ").append(mark.getBeginLine()).append(" of ").append(mark.getFilename())
+            writer.append("Starting at line ").append(String.valueOf(mark.getBeginLine())).append(" of ").append(mark.getFilename())
                     .append(PMD.EOL);
         }
 
-        rpt.append(PMD.EOL); // add a line to separate the source from the desc
-        // above
+        writer.append(PMD.EOL); // add a line to separate the source from the desc above
 
         String source = match.getSourceCodeSlice();
 
@@ -52,30 +55,37 @@ public class SimpleRenderer implements Renderer {
                 lines = StringUtil.trimStartOn(lines, trimDepth);
             }
             for (int i = 0; i < lines.length; i++) {
-                rpt.append(lines[i]).append(PMD.EOL);
+                writer.append(lines[i]).append(PMD.EOL);
             }
             return;
         }
 
-        rpt.append(source).append(PMD.EOL);
+        writer.append(source).append(PMD.EOL);
     }
 
     @Override
     public String render(Iterator<Match> matches) {
+        StringWriter writer = new StringWriter(300);
+        try {
+            render(matches, writer);
+        } catch (IOException ignored) {
+            // Not really possible with a StringWriter
+        }
+        return writer.toString();
+    }
 
-        StringBuilder rpt = new StringBuilder(300);
-
+    @Override
+    public void render(Iterator<Match> matches, Writer writer) throws IOException {
         if (matches.hasNext()) {
-            renderOn(rpt, matches.next());
+            renderOn(writer, matches.next());
         }
 
         Match match;
         while (matches.hasNext()) {
             match = matches.next();
-            rpt.append(separator).append(PMD.EOL);
-            renderOn(rpt, match);
-
+            writer.append(separator).append(PMD.EOL);
+            renderOn(writer, match);
         }
-        return rpt.toString();
+        writer.flush();
     }
 }
