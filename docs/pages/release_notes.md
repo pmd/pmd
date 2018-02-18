@@ -23,6 +23,7 @@ This is a minor release.
 
 *   all
     *   [#569](https://github.com/pmd/pmd/issues/569): \[core] XPath support requires specific toString implementations
+    *   [#795](https://github.com/pmd/pmd/issues/795): \[cpd] java.lang.OutOfMemoryError
     *   [#848](https://github.com/pmd/pmd/issues/848): \[doc] Test failures when building pmd-doc under Windows
     *   [#872](https://github.com/pmd/pmd/issues/872): \[core] NullPointerException at FileDataSource.glomName()
 *   doc
@@ -56,6 +57,15 @@ with existing implementors.
 The `toString` method of a Node is not changed for the time being, and still produces
 the name of the XPath node. That behaviour may however change in future major releases,
 e.g. to produce a more useful message for debugging.
+
+#### Changes to CPD renderers
+
+The interface `net.sourceforge.pmd.cpd.Renderer` has been deprecated. A new interface `net.sourceforge.pmd.cpd.renderer.CPDRenderer`
+has been introduced to replace it. The main difference is that the new interface is meant to render directly to a `java.io.Writer`
+rather than to a String. This allows to greatly reduce the memory footprint of CPD, as on large projects, with many duplications,
+it was causing `OutOfMemoryError`s (see [#795](https://github.com/pmd/pmd/issues/795)).
+
+`net.sourceforge.pmd.cpd.FileReporter` has also been deprecated as part of this change, as it's no longer needed.
 
 ### External Contributions
 
