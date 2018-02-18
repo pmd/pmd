@@ -37,12 +37,14 @@ public class CSVRenderer implements Renderer {
 
     @Override
     public String render(Iterator<Match> matches) {
-        StringBuilder csv = new StringBuilder(1000);
+        StringBuilder csv = new StringBuilder();
 
         if (!lineCountPerFile) {
             csv.append("lines").append(separator);
         }
-        csv.append("tokens").append(separator).append("occurrences").append(PMD.EOL);
+        csv.append("tokens").append(separator).append("occurrences");
+        System.out.println(csv);
+        csv.setLength(0);
 
         while (matches.hasNext()) {
             Match match = matches.next();
@@ -63,8 +65,10 @@ public class CSVRenderer implements Renderer {
                     csv.append(separator);
                 }
             }
-            csv.append(PMD.EOL);
+
+            System.out.println(csv);
+            csv.setLength(0);
         }
-        return csv.toString();
+        return "";
     }
 }

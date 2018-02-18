@@ -81,10 +81,15 @@ public class CPDCommandLineInterface {
         CPD cpd = new CPD(arguments);
 
         try {
+            // add all files path to cpd
             addSourceFilesToCPD(cpd, arguments);
 
+            System.err.println("Srart CPD.go()!");
             cpd.go();
+            System.err.println("End CPD.go()");
             System.out.println(arguments.getRenderer().render(cpd.getMatches()));
+            System.err.println("Output End!");
+
             if (cpd.getMatches().hasNext()) {
                 if (arguments.isFailOnViolation()) {
                     setStatusCodeOrExit(DUPLICATE_CODE_FOUND);
