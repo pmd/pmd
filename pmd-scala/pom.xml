@@ -41,9 +41,7 @@
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
                 <configuration>
-                    <jvmArgs>
-                        <jvmArg>-Dscalac.patmat.analysisBudget=off</jvmArg>
-                    </jvmArgs>
+                    <addScalacArgs>-deprecation</addScalacArgs>
                     <scalaVersion>${scala.version}</scalaVersion>
                 </configuration>
                 <executions>
@@ -55,6 +53,12 @@
                             <goal>compile</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>doc-jar</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
 
@@ -64,6 +68,21 @@
                 <configuration>
                     <suppressionsLocation>pmd-scala-checkstyle-suppressions.xml</suppressionsLocation>
                 </configuration>
+            </plugin>
+
+            <!-- Disabling the default javadoc plugin - we use scala-maven-plugin instead -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
