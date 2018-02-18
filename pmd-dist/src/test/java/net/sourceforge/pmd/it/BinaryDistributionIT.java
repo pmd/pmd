@@ -21,12 +21,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 
 public class BinaryDistributionIT {
 
     private static File getBinaryDistribution() {
-        return new File(".", "target/pmd-bin-" + PMD.VERSION + ".zip");
+        return new File(".", "target/pmd-bin-" + PMDVersion.VERSION + ".zip");
     }
 
     /**
@@ -57,13 +57,13 @@ public class BinaryDistributionIT {
 
     private Set<String> getExpectedFileNames() {
         Set<String> result = new HashSet<>();
-        String basedir = "pmd-bin-" + PMD.VERSION + "/";
+        String basedir = "pmd-bin-" + PMDVersion.VERSION + "/";
         result.add(basedir);
         result.add(basedir + "bin/run.sh");
         result.add(basedir + "bin/pmd.bat");
         result.add(basedir + "bin/cpd.bat");
-        result.add(basedir + "lib/pmd-core-" + PMD.VERSION + ".jar");
-        result.add(basedir + "lib/pmd-java-" + PMD.VERSION + ".jar");
+        result.add(basedir + "lib/pmd-core-" + PMDVersion.VERSION + ".jar");
+        result.add(basedir + "lib/pmd-java-" + PMDVersion.VERSION + ".jar");
         return result;
     }
 
