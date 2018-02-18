@@ -12,8 +12,6 @@ import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.contrib.java.lang.system.StandardOutputStreamLog;
 import org.junit.rules.TestRule;
 
-import net.sourceforge.pmd.PMD;
-
 public class CPDCommandLineInterfaceTest {
     @Rule
     public final TestRule restoreSystemProperties = new RestoreSystemProperties();
