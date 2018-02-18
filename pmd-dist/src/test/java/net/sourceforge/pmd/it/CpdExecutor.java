@@ -10,7 +10,7 @@ import java.util.Arrays;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 
 /**
  * Executes CPD from command line. Deals with the differences, when CPD is run on Windows or on Linux.
@@ -25,7 +25,7 @@ public class CpdExecutor {
     }
 
     private static ExecutionResult runCpdUnix(Path tempDir, String ... arguments) throws Exception {
-        String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMD.VERSION + "/bin/run.sh").toAbsolutePath().toString();
+        String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/run.sh").toAbsolutePath().toString();
         ProcessBuilder pb = new ProcessBuilder(cmd, "cpd");
         pb.command().addAll(Arrays.asList(arguments));
         pb.redirectErrorStream(true);
@@ -37,7 +37,7 @@ public class CpdExecutor {
     }
 
     private static ExecutionResult runCpdWindows(Path tempDir, String ... arguments) throws Exception {
-        String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMD.VERSION + "/bin/cpd.bat").toAbsolutePath().toString();
+        String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/cpd.bat").toAbsolutePath().toString();
         ProcessBuilder pb = new ProcessBuilder(cmd);
         pb.command().addAll(Arrays.asList(arguments));
         pb.redirectErrorStream(true);

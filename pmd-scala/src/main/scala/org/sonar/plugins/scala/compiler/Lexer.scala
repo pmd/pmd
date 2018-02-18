@@ -19,7 +19,7 @@
  */
 package org.sonar.plugins.scala.compiler
 
-import collection.mutable.ListBuffer
+import scala.collection.mutable.Buffer
 
 import org.sonar.plugins.scala.language.{Comment, CommentType}
 import scala.reflect.io.AbstractFile
@@ -34,7 +34,7 @@ import scala.reflect.internal.util.BatchSourceFile
  */
 class Lexer {
 
-  import scala.collection.JavaConversions._
+  import scala.collection.JavaConverters._
   import Compiler._
 
   def getTokens(code: String): java.util.List[Token] = {
@@ -49,7 +49,7 @@ class Lexer {
 
   private def tokenize(unit: CompilationUnit): java.util.List[Token] = {
     val scanner = new syntaxAnalyzer.UnitScanner(unit)
-    val tokens = ListBuffer[Token]()
+    val tokens = Buffer[Token]()
 
     scanner.init()
     while (scanner.token != scala.tools.nsc.ast.parser.Tokens.EOF) {
@@ -60,69 +60,7 @@ class Lexer {
       tokens += Token(scanner.token, linenr, tokenVal)
       scanner.nextToken()
     }
-    tokens
+    tokens.asJava
   }
 
-  def getComments(code: String): java.util.List[Comment] = {
-    val unit = new CompilationUnit(new BatchSourceFile("", code.toCharArray))
-    tokenizeComments(unit)
-  }
-
-  def getCommentsOfFile(path: String): java.util.List[Comment] = {
-    val unit = new CompilationUnit(new BatchSourceFile(AbstractFile.getFile(path)))
-    tokenizeComments(unit)
-  }
-
-  private def tokenizeComments(unit: CompilationUnit): java.util.List[Comment] = {
-    val comments = ListBuffer[Comment]()
-    val scanner = new syntaxAnalyzer.UnitScanner(unit) {
-
-      private var lastDocCommentRange: Option[Range] = None
-
-      private var foundToken = false
-
-      override def nextToken() {
-        super.nextToken()
-        foundToken = token != 0
-      }
-
-      override def foundComment(value: String, start: Int, end: Int) = {
-        super.foundComment(value, start, end)
-
-        def isHeaderComment(value: String) = {
-          !foundToken && comments.isEmpty && value.trim().startsWith("/*")
-        }
-
-        lastDocCommentRange match {
-
-          case Some(r: Range) => {
-            if (r.start != start || r.end != end) {
-              comments += new Comment(value, CommentType.NORMAL)
-            }
-          }
-
-          case None => {
-            if (isHeaderComment(value)) {
-              comments += new Comment(value, CommentType.HEADER)
-            } else {
-              comments += new Comment(value, CommentType.NORMAL)
-            }
-          }
-        }
-      }
-
-      override def foundDocComment(value: String, start: Int, end: Int) = {
-        super.foundDocComment(value, start, end)
-        comments += new Comment(value, CommentType.DOC)
-        lastDocCommentRange = Some(Range(start, end))
-      }
-    }
-
-    scanner.init()
-    while (scanner.token != scala.tools.nsc.ast.parser.Tokens.EOF) {
-      scanner.nextToken()
-    }
-
-    comments
-  }
 }

@@ -10,11 +10,11 @@ import java.io.File;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 
 public class SourceDistributionIT {
     private File getSourceDistribution() {
-        return new File(".", "target/pmd-src-" + PMD.VERSION + ".zip");
+        return new File(".", "target/pmd-src-" + PMDVersion.VERSION + ".zip");
     }
 
     @Test
