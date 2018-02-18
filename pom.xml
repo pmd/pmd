@@ -976,21 +976,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         </profile>
 
         <profile>
-            <id>jdk9-disabled</id>
-            <activation>
-                <jdk>!9</jdk>
-            </activation>
-            <modules>
-                <!--
-                    https://github.com/scala/scala-dev/issues/139
-                    https://issues.scala-lang.org/browse/SI-9103
-                    https://sourceforge.net/p/pmd/bugs/1314/
-                 -->
-                <module>pmd-scala</module>
-            </modules>
-        </profile>
-
-        <profile>
             <id>doclint</id>
             <build>
                 <pluginManagement>
@@ -1051,11 +1036,11 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <module>pmd-plsql</module>
         <module>pmd-python</module>
         <module>pmd-ruby</module>
+        <module>pmd-scala</module>
         <module>pmd-swift</module>
         <module>pmd-test</module>
         <module>pmd-visualforce</module>
         <module>pmd-vm</module>
         <module>pmd-xml</module>
-        <module>pmd-scala</module>
     </modules>
 </project>
