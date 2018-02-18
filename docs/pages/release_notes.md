@@ -60,9 +60,9 @@ e.g. to produce a more useful message for debugging.
 #### Changes to CPD renderers
 
 The interface `net.sourceforge.pmd.cpd.Renderer` has been deprecated. A new interface `net.sourceforge.pmd.cpd.renderer.CPDRenderer`
-has been introduced  to replace it. The main difference is that the new interface is meant to render directly to a `java.io.Writer`
+has been introduced to replace it. The main difference is that the new interface is meant to render directly to a `java.io.Writer`
 rather than to a String. This allows to greatly reduce the memory footprint of CPD, as on large projects, with many duplications,
-it was causing `OutOfMemotyError`s (see [#795](https://github.com/pmd/pmd/issues/795)).
+it was causing `OutOfMemoryError`s (see [#795](https://github.com/pmd/pmd/issues/795)).
 
 `net.sourceforge.pmd.cpd.FileReporter` has also been deprecated as part of this change, as it's no longer needed.
 
