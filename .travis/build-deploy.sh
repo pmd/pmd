@@ -25,10 +25,7 @@ function push_docs() {
 VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 echo "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
-# determine java 7 path
-JAVA7_HOME=$(jdk_switcher home openjdk7)
-
-MVN_BUILD_FLAGS="-B -V -Djava7.home=${JAVA7_HOME}"
+MVN_BUILD_FLAGS="-B -V"
 
 if travis_isPullRequest; then
 
