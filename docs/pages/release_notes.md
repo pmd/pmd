@@ -31,6 +31,7 @@ This is a minor release.
 *   java
     *   [#825](https://github.com/pmd/pmd/issues/825): \[java] Excessive\*Length ignores too much
     *   [#888](https://github.com/pmd/pmd/issues/888): \[java] ParseException occurs with valid '<>' in Java 1.8 mode
+    *   [#920](https://github.com/pmd/pmd/pull/920): \[java] Update valid identifiers in grammar
 *   java-bestpractices
     *   [#784](https://github.com/pmd/pmd/issues/784): \[java] ForLoopCanBeForeach false-positive
 *   java-design
