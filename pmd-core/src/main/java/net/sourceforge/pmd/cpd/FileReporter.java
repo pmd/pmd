@@ -14,9 +14,13 @@ import java.io.Writer;
 
 import org.apache.commons.io.IOUtils;
 
+import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+
 /**
  * @author Philippe T'Seyen
+ * @deprecated {@link CPDRenderer} directly renders to a Writer
  */
+@Deprecated
 public class FileReporter {
     private File reportFile;
     private String encoding;
