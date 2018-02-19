@@ -184,7 +184,7 @@
     <test-code>
         <description>Consider methods with array parameters</description>
         <expected-problems>1</expected-problems>
-        <expected-messages><!--FIXME should be arrayParams(String, int[], StringBuilder[]) - caused by #910 -->
+        <expected-messages> <!--FIXME should be arrayParams(String, int[], StringBuilder[]) - caused by #910 -->
             <message>The method 'arrayParams(String, int, StringBuilder)' is missing an @Override annotation.</message>
         </expected-messages>
         <code><![CDATA[
@@ -202,10 +202,10 @@
         ]]></code>
     </test-code>
 
-    <test-code>
+    <test-code regressionTest="false">  <!-- FIXME bug in typeres, anon constants are not resolved -->
         <description>Consider enum anon class</description>
-        <expected-problems>0</expected-problems> <!-- FIXME should be 1 - bug in typeres, anon constants are not resolved -->
-        <!--<expected-linenumbers>10</expected-linenumbers>-->
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
         <code><![CDATA[
             package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 

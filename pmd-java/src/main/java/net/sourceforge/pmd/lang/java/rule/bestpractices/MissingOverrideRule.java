@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
@@ -35,6 +36,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  */
 public class MissingOverrideRule extends AbstractJavaRule {
 
+    private static final Logger LOG = Logger.getLogger(MissingOverrideRule.class.getName());
     private final Stack<MethodLookup> currentLookup = new Stack<>();
 
 
@@ -212,6 +214,8 @@ public class MissingOverrideRule extends AbstractJavaRule {
             // may happen in the body of an enum constant,
             // because the method lookup used is the one of
             // the parent class.
+            LOG.warning("MissingOverride encountered unexpected method " + node.getMethodName());
+            // throw new RuntimeException(e); // uncomment when enum constants are handled by typeres
         }
         return super.visit(node, data);
     }

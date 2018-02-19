@@ -66,7 +66,7 @@ public class ASTAnnotation extends AbstractJavaTypeNode {
         }
 
         // if (SuppressWarnings.class.equals(getType())) { // typeres is not always on
-        if ("SuppressWarnings".equals(getAnnotationName()) || "java.lang.SuppressWarnings".equals(getAnnotationName())) {
+        if (isSuppressWarnings()) {
             for (ASTLiteral element : findDescendantsOfType(ASTLiteral.class)) {
                 if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo("\"PMD." + rule.getName() + "\"")
                         // Check for standard annotations values
@@ -79,6 +79,11 @@ public class ASTAnnotation extends AbstractJavaTypeNode {
         }
 
         return false;
+    }
+
+
+    private boolean isSuppressWarnings() {
+        return "SuppressWarnings".equals(getAnnotationName()) || "java.lang.SuppressWarnings".equals(getAnnotationName());
     }
 
     /**
