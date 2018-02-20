@@ -337,16 +337,24 @@ buf.append("Hello").append(foo).append("World"); // good
 
 **Priority:** Medium (3)
 
-Consecutively calling StringBuffer/StringBuilder.append with String literals
+Consecutively calling StringBuffer/StringBuilder.append(...) with literals should be avoided.
+Since the literals are constants, they can already be combined into a single String literal and this String
+can be appended in a single method call.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.ConsecutiveLiteralAppendsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/ConsecutiveLiteralAppendsRule.java)
 
 **Example(s):**
 
 ``` java
-StringBuffer buf = new StringBuffer();
+StringBuilder buf = new StringBuilder();
 buf.append("Hello").append(" ").append("World");    // poor
 buf.append("Hello World");                          // good
+
+buf.append('h').append('e').append('l').append('l').append('o'); // poor
+buf.append("hello");                                             // good
+
+buf.append(1).append('m');  // poor
+buf.append("1m");           // good
 ```
 
 **This rule has the following properties:**
