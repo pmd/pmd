@@ -86,4 +86,5 @@ it was causing `OutOfMemoryError`s (see [#795](https://github.com/pmd/pmd/issues
 *   [#900](https://github.com/pmd/pmd/pull/900): \[core] Use the isEmpty method instead of comparing the value of size() to 0 - [reudismam](https://github.com/reudismam)
 *   [#914](https://github.com/pmd/pmd/pull/914): \[doc] Apex @SuppressWarnings documentation updated - [Akshat Bahety](https://github.com/akshatbahety)
 *   [#918](https://github.com/pmd/pmd/pull/918): \[doc] Add qa-eclipse as new tool - [Akshat Bahety](https://github.com/akshatbahety)
+*   [#927](https://github.com/pmd/pmd/pull/927): \[java][doc] Fix example of AbstractClassWithoutAnyMethod - [Kazuma Watanabe](https://github.com/wata727)
 
