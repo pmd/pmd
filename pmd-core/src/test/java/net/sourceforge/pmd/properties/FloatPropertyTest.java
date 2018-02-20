@@ -35,16 +35,18 @@ public class FloatPropertyTest extends AbstractNumericPropertyDescriptorTester<F
 
     @Override
     protected Float createBadValue() {
-        return randomBool() ? randomFloat(MIN - SHIFT, MIN) : randomFloat(MAX, MAX + SHIFT);
+        return randomBool() ? randomFloat(MIN - SHIFT, MIN) : randomFloat(MAX + 1, MAX + SHIFT);
     }
 
 
+    @Override
     protected FloatProperty.FloatPBuilder singleBuilder() {
         return FloatProperty.named("test").desc("foo")
                             .range(MIN, MAX).defaultValue(createValue()).uiOrder(1.0f);
     }
 
 
+    @Override
     protected FloatMultiProperty.FloatMultiPBuilder multiBuilder() {
         return FloatMultiProperty.named("test").desc("foo")
                                  .range(MIN, MAX).defaultValues(createValue(), createValue()).uiOrder(1.0f);

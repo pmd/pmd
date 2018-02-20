@@ -120,13 +120,13 @@ public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTest
 
     @Override
     protected Foo createValue() {
-        return randomChoice(Foo.values());
+        return randomChoice(VALUES);
     }
 
 
     @Override
     protected Foo createBadValue() {
-        return null; // not in the set of values
+        return Foo.IGNORED; // not in the set of values
     }
 
 
