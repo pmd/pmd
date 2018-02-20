@@ -27,6 +27,7 @@ This is a minor release.
     *   [#872](https://github.com/pmd/pmd/issues/872): \[core] NullPointerException at FileDataSource.glomName()
 *   doc
     *   [#791](https://github.com/pmd/pmd/issues/791): \[doc] Documentation site reorganisation
+    *   [#909](https://github.com/pmd/pmd/issues/909): \[doc] Please add new PMD Eclipse Plugin to tool integration section
 *   java
     *   [#825](https://github.com/pmd/pmd/issues/825): \[java] Excessive\*Length ignores too much
     *   [#888](https://github.com/pmd/pmd/issues/888): \[java] ParseException occurs with valid '<>' in Java 1.8 mode
@@ -61,4 +62,5 @@ e.g. to produce a more useful message for debugging.
 *   [#875](https://github.com/pmd/pmd/pull/875): \[core] Support shortnames when using filelist - [John Zhang](https://github.com/johnjiabinzhang)
 *   [#886](https://github.com/pmd/pmd/pull/886): \[java] Fix #885 - [Matias Comercio](https://github.com/MatiasComercio)
 *   [#900](https://github.com/pmd/pmd/pull/900): \[core] Use the isEmpty method instead of comparing the value of size() to 0 - [reudismam](https://github.com/reudismam)
+*   [#918](https://github.com/pmd/pmd/pull/918): \[doc] Add qa-eclipse as new tool - [Akshat Bahety](https://github.com/akshatbahety)
 
