@@ -20,7 +20,7 @@ public class BooleanPropertyTest extends AbstractPropertyDescriptorTester<Boolea
 
     @Override
     protected Boolean createValue() {
-        return System.currentTimeMillis() % 1 > 0 ? Boolean.TRUE : Boolean.FALSE;
+        return randomBool();
     }
 
 

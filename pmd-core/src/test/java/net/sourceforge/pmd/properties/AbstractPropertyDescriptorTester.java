@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.junit.Test;
 
@@ -36,6 +37,9 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     public static final String ALPHA_NUMERIC_CHARS = DIGIT_CHARS + ALPHA_CHARS;
     public static final String ALL_CHARS = PUNCTUATION_CHARS + WHITESPACE_CHARS + ALPHA_NUMERIC_CHARS;
     private static final int MULTI_VALUE_COUNT = 10;
+
+    private static final Random RANDOM = new Random();
+
     protected final String typeName;
 
 
@@ -277,79 +281,38 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     }
 
 
-    public static boolean randomBool() {
-        return ((Math.random() * 100) % 2) == 0;
+    static boolean randomBool() {
+        return RANDOM.nextBoolean();
     }
 
 
-    public static int randomInt() {
-
-        int randomVal = (int) (Math.random() * 100 + 1D);
-        return randomVal + (int) (Math.random() * 100000D);
+    static char randomChar(char[] characters) {
+        return characters[randomInt(0, characters.length)];
     }
 
 
-    public static String randomString(int length) {
-
-        final char[] chars = ALPHA_CHARS.toCharArray();
-
-        StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            sb.append(randomChar(chars));
-        }
-        return sb.toString();
+    static int randomInt(int min, int max) {
+        return (int) randomLong(min, max);
     }
 
 
-    public static char randomChar(char[] characters) {
-        return characters[randomInt(0, characters.length - 1)];
-    }
-
-
-    public static int randomInt(int min, int max) {
-        if (max < min) {
-            max = min;
-        }
-        int range = Math.abs(max - min);
-        int x = (int) (range * Math.random());
-        return x + min;
-    }
-
-
-    public static float randomFloat(float min, float max) {
-
+    static float randomFloat(float min, float max) {
         return (float) randomDouble(min, max);
     }
 
 
-    public static double randomDouble(double min, double max) {
-        if (max < min) {
-            max = min;
-        }
-        double range = Math.abs(max - min);
-        double x = range * Math.random();
-        return x + min;
+    static double randomDouble(double min, double max) {
+        return min + RANDOM.nextDouble() * Math.abs(max - min);
     }
 
 
-    public static long randomLong(long min, long max) {
-        if (max < min) {
-            max = min;
-        }
-        long range = Math.abs(max - min);
-        long x = (long) (range * Math.random());
-        return x + min;
+    static long randomLong(long min, long max) {
+        return min + RANDOM.nextInt((int) Math.abs(max - min));
     }
 
 
-    /**
-     * Method randomChoice.
-     *
-     * @param items Object[]
-     * @return Object
-     */
-    public static <T> T randomChoice(T[] items) {
-        return items[randomInt(0, items.length - 1)];
+    static <T> T randomChoice(T[] items) {
+        return items[randomInt(0, items.length)];
     }
 
 
@@ -360,19 +323,19 @@ public abstract class AbstractPropertyDescriptorTester<T> {
      * @param removeChar char
      * @return char[]
      */
-    protected static final char[] filter(char[] chars, char removeChar) {
+    protected static char[] filter(char[] chars, char removeChar) {
         int count = 0;
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] == removeChar) {
+        for (char c : chars) {
+            if (c == removeChar) {
                 count++;
             }
         }
         char[] results = new char[chars.length - count];
 
         int index = 0;
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] != removeChar) {
-                results[index++] = chars[i];
+        for (char c : chars) {
+            if (c != removeChar) {
+                results[index++] = c;
             }
         }
         return results;

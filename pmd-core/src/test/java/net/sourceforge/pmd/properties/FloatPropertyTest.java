@@ -91,11 +91,4 @@ public class FloatPropertyTest extends AbstractNumericPropertyDescriptorTester<F
     }
 
 
-    public static FloatProperty randomProperty(int nameLength, int descLength, boolean multiValue) {
-
-        float defalt = randomFloat(0, 1000f);
-
-        return new FloatProperty(randomString(nameLength), randomString(descLength), defalt - 1000f, defalt + 1000,
-            defalt, 0f);
-    }
 }
