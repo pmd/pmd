@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.rule;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,6 +35,13 @@ public class ImportWrapper {
             }
             for (Field f : type.getFields()) {
                 allDemands.add(f.getName());
+            }
+            // also consider static fields, that are not public
+            int requiredMod = Modifier.STATIC;
+            for (Field f : type.getDeclaredFields()) {
+                if ((f.getModifiers() & requiredMod) == requiredMod) {
+                    allDemands.add(f.getName());
+                }
             }
         }
     }

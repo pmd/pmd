@@ -37,6 +37,7 @@ This is a minor release.
     *   [#920](https://github.com/pmd/pmd/pull/920): \[java] Update valid identifiers in grammar
 *   java-bestpractices
     *   [#784](https://github.com/pmd/pmd/issues/784): \[java] ForLoopCanBeForeach false-positive
+    *   [#925](https://github.com/pmd/pmd/issues/925): \[java] UnusedImports false positive for static import
 *   java-design
     *   [#855](https://github.com/pmd/pmd/issues/855): \[java] ImmutableField false-positive with lambdas
 *   java-documentation
