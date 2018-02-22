@@ -37,9 +37,8 @@ public class ImportWrapper {
                 allDemands.add(f.getName());
             }
             // also consider static fields, that are not public
-            int requiredMod = Modifier.STATIC;
             for (Field f : type.getDeclaredFields()) {
-                if ((f.getModifiers() & requiredMod) == requiredMod) {
+                if (Modifier.isStatic(f.getModifiers())) {
                     allDemands.add(f.getName());
                 }
             }
