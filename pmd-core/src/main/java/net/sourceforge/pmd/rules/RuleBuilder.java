@@ -25,7 +25,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @author Clément Fournier
  * @since 6.0.0
  */
-/* default */ class RuleBuilder {
+public class RuleBuilder {
 
     private List<PropertyDescriptor<?>> definedProperties = new ArrayList<>();
     private String name;
@@ -44,7 +44,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
     private boolean isUsesMultifile;
     private boolean isUsesTyperesolution;
 
-    /* default */ RuleBuilder(String name, String clazz, String language) {
+    public RuleBuilder(String name, String clazz, String language) {
         this.name = name;
         language(language);
         className(clazz);

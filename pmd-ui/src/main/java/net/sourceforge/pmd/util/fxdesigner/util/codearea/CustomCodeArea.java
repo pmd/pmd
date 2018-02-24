@@ -147,7 +147,7 @@ public class CustomCodeArea extends CodeArea {
 
         try { // refresh the highlighting.
             Task<StyleSpans<Collection<String>>> t = computeHighlightingAsync(this.getText());
-            t.setOnSucceeded((e) -> {
+            t.setOnSucceeded(e -> {
                 StyleLayer layer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
                 layer.reset(t.getValue());
                 this.paintCss();

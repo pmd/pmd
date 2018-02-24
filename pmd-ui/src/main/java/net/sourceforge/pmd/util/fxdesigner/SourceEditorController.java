@@ -5,32 +5,31 @@
 package net.sourceforge.pmd.util.fxdesigner;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.richtext.LineNumberFactory;
+import org.reactfx.EventStreams;
+import org.reactfx.value.Val;
+import org.reactfx.value.Var;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
+import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
+import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
-import net.sourceforge.pmd.util.fxdesigner.util.settings.AppSetting;
-import net.sourceforge.pmd.util.fxdesigner.util.settings.SettingsOwner;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -56,7 +55,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private TreeView<Node> astTreeView;
     @FXML
     private CustomCodeArea codeEditorArea;
-    private BooleanProperty isSyntaxHighlightingEnabled = new SimpleBooleanProperty(true);
+
     private ASTManager astManager;
 
 
@@ -69,41 +68,16 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initializeSyntaxHighlighting();
-        initializeASTTreeView();
+        languageVersionProperty().values()
+                                 .filterMap(Objects::nonNull, LanguageVersion::getLanguage)
+                                 .distinct()
+                                 .subscribe(this::updateSyntaxHighlighter);
+
+        EventStreams.valuesOf(astTreeView.getSelectionModel().selectedItemProperty())
+                    .filterMap(Objects::nonNull, TreeItem::getValue)
+                    .subscribe(parent::onNodeItemSelected);
 
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
-    }
-
-
-    private void initializeSyntaxHighlighting() {
-
-        isSyntaxHighlightingEnabled.bind(codeEditorArea.syntaxHighlightingEnabledProperty());
-
-        isSyntaxHighlightingEnabled.addListener(((observable, wasEnabled, isEnabled) -> {
-            if (!wasEnabled && isEnabled) {
-                updateSyntaxHighlighter();
-            } else if (!isEnabled) {
-                codeEditorArea.disableSyntaxHighlighting();
-            }
-        }));
-
-        astManager.languageVersionProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null && !newVal.equals(oldVal)) {
-                updateSyntaxHighlighter();
-            }
-        });
-
-    }
-
-
-    private void initializeASTTreeView() {
-
-        astTreeView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null && newVal.getValue() != null) {
-                parent.onNodeItemSelected(newVal.getValue());
-            }
-        });
     }
 
 
@@ -111,9 +85,15 @@ public class SourceEditorController implements Initializable, SettingsOwner {
      * Refreshes the AST.
      */
     public void refreshAST() {
-        String source = codeEditorArea.getText();
-        Node previous = astManager.compilationUnitProperty().get();
+        String source = getText();
+        Node previous = getCompilationUnit();
         Node current;
+
+        if (StringUtils.isBlank(source)) {
+            astTreeView.setRoot(null);
+            return;
+        }
+
         try {
             current = astManager.updateCompilationUnit(source);
         } catch (ParseAbortedException e) {
@@ -122,11 +102,8 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         }
         if (previous != current) {
             parent.invalidateAst();
+            setUpToDateCompilationUnit(current);
         }
-
-        setUpToDateCompilationUnit(current);
-        codeEditorArea.clearPrimaryStyleLayer();
-
     }
 
 
@@ -142,10 +119,11 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    private void updateSyntaxHighlighter() {
-        SyntaxHighlighter computer = AvailableSyntaxHighlighters.getComputerForLanguage(astManager.getLanguageVersion().getLanguage());
-        if (computer != null) {
-            codeEditorArea.setSyntaxHighlightingEnabled(computer);
+    private void updateSyntaxHighlighter(Language language) {
+        Optional<SyntaxHighlighter> highlighter = AvailableSyntaxHighlighters.getHighlighterForLanguage(language);
+        
+        if (highlighter.isPresent()) {
+            codeEditorArea.setSyntaxHighlightingEnabled(highlighter.get());
         } else {
             codeEditorArea.disableSyntaxHighlighting();
         }
@@ -162,7 +140,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    private void highlightNodes(Collection<Node> nodes, Set<String> cssClasses) {
+    private void highlightNodes(Collection<? extends Node> nodes, Set<String> cssClasses) {
         for (Node node : nodes) {
             if (codeEditorArea.isInRange(node)) {
                 codeEditorArea.styleCss(node, cssClasses);
@@ -176,7 +154,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    public void highlightNodesSecondary(Collection<Node> nodes) {
+    public void highlightNodesSecondary(Collection<? extends Node> nodes) {
         highlightNodes(nodes, Collections.singleton("secondary-highlight"));
     }
 
@@ -202,71 +180,50 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         codeEditorArea.requestFollowCaret();
     }
 
-
-    public boolean isSyntaxHighlightingEnabled() {
-        return isSyntaxHighlightingEnabled.get();
-    }
-
-
-    public ReadOnlyBooleanProperty syntaxHighlightingEnabledProperty() {
-        return isSyntaxHighlightingEnabled;
-    }
-
-
-    public ObservableValue<String> sourceCodeProperty() {
-        return codeEditorArea.textProperty();
-    }
-
-
+    @PersistentProperty
     public LanguageVersion getLanguageVersion() {
         return astManager.getLanguageVersion();
     }
 
 
-    public ObjectProperty<LanguageVersion> languageVersionProperty() {
+    public void setLanguageVersion(LanguageVersion version) {
+        astManager.setLanguageVersion(version);
+    }
+
+
+    public Var<LanguageVersion> languageVersionProperty() {
         return astManager.languageVersionProperty();
     }
 
 
     public Node getCompilationUnit() {
-        return astManager.updateCompilationUnit();
+        return astManager.getCompilationUnit();
     }
 
 
-    public ObjectProperty<Node> compilationUnitProperty() {
+    public Val<Node> compilationUnitProperty() {
         return astManager.compilationUnitProperty();
     }
 
 
-    public void replaceText(String source) {
-        codeEditorArea.replaceText(source);
+    @PersistentProperty
+    public String getText() {
+        return codeEditorArea.getText();
+    }
+
+
+    public void setText(String expression) {
+        codeEditorArea.replaceText(expression);
+    }
+
+
+    public Val<String> textProperty() {
+        return Val.wrap(codeEditorArea.textProperty());
     }
 
 
     public void clearStyleLayers() {
         codeEditorArea.clearStyleLayers();
     }
-
-
-    @Override
-    public List<AppSetting> getSettings() {
-        List<AppSetting> settings = new ArrayList<>();
-        settings.add(new AppSetting("langVersion", () -> getLanguageVersion().getTerseName(),
-            this::restoreLanguageVersion));
-
-        settings.add(new AppSetting("code", () -> codeEditorArea.getText(),
-            e -> codeEditorArea.replaceText(e)));
-
-        return settings;
-    }
-
-
-    private void restoreLanguageVersion(String name) {
-        LanguageVersion version = LanguageRegistry.findLanguageVersionByTerseName(name);
-        if (version != null) {
-            astManager.languageVersionProperty().setValue(version);
-        }
-    }
-
 
 }
