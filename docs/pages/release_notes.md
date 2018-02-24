@@ -19,6 +19,13 @@ This is a bug fixing release.
 
 ### New and noteworthy
 
+#### Designer UI
+
+The Designer now supports configuring properties for XPath based rule development.
+The Designer is still under development and any feedback is welcome.
+
+You can start the designer via `run.sh designer` or `designer.bat`.
+
 ### Fixed Issues
 
 *   apex-errorprone
