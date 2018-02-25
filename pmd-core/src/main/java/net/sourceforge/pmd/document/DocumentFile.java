@@ -14,6 +14,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -152,10 +153,7 @@ public class DocumentFile implements Document, Closeable {
         reader.close();
         writer.close();
 
-        if (!temporaryPath.toFile().renameTo(filePath.toFile())) {
-            throw new IOException("Fixed file could not be renamed. Original path = " + filePath.toAbsolutePath());
-        }
-        temporaryPath.toFile().delete();
+        Files.move(temporaryPath, filePath, StandardCopyOption.REPLACE_EXISTING);
     }
 
     private void writeUntilEOF() throws IOException {
