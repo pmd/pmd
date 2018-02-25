@@ -4,7 +4,7 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## ????? - 6.1.0-SNAPSHOT
+## 25-February-2018 - 6.1.0
 
 The PMD team is pleased to announce PMD 6.1.0.
 
@@ -12,10 +12,13 @@ This is a minor release.
 
 ### Table Of Contents
 
-* [New and noteworthy](#new-and-noteworthy)
-* [Fixed Issues](#fixed-issues)
-* [API Changes](#api-changes)
-* [External Contributions](#external-contributions)
+*   [New and noteworthy](#new-and-noteworthy)
+    *   [Designer UI](#designer-ui)
+*    [Fixed Issues](#fixed-issues)
+*    [API Changes](#api-changes)
+    *   [Changes to the Node interface](#changes-to-the-node-interface)
+    *   [Changes to CPD renderers](#changes-to-cpd-renderers)
+*    [External Contributions](#external-contributions)
 
 ### New and noteworthy
 
@@ -94,5 +97,5 @@ it was causing `OutOfMemoryError`s (see [#795](https://github.com/pmd/pmd/issues
 *   [#900](https://github.com/pmd/pmd/pull/900): \[core] Use the isEmpty method instead of comparing the value of size() to 0 - [reudismam](https://github.com/reudismam)
 *   [#914](https://github.com/pmd/pmd/pull/914): \[doc] Apex @SuppressWarnings documentation updated - [Akshat Bahety](https://github.com/akshatbahety)
 *   [#918](https://github.com/pmd/pmd/pull/918): \[doc] Add qa-eclipse as new tool - [Akshat Bahety](https://github.com/akshatbahety)
-*   [#927](https://github.com/pmd/pmd/pull/927): \[java][doc] Fix example of AbstractClassWithoutAnyMethod - [Kazuma Watanabe](https://github.com/wata727)
+*   [#927](https://github.com/pmd/pmd/pull/927): \[java]\[doc] Fix example of AbstractClassWithoutAnyMethod - [Kazuma Watanabe](https://github.com/wata727)
 
