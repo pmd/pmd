@@ -19,6 +19,10 @@ This is a bug fixing release.
 
 ### New and noteworthy
 
+#### Ecmascript (JavaScript)
+
+The [Rhino Library](https://github.com/mozilla/rhino) has been upgraded to version 1.7.7.2.
+
 ### Fixed Issues
 
 ### API Changes

@@ -791,7 +791,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
                 <groupId>org.mozilla</groupId>
                 <artifactId>rhino</artifactId>
-                <version>1.7.7</version>
+                <version>1.7.7.2</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
