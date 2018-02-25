@@ -86,7 +86,7 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 (
     echo "Committing current changes (pmd.github.io)"
     cd ../pmd.github.io
-    git add _posts/$(date -u +%d-%m-%Y)-PMD-${RELEASE_VERSION}.md
+    git add _posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md
     git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     git push
 )
