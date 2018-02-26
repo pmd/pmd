@@ -190,7 +190,7 @@ public class RuleSetFactory {
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse(referenceString);
         if (references.isEmpty()) {
             throw new RuleSetNotFoundException(
-                    "No RuleSetReferenceId can be parsed from the string: <" + referenceString + ">");
+                    "No RuleSetReferenceId can be parsed from the string: <" + referenceString + '>');
         }
         return createRuleSet(references.get(0));
     }
@@ -620,7 +620,7 @@ public class RuleSetFactory {
             if (referencedRule instanceof RuleReference) {
                 RuleReference ruleReference = (RuleReference) referencedRule;
                 if (LOG.isLoggable(Level.WARNING)) {
-                    LOG.warning("Use Rule name " + ruleReference.getRuleSetReference().getRuleSetFileName() + "/"
+                    LOG.warning("Use Rule name " + ruleReference.getRuleSetReference().getRuleSetFileName() + '/'
                             + ruleReference.getOriginalName() + " instead of the deprecated Rule name "
                             + otherRuleSetReferenceId
                             + ". PMD " + PMDVersion.getNextMajorRelease()
@@ -650,9 +650,9 @@ public class RuleSetFactory {
 
         if (warnDeprecated && ruleReference.isDeprecated()) {
             if (LOG.isLoggable(Level.WARNING)) {
-                LOG.warning("Use Rule name " + ruleReference.getRuleSetReference().getRuleSetFileName() + "/"
+                LOG.warning("Use Rule name " + ruleReference.getRuleSetReference().getRuleSetFileName() + '/'
                         + ruleReference.getOriginalName() + " instead of the deprecated Rule name "
-                        + ruleSetReferenceId.getRuleSetFileName() + "/" + ruleReference.getName()
+                        + ruleSetReferenceId.getRuleSetFileName() + '/' + ruleReference.getName()
                         + ". PMD " + PMDVersion.getNextMajorRelease()
                         + " will remove support for this deprecated Rule name usage.");
             }

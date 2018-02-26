@@ -251,7 +251,7 @@ public class RuleSetReferenceId {
             int index = name.indexOf('-');
             if (index >= 0) {
                 // Standard short name
-                result = "rulesets/" + name.substring(0, index) + "/" + name.substring(index + 1) + ".xml";
+                result = "rulesets/" + name.substring(0, index) + '/' + name.substring(index + 1) + ".xml";
             } else {
                 // A release RuleSet?
                 if (name.matches("[0-9]+.*")) {
@@ -428,7 +428,7 @@ public class RuleSetReferenceId {
             if (allRules) {
                 return ruleSetFileName;
             } else {
-                return ruleSetFileName + "/" + ruleName;
+                return ruleSetFileName + '/' + ruleName;
             }
 
         } else {

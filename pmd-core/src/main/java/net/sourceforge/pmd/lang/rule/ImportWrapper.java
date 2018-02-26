@@ -101,6 +101,6 @@ public class ImportWrapper {
 
     @Override
     public String toString() {
-        return "Import[name=" + name + ",fullname=" + fullname + ",static*=" + isStaticDemand + "]";
+        return "Import[name=" + name + ",fullname=" + fullname + ",static*=" + isStaticDemand + ']';
     }
 }
