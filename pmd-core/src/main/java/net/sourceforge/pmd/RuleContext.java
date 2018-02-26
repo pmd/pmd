@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import net.sourceforge.pmd.autofix.RuleViolationFixesApplier;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
 /**
@@ -35,6 +36,8 @@ public class RuleContext {
     private LanguageVersion languageVersion;
     private final ConcurrentMap<String, Object> attributes;
     private boolean ignoreExceptions = true;
+
+    private RuleViolationFixesApplier ruleViolationFixesApplier = new RuleViolationFixesApplier();
 
     /**
      * Default constructor.
@@ -235,5 +238,14 @@ public class RuleContext {
      */
     public boolean isIgnoreExceptions() {
         return ignoreExceptions;
+    }
+
+    /**
+     * Gets the stored RuleViolationFixesApplier. This should be used when clearing the applier or when traversing
+     * the set of fixes to apply in the {@link SourceCodeProcessor}.
+     * @return the RuleViolationFixesApplier instance
+     */
+    public RuleViolationFixesApplier getRuleViolationFixesApplier() {
+        return ruleViolationFixesApplier;
     }
 }

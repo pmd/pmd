@@ -107,6 +107,8 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean benchmark;
     private AnalysisCache analysisCache;
 
+    private boolean isAutoFixes;
+
     /**
      * Get the suppress marker. This is the source level marker used to indicate
      * a RuleViolation should be suppressed.
@@ -601,5 +603,13 @@ public class PMDConfiguration extends AbstractConfiguration {
         } else {
             setAnalysisCache(new FileAnalysisCache(new File(cacheLocation)));
         }
+    }
+
+    public boolean isAutoFixes() {
+        return isAutoFixes;
+    }
+
+    public void setAutoFixes(boolean autoFixes) {
+        isAutoFixes = autoFixes;
     }
 }

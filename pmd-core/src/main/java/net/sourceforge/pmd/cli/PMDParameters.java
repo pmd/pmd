@@ -98,9 +98,12 @@ public class PMDParameters {
     @Parameter(names = "-norulesetcompatibility",
             description = "Disable the ruleset compatibility filter. The filter is active by default and tries automatically 'fix' old ruleset files with old rule names")
     private boolean noRuleSetCompatibility = false;
-    
+
     @Parameter(names = "-cache", description = "Specify the location of the cache file for incremental analysis.")
     private String cacheLocation = null;
+
+    //    @Parameter(names = "-fix", description = "Attempt to automatically fix rule violations found on source files.")
+    private boolean autoFixes = false;
 
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
@@ -165,6 +168,7 @@ public class PMDParameters {
         configuration.setThreads(params.getThreads());
         configuration.setFailOnViolation(params.isFailOnViolation());
         configuration.setAnalysisCacheLocation(params.cacheLocation);
+        configuration.setAutoFixes(params.isAutoFixes());
 
         LanguageVersion languageVersion = LanguageRegistry
                 .findLanguageVersionByTerseName(params.getLanguage() + " " + params.getVersion());
@@ -281,4 +285,7 @@ public class PMDParameters {
         this.uri = uri;
     }
 
+    public boolean isAutoFixes() {
+        return autoFixes;
+    }
 }

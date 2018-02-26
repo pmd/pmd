@@ -14,11 +14,14 @@ import java.util.Map;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.autofix.AutoFixableRuleViolation;
+import net.sourceforge.pmd.autofix.RuleViolationFix;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.AutoFixableParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 /**
@@ -101,6 +104,23 @@ public class DummyLanguageModule extends BaseLanguageModule {
         @Override
         protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
             return createRuleViolation(rule, ruleContext, node, message, 0, 0);
+        }
+
+        @Override
+        protected AutoFixableRuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, Class<? extends RuleViolationFix> ruleViolationFixClass) {
+            return new AutoFixableParametricRuleViolation<>(rule, ruleContext, node, message, ruleViolationFixClass);
+        }
+
+        @Override
+        protected AutoFixableRuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine, Class<? extends RuleViolationFix> ruleViolationFixClass) {
+            final AutoFixableParametricRuleViolation<Node> rv = new AutoFixableParametricRuleViolation<Node>(rule, ruleContext, node, message, ruleViolationFixClass) {
+                {
+                    this.packageName = "foo"; // just for testing variable
+                    // expansion
+                }
+            };
+            rv.setLines(beginLine, endLine);
+            return rv;
         }
 
         @Override

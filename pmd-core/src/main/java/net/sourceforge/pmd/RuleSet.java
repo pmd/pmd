@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.autofix.RuleViolationFixesApplier;
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.cache.ChecksumAware;
@@ -509,6 +510,39 @@ public class RuleSet implements ChecksumAware {
                     if (LOG.isLoggable(Level.WARNING)) {
                         LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
                                 + ctx.getSourceCodeFilename() + ", continuing with next rule", e);
+                    }
+                } else {
+                    throw e;
+                }
+            }
+        }
+    }
+
+    /**
+     * Apply all applicable rules to the nodes and fix AST in which they belong. The fixes are applied after every rule
+     * is applied.
+     *
+     * @param applicableCompilationUnits the list of applicable compilation units on which to apply and fix the rules
+     * @param context the context which the visitors will have
+     */
+    public void applyWithAutoFixes(final List<? extends Node> applicableCompilationUnits, final RuleContext context) {
+        long start = System.nanoTime();
+        final RuleViolationFixesApplier applier = context.getRuleViolationFixesApplier();
+
+        for (final Rule rule : rules) {
+            try {
+                if (!rule.isRuleChain() && applies(rule, context.getLanguageVersion())) {
+                    rule.apply(applicableCompilationUnits, context);
+                    applier.applyAutoFixesAndClear();
+                    long end = System.nanoTime();
+                    Benchmarker.mark(Benchmark.Rule, rule.getName(), end - start, 1);
+                    start = end;
+                }
+            } catch (final RuntimeException e) {
+                if (context.isIgnoreExceptions()) {
+                    if (LOG.isLoggable(Level.WARNING)) {
+                        LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
+                                + context.getSourceCodeFilename() + ", continuing with next rule", e);
                     }
                 } else {
                     throw e;

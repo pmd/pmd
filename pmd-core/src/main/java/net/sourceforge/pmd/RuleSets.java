@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.autofix.RuleViolationFixesApplier;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -141,6 +142,28 @@ public class RuleSets {
         for (RuleSet ruleSet : ruleSets) {
             if (ruleSet.applies(ctx.getSourceCodeFile())) {
                 ruleSet.apply(acuList, ctx);
+            }
+        }
+    }
+
+    /**
+     * Apply all applicable rules to the nodes and fix AST in which they belong. The fixes are applied after the
+     * application of the rule chain and after every applicable rule.
+     *
+     * @param applicableCompilationUnits the List of compilation units; the type these must have, depends on
+     *                                   the source language
+     * @param context the context passed to the visitors
+     * @param language The AST source
+     */
+    public void applyWithAutoFixes(final List<Node> applicableCompilationUnits, final RuleContext context, final Language language) {
+        final RuleViolationFixesApplier applier = context.getRuleViolationFixesApplier();
+
+        ruleChain.apply(applicableCompilationUnits, context, language);
+        applier.applyAutoFixesAndClear();
+
+        for (final RuleSet ruleSet : ruleSets) {
+            if (ruleSet.applies(context.getSourceCodeFile())) {
+                ruleSet.applyWithAutoFixes(applicableCompilationUnits, context);
             }
         }
     }
