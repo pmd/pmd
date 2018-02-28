@@ -61,18 +61,13 @@ public class SourceCodeProcessor {
      * set the Language on the RuleContext, or set it to <code>null</code>
      * first.
      *
+     * @param sourceCode The Reader to analyze.
+     * @param ruleSets   The collection of rules to process against the file.
+     * @param ctx        The context in which PMD is operating.
+     * @throws PMDException if the input encoding is unsupported, the input stream could
+     *                      not be parsed, or other error is encountered.
      * @see RuleContext#setLanguageVersion(net.sourceforge.pmd.lang.LanguageVersion)
      * @see PMDConfiguration#getLanguageVersionOfFile(String)
-     *
-     * @param sourceCode
-     *            The Reader to analyze.
-     * @param ruleSets
-     *            The collection of rules to process against the file.
-     * @param ctx
-     *            The context in which PMD is operating.
-     * @throws PMDException
-     *             if the input encoding is unsupported, the input stream could
-     *             not be parsed, or other error is encountered.
      */
     public void processSourceCode(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) throws PMDException {
         determineLanguage(ctx);
@@ -82,8 +77,7 @@ public class SourceCodeProcessor {
 
         // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
         if (ruleSets.applies(ctx.getSourceCodeFile())) {
-            // Is the cache up to date?
-            if (configuration.getAnalysisCache().isUpToDate(ctx.getSourceCodeFile())) {
+            if (!configuration.isAutoFixes() && configuration.getAnalysisCache().isUpToDate(ctx.getSourceCodeFile())) {
                 for (final RuleViolation rv : configuration.getAnalysisCache().getCachedViolations(ctx.getSourceCodeFile())) {
                     ctx.getReport().addRuleViolation(rv);
                 }
@@ -93,10 +87,10 @@ public class SourceCodeProcessor {
             try {
                 ruleSets.start(ctx);
                 processSource(sourceCode, ruleSets, ctx);
-            } catch (ParseException pe) {
+            } catch (final ParseException pe) {
                 configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
                 throw new PMDException("Error while parsing " + ctx.getSourceCodeFilename(), pe);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
                 throw new PMDException("Error while processing " + ctx.getSourceCodeFilename(), e);
             } finally {
@@ -165,20 +159,20 @@ public class SourceCodeProcessor {
     }
 
 
-    private void processSource(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) {
-        LanguageVersion languageVersion = ctx.getLanguageVersion();
-        LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-        Parser parser = PMD.parserFor(languageVersion, configuration);
+    private void processSource(final Reader sourceCode, final RuleSets ruleSets, final RuleContext ctx) {
+        final LanguageVersion languageVersion = ctx.getLanguageVersion();
+        final LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+        final Parser parser = PMD.parserFor(languageVersion, configuration);
 
-        Node rootNode = parse(ctx, sourceCode, parser);
+        final Node rootNode = parse(ctx, sourceCode, parser);
         symbolFacade(rootNode, languageVersionHandler);
-        Language language = languageVersion.getLanguage();
+        final Language language = languageVersion.getLanguage();
         usesDFA(languageVersion, rootNode, ruleSets, language);
         usesTypeResolution(languageVersion, rootNode, ruleSets, language);
         usesMultifile(rootNode, languageVersionHandler, ruleSets, language);
 
-        List<Node> acus = Collections.singletonList(rootNode);
-        ruleSets.apply(acus, ctx, language);
+        final List<Node> applicableCompilationUnits = Collections.singletonList(rootNode);
+        ruleSets.apply(applicableCompilationUnits, ctx, language);
     }
 
     private void determineLanguage(RuleContext ctx) {

@@ -99,15 +99,14 @@ public abstract class AbstractPMDProcessor {
         return brokenRules;
     }
 
-    public void processFiles(RuleSetFactory ruleSetFactory, List<DataSource> files, RuleContext ctx,
-            List<Renderer> renderers) {
-        RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
+    public void processFiles(final RuleSetFactory ruleSetFactory, final List<DataSource> files, final RuleContext ctx,
+            final List<Renderer> renderers) {
+        final RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
         configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
-        SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
+        final SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
 
-        for (DataSource dataSource : files) {
-            String niceFileName = filenameFrom(dataSource);
-
+        for (final DataSource dataSource : files) {
+            final String niceFileName = filenameFrom(dataSource);
             runAnalysis(new PmdRunnable(dataSource, niceFileName, renderers, ctx, rs, processor));
         }
 
