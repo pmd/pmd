@@ -45,6 +45,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
@@ -72,6 +73,7 @@ import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.AnoymousExtendingObject;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayTypes;
+import net.sourceforge.pmd.typeresolution.testdata.ArrayVariableDeclaration;
 import net.sourceforge.pmd.typeresolution.testdata.DefaultJavaLangImport;
 import net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ExtraTopLevelClass;
@@ -789,9 +791,62 @@ public class ClassTypeResolverTest {
     }
 
 
+    @Test
+    public void testHeterogeneousArrayFieldDeclaration() throws JaxenException {
+        List<ASTFieldDeclaration> fields = selectNodes(ArrayVariableDeclaration.class, ASTFieldDeclaration.class);
+        List<ASTLocalVariableDeclaration> locals = selectNodes(ArrayVariableDeclaration.class, ASTLocalVariableDeclaration.class);
+
+        // public int[] a, b[];
+        testPrimitiveTypeFieldDecl(fields.get(0));
+        testPrimitiveTypeFieldDecl(locals.get(0));
+
+        // public String[] c, d[];
+        testRefTypeFieldDecl(fields.get(1));
+        testRefTypeFieldDecl(locals.get(1));
+    }
+
+
+    // subtest
+    private void testPrimitiveTypeFieldDecl(Node declaration) throws JaxenException {
+
+        // public String[] c, d[];
+        boolean primDeclMatches = declaration.jjtGetParent().hasDescendantMatchingXPath("//" + declaration.getXPathNodeName() + "\n"
+                                                                                                + "  [child::Type/ReferenceType[@Array='true' and @ArrayDepth=1]/PrimitiveType[@Image='int']]\n"
+                                                                                                + "  [child::VariableDeclarator/VariableDeclaratorId[@Image='a' and @Array='false' and @ArrayDepth=0]]\n"
+                                                                                                + "  [child::VariableDeclarator/VariableDeclaratorId[@Image='b' and @Array='true' and @ArrayDepth=1]]");
+
+        assertTrue(primDeclMatches);
+
+        ASTVariableDeclaratorId aDeclarator = (ASTVariableDeclaratorId) declaration.findChildNodesWithXPath("//VariableDeclaratorId[@Image='a']").get(0);
+        assertEquals(int[].class, aDeclarator.getType());
+
+        ASTVariableDeclaratorId bDeclarator = (ASTVariableDeclaratorId) declaration.findChildNodesWithXPath("//VariableDeclaratorId[@Image='b']").get(0);
+        assertEquals(int[][].class, bDeclarator.getType());
+    }
+
+
+    // subtest
+    private void testRefTypeFieldDecl(Node declaration) throws JaxenException {
+
+        // public String[] c, d[];
+        boolean refDeclMatches = declaration.jjtGetParent().hasDescendantMatchingXPath("//" + declaration.getXPathNodeName() + "\n"
+                                                                                               + "  [child::Type/ReferenceType[@Array='true' and @ArrayDepth=1]/ClassOrInterfaceType[@Image='String']]\n"
+                                                                                               + "  [child::VariableDeclarator/VariableDeclaratorId[@Image='c' and @Array='false' and @ArrayDepth=0]]\n"
+                                                                                               + "  [child::VariableDeclarator/VariableDeclaratorId[@Image='d' and @Array='true' and @ArrayDepth=1]]");
+
+        assertTrue(refDeclMatches);
+
+        ASTVariableDeclaratorId cDeclarator = (ASTVariableDeclaratorId) declaration.findChildNodesWithXPath("//VariableDeclaratorId[@Image='c']").get(0);
+        assertEquals(String[].class, cDeclarator.getType());
+
+        ASTVariableDeclaratorId dDeclarator = (ASTVariableDeclaratorId) declaration.findChildNodesWithXPath("//VariableDeclaratorId[@Image='d']").get(0);
+        assertEquals(String[][].class, dDeclarator.getType());
+    }
+
+
     private void testSubtreeNodeTypes(final AbstractJavaTypeNode node, final Class<?> expectedType) {
         assertEquals(expectedType, node.getType());
-        // Check all typeable nodes in the tree
+        // FIXME this doesn't test anything, since findDescendantsOfType considers only exact type match! -> other PR
         for (AbstractJavaTypeNode n : node.findDescendantsOfType(AbstractJavaTypeNode.class)) {
             assertEquals(expectedType, n.getType());
         }
