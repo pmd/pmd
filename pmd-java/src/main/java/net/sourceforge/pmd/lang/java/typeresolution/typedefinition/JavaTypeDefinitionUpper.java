@@ -77,6 +77,19 @@ import java.util.Set;
         return firstJavaType().getComponentType();
     }
 
+
+    @Override
+    public JavaTypeDefinition getElementType() {
+        return firstJavaType().getElementType();
+    }
+
+
+    @Override
+    public JavaTypeDefinition withDimensions(int numDimensions) {
+        return firstJavaType().withDimensions(numDimensions);
+    }
+
+
     @Override
     public boolean isClassOrInterface() {
         return firstJavaType().isClassOrInterface();

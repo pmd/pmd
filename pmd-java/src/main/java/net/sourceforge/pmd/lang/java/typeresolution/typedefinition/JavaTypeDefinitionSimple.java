@@ -199,7 +199,15 @@ import java.util.logging.Logger;
         return forClass(Object.class);
     }
 
+
+    @Override
+    public boolean isArrayType() {
+        return clazz.isArray();
+    }
+
+
     // TODO: are generics okay like this?
+    @Override
     public JavaTypeDefinition getComponentType() {
         Class<?> componentType = getType().getComponentType();
 
@@ -208,6 +216,28 @@ import java.util.logging.Logger;
         }
 
         return forClass(componentType);
+    }
+
+
+    private Class<?> getElementTypeRec(Class<?> arrayType) {
+        return arrayType.isArray() ? getElementTypeRec(arrayType.getComponentType()) : arrayType;
+    }
+
+
+    @Override
+    public JavaTypeDefinition getElementType() {
+        return isArrayType() ? forClass(getElementTypeRec(getType())) : this;
+    }
+
+
+    @Override
+    public JavaTypeDefinition withDimensions(int numDimensions) {
+        if (numDimensions < 0) {
+            throw new IllegalArgumentException("Negative array dimension");
+        }
+        return numDimensions == 0
+                ? this
+                : forClass(Array.newInstance(getType(), (int[]) Array.newInstance(int.class, numDimensions)).getClass());
     }
 
     public boolean isClassOrInterface() {
@@ -235,9 +265,6 @@ import java.util.logging.Logger;
         return typeParameterCount;
     }
 
-    public boolean isArrayType() {
-        return clazz.isArray();
-    }
 
     @Override
     public String toString() {
@@ -340,6 +367,8 @@ import java.util.logging.Logger;
         return destinationSet;
     }
 
+
+    @Override
     public JavaTypeDefinition getAsSuper(Class<?> superClazz) {
         if (clazz == superClazz) { // optimize for same class calls
             return this;

@@ -39,4 +39,14 @@ public class ASTReferenceType extends AbstractJavaTypeNode implements Dimensiona
         return arrayDepth > 0;
     }
 
+
+    /**
+     * Returns the type of this node. If this node represents an
+     * array type, then the returned type is an array type of the
+     * correct dimensions ({@link #getArrayDepth()}).
+     */
+    @Override
+    public Class<?> getType() {
+        return super.getType();
+    }
 }
