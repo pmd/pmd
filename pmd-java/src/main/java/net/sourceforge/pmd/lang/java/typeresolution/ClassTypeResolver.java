@@ -683,12 +683,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (node == null || node.getNameDeclaration() == null) {
+        if (node == null || node.isLambdaInferredFormalParameter()) {
             return super.visit(node, data);
         }
-        String name = node.getNameDeclaration().getTypeImage();
-        if (name != null) {
-            populateType(node, name, node.getNameDeclaration().getArrayDepth());
+
+        // Type common to all declarations in the same statement
+        JavaTypeDefinition baseType = node.getTypeNode().getTypeDefinition();
+
+        if (baseType != null) {
+            // add the dimensions specific to the declarator id
+            node.setTypeDefinition(baseType.withDimensions(node.getArrayDepth()));
         }
         return super.visit(node, data);
     }

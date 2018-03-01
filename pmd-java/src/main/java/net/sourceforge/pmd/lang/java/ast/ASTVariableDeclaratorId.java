@@ -71,28 +71,45 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return explicitReceiverParameter;
     }
 
-    public Node getTypeNameNode() {
-        if (jjtGetParent() instanceof ASTFormalParameter) {
-            return findTypeNameNode(jjtGetParent());
-        } else if (jjtGetParent() instanceof ASTLambdaExpression) {
-            // lambda expression with lax types. The type is inferred...
-            return null;
-        } else if (jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration
-                || jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
-            return findTypeNameNode(jjtGetParent().jjtGetParent());
-        }
-        return null;
-    }
 
     /**
-     * Determines the type node of this variable id.
-     * 
-     * @return the type node or <code>null</code> if there is no explicit type.
+     * Returns true if this declarator ID declares a formal
+     * parameter for a lambda with an inferred type, eg in
+     * {@code (a,b) -> a + b}. In that case, {@link #getTypeNode()}
+     * returns {@code null}, since the type node is absent.
+     */
+    public boolean isLambdaInferredFormalParameter() {
+        return jjtGetParent() instanceof ASTLambdaExpression;
+    }
+
+
+    /**
+     * Returns the first child of the node returned by {@link #getTypeNode()}.
+     * The image of that node can usually be interpreted as the image of the
+     * type.
+     */
+    // TODO unreliable, not typesafe and not useful, should be deprecated
+    public Node getTypeNameNode() {
+        ASTType type = getTypeNode();
+        return type == null ? null : getTypeNode().jjtGetChild(0);
+    }
+
+
+    /**
+     * Determines the type node of this variable id, that is, the type node
+     * belonging to the variable declaration of this node (either a
+     * FormalParameter, LocalVariableDeclaration or FieldDeclaration).
+     *
+     * <p>The type of the returned node is not necessarily the type of this
+     * node. See {@link #getType()} for an explanation.
+     *
+     * @return the type node, or {@code null} if there is no explicit type,
+     * e.g. if {@link #isLambdaInferredFormalParameter()} returns true.
      */
     public ASTType getTypeNode() {
         if (jjtGetParent() instanceof ASTFormalParameter) {
             return ((ASTFormalParameter) jjtGetParent()).getTypeNode();
-        } else if (jjtGetParent() instanceof ASTLambdaExpression) {
+        } else if (isLambdaInferredFormalParameter()) {
             // lambda expression with lax types. The type is inferred...
             return null;
         } else {
@@ -104,13 +121,29 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return null;
     }
 
-    private Node findTypeNameNode(Node node) {
-        int i = 0;
-        while (node.jjtGetChild(i) instanceof ASTAnnotation) {
-            // skip annotations
-            i++;
-        }
-        ASTType typeNode = (ASTType) node.jjtGetChild(i);
-        return typeNode.jjtGetChild(0);
+    // @formatter:off
+    /**
+     * Returns the type of this node. The type of a declarator ID is
+     * <ul>
+     *   <li>1. not necessarily the same as the type written out at the
+     *          start of the declaration, e.g. {@code int a[];}
+     *   <li>2. not necessarily the same as the types of other variables
+     *          declared in the same statement, e.g. {@code int a[], b;}.
+     * </ul>
+     *
+     * <p>These are consequences of Java's allowing programmers to
+     * declare additional pairs of brackets on declarator ids. The type
+     * of the node returned by {@link #getTypeNode()} doesn't take into
+     * account those additional array dimensions, whereas this node's
+     * type takes into account the total number of dimensions, i.e.
+     * those declared on this node plus those declared on the type node.
+     *
+     * <p>The type of the declarator ID is thus always the real type of
+     * the variable.
+     */
+    // @formatter:on
+    @Override
+    public Class<?> getType() {
+        return super.getType();
     }
 }
