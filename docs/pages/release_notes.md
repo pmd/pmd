@@ -31,6 +31,9 @@ Both are bugfixing releases.
 
 ### Fixed Issues
 
+*   all
+    *   [#928](https://github.com/pmd/pmd/issues/928): \[core] PMD build failure on Windows
+
 ### API Changes
 
 ### External Contributions
