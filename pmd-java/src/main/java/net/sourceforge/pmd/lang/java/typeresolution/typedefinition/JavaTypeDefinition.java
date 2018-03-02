@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+
 public abstract class JavaTypeDefinition implements TypeDefinition {
     // contains non-generic and raw EXACT types
     private static final Map<Class<?>, JavaTypeDefinition> CLASS_EXACT_TYPE_DEF_CACHE = new HashMap<>();
@@ -37,9 +40,13 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
             }
         case UPPER_BOUND:
         case UPPER_WILDCARD:
-            return new JavaTypeDefinitionUpper(type, intersectionTypes);
+            // In theory, if one of the bounds can't be resolved, then the type is useless.
+            // Looking at the implementation of JavaTypeDefinitionUpper, it looks like only the
+            // first bound is used, so we could only check for the first array component.
+            // But isn't that behaviour weird ? Where are the other bounds useful then ?
+            return ArrayUtils.contains(intersectionTypes, null) ? null : new JavaTypeDefinitionUpper(type, intersectionTypes);
         case LOWER_WILDCARD:
-            return new JavaTypeDefinitionLower(intersectionTypes);
+            return ArrayUtils.contains(intersectionTypes, null) ? null : new JavaTypeDefinitionLower(intersectionTypes);
         default:
             throw new IllegalStateException("Unknow type");
         }
