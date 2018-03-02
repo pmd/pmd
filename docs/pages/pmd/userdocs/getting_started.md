@@ -253,7 +253,7 @@ Please note that if PMD detects any violations, it will exit with status 4 (sinc
 This behavior has been introduced to ease PMD integration into scripts or hooks, such as SVN hooks.
 
 <table>
-<tr><td>0</td><td>Everything is fine, now violations found</td></tr>
+<tr><td>0</td><td>Everything is fine, no violations found</td></tr>
 <tr><td>1</td><td>Couldn't understand command line parameters or PMD exited with an exception</td></tr>
 <tr><td>4</td><td>At least one violation has been detected unless '-failOnViolation false' is set.</td></tr>
 </table>
