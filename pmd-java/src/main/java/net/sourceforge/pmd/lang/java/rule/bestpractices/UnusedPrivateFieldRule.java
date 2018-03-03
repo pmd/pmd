@@ -32,17 +32,12 @@ import net.sourceforge.pmd.properties.StringMultiProperty;
 
 public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
 
-    private static final List<String> NEGLECT_ANNOTATIONS_DEFAULT = new ArrayList<>();
-
-    static {
-        NEGLECT_ANNOTATIONS_DEFAULT.add("java.lang.Deprecated");
-        NEGLECT_ANNOTATIONS_DEFAULT.add("javafx.fxml.FXML");
-    }
-
     private static final StringMultiProperty IGNORED_ANNOTATIONS_DESCRIPTOR
-        = StringMultiProperty.named("IgnoredAnnotations")
-        .desc("The annotations should be ignored by rule unusedPrivateFieldRule")
-        .defaultValues(NEGLECT_ANNOTATIONS_DEFAULT).build();
+            = StringMultiProperty.named("ignoredAnnotations")
+                                 .desc("Fully qualified names of the annotation types that should be ignored by this rule")
+                                 .defaultValues("java.lang.Deprecated", "javafx.fxml.FXML")
+                                 .build();
+
 
     public UnusedPrivateFieldRule() {
         definePropertyDescriptor(IGNORED_ANNOTATIONS_DESCRIPTOR);
