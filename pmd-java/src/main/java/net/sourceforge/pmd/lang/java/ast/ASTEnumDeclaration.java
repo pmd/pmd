@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
-public class ASTEnumDeclaration extends ASTAnyTypeDeclaration {
+public class ASTEnumDeclaration extends AbstractAnyTypeDeclaration {
 
 
     public ASTEnumDeclaration(int id) {

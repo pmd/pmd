@@ -10,7 +10,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ast.Node;
 
 
-public class ASTClassOrInterfaceDeclaration extends ASTAnyTypeDeclaration {
+public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
 
     private boolean isLocal;
     private boolean isLocalComputed; // guard for lazy evaluation of isLocal()

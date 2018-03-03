@@ -12,27 +12,14 @@ import java.util.List;
  *
  * @author Clément Fournier
  */
-public abstract class ASTAnyTypeDeclaration extends AbstractJavaAccessTypeNode implements JavaQualifiableNode, AccessNode, JavaNode {
-
-    private JavaQualifiedName qualifiedName;
-
-
-    public ASTAnyTypeDeclaration(int i) {
-        super(i);
-    }
-
-
-    public ASTAnyTypeDeclaration(JavaParser parser, int i) {
-        super(parser, i);
-    }
-
+public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, AccessNode, JavaNode {
 
     /**
      * Finds the type kind of this declaration.
      *
      * @return The type kind of this declaration.
      */
-    public abstract TypeKind getTypeKind();
+    TypeKind getTypeKind();
 
 
     /**
@@ -40,38 +27,18 @@ public abstract class ASTAnyTypeDeclaration extends AbstractJavaAccessTypeNode i
      *
      * @return The member declarations declared in this type declaration
      */
-    public abstract List<ASTAnyTypeBodyDeclaration> getDeclarations();
+    List<ASTAnyTypeBodyDeclaration> getDeclarations();
 
 
     /**
      * Returns true if this type declaration is nested inside an interface, class or annotation.
      */
-    public final boolean isNested() {
-        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
-                || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
-    }
-
-
-    @Override
-    public final JavaQualifiedName getQualifiedName() {
-        if (qualifiedName == null) {
-            qualifiedName = buildQualifiedName();
-        }
-
-        return qualifiedName;
-    }
-
-
-    /** Create the qualified name, which is then cached in the node. */
-    protected final JavaQualifiedName buildQualifiedName() {
-        return QualifiedNameFactory.ofClass(this);
-    }
-
+    boolean isNested();
 
     /**
      * The kind of type this node declares.
      */
-    public enum TypeKind {
+    enum TypeKind {
         CLASS, INTERFACE, ENUM, ANNOTATION
     }
 
