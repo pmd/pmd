@@ -631,7 +631,7 @@ public class GUI implements CPDListener {
             int separatorPos = sourceId.lastIndexOf(File.separatorChar);
             label = "..." + sourceId.substring(separatorPos);
         } else {
-            label = "(" + sourceIDs.size() + " separate files)";
+            label = '(' + sourceIDs.size() + " separate files)";
         }
 
         match.setLabel(label);

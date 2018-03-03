@@ -49,7 +49,7 @@ public class SimpleRenderer implements Renderer, CPDRenderer {
         String source = match.getSourceCodeSlice();
 
         if (trimLeadingWhitespace) {
-            String[] lines = source.split("[" + PMD.EOL + "]");
+            String[] lines = source.split('[' + PMD.EOL + ']');
             int trimDepth = StringUtil.maxCommonLeadingWhitespaceForAll(lines);
             if (trimDepth > 0) {
                 lines = StringUtil.trimStartOn(lines, trimDepth);

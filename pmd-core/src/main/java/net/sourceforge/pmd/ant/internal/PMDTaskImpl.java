@@ -85,9 +85,9 @@ public class PMDTaskImpl {
         SourceLanguage version = task.getSourceLanguage();
         if (version != null) {
             LanguageVersion languageVersion = LanguageRegistry
-                    .findLanguageVersionByTerseName(version.getName() + " " + version.getVersion());
+                    .findLanguageVersionByTerseName(version.getName() + ' ' + version.getVersion());
             if (languageVersion == null) {
-                throw new BuildException("The following language is not supported:" + version + ".");
+                throw new BuildException("The following language is not supported:" + version + '.');
             }
             configuration.setDefaultLanguageVersion(languageVersion);
         }

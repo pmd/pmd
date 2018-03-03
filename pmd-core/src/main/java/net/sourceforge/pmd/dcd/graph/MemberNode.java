@@ -81,7 +81,7 @@ public abstract class MemberNode<S extends MemberNode<S, T>, T extends Member>
 
     @Override
     public String toString() {
-        return name + " " + desc;
+        return name + ' ' + desc;
     }
 
     public String toStringLong() {

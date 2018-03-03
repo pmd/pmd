@@ -167,7 +167,7 @@ public class PMDParameters {
         configuration.setAnalysisCacheLocation(params.cacheLocation);
 
         LanguageVersion languageVersion = LanguageRegistry
-                .findLanguageVersionByTerseName(params.getLanguage() + " " + params.getVersion());
+                .findLanguageVersionByTerseName(params.getLanguage() + ' ' + params.getVersion());
         if (languageVersion != null) {
             configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
         }
