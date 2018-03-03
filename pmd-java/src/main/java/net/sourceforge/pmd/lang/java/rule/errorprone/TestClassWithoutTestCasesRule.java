@@ -23,8 +23,9 @@ public class TestClassWithoutTestCasesRule extends AbstractJUnitRule {
 
         if (m != null) {
             for (ASTMethodDeclaration md : m) {
-                if (!isInInnerClassOrInterface(md) && isJUnitMethod(md, data)) {
+                if (isJUnitMethod(md, data)) {
                     testsFound = true;
+                    break;
                 }
             }
         }
@@ -34,10 +35,5 @@ public class TestClassWithoutTestCasesRule extends AbstractJUnitRule {
         }
 
         return data;
-    }
-
-    private boolean isInInnerClassOrInterface(ASTMethodDeclaration md) {
-        ASTClassOrInterfaceDeclaration p = md.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        return p != null && p.isNested();
     }
 }
