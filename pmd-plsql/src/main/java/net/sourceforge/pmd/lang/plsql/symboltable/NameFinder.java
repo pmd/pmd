@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTName;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPrimarySuffix;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTMemberSelector;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 
 public class NameFinder {

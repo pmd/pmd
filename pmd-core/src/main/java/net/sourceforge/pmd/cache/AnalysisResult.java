@@ -38,7 +38,7 @@ public class AnalysisResult {
     private static long computeFileChecksum(final File sourceFile) {
         try (
             CheckedInputStream stream = new CheckedInputStream(
-               new BufferedInputStream(new FileInputStream(sourceFile)), new Adler32());
+                new BufferedInputStream(new FileInputStream(sourceFile)), new Adler32());
         ) {
             // Just read it, the CheckedInputStream will update the checksum on it's own
             IOUtils.skipFully(stream, sourceFile.length());
