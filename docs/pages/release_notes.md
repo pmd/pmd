@@ -37,3 +37,6 @@ Both are bugfixing releases.
 ### API Changes
 
 ### External Contributions
+
+* [#941](https://github.com/pmd/pmd/pull/941): \[java] Use char notation to represent a character to improve performance - [reudismam](https://github.com/reudismam)
+
