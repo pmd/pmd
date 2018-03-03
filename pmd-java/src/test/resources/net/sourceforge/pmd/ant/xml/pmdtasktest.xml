@@ -6,8 +6,8 @@
 
 	<target name="testNestedRuleset">
 		<pmd>
-			<ruleset>${pmd.home}/src/main/resources/rulesets/java/codesize.xml</ruleset>
-			<ruleset>${pmd.home}/src/main/resources/rulesets/java/design.xml</ruleset>
+			<ruleset>${pmd.home}/src/main/resources/category/java/codestyle.xml</ruleset>
+			<ruleset>${pmd.home}/src/main/resources/category/java/design.xml</ruleset>
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/test/resources/ant/java">
 				<include name="*.java"/>
@@ -17,8 +17,8 @@
 
 	<target name="testFormatterWithProperties">
 		<pmd>
-			<ruleset>${pmd.home}/src/main/resources/rulesets/java/codesize.xml</ruleset>
-			<ruleset>${pmd.home}/src/main/resources/rulesets/java/design.xml</ruleset>
+			<ruleset>${pmd.home}/src/main/resources/category/java/codestyle.xml</ruleset>
+			<ruleset>${pmd.home}/src/main/resources/category/java/design.xml</ruleset>
 			<formatter type="summaryhtml" toConsole="true">
 				<param name="linkPrefix" value="link_prefix"/>
 				<param name="linePrefix" value="line_prefix"/>
@@ -30,7 +30,7 @@
 	</target>
 
 	<target name="testAbstractNames">
-		<pmd rulesetfiles="java-codesize,java-design">
+		<pmd rulesetfiles="category/java/codestyle.xml,category/java/design.xml">
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/test/resources/ant/java">
 				<include name="*.java"/>
@@ -40,8 +40,8 @@
 
 	<target name="testAbstractNamesInNestedRuleset">
 		<pmd>
-			<ruleset>java-codesize</ruleset>
-			<ruleset>java-design</ruleset>
+			<ruleset>category/java/codestyle.xml</ruleset>
+			<ruleset>category/java/design.xml</ruleset>
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/test/resources/ant/java">
 				<include name="*.java"/>
@@ -50,7 +50,7 @@
 	</target>
 
 	<target name="testCommaInRulesetfiles">
-		<pmd rulesetfiles="${pmd.home}/src/main/resources/rulesets/java/codesize.xml,${pmd.home}/src/main/resources/rulesets/java/design.xml">
+		<pmd rulesetfiles="${pmd.home}/src/main/resources/category/java/codestyle.xml,${pmd.home}/src/main/resources/category/java/design.xml">
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/test/resources/ant/java">
 				<include name="*.java"/>
@@ -61,7 +61,7 @@
 	<target name="testRelativeRulesets">
 		<pmd>
 			<ruleset>custom_ruleset.xml</ruleset>
-			<ruleset>rulesets/java/design.xml</ruleset>
+			<ruleset>category/java/codestyle.xml</ruleset>
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/test/resources/ant/java">
 				<include name="*.java"/>
@@ -70,7 +70,7 @@
 	</target>
 
 	<target name="testRelativeRulesetsInRulesetfiles">
-		<pmd rulesetfiles="custom_ruleset.xml,src/main/resources/rulesets/java/design.xml">
+		<pmd rulesetfiles="custom_ruleset.xml,src/main/resources/category/java/codestyle.xml">
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/test/resources/ant/java">
 				<include name="*.java"/>
@@ -79,7 +79,7 @@
 	</target>
 
 	<target name="testNoFormattersValidation">
-		<pmd rulesetfiles="${pmd.home}/src/main/resources/rulesets/java/design.xml">
+		<pmd rulesetfiles="${pmd.home}/src/main/resources/category/java/codestyle.xml">
             <fileset dir="${pmd.home}/src/test/resources/ant/java">
                 <include name="*.java"/>
             </fileset>
@@ -87,7 +87,7 @@
 	</target>
 
 	<target name="testExplicitRuleInRuleSet">
-		<pmd rulesetfiles="src/main/resources/rulesets/java/codesize.xml/ExcessiveMethodLength">
+		<pmd rulesetfiles="src/main/resources/category/java/design.xml/ExcessiveMethodLength">
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/test/resources/ant/java">
 				<include name="*.java"/>
@@ -111,8 +111,7 @@
     <target name="testFormatterEncodingWithXML">
         <!-- source encoding is cp1252 -->
         <pmd encoding="cp1252">
-            <ruleset>java-strings</ruleset>
-            <ruleset>java-unusedcode</ruleset>
+            <ruleset>category/java/bestpractices.xml</ruleset>
             <!--
             <formatter type="xml" toConsole="true"/>
             -->
@@ -129,7 +128,7 @@
     <target name="testFormatterEncodingWithXMLConsole">
         <!-- source encoding is cp1252 -->
         <pmd encoding="cp1252">
-            <ruleset>java-unusedcode</ruleset>
+            <ruleset>category/java/bestpractices.xml</ruleset>
             <formatter type="xml" toConsole="true">
                 <!-- specifying a encoding here will override the console encoding.
                      The output might have junk characters in it.
