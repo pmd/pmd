@@ -15,6 +15,7 @@ This is a bug fixing release.
 *   [New and noteworthy](#new-and-noteworthy)
 *   [Fixed Issues](#fixed-issues)
     *   [Ecmascript (JavaScript)](#ecmascript-javascript)
+    *   [Tree transversal revision](#tree-transversal-revision)
     *   [Disable Incremental Analysis](#disable-incremental-analysis)
     *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
@@ -23,7 +24,7 @@ This is a bug fixing release.
 
 ### New and noteworthy
 
-#### Ecmascript (JavaScript)
+#### Rhino library updated
 
 The [Rhino Library](https://github.com/mozilla/rhino) has been upgraded from version 1.7.7 to version 1.7.7.2.
 
@@ -32,6 +33,18 @@ Detailed changes for changed in Rhino can be found:
 * [For 1.7.7.1](https://github.com/mozilla/rhino/blob/master/RELEASE-NOTES.md#rhino-1771)
 
 Both are bugfixing releases.
+
+#### Tree transversal revision
+
+As described in [#904](https://github.com/pmd/pmd/issues/904), when searching for child nodes of the AST methods
+such as `hasDescendantOfType`, `getFirstDescendantOfType` and `findDescendantsOfType` were found to behave inconsistently,
+not all of them honoring find boundaries; that is, nodes that define a self-contained entity which should be considered separately
+(think of lambdas, nested classes, anonymous classes, etc.). We have modified these methods to ensure all of them honor
+find boundaries.
+
+This change implies several false positives / unexpected results (ie: `ASTBlockStatement` falsely returning `true` to `isAllocation()`)
+have been fixed; and lots of searches are now restricted to smaller search areas, which improves performance (depending on the project,
+we have measured up to 10% improvements during Type Resolution, Symbol Table analysis, and some rule's application).
 
 ### Disable Incremental Analysis
 
@@ -64,12 +77,13 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
     that allows to configure annotations that imply the method should be ignored. By default `@java.lang.Deprecated`
     is ignored.
 
-
 ### Fixed Issues
 
 *   all
+    *   [#904](https://github.com/pmd/pmd/issues/904): \[core] Tree traversal revision
     *   [#928](https://github.com/pmd/pmd/issues/928): \[core] PMD build failure on Windows
 *   java-bestpracrtices
+    *   [#370](https://github.com/pmd/pmd/issues/370): \[java] GuardLogStatementJavaUtil not considering lambdas
     *   [#907](https://github.com/pmd/pmd/issues/907): \[java] UnusedPrivateField false-positive with @FXML
     *   [#963](https://github.com/pmd/pmd/issues/965): \[java] ArrayIsStoredDirectly not triggered from variadic functions
 *   java-design
