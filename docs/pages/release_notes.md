@@ -31,6 +31,11 @@ Both are bugfixing releases.
 
 ### Fixed Issues
 
+*   java
+    *   [#907](https://github.com/pmd/pmd/issues/907): \[java] UnusedPrivateField false-positive with @FXML
+
 ### API Changes
 
 ### External Contributions
+
+*   [#943](https://github.com/pmd/pmd/pull/943): \[java] UnusedPrivateField false-positive with @FXML - [BBG](https://github.com/djydewang)
