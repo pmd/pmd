@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserDecoratedVisitor;
-import net.sourceforge.pmd.lang.java.ast.MethodLike;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloAssertAwareDecorator;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloBaseVisitor;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloPathAwareDecorator;
@@ -35,7 +35,7 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
 
 
     @Override
-    public double computeFor(final MethodLike node, MetricOptions options) {
+    public double computeFor(final MethodLikeNode node, MetricOptions options) {
         Set<MetricOption> opts = options.getOptions();
         JavaParserDecoratedVisitor visitor = new JavaParserDecoratedVisitor(CycloBaseVisitor.INSTANCE) { // TODO decorators are unmaintainable, change that someday
             // stops the visit when stumbling on a lambda or class decl

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public abstract class AbstractMethodLikeNode extends AbstractJavaAccessNode implements MethodLike {
+public abstract class AbstractMethodLikeNode extends AbstractJavaAccessNode implements MethodLikeNode {
     private JavaQualifiedName qualifiedName;
 
 

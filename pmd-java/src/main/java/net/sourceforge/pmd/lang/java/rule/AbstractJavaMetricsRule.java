@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.MethodLike;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 
 
 /**
@@ -59,16 +59,16 @@ public abstract class AbstractJavaMetricsRule extends AbstractJavaRule {
 
     @Override
     public final Object visit(ASTLambdaExpression node, Object data) {
-        return visit((MethodLike) node, data);
+        return visit((MethodLikeNode) node, data);
     }
 
 
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-        return visit((MethodLike) node, data);
+        return visit((MethodLikeNode) node, data);
     }
 
 
-    public Object visit(MethodLike node, Object data) {
+    public Object visit(MethodLikeNode node, Object data) {
         return visit((JavaNode) node, data);
     }
 

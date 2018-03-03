@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ImmutableList.ListFactory;
-import net.sourceforge.pmd.lang.java.ast.MethodLike.MethodLikeKind;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode.MethodLikeKind;
 
 
 /**
@@ -123,7 +123,7 @@ public class QualifiedNameFactory {
     }
 
 
-    static JavaQualifiedName ofOperation(MethodLike methodLike) {
+    static JavaQualifiedName ofOperation(MethodLikeNode methodLike) {
         if (methodLike.getKind() == MethodLikeKind.CONSTRUCTOR) {
             return ofOperation((ASTConstructorDeclaration) methodLike);
         } else if (methodLike.getKind() == MethodLikeKind.METHOD) {
@@ -241,7 +241,7 @@ public class QualifiedNameFactory {
         while (parent != null
                 && !(parent instanceof ASTFieldDeclaration)
                 && !(parent instanceof ASTInitializer)
-                && !(parent instanceof MethodLike)) {
+                && !(parent instanceof MethodLikeNode)) {
             parent = parent.jjtGetParent();
         }
 

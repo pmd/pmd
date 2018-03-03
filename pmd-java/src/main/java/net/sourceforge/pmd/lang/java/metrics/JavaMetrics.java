@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics;
 
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.MethodLike;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
@@ -79,7 +79,7 @@ public final class JavaMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<MethodLike> key, MethodLike node) {
+    public static double get(MetricKey<MethodLikeNode> key, MethodLikeNode node) {
         return FACADE.computeForOperation(key, node, MetricOptions.emptyOptions());
     }
 
@@ -93,7 +93,7 @@ public final class JavaMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<MethodLike> key, MethodLike node, MetricOptions options) {
+    public static double get(MetricKey<MethodLikeNode> key, MethodLikeNode node, MetricOptions options) {
         return FACADE.computeForOperation(key, node, options);
     }
 
@@ -108,7 +108,7 @@ public final class JavaMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<MethodLike> key, ASTAnyTypeDeclaration node, ResultOption resultOption) {
+    public static double get(MetricKey<MethodLikeNode> key, ASTAnyTypeDeclaration node, ResultOption resultOption) {
         return FACADE.computeWithResultOption(key, node, MetricOptions.emptyOptions(), resultOption);
     }
 
@@ -124,7 +124,7 @@ public final class JavaMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<MethodLike> key, ASTAnyTypeDeclaration node,
+    public static double get(MetricKey<MethodLikeNode> key, ASTAnyTypeDeclaration node,
                              MetricOptions options, ResultOption resultOption) {
         return FACADE.computeWithResultOption(key, node, options, resultOption);
     }

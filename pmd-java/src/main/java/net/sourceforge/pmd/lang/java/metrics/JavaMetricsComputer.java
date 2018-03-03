@@ -10,7 +10,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.MethodLike;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.metrics.AbstractMetricsComputer;
 
 /**
@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.metrics.AbstractMetricsComputer;
  *
  * @author Clément Fournier
  */
-public class JavaMetricsComputer extends AbstractMetricsComputer<ASTAnyTypeDeclaration, MethodLike> {
+public class JavaMetricsComputer extends AbstractMetricsComputer<ASTAnyTypeDeclaration, MethodLikeNode> {
 
     static final JavaMetricsComputer INSTANCE = new JavaMetricsComputer();
 
@@ -29,9 +29,9 @@ public class JavaMetricsComputer extends AbstractMetricsComputer<ASTAnyTypeDecla
 
     // TODO: doesn't consider lambdas
     @Override
-    protected List<MethodLike> findOperations(ASTAnyTypeDeclaration node) {
+    protected List<MethodLikeNode> findOperations(ASTAnyTypeDeclaration node) {
 
-        List<MethodLike> operations = new ArrayList<>();
+        List<MethodLikeNode> operations = new ArrayList<>();
 
         for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
             if (decl.jjtGetNumChildren() > 0 && decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {

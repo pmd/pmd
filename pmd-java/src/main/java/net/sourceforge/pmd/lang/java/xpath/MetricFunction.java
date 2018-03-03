@@ -16,7 +16,7 @@ import org.jaxen.XPathFunctionContext;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.MethodLike;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
@@ -79,8 +79,8 @@ public class MetricFunction implements Function {
     public static double getMetric(Node n, String metricKeyName) {
         if (n instanceof ASTAnyTypeDeclaration) {
             return getClassMetric((ASTAnyTypeDeclaration) n, getClassMetricKey(metricKeyName));
-        } else if (n instanceof MethodLike) {
-            return getOpMetric((MethodLike) n, getOperationMetricKey(metricKeyName));
+        } else if (n instanceof MethodLikeNode) {
+            return getOpMetric((MethodLikeNode) n, getOperationMetricKey(metricKeyName));
         } else {
             throw new IllegalStateException(genericBadNodeMessage());
         }
@@ -105,7 +105,7 @@ public class MetricFunction implements Function {
     }
 
 
-    private static double getOpMetric(MethodLike node, JavaOperationMetricKey key) {
+    private static double getOpMetric(MethodLikeNode node, JavaOperationMetricKey key) {
         return JavaMetrics.get(key, node);
     }
 

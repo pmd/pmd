@@ -10,7 +10,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * @author Clément Fournier
  * @since 6.1.0
  */
-public interface MethodLike extends AccessNode, JavaQualifiableNode, JavaNode {
+public interface MethodLikeNode extends AccessNode, JavaQualifiableNode, JavaNode {
 
     /**
      * Returns a token indicating whether this node is a lambda

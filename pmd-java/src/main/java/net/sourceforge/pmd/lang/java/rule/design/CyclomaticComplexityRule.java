@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.MethodLike;
-import net.sourceforge.pmd.lang.java.ast.MethodLike.MethodLikeKind;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode.MethodLikeKind;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
@@ -138,7 +138,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
 
     @Override
-    public final Object visit(MethodLike node, Object data) {
+    public final Object visit(MethodLikeNode node, Object data) {
 
         int cyclo = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloOptions);
         if (cyclo >= methodReportLevel) {

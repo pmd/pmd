@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.MethodLike;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.metrics.BasicProjectMemoizer;
 
 /**
@@ -13,6 +13,6 @@ import net.sourceforge.pmd.lang.metrics.BasicProjectMemoizer;
  *
  * @author Clément Fournier
  */
-class JavaProjectMemoizer extends BasicProjectMemoizer<ASTAnyTypeDeclaration, MethodLike> {
+class JavaProjectMemoizer extends BasicProjectMemoizer<ASTAnyTypeDeclaration, MethodLikeNode> {
 
 }

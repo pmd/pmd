@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.metrics.api;
 
-import net.sourceforge.pmd.lang.java.ast.MethodLike;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.metrics.Metric;
 
 /**
@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.metrics.Metric;
  *
  * @author Clément Fournier
  */
-public interface JavaOperationMetric extends Metric<MethodLike> {
+public interface JavaOperationMetric extends Metric<MethodLikeNode> {
 
 
 }

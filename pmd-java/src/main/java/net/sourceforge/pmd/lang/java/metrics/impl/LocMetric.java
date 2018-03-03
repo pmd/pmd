@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.MethodLike;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
@@ -21,13 +21,13 @@ public final class LocMetric {
     public static final class LocOperationMetric extends AbstractJavaOperationMetric {
 
         @Override
-        public boolean supports(MethodLike node) {
+        public boolean supports(MethodLikeNode node) {
             return true;
         }
 
 
         @Override
-        public double computeFor(MethodLike node, MetricOptions options) {
+        public double computeFor(MethodLikeNode node, MetricOptions options) {
             return 1 + node.getEndLine() - node.getBeginLine();
         }
     }

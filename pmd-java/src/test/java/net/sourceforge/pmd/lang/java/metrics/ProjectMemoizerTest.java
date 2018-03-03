@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
-import net.sourceforge.pmd.lang.java.ast.MethodLike;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
@@ -34,7 +34,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 public class ProjectMemoizerTest {
 
     private MetricKey<ASTAnyTypeDeclaration> classMetricKey = MetricKeyUtil.of(null, new RandomClassMetric());
-    private MetricKey<MethodLike> opMetricKey = MetricKeyUtil.of(null, new RandomOperationMetric());
+    private MetricKey<MethodLikeNode> opMetricKey = MetricKeyUtil.of(null, new RandomOperationMetric());
 
 
     @Test
@@ -73,7 +73,7 @@ public class ProjectMemoizerTest {
         acu.jjtAccept(new JavaParserVisitorReducedAdapter() {
             @Override
             public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-                MetricMemoizer<MethodLike> op = toplevel.getOperationMemoizer(node.getQualifiedName());
+                MetricMemoizer<MethodLikeNode> op = toplevel.getOperationMemoizer(node.getQualifiedName());
                 result.add((int) JavaMetricsComputer.INSTANCE.computeForOperation(opMetricKey, node, force,
                                                                                   MetricOptions.emptyOptions(), op));
                 return super.visit(node, data);
@@ -99,7 +99,7 @@ public class ProjectMemoizerTest {
 
 
         @Override
-        public double computeFor(MethodLike node, MetricOptions options) {
+        public double computeFor(MethodLikeNode node, MetricOptions options) {
             return random.nextInt();
         }
     }

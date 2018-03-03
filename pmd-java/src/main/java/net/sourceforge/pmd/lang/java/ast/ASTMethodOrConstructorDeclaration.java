@@ -12,10 +12,10 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
  * Groups method and constructor declarations under a common type.
  *
  * @author Clément Fournier
- * @see MethodLike
+ * @see MethodLikeNode
  * @since 5.8.1
  */
-public interface ASTMethodOrConstructorDeclaration extends MethodLike, SignedNode<ASTMethodOrConstructorDeclaration> {
+public interface ASTMethodOrConstructorDeclaration extends MethodLikeNode, SignedNode<ASTMethodOrConstructorDeclaration> {
     @Override
     JavaOperationSignature getSignature();
 }

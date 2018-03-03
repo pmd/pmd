@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import net.sourceforge.pmd.lang.java.ast.MethodLike;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaMetric;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetric;
 
@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetric;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractJavaOperationMetric extends AbstractJavaMetric<MethodLike>
+public abstract class AbstractJavaOperationMetric extends AbstractJavaMetric<MethodLikeNode>
         implements JavaOperationMetric {
 
     /**
@@ -25,7 +25,7 @@ public abstract class AbstractJavaOperationMetric extends AbstractJavaMetric<Met
      *
      * @return True if the metric can be computed on this operation
      */
-    public boolean supports(MethodLike node) {
+    public boolean supports(MethodLikeNode node) {
         return !node.isAbstract();
     }
 }
