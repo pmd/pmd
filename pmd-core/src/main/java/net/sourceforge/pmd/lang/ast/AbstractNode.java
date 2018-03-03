@@ -340,14 +340,18 @@ public abstract class AbstractNode implements Node {
     }
 
 
-    private static <T> T getFirstDescendantOfType(Class<T> descendantType, Node node) {
-        int n = node.jjtGetNumChildren();
+    private static <T> T getFirstDescendantOfType(final Class<T> descendantType, final Node node) {
+        if (node.isFindBoundary()) {
+            return null;
+        }
+        
+        final int n = node.jjtGetNumChildren();
         for (int i = 0; i < n; i++) {
             Node n1 = node.jjtGetChild(i);
             if (descendantType.isAssignableFrom(n1.getClass())) {
                 return descendantType.cast(n1);
             }
-            T n2 = getFirstDescendantOfType(descendantType, n1);
+            final T n2 = getFirstDescendantOfType(descendantType, n1);
             if (n2 != null) {
                 return n2;
             }
