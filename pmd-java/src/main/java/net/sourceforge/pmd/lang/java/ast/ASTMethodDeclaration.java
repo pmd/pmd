@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 
-public class ASTMethodDeclaration extends ASTMethodOrConstructorDeclaration implements DFAGraphMethod {
+public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration implements DFAGraphMethod {
 
 
     public ASTMethodDeclaration(int id) {

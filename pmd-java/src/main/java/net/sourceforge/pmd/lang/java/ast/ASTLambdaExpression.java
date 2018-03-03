@@ -6,7 +6,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTLambdaExpression extends MethodLike {
+public class ASTLambdaExpression extends AbstractMethodLikeNode {
     public ASTLambdaExpression(int id) {
         super(id);
     }

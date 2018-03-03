@@ -15,26 +15,7 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
  * @see MethodLike
  * @since 5.8.1
  */
-public abstract class ASTMethodOrConstructorDeclaration extends MethodLike implements SignedNode<ASTMethodOrConstructorDeclaration> {
-    private JavaOperationSignature signature;
-
-
-    public ASTMethodOrConstructorDeclaration(int i) {
-        super(i);
-    }
-
-
-    public ASTMethodOrConstructorDeclaration(JavaParser parser, int i) {
-        super(parser, i);
-    }
-
-
+public interface ASTMethodOrConstructorDeclaration extends MethodLike, SignedNode<ASTMethodOrConstructorDeclaration> {
     @Override
-    public JavaOperationSignature getSignature() {
-        if (signature == null) {
-            signature = JavaOperationSignature.buildFor(this);
-        }
-
-        return signature;
-    }
+    JavaOperationSignature getSignature();
 }

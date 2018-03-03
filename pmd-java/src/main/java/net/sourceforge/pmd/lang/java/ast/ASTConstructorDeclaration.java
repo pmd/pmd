@@ -6,7 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
-public class ASTConstructorDeclaration extends ASTMethodOrConstructorDeclaration {
+public class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration {
 
     private boolean containsComment;
 
