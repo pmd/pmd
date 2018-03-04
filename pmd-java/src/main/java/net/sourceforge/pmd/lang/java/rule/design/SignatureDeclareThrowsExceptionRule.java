@@ -155,7 +155,9 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTConstructorDeclaration constructorDeclaration, Object o) {
-        checkExceptions(constructorDeclaration, o);
+        if (!junitImported || !getProperty(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR)) {
+            checkExceptions(constructorDeclaration, o);
+        }
 
         return super.visit(constructorDeclaration, o);
     }
