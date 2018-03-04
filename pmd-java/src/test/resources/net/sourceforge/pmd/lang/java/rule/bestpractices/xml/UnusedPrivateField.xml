@@ -541,6 +541,42 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>#907 UnusedPrivateField false-positive with @FXML</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        import javafx.fxml.FXML;
+
+        public class NodeInfoPanelController {
+            @FXML
+            private TabPane nodeInfoTabPane;
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#907 UnusedPrivateField false-positive with @FXML</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+            @Deprecated
+            private String bar;
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#907 UnusedPrivateField false-positive with @FXML</description>
+        <rule-property name="ignoredAnnotations">javafx.fxml.FXML</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+            @Deprecated
+            private String bar;
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#1428 False positive in UnusedPrivateField when local variable hides member variable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
