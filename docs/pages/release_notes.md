@@ -39,6 +39,9 @@ Both are bugfixing releases.
 
 ### API Changes
 
+* The static method `PMDParameters.transformParametersIntoConfiguration(PMDParameters)` is now deprecated,
+  for removal in 7.0.0. The new instance method `PMDParameters.toConfiguration()` replaces it.
+
 ### External Contributions
 
 * [#941](https://github.com/pmd/pmd/pull/941): \[java] Use char notation to represent a character to improve performance - [reudismam](https://github.com/reudismam)

@@ -203,6 +203,13 @@ public class PMD {
             return 0;
         }
 
+        // Log warning only once, if not explicitly disabled
+        if (!configuration.isIgnoreIncrementalAnalysis() && LOG.isLoggable(Level.WARNING)) {
+            final String version = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
+            LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
+                                + "https://pmd.github.io/" + version + "/pmd_userdocs_getting_started.html#incremental-analysis");
+        }
+
         Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
         List<DataSource> files = getApplicableFiles(configuration, languages);
 

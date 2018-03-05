@@ -152,8 +152,43 @@ public class PMDParameters {
      * @throws IllegalArgumentException if the parameters are inconsistent or incomplete
      */
     public PMDConfiguration toConfiguration() {
-        // the static method could probably be deprecated in favour of this one
-        return transformParametersIntoConfiguration(this);
+        if (null == this.getSourceDir() && null == this.getUri() && null == this.getFileListPath()) {
+            throw new IllegalArgumentException(
+                    "Please provide a parameter for source root directory (-dir or -d), database URI (-uri or -u), or file list path (-filelist).");
+        }
+        PMDConfiguration configuration = new PMDConfiguration();
+        configuration.setInputPaths(this.getSourceDir());
+        configuration.setInputFilePath(this.getFileListPath());
+        configuration.setInputUri(this.getUri());
+        configuration.setReportFormat(this.getFormat());
+        configuration.setBenchmark(this.isBenchmark());
+        configuration.setDebug(this.isDebug());
+        configuration.setMinimumPriority(this.getMinimumPriority());
+        configuration.setReportFile(this.getReportfile());
+        configuration.setReportProperties(this.getProperties());
+        configuration.setReportShortNames(this.isShortnames());
+        configuration.setRuleSets(this.getRulesets());
+        configuration.setRuleSetFactoryCompatibilityEnabled(!this.noRuleSetCompatibility);
+        configuration.setShowSuppressedViolations(this.isShowsuppressed());
+        configuration.setSourceEncoding(this.getEncoding());
+        configuration.setStressTest(this.isStress());
+        configuration.setSuppressMarker(this.getSuppressmarker());
+        configuration.setThreads(this.getThreads());
+        configuration.setFailOnViolation(this.isFailOnViolation());
+        configuration.setAnalysisCacheLocation(this.cacheLocation);
+        configuration.setIgnoreIncrementalAnalysis(this.isIgnoreIncrementalAnalysis());
+
+        LanguageVersion languageVersion = LanguageRegistry
+                .findLanguageVersionByTerseName(this.getLanguage() + ' ' + this.getVersion());
+        if (languageVersion != null) {
+            configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
+        }
+        try {
+            configuration.prependClasspath(this.getAuxclasspath());
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Invalid auxiliary classpath: " + e.getMessage(), e);
+        }
+        return configuration;
     }
 
 
@@ -162,44 +197,13 @@ public class PMDParameters {
     }
 
 
+    /**
+     * {@link #toConfiguration()}.
+     * @deprecated To be removed in 7.0.0. Use the instance method {@link #toConfiguration()}.
+     */
+    @Deprecated
     public static PMDConfiguration transformParametersIntoConfiguration(PMDParameters params) {
-        if (null == params.getSourceDir() && null == params.getUri() && null == params.getFileListPath()) {
-            throw new IllegalArgumentException(
-                    "Please provide a parameter for source root directory (-dir or -d), database URI (-uri or -u), or file list path (-filelist).");
-        }
-        PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths(params.getSourceDir());
-        configuration.setInputFilePath(params.getFileListPath());
-        configuration.setInputUri(params.getUri());
-        configuration.setReportFormat(params.getFormat());
-        configuration.setBenchmark(params.isBenchmark());
-        configuration.setDebug(params.isDebug());
-        configuration.setMinimumPriority(params.getMinimumPriority());
-        configuration.setReportFile(params.getReportfile());
-        configuration.setReportProperties(params.getProperties());
-        configuration.setReportShortNames(params.isShortnames());
-        configuration.setRuleSets(params.getRulesets());
-        configuration.setRuleSetFactoryCompatibilityEnabled(!params.noRuleSetCompatibility);
-        configuration.setShowSuppressedViolations(params.isShowsuppressed());
-        configuration.setSourceEncoding(params.getEncoding());
-        configuration.setStressTest(params.isStress());
-        configuration.setSuppressMarker(params.getSuppressmarker());
-        configuration.setThreads(params.getThreads());
-        configuration.setFailOnViolation(params.isFailOnViolation());
-        configuration.setAnalysisCacheLocation(params.cacheLocation);
-        configuration.setIgnoreIncrementalAnalysis(params.isIgnoreIncrementalAnalysis());
-
-        LanguageVersion languageVersion = LanguageRegistry
-                .findLanguageVersionByTerseName(params.getLanguage() + ' ' + params.getVersion());
-        if (languageVersion != null) {
-            configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
-        }
-        try {
-            configuration.prependClasspath(params.getAuxclasspath());
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Invalid auxiliary classpath: " + e.getMessage(), e);
-        }
-        return configuration;
+        return params.toConfiguration();
     }
 
     public boolean isDebug() {

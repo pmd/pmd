@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.cache.AnalysisCache;
@@ -110,7 +109,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     private boolean stressTest;
     private boolean benchmark;
-    private AnalysisCache analysisCache;
+    private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
 
     /**
@@ -558,8 +557,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Sets the rule set factory compatibility feature enabled/disabled.
      *
-     * @param ruleSetFactoryCompatibilityEnabled
-     *            <code>true</code> if the feature should be enabled
+     * @param ruleSetFactoryCompatibilityEnabled {@code true} if the feature should be enabled
      *
      * @see RuleSetFactoryCompatibility
      */
@@ -576,7 +574,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         // Make sure we are not null
         if (analysisCache == null || isIgnoreIncrementalAnalysis() && isAnalysisCacheFunctional()) {
             // sets a noop cache
-            setAnalysisCache(null);
+            setAnalysisCache(new NoopAnalysisCache());
         }
 
         return analysisCache;
@@ -587,22 +585,17 @@ public class PMDConfiguration extends AbstractConfiguration {
      * value of {@code null} will cause a Noop AnalysisCache to be used.
      * If incremental analysis was explicitly disabled ({@link #isIgnoreIncrementalAnalysis()}),
      * then this method is a noop.
-     * 
+     *
      * @param cache The analysis cache to be used.
      */
     public void setAnalysisCache(final AnalysisCache cache) {
         if (cache == null && isAnalysisCacheFunctional()) {
             analysisCache = new NoopAnalysisCache();
-
-            // Log warning only once, if not explicitly disabled
-            if (!isIgnoreIncrementalAnalysis() && LOG.isLoggable(Level.WARNING)) {
-                final String version = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
-                LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
-                                    + "https://pmd.github.io/" + version + "/pmd_userdocs_getting_started.html#incremental-analysis");
-            }
-        } else if (!isIgnoreIncrementalAnalysis()) { // ignore new value if incr. analysis is disabled
+        } else {
             analysisCache = cache;
         }
+        // the doc says it's a noop if incremental analysis was disabled,
+        // but it's actually the getter that enforces that
     }
 
     /**
@@ -612,11 +605,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param cacheLocation The location of the analysis cache to be used.
      */
     public void setAnalysisCacheLocation(final String cacheLocation) {
-        if (cacheLocation == null) {
-            setAnalysisCache(null);
-        } else {
-            setAnalysisCache(new FileAnalysisCache(new File(cacheLocation)));
-        }
+        setAnalysisCache(cacheLocation == null
+                                 ? new NoopAnalysisCache()
+                                 : new FileAnalysisCache(new File(cacheLocation)));
     }
 
     /** Returns true if the current analysis cache isn't noop. */
