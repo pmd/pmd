@@ -237,14 +237,12 @@ public abstract class AbstractNode implements Node {
         return parents;
     }
 
-
     @Override
     public <T> List<T> findDescendantsOfType(Class<T> targetType) {
         List<T> list = new ArrayList<>();
-        findDescendantsOfType(this, targetType, list, true);
+        findDescendantsOfType(this, targetType, list, false);
         return list;
     }
-
 
     @Override
     public <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossBoundaries) {
@@ -254,17 +252,15 @@ public abstract class AbstractNode implements Node {
     private static <T> void findDescendantsOfType(Node node, Class<T> targetType, List<T> results,
             boolean crossFindBoundaries) {
 
-        if (!crossFindBoundaries && node.isFindBoundary()) {
-            return;
-        }
-
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node child = node.jjtGetChild(i);
             if (child.getClass() == targetType) {
                 results.add(targetType.cast(child));
             }
 
-            findDescendantsOfType(child, targetType, results, crossFindBoundaries);
+            if (crossFindBoundaries || !child.isFindBoundary()) {
+                findDescendantsOfType(child, targetType, results, crossFindBoundaries);
+            }
         }
     }
 
@@ -341,19 +337,17 @@ public abstract class AbstractNode implements Node {
 
 
     private static <T> T getFirstDescendantOfType(final Class<T> descendantType, final Node node) {
-        if (node.isFindBoundary()) {
-            return null;
-        }
-        
         final int n = node.jjtGetNumChildren();
         for (int i = 0; i < n; i++) {
             Node n1 = node.jjtGetChild(i);
             if (descendantType.isAssignableFrom(n1.getClass())) {
                 return descendantType.cast(n1);
             }
-            final T n2 = getFirstDescendantOfType(descendantType, n1);
-            if (n2 != null) {
-                return n2;
+            if (!n1.isFindBoundary()) {
+                final T n2 = getFirstDescendantOfType(descendantType, n1);
+                if (n2 != null) {
+                    return n2;
+                }
             }
         }
         return null;

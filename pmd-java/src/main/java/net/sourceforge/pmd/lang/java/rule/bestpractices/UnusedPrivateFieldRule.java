@@ -100,14 +100,16 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
         nodes.addAll(enumConstants);
 
         for (JavaNode node : nodes) {
-            List<ASTPrimarySuffix> primarySuffixes = node.findDescendantsOfType(ASTPrimarySuffix.class);
+            List<ASTPrimarySuffix> primarySuffixes = new ArrayList<>();
+            node.findDescendantsOfType(ASTPrimarySuffix.class, primarySuffixes, true);
             for (ASTPrimarySuffix primarySuffix : primarySuffixes) {
                 if (decl.getImage().equals(primarySuffix.getImage())) {
                     return true; // No violation
                 }
             }
 
-            List<ASTPrimaryPrefix> primaryPrefixes = node.findDescendantsOfType(ASTPrimaryPrefix.class);
+            List<ASTPrimaryPrefix> primaryPrefixes = new ArrayList<>();
+            node.findDescendantsOfType(ASTPrimaryPrefix.class, primaryPrefixes, true);
             for (ASTPrimaryPrefix primaryPrefix : primaryPrefixes) {
                 ASTName name = primaryPrefix.getFirstDescendantOfType(ASTName.class);
 

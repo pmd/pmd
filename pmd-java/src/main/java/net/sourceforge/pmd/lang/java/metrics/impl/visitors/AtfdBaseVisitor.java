@@ -103,7 +103,7 @@ public class AtfdBaseVisitor extends JavaParserVisitorAdapter {
 
 
     private boolean isAttributeAccess(ASTPrimaryExpression node) {
-        return node.findDescendantsOfType(ASTPrimarySuffix.class).isEmpty();
+        return !node.hasDescendantOfType(ASTPrimarySuffix.class);
     }
 
 }

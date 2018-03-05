@@ -18,6 +18,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -129,7 +130,8 @@ public class AcceptanceTest extends STBBaseTst {
     @Test
     public void testInnerOuterClass() {
         parseCode(TEST_INNER_CLASS);
-        ASTVariableDeclaratorId vdi = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
+        ASTVariableDeclaratorId vdi = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(1) // get inner class
+                .findDescendantsOfType(ASTVariableDeclaratorId.class).get(0); // get first declaration
         List<NameOccurrence> usages = vdi.getUsages();
         assertEquals(2, usages.size());
         assertEquals(5, usages.get(0).getLocation().getBeginLine());

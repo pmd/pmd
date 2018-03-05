@@ -199,22 +199,26 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 
         SortedMap<Integer, Node> itemsByLineNumber = new TreeMap<>();
 
-        List<ASTClassOrInterfaceDeclaration> packageDecl = cUnit
-                .findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
-        addDeclarations(itemsByLineNumber, packageDecl);
+        List<ASTClassOrInterfaceDeclaration> classDecl = new ArrayList<>();
+        cUnit.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class, classDecl, true);
+        addDeclarations(itemsByLineNumber, classDecl);
 
         addDeclarations(itemsByLineNumber, cUnit.getComments());
 
-        List<ASTFieldDeclaration> fields = cUnit.findDescendantsOfType(ASTFieldDeclaration.class);
+        List<ASTFieldDeclaration> fields = new ArrayList<>();
+        cUnit.findDescendantsOfType(ASTFieldDeclaration.class, fields, true);
         addDeclarations(itemsByLineNumber, fields);
 
-        List<ASTMethodDeclaration> methods = cUnit.findDescendantsOfType(ASTMethodDeclaration.class);
+        List<ASTMethodDeclaration> methods = new ArrayList<>();
+        cUnit.findDescendantsOfType(ASTMethodDeclaration.class, methods, true);
         addDeclarations(itemsByLineNumber, methods);
 
-        List<ASTConstructorDeclaration> constructors = cUnit.findDescendantsOfType(ASTConstructorDeclaration.class);
+        List<ASTConstructorDeclaration> constructors = new ArrayList<>();
+        cUnit.findDescendantsOfType(ASTConstructorDeclaration.class, constructors, true);
         addDeclarations(itemsByLineNumber, constructors);
 
-        List<ASTEnumDeclaration> enumDecl = cUnit.findDescendantsOfType(ASTEnumDeclaration.class);
+        List<ASTEnumDeclaration> enumDecl = new ArrayList<>();
+        cUnit.findDescendantsOfType(ASTEnumDeclaration.class, enumDecl, true);
         addDeclarations(itemsByLineNumber, enumDecl);
 
         return itemsByLineNumber;

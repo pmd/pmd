@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -13,6 +14,8 @@ import org.junit.Test;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
@@ -65,7 +68,10 @@ public class ScopeAndDeclarationFinderTest extends STBBaseTst {
         ClassScope cs = (ClassScope) acu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getScope();
         Assert.assertEquals(1, cs.getClassDeclarations().size()); // There should be 1 anonymous class
 
-        List<ASTMethodDeclarator> methods = acu.findDescendantsOfType(ASTMethodDeclarator.class);
+        List<ASTMethodDeclarator> methods = new ArrayList<>();
+        acu.getFirstDescendantOfType(ASTClassOrInterfaceBody.class) // outer class
+                .getFirstDescendantOfType(ASTClassOrInterfaceBody.class) // inner class
+                .findDescendantsOfType(ASTMethodDeclarator.class, methods, true); // inner class methods
         Assert.assertEquals(2, methods.size());
         ClassScope scope1 = methods.get(0).getScope().getEnclosingScope(ClassScope.class);
         ClassScope scope2 = methods.get(1).getScope().getEnclosingScope(ClassScope.class);
