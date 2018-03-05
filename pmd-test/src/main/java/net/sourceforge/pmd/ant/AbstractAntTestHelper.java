@@ -63,6 +63,17 @@ public abstract class AbstractAntTestHelper {
         }
     }
 
+
+    /**
+     * Returns the current temporary file. Replaced by a fresh (inexistent)
+     * file before each test.
+     */
+    public File currentTempFile() {
+        String tmpname = buildRule.getProject().getProperty("tmpfile");
+        return tmpname == null ? null : new File(tmpname);
+    }
+
+
     private void validatePostConstruct() {
         if (pathToTestScript == null || "".equals(pathToTestScript) || antTestScriptFilename == null
                 || "".equals(antTestScriptFilename) || mvnWorkaround == null || "".equals(mvnWorkaround)) {

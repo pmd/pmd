@@ -7,7 +7,6 @@ package net.sourceforge.pmd.ant;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.Locale;
@@ -146,7 +145,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         setDefaultCharset("cp1252");
 
         executeTarget("testFormatterEncodingWithXML");
-        String report = FileUtils.readFileToString(new File("target/testFormatterEncodingWithXML-pmd.xml"), "UTF-8");
+        String report = FileUtils.readFileToString(currentTempFile(), "UTF-8");
         assertTrue(report.contains("unusedVariableWithÜmlaut"));
     }
 
@@ -173,7 +172,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         assertOutputContaining("Avoid really long methods");
         assertDoesntContain(buildRule.getLog(), "This analysis could be faster");
 
-        assertTrue(new File(buildRule.getProject().getProperty("tmpfile")).exists());
+        assertTrue(currentTempFile().exists());
     }
 
 
@@ -183,6 +182,6 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         assertOutputContaining("Avoid really long methods");
         assertDoesntContain(buildRule.getLog(), "This analysis could be faster");
 
-        assertFalse(new File(buildRule.getProject().getProperty("tmpfile")).exists());
+        assertFalse(currentTempFile().exists());
     }
 }

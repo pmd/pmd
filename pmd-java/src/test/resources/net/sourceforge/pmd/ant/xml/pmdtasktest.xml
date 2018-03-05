@@ -115,7 +115,7 @@
             <!--
             <formatter type="xml" toConsole="true"/>
             -->
-            <formatter type="xml" toFile="${pmd.home}/target/testFormatterEncodingWithXML-pmd.xml">
+            <formatter type="xml" toFile="${tmpfile}">
                 <param name="encoding" value="UTF-8" /> <!-- report encoding -->
             </formatter>
             <fileset dir="${pmd.home}/src/test/resources/ant/java">
