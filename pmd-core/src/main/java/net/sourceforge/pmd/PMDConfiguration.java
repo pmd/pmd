@@ -572,7 +572,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public AnalysisCache getAnalysisCache() {
         // Make sure we are not null
-        if (analysisCache == null || isIgnoreIncrementalAnalysis() && isAnalysisCacheFunctional()) {
+        if (analysisCache == null || isIgnoreIncrementalAnalysis() && !(analysisCache instanceof NoopAnalysisCache)) {
             // sets a noop cache
             setAnalysisCache(new NoopAnalysisCache());
         }
@@ -589,13 +589,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param cache The analysis cache to be used.
      */
     public void setAnalysisCache(final AnalysisCache cache) {
-        if (cache == null && isAnalysisCacheFunctional()) {
-            analysisCache = new NoopAnalysisCache();
-        } else {
-            analysisCache = cache;
-        }
         // the doc says it's a noop if incremental analysis was disabled,
         // but it's actually the getter that enforces that
+        this.analysisCache = cache == null ? new NoopAnalysisCache() : cache;
     }
 
     /**
@@ -610,10 +606,6 @@ public class PMDConfiguration extends AbstractConfiguration {
                                  : new FileAnalysisCache(new File(cacheLocation)));
     }
 
-    /** Returns true if the current analysis cache isn't noop. */
-    private boolean isAnalysisCacheFunctional() {
-        return !(analysisCache instanceof NoopAnalysisCache);
-    }
 
     /**
      * Sets whether the user has explicitly disabled incremental analysis or not.

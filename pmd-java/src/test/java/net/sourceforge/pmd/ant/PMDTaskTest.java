@@ -149,12 +149,26 @@ public class PMDTaskTest extends AbstractAntTestHelper {
     }
 
     @Test
-    public void testFormatterEncodingWithXMLConsole() throws Exception {
+    public void testFormatterEncodingWithXMLConsole() {
         setDefaultCharset("cp1252");
 
         executeTarget("testFormatterEncodingWithXMLConsole");
         String report = buildRule.getOutput();
         Assert.assertTrue(report.startsWith("<?xml version=\"1.0\" encoding=\"windows-1252\"?>"));
         Assert.assertTrue(report.contains("unusedVariableWith&#xdc;mlaut"));
+    }
+
+    // The following two tests just test that the switches are recognised. How to test analysis cache?
+
+    @Test
+    public void testAnalysisCache() {
+        executeTarget("testAnalysisCache");
+        assertOutputContaining("Avoid really long methods");
+    }
+
+    @Test
+    public void testDisableIncrementalAnalysis() {
+        executeTarget("testDisableIncrementalAnalysis");
+        assertOutputContaining("Avoid really long methods");
     }
 }

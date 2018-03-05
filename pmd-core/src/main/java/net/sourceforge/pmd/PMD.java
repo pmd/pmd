@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.benchmark.TextReport;
+import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PMDParameters;
 import net.sourceforge.pmd.lang.Language;
@@ -203,8 +204,9 @@ public class PMD {
             return 0;
         }
 
-        // Log warning only once, if not explicitly disabled
-        if (!configuration.isIgnoreIncrementalAnalysis() && LOG.isLoggable(Level.WARNING)) {
+        if (!configuration.isIgnoreIncrementalAnalysis()
+                && configuration.getAnalysisCache() instanceof NoopAnalysisCache
+                && LOG.isLoggable(Level.WARNING)) {
             final String version = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
             LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
                                 + "https://pmd.github.io/" + version + "/pmd_userdocs_getting_started.html#incremental-analysis");

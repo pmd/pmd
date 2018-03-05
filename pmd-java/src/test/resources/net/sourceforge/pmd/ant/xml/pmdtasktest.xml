@@ -143,4 +143,22 @@
             </fileset>
         </pmd>
     </target>
+
+	<target name="testAnalysisCache">
+		<pmd rulesetfiles="src/main/resources/category/java/design.xml/ExcessiveMethodLength" cacheLocation="/home/user/.pmd/cache">
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testDisableIncrementalAnalysis">
+		<pmd rulesetfiles="src/main/resources/category/java/design.xml/ExcessiveMethodLength" noCache="true" cacheLocation="/home/user/.pmd/cache">
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
 </project>
