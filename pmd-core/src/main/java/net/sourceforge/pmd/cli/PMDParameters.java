@@ -102,6 +102,9 @@ public class PMDParameters {
     @Parameter(names = "-cache", description = "Specify the location of the cache file for incremental analysis.")
     private String cacheLocation = null;
 
+    @Parameter(names = "-no-cache", description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
+    private boolean noCache = false;
+
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
 
@@ -140,6 +143,25 @@ public class PMDParameters {
         }
     }
 
+
+    /**
+     * Converts these parameters into a configuration.
+     *
+     * @return A new PMDConfiguration corresponding to these parameters
+     *
+     * @throws IllegalArgumentException if the parameters are inconsistent or incomplete
+     */
+    public PMDConfiguration toConfiguration() {
+        // the static method could probably be deprecated in favour of this one
+        return transformParametersIntoConfiguration(this);
+    }
+
+
+    public boolean isIgnoreIncrementalAnalysis() {
+        return noCache;
+    }
+
+
     public static PMDConfiguration transformParametersIntoConfiguration(PMDParameters params) {
         if (null == params.getSourceDir() && null == params.getUri() && null == params.getFileListPath()) {
             throw new IllegalArgumentException(
@@ -165,6 +187,7 @@ public class PMDParameters {
         configuration.setThreads(params.getThreads());
         configuration.setFailOnViolation(params.isFailOnViolation());
         configuration.setAnalysisCacheLocation(params.cacheLocation);
+        configuration.setIgnoreIncrementalAnalysis(params.isIgnoreIncrementalAnalysis());
 
         LanguageVersion languageVersion = LanguageRegistry
                 .findLanguageVersionByTerseName(params.getLanguage() + ' ' + params.getVersion());

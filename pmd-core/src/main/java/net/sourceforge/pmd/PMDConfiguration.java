@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.FileAnalysisCache;
@@ -81,6 +83,9 @@ import net.sourceforge.pmd.util.IOUtil;
  */
 public class PMDConfiguration extends AbstractConfiguration {
 
+    private static final Logger LOG = Logger.getLogger(PMDConfiguration.class.getName());
+
+
     // General behavior options
     private String suppressMarker = PMD.SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
@@ -106,6 +111,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean stressTest;
     private boolean benchmark;
     private AnalysisCache analysisCache;
+    private boolean ignoreIncrementalAnalysis;
 
     /**
      * Get the suppress marker. This is the source level marker used to indicate
@@ -568,7 +574,8 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public AnalysisCache getAnalysisCache() {
         // Make sure we are not null
-        if (analysisCache == null) {
+        if (analysisCache == null || isIgnoreIncrementalAnalysis() && isAnalysisCacheFunctional()) {
+            // sets a noop cache
             setAnalysisCache(null);
         }
 
@@ -577,14 +584,23 @@ public class PMDConfiguration extends AbstractConfiguration {
     
     /**
      * Sets the analysis cache to be used. Setting a
-     * value of <code>null</code> will cause a Noop AnalysisCache to be used.
+     * value of {@code null} will cause a Noop AnalysisCache to be used.
+     * If incremental analysis was explicitly disabled ({@link #isIgnoreIncrementalAnalysis()}),
+     * then this method is a noop.
      * 
      * @param cache The analysis cache to be used.
      */
     public void setAnalysisCache(final AnalysisCache cache) {
-        if (cache == null) {
+        if (cache == null && isAnalysisCacheFunctional()) {
             analysisCache = new NoopAnalysisCache();
-        } else {
+
+            // Log warning only once, if not explicitly disabled
+            if (!isIgnoreIncrementalAnalysis() && LOG.isLoggable(Level.WARNING)) {
+                final String version = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
+                LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
+                                    + "https://pmd.github.io/" + version + "/pmd_userdocs_getting_started.html#incremental-analysis");
+            }
+        } else if (!isIgnoreIncrementalAnalysis()) { // ignore new value if incr. analysis is disabled
             analysisCache = cache;
         }
     }
@@ -601,5 +617,33 @@ public class PMDConfiguration extends AbstractConfiguration {
         } else {
             setAnalysisCache(new FileAnalysisCache(new File(cacheLocation)));
         }
+    }
+
+    /** Returns true if the current analysis cache isn't noop. */
+    private boolean isAnalysisCacheFunctional() {
+        return !(analysisCache instanceof NoopAnalysisCache);
+    }
+
+    /**
+     * Sets whether the user has explicitly disabled incremental analysis or not.
+     * If so, incremental analysis is not used, and all suggestions to use it are
+     * disabled. The analysis cached location is ignored, even if it's specified.
+     *
+     * @param noCache Whether to ignore incremental analysis or not
+     */
+    public void setIgnoreIncrementalAnalysis(boolean noCache) {
+        // see #getAnalysisCache for the implementation.
+        this.ignoreIncrementalAnalysis = noCache;
+    }
+
+
+    /**
+     * Returns whether incremental analysis was explicitly disabled by the user
+     * or not.
+     *
+     * @return {@code true} if incremental analysis is explicitly disabled
+     */
+    public boolean isIgnoreIncrementalAnalysis() {
+        return ignoreIncrementalAnalysis;
     }
 }

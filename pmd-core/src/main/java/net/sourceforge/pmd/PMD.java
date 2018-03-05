@@ -437,7 +437,7 @@ public class PMD {
         int status = 0;
         long start = System.nanoTime();
         final PMDParameters params = PMDCommandLineInterface.extractParameters(new PMDParameters(), args, "pmd");
-        final PMDConfiguration configuration = PMDParameters.transformParametersIntoConfiguration(params);
+        final PMDConfiguration configuration = params.toConfiguration();
 
         final Level logLevel = params.isDebug() ? Level.FINER : Level.INFO;
         final Handler logHandler = new ConsoleLogHandler();
