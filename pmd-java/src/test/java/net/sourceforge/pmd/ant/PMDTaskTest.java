@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.ant;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
@@ -11,7 +14,6 @@ import java.util.Locale;
 import java.util.Objects;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
@@ -145,7 +147,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
 
         executeTarget("testFormatterEncodingWithXML");
         String report = FileUtils.readFileToString(new File("target/testFormatterEncodingWithXML-pmd.xml"), "UTF-8");
-        Assert.assertTrue(report.contains("unusedVariableWithÜmlaut"));
+        assertTrue(report.contains("unusedVariableWithÜmlaut"));
     }
 
     @Test
@@ -154,21 +156,33 @@ public class PMDTaskTest extends AbstractAntTestHelper {
 
         executeTarget("testFormatterEncodingWithXMLConsole");
         String report = buildRule.getOutput();
-        Assert.assertTrue(report.startsWith("<?xml version=\"1.0\" encoding=\"windows-1252\"?>"));
-        Assert.assertTrue(report.contains("unusedVariableWith&#xdc;mlaut"));
+        assertTrue(report.startsWith("<?xml version=\"1.0\" encoding=\"windows-1252\"?>"));
+        assertTrue(report.contains("unusedVariableWith&#xdc;mlaut"));
     }
 
-    // The following two tests just test that the switches are recognised. How to test analysis cache?
+    @Test
+    public void testMissingCacheLocation() {
+        executeTarget("testMissingCacheLocation");
+        assertOutputContaining("Avoid really long methods");
+        assertContains(buildRule.getLog(), "This analysis could be faster");
+    }
 
     @Test
     public void testAnalysisCache() {
         executeTarget("testAnalysisCache");
         assertOutputContaining("Avoid really long methods");
+        assertDoesntContain(buildRule.getLog(), "This analysis could be faster");
+
+        assertTrue(new File(buildRule.getProject().getProperty("tmpfile")).exists());
     }
+
 
     @Test
     public void testDisableIncrementalAnalysis() {
         executeTarget("testDisableIncrementalAnalysis");
         assertOutputContaining("Avoid really long methods");
+        assertDoesntContain(buildRule.getLog(), "This analysis could be faster");
+
+        assertFalse(new File(buildRule.getProject().getProperty("tmpfile")).exists());
     }
 }

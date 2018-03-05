@@ -7,12 +7,16 @@ package net.sourceforge.pmd.ant;
 import static java.io.File.separator;
 
 import java.io.File;
+import java.nio.file.Path;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.tools.ant.BuildFileRule;
 import org.apache.tools.ant.Project;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
+
 
 /**
  * Quite an ugly classe, arguably useful for just 2 units test - nevertheless as
@@ -46,6 +50,11 @@ public abstract class AbstractAntTestHelper {
         // initialize Ant
         buildRule.configureProject(pathToTestScript + separator + antTestScriptFilename);
 
+        // Each test case gets one temp file name, accessible with ${tmpfile}
+        // The file doesn't exist before the test is executed
+        Path tmpFilePath = FileUtils.getTempDirectory().toPath().resolve(RandomStringUtils.randomAlphabetic(30)).toAbsolutePath();
+        buildRule.getProject().setProperty("tmpfile", tmpFilePath.toString());
+
         Project project = buildRule.getProject();
         if (!project.getBaseDir().toString().endsWith(mvnWorkaround)) {
             // when running from maven, the path needs to be adapted...
@@ -66,7 +75,18 @@ public abstract class AbstractAntTestHelper {
     }
 
     public void assertOutputContaining(String text) {
-        Assert.assertTrue("Expected to find \"" + text + "\" in the output, but it's missing",
-                buildRule.getOutput().contains(text));
+        assertContains(buildRule.getOutput(), text);
+    }
+
+
+    public void assertContains(String text, String toFind) {
+        Assert.assertTrue("Expected to find \"" + toFind + "\", but it's missing",
+                          text.contains(toFind));
+    }
+
+
+    public void assertDoesntContain(String text, String toFind) {
+        Assert.assertTrue("Expected no occurrence of \"" + toFind + "\", but found at least one",
+                          !text.contains(toFind));
     }
 }

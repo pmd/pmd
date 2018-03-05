@@ -256,6 +256,7 @@ public class PMDTask extends Task {
         this.cacheLocation = cacheLocation;
     }
 
+
     public boolean isNoCache() {
         return noCache;
     }
