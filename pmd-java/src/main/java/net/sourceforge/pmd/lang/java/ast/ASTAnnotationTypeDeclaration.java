@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
-public class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration{
+public class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration {
 
 
     public ASTAnnotationTypeDeclaration(int id) {
