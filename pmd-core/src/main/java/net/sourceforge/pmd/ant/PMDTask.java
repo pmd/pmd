@@ -36,6 +36,7 @@ public class PMDTask extends Task {
     private String failuresPropertyName;
     private SourceLanguage sourceLanguage;
     private String cacheLocation;
+    private boolean noCache;
     private final Collection<RuleSetWrapper> nestedRules = new ArrayList<>();
 
     @Override
@@ -253,5 +254,13 @@ public class PMDTask extends Task {
 
     public void setCacheLocation(String cacheLocation) {
         this.cacheLocation = cacheLocation;
+    }
+
+    public boolean isNoCache() {
+        return noCache;
+    }
+
+    public void setNoCache(boolean noCache) {
+        this.noCache = noCache;
     }
 }

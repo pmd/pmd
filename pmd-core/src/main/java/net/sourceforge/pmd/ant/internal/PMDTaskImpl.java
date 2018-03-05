@@ -81,6 +81,7 @@ public class PMDTaskImpl {
         this.failuresPropertyName = task.getFailuresPropertyName();
         configuration.setMinimumPriority(RulePriority.valueOf(task.getMinimumPriority()));
         configuration.setAnalysisCacheLocation(task.getCacheLocation());
+        configuration.setIgnoreIncrementalAnalysis(task.isNoCache());
 
         SourceLanguage version = task.getSourceLanguage();
         if (version != null) {
