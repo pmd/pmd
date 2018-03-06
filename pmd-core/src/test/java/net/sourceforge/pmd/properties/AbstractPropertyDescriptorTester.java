@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -55,11 +56,13 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     public void testFactorySingleValue() {
         PropertyDescriptor<T> prop = getSingleFactory().build(getPropertyDescriptorValues());
         T originalValue = createValue();
-        T value = prop.valueFrom(
-                originalValue instanceof Class ? ((Class) originalValue).getName() : String.valueOf(originalValue));
-        String asDelimitedString = prop.asDelimitedString(value);
-        Object value2 = prop.valueFrom(asDelimitedString);
-        assertEquals(value, value2);
+        T value = prop.valueFrom(originalValue instanceof Class ? ((Class) originalValue).getName() : String.valueOf(originalValue));
+        T value2 = prop.valueFrom(prop.asDelimitedString(value));
+        if (Pattern.class.equals(prop.type())) {
+            assertEquals(String.valueOf(value), String.valueOf(value2));
+        } else {
+            assertEquals(value, value2);
+        }
     }
 
 
@@ -188,7 +191,11 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
         T returnedValue = pmdProp.valueFrom(storeValue);
 
-        assertEquals(returnedValue, testValue);
+        if (Pattern.class.equals(pmdProp.type())) {
+            assertEquals(String.valueOf(returnedValue), String.valueOf(testValue));
+        } else {
+            assertEquals(returnedValue, testValue);
+        }
     }
 
 
@@ -254,19 +261,26 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     @Test
     public void testIsMultiValue() {
         assertFalse(createProperty().isMultiValue());
-        assertTrue(createMultiProperty().isMultiValue());
     }
 
 
     @Test
+    public void testIsMultiValueMulti() {
+        assertTrue(createMultiProperty().isMultiValue());
+    }
+
+    @Test
     public void testAddAttributes() {
         Map<PropertyDescriptorField, String> atts = createProperty().attributeValuesById();
-        Map<PropertyDescriptorField, String> multiAtts = createMultiProperty().attributeValuesById();
-
         assertTrue(atts.containsKey(PropertyDescriptorField.NAME));
         assertTrue(atts.containsKey(PropertyDescriptorField.DESCRIPTION));
         assertTrue(atts.containsKey(PropertyDescriptorField.DEFAULT_VALUE));
+    }
 
+
+    @Test
+    public void testAddAttributesMulti() {
+        Map<PropertyDescriptorField, String> multiAtts = createMultiProperty().attributeValuesById();
         assertTrue(multiAtts.containsKey(PropertyDescriptorField.DELIMITER));
         assertTrue(multiAtts.containsKey(PropertyDescriptorField.NAME));
         assertTrue(multiAtts.containsKey(PropertyDescriptorField.DESCRIPTION));
@@ -276,10 +290,14 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
     @Test
     public void testType() {
-        assertNotNull(createMultiProperty().type());
         assertNotNull(createProperty().type());
     }
 
+
+    @Test
+    public void testTypeMulti() {
+        assertNotNull(createMultiProperty().type());
+    }
 
     static boolean randomBool() {
         return RANDOM.nextBoolean();
