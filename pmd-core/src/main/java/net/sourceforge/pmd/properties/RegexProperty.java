@@ -66,7 +66,7 @@ public final class RegexProperty extends AbstractSingleValueProperty<Pattern> {
 
         /**
          * Specify a default pattern for the property.
-         * The string value must be a valid regex pattern.
+         * The argument must be a valid regex pattern.
          *
          * @param val Regex pattern
          *
