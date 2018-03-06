@@ -31,6 +31,8 @@ public enum PropertyTypeId {
     CHARACTER("Character", CharacterProperty.extractor(), ValueParserConstants.CHARACTER_PARSER),
     CHARACTER_LIST("List[Character]", CharacterMultiProperty.extractor(), ValueParserConstants.CHARACTER_PARSER),
 
+    REGEX("Regex", RegexProperty.extractor(), ValueParserConstants.REGEX_PARSER),
+
     INTEGER("Integer", IntegerProperty.extractor(), ValueParserConstants.INTEGER_PARSER),
     INTEGER_LIST("List[Integer]", IntegerMultiProperty.extractor(), ValueParserConstants.INTEGER_PARSER),
     LONG("Long", LongProperty.extractor(), ValueParserConstants.LONG_PARSER),
