@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
@@ -11,10 +12,13 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.*;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
-public abstract class AbstractJavaRule extends AbstractRule implements JavaParserVisitor, ImmutableLanguage {
+public abstract class AbstractJavaRule extends AbstractRule implements JavaParserVisitor, ImmutableLanguage, Annotateable {
+
+    protected List<String> ignoredAnnotations = new ArrayList<>();
 
     public AbstractJavaRule() {
         super.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
@@ -72,6 +76,20 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
     protected boolean isSuppressed(Node node) {
         return JavaRuleViolation.isSupressed(node, this);
+    }
+
+    public boolean isAnnotateable(Node node) {
+        Node parent = node.jjtGetParent();
+        List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
+        for (ASTAnnotation annotation : annotations) {
+            ASTName n = annotation.getFirstDescendantOfType(ASTName.class);
+            for (String annotationName : ignoredAnnotations) {
+                if (TypeHelper.isA(n, annotationName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     //

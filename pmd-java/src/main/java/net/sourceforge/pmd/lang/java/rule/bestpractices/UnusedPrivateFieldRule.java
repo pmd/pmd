@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -21,11 +19,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.StringMultiProperty;
@@ -45,7 +41,11 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        boolean classHasLombok = hasLombokAnnotation(node);
+        boolean classHasLombok = isAnnotateable(node);
+
+        for (String annotationName : getProperty(IGNORED_ANNOTATIONS_DESCRIPTOR)) {
+            ignoredAnnotations.add(annotationName);
+        }
 
         Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
                 .getDeclarations(VariableNameDeclaration.class);
@@ -53,7 +53,7 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
             VariableNameDeclaration decl = entry.getKey();
             AccessNode accessNodeParent = decl.getAccessNodeParent();
             if (!accessNodeParent.isPrivate() || isOK(decl.getImage()) || classHasLombok
-                    || hasLombokAnnotation(accessNodeParent) || hasNeglectAnnotation(decl)) {
+                || isAnnotateable(accessNodeParent)) {
                 continue;
             }
             if (!actuallyUsed(entry.getValue())) {
@@ -136,27 +136,5 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
 
     private boolean isOK(String image) {
         return "serialVersionUID".equals(image) || "serialPersistentFields".equals(image) || "IDENT".equals(image);
-    }
-
-    /**
-     * Checks whether the given node is annotated with annotation in the set.
-     * The node should be variable Name declaration.
-     *
-     * @param node
-     *            the node to check
-     * @return <code>true</code> if the annotation has been found
-     */
-    protected boolean hasNeglectAnnotation(VariableNameDeclaration node) {
-        Node parent = node.getAccessNodeParent().jjtGetParent();
-        List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
-        for (ASTAnnotation annotation : annotations) {
-            TypeNode n = (TypeNode) annotation.jjtGetChild(0);
-            for (String annotationName : getProperty(IGNORED_ANNOTATIONS_DESCRIPTOR)) {
-                if (TypeHelper.isA(n, annotationName)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

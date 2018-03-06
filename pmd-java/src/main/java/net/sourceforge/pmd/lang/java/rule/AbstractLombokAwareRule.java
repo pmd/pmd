@@ -5,16 +5,14 @@
 package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+
 
 /**
  * Base class for rules, that should ignore classes/fields that are annotated
@@ -57,13 +55,13 @@ public class AbstractLombokAwareRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        classHasLombokAnnotation = hasLombokAnnotation(node);
+        classHasLombokAnnotation = isAnnotateable(node);
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
-        classHasLombokAnnotation = hasLombokAnnotation(node);
+        classHasLombokAnnotation = isAnnotateable(node);
         return super.visit(node, data);
     }
 
