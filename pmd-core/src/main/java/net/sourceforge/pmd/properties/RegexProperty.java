@@ -12,10 +12,12 @@ import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
 
 
 /**
- * Property which has a regex pattern as a value.
+ * Property which has a regex pattern as a value.This property has no multi-valued
+ * variant, since it would be ambiguous whether the delimiters are part of the regex
+ * or not.
  *
  * @author Clément Fournier
- * @since 6.1.0
+ * @since 6.2.0
  */
 public final class RegexProperty extends AbstractSingleValueProperty<Pattern> {
 

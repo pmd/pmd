@@ -59,6 +59,8 @@ public abstract class AbstractPropertyDescriptorTester<T> {
         T value = prop.valueFrom(originalValue instanceof Class ? ((Class) originalValue).getName() : String.valueOf(originalValue));
         T value2 = prop.valueFrom(prop.asDelimitedString(value));
         if (Pattern.class.equals(prop.type())) {
+            // Pattern.equals uses object identity...
+            // we're forced to do that to make it compare the string values of the pattern
             assertEquals(String.valueOf(value), String.valueOf(value2));
         } else {
             assertEquals(value, value2);
@@ -192,6 +194,8 @@ public abstract class AbstractPropertyDescriptorTester<T> {
         T returnedValue = pmdProp.valueFrom(storeValue);
 
         if (Pattern.class.equals(pmdProp.type())) {
+            // Pattern.equals uses object identity...
+            // we're forced to do that to make it compare the string values of the pattern
             assertEquals(String.valueOf(returnedValue), String.valueOf(testValue));
         } else {
             assertEquals(returnedValue, testValue);

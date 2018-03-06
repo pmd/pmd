@@ -9,8 +9,11 @@ import java.util.regex.Pattern;
 
 
 /**
+ * Since there's no RegexMultiProperty the base class is only partially implemented,
+ * and some tests are overridden with no-op ones.
+ *
  * @author Clément Fournier
- * @since 6.1.0
+ * @since 6.2.0
  */
 public class RegexPropertyTest extends AbstractPropertyDescriptorTester<Pattern> {
     public RegexPropertyTest() {
