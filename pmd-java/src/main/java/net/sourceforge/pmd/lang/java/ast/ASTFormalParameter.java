@@ -8,6 +8,15 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.Rule;
 
 
+/**
+ * Formal parameter node. Used in the {@link ASTFormalParameters}
+ * production of {@link ASTMethodDeclarator} to represent a
+ * method's formal parameter. Also used in the {@link ASTCatchStatement}
+ * production to represent the declared exception variable.
+ * <pre>
+ *      ( "final" | Annotation )* Type ( "|" Type )* [ "..." ] VariableDeclaratorId
+ * </pre>
+ */
 public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Dimensionable, CanSuppressWarnings {
 
     private boolean isVarargs;

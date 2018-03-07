@@ -38,6 +38,7 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ForLoopsMustUseBraces");
         addRule(RULESET, "ForLoopShouldBeWhileLoop");
         addRule(RULESET, "GenericsNaming");
+        addRule(RULESET, "IdenticalCatchBranches");
         addRule(RULESET, "IfElseStmtsMustUseBraces");
         addRule(RULESET, "IfStmtsMustUseBraces");
         addRule(RULESET, "LocalHomeNamingConvention");

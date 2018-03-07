@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 
 <ruleset name="Code Style"
-    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
     <description>
-Rules which enforce a specific coding style.
+        Rules which enforce a specific coding style.
     </description>
 
     <rule name="AbstractNaming"
@@ -16,7 +16,7 @@ Rules which enforce a specific coding style.
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#abstractnaming">
         <description>
-Abstract classes should be named 'AbstractXXX'.
+            Abstract classes should be named 'AbstractXXX'.
         </description>
         <priority>3</priority>
         <properties>
@@ -785,6 +785,39 @@ public interface GenericDao<EF extends BaseModel, K extends Serializable> {
    // 'EF' is not ok.
 }
 ]]>
+        </example>
+    </rule>
+
+
+    <rule name="IdenticalCatchBranches"
+          language="java"
+          since="6.2.0"
+          minimumLanguageVersion="1.7"
+          message="''catch'' branch identical to ''{0}'' branch"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.IdenticalCatchBranchesRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#identicalcatchbranches">
+        <description>
+            Identical `catch` branches use up vertical space and increase the complexity of code without
+            adding functionality. It's better style to collapse identical branches into a single multi-catch
+            branch.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+try {
+    // do something
+} catch (IllegalArgumentException e) {
+    throw e;
+} catch (IllegalStateException e) { // Can be collapsed into the previous block
+    throw e;
+}
+
+try {
+    // do something
+} catch (IllegalArgumentException | IllegalStateException e) { // This is better
+    throw e;
+}
+            ]]>
         </example>
     </rule>
 

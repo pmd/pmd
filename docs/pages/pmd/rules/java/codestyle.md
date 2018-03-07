@@ -808,6 +808,43 @@ public interface GenericDao<EF extends BaseModel, K extends Serializable> {
 <rule ref="category/java/codestyle.xml/GenericsNaming" />
 ```
 
+## IdenticalCatchBranches
+
+**Since:** PMD 6.2.0
+
+**Priority:** Medium (3)
+
+**Minimum Language Version:** Java 1.7
+
+Identical `catch` branches use up vertical space and increase the complexity of code without
+adding functionality. It's better style to collapse identical branches into a single multi-catch
+branch.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.IdenticalCatchBranchesRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/IdenticalCatchBranchesRule.java)
+
+**Example(s):**
+
+``` java
+try {
+    // do something
+} catch (IllegalArgumentException e) {
+    throw e;
+} catch (IllegalStateException e) { // Can be collapsed into the previous block
+    throw e;
+}
+
+try {
+    // do something
+} catch (IllegalArgumentException | IllegalStateException e) { // This is better
+    throw e;
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/IdenticalCatchBranches" />
+```
+
 ## IfElseStmtsMustUseBraces
 
 <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
