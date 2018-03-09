@@ -337,7 +337,8 @@ public final class TypeInferenceResolver {
                 }
 
                 private void advanceToNextK() {
-                    if (++k > n) {
+                    k++;
+                    if (k > n) {
                         nextBitSet = null;
                     } else {
                         nextBitSet.clear();

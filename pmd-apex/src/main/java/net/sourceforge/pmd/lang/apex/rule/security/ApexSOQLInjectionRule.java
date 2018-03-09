@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.apex.rule.security;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
@@ -45,8 +47,8 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     private static final String DATABASE = "Database";
     private static final String QUERY = "query";
     private static final Pattern SELECT_PATTERN = Pattern.compile("^select[\\s]+?.*?$", Pattern.CASE_INSENSITIVE);
-    private final HashSet<String> safeVariables = new HashSet<>();
-    private final HashMap<String, Boolean> selectContainingVariables = new HashMap<>();
+    private final Set<String> safeVariables = new HashSet<>();
+    private final Map<String, Boolean> selectContainingVariables = new HashMap<>();
 
     public ApexSOQLInjectionRule() {
         setProperty(CODECLIMATE_CATEGORIES, "Security");

@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.regex.Matcher;
@@ -60,10 +61,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private static final Pattern SELECT_FROM_PATTERN = Pattern.compile("[\\S|\\s]+?FROM[\\s]+?(\\w+)",
             Pattern.CASE_INSENSITIVE);
 
-    private final HashMap<String, String> varToTypeMapping = new HashMap<>();
+    private final Map<String, String> varToTypeMapping = new HashMap<>();
     private final ListMultimap<String, String> typeToDMLOperationMapping = ArrayListMultimap.create();
-    private final HashMap<String, String> checkedTypeToDMLOperationViaESAPI = new HashMap<>();
-    private final WeakHashMap<String, ASTMethod> classMethods = new WeakHashMap<>();
+    private final Map<String, String> checkedTypeToDMLOperationViaESAPI = new HashMap<>();
+    private final Map<String, ASTMethod> classMethods = new WeakHashMap<>();
     private String className;
 
     private static final String IS_CREATEABLE = "isCreateable";
@@ -355,7 +356,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void checkForCRUD(final AbstractApexNode<?> node, final Object data, final String crudMethod) {
-        final HashSet<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);
+        final Set<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);
         for (ASTMethodCallExpression prevCall : prevCalls) {
             collectCRUDMethodLevelChecks(prevCall);
         }
@@ -386,8 +387,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private HashSet<ASTMethodCallExpression> getPreviousMethodCalls(final AbstractApexNode<?> self) {
-        final HashSet<ASTMethodCallExpression> innerMethodCalls = new HashSet<>();
+    private Set<ASTMethodCallExpression> getPreviousMethodCalls(final AbstractApexNode<?> self) {
+        final Set<ASTMethodCallExpression> innerMethodCalls = new HashSet<>();
         final ASTMethod outerMethod = self.getFirstParentOfType(ASTMethod.class);
         if (outerMethod != null) {
             final ASTBlockStatement blockStatement = outerMethod.getFirstChildOfType(ASTBlockStatement.class);
@@ -406,7 +407,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void recursivelyEvaluateCRUDMethodCalls(final AbstractApexNode<?> self,
-            final HashSet<ASTMethodCallExpression> innerMethodCalls, final ASTBlockStatement blockStatement) {
+            final Set<ASTMethodCallExpression> innerMethodCalls, final ASTBlockStatement blockStatement) {
         if (blockStatement != null) {
             int numberOfStatements = blockStatement.jjtGetNumChildren();
             for (int i = 0; i < numberOfStatements; i++) {
@@ -433,7 +434,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void mapCallToMethodDecl(final AbstractApexNode<?> self,
-            final HashSet<ASTMethodCallExpression> innerMethodCalls, final List<ASTMethodCallExpression> nodes) {
+            final Set<ASTMethodCallExpression> innerMethodCalls, final List<ASTMethodCallExpression> nodes) {
         for (ASTMethodCallExpression node : nodes) {
             if (node == self) {
                 break;
@@ -528,7 +529,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         final boolean isCount = node.getNode().getCanonicalQuery().startsWith("SELECT COUNT()");
         final Set<String> typesFromSOQL = getTypesFromSOQLQuery(node);
 
-        final HashSet<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);
+        final Set<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);
         for (ASTMethodCallExpression prevCall : prevCalls) {
             collectCRUDMethodLevelChecks(prevCall);
         }
