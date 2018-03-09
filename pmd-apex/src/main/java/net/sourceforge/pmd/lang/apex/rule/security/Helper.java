@@ -211,11 +211,16 @@ public final class Helper {
 
     static boolean isSystemLevelClass(ASTUserClass node) {
         List<TypeRef> interfaces = node.getNode().getDefiningType().getCodeUnitDetails().getInterfaceTypeRefs();
+
+        boolean hasWhitelistedInterfaces = false;
         for (TypeRef intObject : interfaces) {
-            return isWhitelisted(intObject.getNames());
+            if (isWhitelisted(intObject.getNames())) {
+                hasWhitelistedInterfaces = true;
+                break;
+            }
         }
 
-        return false;
+        return hasWhitelistedInterfaces;
     }
 
     private static boolean isWhitelisted(List<Identifier> ids) {

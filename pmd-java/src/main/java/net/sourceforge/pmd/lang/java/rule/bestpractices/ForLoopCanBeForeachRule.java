@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 /**
  * @author Clément Fournier
@@ -395,16 +396,19 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             return false;
         }
 
+        boolean onlyCallingNext = true;
         for (NameOccurrence occ : indexInfo.getValue()) {
-            String image = occ.getLocation().getImage();
+            ScopedNode location = occ.getLocation();
+            boolean isCallingNext = location instanceof ASTName
+                    && (location.hasImageEqualTo(indexName + ".hasNext")
+                            || location.hasImageEqualTo(indexName + ".next"));
 
-            if (occ.getLocation() instanceof ASTName
-                && ((indexName + ".hasNext").equals(image) || (indexName + ".next").equals(image))) {
-                continue;
+            if (!isCallingNext) {
+                onlyCallingNext = false;
+                break;
             }
-            return false;
         }
-        return true;
+        return onlyCallingNext;
     }
 
     private boolean isIterableModifiedInsideLoop(Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo,
