@@ -448,7 +448,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private boolean containsSafeFields(final AbstractVFNode expression) {
         final ASTExpression ex = expression.getFirstChildOfType(ASTExpression.class);
 
-        return ex == null ? false : innerContainsSafeFields(ex);
+        return ex != null && innerContainsSafeFields(ex);
 
     }
 

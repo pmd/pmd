@@ -198,7 +198,7 @@ public class RuleSetReferenceId {
                         ruleName = null;
                         allRules = true;
                     } else {
-                        external = externalRuleSetReferenceId != null ? externalRuleSetReferenceId.isExternal() : false;
+                        external = externalRuleSetReferenceId != null && externalRuleSetReferenceId.isExternal();
                         ruleSetFileName = externalRuleSetReferenceId != null
                                 ? externalRuleSetReferenceId.getRuleSetFileName() : null;
                         ruleName = id;
