@@ -4,20 +4,25 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 
 public final class TypeHelper {
-    private static final Logger LOG = Logger.getLogger(TypeHelper.class.getName());
 
     private TypeHelper() {
         // utility class
     }
 
+    /**
+     * Checks whether the resolved type of the given {@link TypeNode} n is of the type
+     * given by the clazzName. If the clazzName is on the auxclasspath, then also subclasses
+     * are considered.
+     *
+     * @param n the type node to check
+     * @param clazzName the class name to compare to
+     * @return <code>true</code> if type node n is of type clazzName or a subtype of clazzName
+     */
     public static boolean isA(final TypeNode n, final String clazzName) {
         if (n.getType() != null) {
             try {
@@ -33,12 +38,13 @@ public final class TypeHelper {
                 if (clazz != null) {
                     return isA(n, clazz);
                 }
-            } catch (final ClassNotFoundException e) {
-                // The requested type is not on the auxclasspath
-                LOG.log(Level.WARNING, "Incomplete auxclasspath: The class " + clazzName + " was not found");
+            } catch (final ClassNotFoundException ignored) {
+                // The requested type is not on the auxclasspath. This might happen, if the type node
+                // is probed for a specific type (e.g. is is a JUnit5 Test Annotation class).
+                // Failing to resolve clazzName does not necessarily indicate an incomplete auxclasspath.
             }
         }
-        
+
         return clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage());
     }
     
