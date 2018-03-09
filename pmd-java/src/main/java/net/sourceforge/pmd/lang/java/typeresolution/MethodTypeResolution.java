@@ -45,11 +45,15 @@ public final class MethodTypeResolution {
     static {
         final List<Class<?>> primitiveList = new ArrayList<>();
 
+        @SuppressWarnings("PMD.AvoidUsingShortType") // defining a local variable to suppress warnings only for
+        // the following statement
+        Class<?> shortType = short.class;
+
         primitiveList.add(double.class);
         primitiveList.add(float.class);
         primitiveList.add(long.class);
         primitiveList.add(int.class);
-        primitiveList.add(short.class);
+        primitiveList.add(shortType);
         primitiveList.add(byte.class);
         primitiveList.add(char.class); // this is here for convenience, not really in order
 
@@ -73,7 +77,7 @@ public final class MethodTypeResolution {
         boxingRules.put(float.class, Float.class);
         boxingRules.put(long.class, Long.class);
         boxingRules.put(int.class, Integer.class);
-        boxingRules.put(short.class, Short.class);
+        boxingRules.put(shortType, Short.class);
         boxingRules.put(byte.class, Byte.class);
         boxingRules.put(char.class, Character.class);
         boxingRules.put(boolean.class, Boolean.class);

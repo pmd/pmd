@@ -406,7 +406,11 @@ public class TypeSet {
             types.put("long", long.class);
             types.put("boolean", boolean.class);
             types.put("byte", byte.class);
-            types.put("short", short.class);
+
+            @SuppressWarnings("PMD.AvoidUsingShortType") // scoping the suppression just for the following statement
+            Class<?> shortType = short.class;
+            types.put("short", shortType);
+
             types.put("char", char.class);
             PRIMITIVE_TYPES = Collections.unmodifiableMap(types);
         }

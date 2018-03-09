@@ -144,9 +144,6 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
     }
 
-    public CPDConfiguration() {
-    }
-
     @Parameter(names = "--encoding", description = "Character encoding to use when processing files", required = false)
     public void setEncoding(String encoding) {
         this.encoding = encoding;
