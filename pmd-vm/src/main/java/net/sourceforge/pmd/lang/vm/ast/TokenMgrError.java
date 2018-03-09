@@ -117,10 +117,10 @@ public class TokenMgrError extends RuntimeException {
      */
     protected static String lexicalError(final boolean eofSeen, final int lexState, final int errorLine,
             final int errorColumn, final String errorAfter, final char curChar) {
-        return ("Lexical error at line " + errorLine + ", column " + errorColumn + ".  Encountered: "
+        return "Lexical error at line " + errorLine + ", column " + errorColumn + ".  Encountered: "
                 + (eofSeen ? "<EOF> "
                         : ("\"" + addEscapes(String.valueOf(curChar)) + "\"") + " (" + (int) curChar + "), ")
-                + "after : \"" + addEscapes(errorAfter) + "\"");
+                + "after : \"" + addEscapes(errorAfter) + "\"";
     }
 
 }

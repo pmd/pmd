@@ -525,9 +525,9 @@ public final class MethodTypeResolution {
                 // is visible
                 && isMemberVisibleFromClass(method.getDeclaringClass(), method.getModifiers(), accessingClass)
                 // if method is vararg with arity n, then the invocation's arity >= n - 1
-                && (!method.isVarArgs() || (argArity >= getArity(method) - 1))
+                && (!method.isVarArgs() || argArity >= getArity(method) - 1)
                 // if the method isn't vararg, then arity matches
-                && (method.isVarArgs() || (argArity == getArity(method)))
+                && (method.isVarArgs() || argArity == getArity(method))
                 // isn't generic or arity of type arguments matches that of parameters
                 && (!isGeneric(method) || typeArguments.isEmpty()
                 || method.getTypeParameters().length == typeArguments.size())) {

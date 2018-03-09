@@ -116,18 +116,18 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
                 instance.runTest(testCase);
             }
         };
-        statement = withBefores(testCase, statement);
-        statement = withAfters(testCase, statement);
+        statement = withBefores(statement);
+        statement = withAfters(statement);
         statement = withRules(testCase, statement);
         return statement;
     }
 
-    private Statement withBefores(final TestDescriptor testCase, Statement statement) {
+    private Statement withBefores(Statement statement) {
         List<FrameworkMethod> befores = getTestClass().getAnnotatedMethods(Before.class);
         return befores.isEmpty() ? statement : new RunBefores(statement, befores, instance);
     }
 
-    private Statement withAfters(final TestDescriptor testCase, Statement statement) {
+    private Statement withAfters(Statement statement) {
         List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(After.class);
         return afters.isEmpty() ? statement : new RunAfters(statement, afters, instance);
     }

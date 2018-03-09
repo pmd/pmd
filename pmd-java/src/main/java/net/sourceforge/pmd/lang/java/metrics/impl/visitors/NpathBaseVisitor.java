@@ -146,7 +146,7 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
             boolCompReturn += conditionalExpressionComplexity;
         }
 
-        return (boolCompReturn > 0) ? boolCompReturn : 1;
+        return boolCompReturn > 0 ? boolCompReturn : 1;
     }
 
 

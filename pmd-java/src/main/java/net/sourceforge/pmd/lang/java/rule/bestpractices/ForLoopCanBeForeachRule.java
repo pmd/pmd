@@ -173,7 +173,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             + "/PrimaryExpression"
             + "/PrimaryPrefix"
             + "/Name"
-            + (itName == null ? "" : ("[@Image='" + itName + "']"));
+            + (itName == null ? "" : "[@Image='" + itName + "']");
     }
 
 

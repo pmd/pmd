@@ -216,7 +216,7 @@ public class RuleSetWriter {
     private Element createSingleRuleElement(Language language, LanguageVersion minimumLanguageVersion,
             LanguageVersion maximumLanguageVersion, Boolean deprecated, String name, String since, String ref,
             String message, String externalInfoUrl, String clazz, Boolean dfa, Boolean typeResolution,
-            Boolean multifile,
+            Boolean multifile, // NOPMD: TODO multifile
             String description, RulePriority priority, List<PropertyDescriptor<?>> propertyDescriptors,
             Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor, List<String> examples) {
         Element ruleElement = createRuleElement();

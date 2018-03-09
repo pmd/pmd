@@ -106,7 +106,7 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
     }
 
     private String getNameFromPrimaryPrefix(ASTPrimaryPrefix pp) {
-        if ((pp.jjtGetNumChildren() == 1) && (pp.jjtGetChild(0) instanceof ASTName)) {
+        if (pp.jjtGetNumChildren() == 1 && pp.jjtGetChild(0) instanceof ASTName) {
             return ((ASTName) pp.jjtGetChild(0)).getImage();
         }
         return null;

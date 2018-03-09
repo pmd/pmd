@@ -104,7 +104,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
     }
 
     private boolean isJsonParse(ASTText prevText) {
-        final String text = (prevText.getImage().endsWith("'") || prevText.getImage().endsWith("'"))
+        final String text = prevText.getImage().endsWith("'")
                 ? prevText.getImage().substring(0, prevText.getImage().length() - 1) : prevText.getImage();
 
         if (text.endsWith("JSON.parse(") || text.endsWith("jQuery.parseJSON(") || text.endsWith("$.parseJSON(")) {

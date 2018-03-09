@@ -363,8 +363,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         final ASTMethod wrappingMethod = node.getFirstParentOfType(ASTMethod.class);
         final ASTUserClass wrappingClass = node.getFirstParentOfType(ASTUserClass.class);
 
-        if ((wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass))
-                || (wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod))) {
+        if (wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass)
+                || wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod)) {
             return;
         }
 
@@ -393,7 +393,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             final ASTBlockStatement blockStatement = outerMethod.getFirstChildOfType(ASTBlockStatement.class);
             recursivelyEvaluateCRUDMethodCalls(self, innerMethodCalls, blockStatement);
 
-            final List<ASTMethod> constructorMethods = findConstructorlMethods(self);
+            final List<ASTMethod> constructorMethods = findConstructorlMethods();
             for (ASTMethod method : constructorMethods) {
                 innerMethodCalls.addAll(method.findDescendantsOfType(ASTMethodCallExpression.class));
             }
@@ -447,11 +447,11 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private List<ASTMethod> findConstructorlMethods(final AbstractApexNode<?> node) {
+    private List<ASTMethod> findConstructorlMethods() {
         final ArrayList<ASTMethod> ret = new ArrayList<>();
         final Set<String> constructors = classMethods.keySet().stream()
-                .filter(p -> (p.contains("<init>") || p.contains("<clinit>")
-                        || p.startsWith(className + ":" + className + ":"))).collect(Collectors.toSet());
+                .filter(p -> p.contains("<init>") || p.contains("<clinit>")
+                        || p.startsWith(className + ":" + className + ":")).collect(Collectors.toSet());
 
         for (String c : constructors) {
             ret.add(classMethods.get(c));
@@ -539,8 +539,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         final ASTMethod wrappingMethod = node.getFirstParentOfType(ASTMethod.class);
         final ASTUserClass wrappingClass = node.getFirstParentOfType(ASTUserClass.class);
 
-        if (isCount || (wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass))
-                || (wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod))) {
+        if (isCount
+                || wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass)
+                || wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod)) {
             return;
         }
 
@@ -627,6 +628,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 .matcher(method.getNode().getMethodInfo().getEmitSignature().getReturnType().getApexName()).matches();
         final boolean noParams = method.findChildrenOfType(ASTParameter.class).isEmpty();
 
-        return (startsWithGet && noParams && !voidOrString);
+        return startsWithGet && noParams && !voidOrString;
     }
 }

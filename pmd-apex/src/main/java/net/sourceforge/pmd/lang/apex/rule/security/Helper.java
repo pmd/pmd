@@ -229,7 +229,7 @@ public final class Helper {
         for (int i = 0; i < ids.size(); i++) {
             sb.append(ids.get(i).getValue());
 
-            if (i != (ids.size() - 1)) {
+            if (i != ids.size() - 1) {
                 sb.append(".");
             }
         }

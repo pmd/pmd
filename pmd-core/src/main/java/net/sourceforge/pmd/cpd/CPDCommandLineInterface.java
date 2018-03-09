@@ -49,7 +49,7 @@ public class CPDCommandLineInterface {
         if (noExit == null) {
             noExit = System.getProperty(NO_EXIT_AFTER_RUN);
         }
-        return (noExit == null ? true : false);
+        return noExit == null;
     }
 
     private static void setStatusCode(int statusCode) {

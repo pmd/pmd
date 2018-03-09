@@ -40,7 +40,13 @@ class BenchmarkResult implements Comparable<BenchmarkResult> {
         int cmp = type.index - benchmarkResult.type.index;
         if (cmp == 0) {
             long delta = this.time - benchmarkResult.time;
-            cmp = delta > 0 ? 1 : (delta < 0 ? -1 : 0);
+            if (delta > 0) {
+                cmp = 1;
+            } else if (delta < 0) {
+                cmp = -1;
+            } else {
+                cmp = 0;
+            }
         }
         return cmp;
     }

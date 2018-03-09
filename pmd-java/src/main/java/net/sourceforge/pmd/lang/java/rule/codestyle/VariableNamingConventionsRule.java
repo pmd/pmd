@@ -146,7 +146,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         for (ASTFormalParameter formalParameter : node.findChildrenOfType(ASTFormalParameter.class)) {
             for (ASTVariableDeclaratorId variableDeclaratorId : formalParameter
                     .findChildrenOfType(ASTVariableDeclaratorId.class)) {
-                checkVariableDeclaratorId(parameterPrefixes, parameterSuffixes, node, false, formalParameter.isFinal(),
+                checkVariableDeclaratorId(parameterPrefixes, parameterSuffixes, false, formalParameter.isFinal(),
                         variableDeclaratorId, data);
             }
         }
@@ -158,13 +158,13 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         for (ASTVariableDeclarator variableDeclarator : root.findChildrenOfType(ASTVariableDeclarator.class)) {
             for (ASTVariableDeclaratorId variableDeclaratorId : variableDeclarator
                     .findChildrenOfType(ASTVariableDeclaratorId.class)) {
-                checkVariableDeclaratorId(prefixes, suffixes, root, isStatic, isFinal, variableDeclaratorId, data);
+                checkVariableDeclaratorId(prefixes, suffixes, isStatic, isFinal, variableDeclaratorId, data);
             }
         }
         return data;
     }
 
-    private Object checkVariableDeclaratorId(List<String> prefixes, List<String> suffixes, Node root, boolean isStatic,
+    private Object checkVariableDeclaratorId(List<String> prefixes, List<String> suffixes, boolean isStatic,
             boolean isFinal, ASTVariableDeclaratorId variableDeclaratorId, Object data) {
 
         // Get the variable name
