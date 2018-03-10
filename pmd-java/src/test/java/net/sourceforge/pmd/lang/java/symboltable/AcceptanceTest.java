@@ -9,7 +9,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -100,11 +99,10 @@ public class AcceptanceTest extends STBBaseTst {
         ASTMethodDeclaration node = acu.findDescendantsOfType(ASTMethodDeclaration.class).get(0);
         Scope s = node.getScope();
         Map<NameDeclaration, List<NameOccurrence>> m = s.getDeclarations();
-        for (Iterator<NameDeclaration> i = m.keySet().iterator(); i.hasNext();) {
-            NameDeclaration d = i.next();
-            assertEquals("buz", d.getImage());
-            assertEquals("ArrayList", ((TypedNameDeclaration) d).getTypeImage());
-            List<NameOccurrence> u = m.get(d);
+        for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : m.entrySet()) {
+            assertEquals("buz", entry.getKey().getImage());
+            assertEquals("ArrayList", ((TypedNameDeclaration) entry.getKey()).getTypeImage());
+            List<NameOccurrence> u = entry.getValue();
             assertEquals(1, u.size());
             NameOccurrence o = u.get(0);
             int beginLine = o.getLocation().getBeginLine();

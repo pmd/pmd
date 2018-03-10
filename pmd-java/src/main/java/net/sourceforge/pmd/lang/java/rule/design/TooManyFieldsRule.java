@@ -49,9 +49,9 @@ public class TooManyFieldsRule extends AbstractJavaRule {
                 bumpCounterFor(clazz);
             }
         }
-        for (String k : stats.keySet()) {
-            int val = stats.get(k);
-            Node n = nodes.get(k);
+        for (Map.Entry<String, Integer> entry : stats.entrySet()) {
+            int val = entry.getValue();
+            Node n = nodes.get(entry.getKey());
             if (val > maxFields) {
                 addViolation(data, n);
             }
