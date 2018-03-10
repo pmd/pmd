@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
  * @author Clément Fournier
  * @since 6.1.0
  */
-public class JavaTypeQualifiedName extends JavaQualifiedName {
+public final class JavaTypeQualifiedName extends JavaQualifiedName {
 
     /** Local index value for when the class is not local. */
     static final int NOTLOCAL_PLACEHOLDER = -1;
@@ -29,8 +29,8 @@ public class JavaTypeQualifiedName extends JavaQualifiedName {
     // since we prepend each time, these lists are in the reversed order (innermost elem first).
     // we use ImmutableList.reverse() to get them in their usual, user-friendly order
 
-    protected final ImmutableList<String> packages; // unnamed package == Nil
-    protected final ImmutableList<String> classes;
+    private final ImmutableList<String> packages; // unnamed package == Nil
+    private final ImmutableList<String> classes;
 
     /**
      * Local indices of the parents and of this class, in order.
@@ -38,7 +38,7 @@ public class JavaTypeQualifiedName extends JavaQualifiedName {
      *
      * <p>If a class is not local, its local index is {@link #NOTLOCAL_PLACEHOLDER}.
      */
-    protected final ImmutableList<Integer> localIndices;
+    private final ImmutableList<Integer> localIndices;
 
     private Class<?> representedType;
     private boolean typeLoaded;
@@ -163,7 +163,7 @@ public class JavaTypeQualifiedName extends JavaQualifiedName {
      *
      * @return A class instance, or null if the classloader threw a {@link ClassNotFoundException}
      */
-    public final Class<?> getType() {
+    public Class<?> getType() {
         synchronized (this) {
             if (typeLoaded) {
                 return representedType;

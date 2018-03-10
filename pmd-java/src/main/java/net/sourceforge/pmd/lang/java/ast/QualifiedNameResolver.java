@@ -27,7 +27,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
     // Package names to package representation.
     // Allows reusing the same list instance for the same packages.
     // Package prefixes are also shared.
-    private final Map<String, ImmutableList<String>> FOUND_PACKAGES = new HashMap<>(128);
+    private final Map<String, ImmutableList<String>> foundPackages = new HashMap<>(128);
 
     // The following stacks stack some counter of the
     // visited classes. A new entry is pushed when
@@ -115,7 +115,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
         }
 
         final String image = pack.getPackageNameImage();
-        ImmutableList<String> fullExisting = FOUND_PACKAGES.get(image);
+        ImmutableList<String> fullExisting = foundPackages.get(image);
 
         if (fullExisting != null) {
             return fullExisting;
@@ -134,7 +134,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
         for (int i = longestPrefix.size(); i < allPacks.length; i++) {
             longestPrefix = longestPrefix.prepend(allPacks[i]);
             prefixImage.append(allPacks[i]);
-            FOUND_PACKAGES.put(prefixImage.toString(), longestPrefix);
+            foundPackages.put(prefixImage.toString(), longestPrefix);
         }
 
         return longestPrefix;
@@ -152,7 +152,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
      *            the total number of packages in the package name
      */
     private ImmutableList<String> getLongestPackagePrefix(String acc, int i) {
-        ImmutableList<String> prefix = FOUND_PACKAGES.get(acc);
+        ImmutableList<String> prefix = foundPackages.get(acc);
         if (prefix != null) {
             return prefix;
         }

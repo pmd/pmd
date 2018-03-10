@@ -13,7 +13,7 @@ import java.util.Objects;
  * @author Clément Fournier
  * @since 6.1.0
  */
-public class JavaOperationQualifiedName extends JavaQualifiedName {
+public final class JavaOperationQualifiedName extends JavaQualifiedName {
 
 
     private final JavaTypeQualifiedName parent;
