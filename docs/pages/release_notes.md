@@ -33,9 +33,10 @@ Both are bugfixing releases.
 
 *   all
     *   [#928](https://github.com/pmd/pmd/issues/928): \[core] PMD build failure on Windows
-
 *   java
     *   [#907](https://github.com/pmd/pmd/issues/907): \[java] UnusedPrivateField false-positive with @FXML
+*   java-bestpracrtices
+    *   [#963](https://github.com/pmd/pmd/issues/965): \[java] ArrayIsStoredDirectly not triggered from variadic functions
 
 ### API Changes
 
@@ -43,3 +44,4 @@ Both are bugfixing releases.
 
 * [#941](https://github.com/pmd/pmd/pull/941): \[java] Use char notation to represent a character to improve performance - [reudismam](https://github.com/reudismam)
 * [#943](https://github.com/pmd/pmd/pull/943): \[java] UnusedPrivateField false-positive with @FXML - [BBG](https://github.com/djydewang)
+* [#965](https://github.com/pmd/pmd/pull/965): \[java] Make Varargs trigger ArrayIsStoredDirectly - [Stephen](https://github.com/pmd/pmd/issues/907)
