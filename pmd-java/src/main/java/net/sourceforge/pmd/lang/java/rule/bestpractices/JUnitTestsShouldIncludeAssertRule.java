@@ -80,8 +80,8 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         Map<String, List<NameOccurrence>> result = new HashMap<>();
         Map<NameDeclaration, List<NameOccurrence>> decls = classScope.getDeclarations();
 
-        for (NameDeclaration decl : decls.keySet()) {
-            Node parent = decl.getNode().jjtGetParent().jjtGetParent().jjtGetParent();
+        for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : decls.entrySet()) {
+            Node parent = entry.getKey().getNode().jjtGetParent().jjtGetParent().jjtGetParent();
             if (parent.hasDescendantOfType(ASTMarkerAnnotation.class)
                     && parent.getFirstChildOfType(ASTFieldDeclaration.class) != null) {
                 String annot = parent.getFirstDescendantOfType(ASTMarkerAnnotation.class).jjtGetChild(0).getImage();
@@ -93,7 +93,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
                 if (!"ExpectedException".equals(type.jjtGetChild(0).getImage())) {
                     continue;
                 }
-                result.put(decl.getName(), decls.get(decl));
+                result.put(entry.getKey().getName(), entry.getValue());
             }
         }
         return result;

@@ -98,9 +98,9 @@ final class ClassStats implements ClassMirror {
     @Override
     public boolean hasMatchingOpSig(String name, JavaOperationSigMask mask) {
         // Indexing on signatures optimises this type of request
-        for (JavaOperationSignature sig : operations.keySet()) {
-            if (mask.covers(sig)) {
-                if (operations.get(sig).contains(name)) {
+        for (Entry<JavaOperationSignature, Set<String>> entry : operations.entrySet()) {
+            if (mask.covers(entry.getKey())) {
+                if (operations.get(entry.getKey()).contains(name)) {
                     return true;
                 }
             }
@@ -111,9 +111,9 @@ final class ClassStats implements ClassMirror {
 
     @Override
     public boolean hasMatchingFieldSig(String name, JavaFieldSigMask mask) {
-        for (JavaFieldSignature sig : fields.keySet()) {
-            if (mask.covers(sig)) {
-                if (fields.get(sig).contains(name)) {
+        for (Entry<JavaFieldSignature, Set<String>> entry : fields.entrySet()) {
+            if (mask.covers(entry.getKey())) {
+                if (fields.get(entry.getKey()).contains(name)) {
                     return true;
                 }
             }
