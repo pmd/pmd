@@ -156,7 +156,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
         if (l != null && !l.isEmpty()) {
             List<ASTFormalParameter> l2 = new ArrayList<>();
             for (ASTFormalParameter fp : l) {
-                if (fp.isArray()) {
+                if (fp.isArray() || fp.isVarargs()) {
                     l2.add(fp);
                 }
             }
