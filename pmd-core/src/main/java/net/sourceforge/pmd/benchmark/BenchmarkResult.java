@@ -37,16 +37,9 @@ class BenchmarkResult implements Comparable<BenchmarkResult> {
 
     @Override
     public int compareTo(BenchmarkResult benchmarkResult) {
-        int cmp = type.index - benchmarkResult.type.index;
+        int cmp = Integer.compare(type.index, benchmarkResult.type.index);
         if (cmp == 0) {
-            long delta = this.time - benchmarkResult.time;
-            if (delta > 0) {
-                cmp = 1;
-            } else if (delta < 0) {
-                cmp = -1;
-            } else {
-                cmp = 0;
-            }
+            cmp = Long.compare(this.time, benchmarkResult.time);
         }
         return cmp;
     }

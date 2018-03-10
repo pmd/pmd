@@ -28,13 +28,10 @@ import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
  * @author Clément Fournier
  * @author Jason Bennett
  */
-public final class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
+public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
     /** Instance. */
     public static final NpathBaseVisitor INSTANCE = new NpathBaseVisitor();
-
-    private NpathBaseVisitor() {
-    }
 
     /* Multiplies the complexity of the children of this node. */
     private int multiplyChildrenComplexities(JavaNode node, Object data) {

@@ -195,15 +195,13 @@ public final class Helper {
     static boolean isSystemLevelClass(ASTUserClass node) {
         List<TypeRef> interfaces = node.getNode().getDefiningType().getCodeUnitDetails().getInterfaceTypeRefs();
 
-        boolean hasWhitelistedInterfaces = false;
         for (TypeRef intObject : interfaces) {
             if (isWhitelisted(intObject.getNames())) {
-                hasWhitelistedInterfaces = true;
-                break;
+                return true;
             }
         }
 
-        return hasWhitelistedInterfaces;
+        return false;
     }
 
     private static boolean isWhitelisted(List<Identifier> ids) {

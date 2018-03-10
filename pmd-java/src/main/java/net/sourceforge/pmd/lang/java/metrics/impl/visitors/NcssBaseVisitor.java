@@ -41,15 +41,10 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserControllessVisitorAdapter;
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric
  */
-public final class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
+public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
 
     /** Instance. */
     public static final NcssBaseVisitor INSTANCE = new NcssBaseVisitor();
-
-
-    private NcssBaseVisitor() {
-    }
-
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {

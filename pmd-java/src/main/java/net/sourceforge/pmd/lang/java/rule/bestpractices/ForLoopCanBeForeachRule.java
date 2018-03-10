@@ -397,7 +397,6 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             return false;
         }
 
-        boolean onlyCallingNext = true;
         for (NameOccurrence occ : indexInfo.getValue()) {
             ScopedNode location = occ.getLocation();
             boolean isCallingNext = location instanceof ASTName
@@ -405,11 +404,10 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                             || location.hasImageEqualTo(indexName + ".next"));
 
             if (!isCallingNext) {
-                onlyCallingNext = false;
-                break;
+                return false;
             }
         }
-        return onlyCallingNext;
+        return true;
     }
 
     private boolean isIterableModifiedInsideLoop(Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo,
