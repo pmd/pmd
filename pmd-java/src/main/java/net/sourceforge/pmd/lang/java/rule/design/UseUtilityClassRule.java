@@ -30,29 +30,8 @@ public class UseUtilityClassRule extends AbstractLombokAwareRule {
                 return super.visit(decl, data);
             }
 
-            // check if there's a lombok no arg private constructor, if so skip the rest of the rules
-            if (hasClassLombokAnnotation()) {
-                ASTAnnotation annotation = getLombokAnnotation(parent, "NoArgsConstructor");
-
-                if (annotation != null) {
-
-                    List<ASTMemberValuePair> memberValuePairs = annotation.findDescendantsOfType(ASTMemberValuePair.class);
-
-                    for (ASTMemberValuePair memberValuePair : memberValuePairs) {
-                        // to set the access level of a constructor in lombok, you set the access property on the annotation
-                        if ("access".equals(memberValuePair.getImage())) {
-                            List<ASTName> names = memberValuePair.findDescendantsOfType(ASTName.class);
-
-                            for (ASTName name : names) {
-                                // check to see if the value of the member value pair ends PRIVATE.  This is from the AccessLevel enum in Lombok
-                                if (name.getImage().endsWith("PRIVATE")) {
-                                    // if the constructor is found and the accesslevel is private no need to check anything else
-                                    return super.visit(decl, data);
-                                }
-                            }
-                        }
-                    }
-                }
+            if (isOkUsingLombok(parent)) {
+                return super.visit(decl, data);
             }
 
             int i = decl.jjtGetNumChildren();
@@ -100,6 +79,35 @@ public class UseUtilityClassRule extends AbstractLombokAwareRule {
             }
         }
         return super.visit(decl, data);
+    }
+
+    private boolean isOkUsingLombok(ASTClassOrInterfaceDeclaration parent) {
+     // check if there's a lombok no arg private constructor, if so skip the rest of the rules
+        if (hasClassLombokAnnotation()) {
+            ASTAnnotation annotation = getLombokAnnotation(parent, "NoArgsConstructor");
+
+            if (annotation != null) {
+
+                List<ASTMemberValuePair> memberValuePairs = annotation.findDescendantsOfType(ASTMemberValuePair.class);
+
+                for (ASTMemberValuePair memberValuePair : memberValuePairs) {
+                    // to set the access level of a constructor in lombok, you set the access property on the annotation
+                    if ("access".equals(memberValuePair.getImage())) {
+                        List<ASTName> names = memberValuePair.findDescendantsOfType(ASTName.class);
+
+                        for (ASTName name : names) {
+                            // check to see if the value of the member value pair ends PRIVATE.  This is from the AccessLevel enum in Lombok
+                            if (name.getImage().endsWith("PRIVATE")) {
+                                // if the constructor is found and the accesslevel is private no need to check anything else
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return false;
     }
 
     private Node skipAnnotations(Node p) {
