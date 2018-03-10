@@ -29,11 +29,11 @@ import apex.jorje.semantic.symbol.type.TypeInfo;
 /**
  * @author jspagnola
  */
-public class EmptySymbolProvider implements SymbolProvider {
+public final class EmptySymbolProvider implements SymbolProvider {
 
     private static final EmptySymbolProvider INSTANCE = new EmptySymbolProvider();
 
-    EmptySymbolProvider() {
+    private EmptySymbolProvider() {
     }
 
     public static EmptySymbolProvider get() {

@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
+import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.DumpFacade;
@@ -46,13 +46,15 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
 
     @Override
     public XPathHandler getXPathHandler() {
-        return new AbstractASTXPathHandler() {
+        return new DefaultASTXPathHandler() {
+            @Override
             public void initialize() {
                 TypeOfFunction.registerSelfInSimpleContext();
                 GetCommentOnFunction.registerSelfInSimpleContext();
                 MetricFunction.registerSelfInSimpleContext();
             }
 
+            @Override
             public void initialize(IndependentContext context) {
                 super.initialize(context, LanguageRegistry.getLanguage(JavaLanguageModule.NAME), JavaFunctions.class);
             }

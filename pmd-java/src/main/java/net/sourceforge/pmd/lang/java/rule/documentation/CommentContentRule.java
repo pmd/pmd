@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -68,7 +69,7 @@ public class CommentContentRule extends AbstractCommentRule {
         } else {
             currentBadWords = new ArrayList<>();
             for (String badWord : originalBadWords) {
-                currentBadWords.add(badWord.toUpperCase());
+                currentBadWords.add(badWord.toUpperCase(Locale.ROOT));
             }
         }
     }
@@ -94,7 +95,7 @@ public class CommentContentRule extends AbstractCommentRule {
         }
 
         if (!caseSensitive) {
-            commentText = commentText.toUpperCase();
+            commentText = commentText.toUpperCase(Locale.ROOT);
         }
 
         List<String> foundWords = new ArrayList<>();

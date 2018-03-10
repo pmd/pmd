@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.vf.rule.security;
 
 import java.util.List;
+import java.util.Locale;
 
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
@@ -29,7 +30,7 @@ public class VfCsrfRule extends AbstractVfRule {
             ASTElExpression valToReport = null;
 
             for (ASTAttribute attr : attribs) {
-                switch (attr.getName().toLowerCase()) {
+                switch (attr.getName().toLowerCase(Locale.ROOT)) {
                 case "action":
                     ASTElExpression value = attr.getFirstDescendantOfType(ASTElExpression.class);
                     if (value != null) {

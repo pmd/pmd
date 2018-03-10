@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 /**
  * This is really just a POJO.
  */
-public class MethodType {
+public final class MethodType {
     private final JavaTypeDefinition returnType;
     private final List<JavaTypeDefinition> argTypes;
     private final Method method;

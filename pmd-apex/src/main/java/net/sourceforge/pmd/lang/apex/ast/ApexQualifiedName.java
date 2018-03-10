@@ -20,7 +20,7 @@ import apex.jorje.semantic.symbol.type.TypeInfo;
  *
  * @author Clément Fournier
  */
-public class ApexQualifiedName implements QualifiedName {
+public final class ApexQualifiedName implements QualifiedName {
 
 
     private final String nameSpace;
@@ -155,7 +155,7 @@ public class ApexQualifiedName implements QualifiedName {
 
         List<TypeInfo> paramTypes = node.getNode().getMethodInfo().getParameterTypes();
 
-        if (paramTypes.size() > 0) {
+        if (!paramTypes.isEmpty()) {
             sb.append(paramTypes.get(0).getApexName());
 
             for (int i = 1; i < paramTypes.size(); i++) {

@@ -86,6 +86,7 @@ public class AbstractDomXmlRule extends AbstractXmlRule {
     }
 
     protected void visit(XmlNode node, Attr attr, RuleContext ctx) {
+        // does nothing by default since attributes are leaf nodes
     }
 
     protected void visit(XmlNode node, CharacterData characterData, RuleContext ctx) {

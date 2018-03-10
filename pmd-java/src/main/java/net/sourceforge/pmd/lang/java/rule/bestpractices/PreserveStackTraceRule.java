@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -160,7 +161,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
      */
     private boolean isStringConcat(Node childNode, Node baseNode) {
         Node currentNode = childNode;
-        while (currentNode != baseNode) {
+        while (!Objects.equals(currentNode, baseNode)) {
             currentNode = currentNode.jjtGetParent();
             if (currentNode instanceof ASTAdditiveExpression) {
                 return true;

@@ -45,6 +45,7 @@ public class TokenMgrError extends RuntimeException {
      */
 
     public TokenMgrError() {
+        // default constructor
     }
 
     public TokenMgrError(final String message, final int reason) {

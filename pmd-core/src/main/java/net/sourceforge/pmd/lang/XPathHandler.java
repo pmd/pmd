@@ -19,10 +19,12 @@ public interface XPathHandler {
     XPathHandler DUMMY = new XPathHandler() {
         @Override
         public void initialize() {
+            // empty handler - does nothing
         }
 
         @Override
         public void initialize(IndependentContext context) {
+            // empty handler - does nothing
         }
 
         @Override

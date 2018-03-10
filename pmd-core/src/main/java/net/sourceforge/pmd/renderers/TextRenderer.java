@@ -29,10 +29,6 @@ public class TextRenderer extends AbstractIncrementingRenderer {
     }
 
     @Override
-    public void start() throws IOException {
-    }
-
-    @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
         StringBuilder buf = new StringBuilder();

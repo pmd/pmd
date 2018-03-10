@@ -35,9 +35,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  */
 public abstract class AbstractCommentRule extends AbstractJavaRule {
 
-    protected AbstractCommentRule() {
-    }
-
     protected List<Integer> tagsIndicesIn(String comments) {
 
         int atPos = comments.indexOf('@');

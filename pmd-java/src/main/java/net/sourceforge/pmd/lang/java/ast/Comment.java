@@ -42,7 +42,7 @@ public abstract class Comment extends AbstractNode {
                     entry.getValue() + 1, entry.getValue() + tag.label.length() + 1, tag));
         }
 
-        children = kids.toArray(new Node[kids.size()]);
+        children = kids.toArray(new Node[0]);
     }
 
 }

@@ -12,13 +12,11 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
+import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.jsp.ast.DumpFacade;
 import net.sourceforge.pmd.lang.jsp.ast.JspNode;
 import net.sourceforge.pmd.lang.jsp.rule.JspRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-
-import net.sf.saxon.sxpath.IndependentContext;
 
 /**
  * Implementation of LanguageVersionHandler for the JSP parser.
@@ -29,13 +27,7 @@ public class JspHandler extends AbstractLanguageVersionHandler {
 
     @Override
     public XPathHandler getXPathHandler() {
-        return new AbstractASTXPathHandler() {
-            public void initialize() {
-            }
-
-            public void initialize(IndependentContext context) {
-            }
-        };
+        return new DefaultASTXPathHandler();
     }
 
     public RuleViolationFactory getRuleViolationFactory() {

@@ -21,7 +21,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  *
  * @see Renderer
  */
-public class RendererFactory {
+public final class RendererFactory {
 
     private static final Logger LOG = Logger.getLogger(RendererFactory.class.getName());
 

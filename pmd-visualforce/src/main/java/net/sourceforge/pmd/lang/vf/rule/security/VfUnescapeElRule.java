@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.vf.rule.security;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -107,11 +108,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
         final String text = prevText.getImage().endsWith("'")
                 ? prevText.getImage().substring(0, prevText.getImage().length() - 1) : prevText.getImage();
 
-        if (text.endsWith("JSON.parse(") || text.endsWith("jQuery.parseJSON(") || text.endsWith("$.parseJSON(")) {
-            return true;
-        }
-
-        return false;
+        return text.endsWith("JSON.parse(") || text.endsWith("jQuery.parseJSON(") || text.endsWith("$.parseJSON(");
     }
 
     private boolean isUnbalanced(String image, char pattern) {
@@ -125,11 +122,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
             }
 
             if (array[i] == ';') {
-                if (foundPattern) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return foundPattern;
             }
         }
 
@@ -149,7 +142,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
     }
 
     private void checkLimitedFlags(ASTElement node, Object data) {
-        switch (node.getName().toLowerCase()) {
+        switch (node.getName().toLowerCase(Locale.ROOT)) {
         case IFRAME_CONST:
         case APEXIFRAME_CONST:
         case A_CONST:
@@ -163,7 +156,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
         final Set<ASTElExpression> toReport = new HashSet<>();
 
         for (ASTAttribute attr : attributes) {
-            String name = attr.getName().toLowerCase();
+            String name = attr.getName().toLowerCase(Locale.ROOT);
             // look for onevents
 
             if (HREF.equalsIgnoreCase(name) || SRC.equalsIgnoreCase(name)) {
@@ -172,8 +165,9 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 final ASTText attrText = attr.getFirstDescendantOfType(ASTText.class);
                 if (attrText != null) {
                     if (0 == attrText.jjtGetChildIndex()) {
-                        if (attrText.getImage().startsWith("/") || attrText.getImage().toLowerCase().startsWith("http")
-                                || attrText.getImage().toLowerCase().startsWith("mailto")) {
+                        String lowerCaseImage = attrText.getImage().toLowerCase(Locale.ROOT);
+                        if (lowerCaseImage.startsWith("/") || lowerCaseImage.startsWith("http")
+                                || lowerCaseImage.startsWith("mailto")) {
                             startingWithSlashText = true;
                         }
                     }
@@ -215,7 +209,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
         final Set<ASTElExpression> toReport = new HashSet<>();
 
         for (ASTAttribute attr : attributes) {
-            String name = attr.getName().toLowerCase();
+            String name = attr.getName().toLowerCase(Locale.ROOT);
             // look for onevents
 
             if (ON_EVENT.matcher(name).matches()) {
@@ -253,14 +247,15 @@ public class VfUnescapeElRule extends AbstractVfRule {
             
             final ASTIdentifier id = expression.getFirstChildOfType(ASTIdentifier.class);
             if (id != null) {
+                String lowerCaseId = id.getImage().toLowerCase(Locale.ROOT);
                 List<ASTArguments> args = expression.findChildrenOfType(ASTArguments.class);
                 if (!args.isEmpty()) {
-                    switch (id.getImage().toLowerCase()) {
+                    switch (lowerCaseId) {
                     case "urlfor":
                     case "casesafeid":
                     case "begins":
                     case "contains":
-                    case "len":                    
+                    case "len":
                     case "getrecordids":
                     case "linkto":
                     case "sqrt":
@@ -292,7 +287,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     }
                 } else {
                     // has no arguments
-                    switch (id.getImage().toLowerCase()) {
+                    switch (lowerCaseId) {
                     case "$action":
                     case "$page":
                     case "$site":
@@ -318,9 +313,10 @@ public class VfUnescapeElRule extends AbstractVfRule {
         if (expression != null) {
             final ASTLiteral literal = expression.getFirstChildOfType(ASTLiteral.class);
             if (literal != null && literal.jjtGetChildIndex() == 0) {
-                if (literal.getImage().startsWith("'/") || literal.getImage().startsWith("\"/")
-                        || literal.getImage().toLowerCase().startsWith("'http")
-                        || literal.getImage().toLowerCase().startsWith("\"http")) {
+                String lowerCaseLiteral = literal.getImage().toLowerCase(Locale.ROOT);
+                if (lowerCaseLiteral.startsWith("'/") || lowerCaseLiteral.startsWith("\"/")
+                        || lowerCaseLiteral.startsWith("'http")
+                        || lowerCaseLiteral.startsWith("\"http")) {
                     return true;
                 }
             }
@@ -338,7 +334,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
         boolean hasPlaceholders = false;
 
         for (ASTAttribute attr : attributes) {
-            String name = attr.getName().toLowerCase();
+            String name = attr.getName().toLowerCase(Locale.ROOT);
             switch (name) {
             case ESCAPE:
             case ITEM_ESCAPED:
@@ -457,7 +453,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
             Node child = expression.jjtGetChild(i);
 
             if (child instanceof ASTIdentifier) {
-                switch (child.getImage().toLowerCase()) {
+                switch (child.getImage().toLowerCase(Locale.ROOT)) {
                 case "id":
                 case "size":
                 case "caseNumber":
@@ -488,7 +484,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
             return false;
         }
 
-        switch (node.getName().toLowerCase()) { // vf is case insensitive
+        switch (node.getName().toLowerCase(Locale.ROOT)) { // vf is case insensitive
         case APEX_OUTPUT_TEXT:
         case APEX_PAGE_MESSAGE:
         case APEX_PAGE_MESSAGES:

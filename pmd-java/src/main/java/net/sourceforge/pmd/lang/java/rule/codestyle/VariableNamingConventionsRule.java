@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.List;
+import java.util.Locale;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
@@ -177,7 +178,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
 
         // Static finals should be uppercase
         if (isStatic && isFinal) {
-            if (!varName.equals(varName.toUpperCase())) {
+            if (!varName.equals(varName.toUpperCase(Locale.ROOT))) {
                 addViolationWithMessage(data, variableDeclaratorId,
                         "Variables that are final and static should be all capitals, ''{0}'' is not all capitals.",
                         new Object[] { varName });

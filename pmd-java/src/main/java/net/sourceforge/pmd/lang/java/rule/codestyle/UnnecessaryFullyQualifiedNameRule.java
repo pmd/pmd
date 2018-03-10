@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -141,7 +142,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
             // Is there any other static import conflictive?
             for (final ASTImportDeclaration importDeclaration : imports) {
-                if (importDeclaration != firstMatch && importDeclaration.isStatic()) {
+                if (!Objects.equals(importDeclaration, firstMatch) && importDeclaration.isStatic()) {
                     if (importDeclaration.getImportedName().startsWith(firstMatch.getImportedName())
                             && importDeclaration.getImportedName().lastIndexOf('.') == firstMatch.getImportedName()
                                     .length()) {

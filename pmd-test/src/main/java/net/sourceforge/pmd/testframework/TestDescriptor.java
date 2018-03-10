@@ -32,9 +32,8 @@ public class TestDescriptor {
     private boolean useAuxClasspath = true;
     private int numberInDocument = -1;
 
-    // Empty descriptor added to please mvn surefire plugin
     public TestDescriptor() {
-
+        // Empty default descriptor added to please mvn surefire plugin
     }
 
     public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule) {

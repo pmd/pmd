@@ -40,8 +40,7 @@ public class ApexParser {
         Locations.useIndexFactory();
         CompilerService.INSTANCE.visitAstFromString(sourceCode, visitor);
 
-        Compilation astRoot = visitor.getTopLevel();
-        return astRoot;
+        return visitor.getTopLevel();
     }
 
     public ApexNode<Compilation> parse(final Reader reader) {
@@ -55,8 +54,7 @@ public class ApexParser {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
-            ApexNode<Compilation> tree = treeBuilder.build(astRoot);
-            return tree;
+            return treeBuilder.build(astRoot);
         } catch (IOException e) {
             throw new ParseException(e);
         }

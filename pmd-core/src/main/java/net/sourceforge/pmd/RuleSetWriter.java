@@ -170,8 +170,7 @@ public class RuleSetWriter {
             if (ruleSetReference.isAllRules()) {
                 if (!ruleSetFileNames.contains(ruleSetReference.getRuleSetFileName())) {
                     ruleSetFileNames.add(ruleSetReference.getRuleSetFileName());
-                    Element ruleSetReferenceElement = createRuleSetReferenceElement(ruleSetReference);
-                    return ruleSetReferenceElement;
+                    return createRuleSetReferenceElement(ruleSetReference);
                 } else {
                     return null;
                 }

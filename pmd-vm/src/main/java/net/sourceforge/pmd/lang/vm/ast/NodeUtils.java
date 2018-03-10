@@ -29,7 +29,7 @@ import org.apache.commons.lang3.text.StrBuilder;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: NodeUtils.java 687386 2008-08-20 16:57:07Z nbubna $
  */
-public class NodeUtils {
+public final class NodeUtils {
     private NodeUtils() { }
 
     /**

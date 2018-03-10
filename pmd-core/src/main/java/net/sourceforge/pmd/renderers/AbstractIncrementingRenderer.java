@@ -47,10 +47,12 @@ public abstract class AbstractIncrementingRenderer extends AbstractRenderer {
 
     @Override
     public void start() throws IOException {
+        // does nothing - override if necessary
     }
 
     @Override
     public void startFileAnalysis(DataSource dataSource) {
+        // does nothing - override if necessary
     }
 
     @Override
@@ -85,5 +87,6 @@ public abstract class AbstractIncrementingRenderer extends AbstractRenderer {
 
     @Override
     public void end() throws IOException {
+        // does nothing - override if necessary
     }
 }

@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
@@ -45,7 +46,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
     public Object visit(final ASTName node, final Object data) {
         final NameDeclaration nameDeclaration = node.getNameDeclaration();
         // ignore imports or methods
-        if (nameDeclaration == null || !(nameDeclaration instanceof VariableNameDeclaration)) {
+        if (!(nameDeclaration instanceof VariableNameDeclaration)) {
             return super.visit(node, data);
         }
 
@@ -100,19 +101,13 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         // in case a new exception is created or the exception class is
         // mentioned.
         ASTClassOrInterfaceType classOrInterface = last.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        if (classOrInterface != null && classOrInterface.getType() != null
-                && Throwable.class.isAssignableFrom(classOrInterface.getType())) {
-            return true;
-        }
-        return false;
+        return classOrInterface != null && classOrInterface.getType() != null
+                && TypeHelper.isA(classOrInterface, Throwable.class);
     }
 
     private boolean hasTypeThrowable(ASTPrimaryExpression last) {
         // if the type could be determined already
-        if (last.getType() != null && Throwable.class.isAssignableFrom(last.getType())) {
-            return true;
-        }
-        return false;
+        return last.getType() != null && TypeHelper.isA(last, Throwable.class);
     }
 
     private boolean isReferencingThrowable(ASTPrimaryExpression last) {

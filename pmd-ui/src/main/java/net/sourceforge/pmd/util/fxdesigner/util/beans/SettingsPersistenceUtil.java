@@ -44,7 +44,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.beans.converters.RulePriorityCon
  * @see SettingsOwner
  * @since 6.1.0
  */
-public class SettingsPersistenceUtil {
+public final class SettingsPersistenceUtil {
 
     static {
         // register converters for custom types

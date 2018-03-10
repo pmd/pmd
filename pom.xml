@@ -528,6 +528,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     </rulesets>
                     <excludeRoots>
                         <excludeRoot>target/generated-sources/javacc</excludeRoot>
+                        <excludeRoot>target/generated-sources/antlr4</excludeRoot>
                     </excludeRoots>
                     <skipPmdError>false</skipPmdError>
                     <failOnViolation>true</failOnViolation>

@@ -525,7 +525,7 @@ public final class MethodTypeResolution {
     public static boolean isMethodApplicable(Method method, String methodName, int argArity,
                                              Class<?> accessingClass, List<JavaTypeDefinition> typeArguments) {
 
-        if (method.getName().equals(methodName) // name matches
+        return method.getName().equals(methodName) // name matches
                 // is visible
                 && isMemberVisibleFromClass(method.getDeclaringClass(), method.getModifiers(), accessingClass)
                 // if method is vararg with arity n, then the invocation's arity >= n - 1
@@ -534,12 +534,7 @@ public final class MethodTypeResolution {
                 && (method.isVarArgs() || argArity == getArity(method))
                 // isn't generic or arity of type arguments matches that of parameters
                 && (!isGeneric(method) || typeArguments.isEmpty()
-                || method.getTypeParameters().length == typeArguments.size())) {
-
-            return true;
-        }
-
-        return false;
+                || method.getTypeParameters().length == typeArguments.size());
     }
 
 
@@ -631,15 +626,10 @@ public final class MethodTypeResolution {
         // covers unboxing
         int indexInBoxed = BOXED_PRIMITIVE_SUBTYPE_ORDER.indexOf(argument.getType());
 
-        if (indexInBoxed != -1 // arg is boxed primitive
+        return indexInBoxed != -1 // arg is boxed primitive
                 && isSubtypeable(parameter,
-                                 JavaTypeDefinition.forClass(PRIMITIVE_SUBTYPE_ORDER.get(indexInBoxed)))) {
-            return true;
-        }
-
+                                 JavaTypeDefinition.forClass(PRIMITIVE_SUBTYPE_ORDER.get(indexInBoxed)));
         // TODO: add raw unchecked conversion part
-
-        return false;
     }
 
     public static boolean isSubtypeable(JavaTypeDefinition parameter, ASTExpression argument) {

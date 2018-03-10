@@ -44,12 +44,10 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         ASTFormalParameter[] arrs = getArrays(node.getParameters());
-        if (arrs != null) {
-            // TODO check if one of these arrays is stored in a non local
-            // variable
-            List<ASTBlockStatement> bs = node.findDescendantsOfType(ASTBlockStatement.class);
-            checkAll(data, arrs, bs);
-        }
+        // TODO check if one of these arrays is stored in a non local
+        // variable
+        List<ASTBlockStatement> bs = node.findDescendantsOfType(ASTBlockStatement.class);
+        checkAll(data, arrs, bs);
         return data;
     }
 
@@ -57,9 +55,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
     public Object visit(ASTMethodDeclaration node, Object data) {
         final ASTFormalParameters params = node.getFirstDescendantOfType(ASTFormalParameters.class);
         ASTFormalParameter[] arrs = getArrays(params);
-        if (arrs != null) {
-            checkAll(data, arrs, node.findDescendantsOfType(ASTBlockStatement.class));
-        }
+        checkAll(data, arrs, node.findDescendantsOfType(ASTBlockStatement.class));
         return data;
     }
 
@@ -160,9 +156,9 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
                     l2.add(fp);
                 }
             }
-            return l2.toArray(new ASTFormalParameter[l2.size()]);
+            return l2.toArray(new ASTFormalParameter[0]);
         }
-        return null;
+        return new ASTFormalParameter[0];
     }
 
 }

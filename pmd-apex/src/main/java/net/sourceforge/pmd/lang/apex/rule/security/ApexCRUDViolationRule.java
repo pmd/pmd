@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -47,6 +48,7 @@ import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.data.ast.TypeRefs.ArrayTypeRef;
 import apex.jorje.data.ast.TypeRefs.ClassTypeRef;
+import com.google.common.base.Objects;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
@@ -188,7 +190,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 }
                 sb.deleteCharAt(sb.length() - 1);
 
-                switch (sb.toString().toLowerCase()) {
+                switch (sb.toString().toLowerCase(Locale.ROOT)) {
                 case "list":
                 case "map":
                     addParametersToMapping(node, typeArgs);
@@ -244,12 +246,13 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void addVariableToMapping(final String variableName, final String type) {
-        switch (type.toLowerCase()) {
+        switch (type.toLowerCase(Locale.ROOT)) {
         case "list":
         case "map":
-            return;
+            break;
         default:
             varToTypeMapping.put(variableName, getSimpleType(type));
+            break;
         }
     }
 
@@ -421,7 +424,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 }
 
                 AbstractApexNode<?> match = n.getFirstDescendantOfType(self.getClass());
-                if (match == self) {
+                if (Objects.equal(match, self)) {
                     break;
                 }
                 ASTMethodCallExpression methodCall = n.getFirstDescendantOfType(ASTMethodCallExpression.class);
@@ -436,7 +439,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private void mapCallToMethodDecl(final AbstractApexNode<?> self,
             final Set<ASTMethodCallExpression> innerMethodCalls, final List<ASTMethodCallExpression> nodes) {
         for (ASTMethodCallExpression node : nodes) {
-            if (node == self) {
+            if (Objects.equal(node, self)) {
                 break;
             }
 

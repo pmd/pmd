@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
  * @version $Id$
  */
 @Deprecated // to be removed with PMD 7.0.0
-public class NLS {
+public final class NLS {
     private static final ResourceBundle BUNDLE;
 
     static {

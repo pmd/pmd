@@ -39,6 +39,7 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
 
     @Override
     public void startFileAnalysis(DataSource dataSource) {
+        // does nothing - override if necessary
     }
 
     @Override

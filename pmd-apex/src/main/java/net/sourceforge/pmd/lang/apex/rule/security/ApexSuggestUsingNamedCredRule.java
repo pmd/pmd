@@ -67,7 +67,7 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
 
     private void findFieldLiterals(final ASTField fDecl) {
         Object f = fDecl.getNode().getFieldInfo().getValue();
-        if (f != null && f instanceof String) {
+        if (f instanceof String) {
             final String fieldValue = (String) f;
             if (AUTHORIZATION.equalsIgnoreCase(fieldValue)) {
                 listOfAuthorizationVariables.add(Helper.getFQVariableName(fDecl));

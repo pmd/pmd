@@ -20,7 +20,7 @@ import javafx.scene.control.TreeItem;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class ScopeHierarchyTreeItem extends TreeItem<Object> {
+public final class ScopeHierarchyTreeItem extends TreeItem<Object> {
 
     private ScopeHierarchyTreeItem(Object scopeOrDecl) {
         super(scopeOrDecl);

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.rule.security;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -108,7 +109,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     private void findSafeVariablesInSignature(ASTMethod m) {
         List<Parameter> parameters = m.getNode().getMethodInfo().getParameters();
         for (Parameter p : parameters) {
-            switch (p.getType().getApexName().toLowerCase()) {
+            switch (p.getType().getApexName().toLowerCase(Locale.ROOT)) {
             case ID:
             case INTEGER:
             case BOOLEAN:
@@ -159,7 +160,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
 
         if (node instanceof ASTVariableDeclaration) {
             VariableDeclaration o = (VariableDeclaration) node.getNode();
-            switch (o.getLocalInfo().getType().getApexName().toLowerCase()) {
+            switch (o.getLocalInfo().getType().getApexName().toLowerCase(Locale.ROOT)) {
             case INTEGER:
             case ID:
             case BOOLEAN:

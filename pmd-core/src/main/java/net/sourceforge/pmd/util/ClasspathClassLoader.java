@@ -50,7 +50,7 @@ public class ClasspathClassLoader extends URLClassLoader {
             // Treat as classpath
             addClasspathURLs(urls, classpath);
         }
-        return urls.toArray(new URL[urls.size()]);
+        return urls.toArray(new URL[0]);
     }
 
     private static void addClasspathURLs(final List<URL> urls, final String classpath) throws MalformedURLException {

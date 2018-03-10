@@ -45,9 +45,18 @@ public class RuleReference extends AbstractDelegateRule {
 
     private static final List<PropertyDescriptor<?>> EMPTY_DESCRIPTORS = Collections.emptyList();
 
+    @Deprecated // to be removed with PMD 7.0.0
+    // when creating a rule reference, always provide the rule and the ruleset, see
+    // the constructor RuleReference(Rule, RuleSetReference)
     public RuleReference() {
+        // default constructor
     }
 
+    /**
+     * 
+     * @param theRule the referenced rule
+     * @param theRuleSetReference the rule set, where the rule is defined
+     */
     public RuleReference(Rule theRule, RuleSetReference theRuleSetReference) {
         setRule(theRule);
         ruleSetReference = theRuleSetReference;
@@ -317,11 +326,7 @@ public class RuleReference extends AbstractDelegateRule {
             }
         }
 
-        if (!getRule().usesDefaultValues()) {
-            return false;
-        }
-
-        return true;
+        return getRule().usesDefaultValues();
     }
 
     @Override

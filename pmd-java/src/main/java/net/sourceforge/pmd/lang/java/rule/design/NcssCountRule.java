@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -83,7 +84,7 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
             int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.NCSS, node, ncssOptions, ResultOption.HIGHEST);
 
             if (classSize >= classReportLevel) {
-                String[] messageParams = {node.getTypeKind().name().toLowerCase(),
+                String[] messageParams = {node.getTypeKind().name().toLowerCase(Locale.ROOT),
                                           node.getImage(),
                                           classSize + " (Highest = " + classHighest + ")", };
 

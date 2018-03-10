@@ -179,9 +179,8 @@ public class JavaTokenizer implements Tokenizer {
         }
 
         public boolean isDiscarding() {
-            boolean result = discardingSemicolon || discardingKeywords || discardingAnnotations
+            return discardingSemicolon || discardingKeywords || discardingAnnotations
                     || discardingSuppressing;
-            return result;
         }
 
         private void detectAnnotations(Token currentToken) {

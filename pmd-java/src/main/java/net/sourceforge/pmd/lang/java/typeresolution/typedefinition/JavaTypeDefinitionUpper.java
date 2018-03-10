@@ -145,11 +145,7 @@ import java.util.Set;
         }
 
         // we assume that the typeList list cannot contain duplicates, then indeed, this will prove equality
-        if (!Arrays.deepEquals(typeList, otherTypeDef.typeList)) {
-            return false;
-        }
-
-        return true;
+        return Arrays.deepEquals(typeList, otherTypeDef.typeList);
     }
 
     @Override

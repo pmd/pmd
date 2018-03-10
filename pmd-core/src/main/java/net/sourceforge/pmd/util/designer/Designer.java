@@ -222,7 +222,7 @@ public class Designer implements ClipboardOwner {
                 }
             }
         }
-        return languageVersions.toArray(new LanguageVersion[languageVersions.size()]);
+        return languageVersions.toArray(new LanguageVersion[0]);
     }
 
     private LanguageVersion getLanguageVersion() {
@@ -990,6 +990,7 @@ public class Designer implements ClipboardOwner {
 
     @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
+        // ignored
     }
 
     private void loadSettings() {

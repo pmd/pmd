@@ -293,11 +293,7 @@ public class RuleSetReferenceId {
             return false;
         }
 
-        if (stripped.startsWith("http://") || stripped.startsWith("https://")) {
-            return true;
-        }
-
-        return false;
+        return stripped.startsWith("http://") || stripped.startsWith("https://");
     }
 
     private static boolean isValidUrl(String name) {

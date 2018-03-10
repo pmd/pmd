@@ -20,7 +20,7 @@ import com.beust.jcommander.ParameterException;
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
-public class PMDCommandLineInterface {
+public final class PMDCommandLineInterface {
 
     public static final String PROG_NAME = "pmd";
 

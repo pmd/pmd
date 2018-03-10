@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -40,11 +41,11 @@ public class AvoidFieldNameMatchingMethodNameRule extends AbstractJavaRule {
             if (child instanceof ASTFieldDeclaration) {
                 fields.add((ASTFieldDeclaration) child);
             } else if (child instanceof ASTMethodDeclaration) {
-                methodNames.add(((ASTMethodDeclaration) child).getMethodName().toLowerCase());
+                methodNames.add(((ASTMethodDeclaration) child).getMethodName().toLowerCase(Locale.ROOT));
             }
         }
         for (ASTFieldDeclaration field : fields) {
-            String varName = field.getVariableName().toLowerCase();
+            String varName = field.getVariableName().toLowerCase(Locale.ROOT);
             if (methodNames.contains(varName)) {
                 addViolation(data, field, field.getVariableName());
             }

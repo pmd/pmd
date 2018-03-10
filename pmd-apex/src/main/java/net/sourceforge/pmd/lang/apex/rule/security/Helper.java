@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
@@ -43,7 +44,7 @@ import apex.jorje.semantic.ast.statement.VariableDeclaration;
  *
  */
 public final class Helper {
-    protected static final String ANY_METHOD = "*";
+    static final String ANY_METHOD = "*";
 
     private Helper() {
         throw new AssertionError("Can't instantiate helper classes");
@@ -58,22 +59,14 @@ public final class Helper {
         }
 
         final String className = node.getNode().getDefiningType().getApexName();
-        if (className.endsWith("Test")) {
-            return true;
-        }
-
-        return false;
+        return className.endsWith("Test");
     }
 
     static boolean foundAnySOQLorSOSL(final ApexNode<?> node) {
         final List<ASTSoqlExpression> dmlSoqlExpression = node.findDescendantsOfType(ASTSoqlExpression.class);
         final List<ASTSoslExpression> dmlSoslExpression = node.findDescendantsOfType(ASTSoslExpression.class);
 
-        if (dmlSoqlExpression.isEmpty() && dmlSoslExpression.isEmpty()) {
-            return false;
-        }
-
-        return true;
+        return !dmlSoqlExpression.isEmpty() || !dmlSoslExpression.isEmpty();
     }
 
     /**
@@ -93,27 +86,17 @@ public final class Helper {
         final List<ASTDmlInsertStatement> dmlInsertStatement = node.findDescendantsOfType(ASTDmlInsertStatement.class);
         final List<ASTDmlDeleteStatement> dmlDeleteStatement = node.findDescendantsOfType(ASTDmlDeleteStatement.class);
 
-        if (dmlUpsertStatement.isEmpty() && dmlUpdateStatement.isEmpty() && dmlUndeleteStatement.isEmpty()
-                && dmlMergeStatement.isEmpty() && dmlInsertStatement.isEmpty() && dmlDeleteStatement.isEmpty()) {
-            return false;
-        }
-
-        return true;
+        return !dmlUpsertStatement.isEmpty() || !dmlUpdateStatement.isEmpty() || !dmlUndeleteStatement.isEmpty()
+                || !dmlMergeStatement.isEmpty() || !dmlInsertStatement.isEmpty() || !dmlDeleteStatement.isEmpty();
     }
 
     static boolean isMethodName(final ASTMethodCallExpression methodNode, final String className,
             final String methodName) {
         final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
-        if (reference != null && reference.getNode().getNames().size() == 1) {
-            if (reference.getNode().getNames().get(0).getValue().equalsIgnoreCase(className)) {
-                if (methodName.equals(ANY_METHOD) || isMethodName(methodNode, methodName)) {
-                    return true;
-                }
-            }
-        }
 
-        return false;
-
+        return reference != null && reference.getNode().getNames().size() == 1
+                && reference.getNode().getNames().get(0).getValue().equalsIgnoreCase(className)
+                && (methodName.equals(ANY_METHOD) || isMethodName(methodNode, methodName));
     }
 
     static boolean isMethodName(final ASTMethodCallExpression m, final String methodName) {
@@ -234,7 +217,7 @@ public final class Helper {
             }
         }
 
-        switch (sb.toString().toLowerCase()) {
+        switch (sb.toString().toLowerCase(Locale.ROOT)) {
         case "queueable":
         case "database.batchable":
         case "installhandler":

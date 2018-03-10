@@ -503,9 +503,7 @@ public class RuleSetFactory {
         for (Rule rule : otherRuleSet.getRules()) {
             excludedRulesCheck.remove(rule.getName());
             if (!ruleSetReference.getExcludes().contains(rule.getName())) {
-                RuleReference ruleReference = new RuleReference();
-                ruleReference.setRuleSetReference(ruleSetReference);
-                ruleReference.setRule(rule);
+                RuleReference ruleReference = new RuleReference(rule, ruleSetReference);
                 // override the priority
                 if (priority != null) {
                     ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(priority)));
@@ -644,8 +642,7 @@ public class RuleSetFactory {
 
         RuleSetReference ruleSetReference = new RuleSetReference(otherRuleSetReferenceId.getRuleSetFileName(), false);
 
-        RuleReference ruleReference = new RuleFactory().decorateRule(referencedRule, ruleElement);
-        ruleReference.setRuleSetReference(ruleSetReference);
+        RuleReference ruleReference = new RuleFactory().decorateRule(referencedRule, ruleSetReference, ruleElement);
 
         if (warnDeprecated && ruleReference.isDeprecated()) {
             if (LOG.isLoggable(Level.WARNING)) {
