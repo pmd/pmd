@@ -147,6 +147,18 @@ public interface Node {
      */
     <T> List<T> getParentsOfType(Class<T> parentType);
 
+
+    /**
+     * Gets the first parent that's an instance of any of the given types.
+     *
+     * @param parentTypes Types to look for
+     * @param <T>         Most specific common type of the parameters
+     *
+     * @return The first parent with a matching type. Returns null if there
+     * is no such parent
+     */
+    <T> T getFirstParentOfAnyType(Class<? extends T>... parentTypes);
+
     /**
      * Traverses the children to find all the instances of type childType or
      * one of its subclasses.

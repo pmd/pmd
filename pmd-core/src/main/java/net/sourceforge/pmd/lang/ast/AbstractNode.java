@@ -238,6 +238,22 @@ public abstract class AbstractNode implements Node {
     }
 
 
+    @SafeVarargs
+    @Override
+    public final <T> T getFirstParentOfAnyType(Class<? extends T>... parentTypes) {
+        Node parentNode = jjtGetParent();
+        while (parentNode != null) {
+            for (Class<? extends T> c : parentTypes) {
+                if (c.isInstance(parentNode)) {
+                    return c.cast(parentNode);
+                }
+            }
+            parentNode = parentNode.jjtGetParent();
+        }
+        return null;
+    }
+
+
     @Override
     public <T> List<T> findDescendantsOfType(Class<T> targetType) {
         List<T> list = new ArrayList<>();
