@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.metrics.api;
 
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric.AtfdOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
@@ -72,5 +73,16 @@ public enum JavaOperationMetricKey implements MetricKey<MethodLikeNode> {
     @Override
     public boolean supports(MethodLikeNode node) {
         return calculator.supports(node);
+    }
+
+
+    /**
+     * @see #supports(MethodLikeNode)
+     * @deprecated Provided here for backwards binary compatibility with {@link #supports(MethodLikeNode)}.
+     *             Please explicitly link your code to that method and recompile your code. Will be remove with 7.0.0
+     */
+    @Deprecated
+    public boolean supports(ASTMethodOrConstructorDeclaration node) {
+        return this.supports((MethodLikeNode) node);
     }
 }

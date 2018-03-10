@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaMetric;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetric;
@@ -28,4 +29,16 @@ public abstract class AbstractJavaOperationMetric extends AbstractJavaMetric<Met
     public boolean supports(MethodLikeNode node) {
         return !node.isAbstract();
     }
+
+
+    /**
+     * @see #supports(MethodLikeNode)
+     * @deprecated Provided here for backwards binary compatibility with {@link #supports(MethodLikeNode)}.
+     *             Please explicitly link your code to that method and recompile your code. Will be remove with 7.0.0
+     */
+    public boolean supports(ASTMethodOrConstructorDeclaration node) {
+        return supports((MethodLikeNode) node);
+    }
+
+
 }

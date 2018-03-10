@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics;
 
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
@@ -83,6 +84,26 @@ public final class JavaMetrics {
         return FACADE.computeForOperation(key, node, MetricOptions.emptyOptions());
     }
 
+
+    /**
+     * @see #get(MetricKey, MethodLikeNode)
+     * @deprecated Provided here for backwards binary compatibility with {@link #get(MetricKey, MethodLikeNode)}.
+     * Please explicitly link your code to that method and recompile your code. Will be remove with 7.0.0
+     */
+    public static double get(MetricKey<MethodLikeNode> key, ASTMethodOrConstructorDeclaration node) {
+        return get(key, (MethodLikeNode) node);
+    }
+
+
+    /**
+     * @see #get(MetricKey, MethodLikeNode, MetricOptions)
+     * @deprecated Provided here for backwards binary compatibility with {@link #get(MetricKey, MethodLikeNode, MetricOptions)}.
+     *             Please explicitly link your code to that method and recompile your code. Will be remove with 7.0.0
+     */
+    @Deprecated
+    public static double get(MetricKey<MethodLikeNode> key, ASTMethodOrConstructorDeclaration node, MetricOptions options) {
+        return get(key, (MethodLikeNode) node, options);
+    }
 
     /**
      * Computes a metric identified by its key on a operation AST node.
