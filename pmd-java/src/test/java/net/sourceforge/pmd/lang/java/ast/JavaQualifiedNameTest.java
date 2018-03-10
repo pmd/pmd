@@ -48,9 +48,9 @@ public class JavaQualifiedNameTest {
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
             assertEquals("Foo", qname.toString());
-            assertTrue(qname.getPackages().isEmpty());
+            assertTrue(qname.getPackageList().isEmpty());
             assertTrue(qname.isUnnamedPackage());
-            assertEquals(1, qname.getClasses().size());
+            assertEquals(1, qname.getClassList().size());
             assertNull(qname.getOperation());
         }
     }
@@ -65,8 +65,8 @@ public class JavaQualifiedNameTest {
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
             assertEquals("foo.bar.Bzaz", qname.toString());
-            assertEquals(2, qname.getPackages().size());
-            assertEquals(1, qname.getClasses().size());
+            assertEquals(2, qname.getPackageList().size());
+            assertEquals(1, qname.getClassList().size());
             assertNull(qname.getOperation());
         }
     }
@@ -85,7 +85,7 @@ public class JavaQualifiedNameTest {
             case "Foo":
                 assertEquals("foo.bar.Bzaz$Bor$Foo",
                              qname.toString());
-                assertEquals(3, qname.getClasses().size());
+                assertEquals(3, qname.getClassList().size());
                 break;
             default:
                 break;
@@ -103,8 +103,8 @@ public class JavaQualifiedNameTest {
         for (ASTEnumDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
             assertEquals("foo.bar.Foo$Bzaz", qname.toString());
-            assertEquals(2, qname.getPackages().size());
-            assertEquals(2, qname.getClasses().size());
+            assertEquals(2, qname.getPackageList().size());
+            assertEquals(2, qname.getClassList().size());
             assertNull(qname.getOperation());
         }
     }
@@ -119,8 +119,8 @@ public class JavaQualifiedNameTest {
         for (ASTEnumDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
             assertEquals("foo.bar.Bzaz", qname.toString());
-            assertEquals(2, qname.getPackages().size());
-            assertEquals(1, qname.getClasses().size());
+            assertEquals(2, qname.getPackageList().size());
+            assertEquals(1, qname.getClassList().size());
             assertNull(qname.getOperation());
         }
     }
@@ -135,8 +135,8 @@ public class JavaQualifiedNameTest {
         for (ASTMethodDeclaration coid : nodes) {
             JavaQualifiedName qname = coid.getQualifiedName();
             assertEquals("foo.bar.Bzaz#foo()", qname.toString());
-            assertEquals(2, qname.getPackages().size());
-            assertEquals(1, qname.getClasses().size());
+            assertEquals(2, qname.getPackageList().size());
+            assertEquals(1, qname.getClassList().size());
             assertEquals("foo()", qname.getOperation());
         }
     }
@@ -155,9 +155,9 @@ public class JavaQualifiedNameTest {
             case "Foo":
                 assertEquals("Bzaz$Bor$Foo",
                              qname.toString());
-                assertTrue(qname.getPackages().isEmpty());
+                assertTrue(qname.getPackageList().isEmpty());
                 assertTrue(qname.isUnnamedPackage());
-                assertEquals(3, qname.getClasses().size());
+                assertEquals(3, qname.getClassList().size());
                 break;
             default:
                 break;
@@ -248,12 +248,12 @@ public class JavaQualifiedNameTest {
         JavaQualifiedName outer = QualifiedNameFactory.ofString("foo.bar.Bzaz");
         JavaQualifiedName nested = QualifiedNameFactory.ofString("foo.bar.Bzaz$Bolg");
 
-        assertEquals(1, outer.getClasses().size());
-        assertEquals("Bzaz", outer.getClasses().head());
+        assertEquals(1, outer.getClassList().size());
+        assertEquals("Bzaz", outer.getClassList().head());
 
-        assertEquals(2, nested.getClasses().size());
-        assertEquals("Bzaz", nested.getClasses().head());
-        assertEquals("Bolg", nested.getClasses().get(1));
+        assertEquals(2, nested.getClassList().size());
+        assertEquals("Bzaz", nested.getClassList().head());
+        assertEquals("Bolg", nested.getClassList().get(1));
     }
 
 
@@ -262,11 +262,11 @@ public class JavaQualifiedNameTest {
         JavaQualifiedName packs = QualifiedNameFactory.ofString("foo.bar.Bzaz$Bolg");
         JavaQualifiedName nopacks = QualifiedNameFactory.ofString("Bzaz");
 
-        assertNotNull(packs.getPackages());
-        assertEquals("foo", packs.getPackages().get(0));
-        assertEquals("bar", packs.getPackages().get(1));
+        assertNotNull(packs.getPackageList());
+        assertEquals("foo", packs.getPackageList().get(0));
+        assertEquals("bar", packs.getPackageList().get(1));
 
-        assertTrue(nopacks.getPackages().isEmpty());
+        assertTrue(nopacks.getPackageList().isEmpty());
     }
 
 
@@ -310,8 +310,8 @@ public class JavaQualifiedNameTest {
         assertTrue(simple.isAnonymousClass());
         assertFalse(simple.isLocalClass());
 
-        assertEquals("12", simple.getClasses().get(1));
-        assertEquals("13", simple.getClasses().get(2));
+        assertEquals("12", simple.getClassList().get(1));
+        assertEquals("13", simple.getClassList().get(2));
 
         assertEquals(SIMPLE, simple.toString());
     }
@@ -602,7 +602,7 @@ public class JavaQualifiedNameTest {
 
         assertTrue(lambdas.get(0).getQualifiedName().isLambda());
         assertEquals("lambda$$0", lambdas.get(0).getQualifiedName().getOperation());
-        assertEquals(2, lambdas.get(0).getQualifiedName().getClasses().size());
+        assertEquals(2, lambdas.get(0).getQualifiedName().getClassList().size());
     }
 
 
@@ -684,7 +684,7 @@ public class JavaQualifiedNameTest {
         // * operation == null
         assertTrue(lambdas.get(3).getQualifiedName().isLambda());
         assertEquals("lambda$run$0", lambdas.get(3).getQualifiedName().getOperation());
-        assertEquals(2, lambdas.get(3).getQualifiedName().getClasses().size());
+        assertEquals(2, lambdas.get(3).getQualifiedName().getClassList().size());
     }
 
 

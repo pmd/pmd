@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.lang.reflect.Array;
 import java.util.Map.Entry;
 import java.util.Objects;
 
@@ -127,7 +128,7 @@ public final class JavaQualifiedName implements QualifiedName {
      *
      * @return The packages.
      */
-    public ImmutableList<String> getPackages() {
+    public ImmutableList<String> getPackageList() {
         return packages.reverse();
     }
 
@@ -143,10 +144,58 @@ public final class JavaQualifiedName implements QualifiedName {
      *
      * @return The class names.
      */
-    public ImmutableList<String> getClasses() {
+    public ImmutableList<String> getClassList() {
         return classes.reverse();
     }
 
+
+    /**
+     * Puts the reversed list into the given array, if possible, otherwise returns a new
+     * array with the same elements as this list in reversed order.
+     *
+     * <p>This method is only here to provide backwards compatibility to {@link #getPackages()}
+     * and {@link #getClasses()}. It should be removed with 7.0.0
+     *
+     * @param lst List
+     * @param arr Array
+     * @param <T> Type of the elements
+     *
+     * @return an array of the specified type
+     */
+    private static <T> T[] reversedToArray(ImmutableList<T> lst, T[] arr) {
+        @SuppressWarnings("unchecked")
+        T[] resultArr = arr.length == lst.size()
+                ? arr
+                : (T[]) Array.newInstance(arr.getClass().getComponentType(), lst.size());
+
+        int i = arr.length;
+        for (T elem : lst) {
+            resultArr[--i] = elem;
+        }
+        return resultArr;
+    }
+
+
+    /**
+     * Returns the packages in order.
+     *
+     * @deprecated Use {@link #getPackageList()} ()}. Will be removed in 7.0.0
+     */
+    @Deprecated
+    public String[] getPackages() {
+        return reversedToArray(packages, new String[packages.size()]);
+    }
+
+
+    /**
+     * Returns the classes in order.
+     *
+     * @deprecated Use {@link #getClassList()}. Will be removed in 7.0.0
+     */
+    @Deprecated
+    public String[] getClasses() {
+        return reversedToArray(classes, new String[classes.size()]);
+    }
 
     /**
      * Returns the operation specific part of the name. It
@@ -237,7 +286,25 @@ public final class JavaQualifiedName implements QualifiedName {
         return sb.toString();
     }
 
-    // These factories are kept here because getClasses and getPackages return
+
+    /**
+     * @deprecated Use {@link QualifiedNameFactory#ofString(String)}. Will be removed in 7.0.0
+     */
+    @Deprecated
+    public static JavaQualifiedName ofString(String name) {
+        return QualifiedNameFactory.ofString(name);
+    }
+
+
+    /**
+     * @deprecated Use {@link QualifiedNameFactory#ofClass(Class)}. Will be removed in 7.0.0
+     */
+    @Deprecated
+    public static JavaQualifiedName ofClass(Class<?> clazz) {
+        return QualifiedNameFactory.ofClass(clazz);
+    }
+
+    // These factories are kept here because getClassList and getPackageList return
     // a reversed list. Not calling them from QualifiedNameFactory avoids a
     // reverse operation
 

@@ -64,7 +64,7 @@ final class PackageStats implements ProjectMirror {
             return null;
         }
 
-        String topClassName = qname.getClasses().head();
+        String topClassName = qname.getClassList().head();
         if (createIfNotFound && container.classes.get(topClassName) == null) {
             container.classes.put(topClassName, new ClassStats());
         }
@@ -75,7 +75,7 @@ final class PackageStats implements ProjectMirror {
             return null;
         }
 
-        ImmutableList<String> nameClasses = qname.getClasses();
+        ImmutableList<String> nameClasses = qname.getClassList();
 
         for (Iterator<String> it = nameClasses.tail().iterator(); it.hasNext() && next != null;) {
             // Delegate search for nested classes to ClassStats
@@ -96,11 +96,11 @@ final class PackageStats implements ProjectMirror {
      * @return The deepest package that contains this resource. Can only return null if createIfNotFound is unset
      */
     private PackageStats getSubPackage(JavaQualifiedName qname, boolean createIfNotFound) {
-        if (qname.getPackages() == null) {
+        if (qname.getPackageList() == null) {
             return this; // the toplevel
         }
 
-        ImmutableList<String> packagePath = qname.getPackages();
+        ImmutableList<String> packagePath = qname.getPackageList();
         PackageStats next = this;
 
         for (Iterator<String> it = packagePath.iterator(); it.hasNext() && next != null;) {

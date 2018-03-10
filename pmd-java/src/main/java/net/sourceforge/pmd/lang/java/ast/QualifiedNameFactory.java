@@ -264,7 +264,7 @@ public class QualifiedNameFactory {
             if (qname.isAnonymousClass()) {
                 return "";
             } else if (qname.isLocalClass()) {
-                return qname.getClasses().get(qname.getClasses().size() - 1);
+                return qname.getClassList().get(qname.getClassList().size() - 1);
             } else { // other type
                 return "new";
             }
