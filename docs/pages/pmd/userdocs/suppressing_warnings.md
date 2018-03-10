@@ -181,6 +181,6 @@ suppress reporting specifically typed parameters which are unused:
 Note for XPath based suppression to work, you must know how to write
 an XPath query that matches the AST structure of the nodes of the
 violations you wish to suppress.  XPath queries are explained in
-[XPath Rule tutorial](/pmd_devdocs_writing_xpath_rules.html).
+[XPath Rule tutorial](/pmd_userdocs_extending_writing_xpath_rules.html).
 
 Suggestions?  Comments? Post them [here](https://github.com/pmd/pmd/issues). Thanks!
