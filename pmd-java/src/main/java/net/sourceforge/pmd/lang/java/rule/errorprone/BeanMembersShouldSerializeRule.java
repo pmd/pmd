@@ -75,11 +75,12 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
         Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
                 .getDeclarations(VariableNameDeclaration.class);
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
-            AccessNode accessNodeParent = entry.getKey().getAccessNodeParent();
+            VariableNameDeclaration decl = entry.getKey();
+            AccessNode accessNodeParent = decl.getAccessNodeParent();
             if (entry.getValue().isEmpty() || accessNodeParent.isTransient() || accessNodeParent.isStatic()) {
                 continue;
             }
-            String varName = trimIfPrefix(entry.getKey().getImage());
+            String varName = trimIfPrefix(decl.getImage());
             varName = varName.substring(0, 1).toUpperCase() + varName.substring(1, varName.length());
             boolean hasGetMethod = Arrays.binarySearch(methNameArray, "get" + varName) >= 0
                     || Arrays.binarySearch(methNameArray, "is" + varName) >= 0;
@@ -87,7 +88,7 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
             // Note that a Setter method is not applicable to a final
             // variable...
             if (!hasGetMethod || !accessNodeParent.isFinal() && !hasSetMethod) {
-                addViolation(data, entry.getKey().getNode(), entry.getKey().getImage());
+                addViolation(data, decl.getNode(), decl.getImage());
             }
         }
         return super.visit(node, data);

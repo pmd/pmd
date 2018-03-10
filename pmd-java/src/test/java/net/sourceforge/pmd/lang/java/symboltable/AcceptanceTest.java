@@ -103,7 +103,7 @@ public class AcceptanceTest extends STBBaseTst {
         for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : m.entrySet()) {
             assertEquals("buz", entry.getKey().getImage());
             assertEquals("ArrayList", ((TypedNameDeclaration) entry.getKey()).getTypeImage());
-            List<NameOccurrence> u = m.get(entry.getKey());
+            List<NameOccurrence> u = entry.getValue();
             assertEquals(1, u.size());
             NameOccurrence o = u.get(0);
             int beginLine = o.getLocation().getBeginLine();

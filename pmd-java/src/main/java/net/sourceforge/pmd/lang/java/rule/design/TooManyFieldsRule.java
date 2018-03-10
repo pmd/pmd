@@ -50,7 +50,7 @@ public class TooManyFieldsRule extends AbstractJavaRule {
             }
         }
         for (Map.Entry<String, Integer> entry : stats.entrySet()) {
-            int val = stats.get(entry.getKey());
+            int val = entry.getValue();
             Node n = nodes.get(entry.getKey());
             if (val > maxFields) {
                 addViolation(data, n);
