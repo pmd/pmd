@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting;
 
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BRACKET;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.KEYWORD;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.NUMBER;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.PAREN;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.SINGLEL_COMMENT;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.STRING;
@@ -41,8 +42,9 @@ public class XPathSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         .or(XPATH_PATH.css, "//?")
         .or(PAREN.css, "[()]")
         .or(BRACKET.css, "[\\[\\]]")
+        .or(NUMBER.css, "\\b\\d+\\b")
         .or(STRING.css, "('([^'\\\\]|\\\\.)*')|(\"([^\"\\\\]|\\\\.)*\")")
-        .or(SINGLEL_COMMENT.css, "\\(:.*:\\)")
+        .or(SINGLEL_COMMENT.css, "\\(:.*?:\\)")
         .create();
 
 

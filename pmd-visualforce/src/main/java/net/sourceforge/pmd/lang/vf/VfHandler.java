@@ -12,25 +12,17 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
+import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.vf.ast.DumpFacade;
 import net.sourceforge.pmd.lang.vf.ast.VfNode;
 import net.sourceforge.pmd.lang.vf.rule.VfRuleViolationFactory;
 
-import net.sf.saxon.sxpath.IndependentContext;
-
 public class VfHandler extends AbstractLanguageVersionHandler {
 
     @Override
     public XPathHandler getXPathHandler() {
-        return new AbstractASTXPathHandler() {
-            public void initialize() {
-            }
-
-            public void initialize(IndependentContext context) {
-            }
-        };
+        return new DefaultASTXPathHandler();
     }
 
     public RuleViolationFactory getRuleViolationFactory() {

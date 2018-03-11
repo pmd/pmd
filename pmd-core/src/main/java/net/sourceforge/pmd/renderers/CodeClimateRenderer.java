@@ -52,9 +52,6 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         return url;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();

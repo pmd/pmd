@@ -34,8 +34,7 @@ final class PackageStats implements ProjectMirror {
     /**
      * Default constructor.
      */
-    /* default */ PackageStats() {
-
+    private PackageStats() {
     }
 
 

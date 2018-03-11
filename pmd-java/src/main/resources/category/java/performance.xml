@@ -325,18 +325,26 @@ buf.append("Hello").append(foo).append("World"); // good
 
     <rule name="ConsecutiveLiteralAppends"
           since="3.5"
-          message="StringBuffer (or StringBuilder).append is called {0} consecutive times with literal Strings. Use a single append with a single combined String."
+          message="StringBuffer (or StringBuilder).append is called {0} consecutive times with literals. Use a single append with a single combined String."
           class="net.sourceforge.pmd.lang.java.rule.performance.ConsecutiveLiteralAppendsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#consecutiveliteralappends">
         <description>
-Consecutively calling StringBuffer/StringBuilder.append with String literals
+Consecutively calling StringBuffer/StringBuilder.append(...) with literals should be avoided.
+Since the literals are constants, they can already be combined into a single String literal and this String
+can be appended in a single method call.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
-StringBuffer buf = new StringBuffer();
+StringBuilder buf = new StringBuilder();
 buf.append("Hello").append(" ").append("World");    // poor
 buf.append("Hello World");                          // good
+
+buf.append('h').append('e').append('l').append('l').append('o'); // poor
+buf.append("hello");                                             // good
+
+buf.append(1).append('m');  // poor
+buf.append("1m");           // good
 ]]>
         </example>
     </rule>

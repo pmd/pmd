@@ -73,7 +73,7 @@ class StyleLayer {
                       Set<String> cssClasses) {
 
         if (endLine > codeArea.getParagraphs().size()
-            || endLine == codeArea.getParagraphs().size() && endColumn > codeArea.getParagraph(endLine).length()) {
+            || endLine == codeArea.getParagraphs().size() && endColumn > codeArea.getParagraph(endLine - 1).length()) {
             throw new IllegalArgumentException("Cannot style, the region is out of bounds");
         }
 

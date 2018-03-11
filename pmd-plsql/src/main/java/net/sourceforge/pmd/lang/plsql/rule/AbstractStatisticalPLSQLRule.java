@@ -21,7 +21,7 @@ public abstract class AbstractStatisticalPLSQLRule extends AbstractPLSQLRule imp
     }
 
     public Object[] getViolationParameters(DataPoint point) {
-        return null;
+        return new Object[0];
     }
 
     @Override

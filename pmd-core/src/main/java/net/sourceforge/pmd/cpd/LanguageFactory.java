@@ -72,7 +72,7 @@ public final class LanguageFactory {
         if (BY_EXTENSION.equals(language)) {
             implementation = instance.getLanguageByExtension(properties.getProperty(EXTENSION));
         } else {
-            implementation = instance.languages.get(instance.languageAliases(language).toLowerCase());
+            implementation = instance.languages.get(instance.languageAliases(language).toLowerCase(Locale.ROOT));
         }
         if (implementation == null) {
             // No proper implementation

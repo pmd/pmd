@@ -344,7 +344,7 @@ public abstract class AbstractNode implements Node {
         int n = node.jjtGetNumChildren();
         for (int i = 0; i < n; i++) {
             Node n1 = node.jjtGetChild(i);
-            if (n1.getClass() == descendantType) {
+            if (descendantType.isAssignableFrom(n1.getClass())) {
                 return descendantType.cast(n1);
             }
             T n2 = getFirstDescendantOfType(descendantType, n1);
@@ -479,7 +479,7 @@ public abstract class AbstractNode implements Node {
 
 
     /**
-     * {@inheritDoc}
+     *
      *
      * @deprecated The equivalence between toString and a node's name could be broken as soon as release 7.0.0.
      *  Use getXPathNodeName for that purpose. The use for debugging purposes is not deprecated.

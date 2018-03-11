@@ -23,7 +23,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 
-public class GenerateRuleDocsCmd {
+public final class GenerateRuleDocsCmd {
     private GenerateRuleDocsCmd() {
         // Utility class
     }

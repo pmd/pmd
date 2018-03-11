@@ -50,7 +50,7 @@ public class ClasspathClassLoader extends URLClassLoader {
             // Treat as classpath
             addClasspathURLs(urls, classpath);
         }
-        return urls.toArray(new URL[urls.size()]);
+        return urls.toArray(new URL[0]);
     }
 
     private static void addClasspathURLs(final List<URL> urls, final String classpath) throws MalformedURLException {
@@ -81,9 +81,6 @@ public class ClasspathClassLoader extends URLClassLoader {
         return file.getAbsoluteFile().toURI().toURL();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return new StringBuilder(getClass().getSimpleName())

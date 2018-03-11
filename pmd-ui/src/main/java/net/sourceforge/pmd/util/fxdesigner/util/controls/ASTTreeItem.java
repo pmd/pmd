@@ -15,7 +15,7 @@ import javafx.scene.control.TreeItem;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class ASTTreeItem extends TreeItem<Node> {
+public final class ASTTreeItem extends TreeItem<Node> {
 
 
     private ASTTreeItem(Node n) {

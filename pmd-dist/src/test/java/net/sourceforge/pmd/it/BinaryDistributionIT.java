@@ -17,18 +17,16 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.JavaVersion;
-import org.apache.commons.lang3.SystemUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 
 public class BinaryDistributionIT {
 
     private static File getBinaryDistribution() {
-        return new File(".", "target/pmd-bin-" + PMD.VERSION + ".zip");
+        return new File(".", "target/pmd-bin-" + PMDVersion.VERSION + ".zip");
     }
 
     /**
@@ -59,13 +57,13 @@ public class BinaryDistributionIT {
 
     private Set<String> getExpectedFileNames() {
         Set<String> result = new HashSet<>();
-        String basedir = "pmd-bin-" + PMD.VERSION + "/";
+        String basedir = "pmd-bin-" + PMDVersion.VERSION + "/";
         result.add(basedir);
         result.add(basedir + "bin/run.sh");
         result.add(basedir + "bin/pmd.bat");
         result.add(basedir + "bin/cpd.bat");
-        result.add(basedir + "lib/pmd-core-" + PMD.VERSION + ".jar");
-        result.add(basedir + "lib/pmd-java-" + PMD.VERSION + ".jar");
+        result.add(basedir + "lib/pmd-core-" + PMDVersion.VERSION + ".jar");
+        result.add(basedir + "lib/pmd-java-" + PMDVersion.VERSION + ".jar");
         return result;
     }
 
@@ -110,12 +108,7 @@ public class BinaryDistributionIT {
 
         result = CpdExecutor.runCpd(tempDir, "-h");
 
-        if (SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_9)) {
-            // with java9, scala is not supported
-            result.assertExecutionResult(1, "Supported languages: [apex, cpp, cs, ecmascript, fortran, go, groovy, java, jsp, matlab, objectivec, perl, php, plsql, python, ruby, swift, vf]");
-        } else {
-            result.assertExecutionResult(1, "Supported languages: [apex, cpp, cs, ecmascript, fortran, go, groovy, java, jsp, matlab, objectivec, perl, php, plsql, python, ruby, scala, swift, vf]");
-        }
+        result.assertExecutionResult(1, "Supported languages: [apex, cpp, cs, ecmascript, fortran, go, groovy, java, jsp, matlab, objectivec, perl, php, plsql, python, ruby, scala, swift, vf]");
 
         result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "text", "--files", srcDir);
         result.assertExecutionResult(4, "Found a 10 line (55 tokens) duplication in the following files:");

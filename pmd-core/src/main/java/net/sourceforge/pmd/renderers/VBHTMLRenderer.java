@@ -30,17 +30,11 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
         return "vb.html";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void start() throws IOException {
         getWriter().write(header());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         if (!violations.hasNext()) {
@@ -87,9 +81,6 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void end() throws IOException {
         Writer writer = getWriter();

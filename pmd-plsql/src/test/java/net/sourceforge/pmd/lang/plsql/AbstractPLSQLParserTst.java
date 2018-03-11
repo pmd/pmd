@@ -19,9 +19,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-// Root Production comprising PLSQL definitions, and SQL*PLus, DDL, GRANTS etc.
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
-//Covers all executbale code units, such as package and object type bodies, standalone procedures and functions, and triggers 
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor;
 import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;

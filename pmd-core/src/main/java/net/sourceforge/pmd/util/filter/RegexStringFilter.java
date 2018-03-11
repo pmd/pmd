@@ -67,7 +67,7 @@ public class RegexStringFilter implements Filter<String> {
         } else {
             try {
                 this.pattern = Pattern.compile(this.regex);
-            } catch (PatternSyntaxException e) {
+            } catch (PatternSyntaxException ignored) {
                 // If the regular expression is invalid, then pattern will be
                 // null.
             }

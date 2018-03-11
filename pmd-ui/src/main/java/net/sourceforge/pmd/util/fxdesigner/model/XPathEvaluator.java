@@ -17,10 +17,8 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
+import net.sourceforge.pmd.util.fxdesigner.util.PropertyDescriptorSpec;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 /**
  * Evaluates XPath expressions.
@@ -31,31 +29,22 @@ import javafx.beans.property.StringProperty;
 public class XPathEvaluator {
 
 
-    private final StringProperty xpathVersion = new SimpleStringProperty(XPathRuleQuery.XPATH_2_0);
-
-
-    public String getXpathVersion() {
-        return xpathVersion.get();
-    }
-
-
-    public StringProperty xpathVersionProperty() {
-        return xpathVersion;
-    }
-
-
     /**
      * Evaluates an XPath query on the compilation unit.
      *
      * @param compilationUnit AST root
      * @param languageVersion language version
-     * @param xpathQuery      query
+     * @param xpathVersion    XPath version
+     * @param xpathQuery      XPath query
+     * @param properties      Properties of the rule
      *
      * @throws XPathEvaluationException if there was an error during the evaluation. The cause is preserved
      */
     public List<Node> evaluateQuery(Node compilationUnit,
                                     LanguageVersion languageVersion,
-                                    String xpathQuery) throws XPathEvaluationException {
+                                    String xpathVersion,
+                                    String xpathQuery,
+                                    List<PropertyDescriptorSpec> properties) throws XPathEvaluationException {
 
         if (StringUtils.isBlank(xpathQuery)) {
             return Collections.emptyList();
@@ -71,11 +60,15 @@ public class XPathEvaluator {
                 }
             };
 
+
             xpathRule.setMessage("");
             xpathRule.setLanguage(languageVersion.getLanguage());
             xpathRule.setXPath(xpathQuery);
-            xpathRule.setVersion(xpathVersion.get());
+            xpathRule.setVersion(xpathVersion);
 
+            properties.stream()
+                      .map(PropertyDescriptorSpec::build)
+                      .forEach(xpathRule::definePropertyDescriptor);
 
             final RuleSet ruleSet = new RuleSetFactory().createSingleRuleRuleSet(xpathRule);
 
@@ -94,6 +87,4 @@ public class XPathEvaluator {
             throw new XPathEvaluationException(e);
         }
     }
-
-
 }

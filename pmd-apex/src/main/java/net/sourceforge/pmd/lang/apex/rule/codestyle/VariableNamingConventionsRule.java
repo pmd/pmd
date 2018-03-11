@@ -8,6 +8,7 @@ import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.FINAL;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
 
 import java.util.List;
+import java.util.Locale;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
@@ -152,7 +153,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
 
         // Static finals should be uppercase
         if (isStatic && isFinal) {
-            if (!varName.equals(varName.toUpperCase())) {
+            if (!varName.equals(varName.toUpperCase(Locale.ROOT))) {
                 addViolationWithMessage(data, node,
                         "Variables that are final and static should be all capitals, ''{0}'' is not all capitals.",
                         new Object[] { varName });

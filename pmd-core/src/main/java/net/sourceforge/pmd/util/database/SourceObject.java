@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.database;
 
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.cpd.SourceCode;
@@ -130,21 +131,21 @@ public class SourceObject {
         LOG.entering(CLASS_NAME, "getSuffixFromType", this);
         if (null == type || type.isEmpty()) {
             return "";
-        } else if (type.toUpperCase().indexOf("JAVA") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).indexOf("JAVA") >= 0) {
             return ".java";
-        } else if (type.toUpperCase().indexOf("TRIGGER") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).indexOf("TRIGGER") >= 0) {
             return ".trg";
-        } else if (type.toUpperCase().indexOf("FUNCTION") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).indexOf("FUNCTION") >= 0) {
             return ".fnc";
-        } else if (type.toUpperCase().indexOf("PROCEDURE") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).indexOf("PROCEDURE") >= 0) {
             return ".prc";
-        } else if (type.toUpperCase().indexOf("PACKAGE_BODY") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).indexOf("PACKAGE_BODY") >= 0) {
             return ".pkb";
-        } else if (type.toUpperCase().indexOf("PACKAGE") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).indexOf("PACKAGE") >= 0) {
             return ".pks";
-        } else if (type.toUpperCase().indexOf("TYPE_BODY") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).indexOf("TYPE_BODY") >= 0) {
             return ".tpb";
-        } else if (type.toUpperCase().indexOf("TYPE") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).indexOf("TYPE") >= 0) {
             return ".tps";
         } else {
             return "";
@@ -157,8 +158,7 @@ public class SourceObject {
      * parser is used.
      */
     public String getPseudoFileName() {
-        String falseFilePath = String.format("/Database/%s/%s/%s%s", getSchema(), getType(), getName(),
+        return String.format("/Database/%s/%s/%s%s", getSchema(), getType(), getName(),
                 getSuffixFromType());
-        return falseFilePath;
     }
 }

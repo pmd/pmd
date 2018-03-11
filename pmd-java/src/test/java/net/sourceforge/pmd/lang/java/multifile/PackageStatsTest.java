@@ -35,7 +35,8 @@ public class PackageStatsTest {
 
     @Before
     public void setUp() {
-        pack = new PackageStats();
+        pack = PackageStats.INSTANCE;
+        pack.reset();
     }
 
 

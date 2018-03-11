@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class MetricKeyUtil {
+public final class MetricKeyUtil {
 
     private MetricKeyUtil() {
 

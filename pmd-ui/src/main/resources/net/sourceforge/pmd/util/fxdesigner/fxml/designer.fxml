@@ -2,14 +2,9 @@
 
 <!--suppress JavaFxDefaultTag -->
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -22,43 +17,39 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.MainDesignerController">
+<AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.MainDesignerController">
     <children>
         <BorderPane prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
                 <AnchorPane>
                     <children>
-                          <MenuBar maxHeight="20.0" prefHeight="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                              <menus>
-                                  <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
-                                      <items>
-                                          <MenuItem fx:id="openFileMenuItem" mnemonicParsing="false" text="Open..." />
-                                          <Menu fx:id="openRecentMenu" mnemonicParsing="false" text="Open recent..." />
-                                          <SeparatorMenuItem mnemonicParsing="false" />
-                                          <Menu fx:id="exportMenu" mnemonicParsing="false" text="Export...">
-                                              <items>
-                                                  <MenuItem fx:id="exportToTestCodeMenuItem" mnemonicParsing="false" text="Export code to test code" />
-                                                  <MenuItem fx:id="exportXPathMenuItem" mnemonicParsing="false" text="Export XPath to rule" />
-                                              </items>
-                                          </Menu>
-                                      </items>
-                                  </Menu>
-                                  <Menu mnemonicParsing="false" text="About">
-                                      <items>
-                                          <MenuItem mnemonicParsing="false" text="About" />
-                                          <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License" />
-                                      </items>
-                                  </Menu>
-                              </menus>
-                          </MenuBar>
+                        <MenuBar maxHeight="20.0" prefHeight="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <menus>
+                                <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
+                                    <items>
+                                        <MenuItem fx:id="openFileMenuItem" mnemonicParsing="false" text="Open..." />
+                                        <Menu fx:id="openRecentMenu" mnemonicParsing="false" text="Open recent..." />
+                                        <SeparatorMenuItem mnemonicParsing="false" />
+                                        <MenuItem fx:id="exportToTestCodeMenuItem" mnemonicParsing="false" text="Export code to test code" />
+                                        <MenuItem fx:id="exportXPathMenuItem" mnemonicParsing="false" text="Export XPath to rule" />
+                                    </items>
+                                </Menu>
+                                <Menu mnemonicParsing="false" text="About">
+                                    <items>
+                                        <MenuItem mnemonicParsing="false" text="About" />
+                                        <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License" />
+                                    </items>
+                                </Menu>
+                            </menus>
+                        </MenuBar>
                     </children>
                 </AnchorPane>
             </top>
             <center>
-                <SplitPane fx:id="mainHorizontalSplitPane" dividerPositions="0.8" orientation="VERTICAL" BorderPane.alignment="BOTTOM_CENTER">
+                <SplitPane id="main-vertical-split-pane" fx:id="mainHorizontalSplitPane" dividerPositions="0.8" orientation="VERTICAL" BorderPane.alignment="BOTTOM_CENTER">
                     <items>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                             <left>
@@ -70,7 +61,7 @@
                                         <fx:include fx:id="sourceEditor" source="editor.fxml" />
                                     </center>
                                     <bottom>
-                                        <ToolBar id="mainToolbar" prefHeight="40.0" prefWidth="200.0" styleClass="info-title-bar" BorderPane.alignment="CENTER">
+                                        <ToolBar id="main-toolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                             <items>
                                                 <Button fx:id="refreshASTButton" maxHeight="22.0" minHeight="22.0" mnemonicParsing="true" prefHeight="20.0" text="_Refresh AST">
                                                     <tooltip>
@@ -105,7 +96,7 @@
                             <center>
                                 <AnchorPane BorderPane.alignment="CENTER">
                                     <children>
-                                        <TabPane fx:id="bottomTabPane" minHeight="20.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <TabPane fx:id="bottomTabPane" minHeight="20.0" styleClass="bottom-pane-tab-pane" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="10000.0" tabMaxWidth="10000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <tabs>
                                                 <Tab text="XPath Editor" fx:id="xpathEditorTab">
                                                     <content>

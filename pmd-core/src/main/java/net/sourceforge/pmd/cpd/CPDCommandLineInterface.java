@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +23,7 @@ import net.sourceforge.pmd.util.database.DBURI;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
-public class CPDCommandLineInterface {
+public final class CPDCommandLineInterface {
     private static final Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
 
     private static final int DUPLICATE_CODE_FOUND = 4;
@@ -47,7 +49,7 @@ public class CPDCommandLineInterface {
         if (noExit == null) {
             noExit = System.getProperty(NO_EXIT_AFTER_RUN);
         }
-        return (noExit == null ? true : false);
+        return noExit == null;
     }
 
     private static void setStatusCode(int statusCode) {
@@ -84,7 +86,12 @@ public class CPDCommandLineInterface {
             addSourceFilesToCPD(cpd, arguments);
 
             cpd.go();
-            System.out.println(arguments.getRenderer().render(cpd.getMatches()));
+            if (arguments.getCPDRenderer() == null) {
+                // legacy writer
+                System.out.println(arguments.getRenderer().render(cpd.getMatches()));
+            } else {
+                arguments.getCPDRenderer().render(cpd.getMatches(), new BufferedWriter(new OutputStreamWriter(System.out)));
+            }
             if (cpd.getMatches().hasNext()) {
                 if (arguments.isFailOnViolation()) {
                     setStatusCodeOrExit(DUPLICATE_CODE_FOUND);
@@ -94,7 +101,7 @@ public class CPDCommandLineInterface {
             } else {
                 setStatusCodeOrExit(0);
             }
-        } catch (RuntimeException e) {
+        } catch (IOException | RuntimeException e) {
             e.printStackTrace();
             setStatusCodeOrExit(ERROR_STATUS);
         }

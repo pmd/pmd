@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- Left pane of the designer. Displays node information. -->
+
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tab?>
@@ -13,40 +14,27 @@
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.MetricResultListCell?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell?>
 
-
-<TabPane xmlns="http://javafx.com/javafx"
-         xmlns:fx="http://javafx.com/fxml"
-         fx:id="nodeInfoTabPane"
-         fx:controller="net.sourceforge.pmd.util.fxdesigner.NodeInfoPanelController"
-
-         maxWidth="-Infinity"
-         minWidth="-Infinity"
-         prefWidth="300.0"
-         side="LEFT"
-         tabClosingPolicy="UNAVAILABLE"
-         BorderPane.alignment="CENTER">
+<TabPane fx:id="nodeInfoTabPane" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="300.0" side="LEFT" stylesheets="@../css/designer.css" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.NodeInfoPanelController">
 
     <tabs>
         <Tab text="Attributes" fx:id="xpathAttributesTitledPane">
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                     <children>
-                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <top>
                                 <ToolBar styleClass="info-title-bar" BorderPane.alignment="CENTER">
                                     <items>
                                         <Label text="XPath Attributes">
                                             <tooltip>
-                                                <Tooltip text="Those attributes can be accessed via XPath"/>
+                                                <Tooltip text="Those attributes can be accessed via XPath" />
                                             </tooltip>
                                         </Label>
                                     </items>
                                 </ToolBar>
                             </top>
                             <center>
-                                <ListView styleClass="secondary-panel" BorderPane.alignment="CENTER"
-                                          fx:id="xpathAttributesListView"/>
+                                <ListView styleClass="secondary-panel" BorderPane.alignment="CENTER" fx:id="xpathAttributesListView" />
                             </center>
                         </BorderPane>
                     </children>
@@ -57,20 +45,18 @@
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                     <children>
-                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <center>
-                                <ListView fx:id="metricResultsListView" styleClass="secondary-panel"
-                                          BorderPane.alignment="CENTER">
+                                <ListView fx:id="metricResultsListView" styleClass="secondary-panel" BorderPane.alignment="CENTER">
                                     <cellFactory>
-                                        <MetricResultListCell fx:factory="callback"/>
+                                        <MetricResultListCell fx:factory="callback" />
                                     </cellFactory>
                                 </ListView>
                             </center>
                             <top>
                                 <ToolBar styleClass="info-title-bar" BorderPane.alignment="CENTER">
                                     <items>
-                                        <Label fx:id="metricsTitleLabel" text="Metrics"/>
+                                        <Label fx:id="metricsTitleLabel" text="Metrics" />
                                     </items>
                                 </ToolBar>
                             </top>
@@ -83,20 +69,15 @@
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                     <children>
-                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <center>
                                 <TreeView fx:id="scopeHierarchyTreeView" styleClass="secondary-panel"
-                                          BorderPane.alignment="CENTER">
-                                    <cellFactory>
-                                        <ScopeHierarchyTreeCell fx:factory="callback"/>
-                                    </cellFactory>
-                                </TreeView>
+                                          BorderPane.alignment="CENTER"/>
                             </center>
                             <top>
                                 <ToolBar styleClass="info-title-bar" BorderPane.alignment="CENTER">
                                     <items>
-                                        <Label text="Scope hierarchy"/>
+                                        <Label text="Scope hierarchy" />
                                     </items>
                                 </ToolBar>
                             </top>
@@ -107,4 +88,3 @@
         </Tab>
     </tabs>
 </TabPane>
-

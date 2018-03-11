@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -15,7 +16,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
@@ -152,21 +152,17 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRule {
                 .findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
         final Set<String> classesNames = new HashSet<String>();
         for (final ASTClassOrInterfaceDeclaration c : classes) {
-            if (c != currentClass && extendsOrImplementsCloneable(c)) {
+            if (!Objects.equals(c, currentClass) && extendsOrImplementsCloneable(c)) {
                 classesNames.add(c.getImage());
             }
         }
         return classesNames;
     }
 
-    public boolean isCloneMethod(final ASTMethodDeclarator node) {
-        if (!"clone".equals(node.getImage())) {
+    public boolean isCloneMethod(final ASTMethodDeclarator method) {
+        if (!"clone".equals(method.getImage())) {
             return false;
         }
-        final int countParams = ((ASTFormalParameters) node.jjtGetChild(0)).jjtGetNumChildren();
-        if (countParams != 0) {
-            return false;
-        }
-        return true;
+        return method.getParameterCount() == 0;
     }
 }

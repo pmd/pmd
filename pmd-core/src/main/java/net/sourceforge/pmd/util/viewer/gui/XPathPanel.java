@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util.viewer.gui;
 
 import java.awt.Dimension;
-
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;

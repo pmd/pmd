@@ -8,13 +8,12 @@
   <parent>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>6.1.0-SNAPSHOT</version>
+    <version>6.2.0-SNAPSHOT</version>
   </parent>
 
   <properties>
     <config.basedir>${basedir}/../pmd-core</config.basedir>
     <java.version>8</java.version>
-    <java.home>${env.JAVA_HOME}</java.home>
     <apex.jorje.version>2017-11-17</apex.jorje.version>
   </properties>
 

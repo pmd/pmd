@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import org.jaxen.JaxenException;
 
@@ -16,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
@@ -28,6 +30,7 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 /**
  * @author Clément Fournier
@@ -38,7 +41,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     public ForLoopCanBeForeachRule() {
         addRuleChainVisit(ASTForStatement.class);
     }
-    
+
     @Override
     public Object visit(ASTForStatement node, Object data) {
 
@@ -102,10 +105,20 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     }
 
 
-    /* Finds the declaration of the index variable and its occurrences */
+    /* Finds the declaration of the index variable and its occurrences, null to abort */
     private Entry<VariableNameDeclaration, List<NameOccurrence>> getIndexVarDeclaration(ASTForInit init, ASTForUpdate update) {
         if (init == null) {
             return guessIndexVarFromUpdate(update);
+        }
+
+        ASTLocalVariableDeclaration decl = init.getFirstChildOfType(ASTLocalVariableDeclaration.class);
+        if (decl == null) {
+            return null;
+        }
+
+        int numDeclaredVars = decl.findChildrenOfType(ASTVariableDeclarator.class).size();
+        if (numDeclaredVars > 1) {
+            return null; // will abort in the calling function
         }
 
         Map<VariableNameDeclaration, List<NameOccurrence>> decls = init.getScope().getDeclarations(VariableNameDeclaration.class);
@@ -114,7 +127,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
         for (Entry<VariableNameDeclaration, List<NameOccurrence>> e : decls.entrySet()) {
 
             ASTForInit declInit = e.getKey().getNode().getFirstParentOfType(ASTForInit.class);
-            if (declInit == init) {
+            if (Objects.equals(declInit, init)) {
                 indexVarAndOccurrences = e;
                 break;
             }
@@ -161,7 +174,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             + "/PrimaryExpression"
             + "/PrimaryPrefix"
             + "/Name"
-            + (itName == null ? "" : ("[@Image='" + itName + "']"));
+            + (itName == null ? "" : "[@Image='" + itName + "']");
     }
 
 
@@ -249,7 +262,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             // TODO : This can happen if we are calling a local / statically imported method that returns the iterable - currently unhandled
             return null;
         }
-        
+
         String name = nameNode.getImage();
         int dotIndex = name.indexOf('.');
 
@@ -385,13 +398,14 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
         }
 
         for (NameOccurrence occ : indexInfo.getValue()) {
-            String image = occ.getLocation().getImage();
+            ScopedNode location = occ.getLocation();
+            boolean isCallingNext = location instanceof ASTName
+                    && (location.hasImageEqualTo(indexName + ".hasNext")
+                            || location.hasImageEqualTo(indexName + ".next"));
 
-            if (occ.getLocation() instanceof ASTName
-                && ((indexName + ".hasNext").equals(image) || (indexName + ".next").equals(image))) {
-                continue;
+            if (!isCallingNext) {
+                return false;
             }
-            return false;
         }
         return true;
     }
@@ -402,7 +416,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
         String iterableName = iterableInfo.getKey().getName();
         for (NameOccurrence occ : iterableInfo.getValue()) {
             ASTForStatement forParent = occ.getLocation().getFirstParentOfType(ASTForStatement.class);
-            if (forParent == stmt) {
+            if (Objects.equals(forParent, stmt)) {
                 String image = occ.getLocation().getImage();
                 if (image.startsWith(iterableName + ".remove")) {
                     return true;

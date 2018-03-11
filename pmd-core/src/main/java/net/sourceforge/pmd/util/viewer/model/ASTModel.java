@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.viewer.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;

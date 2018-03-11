@@ -119,26 +119,17 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
-
-        Integer lineCount = countNodeChildren(node, data);
-
-        return lineCount;
+        return countNodeChildren(node, data);
     }
 
     @Override
     public Object visit(ASTElsifClause node, Object data) {
-
-        Integer lineCount = countNodeChildren(node, data);
-
-        return lineCount;
+        return countNodeChildren(node, data);
     }
 
     @Override
     public Object visit(ASTElseClause node, Object data) {
-
-        Integer lineCount = countNodeChildren(node, data);
-
-        return lineCount;
+        return countNodeChildren(node, data);
     }
 
     @Override

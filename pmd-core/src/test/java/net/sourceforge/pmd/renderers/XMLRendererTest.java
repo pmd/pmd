@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.StringReader;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.Assert;

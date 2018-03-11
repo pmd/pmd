@@ -30,12 +30,12 @@ for you:
     changing the Rule, but you do not need to submit a patch back to the
     PMD project.
 
-If you need to modify the Rule, see [How to write a rule](/pmd_devdocs_writing_pmd_rules.html).
+If you need to modify the Rule, see [How to write a rule](pmd_devdocs_writing_pmd_rules.html).
 Otherwise, the other suppression methods are explained in the following sections.
 
 ## Annotations
 
-When using Java 1.5 or later, or Salesforce.com's Apex you can use annotations to suppress PMD warnings, like this:
+When using Java 1.5 or later,you can use annotations to suppress PMD warnings, like this:
 
     // This will suppress all the PMD warnings in this class
     @SuppressWarnings("PMD")
@@ -44,6 +44,14 @@ When using Java 1.5 or later, or Salesforce.com's Apex you can use annotations t
             int foo;
         }
     }
+
+When using Apex make sure to use Single Quotes instead of Double Quotes 
+
+``` 
+    // This will suppress all the PMD warnings in this class
+    @SuppressWarnings('PMD') 
+```
+
 
 Or you can suppress one rule with an annotation like this:
 
@@ -64,7 +72,7 @@ Multiple rules can be suppressed by providing multiple values, ie:
 For Apex, the syntax for this is slightly different:
 
 ```
-@SuppressWarnings("PMD.UnusedLocalVariable, PMD.UnusedPrivateMethod")
+@SuppressWarnings('PMD.UnusedLocalVariable, PMD.UnusedPrivateMethod')
 ```
 
 PMD Java also obeys the JDK annotation @SuppressWarnings("unused"), which will apply to all rules in the unused ruleset.
@@ -173,6 +181,6 @@ suppress reporting specifically typed parameters which are unused:
 Note for XPath based suppression to work, you must know how to write
 an XPath query that matches the AST structure of the nodes of the
 violations you wish to suppress.  XPath queries are explained in
-[XPath Rule tutorial](/pmd_devdocs_writing_xpath_rules.html).
+[XPath Rule tutorial](pmd_userdocs_extending_writing_xpath_rules.html).
 
 Suggestions?  Comments? Post them [here](https://github.com/pmd/pmd/issues). Thanks!

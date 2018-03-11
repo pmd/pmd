@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -125,7 +126,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
             if (classWmc >= classReportLevel) {
                 int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloOptions, ResultOption.HIGHEST);
 
-                String[] messageParams = {node.getTypeKind().name().toLowerCase(),
+                String[] messageParams = {node.getTypeKind().name().toLowerCase(Locale.ROOT),
                                           node.getImage(),
                                           " total",
                                           classWmc + " (highest " + classHighest + ")", };

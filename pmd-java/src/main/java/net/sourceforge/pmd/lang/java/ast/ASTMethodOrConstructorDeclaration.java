@@ -18,4 +18,11 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 public interface ASTMethodOrConstructorDeclaration extends MethodLikeNode, SignedNode<ASTMethodOrConstructorDeclaration> {
     @Override
     JavaOperationSignature getSignature();
+
+
+    /**
+     * Returns the formal parameters node of this method or constructor.
+     */
+    ASTFormalParameters getFormalParameters();
+
 }

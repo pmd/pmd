@@ -332,7 +332,6 @@ public class DBMSMetadata {
     public List<SourceObject> getSourceObjectList(List<String> languages, List<String> schemas,
             List<String> sourceCodeTypes, List<String> sourceCodeNames) {
 
-        ResultSet sourceCodeObjects = null;
         List<SourceObject> sourceObjectsList = new ArrayList<>();
 
         List<String> searchLanguages = languages;
@@ -388,57 +387,14 @@ public class DBMSMetadata {
             if (null != returnSourceCodeObjectsStatement) {
                 LOGGER.log(Level.FINE, "Have bespoke returnSourceCodeObjectsStatement from DBURI: \"{0}\"",
                         returnSourceCodeObjectsStatement);
-                PreparedStatement sourceCodeObjectsStatement = getConnection()
-                        .prepareStatement(returnSourceCodeObjectsStatement);
-
-                for (String language : searchLanguages) {
-                    for (String schema : searchSchemas) {
-                        for (String sourceCodeType : searchSourceCodeTypes) {
-                            for (String sourceCodeName : searchSourceCodeNames) {
-                                sourceCodeObjectsStatement.setString(1, language);
-                                sourceCodeObjectsStatement.setString(2, schema);
-                                sourceCodeObjectsStatement.setString(3, sourceCodeType);
-                                sourceCodeObjectsStatement.setString(4, sourceCodeName);
-                                LOGGER.finer(String.format(
-                                        "searching for language=\"%s\", schema=\"%s\", sourceCodeType=\"%s\", sourceCodeNames=\"%s\" ",
-                                        language, schema, sourceCodeType, sourceCodeName));
-
-                                /*
-                                 * public ResultSet getProcedures(String catalog
-                                 * , String schemaPattern , String
-                                 * procedureNamePattern) throws SQLException
-                                 */
-
-                                sourceCodeObjects = sourceCodeObjectsStatement.executeQuery();
-
-                                /*
-                                 * From Javadoc .... Each procedure description
-                                 * has the the following columns: PROCEDURE_CAT
-                                 * String => procedure catalog (may be null)
-                                 * PROCEDURE_SCHEM String => procedure schema
-                                 * (may be null) PROCEDURE_NAME String =>
-                                 * procedure name reserved for future use
-                                 * reserved for future use reserved for future
-                                 * use REMARKS String => explanatory comment on
-                                 * the procedure PROCEDURE_TYPE short => kind of
-                                 * procedure: procedureResultUnknown - Cannot
-                                 * determine if a return value will be returned
-                                 * procedureNoResult - Does not return a return
-                                 * value procedureReturnsResult - Returns a
-                                 * return value SPECIFIC_NAME String => The name
-                                 * which uniquely identifies this procedure
-                                 * within its schema.
-                                 */
-                                while (sourceCodeObjects.next()) {
-                                    LOGGER.finest(String.format("Found schema=%s,object_type=%s,object_name=%s",
-                                            sourceCodeObjects.getString("PROCEDURE_SCHEM"),
-                                            sourceCodeObjects.getString("PROCEDURE_TYPE"),
-                                            sourceCodeObjects.getString("PROCEDURE_NAME")));
-
-                                    sourceObjectsList
-                                            .add(new SourceObject(sourceCodeObjects.getString("PROCEDURE_SCHEM"),
-                                                    sourceCodeObjects.getString("PROCEDURE_TYPE"),
-                                                    sourceCodeObjects.getString("PROCEDURE_NAME"), null));
+                try (PreparedStatement sourceCodeObjectsStatement = getConnection()
+                        .prepareStatement(returnSourceCodeObjectsStatement)) {
+                    for (String language : searchLanguages) {
+                        for (String schema : searchSchemas) {
+                            for (String sourceCodeType : searchSourceCodeTypes) {
+                                for (String sourceCodeName : searchSourceCodeNames) {
+                                    sourceObjectsList.addAll(findSourceObjects(sourceCodeObjectsStatement, language, schema,
+                                            sourceCodeType, sourceCodeName));
                                 }
                             }
                         }
@@ -453,74 +409,7 @@ public class DBMSMetadata {
                 List<String> schemasList = dburi.getSchemasList();
                 for (String schema : schemasList) {
                     for (String sourceCodeName : dburi.getSourceCodeNamesList()) {
-                        /*
-                         * public ResultSet getProcedures(String catalog ,
-                         * String schemaPattern , String procedureNamePattern)
-                         * throws SQLException
-                         */
-                        sourceCodeObjects = metadata.getProcedures(null, schema, sourceCodeName);
-                        /*
-                         * From Javadoc .... Each procedure description has the
-                         * the following columns: PROCEDURE_CAT String =>
-                         * procedure catalog (may be null) PROCEDURE_SCHEM
-                         * String => procedure schema (may be null)
-                         * PROCEDURE_NAME String => procedure name reserved for
-                         * future use reserved for future use reserved for
-                         * future use REMARKS String => explanatory comment on
-                         * the procedure PROCEDURE_TYPE short => kind of
-                         * procedure: procedureResultUnknown - Cannot determine
-                         * if a return value will be returned procedureNoResult
-                         * - Does not return a return value
-                         * procedureReturnsResult - Returns a return value
-                         * SPECIFIC_NAME String => The name which uniquely
-                         * identifies this procedure within its schema.
-                         *
-                         * Oracle getProcedures actually returns these 8
-                         * columns:- ResultSet "Matched Procedures" has 8
-                         * columns and contains ...
-                         * [PROCEDURE_CAT,PROCEDURE_SCHEM,PROCEDURE_NAME,NULL,
-                         * NULL,NULL,REMARKS,PROCEDURE_TYPE
-                         * ,null,PHPDEMO,ADD_JOB_HISTORY,null,null,null,
-                         * Standalone procedure or function,1
-                         * ,FETCHPERFPKG,PHPDEMO,BULKSELECTPRC,null,null,null,
-                         * Packaged function,2
-                         * ,FETCHPERFPKG,PHPDEMO,BULKSELECTPRC,null,null,null,
-                         * Packaged procedure,1
-                         * ,null,PHPDEMO,CITY_LIST,null,null,null,Standalone
-                         * procedure or function,1
-                         * ,null,PHPDEMO,EDDISCOUNT,null,null,null,Standalone
-                         * procedure or function,2
-                         * ,SELPKG_BA,PHPDEMO,EMPSELBULK,null,null,null,Packaged
-                         * function,2
-                         * ,SELPKG_BA,PHPDEMO,EMPSELBULK,null,null,null,Packaged
-                         * procedure,1
-                         * ,INSPKG,PHPDEMO,INSFORALL,null,null,null,Packaged
-                         * procedure,1
-                         * ,null,PHPDEMO,MYDOFETCH,null,null,null,Standalone
-                         * procedure or function,2
-                         * ,null,PHPDEMO,MYPROC1,null,null,null,Standalone
-                         * procedure or function,1
-                         * ,null,PHPDEMO,MYPROC2,null,null,null,Standalone
-                         * procedure or function,1
-                         * ,null,PHPDEMO,MYXAQUERY,null,null,null,Standalone
-                         * procedure or function,1
-                         * ,null,PHPDEMO,POLICY_VPDPARTS,null,null,null,
-                         * Standalone procedure or function,2
-                         * ,FETCHPERFPKG,PHPDEMO,REFCURPRC,null,null,null,
-                         * Packaged procedure,1
-                         * ,null,PHPDEMO,SECURE_DML,null,null,null,Standalone
-                         * procedure or function,1 ... ]
-                         */
-                        while (sourceCodeObjects.next()) {
-                            LOGGER.finest(String.format("Located schema=%s,object_type=%s,object_name=%s\n",
-                                    sourceCodeObjects.getString("PROCEDURE_SCHEM"),
-                                    sourceCodeObjects.getString("PROCEDURE_TYPE"),
-                                    sourceCodeObjects.getString("PROCEDURE_NAME")));
-
-                            sourceObjectsList.add(new SourceObject(sourceCodeObjects.getString("PROCEDURE_SCHEM"),
-                                    sourceCodeObjects.getString("PROCEDURE_TYPE"),
-                                    sourceCodeObjects.getString("PROCEDURE_NAME"), null));
-                        }
+                        sourceObjectsList.addAll(findSourceObjectFromMetaData(metadata, schema, sourceCodeName));
                     }
                 }
             }
@@ -531,5 +420,131 @@ public class DBMSMetadata {
         } catch (SQLException sqle) {
             throw new RuntimeException("Problem collecting list of source code objects", sqle);
         }
+    }
+
+    private List<SourceObject> findSourceObjectFromMetaData(DatabaseMetaData metadata,
+            String schema, String sourceCodeName) throws SQLException {
+        List<SourceObject> sourceObjectsList = new ArrayList<>();
+        /*
+         * public ResultSet getProcedures(String catalog ,
+         * String schemaPattern , String procedureNamePattern)
+         * throws SQLException
+         */
+        try (ResultSet sourceCodeObjects = metadata.getProcedures(null, schema, sourceCodeName)) {
+            /*
+             * From Javadoc .... Each procedure description has the
+             * the following columns: PROCEDURE_CAT String =>
+             * procedure catalog (may be null) PROCEDURE_SCHEM
+             * String => procedure schema (may be null)
+             * PROCEDURE_NAME String => procedure name reserved for
+             * future use reserved for future use reserved for
+             * future use REMARKS String => explanatory comment on
+             * the procedure PROCEDURE_TYPE short => kind of
+             * procedure: procedureResultUnknown - Cannot determine
+             * if a return value will be returned procedureNoResult
+             * - Does not return a return value
+             * procedureReturnsResult - Returns a return value
+             * SPECIFIC_NAME String => The name which uniquely
+             * identifies this procedure within its schema.
+             *
+             * Oracle getProcedures actually returns these 8
+             * columns:- ResultSet "Matched Procedures" has 8
+             * columns and contains ...
+             * [PROCEDURE_CAT,PROCEDURE_SCHEM,PROCEDURE_NAME,NULL,
+             * NULL,NULL,REMARKS,PROCEDURE_TYPE
+             * ,null,PHPDEMO,ADD_JOB_HISTORY,null,null,null,
+             * Standalone procedure or function,1
+             * ,FETCHPERFPKG,PHPDEMO,BULKSELECTPRC,null,null,null,
+             * Packaged function,2
+             * ,FETCHPERFPKG,PHPDEMO,BULKSELECTPRC,null,null,null,
+             * Packaged procedure,1
+             * ,null,PHPDEMO,CITY_LIST,null,null,null,Standalone
+             * procedure or function,1
+             * ,null,PHPDEMO,EDDISCOUNT,null,null,null,Standalone
+             * procedure or function,2
+             * ,SELPKG_BA,PHPDEMO,EMPSELBULK,null,null,null,Packaged
+             * function,2
+             * ,SELPKG_BA,PHPDEMO,EMPSELBULK,null,null,null,Packaged
+             * procedure,1
+             * ,INSPKG,PHPDEMO,INSFORALL,null,null,null,Packaged
+             * procedure,1
+             * ,null,PHPDEMO,MYDOFETCH,null,null,null,Standalone
+             * procedure or function,2
+             * ,null,PHPDEMO,MYPROC1,null,null,null,Standalone
+             * procedure or function,1
+             * ,null,PHPDEMO,MYPROC2,null,null,null,Standalone
+             * procedure or function,1
+             * ,null,PHPDEMO,MYXAQUERY,null,null,null,Standalone
+             * procedure or function,1
+             * ,null,PHPDEMO,POLICY_VPDPARTS,null,null,null,
+             * Standalone procedure or function,2
+             * ,FETCHPERFPKG,PHPDEMO,REFCURPRC,null,null,null,
+             * Packaged procedure,1
+             * ,null,PHPDEMO,SECURE_DML,null,null,null,Standalone
+             * procedure or function,1 ... ]
+             */
+            while (sourceCodeObjects.next()) {
+                LOGGER.finest(String.format("Located schema=%s,object_type=%s,object_name=%s\n",
+                        sourceCodeObjects.getString("PROCEDURE_SCHEM"),
+                        sourceCodeObjects.getString("PROCEDURE_TYPE"),
+                        sourceCodeObjects.getString("PROCEDURE_NAME")));
+    
+                sourceObjectsList.add(new SourceObject(sourceCodeObjects.getString("PROCEDURE_SCHEM"),
+                        sourceCodeObjects.getString("PROCEDURE_TYPE"),
+                        sourceCodeObjects.getString("PROCEDURE_NAME"), null));
+            }
+        }
+        return sourceObjectsList;
+    }
+
+    private List<SourceObject> findSourceObjects(PreparedStatement sourceCodeObjectsStatement,
+            String language, String schema, String sourceCodeType, String sourceCodeName) throws SQLException {
+        List<SourceObject> sourceObjectsList = new ArrayList<>();
+        sourceCodeObjectsStatement.setString(1, language);
+        sourceCodeObjectsStatement.setString(2, schema);
+        sourceCodeObjectsStatement.setString(3, sourceCodeType);
+        sourceCodeObjectsStatement.setString(4, sourceCodeName);
+        LOGGER.finer(String.format(
+                "searching for language=\"%s\", schema=\"%s\", sourceCodeType=\"%s\", sourceCodeNames=\"%s\" ",
+                language, schema, sourceCodeType, sourceCodeName));
+
+        /*
+         * public ResultSet getProcedures(String catalog
+         * , String schemaPattern , String
+         * procedureNamePattern) throws SQLException
+         */
+        try (ResultSet sourceCodeObjects = sourceCodeObjectsStatement.executeQuery()) {
+
+            /*
+             * From Javadoc .... Each procedure description
+             * has the the following columns: PROCEDURE_CAT
+             * String => procedure catalog (may be null)
+             * PROCEDURE_SCHEM String => procedure schema
+             * (may be null) PROCEDURE_NAME String =>
+             * procedure name reserved for future use
+             * reserved for future use reserved for future
+             * use REMARKS String => explanatory comment on
+             * the procedure PROCEDURE_TYPE short => kind of
+             * procedure: procedureResultUnknown - Cannot
+             * determine if a return value will be returned
+             * procedureNoResult - Does not return a return
+             * value procedureReturnsResult - Returns a
+             * return value SPECIFIC_NAME String => The name
+             * which uniquely identifies this procedure
+             * within its schema.
+             */
+            while (sourceCodeObjects.next()) {
+                LOGGER.finest(String.format("Found schema=%s,object_type=%s,object_name=%s",
+                        sourceCodeObjects.getString("PROCEDURE_SCHEM"),
+                        sourceCodeObjects.getString("PROCEDURE_TYPE"),
+                        sourceCodeObjects.getString("PROCEDURE_NAME")));
+    
+                sourceObjectsList
+                        .add(new SourceObject(sourceCodeObjects.getString("PROCEDURE_SCHEM"),
+                                sourceCodeObjects.getString("PROCEDURE_TYPE"),
+                                sourceCodeObjects.getString("PROCEDURE_NAME"), null));
+            }
+        }
+        return sourceObjectsList;
     }
 }

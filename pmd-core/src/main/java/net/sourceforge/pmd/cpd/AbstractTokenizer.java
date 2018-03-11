@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  *
@@ -51,7 +52,7 @@ public abstract class AbstractTokenizer implements Tokenizer {
                 loc = getTokenFromLine(token, loc);
                 if (token.length() > 0 && !isIgnorableString(token.toString())) {
                     if (downcaseString) {
-                        token = new StringBuilder(token.toString().toLowerCase());
+                        token = new StringBuilder(token.toString().toLowerCase(Locale.ROOT));
                     }
                     // need to re-think how to link this
                     // if ( CPD.debugEnable ) {

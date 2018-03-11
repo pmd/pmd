@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+import org.reactfx.EventStreams;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
@@ -16,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeItem;
 
 import javafx.collections.FXCollections;
@@ -36,9 +39,9 @@ import javafx.scene.control.TreeView;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@SuppressWarnings("PMD.UnusedPrivateField")
 public class NodeInfoPanelController implements Initializable {
 
-    private final DesignerRoot designerRoot;
     private final MainDesignerController parent;
 
     @FXML
@@ -58,19 +61,20 @@ public class NodeInfoPanelController implements Initializable {
     private MetricEvaluator metricEvaluator = new MetricEvaluator();
 
 
-    NodeInfoPanelController(DesignerRoot root, MainDesignerController mainController) {
-        this.designerRoot = root;
+    public NodeInfoPanelController(MainDesignerController mainController) {
         parent = mainController;
     }
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        scopeHierarchyTreeView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null && newVal.getValue() instanceof NameDeclaration) {
-                parent.onNameDeclarationSelected((NameDeclaration) newVal.getValue());
-            }
-        });
+        EventStreams.valuesOf(scopeHierarchyTreeView.getSelectionModel().selectedItemProperty())
+                    .filter(Objects::nonNull)
+                    .map(TreeItem::getValue)
+                    .filterMap(o -> o instanceof NameDeclaration, o -> (NameDeclaration) o)
+                    .subscribe(parent::onNameDeclarationSelected);
+
+        scopeHierarchyTreeView.setCellFactory(view -> new ScopeHierarchyTreeCell(parent));
     }
 
 
@@ -93,7 +97,8 @@ public class NodeInfoPanelController implements Initializable {
                                       .filter(result -> !result.isNaN())
                                       .count());
 
-
+        // TODO maybe a better way would be to build all the scope TreeItem hierarchy once
+        // and only expand the ascendants of the node.
         TreeItem<Object> rootScope = ScopeHierarchyTreeItem.buildAscendantHierarchy(node);
         scopeHierarchyTreeView.setRoot(rootScope);
     }
@@ -134,7 +139,7 @@ public class NodeInfoPanelController implements Initializable {
         while (attributeAxisIterator.hasNext()) {
             Attribute attribute = attributeAxisIterator.next();
             result.add(attribute.getName() + " = "
-                       + ((attribute.getValue() != null) ? attribute.getStringValue() : "null"));
+                               + ((attribute.getValue() != null) ? attribute.getStringValue() : "null"));
         }
 
         if (node instanceof TypeNode) {

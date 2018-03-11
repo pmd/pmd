@@ -13,6 +13,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.Java
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XmlSyntaxHighlighter;
 
+
 /**
  * Lists the available syntax highlighter engines by language.
  *
@@ -40,21 +41,17 @@ public enum AvailableSyntaxHighlighters {
 
 
     /**
-     * Gets the highlighter for a language if available, otherwise returns null.
+     * Gets the highlighter for a language if available.
      *
      * @param language Language to look for
      *
-     * @return A highlighter if available, otherwise null
+     * @return A highlighter, if available
      */
-    public static SyntaxHighlighter getComputerForLanguage(Language language) {
-        Optional<AvailableSyntaxHighlighters> found = Arrays.stream(AvailableSyntaxHighlighters.values())
-                                                            .filter(e -> e.language.equals(language.getTerseName()))
-                                                            .findFirst();
-        if (found.isPresent()) {
-            return found.get().engine;
-        } else {
-            return null;
-        }
+    public static Optional<SyntaxHighlighter> getHighlighterForLanguage(Language language) {
+        return Arrays.stream(AvailableSyntaxHighlighters.values())
+                     .filter(e -> e.language.equals(language.getTerseName()))
+                     .findFirst()
+                     .map(h -> h.engine);
 
     }
 }

@@ -580,15 +580,17 @@ public class QualifiedNameFactory {
         sb.append(methodName);
         sb.append('(');
 
-        int last = params.getParameterCount() - 1;
-        for (int i = 0; i < last; i++) {
-            // append type image of param. TODO use FQCN instead!
-            sb.append(params.jjtGetChild(i).getFirstDescendantOfType(ASTType.class).getTypeImage());
-            sb.append(", ");
-        }
+        boolean first = true;
+        for (ASTFormalParameter param : params) {
+            if (!first) {
+                sb.append(", ");
+            }
+            first = false;
 
-        if (last > -1) {
-            sb.append(params.jjtGetChild(last).getFirstDescendantOfType(ASTType.class).getTypeImage());
+            sb.append(param.getTypeNode().getTypeImage());
+            if (param.isVarargs()) {
+                sb.append("...");
+            }
         }
 
         sb.append(')');

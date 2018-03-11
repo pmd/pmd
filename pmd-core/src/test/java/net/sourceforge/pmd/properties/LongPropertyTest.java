@@ -30,16 +30,18 @@ public class LongPropertyTest extends AbstractNumericPropertyDescriptorTester<Lo
 
     @Override
     protected Long createBadValue() {
-        return randomBool() ? randomLong(MIN - SHIFT, MIN) : randomLong(MAX, MAX + SHIFT);
+        return randomBool() ? randomLong(MIN - SHIFT, MIN) : randomLong(MAX + 1, MAX + SHIFT);
     }
 
 
+    @Override
     protected LongProperty.LongPBuilder singleBuilder() {
         return LongProperty.named("test").desc("foo")
                            .range(MIN, MAX).defaultValue(createValue()).uiOrder(1.0f);
     }
 
 
+    @Override
     protected LongMultiProperty.LongMultiPBuilder multiBuilder() {
         return LongMultiProperty.named("test").desc("foo")
                                 .range(MIN, MAX).defaultValues(createValue(), createValue()).uiOrder(1.0f);

@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.benchmark.TextReport;
+import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PMDParameters;
 import net.sourceforge.pmd.lang.Language;
@@ -226,6 +227,7 @@ public class PMD {
 
                 @Override
                 public void metricAdded(Metric metric) {
+                    // ignored - not needed for counting violations
                 }
             });
 
@@ -294,6 +296,14 @@ public class PMD {
      */
     public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
             final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
+
+        if (!configuration.isIgnoreIncrementalAnalysis()
+                && configuration.getAnalysisCache() instanceof NoopAnalysisCache
+                && LOG.isLoggable(Level.WARNING)) {
+            final String version = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
+            LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
+                                + "https://pmd.github.io/" + version + "/pmd_userdocs_getting_started.html#incremental-analysis");
+        }
 
         sortFiles(configuration, files);
 
@@ -437,7 +447,7 @@ public class PMD {
         int status = 0;
         long start = System.nanoTime();
         final PMDParameters params = PMDCommandLineInterface.extractParameters(new PMDParameters(), args, "pmd");
-        final PMDConfiguration configuration = PMDParameters.transformParametersIntoConfiguration(params);
+        final PMDConfiguration configuration = params.toConfiguration();
 
         final Level logLevel = params.isDebug() ? Level.FINER : Level.INFO;
         final Handler logHandler = new ConsoleLogHandler();

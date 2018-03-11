@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.viewer.gui;
 
 import java.awt.BorderLayout;
 import java.util.Vector;
-
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;

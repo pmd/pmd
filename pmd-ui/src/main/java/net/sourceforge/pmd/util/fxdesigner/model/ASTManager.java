@@ -7,6 +7,8 @@ package net.sourceforge.pmd.util.fxdesigner.model;
 import java.io.StringReader;
 
 import org.apache.commons.lang3.StringUtils;
+import org.reactfx.value.Val;
+import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -15,9 +17,6 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
-
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 
 
 /**
@@ -41,15 +40,11 @@ public class ASTManager {
     /**
      * Latest computed compilation unit (only null before the first call to {@link #updateCompilationUnit(String)})
      */
-    private ObjectProperty<Node> compilationUnit = new SimpleObjectProperty<>();
+    private Var<Node> compilationUnit = Var.newSimpleVar(null);
     /**
      * Selected language version.
      */
-    private ObjectProperty<LanguageVersion> languageVersion = new SimpleObjectProperty<>();
-
-    {
-        languageVersion.setValue(LanguageRegistry.findLanguageVersionByTerseName("java 8"));
-    }
+    private Var<LanguageVersion> languageVersion = Var.newSimpleVar(LanguageRegistry.getDefaultLanguage().getDefaultVersion());
 
 
     public ASTManager(DesignerRoot owner) {
@@ -58,21 +53,26 @@ public class ASTManager {
 
 
     public LanguageVersion getLanguageVersion() {
-        return languageVersion.get();
+        return languageVersion.getValue();
     }
 
 
-    public ObjectProperty<LanguageVersion> languageVersionProperty() {
+    public void setLanguageVersion(LanguageVersion version) {
+        languageVersion.setValue(version);
+    }
+
+
+    public Var<LanguageVersion> languageVersionProperty() {
         return languageVersion;
     }
 
 
-    public Node updateCompilationUnit() {
-        return compilationUnit.get();
+    public Node getCompilationUnit() {
+        return compilationUnit.getValue();
     }
 
 
-    public ObjectProperty<Node> compilationUnitProperty() {
+    public Val<Node> compilationUnitProperty() {
         return compilationUnit;
     }
 
@@ -81,14 +81,16 @@ public class ASTManager {
      * Refreshes the compilation unit given the current parameters of the model.
      *
      * @param source Source code
+     *
      * @throws ParseAbortedException if parsing fails and cannot recover
      */
     public Node updateCompilationUnit(String source) throws ParseAbortedException {
-        if (compilationUnit.get() != null
-            && languageVersion.get().equals(lastLanguageVersion) && StringUtils.equals(source, lastValidSource)) {
-            return compilationUnit.get();
+        if (compilationUnit.isPresent()
+                && getLanguageVersion().equals(lastLanguageVersion)
+                && StringUtils.equals(source, lastValidSource)) {
+            return getCompilationUnit();
         }
-        LanguageVersionHandler languageVersionHandler = languageVersion.get().getLanguageVersionHandler();
+        LanguageVersionHandler languageVersionHandler = getLanguageVersion().getLanguageVersionHandler();
         Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
 
         Node node;
@@ -111,8 +113,8 @@ public class ASTManager {
 
         compilationUnit.setValue(node);
         lastValidSource = source;
-        lastLanguageVersion = languageVersion.get();
-        return compilationUnit.get();
+        lastLanguageVersion = getLanguageVersion();
+        return getCompilationUnit();
 
 
     }

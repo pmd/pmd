@@ -18,13 +18,12 @@ import net.sourceforge.pmd.lang.metrics.AbstractMetricsComputer;
  *
  * @author Clément Fournier
  */
-public class JavaMetricsComputer extends AbstractMetricsComputer<ASTAnyTypeDeclaration, MethodLikeNode> {
+public final class JavaMetricsComputer extends AbstractMetricsComputer<ASTAnyTypeDeclaration, MethodLikeNode> {
 
     static final JavaMetricsComputer INSTANCE = new JavaMetricsComputer();
 
 
     private JavaMetricsComputer() {
-
     }
 
     // TODO: doesn't consider lambdas
@@ -35,7 +34,7 @@ public class JavaMetricsComputer extends AbstractMetricsComputer<ASTAnyTypeDecla
 
         for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
             if (decl.jjtGetNumChildren() > 0 && decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {
-                operations.add((ASTMethodOrConstructorDeclaration) decl.jjtGetChild(0));
+                operations.add((MethodLikeNode) decl.jjtGetChild(0));
             }
         }
         return operations;

@@ -15,10 +15,8 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.DumpFacade;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileVisitorFacade;
 import net.sourceforge.pmd.lang.apex.rule.ApexRuleViolationFactory;
-import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
+import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-
-import net.sf.saxon.sxpath.IndependentContext;
 
 public class ApexHandler extends AbstractLanguageVersionHandler {
 
@@ -30,13 +28,7 @@ public class ApexHandler extends AbstractLanguageVersionHandler {
 
     @Override
     public XPathHandler getXPathHandler() {
-        return new AbstractASTXPathHandler() {
-            public void initialize() {
-            }
-
-            public void initialize(IndependentContext context) {
-            }
-        };
+        return new DefaultASTXPathHandler();
     }
 
     public RuleViolationFactory getRuleViolationFactory() {

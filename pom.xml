@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>6.1.0-SNAPSHOT</version>
+    <version>6.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -256,11 +256,10 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
     <properties>
         <java.version>7</java.version>
-        <java.home>${env.JAVA_HOME}</java.home>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.20.1</surefire.version>
-        <checkstyle.version>2.17</checkstyle.version>
+        <checkstyle.version>3.0.0</checkstyle.version>
         <pmd.plugin.version>3.9.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
         <javadoc.plugin.version>3.0.0-M1</javadoc.plugin.version>
@@ -274,7 +273,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <config.basedir>${basedir}/pmd-core</config.basedir>
         <pmd.dogfood.ruleset>${config.basedir}/src/main/resources/rulesets/internal/dogfood.xml</pmd.dogfood.ruleset>
-        <pmd.build-tools.version>1.0.1</pmd.build-tools.version>
+        <pmd.build-tools.version>1.1.0-SNAPSHOT</pmd.build-tools.version>
     </properties>
 
     <build>
@@ -341,11 +340,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.7.0</version>
                     <configuration>
-                        <source>${java.version}</source>
-                        <target>${java.version}</target>
-                        <compilerArguments>
-                            <bootclasspath>${java.home}/jre/lib/rt.jar</bootclasspath>
-                        </compilerArguments>
+                        <release>${java.version}</release>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -483,7 +478,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>[1.8,)</version>
+                                    <version>[9,)</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
@@ -520,7 +515,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <execution>
                         <phase>verify</phase>
                         <goals>
-                            <goal>pmd</goal>
+                            <goal>check</goal>
                             <goal>cpd</goal>
                         </goals>
                     </execution>
@@ -529,24 +524,33 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <minimumTokens>100</minimumTokens>
                     <targetJdk>1.${java.version}</targetJdk>
                     <rulesets>
-                        <ruleset>${pmd.dogfood.ruleset}</ruleset>
+                        <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
                     </rulesets>
                     <excludeRoots>
                         <excludeRoot>target/generated-sources/javacc</excludeRoot>
+                        <excludeRoot>target/generated-sources/antlr4</excludeRoot>
                     </excludeRoots>
                     <skipPmdError>false</skipPmdError>
+                    <failOnViolation>true</failOnViolation>
+                    <printFailingErrors>true</printFailingErrors>
                 </configuration>
                 <dependencies>
                     <!-- Note: we can't use a property for the version here due to https://issues.apache.org/jira/browse/MRELEASE-932 -->
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
                         <artifactId>pmd-core</artifactId>
-                        <version>6.0.1</version>
+                        <version>6.1.0</version>
                     </dependency>
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
                         <artifactId>pmd-java</artifactId>
-                        <version>6.0.1</version>
+                        <version>6.1.0</version>
+                    </dependency>
+                    <!-- This contains the dogfood ruleset -->
+                    <dependency>
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-build-tools-config</artifactId>
+                        <version>1.1.0-SNAPSHOT</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -566,7 +570,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>7.2</version>
+                        <version>8.8</version>
                     </dependency>
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
@@ -796,7 +800,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
                 <groupId>org.mozilla</groupId>
                 <artifactId>rhino</artifactId>
-                <version>1.7.7</version>
+                <version>1.7.7.2</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -930,18 +934,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         </profile>
 
         <profile>
-            <id>jdk7-settings</id>
-            <activation>
-                <property>
-                    <name>java7.home</name>
-                </property>
-            </activation>
-            <properties>
-                <java.home>${java7.home}</java.home>
-            </properties>
-        </profile>
-
-        <profile>
             <id>jdk8-modules</id>
             <activation>
                 <jdk>[1.8,</jdk>
@@ -952,41 +944,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <module>pmd-java8</module>
                 <module>pmd-ui</module>
                 <module>pmd-doc</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>jdk9-config</id>
-            <activation>
-                <jdk>[9,</jdk>
-            </activation>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-compiler-plugin</artifactId>
-                            <configuration>
-                                <release>${java.version}</release>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-
-        <profile>
-            <id>jdk9-disabled</id>
-            <activation>
-                <jdk>!9</jdk>
-            </activation>
-            <modules>
-                <!--
-                    https://github.com/scala/scala-dev/issues/139
-                    https://issues.scala-lang.org/browse/SI-9103
-                    https://sourceforge.net/p/pmd/bugs/1314/
-                 -->
-                <module>pmd-scala</module>
             </modules>
         </profile>
 
@@ -1051,6 +1008,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <module>pmd-plsql</module>
         <module>pmd-python</module>
         <module>pmd-ruby</module>
+        <module>pmd-scala</module>
         <module>pmd-swift</module>
         <module>pmd-test</module>
         <module>pmd-visualforce</module>

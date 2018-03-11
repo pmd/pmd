@@ -3,13 +3,13 @@ sudo: false
 addons:
   apt:
     packages:
-      - oracle-java8-installer
+      - oracle-java9-installer
   ssh_known_hosts:
     - web.sourceforge.net
 
 language: java
 
-jdk: oraclejdk8
+jdk: oraclejdk9
 
 env:
   global:

@@ -39,6 +39,7 @@ public class BestPracticesRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "JUnitUseExpected");
         addRule(RULESET, "LooseCoupling");
         addRule(RULESET, "MethodReturnsInternalArray");
+        addRule(RULESET, "MissingOverride");
         addRule(RULESET, "OneDeclarationPerLine");
         addRule(RULESET, "PositionLiteralsFirstInComparisons");
         addRule(RULESET, "PositionLiteralsFirstInCaseInsensitiveComparisons");

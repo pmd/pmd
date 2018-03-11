@@ -109,9 +109,6 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         return property != null && !("0".equals(property) || "false".equalsIgnoreCase(property));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void end() throws IOException {
         StringBuilder buf = new StringBuilder(500);

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,15 +32,11 @@ import net.sourceforge.pmd.properties.StringMultiProperty;
 public class CommentContentRule extends AbstractCommentRule {
 
     private boolean caseSensitive;
-    private boolean wordsAreRegex;
     private List<String> originalBadWords;
     private List<String> currentBadWords;
 
     // FIXME need some better defaults (or none?)
     private static final String[] BAD_WORDS = {"idiot", "jerk" };
-
-    public static final BooleanProperty WORDS_ARE_REGEX_DESCRIPTOR = new BooleanProperty("wordsAreRegex",
-            "Use regular expressions", false, 1.0f);
 
     // ignored when property above == True
     public static final BooleanProperty CASE_SENSITIVE_DESCRIPTOR = new BooleanProperty("caseSensitive",
@@ -56,7 +53,6 @@ public class CommentContentRule extends AbstractCommentRule {
     }
 
     public CommentContentRule() {
-        definePropertyDescriptor(WORDS_ARE_REGEX_DESCRIPTOR);
         definePropertyDescriptor(CASE_SENSITIVE_DESCRIPTOR);
         definePropertyDescriptor(DISSALLOWED_TERMS_DESCRIPTOR);
     }
@@ -66,7 +62,6 @@ public class CommentContentRule extends AbstractCommentRule {
      */
     @Override
     public void start(RuleContext ctx) {
-        wordsAreRegex = getProperty(WORDS_ARE_REGEX_DESCRIPTOR);
         originalBadWords = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
         caseSensitive = getProperty(CASE_SENSITIVE_DESCRIPTOR);
         if (caseSensitive) {
@@ -74,15 +69,9 @@ public class CommentContentRule extends AbstractCommentRule {
         } else {
             currentBadWords = new ArrayList<>();
             for (String badWord : originalBadWords) {
-                currentBadWords.add(badWord.toUpperCase());
+                currentBadWords.add(badWord.toUpperCase(Locale.ROOT));
             }
         }
-    }
-
-    @Override
-    public Set<PropertyDescriptor<?>> ignoredProperties() {
-        return getProperty(WORDS_ARE_REGEX_DESCRIPTOR) ? NON_REGEX_PROPERTIES
-                                                       : Collections.<PropertyDescriptor<?>>emptySet();
     }
 
     /**
@@ -106,7 +95,7 @@ public class CommentContentRule extends AbstractCommentRule {
         }
 
         if (!caseSensitive) {
-            commentText = commentText.toUpperCase();
+            commentText = commentText.toUpperCase(Locale.ROOT);
         }
 
         List<String> foundWords = new ArrayList<>();

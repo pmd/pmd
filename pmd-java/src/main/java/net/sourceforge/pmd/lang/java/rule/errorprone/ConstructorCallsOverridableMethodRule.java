@@ -596,7 +596,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         public List<ConstructorInvocation> calledConstructors;
         public Map<ConstructorHolder, List<MethodInvocation>> allPrivateConstructorsOfClass;
 
-        EvalPackage() {
+        private EvalPackage() {
         }
 
         EvalPackage(String className) {

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -97,7 +98,9 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
 
         addViolationWithMessage(data, node,
-            DESCRIPTOR_NAME_TO_COMMENT_TYPE.get(descriptor.name()) + " are " + getProperty(descriptor).label.toLowerCase());
+            DESCRIPTOR_NAME_TO_COMMENT_TYPE.get(descriptor.name())
+            + " are "
+            + getProperty(descriptor).label.toLowerCase(Locale.ROOT));
     }
 
 

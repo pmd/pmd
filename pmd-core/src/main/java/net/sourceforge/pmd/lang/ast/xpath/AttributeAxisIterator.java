@@ -65,7 +65,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
                     postFilter.add(new MethodWrapper(element));
                 }
             }
-            methodCache.putIfAbsent(contextNode.getClass(), postFilter.toArray(new MethodWrapper[postFilter.size()]));
+            methodCache.putIfAbsent(contextNode.getClass(), postFilter.toArray(new MethodWrapper[0]));
         }
         this.methodWrappers = methodCache.get(contextNode.getClass());
 

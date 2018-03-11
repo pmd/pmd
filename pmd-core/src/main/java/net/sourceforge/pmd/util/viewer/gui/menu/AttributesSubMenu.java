@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util.viewer.gui.menu;
 
 import java.text.MessageFormat;
-
 import javax.swing.JMenu;
 
 import net.sourceforge.pmd.lang.ast.Node;

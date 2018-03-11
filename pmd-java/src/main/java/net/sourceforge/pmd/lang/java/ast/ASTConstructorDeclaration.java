@@ -49,6 +49,8 @@ public class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclar
         this.containsComment = true;
     }
 
-
-
+    @Override
+    public ASTFormalParameters getFormalParameters() {
+        return getFirstChildOfType(ASTFormalParameters.class);
+    }
 }

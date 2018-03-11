@@ -29,7 +29,6 @@ A rule for the politically correct... we don't want to offend anyone.
 |----|-------------|-----------|
 |disallowedTerms|[idiot, jerk]|Illegal terms or phrases|
 |caseSensitive|false|Case sensitive|
-|wordsAreRegex|false|Use regular expressions|
 
 **Use this rule by referencing it:**
 ``` xml

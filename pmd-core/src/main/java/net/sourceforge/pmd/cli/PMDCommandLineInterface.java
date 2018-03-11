@@ -20,7 +20,7 @@ import com.beust.jcommander.ParameterException;
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
-public class PMDCommandLineInterface {
+public final class PMDCommandLineInterface {
 
     public static final String PROG_NAME = "pmd";
 
@@ -184,7 +184,7 @@ public class PMDCommandLineInterface {
         if (noExit == null) {
             noExit = System.getProperty(NO_EXIT_AFTER_RUN);
         }
-        return (noExit == null ? true : false);
+        return noExit == null;
     }
 
     private static void setStatusCode(int statusCode) {

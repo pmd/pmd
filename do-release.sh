@@ -86,7 +86,7 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 (
     echo "Committing current changes (pmd.github.io)"
     cd ../pmd.github.io
-    git add _posts/$(date -u +%d-%m-%Y)-PMD-${RELEASE_VERSION}.md
+    git add _posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md
     git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     git push
 )
@@ -107,19 +107,20 @@ echo
 cat <<EOF
 PMD ${RELEASE_VERSION} released
 
-* minor version with lots of bug fixes
-* Release Notes: https://pmd.github.io/pmd-${RELEASE_VERSION}/pmd_release_notes.html
 * Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${RELEASE_VERSION}
-* Fixed Bugs: https://sourceforge.net/p/pmd/bugs/milestone/PMD-${RELEASE_VERSION}/
 * Documentation: https://pmd.github.io/pmd-${RELEASE_VERSION}/
+
+And Copy-Paste the release notes
 EOF
 echo
 echo "Press enter to continue..."
 read
 
 echo
-echo "Check the milestone on sourceforge:"
-echo "<https://sourceforge.net/p/pmd/bugs/milestones>"
+echo "Check the milestone on github:"
+echo "<https://github.com/pmd/pmd/milestones>"
+echo " --> move any open issues to the next milestone, close the current milestone"
+echo " --> Maybe there are some milestones on sourceforge, too: <https://sourceforge.net/p/pmd/bugs/milestones>."
 echo
 echo
 echo
@@ -171,7 +172,12 @@ echo
 echo "Send out an announcement mail to the mailing list:"
 echo "To: PMD Developers List <pmd-devel@lists.sourceforge.net>"
 echo "Subject: [ANNOUNCE] PMD ${RELEASE_VERSION} Released"
-echo "Body: !!Copy Changelog!!"
+echo
+echo "    *   Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${RELEASE_VERSION}"
+echo "    *   Documentation: https://pmd.github.io/pmd-${RELEASE_VERSION}/"
+echo
+echo "    And Copy-Paste the release notes"
+echo
 echo
 echo
 echo "------------------------------------------"

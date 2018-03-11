@@ -51,7 +51,7 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
     }
 
     public boolean isAnonymousClass() {
-        return jjtGetParent().hasDescendantOfType(ASTClassOrInterfaceBody.class);
+        return jjtGetParent().getFirstChildOfType(ASTClassOrInterfaceBody.class) != null;
     }
 
     public boolean isArray() {
