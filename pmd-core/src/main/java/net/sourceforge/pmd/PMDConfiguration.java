@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.FileAnalysisCache;
@@ -81,10 +80,6 @@ import net.sourceforge.pmd.util.IOUtil;
  * </ul>
  */
 public class PMDConfiguration extends AbstractConfiguration {
-
-    private static final Logger LOG = Logger.getLogger(PMDConfiguration.class.getName());
-
-
     // General behavior options
     private String suppressMarker = PMD.SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
