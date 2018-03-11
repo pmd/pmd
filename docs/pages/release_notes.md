@@ -13,6 +13,7 @@ This is a bug fixing release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
+    * [Modified Rules](#modified-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
 * [External Contributions](#external-contributions)
@@ -29,12 +30,24 @@ Detailed changes for changed in Rhino can be found:
 
 Both are bugfixing releases.
 
+#### Modified Rules
+
+* The Java rule `UnusedPrivateField` (ruleset `java-bestpractices`) now has a new `ignoredAnnotations` property
+that allows to configure annotations that imply the field should be ignored. By default `@java.lang.Deprecated`
+and `@javafx.fxml.FXML` are ignored.
+
+* The Java rule `UnusedPrivateMethod` (ruleset `java-bestpractices`) now has a new `ignoredAnnotations` property
+that allows to configure annotations that imply the method should be ignored. By default `@java.lang.Deprecated`
+is ignored.
+
 ### Fixed Issues
 
 *   all
     *   [#928](https://github.com/pmd/pmd/issues/928): \[core] PMD build failure on Windows
 
 *   java
+    *   [#907](https://github.com/pmd/pmd/issues/907): \[java] UnusedPrivateField false-positive with @FXML
+*   java-bestpractices
     *   [#907](https://github.com/pmd/pmd/issues/907): \[java] UnusedPrivateField false-positive with @FXML
 
 ### API Changes
@@ -43,3 +56,4 @@ Both are bugfixing releases.
 
 * [#941](https://github.com/pmd/pmd/pull/941): \[java] Use char notation to represent a character to improve performance - [reudismam](https://github.com/reudismam)
 * [#943](https://github.com/pmd/pmd/pull/943): \[java] UnusedPrivateField false-positive with @FXML - [BBG](https://github.com/djydewang)
+* [#951](https://github.com/pmd/pmd/pull/951): \[java] Add ignoredAnnotations property to unusedPrivateMethod rule - [BBG](https://github.com/djydewang)
