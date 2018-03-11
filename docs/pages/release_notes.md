@@ -13,11 +13,24 @@ This is a bug fixing release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
+  * [Disable Incremental Analysis](#disable-incremental-analysis)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
 * [External Contributions](#external-contributions)
 
 ### New and noteworthy
+
+### Disable Incremental Analysis
+
+Some time ago, we added support for [Incremental Analhysis](pmd_userdocs_getting_started.html). On PMD 6.0.0, we
+started to add warns when not using it, as we strongly believe it's a great improvement to our user's experience as
+analysis time is greatly reduced; and in the future we plan to have it enabled by default. However, we realize some
+scenarios don't benefit from it (ie: CI jobs), and having the warning logged can be noisy and cause confusion.
+
+To this end, we have added a new flag to allow you to explicitly disable incremental analysis. On CLI, this is
+the new `-no-cache` flag. On Ant, there is a `noCache` attribute for the `<pmd>` task.
+
+On both scenarios, disabling the cache takes precedence over setting a cache location.
 
 #### Ecmascript (JavaScript)
 
