@@ -1227,6 +1227,12 @@ public class Something {
 }
 ```
 
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|ignoredAnnotations|[java.lang.Deprecated]|Fully qualified names of the annotation types that should be ignored by this rule|
+
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod" />
