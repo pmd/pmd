@@ -11,6 +11,7 @@ import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDe
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.LOOSE_INVOCATION;
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.SUBTYPE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -99,6 +100,7 @@ import net.sourceforge.pmd.typeresolution.testdata.MethodPotentialApplicability;
 import net.sourceforge.pmd.typeresolution.testdata.MethodSecondPhase;
 import net.sourceforge.pmd.typeresolution.testdata.MethodStaticAccess;
 import net.sourceforge.pmd.typeresolution.testdata.MethodThirdPhase;
+import net.sourceforge.pmd.typeresolution.testdata.NestedAllocationExpressions;
 import net.sourceforge.pmd.typeresolution.testdata.NestedAnonymousClass;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.OverloadedMethodsUsage;
@@ -202,7 +204,7 @@ public class ClassTypeResolverTest {
                      outerClassDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
         // Method parameter as inner class
         ASTFormalParameter formalParameter = typeDeclaration.getFirstDescendantOfType(ASTFormalParameter.class);
-        assertEquals(theInnerClass, formalParameter.getTypeNode().getType());
+        assertEquals(theInnerClass, formalParameter.getType());
     }
 
     /**
@@ -605,14 +607,6 @@ public class ClassTypeResolverTest {
 
         // Make sure we got them all.
         assertEquals("All expressions not tested", index, expressions.size());
-    }
-
-    private static <T> List<T> convertList(List<Node> nodes, Class<T> target) {
-        List<T> converted = new ArrayList<>();
-        for (Node n : nodes) {
-            converted.add(target.cast(n));
-        }
-        return converted;
     }
 
     @Test
@@ -1780,6 +1774,20 @@ public class ClassTypeResolverTest {
                      forClass(SuperClassAOther2.class));
     }
 
+
+    @Test
+    public void testNestedAllocationExpressions() {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(NestedAllocationExpressions.class);
+        List<ASTAllocationExpression> allocs = acu.findDescendantsOfType(ASTAllocationExpression.class);
+
+        assertFalse(allocs.get(0).isAnonymousClass());
+        assertEquals(Thread.class, allocs.get(0).getType());
+
+        assertTrue(allocs.get(1).isAnonymousClass());
+        // FUTURE 1.8 use Class.getTypeName() instead of toString
+        assertTrue(allocs.get(1).getType().toString().endsWith("NestedAllocationExpressions$1"));
+    }
+
     @Test
     public void testAnnotatedTypeParams() {
         parseAndTypeResolveForString("public class Foo { public static <T extends @NonNull Enum<?>> T getEnum() { return null; } }", "1.8");
@@ -1847,5 +1855,14 @@ public class ClassTypeResolverTest {
         languageVersionHandler.getSymbolFacade().start(acu);
         languageVersionHandler.getTypeResolutionFacade(ClassTypeResolverTest.class.getClassLoader()).start(acu);
         return acu;
+    }
+
+
+    private static <T> List<T> convertList(List<Node> nodes, Class<T> target) {
+        List<T> converted = new ArrayList<>();
+        for (Node n : nodes) {
+            converted.add(target.cast(n));
+        }
+        return converted;
     }
 }

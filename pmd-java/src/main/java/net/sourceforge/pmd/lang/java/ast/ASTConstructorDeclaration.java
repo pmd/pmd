@@ -61,4 +61,9 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
 
         return signature;
     }
+
+    @Override
+    public ASTFormalParameters getFormalParameters() {
+        return getFirstChildOfType(ASTFormalParameters.class);
+    }
 }

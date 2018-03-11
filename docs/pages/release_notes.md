@@ -16,6 +16,7 @@ This is a bug fixing release.
 *   [Fixed Issues](#fixed-issues)
     *   [Ecmascript (JavaScript)](#ecmascript-javascript)
     *   [Disable Incremental Analysis](#disable-incremental-analysis)
+    *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
 *   [API Changes](#api-changes)
 *   [External Contributions](#external-contributions)
@@ -44,6 +45,12 @@ the new `-no-cache` flag. On Ant, there is a `noCache` attribute for the `<pmd>`
 
 On both scenarios, disabling the cache takes precedence over setting a cache location.
 
+#### New Rules
+
+*   The new Java rule `MissingOverride` (category `bestpractices`) detects overridden and implemented methods,
+    which are not marked with the `@Override` annotation. Annotating overridden methods with `@Override` ensures
+    at compile time that the method really overrides one, which helps refactoring and clarifies intent.
+
 #### Modified Rules
 
 *   The Java rule `CommentContentRule` (`java-documentation`) previously had the property `wordsAreRegex`. But this 
@@ -56,6 +63,7 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
 *   The Java rule `UnusedPrivateMethod` (`java-bestpractices`) now has a new `ignoredAnnotations` property
     that allows to configure annotations that imply the method should be ignored. By default `@java.lang.Deprecated`
     is ignored.
+
 
 ### Fixed Issues
 

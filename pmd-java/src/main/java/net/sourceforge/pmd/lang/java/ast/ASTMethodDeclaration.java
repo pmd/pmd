@@ -5,10 +5,21 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.List;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 
+
+/**
+ * Method declaration node.
+ *
+ * <pre>
+ * MethodDeclaration := [ TypeParameters() ] (TypeAnnotation())* ResultType() MethodDeclarator() [ "throws" NameList() ] ( Block() | ";" )
+ * </pre>
+ *
+ */
 public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAGraphMethod, ASTMethodOrConstructorDeclaration {
 
     private JavaQualifiedName qualifiedName;
@@ -23,104 +34,120 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
     /**
-     * Gets the name of the method.
-     *
-     * @return a String representing the name of the method
+     * Returns the simple name of the method.
      */
     public String getMethodName() {
-        ASTMethodDeclarator md = getFirstChildOfType(ASTMethodDeclarator.class);
-        if (md != null) {
-            return md.getImage();
-        }
-        return null;
+        return getFirstChildOfType(ASTMethodDeclarator.class).getImage();
     }
 
+
+    @Override
     public String getName() {
         return getMethodName();
     }
 
+
+    /**
+     * Returns true if this method is explicitly modified by
+     * the {@code public} modifier.
+     */
     public boolean isSyntacticallyPublic() {
         return super.isPublic();
     }
 
+
+    /**
+     * Returns true if this method is explicitly modified by
+     * the {@code abstract} modifier.
+     */
     public boolean isSyntacticallyAbstract() {
         return super.isAbstract();
     }
 
+
+    /**
+     * Returns true if this method has public visibility.
+     * Non-private interface members are implicitly public,
+     * whether they declare the {@code public} modifier or
+     * not.
+     */
     @Override
     public boolean isPublic() {
         // interface methods are public by default, but could be private since java9
-        if (isInterfaceMember() && !isPrivate()) {
-            return true;
-        }
-        return super.isPublic();
+        return isInterfaceMember() && !isPrivate() || super.isPublic();
     }
 
+
+    /**
+     * Returns true if this method is abstract, so doesn't
+     * declare a body. Interface members are
+     * implicitly abstract, whether they declare the
+     * {@code abstract} modifier or not.
+     */
     @Override
     public boolean isAbstract() {
-        if (isInterfaceMember()) {
-            return true;
-        }
-        return super.isAbstract();
+        return isInterfaceMember() || super.isAbstract();
     }
 
 
+    /**
+     * Returns true if this method declaration is a member of an interface type.
+     */
     public boolean isInterfaceMember() {
         // for a real class/interface the 3rd parent is a ClassOrInterfaceDeclaration,
         // for anonymous classes, the parent is e.g. a AllocationExpression
         Node potentialTypeDeclaration = getNthParent(3);
 
-        if (potentialTypeDeclaration instanceof ASTClassOrInterfaceDeclaration) {
-            return ((ASTClassOrInterfaceDeclaration) potentialTypeDeclaration).isInterface();
-        }
-        return false;
+        return potentialTypeDeclaration instanceof ASTClassOrInterfaceDeclaration
+                && ((ASTClassOrInterfaceDeclaration) potentialTypeDeclaration).isInterface();
     }
 
+
+    /**
+     * Returns true if the result type of this method is {@code void}.
+     */
     public boolean isVoid() {
         return getResultType().isVoid();
     }
 
+
+    /**
+     * Returns the result type node of the method.
+     */
     public ASTResultType getResultType() {
         return getFirstChildOfType(ASTResultType.class);
     }
 
+
+    /**
+     * Returns the block defined by this method, or
+     * null if the method is abstract.
+     */
     public ASTBlock getBlock() {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            Node n = jjtGetChild(i);
-            if (n instanceof ASTBlock) {
-                return (ASTBlock) n;
-            }
-        }
-        return null;
+        return getFirstChildOfType(ASTBlock.class);
     }
 
+
+    /**
+     * Returns the exception names listed in the {@code throws} clause
+     * of this method declaration, or null if there are none.
+     */
     public ASTNameList getThrows() {
-        int declaratorIndex = -1;
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            Node child = jjtGetChild(i);
-            if (child instanceof ASTMethodDeclarator) {
-                declaratorIndex = i;
-                break;
-            }
-        }
-        // the throws declaration is immediately followed by the
-        // MethodDeclarator
-        if (jjtGetNumChildren() > declaratorIndex + 1) {
-            Node n = jjtGetChild(declaratorIndex + 1);
-            if (n instanceof ASTNameList) {
-                return (ASTNameList) n;
-            }
-        }
-        return null;
+        return getFirstChildOfType(ASTNameList.class);
+    }
+
+
+    /**
+     * Returns the annotations declared on this method declaration.
+     */
+    public List<ASTAnnotation> getDeclaredAnnotations() {
+        return this.jjtGetParent().findChildrenOfType(ASTAnnotation.class);
     }
 
 
@@ -140,5 +167,11 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
         }
 
         return signature;
+    }
+
+
+    @Override
+    public ASTFormalParameters getFormalParameters() {
+        return getFirstChildOfType(ASTMethodDeclarator.class).getFirstChildOfType(ASTFormalParameters.class);
     }
 }
