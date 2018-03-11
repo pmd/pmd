@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.metrics.MetricKey;
 
 /**
  * @author Clément Fournier
- * @since 6.1.0
+ * @since 6.2.0
  */
 public enum EnumWithInterfaces implements MetricKey<ASTAnyTypeDeclaration> {
     Foo {

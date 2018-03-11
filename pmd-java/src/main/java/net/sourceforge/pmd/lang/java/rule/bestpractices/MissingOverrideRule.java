@@ -32,7 +32,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * Flags missing @Override annotations.
  *
  * @author Clément Fournier
- * @since 6.1.0
+ * @since 6.2.0
  */
 public class MissingOverrideRule extends AbstractJavaRule {
 

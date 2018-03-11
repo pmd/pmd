@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
 /**
  * @author Clément Fournier
- * @since 6.1.0
+ * @since 6.2.0
  */
 public class ConcreteClass extends AbstractClass {
     @Override

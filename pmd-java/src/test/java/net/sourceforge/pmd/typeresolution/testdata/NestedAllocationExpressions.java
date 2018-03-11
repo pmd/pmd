@@ -6,7 +6,7 @@ package net.sourceforge.pmd.typeresolution.testdata;
 
 /**
  * @author Clément Fournier
- * @since 6.1.0
+ * @since 6.2.0
  */
 public class NestedAllocationExpressions {
     static {
