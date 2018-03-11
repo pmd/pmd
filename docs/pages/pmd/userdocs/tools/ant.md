@@ -77,7 +77,15 @@ Runs a set of static code analysis rules on some source code files and generates
       <td>
         The location of the analysis cache file to be used.
         Setting this property enables Incremental Analysis, which can greatly improve analysis time without loosing analysis quality.
-        <b>It's use is strongly recommended.</b>
+        <b>Its use is strongly recommended.</b>
+      </td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>noCache</td>
+      <td>
+        Setting this property to true disables Incremental Analysis, even if <i>cacheLocation</i> is provided.
+        You can use this to explicitly turn off suggestions to use incremental analysis, or for testing purposes.
       </td>
       <td>No</td>
     </tr>

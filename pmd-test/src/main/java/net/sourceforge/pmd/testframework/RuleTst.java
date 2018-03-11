@@ -260,6 +260,7 @@ public abstract class RuleTst {
         try {
             PMD p = new PMD();
             p.getConfiguration().setDefaultLanguageVersion(languageVersion);
+            p.getConfiguration().setIgnoreIncrementalAnalysis(true);
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
                 p.getConfiguration().prependClasspath(".");

@@ -244,6 +244,13 @@ The tool comes with a rather extensive help text, simply running with `-help`!
         <td>no</td>
         <td></td>
     </tr>
+    <tr>
+        <td>-no-cache</td>
+        <td>Explicitly disable incremental analysis. This switch turns off suggestions to use Incremental Analysis,
+            and causes the <i>-cache</i> option to be discarded if it is provided.
+        </td>
+        <td></td>
+    </tr>
 </table>
 
 
@@ -255,7 +262,7 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 <table>
 <tr><td>0</td><td>Everything is fine, no violations found</td></tr>
 <tr><td>1</td><td>Couldn't understand command line parameters or PMD exited with an exception</td></tr>
-<tr><td>4</td><td>At least one violation has been detected unless '-failOnViolation false' is set.</td></tr>
+<tr><td>4</td><td>At least one violation has been detected, unless '-failOnViolation false' is set.</td></tr>
 </table>
 
 

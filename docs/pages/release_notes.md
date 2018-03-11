@@ -15,6 +15,7 @@ This is a bug fixing release.
 *   [New and noteworthy](#new-and-noteworthy)
 *   [Fixed Issues](#fixed-issues)
     *   [Ecmascript (JavaScript)](#ecmascript-javascript)
+    *   [Disable Incremental Analysis](#disable-incremental-analysis)
     *   [Modified Rules](#modified-rules)
 *   [API Changes](#api-changes)
 *   [External Contributions](#external-contributions)
@@ -30,6 +31,18 @@ Detailed changes for changed in Rhino can be found:
 * [For 1.7.7.1](https://github.com/mozilla/rhino/blob/master/RELEASE-NOTES.md#rhino-1771)
 
 Both are bugfixing releases.
+
+### Disable Incremental Analysis
+
+Some time ago, we added support for [Incremental Analhysis](pmd_userdocs_getting_started.html). On PMD 6.0.0, we
+started to add warns when not using it, as we strongly believe it's a great improvement to our user's experience as
+analysis time is greatly reduced; and in the future we plan to have it enabled by default. However, we realize some
+scenarios don't benefit from it (ie: CI jobs), and having the warning logged can be noisy and cause confusion.
+
+To this end, we have added a new flag to allow you to explicitly disable incremental analysis. On CLI, this is
+the new `-no-cache` flag. On Ant, there is a `noCache` attribute for the `<pmd>` task.
+
+On both scenarios, disabling the cache takes precedence over setting a cache location.
 
 #### Modified Rules
 
@@ -56,6 +69,12 @@ Both are bugfixing releases.
     *   [#968](https://github.com/pmd/pmd/issues/968): \[java] UseUtilityClassRule reports false positive with lombok NoArgsConstructor
 
 ### API Changes
+
+* A new CLI switch, `-no-cache`, disables incremental analysis and the related suggestion. This overrides the
+`-cache` option. The corresponding Ant task parameter is `noCache`.
+
+* The static method `PMDParameters.transformParametersIntoConfiguration(PMDParameters)` is now deprecated,
+  for removal in 7.0.0. The new instance method `PMDParameters.toConfiguration()` replaces it.
 
 ### External Contributions
 

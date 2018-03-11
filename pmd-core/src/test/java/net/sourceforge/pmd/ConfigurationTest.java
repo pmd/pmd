@@ -5,6 +5,7 @@
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -198,5 +199,22 @@ public class ConfigurationTest {
         assertNotNull("Not null cache location produces null cache", configuration.getAnalysisCache());
         assertTrue("File cache location doesn't produce a file cache",
                 configuration.getAnalysisCache() instanceof FileAnalysisCache);
+    }
+
+
+    @Test
+    public void testIgnoreIncrementalAnalysis() throws IOException {
+        final PMDConfiguration configuration = new PMDConfiguration();
+
+        // set dummy cache location
+        final File cacheFile = File.createTempFile("pmd-", ".cache");
+        cacheFile.deleteOnExit();
+        final FileAnalysisCache analysisCache = new FileAnalysisCache(cacheFile);
+        configuration.setAnalysisCache(analysisCache);
+        assertNotNull("Null cache location accepted", configuration.getAnalysisCache());
+        assertFalse("Non null cache location, cache should not be noop", configuration.getAnalysisCache() instanceof NoopAnalysisCache);
+
+        configuration.setIgnoreIncrementalAnalysis(true);
+        assertTrue("Ignoring incremental analysis should turn the cache into a noop", configuration.getAnalysisCache() instanceof NoopAnalysisCache);
     }
 }
