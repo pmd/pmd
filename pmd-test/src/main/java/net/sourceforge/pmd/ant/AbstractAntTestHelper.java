@@ -7,15 +7,14 @@ package net.sourceforge.pmd.ant;
 import static java.io.File.separator;
 
 import java.io.File;
-import java.nio.file.Path;
+import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.tools.ant.BuildFileRule;
 import org.apache.tools.ant.Project;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 
 /**
@@ -28,6 +27,9 @@ import org.junit.Rule;
  */
 public abstract class AbstractAntTestHelper {
 
+    @Rule
+    public final TemporaryFolder tempFolder = new TemporaryFolder();
+    
     @Rule
     public final BuildFileRule buildRule = new BuildFileRule();
 
@@ -45,15 +47,15 @@ public abstract class AbstractAntTestHelper {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         validatePostConstruct();
         // initialize Ant
         buildRule.configureProject(pathToTestScript + separator + antTestScriptFilename);
 
         // Each test case gets one temp file name, accessible with ${tmpfile}
-        // The file doesn't exist before the test is executed
-        Path tmpFilePath = FileUtils.getTempDirectory().toPath().resolve(RandomStringUtils.randomAlphabetic(30)).toAbsolutePath();
-        buildRule.getProject().setProperty("tmpfile", tmpFilePath.toString());
+        final File newFile = tempFolder.newFile();
+        newFile.delete(); // It shouldn't exist yet, but we want a unique name
+        buildRule.getProject().setProperty("tmpfile", newFile.getAbsolutePath());
 
         Project project = buildRule.getProject();
         if (!project.getBaseDir().toString().endsWith(mvnWorkaround)) {
