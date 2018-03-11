@@ -736,7 +736,7 @@ public class SecureSystem {
 
 
     <rule name="MissingOverride"
-          since="6.1.0"
+          since="6.2.0"
           minimumLanguageVersion="1.5"
           message="The method ''{0}'' is missing an @Override annotation."
           typeResolution="true"

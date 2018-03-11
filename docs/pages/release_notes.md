@@ -19,6 +19,12 @@ This is a minor release.
 
 ### New and noteworthy
 
+#### New Rules
+
+*   The new Java rule `MissingOverride` (category `bestpractices`) detects overridden and implemented methods,
+    which are not marked with the `@Override` annotation. Annotating overridden methods with `@Override` ensures
+    at compile time that the method really overrides one, which helps refactoring and clarifies intent.
+
 ### Fixed Issues
 
 *   all
