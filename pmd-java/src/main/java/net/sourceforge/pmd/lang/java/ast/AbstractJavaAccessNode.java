@@ -4,7 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements AccessNode {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+
+public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements AccessNode, Annotateable {
 
     private int modifiers;
 
@@ -134,5 +141,53 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements
 
     public boolean isPackagePrivate() {
         return !isPrivate() && !isPublic() && !isProtected();
+    }
+
+    public List<ASTAnnotation> getDeclaredAnnotations() {
+        List<ASTAnnotation> result = new ArrayList<>();
+        Node parent = this.jjtGetParent();
+        for (int index = 0; index < parent.jjtGetNumChildren(); index++) {
+            Node child = parent.jjtGetChild(index);
+            if (child == this) {
+                return result;
+            } else if (child instanceof ASTAnnotation) {
+                result.add((ASTAnnotation) child);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Checks whether the annotation is present on this node.
+     *
+     * @param annotQualifiedName
+     *            qulified name of the annotation.
+     * @return <code>true</code> if the annotation is present on this node, else <code>false</code>
+     */
+    public boolean isAnnotationPresent(String annotQualifiedName) {
+        List<ASTAnnotation> annotations = getDeclaredAnnotations();
+        for (ASTAnnotation annotation : annotations) {
+            ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
+            if (TypeHelper.isA(name, annotQualifiedName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks whether any annotation is present on this node.
+     *
+     * @param annotQualifiedNames
+     *            collection that cotains qulified name of annotations.
+     * @return <code>true</code> if any annotation is present on this node, else <code>false</code>
+     */
+    public boolean isAnyAnnotationPresent(Collection<String> annotQualifiedNames) {
+        for (String annotQualifiedName : annotQualifiedNames) {
+            if (isAnnotationPresent(annotQualifiedName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import java.util.Collection;
 
-public interface Annotateable {
-    boolean isAnnotateable(Node node);
+public interface Annotateable extends JavaNode {
+    boolean isAnyAnnotationPresent(Collection<String> annotQualifiedNames);
+
+    boolean isAnnotationPresent(String annotQualifiedName);
 }

@@ -5,13 +5,17 @@
 package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.Annotateable;
 
 
 /**
@@ -28,14 +32,14 @@ public class AbstractLombokAwareRule extends AbstractJavaRule {
     private static final Set<String> LOMBOK_ANNOTATIONS = new HashSet<>();
 
     static {
-        LOMBOK_ANNOTATIONS.add("Data");
-        LOMBOK_ANNOTATIONS.add("Getter");
-        LOMBOK_ANNOTATIONS.add("Setter");
-        LOMBOK_ANNOTATIONS.add("Value");
-        LOMBOK_ANNOTATIONS.add("RequiredArgsConstructor");
-        LOMBOK_ANNOTATIONS.add("AllArgsConstructor");
-        LOMBOK_ANNOTATIONS.add("NoArgsConstructor");
-        LOMBOK_ANNOTATIONS.add("Builder");
+        LOMBOK_ANNOTATIONS.add("lombok.Data");
+        LOMBOK_ANNOTATIONS.add("lombok.Getter");
+        LOMBOK_ANNOTATIONS.add("lombok.Setter");
+        LOMBOK_ANNOTATIONS.add("lombok.Value");
+        LOMBOK_ANNOTATIONS.add("lombok.RequiredArgsConstructor");
+        LOMBOK_ANNOTATIONS.add("lombok.AllArgsConstructor");
+        LOMBOK_ANNOTATIONS.add("lombok.NoArgsConstructor");
+        LOMBOK_ANNOTATIONS.add("lombok.Builder");
     }
 
     @Override
@@ -55,13 +59,13 @@ public class AbstractLombokAwareRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        classHasLombokAnnotation = isAnnotateable(node);
+        classHasLombokAnnotation = hasLombokAnnotation(node);
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
-        classHasLombokAnnotation = isAnnotateable(node);
+        classHasLombokAnnotation = hasLombokAnnotation(node);
         return super.visit(node, data);
     }
 
@@ -79,35 +83,14 @@ public class AbstractLombokAwareRule extends AbstractJavaRule {
 
     /**
      * Checks whether the given node is annotated with any lombok annotation.
-     * The node can be any node, e.g. class declaration or field declaration.
-     * 
+     * The node should be annotateable.
+     *
      * @param node
-     *            the node to check
+     *            the Annotateable node to check
      * @return <code>true</code> if a lombok annotation has been found
      */
-    protected boolean hasLombokAnnotation(Node node) {
-        boolean result = false;
-        Node parent = node.jjtGetParent();
-        List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
-        for (ASTAnnotation annotation : annotations) {
-            ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
-            if (name != null) {
-                String annotationName = name.getImage();
-                if (lombokImported) {
-                    if (LOMBOK_ANNOTATIONS.contains(annotationName)) {
-                        result = true;
-                    }
-                } else {
-                    if (annotationName.startsWith(LOMBOK_PACKAGE + ".")) {
-                        String shortName = annotationName.substring(LOMBOK_PACKAGE.length() + 1);
-                        if (LOMBOK_ANNOTATIONS.contains(shortName)) {
-                            result = true;
-                        }
-                    }
-                }
-            }
-        }
-        return result;
+    protected boolean hasLombokAnnotation(Annotateable node) {
+        return node.isAnyAnnotationPresent(LOMBOK_ANNOTATIONS);
     }
 
     protected ASTAnnotation getLombokAnnotation(Node node, String lombokAnnotation) {

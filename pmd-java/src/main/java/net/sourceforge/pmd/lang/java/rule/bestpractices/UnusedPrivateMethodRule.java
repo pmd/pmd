@@ -10,21 +10,18 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.ast.Annotateable;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.properties.StringMultiProperty;
 
 /**
  * This rule detects private methods, that are not used and can therefore be
@@ -32,15 +29,10 @@ import net.sourceforge.pmd.properties.StringMultiProperty;
  */
 public class UnusedPrivateMethodRule extends AbstractJavaRule {
 
-    private static final StringMultiProperty IGNORED_ANNOTATIONS_DESCRIPTOR
-            = StringMultiProperty.named("ignoredAnnotations")
-                                 .desc("Fully qualified names of the annotation types that should be ignored by this rule")
-                                 .defaultValues("java.lang.Deprecated")
-                                 .build();
-
-
     public UnusedPrivateMethodRule() {
-        definePropertyDescriptor(IGNORED_ANNOTATIONS_DESCRIPTOR);
+        ignoredAnnotDescriptor = ignoredAnnotBuilder
+            .defaultValues("java.lang.Deprecated").build();
+        definePropertyDescriptor(ignoredAnnotDescriptor);
     }
 
     /**
@@ -61,7 +53,8 @@ public class UnusedPrivateMethodRule extends AbstractJavaRule {
                 .getMethodDeclarations();
         for (MethodNameDeclaration mnd : findUnique(methods)) {
             List<NameOccurrence> occs = methods.get(mnd);
-            if (!privateAndNotExcluded(mnd) || hasNeglectAnnotation(mnd)) {
+            if (!privateAndNotExcluded(mnd)
+                || ((Annotateable) mnd.getNode()).isAnyAnnotationPresent(getProperty(ignoredAnnotDescriptor))) {
                 continue;
             }
             if (occs.isEmpty()) {
@@ -121,27 +114,5 @@ public class UnusedPrivateMethodRule extends AbstractJavaRule {
         return ((AccessNode) node.jjtGetParent()).isPrivate() && !node.hasImageEqualTo("readObject")
                 && !node.hasImageEqualTo("writeObject") && !node.hasImageEqualTo("readResolve")
                 && !node.hasImageEqualTo("writeReplace");
-    }
-
-    /**
-     * Checks whether the given node is annotated with annotation in the set.
-     * The node should be method name declaration.
-     *
-     * @param node
-     *            the node to check
-     * @return <code>true</code> if the annotation has been found
-     */
-    protected boolean hasNeglectAnnotation(MethodNameDeclaration node) {
-        Node parent = node.getNode().jjtGetParent();
-        List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
-        for (ASTAnnotation annotation : annotations) {
-            TypeNode n = (TypeNode) annotation.jjtGetChild(0);
-            for (String annotationName : getProperty(IGNORED_ANNOTATIONS_DESCRIPTOR)) {
-                if (TypeHelper.isA(n, annotationName)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTMethodDeclarator extends AbstractJavaNode {
+public class ASTMethodDeclarator extends AbstractJavaAccessNode {
     public ASTMethodDeclarator(int id) {
         super(id);
     }

@@ -18,34 +18,26 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.Annotateable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.properties.StringMultiProperty;
 
 public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
 
-    private static final StringMultiProperty IGNORED_ANNOTATIONS_DESCRIPTOR
-            = StringMultiProperty.named("ignoredAnnotations")
-                                 .desc("Fully qualified names of the annotation types that should be ignored by this rule")
-                                 .defaultValues("java.lang.Deprecated", "javafx.fxml.FXML")
-                                 .build();
-
-
     public UnusedPrivateFieldRule() {
-        definePropertyDescriptor(IGNORED_ANNOTATIONS_DESCRIPTOR);
+        ignoredAnnotDescriptor = ignoredAnnotBuilder
+            .defaultValues("java.lang.Deprecated", "javafx.fxml.FXML")
+            .build();
+        definePropertyDescriptor(ignoredAnnotDescriptor);
     }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        boolean classHasLombok = isAnnotateable(node);
-
-        for (String annotationName : getProperty(IGNORED_ANNOTATIONS_DESCRIPTOR)) {
-            ignoredAnnotations.add(annotationName);
-        }
+        boolean classHasLombok = hasLombokAnnotation(node);
 
         Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
                 .getDeclarations(VariableNameDeclaration.class);
@@ -53,7 +45,8 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
             VariableNameDeclaration decl = entry.getKey();
             AccessNode accessNodeParent = decl.getAccessNodeParent();
             if (!accessNodeParent.isPrivate() || isOK(decl.getImage()) || classHasLombok
-                || isAnnotateable(accessNodeParent)) {
+                || ((Annotateable) accessNodeParent).isAnyAnnotationPresent(getProperty(ignoredAnnotDescriptor))
+                || hasLombokAnnotation((Annotateable) accessNodeParent)) {
                 continue;
             }
             if (!actuallyUsed(entry.getValue())) {
