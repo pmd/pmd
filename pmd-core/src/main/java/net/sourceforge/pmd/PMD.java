@@ -226,6 +226,7 @@ public class PMD {
 
                 @Override
                 public void metricAdded(Metric metric) {
+                    // ignored - not needed for counting violations
                 }
             });
 

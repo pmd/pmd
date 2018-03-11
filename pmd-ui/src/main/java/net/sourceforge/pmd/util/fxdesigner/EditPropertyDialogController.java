@@ -68,7 +68,7 @@ public class EditPropertyDialogController implements Initializable {
 
 
     public EditPropertyDialogController() {
-
+        // default constructor
     }
 
 

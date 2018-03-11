@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -57,7 +58,7 @@ public class TccAttributeAccessCollector extends JavaParserVisitorReducedAdapter
 
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
-        if (node == exploredClass) {
+        if (Objects.equals(node, exploredClass)) {
             methodAttributeAccess = new HashMap<>();
             super.visit(node, data);
         } else if (node instanceof ASTClassOrInterfaceDeclaration

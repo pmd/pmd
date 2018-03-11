@@ -633,7 +633,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     if (foundTypeDef != null) { // if null, then it's not an inherited field
                         return foundTypeDef;
                     }
-                } catch (ClassCastException e) {
+                } catch (ClassCastException ignored) {
                     // if there is an anonymous class, getClassDeclaration().getType() will throw
                     // TODO: maybe there is a better way to handle this, maybe this hides bugs
                 }
@@ -1280,16 +1280,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     + qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
             try {
                 myType = pmdClassLoader.loadClass(qualifiedNameInner);
-            } catch (Exception e) {
-                // ignored
+            } catch (Exception ignored) {
+                // ignored, we'll try again with a different package name/fqcn
             }
         }
         if (myType == null && qualifiedName != null && !qualifiedName.contains(".")) {
             // try again with java.lang....
             try {
                 myType = pmdClassLoader.loadClass("java.lang." + qualifiedName);
-            } catch (Exception e) {
-                // ignored
+            } catch (Exception ignored) {
+                // ignored, we'll try again with generics
             }
         }
 
@@ -1355,9 +1355,19 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     private Class<?> processOnDemand(String qualifiedName) {
         for (String entry : importedOnDemand) {
+            String fullClassName = entry + "." + qualifiedName;
             try {
-                return pmdClassLoader.loadClass(entry + "." + qualifiedName);
-            } catch (Throwable e) {
+                return pmdClassLoader.loadClass(fullClassName);
+            } catch (ClassNotFoundException ignored) {
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.log(Level.FINE, "Tried to load class " + fullClassName + " from on demand import, "
+                            + "which apparently doesn't exist.", ignored);
+                }
+            } catch (LinkageError ignored) {
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.log(Level.FINE, "Tried to load class " + fullClassName + " from on demand import, "
+                            + "which apparently doesn't exist.", ignored);
+                }
             }
         }
         return null;

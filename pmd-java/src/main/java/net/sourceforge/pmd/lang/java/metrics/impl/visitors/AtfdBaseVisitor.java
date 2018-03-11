@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.impl.visitors;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
@@ -15,7 +16,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Computes Atfd.
@@ -41,7 +41,7 @@ public class AtfdBaseVisitor extends JavaParserVisitorAdapter {
 
         String methodOrAttributeName = getMethodOrAttributeName(node);
 
-        return methodOrAttributeName != null && StringUtil.startsWithAny(methodOrAttributeName, "get", "is", "set");
+        return methodOrAttributeName != null && StringUtils.startsWithAny(methodOrAttributeName, "get", "is", "set");
     }
 
 

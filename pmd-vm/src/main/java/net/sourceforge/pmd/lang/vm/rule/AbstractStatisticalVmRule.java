@@ -23,7 +23,7 @@ public abstract class AbstractStatisticalVmRule extends AbstractVmRule implement
 
     @Override
     public Object[] getViolationParameters(final DataPoint point) {
-        return null;
+        return new Object[0];
     }
 
     @Override

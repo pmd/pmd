@@ -115,8 +115,8 @@ public class RuleSetFactoryCompatibility {
         return new StringReader(ruleset);
     }
 
-    private String applyAllFilters(String in) {
-        String result = in;
+    private String applyAllFilters(String ruleset) {
+        String result = ruleset;
         for (RuleSetFilter filter : filters) {
             result = filter.apply(result);
         }
@@ -194,9 +194,9 @@ public class RuleSetFactoryCompatibility {
             return filter;
         }
 
-        String apply(String in) {
-            String result = in;
-            Matcher matcher = refPattern.matcher(in);
+        String apply(String ruleset) {
+            String result = ruleset;
+            Matcher matcher = refPattern.matcher(ruleset);
 
             if (matcher.find()) {
                 result = matcher.replaceAll(replacement);

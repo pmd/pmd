@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.List;
+import java.util.Locale;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
@@ -146,7 +147,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         for (ASTFormalParameter formalParameter : node.findChildrenOfType(ASTFormalParameter.class)) {
             for (ASTVariableDeclaratorId variableDeclaratorId : formalParameter
                     .findChildrenOfType(ASTVariableDeclaratorId.class)) {
-                checkVariableDeclaratorId(parameterPrefixes, parameterSuffixes, node, false, formalParameter.isFinal(),
+                checkVariableDeclaratorId(parameterPrefixes, parameterSuffixes, false, formalParameter.isFinal(),
                         variableDeclaratorId, data);
             }
         }
@@ -158,13 +159,13 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         for (ASTVariableDeclarator variableDeclarator : root.findChildrenOfType(ASTVariableDeclarator.class)) {
             for (ASTVariableDeclaratorId variableDeclaratorId : variableDeclarator
                     .findChildrenOfType(ASTVariableDeclaratorId.class)) {
-                checkVariableDeclaratorId(prefixes, suffixes, root, isStatic, isFinal, variableDeclaratorId, data);
+                checkVariableDeclaratorId(prefixes, suffixes, isStatic, isFinal, variableDeclaratorId, data);
             }
         }
         return data;
     }
 
-    private Object checkVariableDeclaratorId(List<String> prefixes, List<String> suffixes, Node root, boolean isStatic,
+    private Object checkVariableDeclaratorId(List<String> prefixes, List<String> suffixes, boolean isStatic,
             boolean isFinal, ASTVariableDeclaratorId variableDeclaratorId, Object data) {
 
         // Get the variable name
@@ -177,7 +178,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
 
         // Static finals should be uppercase
         if (isStatic && isFinal) {
-            if (!varName.equals(varName.toUpperCase())) {
+            if (!varName.equals(varName.toUpperCase(Locale.ROOT))) {
                 addViolationWithMessage(data, variableDeclaratorId,
                         "Variables that are final and static should be all capitals, ''{0}'' is not all capitals.",
                         new Object[] { varName });

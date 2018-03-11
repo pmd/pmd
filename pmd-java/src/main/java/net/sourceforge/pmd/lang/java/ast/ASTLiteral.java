@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class ASTLiteral extends AbstractJavaTypeNode {
@@ -98,7 +99,7 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     }
     
     private String stripIntValue() {
-        String image = getImage().toLowerCase().replaceAll("_", "");
+        String image = getImage().toLowerCase(Locale.ROOT).replaceAll("_", "");
         
         boolean isNegative = false;
         if (image.charAt(0) == '-') {
@@ -126,11 +127,11 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     }
     
     private String stripFloatValue() {
-        return getImage().toLowerCase().replaceAll("_", "");
+        return getImage().toLowerCase(Locale.ROOT).replaceAll("_", "");
     }
     
     private int getIntBase() {
-        final String image = getImage().toLowerCase();
+        final String image = getImage().toLowerCase(Locale.ROOT);
         final int offset = image.charAt(0) == '-' ? 1 : 0;
         if (image.startsWith("0x", offset)) {
             return 16;

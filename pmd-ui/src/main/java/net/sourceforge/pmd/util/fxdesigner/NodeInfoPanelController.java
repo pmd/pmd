@@ -39,9 +39,9 @@ import javafx.scene.control.TreeView;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@SuppressWarnings("PMD.UnusedPrivateField")
 public class NodeInfoPanelController implements Initializable {
 
-    private final DesignerRoot designerRoot;
     private final MainDesignerController parent;
 
     @FXML
@@ -61,8 +61,7 @@ public class NodeInfoPanelController implements Initializable {
     private MetricEvaluator metricEvaluator = new MetricEvaluator();
 
 
-    public NodeInfoPanelController(DesignerRoot root, MainDesignerController mainController) {
-        this.designerRoot = root;
+    public NodeInfoPanelController(MainDesignerController mainController) {
         parent = mainController;
     }
 

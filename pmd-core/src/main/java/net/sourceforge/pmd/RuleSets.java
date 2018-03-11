@@ -35,8 +35,9 @@ public class RuleSets {
      * Public constructor.
      */
     public RuleSets() {
+        // default constructor
     }
-    
+
     /**
      * Copy constructor. Deep copies RuleSets.
      * @param ruleSets The RuleSets to copy.
@@ -54,7 +55,6 @@ public class RuleSets {
      *            the RuleSet
      */
     public RuleSets(RuleSet ruleSet) {
-        this();
         addRuleSet(ruleSet);
     }
 
@@ -77,7 +77,7 @@ public class RuleSets {
      * @return RuleSet[]
      */
     public RuleSet[] getAllRuleSets() {
-        return ruleSets.toArray(new RuleSet[ruleSets.size()]);
+        return ruleSets.toArray(new RuleSet[0]);
     }
 
     public Iterator<RuleSet> getRuleSetsIterator() {

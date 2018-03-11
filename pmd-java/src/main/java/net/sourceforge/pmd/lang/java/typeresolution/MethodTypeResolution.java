@@ -45,11 +45,15 @@ public final class MethodTypeResolution {
     static {
         final List<Class<?>> primitiveList = new ArrayList<>();
 
+        @SuppressWarnings("PMD.AvoidUsingShortType") // defining a local variable to suppress warnings only for
+        // the following statement
+        Class<?> shortType = short.class;
+
         primitiveList.add(double.class);
         primitiveList.add(float.class);
         primitiveList.add(long.class);
         primitiveList.add(int.class);
-        primitiveList.add(short.class);
+        primitiveList.add(shortType);
         primitiveList.add(byte.class);
         primitiveList.add(char.class); // this is here for convenience, not really in order
 
@@ -73,7 +77,7 @@ public final class MethodTypeResolution {
         boxingRules.put(float.class, Float.class);
         boxingRules.put(long.class, Long.class);
         boxingRules.put(int.class, Integer.class);
-        boxingRules.put(short.class, Short.class);
+        boxingRules.put(shortType, Short.class);
         boxingRules.put(byte.class, Byte.class);
         boxingRules.put(char.class, Character.class);
         boxingRules.put(boolean.class, Boolean.class);
@@ -521,21 +525,16 @@ public final class MethodTypeResolution {
     public static boolean isMethodApplicable(Method method, String methodName, int argArity,
                                              Class<?> accessingClass, List<JavaTypeDefinition> typeArguments) {
 
-        if (method.getName().equals(methodName) // name matches
+        return method.getName().equals(methodName) // name matches
                 // is visible
                 && isMemberVisibleFromClass(method.getDeclaringClass(), method.getModifiers(), accessingClass)
                 // if method is vararg with arity n, then the invocation's arity >= n - 1
-                && (!method.isVarArgs() || (argArity >= getArity(method) - 1))
+                && (!method.isVarArgs() || argArity >= getArity(method) - 1)
                 // if the method isn't vararg, then arity matches
-                && (method.isVarArgs() || (argArity == getArity(method)))
+                && (method.isVarArgs() || argArity == getArity(method))
                 // isn't generic or arity of type arguments matches that of parameters
                 && (!isGeneric(method) || typeArguments.isEmpty()
-                || method.getTypeParameters().length == typeArguments.size())) {
-
-            return true;
-        }
-
-        return false;
+                || method.getTypeParameters().length == typeArguments.size());
     }
 
 
@@ -627,15 +626,10 @@ public final class MethodTypeResolution {
         // covers unboxing
         int indexInBoxed = BOXED_PRIMITIVE_SUBTYPE_ORDER.indexOf(argument.getType());
 
-        if (indexInBoxed != -1 // arg is boxed primitive
+        return indexInBoxed != -1 // arg is boxed primitive
                 && isSubtypeable(parameter,
-                                 JavaTypeDefinition.forClass(PRIMITIVE_SUBTYPE_ORDER.get(indexInBoxed)))) {
-            return true;
-        }
-
+                                 JavaTypeDefinition.forClass(PRIMITIVE_SUBTYPE_ORDER.get(indexInBoxed)));
         // TODO: add raw unchecked conversion part
-
-        return false;
     }
 
     public static boolean isSubtypeable(JavaTypeDefinition parameter, ASTExpression argument) {

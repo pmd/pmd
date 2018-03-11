@@ -14,11 +14,6 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
 
     private JavaParserVisitor visitor;
 
-
-    public JavaParserVisitorDecorator() {
-    }
-
-
     public void setBase(JavaParserControllessVisitor base) {
         visitor = base;
     }

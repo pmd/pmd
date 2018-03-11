@@ -17,13 +17,12 @@ import net.sourceforge.pmd.lang.metrics.AbstractMetricsComputer;
  *
  * @author Clément Fournier
  */
-public class JavaMetricsComputer extends AbstractMetricsComputer<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> {
+public final class JavaMetricsComputer extends AbstractMetricsComputer<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> {
 
     static final JavaMetricsComputer INSTANCE = new JavaMetricsComputer();
 
 
     private JavaMetricsComputer() {
-
     }
 
 

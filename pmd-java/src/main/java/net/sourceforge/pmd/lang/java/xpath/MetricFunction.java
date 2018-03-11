@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.xpath;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang3.EnumUtils;
@@ -82,7 +83,7 @@ public class MetricFunction implements Function {
 
 
     private static JavaClassMetricKey getClassMetricKey(String s) {
-        String constantName = s.toUpperCase();
+        String constantName = s.toUpperCase(Locale.ROOT);
         if (!CLASS_METRIC_KEY_MAP.containsKey(constantName)) {
             throw new IllegalArgumentException(badClassMetricKeyMessage());
         }
@@ -91,7 +92,7 @@ public class MetricFunction implements Function {
 
 
     private static JavaOperationMetricKey getOperationMetricKey(String s) {
-        String constantName = s.toUpperCase();
+        String constantName = s.toUpperCase(Locale.ROOT);
         if (!OPERATION_METRIC_KEY_MAP.containsKey(constantName)) {
             throw new IllegalArgumentException(badOperationMetricKeyMessage());
         }

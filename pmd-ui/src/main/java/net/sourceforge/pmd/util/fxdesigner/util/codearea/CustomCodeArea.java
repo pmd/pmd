@@ -152,7 +152,7 @@ public class CustomCodeArea extends CodeArea {
                 layer.reset(t.getValue());
                 this.paintCss();
             });
-        } catch (Exception e) {
+        } catch (Exception ignored) {
             // nevermind
         }
     }

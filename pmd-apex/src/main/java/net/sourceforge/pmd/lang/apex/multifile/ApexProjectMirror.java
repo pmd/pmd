@@ -16,14 +16,13 @@ import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSigMask;
  *
  * @author Clément Fournier
  */
-class ApexProjectMirror implements ApexSignatureMatcher {
+final class ApexProjectMirror implements ApexSignatureMatcher {
 
     static final ApexProjectMirror INSTANCE = new ApexProjectMirror();
 
     private final Map<ApexQualifiedName, ApexClassStats> classes = new HashMap<>();
 
-    ApexProjectMirror() {
-
+    private ApexProjectMirror() {
     }
 
 

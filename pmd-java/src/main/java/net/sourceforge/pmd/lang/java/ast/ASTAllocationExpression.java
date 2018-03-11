@@ -5,8 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 public class ASTAllocationExpression extends AbstractJavaTypeNode {
     public ASTAllocationExpression(int id) {
         super(id);
@@ -25,8 +23,8 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode {
 
     public boolean isAnonymousClass() {
         if (jjtGetNumChildren() > 1) {
-            Node lastChild = jjtGetChild(jjtGetNumChildren() - 1);
-            return lastChild instanceof ASTClassOrInterfaceBody;
+            // check the last child
+            return jjtGetChild(jjtGetNumChildren() - 1) instanceof ASTClassOrInterfaceBody;
         }
         return false;
     }

@@ -40,12 +40,9 @@ public class ASTExpression extends AbstractJavaTypeNode {
 
         ASTLiteral literal = primaryPrefix.getFirstChildOfType(ASTLiteral.class);
 
-        if (literal == null || literal.isStringLiteral()
-                || (literal.jjtGetNumChildren() != 0 && literal.jjtGetChild(0) instanceof ASTNullLiteral)) {
-            return false;
-        }
-
+        // if it is not a string literal and not a null, then it is one of
         // byte, short, char, int, long, float, double, boolean
-        return true;
+        return literal != null && !literal.isStringLiteral()
+                && (literal.jjtGetNumChildren() == 0 || !(literal.jjtGetChild(0) instanceof ASTNullLiteral));
     }
 }

@@ -64,7 +64,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
 
                 lastKwEnd = matcher.end();
             }
-        } catch (StackOverflowError so) {
+        } catch (StackOverflowError ignored) {
             // matcher.find overflowed, might happen when coloring ginormous files with incorrect language
         }
 

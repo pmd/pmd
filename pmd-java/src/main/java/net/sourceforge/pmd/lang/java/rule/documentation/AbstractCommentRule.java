@@ -35,9 +35,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  */
 public abstract class AbstractCommentRule extends AbstractJavaRule {
 
-    protected AbstractCommentRule() {
-    }
-
     protected List<Integer> tagsIndicesIn(String comments) {
 
         int atPos = comments.indexOf('@');
@@ -188,8 +185,8 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
                 || n1.getEndLine() == n2.getEndLine() && n1.getEndColumn() < n2.getEndColumn());
         boolean isNotSameClass = node.getFirstParentOfType(ASTClassOrInterfaceBody.class) != n2
                 .getFirstParentOfType(ASTClassOrInterfaceBody.class);
-        boolean isNodeWithinNode2 = (node.getEndLine() < n2.getEndLine()
-                || node.getEndLine() == n2.getEndLine() && node.getEndColumn() < n2.getEndColumn());
+        boolean isNodeWithinNode2 = node.getEndLine() < n2.getEndLine()
+                || node.getEndLine() == n2.getEndLine() && node.getEndColumn() < n2.getEndColumn();
         return isNotWithinNode2 || isNotSameClass || isNodeWithinNode2;
     }
 

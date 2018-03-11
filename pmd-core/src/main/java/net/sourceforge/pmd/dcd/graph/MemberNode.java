@@ -24,8 +24,6 @@ public abstract class MemberNode<S extends MemberNode<S, T>, T extends Member>
 
     private List<MemberNode> users;
 
-    private Object decoration;
-
     public MemberNode(ClassNode classNode, String name, String desc) {
         this.classNode = classNode;
         this.name = name;
@@ -89,6 +87,7 @@ public abstract class MemberNode<S extends MemberNode<S, T>, T extends Member>
     }
 
     @SuppressWarnings("PMD.SuspiciousEqualsMethodName")
+    @Deprecated // To be removed with PMD 7.0.0
     public boolean equals(S that) {
         return equals(that.name, that.desc);
     }

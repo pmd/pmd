@@ -63,6 +63,7 @@ public class ResourceLoader {
                 return new FileInputStream(file);
             } catch (final FileNotFoundException e) {
                 // if the file didn't exist, we wouldn't be here
+                throw new RuntimeException(e); // somehow the file vanished between checking for existence and opening
             }
         }
 
@@ -76,7 +77,7 @@ public class ResourceLoader {
             try {
                 return loadClassPathResourceAsStream(name);
             } catch (final IOException ignored) {
-                // We will throw out own exception, with a different message
+                // We will throw our own exception, with a different message
             }
         }
         

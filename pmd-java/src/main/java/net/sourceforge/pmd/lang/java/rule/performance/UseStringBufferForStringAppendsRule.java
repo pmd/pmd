@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
+import java.util.Objects;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
@@ -48,8 +50,9 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
             ASTConditionalExpression conditional = name.getFirstParentOfType(ASTConditionalExpression.class);
 
             if (conditional != null) {
-                Node thirdParent = name.jjtGetParent().jjtGetParent().jjtGetParent();
-                if ((thirdParent == conditional || thirdParent.jjtGetParent() == conditional)
+                Node thirdParent = name.getNthParent(3);
+                Node fourthParent = name.getNthParent(4);
+                if ((Objects.equals(thirdParent, conditional) || Objects.equals(fourthParent, conditional))
                         && conditional.getFirstParentOfType(ASTStatementExpression.class) == statement) {
                     // is used in ternary as only option (not appended to other
                     // string)

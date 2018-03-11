@@ -74,7 +74,9 @@ public class TypeSet {
                     try {
                         String importPkg = importStmt.substring(0, importStmt.indexOf('*') - 1);
                         return Class.forName(importPkg + '.' + name);
-                    } catch (ClassNotFoundException cnfe) {
+                    } catch (ClassNotFoundException ignored) {
+                        // Ignored, we'll throw a custom exception later, after all import possibilities have
+                        // been checked
                     }
                 }
             }
@@ -150,7 +152,8 @@ public class TypeSet {
         for (Resolver resolver : resolvers) {
             try {
                 return resolver.resolve(name);
-            } catch (ClassNotFoundException cnfe) {
+            } catch (ClassNotFoundException ignored) {
+                // Ignored, maybe another resolver might find the class
             }
         }
 

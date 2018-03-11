@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.xpath;
 
-public class PMDFunctions {
+public final class PMDFunctions {
     private PMDFunctions() { }
 
     public static boolean matches(String s, String pattern1) {

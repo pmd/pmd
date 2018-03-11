@@ -73,6 +73,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     @FXML
     private ListView<Node> xpathResultListView;
     // Actually a child of the main view toolbar, but this controller is responsible for it
+    @SuppressWarnings("PMD.SingularField")
     private ChoiceBox<String> xpathVersionChoiceBox;
 
 

@@ -515,7 +515,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <execution>
                         <phase>verify</phase>
                         <goals>
-                            <goal>pmd</goal>
+                            <goal>check</goal>
                             <goal>cpd</goal>
                         </goals>
                     </execution>
@@ -524,24 +524,33 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <minimumTokens>100</minimumTokens>
                     <targetJdk>1.${java.version}</targetJdk>
                     <rulesets>
-                        <ruleset>${pmd.dogfood.ruleset}</ruleset>
+                        <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
                     </rulesets>
                     <excludeRoots>
                         <excludeRoot>target/generated-sources/javacc</excludeRoot>
+                        <excludeRoot>target/generated-sources/antlr4</excludeRoot>
                     </excludeRoots>
                     <skipPmdError>false</skipPmdError>
+                    <failOnViolation>true</failOnViolation>
+                    <printFailingErrors>true</printFailingErrors>
                 </configuration>
                 <dependencies>
                     <!-- Note: we can't use a property for the version here due to https://issues.apache.org/jira/browse/MRELEASE-932 -->
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
                         <artifactId>pmd-core</artifactId>
-                        <version>6.0.1</version>
+                        <version>6.1.0</version>
                     </dependency>
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
                         <artifactId>pmd-java</artifactId>
-                        <version>6.0.1</version>
+                        <version>6.1.0</version>
+                    </dependency>
+                    <!-- This contains the dogfood ruleset -->
+                    <dependency>
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-build-tools-config</artifactId>
+                        <version>1.1.0-SNAPSHOT</version>
                     </dependency>
                 </dependencies>
             </plugin>
