@@ -78,11 +78,15 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
 
 ### API Changes
 
-* A new CLI switch, `-no-cache`, disables incremental analysis and the related suggestion. This overrides the
-`-cache` option. The corresponding Ant task parameter is `noCache`.
+*    A new CLI switch, `-no-cache`, disables incremental analysis and the related suggestion. This overrides the
+    `-cache` option. The corresponding Ant task parameter is `noCache`.
 
-* The static method `PMDParameters.transformParametersIntoConfiguration(PMDParameters)` is now deprecated,
-  for removal in 7.0.0. The new instance method `PMDParameters.toConfiguration()` replaces it.
+*   The static method `PMDParameters.transformParametersIntoConfiguration(PMDParameters)` is now deprecated,
+    for removal in 7.0.0. The new instance method `PMDParameters.toConfiguration()` replaces it.
+
+*   The method `ASTConstructorDeclaration.getParameters()` has been deprecated in favor of the new method
+    `getFormalParameters()`. This method is available for both `ASTConstructorDeclaration` and
+    `ASTMethodDeclaration`.
 
 ### External Contributions
 

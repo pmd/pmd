@@ -19,10 +19,12 @@ public interface ASTMethodOrConstructorDeclaration extends
     @Override
     JavaOperationSignature getSignature();
 
-
-    /**
-     * Returns the formal parameters node of this method or constructor.
-     */
-    ASTFormalParameters getFormalParameters();
+    //
+    // Enable this with PMD 7.0.0
+    //
+    ///**
+    // * Returns the formal parameters node of this method or constructor.
+    // */
+    //ASTFormalParameters getFormalParameters();
 
 }
