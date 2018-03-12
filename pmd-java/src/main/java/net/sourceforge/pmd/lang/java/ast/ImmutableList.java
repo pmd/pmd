@@ -315,7 +315,7 @@ public interface ImmutableList<E> extends Iterable<E> {
              * You should not use that, use {@link #emptyList()}.
              */
             Nil() {
-
+                // There should only be one instance of that
             }
 
             @Override

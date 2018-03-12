@@ -41,7 +41,7 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
             // stops the visit when stumbling on a lambda or class decl
             @Override
             public Object visit(JavaNode localNode, Object data) {
-                return localNode.isFindBoundary() && localNode != node ? data : super.visit(localNode, data); // TODO generalize that to other metrics
+                return localNode.isFindBoundary() && !localNode.equals(node) ? data : super.visit(localNode, data); // TODO generalize that to other metrics
             }
         };
 

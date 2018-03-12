@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.MethodLikeNode.MethodLikeKind;
  * @author Clément Fournier
  * @since 6.1.0
  */
-public class QualifiedNameFactory {
+public final class QualifiedNameFactory {
 
     /** Operation part of a lambda. */
     private static final String LAMBDA_PATTERN = "lambda\\$(\\w++)?\\$\\d++";
@@ -86,7 +86,6 @@ public class QualifiedNameFactory {
     private static final int PACKAGES_GROUP_INDEX = 1;
     private static final int CLASSES_GROUP_INDEX = 3;
     private static final int OPERATION_GROUP_INDEX = 7;
-    private static final int PARAMETERS_GROUP_INDEX = 9;
     // TODO we need a visitor to remove this mess
 
     // maps class names to the names of their local classes, to the count of local classes with the same name
