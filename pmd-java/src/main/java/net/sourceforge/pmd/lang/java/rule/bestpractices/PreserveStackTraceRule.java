@@ -141,7 +141,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
         boolean match = false;
         if (target != null && baseNode != null) {
             List<ASTName> nameNodes = new ArrayList<>();
-           baseNode.findDescendantsOfType(ASTName.class, nameNodes, true);
+            baseNode.findDescendantsOfType(ASTName.class, nameNodes, true);
             for (ASTName nameNode : nameNodes) {
                 if (target.equals(nameNode.getImage())) {
                     boolean isPartOfStringConcatenation = isStringConcat(nameNode, baseNode);
