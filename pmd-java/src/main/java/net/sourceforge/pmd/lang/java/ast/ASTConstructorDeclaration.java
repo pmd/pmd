@@ -54,7 +54,11 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
         return signature;
     }
 
-    @Deprecated // to be removed with PMD 7.0.0 - use getFormalParameters() instead
+
+    /**
+     * @deprecated to be removed with PMD 7.0.0 - use getFormalParameters() instead
+     */
+    @Deprecated
     public ASTFormalParameters getParameters() {
         return getFormalParameters();
     }
