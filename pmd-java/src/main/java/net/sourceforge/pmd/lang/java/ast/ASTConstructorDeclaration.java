@@ -24,15 +24,6 @@ public class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclar
         return MethodLikeKind.CONSTRUCTOR;
     }
 
-
-    public ASTFormalParameters getParameters() {
-        return (ASTFormalParameters) (jjtGetChild(0) instanceof ASTFormalParameters ? jjtGetChild(0) : jjtGetChild(1));
-    }
-
-    public int getParameterCount() {
-        return getParameters().getParameterCount();
-    }
-
     /**
      * Accept the visitor. *
      */
@@ -49,7 +40,19 @@ public class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclar
         this.containsComment = true;
     }
 
-    @Override
+    /**
+     * @deprecated to be removed with PMD 7.0.0 - use getFormalParameters() instead
+     */
+    @Deprecated
+    public ASTFormalParameters getParameters() {
+        return getFormalParameters();
+    }
+
+    public int getParameterCount() {
+        return getFormalParameters().getParameterCount();
+    }
+
+    //@Override // enable this with PMD 7.0.0 - see interface ASTMethodOrConstructorDeclaration
     public ASTFormalParameters getFormalParameters() {
         return getFirstChildOfType(ASTFormalParameters.class);
     }
