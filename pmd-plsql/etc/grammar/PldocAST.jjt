@@ -229,6 +229,10 @@ ASTSqlPlusCommand SqlPlusCommand() :
   // e.g. SHOW ERRORS, GRANT EXECUTE ON ... TO ...
   // SQLPLUS commands
   ( "@" 
+  | "&"
+  | "["
+  | "]"
+  | "\\"
   | <ACCEPT>
   | <COLUMN>
   | <CONNECT>

@@ -104,7 +104,13 @@ public class CPD {
         }
 
         SourceCode sourceCode = configuration.sourceCodeFor(file);
-        add(sourceCode);
+        try {
+            add(sourceCode);
+        } catch (Exception e) {
+
+            System.err.println("Error while processing file " + file.getAbsolutePath());
+            throw e;
+        }
     }
 
     public void add(DBURI dburi) throws IOException {
