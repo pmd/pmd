@@ -20,7 +20,8 @@ public class PLSQLLanguage extends AbstractLanguage {
                 ".pls", ".plh", ".plb", // Packages
                 ".pck", ".pks", ".pkh", ".pkb", // Packages
                 ".typ", ".tyb", // Object Types
-                ".tps", ".tpb" // Object Types
+                ".tps", ".tpb", // Object Types
+                ".spc", ".bdy" // Packages
         );
     }
 
