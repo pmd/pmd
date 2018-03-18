@@ -1402,7 +1402,7 @@ import static Yoko; // Too much !
 
 
     <rule name="UnnecessaryAnnotationValueElement"
-          since="6.2"
+          since="6.2.0"
           message="Avoid the use of value in annotations when it's the only element"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryAnnotationValueElementRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryannotationvalueelement">
