@@ -1433,7 +1433,7 @@ import static Yoko; // Too much !
 
 ## UnnecessaryAnnotationValueElement
 
-**Since:** PMD 6.2
+**Since:** PMD 6.2.0
 
 **Priority:** Medium (3)
 
