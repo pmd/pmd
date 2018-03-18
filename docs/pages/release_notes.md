@@ -35,7 +35,7 @@ Both are bugfixing releases.
 
 ### Disable Incremental Analysis
 
-Some time ago, we added support for [Incremental Analhysis](pmd_userdocs_getting_started.html). On PMD 6.0.0, we
+Some time ago, we added support for [Incremental Analysis](pmd_userdocs_getting_started.html). On PMD 6.0.0, we
 started to add warns when not using it, as we strongly believe it's a great improvement to our user's experience as
 analysis time is greatly reduced; and in the future we plan to have it enabled by default. However, we realize some
 scenarios don't benefit from it (ie: CI jobs), and having the warning logged can be noisy and cause confusion.
@@ -50,6 +50,10 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
 *   The new Java rule `MissingOverride` (category `bestpractices`) detects overridden and implemented methods,
     which are not marked with the `@Override` annotation. Annotating overridden methods with `@Override` ensures
     at compile time that the method really overrides one, which helps refactoring and clarifies intent.
+
+*   The new Java rule `UnnecessaryAnnotationValueElement` (category `codestyle`) detects annotations with a single
+    element (`value`) that explicitely names it. That is, doing `@SuppressWarnings(value = "unchecked")` would be
+    flagged in favor of `@SuppressWarnings("unchecked")`.
 
 #### Modified Rules
 
@@ -72,6 +76,8 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
 *   java-bestpracrtices
     *   [#907](https://github.com/pmd/pmd/issues/907): \[java] UnusedPrivateField false-positive with @FXML
     *   [#963](https://github.com/pmd/pmd/issues/965): \[java] ArrayIsStoredDirectly not triggered from variadic functions
+*   java-codestyle
+    *   [#983](https://github.com/pmd/pmd/issues/983): \[java] Detect annotations with single value element
 *   java-design
     *   [#839](https://github.com/pmd/pmd/issues/839): \[java] SignatureDeclareThrowsException's IgnoreJUnitCompletely property not honored for constructors
     *   [#968](https://github.com/pmd/pmd/issues/968): \[java] UseUtilityClassRule reports false positive with lombok NoArgsConstructor
@@ -98,4 +104,5 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
 * [#967](https://github.com/pmd/pmd/pull/967): \[doc] Issue 959: fixed broken link to XPath Rule Tutorial - [Andrey Mochalov](https://github.com/epidemia)
 * [#969](https://github.com/pmd/pmd/pull/969): \[java] Issue 968 Add logic to handle lombok private constructors with utility classes - [Kirk Clemens](https://github.com/clem0110)
 * [#970](https://github.com/pmd/pmd/pull/970): \[java] Fixed inefficient use of keySet iterator instead of entrySet iterator - [Andrey Mochalov](https://github.com/epidemia)
+* [#984](https://github.com/pmd/pmd/pull/984): \[java] issue983 Add new UnnecessaryAnnotationValueElement rule - [Kirk Clemens](https://github.com/clem0110)
 
