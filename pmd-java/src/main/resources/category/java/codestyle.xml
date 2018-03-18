@@ -1400,6 +1400,51 @@ import static Yoko; // Too much !
         </example>
     </rule>
 
+
+    <rule name="UnnecessaryAnnotationValueElement"
+          since="6.2"
+          message="Avoid the use of value in annotations when it's the only element"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryAnnotationValueElementRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryannotationvalueelement">
+        <description>
+            Avoid the use of value in annotations when it's the only element.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+@TestClassAnnotation(value = "TEST")
+public class Foo {
+
+    @TestMemberAnnotation(value = "TEST")
+    private String y;
+
+    @TestMethodAnnotation(value = "TEST")
+    public void bar() {
+        int x = 42;
+        return;
+    }
+}
+
+// should be
+
+@TestClassAnnotation("TEST")
+public class Foo {
+
+    @TestMemberAnnotation("TEST")
+    private String y;
+
+    @TestMethodAnnotation("TEST")
+    public void bar() {
+        int x = 42;
+        return;
+    }
+}
+
+]]>
+        </example>
+    </rule>
+
+
     <rule name="UnnecessaryConstructor"
           language="java"
           since="1.0"
