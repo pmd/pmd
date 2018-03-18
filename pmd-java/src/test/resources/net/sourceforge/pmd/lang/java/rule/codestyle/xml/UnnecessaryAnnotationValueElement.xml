@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Single Value Element in Class Annotation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@TestClassAnnotation(value = "TEST")
+public class Foo {
+
+    private String y;
+
+    public void bar() {
+        int x = 42;
+        return;
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Single Value Element in Member Annotation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+    @TestMemberAnnotation(value = "TEST")
+    private String y;
+
+    public void bar() {
+        int x = 42;
+        return;
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Single Value Element in Method Annotation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+    private String y;
+
+    @TestMethodAnnotation(value = "TEST")
+    public void bar() {
+        int x = 42;
+        return;
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Two Elements in Method Annotation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+
+    private String y;
+
+    @TestMethodAnnotation(value = "TEST", other = "TEST1")
+    public void bar() {
+        int x = 42;
+        return;
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Single Element in Method Annotation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+    private String y;
+
+    @TestMethodAnnotation("TEST")
+    public void bar() {
+        int x = 42;
+        return;
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Single non Value Element in Method Annotation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+    private String y;
+
+    @TestMethodAnnotation(other = "TEST")
+    public void bar() {
+        int x = 42;
+        return;
+    }
+}
+     ]]></code>
+    </test-code>
+</test-data>
