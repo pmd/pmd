@@ -16,6 +16,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  */
 public class UnnecessaryAnnotationValueElementRule extends AbstractJavaRule {
 
+    public UnnecessaryAnnotationValueElementRule() {
+        addRuleChainVisit(ASTAnnotation.class);
+    }
+
     @Override
     public Object visit(ASTAnnotation node, Object data) {
 
@@ -25,6 +29,7 @@ public class UnnecessaryAnnotationValueElementRule extends AbstractJavaRule {
         if (annotationProperties.size() == 1 && "value".equals(annotationProperties.get(0).getImage())) {
             addViolation(data, node);
         }
-        return super.visit(node, data);
+
+        return data;
     }
 }
