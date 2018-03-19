@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>While, no braces</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    while (true)
+                        x++;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While, no braces, allowed</description>
+        <rule-property name="checkWhileStmt">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    while (true)
+                        x++;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While, with braces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    while (true) {
+                        x++;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Empty while</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    while (true)
+                        ;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Empty while, allowed</description>
+        <rule-property name="allowEmptyLoop">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    while (true)
+                        ;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>For, no braces</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    for (; ; )
+                        x++;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>For, no braces, allowed</description>
+        <rule-property name="checkForStmt">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    for (; ; )
+                        x++;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>For, with braces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    for (; ; ) {
+                        x++;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Empty for</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    for (; ; )
+                        ;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Empty while, allowed</description>
+        <rule-property name="allowEmptyLoop">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    for (; ; )
+                        ;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>If else, no braces</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    if (true)
+                        x++;
+                    else
+                        x--;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>If else, no braces, allowed</description>
+        <rule-property name="checkIfElseStmt">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    if (true)
+                        x++;
+                    else
+                        x--;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>If else, braces on if</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    if (true) {
+                        x++;
+                    } else
+                        x--;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>If else, braces on else</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    if (true)
+                        x++;
+                     else {
+                        x--;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>If chain, partial braces</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,10</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    if (true)
+                        x++; // here
+                     else if (false) {
+                        x--;
+                    } else
+
+                        ; // and here
+                }
+            }
+            ]]></code>
+    </test-code>
+
+</test-data>
