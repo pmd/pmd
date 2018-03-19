@@ -14,9 +14,9 @@ This is a bug fixing release.
 
 *   [New and noteworthy](#new-and-noteworthy)
 *   [Fixed Issues](#fixed-issues)
-    *   [Ecmascript (JavaScript)](#ecmascript-javascript)
+    *   [Rhino library updated](#rhino-library-updated)
     *   [Tree transversal revision](#tree-transversal-revision)
-    *   [Disable Incremental Analysis](#disable-incremental-analysis)
+    *   [Allow to Disable Incremental Analysis](#allow-to-disable-incremental-analysis)
     *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
 *   [API Changes](#api-changes)
@@ -46,10 +46,10 @@ This change implies several false positives / unexpected results (ie: `ASTBlockS
 have been fixed; and lots of searches are now restricted to smaller search areas, which improves performance (depending on the project,
 we have measured up to 10% improvements during Type Resolution, Symbol Table analysis, and some rule's application).
 
-### Disable Incremental Analysis
+### Allow to disable Incremental Analysis
 
 Some time ago, we added support for [Incremental Analhysis](pmd_userdocs_getting_started.html). On PMD 6.0.0, we
-started to add warns when not using it, as we strongly believe it's a great improvement to our user's experience as
+started to add warnings when not using it, as we strongly believe it's a great improvement to our user's experience as
 analysis time is greatly reduced; and in the future we plan to have it enabled by default. However, we realize some
 scenarios don't benefit from it (ie: CI jobs), and having the warning logged can be noisy and cause confusion.
 
@@ -57,6 +57,9 @@ To this end, we have added a new flag to allow you to explicitly disable increme
 the new `-no-cache` flag. On Ant, there is a `noCache` attribute for the `<pmd>` task.
 
 On both scenarios, disabling the cache takes precedence over setting a cache location.
+
+The only difference between using this flag and not setting up cache is the absence of the warning for the time being,
+once we enable Incremental Analysis by default, this will effectively disable it.
 
 #### New Rules
 
