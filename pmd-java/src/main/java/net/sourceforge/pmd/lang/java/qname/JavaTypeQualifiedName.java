@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.qname;
 
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 
@@ -138,7 +139,7 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
      *
      * @return The packages.
      */
-    public ImmutableList<String> getPackageList() {
+    public List<String> getPackageList() {
         return packages.reverse();
     }
 
@@ -154,7 +155,7 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
      *
      * @return The class names.
      */
-    public ImmutableList<String> getClassList() {
+    public List<String> getClassList() {
         return classes.reverse();
     }
 

@@ -6,13 +6,13 @@ package net.sourceforge.pmd.lang.java.multifile;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.qname.ImmutableList;
-import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
-import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
 
 /**
@@ -64,7 +64,7 @@ final class PackageStats implements ProjectMirror {
             return null;
         }
 
-        String topClassName = qname.getClassList().head();
+        String topClassName = qname.getClassList().get(0);
         if (createIfNotFound && container.classes.get(topClassName) == null) {
             container.classes.put(topClassName, new ClassStats());
         }
@@ -75,9 +75,12 @@ final class PackageStats implements ProjectMirror {
             return null;
         }
 
-        ImmutableList<String> nameClasses = qname.getClassList();
+        Iterator<String> it = qname.getClassList().iterator();
+        if (it.hasNext()) {
+            it.next();
+        }
 
-        for (Iterator<String> it = nameClasses.tail().iterator(); it.hasNext() && next != null;) {
+        while (it.hasNext() && next != null) {
             // Delegate search for nested classes to ClassStats
             next = next.getNestedClassStats(it.next(), createIfNotFound);
         }
@@ -100,7 +103,7 @@ final class PackageStats implements ProjectMirror {
             return this; // the toplevel
         }
 
-        ImmutableList<String> packagePath = qname.getPackageList();
+        List<String> packagePath = qname.getPackageList();
         PackageStats next = this;
 
         for (Iterator<String> it = packagePath.iterator(); it.hasNext() && next != null;) {

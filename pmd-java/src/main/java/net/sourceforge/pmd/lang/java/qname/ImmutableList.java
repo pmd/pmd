@@ -7,9 +7,11 @@ package net.sourceforge.pmd.lang.java.qname;
 import java.lang.ref.SoftReference;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -35,7 +37,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
  * @author Clément Fournier
  * @since 6.1.0
  */
-public interface ImmutableList<E> extends Iterable<E> {
+interface ImmutableList<E> extends List<E> {
     /**
      * Adds an element at the beginning of this list.
      *
@@ -122,16 +124,6 @@ public interface ImmutableList<E> extends Iterable<E> {
      * @return A list with the same elements as this list
      */
     List<E> toList();
-
-
-    /**
-     * Returns whether this list contains the given item.
-     *
-     * @param item Item to look for
-     *
-     * @return True if this list contains the item
-     */
-    boolean contains(E item);
 
 
     /**
@@ -289,8 +281,96 @@ public interface ImmutableList<E> extends Iterable<E> {
         private abstract static class AbstractImmutableList<E> implements ImmutableList<E> {
 
             @Override
+            public boolean add(E e) {
+                throw new UnsupportedOperationException();
+            }
+
+
+            @Override
+            public boolean addAll(Collection<? extends E> c) {
+                throw new UnsupportedOperationException();
+            }
+
+
+            @Override
+            public boolean addAll(int index, Collection<? extends E> c) {
+                throw new UnsupportedOperationException();
+            }
+
+
+            @Override
+            public void add(int index, E element) {
+                throw new UnsupportedOperationException();
+            }
+
+
+            @Override
+            public boolean remove(Object o) {
+                throw new UnsupportedOperationException();
+            }
+
+
+            @Override
+            public boolean removeAll(Collection<?> c) {
+                throw new UnsupportedOperationException();
+            }
+
+
+            @Override
+            public E remove(int index) {
+                throw new UnsupportedOperationException();
+            }
+
+
+            @Override
+            public boolean retainAll(Collection<?> c) {
+                throw new UnsupportedOperationException();
+            }
+
+
+            @Override
+            public void clear() {
+                throw new UnsupportedOperationException();
+            }
+
+
+            @Override
+            public ListIterator<E> listIterator() {
+                throw new UnsupportedOperationException();
+            }
+
+
+            @Override
+            public ListIterator<E> listIterator(int index) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public <T> T[] toArray(T[] a) {
+                return toList().toArray(a);
+            }
+
+
+            @Override
+            public Object[] toArray() {
+                return toList().toArray();
+            }
+
+            @Override
             public final AbstractImmutableList<E> prepend(E elem) {
                 return new ListNode<>(elem, this);
+            }
+
+
+            @Override
+            public E set(int index, E element) {
+                throw new UnsupportedOperationException();
+            }
+
+
+            @Override
+            public List<E> subList(int fromIndex, int toIndex) {
+                throw new UnsupportedOperationException();
             }
 
 
@@ -363,8 +443,26 @@ public interface ImmutableList<E> extends Iterable<E> {
 
 
             @Override
-            public boolean contains(E item) {
+            public boolean contains(Object item) {
                 return false;
+            }
+
+
+            @Override
+            public boolean containsAll(Collection<?> c) {
+                return false;
+            }
+
+
+            @Override
+            public int indexOf(Object o) {
+                return -1;
+            }
+
+
+            @Override
+            public int lastIndexOf(Object o) {
+                return -1;
             }
 
 
@@ -471,8 +569,39 @@ public interface ImmutableList<E> extends Iterable<E> {
 
 
             @Override
-            public boolean contains(E o) {
+            public boolean contains(Object o) {
                 return Objects.equals(head(), o) || tail.contains(o);
+            }
+
+
+            @Override
+            public boolean containsAll(Collection<?> c) {
+                for (Object o : c) {
+                    if (!contains(o)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+
+            @Override
+            public int indexOf(Object o) {
+                int i = 0;
+                for (E e : this) {
+                    if (Objects.equals(e, o)) {
+                        return i;
+                    }
+                    i++;
+                }
+                return -1;
+            }
+
+
+            @Override
+            public int lastIndexOf(Object o) {
+                int i = reverse().indexOf(o);
+                return i < 0 ? i : size() - i - 1;
             }
 
 

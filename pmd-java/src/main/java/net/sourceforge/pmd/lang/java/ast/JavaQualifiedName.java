@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.lang.reflect.Array;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.QualifiedName;
-import net.sourceforge.pmd.lang.java.qname.ImmutableList;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
@@ -94,34 +92,6 @@ public abstract class JavaQualifiedName implements QualifiedName {
         return null; // overridden by JOperationQName
     }
 
-
-    /**
-     * Puts the reversed list into the given array, if possible, otherwise returns a new
-     * array with the same elements as this list in reversed order.
-     *
-     * <p>This method is only here to provide backwards compatibility to {@link #getPackages()}
-     * and {@link #getClasses()}. It should be removed with 7.0.0
-     *
-     * @param lst List
-     * @param arr Array
-     * @param <T> Type of the elements
-     *
-     * @return an array of the specified type
-     */
-    private static <T> T[] reversedToArray(ImmutableList<T> lst, T[] arr) {
-        @SuppressWarnings("unchecked")
-        T[] resultArr = arr.length == lst.size()
-                ? arr
-                : (T[]) Array.newInstance(arr.getClass().getComponentType(), lst.size());
-
-        int i = arr.length;
-        for (T elem : lst) {
-            resultArr[--i] = elem;
-        }
-        return resultArr;
-    }
-
-
     /**
      * Returns the packages in order.
      *
@@ -129,8 +99,7 @@ public abstract class JavaQualifiedName implements QualifiedName {
      */
     @Deprecated
     public String[] getPackages() {
-        ImmutableList<String> packages = getClassName().getPackageList();
-        return reversedToArray(packages, new String[packages.size()]);
+        return getClassName().getPackageList().toArray(new String[0]);
     }
 
 
@@ -141,8 +110,7 @@ public abstract class JavaQualifiedName implements QualifiedName {
      */
     @Deprecated
     public String[] getClasses() {
-        ImmutableList<String> classes = getClassName().getClassList();
-        return reversedToArray(classes, new String[classes.size()]);
+        return getClassName().getClassList().toArray(new String[0]);
     }
 
     @Override
