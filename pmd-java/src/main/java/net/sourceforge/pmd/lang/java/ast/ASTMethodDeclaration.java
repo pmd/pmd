@@ -9,7 +9,6 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
-import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 
 
 /**
@@ -20,10 +19,7 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
  * </pre>
  *
  */
-public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAGraphMethod, ASTMethodOrConstructorDeclaration {
-
-    private JavaQualifiedName qualifiedName;
-    private JavaOperationSignature signature;
+public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration implements DFAGraphMethod {
 
 
     public ASTMethodDeclaration(int id) {
@@ -152,23 +148,9 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
 
 
     @Override
-    public JavaQualifiedName getQualifiedName() {
-        if (qualifiedName == null) {
-            qualifiedName = JavaQualifiedName.ofOperation(this);
-        }
-        return qualifiedName;
+    public MethodLikeKind getKind() {
+        return MethodLikeKind.METHOD;
     }
-
-
-    @Override
-    public JavaOperationSignature getSignature() {
-        if (signature == null) {
-            signature = JavaOperationSignature.buildFor(this);
-        }
-
-        return signature;
-    }
-
 
     //@Override // enable this with PMD 7.0.0 - see interface ASTMethodOrConstructorDeclaration
     public ASTFormalParameters getFormalParameters() {

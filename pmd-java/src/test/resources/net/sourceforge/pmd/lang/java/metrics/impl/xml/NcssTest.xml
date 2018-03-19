@@ -157,7 +157,7 @@
         <description>Empty method</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#foo()' has value 1.</message>
+            <message>'Foo#foo()' has value 1.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -175,7 +175,7 @@
         <rule-property name="reportClasses">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo' has value 1 highest 0.</message>
+            <message>'Foo' has value 1 highest 0.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -189,7 +189,7 @@
         <description>Switch</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#foo()' has value 11.</message>
+            <message>'Foo#foo()' has value 11.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -213,7 +213,7 @@
         <description>Multiple local variable declarations</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#foo()' has value 2.</message>
+            <message>'Foo#foo()' has value 2.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -230,7 +230,7 @@
         <description>First catch is not counted</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#foo()' has value 3.</message>
+            <message>'Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -250,7 +250,7 @@
         <description>Empty statements are not counted</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Boo#foo()' has value 2.</message>
+            <message>'Boo#foo()' has value 2.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -270,7 +270,7 @@
         <description>Blocks are not counted</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Boo#foo()' has value 3.</message>
+            <message>'Boo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -292,7 +292,7 @@
         <description>For initialisations are not counted</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Hoo#foo()' has value 3.</message>
+            <message>'Hoo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -317,8 +317,8 @@
         <rule-property name="reportMethods">false</rule-property>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'.Boo' has value 8 highest 2.</message>
-            <message>'.Boo$Barnabee' has value 5 highest 2.</message>
+            <message>'Boo' has value 8 highest 2.</message>
+            <message>'Boo$Barnabee' has value 5 highest 2.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -346,8 +346,8 @@
         <rule-property name="reportMethods">false</rule-property>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'.Boo' has value 8 highest 2.</message>
-            <message>'.Boo$Barnabee' has value 5 highest 2.</message>
+            <message>'Boo' has value 8 highest 2.</message>
+            <message>'Boo$Barnabee' has value 5 highest 2.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -375,7 +375,7 @@
         <rule-property name="reportMethods">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Shoo' has value 1 highest 0.</message>
+            <message>'Shoo' has value 1 highest 0.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -392,7 +392,7 @@
         <rule-property name="reportMethods">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Moo' has value 1 highest 0.</message>
+            <message>'Moo' has value 1 highest 0.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -406,7 +406,7 @@
         <description>Abstract methods are counted</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Koo#bar()' has value 1.</message>
+            <message>'Koo#bar()' has value 1.</message>
         </expected-messages>
         <code>
             <![CDATA[

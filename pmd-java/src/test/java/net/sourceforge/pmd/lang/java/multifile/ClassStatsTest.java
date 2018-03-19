@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
+import net.sourceforge.pmd.lang.java.ast.QualifiedNameFactory;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;
@@ -37,7 +37,7 @@ public class ClassStatsTest {
 
         final ProjectMirror toplevel = PackageStats.INSTANCE;
 
-        final ClassMirror classMirror = toplevel.getClassMirror(JavaQualifiedName.ofClass(SignatureCountTestData.class));
+        final ClassMirror classMirror = toplevel.getClassMirror(QualifiedNameFactory.ofClass(SignatureCountTestData.class));
 
         final FluentOperationSigMask opSigMask = new FluentOperationSigMask();
 

@@ -6,12 +6,13 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+
 /**
- * Groups enums, classes and interface declarations.
+ * Groups enum, class, annotation and interface declarations.
  *
  * @author Clément Fournier
  */
-public interface ASTAnyTypeDeclaration extends JavaQualifiableNode, AccessNode, JavaNode {
+public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, AccessNode, JavaNode {
 
     /**
      * Finds the type kind of this declaration.
@@ -28,6 +29,11 @@ public interface ASTAnyTypeDeclaration extends JavaQualifiableNode, AccessNode, 
      */
     List<ASTAnyTypeBodyDeclaration> getDeclarations();
 
+
+    /**
+     * Returns true if this type declaration is nested inside an interface, class or annotation.
+     */
+    boolean isNested();
 
     /**
      * The kind of type this node declares.

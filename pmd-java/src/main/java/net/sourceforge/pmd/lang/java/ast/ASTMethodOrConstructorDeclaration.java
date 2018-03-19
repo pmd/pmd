@@ -7,15 +7,15 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 
-/**
- * @author Clément Fournier
- */
-public interface ASTMethodOrConstructorDeclaration extends
-                                                   SignedNode<ASTMethodOrConstructorDeclaration>,
-                                                   JavaQualifiableNode,
-                                                   AccessNode,
-                                                   JavaNode {
 
+/**
+ * Groups method and constructor declarations under a common type.
+ *
+ * @author Clément Fournier
+ * @see MethodLikeNode
+ * @since 5.8.1
+ */
+public interface ASTMethodOrConstructorDeclaration extends MethodLikeNode, SignedNode<ASTMethodOrConstructorDeclaration> {
     @Override
     JavaOperationSignature getSignature();
 

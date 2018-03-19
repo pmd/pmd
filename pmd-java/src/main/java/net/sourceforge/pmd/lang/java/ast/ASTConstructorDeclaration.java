@@ -5,13 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 
-public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements ASTMethodOrConstructorDeclaration {
+public class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration {
 
     private boolean containsComment;
-    private JavaQualifiedName qualifiedName;
-    private JavaOperationSignature signature;
 
     public ASTConstructorDeclaration(int id) {
         super(id);
@@ -19,6 +16,12 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
 
     public ASTConstructorDeclaration(JavaParser p, int id) {
         super(p, id);
+    }
+
+
+    @Override
+    public MethodLikeKind getKind() {
+        return MethodLikeKind.CONSTRUCTOR;
     }
 
     /**
@@ -36,24 +39,6 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
     public void setContainsComment() {
         this.containsComment = true;
     }
-
-    @Override
-    public JavaQualifiedName getQualifiedName() {
-        if (qualifiedName == null) {
-            qualifiedName = JavaQualifiedName.ofOperation(this);
-        }
-        return qualifiedName;
-    }
-
-    @Override
-    public JavaOperationSignature getSignature() {
-        if (signature == null) {
-            signature = JavaOperationSignature.buildFor(this);
-        }
-
-        return signature;
-    }
-
 
     /**
      * @deprecated to be removed with PMD 7.0.0 - use getFormalParameters() instead
