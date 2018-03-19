@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+
 
 /**
  * Groups enum, class, annotation and interface declarations.

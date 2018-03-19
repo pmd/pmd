@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
+
+
 public abstract class AbstractMethodLikeNode extends AbstractJavaAccessNode implements MethodLikeNode {
     private JavaOperationQualifiedName qualifiedName;
 
@@ -18,7 +21,7 @@ public abstract class AbstractMethodLikeNode extends AbstractJavaAccessNode impl
     }
 
 
-    void setQualifiedName(JavaOperationQualifiedName qualifiedName) {
+    public void setQualifiedName(JavaOperationQualifiedName qualifiedName) {
         this.qualifiedName = qualifiedName;
     }
 

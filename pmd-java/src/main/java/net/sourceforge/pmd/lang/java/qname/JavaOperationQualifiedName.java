@@ -2,9 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.ast;
+package net.sourceforge.pmd.lang.java.qname;
 
 import java.util.Objects;
+
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 
 
 /**

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.ast;
+package net.sourceforge.pmd.lang.java.qname;
 
 import java.lang.ref.SoftReference;
 import java.util.AbstractMap.SimpleImmutableEntry;
@@ -14,6 +14,8 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 
 
 /**
@@ -137,7 +139,7 @@ public interface ImmutableList<E> extends Iterable<E> {
      * Since we do not offer a general-purpose implementation, these
      * factories are package private.
      */
-    class ListFactory {
+    final class ListFactory {
         /** Empty list instance. */
         private static final Nil<?> NIL = new Nil<>();
 

@@ -2,13 +2,14 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.ast;
+package net.sourceforge.pmd.lang.java.qname;
 
 import java.util.Map.Entry;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 

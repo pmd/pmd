@@ -17,6 +17,9 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.ParserTstUtil;
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 
 
 /**

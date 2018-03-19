@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.ast.ImmutableList;
-import net.sourceforge.pmd.lang.java.ast.JavaOperationQualifiedName;
-import net.sourceforge.pmd.lang.java.ast.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.ImmutableList;
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 

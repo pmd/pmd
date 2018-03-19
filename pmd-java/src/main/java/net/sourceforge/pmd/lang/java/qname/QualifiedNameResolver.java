@@ -2,9 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.ast;
+package net.sourceforge.pmd.lang.java.qname;
 
-import static net.sourceforge.pmd.lang.java.ast.JavaTypeQualifiedName.NOTLOCAL_PLACEHOLDER;
+import static net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName.NOTLOCAL_PLACEHOLDER;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,24 @@ import java.util.Stack;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ImmutableList.ListFactory;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiableNode;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
+import net.sourceforge.pmd.lang.java.qname.ImmutableList.ListFactory;
 
 
 /**

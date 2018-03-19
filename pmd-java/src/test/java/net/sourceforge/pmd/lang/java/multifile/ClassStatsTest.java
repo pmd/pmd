@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.ast.QualifiedNameFactory;
+import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;

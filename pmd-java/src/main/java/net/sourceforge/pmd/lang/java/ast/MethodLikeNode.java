@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
+
+
 /**
  * Groups method, constructor and lambda declarations under a common type.
  *

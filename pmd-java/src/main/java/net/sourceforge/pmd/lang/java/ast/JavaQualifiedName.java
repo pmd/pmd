@@ -8,6 +8,10 @@ import java.lang.reflect.Array;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.qname.ImmutableList;
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 
 
 /**
