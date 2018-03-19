@@ -6,14 +6,12 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode.MethodLikeKind;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
@@ -126,7 +124,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
             if (classWmc >= classReportLevel) {
                 int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloOptions, ResultOption.HIGHEST);
 
-                String[] messageParams = {node.getTypeKind().name().toLowerCase(Locale.ROOT),
+                String[] messageParams = {node.getTypeKind().getPrintableName(),
                                           node.getImage(),
                                           " total",
                                           classWmc + " (highest " + classHighest + ")", };
@@ -143,13 +141,8 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
         int cyclo = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloOptions);
         if (cyclo >= methodReportLevel) {
-            String nodeType = node.getKind() == MethodLikeKind.METHOD
-                    ? "method"
-                    : node.getKind() == MethodLikeKind.CONSTRUCTOR
-                            ? "constructor"
-                            : "lambda";
 
-            addViolation(data, node, new String[]{nodeType,
+            addViolation(data, node, new String[]{node.getKind().getPrintableName(),
                                                   node.getQualifiedName().getOperation(),
                                                   "",
                                                   "" + cyclo, });

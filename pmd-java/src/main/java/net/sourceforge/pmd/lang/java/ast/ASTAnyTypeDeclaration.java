@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -39,7 +40,12 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
      * The kind of type this node declares.
      */
     enum TypeKind {
-        CLASS, INTERFACE, ENUM, ANNOTATION
+        CLASS, INTERFACE, ENUM, ANNOTATION;
+
+
+        public String getPrintableName() {
+            return name().toLowerCase(Locale.ROOT);
+        }
     }
 
 }
