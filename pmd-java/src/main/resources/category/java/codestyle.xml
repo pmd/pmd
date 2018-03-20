@@ -721,6 +721,7 @@ public class Foo {
     <rule name="ForLoopsMustUseBraces"
           language="java"
           since="0.7"
+          deprecated="true"
           message="Avoid using 'for' statements without curly braces"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#forloopsmustusebraces">
@@ -790,6 +791,7 @@ public interface GenericDao<EF extends BaseModel, K extends Serializable> {
     <rule name="IfElseStmtsMustUseBraces"
           language="java"
           since="0.2"
+          deprecated="true"
           message="Avoid using 'if...else' statements without curly braces"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#ifelsestmtsmustusebraces">
@@ -828,6 +830,7 @@ if (foo)
     <rule name="IfStmtsMustUseBraces"
           language="java"
           since="1.0"
+          deprecated="true"
           message="Avoid using if statements without curly braces"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#ifstmtsmustusebraces">
@@ -1803,6 +1806,7 @@ public class Foo {
     <rule name="WhileLoopsMustUseBraces"
           language="java"
           since="0.7"
+          deprecated="true"
           message="Avoid using 'while' statements without curly braces"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#whileloopsmustusebraces">
