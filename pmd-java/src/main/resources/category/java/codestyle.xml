@@ -490,11 +490,20 @@ boolean bar(int x, int y) {
                 (: The violation is reported on the sub statement -- not the if statement :)
                 //Statement[$checkIfElseStmt and parent::IfStatement and not(child::Block or child::IfStatement)]
                 |
-                (: Reports case labels if one of their subordinate statements is not braced. Ignores if there are several blocks. :)
-                //SwitchLabel[$checkCaseStmt]
-                             [some $stmt (: in only the block statements until the next label :)
-                                in following-sibling::BlockStatement except following-sibling::SwitchLabel[1]/following-sibling::BlockStatement
-                                satisfies not($stmt/Statement/Block)]
+                (
+                    if ($checkCaseStmt)
+                    then for $label in //SwitchLabel
+                         return if (empty($label/following-sibling::BlockStatement except $label/following-sibling::SwitchLabel[1]/following-sibling::BlockStatement))
+                                then () (: Ignore fallthrough case :)
+                                else if (every $stmt in ($label/following-sibling::BlockStatement except $label/following-sibling::SwitchLabel[1]/following-sibling::BlockStatement)
+                                         satisfies not($stmt/Statement/Block))
+                                then $label (: Flag the label if every statement is unbraced :)
+                                else for $stmt in ($label/following-sibling::BlockStatement except $label/following-sibling::SwitchLabel[1]/following-sibling::BlockStatement)
+                                     return if (not($stmt/Statement/Block))
+                                            then $stmt (: Else flag unbraced statements individually :)
+                                            else ()
+                    else ()
+                )
                 ]]></value>
             </property>
         </properties>

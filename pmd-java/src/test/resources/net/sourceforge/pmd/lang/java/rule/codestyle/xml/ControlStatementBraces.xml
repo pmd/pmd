@@ -354,17 +354,17 @@
         <description>Case, dangling unbraced statement</description>
         <rule-property name="checkCaseStmt">true</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
             public class Foo {
                 void foo() {
                     int x = 0;
                     switch (x) {
                     case 1:
-                    case 2: {    // here
+                    case 2: {    // not here
                         x++;
                     }
-                    break;       // not here
+                    break;       // here
                     default: {   // not here
                         break;
                     }
