@@ -794,9 +794,6 @@ public class SecureSystem {
 Annotating overridden methods with @Override ensures at compile time that
 the method really overrides one, which helps refactoring and clarifies intent.
 
-This rule is limited to resolving methods inherited from non-parameterized
-or raw supertypes.
-
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.MissingOverrideRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/MissingOverrideRule.java)
 
 **Example(s):**
