@@ -230,10 +230,10 @@ public class JavaQualifiedNameTest {
         JavaTypeQualifiedName nested = (JavaTypeQualifiedName) QualifiedNameFactory.ofString("foo.bar.Bzaz$Bolg");
 
         assertEquals(1, outer.getClassList().size());
-        assertEquals("Bzaz", outer.getClassList().head());
+        assertEquals("Bzaz", outer.getClassList().get(0));
 
         assertEquals(2, nested.getClassList().size());
-        assertEquals("Bzaz", nested.getClassList().head());
+        assertEquals("Bzaz", nested.getClassList().get(0));
         assertEquals("Bolg", nested.getClassList().get(1));
     }
 

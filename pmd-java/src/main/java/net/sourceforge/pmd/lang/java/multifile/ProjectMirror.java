@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.multifile;
 
-import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
-import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
 /**
  * Represents the analysed project to provide all rules with info about other classes.

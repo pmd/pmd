@@ -14,16 +14,16 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.java.ParserTstUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
-import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaSignature.Visibility;
 import net.sourceforge.pmd.lang.java.multifile.testdata.MultifileVisitorTestData2;
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 
 /**
  * Tests of the multifile visitor.

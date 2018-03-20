@@ -16,13 +16,13 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
-import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
-import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 
 /**
  * Tests functionality of PackageStats

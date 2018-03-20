@@ -24,8 +24,8 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
-import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
+import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 
 public class ParserTstUtil {

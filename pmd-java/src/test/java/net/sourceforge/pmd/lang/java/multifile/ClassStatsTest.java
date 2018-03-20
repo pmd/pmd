@@ -11,12 +11,12 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaSignature.Visibility;
 import net.sourceforge.pmd.lang.java.multifile.testdata.SignatureCountTestData;
+import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 
 /**
  * @author Clément Fournier
