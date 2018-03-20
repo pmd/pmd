@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.Annotateable;
  *
  * @author Andreas Dangel
  */
-public class AbstractLombokAwareRule extends AbstractJavaRule {
+public class AbstractLombokAwareRule extends AbstractIgnoredAnnotRule {
 
     private boolean lombokImported = false;
     private boolean classHasLombokAnnotation = false;
@@ -40,6 +42,13 @@ public class AbstractLombokAwareRule extends AbstractJavaRule {
         LOMBOK_ANNOTATIONS.add("lombok.AllArgsConstructor");
         LOMBOK_ANNOTATIONS.add("lombok.NoArgsConstructor");
         LOMBOK_ANNOTATIONS.add("lombok.Builder");
+    }
+
+    @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        Collection defaultValues = new ArrayList<String>();
+        defaultValues.addAll(LOMBOK_ANNOTATIONS);
+        return defaultValues;
     }
 
     @Override
@@ -83,6 +92,40 @@ public class AbstractLombokAwareRule extends AbstractJavaRule {
 
     /**
      * Checks whether the given node is annotated with any lombok annotation.
+     * The node can be any node, e.g. class declaration or field declaration.
+     *
+     * @param node
+     *            the node to check
+     * @return <code>true</code> if a lombok annotation has been found
+     */
+    @Deprecated
+    protected boolean hasLombokAnnotation(Node node) {
+        boolean result = false;
+        Node parent = node.jjtGetParent();
+        List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
+        for (ASTAnnotation annotation : annotations) {
+            ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
+            if (name != null) {
+                String annotationName = name.getImage();
+                if (lombokImported) {
+                    if (LOMBOK_ANNOTATIONS.contains(annotationName)) {
+                        result = true;
+                    }
+                } else {
+                    if (annotationName.startsWith(LOMBOK_PACKAGE + ".")) {
+                        String shortName = annotationName.substring(LOMBOK_PACKAGE.length() + 1);
+                        if (LOMBOK_ANNOTATIONS.contains(shortName)) {
+                            result = true;
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Checks whether the given node is annotated with any lombok annotation.
      * The node should be annotateable.
      *
      * @param node
@@ -93,6 +136,7 @@ public class AbstractLombokAwareRule extends AbstractJavaRule {
         return node.isAnyAnnotationPresent(LOMBOK_ANNOTATIONS);
     }
 
+    @Deprecated
     protected ASTAnnotation getLombokAnnotation(Node node, String lombokAnnotation) {
         Node parent = node.jjtGetParent();
         List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);

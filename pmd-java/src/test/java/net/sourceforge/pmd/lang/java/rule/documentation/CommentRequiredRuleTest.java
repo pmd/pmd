@@ -33,7 +33,7 @@ public class CommentRequiredRuleTest {
         for (PropertyDescriptor<?> property : propertyDescriptors) {
             setPropertyValue(rule, property, "Required");
             assertNull("The property " + property.name() + " is set to required, the rule should be functional.",
-                    rule.dysfunctionReason());
+                rule.dysfunctionReason());
             setPropertyValue(rule, property, "Ignored");
         }
     }

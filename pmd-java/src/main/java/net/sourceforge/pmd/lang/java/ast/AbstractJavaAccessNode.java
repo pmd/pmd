@@ -143,6 +143,12 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements
         return !isPrivate() && !isPublic() && !isProtected();
     }
 
+    /**
+     * Get all annotations present on this node.
+     *
+     * @return all annotations present on this node.
+     */
+    @Override
     public List<ASTAnnotation> getDeclaredAnnotations() {
         List<ASTAnnotation> result = new ArrayList<>();
         Node parent = this.jjtGetParent();
@@ -158,12 +164,32 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements
     }
 
     /**
+     * Get specific annotaion on this node.
+     *
+     * @param annotQualifiedName
+     *            qulified name of the annotation.
+     * @return <code>ASTAnnotaion</code> node if the annotation is present on this node, else <code>null</code>
+     */
+    @Override
+    public ASTAnnotation getSpecificAnnotation(String annotQualifiedName) {
+        List<ASTAnnotation> annotations = getDeclaredAnnotations();
+        for (ASTAnnotation annotation : annotations) {
+            ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
+            if (TypeHelper.isA(name, annotQualifiedName)) {
+                return annotation;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Checks whether the annotation is present on this node.
      *
      * @param annotQualifiedName
      *            qulified name of the annotation.
      * @return <code>true</code> if the annotation is present on this node, else <code>false</code>
      */
+    @Override
     public boolean isAnnotationPresent(String annotQualifiedName) {
         List<ASTAnnotation> annotations = getDeclaredAnnotations();
         for (ASTAnnotation annotation : annotations) {
@@ -182,6 +208,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements
      *            collection that cotains qulified name of annotations.
      * @return <code>true</code> if any annotation is present on this node, else <code>false</code>
      */
+    @Override
     public boolean isAnyAnnotationPresent(Collection<String> annotQualifiedNames) {
         for (String annotQualifiedName : annotQualifiedNames) {
             if (isAnnotationPresent(annotQualifiedName)) {

@@ -84,7 +84,7 @@ public class UseUtilityClassRule extends AbstractLombokAwareRule {
     private boolean isOkUsingLombok(ASTClassOrInterfaceDeclaration parent) {
         // check if there's a lombok no arg private constructor, if so skip the rest of the rules
         if (hasClassLombokAnnotation()) {
-            ASTAnnotation annotation = getLombokAnnotation(parent, "NoArgsConstructor");
+            ASTAnnotation annotation = parent.getSpecificAnnotation("lombok.NoArgsConstructor");
 
             if (annotation != null) {
 

@@ -13,15 +13,8 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.*;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
-import net.sourceforge.pmd.properties.StringMultiProperty;
 
 public abstract class AbstractJavaRule extends AbstractRule implements JavaParserVisitor, ImmutableLanguage {
-
-    protected StringMultiProperty.StringMultiPBuilder ignoredAnnotBuilder
-        = StringMultiProperty.named("ignoredAnnotations")
-        .desc("Fully qualified names of the annotation types that should be ignored by this rule");
-
-    protected StringMultiProperty ignoredAnnotDescriptor;
 
     public AbstractJavaRule() {
         super.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
