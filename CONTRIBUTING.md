@@ -33,6 +33,7 @@ There are some documentation available under <https://pmd.github.io>. Feel free 
 documentation is missing, incomplete or outdated. You can do that [here](https://github.com/pmd/pmd/issues).
 
 The documentation is generated as a Jekyll site, the source is available at: <https://github.com/pmd/pmd/tree/master/docs>. You can find build instructions there.
+For more on contributing to documentation check <https://pmd.github.io/pmd-6.1.0/pmd_devdocs_writing_documentation.html>
 
 ## Questions
 
