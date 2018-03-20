@@ -135,7 +135,7 @@
     </test-code>
 
     <test-code>
-        <description>Empty while, allowed</description>
+        <description>Empty for, allowed</description>
         <rule-property name="allowEmptyLoop">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -144,6 +144,81 @@
                     int x = 0;
                     for (; ; )
                         ;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do while, no braces</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    do
+                        x++;
+                    while(true);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do while, no braces, allowed</description>
+        <rule-property name="checkDoWhileStmt">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    do
+                        x++;
+                    while (true);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do while, with braces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    do {
+                        x++;
+                    } while (true);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Empty Do while</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    do;
+                    while (true);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Empty Do while, allowed</description>
+        <rule-property name="allowEmptyLoop">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    do;
+                    while (true);
                 }
             }
             ]]></code>
@@ -234,5 +309,70 @@
             }
             ]]></code>
     </test-code>
+
+
+    <test-code>
+        <description>Case, no braces, allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    switch (x) {
+                    case 1:
+                    case 2: x++;break;
+                    default: break;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Case, no braces</description>
+        <rule-property name="checkCaseStmt">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,9</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    switch (x) {
+                    case 1:
+                    case 2:    // here
+                        x++;   // not here
+                        break; // not here
+                    default:   // here
+                        break; // not here
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Case, dangling unbraced statement</description>
+        <rule-property name="checkCaseStmt">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    switch (x) {
+                    case 1:
+                    case 2: {    // here
+                        x++;
+                    }
+                    break;       // not here
+                    default: {   // not here
+                        break;
+                    }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
 
 </test-data>
