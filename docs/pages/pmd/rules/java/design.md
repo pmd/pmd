@@ -194,40 +194,8 @@ public void bar() {
 **Priority:** High (1)
 
 Avoid throwing NullPointerExceptions. These are confusing because most people will assume that the
-virtual machine threw it. To avoid a method being called with a null parameter, you may consider using an IllegalArgumentException instead, which may make it clearly seen as a programmer-initiated exception. However, there are better way to handle this:
-
->***Effective Java, 3rd Edition, Item 72: Favor the use of standard exceptions***
->
->Arguably, every erroneous method invocation boils down to an illegal argument or state, but other exceptions are standardly used for certain kinds of illegal arguments and states. If a caller passes null in some parameter for which null values are prohibited, convention dictates that NullPointerException be thrown rather than IllegalArgumentException.
-
-So this suggests :
-```
-public class Foo {
-  private String exampleValue;
-    
-  void setExampleValue(String exampleValue) {
-   if(exampleValue == null) { // manual check
-       throw new NullPointerException("exampleValue must not be null!");//manual throw
-      }
-     this.exampleValue = exampleValue; // assignment
-   }
-}
-```
-
-Java 1.7 : introduces `java.util.Objects.requireNonNull()` to solve this problem in a neat and expressive way.
-
-So the above code will now be:
-```
-public class Foo {
-    private String exampleValue;
-      
-    void setExampleValue(String exampleValue) {
-      // check, throw and assignment in a single standard call
-      this.exampleValue = Objects.requireNonNull(exampleValue, "exampleValue must not be null!");
-    }
-  } 
-```
-
+virtual machine threw it. Consider using an IllegalArgumentException instead; this will be
+clearly seen as a programmer-initiated exception.
 
 ```
 //AllocationExpression/ClassOrInterfaceType[@Image='NullPointerException']
