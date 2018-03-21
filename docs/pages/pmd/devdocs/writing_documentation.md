@@ -24,6 +24,26 @@ New pages are stored in the different subfolders under `pages`. The folder struc
 Since all pages use a simple *permalink*, in the rendered html pages, all pages are flattened in one directory.
 This makes it easy to view the documentation also offline.
 
+There are two parts of the documentation based on how they are generated 
+- the ones that are manually written (like this one you are reading).
+- and the ones that are generated automatically from the rulesets. All the rule documentation pages are generated in this way. The rulesets for a language %lang% are located in `/pmd/pmd/tree/master/pmd-%lang%/src/main/resources/category/%lang% `. So for Java the rulesets are here <https://github.com/pmd/pmd/tree/master/pmd-java/src/main/resources/category/java> The rulesets are grouped into categories used to name the XML files in this folder (e.g. bestpractices.xml, design.xml). The XML files in this directory are transformed during build into the markdown pages found with other documentations in `docs/`. The documentation generator is the separate submodule pmd-doc. Any contribution to this kind of documentaion (ruleset documentations) should be done in the relevant XML file.
+
+## XML Documataion
+
+You can include Mardown Text in the XML Documention, also github flavoured markdown. Just wrap the markdown inside CDATA section in the xml. CDATA sections preserve all formatting inside the delimiters e.g.:
+```
+<rule ...>
+ <description>
+ <![CDATA[
+   Full description, can contain markup
+
+   And paragraphs
+ ]]>
+ </description>
+ ...
+</rule>
+```
+
 ## Building
 
 There are two ways, to execute jekyll:
