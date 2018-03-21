@@ -73,6 +73,7 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
     *   [#907](https://github.com/pmd/pmd/issues/907): \[java] UnusedPrivateField false-positive with @FXML
     *   [#963](https://github.com/pmd/pmd/issues/965): \[java] ArrayIsStoredDirectly not triggered from variadic functions
 *   java-design
+    *   [#832](https://github.com/pmd/pmd/issues/832): \[java] AvoidThrowingNullPointerException documentation suggestion
     *   [#839](https://github.com/pmd/pmd/issues/839): \[java] SignatureDeclareThrowsException's IgnoreJUnitCompletely property not honored for constructors
     *   [#968](https://github.com/pmd/pmd/issues/968): \[java] UseUtilityClassRule reports false positive with lombok NoArgsConstructor
 
@@ -98,4 +99,5 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
 * [#967](https://github.com/pmd/pmd/pull/967): \[doc] Issue 959: fixed broken link to XPath Rule Tutorial - [Andrey Mochalov](https://github.com/epidemia)
 * [#969](https://github.com/pmd/pmd/pull/969): \[java] Issue 968 Add logic to handle lombok private constructors with utility classes - [Kirk Clemens](https://github.com/clem0110)
 * [#970](https://github.com/pmd/pmd/pull/970): \[java] Fixed inefficient use of keySet iterator instead of entrySet iterator - [Andrey Mochalov](https://github.com/epidemia)
+* [#990](https://github.com/pmd/pmd/pull/990): \[java] Updated Doc on AvoidThrowingNullPointerException to close Issue #832 - [Bolarinwa Saheed](https://github.com/refactormyself)
 
