@@ -10,6 +10,21 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ast.Node;
 
 
+/**
+ * Represents class and interface declarations.
+ *
+ * <pre>
+ *
+ * ClassOrInterfaceDeclaration ::=
+ *          ( "class" | "interface" )
+ *          &lt;IDENTIFIER>
+ *          [ TypeParameters ]
+ *          [ ExtendsList ]
+ *          [ ImplementsList ]
+ *          ClassOrInterfaceBody
+ * </pre>
+ *
+ */
 public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
 
     private boolean isLocal;
