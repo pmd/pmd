@@ -29,11 +29,11 @@ When filing a bug report, please provide as much information as possible, so tha
 
 ## Documentation
 
-There are some documentation available under <https://pmd.github.io>. Feel free to create a bug report if
-documentation is missing, incomplete or outdated. You can do that [here](https://github.com/pmd/pmd/issues).
+There is some documentation available under <https://pmd.github.io/pmd>. Feel free to create a bug report if
+documentation is missing, incomplete or outdated. See [Bug reports](#bug-reports).
 
 The documentation is generated as a Jekyll site, the source is available at: <https://github.com/pmd/pmd/tree/master/docs>. You can find build instructions there.
-For more on contributing to documentation check <https://pmd.github.io/pmd-6.1.0/pmd_devdocs_writing_documentation.html>
+For more on contributing documentation check <https://pmd.github.io/pmd/pmd_devdocs_writing_documentation.html>
 
 ## Questions
 
