@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule;
 import java.util.Collection;
 import java.util.Collections;
 
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.properties.StringMultiProperty;
 
 public class AbstractIgnoredAnnotRule extends AbstractJavaRule {
@@ -23,5 +24,17 @@ public class AbstractIgnoredAnnotRule extends AbstractJavaRule {
 
     public AbstractIgnoredAnnotRule() {
         definePropertyDescriptor(ignoredAnnotationsDescriptor);
+    }
+
+
+    /**
+     * Checks whether any annotation is present on the node.
+     *
+     * @param node
+     *            the node to check
+     * @return <code>true</code> if the annotation has been found, otherwise <code>false</code>
+     */
+    protected boolean isAnyAnnotationPresent(Annotatable node) {
+        return node.isAnyAnnotationPresent(getProperty(ignoredAnnotationsDescriptor));
     }
 }

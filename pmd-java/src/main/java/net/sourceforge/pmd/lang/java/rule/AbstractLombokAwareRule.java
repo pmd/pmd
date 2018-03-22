@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.Annotateable;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
 
 
 /**
@@ -46,9 +46,7 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotRule {
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
-        Collection defaultValues = new ArrayList<String>();
-        defaultValues.addAll(LOMBOK_ANNOTATIONS);
-        return defaultValues;
+        return new ArrayList<>(LOMBOK_ANNOTATIONS);
     }
 
     @Override
@@ -129,35 +127,10 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotRule {
      * The node should be annotateable.
      *
      * @param node
-     *            the Annotateable node to check
+     *            the Annotatable node to check
      * @return <code>true</code> if a lombok annotation has been found
      */
-    protected boolean hasLombokAnnotation(Annotateable node) {
+    protected boolean hasLombokAnnotation(Annotatable node) {
         return node.isAnyAnnotationPresent(LOMBOK_ANNOTATIONS);
-    }
-
-    @Deprecated
-    protected ASTAnnotation getLombokAnnotation(Node node, String lombokAnnotation) {
-        Node parent = node.jjtGetParent();
-        List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
-        for (ASTAnnotation annotation : annotations) {
-            ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
-            if (name != null) {
-                String annotationName = name.getImage();
-                if (lombokImported) {
-                    if (lombokAnnotation.equals(annotationName)) {
-                        return annotation;
-                    }
-                } else {
-                    if (annotationName.startsWith(LOMBOK_PACKAGE + ".")) {
-                        String shortName = annotationName.substring(LOMBOK_PACKAGE.length() + 1);
-                        if (lombokAnnotation.equals(shortName)) {
-                            return annotation;
-                        }
-                    }
-                }
-            }
-        }
-        return null;
     }
 }
