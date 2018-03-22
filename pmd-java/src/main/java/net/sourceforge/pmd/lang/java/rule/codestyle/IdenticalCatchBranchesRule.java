@@ -6,16 +6,14 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 
@@ -29,7 +27,7 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRule {
 
 
     private boolean areEquivalent(ASTCatchStatement st1, ASTCatchStatement st2) {
-        return tokenEquals(st1.getBlock(), st2.getBlock(), st1.getExceptionName(), st2.getExceptionName());
+        return hasSameSubTree(st1.getBlock(), st2.getBlock(), st1.getExceptionName(), st2.getExceptionName());
     }
 
 
@@ -105,70 +103,55 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRule {
         return super.visit(node, data);
     }
 
-
-    // Would be cleaner with java8 streams. Maybe this can be moved to AbstractJavaNode then
-    private static Iterator<String> tokenImageIterator(final AbstractJavaNode node) {
-        return new Iterator<String>() {
-
-            GenericToken current = node.jjtGetFirstToken();
-
-
-            @Override
-            public boolean hasNext() {
-                // the first
-                return current != null && current != node.jjtGetLastToken().getNext();
-            }
-
-
-            @Override
-            public String next() {
-                GenericToken token = current;
-                current = current.getNext();
-                return token.getImage();
-            }
-
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
-    }
-
-
     /**
-     * Returns true if the image of the tokens of this node are
-     * equal to the image of the tokens of the other node. This
-     * method implements one definition of equality between two
-     * nodes, based solely on the equality of their string
-     * representation in the source.
+     * Checks whether two nodes has same subtree.
+     * Note, it wouldn't be sensitive to changes in the exception variable name.
      *
-     * @param node First node
-     * @param that Second node
-     *
-     * @return Whether this node is equal to that node, or not
+     * @param node1
+     *             the first node to check
+     * @param node2
+     *             the second node to check
+     * @param exceptionName1
+     *             the first exception variable name
+     * @param exceptionName2
+     *             the second exception variable name
+     * @return <code>ture</code> if two nodes has same subtree, otherwise <code>false</code>
      */
-    private static boolean tokenEquals(AbstractJavaNode node, AbstractJavaNode that, String nodeName, String thatName) {
-        if (that == null) {
+    private boolean hasSameSubTree(Node node1, Node node2, String exceptionName1, String exceptionName2) {
+        if (node1 == null && node2 == null) {
+            return true;
+        } else if (node1 == null || node2 == null) {
             return false;
-        } else {
-            Iterator<String> thisIt = tokenImageIterator(node);
-            Iterator<String> thatIt = tokenImageIterator(that);
-            while (thisIt.hasNext()) {
-                if (!thatIt.hasNext()) {
-                    return false;
-                }
-                String o1 = thisIt.next();
-                String o2 = thatIt.next();
-                if (!Objects.equals(o1, o2)
-                    // wouldn't be sensitive to changes in the exception variable name
-                    && !(Objects.equals(o1, nodeName) && Objects.equals(o2, thatName))) {
-                    return false;
-                }
-            }
-            return !thatIt.hasNext();
         }
+
+        //numbers of child node are different
+        if (node1.jjtGetNumChildren() != node2.jjtGetNumChildren()) {
+            return false;
+        }
+
+        for (int num = 0; num < node1.jjtGetNumChildren(); num++) {
+
+            //type of nodes are different
+            if (node1.jjtGetChild(num).getClass() != node2.jjtGetChild(num).getClass()) {
+                return false;
+            }
+
+            String image1 = node1.jjtGetChild(num).getImage();
+            String image2 = node2.jjtGetChild(num).getImage();
+
+            //image of nodes are different
+            if (!Objects.equals(image1, image2)
+                // wouldn't be sensitive to changes in the exception variable name
+                && !Objects.equals(image1, exceptionName1) && Objects.equals(image2, exceptionName2)) {
+                return false;
+            }
+
+            //subtree of nodes are different
+            if (!hasSameSubTree(node1.jjtGetChild(num), node2.jjtGetChild(num),
+                exceptionName1, exceptionName2)) {
+                return false;
+            }
+        }
+        return true;
     }
-
-
 }
