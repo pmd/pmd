@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Locale;
+
+
 /**
  * Groups method, constructor and lambda declarations under a common type.
  *
@@ -27,7 +30,11 @@ public interface MethodLikeNode extends AccessNode, JavaQualifiableNode, JavaNod
     enum MethodLikeKind {
         METHOD,
         CONSTRUCTOR,
-        LAMBDA
+        LAMBDA;
+
+        public String getPrintableName() {
+            return name().toLowerCase(Locale.ROOT);
+        }
     }
 
 
