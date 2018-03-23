@@ -128,7 +128,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
 
     // @formatter:off
     /**
-     * Returns the type of this node. The type of a declarator ID is
+     * Returns the type of the declared variable. The type of a declarator ID is
      * <ul>
      *   <li>1. not necessarily the same as the type written out at the
      *          start of the declaration, e.g. {@code int a[];}
@@ -142,6 +142,9 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * account those additional array dimensions, whereas this node's
      * type takes into account the total number of dimensions, i.e.
      * those declared on this node plus those declared on the type node.
+     *
+     * <p>The returned type also takes into account whether this variable
+     * is a varargs formal parameter.
      *
      * <p>The type of the declarator ID is thus always the real type of
      * the variable.

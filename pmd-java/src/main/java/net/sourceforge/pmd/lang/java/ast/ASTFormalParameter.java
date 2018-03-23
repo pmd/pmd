@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
 public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Dimensionable, CanSuppressWarnings {
@@ -20,16 +21,36 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
         super(p, id);
     }
 
+
+    /**
+     * @deprecated Will be made private in 7.0.0
+     */
+    @Deprecated
     public void setVarargs() {
         isVarargs = true;
     }
 
+
+    /**
+     * Returns true if this node is a varargs parameter.
+     */
     public boolean isVarargs() {
         return isVarargs;
     }
 
+
+    /**
+     * Returns true if this node is the explicit receiver parameter,
+     * e.g. in
+     *
+     * <pre>
+     * class Foo {
+     *   abstract void foo(@Bar Foo this);
+     * }
+     * </pre>
+     */
     public boolean isExplicitReceiverParameter() {
-        return getDecl().isExplicitReceiverParameter();
+        return getVariableDeclaratorId().isExplicitReceiverParameter();
     }
 
     @Override
@@ -37,22 +58,32 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
         return visitor.visit(this, data);
     }
 
+
+    /**
+     * Returns the declarator ID of this formal parameter.
+     */
+    public ASTVariableDeclaratorId getVariableDeclaratorId() {
+        return getFirstChildOfType(ASTVariableDeclaratorId.class);
+    }
+
     @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTAnnotation) {
-                ASTAnnotation a = (ASTAnnotation) jjtGetChild(i);
-                if (a.suppresses(rule)) {
-                    return true;
-                }
+        for (ASTAnnotation a : findChildrenOfType(ASTAnnotation.class)) {
+            if (a.suppresses(rule)) {
+                return true;
             }
         }
         return false;
     }
 
+
+    /**
+     * Returns true if this formal parameter is of an array type.
+     * This includes varargs parameters.
+     */
     @Override
     public boolean isArray() {
-        return checkType() + checkDecl() > 0;
+        return isVarargs() || getTypeNode().isArray() || getVariableDeclaratorId().isArray();
     }
 
     @Override
@@ -60,34 +91,65 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
         if (!isArray()) {
             return 0;
         }
-        return checkType() + checkDecl();
+        return getTypeNode().getArrayDepth() + getVariableDeclaratorId().getArrayDepth() + (isVarargs() ? 1 : 0);
     }
 
+
+    /**
+     * Returns the type node of this formal parameter.
+     * The type of that node is not necessarily the type
+     * of the parameter itself, see {@link ASTVariableDeclaratorId#getType()}.
+     *
+     * <p>In particular, the type of the returned node
+     * doesn't take into account whether this formal
+     * parameter is varargs or not.
+     */
     public ASTType getTypeNode() {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTType) {
-                return (ASTType) jjtGetChild(i);
-            }
-        }
-        throw new IllegalStateException("ASTType not found");
+        return getFirstChildOfType(ASTType.class);
     }
 
-    private int checkType() {
-        return getTypeNode().getArrayDepth();
-    }
 
+    /**
+     * @deprecated use {@link #getVariableDeclaratorId()}
+     */
+    @Deprecated
     protected ASTVariableDeclaratorId getDecl() {
-        try {
-            return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren() - 1);
-        } catch (ClassCastException c) {
-            System.out.println(
-                    "CLASS CAST: " + this.getBeginLine() + ":" + this.getBeginColumn() + " " + this.toString());
-            return null;
-        }
+        return getVariableDeclaratorId();
     }
 
-    private int checkDecl() {
-        return getDecl().getArrayDepth();
+    /**
+     * Returns the type of this formal parameter. That type
+     * is exactly that of the variable declarator id,
+     * which means that the declarator id's type takes into
+     * account whether this parameter is varargs or not.
+     */
+    @Override
+    public Class<?> getType() {
+        return getVariableDeclaratorId().getType();
     }
 
+
+    @Override
+    public JavaTypeDefinition getTypeDefinition() {
+        return getVariableDeclaratorId().getTypeDefinition();
+    }
+
+
+    /**
+     * Noop, the type of this node is defined by the type
+     * of the declarator id.
+     */
+    @Override
+    public void setTypeDefinition(JavaTypeDefinition type) {
+        // see javadoc
+    }
+
+    /**
+     * Noop, the type of this node is defined by the type
+     * of the declarator id.
+     */
+    @Override
+    public void setType(Class<?> type) {
+        // see javadoc
+    }
 }

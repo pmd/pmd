@@ -6,8 +6,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 public class ASTResource extends ASTFormalParameter {
     public ASTResource(int id) {
         super(id);
@@ -20,17 +18,6 @@ public class ASTResource extends ASTFormalParameter {
     /** Accept the visitor. **/
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
-    }
-
-    @Override
-    protected ASTVariableDeclaratorId getDecl() {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            Node n = jjtGetChild(i);
-            if (n instanceof ASTVariableDeclaratorId) {
-                return (ASTVariableDeclaratorId) n;
-            }
-        }
-        return null;
     }
 }
 /*
