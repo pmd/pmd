@@ -10,10 +10,6 @@
         <version>6.2.0-SNAPSHOT</version>
     </parent>
 
-    <properties>
-        <config.basedir>${basedir}</config.basedir>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
