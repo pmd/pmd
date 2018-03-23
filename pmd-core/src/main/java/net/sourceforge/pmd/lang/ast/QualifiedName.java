@@ -5,9 +5,11 @@
 package net.sourceforge.pmd.lang.ast;
 
 /**
- * Basic interface for qualified names. That's used in the metrics framework to refer unambiguously to operations or
- * classes. Language specific pmd modules should have at most one implementation of this interface, to allow safe
- * downcasting from QualifiedName to e.g. JavaQualifiedName.
+ * Basic interface for qualified names usable in the metrics framework.
+ * Qualified names identify unambiguously operations and classes across
+ * the analysed project. Language specific pmd modules should have at
+ * most one implementation of this interface, to allow safe downcasting
+ * from QualifiedName to e.g. JavaQualifiedName.
  *
  * @author Clément Fournier
  */

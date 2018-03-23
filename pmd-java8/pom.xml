@@ -13,6 +13,9 @@
     <properties>
         <config.basedir>${basedir}/../pmd-core</config.basedir>
         <java.version>8</java.version>
+        <!-- Workaround for https://youtrack.jetbrains.com/issue/IDEA-188690 -->
+        <maven.compiler.source>1.${java.version}</maven.compiler.source>
+        <maven.compiler.target>1.${java.version}</maven.compiler.target>
     </properties>
 
     <build>

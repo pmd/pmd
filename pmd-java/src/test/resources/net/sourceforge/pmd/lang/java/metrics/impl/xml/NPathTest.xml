@@ -60,7 +60,7 @@ public class Foo {
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#bar()' has value 8064.</message>
+            <message>'Foo#bar()' has value 8064.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -69,7 +69,7 @@ public class Foo {
         <description>If with no else</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#bar()' has value 2.</message>
+            <message>'Foo#bar()' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
         class Foo {
@@ -87,7 +87,7 @@ public class Foo {
         <description>Nested if with no else</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#bar()' has value 3.</message>
+            <message>'Foo#bar()' has value 3.</message>
         </expected-messages>
         <code><![CDATA[
         class Foo {
@@ -109,7 +109,7 @@ public class Foo {
         <description>Nested if with else</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#bar()' has value 4.</message>
+            <message>'Foo#bar()' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
         class Foo {
@@ -137,7 +137,7 @@ public class Foo {
         <description>Two ifs</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#bar()' has value 4.</message>
+            <message>'Foo#bar()' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
         class Foo {
@@ -157,7 +157,7 @@ public class Foo {
         <description>Two ifs one else</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#bar()' has value 4.</message>
+            <message>'Foo#bar()' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
         class Foo {
@@ -176,7 +176,7 @@ public class Foo {
         <description>Two ifs and nested</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#bar()' has value 6.</message>
+            <message>'Foo#bar()' has value 6.</message>
         </expected-messages>
         <code><![CDATA[
         class Foo {
@@ -198,7 +198,7 @@ public class Foo {
         <description>Full switch</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#bar()' has value 7.</message>
+            <message>'Foo#bar()' has value 7.</message>
         </expected-messages>
         <code><![CDATA[
         class Foo {
@@ -221,7 +221,7 @@ public class Foo {
         <description>Ensure switch has same complexity as equivalent ifs</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#bar()' has value 7.</message>
+            <message>'Foo#bar()' has value 7.</message>
         </expected-messages>
         <code><![CDATA[
         class Foo {
@@ -244,7 +244,7 @@ public class Foo {
         <description>Boolean operators</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#bar()' has value 4.</message>
+            <message>'Foo#bar()' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
         class Foo {
@@ -276,9 +276,9 @@ class Bar {
         <description>Test case for bug 3484404 (Invalid NPath calculation in return statement)</description>
         <expected-problems>3</expected-problems>
         <expected-messages>
-            <message>'.Bar#x(boolean, boolean)' has value 4.</message>
-            <message>'.Bar#y(boolean, boolean)' has value 4.</message>
-            <message>'.Bar#z(int, int)' has value 1.</message>
+            <message>'Bar#x(boolean, boolean)' has value 4.</message>
+            <message>'Bar#y(boolean, boolean)' has value 4.</message>
+            <message>'Bar#z(int, int)' has value 1.</message>
         </expected-messages>
         <code-ref id="bug3484404"/>
     </test-code>
@@ -288,7 +288,7 @@ class Bar {
         <description>NPath supports constructors</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#Foo()' has value 7.</message>
+            <message>'Foo#Foo()' has value 7.</message>
         </expected-messages>
         <code><![CDATA[
         class Foo {
@@ -311,7 +311,7 @@ class Bar {
         <description>NPath should count the boolean complexity of ternaries</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Test#method(Date)' has value 4.</message>
+            <message>'Test#method(Date)' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
         public class Test {
@@ -326,7 +326,7 @@ class Bar {
         <description>#01 NPath should count ternaries like if - else constructs (https://stackoverflow.com/q/5079923/6245827)</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Test#method(Date)' has value 2.</message>
+            <message>'Test#method(Date)' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
         public class Test {
@@ -349,7 +349,7 @@ class Bar {
         <description>#02 NPath should count ternaries like if - else constructs (https://stackoverflow.com/q/5079923/6245827)</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Test#method(Date)' has value 2.</message>
+            <message>'Test#method(Date)' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
         public class Test {
@@ -368,7 +368,7 @@ class Bar {
         <rule-property name="reportLevel">6</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.SOFExample#usefulMethod(List)' has value 272.</message>
+            <message>'SOFExample#usefulMethod(List)' has value 272.</message>
         </expected-messages>
         <code><![CDATA[
         public class SOFExample {
@@ -405,7 +405,7 @@ class Bar {
         <rule-property name="reportLevel">6</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.SOFExample#usefulMethod(List)' has value 272.</message>
+            <message>'SOFExample#usefulMethod(List)' has value 272.</message>
         </expected-messages>
         <code><![CDATA[
         public class SOFExample {

@@ -48,8 +48,8 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
 
 ### Allow to disable Incremental Analysis
 
-Some time ago, we added support for [Incremental Analhysis](pmd_userdocs_getting_started.html). On PMD 6.0.0, we
-started to add warnings when not using it, as we strongly believe it's a great improvement to our user's experience as
+Some time ago, we added support for [Incremental Analysis](pmd_userdocs_getting_started.html). On PMD 6.0.0, we
+started to add warns when not using it, as we strongly believe it's a great improvement to our user's experience as
 analysis time is greatly reduced; and in the future we plan to have it enabled by default. However, we realize some
 scenarios don't benefit from it (ie: CI jobs), and having the warning logged can be noisy and cause confusion.
 
@@ -66,6 +66,10 @@ once we enable Incremental Analysis by default, this will effectively disable it
 *   The new Java rule `MissingOverride` (category `bestpractices`) detects overridden and implemented methods,
     which are not marked with the `@Override` annotation. Annotating overridden methods with `@Override` ensures
     at compile time that the method really overrides one, which helps refactoring and clarifies intent.
+
+*   The new Java rule `UnnecessaryAnnotationValueElement` (category `codestyle`) detects annotations with a single
+    element (`value`) that explicitely names it. That is, doing `@SuppressWarnings(value = "unchecked")` would be
+    flagged in favor of `@SuppressWarnings("unchecked")`.
 
 #### Modified Rules
 
@@ -89,17 +93,28 @@ once we enable Incremental Analysis by default, this will effectively disable it
     *   [#370](https://github.com/pmd/pmd/issues/370): \[java] GuardLogStatementJavaUtil not considering lambdas
     *   [#907](https://github.com/pmd/pmd/issues/907): \[java] UnusedPrivateField false-positive with @FXML
     *   [#963](https://github.com/pmd/pmd/issues/965): \[java] ArrayIsStoredDirectly not triggered from variadic functions
+*   java-codestyle
+    *   [#983](https://github.com/pmd/pmd/issues/983): \[java] Detect annotations with single value element
 *   java-design
+    *   [#832](https://github.com/pmd/pmd/issues/832): \[java] AvoidThrowingNullPointerException documentation suggestion
+    *   [#837](https://github.com/pmd/pmd/issues/837): \[java] CFGs of declared but not called lambdas are treated as parts of an enclosing method's CFG
     *   [#839](https://github.com/pmd/pmd/issues/839): \[java] SignatureDeclareThrowsException's IgnoreJUnitCompletely property not honored for constructors
     *   [#968](https://github.com/pmd/pmd/issues/968): \[java] UseUtilityClassRule reports false positive with lombok NoArgsConstructor
+*   documentation
+    *   [#978](https://github.com/pmd/pmd/issues/978): \[core] Broken link in CONTRIBUTING.md
+    *   [#992](https://github.com/pmd/pmd/issues/992): \[core] Include info about rule doc generation in "Writing Documentation" md page
 
 ### API Changes
 
-* A new CLI switch, `-no-cache`, disables incremental analysis and the related suggestion. This overrides the
-`-cache` option. The corresponding Ant task parameter is `noCache`.
+*    A new CLI switch, `-no-cache`, disables incremental analysis and the related suggestion. This overrides the
+    `-cache` option. The corresponding Ant task parameter is `noCache`.
 
-* The static method `PMDParameters.transformParametersIntoConfiguration(PMDParameters)` is now deprecated,
-  for removal in 7.0.0. The new instance method `PMDParameters.toConfiguration()` replaces it.
+*   The static method `PMDParameters.transformParametersIntoConfiguration(PMDParameters)` is now deprecated,
+    for removal in 7.0.0. The new instance method `PMDParameters.toConfiguration()` replaces it.
+
+*   The method `ASTConstructorDeclaration.getParameters()` has been deprecated in favor of the new method
+    `getFormalParameters()`. This method is available for both `ASTConstructorDeclaration` and
+    `ASTMethodDeclaration`.
 
 ### External Contributions
 
@@ -111,4 +126,8 @@ once we enable Incremental Analysis by default, this will effectively disable it
 * [#967](https://github.com/pmd/pmd/pull/967): \[doc] Issue 959: fixed broken link to XPath Rule Tutorial - [Andrey Mochalov](https://github.com/epidemia)
 * [#969](https://github.com/pmd/pmd/pull/969): \[java] Issue 968 Add logic to handle lombok private constructors with utility classes - [Kirk Clemens](https://github.com/clem0110)
 * [#970](https://github.com/pmd/pmd/pull/970): \[java] Fixed inefficient use of keySet iterator instead of entrySet iterator - [Andrey Mochalov](https://github.com/epidemia)
+* [#984](https://github.com/pmd/pmd/pull/984): \[java] issue983 Add new UnnecessaryAnnotationValueElement rule - [Kirk Clemens](https://github.com/clem0110)
+* [#989](https://github.com/pmd/pmd/pull/989): \[core] Update Contribute.md to close Issue #978 - [Bolarinwa Saheed Olayemi](https://github.com/refactormyself)
+* [#990](https://github.com/pmd/pmd/pull/990): \[java] Updated Doc on AvoidThrowingNullPointerException to close Issue #832 - [Bolarinwa Saheed Olayemi](https://github.com/refactormyself)
+* [#993](https://github.com/pmd/pmd/pull/993): \[core] Update writing_documentation.md to fix Issue #992 - [Bolarinwa Saheed Olayemi](https://github.com/refactormyself)
 

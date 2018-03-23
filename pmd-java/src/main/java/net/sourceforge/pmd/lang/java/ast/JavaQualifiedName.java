@@ -4,338 +4,68 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.WeakHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.ast.QualifiedName;
 
 
 /**
- * Represents Qualified Names for use within the java metrics framework.
+ * Unambiguous identifier for a java method or class. This implementation
+ * approaches the qualified name format found in stack traces for example,
+ * using a custom format specification (see {@link QualifiedNameFactory#ofString(String)}).
+ *
+ * <p>Instances of this class are immutable. They can be obtained from the
+ * factory methods of this class, or from {@link JavaQualifiableNode#getQualifiedName()}
+ * on AST nodes that support it.
+ *
+ * <p>Class qualified names follow the <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-13.html#jls-13.1">binary name spec</a>.
+ *
+ * <p>Method qualified names don't follow a specification but allow to
+ * distinguish overloads of the same method, using parameter types and order.
  */
+// TODO split into subclasses for class, field, method
+// TODO load a Class<?> from class qname, Method from method qname, etc
 public final class JavaQualifiedName implements QualifiedName {
-
-    /**
-     * Pattern specifying the format.
-     *
-     * <pre>
-     *    ((\w+\.)+|\.)             # packages
-     *    (                         # classes
-     *       (\w+)                  # primary class
-     *       (
-     *         \$                   # separator
-     *         (\d+)?               # optional local class index
-     *         \w+
-     *       )*
-     *     )
-     *     (                        # optional operation suffix
-     *       \#
-     *       (\w+)                  # method name
-     *       \(
-     *       (                      # parameters
-     *         (\w+)
-     *         (,\040\w+)*          # \040 is a space
-     *       )?
-     *       \)
-     *     )?
-     * </pre>
-     */
-    private static final Pattern FORMAT = Pattern.compile("((\\w+\\.)+|\\.)              # packages\n"
-                                                                  + "(                         # classes\n"
-                                                                  + "  (\\w+)                  # primary class\n"
-                                                                  + "  ("
-                                                                  + "    \\$                   # separator\n"
-                                                                  + "    (\\d+)?               # optional local class index\n"
-                                                                  + "    \\w+"
-                                                                  + "  )*"
-                                                                  + ")"
-                                                                  + "(                         # optional operation suffix\n"
-                                                                  + "  \\#"
-                                                                  + "  (\\w+)                  # method name\n"
-                                                                  + "  \\("
-                                                                  + "    (                     # parameters\n"
-                                                                  + "      (\\w+)"
-                                                                  + "      (,\\040\\w+)*        # \040 is a space\n"
-                                                                  + "    )?"
-                                                                  + "  \\)"
-                                                                  + ")?", Pattern.COMMENTS);
-    // indices of interesting groups in the regex
-    private static final int PACKAGES_GROUP_INDEX = 1;
-    private static final int CLASSES_GROUP_INDEX = 3;
-    private static final int OPERATION_GROUP_INDEX = 7;
 
 
     /** Local index value for when the class is not local. */
-    private static final int NOTLOCAL_PLACEHOLDER = -1;
-
-    // maps class names to the names of their local classes, to the count of local classes with the same name
-    private static final Map<JavaQualifiedName, Map<String, Integer>> LOCAL_INDICES = new WeakHashMap<>();
-    private static final Pattern LOCAL_INDEX_PATTERN = Pattern.compile("(\\d+)(\\w+)");
-
-    private String[] packages = null; // unnamed package
-    private String[] classes = new String[1];
-    private String operation = null;
-
-
+    static final int NOTLOCAL_PLACEHOLDER = -1;
+    // since we prepend each time, these lists are in the reversed order (innermost elem first).
+    // we use ImmutableList.reverse() to get them in their usual, user-friendly order
+    // TODO packages is not shared! if we used a dedicated visitor, we could make this happen
+    private final ImmutableList<String> packages; // unnamed package == Nil
+    private final ImmutableList<String> classes;
     /**
      * Local indices of the parents and of this class, in order.
      * They can be zipped with the {@link #classes} array.
      *
      * <p>If a class is not local, its local index is {@link #NOTLOCAL_PLACEHOLDER}.
      */
-    private int[] localIndices = new int[1];
+    private final ImmutableList<Integer> localIndices;
+    private final String operation;
+    private final boolean isLambda;
+    // toString cache
+    private String toString;
+    private final int hashCode;
 
 
-    private JavaQualifiedName() {
-        localIndices[0] = NOTLOCAL_PLACEHOLDER;
-    }
-
-
-    /* default, test only */ static void resetLocalIndicesCounter() {
-        LOCAL_INDICES.clear();
-    }
-
-
-    /**
-     * Builds the qualified name of a method declaration.
-     *
-     * @param node The method declaration node
-     *
-     * @return The qualified name of the node
-     */
-    /* default */ static JavaQualifiedName ofOperation(ASTMethodDeclaration node) {
-        JavaQualifiedName parentQname = node.getFirstParentOfType(ASTAnyTypeDeclaration.class)
-                                            .getQualifiedName();
-
-        return ofOperation(parentQname,
-                           node.getMethodName(),
-                           node.getFirstDescendantOfType(ASTFormalParameters.class));
-    }
-
-
-    /**
-     * Builds the qualified name of a constructor declaration.
-     *
-     * @param node The constructor declaration node
-     *
-     * @return The qualified name of the node
-     */
-    /* default */ static JavaQualifiedName ofOperation(ASTConstructorDeclaration node) {
-        ASTAnyTypeDeclaration parent = node.getFirstParentOfType(ASTAnyTypeDeclaration.class);
-
-        return ofOperation(parent.getQualifiedName(),
-                           parent.getImage(),
-                           node.getFirstDescendantOfType(ASTFormalParameters.class));
-    }
-
-
-    /** Factorises the functionality of ofOperation() */
-    private static JavaQualifiedName ofOperation(JavaQualifiedName parent, String opName, ASTFormalParameters params) {
-        JavaQualifiedName qname = new JavaQualifiedName();
-
-        qname.packages = parent.packages;
-        qname.classes = parent.classes;
-        qname.operation = getOperationName(opName, params);
-
-        return qname;
-    }
-
-
-    /**
-     * Builds the qualified name of a nested class using the qualified name of its immediate parent.
-     *
-     * @param parent    The qname of the immediate parent
-     * @param className The name of the class
-     *
-     * @return The qualified name of the nested class
-     */
-    /* default */ static JavaQualifiedName ofNestedClass(JavaQualifiedName parent, String className) {
-        return nestedOrLocalClassQualifiedNameHelper(parent, className, NOTLOCAL_PLACEHOLDER);
-    }
-
-
-    /**
-     * Builds the qualified name of a local class using the qualified name of its immediate parent.
-     * Local classes use a random suffix to prevent qualified name collisions.
-     *
-     * @param parent    The qname of the immediate parent
-     * @param className The name of the class
-     *
-     * @return The qualified name of the local class
-     */
-    /* default */ static JavaQualifiedName ofLocalClass(JavaQualifiedName parent, String className) {
-        return nestedOrLocalClassQualifiedNameHelper(parent, className, addLocal(parent, className));
-    }
-
-
-    // works from the parent class qualified name to create a nested or local class name
-    // use NOTLOCAL_PLACEHOLDER if the class is not local
-    private static JavaQualifiedName nestedOrLocalClassQualifiedNameHelper(JavaQualifiedName parent, String className, int localIndex) {
-        JavaQualifiedName toBuild = new JavaQualifiedName();
-
-        toBuild.packages = parent.packages;
-        toBuild.classes = Arrays.copyOf(parent.classes, parent.classes.length + 1);
-        toBuild.classes[parent.classes.length] = className;
-
-        // copy the local indices of the parents
-        toBuild.localIndices = Arrays.copyOf(parent.localIndices, parent.localIndices.length + 1);
-        toBuild.localIndices[parent.localIndices.length] = localIndex;
-
-        return toBuild;
-    }
-
-
-    // Registers a class as local to the parent qualified name, and gives back its index.
-    // The index identifies the local class in the scope of its parent.
-    private static int addLocal(JavaQualifiedName parent, String localClassName) {
-        Map<String, Integer> siblings = LOCAL_INDICES.get(parent);
-        if (siblings == null) {
-            LOCAL_INDICES.put(parent, new HashMap<String, Integer>());
-            LOCAL_INDICES.get(parent).put(localClassName, 1);
-            return 1;
-        } else {
-            Integer count = siblings.get(localClassName);
-            if (count == null) {
-                siblings.put(localClassName, 1);
-                return 1;
-            } else {
-                siblings.put(localClassName, count + 1);
-                return count + 1;
-            }
-        }
-    }
-
-
-    /**
-     * Builds the qualified name of an outer (not nested) class.
-     *
-     * @param node The class node
-     *
-     * @return The qualified name of the node
-     */
-    /* default */ static JavaQualifiedName ofOuterClass(ASTAnyTypeDeclaration node) {
-        ASTPackageDeclaration pkg = node.getFirstParentOfType(ASTCompilationUnit.class)
-                                        .getFirstChildOfType(ASTPackageDeclaration.class);
-
-        JavaQualifiedName qname = new JavaQualifiedName();
-        qname.packages = pkg == null ? null : pkg.getPackageNameImage().split("\\.");
-        qname.classes[0] = node.getImage();
-
-        return qname;
-    }
-
-
-    /**
-     * Gets the qualified name of a class.
-     *
-     * @param clazz Class object
-     *
-     * @return The qualified name of the class, or null if the class is null
-     */
-    public static JavaQualifiedName ofClass(Class<?> clazz) {
-        if (clazz == null) {
-            return null;
-        }
-
-        String name = clazz.getName();
-        if (name.indexOf('.') < 0) {
-            name = '.' + name; // unnamed package, marked by a full stop. See ofString's format below
-        }
-
-        return ofString(name);
-    }
-
-
-    /**
-     * Parses a qualified name given in the format defined for this implementation. The format
-     * is specified by a regex pattern (see {@link JavaQualifiedName#FORMAT}). Examples:
-     *
-     * <p>{@code com.company.MyClass$Nested#myMethod(String, int)}
-     * <ul>
-     * <li> Packages are separated by full stops;
-     * <li> Nested classes are separated by a dollar symbol;
-     * <li> The optional method suffix is separated from the class with a hashtag;
-     * <li> Method arguments are separated by a comma and a single space.
-     * </ul>
-     *
-     * <p>{@code .MyClass$Nested}
-     * <ul>
-     * <li> A class in the unnamed package is preceded by a single full stop.
-     * </ul>
-     *
-     * <p>{@code com.foo.Class$1LocalClass}
-     * <ul>
-     * <li> A local class' qualified name is assigned an index which identifies it within the scope
-     * of its enclosing class. The index is displayed after the separating dollar symbol.
-     * </ul>
-     *
-     * @param name The name to parse.
-     *
-     * @return A qualified name instance corresponding to the parsed string.
-     */
-    public static JavaQualifiedName ofString(String name) {
-        JavaQualifiedName qname = new JavaQualifiedName();
-
-        Matcher matcher = FORMAT.matcher(name);
-
-        if (!matcher.matches()) {
-            return null;
-        }
-
-        qname.packages = ".".equals(matcher.group(PACKAGES_GROUP_INDEX)) ? null : matcher.group(PACKAGES_GROUP_INDEX).split("\\.");
-        qname.operation = matcher.group(OPERATION_GROUP_INDEX) == null ? null : matcher.group(OPERATION_GROUP_INDEX).substring(1);
-
-        qname.classes = matcher.group(CLASSES_GROUP_INDEX).split("\\$");
-        qname.localIndices = new int[qname.classes.length];
-
-        for (int i = 0; i < qname.classes.length; i++) {
-            Matcher localIndexMatcher = LOCAL_INDEX_PATTERN.matcher(qname.classes[i]);
-            if (localIndexMatcher.matches()) {
-                qname.localIndices[i] = Integer.parseInt(localIndexMatcher.group(1));
-                qname.classes[i] = localIndexMatcher.group(2);
-            } else {
-                qname.localIndices[i] = NOTLOCAL_PLACEHOLDER;
-            }
-        }
-
-        return qname;
-    }
-
-
-    /** Returns a normalized method name (not Java-canonical!). */
-    private static String getOperationName(String methodName, ASTFormalParameters params) {
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(methodName);
-        sb.append('(');
-
-        boolean first = true;
-        for (ASTFormalParameter param : params) {
-            if (!first) {
-                sb.append(", ");
-            }
-            first = false;
-
-            sb.append(param.getTypeNode().getTypeImage());
-            if (param.isVarargs()) {
-                sb.append("...");
-            }
-        }
-
-        sb.append(')');
-
-        return sb.toString();
+    JavaQualifiedName(ImmutableList<String> packages, ImmutableList<String> classes, ImmutableList<Integer> localIndices, String operation, boolean isLambda) {
+        this.packages = packages;
+        this.classes = classes;
+        this.localIndices = localIndices;
+        this.operation = operation;
+        this.isLambda = isLambda;
+        this.hashCode = Objects.hash(packages, classes, localIndices, operation, isLambda);
     }
 
 
     @Override
     public boolean isClass() {
-        return classes[0] != null && operation == null;
+        return !classes.isEmpty() && operation == null;
     }
 
 
@@ -346,38 +76,133 @@ public final class JavaQualifiedName implements QualifiedName {
 
 
     /**
-     * Returns true if this qname identifies a local class.
+     * Returns true if this qualified name identifies a lambda expression.
      */
-    public boolean isLocalClass() {
-        return localIndices[localIndices.length - 1] != NOTLOCAL_PLACEHOLDER;
+    public boolean isLambda() {
+        return isLambda;
     }
 
 
     /**
-     * Returns the packages. This is specific to Java's package structure.
+     * Returns true if this qualified name identifies a
+     * local class.
+     */
+    public boolean isLocalClass() {
+        return localIndices.head() != NOTLOCAL_PLACEHOLDER;
+    }
+
+
+    /**
+     * Returns true if this qualified name identifies an
+     * anonymous class.
+     */
+    public boolean isAnonymousClass() {
+        return !isLocalClass() && StringUtils.isNumeric(getClassSimpleName());
+    }
+
+
+    /**
+     * Get the simple name of the class.
+     */
+    public String getClassSimpleName() {
+        return classes.head();
+    }
+
+
+    /**
+     * Returns true if the class represented by this
+     * qualified name is in the unnamed package.
+     */
+    public boolean isUnnamedPackage() {
+        return packages.isEmpty();
+    }
+
+
+    /**
+     * Returns the packages in outer-to-inner order. This
+     * is specific to Java's package structure. If the
+     * outer class is in the unnamed package, returns an
+     * empty list.
+     *
+     * <p>{@literal @NotNull}
      *
      * @return The packages.
      */
-    public String[] getPackages() {
-        return packages == null ? null : Arrays.copyOf(packages, packages.length);
+    public ImmutableList<String> getPackageList() {
+        return packages.reverse();
     }
 
 
     /**
-     * Returns the class specific part of the name. It identifies a class in the namespace it's declared in. If the
-     * class is nested inside another, then the array returned contains all enclosing classes in order.
+     * Returns the class specific part of the name. It
+     * identifies a class in the namespace it's declared
+     * in. If the class is nested inside another, then
+     * the list returned contains all enclosing classes
+     * in order, from outermost to innermost.
      *
-     * @return The class names array.
+     * <p>{@literal @NotNull}
+     *
+     * @return The class names.
      */
-    public String[] getClasses() {
-        return Arrays.copyOf(classes, classes.length);
+    public ImmutableList<String> getClassList() {
+        return classes.reverse();
     }
 
 
     /**
-     * Returns the operation specific part of the name. It identifies an operation in its namespace.
+     * Puts the reversed list into the given array, if possible, otherwise returns a new
+     * array with the same elements as this list in reversed order.
      *
-     * @return The operation string.
+     * <p>This method is only here to provide backwards compatibility to {@link #getPackages()}
+     * and {@link #getClasses()}. It should be removed with 7.0.0
+     *
+     * @param lst List
+     * @param arr Array
+     * @param <T> Type of the elements
+     *
+     * @return an array of the specified type
+     */
+    private static <T> T[] reversedToArray(ImmutableList<T> lst, T[] arr) {
+        @SuppressWarnings("unchecked")
+        T[] resultArr = arr.length == lst.size()
+                ? arr
+                : (T[]) Array.newInstance(arr.getClass().getComponentType(), lst.size());
+
+        int i = arr.length;
+        for (T elem : lst) {
+            resultArr[--i] = elem;
+        }
+        return resultArr;
+    }
+
+
+    /**
+     * Returns the packages in order.
+     *
+     * @deprecated Use {@link #getPackageList()} ()}. Will be removed in 7.0.0
+     */
+    @Deprecated
+    public String[] getPackages() {
+        return reversedToArray(packages, new String[packages.size()]);
+    }
+
+
+    /**
+     * Returns the classes in order.
+     *
+     * @deprecated Use {@link #getClassList()}. Will be removed in 7.0.0
+     */
+    @Deprecated
+    public String[] getClasses() {
+        return reversedToArray(classes, new String[classes.size()]);
+    }
+
+    /**
+     * Returns the operation specific part of the name. It
+     * identifies an operation in its namespace. Returns
+     * {@code null} if {@link #isOperation()} returns false.
+     *
+     * @return The operation string, or {@code null}.
      */
     public String getOperation() {
         return operation;
@@ -390,10 +215,7 @@ public final class JavaQualifiedName implements QualifiedName {
             return this;
         }
 
-        JavaQualifiedName qname = new JavaQualifiedName();
-        qname.classes = this.classes;
-        qname.packages = this.packages;
-        return qname;
+        return new JavaQualifiedName(packages, classes, localIndices, null, false);
     }
 
 
@@ -406,53 +228,115 @@ public final class JavaQualifiedName implements QualifiedName {
             return false;
         }
         JavaQualifiedName that = (JavaQualifiedName) o;
-        return Arrays.equals(packages, that.packages)
-                && Arrays.equals(classes, that.classes)
+        return Objects.equals(toString(), that.toString())
+                && isLambda == that.isLambda
                 && Objects.equals(operation, that.operation)
-                && Arrays.equals(localIndices, that.localIndices);
+                && Objects.equals(packages, that.packages)
+                && Objects.equals(classes, that.classes)
+                && Objects.equals(localIndices, that.localIndices);
     }
 
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(operation);
-        result = 31 * result + Arrays.hashCode(packages);
-        result = 31 * result + Arrays.hashCode(classes);
-        result = 31 * result + Arrays.hashCode(localIndices);
-        return result;
+        return hashCode;
     }
 
 
+    /**
+     * Returns the string representation of this qualified
+     * name. The representation follows the format defined
+     * for {@link QualifiedNameFactory#ofString(String)}.
+     */
     @Override
     public String toString() {
+        // lazy evaluated
+        if (toString == null) {
+            toString = buildToString();
+        }
+        return toString;
+    }
+
+
+    // Construct the toString. Called only once per instance
+    private String buildToString() {
         StringBuilder sb = new StringBuilder();
 
-        if (packages != null) {
-            int last = packages.length - 1;
-            for (int i = 0; i < last; i++) {
-                sb.append(packages[i]).append('.');
-            }
-
-            sb.append(packages[last]);
+        for (String aPackage : packages.reverse()) {
+            sb.append(aPackage).append('.');
         }
-        sb.append('.'); // this dot is there even if package is null
 
-        sb.append(classes[0]);
-
-        for (int i = 1; i < classes.length; i++) {
+        // this in the normal order
+        ImmutableList<String> reversed = classes.reverse();
+        sb.append(reversed.head());
+        for (Entry<String, Integer> classAndLocalIdx : reversed.tail().zip(localIndices.reverse().tail())) {
             sb.append('$');
 
-            if (localIndices[i] != NOTLOCAL_PLACEHOLDER) {
-                sb.append(localIndices[i]);
+            if (classAndLocalIdx.getValue() != NOTLOCAL_PLACEHOLDER) {
+                sb.append(classAndLocalIdx.getValue());
             }
 
-            sb.append(classes[i]);
+            sb.append(classAndLocalIdx.getKey());
         }
 
-        if (operation != null) {
+        if (isOperation()) {
             sb.append('#').append(operation);
         }
 
         return sb.toString();
     }
+
+
+    /**
+     * @deprecated Use {@link QualifiedNameFactory#ofString(String)}. Will be removed in 7.0.0
+     */
+    @Deprecated
+    public static JavaQualifiedName ofString(String name) {
+        return QualifiedNameFactory.ofString(name);
+    }
+
+
+    /**
+     * @deprecated Use {@link QualifiedNameFactory#ofClass(Class)}. Will be removed in 7.0.0
+     */
+    @Deprecated
+    public static JavaQualifiedName ofClass(Class<?> clazz) {
+        return QualifiedNameFactory.ofClass(clazz);
+    }
+
+    // These factories are kept here because getClassList and getPackageList return
+    // a reversed list. Not calling them from QualifiedNameFactory avoids a
+    // reverse operation
+
+    /**
+     * Builds the name of an operation from its parent and operation string.
+     *
+     * @param parent    Qualified name of the parent class
+     * @param operation Operation name
+     *
+     * @return A new qualified name
+     */
+    static JavaQualifiedName operationName(JavaQualifiedName parent, String operation, boolean isLambda) {
+        return new JavaQualifiedName(parent.packages, parent.classes, parent.localIndices, operation, isLambda);
+    }
+
+
+    /**
+     * Builds the name of a class that's not in the outer level (that is, it's
+     * either local, anonymous, nested or inner).
+     *
+     * @param parent     Qualified name of the parent class
+     * @param className  Name of the new class
+     * @param localIndex Locality index
+     *
+     * @return A new qualified name
+     */
+    static JavaQualifiedName notOuterClassName(JavaQualifiedName parent, String className, int localIndex) {
+        return new JavaQualifiedName(parent.packages,
+                                     parent.classes.prepend(className),
+                                     parent.localIndices.prepend(localIndex),
+                                     null,
+                                     false);
+    }
+
 }

@@ -256,6 +256,9 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
     <properties>
         <java.version>7</java.version>
+        <!-- Workaround for https://youtrack.jetbrains.com/issue/IDEA-188690 -->
+        <maven.compiler.source>1.${java.version}</maven.compiler.source>
+        <maven.compiler.target>1.${java.version}</maven.compiler.target>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.20.1</surefire.version>

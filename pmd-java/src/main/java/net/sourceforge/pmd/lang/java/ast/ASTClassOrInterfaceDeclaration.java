@@ -10,13 +10,12 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ast.Node;
 
 
-public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
+public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
 
     private boolean isLocal;
     private boolean isLocalComputed; // guard for lazy evaluation of isLocal()
 
     private boolean isInterface;
-    private JavaQualifiedName qualifiedName;
 
     public ASTClassOrInterfaceDeclaration(int id) {
         super(id);
@@ -37,11 +36,6 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
-    }
-
-    public boolean isNested() {
-        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
-            || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
     }
 
 
@@ -77,25 +71,6 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
 
     public void setInterface() {
         this.isInterface = true;
-    }
-
-    @Override
-    public JavaQualifiedName getQualifiedName() {
-        if (qualifiedName == null) {
-            if (isNested() || isLocal()) {
-                ASTAnyTypeDeclaration parent = this.getFirstParentOfType(ASTAnyTypeDeclaration.class);
-                JavaQualifiedName parentQN = parent.getQualifiedName();
-
-                qualifiedName = isLocal()
-                        ? JavaQualifiedName.ofLocalClass(parentQN, this.getImage())
-                        : JavaQualifiedName.ofNestedClass(parentQN, this.getImage());
-                return qualifiedName;
-            }
-
-            qualifiedName = JavaQualifiedName.ofOuterClass(this);
-        }
-
-        return qualifiedName;
     }
 
     @Override
