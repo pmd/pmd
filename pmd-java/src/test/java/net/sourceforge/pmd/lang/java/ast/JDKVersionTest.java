@@ -17,7 +17,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -277,8 +276,7 @@ public class JDKVersionTest {
     @Test
     public final void jdk7PrivateMethodInnerClassInterface1() {
         ASTCompilationUnit acu = parseJava17(loadSource("private_method_in_inner_class_interface1.java"));
-        List<ASTMethodDeclaration> methods = new ArrayList<>();
-        acu.findDescendantsOfType(ASTMethodDeclaration.class, methods, true);
+        List<ASTMethodDeclaration> methods = acu.findDescendantsOfType(ASTMethodDeclaration.class, true);
         assertEquals(3, methods.size());
         for (ASTMethodDeclaration method : methods) {
             assertFalse(method.isInterfaceMember());

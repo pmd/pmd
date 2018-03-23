@@ -5,9 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.sourceforge.pmd.lang.ast.Node;
 
 public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
@@ -36,16 +33,12 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
      */
     public boolean isReferenceToClassSameCompilationUnit() {
         ASTCompilationUnit root = getFirstParentOfType(ASTCompilationUnit.class);
-        List<ASTClassOrInterfaceDeclaration> classes = new ArrayList<>();
-        root.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class, classes, true);
-        for (ASTClassOrInterfaceDeclaration c : classes) {
+        for (ASTClassOrInterfaceDeclaration c : root.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class, true)) {
             if (c.hasImageEqualTo(getImage())) {
                 return true;
             }
         }
-        List<ASTEnumDeclaration> enums = new ArrayList<>();
-        root.findDescendantsOfType(ASTEnumDeclaration.class, enums, true);
-        for (ASTEnumDeclaration e : enums) {
+        for (ASTEnumDeclaration e : root.findDescendantsOfType(ASTEnumDeclaration.class, true)) {
             if (e.hasImageEqualTo(getImage())) {
                 return true;
             }

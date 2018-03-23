@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -67,10 +66,9 @@ public class ScopeAndDeclarationFinderTest extends STBBaseTst {
         ClassScope cs = (ClassScope) acu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getScope();
         Assert.assertEquals(1, cs.getClassDeclarations().size()); // There should be 1 anonymous class
 
-        List<ASTMethodDeclarator> methods = new ArrayList<>();
-        acu.getFirstDescendantOfType(ASTClassOrInterfaceBody.class) // outer class
+        List<ASTMethodDeclarator> methods = acu.getFirstDescendantOfType(ASTClassOrInterfaceBody.class) // outer class
                 .getFirstDescendantOfType(ASTClassOrInterfaceBody.class) // inner class
-                .findDescendantsOfType(ASTMethodDeclarator.class, methods, true); // inner class methods
+                .findDescendantsOfType(ASTMethodDeclarator.class, true); // inner class methods
         Assert.assertEquals(2, methods.size());
         ClassScope scope1 = methods.get(0).getScope().getEnclosingScope(ClassScope.class);
         ClassScope scope2 = methods.get(1).getScope().getEnclosingScope(ClassScope.class);

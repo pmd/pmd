@@ -131,7 +131,7 @@ public class AcceptanceTest extends STBBaseTst {
     public void testInnerOuterClass() {
         parseCode(TEST_INNER_CLASS);
         ASTVariableDeclaratorId vdi = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(1) // get inner class
-                .findDescendantsOfType(ASTVariableDeclaratorId.class).get(0); // get first declaration
+                .getFirstDescendantOfType(ASTVariableDeclaratorId.class); // get first declaration
         List<NameOccurrence> usages = vdi.getUsages();
         assertEquals(2, usages.size());
         assertEquals(5, usages.get(0).getLocation().getBeginLine());

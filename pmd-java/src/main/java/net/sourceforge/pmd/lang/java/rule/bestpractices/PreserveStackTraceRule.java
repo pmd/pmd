@@ -140,6 +140,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
     private boolean checkForTargetUsage(String target, Node baseNode) {
         boolean match = false;
         if (target != null && baseNode != null) {
+            // TODO : use Node.findDescendantsOfType(ASTName.class, true) on 7.0.0
             List<ASTName> nameNodes = new ArrayList<>();
             baseNode.findDescendantsOfType(ASTName.class, nameNodes, true);
             for (ASTName nameNode : nameNodes) {
