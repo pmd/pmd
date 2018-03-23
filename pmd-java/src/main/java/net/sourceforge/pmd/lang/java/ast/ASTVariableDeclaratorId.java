@@ -73,12 +73,17 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
 
 
     /**
-     * Returns true if this declarator ID declares a formal
-     * parameter for a lambda with an inferred type, eg in
-     * {@code (a,b) -> a + b}. In that case, {@link #getTypeNode()}
-     * returns {@code null}, since the type node is absent.
+     * Returns true if the declared variable's type is inferred by
+     * the compiler. In Java 8, this can happen if it's in a formal
+     * parameter of a lambda with an inferred type (e.g. {@code (a, b) -> a + b}).
+     * Since Java 10, the type of local variables can be inferred
+     * too, e.g. {@code var i = 2;}.
+     *
+     * <p>This method returns true for declarator IDs in those contexts,
+     * in which case {@link #getTypeNode()} returns {@code null},
+     * since the type node is absent.
      */
-    public boolean isLambdaInferredFormalParameter() {
+    public boolean isTypeInferred() {
         return jjtGetParent() instanceof ASTLambdaExpression;
     }
 
@@ -104,12 +109,12 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * node. See {@link #getType()} for an explanation.
      *
      * @return the type node, or {@code null} if there is no explicit type,
-     * e.g. if {@link #isLambdaInferredFormalParameter()} returns true.
+     * e.g. if {@link #isTypeInferred()} returns true.
      */
     public ASTType getTypeNode() {
         if (jjtGetParent() instanceof ASTFormalParameter) {
             return ((ASTFormalParameter) jjtGetParent()).getTypeNode();
-        } else if (isLambdaInferredFormalParameter()) {
+        } else if (isTypeInferred()) {
             // lambda expression with lax types. The type is inferred...
             return null;
         } else {

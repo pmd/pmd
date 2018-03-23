@@ -683,7 +683,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (node == null || node.isLambdaInferredFormalParameter()) {
+        if (node == null || node.isTypeInferred()) {
             return super.visit(node, data);
         }
 
