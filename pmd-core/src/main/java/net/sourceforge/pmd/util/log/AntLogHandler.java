@@ -62,9 +62,11 @@ public class AntLogHandler extends Handler {
 
     @Override
     public void close() throws SecurityException {
+        // nothing to do
     }
 
     @Override
     public void flush() {
+        // nothing to do
     }
 }

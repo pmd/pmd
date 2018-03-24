@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
+import net.sourceforge.pmd.lang.java.ast.QualifiedNameFactory;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
@@ -34,13 +35,14 @@ public class PackageStatsTest {
 
     @Before
     public void setUp() {
-        pack = new PackageStats();
+        pack = PackageStats.INSTANCE;
+        pack.reset();
     }
 
 
     @Test
     public void testAddClass() {
-        JavaQualifiedName qname = JavaQualifiedName.ofString("org.foo.Boo");
+        JavaQualifiedName qname = QualifiedNameFactory.ofString("org.foo.Boo");
 
         assertNull(pack.getClassStats(qname, false));
         assertNotNull(pack.getClassStats(qname, true));
@@ -75,7 +77,7 @@ public class PackageStatsTest {
 
         ASTFieldDeclaration node = getOrderedNodes(ASTFieldDeclaration.class, TEST).get(0);
 
-        JavaQualifiedName qname = JavaQualifiedName.ofString("org.foo.Boo");
+        JavaQualifiedName qname = QualifiedNameFactory.ofString("org.foo.Boo");
         String fieldName = "bar";
         JavaFieldSignature signature = JavaFieldSignature.buildFor(node);
 

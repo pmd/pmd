@@ -69,7 +69,12 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
             return typeDef;
         }
 
-        final JavaTypeDefinition newDef = new JavaTypeDefinitionSimple(clazz);
+        final JavaTypeDefinition newDef;
+        try {
+            newDef = new JavaTypeDefinitionSimple(clazz);
+        } catch (final NoClassDefFoundError e) {
+            return null; // Can happen if a parent class references a class not in classpath
+        }
 
         CLASS_EXACT_TYPE_DEF_CACHE.put(clazz, newDef);
 

@@ -14,7 +14,7 @@ import net.sourceforge.pmd.util.viewer.gui.MainFrame;
  * @version $Id$
  */
 @Deprecated // to be removed with PMD 7.0.0
-public class Viewer {
+public final class Viewer {
 
     private Viewer() { }
 

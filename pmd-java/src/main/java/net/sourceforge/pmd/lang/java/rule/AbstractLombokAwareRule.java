@@ -36,6 +36,7 @@ public class AbstractLombokAwareRule extends AbstractJavaRule {
         LOMBOK_ANNOTATIONS.add("Value");
         LOMBOK_ANNOTATIONS.add("RequiredArgsConstructor");
         LOMBOK_ANNOTATIONS.add("AllArgsConstructor");
+        LOMBOK_ANNOTATIONS.add("NoArgsConstructor");
         LOMBOK_ANNOTATIONS.add("Builder");
     }
 
@@ -109,5 +110,29 @@ public class AbstractLombokAwareRule extends AbstractJavaRule {
             }
         }
         return result;
+    }
+
+    protected ASTAnnotation getLombokAnnotation(Node node, String lombokAnnotation) {
+        Node parent = node.jjtGetParent();
+        List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
+        for (ASTAnnotation annotation : annotations) {
+            ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
+            if (name != null) {
+                String annotationName = name.getImage();
+                if (lombokImported) {
+                    if (lombokAnnotation.equals(annotationName)) {
+                        return annotation;
+                    }
+                } else {
+                    if (annotationName.startsWith(LOMBOK_PACKAGE + ".")) {
+                        String shortName = annotationName.substring(LOMBOK_PACKAGE.length() + 1);
+                        if (lombokAnnotation.equals(shortName)) {
+                            return annotation;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

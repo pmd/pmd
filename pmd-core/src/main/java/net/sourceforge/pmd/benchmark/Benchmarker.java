@@ -40,7 +40,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  *
  *
  */
-public class Benchmarker {
+public final class Benchmarker {
 
     private static final Map<String, BenchmarkResult> BENCHMARKS_BY_NAME = new HashMap<>();
 

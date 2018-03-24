@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -32,7 +33,7 @@ import javafx.util.StringConverter;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class DesignerUtil {
+public final class DesignerUtil {
 
 
     private static final Path PMD_SETTINGS_DIR = Paths.get(System.getProperty("user.home"), ".pmd");
@@ -98,7 +99,7 @@ public class DesignerUtil {
 
     public static StringConverter<LanguageVersion> languageVersionStringConverter() {
         return DesignerUtil.stringConverter(LanguageVersion::getShortName,
-            s -> LanguageRegistry.findLanguageVersionByTerseName(s.toLowerCase()));
+            s -> LanguageRegistry.findLanguageVersionByTerseName(s.toLowerCase(Locale.ROOT)));
     }
 
 
@@ -114,7 +115,7 @@ public class DesignerUtil {
     }
 
 
-    public static LanguageVersion getLanguageVersionFromExtension(String filename) {
+    public static synchronized LanguageVersion getLanguageVersionFromExtension(String filename) {
         if (extensionsToLanguage == null) {
             extensionsToLanguage = getExtensionsToLanguageMap();
         }
@@ -127,7 +128,7 @@ public class DesignerUtil {
     }
 
 
-    public static List<LanguageVersion> getSupportedLanguageVersions() {
+    public static synchronized List<LanguageVersion> getSupportedLanguageVersions() {
         if (supportedLanguageVersions == null) {
             List<LanguageVersion> languageVersions = new ArrayList<>();
             for (LanguageVersion languageVersion : LanguageRegistry.findAllVersions()) {

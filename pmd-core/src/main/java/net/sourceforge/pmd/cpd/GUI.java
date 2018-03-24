@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -59,7 +58,7 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
@@ -139,7 +138,7 @@ public class GUI implements CPDListener {
                 @Override
                 public String[] extensions() {
                     List<String> exts = lang.getExtensions();
-                    return exts.toArray(new String[exts.size()]);
+                    return exts.toArray(new String[0]);
                 }
 
                 @Override
@@ -632,7 +631,7 @@ public class GUI implements CPDListener {
             int separatorPos = sourceId.lastIndexOf(File.separatorChar);
             label = "..." + sourceId.substring(separatorPos);
         } else {
-            label = "(" + sourceIDs.size() + " separate files)";
+            label = '(' + sourceIDs.size() + " separate files)";
         }
 
         match.setLabel(label);
@@ -749,16 +748,16 @@ public class GUI implements CPDListener {
         return sb.toString();
     }
 
-    private interface SortingTableModel<E> extends TableModel {
-        int sortColumn();
+    private abstract class SortingTableModel<E> extends AbstractTableModel {
+        abstract int sortColumn();
 
-        void sortColumn(int column);
+        abstract void sortColumn(int column);
 
-        boolean sortDescending();
+        abstract boolean sortDescending();
 
-        void sortDescending(boolean flag);
+        abstract void sortDescending(boolean flag);
 
-        void sort(Comparator<E> comparator);
+        abstract void sort(Comparator<E> comparator);
     }
 
     private TableModel tableModelFrom(final List<Match> items) {
@@ -806,20 +805,8 @@ public class GUI implements CPDListener {
             }
 
             @Override
-            public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            }
-
-            @Override
             public String getColumnName(int i) {
                 return matchColumns[i].label();
-            }
-
-            @Override
-            public void addTableModelListener(TableModelListener l) {
-            }
-
-            @Override
-            public void removeTableModelListener(TableModelListener l) {
             }
 
             @Override

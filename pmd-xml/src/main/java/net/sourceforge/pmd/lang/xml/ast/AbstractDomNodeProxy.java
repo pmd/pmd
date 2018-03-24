@@ -49,6 +49,7 @@ public abstract class AbstractDomNodeProxy extends AbstractNode implements org.w
     }
 
 
+    @SuppressWarnings("PMD.AvoidUsingShortType")
     @Override
     public short getNodeType() {
         return node.getNodeType();
@@ -187,6 +188,7 @@ public abstract class AbstractDomNodeProxy extends AbstractNode implements org.w
     }
 
 
+    @SuppressWarnings("PMD.AvoidUsingShortType")
     @Override
     public short compareDocumentPosition(org.w3c.dom.Node other) throws DOMException {
         return node.compareDocumentPosition(other);

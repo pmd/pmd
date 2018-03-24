@@ -172,7 +172,6 @@ public class UnusedImportsRule extends AbstractJavaRule {
         } else {
             name = node.getImage().substring(0, node.getImage().indexOf('.'));
         }
-        ImportWrapper candidate = new ImportWrapper(node.getImage(), name);
-        return candidate;
+        return new ImportWrapper(node.getImage(), name);
     }
 }

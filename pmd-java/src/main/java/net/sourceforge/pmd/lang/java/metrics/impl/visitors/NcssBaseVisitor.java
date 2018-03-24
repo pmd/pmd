@@ -46,12 +46,6 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
     /** Instance. */
     public static final NcssBaseVisitor INSTANCE = new NcssBaseVisitor();
 
-
-    protected NcssBaseVisitor() {
-
-    }
-
-
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         ((MutableInt) data).increment();

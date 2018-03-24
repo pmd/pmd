@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -99,6 +100,12 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
         return false;
     }
 
+    // TODO : should node define isAfter / isBefore helper methods for Nodes?
+    private static boolean isAfter(Node n1, Node n2) {
+        return n1.getBeginLine() > n2.getBeginLine()
+                || n1.getBeginLine() == n2.getBeginLine() && n1.getBeginColumn() >= n2.getEndColumn();
+    }
+
     private boolean isInitDataModifiedAfterInit(final VariableNameDeclaration variableDeclaration,
             final ASTReturnStatement rtn) {
         final ASTVariableInitializer initializer = variableDeclaration.getAccessNodeParent()
@@ -118,12 +125,7 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
                             for (final NameOccurrence occ : entry.getValue()) {
                                 final ScopedNode location = occ.getLocation();
                                 // Is it used after initializing our "unnecessary" local but before the return statement?
-                                // TODO : should node define isAfter / isBefore helper methods?
-                                if ((location.getBeginLine() > initializer.getEndLine()
-                                        || (location.getBeginLine() == initializer.getEndLine() && location.getBeginColumn() >= initializer.getEndColumn()))
-                                        && (location.getEndLine() < rtn.getBeginLine()
-                                                || (location.getEndLine() == rtn.getBeginLine()
-                                                        && location.getEndColumn() <= rtn.getEndColumn()))) {
+                                if (isAfter(location, initializer) && isAfter(rtn, location)) {
                                     return true;
                                 }
                             }

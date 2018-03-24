@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -291,7 +292,7 @@ import java.util.logging.Logger;
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof JavaTypeDefinitionSimple)) {
+        if (!(obj instanceof JavaTypeDefinitionSimple)) {
             return false;
         }
 
@@ -370,7 +371,7 @@ import java.util.logging.Logger;
 
     @Override
     public JavaTypeDefinition getAsSuper(Class<?> superClazz) {
-        if (clazz == superClazz) { // optimize for same class calls
+        if (Objects.equals(clazz, superClazz)) { // optimize for same class calls
             return this;
         }
 

@@ -81,13 +81,14 @@ public class PMDTaskImpl {
         this.failuresPropertyName = task.getFailuresPropertyName();
         configuration.setMinimumPriority(RulePriority.valueOf(task.getMinimumPriority()));
         configuration.setAnalysisCacheLocation(task.getCacheLocation());
+        configuration.setIgnoreIncrementalAnalysis(task.isNoCache());
 
         SourceLanguage version = task.getSourceLanguage();
         if (version != null) {
             LanguageVersion languageVersion = LanguageRegistry
-                    .findLanguageVersionByTerseName(version.getName() + " " + version.getVersion());
+                    .findLanguageVersionByTerseName(version.getName() + ' ' + version.getVersion());
             if (languageVersion == null) {
-                throw new BuildException("The following language is not supported:" + version + ".");
+                throw new BuildException("The following language is not supported:" + version + '.');
             }
             configuration.setDefaultLanguageVersion(languageVersion);
         }

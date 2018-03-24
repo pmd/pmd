@@ -1552,4 +1552,16 @@ public class Something {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#907 Add IgnoredAnnotations property to UnusedPrivateMethod</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          @Deprecated
+          private bar() {
+          }
+        }
+        ]]></code>
+    </test-code>
+
 </test-data>

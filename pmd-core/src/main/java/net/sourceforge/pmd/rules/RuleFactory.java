@@ -25,6 +25,7 @@ import org.w3c.dom.NodeList;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
@@ -59,19 +60,19 @@ public class RuleFactory {
     private static final List<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(NAME, CLASS));
 
     /**
-     * Decorates a referenced rule with the metadata that are overriden in the given rule element.
+     * Decorates a referenced rule with the metadata that are overridden in the given rule element.
      *
      * <p>Declaring a property in the overriding element throws an exception (the property must exist in the referenced
      * rule).
      *
      * @param referencedRule Referenced rule
+     * @param ruleSetReference the ruleset, where the referenced rule is defined
      * @param ruleElement    Element overriding some metadata about the rule
      *
      * @return A rule reference to the referenced rule
      */
-    public RuleReference decorateRule(Rule referencedRule, Element ruleElement) {
-        RuleReference ruleReference = new RuleReference();
-        ruleReference.setRule(referencedRule);
+    public RuleReference decorateRule(Rule referencedRule, RuleSetReference ruleSetReference, Element ruleElement) {
+        RuleReference ruleReference = new RuleReference(referencedRule, ruleSetReference);
 
         if (ruleElement.hasAttribute(DEPRECATED)) {
             ruleReference.setDeprecated(Boolean.parseBoolean(ruleElement.getAttribute(DEPRECATED)));

@@ -41,12 +41,6 @@ public class XmlNodeWrapper extends AbstractDomNodeProxy implements XmlNode {
 
 
     @Override
-    public void jjtOpen() {
-
-    }
-
-
-    @Override
     public void jjtClose() {
         throw new UnsupportedOperationException();
     }

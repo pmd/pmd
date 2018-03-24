@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.java.ast.QualifiedNameTest;
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiedNameTest;
 import net.sourceforge.pmd.lang.java.metrics.MetricsHook;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
@@ -19,7 +19,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
     @Override
     protected Rule reinitializeRule(Rule rule) {
         MetricsHook.reset();
-        QualifiedNameTest.resetLocalIndicesCounterHook();
+        JavaQualifiedNameTest.resetLocalIndicesCounterHook();
         return rule;
     }
 

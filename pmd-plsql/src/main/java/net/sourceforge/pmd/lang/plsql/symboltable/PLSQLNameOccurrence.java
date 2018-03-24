@@ -94,15 +94,11 @@ public class PLSQLNameOccurrence implements NameOccurrence {
          * ASTAssignmentOperator)) { return false; }
          */
 
-        if (isPartOfQualifiedName() /* or is an array type */) {
-            return false;
-        }
-
         /*
          * if (isCompoundAssignment(primaryExpression)) { return false; }
          */
 
-        return true;
+        return !isPartOfQualifiedName() /* and not is an array type */;
     }
 
     /*

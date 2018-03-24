@@ -169,10 +169,9 @@ public class Report implements Iterable<RuleViolation> {
                 error.printStackTrace(writer);
                 return stringWriter.toString();
             } catch (IOException e) {
-                // can never happen when using StringWriter
+                // IOException on close - should never happen when using StringWriter
+                throw new RuntimeException(e);
             }
-            
-            return null;
         }
 
         public String getFile() {

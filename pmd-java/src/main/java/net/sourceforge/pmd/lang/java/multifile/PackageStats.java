@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.lang.java.multifile;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.java.ast.ImmutableList;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
@@ -32,8 +34,7 @@ final class PackageStats implements ProjectMirror {
     /**
      * Default constructor.
      */
-    /* default */ PackageStats() {
-
+    private PackageStats() {
     }
 
 
@@ -62,7 +63,7 @@ final class PackageStats implements ProjectMirror {
             return null;
         }
 
-        String topClassName = qname.getClasses()[0];
+        String topClassName = qname.getClassList().head();
         if (createIfNotFound && container.classes.get(topClassName) == null) {
             container.classes.put(topClassName, new ClassStats());
         }
@@ -73,11 +74,11 @@ final class PackageStats implements ProjectMirror {
             return null;
         }
 
-        String[] nameClasses = qname.getClasses();
+        ImmutableList<String> nameClasses = qname.getClassList();
 
-        for (int i = 1; i < nameClasses.length && next != null; i++) {
+        for (Iterator<String> it = nameClasses.tail().iterator(); it.hasNext() && next != null;) {
             // Delegate search for nested classes to ClassStats
-            next = next.getNestedClassStats(nameClasses[i], createIfNotFound);
+            next = next.getNestedClassStats(it.next(), createIfNotFound);
         }
 
         return next;
@@ -94,19 +95,20 @@ final class PackageStats implements ProjectMirror {
      * @return The deepest package that contains this resource. Can only return null if createIfNotFound is unset
      */
     private PackageStats getSubPackage(JavaQualifiedName qname, boolean createIfNotFound) {
-        if (qname.getPackages() == null) {
+        if (qname.getPackageList() == null) {
             return this; // the toplevel
         }
 
-        String[] packagePath = qname.getPackages();
+        ImmutableList<String> packagePath = qname.getPackageList();
         PackageStats next = this;
 
-        for (int i = 0; i < packagePath.length && next != null; i++) {
-            if (createIfNotFound && next.subPackages.get(packagePath[i]) == null) {
-                next.subPackages.put(packagePath[i], new PackageStats());
+        for (Iterator<String> it = packagePath.iterator(); it.hasNext() && next != null;) {
+            String currentPackage = it.next();
+            if (createIfNotFound && next.subPackages.get(currentPackage) == null) {
+                next.subPackages.put(currentPackage, new PackageStats());
             }
 
-            next = next.subPackages.get(packagePath[i]);
+            next = next.subPackages.get(currentPackage);
         }
 
         return next;

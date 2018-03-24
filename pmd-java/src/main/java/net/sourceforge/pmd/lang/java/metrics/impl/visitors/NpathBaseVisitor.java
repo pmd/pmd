@@ -33,10 +33,6 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
     /** Instance. */
     public static final NpathBaseVisitor INSTANCE = new NpathBaseVisitor();
 
-    protected NpathBaseVisitor() {
-
-    }
-
     /* Multiplies the complexity of the children of this node. */
     private int multiplyChildrenComplexities(JavaNode node, Object data) {
         int product = 1;
@@ -146,7 +142,7 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
             boolCompReturn += conditionalExpressionComplexity;
         }
 
-        return (boolCompReturn > 0) ? boolCompReturn : 1;
+        return boolCompReturn > 0 ? boolCompReturn : 1;
     }
 
 

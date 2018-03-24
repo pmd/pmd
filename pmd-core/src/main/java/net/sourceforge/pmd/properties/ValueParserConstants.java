@@ -14,6 +14,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -192,6 +193,14 @@ public final class ValueParserConstants {
         @Override
         public File valueOf(String value) throws IllegalArgumentException {
             return new File(value);
+        }
+    };
+
+    /** Compiles a regex. */
+    static final ValueParser<Pattern> REGEX_PARSER = new ValueParser<Pattern>() {
+        @Override
+        public Pattern valueOf(String value) throws IllegalArgumentException {
+            return Pattern.compile(value);
         }
     };
 

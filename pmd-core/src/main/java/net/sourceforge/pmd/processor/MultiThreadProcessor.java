@@ -12,7 +12,6 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
@@ -24,7 +23,6 @@ import net.sourceforge.pmd.renderers.Renderer;
  */
 public class MultiThreadProcessor extends AbstractPMDProcessor {
 
-    private ThreadFactory factory;
     private ExecutorService executor;
     private CompletionService<Report> completionService;
     private List<Future<Report>> tasks = new ArrayList<>();
@@ -32,8 +30,7 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
     public MultiThreadProcessor(final PMDConfiguration configuration) {
         super(configuration);
 
-        factory = new PmdThreadFactory();
-        executor = Executors.newFixedThreadPool(configuration.getThreads(), factory);
+        executor = Executors.newFixedThreadPool(configuration.getThreads(), new PmdThreadFactory());
         completionService = new ExecutorCompletionService<>(executor);
     }
 

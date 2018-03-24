@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class MetricKeyUtil {
+public final class MetricKeyUtil {
 
     private MetricKeyUtil() {
 
@@ -22,7 +22,7 @@ public class MetricKeyUtil {
 
 
     /**
-     * Creates a new metric key holding a metric which can be computed on a class.
+     * Creates a new metric key from its metric and name.
      *
      * @param name   The name of the metric
      * @param metric The metric to use

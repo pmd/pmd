@@ -10,10 +10,6 @@
         <version>6.2.0-SNAPSHOT</version>
     </parent>
 
-    <properties>
-        <config.basedir>${basedir}/../pmd-core</config.basedir>
-    </properties>
-
     <build>
         <testResources>
             <testResource>

@@ -53,10 +53,10 @@ public class Designer extends Application {
         DesignerRoot owner = new DesignerRoot(stage);
         MainDesignerController mainController = new MainDesignerController(owner);
 
-        NodeInfoPanelController nodeInfoPanelController = new NodeInfoPanelController(owner, mainController);
+        NodeInfoPanelController nodeInfoPanelController = new NodeInfoPanelController(mainController);
         XPathPanelController xpathPanelController = new XPathPanelController(owner, mainController);
         SourceEditorController sourceEditorController = new SourceEditorController(owner, mainController);
-        EventLogController eventLogController = new EventLogController(owner, mainController);
+        EventLogController eventLogController = new EventLogController(owner);
 
         loader.setControllerFactory(type -> {
             if (type == MainDesignerController.class) {

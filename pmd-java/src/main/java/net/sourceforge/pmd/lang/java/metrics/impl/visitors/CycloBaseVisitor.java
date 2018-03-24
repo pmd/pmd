@@ -30,10 +30,6 @@ public class CycloBaseVisitor extends JavaParserControllessVisitorAdapter {
     /** Instance. */
     public static final CycloBaseVisitor INSTANCE = new CycloBaseVisitor();
 
-    protected CycloBaseVisitor() {
-
-    }
-
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
         int childCount = node.jjtGetNumChildren();

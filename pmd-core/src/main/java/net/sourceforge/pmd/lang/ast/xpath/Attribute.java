@@ -75,6 +75,6 @@ public class Attribute {
 
     @Override
     public String toString() {
-        return name + ":" + getValue() + ":" + parent;
+        return name + ':' + getValue() + ':' + parent;
     }
 }

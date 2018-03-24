@@ -21,7 +21,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  *
  * @see Renderer
  */
-public class RendererFactory {
+public final class RendererFactory {
 
     private static final Logger LOG = Logger.getLogger(RendererFactory.class.getName());
 
@@ -129,8 +129,8 @@ public class RendererFactory {
             if (!Modifier.isPublic(constructor.getModifiers())) {
                 constructor = null;
             }
-        } catch (NoSuchMethodException e) {
-            // Ok
+        } catch (NoSuchMethodException ignored) {
+            // Ignored, we'll check default constructor next
         }
 
         // 2) No-arg constructor?
@@ -139,8 +139,8 @@ public class RendererFactory {
             if (!Modifier.isPublic(constructor.getModifiers())) {
                 constructor = null;
             }
-        } catch (NoSuchMethodException e2) {
-            // Ok
+        } catch (NoSuchMethodException ignored) {
+            // Ignored, we'll eventually throw an exception, if there is no constructor
         }
 
         if (constructor == null) {

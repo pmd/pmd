@@ -25,7 +25,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
@@ -46,6 +48,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInstanceOfExpression;
@@ -203,11 +206,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             if (className != null) {
                 populateClassName(node, className);
             }
-        } catch (ClassNotFoundException e) {
-            if (LOG.isLoggable(Level.FINE)) {
-                LOG.log(Level.FINE, "Could not find class " + className + ", due to: " + e);
-            }
-        } catch (NoClassDefFoundError e) {
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "Could not find class " + className + ", due to: " + e);
             }
@@ -640,7 +639,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     if (foundTypeDef != null) { // if null, then it's not an inherited field
                         return foundTypeDef;
                     }
-                } catch (ClassCastException e) {
+                } catch (ClassCastException ignored) {
                     // if there is an anonymous class, getClassDeclaration().getType() will throw
                     // TODO: maybe there is a better way to handle this, maybe this hides bugs
                 }
@@ -1174,6 +1173,26 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
+
+    @Override
+    public Object visit(ASTFormalParameter node, Object data) {
+        super.visit(node, data);
+        node.setTypeDefinition(node.getTypeNode().getTypeDefinition());
+        if (node.isVarargs() && node.getType() != null) {
+            node.setType(Array.newInstance(node.getType(), 0).getClass());
+        }
+
+        return data;
+    }
+
+
+    @Override
+    public Object visit(ASTAnnotation node, Object data) {
+        super.visit(node, data);
+        rollupTypeUnary(node);
+        return data;
+    }
+
     @Override
     public Object visit(ASTNormalAnnotation node, Object data) {
         super.visit(node, data);
@@ -1300,16 +1319,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     + qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
             try {
                 myType = pmdClassLoader.loadClass(qualifiedNameInner);
-            } catch (Exception e) {
-                // ignored
+            } catch (Exception ignored) {
+                // ignored, we'll try again with a different package name/fqcn
             }
         }
         if (myType == null && qualifiedName != null && !qualifiedName.contains(".")) {
             // try again with java.lang....
             try {
                 myType = pmdClassLoader.loadClass("java.lang." + qualifiedName);
-            } catch (Exception e) {
-                // ignored
+            } catch (Exception ignored) {
+                // ignored, we'll try again with generics
             }
         }
 
@@ -1358,9 +1377,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         try {
             pmdClassLoader.loadClass(fullyQualifiedClassName);
             return true; // Class found
-        } catch (ClassNotFoundException e) {
-            return false;
-        } catch (NoClassDefFoundError e) {
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
             return false;
         }
     }
@@ -1375,20 +1392,32 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     private Class<?> processOnDemand(String qualifiedName) {
         for (String entry : importedOnDemand) {
+            String fullClassName = entry + "." + qualifiedName;
             try {
-                return pmdClassLoader.loadClass(entry + "." + qualifiedName);
-            } catch (Throwable e) {
+                return pmdClassLoader.loadClass(fullClassName);
+            } catch (ClassNotFoundException ignored) {
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.log(Level.FINE, "Tried to load class " + fullClassName + " from on demand import, "
+                            + "which apparently doesn't exist.", ignored);
+                }
+            } catch (LinkageError ignored) {
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.log(Level.FINE, "Tried to load class " + fullClassName + " from on demand import, "
+                            + "which apparently doesn't exist.", ignored);
+                }
             }
         }
         return null;
     }
 
     private String getClassName(ASTCompilationUnit node) {
-        ASTClassOrInterfaceDeclaration classDecl = node.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
+        ASTAnyTypeDeclaration classDecl = node.getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
         if (classDecl == null) {
-            // Happens if this compilation unit only contains an enum
+            // package-info.java?
             return null;
         }
+
+
         if (node.declarationsAreInDefaultPackage()) {
             return classDecl.getImage();
         }

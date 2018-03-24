@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
@@ -51,7 +52,7 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
         boolean isAssertFound = false;
 
         for (final ASTMethodCallExpression methodCallExpression : methodCalls) {
-            if (ASSERT_METHODS.contains(methodCallExpression.getFullMethodName().toLowerCase())) {
+            if (ASSERT_METHODS.contains(methodCallExpression.getFullMethodName().toLowerCase(Locale.ROOT))) {
                 isAssertFound = true;
                 break;
             }

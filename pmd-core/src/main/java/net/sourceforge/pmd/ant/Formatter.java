@@ -206,9 +206,9 @@ public class Formatter {
                 if (res instanceof Charset) {
                     return ((Charset) res).name();
                 }
-            } catch (NoSuchFieldException e) {
+            } catch (NoSuchFieldException ignored) {
                 // fall-through
-            } catch (IllegalAccessException e) {
+            } catch (IllegalAccessException ignored) {
                 // fall-through
             }
             return getNativeConsoleEncoding();
@@ -224,11 +224,11 @@ public class Formatter {
             if (res instanceof String) {
                 return (String) res;
             }
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException ignored) {
             // fall-through
-        } catch (InvocationTargetException e) {
+        } catch (InvocationTargetException ignored) {
             // fall-through
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException ignored) {
             // fall-through
         }
         return null;
