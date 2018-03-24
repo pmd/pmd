@@ -100,9 +100,11 @@ public interface LanguageVersionHandler {
      * Gets the visitor that populates the qualified names of the
      * nodes.
      *
+     * @param classLoader The classloader to use to resolve the types of type qualified names
+     *
      * @return The visitor starter
      */
-    VisitorStarter getQualifiedNameResolutionFacade();
+    VisitorStarter getQualifiedNameResolutionFacade(ClassLoader classLoader);
 
 
     DFAGraphRule getDFAGraphRule();

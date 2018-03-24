@@ -25,8 +25,7 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
     /** Local index value for when the class is not local. */
     static final int NOTLOCAL_PLACEHOLDER = -1;
 
-    // Should we share that with ClassTypeResolver?
-    private static final PMDASMClassLoader CLASS_LOADER = PMDASMClassLoader.getInstance(JavaTypeQualifiedName.class.getClassLoader());
+    private static ClassLoader classLoader = PMDASMClassLoader.getInstance(JavaTypeQualifiedName.class.getClassLoader());
 
     // since we prepend each time, these lists are in the reversed order (innermost elem first).
     // we use ImmutableList.reverse() to get them in their usual, user-friendly order
@@ -58,6 +57,20 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
         this.packages = packages;
         this.classes = classes;
         this.localIndices = localIndices;
+    }
+
+
+    /**
+     * Sets the class loader used by qualified names to resolve their types.
+     * This method is called by the qualified name resolver during initialization.
+     *
+     * @param cl a class loader
+     */
+    static void setClassLoader(ClassLoader cl) {
+        ClassLoader asmCL = PMDASMClassLoader.getInstance(cl);
+        if (asmCL != classLoader) {
+            classLoader = asmCL;
+        }
     }
 
 
@@ -191,7 +204,7 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
      */
     private Class<?> loadType() throws ClassNotFoundException {
         // hence why the toString should follow binary name specification
-        return CLASS_LOADER.loadClass(getBinaryName());
+        return classLoader.loadClass(getBinaryName());
     }
 
 

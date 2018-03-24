@@ -1858,7 +1858,7 @@ public class ClassTypeResolverTest {
                 .getVersion(version).getLanguageVersionHandler();
         ASTCompilationUnit acu = (ASTCompilationUnit) languageVersionHandler
                 .getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(source));
-        languageVersionHandler.getQualifiedNameResolutionFacade().start(acu);
+        languageVersionHandler.getQualifiedNameResolutionFacade(ClassTypeResolverTest.class.getClassLoader()).start(acu);
         languageVersionHandler.getSymbolFacade().start(acu);
         languageVersionHandler.getTypeResolutionFacade(ClassTypeResolverTest.class.getClassLoader()).start(acu);
         return acu;

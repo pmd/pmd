@@ -62,7 +62,7 @@ public abstract class AbstractLanguageVersionHandler implements LanguageVersionH
 
 
     @Override
-    public VisitorStarter getQualifiedNameResolutionFacade() {
+    public VisitorStarter getQualifiedNameResolutionFacade(ClassLoader classLoader) {
         return VisitorStarter.DUMMY;
     }
 

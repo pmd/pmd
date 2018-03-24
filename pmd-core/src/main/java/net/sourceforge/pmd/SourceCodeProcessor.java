@@ -123,7 +123,7 @@ public class SourceCodeProcessor {
 
     private void resolveQualifiedNames(Node rootNode, LanguageVersionHandler handler) {
         long start = System.nanoTime();
-        handler.getQualifiedNameResolutionFacade().start(rootNode);
+        handler.getQualifiedNameResolutionFacade(configuration.getClassLoader()).start(rootNode);
         long end = System.nanoTime();
         Benchmarker.mark(Benchmark.QualifiedNameResolution, end - start, 0);
     }

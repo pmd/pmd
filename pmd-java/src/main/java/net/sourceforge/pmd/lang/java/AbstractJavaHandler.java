@@ -123,11 +123,11 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
 
 
     @Override
-    public VisitorStarter getQualifiedNameResolutionFacade() {
+    public VisitorStarter getQualifiedNameResolutionFacade(final ClassLoader classLoader) {
         return new VisitorStarter() {
             @Override
             public void start(Node rootNode) {
-                new QualifiedNameResolver().initializeWith((ASTCompilationUnit) rootNode);
+                new QualifiedNameResolver().initializeWith(classLoader, (ASTCompilationUnit) rootNode);
             }
         };
     }

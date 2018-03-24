@@ -93,7 +93,7 @@ public class ParserTstUtil {
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(),
                 new Class[] { JavaParserVisitor.class }, coll);
         jpv.visit(cu, null);
-        new QualifiedNameResolver().initializeWith(cu);
+        new QualifiedNameResolver().initializeWith(ParserTstUtil.class.getClassLoader(), cu);
         new SymbolFacade().initializeWith(cu);
         new DataFlowFacade().initializeWith(languageVersionHandler.getDataFlowHandler(), cu);
 
@@ -214,7 +214,7 @@ public class ParserTstUtil {
     public static ASTCompilationUnit parseJava(LanguageVersionHandler languageVersionHandler, String code) {
         ASTCompilationUnit rootNode = (ASTCompilationUnit) languageVersionHandler
                 .getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));
-        languageVersionHandler.getQualifiedNameResolutionFacade().start(rootNode);
+        languageVersionHandler.getQualifiedNameResolutionFacade(ParserTstUtil.class.getClassLoader()).start(rootNode);
         languageVersionHandler.getSymbolFacade().start(rootNode);
         return rootNode;
     }

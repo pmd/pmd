@@ -99,7 +99,14 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
     private ImmutableList<String> classNames;
 
 
-    public void initializeWith(ASTCompilationUnit rootNode) {
+    /**
+     * Initialises the visitor and starts it.
+     * @param classLoader The classloader that will be used by type qualified names
+     *                    to load their type.
+     * @param rootNode The root hierarchy
+     */
+    public void initializeWith(ClassLoader classLoader, ASTCompilationUnit rootNode) {
+        JavaTypeQualifiedName.setClassLoader(classLoader);
         rootNode.jjtAccept(this, null);
     }
 

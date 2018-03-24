@@ -109,7 +109,7 @@ public class ClassTypeResolverJava8Test {
         ASTCompilationUnit acu = (ASTCompilationUnit) languageVersionHandler
                 .getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new InputStreamReader(is));
         languageVersionHandler.getSymbolFacade().start(acu);
-        languageVersionHandler.getQualifiedNameResolutionFacade().start(acu);
+        languageVersionHandler.getQualifiedNameResolutionFacade(ClassTypeResolverJava8Test.class.getClassLoader()).start(acu);
         languageVersionHandler.getTypeResolutionFacade(ClassTypeResolverJava8Test.class.getClassLoader()).start(acu);
         return acu;
     }

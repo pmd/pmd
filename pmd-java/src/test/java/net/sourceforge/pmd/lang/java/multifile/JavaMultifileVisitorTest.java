@@ -141,7 +141,7 @@ public class JavaMultifileVisitorTest {
     static ASTCompilationUnit parseAndVisitForClass(Class<?> clazz) {
         ASTCompilationUnit acu = ParserTstUtil.parseJavaDefaultVersion(clazz);
         LanguageVersionHandler handler = ParserTstUtil.getDefaultLanguageVersionHandler();
-        handler.getQualifiedNameResolutionFacade().start(acu);
+        handler.getQualifiedNameResolutionFacade(JavaMultifileVisitorTest.class.getClassLoader()).start(acu);
         handler.getTypeResolutionFacade(JavaMultifileVisitorTest.class.getClassLoader()).start(acu);
         handler.getMultifileFacade().start(acu);
         return acu;
