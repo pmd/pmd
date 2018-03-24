@@ -68,7 +68,7 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
      */
     static void setClassLoader(ClassLoader cl) {
         ClassLoader asmCL = PMDASMClassLoader.getInstance(cl);
-        if (asmCL != classLoader) {
+        if (asmCL != null && asmCL.equals(classLoader)) {
             classLoader = asmCL;
         }
     }
