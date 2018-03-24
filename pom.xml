@@ -256,6 +256,9 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
     <properties>
         <java.version>7</java.version>
+        <!-- Workaround for https://youtrack.jetbrains.com/issue/IDEA-188690 -->
+        <maven.compiler.source>1.${java.version}</maven.compiler.source>
+        <maven.compiler.target>1.${java.version}</maven.compiler.target>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.20.1</surefire.version>
@@ -271,9 +274,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <config.basedir>${basedir}/pmd-core</config.basedir>
-        <pmd.dogfood.ruleset>${config.basedir}/src/main/resources/rulesets/internal/dogfood.xml</pmd.dogfood.ruleset>
-        <pmd.build-tools.version>1.1.0-SNAPSHOT</pmd.build-tools.version>
+        <pmd.build-tools.version>1.1.0</pmd.build-tools.version>
     </properties>
 
     <build>
@@ -418,6 +419,49 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-pmd-plugin</artifactId>
                     <version>${pmd.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>check</goal>
+                                <goal>cpd</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <linkXRef>true</linkXRef>
+                        <minimumTokens>100</minimumTokens>
+                        <targetJdk>1.${java.version}</targetJdk>
+                        <rulesets>
+                            <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
+                        </rulesets>
+                        <excludeRoots>
+                            <excludeRoot>target/generated-sources/javacc</excludeRoot>
+                            <excludeRoot>target/generated-sources/antlr4</excludeRoot>
+                        </excludeRoots>
+                        <skipPmdError>false</skipPmdError>
+                        <failOnViolation>true</failOnViolation>
+                        <printFailingErrors>true</printFailingErrors>
+                    </configuration>
+                    <dependencies>
+                        <!-- Note: we can't use a property for the version here due to https://issues.apache.org/jira/browse/MRELEASE-932 -->
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-core</artifactId>
+                            <version>6.1.0</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-java</artifactId>
+                            <version>6.1.0</version>
+                        </dependency>
+                        <!-- This contains the dogfood ruleset -->
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-build-tools-config</artifactId>
+                            <version>${pmd.build-tools.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -511,48 +555,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                            <goal>cpd</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <minimumTokens>100</minimumTokens>
-                    <targetJdk>1.${java.version}</targetJdk>
-                    <rulesets>
-                        <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
-                    </rulesets>
-                    <excludeRoots>
-                        <excludeRoot>target/generated-sources/javacc</excludeRoot>
-                        <excludeRoot>target/generated-sources/antlr4</excludeRoot>
-                    </excludeRoots>
-                    <skipPmdError>false</skipPmdError>
-                    <failOnViolation>true</failOnViolation>
-                    <printFailingErrors>true</printFailingErrors>
-                </configuration>
-                <dependencies>
-                    <!-- Note: we can't use a property for the version here due to https://issues.apache.org/jira/browse/MRELEASE-932 -->
-                    <dependency>
-                        <groupId>net.sourceforge.pmd</groupId>
-                        <artifactId>pmd-core</artifactId>
-                        <version>6.1.0</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>net.sourceforge.pmd</groupId>
-                        <artifactId>pmd-java</artifactId>
-                        <version>6.1.0</version>
-                    </dependency>
-                    <!-- This contains the dogfood ruleset -->
-                    <dependency>
-                        <groupId>net.sourceforge.pmd</groupId>
-                        <artifactId>pmd-build-tools-config</artifactId>
-                        <version>1.1.0-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
+                <!-- configuration is in plugin management section -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -654,17 +657,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>${pmd.plugin.version}</version>
-                <configuration>
-                    <linkXRef>true</linkXRef>
-                    <minimumTokens>100</minimumTokens>
-                    <targetJdk>1.${java.version}</targetJdk>
-                    <rulesets>
-                        <ruleset>${pmd.dogfood.ruleset}</ruleset>
-                    </rulesets>
-                    <excludeRoots>
-                        <excludeRoot>target/generated-sources/javacc</excludeRoot>
-                    </excludeRoots>
-                </configuration>
+                <!-- configuration is in plugin management section -->
             </plugin>
 
             <plugin>
@@ -934,20 +927,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         </profile>
 
         <profile>
-            <id>jdk8-modules</id>
-            <activation>
-                <jdk>[1.8,</jdk>
-            </activation>
-            <modules>
-                <module>pmd-apex-jorje</module>
-                <module>pmd-apex</module>
-                <module>pmd-java8</module>
-                <module>pmd-ui</module>
-                <module>pmd-doc</module>
-            </modules>
-        </profile>
-
-        <profile>
             <id>doclint</id>
             <build>
                 <pluginManagement>
@@ -1014,5 +993,12 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <module>pmd-visualforce</module>
         <module>pmd-vm</module>
         <module>pmd-xml</module>
+
+        <!-- java8 modules -->
+        <module>pmd-apex-jorje</module>
+        <module>pmd-apex</module>
+        <module>pmd-java8</module>
+        <module>pmd-ui</module>
+        <module>pmd-doc</module>
     </modules>
 </project>

@@ -745,9 +745,6 @@ public class SecureSystem {
         <description>
             Annotating overridden methods with @Override ensures at compile time that
             the method really overrides one, which helps refactoring and clarifies intent.
-
-            This rule is limited to resolving methods inherited from non-parameterized
-            or raw supertypes.
         </description>
         <priority>3</priority>
         <example>

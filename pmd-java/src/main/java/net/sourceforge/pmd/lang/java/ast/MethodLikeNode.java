@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Locale;
+
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 
 
@@ -34,7 +36,11 @@ public interface MethodLikeNode extends AccessNode, JavaQualifiableNode, JavaNod
     enum MethodLikeKind {
         METHOD,
         CONSTRUCTOR,
-        LAMBDA
+        LAMBDA;
+
+        public String getPrintableName() {
+            return name().toLowerCase(Locale.ROOT);
+        }
     }
 
 
