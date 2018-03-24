@@ -106,12 +106,14 @@ public class ASTManager {
             designerRoot.getLogger().logEvent(new LogEntry(e, Category.SYMBOL_FACADE_EXCEPTION));
         }
         try {
-            languageVersionHandler.getQualifiedNameResolutionFacade().start(node);
+            // TODO this should use the aux classpath
+            languageVersionHandler.getQualifiedNameResolutionFacade(ASTManager.class.getClassLoader()).start(node);
         } catch (Exception e) {
             designerRoot.getLogger().logEvent(new LogEntry(e, Category.QUALIFIED_NAME_RESOLUTION_EXCEPTION));
         }
 
         try {
+            // TODO this should use the aux classpath
             languageVersionHandler.getTypeResolutionFacade(ASTManager.class.getClassLoader()).start(node);
         } catch (Exception e) {
             designerRoot.getLogger().logEvent(new LogEntry(e, Category.TYPERESOLUTION_EXCEPTION));
