@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +45,7 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotRule {
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
-        return new ArrayList<>(LOMBOK_ANNOTATIONS);
+        return LOMBOK_ANNOTATIONS;
     }
 
     @Override
@@ -89,6 +88,7 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotRule {
     }
 
     /**
+     * @deprecated As of release 6.2.0, replaced by {@link #hasLombokAnnotation(Annotatable)}
      * Checks whether the given node is annotated with any lombok annotation.
      * The node can be any node, e.g. class declaration or field declaration.
      *

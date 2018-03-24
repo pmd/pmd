@@ -4,14 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
-
-public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements AccessNode, Annotatable {
+public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode implements AccessNode {
 
     private int modifiers;
 
@@ -142,46 +135,5 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements
     public boolean isPackagePrivate() {
         return !isPrivate() && !isPublic() && !isProtected();
     }
-
-    @Override
-    public List<ASTAnnotation> getDeclaredAnnotations() {
-        List<ASTAnnotation> result = new ArrayList<>();
-        Node parent = this.jjtGetParent();
-        for (int index = 0; index < parent.jjtGetNumChildren(); index++) {
-            Node child = parent.jjtGetChild(index);
-            if (child == this) {
-                return result;
-            } else if (child instanceof ASTAnnotation) {
-                result.add((ASTAnnotation) child);
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public ASTAnnotation getAnnotation(String annotQualifiedName) {
-        List<ASTAnnotation> annotations = getDeclaredAnnotations();
-        for (ASTAnnotation annotation : annotations) {
-            ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
-            if (TypeHelper.isA(name, annotQualifiedName)) {
-                return annotation;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public boolean isAnnotationPresent(String annotQualifiedName) {
-        return getAnnotation(annotQualifiedName) != null;
-    }
-
-    @Override
-    public boolean isAnyAnnotationPresent(Collection<String> annotQualifiedNames) {
-        for (String annotQualifiedName : annotQualifiedNames) {
-            if (isAnnotationPresent(annotQualifiedName)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
+

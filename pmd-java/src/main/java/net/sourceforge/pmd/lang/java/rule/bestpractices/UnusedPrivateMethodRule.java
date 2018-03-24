@@ -56,7 +56,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotRule {
                 .getMethodDeclarations();
         for (MethodNameDeclaration mnd : findUnique(methods)) {
             List<NameOccurrence> occs = methods.get(mnd);
-            if (!privateAndNotExcluded(mnd) || isAnyAnnotationPresent((Annotatable) mnd.getNode().jjtGetParent())) {
+            if (!privateAndNotExcluded(mnd) || hasIgnoredAnnotation((Annotatable) mnd.getNode().jjtGetParent())) {
                 continue;
             }
             if (occs.isEmpty()) {
