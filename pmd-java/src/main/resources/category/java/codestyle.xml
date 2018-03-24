@@ -453,6 +453,64 @@ boolean bar(int x, int y) {
         </example>
     </rule>
 
+    <rule name="ControlStatementBraces"
+          language="java"
+          since="6.2.0"
+          message="This statement should have braces"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#controlstatementbraces">
+        <description>
+            Enforce a policy for braces on control statements. It is recommended to use braces on 'if ... else'
+            statements and loop statements, even if they are optional. This usually makes the code clearer, and
+            helps prepare the future when you need to add another statement. That said, this rule lets you control
+            which statements are required to have braces via properties.
+
+            From 6.2.0 on, this rule supersedes WhileLoopMustUseBraces, ForLoopMustUseBraces, IfStmtMustUseBraces,
+            and IfElseStmtMustUseBraces.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="checkIfElseStmt" type="Boolean" value="true" description="Require that 'if ... else' statements use braces" />
+            <property name="checkWhileStmt" type="Boolean" value="true" description="Require that 'while' loops use braces" />
+            <property name="checkForStmt" type="Boolean" value="true" description="Require that 'for' loops should use braces" />
+            <property name="checkDoWhileStmt" type="Boolean" value="true" description="Require that 'do ... while' loops use braces" />
+            <property name="checkCaseStmt" type="Boolean" value="false" description="Require that cases of a switch have braces"/>
+
+            <property name="allowEmptyLoop" type="Boolean" value="false" description="Allow loops with an empty statement, e.g. 'while(true);'" />
+
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value><![CDATA[
+                //WhileStatement[$checkWhileStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
+                |
+                //ForStatement[$checkForStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
+                |
+                //DoStatement[$checkDoWhileStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
+                |
+                (: The violation is reported on the sub statement -- not the if statement :)
+                //Statement[$checkIfElseStmt and parent::IfStatement and not(child::Block or child::IfStatement)]
+                |
+                (: Reports case labels if one of their subordinate statements is not braced :)
+                //SwitchLabel[$checkCaseStmt]
+                             [count(following-sibling::BlockStatement except following-sibling::SwitchLabel[1]/following-sibling::BlockStatement) > 1
+                              or (some $stmt (: in only the block statements until the next label :)
+                                  in following-sibling::BlockStatement except following-sibling::SwitchLabel[1]/following-sibling::BlockStatement
+                                  satisfies not($stmt/Statement/Block))]
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+while (true)    // not recommended
+  x++;
+
+while (true) {  // preferred approach
+  x++;
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="DefaultPackage"
           language="java"
           since="3.4"
@@ -663,6 +721,7 @@ public class Foo {
     <rule name="ForLoopsMustUseBraces"
           language="java"
           since="0.7"
+          deprecated="true"
           message="Avoid using 'for' statements without curly braces"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#forloopsmustusebraces">
@@ -732,6 +791,7 @@ public interface GenericDao<EF extends BaseModel, K extends Serializable> {
     <rule name="IfElseStmtsMustUseBraces"
           language="java"
           since="0.2"
+          deprecated="true"
           message="Avoid using 'if...else' statements without curly braces"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#ifelsestmtsmustusebraces">
@@ -770,6 +830,7 @@ if (foo)
     <rule name="IfStmtsMustUseBraces"
           language="java"
           since="1.0"
+          deprecated="true"
           message="Avoid using if statements without curly braces"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#ifstmtsmustusebraces">
@@ -1745,6 +1806,7 @@ public class Foo {
     <rule name="WhileLoopsMustUseBraces"
           language="java"
           since="0.7"
+          deprecated="true"
           message="Avoid using 'while' statements without curly braces"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#whileloopsmustusebraces">

@@ -47,13 +47,22 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
 
 #### New Rules
 
-*   The new Java rule `MissingOverride` (category `bestpractices`) detects overridden and implemented methods,
-    which are not marked with the `@Override` annotation. Annotating overridden methods with `@Override` ensures
-    at compile time that the method really overrides one, which helps refactoring and clarifies intent.
+*   The new Java rule [`MissingOverride`](pmd_rules_java_bestpractices.html#missingoverride)
+    (category `bestpractices`) detects overridden and implemented methods, which are not marked with the
+    `@Override` annotation. Annotating overridden methods with `@Override` ensures at compile time that
+    the method really overrides one, which helps refactoring and clarifies intent.
 
-*   The new Java rule `UnnecessaryAnnotationValueElement` (category `codestyle`) detects annotations with a single
-    element (`value`) that explicitely names it. That is, doing `@SuppressWarnings(value = "unchecked")` would be
-    flagged in favor of `@SuppressWarnings("unchecked")`.
+*   The new Java rule [`UnnecessaryAnnotationValueElement`](pmd_rules_java_codestyle.html#unnecessaryannotationvalueelement)
+    (category `codestyle`) detects annotations with a single element (`value`) that explicitely names it.
+    That is, doing `@SuppressWarnings(value = "unchecked")` would be flagged in favor of
+    `@SuppressWarnings("unchecked")`.
+
+*   The new Java rule [`ControlStatementBraces`](pmd_rules_java_codestyle.html#controlstatementbraces)
+    (category `codestyle`) enforces the presence of braces on control statements where they are optional.
+    Properties allow to customize which statements are required to have braces. This rule replaces the now
+    deprecated rules `WhileLoopMustUseBraces`, `ForLoopMustUseBraces`, `IfStmtMustUseBraces`, and
+    `IfElseStmtMustUseBraces`. More than covering the use cases of those rules, this rule also supports
+    `do ... while` statements and `case` labels of `switch` statements (disabled by default).
 
 #### Modified Rules
 
@@ -68,6 +77,10 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
     that allows to configure annotations that imply the method should be ignored. By default `@java.lang.Deprecated`
     is ignored.
 
+#### Deprecated Rules
+
+*   The Java rules `WhileLoopMustUseBraces`, `ForLoopMustUseBraces`, `IfStmtMustUseBraces`, and `IfElseStmtMustUseBraces`
+    are deprecated. They will be replaced by the new rule `ControlStatementBraces`, in the category `codestyle`.
 
 ### Fixed Issues
 
@@ -77,6 +90,7 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
     *   [#907](https://github.com/pmd/pmd/issues/907): \[java] UnusedPrivateField false-positive with @FXML
     *   [#963](https://github.com/pmd/pmd/issues/965): \[java] ArrayIsStoredDirectly not triggered from variadic functions
 *   java-codestyle
+    *   [#974](https://github.com/pmd/pmd/issues/974): \[java] Merge *StmtMustUseBraces rules
     *   [#983](https://github.com/pmd/pmd/issues/983): \[java] Detect annotations with single value element
 *   java-design
     *   [#832](https://github.com/pmd/pmd/issues/832): \[java] AvoidThrowingNullPointerException documentation suggestion
