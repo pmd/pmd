@@ -90,6 +90,7 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
     *   [#907](https://github.com/pmd/pmd/issues/907): \[java] UnusedPrivateField false-positive with @FXML
     *   [#963](https://github.com/pmd/pmd/issues/965): \[java] ArrayIsStoredDirectly not triggered from variadic functions
 *   java-codestyle
+    *   [#974](https://github.com/pmd/pmd/issues/974): \[java] Merge *StmtMustUseBraces rules
     *   [#983](https://github.com/pmd/pmd/issues/983): \[java] Detect annotations with single value element
 *   java-design
     *   [#837](https://github.com/pmd/pmd/issues/837): \[java] CFGs of declared but not called lambdas are treated as parts of an enclosing method's CFG
