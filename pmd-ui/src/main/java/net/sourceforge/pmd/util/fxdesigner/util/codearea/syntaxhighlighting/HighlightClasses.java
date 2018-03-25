@@ -28,6 +28,7 @@ public enum HighlightClasses {
     LITERAL(Constants.LITERAL),
     BOOLEAN("boolean", Constants.LITERAL),
     STRING("string", Constants.LITERAL),
+    URI("uri", "string", Constants.LITERAL),
     CHAR("char", Constants.LITERAL),
     NULL("null", Constants.LITERAL),
     NUMBER("number", Constants.LITERAL),
@@ -41,7 +42,8 @@ public enum HighlightClasses {
     XPATH_AXIS("axis", Constants.XPATH),
     XPATH_FUNCTION("function", Constants.XPATH),
     XPATH_PATH("path", Constants.XPATH, Constants.PUNCTUATION),
-    
+    XPATH_KIND_TEST("kind-test", "function", Constants.XPATH),
+
     XML_CDATA_TAG("cdata-tag", Constants.XML),
     XML_CDATA_CONTENT("cdata-content", Constants.XML),
     XML_PROLOG("xml-prolog", Constants.XML),
@@ -59,7 +61,7 @@ public enum HighlightClasses {
     }
 
 
-    private static class Constants {
+    private static final class Constants {
         static final String LITERAL = "literal";
         static final String COMMENT = "comment";
         static final String PUNCTUATION = "punctuation";
