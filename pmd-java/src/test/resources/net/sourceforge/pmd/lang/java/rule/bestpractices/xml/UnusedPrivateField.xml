@@ -557,8 +557,6 @@ public class Foo {
         <description>#907 UnusedPrivateField false-positive with @FXML - 2</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-        import java.lang.Deprecated;
-
         public class Foo {
             @Deprecated
             private String bar;

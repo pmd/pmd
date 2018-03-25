@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
-import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  * This rule detects private methods, that are not used and can therefore be
  * deleted.
  */
-public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotRule {
+public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {

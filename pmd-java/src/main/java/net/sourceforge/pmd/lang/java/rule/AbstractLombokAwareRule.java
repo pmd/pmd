@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.Annotatable;
  *
  * @author Andreas Dangel
  */
-public class AbstractLombokAwareRule extends AbstractIgnoredAnnotRule {
+public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
 
     private boolean lombokImported = false;
     private boolean classHasLombokAnnotation = false;
