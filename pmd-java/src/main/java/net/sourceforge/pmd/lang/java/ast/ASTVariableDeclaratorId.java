@@ -151,6 +151,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      */
     // @formatter:on
     @Override
+    @SuppressWarnings("PMD.UselessOverridingMethod")
     public Class<?> getType() {
         return super.getType();
     }
