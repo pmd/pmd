@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.List;
 import java.util.Locale;
 
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+
 
 /**
  * Groups enum, class, annotation and interface declarations.
@@ -29,6 +31,11 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
      * @return The member declarations declared in this type declaration
      */
     List<ASTAnyTypeBodyDeclaration> getDeclarations();
+
+
+
+    @Override
+    JavaTypeQualifiedName getQualifiedName();
 
 
     /**

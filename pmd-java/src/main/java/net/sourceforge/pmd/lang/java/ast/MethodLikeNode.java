@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Locale;
 
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
+
 
 /**
  * Groups method, constructor and lambda declarations under a common type.
@@ -24,6 +26,10 @@ public interface MethodLikeNode extends AccessNode, JavaQualifiableNode, JavaNod
      * @return The kind of method-like
      */
     MethodLikeKind getKind();
+
+
+    @Override
+    JavaOperationQualifiedName getQualifiedName();
 
 
     /** Kind of method-like. */

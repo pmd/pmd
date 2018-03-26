@@ -7,7 +7,10 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode implements TypeNode {
-    private JavaTypeDefinition typeDefinition;
+    /**
+     * Type definition, used to get the type of the node.
+     */
+    protected JavaTypeDefinition typeDefinition;
 
     public AbstractJavaAccessTypeNode(int i) {
         super(i);
