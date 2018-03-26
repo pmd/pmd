@@ -4,20 +4,20 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## ????? - 6.2.0-SNAPSHOT
+## 26-March-2018 - 6.2.0
 
 The PMD team is pleased to announce PMD 6.2.0.
 
-This is a bug fixing release.
+This is a minor release.
 
 ### Table Of Contents
 
 *   [New and noteworthy](#new-and-noteworthy)
-*   [Fixed Issues](#fixed-issues)
     *   [Ecmascript (JavaScript)](#ecmascript-javascript)
     *   [Disable Incremental Analysis](#disable-incremental-analysis)
     *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
+*   [Fixed Issues](#fixed-issues)
 *   [API Changes](#api-changes)
 *   [External Contributions](#external-contributions)
 
@@ -33,7 +33,7 @@ Detailed changes for changed in Rhino can be found:
 
 Both are bugfixing releases.
 
-### Disable Incremental Analysis
+#### Disable Incremental Analysis
 
 Some time ago, we added support for [Incremental Analysis](pmd_userdocs_getting_started.html). On PMD 6.0.0, we
 started to add warns when not using it, as we strongly believe it's a great improvement to our user's experience as
