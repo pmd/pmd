@@ -6,14 +6,25 @@ package net.sourceforge.pmd.lang.ast;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.StringWriter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+
+import org.jaxen.JaxenException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+
 
 /**
  * Unit test for {@link AbstractNode}.
@@ -65,9 +76,10 @@ public class AbstractNodeTest {
         return new DummyNode(nextId());
     }
 
-    private static void addChild(final Node parent, final Node child) {
+    private static Node addChild(final Node parent, final Node child) {
         parent.jjtAddChild(child, parent.jjtGetNumChildren()); // Append child at the end
         child.jjtSetParent(parent);
+        return parent;
     }
 
     @Before
@@ -216,4 +228,48 @@ public class AbstractNodeTest {
         // Check that this node still does not have any children
         assertEquals(0, grandChild.jjtGetNumChildren());
     }
+
+
+    @Test
+    public void testDeprecatedAttributeXPathQuery() throws JaxenException {
+        final StringWriter writer = new StringWriter();
+
+        class MyRootNode extends DummyNode implements RootNode {
+
+             private MyRootNode(int id) {
+                super(id);
+            }
+        }
+
+        // intercept log
+        Logger.getLogger(Attribute.class.getName()).setLevel(Level.WARNING);
+        Logger.getLogger(Attribute.class.getName()).addHandler(new Handler() {
+            @Override
+            public void publish(LogRecord record) {
+                writer.write(record.getMessage());
+                writer.write('\n');
+            }
+
+
+            @Override
+            public void flush() {
+                writer.flush();
+            }
+
+
+            @Override
+            public void close() throws SecurityException {
+                // empty
+            }
+        });
+        addChild(new MyRootNode(nextId()), new DummyNodeWithDeprecatedAttribute(2)).findChildNodesWithXPath("//dummyNode[@Size=1]");
+
+        writer.flush();
+
+        assertTrue(writer.toString().contains("deprecated"));
+        assertTrue(writer.toString().contains("attribute"));
+        assertTrue(writer.toString().contains("dummyNode/@Size"));
+    }
+
+
 }
