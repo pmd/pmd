@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTPackageDeclaration extends AbstractJavaNode {
+public class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
     public ASTPackageDeclaration(int id) {
         super(id);
     }
