@@ -58,6 +58,7 @@ public class PMDCoverageTest {
 
             assertFalse("There was at least one exception mentioned in the output", output.getLog().contains("Exception applying rule"));
             assertFalse("Wrong configuration? Ruleset not found", output.getLog().contains("Ruleset not found"));
+            assertFalse("Some XPath rules use deprecated attributes", output.getLog().contains("Use of deprecated attribute"));
 
             String report = FileUtils.readFileToString(f);
             assertEquals("No processing errors expected", 0, StringUtils.countMatches(report, "Error while processing"));
