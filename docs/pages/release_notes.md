@@ -68,6 +68,13 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
     that allows to configure annotations that imply the method should be ignored. By default `@java.lang.Deprecated`
     is ignored.
 
+*   The Java rule `ImmutableField` (`java-design`) now has a new `ignoredAnnotations` property
+    that allows to configure annotations that imply the method should be ignored. By default several `lombok`
+    annotations are ignored
+
+*   The Java rule `SingularField` (`java-design`) now has a new `ignoredAnnotations` property
+    that allows to configure annotations that imply the method should be ignored. By default several `lombok`
+    annotations are ignored
 
 ### Fixed Issues
 
@@ -105,6 +112,7 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
 * [#943](https://github.com/pmd/pmd/pull/943): \[java] UnusedPrivateField false-positive with @FXML - [BBG](https://github.com/djydewang)
 * [#951](https://github.com/pmd/pmd/pull/951): \[java] Add ignoredAnnotations property to unusedPrivateMethod rule - [BBG](https://github.com/djydewang)
 * [#952](https://github.com/pmd/pmd/pull/952): \[java] SignatureDeclareThrowsException's IgnoreJUnitCompletely property not honored for constructors - [BBG](https://github.com/djydewang)
+* [#958](https://github.com/pmd/pmd/pull/958): \[java] Refactor how we ignore annotated elements in rules - [BBG](https://github.com/djydewang)
 * [#965](https://github.com/pmd/pmd/pull/965): \[java] Make Varargs trigger ArrayIsStoredDirectly - [Stephen](https://github.com/pmd/pmd/issues/907)
 * [#967](https://github.com/pmd/pmd/pull/967): \[doc] Issue 959: fixed broken link to XPath Rule Tutorial - [Andrey Mochalov](https://github.com/epidemia)
 * [#969](https://github.com/pmd/pmd/pull/969): \[java] Issue 968 Add logic to handle lombok private constructors with utility classes - [Kirk Clemens](https://github.com/clem0110)
