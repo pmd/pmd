@@ -236,7 +236,7 @@ public class AbstractNodeTest {
 
         class MyRootNode extends DummyNode implements RootNode {
 
-             private MyRootNode(int id) {
+            private MyRootNode(int id) {
                 super(id);
             }
         }
