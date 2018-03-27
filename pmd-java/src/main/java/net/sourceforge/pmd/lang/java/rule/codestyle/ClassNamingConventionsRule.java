@@ -43,6 +43,10 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
         definePropertyDescriptor(ENUMERATION_REGEX);
         definePropertyDescriptor(ANNOTATION_REGEX);
         definePropertyDescriptor(UTILITY_CLASS_REGEX);
+
+        addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
+        addRuleChainVisit(ASTEnumDeclaration.class);
+        addRuleChainVisit(ASTAnnotationTypeDeclaration.class);
     }
 
 
@@ -101,21 +105,21 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
             checkMatches(node, CLASS_REGEX, data);
         }
 
-        return super.visit(node, data);
+        return data;
     }
 
 
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
         checkMatches(node, ENUMERATION_REGEX, data);
-        return super.visit(node, data);
+        return data;
     }
 
 
     @Override
     public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
         checkMatches(node, ANNOTATION_REGEX, data);
-        return super.visit(node, data);
+        return data;
     }
 
 
