@@ -348,7 +348,7 @@ public abstract class AbstractNode implements Node {
         int n = jjtGetNumChildren();
         for (int i = 0; i < n; i++) {
             Node child = jjtGetChild(i);
-            if (child.getClass() == childType) {
+            if (childType.isInstance(child)) {
                 return childType.cast(child);
             }
         }

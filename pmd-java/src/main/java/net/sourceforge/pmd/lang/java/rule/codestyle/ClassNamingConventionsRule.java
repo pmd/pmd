@@ -11,8 +11,11 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -54,19 +57,30 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
     }
 
 
+    // This could probably be moved to ClassOrInterfaceDeclaration
+    // to share the implementation and be used from XPath
     private boolean isUtilityClass(ASTAnyTypeDeclaration node) {
-        if (!(node instanceof ASTClassOrInterfaceDeclaration)) {
+        if (node.getTypeKind() != TypeKind.CLASS) {
             return false;
         }
 
+        // A class without declarations shouldn't be reported
         boolean hasAny = false;
 
+        // we could probably enrich ASTAnyTypeBodyDeclaration
+        // with methods to know what kind of declaration it is
         for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
-            if (decl.jjtGetNumChildren() > 0) { // not an empty decl (;)
+            AccessNode accessNode = decl.getFirstChildOfType(AccessNode.class);
+            ASTInitializer initializer = decl.getFirstChildOfType(ASTInitializer.class);
+            if (accessNode != null && !(accessNode instanceof ASTConstructorDeclaration)) {
                 hasAny = true;
-                if (!((AccessNode) decl.jjtGetChild(0)).isStatic()) {
+                if (!accessNode.isStatic()) {
                     return false;
                 }
+            }
+
+            if (initializer != null && !initializer.isStatic()) {
+                return false;
             }
         }
 
@@ -107,8 +121,14 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
 
     private static String toCamelCase(String name) {
         StringBuilder sb = new StringBuilder();
+        boolean isFirst = true;
         for (String word : name.trim().split("\\s++")) {
-            sb.append(StringUtils.capitalize(word));
+            if (isFirst) {
+                sb.append(word);
+                isFirst = false;
+            } else {
+                sb.append(StringUtils.capitalize(word));
+            }
         }
         return sb.toString();
     }
