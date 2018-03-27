@@ -24,3 +24,5 @@ This is a minor release.
 ### API Changes
 
 ### External Contributions
+
+* [#1008](https://github.com/pmd/pmd/pull/1008): \[core] DOC: fix closing tag for &lt;pmdVersion> - [stonio](https://github.com/stonio)
