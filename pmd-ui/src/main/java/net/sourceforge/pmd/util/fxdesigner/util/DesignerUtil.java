@@ -9,6 +9,8 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +18,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.Language;
@@ -38,7 +42,7 @@ public final class DesignerUtil {
 
     private static final Path PMD_SETTINGS_DIR = Paths.get(System.getProperty("user.home"), ".pmd");
     private static final File DESIGNER_SETTINGS_FILE = PMD_SETTINGS_DIR.resolve("designer.xml").toFile();
-
+    private static final Pattern JJT_ACCEPT_PATTERN = Pattern.compile("net.sourceforge.pmd.lang.\\w++.ast.AST(\\w+).jjtAccept");
 
     private static List<LanguageVersion> supportedLanguageVersions;
     private static Map<String, LanguageVersion> extensionsToLanguage;
@@ -161,6 +165,31 @@ public final class DesignerUtil {
     public static <T> void rewire(Property<T> underlying, ObservableValue<? extends T> source) {
         underlying.unbind();
         underlying.bind(source);
+    }
+
+
+    /**
+     * Works out an xpath query that matches the node
+     * which was being visited during the failure.
+     *
+     * <p>The query selects nodes that have exactly the
+     * same ancestors than the node in which the last call
+     * from the stack trace.
+     *
+     * @param stackTrace full stack trace
+     *
+     * @return An xpath expression if possible
+     */
+    public static Optional<String> stackTraceToXPath(String stackTrace) {
+        List<String> lines = Arrays.stream(stackTrace.split("\\n"))
+                                   .map(JJT_ACCEPT_PATTERN::matcher)
+                                   .filter(Matcher::find)
+                                   .map(m -> m.group(1))
+                                   .collect(Collectors.toList());
+
+        Collections.reverse(lines);
+
+        return lines.isEmpty() ? Optional.empty() : Optional.of("//" + String.join("/", lines));
     }
 
 }
