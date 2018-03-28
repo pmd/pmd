@@ -198,10 +198,22 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
+    /** Clears the highlighting of XPath results. */
+    public void clearXPathHighlight() {
+        codeEditorArea.clearStyleLayer(LayerId.XPATH_RESULTS);
+    }
+
     /** Highlights the given node. Removes highlighting on the previously highlighted node. */
     public void setFocusNode(Node node) {
         clearFocusHighlight();
         highlightNodes(Collections.singleton(node), LayerId.FOCUS);
+    }
+
+
+    /** Highlights xpath results (xpath highlight). */
+    public void highlightXPathResults(Collection<? extends Node> nodes) {
+        clearXPathHighlight();
+        highlightNodes(nodes, LayerId.XPATH_RESULTS);
     }
 
 

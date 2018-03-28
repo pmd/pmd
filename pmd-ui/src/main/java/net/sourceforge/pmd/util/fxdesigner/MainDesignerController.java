@@ -290,6 +290,14 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         sourceEditorController.clearSecondaryHighlight();
     }
 
+    public void resetXPathResults() {
+        sourceEditorController.clearXPathHighlight();
+    }
+    
+    public void handleXPathResults(List<Node> nodes) {
+        resetXPathResults();
+        sourceEditorController.highlightXPathResults(nodes);
+    }
 
     private void showLicensePopup() {
         Alert licenseAlert = new Alert(AlertType.INFORMATION);

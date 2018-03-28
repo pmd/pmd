@@ -211,6 +211,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                                                                                      xpath,
                                                                                      ruleBuilder.getRuleProperties()));
             xpathResultListView.setItems(results);
+            parent.handleXPathResults(results);
             violationsTitledPane.setText("Matched nodes\t(" + results.size() + ")");
         } catch (XPathEvaluationException e) {
             invalidateResults(true);
@@ -230,6 +231,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
     public void invalidateResults(boolean error) {
         xpathResultListView.getItems().clear();
+        parent.resetXPathResults();
         violationsTitledPane.setText("Matched nodes" + (error ? "\t(error)" : ""));
     }
 

@@ -23,6 +23,14 @@
     -fx-fill: darkred !important;
 }
 
+.styled-text-area .xpath-highlight {
+    -rtfx-border-stroke-width: .75pt;
+    -rtfx-border-stroke-type: outside;
+    -rtfx-border-stroke-color: darkgoldenrod;
+
+    -rtfx-background-color: antiquewhite;
+}
+
 /********/
 /* Base */
 /*******/
