@@ -29,6 +29,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighligh
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -55,16 +56,22 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private CustomCodeArea codeEditorArea;
 
     private ASTManager astManager;
+    private TreeViewWrapper<Node> treeViewWrapper;
 
 
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
         parent = mainController;
         astManager = new ASTManager(owner);
+
     }
+
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        treeViewWrapper = new TreeViewWrapper<>(astTreeView);
+
         languageVersionProperty().values()
                                  .filterMap(Objects::nonNull, LanguageVersion::getLanguage)
                                  .distinct()
@@ -162,7 +169,9 @@ public class SourceEditorController implements Initializable, SettingsOwner {
             SelectionModel<TreeItem<Node>> selectionModel = astTreeView.getSelectionModel();
             selectionModel.select(found);
             astTreeView.getFocusModel().focus(selectionModel.getSelectedIndex());
-            // astTreeView.scrollTo(selectionModel.getSelectedIndex());
+            if (!treeViewWrapper.isIndexVisible(selectionModel.getSelectedIndex())) {
+                astTreeView.scrollTo(selectionModel.getSelectedIndex());
+            }
         }
     }
 
