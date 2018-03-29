@@ -51,6 +51,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -81,6 +82,9 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     private TitledPane violationsTitledPane;
     @FXML
     private ListView<Node> xpathResultListView;
+    @FXML
+    private ToggleButton resultHighlightingToggle;
+
     // Actually a child of the main view toolbar, but this controller is responsible for it
     @SuppressWarnings("PMD.SingularField")
     private ChoiceBox<String> xpathVersionChoiceBox;
@@ -104,6 +108,14 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                     .conditionOn(xpathResultListView.focusedProperty())
                     .filter(Objects::nonNull)
                     .subscribe(parent::onNodeItemSelected);
+
+        resultHighlightingToggle.setOnAction(e -> {
+            if (resultHighlightingToggle.isSelected()) {
+                parent.highlightXPathResults(xpathResultListView.getItems());
+            } else {
+                parent.resetXPathResults();
+            }
+        });
 
         Platform.runLater(this::bindToParent);
 
@@ -211,7 +223,9 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                                                                                      xpath,
                                                                                      ruleBuilder.getRuleProperties()));
             xpathResultListView.setItems(results);
-            parent.handleXPathResults(results);
+            if (resultHighlightingToggle.isSelected()) {
+                parent.highlightXPathResults(results);
+            }
             violationsTitledPane.setText("Matched nodes\t(" + results.size() + ")");
         } catch (XPathEvaluationException e) {
             invalidateResults(true);
@@ -260,6 +274,16 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         xpathExpressionArea.disableSyntaxHighlighting();
     }
 
+
+    @PersistentProperty
+    public boolean isResultHighlightingOn() {
+        return resultHighlightingToggle.isSelected();
+    }
+
+
+    public void setResultHighlightingOn(boolean b) {
+        resultHighlightingToggle.setSelected(b);
+    }
 
     @PersistentProperty
     public String getXpathExpression() {

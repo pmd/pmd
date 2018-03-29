@@ -44,7 +44,6 @@ public class Designer extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        
         parseParameters(getParameters());
 
         FXMLLoader loader

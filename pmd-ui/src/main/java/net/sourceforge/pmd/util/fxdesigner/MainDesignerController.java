@@ -293,8 +293,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     public void resetXPathResults() {
         sourceEditorController.clearXPathHighlight();
     }
-    
-    public void handleXPathResults(List<Node> nodes) {
+
+    public void highlightXPathResults(List<Node> nodes) {
         resetXPathResults();
         sourceEditorController.highlightXPathResults(nodes);
     }

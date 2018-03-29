@@ -41,6 +41,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -188,19 +189,26 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     /** Clears the focus node highlight. */
     public void clearFocusHighlight() {
-        codeEditorArea.clearStyleLayer(LayerId.FOCUS);
+        clearLayer(LayerId.FOCUS);
+
     }
 
 
     /** Clears the secondary highlight. Doesn't clear the primary focus.. */
     public void clearSecondaryHighlight() {
-        codeEditorArea.clearStyleLayer(LayerId.SECONDARY);
+        clearLayer(LayerId.SECONDARY);
     }
 
 
     /** Clears the highlighting of XPath results. */
     public void clearXPathHighlight() {
-        codeEditorArea.clearStyleLayer(LayerId.XPATH_RESULTS);
+        clearLayer(LayerId.XPATH_RESULTS);
+    }
+
+
+    private void clearLayer(LayerId id) {
+        codeEditorArea.clearStyleLayer(id);
+        Platform.runLater(codeEditorArea::paintCss);
     }
 
     /** Highlights the given node. Removes highlighting on the previously highlighted node. */
