@@ -169,8 +169,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
 
         sourceEditorController.refreshAST();
-        xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(),
-                                           getLanguageVersion());
+        Platform.runLater(() -> xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(), getLanguageVersion()));
         Platform.runLater(() -> sourceEditorController.moveCaret(0, 0));
         Platform.runLater(() -> { // fixes choicebox bad rendering on first opening
             languageChoiceBox.show();

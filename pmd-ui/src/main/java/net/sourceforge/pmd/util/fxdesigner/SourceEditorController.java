@@ -214,38 +214,42 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     /** Highlights the given node. Removes highlighting on the previously highlighted node. */
     public void setFocusNode(Node node) {
         clearFocusHighlight();
-        highlightNodes(Collections.singleton(node), LayerId.FOCUS);
+        highlightNodes(Collections.singleton(node), LayerId.FOCUS, true);
     }
 
 
     /** Highlights xpath results (xpath highlight). */
     public void highlightXPathResults(Collection<? extends Node> nodes) {
         clearXPathHighlight();
-        highlightNodes(nodes, LayerId.XPATH_RESULTS);
+        highlightNodes(nodes, LayerId.XPATH_RESULTS, false);
     }
 
 
     /** Highlights name occurences (secondary highlight). */
     public void highlightNameOccurences(Collection<? extends NameOccurrence> occs) {
         clearSecondaryHighlight();
-        highlightNodes(occs.stream().map(NameOccurrence::getLocation).collect(Collectors.toList()), LayerId.SECONDARY, "name-occurence");
+        highlightNodes(occs.stream().map(NameOccurrence::getLocation).collect(Collectors.toList()), LayerId.SECONDARY, false, "name-occurence");
     }
 
 
     /** Highlights nodes that are in error (secondary highlight). */
     public void highlightErrorNodes(Collection<? extends Node> nodes) {
         clearSecondaryHighlight();
-        highlightNodes(nodes, LayerId.SECONDARY, "error-highlight");
+        highlightNodes(nodes, LayerId.SECONDARY, true, "error-highlight");
     }
 
-    private void highlightNodes(Collection<? extends Node> nodes, LayerId layer, String... cssClasses) {
+
+    private void highlightNodes(Collection<? extends Node> nodes, LayerId layer, boolean autoScroll, String... cssClasses) {
         for (Node node : nodes) {
             if (codeEditorArea.isInRange(node)) {
                 codeEditorArea.styleCss(node, layer, cssClasses);
-                codeEditorArea.paintCss();
-                codeEditorArea.moveTo(node.getBeginLine() - 1, 0);
-                codeEditorArea.requestFollowCaret();
+                if (autoScroll) {
+                    moveCaret(node.getBeginLine() - 1, 0);
+                }
             }
+        }
+        if (!nodes.isEmpty()) {
+            codeEditorArea.paintCss();
         }
     }
 
@@ -274,6 +278,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
+    /** Moves the caret to a position and makes the view follow it. */
     public void moveCaret(int line, int column) {
         codeEditorArea.moveTo(line, column);
         codeEditorArea.requestFollowCaret();

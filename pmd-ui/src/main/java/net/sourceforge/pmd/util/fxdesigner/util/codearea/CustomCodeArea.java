@@ -56,11 +56,14 @@ public class CustomCodeArea extends CodeArea {
     public CustomCodeArea() {
         super();
         styleContext = new StyleContext(this);
-        styleContext.addLayer(XPATH_RESULTS.id, new StyleLayer(XPATH_RESULTS.id, this));
         styleContext.addLayer(SYNTAX_HIGHLIGHT_LAYER_ID, new StyleLayer(SYNTAX_HIGHLIGHT_LAYER_ID, this));
+        styleContext.addLayer(XPATH_RESULTS.id, new StyleLayer(XPATH_RESULTS.id, this));
         styleContext.addLayer(FOCUS.id, new StyleLayer(FOCUS.id, this));
         styleContext.addLayer(SECONDARY.id, new StyleLayer(SECONDARY.id, this));
     }
+
+    // FIXME the highlighting offsets to the left (right) when characters are deleted (inserted)
+    // Probably, auto-parsing of the source will fix that to some extent.
 
     /**
      * Styles the node in the given layer.
@@ -71,16 +74,45 @@ public class CustomCodeArea extends CodeArea {
      * occurrences correspond to a name declaration). The XPath result layer
      * highlights nodes that are independent from any selection (they depend
      * on the xpath results).
-     *  @param node       node to style
+     *
+     * @param node       node to style
      * @param layerId    Layer id
      * @param cssClasses css classes to apply
      */
+    // TODO we can probably be more efficient if we style batches of n nodes, and create only one span for them instead of overlaying n spans
     public void styleCss(Node node, LayerId layerId, String... cssClasses) {
         Set<String> fullClasses = new HashSet<>(Arrays.asList(cssClasses));
         fullClasses.add("text");
         fullClasses.add("styled-text-area");
         fullClasses.add(layerId.id + "-highlight"); // focus-highlight, xpath-highlight, secondary-highlight
+
+        if (layerId == XPATH_RESULTS && useInlineHighlight(node)) {
+            fullClasses.add("inline-highlight");
+        }
+
         styleContext.getLayer(layerId.id).style(node.getBeginLine(), node.getBeginColumn(), node.getEndLine(), node.getEndColumn(), fullClasses);
+    }
+
+
+    /**
+     * Returns whether the node should be styled inline or not.
+     * Inline highlight basically adds a border around a node.
+     * Borders are only used around short (text-wise) nodes,
+     * since otherwise the background variation is enough to
+     * spot the node. Also, borders can't stack, so having only
+     * short nodes bear the border reduces the chance that
+     * another node that should be bordered is included inside
+     * the node, in which case it would be unnoticeable.
+     *
+     * <p>This is a pretty dumb heuristic, it would be better
+     * to have a way to know if a node is included in another
+     * highlighted node and in that case display the border...
+     *
+     * @param node node to test
+     */
+    private boolean useInlineHighlight(Node node) {
+        final int maxInlineLength = 10;
+        return node.getBeginLine() == node.getEndLine() && (node.getEndColumn() - node.getBeginColumn()) <= maxInlineLength;
     }
 
     /**
@@ -151,6 +183,8 @@ public class CustomCodeArea extends CodeArea {
 
     /**
      * Forcefully applies the possibly updated css classes.
+     * This operation is expensive, and should not be executed
+     * in a loop for example.
      */
     public void paintCss() {
         this.setStyleSpans(0, styleContext.getStyleSpans());

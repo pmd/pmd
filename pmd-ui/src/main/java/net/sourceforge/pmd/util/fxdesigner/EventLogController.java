@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import org.reactfx.EventStream;
@@ -23,7 +24,6 @@ import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableCell;
@@ -105,7 +105,7 @@ public class EventLogController implements Initializable {
 
         eventLogTableView.getSelectionModel()
                          .selectedItemProperty()
-                         .addListener(this::onExceptionSelectionChanges);
+                         .addListener((obs, oldVal, newVal) -> onExceptionSelectionChanges(oldVal, newVal));
 
         EventStreams.combine(EventStreams.changesOf(eventLogTableView.focusedProperty()),
                              EventStreams.changesOf(selectedErrorNodes));
@@ -155,13 +155,13 @@ public class EventLogController implements Initializable {
     }
 
 
-    private void onExceptionSelectionChanges(ObservableValue<? extends LogEntry> obs, LogEntry oldVal, LogEntry newVal) {
+    private void onExceptionSelectionChanges(LogEntry oldVal, LogEntry newVal) {
         if (newVal != null) {
             logDetailsTextArea.setText(newVal.getStackTrace());
         } else {
             logDetailsTextArea.clear();
         }
-        if (newVal != oldVal) {
+        if (!Objects.equals(newVal, oldVal)) {
             handleSelectedEntry(newVal);
         }
     }

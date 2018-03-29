@@ -4,31 +4,38 @@
  https://github.com/FXMisc/RichTextFX/wiki/RichTextFX-CSS-Reference-Guide
 */
 
-
+/* With syntax highlighting, it's more readable to not change the fill color */
 
 .styled-text-area .focus-highlight {
-    -fx-font-weight: bolder !important;
-    -fx-fill: royalblue !important;
+    -fx-font-weight: bolder;
 }
 
-.styled-text-area .name-occurence {
-    -fx-font-weight: bolder !important;
-    -fx-fill: lightgreen !important;
-}
-
-/* Highlights nodes in error */
-.styled-text-area .error-highlight {
-    -rtfx-background-color: lightcoral;
-    -fx-font-weight: bolder !important;
-    -fx-fill: darkred !important;
+/* Add a border around highlighted nodes if they fit in one line */
+/* Otherwise, the background variation should be enough to spot them */
+.styled-text-area .inline-highlight {
+    -rtfx-border-stroke-width: .75pt;
+    -rtfx-border-stroke-type: centered;
 }
 
 .styled-text-area .xpath-highlight {
-    -rtfx-border-stroke-width: .75pt;
-    -rtfx-border-stroke-type: outside;
     -rtfx-border-stroke-color: darkgoldenrod;
+    -rtfx-background-color: #f6e8d3;
+}
 
-    -rtfx-background-color: antiquewhite;
+/* This rule removes the vertical border around eg name occurrences included in XPath highlight */
+.styled-text-area .name-occurence.xpath-highlight,
+.styled-text-area .error-highlight.xpath-highlight {
+    -rtfx-border-stroke-color: darkgoldenrod;
+}
+
+.styled-text-area .error-highlight {
+    -rtfx-border-stroke-color: darkred;
+    -rtfx-background-color: lightcoral;
+}
+
+.styled-text-area .name-occurence {
+    -rtfx-border-stroke-color: olivedrab;
+    -rtfx-background-color: palegreen;
 }
 
 /********/
@@ -54,7 +61,7 @@
 
 
 .paragraph-box:has-caret {
-    -fx-background-color: #FDF6E3;
+    -fx-background-color: #fbf4e1;
 }
 
 .text {
