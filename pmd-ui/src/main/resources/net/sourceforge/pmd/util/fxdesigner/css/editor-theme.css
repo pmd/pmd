@@ -91,7 +91,11 @@
 }
 
 .styled-text-area .xpath.path {
-    -fx-font-weight: bolder;
+    -fx-font-weight: bold;
+}
+
+.styled-text-area .xpath.axis {
+    -fx-fill: #B05A65;
 }
 
 .styled-text-area .xpath.bracket {
@@ -100,6 +104,10 @@
 
 .styled-text-area .xpath.attribute {
     -fx-fill: #B05A65;
+}
+
+.styled-text-area .xpath.function {
+    -fx-fill: #cc971b;
 }
 
 /* XML specific */

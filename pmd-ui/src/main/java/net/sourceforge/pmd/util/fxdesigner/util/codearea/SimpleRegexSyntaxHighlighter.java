@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -81,6 +82,30 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
         return languageName;
     }
 
+
+    /**
+     * Returns a regex alternation for the given words.
+     * The words must not begin with an escaped character.
+     *
+     * @param alternatives Words to join
+     */
+    protected static String alternation(String[] alternatives) {
+        // first characters of each alternative, to optimise the regex
+        String firstChars = Arrays.stream(alternatives)
+                                  .map(s -> s.substring(0, 1))
+                                  .distinct()
+                                  .reduce((s1, s2) -> s1 + s2)
+                                  .get();
+
+        String alt = "(?=[" + firstChars + "])(?:" + String.join("|", alternatives) + ")";
+
+        return asWord(alt);
+    }
+
+
+    protected static String asWord(String regex) {
+        return "(?:\\b" + regex + "\\b)";
+    }
 
     /**
      * Gets a builder to make a grammar to build a highlighter.
