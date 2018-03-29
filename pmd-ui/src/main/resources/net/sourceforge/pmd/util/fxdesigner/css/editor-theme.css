@@ -1,13 +1,26 @@
 /* Presets for the editor theme and syntax highlighting. */
 
-.styled-text-area .primary-highlight {
+/* CSS reference of the code area:
+ https://github.com/FXMisc/RichTextFX/wiki/RichTextFX-CSS-Reference-Guide
+*/
+
+
+
+.styled-text-area .focus-highlight {
     -fx-font-weight: bolder !important;
     -fx-fill: royalblue !important;
 }
 
-.styled-text-area .secondary-highlight {
+.styled-text-area .name-occurence {
     -fx-font-weight: bolder !important;
     -fx-fill: lightgreen !important;
+}
+
+/* Highlights nodes in error */
+.styled-text-area .error-highlight {
+    -rtfx-background-color: lightcoral;
+    -fx-font-weight: bolder !important;
+    -fx-fill: darkred !important;
 }
 
 /********/

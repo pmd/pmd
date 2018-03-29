@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.util.fxdesigner.util;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -214,4 +216,21 @@ public final class DesignerUtil {
         return lines.isEmpty() ? Optional.empty() : Optional.of("//" + String.join("/", lines));
     }
 
+
+    /**
+     * Works out an xpath query that matches the node
+     * which was being visited during the failure.
+     *
+     * @param e Exception
+     *
+     * @return A query, if possible.
+     *
+     * @see #stackTraceToXPath(String)
+     */
+    public static Optional<String> stackTraceToXPath(Throwable e) {
+
+        StringWriter writer = new StringWriter();
+        e.printStackTrace(new PrintWriter(writer));
+        return stackTraceToXPath(writer.toString());
+    }
 }

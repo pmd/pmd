@@ -30,7 +30,8 @@ public class XPathEvaluator {
 
 
     /**
-     * Evaluates an XPath query on the compilation unit.
+     * Evaluates an XPath query on the compilation unit. Performs
+     * no side effects.
      *
      * @param compilationUnit AST root
      * @param languageVersion language version

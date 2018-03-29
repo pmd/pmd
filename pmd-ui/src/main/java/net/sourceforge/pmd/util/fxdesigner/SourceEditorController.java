@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +26,7 @@ import org.reactfx.value.Var;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
@@ -35,6 +35,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
@@ -76,8 +77,8 @@ public class SourceEditorController implements Initializable, SettingsOwner {
             return new ClasspathClassLoader(fileList, SourceEditorController.class.getClassLoader());
         } catch (IOException e) {
             e.printStackTrace();
+            return SourceEditorController.class.getClassLoader();
         }
-        return SourceEditorController.class.getClassLoader();
     });
 
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
@@ -185,33 +186,49 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    public void clearNodeHighlight() {
-        codeEditorArea.clearPrimaryStyleLayer();
+    /** Clears the focus node highlight. */
+    public void clearFocusHighlight() {
+        codeEditorArea.clearStyleLayer(LayerId.FOCUS);
     }
 
 
-    public void highlightNodePrimary(Node node) {
-        highlightNodes(Collections.singleton(node), Collections.singleton("primary-highlight"));
+    /** Clears the secondary highlight. Doesn't clear the primary focus.. */
+    public void clearSecondaryHighlight() {
+        codeEditorArea.clearStyleLayer(LayerId.SECONDARY);
     }
 
 
-    private void highlightNodes(Collection<? extends Node> nodes, Set<String> cssClasses) {
+    /** Highlights the given node. Removes highlighting on the previously highlighted node. */
+    public void setFocusNode(Node node) {
+        clearFocusHighlight();
+        highlightNodes(Collections.singleton(node), LayerId.FOCUS);
+    }
+
+
+    /** Highlights name occurences (secondary highlight). */
+    public void highlightNameOccurences(Collection<? extends NameOccurrence> occs) {
+        clearSecondaryHighlight();
+        highlightNodes(occs.stream().map(NameOccurrence::getLocation).collect(Collectors.toList()), LayerId.SECONDARY, "name-occurence");
+    }
+
+
+    /** Highlights nodes that are in error (secondary highlight). */
+    public void highlightErrorNodes(Collection<? extends Node> nodes) {
+        clearSecondaryHighlight();
+        highlightNodes(nodes, LayerId.SECONDARY, "error-highlight");
+    }
+
+    private void highlightNodes(Collection<? extends Node> nodes, LayerId layer, String... cssClasses) {
         for (Node node : nodes) {
             if (codeEditorArea.isInRange(node)) {
-                codeEditorArea.styleCss(node, cssClasses);
+                codeEditorArea.styleCss(node, layer, cssClasses);
                 codeEditorArea.paintCss();
                 codeEditorArea.moveTo(node.getBeginLine() - 1, 0);
                 codeEditorArea.requestFollowCaret();
-            } else {
-                codeEditorArea.clearPrimaryStyleLayer();
             }
         }
     }
 
-
-    public void highlightNodesSecondary(Collection<? extends Node> nodes) {
-        highlightNodes(nodes, Collections.singleton("secondary-highlight"));
-    }
 
     public void focusNodeInTreeView(Node node) {
         SelectionModel<TreeItem<Node>> selectionModel = astTreeView.getSelectionModel();

@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.reactfx.value.Val;
@@ -22,7 +22,7 @@ import org.reactfx.value.Val;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
@@ -245,24 +245,49 @@ public class MainDesignerController implements Initializable, SettingsOwner {
      */
     public void onNodeItemSelected(Node selectedValue) {
         nodeInfoPanelController.displayInfo(selectedValue);
-        // The following line causes problems, since it wipes out the name occurrence highlighting,
-        // but it's already fixed in a PR to come soon
-        sourceEditorController.clearNodeHighlight();
-        sourceEditorController.highlightNodePrimary(selectedValue);
+        sourceEditorController.setFocusNode(selectedValue);
         sourceEditorController.focusNodeInTreeView(selectedValue);
     }
 
 
     public void onNameDeclarationSelected(NameDeclaration declaration) {
-        Platform.runLater(() -> onNodeItemSelected(declaration.getNode()));
+        sourceEditorController.clearSecondaryHighlight();
 
-        List<NameOccurrence> occ = declaration.getNode().getScope().getDeclarations().get(declaration);
-        if (occ != null) {
-            sourceEditorController.highlightNodesSecondary(occ.stream()
-                                                              .map(NameOccurrence::getLocation)
-                                                              .collect(Collectors.toList()));
-        }
+        Optional.ofNullable(declaration.getNode().getScope().getDeclarations().get(declaration))
+                .ifPresent(sourceEditorController::highlightNameOccurences);
 
+        sourceEditorController.setFocusNode(declaration.getNode());
+    }
+
+    /**
+     * Runs an XPath (2.0) query on the current AST.
+     * Performs no side effects.
+     *
+     * @param query the query
+     * @return the matched nodes
+     * @throws XPathEvaluationException if the query fails
+     */
+    public List<Node> runXPathQuery(String query) throws XPathEvaluationException {
+        return xpathPanelController.runXPathQuery(sourceEditorController.getCompilationUnit(),
+                                                  getLanguageVersion(), query);
+    }
+
+    // TODO consider using a messenger pattern instead of mediator
+
+    /**
+     * Handles nodes that potentially caused an error.
+     * This can for example highlight nodes on the
+     * editor. Effects can be reset with {@link #resetSelectedErrorNodes()}.
+     *
+     * @param n Node
+     */
+    public void handleSelectedNodeInError(List<Node> n) {
+        resetSelectedErrorNodes();
+        sourceEditorController.highlightErrorNodes(n);
+    }
+
+    public void resetSelectedErrorNodes() {
+        sourceEditorController.clearSecondaryHighlight();
     }
 
 
@@ -355,7 +380,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     public void invalidateAst() {
         nodeInfoPanelController.invalidateInfo();
         xpathPanelController.invalidateResults(false);
-        sourceEditorController.clearNodeHighlight();
+        sourceEditorController.clearFocusHighlight();
     }
 
 

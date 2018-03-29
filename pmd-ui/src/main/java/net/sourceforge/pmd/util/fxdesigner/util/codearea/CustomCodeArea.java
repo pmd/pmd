@@ -4,7 +4,12 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.FOCUS;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.SECONDARY;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.XPATH_RESULTS;
+
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -27,10 +32,12 @@ import javafx.concurrent.Task;
 
 /**
  * Code area that can handle syntax highlighting as well as regular node highlighting. Regular node highlighting is
- * handled in the "primary" {@link StyleLayer}, which you can affect with {@link #styleCss(Node, Set)}, {@link
- * #clearPrimaryStyleLayer()} and the like. Syntax highlighting uses another internal style layer. Syntax highlighting
- * is performed asynchronously by another thread. You must shut down the executor gracefully by calling {@link
- * #disableSyntaxHighlighting()} before exiting the application.
+ * handled in several {@link StyleLayer}s, which you can affect with {@link #styleCss(Node, LayerId, String...)},
+ * {@link #clearStyleLayer(LayerId)} and the like. Highlighting
+ *
+ * <p>Syntax highlighting uses another internal style layer. Syntax highlighting
+ * is performed asynchronously by another thread. You must shut down the executor
+ * gracefully by calling {@link #disableSyntaxHighlighting()} before exiting the application.
  *
  * @author Clément Fournier
  * @since 6.0.0
@@ -38,7 +45,7 @@ import javafx.concurrent.Task;
 public class CustomCodeArea extends CodeArea {
 
     private static final String SYNTAX_HIGHLIGHT_LAYER_ID = "syntax";
-    private static final String PRIMARY_HIGHLIGHT_LAYER_ID = "primary";
+
     private ExecutorService executorService;
     private Subscription syntaxAutoRefresh;
     private BooleanProperty isSyntaxHighlightingEnabled = new SimpleBooleanProperty(false);
@@ -49,54 +56,40 @@ public class CustomCodeArea extends CodeArea {
     public CustomCodeArea() {
         super();
         styleContext = new StyleContext(this);
-        styleContext.addLayer(PRIMARY_HIGHLIGHT_LAYER_ID, new StyleLayer(PRIMARY_HIGHLIGHT_LAYER_ID, this));
+        styleContext.addLayer(XPATH_RESULTS.id, new StyleLayer(XPATH_RESULTS.id, this));
+        styleContext.addLayer(SYNTAX_HIGHLIGHT_LAYER_ID, new StyleLayer(SYNTAX_HIGHLIGHT_LAYER_ID, this));
+        styleContext.addLayer(FOCUS.id, new StyleLayer(FOCUS.id, this));
+        styleContext.addLayer(SECONDARY.id, new StyleLayer(SECONDARY.id, this));
     }
 
-
     /**
-     * Styles the region delimited by the coordinates with the given css classes. Should be followed by a call to {@link
-     * #paintCss()} to update the visual appearance.
+     * Styles the node in the given layer.
      *
-     * @param beginLine   Begin line
-     * @param beginColumn Begin column
-     * @param endLine     End line
-     * @param endColumn   End column
-     * @param cssClasses  The css classes to apply
-     *
-     * @throws IllegalArgumentException if the region identified by the coordinates is out of bounds
+     * <p>The focus layer is meant for the node in primary focus, in contrast
+     * with the secondary layer, which highlights some nodes that are related
+     * to a specific selection (eg error nodes correspond to an error, name
+     * occurrences correspond to a name declaration). The XPath result layer
+     * highlights nodes that are independent from any selection (they depend
+     * on the xpath results).
+     *  @param node       node to style
+     * @param layerId    Layer id
+     * @param cssClasses css classes to apply
      */
-    public void styleCss(int beginLine, int beginColumn, int endLine, int endColumn, Set<String> cssClasses) {
-        Set<String> fullClasses = new HashSet<>(cssClasses);
+    public void styleCss(Node node, LayerId layerId, String... cssClasses) {
+        Set<String> fullClasses = new HashSet<>(Arrays.asList(cssClasses));
         fullClasses.add("text");
         fullClasses.add("styled-text-area");
-        styleContext.getLayer(PRIMARY_HIGHLIGHT_LAYER_ID).style(beginLine, beginColumn, endLine, endColumn, fullClasses);
+        fullClasses.add(layerId.id + "-highlight"); // focus-highlight, xpath-highlight, secondary-highlight
+        styleContext.getLayer(layerId.id).style(node.getBeginLine(), node.getBeginColumn(), node.getEndLine(), node.getEndColumn(), fullClasses);
     }
 
-
     /**
-     * Styles the node's position with the given css classes.
+     * Clears a style layer.
      *
-     * @param node       The node to style
-     * @param cssClasses The css classes to apply
-     *
-     * @throws IllegalArgumentException if the node's coordinates are out of bounds
+     * @param id layer id.
      */
-    public void styleCss(Node node, Set<String> cssClasses) {
-        this.styleCss(node.getBeginLine(), node.getBeginColumn(), node.getEndLine(), node.getEndColumn(), cssClasses);
-    }
-
-
-    /**
-     * Replaces the styling of the primary layer by styling the node's position with the given css classes.
-     *
-     * @param node       The node to style
-     * @param cssClasses The css classes to apply
-     *
-     * @throws IllegalArgumentException if the node's coordinates are out of bounds
-     */
-    public void restylePrimaryStyleLayer(Node node, Set<String> cssClasses) {
-        clearPrimaryStyleLayer();
-        styleCss(node, cssClasses);
+    public void clearStyleLayer(LayerId id) {
+        styleContext.getLayer(id.id).clearStyles();
     }
 
 
@@ -109,17 +102,10 @@ public class CustomCodeArea extends CodeArea {
      */
     public boolean isInRange(Node n) {
         return n.getEndLine() <= getParagraphs().size()
-               && (n.getEndLine() != getParagraphs().size()
-                   || n.getEndColumn() <= getParagraph(n.getEndLine() - 1).length());
+                && (n.getEndLine() != getParagraphs().size()
+                || n.getEndColumn() <= getParagraph(n.getEndLine() - 1).length());
     }
 
-
-    /**
-     * Clears the primary style layer from its contents.
-     */
-    public void clearPrimaryStyleLayer() {
-        styleContext.getLayer(PRIMARY_HIGHLIGHT_LAYER_ID).clearStyles();
-    }
 
 
     /**
@@ -198,12 +184,6 @@ public class CustomCodeArea extends CodeArea {
         isSyntaxHighlightingEnabled.set(true);
         Objects.requireNonNull(newHighlighter, "The syntax highlighting highlighter cannot be null");
 
-        StyleLayer syntaxHighlightLayer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
-        if (syntaxHighlightLayer == null) {
-            styleContext.addLayer(SYNTAX_HIGHLIGHT_LAYER_ID, new StyleLayer(SYNTAX_HIGHLIGHT_LAYER_ID, this));
-        }
-
-
         ObservableList<String> styleClasses = this.getStyleClass();
         if (syntaxHighlighter != null) {
             styleClasses.remove("." + syntaxHighlighter.getLanguageTerseName());
@@ -261,4 +241,19 @@ public class CustomCodeArea extends CodeArea {
     }
 
 
+    /** Public style layers of the code area. */
+    public enum LayerId {
+        /** For the currently selected node. */
+        FOCUS("focus"),
+        /** For nodes in error, declaration usages. */
+        SECONDARY("secondary"),
+        /** For xpath results. */
+        XPATH_RESULTS("xpath");
+
+        private final String id;
+
+        LayerId(String id) {
+            this.id = id;
+        }
+    }
 }

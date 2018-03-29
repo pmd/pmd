@@ -186,7 +186,10 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
 
     /**
-     * Evaluate XPath on the given compilation unit.
+     * Evaluate the contents of the XPath expression area
+     * on the given compilation unit. This updates the xpath
+     * result panel, and can log XPath exceptions to the
+     * event log panel.
      *
      * @param compilationUnit The AST root
      * @param version         The language version
@@ -217,6 +220,11 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         xpathResultListView.refresh();
 
 
+    }
+
+
+    public List<Node> runXPathQuery(Node compilationUnit, LanguageVersion version, String query) throws XPathEvaluationException {
+        return xpathEvaluator.evaluateQuery(compilationUnit, version, "2.0", query, ruleBuilder.getRuleProperties());
     }
 
 

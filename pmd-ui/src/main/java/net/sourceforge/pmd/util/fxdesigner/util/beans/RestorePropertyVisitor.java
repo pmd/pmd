@@ -46,7 +46,7 @@ public class RestorePropertyVisitor extends BeanNodeVisitor<SettingsOwner> {
         }
 
         Map<String, PropertyDescriptor> descriptors = Arrays.stream(PropertyUtils.getPropertyDescriptors(target))
-                                                            .filter(d -> d.getReadMethod().isAnnotationPresent(PersistentProperty.class))
+                                                            .filter(d -> d.getReadMethod() != null && d.getReadMethod().isAnnotationPresent(PersistentProperty.class))
                                                             .collect(Collectors.toMap(PropertyDescriptor::getName, d -> d));
 
         for (Entry<String, Object> saved : model.getSettingsValues().entrySet()) {
