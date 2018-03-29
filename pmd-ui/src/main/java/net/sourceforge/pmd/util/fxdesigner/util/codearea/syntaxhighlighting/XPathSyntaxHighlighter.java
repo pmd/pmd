@@ -29,22 +29,22 @@ public class XPathSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         "self", "child", "attribute", "descendant", "descendant-or-self", "ancestor",
         "ancestor-or-self", "following", "following-sibling", "namespace", "parent",
         "preceding-sibling",
-        };
+    };
 
     private static final String[] KEYWORDS = {
-            "or", "and", "not", "some", "in", "satisfies",
-            "as", "is", "for", "every", "cast", "castable",
-            "treat", "instance", "of", "to", "if", "then", "else",
-            "return", "let",
-            "intersect", "except", "union", "div", "idiv", "mod",
-            "ne", "eq", "lt", "le", "gt", "ge"
+        "or", "and", "not", "some", "in", "satisfies",
+        "as", "is", "for", "every", "cast", "castable",
+        "treat", "instance", "of", "to", "if", "then", "else",
+        "return", "let",
+        "intersect", "except", "union", "div", "idiv", "mod",
+        "ne", "eq", "lt", "le", "gt", "ge",
     };
 
     private static final String[] KIND_TESTS = {
-            "node", "document-node", "text", "comment",
-            "namespace-node", "processing-instruction",
-            "attribute", "schema-attribute", "element",
-            "schema-element", "function"
+        "node", "document-node", "text", "comment",
+        "namespace-node", "processing-instruction",
+        "attribute", "schema-attribute", "element",
+        "schema-element", "function",
     };
 
 
