@@ -276,7 +276,7 @@ public class JDKVersionTest {
     @Test
     public final void jdk7PrivateMethodInnerClassInterface1() {
         ASTCompilationUnit acu = parseJava17(loadSource("private_method_in_inner_class_interface1.java"));
-        List<ASTMethodDeclaration> methods = acu.findDescendantsOfType(ASTMethodDeclaration.class);
+        List<ASTMethodDeclaration> methods = acu.findDescendantsOfType(ASTMethodDeclaration.class, true);
         assertEquals(3, methods.size());
         for (ASTMethodDeclaration method : methods) {
             assertFalse(method.isInterfaceMember());
