@@ -1231,7 +1231,7 @@ public class Something {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|ignoredAnnotations|[java.lang.Deprecated, javafx.fxml.FXML]|Fully qualified names of the annotation types that should be ignored by this rule|
+|ignoredAnnotations|[lombok.Setter, lombok.Getter, lombok.Builder, lombok.Data, lombok.RequiredArgsConstructor, lombok.AllArgsConstructor, lombok.Value, lombok.NoArgsConstructor, java.lang.Deprecated, javafx.fxml.FXML]|Fully qualified names of the annotation types that should be ignored by this rule|
 
 **Use this rule by referencing it:**
 ``` xml

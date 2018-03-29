@@ -4,12 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+
+
 /**
  * Abstract class for type declarations nodes.
  */
 public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
 
-    private JavaQualifiedName qualifiedName;
+    private JavaTypeQualifiedName qualifiedName;
 
 
     AbstractAnyTypeDeclaration(int i) {
@@ -33,18 +37,14 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
 
 
     @Override
-    public final JavaQualifiedName getQualifiedName() {
-        if (qualifiedName == null) {
-            qualifiedName = buildQualifiedName();
-        }
-
+    public final JavaTypeQualifiedName getQualifiedName() {
         return qualifiedName;
     }
 
 
-    /** Create the qualified name, which is then cached in the node. */
-    private JavaQualifiedName buildQualifiedName() {
-        return QualifiedNameFactory.ofClass(this);
+    public void setQualifiedName(JavaTypeQualifiedName qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        this.typeDefinition = JavaTypeDefinition.forClass(qualifiedName.getType());
     }
 }
 

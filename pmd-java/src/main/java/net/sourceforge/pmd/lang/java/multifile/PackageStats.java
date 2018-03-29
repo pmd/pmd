@@ -6,12 +6,13 @@ package net.sourceforge.pmd.lang.java.multifile;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.ast.ImmutableList;
-import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
 
 /**
@@ -56,14 +57,14 @@ final class PackageStats implements ProjectMirror {
      *
      * @return The new ClassStats, or the one that was found. Can return null only if createIfNotFound is unset
      */
-    /* default */ ClassStats getClassStats(JavaQualifiedName qname, boolean createIfNotFound) {
+    /* default */ ClassStats getClassStats(JavaTypeQualifiedName qname, boolean createIfNotFound) {
         PackageStats container = getSubPackage(qname, createIfNotFound);
 
         if (container == null) {
             return null;
         }
 
-        String topClassName = qname.getClassList().head();
+        String topClassName = qname.getClassList().get(0);
         if (createIfNotFound && container.classes.get(topClassName) == null) {
             container.classes.put(topClassName, new ClassStats());
         }
@@ -74,9 +75,12 @@ final class PackageStats implements ProjectMirror {
             return null;
         }
 
-        ImmutableList<String> nameClasses = qname.getClassList();
+        Iterator<String> it = qname.getClassList().iterator();
+        if (it.hasNext()) {
+            it.next();
+        }
 
-        for (Iterator<String> it = nameClasses.tail().iterator(); it.hasNext() && next != null;) {
+        while (it.hasNext() && next != null) {
             // Delegate search for nested classes to ClassStats
             next = next.getNestedClassStats(it.next(), createIfNotFound);
         }
@@ -94,12 +98,12 @@ final class PackageStats implements ProjectMirror {
      *
      * @return The deepest package that contains this resource. Can only return null if createIfNotFound is unset
      */
-    private PackageStats getSubPackage(JavaQualifiedName qname, boolean createIfNotFound) {
-        if (qname.getPackageList() == null) {
+    private PackageStats getSubPackage(JavaTypeQualifiedName qname, boolean createIfNotFound) {
+        if (qname.getPackageList().isEmpty()) {
             return this; // the toplevel
         }
 
-        ImmutableList<String> packagePath = qname.getPackageList();
+        List<String> packagePath = qname.getPackageList();
         PackageStats next = this;
 
         for (Iterator<String> it = packagePath.iterator(); it.hasNext() && next != null;) {
@@ -116,15 +120,15 @@ final class PackageStats implements ProjectMirror {
 
 
     @Override
-    public boolean hasMatchingSig(JavaQualifiedName qname, JavaOperationSigMask sigMask) {
-        ClassStats clazz = getClassStats(qname, false);
+    public boolean hasMatchingSig(JavaOperationQualifiedName qname, JavaOperationSigMask sigMask) {
+        ClassStats clazz = getClassStats(qname.getClassName(), false);
 
         return clazz != null && clazz.hasMatchingOpSig(qname.getOperation(), sigMask);
     }
 
 
     @Override
-    public boolean hasMatchingSig(JavaQualifiedName qname, String fieldName, JavaFieldSigMask sigMask) {
+    public boolean hasMatchingSig(JavaTypeQualifiedName qname, String fieldName, JavaFieldSigMask sigMask) {
         ClassStats clazz = getClassStats(qname, false);
 
         return clazz != null && clazz.hasMatchingFieldSig(fieldName, sigMask);
@@ -132,7 +136,7 @@ final class PackageStats implements ProjectMirror {
 
 
     @Override
-    public ClassMirror getClassMirror(JavaQualifiedName className) {
+    public ClassMirror getClassMirror(JavaTypeQualifiedName className) {
         return getClassStats(className, false);
     }
 

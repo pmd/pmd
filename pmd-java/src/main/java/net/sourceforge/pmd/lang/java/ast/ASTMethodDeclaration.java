@@ -5,8 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 
@@ -136,14 +134,6 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
      */
     public ASTNameList getThrows() {
         return getFirstChildOfType(ASTNameList.class);
-    }
-
-
-    /**
-     * Returns the annotations declared on this method declaration.
-     */
-    public List<ASTAnnotation> getDeclaredAnnotations() {
-        return this.jjtGetParent().findChildrenOfType(ASTAnnotation.class);
     }
 
 

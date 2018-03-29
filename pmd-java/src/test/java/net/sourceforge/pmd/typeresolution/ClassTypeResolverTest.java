@@ -42,6 +42,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -168,9 +169,14 @@ public class ClassTypeResolverTest {
     @Test
     public void testEnumAnonymousInnerClass() {
         ASTCompilationUnit acu = parseAndTypeResolveForClass15(EnumWithAnonymousInnerClass.class);
+        // try it in jshell, an enum constant with a body is compiled to an anonymous class,
+        // the counter is shared with other anonymous classes of the enum
+        Class<?> enumAnon = acu.getFirstDescendantOfType(ASTEnumConstant.class).getQualifiedName().getType();
+        assertEquals("net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass$1", enumAnon.getName());
+
         Class<?> inner = acu.getFirstDescendantOfType(ASTAllocationExpression.class)
                 .getFirstDescendantOfType(ASTClassOrInterfaceType.class).getType();
-        assertEquals("net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass$1", inner.getName());
+        assertEquals("net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass$2", inner.getName());
     }
 
     @Test
@@ -247,7 +253,7 @@ public class ClassTypeResolverTest {
     }
 
     @Test
-    public void testAnoymousExtendingObject() throws Exception {
+    public void testAnonymousExtendingObject() throws Exception {
         Node acu = parseAndTypeResolveForClass(AnoymousExtendingObject.class, "1.8");
         ASTAllocationExpression allocationExpression = acu.getFirstDescendantOfType(ASTAllocationExpression.class);
         TypeNode child = (TypeNode) allocationExpression.jjtGetChild(0);
@@ -1854,6 +1860,7 @@ public class ClassTypeResolverTest {
                 .getVersion(version).getLanguageVersionHandler();
         ASTCompilationUnit acu = (ASTCompilationUnit) languageVersionHandler
                 .getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(source));
+        languageVersionHandler.getQualifiedNameResolutionFacade(ClassTypeResolverTest.class.getClassLoader()).start(acu);
         languageVersionHandler.getSymbolFacade().start(acu);
         languageVersionHandler.getTypeResolutionFacade(ClassTypeResolverTest.class.getClassLoader()).start(acu);
         return acu;

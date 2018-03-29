@@ -153,7 +153,7 @@ Maven plugin will use and benefit from the latest bugfixes and enhancements:
 ``` xml
 <project>
     <properties>
-        <pmdVersion>...choose your version...</version>
+        <pmdVersion>...choose your version...</pmdVersion>
     </properties>
 ...
     <build>
