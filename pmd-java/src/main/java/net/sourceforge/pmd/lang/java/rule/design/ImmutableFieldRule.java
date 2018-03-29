@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -136,9 +135,7 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
     }
 
     private List<ASTConstructorDeclaration> findAllConstructors(ASTClassOrInterfaceDeclaration node) {
-        List<ASTConstructorDeclaration> cons = new ArrayList<>();
-        node.getFirstChildOfType(ASTClassOrInterfaceBody.class).findDescendantsOfType(ASTConstructorDeclaration.class,
-                cons, false);
-        return cons;
+        return node.getFirstChildOfType(ASTClassOrInterfaceBody.class)
+                .findDescendantsOfType(ASTConstructorDeclaration.class);
     }
 }

@@ -15,7 +15,6 @@ import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighti
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.SINGLEL_COMMENT;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.STRING;
 
-import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SimpleRegexSyntaxHighlighter;
@@ -29,7 +28,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.SimpleRegexSyntaxHighli
 public class ApexSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
 
 
-    private static final String[] KEYWORDS = new String[] {
+    private static final String[] KEYWORDS = {
         "abstract", "activate", "and", "any", "array", "as",
         "asc", "autonomous", "begin", "bigdecimal", "blob",
         "break", "bulk", "by", "byte", "case", "cast", "catch",
@@ -55,24 +54,16 @@ public class ApexSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         "last", "order", "sharing", "with",
         };
 
-
-    /** First characters of the keywords, used to optimise the regex. */
-    private static final String KEYWORDS_START_CHARS = Arrays.stream(KEYWORDS)
-                                                             .map(s -> s.substring(0, 1))
-                                                             .distinct()
-                                                             .reduce((s1, s2) -> s1 + s2)
-                                                             .get();
-
     private static final RegexHighlightGrammar GRAMMAR
         = grammarBuilder(SINGLEL_COMMENT.css, "//[^\r\n]*")
         .or(MULTIL_COMMENT.css, "/\\*.*?\\*/")
-        .or(KEYWORD.css, "\\b(?i)(?=[" + KEYWORDS_START_CHARS + "])(" + String.join("|", KEYWORDS) + ")\\b")
+        .or(KEYWORD.css, "(?i)" + alternation(KEYWORDS))
         .or(PAREN.css, "[()]")
         .or(BRACE.css, "[{}]")
         .or(BRACKET.css, "[\\[]]")
         .or(SEMICOLON.css, ";")
         .or(STRING.css, "'[^'\\\\]*(\\\\.[^'\\\\]*)*'")
-        .or(BOOLEAN.css, "\\b(?i)true|false\\b")
+        .or(BOOLEAN.css, asWord("(?i)true|false"))
         .or(ANNOTATION.css, "@[\\w]+")
         .create(Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 

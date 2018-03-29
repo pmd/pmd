@@ -175,7 +175,7 @@ public interface Node {
 
     /**
      * Traverses down the tree to find all the descendant instances of type
-     * descendantType.
+     * descendantType without crossing find boundaries.
      *
      * @param targetType
      *            class which you want to find.
@@ -212,7 +212,7 @@ public interface Node {
 
     /**
      * Traverses down the tree to find the first descendant instance of type
-     * descendantType.
+     * descendantType without crossing find boundaries.
      *
      * @param descendantType
      *            class which you want to find.
@@ -222,7 +222,7 @@ public interface Node {
     <T> T getFirstDescendantOfType(Class<T> descendantType);
 
     /**
-     * Finds if this node contains a descendant of the given type.
+     * Finds if this node contains a descendant of the given type without crossing find boundaries.
      *
      * @param type
      *            the node type to search
