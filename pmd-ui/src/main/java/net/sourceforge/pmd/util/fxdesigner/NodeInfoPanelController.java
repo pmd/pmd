@@ -74,7 +74,7 @@ public class NodeInfoPanelController implements Initializable {
                     .filterMap(o -> o instanceof NameDeclaration, o -> (NameDeclaration) o)
                     .subscribe(parent::onNameDeclarationSelected);
 
-        scopeHierarchyTreeView.setCellFactory(view -> new ScopeHierarchyTreeCell(parent));
+        scopeHierarchyTreeView.setCellFactory(view -> new ScopeHierarchyTreeCell());
     }
 
 

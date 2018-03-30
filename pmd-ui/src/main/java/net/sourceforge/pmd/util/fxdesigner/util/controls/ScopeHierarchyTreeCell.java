@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
-import net.sourceforge.pmd.util.fxdesigner.MainDesignerController;
 
 import javafx.scene.control.TreeCell;
 
@@ -23,13 +22,6 @@ import javafx.scene.control.TreeCell;
  */
 public class ScopeHierarchyTreeCell extends TreeCell<Object> {
 
-    private final MainDesignerController controller;
-
-
-    public ScopeHierarchyTreeCell(MainDesignerController controller) {
-        this.controller = controller;
-    }
-    
     @Override
     protected void updateItem(Object item, boolean empty) {
         super.updateItem(item, empty);
