@@ -6,14 +6,16 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-
-import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
+import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 
@@ -23,12 +25,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
  * and takes no arguments.
  */
 public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
-
-    private static final String XPATH_EXPRESSION_TO_CONSTRUCTOR
-        = "ClassOrInterfaceBodyDeclaration/ConstructorDeclaration";
-
-    private static final String XPATH_EXPRESSION_TO_ARGLISTEXPRESSION
-        = "ExplicitConstructorInvocation/Arguments/ArgumentList/Expression";
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
@@ -40,19 +36,20 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
     @Override
     public Object visit(ASTClassOrInterfaceBody node, Object data) {
 
-        List<Node> nodes = getConstructorDeclarationNodes(node);
-
-        //the node has more than one constructor
-        if (nodes.size() != 1) {
-            return super.visit(node, data);
+        if (isExplicitDefaultConstructor(node)
+            && hasDefaultAccessModifier((ASTClassOrInterfaceDeclaration) node.jjtGetParent(),
+            node.getFirstDescendantOfType(ASTConstructorDeclaration.class))) {
+            addViolation(data, node);
         }
 
-        ASTConstructorDeclaration cdnode = (ASTConstructorDeclaration) nodes.get(0);
+        return super.visit(node, data);
+    }
 
-        if (cdnode.isPublic() && !cdnode.hasDescendantMatchingXPath("FormalParameters/*")
-            && !cdnode.hasDescendantOfType(ASTBlockStatement.class) && !cdnode.hasDescendantOfType(ASTNameList.class)
-            && !cdnode.hasDescendantMatchingXPath(XPATH_EXPRESSION_TO_ARGLISTEXPRESSION)
-            && !hasIgnoredAnnotation(cdnode)) {
+    @Override
+    public Object visit(ASTEnumBody node, Object data) {
+
+        if (isExplicitDefaultConstructor(node)
+            && node.getFirstDescendantOfType(ASTConstructorDeclaration.class).isPrivate()) {
             addViolation(data, node);
         }
 
@@ -60,18 +57,74 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
-     * Returns all the constructor declaration nodes.
+     * @param node
+     *            the node to check
+     * @return {@code true} if the node has only one {@link ASTConstructorDeclaration} child node
+     *         and the constructor has empty body or simply invokes the superclass constructor with no arguments
+     */
+    private boolean isExplicitDefaultConstructor(Node node) {
+
+        List<ASTConstructorDeclaration> nodes = getClassConstructor(node);
+
+        if (nodes.size() != 1) {
+            return false;
+        }
+
+        ASTConstructorDeclaration cdnode = nodes.get(0);
+
+        if (cdnode.getParameterCount() == 0 && !hasIgnoredAnnotation(cdnode)
+            && !cdnode.hasDescendantOfType(ASTBlockStatement.class) && !cdnode.hasDescendantOfType(ASTNameList.class)
+            && hasDefaultConstructorInvocation(cdnode)) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    /**
+     * @param node
+     *            the class node to get constructors
+     * @return List of class's constuctors. Return an empty list if the class has no explicit constructor
+     */
+    private List<ASTConstructorDeclaration> getClassConstructor(Node node) {
+        List<ASTConstructorDeclaration> nodes
+            = node.findDescendantsOfType(ASTConstructorDeclaration.class);
+        Iterator<ASTConstructorDeclaration> iterator = nodes.iterator();
+
+        while (iterator.hasNext()) {
+            if (iterator.next().getNthParent(2) != node) {
+                iterator.remove();
+            }
+        }
+
+        return nodes;
+    }
+
+
+    /**
+     * @param cons
+     *            the node to check
+     * @return {@code true} if the constructor simply invokes superclass constructor
+     *         with no arguments or doesn't invoke any constructor, otherwise {@code false}
+     */
+    private boolean hasDefaultConstructorInvocation(ASTConstructorDeclaration cons) {
+        ASTExplicitConstructorInvocation inv = cons.getFirstChildOfType(ASTExplicitConstructorInvocation.class);
+        return inv == null || inv.isSuper() && inv.getArgumentCount() == 0;
+    }
+
+    /**
      *
      * @param node
-     *            the node to get constructor declaration nodes
-     * @return List of all matching nodes. Returns an empty list if none found.
+     *           the class declaration node
+     * @param cons
+     *            the constructor declaration node
+     * @return {@code true} if access modifier of construtor is same as class's, otherwise {@code false}
      */
-    private List<Node> getConstructorDeclarationNodes(ASTClassOrInterfaceBody node) {
-        try {
-            return node.findChildNodesWithXPath(XPATH_EXPRESSION_TO_CONSTRUCTOR);
-        } catch (JaxenException e) {
-            throw new RuntimeException("XPath expression "
-                + XPATH_EXPRESSION_TO_CONSTRUCTOR + " failed: " + e.getLocalizedMessage(), e);
-        }
+    private boolean hasDefaultAccessModifier(ASTClassOrInterfaceDeclaration node, ASTConstructorDeclaration cons) {
+        return node.isPrivate() && cons.isPrivate()
+            || node.isProtected() && cons.isProtected()
+            || node.isPublic() && cons.isPublic()
+            || node.isPackagePrivate() && cons.isPackagePrivate();
     }
 }
