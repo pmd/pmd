@@ -5,10 +5,11 @@
 package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.fxdesigner.MainDesignerController;
 
 import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeView;
-import javafx.util.Callback;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 
 /**
@@ -19,6 +20,14 @@ import javafx.util.Callback;
  */
 public class ASTTreeCell extends TreeCell<Node> {
 
+    private final MainDesignerController controller;
+
+
+    public ASTTreeCell(MainDesignerController controller) {
+
+        this.controller = controller;
+    }
+
     @Override
     protected void updateItem(Node item, boolean empty) {
         super.updateItem(item, empty);
@@ -26,13 +35,19 @@ public class ASTTreeCell extends TreeCell<Node> {
         if (empty || item == null) {
             setText(null);
             setGraphic(null);
+            return;
         } else {
             setText(item.toString() + (item.getImage() == null ? "" : " \"" + item.getImage() + "\""));
         }
-    }
 
+        // Reclicking the selected node in the ast will scroll back to the node in the editor
+        this.addEventHandler(MouseEvent.MOUSE_CLICKED, t -> {
+            if (t.getButton() == MouseButton.PRIMARY
+                    && getTreeView().getSelectionModel().getSelectedItem().getValue() == item) {
+                controller.onNodeItemSelected(item);
+                t.consume();
+            }
+        });
 
-    public static Callback<TreeView<Node>, ASTTreeCell> callback() {
-        return p -> new ASTTreeCell();
     }
 }

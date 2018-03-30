@@ -28,6 +28,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.Pe
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
@@ -71,6 +72,8 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     public void initialize(URL location, ResourceBundle resources) {
 
         treeViewWrapper = new TreeViewWrapper<>(astTreeView);
+
+        astTreeView.setCellFactory(treeView -> new ASTTreeCell(parent));
 
         languageVersionProperty().values()
                                  .filterMap(Objects::nonNull, LanguageVersion::getLanguage)
