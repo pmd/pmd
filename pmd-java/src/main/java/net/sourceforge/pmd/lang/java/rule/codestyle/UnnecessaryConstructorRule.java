@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -64,7 +63,8 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
      */
     private boolean isExplicitDefaultConstructor(Node node) {
 
-        List<ASTConstructorDeclaration> nodes = getClassConstructor(node);
+        List<ASTConstructorDeclaration> nodes
+            = node.findDescendantsOfType(ASTConstructorDeclaration.class);
 
         if (nodes.size() != 1) {
             return false;
@@ -76,26 +76,6 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
             && !cdnode.hasDescendantOfType(ASTBlockStatement.class) && !cdnode.hasDescendantOfType(ASTNameList.class)
             && hasDefaultConstructorInvocation(cdnode);
     }
-
-    /**
-     * @param node
-     *            the class node to get constructors
-     * @return List of class's constuctors. Return an empty list if the class has no explicit constructor
-     */
-    private List<ASTConstructorDeclaration> getClassConstructor(Node node) {
-        List<ASTConstructorDeclaration> nodes
-            = node.findDescendantsOfType(ASTConstructorDeclaration.class);
-        Iterator<ASTConstructorDeclaration> iterator = nodes.iterator();
-
-        while (iterator.hasNext()) {
-            if (iterator.next().getNthParent(2) != node) {
-                iterator.remove();
-            }
-        }
-
-        return nodes;
-    }
-
 
     /**
      * @param cons
