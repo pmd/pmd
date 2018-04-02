@@ -4,16 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
@@ -27,39 +26,38 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
-        Collection<String> defaultValues = new HashSet<>();
-        defaultValues.add("javax.inject.Inject");
-        return defaultValues;
+        return Arrays.asList("javax.inject.Inject");
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceBody node, Object data) {
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 
+        ASTConstructorDeclaration cons = node.getFirstDescendantOfType(ASTConstructorDeclaration.class);
         if (isExplicitDefaultConstructor(node)
-            && hasDefaultAccessModifier((ASTClassOrInterfaceDeclaration) node.jjtGetParent(),
-            node.getFirstDescendantOfType(ASTConstructorDeclaration.class))) {
-            addViolation(data, node);
+            && haveSameAccessModifier(node, cons)) {
+            addViolation(data, cons);
         }
 
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(ASTEnumBody node, Object data) {
+    public Object visit(ASTEnumDeclaration node, Object data) {
 
-        if (isExplicitDefaultConstructor(node)
-            && node.getFirstDescendantOfType(ASTConstructorDeclaration.class).isPrivate()) {
-            addViolation(data, node);
+        ASTConstructorDeclaration cons = node.getFirstDescendantOfType(ASTConstructorDeclaration.class);
+        if (isExplicitDefaultConstructor(node) && cons.isPrivate()) {
+            addViolation(data, cons);
         }
 
         return super.visit(node, data);
     }
 
     /**
-     * @param node
-     *            the node to check
-     * @return {@code true} if the node has only one {@link ASTConstructorDeclaration} child node
-     *         and the constructor has empty body or simply invokes the superclass constructor with no arguments
+     * Returns {@code true} if the node has only one {@link ASTConstructorDeclaration}
+     * child node and the constructor has empty body or simply invokes the superclass
+     * constructor with no arguments.
+     *
+     * @param node the node to check
      */
     private boolean isExplicitDefaultConstructor(Node node) {
 
@@ -78,10 +76,10 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
-     * @param cons
-     *            the node to check
-     * @return {@code true} if the constructor simply invokes superclass constructor
-     *         with no arguments or doesn't invoke any constructor, otherwise {@code false}
+     * Returns {@code true} if the constructor simply invokes superclass constructor
+     * with no arguments or doesn't invoke any constructor, otherwise {@code false}.
+     *
+     * @param cons the node to check
      */
     private boolean hasDefaultConstructorInvocation(ASTConstructorDeclaration cons) {
         ASTExplicitConstructorInvocation inv = cons.getFirstChildOfType(ASTExplicitConstructorInvocation.class);
@@ -89,14 +87,13 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
+     * Returns {@code true} if access modifier of construtor is same as class's,
+     * otherwise {@code false}.
      *
-     * @param node
-     *           the class declaration node
-     * @param cons
-     *            the constructor declaration node
-     * @return {@code true} if access modifier of construtor is same as class's, otherwise {@code false}
+     * @param node the class declaration node
+     * @param cons the constructor declaration node
      */
-    private boolean hasDefaultAccessModifier(ASTClassOrInterfaceDeclaration node, ASTConstructorDeclaration cons) {
+    private boolean haveSameAccessModifier(ASTClassOrInterfaceDeclaration node, ASTConstructorDeclaration cons) {
         return node.isPrivate() && cons.isPrivate()
             || node.isProtected() && cons.isProtected()
             || node.isPublic() && cons.isPublic()

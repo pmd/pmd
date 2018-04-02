@@ -194,6 +194,7 @@ public class Foo {
 the class is declared protected -- 2
      ]]></description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
   protected class Inner {
@@ -207,6 +208,7 @@ public class Foo {
 unnecessary constructor in enum
      ]]></description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public enum Foo {
   MON, TUE;
