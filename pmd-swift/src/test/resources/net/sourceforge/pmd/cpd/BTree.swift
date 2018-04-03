@@ -1003,3 +1003,13 @@ class MyClass {
 let myClass = MyClass()
 //myClass.delegate = View() // error: cannot assign value of type 'View' to type '(View & MyProtocol)?'
 myClass.delegate = ViewSubclass()
+
+// 4.1 conditional
+
+#if canImport(SomeModule)
+let someModuleImportedVersion = SomeModule.version
+#endif
+
+#if targetEnvironment(simulator)
+print("code only compiled for simulator")
+#endif

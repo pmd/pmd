@@ -894,11 +894,14 @@ platformCondition
  : 'os' '(' operatingSystem ')'
  | 'arch' '(' architecture ')'
  | 'swift' '(' '>=' swiftVersion ')'
+ | 'canImport' '(' moduleName ')'
+ | 'targetEnvironment' '(' 'simulator' ')'
  ;
 
 operatingSystem: 'OSX' | 'iOS' | 'watchOS' | 'tvOS' ;
 architecture: 'i386' | 'x86_64' | 'arm' | 'arm64' ;
 swiftVersion: FloatingPointLiteral ;
+moduleName: IdentifierCharacters ;
 
 lineControlStatement: '#sourceLocation' '(' 'file' ':' fileName ',' 'line' ':' lineNumber ')'
  | '#sourceLocation' '(' ')' ;
