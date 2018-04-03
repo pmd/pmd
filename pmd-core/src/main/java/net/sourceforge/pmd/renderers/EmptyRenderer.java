@@ -26,17 +26,21 @@ public class EmptyRenderer extends AbstractRenderer {
 
     @Override
     public void start() throws IOException {
+        // deliberately does nothing
     }
 
     @Override
     public void startFileAnalysis(DataSource dataSource) {
+        // deliberately does nothing
     }
 
     @Override
     public void renderFileReport(Report report) throws IOException {
+        // deliberately does nothing
     }
 
     @Override
     public void end() throws IOException {
+        // deliberately does nothing
     }
 }

@@ -81,6 +81,7 @@ public class ASTDirective extends AbstractVmNode {
     /**
      * @since 1.5
      */
+    @Deprecated
     @Override
     public String toString() {
         return new ToStringBuilder(this).appendSuper(super.toString()).append("directiveName", getDirectiveName())

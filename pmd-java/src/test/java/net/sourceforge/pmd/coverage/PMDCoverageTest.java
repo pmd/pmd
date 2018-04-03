@@ -57,6 +57,7 @@ public class PMDCoverageTest {
             PMD.run(args);
 
             assertFalse("There was at least one exception mentioned in the output", output.getLog().contains("Exception applying rule"));
+            assertFalse("Wrong configuration? Ruleset not found", output.getLog().contains("Ruleset not found"));
 
             String report = FileUtils.readFileToString(f);
             assertEquals("No processing errors expected", 0, StringUtils.countMatches(report, "Error while processing"));

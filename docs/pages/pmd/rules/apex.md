@@ -12,7 +12,7 @@ folder: pmd/rules
 *   [AvoidGlobalModifier](pmd_rules_apex_bestpractices.html#avoidglobalmodifier): Global classes should be avoided (especially in managed packages) as they can never be deleted or...
 *   [AvoidLogicInTrigger](pmd_rules_apex_bestpractices.html#avoidlogicintrigger): As triggers do not allow methods like regular classes they are less flexible and suited to apply ...
 
-## Codestyle
+## Code Style
 
 {% include callout.html content="Rules which enforce a specific coding style." %}
 

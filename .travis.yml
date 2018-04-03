@@ -46,7 +46,7 @@ deploy:
   file_glob: true
   file:
   - pmd-dist/target/pmd-*.zip
-  - target/pmd-doc-*.zip
+  - docs/pmd-doc-*.zip
   skip_cleanup: true
   on:
     tags: true
@@ -58,6 +58,7 @@ notifications:
   email:
     recipients:
     - andreas.dangel@adangel.org
+    - pmd-commits@lists.sourceforge.net
     on_success: always
     on_failure: always
 cache:

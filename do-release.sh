@@ -24,7 +24,7 @@ echo "Releasing PMD"
 echo "-------------------------------------------"
 
 # see also https://gist.github.com/pdunnavant/4743895
-CURRENT_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec|tail -1)
+CURRENT_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
 RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
 MAJOR=$(echo $RELEASE_VERSION | cut -d . -f 1)
 MINOR=$(echo $RELEASE_VERSION | cut -d . -f 2)
@@ -39,6 +39,12 @@ else
 fi
 DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.$NEXT_PATCH"
 DEVELOPMENT_VERSION="${DEVELOPMENT_VERSION}-SNAPSHOT"
+
+# allow to override the next version, e.g. via "NEXT_VERSION=7.0.0 ./do-release.sh"
+if [ "$NEXT_VERSION" != "" ]; then
+    DEVELOPMENT_VERSION="${NEXT_VERSION}-SNAPSHOT"
+fi
+
 
 # http://stackoverflow.com/questions/1593051/how-to-programmatically-determine-the-current-checked-out-git-branch
 CURRENT_BRANCH=$(git symbolic-ref -q HEAD)
@@ -64,10 +70,14 @@ echo "*   Update version/release info in **docs/pages/release_notes.md**."
 echo
 echo "    ## $(date -u +%d-%B-%Y) - ${RELEASE_VERSION}"
 echo
+echo "*   Update date info in **docs/_config.yml**."
+echo
 echo "*   Ensure all the new rules are listed in a the proper file:"
 echo "    pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION}.xml file."
 echo
-echo "*   Update **../pmd.github.io/index.html** to mention the new release"
+echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
+echo
+echo "*   Add **../pmd.github.io/_posts/$(date -u +%d-%m-%Y)-PMD-${RELEASE_VERSION}.md"
 echo
 echo "Press enter to continue..."
 read
@@ -76,6 +86,7 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 (
     echo "Committing current changes (pmd.github.io)"
     cd ../pmd.github.io
+    git add _posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md
     git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     git push
 )
@@ -96,24 +107,26 @@ echo
 cat <<EOF
 PMD ${RELEASE_VERSION} released
 
-* minor version with lots of bug fixes
-* Release Notes: https://pmd.github.io/pmd-${RELEASE_VERSION}/pmd_release_notes.html
 * Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${RELEASE_VERSION}
-* Fixed Bugs: https://sourceforge.net/p/pmd/bugs/milestone/PMD-${RELEASE_VERSION}/
 * Documentation: https://pmd.github.io/pmd-${RELEASE_VERSION}/
+
+And Copy-Paste the release notes
 EOF
 echo
 echo "Press enter to continue..."
 read
 
 echo
-echo "Check the milestone on sourceforge:"
-echo "<https://sourceforge.net/p/pmd/bugs/milestones>"
+echo "Check the milestone on github:"
+echo "<https://github.com/pmd/pmd/milestones>"
+echo " --> move any open issues to the next milestone, close the current milestone"
+echo " --> Maybe there are some milestones on sourceforge, too: <https://sourceforge.net/p/pmd/bugs/milestones>."
 echo
 echo
 echo
 echo "Prepare Next development version:"
 echo "*   Move version/release info from **docs/pages/release_notes.md** to **docs/pages/release_notes_old.md**."
+echo "*   Update version/date info in **docs/_config.yml**."
 echo "*   Update version/release info in **docs/pages/release_notes.md**."
 echo
 cat <<EOF
@@ -159,7 +172,12 @@ echo
 echo "Send out an announcement mail to the mailing list:"
 echo "To: PMD Developers List <pmd-devel@lists.sourceforge.net>"
 echo "Subject: [ANNOUNCE] PMD ${RELEASE_VERSION} Released"
-echo "Body: !!Copy Changelog!!"
+echo
+echo "    *   Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${RELEASE_VERSION}"
+echo "    *   Documentation: https://pmd.github.io/pmd-${RELEASE_VERSION}/"
+echo
+echo "    And Copy-Paste the release notes"
+echo
 echo
 echo
 echo "------------------------------------------"

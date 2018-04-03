@@ -17,6 +17,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -36,25 +37,21 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     // Note: required by https://github.com/codeclimate/spec/blob/master/SPEC.md
     protected static final String NULL_CHARACTER = "\u0000";
     protected static final List<String> INTERNAL_DEV_PROPERTIES = Arrays.asList("version", "xpath");
-    private final String pmdDeveloperUrl;
+    private static final String PMD_PROPERTIES_URL = getPmdPropertiesURL();
     private Rule rule;
 
     public CodeClimateRenderer() {
         super(NAME, "Code Climate integration.");
-        pmdDeveloperUrl = getPmdDeveloperURL();
     }
 
-    private static String getPmdDeveloperURL() {
-        String url = "http://pmd.github.io/pmd-" + PMD.VERSION + "/customizing/pmd-developer.html";
-        if (PMD.VERSION.contains("SNAPSHOT") || "unknown".equals(PMD.VERSION)) {
-            url = "http://pmd.sourceforge.net/snapshot/customizing/pmd-developer.html";
+    private static String getPmdPropertiesURL() {
+        String url = "https://pmd.github.io/pmd-" + PMDVersion.VERSION + "/pmd_devdocs_working_with_properties.html";
+        if (PMDVersion.isSnapshot() || PMDVersion.isUnknown()) {
+            url = "https://pmd.github.io/latest/pmd_devdocs_working_with_properties.html";
         }
         return url;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
@@ -166,7 +163,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         }
 
         if (!rule.getPropertyDescriptors().isEmpty()) {
-            result += "\\n\\n### [PMD properties](" + pmdDeveloperUrl + ")\\n\\n";
+            result += "\\n\\n### [PMD properties](" + PMD_PROPERTIES_URL + ")\\n\\n";
             result += "Name | Value | Description\\n";
             result += "--- | --- | ---\\n";
 

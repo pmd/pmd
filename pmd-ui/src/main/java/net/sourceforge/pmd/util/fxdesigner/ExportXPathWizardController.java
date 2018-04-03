@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util.fxdesigner;
 
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
@@ -58,10 +57,11 @@ public class ExportXPathWizardController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        languageChoiceBox.getItems().addAll(Arrays.stream(DesignerUtil.getSupportedLanguageVersions())
-                                                  .map(LanguageVersion::getLanguage)
-                                                  .distinct()
-                                                  .collect(Collectors.toList()));
+        languageChoiceBox.getItems().addAll(DesignerUtil.getSupportedLanguageVersions()
+                                                        .stream()
+                                                        .map(LanguageVersion::getLanguage)
+                                                        .distinct()
+                                                        .collect(Collectors.toList()));
 
         languageChoiceBox.setConverter(new StringConverter<Language>() {
             @Override
@@ -117,34 +117,34 @@ public class ExportXPathWizardController implements Initializable {
         // TODO very inefficient, can we do better?
 
         final String template = "<rule name=\"%s\"\n"
-                                + "      language=\"%s\"\n"
-                                + "      message=\"%s\"\n"
-                                + "      class=\"net.sourceforge.pmd.lang.rule.XPathRule\"\n"
-                                + "      <!-- externalInfoUrl=\"%s\"--> >\n"
-                                + "    <description>\n"
-                                + "%s\n"
-                                + "    </description>\n"
-                                + "    <priority>%d</priority>\n"
-                                + "    <properties>\n"
-                                + "        <property name=\"xpath\">\n"
-                                + "            <value>\n"
-                                + "<![CDATA[\n"
-                                + "%s\n"
-                                + "]]>\n"
-                                + "            </value>\n"
-                                + "        </property>\n"
-                                + "    </properties>\n"
-                                + "    <!--<example><![CDATA[]]></example>-->\n"
-                                + "</rule>";
+                + "      language=\"%s\"\n"
+                + "      message=\"%s\"\n"
+                + "      class=\"net.sourceforge.pmd.lang.rule.XPathRule\"\n"
+                + "      <!-- externalInfoUrl=\"%s\"--> >\n"
+                + "    <description>\n"
+                + "%s\n"
+                + "    </description>\n"
+                + "    <priority>%d</priority>\n"
+                + "    <properties>\n"
+                + "        <property name=\"xpath\">\n"
+                + "            <value>\n"
+                + "<![CDATA[\n"
+                + "%s\n"
+                + "]]>\n"
+                + "            </value>\n"
+                + "        </property>\n"
+                + "    </properties>\n"
+                + "    <!--<example><![CDATA[]]></example>-->\n"
+                + "</rule>";
 
         return String.format(template,
-            nameField.getText(),
-            languageChoiceBox.getSelectionModel().getSelectedItem().getTerseName(),
-            messageField.getText(),
-            "TODO",
-            descriptionField.getText(), // TODO format
-            (int) prioritySlider.getValue(),
-            xpathExpression.getValue()
+                             nameField.getText(),
+                             languageChoiceBox.getSelectionModel().getSelectedItem().getTerseName(),
+                             messageField.getText(),
+                             "TODO",
+                             descriptionField.getText(), // TODO format
+                             (int) prioritySlider.getValue(),
+                             xpathExpression.getValue()
         );
     }
 

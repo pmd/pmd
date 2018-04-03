@@ -47,7 +47,8 @@ public class ASTVariableDeclaratorIdTest {
     @Test
     public void testLambdaWithType() throws Exception {
         ASTCompilationUnit acu = parseJava18(TEST_LAMBDA_WITH_TYPE);
-        ASTVariableDeclaratorId f = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(1);
+        ASTLambdaExpression lambda = acu.getFirstDescendantOfType(ASTLambdaExpression.class);
+        ASTVariableDeclaratorId f = lambda.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         assertEquals("File", f.getTypeNode().getTypeImage());
         assertEquals("File", f.getTypeNameNode().jjtGetChild(0).getImage());
     }
@@ -55,7 +56,8 @@ public class ASTVariableDeclaratorIdTest {
     @Test
     public void testLambdaWithoutType() throws Exception {
         ASTCompilationUnit acu = parseJava18(TEST_LAMBDA_WITHOUT_TYPE);
-        ASTVariableDeclaratorId f = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(1);
+        ASTLambdaExpression lambda = acu.getFirstDescendantOfType(ASTLambdaExpression.class);
+        ASTVariableDeclaratorId f = lambda.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         assertNull(f.getTypeNode());
         assertNull(f.getTypeNameNode());
     }

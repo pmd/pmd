@@ -21,6 +21,9 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaSignature.Visibility;
 import net.sourceforge.pmd.lang.java.multifile.testdata.MultifileVisitorTestData2;
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 
 /**
  * Tests of the multifile visitor.
@@ -69,7 +72,7 @@ public class JavaMultifileVisitorTest {
 
         final JavaFieldSigMask fieldSigMask = new JavaFieldSigMask();
 
-        JavaQualifiedName clazz = JavaQualifiedName.ofClass(MultifileVisitorTestData2.class);
+        JavaTypeQualifiedName clazz = QualifiedNameFactory.ofClass(MultifileVisitorTestData2.class);
 
         String[] fieldNames = {"x", "y", "z", "t"};
         Visibility[] visibilities = {Visibility.PUBLIC, Visibility.PRIVATE, Visibility.PROTECTED, Visibility.PACKAGE};
@@ -90,8 +93,8 @@ public class JavaMultifileVisitorTest {
 
         final JavaOperationSigMask operationSigMask = new JavaOperationSigMask();
 
-        JavaQualifiedName clazz = JavaQualifiedName.ofClass(MultifileVisitorTestData2.class);
-        JavaQualifiedName clazz2 = JavaQualifiedName.ofClass(MultifileVisitorTestData2.class);
+        JavaQualifiedName clazz = QualifiedNameFactory.ofClass(MultifileVisitorTestData2.class);
+        JavaQualifiedName clazz2 = QualifiedNameFactory.ofClass(MultifileVisitorTestData2.class);
 
         String[] opNames = {"getX()", "getY()", "setX(String)", "setY(String)",
                             "mymethod1()", "mymethod2()", "mystatic1()",
@@ -102,8 +105,8 @@ public class JavaMultifileVisitorTest {
 
         for (int i = 0; i < opNames.length; i++) {
             operationSigMask.restrictRolesTo(roles[i]);
-            JavaQualifiedName name1 = JavaQualifiedName.ofString(clazz.toString() + "#" + opNames[i]);
-            JavaQualifiedName name2 = JavaQualifiedName.ofString(clazz2.toString() + "#" + opNames[i]);
+            JavaOperationQualifiedName name1 = (JavaOperationQualifiedName) QualifiedNameFactory.ofString(clazz.toString() + "#" + opNames[i]);
+            JavaOperationQualifiedName name2 = (JavaOperationQualifiedName) QualifiedNameFactory.ofString(clazz2.toString() + "#" + opNames[i]);
 
             assertTrue(toplevel.hasMatchingSig(name1, operationSigMask));
             assertTrue(toplevel.hasMatchingSig(name2, operationSigMask));
@@ -120,8 +123,8 @@ public class JavaMultifileVisitorTest {
 
         final JavaFieldSigMask fieldSigMask = new JavaFieldSigMask();
 
-        JavaQualifiedName clazz = JavaQualifiedName.ofClass(MultifileVisitorTestData2.class);
-        JavaQualifiedName clazz2 = JavaQualifiedName.ofClass(MultifileVisitorTestData2.class);
+        JavaTypeQualifiedName clazz = QualifiedNameFactory.ofClass(MultifileVisitorTestData2.class);
+        JavaTypeQualifiedName clazz2 = QualifiedNameFactory.ofClass(MultifileVisitorTestData2.class);
 
         String[] fieldNames = {"x", "y", "z", "t"};
         Visibility[] visibilities = {Visibility.PUBLIC, Visibility.PRIVATE, Visibility.PROTECTED, Visibility.PACKAGE};
@@ -138,6 +141,7 @@ public class JavaMultifileVisitorTest {
     static ASTCompilationUnit parseAndVisitForClass(Class<?> clazz) {
         ASTCompilationUnit acu = ParserTstUtil.parseJavaDefaultVersion(clazz);
         LanguageVersionHandler handler = ParserTstUtil.getDefaultLanguageVersionHandler();
+        handler.getQualifiedNameResolutionFacade(JavaMultifileVisitorTest.class.getClassLoader()).start(acu);
         handler.getTypeResolutionFacade(JavaMultifileVisitorTest.class.getClassLoader()).start(acu);
         handler.getMultifileFacade().start(acu);
         return acu;

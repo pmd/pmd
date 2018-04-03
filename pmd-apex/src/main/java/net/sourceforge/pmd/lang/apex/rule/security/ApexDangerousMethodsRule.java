@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
@@ -35,7 +36,7 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
     private static final String SYSTEM = "System";
     private static final String DEBUG = "debug";
 
-    private final HashSet<String> whiteListedVariables = new HashSet<>();
+    private final Set<String> whiteListedVariables = new HashSet<>();
 
     public ApexDangerousMethodsRule() {
         super.addRuleChainVisit(ASTUserClass.class);

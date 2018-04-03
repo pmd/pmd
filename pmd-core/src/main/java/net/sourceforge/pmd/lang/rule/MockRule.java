@@ -41,5 +41,6 @@ public class MockRule extends AbstractRule {
 
     @Override
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
+        // the mock rule does nothing. Usually you would start here to analyze the AST.
     }
 }

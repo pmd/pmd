@@ -5,7 +5,7 @@ permalink: pmd_rules_java_codestyle.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/codestyle.xml
-keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, GenericsNaming, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
+keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, GenericsNaming, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
 ---
 ## AbstractNaming
 
@@ -462,6 +462,65 @@ boolean bar(int x, int y) {
 <rule ref="category/java/codestyle.xml/ConfusingTernary" />
 ```
 
+## ControlStatementBraces
+
+**Since:** PMD 6.2.0
+
+**Priority:** Medium (3)
+
+Enforce a policy for braces on control statements. It is recommended to use braces on 'if ... else'
+statements and loop statements, even if they are optional. This usually makes the code clearer, and
+helps prepare the future when you need to add another statement. That said, this rule lets you control
+which statements are required to have braces via properties.
+
+From 6.2.0 on, this rule supersedes WhileLoopMustUseBraces, ForLoopMustUseBraces, IfStmtMustUseBraces,
+and IfElseStmtMustUseBraces.
+
+```
+//WhileStatement[$checkWhileStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
+                |
+                //ForStatement[$checkForStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
+                |
+                //DoStatement[$checkDoWhileStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
+                |
+                (: The violation is reported on the sub statement -- not the if statement :)
+                //Statement[$checkIfElseStmt and parent::IfStatement and not(child::Block or child::IfStatement)]
+                |
+                (: Reports case labels if one of their subordinate statements is not braced :)
+                //SwitchLabel[$checkCaseStmt]
+                             [count(following-sibling::BlockStatement except following-sibling::SwitchLabel[1]/following-sibling::BlockStatement) > 1
+                              or (some $stmt (: in only the block statements until the next label :)
+                                  in following-sibling::BlockStatement except following-sibling::SwitchLabel[1]/following-sibling::BlockStatement
+                                  satisfies not($stmt/Statement/Block))]
+```
+
+**Example(s):**
+
+``` java
+while (true)    // not recommended
+  x++;
+
+while (true) {  // preferred approach
+  x++;
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|checkIfElseStmt|true|Require that 'if ... else' statements use braces|
+|checkWhileStmt|true|Require that 'while' loops use braces|
+|checkForStmt|true|Require that 'for' loops should use braces|
+|checkDoWhileStmt|true|Require that 'do ... while' loops use braces|
+|checkCaseStmt|false|Require that cases of a switch have braces|
+|allowEmptyLoop|false|Allow loops with an empty statement, e.g. 'while(true);'|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/ControlStatementBraces" />
+```
+
 ## DefaultPackage
 
 **Since:** PMD 3.4
@@ -682,6 +741,8 @@ public class Foo {
 
 ## ForLoopsMustUseBraces
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 0.7
 
 **Priority:** Medium (3)
@@ -749,6 +810,8 @@ public interface GenericDao<EF extends BaseModel, K extends Serializable> {
 
 ## IfElseStmtsMustUseBraces
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 0.2
 
 **Priority:** Medium (3)
@@ -783,6 +846,8 @@ if (foo)
 ```
 
 ## IfStmtsMustUseBraces
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 1.0
 
@@ -1431,6 +1496,53 @@ import static Yoko; // Too much !
 <rule ref="category/java/codestyle.xml/TooManyStaticImports" />
 ```
 
+## UnnecessaryAnnotationValueElement
+
+**Since:** PMD 6.2.0
+
+**Priority:** Medium (3)
+
+Avoid the use of value in annotations when it's the only element.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryAnnotationValueElementRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/UnnecessaryAnnotationValueElementRule.java)
+
+**Example(s):**
+
+``` java
+@TestClassAnnotation(value = "TEST")
+public class Foo {
+
+    @TestMemberAnnotation(value = "TEST")
+    private String y;
+
+    @TestMethodAnnotation(value = "TEST")
+    public void bar() {
+        int x = 42;
+        return;
+    }
+}
+
+// should be
+
+@TestClassAnnotation("TEST")
+public class Foo {
+
+    @TestMemberAnnotation("TEST")
+    private String y;
+
+    @TestMethodAnnotation("TEST")
+    public void bar() {
+        int x = 42;
+        return;
+    }
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/UnnecessaryAnnotationValueElement" />
+```
+
 ## UnnecessaryConstructor
 
 **Since:** PMD 1.0
@@ -1770,6 +1882,8 @@ public class Foo {
 ```
 
 ## WhileLoopsMustUseBraces
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 0.7
 

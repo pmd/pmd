@@ -7,12 +7,15 @@ package net.sourceforge.pmd.ant;
 import static java.io.File.separator;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.tools.ant.BuildFileRule;
 import org.apache.tools.ant.Project;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
+
 
 /**
  * Quite an ugly classe, arguably useful for just 2 units test - nevertheless as
@@ -24,6 +27,9 @@ import org.junit.Rule;
  */
 public abstract class AbstractAntTestHelper {
 
+    @Rule
+    public final TemporaryFolder tempFolder = new TemporaryFolder();
+    
     @Rule
     public final BuildFileRule buildRule = new BuildFileRule();
 
@@ -41,10 +47,15 @@ public abstract class AbstractAntTestHelper {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         validatePostConstruct();
         // initialize Ant
         buildRule.configureProject(pathToTestScript + separator + antTestScriptFilename);
+
+        // Each test case gets one temp file name, accessible with ${tmpfile}
+        final File newFile = tempFolder.newFile();
+        newFile.delete(); // It shouldn't exist yet, but we want a unique name
+        buildRule.getProject().setProperty("tmpfile", newFile.getAbsolutePath());
 
         Project project = buildRule.getProject();
         if (!project.getBaseDir().toString().endsWith(mvnWorkaround)) {
@@ -53,6 +64,17 @@ public abstract class AbstractAntTestHelper {
             project.setBasedir(project.getBaseDir().toString() + separator + pathToTestScript);
         }
     }
+
+
+    /**
+     * Returns the current temporary file. Replaced by a fresh (inexistent)
+     * file before each test.
+     */
+    public File currentTempFile() {
+        String tmpname = buildRule.getProject().getProperty("tmpfile");
+        return tmpname == null ? null : new File(tmpname);
+    }
+
 
     private void validatePostConstruct() {
         if (pathToTestScript == null || "".equals(pathToTestScript) || antTestScriptFilename == null
@@ -66,7 +88,18 @@ public abstract class AbstractAntTestHelper {
     }
 
     public void assertOutputContaining(String text) {
-        Assert.assertTrue("Expected to find \"" + text + "\" in the output, but it's missing",
-                buildRule.getOutput().contains(text));
+        assertContains(buildRule.getOutput(), text);
+    }
+
+
+    public void assertContains(String text, String toFind) {
+        Assert.assertTrue("Expected to find \"" + toFind + "\", but it's missing",
+                          text.contains(toFind));
+    }
+
+
+    public void assertDoesntContain(String text, String toFind) {
+        Assert.assertTrue("Expected no occurrence of \"" + toFind + "\", but found at least one",
+                          !text.contains(toFind));
     }
 }

@@ -14,12 +14,6 @@ public final class JavaFieldSigMask extends JavaSigMask<JavaFieldSignature> {
     private boolean coverFinal = true;
     private boolean coverStatic = true;
 
-
-    public JavaFieldSigMask() {
-        super();
-    }
-
-
     /** Include final fields?. */
     public void coverFinal(boolean coverFinal) {
         this.coverFinal = coverFinal;

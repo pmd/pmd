@@ -100,7 +100,7 @@ public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
         List<ASTClassOrInterfaceDeclaration> parentClassOrInterface = decl
                 .getParentsOfType(ASTClassOrInterfaceDeclaration.class);
         // ignore if is a Interface
-        return (!parentClassOrInterface.isEmpty() && !parentClassOrInterface.get(0).isInterface())
+        return !parentClassOrInterface.isEmpty() && !parentClassOrInterface.get(0).isInterface()
                 // check if the field/method/nested class has a default access
                 // modifier
                 && decl.isPackagePrivate()
@@ -117,14 +117,9 @@ public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
         if (parent != null) {
             List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
             for (ASTAnnotation annotation : annotations) {
-                List<ASTName> names = annotation.findDescendantsOfType(ASTName.class);
-                for (ASTName name : names) {
-                    if (name.hasImageEqualTo("VisibleForTesting")) {
-                        result = false;
-                        break;
-                    }
-                }
-                if (result == false) {
+                final ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
+                if (name.hasImageEqualTo("VisibleForTesting")) {
+                    result = false;
                     break;
                 }
             }

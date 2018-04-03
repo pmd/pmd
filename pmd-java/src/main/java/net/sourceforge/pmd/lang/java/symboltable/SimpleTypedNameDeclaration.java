@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -150,8 +151,8 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
         } else if (!typeImage.equals(other.typeImage)) {
             // consider auto-boxing
             if (other.typeImage != null) {
-                String lcType = typeImage.toLowerCase();
-                String otherLcType = other.typeImage.toLowerCase();
+                String lcType = typeImage.toLowerCase(Locale.ROOT);
+                String otherLcType = other.typeImage.toLowerCase(Locale.ROOT);
                 if (primitiveTypes.contains(lcType) && primitiveTypes.contains(otherLcType)) {
                     if (lcType.equals(otherLcType)) {
                         return true;

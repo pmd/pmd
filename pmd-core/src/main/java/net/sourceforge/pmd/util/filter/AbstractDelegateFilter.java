@@ -15,6 +15,7 @@ public abstract class AbstractDelegateFilter<T> implements Filter<T> {
     protected Filter<T> filter;
 
     public AbstractDelegateFilter() {
+        // default constructor
     }
 
     public AbstractDelegateFilter(Filter<T> filter) {

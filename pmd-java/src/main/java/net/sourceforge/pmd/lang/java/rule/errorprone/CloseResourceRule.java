@@ -104,13 +104,13 @@ public class CloseResourceRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         checkForResources(node, data);
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         checkForResources(node, data);
-        return data;
+        return super.visit(node, data);
     }
 
     private void checkForResources(Node node, Object data) {
@@ -367,7 +367,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                         + "  [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]");
                 return !nodes.isEmpty();
             } catch (JaxenException e) {
-                // no boolean literals or other condition
+                throw new RuntimeException(e);
             }
         }
         return true;

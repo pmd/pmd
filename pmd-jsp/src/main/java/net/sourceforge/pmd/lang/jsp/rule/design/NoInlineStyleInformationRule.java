@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.jsp.rule.design;
 
+import java.util.Locale;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.jsp.ast.ASTAttribute;
@@ -64,7 +65,7 @@ public class NoInlineStyleInformationRule extends AbstractJspRule {
      * @return boolean
      */
     private boolean isStyleElement(ASTElement elementNode) {
-        return STYLE_ELEMENT_NAMES.contains(elementNode.getName().toUpperCase());
+        return STYLE_ELEMENT_NAMES.contains(elementNode.getName().toUpperCase(Locale.ROOT));
     }
 
     /**
@@ -77,10 +78,10 @@ public class NoInlineStyleInformationRule extends AbstractJspRule {
      *         otherwise.
      */
     private boolean isStyleAttribute(ASTAttribute attributeNode) {
-        if (STYLE_ATTRIBUTES.contains(attributeNode.getName().toUpperCase())) {
+        if (STYLE_ATTRIBUTES.contains(attributeNode.getName().toUpperCase(Locale.ROOT))) {
             if (attributeNode.jjtGetParent() instanceof ASTElement) {
                 ASTElement parent = (ASTElement) attributeNode.jjtGetParent();
-                if (ELEMENT_NAMES_THAT_CAN_HAVE_STYLE_ATTRIBUTES.contains(parent.getName().toUpperCase())) {
+                if (ELEMENT_NAMES_THAT_CAN_HAVE_STYLE_ATTRIBUTES.contains(parent.getName().toUpperCase(Locale.ROOT))) {
                     return true;
                 }
             }

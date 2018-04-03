@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
  * </ul>
  * @param <T>
  */
+@SuppressWarnings("PMD.UseUtilityClass") // we inherit non-static methods...
 public class ApexRuleViolation<T> extends ParametricRuleViolation<Node> {
 
     public ApexRuleViolation(Rule rule, RuleContext ctx, Node node, String message, int beginLine, int endLine) {

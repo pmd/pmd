@@ -35,9 +35,11 @@ public class ConsoleLogHandler extends Handler {
 
     @Override
     public void close() throws SecurityException {
+        // nothing to do
     }
 
     @Override
     public void flush() {
+        System.out.flush();
     }
 }

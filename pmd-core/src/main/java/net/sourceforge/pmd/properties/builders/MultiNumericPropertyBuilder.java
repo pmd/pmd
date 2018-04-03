@@ -30,8 +30,8 @@ public abstract class MultiNumericPropertyBuilder<V, T extends MultiNumericPrope
     /**
      * Specify the range of acceptable values.
      *
-     * @param min Lower bound
-     * @param max Upper bound
+     * @param min Lower bound, inclusive
+     * @param max Upper bound, inclusive
      *
      * @return The same builder
      */

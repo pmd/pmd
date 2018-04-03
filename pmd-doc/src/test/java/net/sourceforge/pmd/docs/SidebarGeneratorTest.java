@@ -15,10 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
+import org.yaml.snakeyaml.DumperOptions.LineBreak;
 import org.yaml.snakeyaml.Yaml;
 
 import net.sourceforge.pmd.RuleSet;
@@ -47,6 +49,9 @@ public class SidebarGeneratorTest {
 
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(FlowStyle.BLOCK);
+        if (SystemUtils.IS_OS_WINDOWS) {
+            options.setLineBreak(LineBreak.WIN);
+        }
         String yaml = new Yaml(options).dump(result);
 
         assertEquals(IOUtils.toString(SidebarGeneratorTest.class.getResourceAsStream("sidebar.yml")), yaml);

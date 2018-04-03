@@ -42,6 +42,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -80,13 +81,14 @@ public class PMDTaskImpl {
         this.failuresPropertyName = task.getFailuresPropertyName();
         configuration.setMinimumPriority(RulePriority.valueOf(task.getMinimumPriority()));
         configuration.setAnalysisCacheLocation(task.getCacheLocation());
+        configuration.setIgnoreIncrementalAnalysis(task.isNoCache());
 
         SourceLanguage version = task.getSourceLanguage();
         if (version != null) {
             LanguageVersion languageVersion = LanguageRegistry
-                    .findLanguageVersionByTerseName(version.getName() + " " + version.getVersion());
+                    .findLanguageVersionByTerseName(version.getName() + ' ' + version.getVersion());
             if (languageVersion == null) {
-                throw new BuildException("The following language is not supported:" + version + ".");
+                throw new BuildException("The following language is not supported:" + version + '.');
             }
             configuration.setDefaultLanguageVersion(languageVersion);
         }
@@ -275,7 +277,11 @@ public class PMDTaskImpl {
             doTask();
         } finally {
             logManager.close();
-            IOUtil.tryCloseClassLoader(configuration.getClassLoader());
+            // only close the classloader, if it is ours. Otherwise we end up with class not found
+            // exceptions
+            if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
+                IOUtil.tryCloseClassLoader(configuration.getClassLoader());
+            }
         }
     }
 

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
+import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
@@ -26,7 +29,14 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  * This rule detects private methods, that are not used and can therefore be
  * deleted.
  */
-public class UnusedPrivateMethodRule extends AbstractJavaRule {
+public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
+
+    @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        Collection<String> defaultValues = new ArrayList<>();
+        defaultValues.add("java.lang.Deprecated");
+        return defaultValues;
+    }
 
     /**
      * Visit each method declaration.
@@ -46,7 +56,7 @@ public class UnusedPrivateMethodRule extends AbstractJavaRule {
                 .getMethodDeclarations();
         for (MethodNameDeclaration mnd : findUnique(methods)) {
             List<NameOccurrence> occs = methods.get(mnd);
-            if (!privateAndNotExcluded(mnd)) {
+            if (!privateAndNotExcluded(mnd) || hasIgnoredAnnotation((Annotatable) mnd.getNode().jjtGetParent())) {
                 continue;
             }
             if (occs.isEmpty()) {

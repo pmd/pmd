@@ -1,11 +1,11 @@
 ---
-title: Errorprone
+title: Error Prone
 summary: Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
 permalink: pmd_rules_pom_errorprone.html
 folder: pmd/rules/pom
 sidebaractiveurl: /pmd_rules_pom.html
 editmepath: ../pmd-xml/src/main/resources/category/pom/errorprone.xml
-keywords: Errorprone, InvalidDependencyTypes, ProjectVersionAsDependencyVersion
+keywords: Error Prone, InvalidDependencyTypes, ProjectVersionAsDependencyVersion
 ---
 ## InvalidDependencyTypes
 
@@ -19,7 +19,7 @@ the entry is just ignored, which might have the effect, that the wrong version o
 The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear, rar, par.
 
 ```
-//dependencyManagement/dependency/type/text[not(contains('pom, jar, maven-plugin, ejb, war, ear, rar, par',@Image))]
+//dependencyManagement/dependency/type/text[not(@Image = $validTypes)]
 ```
 
 **Example(s):**
@@ -41,6 +41,12 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
 </project>
 ```
 
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|validTypes|[pom, jar, maven-plugin, ejb, war, ear, rar, par]|Set of valid types.|
+
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/pom/errorprone.xml/InvalidDependencyTypes" />
@@ -53,7 +59,7 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
 **Priority:** Medium (3)
 
 Using that expression in dependency declarations seems like a shortcut, but it can go wrong.
-By far the most common problem is the use of 6.0.0-SNAPSHOT in a BOM or parent POM.
+By far the most common problem is the use of ${project.version} in a BOM or parent POM.
 
 ```
 //dependency/version/text[contains(@Image,'{project.version}')]

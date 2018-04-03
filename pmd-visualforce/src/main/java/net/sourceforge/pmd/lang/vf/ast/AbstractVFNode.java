@@ -56,7 +56,11 @@ public class AbstractVFNode extends AbstractNode implements VfNode {
         return data;
     }
 
-    public String toString() {
+
+
+
+    @Override
+    public String getXPathNodeName() {
         return VfParserTreeConstants.jjtNodeName[id];
     }
 }

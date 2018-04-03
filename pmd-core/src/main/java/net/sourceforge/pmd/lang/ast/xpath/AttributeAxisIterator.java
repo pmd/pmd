@@ -65,7 +65,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
                     postFilter.add(new MethodWrapper(element));
                 }
             }
-            methodCache.putIfAbsent(contextNode.getClass(), postFilter.toArray(new MethodWrapper[postFilter.size()]));
+            methodCache.putIfAbsent(contextNode.getClass(), postFilter.toArray(new MethodWrapper[0]));
         }
         this.methodWrappers = methodCache.get(contextNode.getClass());
 
@@ -105,7 +105,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         = new HashSet<>(Arrays.<Class<?>>asList(Integer.TYPE, Boolean.TYPE, Double.TYPE, String.class, Long.TYPE, Character.TYPE, Float.TYPE));
     
     private static final Set<String> FILTERED_OUT_NAMES 
-        = new HashSet<>(Arrays.asList("toString", "getClass", "getTypeNameNode", "hashCode", "getImportedNameNode", "getScope"));
+        = new HashSet<>(Arrays.asList("toString", "getClass", "getXPathNodeName", "getTypeNameNode", "hashCode", "getImportedNameNode", "getScope"));
     
     protected boolean isAttributeAccessor(Method method) {
         String methodName = method.getName();

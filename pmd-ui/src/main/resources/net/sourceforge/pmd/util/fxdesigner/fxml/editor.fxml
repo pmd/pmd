@@ -2,8 +2,6 @@
 
 <!-- One editor, ie source + ast view -->
 
-<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
-<?import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
@@ -11,66 +9,45 @@
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<SplitPane xmlns="http://javafx.com/javafx"
-           xmlns:fx="http://javafx.com/fxml"
-           fx:controller="net.sourceforge.pmd.util.fxdesigner.SourceEditorController"
-           dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0"
-           BorderPane.alignment="CENTER">
+<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell?>
+
+<SplitPane dividerPositions="0.5" prefHeight="400.0" prefWidth="500.0" styleClass="accent-header" stylesheets="@../css/designer.css" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.SourceEditorController">
     <items>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
-                    prefWidth="100.0">
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
             <children>
-                <BorderPane prefHeight="200.0" prefWidth="200.0"
-                            AnchorPane.bottomAnchor="0.0"
-                            AnchorPane.leftAnchor="0.0"
-                            AnchorPane.rightAnchor="0.0"
-                            AnchorPane.topAnchor="0.0">
+                <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <center>
-                        <CustomCodeArea fx:id="codeEditorArea"
-                                        prefHeight="346.0" prefWidth="445.0"
-                                        stylesheets="@../css/editor-theme.css"
-                                        BorderPane.alignment="CENTER">
+                        <CustomCodeArea fx:id="codeEditorArea" prefHeight="346.0" prefWidth="445.0" stylesheets="@../css/editor-theme.css" BorderPane.alignment="CENTER">
                             <BorderPane.margin>
-                                <Insets/>
+                                <Insets />
                             </BorderPane.margin>
                         </CustomCodeArea>
                     </center>
                     <top>
-                        <ToolBar prefHeight="40.0" prefWidth="200.0"
-                                 styleClass="info-title-bar"
-                                 BorderPane.alignment="CENTER">
+                        <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="accent-header" BorderPane.alignment="CENTER">
                             <items>
-                                <Label text="Source code"/>
+                                <Label text="Source code" />
                             </items>
                         </ToolBar>
                     </top>
                 </BorderPane>
             </children>
         </AnchorPane>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
-                    prefWidth="100.0">
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
             <children>
-                <BorderPane prefHeight="200.0" prefWidth="200.0"
-                            AnchorPane.bottomAnchor="0.0"
-                            AnchorPane.leftAnchor="0.0"
-                            AnchorPane.rightAnchor="0.0"
-                            AnchorPane.topAnchor="0.0">
+                <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <center>
-                        <TreeView fx:id="astTreeView" prefHeight="200.0"
-                                  prefWidth="200.0" styleClass="secondary-panel"
-                                  BorderPane.alignment="CENTER">
+                        <TreeView fx:id="astTreeView" prefHeight="200.0" prefWidth="200.0" styleClass="secondary-panel" BorderPane.alignment="CENTER">
                             <cellFactory>
-                                <ASTTreeCell fx:factory="callback"/>
+                                <ASTTreeCell fx:factory="callback" />
                             </cellFactory>
                         </TreeView>
                     </center>
                     <top>
-                        <ToolBar prefHeight="40.0" prefWidth="200.0"
-                                 styleClass="info-title-bar"
-                                 BorderPane.alignment="CENTER">
+                        <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="accent-header" BorderPane.alignment="CENTER">
                             <items>
-                                <Label fx:id="astTitleLabel"
-                                       text="Abstract Syntax Tree"/>
+                                <Label fx:id="astTitleLabel" text="Abstract Syntax Tree" />
                             </items>
                         </ToolBar>
                     </top>

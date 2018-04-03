@@ -1245,8 +1245,8 @@ public class Escape {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>6,12</expected-linenumbers>
         <expected-messages>
-            <message>StringBuffer (or StringBuilder).append is called 3 consecutive times with literal Strings. Use a single append with a single combined String.</message>
-            <message>StringBuffer (or StringBuilder).append is called 3 consecutive times with literal Strings. Use a single append with a single combined String.</message>
+            <message>StringBuffer (or StringBuilder).append is called 3 consecutive times with literals. Use a single append with a single combined String.</message>
+            <message>StringBuffer (or StringBuilder).append is called 3 consecutive times with literals. Use a single append with a single combined String.</message>
         </expected-messages>
         <code><![CDATA[
 public class StringBufferTest {
@@ -1298,6 +1298,51 @@ public class Foo {
         StringBuilder s = new StringBuilder("start:").append(value).append(":end");
 
         return s.toString();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consecutive append of literals other than string: integer</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuilder s = new StringBuilder();
+        s.append(1);
+        s.append(2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consecutive append of literals other than string: chars</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuilder s = new StringBuilder();
+        s.append('h');
+        s.append('e');
+        s.append('l');
+        s.append('l');
+        s.append('o');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consecutive append of literals other than string: mix chars and strings</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuilder s = new StringBuilder();
+        s.append('h');
+        s.append("ello");
     }
 }
         ]]></code>

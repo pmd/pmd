@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -74,13 +75,14 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 
         Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
                 .getDeclarations(VariableNameDeclaration.class);
-        for (VariableNameDeclaration decl : vars.keySet()) {
+        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
+            VariableNameDeclaration decl = entry.getKey();
             AccessNode accessNodeParent = decl.getAccessNodeParent();
-            if (vars.get(decl).isEmpty() || accessNodeParent.isTransient() || accessNodeParent.isStatic()) {
+            if (entry.getValue().isEmpty() || accessNodeParent.isTransient() || accessNodeParent.isStatic()) {
                 continue;
             }
             String varName = trimIfPrefix(decl.getImage());
-            varName = varName.substring(0, 1).toUpperCase() + varName.substring(1, varName.length());
+            varName = varName.substring(0, 1).toUpperCase(Locale.ROOT) + varName.substring(1, varName.length());
             boolean hasGetMethod = Arrays.binarySearch(methNameArray, "get" + varName) >= 0
                     || Arrays.binarySearch(methNameArray, "is" + varName) >= 0;
             boolean hasSetMethod = Arrays.binarySearch(methNameArray, "set" + varName) >= 0;

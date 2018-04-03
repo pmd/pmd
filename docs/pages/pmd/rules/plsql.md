@@ -9,7 +9,7 @@ folder: pmd/rules
 
 *   [TomKytesDespair](pmd_rules_plsql_bestpractices.html#tomkytesdespair): "WHEN OTHERS THEN NULL" hides all errors - (Re)RAISE an exception or call RAISE_APPLICATION_ERROR
 
-## Codestyle
+## Code Style
 
 {% include callout.html content="Rules which enforce a specific coding style." %}
 

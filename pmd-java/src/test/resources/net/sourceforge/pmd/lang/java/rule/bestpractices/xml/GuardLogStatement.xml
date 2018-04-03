@@ -280,4 +280,58 @@ public class GuardLogTest {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>#783 [java] GuardLogStatement regression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.log4j.Logger;
+
+public class GuardLogTest {
+    Logger LOG;
+    public void foo() {
+        if (!(exception instanceof IllegalArgumentException) && LOGGER.isErrorEnabled()) {
+            LOGGER.error("Some error " + someObject, exception);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Wrong guard method for java util logging</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
+public class Foo {
+    Logger LOGGER;
+
+    public void foo() {
+        if (LOGGER.isLoggable(Level.INFO)) { // should have been level FINE
+            LOGGER.log(Level.FINE, "This is a severe message" + " and concat");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#370 rule not considering lambdas</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Logger {
+    private static final Logger LOGGER = new Logger();
+    
+    public void bar() {
+        LOGGER.info(() -> "Bla " + " bla"); // The lambda is free to do whatever it likes
+    }
+
+    @Override
+    public void info(Supplier<String> message) {
+        if (logger.isInfoEnabled()) {
+            logger.info(message.get());
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

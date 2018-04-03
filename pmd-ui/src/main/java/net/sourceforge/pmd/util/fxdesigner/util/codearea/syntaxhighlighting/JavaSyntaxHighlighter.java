@@ -19,7 +19,6 @@ import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighti
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.SINGLEL_COMMENT;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.STRING;
 
-import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SimpleRegexSyntaxHighlighter;
@@ -30,10 +29,10 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.SimpleRegexSyntaxHighli
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class JavaSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
+public final class JavaSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
 
 
-    private static final String[] KEYWORDS = new String[] {
+    private static final String[] KEYWORDS = {
         "public", "return", "final", "import", "static", "new",
         "extends", "int", "throws?", "void", "if", "this",
         "private", "class", "else", "case", "package", "abstract",
@@ -48,29 +47,21 @@ public class JavaSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         };
 
 
-    /** First characters of the keywords, used to optimise the regex. */
-    private static final String KEYWORDS_START_CHARS = Arrays.stream(KEYWORDS)
-                                                             .map(s -> s.substring(0, 1))
-                                                             .distinct()
-                                                             .reduce((s1, s2) -> s1 + s2)
-                                                             .get();
-
-
     private static final RegexHighlightGrammar GRAMMAR
         = grammarBuilder(SINGLEL_COMMENT.css, "//[^\n]*")
         .or(MULTIL_COMMENT.css, "/\\*.*?\\*/")
         .or(PAREN.css, "[()]")
-        .or(NUMBER.css, "\\b\\d+[fdlFDL]*\\b")
+        .or(NUMBER.css, asWord("\\d+[fdlFDL]*"))
         .or(BRACE.css, "[{}]")
         .or(BRACKET.css, "[\\[]]")
         .or(SEMICOLON.css, ";")
-        .or(KEYWORD.css, "\\b(?=[" + KEYWORDS_START_CHARS + "])(?:" + String.join("|", KEYWORDS) + ")\\b")
+        .or(KEYWORD.css, alternation(KEYWORDS))
         .or(STRING.css, "\"[^\"\\\\]*(\\\\.[^\"\\\\]*)*\"")
         .or(CHAR.css, "'(?:[^']|\\\\(?:'|u\\w{4}))'") // char
-        .or(NULL.css, "\\bnull\\b") 
-        .or(BOOLEAN.css, "\\btrue|false\\b") 
+        .or(NULL.css, asWord("null"))
+        .or(BOOLEAN.css, asWord("true|false"))
         .or(ANNOTATION.css, "@[\\w]+")
-        .or(CLASS_IDENTIFIER.css, "\\b[A-Z][\\w_$]*\\b")
+        .or(CLASS_IDENTIFIER.css, asWord("[A-Z][\\w_$]*"))
         .create(Pattern.DOTALL);
 
 

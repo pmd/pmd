@@ -25,8 +25,7 @@ function push_docs() {
 VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 echo "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
-# TODO : Once we release PMD 6.0.0 and have a compatible PMD plugin, enable PMD once again
-MVN_BUILD_FLAGS="-B -V -Dpmd.skip=true"
+MVN_BUILD_FLAGS="-B -V"
 
 if travis_isPullRequest; then
 

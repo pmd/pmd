@@ -5,7 +5,7 @@ permalink: pmd_rules_java_bestpractices.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/bestpractices.xml
-keywords: Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidPrintStackTrace, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, ForLoopCanBeForeach, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LooseCoupling, MethodReturnsInternalArray, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseVarargs
+keywords: Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidPrintStackTrace, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, ForLoopCanBeForeach, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseVarargs
 ---
 ## AbstractClassWithoutAbstractMethod
 
@@ -373,7 +373,7 @@ public class Foo {
 
 ## ForLoopCanBeForeach
 
-**Since:** PMD 6.0
+**Since:** PMD 6.0.0
 
 **Priority:** Medium (3)
 
@@ -781,6 +781,35 @@ public class SecureSystem {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray" />
+```
+
+## MissingOverride
+
+**Since:** PMD 6.2.0
+
+**Priority:** Medium (3)
+
+**Minimum Language Version:** Java 1.5
+
+Annotating overridden methods with @Override ensures at compile time that
+the method really overrides one, which helps refactoring and clarifies intent.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.MissingOverrideRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/MissingOverrideRule.java)
+
+**Example(s):**
+
+``` java
+public class Foo implements Runnable {
+                // This method is overridden, and should have an @Override annotation
+                public void run() {
+
+                }
+            }
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/MissingOverride" />
 ```
 
 ## OneDeclarationPerLine
@@ -1198,6 +1227,12 @@ public class Something {
 }
 ```
 
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|ignoredAnnotations|[lombok.Setter, lombok.Getter, lombok.Builder, lombok.Data, lombok.RequiredArgsConstructor, lombok.AllArgsConstructor, lombok.Value, lombok.NoArgsConstructor, java.lang.Deprecated, javafx.fxml.FXML]|Fully qualified names of the annotation types that should be ignored by this rule|
+
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/UnusedPrivateField" />
@@ -1220,6 +1255,12 @@ public class Something {
     private void foo() {} // unused
 }
 ```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|ignoredAnnotations|[java.lang.Deprecated]|Fully qualified names of the annotation types that should be ignored by this rule|
 
 **Use this rule by referencing it:**
 ``` xml

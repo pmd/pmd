@@ -83,7 +83,7 @@ public class ElementNode extends AbstractNodeInfo {
 
     @Override
     public String getLocalPart() {
-        return node.toString();
+        return node.getXPathNodeName();
     }
 
     @Override

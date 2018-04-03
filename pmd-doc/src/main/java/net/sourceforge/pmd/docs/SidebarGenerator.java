@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.docs;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,8 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
+import org.yaml.snakeyaml.DumperOptions.LineBreak;
 import org.yaml.snakeyaml.Yaml;
 
 import net.sourceforge.pmd.RuleSet;
@@ -38,7 +41,7 @@ public class SidebarGenerator {
         List<Map<String, Object>> entries = (List<Map<String, Object>>) sidebar.get("entries");
         Map<String, Object> entry = entries.get(0);
         List<Map<String, Object>> folders = (List<Map<String, Object>>) entry.get("folders");
-        return folders.get(2);
+        return folders.get(3);
     }
 
     public void generateSidebar(Map<Language, List<RuleSet>> sortedRulesets) throws IOException {
@@ -83,15 +86,20 @@ public class SidebarGenerator {
     }
 
     public Map<String, Object> loadSidebar() throws IOException {
-        Yaml yaml = new Yaml();
-        @SuppressWarnings("unchecked")
-        Map<String, Object> sidebar = (Map<String, Object>) yaml.load(Files.newBufferedReader(sidebarPath, StandardCharsets.UTF_8));
-        return sidebar;
+        try (Reader reader = Files.newBufferedReader(sidebarPath, StandardCharsets.UTF_8)) {
+            Yaml yaml = new Yaml();
+            @SuppressWarnings("unchecked")
+            Map<String, Object> sidebar = (Map<String, Object>) yaml.load(reader);
+            return sidebar;
+        }
     }
 
     public void writeSidebar(Map<String, Object> sidebar) throws IOException {
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(FlowStyle.BLOCK);
+        if (SystemUtils.IS_OS_WINDOWS) {
+            options.setLineBreak(LineBreak.WIN);
+        }
         Yaml yaml = new Yaml(options);
         writer.write(sidebarPath, Arrays.asList(yaml.dump(sidebar)));
         System.out.println("Generated " + sidebarPath);

@@ -46,25 +46,16 @@ public class DocumentNode extends AbstractNodeInfo implements DocumentInfo {
         this.rootNode = new ElementNode(this, new IdGenerator(), null, node, -1);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String[] getUnparsedEntity(String name) {
         throw createUnsupportedOperationException("DocumentInfo.getUnparsedEntity(String)");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Iterator getUnparsedEntityNames() {
         throw createUnsupportedOperationException("DocumentInfo.getUnparsedEntityNames()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public NodeInfo selectID(String id) {
         throw createUnsupportedOperationException("DocumentInfo.selectID(String)");

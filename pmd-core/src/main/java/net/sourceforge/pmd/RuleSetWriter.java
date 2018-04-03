@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -34,13 +36,14 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
-import net.sourceforge.pmd.properties.PropertyDescriptorUtil;
+import net.sourceforge.pmd.properties.PropertyTypeId;
 
 /**
  * This class represents a way to serialize a RuleSet to an XML configuration
  * file.
  */
 public class RuleSetWriter {
+    private static final Logger LOG = Logger.getLogger(RuleSetWriter.class.getName());
 
     public static final String RULESET_2_0_0_NS_URI = "http://pmd.sourceforge.net/ruleset/2.0.0";
 
@@ -78,6 +81,7 @@ public class RuleSetWriter {
                 transformerFactory.setAttribute("indent-number", 3);
             } catch (IllegalArgumentException iae) {
                 // ignore it, specific to one parser
+                LOG.log(Level.FINE, "Couldn't set indentation", iae);
             }
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");
@@ -166,8 +170,7 @@ public class RuleSetWriter {
             if (ruleSetReference.isAllRules()) {
                 if (!ruleSetFileNames.contains(ruleSetReference.getRuleSetFileName())) {
                     ruleSetFileNames.add(ruleSetReference.getRuleSetFileName());
-                    Element ruleSetReferenceElement = createRuleSetReferenceElement(ruleSetReference);
-                    return ruleSetReferenceElement;
+                    return createRuleSetReferenceElement(ruleSetReference);
                 } else {
                     return null;
                 }
@@ -177,7 +180,7 @@ public class RuleSetWriter {
                 LanguageVersion maximumLanguageVersion = ruleReference.getOverriddenMaximumLanguageVersion();
                 Boolean deprecated = ruleReference.isOverriddenDeprecated();
                 String name = ruleReference.getOverriddenName();
-                String ref = ruleReference.getRuleSetReference().getRuleSetFileName() + "/"
+                String ref = ruleReference.getRuleSetReference().getRuleSetFileName() + '/'
                         + ruleReference.getRule().getName();
                 String message = ruleReference.getOverriddenMessage();
                 String externalInfoUrl = ruleReference.getOverriddenExternalInfoUrl();
@@ -212,7 +215,7 @@ public class RuleSetWriter {
     private Element createSingleRuleElement(Language language, LanguageVersion minimumLanguageVersion,
             LanguageVersion maximumLanguageVersion, Boolean deprecated, String name, String since, String ref,
             String message, String externalInfoUrl, String clazz, Boolean dfa, Boolean typeResolution,
-            Boolean multifile,
+            Boolean multifile, // NOPMD: TODO multifile
             String description, RulePriority priority, List<PropertyDescriptor<?>> propertyDescriptors,
             Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor, List<String> examples) {
         Element ruleElement = createRuleElement();
@@ -348,7 +351,7 @@ public class RuleSetWriter {
         final Element propertyElement = createPropertyValueElement(propertyDescriptor,
                 propertyDescriptor.defaultValue());
         propertyElement.setAttribute(PropertyDescriptorField.TYPE.attributeName(),
-                                     PropertyDescriptorUtil.typeIdFor(propertyDescriptor.type(),
+                                     PropertyTypeId.typeIdFor(propertyDescriptor.type(),
                                                                       propertyDescriptor.isMultiValue()));
 
         Map<PropertyDescriptorField, String> propertyValuesById = propertyDescriptor.attributeValuesById();

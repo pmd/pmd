@@ -56,7 +56,11 @@ public class AbstractJspNode extends AbstractNode implements JspNode {
         return data;
     }
 
-    public String toString() {
+
+
+
+    @Override
+    public String getXPathNodeName() {
         return JspParserTreeConstants.jjtNodeName[id];
     }
 }

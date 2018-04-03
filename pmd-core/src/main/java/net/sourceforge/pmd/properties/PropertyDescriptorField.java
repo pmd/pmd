@@ -15,7 +15,7 @@ import net.sourceforge.pmd.RuleSetFactory;
  *
  * @author Brian Remedios
  * @see RuleSetFactory
- * @see PropertyDescriptorUtil
+ * @see PropertyTypeId
  */
 public enum PropertyDescriptorField {
 

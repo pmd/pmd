@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetric;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 
+
 /**
  * Base class for class metrics.
  *
@@ -113,7 +114,7 @@ public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyT
         List<ASTAnyTypeBodyDeclaration> decls = node.getDeclarations();
 
         for (ASTAnyTypeBodyDeclaration decl : decls) {
-            if (tClass.isInstance(decl.jjtGetChild(0))) {
+            if (decl.jjtGetNumChildren() > 0 && tClass.isInstance(decl.jjtGetChild(0))) {
                 result.add(tClass.cast(decl.jjtGetChild(0)));
             }
         }

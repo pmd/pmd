@@ -165,9 +165,6 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
     }
 
     private boolean isFirstChild(Node node, Class<?> clazz) {
-        if (node.jjtGetNumChildren() == 1 && clazz.isAssignableFrom(node.jjtGetChild(0).getClass())) {
-            return true;
-        }
-        return false;
+        return node.jjtGetNumChildren() == 1 && clazz.isAssignableFrom(node.jjtGetChild(0).getClass());
     }
 }

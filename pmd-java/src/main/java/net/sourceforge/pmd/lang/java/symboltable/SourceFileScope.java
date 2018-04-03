@@ -87,7 +87,7 @@ public class SourceFileScope extends AbstractJavaScope {
     }
 
     /**
-     * {@inheritDoc}
+     *
      * 
      * @throws IllegalArgumentException
      *             if declaration is not a {@link ClassNameDeclaration}

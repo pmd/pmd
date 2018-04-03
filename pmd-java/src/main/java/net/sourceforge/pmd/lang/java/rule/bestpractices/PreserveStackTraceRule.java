@@ -4,11 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
@@ -137,15 +140,37 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
     private boolean checkForTargetUsage(String target, Node baseNode) {
         boolean match = false;
         if (target != null && baseNode != null) {
-            List<ASTName> nameNodes = baseNode.findDescendantsOfType(ASTName.class);
+            // TODO : use Node.findDescendantsOfType(ASTName.class, true) on 7.0.0
+            List<ASTName> nameNodes = new ArrayList<>();
+            baseNode.findDescendantsOfType(ASTName.class, nameNodes, true);
             for (ASTName nameNode : nameNodes) {
                 if (target.equals(nameNode.getImage())) {
-                    match = true;
-                    break;
+                    boolean isPartOfStringConcatenation = isStringConcat(nameNode, baseNode);
+                    if (!isPartOfStringConcatenation) {
+                        match = true;
+                        break;
+                    }
                 }
             }
         }
         return match;
+    }
+    
+    /**
+     * Checks whether the given childNode is part of an additive expression (String concatenation) limiting search to base Node.
+     * @param childNode
+     * @param baseNode
+     * @return
+     */
+    private boolean isStringConcat(Node childNode, Node baseNode) {
+        Node currentNode = childNode;
+        while (!Objects.equals(currentNode, baseNode)) {
+            currentNode = currentNode.jjtGetParent();
+            if (currentNode instanceof ASTAdditiveExpression) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void ck(Object data, String target, ASTThrowStatement throwStatement, Node baseNode) {

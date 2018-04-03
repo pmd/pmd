@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.TccMethodPairVisitor;
+import net.sourceforge.pmd.lang.java.metrics.impl.visitors.TccAttributeAccessCollector;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
@@ -25,8 +25,7 @@ public class TccMetric extends AbstractJavaClassMetric {
 
     @Override
     public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
-        @SuppressWarnings("unchecked")
-        Map<String, Set<String>> usagesByMethod = (Map<String, Set<String>>) node.jjtAccept(new TccMethodPairVisitor(), null);
+        Map<String, Set<String>> usagesByMethod = new TccAttributeAccessCollector(node).start();
 
         int numPairs = numMethodsRelatedByAttributeAccess(usagesByMethod);
         int maxPairs = maxMethodPairs(usagesByMethod.size());

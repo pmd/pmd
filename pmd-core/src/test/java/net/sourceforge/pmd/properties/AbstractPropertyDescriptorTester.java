@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -36,6 +38,9 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     public static final String ALPHA_NUMERIC_CHARS = DIGIT_CHARS + ALPHA_CHARS;
     public static final String ALL_CHARS = PUNCTUATION_CHARS + WHITESPACE_CHARS + ALPHA_NUMERIC_CHARS;
     private static final int MULTI_VALUE_COUNT = 10;
+
+    private static final Random RANDOM = new Random();
+
     protected final String typeName;
 
 
@@ -51,17 +56,21 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     public void testFactorySingleValue() {
         PropertyDescriptor<T> prop = getSingleFactory().build(getPropertyDescriptorValues());
         T originalValue = createValue();
-        T value = prop.valueFrom(
-                originalValue instanceof Class ? ((Class) originalValue).getName() : String.valueOf(originalValue));
-        String asDelimitedString = prop.asDelimitedString(value);
-        Object value2 = prop.valueFrom(asDelimitedString);
-        assertEquals(value, value2);
+        T value = prop.valueFrom(originalValue instanceof Class ? ((Class) originalValue).getName() : String.valueOf(originalValue));
+        T value2 = prop.valueFrom(prop.asDelimitedString(value));
+        if (Pattern.class.equals(prop.type())) {
+            // Pattern.equals uses object identity...
+            // we're forced to do that to make it compare the string values of the pattern
+            assertEquals(String.valueOf(value), String.valueOf(value2));
+        } else {
+            assertEquals(value, value2);
+        }
     }
 
 
     @SuppressWarnings("unchecked")
     protected final PropertyDescriptorExternalBuilder<T> getSingleFactory() {
-        return (PropertyDescriptorExternalBuilder<T>) PropertyDescriptorUtil.factoryFor(typeName);
+        return (PropertyDescriptorExternalBuilder<T>) PropertyTypeId.factoryFor(typeName);
     }
 
 
@@ -95,7 +104,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
     @SuppressWarnings("unchecked")
     protected final PropertyDescriptorExternalBuilder<List<T>> getMultiFactory() {
-        return (PropertyDescriptorExternalBuilder<List<T>>) PropertyDescriptorUtil.factoryFor("List[" + typeName + "]");
+        return (PropertyDescriptorExternalBuilder<List<T>>) PropertyTypeId.factoryFor("List[" + typeName + "]");
     }
 
 
@@ -184,7 +193,13 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
         T returnedValue = pmdProp.valueFrom(storeValue);
 
-        assertEquals(returnedValue, testValue);
+        if (Pattern.class.equals(pmdProp.type())) {
+            // Pattern.equals uses object identity...
+            // we're forced to do that to make it compare the string values of the pattern
+            assertEquals(String.valueOf(returnedValue), String.valueOf(testValue));
+        } else {
+            assertEquals(returnedValue, testValue);
+        }
     }
 
 
@@ -250,19 +265,26 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     @Test
     public void testIsMultiValue() {
         assertFalse(createProperty().isMultiValue());
-        assertTrue(createMultiProperty().isMultiValue());
     }
 
 
     @Test
+    public void testIsMultiValueMulti() {
+        assertTrue(createMultiProperty().isMultiValue());
+    }
+
+    @Test
     public void testAddAttributes() {
         Map<PropertyDescriptorField, String> atts = createProperty().attributeValuesById();
-        Map<PropertyDescriptorField, String> multiAtts = createMultiProperty().attributeValuesById();
-
         assertTrue(atts.containsKey(PropertyDescriptorField.NAME));
         assertTrue(atts.containsKey(PropertyDescriptorField.DESCRIPTION));
         assertTrue(atts.containsKey(PropertyDescriptorField.DEFAULT_VALUE));
+    }
 
+
+    @Test
+    public void testAddAttributesMulti() {
+        Map<PropertyDescriptorField, String> multiAtts = createMultiProperty().attributeValuesById();
         assertTrue(multiAtts.containsKey(PropertyDescriptorField.DELIMITER));
         assertTrue(multiAtts.containsKey(PropertyDescriptorField.NAME));
         assertTrue(multiAtts.containsKey(PropertyDescriptorField.DESCRIPTION));
@@ -272,84 +294,47 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
     @Test
     public void testType() {
-        assertNotNull(createMultiProperty().type());
         assertNotNull(createProperty().type());
     }
 
 
-    public static boolean randomBool() {
-        return ((Math.random() * 100) % 2) == 0;
+    @Test
+    public void testTypeMulti() {
+        assertNotNull(createMultiProperty().type());
+    }
+
+    static boolean randomBool() {
+        return RANDOM.nextBoolean();
     }
 
 
-    public static int randomInt() {
-
-        int randomVal = (int) (Math.random() * 100 + 1D);
-        return randomVal + (int) (Math.random() * 100000D);
+    static char randomChar(char[] characters) {
+        return characters[randomInt(0, characters.length)];
     }
 
 
-    public static String randomString(int length) {
-
-        final char[] chars = ALPHA_CHARS.toCharArray();
-
-        StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            sb.append(randomChar(chars));
-        }
-        return sb.toString();
+    static int randomInt(int min, int max) {
+        return (int) randomLong(min, max);
     }
 
 
-    public static char randomChar(char[] characters) {
-        return characters[randomInt(0, characters.length - 1)];
-    }
-
-
-    public static int randomInt(int min, int max) {
-        if (max < min) {
-            max = min;
-        }
-        int range = Math.abs(max - min);
-        int x = (int) (range * Math.random());
-        return x + min;
-    }
-
-
-    public static float randomFloat(float min, float max) {
-
+    static float randomFloat(float min, float max) {
         return (float) randomDouble(min, max);
     }
 
 
-    public static double randomDouble(double min, double max) {
-        if (max < min) {
-            max = min;
-        }
-        double range = Math.abs(max - min);
-        double x = range * Math.random();
-        return x + min;
+    static double randomDouble(double min, double max) {
+        return min + RANDOM.nextDouble() * Math.abs(max - min);
     }
 
 
-    public static long randomLong(long min, long max) {
-        if (max < min) {
-            max = min;
-        }
-        long range = Math.abs(max - min);
-        long x = (long) (range * Math.random());
-        return x + min;
+    static long randomLong(long min, long max) {
+        return min + RANDOM.nextInt((int) Math.abs(max - min));
     }
 
 
-    /**
-     * Method randomChoice.
-     *
-     * @param items Object[]
-     * @return Object
-     */
-    public static <T> T randomChoice(T[] items) {
-        return items[randomInt(0, items.length - 1)];
+    static <T> T randomChoice(T[] items) {
+        return items[randomInt(0, items.length)];
     }
 
 
@@ -360,19 +345,19 @@ public abstract class AbstractPropertyDescriptorTester<T> {
      * @param removeChar char
      * @return char[]
      */
-    protected static final char[] filter(char[] chars, char removeChar) {
+    protected static char[] filter(char[] chars, char removeChar) {
         int count = 0;
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] == removeChar) {
+        for (char c : chars) {
+            if (c == removeChar) {
                 count++;
             }
         }
         char[] results = new char[chars.length - count];
 
         int index = 0;
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] != removeChar) {
-                results[index++] = chars[i];
+        for (char c : chars) {
+            if (c != removeChar) {
+                results[index++] = c;
             }
         }
         return results;

@@ -11,7 +11,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
@@ -132,7 +132,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
         if (val == (int) val) {
             return String.valueOf((int) val);
         } else {
-            return String.format(Locale.ROOT, "%." + 4 + "f", val);
+            return String.format(Locale.ROOT, "%.4f", val);
         }
     }
 
@@ -157,7 +157,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
 
 
     @Override
-    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+    public Object visit(MethodLikeNode node, Object data) {
         if (opKey != null && reportMethods && opKey.supports(node)) {
             double methodValue = JavaMetrics.get(opKey, node, metricOptions);
             if (methodValue >= reportLevel) {
@@ -165,6 +165,6 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
                                                        "" + niceDoubleString(methodValue), });
             }
         }
-        return data;
+        return super.visit(node, data);
     }
 }

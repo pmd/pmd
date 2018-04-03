@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -52,7 +53,7 @@ public class LanguageFilenameFilter implements FilenameFilter {
             return false;
         }
 
-        String extension = name.substring(1 + lastDotIndex).toUpperCase();
+        String extension = name.substring(1 + lastDotIndex).toUpperCase(Locale.ROOT);
         for (Language language : languages) {
             for (String ext : language.getExtensions()) {
                 if (extension.equalsIgnoreCase(ext)) {

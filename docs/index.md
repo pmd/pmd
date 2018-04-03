@@ -47,6 +47,7 @@ Features:
 Supported Languages:
 
 *   [Java](pmd_rules_java.html)
+*   [JSP](pmd_rules_jsp.html)
 *   [JavaScript](pmd_rules_ecmascript.html)
 *   [Salesforce.com Apex](pmd_rules_apex.html) and [Visualforce](pmd_rules_vf.html)
 *   [PLSQL](pmd_rules_plsql.html)

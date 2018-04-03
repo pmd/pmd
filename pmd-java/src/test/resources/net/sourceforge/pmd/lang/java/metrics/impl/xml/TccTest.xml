@@ -26,11 +26,11 @@ this(name, valueType, initialValue, null);
 
 
 public Property(String name, Class valueType, Object initialValue, Object[] values) {
-_name = name;
-_valueType = valueType;
-_initialValue = initialValue;
-_availableValues = values;
-_currentValue = _initialValue;
+    _name = name;
+    _valueType = valueType;
+    _initialValue = initialValue;
+    _availableValues = values;
+    _currentValue = _initialValue;
 }
 
 public String getName() {
@@ -68,7 +68,7 @@ return _name.compareTo(((Property) o)._name);
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Property' has value 0.0952.</message>
+            <message>'Property' has value 0.0952.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -96,5 +96,100 @@ return _name.compareTo(((Property) o)._name);
         }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Do not crash on local class, refs #827</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'com.pack.Pack$1Inner' has value 0.</message>
+        </expected-messages>
+        <code><![CDATA[
+        package com.pack;
+
+        import java.util.ArrayList;
+        import java.util.Arrays;
+        import java.util.Date;
+        import java.util.HashMap;
+        import java.util.List;
+        import java.util.Map;
+
+        public class Pack implements IPack {
+
+
+            @Override
+            public Map<String, String> get() {
+
+                class Inner implements IInner {
+
+                    private Map<String, String> results;
+
+                    public Inner(Map<String, String> results) {
+                        this.results = results;
+                    }
+
+                    public void method() {
+                        this.results = new HashMap<String, String>();
+                    }
+
+                    private void otherMethod() {
+                        this.results.clear();
+                    }
+                }
+                return null;
+            }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Attribute accesses in local class count as accesses of the method</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'com.pack.Pack' has value 1.</message>
+            <message>'com.pack.Pack$1Inner' has value 0.</message>
+        </expected-messages>
+        <code><![CDATA[
+        package com.pack;
+
+        import java.util.ArrayList;
+        import java.util.Arrays;
+        import java.util.Date;
+        import java.util.HashMap;
+        import java.util.List;
+        import java.util.Map;
+
+        public class Pack implements IPack {
+
+            // the attribute is in the outer class
+            private Map<String, String> results;
+
+            public void paired() {
+                results.clear();
+            }
+
+            @Override
+            public Map<String, String> get() {
+
+                class Inner implements IInner {
+
+
+                    public Inner(Map<String, String> results) {
+                        this.results = results;
+                    }
+
+                    public void method() {
+                        this.results = new HashMap<String, String>();
+                    }
+
+                    private void otherMethod() {
+                        this.results.clear();
+                    }
+                }
+                return null;
+            }
+        }
+        ]]></code>
+    </test-code>
+
 
 </test-data>

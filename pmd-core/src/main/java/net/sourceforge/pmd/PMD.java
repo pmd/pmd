@@ -6,7 +6,6 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,18 +13,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.benchmark.TextReport;
+import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PMDParameters;
 import net.sourceforge.pmd.lang.Language;
@@ -79,8 +76,10 @@ public class PMD {
 
     /**
      * Constant that contains always the current version of PMD.
+     * @deprecated Use {@link PMDVersion#VERSION} instead.
      */
-    public static final String VERSION;
+    @Deprecated // to be removed with PMD 7.0.0.
+    public static final String VERSION = PMDVersion.VERSION;
 
     /**
      * Create a PMD instance using a default Configuration. Changes to the
@@ -228,6 +227,7 @@ public class PMD {
 
                 @Override
                 public void metricAdded(Metric metric) {
+                    // ignored - not needed for counting violations
                 }
             });
 
@@ -296,6 +296,14 @@ public class PMD {
      */
     public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
             final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
+
+        if (!configuration.isIgnoreIncrementalAnalysis()
+                && configuration.getAnalysisCache() instanceof NoopAnalysisCache
+                && LOG.isLoggable(Level.WARNING)) {
+            final String version = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
+            LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
+                                + "https://pmd.github.io/" + version + "/pmd_userdocs_getting_started.html#incremental-analysis");
+        }
 
         sortFiles(configuration, files);
 
@@ -439,7 +447,7 @@ public class PMD {
         int status = 0;
         long start = System.nanoTime();
         final PMDParameters params = PMDCommandLineInterface.extractParameters(new PMDParameters(), args, "pmd");
-        final PMDConfiguration configuration = PMDParameters.transformParametersIntoConfiguration(params);
+        final PMDConfiguration configuration = params.toConfiguration();
 
         final Level logLevel = params.isDebug() ? Level.FINER : Level.INFO;
         final Handler logHandler = new ConsoleLogHandler();
@@ -475,29 +483,5 @@ public class PMD {
             }
         }
         return status;
-    }
-
-    /**
-     * Determines the version from maven's generated pom.properties file.
-     */
-    static {
-        String pmdVersion = null;
-        InputStream stream = PMD.class
-                .getResourceAsStream("/META-INF/maven/net.sourceforge.pmd/pmd-core/pom.properties");
-        if (stream != null) {
-            try {
-                Properties properties = new Properties();
-                properties.load(stream);
-                pmdVersion = properties.getProperty("version");
-            } catch (IOException e) {
-                LOG.log(Level.FINE, "Couldn't determine version of PMD", e);
-            } finally {
-                IOUtils.closeQuietly(stream);
-            }
-        }
-        if (pmdVersion == null) {
-            pmdVersion = "unknown";
-        }
-        VERSION = pmdVersion;
     }
 }

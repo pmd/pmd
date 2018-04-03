@@ -24,7 +24,6 @@ public class StackObject {
 
     @Override
     public String toString() {
-        return ("StackObject: type=" + type + ", node=" + node.toString());
-
+        return "StackObject: type=" + type + ", node=" + node.toString();
     }
 }

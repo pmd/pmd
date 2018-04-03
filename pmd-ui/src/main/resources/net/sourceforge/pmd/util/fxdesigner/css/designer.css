@@ -24,6 +24,13 @@
     -fx-padding: -1 0 0 0;
 }
 
+.table-view .show-hide-columns-button {
+    -fx-background-color: derive(-fx-base, -10%);
+    -fx-border-color: derive(-fx-base, -20%);
+    -fx-border-style: none solid solid solid;
+    -fx-padding: -1 0 0 0;
+}
+
 .text-area {
     -fx-background-insets: 0;
     -fx-background-color: transparent, white, transparent, white;
@@ -36,11 +43,9 @@
     -fx-border-width: -1;
 }
 
-
 .text-area .content {
     -fx-background-color: transparent, white, transparent, white;
 }
-
 
 /**************/
 /* Split pane */
@@ -61,11 +66,6 @@
 }
 
 
-.bottom-pane-split-pane.split-pane > .split-pane-divider {
-    /*-fx-background-color: derive(-fx-base, -20%);*/
-}
-
-
 .secondary-panel {
     -fx-border-style: none;
 }
@@ -75,7 +75,6 @@
     -fx-max-width: 300px;
     -fx-min-width: 300px;
 }
-
 
 /************/
 /* Toolbars */
@@ -91,20 +90,26 @@
     -fx-pref-height: 24.0;
     -fx-border-radius: 0.0;
     -fx-background-radius: 0.0;
-    -fx-background-color: derive(-fx-base, -10%);
+    -fx-background-color: derive(-fx-base, -14%);
 }
 
-.titled-pane > .title {
-
+.titled-pane.accent-header > .title,
+.tool-bar.accent-header,
+.tool-bar.info-title-bar,
+.split-pane.accent-header > .split-pane-divider,
+#main-toolbar, #main-vertical-split-pane > .split-pane-divider {
+    -fx-background-color: derive(-fx-base, -14%);
 }
 
-.menu-bar {
-    -fx-background-color: derive(-fx-base, -10%);
-    -fx-border-style: none none solid none;
-    -fx-border-color: derive(-fx-base, -20%);
+.accordion .titled-pane .tool-bar {
+    -fx-background-color: derive(-fx-base, -15%);
 }
 
-#mainToolbar {
+.accordion .titled-pane .tool-bar .button {
+    -fx-padding: 2 5 2 5;
+}
+
+.tool-bar {
     -fx-pref-height: 30px;
     -fx-max-height: 30px;
     -fx-min-height: 30px;
@@ -112,16 +117,22 @@
     -fx-border-width: .6;
 }
 
-.button {
+.tool-bar .button {
+    -fx-padding: -3 5 -3 5;
     -fx-background-color: derive(-fx-base, 10%);
     -fx-border-color: derive(-fx-base, -20%);
     -fx-border-radius: 3;
 }
 
-.choice-box {
+.tool-bar .choice-box {
     -fx-background-color: derive(-fx-base, 10%);
     -fx-border-color: derive(-fx-base, -20%);
     -fx-border-radius: 3;
+}
+
+.titled-pane.bar-sep > .title {
+    -fx-border-style: none none solid none;
+    -fx-border-width: 1;
 }
 
 .toggle-button:selected.expand-toggle {
@@ -141,7 +152,6 @@
     -fx-pref-width: 10;
 }
 
-
 /************/
 /* Tab pane */
 /************/
@@ -160,12 +170,13 @@
 .tab {
     -fx-background-insets: 0.0;
     -fx-background-radius: 0.0;
+    -fx-padding: 0 30 0 30;
     -fx-border-color: transparent;
     -fx-background-color: transparent;
 }
 
 .tab:selected {
-    -fx-background-color: derive(-fx-base, -20%);
+    -fx-background-color: derive(-fx-base, -23%);
 }
 
 .tab:focused {
@@ -176,8 +187,21 @@
     -fx-background-color: transparent;
 }
 
-.tab {
-    -fx-padding: 0 30 0 30;
+.tab-pane.bottom-pane-tab-pane .tab-header-area .tab:selected {
+    -fx-border-style: none none solid none;
+    -fx-border-insets: 0 0 1pt 0;
+    -fx-border-width: 0 0 1pt 0;
+    /*-fx-border-color: derive(-fx-base, -10%);*/
+}
+
+
+.tab-pane .tab-header-area .tab-header-background,
+.menu-bar {
+    -fx-border-style: none none solid none;
+    -fx-border-insets: 0 0 1pt 0;
+    -fx-border-width: 0 0 1pt 0;
+    -fx-background-color: -fx-base, derive(-fx-base, -4%);
+    -fx-border-color: transparent;
 }
 
 .tab-pane .tab-header-background {
@@ -202,7 +226,6 @@
 /***************/
 /* Scroll bars */
 /***************/
-
 
 .scroll-bar * {
     -fx-background-color: white;

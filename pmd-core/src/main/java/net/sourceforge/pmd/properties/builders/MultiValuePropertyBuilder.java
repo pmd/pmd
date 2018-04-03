@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.properties.builders;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
@@ -36,8 +38,8 @@ public abstract class MultiValuePropertyBuilder<V, T extends MultiValuePropertyB
      * @return The same builder
      */
     @SuppressWarnings("unchecked")
-    public T defaultValues(List<V> val) {
-        this.defaultValues = val;
+    public T defaultValues(Collection<? extends V> val) {
+        this.defaultValues = new ArrayList<>(val);
         return (T) this;
     }
 

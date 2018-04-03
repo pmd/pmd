@@ -17,7 +17,7 @@ import net.sf.saxon.sxpath.IndependentContext;
  * Initialization should be performed before any XPath related operations are
  * performed.
  */
-public class Initializer {
+public final class Initializer {
 
     private Initializer() { }
 

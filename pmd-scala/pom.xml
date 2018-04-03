@@ -7,12 +7,11 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.0.0-SNAPSHOT</version>
+        <version>6.3.0-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <config.basedir>${basedir}/../pmd-core</config.basedir>
-        <scala.version>2.10.4</scala.version>
+        <scala.version>2.12.4</scala.version>
     </properties>
 
     <build>
@@ -21,7 +20,7 @@
                 <plugin>
                     <groupId>net.alchim31.maven</groupId>
                     <artifactId>scala-maven-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -41,9 +40,8 @@
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
                 <configuration>
-                    <jvmArgs>
-                        <jvmArg>-Dscalac.patmat.analysisBudget=off</jvmArg>
-                    </jvmArgs>
+                    <addScalacArgs>-deprecation</addScalacArgs>
+                    <scalaVersion>${scala.version}</scalaVersion>
                 </configuration>
                 <executions>
                     <execution>
@@ -52,6 +50,12 @@
                         <goals>
                             <goal>add-source</goal>
                             <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>doc-jar</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -63,6 +67,21 @@
                 <configuration>
                     <suppressionsLocation>pmd-scala-checkstyle-suppressions.xml</suppressionsLocation>
                 </configuration>
+            </plugin>
+
+            <!-- Disabling the default javadoc plugin - we use scala-maven-plugin instead -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -136,6 +136,18 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Trigger on Varargs
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ void foo(String... arr) {this.arr = arr;}
+}
+     ]]></code>
+    </test-code>
 
     <test-code>
         <description>#1063 False+: ArrayIsStoredDirectly</description>

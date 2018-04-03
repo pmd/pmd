@@ -48,7 +48,7 @@ public class DocumentNavigator extends DefaultNavigator {
 
     @Override
     public String getElementName(Object node) {
-        return node.toString();
+        return ((Node) node).getXPathNodeName();
     }
 
     @Override

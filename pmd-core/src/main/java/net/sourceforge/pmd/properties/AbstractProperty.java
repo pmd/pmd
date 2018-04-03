@@ -100,9 +100,9 @@ import org.apache.commons.lang3.StringUtils;
 
     @Override
     public String toString() {
-        return "[PropertyDescriptor: name=" + name() + ","
-               + " type=" + (isMultiValue() ? "List<" + type() + ">" : type()) + ","
-               + " value=" + defaultValue() + "]";
+        return "[PropertyDescriptor: name=" + name() + ','
+               + " type=" + (isMultiValue() ? "List<" + type() + '>' : type()) + ','
+               + " value=" + defaultValue() + ']';
     }
 
 

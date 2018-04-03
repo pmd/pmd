@@ -4,312 +4,192 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
+
 
 /**
- * Represents Qualified Names for use within the java metrics framework.
+ * Unambiguous identifier for a java method or class. This implementation
+ * approaches the qualified name format found in stack traces for example,
+ * using a custom format specification (see {@link QualifiedNameFactory#ofString(String)}).
+ *
+ * <p>Instances of this class are immutable. They can be obtained from the
+ * factory methods of {@link QualifiedNameFactory}, or from
+ * {@link JavaQualifiableNode#getQualifiedName()} on AST nodes that support it.
+ *
+ * <p>Class qualified names follow the <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-13.html#jls-13.1">binary name spec</a>.
+ *
+ * <p>Method qualified names don't follow a specification but allow to
+ * distinguish overloads of the same method, using parameter types and order.
+ *
+ * @see JavaTypeQualifiedName
+ * @see  JavaOperationQualifiedName
+ *
+ * @since 5.8.1
+ * @author Clément Fournier
  */
-public final class JavaQualifiedName implements QualifiedName {
+public abstract class JavaQualifiedName implements QualifiedName {
 
-    /**
-     * Pattern specifying the format.
-     *
-     * <p>{@code ((\w+\.)+|\.)((\w+)(\$\w+)*)(#(\w+)\(((\w+)(, \w+)*)?\))?}
-     */
-    public static final Pattern FORMAT = Pattern.compile("((\\w+\\.)+|\\.)((\\w+)(\\$\\w+)*)(#(\\w+)\\(((\\w+)(, \\w+)*)?\\))?");
+    // toString cache
+    private String toString;
+    private int hashCode;
 
-    private String[] packages = null; // unnamed package
-    private String[] classes = new String[1];
-    private String operation = null;
-
-    private JavaQualifiedName() {
-
-    }
-
-    /**
-     * Builds the qualified name of a method declaration.
-     *
-     * @param node The method declaration node
-     *
-     * @return The qualified name of the node
-     */
-    /* default */ static JavaQualifiedName ofOperation(ASTMethodDeclaration node) {
-        JavaQualifiedName parentQname = node.getFirstParentOfType(ASTAnyTypeDeclaration.class)
-                                            .getQualifiedName();
-
-        return ofOperation(parentQname,
-                           node.getMethodName(),
-                           node.getFirstDescendantOfType(ASTFormalParameters.class));
-    }
-
-
-    /**
-     * Builds the qualified name of a constructor declaration.
-     *
-     * @param node The constructor declaration node
-     *
-     * @return The qualified name of the node
-     */
-    /* default */ static JavaQualifiedName ofOperation(ASTConstructorDeclaration node) {
-        ASTAnyTypeDeclaration parent = node.getFirstParentOfType(ASTAnyTypeDeclaration.class);
-
-        return ofOperation(parent.getQualifiedName(),
-                           parent.getImage(),
-                           node.getFirstDescendantOfType(ASTFormalParameters.class));
-    }
-
-
-    /** Factorises the functionality of makeOperationof() */
-    private static JavaQualifiedName ofOperation(JavaQualifiedName parent, String opName, ASTFormalParameters params) {
-        JavaQualifiedName qname = new JavaQualifiedName();
-
-        qname.packages = parent.packages;
-        qname.classes = parent.classes;
-        qname.operation = getOperationName(opName, params);
-
-        return qname;
-    }
-
-
-    /**
-     * Builds the qualified name of a nested class using the qualified name of its immediate parent.
-     *
-     * @param parent    The qname of the immediate parent
-     * @param className The name of the class
-     *
-     * @return The qualified name of the nested class
-     */
-    /* default */ static JavaQualifiedName ofNestedClass(JavaQualifiedName parent, String className) {
-        JavaQualifiedName qname = new JavaQualifiedName();
-        qname.packages = parent.packages;
-        if (parent.classes[0] != null) {
-            qname.classes = Arrays.copyOf(parent.classes, parent.classes.length + 1);
-            qname.classes[parent.classes.length] = className;
-        } else {
-            qname.classes[0] = className;
-        }
-
-        return qname;
-    }
-
-    /**
-     * Builds the qualified name of an outer (not nested) class.
-     *
-     * @param node The class node
-     *
-     * @return The qualified name of the node
-     */
-    /* default */ static JavaQualifiedName ofOuterClass(ASTAnyTypeDeclaration node) {
-        ASTPackageDeclaration pkg = node.getFirstParentOfType(ASTCompilationUnit.class)
-                                        .getFirstChildOfType(ASTPackageDeclaration.class);
-
-        JavaQualifiedName qname = new JavaQualifiedName();
-        qname.packages = pkg == null ? null : pkg.getPackageNameImage().split("\\.");
-        qname.classes[0] = node.getImage();
-
-        return qname;
-    }
-
-
-    /**
-     * Gets the qualified name of a class.
-     *
-     * @param clazz Class object
-     *
-     * @return The qualified name of the class, or null if the class is null
-     */
-    public static JavaQualifiedName ofClass(Class<?> clazz) {
-        if (clazz == null) {
-            return null;
-        }
-
-        String name = clazz.getName();
-        if (name.indexOf('.') < 0) {
-            name = '.' + name; // unnamed package, marked by a full stop. See ofString's format below
-        }
-
-        return ofString(name);
-    }
-
-    /**
-     * Parses a qualified name given in the format defined for this implementation. The format
-     * is specified by a regex pattern (see {@link JavaQualifiedName#FORMAT}). Examples:
-     *
-     * <p>{@code com.company.MyClass$Nested#myMethod(String, int)}
-     * <ul>
-     * <li> Packages are separated by full stops;
-     * <li> Nested classes are separated by a dollar symbol;
-     * <li> The optional method suffix is separated from the class with a hashtag;
-     * <li> Method arguments are separated by a comma and a single space.
-     * </ul>
-     *
-     * <p>{@code .MyClass$Nested}
-     * <ul>
-     * <li> A class in the unnamed package is preceded by a single full stop.
-     * </ul>
-     *
-     * @param name The name to parse.
-     *
-     * @return A qualified name instance corresponding to the parsed string.
-     */
-    public static JavaQualifiedName ofString(String name) {
-        JavaQualifiedName qname = new JavaQualifiedName();
-
-        Matcher matcher = FORMAT.matcher(name);
-
-        if (!matcher.matches()) {
-            return null;
-        }
-
-        qname.packages = ".".equals(matcher.group(1)) ? null : matcher.group(1).split("\\.");
-        qname.classes = matcher.group(3).split("\\$");
-        qname.operation = matcher.group(6) == null ? null : matcher.group(6).substring(1);
-
-        return qname;
-    }
-
-    /** Returns a normalized method name (not Java-canonical!). */
-    private static String getOperationName(String methodName, ASTFormalParameters params) {
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(methodName);
-        sb.append('(');
-
-        int last = params.getParameterCount() - 1;
-        for (int i = 0; i < last; i++) {
-            // append type image of param
-            sb.append(params.jjtGetChild(i).getFirstDescendantOfType(ASTType.class).getTypeImage());
-            sb.append(", ");
-        }
-
-        if (last > -1) {
-            sb.append(params.jjtGetChild(last).getFirstDescendantOfType(ASTType.class).getTypeImage());
-        }
-
-        sb.append(')');
-
-        return sb.toString();
-    }
 
 
     @Override
-    public boolean isClass() {
-        return classes[0] != null && operation == null;
-    }
+    public abstract JavaTypeQualifiedName getClassName();
 
-
-    @Override
-    public boolean isOperation() {
-        return operation != null;
+    /**
+     * Returns true if this qualified name identifies a
+     * local class.
+     *
+     * @deprecated Use {@link JavaTypeQualifiedName#isLocalClass()}. Will be removed in 7.0.0
+     */
+    @Deprecated
+    public boolean isLocalClass() {
+        return getClassName().isLocalClass();
     }
 
 
     /**
-     * Returns the packages. This is specific to Java's package structure.
+     * Get the simple name of the class.
      *
-     * @return The packages.
+     * @deprecated Use {@link JavaTypeQualifiedName#getClassSimpleName()}. Will be removed in 7.0.0
      */
-    public String[] getPackages() {
-        return packages;
+    @Deprecated
+    public String getClassSimpleName() {
+        return getClassName().getClassSimpleName();
     }
 
 
     /**
-     * Returns the class specific part of the name. It identifies a class in the namespace it's declared in. If the
-     * class is nested inside another, then the array returned contains all enclosing classes in order.
+     * Returns true if the class represented by this
+     * qualified name is in the unnamed package.
      *
-     * @return The class names array.
+     * @deprecated Use {@link JavaTypeQualifiedName#isUnnamedPackage()}. Will be removed in 7.0.0
      */
-    public String[] getClasses() {
-        return classes;
+    @Deprecated
+    public boolean isUnnamedPackage() {
+        return getClassName().isUnnamedPackage();
     }
 
 
     /**
-     * Returns the operation specific part of the name. It identifies an operation in its namespace.
+     * Returns the operation specific part of the name. It
+     * identifies an operation in its namespace. Returns
+     * {@code null} if {@link #isOperation()} returns false.
      *
-     * @return The operation string.
+     * @deprecated Use {@link JavaOperationQualifiedName#getOperation()}. Will be removed in 7.0.0
+     *
+     * @return The operation string, or {@code null}.
      */
+    @Deprecated
     public String getOperation() {
-        return operation;
+        return null; // overridden by JOperationQName
+    }
+
+    /**
+     * Returns the packages in order.
+     *
+     * @deprecated Use {@link JavaTypeQualifiedName#getPackageList()} ()}. Will be removed in 7.0.0
+     */
+    @Deprecated
+    public String[] getPackages() {
+        return getClassName().getPackageList().toArray(new String[0]);
     }
 
 
-    @Override
-    public JavaQualifiedName getClassName() {
-        if (isClass()) {
-            return this;
-        }
-
-        JavaQualifiedName qname = new JavaQualifiedName();
-        qname.classes = this.classes;
-        qname.packages = this.packages;
-        return qname;
+    /**
+     * Returns the classes in order.
+     *
+     * @deprecated Use {{@link JavaTypeQualifiedName#getClassList()}. Will be removed in 7.0.0
+     */
+    @Deprecated
+    public String[] getClasses() {
+        return getClassName().getClassList().toArray(new String[0]);
     }
 
-
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         JavaQualifiedName that = (JavaQualifiedName) o;
-
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        if (!Arrays.equals(packages, that.packages)) {
-            return false;
-        }
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        if (!Arrays.equals(classes, that.classes)) {
-            return false;
-        }
-        return operation != null ? operation.equals(that.operation) : that.operation == null;
+        return Objects.equals(toString(), that.toString())
+                && structurallyEquals(that);
     }
+
+
+    /**
+     * Returns true if the given qname is identical to this qname.
+     * Performs a structural comparison. Used in the implementation
+     * of {@link #equals(Object)} after taking shortcuts.
+     *
+     * @param qname The other comparand. Can always be casted down
+     *              to the subclass type in which this method is overridden
+     */
+    protected abstract boolean structurallyEquals(JavaQualifiedName qname);
+
 
     @Override
-    public int hashCode() {
-        int result = Arrays.hashCode(packages);
-        result = 31 * result + Arrays.hashCode(classes);
-        result = 31 * result + (operation != null ? operation.hashCode() : 0);
-        return result;
+    public final int hashCode() {
+        if (hashCode == 0) {
+            hashCode = buildHashCode();
+        }
+        return hashCode;
     }
 
+
+    /**
+     * Computes the hashcode. Called once, then cached.
+     * Since QualifiedNames are mostly used as the keys
+     * of a map, caching the hashcode makes sense.
+     */
+    protected abstract int buildHashCode();
+
+
+    /**
+     * Returns the string representation of this qualified
+     * name. The representation follows the format defined
+     * for {@link QualifiedNameFactory#ofString(String)}.
+     */
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        if (packages != null) {
-            int last = packages.length - 1;
-            for (int i = 0; i < last; i++) {
-                sb.append(packages[i]);
-                sb.append('.');
-            }
-
-            sb.append(packages[last]);
+    public final String toString() {
+        // lazy evaluated
+        if (toString == null) {
+            toString = buildToString();
         }
-        sb.append('.'); // this dot is there even if package is null
-
-        int last = classes.length - 1;
-        for (int i = 0; i < last; i++) {
-            sb.append(classes[i]);
-            sb.append('$');
-        }
-
-        sb.append(classes[last]);
-
-        if (operation != null) {
-            sb.append('#');
-            sb.append(operation);
-        }
-
-        return sb.toString();
+        return toString;
     }
+
+
+    /**
+     * @deprecated Use {@link QualifiedNameFactory#ofString(String)}. Will be removed in 7.0.0
+     */
+    @Deprecated
+    public static JavaQualifiedName ofString(String name) {
+        return QualifiedNameFactory.ofString(name);
+    }
+
+
+    /**
+     * @deprecated Use {@link QualifiedNameFactory#ofClass(Class)}. Will be removed in 7.0.0
+     */
+    @Deprecated
+    public static JavaQualifiedName ofClass(Class<?> clazz) {
+        return QualifiedNameFactory.ofClass(clazz);
+    }
+
+
+    /**
+     * Construct the toString once. Called only once per instance
+     */
+    protected abstract String buildToString();
 }

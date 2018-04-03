@@ -118,7 +118,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
 
     public boolean checksNothing() {
 
-        return getProperty(CHECK_BREAK_LOOP_TYPES).size() == 0 && getProperty(CHECK_CONTINUE_LOOP_TYPES).size() == 0
-            && getProperty(CHECK_RETURN_LOOP_TYPES).size() == 0;
+        return getProperty(CHECK_BREAK_LOOP_TYPES).isEmpty() && getProperty(CHECK_CONTINUE_LOOP_TYPES).isEmpty()
+            && getProperty(CHECK_RETURN_LOOP_TYPES).isEmpty();
     }
 }

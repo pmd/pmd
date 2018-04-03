@@ -138,9 +138,9 @@ public abstract class RuleTst {
 
                 report = processUsingStringReader(test, rule);
                 res = report.size();
-            } catch (Throwable t) {
-                t.printStackTrace();
-                throw new RuntimeException('"' + test.getDescription() + "\" failed", t);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException('"' + test.getDescription() + "\" failed", e);
             }
             if (test.getNumberOfProblemsExpected() != res) {
                 printReport(test, report);
@@ -163,7 +163,7 @@ public abstract class RuleTst {
      *
      * @param rule The rule to reinitialise
      *
-     * @return The rule once it has be reinitialised
+     * @return The rule once it has been reinitialised
      */
     protected Rule reinitializeRule(Rule rule) {
         return findRule(rule.getRuleSetName(), rule.getName());
@@ -260,6 +260,7 @@ public abstract class RuleTst {
         try {
             PMD p = new PMD();
             p.getConfiguration().setDefaultLanguageVersion(languageVersion);
+            p.getConfiguration().setIgnoreIncrementalAnalysis(true);
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
                 p.getConfiguration().prependClasspath(".");

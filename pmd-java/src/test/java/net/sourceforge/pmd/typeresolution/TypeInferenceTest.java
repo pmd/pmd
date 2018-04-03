@@ -30,7 +30,6 @@ import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Constraint;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.TypeInferenceResolver;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
-
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassAOther;

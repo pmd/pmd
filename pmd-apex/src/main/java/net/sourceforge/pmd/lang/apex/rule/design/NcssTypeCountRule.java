@@ -34,7 +34,7 @@ public class NcssTypeCountRule extends AbstractNcssCountRule {
     @Override
     public Object visit(ASTUserClass node, Object data) {
 
-        if (!node.hasDecendantOfAnyType(ASTUserClass.class)) {
+        if (!node.hasDescendantOfAnyType(ASTUserClass.class)) {
             return super.visit(node, data);
         }
 
@@ -44,7 +44,7 @@ public class NcssTypeCountRule extends AbstractNcssCountRule {
     @Override
     public Object visit(ASTUserInterface node, Object data) {
 
-        if (!node.hasDecendantOfAnyType(ASTUserClass.class)) {
+        if (!node.hasDescendantOfAnyType(ASTUserClass.class)) {
             return super.visit(node, data);
         }
 

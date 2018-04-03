@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -58,16 +58,15 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
-import org.apache.commons.io.IOUtils;
-
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 
 public class GUI implements CPDListener {
 
@@ -75,25 +74,25 @@ public class GUI implements CPDListener {
     // String render(Iterator<Match> items);
     // }
 
-    private static final Object[][] RENDERER_SETS = new Object[][] { { "Text", new Renderer() {
+    private static final Object[][] RENDERER_SETS = new Object[][] { { "Text", new CPDRenderer() {
         @Override
-        public String render(Iterator<Match> items) {
-            return new SimpleRenderer().render(items);
+        public void render(Iterator<Match> items, Writer writer) throws IOException {
+            new SimpleRenderer().render(items, writer);
         }
-    }, }, { "XML", new Renderer() {
+    }, }, { "XML", new CPDRenderer() {
         @Override
-        public String render(Iterator<Match> items) {
-            return new XMLRenderer().render(items);
+        public void render(Iterator<Match> items, Writer writer) throws IOException {
+            new XMLRenderer().render(items, writer);
         }
-    }, }, { "CSV (comma)", new Renderer() {
+    }, }, { "CSV (comma)", new CPDRenderer() {
         @Override
-        public String render(Iterator<Match> items) {
-            return new CSVRenderer(',').render(items);
+        public void render(Iterator<Match> items, Writer writer) throws IOException {
+            new CSVRenderer(',').render(items, writer);
         }
-    }, }, { "CSV (tab)", new Renderer() {
+    }, }, { "CSV (tab)", new CPDRenderer() {
         @Override
-        public String render(Iterator<Match> items) {
-            return new CSVRenderer('\t').render(items);
+        public void render(Iterator<Match> items, Writer writer) throws IOException {
+            new CSVRenderer('\t').render(items, writer);
         }
     }, }, };
 
@@ -139,7 +138,7 @@ public class GUI implements CPDListener {
                 @Override
                 public String[] extensions() {
                     List<String> exts = lang.getExtensions();
-                    return exts.toArray(new String[exts.size()]);
+                    return exts.toArray(new String[0]);
                 }
 
                 @Override
@@ -254,9 +253,9 @@ public class GUI implements CPDListener {
 
     private class SaveListener implements ActionListener {
 
-        final Renderer renderer;
+        final CPDRenderer renderer;
 
-        SaveListener(Renderer theRenderer) {
+        SaveListener(CPDRenderer theRenderer) {
             renderer = theRenderer;
         }
 
@@ -270,16 +269,12 @@ public class GUI implements CPDListener {
             }
 
             if (!f.canWrite()) {
-                PrintWriter pw = null;
-                try {
-                    pw = new PrintWriter(new FileOutputStream(f));
-                    pw.write(renderer.render(matches.iterator()));
+                try (PrintWriter pw = new PrintWriter(new FileOutputStream(f))) {
+                    renderer.render(matches.iterator(), pw);
                     pw.flush();
                     JOptionPane.showMessageDialog(frame, "Saved " + matches.size() + " matches");
                 } catch (IOException e) {
                     error("Couldn't save file" + f.getAbsolutePath(), e);
-                } finally {
-                    IOUtils.closeQuietly(pw);
                 }
             } else {
                 error("Could not write to file " + f.getAbsolutePath(), null);
@@ -356,13 +351,13 @@ public class GUI implements CPDListener {
 
         for (int i = 0; i < RENDERER_SETS.length; i++) {
             saveItem = new JMenuItem("Save as " + RENDERER_SETS[i][0]);
-            saveItem.addActionListener(new SaveListener((Renderer) RENDERER_SETS[i][1]));
+            saveItem.addActionListener(new SaveListener((CPDRenderer) RENDERER_SETS[i][1]));
             menu.add(saveItem);
         }
     }
 
     public GUI() {
-        frame = new JFrame("PMD Duplicate Code Detector (v " + PMD.VERSION + ')');
+        frame = new JFrame("PMD Duplicate Code Detector (v " + PMDVersion.VERSION + ')');
 
         timeField.setEditable(false);
 
@@ -636,7 +631,7 @@ public class GUI implements CPDListener {
             int separatorPos = sourceId.lastIndexOf(File.separatorChar);
             label = "..." + sourceId.substring(separatorPos);
         } else {
-            label = "(" + sourceIDs.size() + " separate files)";
+            label = '(' + sourceIDs.size() + " separate files)";
         }
 
         match.setLabel(label);
@@ -753,16 +748,16 @@ public class GUI implements CPDListener {
         return sb.toString();
     }
 
-    private interface SortingTableModel<E> extends TableModel {
-        int sortColumn();
+    private abstract class SortingTableModel<E> extends AbstractTableModel {
+        abstract int sortColumn();
 
-        void sortColumn(int column);
+        abstract void sortColumn(int column);
 
-        boolean sortDescending();
+        abstract boolean sortDescending();
 
-        void sortDescending(boolean flag);
+        abstract void sortDescending(boolean flag);
 
-        void sort(Comparator<E> comparator);
+        abstract void sort(Comparator<E> comparator);
     }
 
     private TableModel tableModelFrom(final List<Match> items) {
@@ -810,20 +805,8 @@ public class GUI implements CPDListener {
             }
 
             @Override
-            public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            }
-
-            @Override
             public String getColumnName(int i) {
                 return matchColumns[i].label();
-            }
-
-            @Override
-            public void addTableModelListener(TableModelListener l) {
-            }
-
-            @Override
-            public void removeTableModelListener(TableModelListener l) {
             }
 
             @Override

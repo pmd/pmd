@@ -84,11 +84,10 @@ public class CompilerService {
         List<SourceFile> sourceFiles = sources.stream().map(s -> SourceFile.builder().setBody(s).build())
                 .collect(Collectors.toList());
         CompilationInput compilationUnit = createCompilationInput(sourceFiles, visitor);
-        return compile(compilationUnit, visitor, compilerStage);
+        return compile(compilationUnit, compilerStage);
     }
 
-    private ApexCompiler compile(CompilationInput compilationInput, AstVisitor<AdditionalPassScope> visitor,
-            CompilerStage compilerStage) {
+    private ApexCompiler compile(CompilationInput compilationInput, CompilerStage compilerStage) {
         ApexCompiler compiler = ApexCompiler.builder().setInput(compilationInput).build();
         compiler.compile(compilerStage);
         callAdditionalPassVisitor(compiler);

@@ -1,11 +1,11 @@
 ---
-title: Codestyle
+title: Code Style
 summary: Rules which enforce a specific coding style.
 permalink: pmd_rules_plsql_codestyle.html
 folder: pmd/rules/plsql
 sidebaractiveurl: /pmd_rules_plsql.html
 editmepath: ../pmd-plsql/src/main/resources/category/plsql/codestyle.xml
-keywords: Codestyle, MisplacedPragma
+keywords: Code Style, MisplacedPragma
 ---
 ## MisplacedPragma
 

@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+
 
 /**
  * This rule detects when a method exceeds a certain threshold. i.e. if a method
@@ -12,7 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
  */
 public class ExcessiveMethodLengthRule extends ExcessiveLengthRule {
     public ExcessiveMethodLengthRule() {
-        super(ASTMethodDeclaration.class);
+        super(ASTMethodOrConstructorDeclaration.class);
         setProperty(MINIMUM_DESCRIPTOR, 100d);
     }
 }

@@ -15,8 +15,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTResultType;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
@@ -38,10 +36,9 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
         isJUnit5Class = false;
 
         isJUnit3Class = isJUnit3Class(node);
-        if (!isJUnit3Class) {
-            isJUnit4Class = isJUnit4Class(node);
-            isJUnit5Class = isJUnit5Class(node);
-        }
+        isJUnit4Class = isJUnit4Class(node);
+        isJUnit5Class = isJUnit5Class(node);
+
         if (isJUnit4Class && isJUnit5Class) {
             isJUnit4Class &= hasImports(node, JUNIT4_CLASS_NAME);
             isJUnit5Class &= hasImports(node, JUNIT5_CLASS_NAME);
@@ -74,29 +71,22 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
         }
 
         boolean result = false;
-        if (isJUnit3Class) {
-            result = isJUnit3Method(method);
-        }
-
+        result |= isJUnit3Method(method);
         result |= isJUnit4Method(method);
         result |= isJUnit5Method(method);
         return result;
     }
 
     private boolean isJUnit4Method(ASTMethodDeclaration method) {
-        return doesNodeContainJUnitAnnotation(method.jjtGetParent(), JUNIT4_CLASS_NAME);
+        return isJUnit4Class && doesNodeContainJUnitAnnotation(method.jjtGetParent(), JUNIT4_CLASS_NAME);
     }
 
     private boolean isJUnit5Method(ASTMethodDeclaration method) {
-        return doesNodeContainJUnitAnnotation(method.jjtGetParent(), JUNIT5_CLASS_NAME);
+        return isJUnit5Class && doesNodeContainJUnitAnnotation(method.jjtGetParent(), JUNIT5_CLASS_NAME);
     }
 
     private boolean isJUnit3Method(ASTMethodDeclaration method) {
-        Node node = method.jjtGetChild(0);
-        if (node instanceof ASTTypeParameters) {
-            node = method.jjtGetChild(1);
-        }
-        return ((ASTResultType) node).isVoid() && method.getMethodName().startsWith("test");
+        return isJUnit3Class && method.isVoid() && method.getMethodName().startsWith("test");
     }
 
     private boolean isJUnit3Class(ASTCompilationUnit node) {

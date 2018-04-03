@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
  * ClassLoader utilities. Useful for extracting additional details from a class
  * hierarchy beyond the basic standard Java Reflection APIs.
  */
-public class ClassLoaderUtil {
+public final class ClassLoaderUtil {
 
     public static final String CLINIT = "<clinit>";
 
@@ -56,8 +56,8 @@ public class ClassLoaderUtil {
             for (Class<?> superInterface : type.getInterfaces()) {
                 try {
                     return myGetField(superInterface, name);
-                } catch (NoSuchFieldException e2) {
-                    // Okay
+                } catch (NoSuchFieldException ignored) {
+                    // Ignored, we'll try the super class next
                 }
             }
             // Try the super classes
@@ -99,8 +99,8 @@ public class ClassLoaderUtil {
                     // + type.getSuperclass());
                     return myGetMethod(type.getSuperclass(), name, parameterTypes);
                 }
-            } catch (NoSuchMethodException e2) {
-                // Okay
+            } catch (NoSuchMethodException ignored) {
+                // Ignored, we'll try the interfaces next
             }
             // Try the super interfaces
             for (Class<?> superInterface : type.getInterfaces()) {
@@ -108,8 +108,8 @@ public class ClassLoaderUtil {
                     // System.out.println("Checking super interface: "
                     // + superInterface);
                     return myGetMethod(superInterface, name, parameterTypes);
-                } catch (NoSuchMethodException e3) {
-                    // Okay
+                } catch (NoSuchMethodException ignored) {
+                    // Ignored, fall through to the last line, were we throw
                 }
             }
             throw new NoSuchMethodException(type.getName() + '.' + getMethodSignature(name, parameterTypes));
@@ -153,7 +153,8 @@ public class ClassLoaderUtil {
                 clazz.getDeclaredMethod(method.getName(), method.getParameterTypes());
                 return true;
             }
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException ignored) {
+            // Ignored, checking super class and interfaces next
         }
         // Check super class
         if (clazz.getSuperclass() != null) {

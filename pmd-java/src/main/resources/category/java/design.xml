@@ -36,7 +36,7 @@ protected constructor in order to prevent instantiation than make the class misl
         </properties>
         <example>
 <![CDATA[
-public class abstract Example {
+public abstract class Example {
     String field;
     int otherField;
 }
@@ -198,9 +198,35 @@ public void bar() {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidthrowingnullpointerexception">
         <description>
-Avoid throwing NullPointerExceptions. These are confusing because most people will assume that the
-virtual machine threw it. Consider using an IllegalArgumentException instead; this will be
-clearly seen as a programmer-initiated exception.
+<![CDATA[
+Avoid throwing NullPointerExceptions manually. These are confusing because most people will assume that the
+virtual machine threw it.  To avoid a method being called with a null parameter, you may consider 
+using an IllegalArgumentException instead, making it clearly seen as a programmer-initiated exception. 
+However, there are better ways to handle this:
+
+>*Effective Java, 3rd Edition, Item 72: Favor the use of standard exceptions*
+>
+>Arguably, every erroneous method invocation boils down to an illegal argument or state, 
+but other exceptions are standardly used for certain kinds of illegal arguments and states. 
+If a caller passes null in some parameter for which null values are prohibited, convention dictates that 
+NullPointerException be thrown rather than IllegalArgumentException.
+
+To implement that, you are encouraged to use `java.util.Objects.requireNonNull()`
+(introduced in Java 1.7). This method is designed primarily for doing parameter
+validation in methods and constructors with multiple parameters.
+
+Your parameter validation could thus look like the following:
+```
+public class Foo {
+    private String exampleValue;
+      
+    void setExampleValue(String exampleValue) {
+      // check, throw and assignment in a single standard call
+      this.exampleValue = Objects.requireNonNull(exampleValue, "exampleValue must not be null!");
+    }
+  }
+```
+]]>
         </description>
         <priority>1</priority>
         <properties>
@@ -425,7 +451,7 @@ class Foo {
     </rule>
 
     <rule name="DataClass"
-          since="6.0"
+          since="6.0.0"
           message="The class ''{0}'' is suspected to be a Data Class (WOC={1}, NOPA={2}, NOAM={3}, WMC={4})"
           class="net.sourceforge.pmd.lang.java.rule.design.DataClassRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#dataclass">
@@ -919,7 +945,7 @@ public class Foo extends Bar {
 
     <rule name="NcssCount"
           message="The {0} ''{1}'' has a NCSS line count of {2}."
-          since="6.0"
+          since="6.0.0"
           class="net.sourceforge.pmd.lang.java.rule.design.NcssCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#ncsscount">
         <description>

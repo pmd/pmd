@@ -11,7 +11,7 @@ import net.sourceforge.pmd.PMD;
  * (https://github.com/codeclimate/spec/blob/master/SPEC.md#issues)
  */
 public class CodeClimateIssue {
-    public final String type = "issue";
+    public String type;
     public String check_name; // SUPPRESS CHECKSTYLE underscore is required per codeclimate format
     public String description;
     public Content content;
@@ -19,6 +19,10 @@ public class CodeClimateIssue {
     public Location location;
     public String severity;
     public int remediation_points; // SUPPRESS CHECKSTYLE underscore is required per codeclimate format
+
+    public CodeClimateIssue() {
+        type = "issue"; // the default type for PMD violations when reporting as code climate
+    }
 
     /**
      * Location structure

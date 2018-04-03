@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -97,7 +98,9 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
 
         addViolationWithMessage(data, node,
-            DESCRIPTOR_NAME_TO_COMMENT_TYPE.get(descriptor.name()) + " are " + getProperty(descriptor).label.toLowerCase());
+            DESCRIPTOR_NAME_TO_COMMENT_TYPE.get(descriptor.name())
+            + " are "
+            + getProperty(descriptor).label.toLowerCase(Locale.ROOT));
     }
 
 
@@ -181,22 +184,22 @@ public class CommentRequiredRule extends AbstractCommentRule {
         return super.visit(cUnit, data);
     }
 
-
     private boolean allCommentsAreIgnored() {
 
-        return getProperty(HEADER_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
-               && getProperty(FIELD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
-               && getProperty(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
-               && getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
-               && getProperty(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored;
+        return getProperty(OVERRIDE_CMT_DESCRIPTOR) == CommentRequirement.Ignored
+                && getProperty(ACCESSOR_CMT_DESCRIPTOR) == CommentRequirement.Ignored
+                && getProperty(HEADER_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
+                && getProperty(FIELD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
+                && getProperty(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
+                && getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
+                && getProperty(ENUM_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
+                && getProperty(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored;
     }
-
 
     @Override
     public String dysfunctionReason() {
         return allCommentsAreIgnored() ? "All comment types are ignored" : null;
     }
-
 
     private enum CommentRequirement {
         Required("Required"), Ignored("Ignored"), Unwanted("Unwanted");

@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.regex.Matcher;
@@ -46,6 +48,7 @@ import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.data.ast.TypeRefs.ArrayTypeRef;
 import apex.jorje.data.ast.TypeRefs.ClassTypeRef;
+import com.google.common.base.Objects;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
@@ -60,10 +63,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private static final Pattern SELECT_FROM_PATTERN = Pattern.compile("[\\S|\\s]+?FROM[\\s]+?(\\w+)",
             Pattern.CASE_INSENSITIVE);
 
-    private final HashMap<String, String> varToTypeMapping = new HashMap<>();
+    private final Map<String, String> varToTypeMapping = new HashMap<>();
     private final ListMultimap<String, String> typeToDMLOperationMapping = ArrayListMultimap.create();
-    private final HashMap<String, String> checkedTypeToDMLOperationViaESAPI = new HashMap<>();
-    private final WeakHashMap<String, ASTMethod> classMethods = new WeakHashMap<>();
+    private final Map<String, String> checkedTypeToDMLOperationViaESAPI = new HashMap<>();
+    private final Map<String, ASTMethod> classMethods = new WeakHashMap<>();
     private String className;
 
     private static final String IS_CREATEABLE = "isCreateable";
@@ -187,7 +190,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 }
                 sb.deleteCharAt(sb.length() - 1);
 
-                switch (sb.toString().toLowerCase()) {
+                switch (sb.toString().toLowerCase(Locale.ROOT)) {
                 case "list":
                 case "map":
                     addParametersToMapping(node, typeArgs);
@@ -243,12 +246,13 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void addVariableToMapping(final String variableName, final String type) {
-        switch (type.toLowerCase()) {
+        switch (type.toLowerCase(Locale.ROOT)) {
         case "list":
         case "map":
-            return;
+            break;
         default:
             varToTypeMapping.put(variableName, getSimpleType(type));
+            break;
         }
     }
 
@@ -322,7 +326,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private boolean isLastMethodName(final ASTMethodCallExpression methodNode, final String className,
             final String methodName) {
         final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
-        if (reference.getNode().getNames().size() > 0) {
+        if (reference != null && reference.getNode().getNames().size() > 0) {
             if (reference.getNode().getNames().get(reference.getNode().getNames().size() - 1).getValue()
                     .equalsIgnoreCase(className) && Helper.isMethodName(methodNode, methodName)) {
                 return true;
@@ -355,7 +359,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void checkForCRUD(final AbstractApexNode<?> node, final Object data, final String crudMethod) {
-        final HashSet<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);
+        final Set<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);
         for (ASTMethodCallExpression prevCall : prevCalls) {
             collectCRUDMethodLevelChecks(prevCall);
         }
@@ -363,8 +367,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         final ASTMethod wrappingMethod = node.getFirstParentOfType(ASTMethod.class);
         final ASTUserClass wrappingClass = node.getFirstParentOfType(ASTUserClass.class);
 
-        if ((wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass))
-                || (wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod))) {
+        if (wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass)
+                || wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod)) {
             return;
         }
 
@@ -386,14 +390,14 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private HashSet<ASTMethodCallExpression> getPreviousMethodCalls(final AbstractApexNode<?> self) {
-        final HashSet<ASTMethodCallExpression> innerMethodCalls = new HashSet<>();
+    private Set<ASTMethodCallExpression> getPreviousMethodCalls(final AbstractApexNode<?> self) {
+        final Set<ASTMethodCallExpression> innerMethodCalls = new HashSet<>();
         final ASTMethod outerMethod = self.getFirstParentOfType(ASTMethod.class);
         if (outerMethod != null) {
             final ASTBlockStatement blockStatement = outerMethod.getFirstChildOfType(ASTBlockStatement.class);
             recursivelyEvaluateCRUDMethodCalls(self, innerMethodCalls, blockStatement);
 
-            final List<ASTMethod> constructorMethods = findConstructorlMethods(self);
+            final List<ASTMethod> constructorMethods = findConstructorlMethods();
             for (ASTMethod method : constructorMethods) {
                 innerMethodCalls.addAll(method.findDescendantsOfType(ASTMethodCallExpression.class));
             }
@@ -406,7 +410,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void recursivelyEvaluateCRUDMethodCalls(final AbstractApexNode<?> self,
-            final HashSet<ASTMethodCallExpression> innerMethodCalls, final ASTBlockStatement blockStatement) {
+            final Set<ASTMethodCallExpression> innerMethodCalls, final ASTBlockStatement blockStatement) {
         if (blockStatement != null) {
             int numberOfStatements = blockStatement.jjtGetNumChildren();
             for (int i = 0; i < numberOfStatements; i++) {
@@ -420,7 +424,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 }
 
                 AbstractApexNode<?> match = n.getFirstDescendantOfType(self.getClass());
-                if (match == self) {
+                if (Objects.equal(match, self)) {
                     break;
                 }
                 ASTMethodCallExpression methodCall = n.getFirstDescendantOfType(ASTMethodCallExpression.class);
@@ -433,9 +437,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void mapCallToMethodDecl(final AbstractApexNode<?> self,
-            final HashSet<ASTMethodCallExpression> innerMethodCalls, final List<ASTMethodCallExpression> nodes) {
+            final Set<ASTMethodCallExpression> innerMethodCalls, final List<ASTMethodCallExpression> nodes) {
         for (ASTMethodCallExpression node : nodes) {
-            if (node == self) {
+            if (Objects.equal(node, self)) {
                 break;
             }
 
@@ -447,11 +451,11 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private List<ASTMethod> findConstructorlMethods(final AbstractApexNode<?> node) {
+    private List<ASTMethod> findConstructorlMethods() {
         final ArrayList<ASTMethod> ret = new ArrayList<>();
         final Set<String> constructors = classMethods.keySet().stream()
-                .filter(p -> (p.contains("<init>") || p.contains("<clinit>")
-                        || p.startsWith(className + ":" + className + ":"))).collect(Collectors.toSet());
+                .filter(p -> p.contains("<init>") || p.contains("<clinit>")
+                        || p.startsWith(className + ":" + className + ":")).collect(Collectors.toSet());
 
         for (String c : constructors) {
             ret.add(classMethods.get(c));
@@ -528,7 +532,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         final boolean isCount = node.getNode().getCanonicalQuery().startsWith("SELECT COUNT()");
         final Set<String> typesFromSOQL = getTypesFromSOQLQuery(node);
 
-        final HashSet<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);
+        final Set<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);
         for (ASTMethodCallExpression prevCall : prevCalls) {
             collectCRUDMethodLevelChecks(prevCall);
         }
@@ -539,8 +543,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         final ASTMethod wrappingMethod = node.getFirstParentOfType(ASTMethod.class);
         final ASTUserClass wrappingClass = node.getFirstParentOfType(ASTUserClass.class);
 
-        if (isCount || (wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass))
-                || (wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod))) {
+        if (isCount
+                || wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass)
+                || wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod)) {
             return;
         }
 
@@ -627,6 +632,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 .matcher(method.getNode().getMethodInfo().getEmitSignature().getReturnType().getApexName()).matches();
         final boolean noParams = method.findChildrenOfType(ASTParameter.class).isEmpty();
 
-        return (startsWithGet && noParams && !voidOrString);
+        return startsWithGet && noParams && !voidOrString;
     }
 }

@@ -36,7 +36,7 @@ Unzip it into any directory:
     [tom@hal tmp]$
 
 
-Note that the PMD binary distribution file contains both [PMD](#running-pmd-via-command-line) and [CPD](/pmd_userdocs_cpd.html).
+Note that the PMD binary distribution file contains both [PMD](#running-pmd-via-command-line) and [CPD](pmd_userdocs_cpd.html).
 
 
 ## Running PMD via command line
@@ -244,6 +244,13 @@ The tool comes with a rather extensive help text, simply running with `-help`!
         <td>no</td>
         <td></td>
     </tr>
+    <tr>
+        <td>-no-cache</td>
+        <td>Explicitly disable incremental analysis. This switch turns off suggestions to use Incremental Analysis,
+            and causes the <i>-cache</i> option to be discarded if it is provided.
+        </td>
+        <td></td>
+    </tr>
 </table>
 
 
@@ -253,20 +260,21 @@ Please note that if PMD detects any violations, it will exit with status 4 (sinc
 This behavior has been introduced to ease PMD integration into scripts or hooks, such as SVN hooks.
 
 <table>
-<tr><td>0</td><td>Everything is fine, now violations found</td></tr>
+<tr><td>0</td><td>Everything is fine, no violations found</td></tr>
 <tr><td>1</td><td>Couldn't understand command line parameters or PMD exited with an exception</td></tr>
-<tr><td>4</td><td>At least one violation has been detected unless '-failOnViolation false' is set.</td></tr>
+<tr><td>4</td><td>At least one violation has been detected, unless '-failOnViolation false' is set.</td></tr>
 </table>
 
 
 ### Supported Languages
 
-*   [apex](/pmd_rules_apex.html)
-*   [java](/pmd_rules_java.html)
-*   [ecmascript](/pmd_rules_javascript.html) (JavaScript)
-*   [jsp](/pmd_rules_jsp.html)
-*   [plsql](/pmd_rules_plsql.html)
-*   [vm](/pmd_rules_vm.html) (Apache Velocity)
+*   [apex](pmd_rules_apex.html) (Salesforce Apex)
+*   [java](pmd_rules_java.html)
+*   [ecmascript](pmd_rules_javascript.html) (JavaScript)
+*   [jsp](pmd_rules_jsp.html)
+*   [plsql](pmd_rules_plsql.html)
+*   [vf](pmd_rules_vf.html) (Salesforce VisualForce)
+*   [vm](pmd_rules_vm.html) (Apache Velocity)
 *   [xml and xsl](/pmd_rules_xml.html)
 
 
@@ -363,6 +371,6 @@ untouched, files with violations will be listed with full detail.
 
 Incremental analysis is enabled automatically once a location to store the cache has been defined.
 From Command Line that is done through the `-cache` argument, but support for the feature is
-available for tools integrating PMD such as [Ant](/pmd_userdocs_tools_ant.html),
-[Maven](/pmd_userdocs_tools_maven.html), and Gradle.
+available for tools integrating PMD such as [Ant](pmd_userdocs_tools_ant.html),
+[Maven](pmd_userdocs_tools_maven.html), and Gradle.
 

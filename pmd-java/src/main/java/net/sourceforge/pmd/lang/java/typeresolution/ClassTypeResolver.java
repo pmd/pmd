@@ -23,16 +23,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.QualifiableNode;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -40,13 +41,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInstanceOfExpression;
@@ -166,16 +167,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     private final PMDASMClassLoader pmdClassLoader;
     private Map<String, String> importedClasses;
     private List<String> importedOnDemand;
-    private Map<Node, AnonymousClassMetadata> anonymousClassMetadata = new HashMap<>();
 
-    private static class AnonymousClassMetadata {
-        public final String name;
-        public int anonymousClassCounter;
-
-        AnonymousClassMetadata(final String className) {
-            this.name = className;
-        }
-    }
 
     public ClassTypeResolver() {
         this(ClassTypeResolver.class.getClassLoader());
@@ -204,11 +196,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             if (className != null) {
                 populateClassName(node, className);
             }
-        } catch (ClassNotFoundException e) {
-            if (LOG.isLoggable(Level.FINE)) {
-                LOG.log(Level.FINE, "Could not find class " + className + ", due to: " + e);
-            }
-        } catch (NoClassDefFoundError e) {
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "Could not find class " + className + ", due to: " + e);
             }
@@ -260,11 +248,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         String typeName = node.getImage();
 
         if (node.isAnonymousClass()) {
-            final AnonymousClassMetadata parentAnonymousClassMetadata = getParentAnonymousClassMetadata(node);
-            if (parentAnonymousClassMetadata != null) {
-                typeName = parentAnonymousClassMetadata.name + "$" + ++parentAnonymousClassMetadata
-                        .anonymousClassCounter;
-                anonymousClassMetadata.put(node, new AnonymousClassMetadata(typeName));
+            QualifiableNode parent = node.getFirstParentOfAnyType(ASTAllocationExpression.class, ASTEnumConstant.class);
+
+            if (parent != null) {
+                typeName = parent.getQualifiedName().toString();
             }
         }
 
@@ -282,73 +269,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
 
         return data;
-    }
-
-    private AnonymousClassMetadata getParentAnonymousClassMetadata(final ASTClassOrInterfaceType node) {
-        Node parent = node;
-        do {
-            parent = parent.jjtGetParent();
-        } while (parent != null && !(parent instanceof ASTClassOrInterfaceBody) && !(parent instanceof ASTEnumBody));
-
-        // TODO : Should never happen, but add this for safety until we are sure to cover all possible scenarios in
-        // unit testing
-        if (parent == null) {
-            return null;
-        }
-
-        parent = parent.jjtGetParent();
-
-        TypeNode typedParent;
-        // The parent may now be an ASTEnumConstant, an ASTAllocationExpression, an ASTEnumDeclaration or an
-        // ASTClassOrInterfaceDeclaration
-        if (parent instanceof ASTAllocationExpression) {
-            typedParent = parent.getFirstChildOfType(ASTClassOrInterfaceType.class);
-        } else if (parent instanceof ASTClassOrInterfaceDeclaration || parent instanceof ASTEnumDeclaration) {
-            typedParent = (TypeNode) parent;
-        } else {
-            typedParent = parent.getFirstParentOfType(ASTEnumDeclaration.class);
-        }
-
-        final AnonymousClassMetadata metadata = anonymousClassMetadata.get(typedParent);
-        if (metadata != null) {
-            return metadata;
-        }
-
-        final AnonymousClassMetadata newMetadata;
-        if (typedParent instanceof ASTClassOrInterfaceType) {
-            ASTClassOrInterfaceType parentTypeNode = (ASTClassOrInterfaceType) typedParent;
-            if (parentTypeNode.isAnonymousClass()) {
-                final AnonymousClassMetadata parentMetadata = getParentAnonymousClassMetadata(parentTypeNode);
-                newMetadata = new AnonymousClassMetadata(parentMetadata.name + "$" + ++parentMetadata
-                        .anonymousClassCounter);
-            } else {
-                newMetadata = new AnonymousClassMetadata(parentTypeNode.getImage());
-            }
-        } else {
-            newMetadata = new AnonymousClassMetadata(typedParent.getImage());
-        }
-
-        anonymousClassMetadata.put(typedParent, newMetadata);
-
-        return newMetadata;
-    }
-
-    @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        populateType(node, node.getImage());
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTEnumDeclaration node, Object data) {
-        populateType(node, node.getImage());
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
-        populateType(node, node.getImage());
-        return super.visit(node, data);
     }
 
     /**
@@ -572,7 +492,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 }
             } catch (final NoSuchFieldException ignored) {
                 // swallow
-            } catch (final NoClassDefFoundError e) {
+            } catch (final LinkageError e) {
+                if (LOG.isLoggable(Level.WARNING)) {
+                    LOG.log(Level.WARNING, "Error during type resolution due to: " + e);
+                }
                 // TODO : report a missing class once we start doing that...
                 return null;
             }
@@ -634,7 +557,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     if (foundTypeDef != null) { // if null, then it's not an inherited field
                         return foundTypeDef;
                     }
-                } catch (ClassCastException e) {
+                } catch (ClassCastException ignored) {
                     // if there is an anonymous class, getClassDeclaration().getType() will throw
                     // TODO: maybe there is a better way to handle this, maybe this hides bugs
                 }
@@ -1154,6 +1077,26 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
+
+    @Override
+    public Object visit(ASTFormalParameter node, Object data) {
+        super.visit(node, data);
+        node.setTypeDefinition(node.getTypeNode().getTypeDefinition());
+        if (node.isVarargs() && node.getType() != null) {
+            node.setType(Array.newInstance(node.getType(), 0).getClass());
+        }
+
+        return data;
+    }
+
+
+    @Override
+    public Object visit(ASTAnnotation node, Object data) {
+        super.visit(node, data);
+        rollupTypeUnary(node);
+        return data;
+    }
+
     @Override
     public Object visit(ASTNormalAnnotation node, Object data) {
         super.visit(node, data);
@@ -1281,16 +1224,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     + qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
             try {
                 myType = pmdClassLoader.loadClass(qualifiedNameInner);
-            } catch (Exception e) {
-                // ignored
+            } catch (Exception ignored) {
+                // ignored, we'll try again with a different package name/fqcn
             }
         }
         if (myType == null && qualifiedName != null && !qualifiedName.contains(".")) {
             // try again with java.lang....
             try {
                 myType = pmdClassLoader.loadClass("java.lang." + qualifiedName);
-            } catch (Exception e) {
-                // ignored
+            } catch (Exception ignored) {
+                // ignored, we'll try again with generics
             }
         }
 
@@ -1341,9 +1284,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         try {
             pmdClassLoader.loadClass(fullyQualifiedClassName);
             return true; // Class found
-        } catch (ClassNotFoundException e) {
-            return false;
-        } catch (NoClassDefFoundError e) {
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
             return false;
         }
     }
@@ -1358,26 +1299,37 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     private Class<?> processOnDemand(String qualifiedName) {
         for (String entry : importedOnDemand) {
+            String fullClassName = entry + "." + qualifiedName;
             try {
-                return pmdClassLoader.loadClass(entry + "." + qualifiedName);
-            } catch (Throwable e) {
+                return pmdClassLoader.loadClass(fullClassName);
+            } catch (ClassNotFoundException ignored) {
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.log(Level.FINE, "Tried to load class " + fullClassName + " from on demand import, "
+                            + "which apparently doesn't exist.", ignored);
+                }
+            } catch (LinkageError ignored) {
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.log(Level.FINE, "Tried to load class " + fullClassName + " from on demand import, "
+                            + "which apparently doesn't exist.", ignored);
+                }
             }
         }
         return null;
     }
 
     private String getClassName(ASTCompilationUnit node) {
-        ASTClassOrInterfaceDeclaration classDecl = node.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
+        ASTAnyTypeDeclaration classDecl = node.getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
         if (classDecl == null) {
-            // Happens if this compilation unit only contains an enum
+            // package-info.java?
             return null;
         }
+
+
         if (node.declarationsAreInDefaultPackage()) {
             return classDecl.getImage();
         }
-        ASTPackageDeclaration pkgDecl = node.getPackageDeclaration();
-        importedOnDemand.add(pkgDecl.getPackageNameImage());
-        return pkgDecl.getPackageNameImage() + "." + classDecl.getImage();
+        importedOnDemand.add(node.getPackageDeclaration().getPackageNameImage());
+        return classDecl.getQualifiedName().toString();
     }
 
     /**

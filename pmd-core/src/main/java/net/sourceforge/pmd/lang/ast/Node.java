@@ -137,7 +137,8 @@ public interface Node {
 
     /**
      * Traverses up the tree to find all of the parent instances of type
-     * parentType or one of its subclasses.
+     * parentType or one of its subclasses. The nodes are ordered
+     * deepest-first.
      *
      * @param parentType Class literal of the type you want to find
      * @param <T>        The type you want to find
@@ -145,6 +146,18 @@ public interface Node {
      * @return List of parentType instances found.
      */
     <T> List<T> getParentsOfType(Class<T> parentType);
+
+
+    /**
+     * Gets the first parent that's an instance of any of the given types.
+     *
+     * @param parentTypes Types to look for
+     * @param <T>         Most specific common type of the parameters
+     *
+     * @return The first parent with a matching type. Returns null if there
+     * is no such parent
+     */
+    <T> T getFirstParentOfAnyType(Class<? extends T>... parentTypes);
 
     /**
      * Traverses the children to find all the instances of type childType or
@@ -162,7 +175,7 @@ public interface Node {
 
     /**
      * Traverses down the tree to find all the descendant instances of type
-     * descendantType.
+     * descendantType without crossing find boundaries.
      *
      * @param targetType
      *            class which you want to find.
@@ -199,7 +212,7 @@ public interface Node {
 
     /**
      * Traverses down the tree to find the first descendant instance of type
-     * descendantType.
+     * descendantType without crossing find boundaries.
      *
      * @param descendantType
      *            class which you want to find.
@@ -209,7 +222,7 @@ public interface Node {
     <T> T getFirstDescendantOfType(Class<T> descendantType);
 
     /**
-     * Finds if this node contains a descendant of the given type.
+     * Finds if this node contains a descendant of the given type without crossing find boundaries.
      *
      * @param type
      *            the node type to search
@@ -281,4 +294,12 @@ public interface Node {
      *          The index of the child to be removed
      */
     void removeChildAtIndex(int childIndex);
+
+
+    /**
+     * Gets the name of the node that is used to match it with XPath queries.
+     *
+     * @return The XPath node name
+     */
+    String getXPathNodeName();
 }

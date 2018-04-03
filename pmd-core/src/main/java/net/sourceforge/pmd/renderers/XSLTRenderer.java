@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -58,9 +57,6 @@ public class XSLTRenderer extends XMLRenderer {
         return "xsl";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void start() throws IOException {
         String xsltFilenameProperty = getProperty(XSLT_FILENAME);
@@ -113,9 +109,6 @@ public class XSLTRenderer extends XMLRenderer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void end() throws IOException {
         // First we finish the XML report

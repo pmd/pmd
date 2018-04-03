@@ -64,7 +64,7 @@ sb.append('a');     // use this instead
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidarrayloops">
         <description>
-Instead of manually copying data between two arrays, use the efficient System.arraycopy method instead.
+Instead of manually copying data between two arrays, use the efficient Arrays.copyOf or System.arraycopy method instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -253,6 +253,7 @@ bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#booleaninstantiation">
         <description>
 Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
+Note that new Boolean() is deprecated since JDK 9 for that reason.
         </description>
         <priority>2</priority>
         <example>
@@ -272,6 +273,7 @@ Boolean buz = Boolean.valueOf(false);    // ...., just reference Boolean.FALSE;
         <description>
 Calling new Byte() causes memory allocation that can be avoided by the static Byte.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+Note that new Byte() is deprecated since JDK 9 for that reason.
         </description>
         <priority>2</priority>
         <properties>
@@ -323,18 +325,26 @@ buf.append("Hello").append(foo).append("World"); // good
 
     <rule name="ConsecutiveLiteralAppends"
           since="3.5"
-          message="StringBuffer (or StringBuilder).append is called {0} consecutive times with literal Strings. Use a single append with a single combined String."
+          message="StringBuffer (or StringBuilder).append is called {0} consecutive times with literals. Use a single append with a single combined String."
           class="net.sourceforge.pmd.lang.java.rule.performance.ConsecutiveLiteralAppendsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#consecutiveliteralappends">
         <description>
-Consecutively calling StringBuffer/StringBuilder.append with String literals
+Consecutively calling StringBuffer/StringBuilder.append(...) with literals should be avoided.
+Since the literals are constants, they can already be combined into a single String literal and this String
+can be appended in a single method call.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
-StringBuffer buf = new StringBuffer();
+StringBuilder buf = new StringBuilder();
 buf.append("Hello").append(" ").append("World");    // poor
 buf.append("Hello World");                          // good
+
+buf.append('h').append('e').append('l').append('l').append('o'); // poor
+buf.append("hello");                                             // good
+
+buf.append(1).append('m');  // poor
+buf.append("1m");           // good
 ]]>
         </example>
     </rule>
@@ -419,6 +429,7 @@ good.append("This is a long string, which is pre-sized");
         <description>
 Calling new Integer() causes memory allocation that can be avoided by the static Integer.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+Note that new Integer() is deprecated since JDK 9 for that reason.
         </description>
         <priority>2</priority>
         <properties>
@@ -452,6 +463,7 @@ public class Foo {
         <description>
 Calling new Long() causes memory allocation that can be avoided by the static Long.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+Note that new Long() is deprecated since JDK 9 for that reason.
         </description>
         <priority>2</priority>
         <properties>
@@ -616,6 +628,7 @@ public class Foo {
         <description>
 Calling new Short() causes memory allocation that can be avoided by the static Short.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+Note that new Short() is deprecated since JDK 9 for that reason.
         </description>
         <priority>2</priority>
         <properties>
@@ -788,9 +801,16 @@ public class SimpleTest extends TestCase {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usearraysaslist">
         <description>
+<![CDATA[ 
 The java.util.Arrays class has a "asList" method that should be used when you want to create a new List from
 an array of objects. It is faster than executing a loop to copy all the elements of the array one by one.
-        </description>
+
+Note that the result of Arrays.asList() is backed by the specified array,
+changes in the returned list will result in the array to be modified.
+For that reason, it is not possible to add new elements to the returned list of Arrays.asList() (UnsupportedOperationException).
+You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you (e.g. because of concurrent access).
+]]>
+	</description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
@@ -834,7 +854,7 @@ an array of objects. It is faster than executing a loop to copy all the elements
 public class Test {
     public void foo(Integer[] ints) {
         // could just use Arrays.asList(ints)
-        List l= new ArrayList(10);
+        List<Integer> l= new ArrayList<>(100);
         for (int i=0; i< 100; i++) {
             l.add(ints[i]);
         }

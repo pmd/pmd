@@ -7,10 +7,15 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
-public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
+import net.sourceforge.pmd.lang.ast.Node;
+
+
+public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
+
+    private boolean isLocal;
+    private boolean isLocalComputed; // guard for lazy evaluation of isLocal()
 
     private boolean isInterface;
-    private JavaQualifiedName qualifiedName;
 
     public ASTClassOrInterfaceDeclaration(int id) {
         super(id);
@@ -33,9 +38,31 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
         return visitor.visit(this, data);
     }
 
-    public boolean isNested() {
-        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
-            || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
+
+    /**
+     * Returns true if the class is declared inside a block other
+     * than the body of another class, or the top level.
+     */
+    public boolean isLocal() {
+        if (!isLocalComputed) {
+            Node current = jjtGetParent();
+            while (current != null) {
+                if (current instanceof ASTAnyTypeDeclaration) {
+                    isLocal = false;
+                    break;
+                } else if (current instanceof ASTMethodOrConstructorDeclaration
+                        || current instanceof ASTInitializer) {
+                    isLocal = true;
+                    break;
+                }
+                current = current.jjtGetParent();
+            }
+            if (current == null) {
+                isLocal = false;
+            }
+            isLocalComputed = true;
+        }
+        return isLocal;
     }
 
     public boolean isInterface() {
@@ -44,22 +71,6 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
 
     public void setInterface() {
         this.isInterface = true;
-    }
-
-    @Override
-    public JavaQualifiedName getQualifiedName() {
-        if (qualifiedName == null) {
-            if (isNested()) {
-                ASTAnyTypeDeclaration parent = this.getFirstParentOfType(ASTAnyTypeDeclaration.class);
-                JavaQualifiedName parentQN = parent.getQualifiedName();
-                qualifiedName = JavaQualifiedName.ofNestedClass(parentQN, this.getImage());
-                return qualifiedName;
-            }
-
-            qualifiedName = JavaQualifiedName.ofOuterClass(this);
-        }
-
-        return qualifiedName;
     }
 
     @Override

@@ -130,10 +130,14 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
         }
     }
 
+
+
+
     @Override
-    public String toString() {
+    public final String getXPathNodeName() {
         return this.getClass().getSimpleName().replaceFirst("^AST", "");
     }
+
 
     public String getLocation() {
         if (hasRealLoc()) {

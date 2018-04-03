@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,11 +18,19 @@ import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
+
+/**
+ * Base class for all implementations of the Node interface.
+ */
 public abstract class AbstractNode implements Node {
+
+    private static final Logger LOG = Logger.getLogger(AbstractNode.class.getName());
+
 
     protected Node parent;
     protected Node[] children;
@@ -113,13 +121,6 @@ public abstract class AbstractNode implements Node {
     public int jjtGetId() {
         return id;
     }
-
-    /**
-     * Subclasses should implement this method to return a name usable with
-     * XPathRule for evaluating Element Names.
-     */
-    @Override
-    public abstract String toString();
 
     @Override
     public String getImage() {
@@ -219,7 +220,7 @@ public abstract class AbstractNode implements Node {
         while (parentNode != null && !parentType.isInstance(parentNode)) {
             parentNode = parentNode.jjtGetParent();
         }
-        return (T) parentNode;
+        return parentType.cast(parentNode);
     }
 
 
@@ -229,21 +230,41 @@ public abstract class AbstractNode implements Node {
         Node parentNode = jjtGetParent();
         while (parentNode != null) {
             if (parentType.isInstance(parentNode)) {
-                parents.add((T) parentNode);
+                parents.add(parentType.cast(parentNode));
             }
             parentNode = parentNode.jjtGetParent();
         }
         return parents;
     }
 
+    @SafeVarargs
+    @Override
+    public final <T> T getFirstParentOfAnyType(Class<? extends T>... parentTypes) {
+        Node parentNode = jjtGetParent();
+        while (parentNode != null) {
+            for (Class<? extends T> c : parentTypes) {
+                if (c.isInstance(parentNode)) {
+                    return c.cast(parentNode);
+                }
+            }
+            parentNode = parentNode.jjtGetParent();
+        }
+        return null;
+    }
 
     @Override
     public <T> List<T> findDescendantsOfType(Class<T> targetType) {
         List<T> list = new ArrayList<>();
-        findDescendantsOfType(this, targetType, list, true);
+        findDescendantsOfType(this, targetType, list, false);
         return list;
     }
 
+    // TODO : Add to Node interface in 7.0.0
+    public <T> List<T> findDescendantsOfType(final Class<T> targetType, final boolean crossBoundaries) {
+        final List<T> list = new ArrayList<>();
+        findDescendantsOfType(this, targetType, list, crossBoundaries);
+        return list;
+    }
 
     @Override
     public <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossBoundaries) {
@@ -253,18 +274,15 @@ public abstract class AbstractNode implements Node {
     private static <T> void findDescendantsOfType(Node node, Class<T> targetType, List<T> results,
             boolean crossFindBoundaries) {
 
-        if (!crossFindBoundaries && node.isFindBoundary()) {
-            return;
-        }
-
-        int n = node.jjtGetNumChildren();
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node child = node.jjtGetChild(i);
             if (child.getClass() == targetType) {
-                results.add((T) child);
+                results.add(targetType.cast(child));
             }
 
-            findDescendantsOfType(child, targetType, results, crossFindBoundaries);
+            if (crossFindBoundaries || !child.isFindBoundary()) {
+                findDescendantsOfType(child, targetType, results, crossFindBoundaries);
+            }
         }
     }
 
@@ -272,11 +290,10 @@ public abstract class AbstractNode implements Node {
     @Override
     public <T> List<T> findChildrenOfType(Class<T> targetType) {
         List<T> list = new ArrayList<>();
-        int n = jjtGetNumChildren();
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < jjtGetNumChildren(); i++) {
             Node child = jjtGetChild(i);
             if (targetType.isInstance(child)) {
-                list.add((T) child);
+                list.add(targetType.cast(child));
             }
         }
         return list;
@@ -334,22 +351,25 @@ public abstract class AbstractNode implements Node {
         for (int i = 0; i < n; i++) {
             Node child = jjtGetChild(i);
             if (child.getClass() == childType) {
-                return (T) child;
+                return childType.cast(child);
             }
         }
         return null;
     }
 
-    private static <T> T getFirstDescendantOfType(Class<T> descendantType, Node node) {
-        int n = node.jjtGetNumChildren();
+
+    private static <T> T getFirstDescendantOfType(final Class<T> descendantType, final Node node) {
+        final int n = node.jjtGetNumChildren();
         for (int i = 0; i < n; i++) {
             Node n1 = node.jjtGetChild(i);
-            if (n1.getClass() == descendantType) {
-                return (T) n1;
+            if (descendantType.isAssignableFrom(n1.getClass())) {
+                return descendantType.cast(n1);
             }
-            T n2 = getFirstDescendantOfType(descendantType, n1);
-            if (n2 != null) {
-                return n2;
+            if (!n1.isFindBoundary()) {
+                final T n2 = getFirstDescendantOfType(descendantType, n1);
+                if (n2 != null) {
+                    return n2;
+                }
             }
         }
         return null;
@@ -361,12 +381,26 @@ public abstract class AbstractNode implements Node {
         return getFirstDescendantOfType(type) != null;
     }
 
+
     /**
+     * Returns true if this node has a descendant of any type among the provided types.
      *
-     * @param types
-     * @return boolean
+     * @param types Types to test
+     *
+     * @deprecated Use {@link #hasDescendantOfAnyType(Class[])}
      */
+    @Deprecated
     public final boolean hasDecendantOfAnyType(Class<?>... types) {
+        return hasDescendantOfAnyType(types);
+    }
+
+
+    /**
+     * Returns true if this node has a descendant of any type among the provided types.
+     *
+     * @param types Types to test
+     */
+    public final boolean hasDescendantOfAnyType(Class<?>... types) {
         for (Class<?> type : types) {
             if (hasDescendantOfType(type)) {
                 return true;
@@ -442,5 +476,37 @@ public abstract class AbstractNode implements Node {
                 jjtGetChild(i).jjtSetChildIndex(i);
             }
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This default implementation adds compatibility with the previous
+     * way to get the xpath node name, which used {@link Object#toString()}.
+     *
+     * <p>Please override it. It may be removed in a future major version.
+     */
+    @Override
+    // @Deprecated // FUTURE 7.0.0 make abstract
+    public String getXPathNodeName() {
+        LOG.warning("getXPathNodeName should be overriden in classes derived from AbstractNode. "
+                            + "The implementation is provided for compatibility with existing implementors,"
+                            + "but could be declared abstract as soon as release " + PMDVersion.getNextMajorRelease()
+                            + ".");
+        return toString();
+    }
+
+
+    /**
+     *
+     *
+     * @deprecated The equivalence between toString and a node's name could be broken as soon as release 7.0.0.
+     *  Use getXPathNodeName for that purpose. The use for debugging purposes is not deprecated.
+     */
+    @Deprecated
+    @Override
+    public String toString() {
+        return getXPathNodeName();
     }
 }

@@ -107,9 +107,9 @@ public class DummyLanguageModule extends BaseLanguageModule {
         protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
                 int beginLine, int endLine) {
             ParametricRuleViolation<Node> rv = new ParametricRuleViolation<Node>(rule, ruleContext, node, message) {
-                {
-                    this.packageName = "foo"; // just for testing variable
-                    // expansion
+                public String getPackageName() {
+                    this.packageName = "foo"; // just for testing variable expansion
+                    return super.getPackageName();
                 }
             };
             rv.setLines(beginLine, endLine);

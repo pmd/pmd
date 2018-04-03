@@ -49,7 +49,7 @@ public abstract class AbstractPMDProcessor {
             long end = System.nanoTime();
             Benchmarker.mark(Benchmark.Reporting, end - start, 1);
         } catch (IOException ioe) {
-
+            throw new RuntimeException(ioe);
         }
     }
 

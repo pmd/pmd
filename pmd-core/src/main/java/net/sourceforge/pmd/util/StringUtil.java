@@ -370,7 +370,7 @@ public final class StringUtil {
             index = str.indexOf(separator, currPos);
         }
         list.add(str.substring(currPos));
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
 
 
