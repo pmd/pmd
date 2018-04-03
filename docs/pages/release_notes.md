@@ -38,6 +38,7 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
     *   [#994](https://github.com/pmd/pmd/issues/994): \[doc] Delete duplicate page contributing.md on the website
 *   java-bestpracrtices
     *   [#370](https://github.com/pmd/pmd/issues/370): \[java] GuardLogStatementJavaUtil not considering lambdas
+    *   [#719](https://github.com/pmd/pmd/issues/719): \[java] Unused Code: Java 8 receiver parameter with an internal class
 
 ### API Changes
 
