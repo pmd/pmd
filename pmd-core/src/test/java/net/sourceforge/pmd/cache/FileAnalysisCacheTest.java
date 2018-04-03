@@ -139,6 +139,21 @@ public class FileAnalysisCacheTest {
     }
     
     @Test
+    public void testAuxClasspathNonExistingAuxclasspathEntriesIgnored() throws MalformedURLException, IOException {
+        final RuleSets rs = mock(RuleSets.class);
+        final URLClassLoader cl = mock(URLClassLoader.class);
+        when(cl.getURLs()).thenReturn(new URL[] { new File(tempFolder.getRoot(), "non-existing-dir").toURI().toURL(), });
+        
+        setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
+        
+        final FileAnalysisCache analysisCache = new FileAnalysisCache(newCacheFile);
+        when(cl.getURLs()).thenReturn(new URL[] {});
+        analysisCache.checkValidity(rs, cl);
+        assertTrue("Cache believes unmodified file is not up to date after non-existing auxclasspath entry removed",
+                analysisCache.isUpToDate(sourceFile));
+    }
+    
+    @Test
     public void testAuxClasspathChangeWithoutDFAorTypeResolutionDoesNotInvalidatesCache() throws MalformedURLException, IOException {
         final RuleSets rs = mock(RuleSets.class);
         final URLClassLoader cl = mock(URLClassLoader.class);
