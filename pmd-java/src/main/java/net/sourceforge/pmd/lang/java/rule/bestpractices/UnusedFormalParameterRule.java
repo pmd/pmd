@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
@@ -85,6 +86,12 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
                     .getDeclarations(VariableNameDeclaration.class);
             for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
                 VariableNameDeclaration nameDecl = entry.getKey();
+                
+                ASTVariableDeclaratorId declNode = (ASTVariableDeclaratorId) nameDecl.getNode();
+                if (declNode.isExplicitReceiverParameter()) {
+                    continue;
+                }
+                
                 if (actuallyUsed(nameDecl, entry.getValue())) {
                     continue;
                 }
