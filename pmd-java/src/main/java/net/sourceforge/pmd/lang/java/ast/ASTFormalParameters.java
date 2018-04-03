@@ -18,7 +18,8 @@ public class ASTFormalParameters extends AbstractJavaNode implements Iterable<AS
     }
 
     public int getParameterCount() {
-        return jjtGetNumChildren();
+        return jjtGetNumChildren() > 0 && getFirstChildOfType(ASTFormalParameter.class).isExplicitReceiverParameter()
+                ? jjtGetNumChildren() - 1 : jjtGetNumChildren();
     }
 
     /**
