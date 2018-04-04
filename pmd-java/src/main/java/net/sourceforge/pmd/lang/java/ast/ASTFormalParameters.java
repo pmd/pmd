@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
+import java.util.List;
 
 
 public class ASTFormalParameters extends AbstractJavaNode implements Iterable<ASTFormalParameter> {
@@ -18,8 +19,9 @@ public class ASTFormalParameters extends AbstractJavaNode implements Iterable<AS
     }
 
     public int getParameterCount() {
-        return jjtGetNumChildren() > 0 && getFirstChildOfType(ASTFormalParameter.class).isExplicitReceiverParameter()
-                ? jjtGetNumChildren() - 1 : jjtGetNumChildren();
+        final List<ASTFormalParameter> parameters = findChildrenOfType(ASTFormalParameter.class);
+        return !parameters.isEmpty() && parameters.get(0).isExplicitReceiverParameter()
+                ? parameters.size() - 1 : parameters.size();
     }
 
     /**
