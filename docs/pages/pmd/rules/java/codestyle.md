@@ -1552,15 +1552,7 @@ public class Foo {
 This rule detects when a constructor is not necessary; i.e., when there is only one constructor,
 it's public, has an empty body, and takes no arguments.
 
-```
-//ClassOrInterfaceBody[count(ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)=1]
-/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration
-[@Public='true']
-[not(FormalParameters/*)]
-[not(BlockStatement)]
-[not(NameList)]
-[count(ExplicitConstructorInvocation/Arguments/ArgumentList/Expression)=0]
-```
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryConstructorRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/UnnecessaryConstructorRule.java)
 
 **Example(s):**
 
@@ -1569,6 +1561,12 @@ public class Foo {
   public Foo() {}
 }
 ```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|ignoredAnnotations|[javax.inject.Inject]|Fully qualified names of the annotation types that should be ignored by this rule|
 
 **Use this rule by referencing it:**
 ``` xml
