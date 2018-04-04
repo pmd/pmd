@@ -15,7 +15,7 @@ public class ASTMethodDeclarator extends AbstractJavaNode {
     }
 
     public int getParameterCount() {
-        return this.jjtGetChild(0).jjtGetNumChildren();
+        return getFirstChildOfType(ASTFormalParameters.class).getParameterCount();
     }
 
     /**
