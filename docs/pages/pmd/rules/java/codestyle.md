@@ -1549,8 +1549,9 @@ public class Foo {
 
 **Priority:** Medium (3)
 
-This rule detects when a constructor is not necessary; i.e., when there is only one constructor,
-it's public, has an empty body, and takes no arguments.
+This rule detects when a constructor is not necessary; i.e., when there is only one constructor and the
+constructor is identical to the default constructor. The default constructor should has same access
+modifier as the declaring class. In an enum type, the default constructor is implicitly private.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryConstructorRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/UnnecessaryConstructorRule.java)
 
