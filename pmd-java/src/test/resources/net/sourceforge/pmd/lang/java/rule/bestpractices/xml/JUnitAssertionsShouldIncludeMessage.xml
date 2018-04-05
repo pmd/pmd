@@ -427,16 +427,19 @@ public class TestNgTestCase {
         ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Issue #1009: JUnitAssertionsShouldIncludeMessage - False positive with assertEquals
-     ]]></description>
+        <description>
+Issue #1009: JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import junit.framework.TestCase;
-public class Foo extends TestCase {
- public void test1() {
-  assertEquals(1, 1, "message");
- }
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
+class SimpleTest {
+    @Test
+    public void simpleMethod() {
+        assertEquals(0, 1, "Not equals 0 != 1");
+    }
 }
      ]]></code>
     </test-code>
