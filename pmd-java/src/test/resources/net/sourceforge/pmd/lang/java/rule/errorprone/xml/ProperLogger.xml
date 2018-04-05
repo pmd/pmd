@@ -56,7 +56,7 @@ public class Foo {
     </test-code>
 	<test-code>
         <description><![CDATA[
-Emuns shoud be accepted for declaration
+Enums shoud be accepted for declaration
         ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
