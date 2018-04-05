@@ -28,7 +28,7 @@ public class Foo {
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo' has value 7.</message>
+            <message>'Foo' has value 7.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -37,7 +37,7 @@ public class Foo {
         <description>Test empty class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo' has value 0.</message>
+            <message>'Foo' has value 0.</message>
         </expected-messages>
         <code><![CDATA[
         public class Foo {

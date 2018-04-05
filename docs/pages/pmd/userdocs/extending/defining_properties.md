@@ -37,6 +37,7 @@ Without further ado, here is the list of available (single-value) properties:
 |FileProperty|java.io.File
 |MethodProperty|java.lang.reflect.Method
 |TypeProperty|java.lang.Class\<?\>
+|RegexProperty|java.util.regex.Pattern
 
 Each of these is complemented by a multivalued variant, whose name ends with "MultiProperty", and which returns a list of values, e.g.
 
@@ -45,6 +46,7 @@ Each of these is complemented by a multivalued variant, whose name ends with "Mu
 |LongMultiProperty | List\<Long\>
 |EnumeratedMultiProperty\<*E*\>| List\<*E*\>
 
+Note that RegexProperty doesn't have a multivalued variant, since the delimiters could be part of a specific value.
 
 ### For Java rules
 
@@ -121,6 +123,7 @@ XPath rules can also define their own properties. To do so, you must add a `prop
 |Character|CharacterProperty
 |Boolean|BooleanProperty
 |Class|TypeProperty
+|Regex|RegexProperty
 
 Note that enumerated properties are not available in XPath rules (yet?).
 

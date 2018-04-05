@@ -10,6 +10,9 @@ public class ErrorProneRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "category/apex/errorprone.xml";
 
+    
+
+
     @Override
     public void setUp() {
         addRule(RULESET, "AvoidDirectAccessTriggerMap");

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cache;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -184,6 +185,8 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
                 while (IOUtils.skip(inputStream, Long.MAX_VALUE) == Long.MAX_VALUE) {
                     // just loop
                 }
+            } catch (final FileNotFoundException ignored) {
+                LOG.warning("Auxclasspath entry " + url.toString() + " doesn't exist, ignoring it");
             } catch (final IOException e) {
                 // Can this even happen?
                 LOG.log(Level.SEVERE, "Incremental analysis can't check auxclasspath contents", e);

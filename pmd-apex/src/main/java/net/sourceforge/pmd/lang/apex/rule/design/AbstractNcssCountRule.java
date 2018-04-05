@@ -108,9 +108,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
 
     @Override
     public Object visit(ASTIfBlockStatement node, Object data) {
-
-        Integer lineCount = countNodeChildren(node, data);
-        return lineCount;
+        return countNodeChildren(node, data);
     }
 
     @Override

@@ -216,4 +216,18 @@ public class BugSignature implements LousyInterface {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>SignatureDeclareThrowsException's IgnoreJUnitCompletely property not honored for constructors</description>
+        <rule-property name="IgnoreJUnitCompletely">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.*;
+
+public class JUnitAnnotationTest extends TestCase {
+    public JUnitAnnotationTest() throws Exception {
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

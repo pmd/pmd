@@ -5,11 +5,10 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -19,28 +18,25 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.properties.StringMultiProperty;
 
 public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
 
-    private static final StringMultiProperty IGNORED_ANNOTATIONS_DESCRIPTOR
-            = StringMultiProperty.named("ignoredAnnotations")
-                                 .desc("Fully qualified names of the annotation types that should be ignored by this rule")
-                                 .defaultValues("java.lang.Deprecated", "javafx.fxml.FXML")
-                                 .build();
-
-
-    public UnusedPrivateFieldRule() {
-        definePropertyDescriptor(IGNORED_ANNOTATIONS_DESCRIPTOR);
+    @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        Collection<String> defaultValues = new ArrayList<>();
+        defaultValues.addAll(super.defaultSuppressionAnnotations());
+        defaultValues.add("java.lang.Deprecated");
+        defaultValues.add("javafx.fxml.FXML");
+        return defaultValues;
     }
 
     @Override
@@ -53,7 +49,7 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
             VariableNameDeclaration decl = entry.getKey();
             AccessNode accessNodeParent = decl.getAccessNodeParent();
             if (!accessNodeParent.isPrivate() || isOK(decl.getImage()) || classHasLombok
-                    || hasLombokAnnotation(accessNodeParent) || hasNeglectAnnotation(decl)) {
+                || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
                 continue;
             }
             if (!actuallyUsed(entry.getValue())) {
@@ -95,20 +91,18 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
         List<ASTClassOrInterfaceBodyDeclaration> classOrInterfaceBodyDeclarations = body
                 .findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
         List<ASTEnumConstant> enumConstants = body.findChildrenOfType(ASTEnumConstant.class);
-        List<JavaNode> nodes = new ArrayList<>();
+        List<AbstractJavaNode> nodes = new ArrayList<>();
         nodes.addAll(classOrInterfaceBodyDeclarations);
         nodes.addAll(enumConstants);
 
-        for (JavaNode node : nodes) {
-            List<ASTPrimarySuffix> primarySuffixes = node.findDescendantsOfType(ASTPrimarySuffix.class);
-            for (ASTPrimarySuffix primarySuffix : primarySuffixes) {
+        for (AbstractJavaNode node : nodes) {
+            for (ASTPrimarySuffix primarySuffix : node.findDescendantsOfType(ASTPrimarySuffix.class, true)) {
                 if (decl.getImage().equals(primarySuffix.getImage())) {
                     return true; // No violation
                 }
             }
 
-            List<ASTPrimaryPrefix> primaryPrefixes = node.findDescendantsOfType(ASTPrimaryPrefix.class);
-            for (ASTPrimaryPrefix primaryPrefix : primaryPrefixes) {
+            for (ASTPrimaryPrefix primaryPrefix : node.findDescendantsOfType(ASTPrimaryPrefix.class, true)) {
                 ASTName name = primaryPrefix.getFirstDescendantOfType(ASTName.class);
 
                 if (name != null) {
@@ -136,27 +130,5 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
 
     private boolean isOK(String image) {
         return "serialVersionUID".equals(image) || "serialPersistentFields".equals(image) || "IDENT".equals(image);
-    }
-
-    /**
-     * Checks whether the given node is annotated with annotation in the set.
-     * The node should be variable Name declaration.
-     *
-     * @param node
-     *            the node to check
-     * @return <code>true</code> if the annotation has been found
-     */
-    protected boolean hasNeglectAnnotation(VariableNameDeclaration node) {
-        Node parent = node.getAccessNodeParent().jjtGetParent();
-        List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
-        for (ASTAnnotation annotation : annotations) {
-            TypeNode n = (TypeNode) annotation.jjtGetChild(0);
-            for (String annotationName : getProperty(IGNORED_ANNOTATIONS_DESCRIPTOR)) {
-                if (TypeHelper.isA(n, annotationName)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

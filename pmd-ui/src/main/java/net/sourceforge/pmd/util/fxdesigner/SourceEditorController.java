@@ -45,8 +45,6 @@ import javafx.scene.control.TreeView;
  * @since 6.0.0
  */
 public class SourceEditorController implements Initializable, SettingsOwner {
-
-    private final DesignerRoot designerRoot;
     private final MainDesignerController parent;
 
     @FXML
@@ -60,9 +58,8 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
 
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
-        this.designerRoot = owner;
         parent = mainController;
-        astManager = new ASTManager(designerRoot);
+        astManager = new ASTManager(owner);
     }
 
 
@@ -100,7 +97,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
             invalidateAST(true);
             return;
         }
-        if (previous != current) {
+        if (!Objects.equals(previous, current)) {
             parent.invalidateAst();
             setUpToDateCompilationUnit(current);
         }

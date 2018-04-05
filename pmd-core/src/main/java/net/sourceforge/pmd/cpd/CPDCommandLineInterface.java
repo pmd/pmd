@@ -23,7 +23,7 @@ import net.sourceforge.pmd.util.database.DBURI;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
-public class CPDCommandLineInterface {
+public final class CPDCommandLineInterface {
     private static final Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
 
     private static final int DUPLICATE_CODE_FOUND = 4;
@@ -49,7 +49,7 @@ public class CPDCommandLineInterface {
         if (noExit == null) {
             noExit = System.getProperty(NO_EXIT_AFTER_RUN);
         }
-        return (noExit == null ? true : false);
+        return noExit == null;
     }
 
     private static void setStatusCode(int statusCode) {

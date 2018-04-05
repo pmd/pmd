@@ -198,7 +198,7 @@ public class RuleSetReferenceId {
                         ruleName = null;
                         allRules = true;
                     } else {
-                        external = externalRuleSetReferenceId != null ? externalRuleSetReferenceId.isExternal() : false;
+                        external = externalRuleSetReferenceId != null && externalRuleSetReferenceId.isExternal();
                         ruleSetFileName = externalRuleSetReferenceId != null
                                 ? externalRuleSetReferenceId.getRuleSetFileName() : null;
                         ruleName = id;
@@ -228,7 +228,7 @@ public class RuleSetReferenceId {
         if (name != null) {
             try (InputStream resource = new ResourceLoader().loadClassPathResourceAsStreamOrThrow(name)) {
                 resourceFound = true;
-            } catch (Exception e) {
+            } catch (Exception ignored) {
                 // ignored
             }
         }
@@ -293,11 +293,7 @@ public class RuleSetReferenceId {
             return false;
         }
 
-        if (stripped.startsWith("http://") || stripped.startsWith("https://")) {
-            return true;
-        }
-
-        return false;
+        return stripped.startsWith("http://") || stripped.startsWith("https://");
     }
 
     private static boolean isValidUrl(String name) {

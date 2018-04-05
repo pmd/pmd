@@ -45,10 +45,10 @@ public class MethodNamingConventionsRule extends AbstractApexRule {
     }
 
     private boolean isPropertyAccessor(ASTMethod node) {
-        return (node.getParentsOfType(ASTProperty.class).size() > 0);
+        return !node.getParentsOfType(ASTProperty.class).isEmpty();
     }
 
     private boolean isConstructor(ASTMethod node) {
-        return (node.getNode().getMethodInfo().isConstructor());
+        return node.getNode().getMethodInfo().isConstructor();
     }
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
@@ -383,7 +384,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             boolean factory = false;
             List<ASTName> names = declarator.findDescendantsOfType(ASTName.class);
             for (ASTName name : names) {
-                if (name.getImage().toLowerCase().contains("factory")) {
+                if (name.getImage().toLowerCase(Locale.ROOT).contains("factory")) {
                     factory = true;
                     break;
                 }

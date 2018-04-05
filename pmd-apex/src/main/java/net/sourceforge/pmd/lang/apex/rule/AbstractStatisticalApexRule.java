@@ -21,7 +21,7 @@ public abstract class AbstractStatisticalApexRule extends AbstractApexRule imple
     }
 
     public Object[] getViolationParameters(DataPoint point) {
-        return null;
+        return new Object[0];
     }
 
     @Override

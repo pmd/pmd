@@ -369,6 +369,10 @@ public class ClassScope extends AbstractJavaScope {
         Map<String, Node> qualifiedTypeNames = fileScope.getQualifiedTypeNames();
 
         for (ASTFormalParameter p : parameters) {
+            if (p.isExplicitReceiverParameter()) {
+                continue;
+            }
+            
             String typeImage = p.getTypeNode().getTypeImage();
             // typeImage might be qualified/unqualified. If it refers to a type,
             // defined in the same toplevel class,
@@ -667,10 +671,10 @@ public class ClassScope extends AbstractJavaScope {
         }
         Map<MethodNameDeclaration, List<NameOccurrence>> methodDeclarations = getMethodDeclarations();
         if (!methodDeclarations.isEmpty()) {
-            for (MethodNameDeclaration mnd : methodDeclarations.keySet()) {
-                res.append(mnd.toString());
-                int usages = methodDeclarations.get(mnd).size();
-                res.append("(begins at line ").append(mnd.getNode().getBeginLine()).append(", ").append(usages)
+            for (Map.Entry<MethodNameDeclaration, List<NameOccurrence>> entry : methodDeclarations.entrySet()) {
+                res.append(entry.getKey().toString());
+                int usages = entry.getValue().size();
+                res.append("(begins at line ").append(entry.getKey().getNode().getBeginLine()).append(", ").append(usages)
                         .append(" usages)");
                 res.append(", ");
             }

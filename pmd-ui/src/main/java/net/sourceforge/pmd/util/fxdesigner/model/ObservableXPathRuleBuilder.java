@@ -4,11 +4,8 @@
 
 package net.sourceforge.pmd.util.fxdesigner.model;
 
-import java.util.Optional;
-
 import org.reactfx.value.Var;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 
@@ -49,9 +46,9 @@ public class ObservableXPathRuleBuilder extends ObservableRuleBuilder {
         return xpathExpression;
     }
 
-
-    @Override
-    public Optional<Rule> build() throws IllegalArgumentException {
-        return super.build(); //TODO
-    }
+    // TODO: Once the xpath expression changes, we'll need to rebuild the rule
+    //    @Override
+    //    public Optional<Rule> build() throws IllegalArgumentException {
+    //        return super.build();
+    //    }
 }

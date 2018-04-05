@@ -7,9 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
-public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
+public class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration {
 
-    private JavaQualifiedName qualifiedName;
 
     public ASTAnnotationTypeDeclaration(int id) {
         super(id);
@@ -27,26 +26,6 @@ public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode imp
         return visitor.visit(this, data);
     }
 
-    public boolean isNested() {
-        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
-            || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
-    }
-
-    @Override
-    public JavaQualifiedName getQualifiedName() {
-        if (qualifiedName == null) {
-            if (isNested()) {
-                ASTAnyTypeDeclaration parent = this.getFirstParentOfType(ASTAnyTypeDeclaration.class);
-                JavaQualifiedName parentQN = parent.getQualifiedName();
-                qualifiedName = JavaQualifiedName.ofNestedClass(parentQN, this.getImage());
-                return qualifiedName;
-            }
-
-            qualifiedName = JavaQualifiedName.ofOuterClass(this);
-        }
-
-        return qualifiedName;
-    }
 
     @Override
     public TypeKind getTypeKind() {

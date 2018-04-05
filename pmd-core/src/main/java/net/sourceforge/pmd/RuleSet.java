@@ -225,9 +225,7 @@ public class RuleSet implements ChecksumAware {
                 ruleReference = (RuleReference) rule;
             } else {
                 final RuleSetReference ruleSetReference = new RuleSetReference(ruleSetFileName);
-                ruleReference = new RuleReference();
-                ruleReference.setRule(rule);
-                ruleReference.setRuleSetReference(ruleSetReference);
+                ruleReference = new RuleReference(rule, ruleSetReference);
             }
             rules.add(ruleReference);
             return this;
@@ -470,7 +468,7 @@ public class RuleSet implements ChecksumAware {
      *         <code>false</code> otherwise
      */
     public boolean applies(File file) {
-        return file != null ? filter.filter(file) : true;
+        return file == null || filter.filter(file);
     }
 
     /**

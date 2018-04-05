@@ -438,8 +438,9 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         Rule rule = null;
         try {
             rule = getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException ignored) {
             // Can't happen... we already have an instance
+            throw new RuntimeException(ignored); // in case it happens anyway, something is really wrong...
         }
         rule.setName(getName());
         rule.setLanguage(getLanguage());

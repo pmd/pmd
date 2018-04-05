@@ -35,9 +35,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  */
 public abstract class AbstractCommentRule extends AbstractJavaRule {
 
-    protected AbstractCommentRule() {
-    }
-
     protected List<Integer> tagsIndicesIn(String comments) {
 
         int atPos = comments.indexOf('@');
@@ -188,8 +185,8 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
                 || n1.getEndLine() == n2.getEndLine() && n1.getEndColumn() < n2.getEndColumn());
         boolean isNotSameClass = node.getFirstParentOfType(ASTClassOrInterfaceBody.class) != n2
                 .getFirstParentOfType(ASTClassOrInterfaceBody.class);
-        boolean isNodeWithinNode2 = (node.getEndLine() < n2.getEndLine()
-                || node.getEndLine() == n2.getEndLine() && node.getEndColumn() < n2.getEndColumn());
+        boolean isNodeWithinNode2 = node.getEndLine() < n2.getEndLine()
+                || node.getEndLine() == n2.getEndLine() && node.getEndColumn() < n2.getEndColumn();
         return isNotWithinNode2 || isNotSameClass || isNodeWithinNode2;
     }
 
@@ -199,26 +196,19 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
     }
 
     protected SortedMap<Integer, Node> orderedCommentsAndDeclarations(ASTCompilationUnit cUnit) {
-
         SortedMap<Integer, Node> itemsByLineNumber = new TreeMap<>();
 
-        List<ASTClassOrInterfaceDeclaration> packageDecl = cUnit
-                .findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
-        addDeclarations(itemsByLineNumber, packageDecl);
+        addDeclarations(itemsByLineNumber, cUnit.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class, true));
 
         addDeclarations(itemsByLineNumber, cUnit.getComments());
 
-        List<ASTFieldDeclaration> fields = cUnit.findDescendantsOfType(ASTFieldDeclaration.class);
-        addDeclarations(itemsByLineNumber, fields);
+        addDeclarations(itemsByLineNumber, cUnit.findDescendantsOfType(ASTFieldDeclaration.class, true));
 
-        List<ASTMethodDeclaration> methods = cUnit.findDescendantsOfType(ASTMethodDeclaration.class);
-        addDeclarations(itemsByLineNumber, methods);
+        addDeclarations(itemsByLineNumber, cUnit.findDescendantsOfType(ASTMethodDeclaration.class, true));
 
-        List<ASTConstructorDeclaration> constructors = cUnit.findDescendantsOfType(ASTConstructorDeclaration.class);
-        addDeclarations(itemsByLineNumber, constructors);
+        addDeclarations(itemsByLineNumber, cUnit.findDescendantsOfType(ASTConstructorDeclaration.class, true));
 
-        List<ASTEnumDeclaration> enumDecl = cUnit.findDescendantsOfType(ASTEnumDeclaration.class);
-        addDeclarations(itemsByLineNumber, enumDecl);
+        addDeclarations(itemsByLineNumber, cUnit.findDescendantsOfType(ASTEnumDeclaration.class, true));
 
         return itemsByLineNumber;
     }

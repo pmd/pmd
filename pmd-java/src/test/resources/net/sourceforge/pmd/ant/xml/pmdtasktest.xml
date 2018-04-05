@@ -115,7 +115,7 @@
             <!--
             <formatter type="xml" toConsole="true"/>
             -->
-            <formatter type="xml" toFile="${pmd.home}/target/testFormatterEncodingWithXML-pmd.xml">
+            <formatter type="xml" toFile="${tmpfile}">
                 <param name="encoding" value="UTF-8" /> <!-- report encoding -->
             </formatter>
             <fileset dir="${pmd.home}/src/test/resources/ant/java">
@@ -143,4 +143,31 @@
             </fileset>
         </pmd>
     </target>
+
+	<target name="testAnalysisCache">
+		<pmd rulesetfiles="src/main/resources/category/java/design.xml/ExcessiveMethodLength" cacheLocation="${tmpfile}">
+			<formatter type="xml" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testMissingCacheLocation">
+		<pmd rulesetfiles="src/main/resources/category/java/design.xml/ExcessiveMethodLength">
+			<formatter type="xml" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testDisableIncrementalAnalysis">
+		<pmd rulesetfiles="src/main/resources/category/java/design.xml/ExcessiveMethodLength" noCache="true" cacheLocation="${tmpfile}">
+			<formatter type="xml" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
 </project>

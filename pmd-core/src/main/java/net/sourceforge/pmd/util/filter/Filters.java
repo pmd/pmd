@@ -14,7 +14,7 @@ import java.util.List;
  * Utility class for working with Filters. Contains builder style methods, apply
  * methods, as well as mechanisms for adapting Filters and FilenameFilters.
  */
-public class Filters {
+public final class Filters {
 
     private Filters() { }
 

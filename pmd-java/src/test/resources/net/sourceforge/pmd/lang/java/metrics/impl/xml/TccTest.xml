@@ -68,7 +68,7 @@ return _name.compareTo(((Property) o)._name);
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Property' has value 0.0952.</message>
+            <message>'Property' has value 0.0952.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>

@@ -52,6 +52,7 @@ public class LogEntry {
     public enum Category {
         PARSE_EXCEPTION("Parse exception"),
         TYPERESOLUTION_EXCEPTION("Type resolution exception"),
+        QUALIFIED_NAME_RESOLUTION_EXCEPTION("Qualified name resolution exception"),
         SYMBOL_FACADE_EXCEPTION("Symbol façade exception"),
         XPATH_EVALUATION_EXCEPTION("XPath evaluation exception"),
         OTHER("Other");

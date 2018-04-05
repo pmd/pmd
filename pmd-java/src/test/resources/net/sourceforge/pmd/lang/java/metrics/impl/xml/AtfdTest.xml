@@ -129,13 +129,13 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         <description>Full example</description> <!-- TODO issues w/ that-->
         <expected-problems>7</expected-problems>
         <expected-messages>
-            <message>'.StatementAndBraceFinder' has value 10 highest 6.</message>
-            <message>'.StatementAndBraceFinder#buildDataFlowFor(JavaNode)' has value 6.</message>
-            <message>'.StatementAndBraceFinder#tryToLog(String, NodeType, Node)' has value 4.</message>
-            <message>'.StatementAndBraceFinder#tryToLog(NodeType, Node)' has value 0.</message>
-            <message>'.StatementAndBraceFinder#visit(ASTStatementExpression, Object)' has value 4.</message>
-            <message>'.StatementAndBraceFinder#visit(ASTVariableDeclarator, Object)' has value 4.</message>
-            <message>'.StatementAndBraceFinder#visit(ASTExpression, Object)' has value 18.</message>
+            <message>'StatementAndBraceFinder' has value 10 highest 6.</message>
+            <message>'StatementAndBraceFinder#buildDataFlowFor(JavaNode)' has value 6.</message>
+            <message>'StatementAndBraceFinder#tryToLog(String, NodeType, Node)' has value 4.</message>
+            <message>'StatementAndBraceFinder#tryToLog(NodeType, Node)' has value 0.</message>
+            <message>'StatementAndBraceFinder#visit(ASTStatementExpression, Object)' has value 4.</message>
+            <message>'StatementAndBraceFinder#visit(ASTVariableDeclarator, Object)' has value 4.</message>
+            <message>'StatementAndBraceFinder#visit(ASTExpression, Object)' has value 18.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -145,7 +145,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         <rule-property name="reportClasses">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#bar()' has value 1.</message>
+            <message>'Foo#bar()' has value 1.</message>
         </expected-messages>
         <code><![CDATA[
         public class Foo {
@@ -162,7 +162,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo' has value 0 highest 0.</message>
+            <message>'Foo' has value 0 highest 0.</message>
         </expected-messages>
         <code><![CDATA[
         public class Foo {

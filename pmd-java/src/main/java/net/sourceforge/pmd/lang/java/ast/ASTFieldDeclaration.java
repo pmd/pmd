@@ -90,14 +90,11 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
     }
 
     public boolean isAnnotationMember() {
-        if (jjtGetParent().jjtGetParent() instanceof ASTAnnotationTypeBody) {
-            return true;
-        }
-        return false;
+        return getNthParent(2) instanceof ASTAnnotationTypeBody;
     }
 
     public boolean isInterfaceMember() {
-        if (jjtGetParent().jjtGetParent() instanceof ASTEnumBody) {
+        if (getNthParent(2) instanceof ASTEnumBody) {
             return false;
         }
         ASTClassOrInterfaceDeclaration n = getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);

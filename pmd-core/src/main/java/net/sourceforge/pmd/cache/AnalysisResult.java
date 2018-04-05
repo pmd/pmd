@@ -44,9 +44,9 @@ public class AnalysisResult {
             IOUtils.skipFully(stream, sourceFile.length());
 
             return stream.getChecksum().getValue();
-        } catch (final IOException e) {
+        } catch (final IOException ignored) {
             // We don't really care, if it's unreadable
-            // the analysis will fail and report the error on it's own
+            // the analysis will fail and report the error on it's own since the checksum won't match
         }
 
         return 0;

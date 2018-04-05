@@ -6,21 +6,17 @@ package net.sourceforge.pmd.lang.xml;
 
 import java.io.Writer;
 
-import org.jaxen.Navigator;
-
 import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
+import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.xml.ast.DumpFacade;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.lang.xml.rule.XmlRuleViolationFactory;
-
-import net.sf.saxon.sxpath.IndependentContext;
 
 /**
  * Implementation of LanguageVersionHandler for the XML.
@@ -29,17 +25,7 @@ public class XmlHandler extends AbstractLanguageVersionHandler {
 
     @Override
     public XPathHandler getXPathHandler() {
-        return new XPathHandler() {
-            public void initialize() {
-            }
-
-            public void initialize(IndependentContext context) {
-            }
-
-            public Navigator getNavigator() {
-                return new DocumentNavigator();
-            }
-        };
+        return new DefaultASTXPathHandler();
     }
 
     public RuleViolationFactory getRuleViolationFactory() {

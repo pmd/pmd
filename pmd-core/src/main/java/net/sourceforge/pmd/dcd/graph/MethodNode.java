@@ -15,7 +15,6 @@ import net.sourceforge.pmd.dcd.asm.TypeSignatureVisitor;
 /**
  * Represents a Class Method in a UsageGraph.
  */
-@SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
 public class MethodNode extends MemberNode<MethodNode, Method> {
 
     private WeakReference<Method> methodReference;
@@ -57,22 +56,5 @@ public class MethodNode extends MemberNode<MethodNode, Method> {
             }
         }
         return cmp;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof MethodNode) {
-            MethodNode that = (MethodNode) obj;
-            return super.equals(that);
-        }
-        return false;
-    }
-
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.dcd.graph.MemberNode#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        return super.hashCode();
     }
 }

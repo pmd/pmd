@@ -18,10 +18,6 @@ public class ApexOperationSigMask {
     private Set<Visibility> visMask = EnumSet.allOf(Visibility.class);
 
 
-    public ApexOperationSigMask() {
-    }
-
-
     /**
      * Sets the mask to cover all visibilities.
      */

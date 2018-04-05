@@ -63,6 +63,7 @@ public final class ParameterizedMetricKey<N extends Node> {
      *
      * @return An instance of parameterized metric key corresponding to the parameters
      */
+    @SuppressWarnings("PMD.SingletonClassReturningNewInstance")
     public static <N extends Node> ParameterizedMetricKey<N> getInstance(MetricKey<N> key, MetricOptions options) {
         ParameterizedMetricKey<N> tmp = new ParameterizedMetricKey<>(key, options);
         if (!POOL.containsKey(tmp)) {

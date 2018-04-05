@@ -13,7 +13,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -209,8 +208,7 @@ public class SimpleNodeTest {
     @Test
     public void testContainsNoInner() {
         ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER).iterator().next();
-        List<ASTFieldDeclaration> res = new ArrayList<>();
-        c.findDescendantsOfType(ASTFieldDeclaration.class, res, false);
+        List<ASTFieldDeclaration> res = c.findDescendantsOfType(ASTFieldDeclaration.class);
         assertTrue(res.isEmpty());
         /*
          * String expectedXml =
@@ -254,8 +252,7 @@ public class SimpleNodeTest {
     @Test
     public void testContainsNoInnerWithAnonInner() {
         ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER_WITH_ANON_INNER).iterator().next();
-        List<ASTFieldDeclaration> res = new ArrayList<>();
-        c.findDescendantsOfType(ASTFieldDeclaration.class, res, false);
+        List<ASTFieldDeclaration> res = c.findDescendantsOfType(ASTFieldDeclaration.class);
         assertTrue(res.isEmpty());
     }
 

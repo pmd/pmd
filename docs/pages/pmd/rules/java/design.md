@@ -193,9 +193,33 @@ public void bar() {
 
 **Priority:** High (1)
 
-Avoid throwing NullPointerExceptions. These are confusing because most people will assume that the
-virtual machine threw it. Consider using an IllegalArgumentException instead; this will be
-clearly seen as a programmer-initiated exception.
+Avoid throwing NullPointerExceptions manually. These are confusing because most people will assume that the
+virtual machine threw it.  To avoid a method being called with a null parameter, you may consider 
+using an IllegalArgumentException instead, making it clearly seen as a programmer-initiated exception. 
+However, there are better ways to handle this:
+
+>*Effective Java, 3rd Edition, Item 72: Favor the use of standard exceptions*
+>
+>Arguably, every erroneous method invocation boils down to an illegal argument or state, 
+but other exceptions are standardly used for certain kinds of illegal arguments and states. 
+If a caller passes null in some parameter for which null values are prohibited, convention dictates that 
+NullPointerException be thrown rather than IllegalArgumentException.
+
+To implement that, you are encouraged to use `java.util.Objects.requireNonNull()`
+(introduced in Java 1.7). This method is designed primarily for doing parameter
+validation in methods and constructors with multiple parameters.
+
+Your parameter validation could thus look like the following:
+```
+public class Foo {
+    private String exampleValue;
+      
+    void setExampleValue(String exampleValue) {
+      // check, throw and assignment in a single standard call
+      this.exampleValue = Objects.requireNonNull(exampleValue, "exampleValue must not be null!");
+    }
+  }
+```
 
 ```
 //AllocationExpression/ClassOrInterfaceType[@Image='NullPointerException']
@@ -806,6 +830,12 @@ public class Foo {
   }
 }
 ```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|ignoredAnnotations|[lombok.Setter, lombok.Getter, lombok.Builder, lombok.Data, lombok.RequiredArgsConstructor, lombok.AllArgsConstructor, lombok.Value, lombok.NoArgsConstructor]|Fully qualified names of the annotation types that should be ignored by this rule|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1525,6 +1555,7 @@ public class Foo {
 |----|-------------|-----------|
 |disallowNotAssignment|false|Disallow violations where the first usage is not an assignment|
 |checkInnerClasses|false|Check inner classes|
+|ignoredAnnotations|[lombok.Setter, lombok.Getter, lombok.Builder, lombok.Data, lombok.RequiredArgsConstructor, lombok.AllArgsConstructor, lombok.Value, lombok.NoArgsConstructor]|Fully qualified names of the annotation types that should be ignored by this rule|
 
 **Use this rule by referencing it:**
 ``` xml

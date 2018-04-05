@@ -109,11 +109,7 @@ public class JavaNameOccurrence implements NameOccurrence {
             return false;
         }
 
-        if (isCompoundAssignment(primaryExpression)) {
-            return false;
-        }
-
-        return true;
+        return !isCompoundAssignment(primaryExpression);
     }
 
     private boolean isCompoundAssignment(Node primaryExpression) {

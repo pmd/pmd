@@ -28,6 +28,7 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ClassNamingConventions");
         addRule(RULESET, "CommentDefaultAccessModifier");
         addRule(RULESET, "ConfusingTernary");
+        addRule(RULESET, "ControlStatementBraces");
         addRule(RULESET, "DefaultPackage");
         addRule(RULESET, "DontImportJavaLang");
         addRule(RULESET, "DuplicateImports");
@@ -58,6 +59,7 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ShortVariable");
         addRule(RULESET, "SuspiciousConstantFieldName");
         addRule(RULESET, "TooManyStaticImports");
+        addRule(RULESET, "UnnecessaryAnnotationValueElement");
         addRule(RULESET, "UnnecessaryConstructor");
         addRule(RULESET, "UnnecessaryFullyQualifiedName");
         addRule(RULESET, "UnnecessaryLocalBeforeReturn");

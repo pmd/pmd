@@ -80,7 +80,6 @@ import net.sourceforge.pmd.util.IOUtil;
  * </ul>
  */
 public class PMDConfiguration extends AbstractConfiguration {
-
     // General behavior options
     private String suppressMarker = PMD.SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
@@ -105,7 +104,8 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     private boolean stressTest;
     private boolean benchmark;
-    private AnalysisCache analysisCache;
+    private AnalysisCache analysisCache = new NoopAnalysisCache();
+    private boolean ignoreIncrementalAnalysis;
 
     /**
      * Get the suppress marker. This is the source level marker used to indicate
@@ -552,8 +552,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Sets the rule set factory compatibility feature enabled/disabled.
      *
-     * @param ruleSetFactoryCompatibilityEnabled
-     *            <code>true</code> if the feature should be enabled
+     * @param ruleSetFactoryCompatibilityEnabled {@code true} if the feature should be enabled
      *
      * @see RuleSetFactoryCompatibility
      */
@@ -568,8 +567,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public AnalysisCache getAnalysisCache() {
         // Make sure we are not null
-        if (analysisCache == null) {
-            setAnalysisCache(null);
+        if (analysisCache == null || isIgnoreIncrementalAnalysis() && !(analysisCache instanceof NoopAnalysisCache)) {
+            // sets a noop cache
+            setAnalysisCache(new NoopAnalysisCache());
         }
 
         return analysisCache;
@@ -577,16 +577,16 @@ public class PMDConfiguration extends AbstractConfiguration {
     
     /**
      * Sets the analysis cache to be used. Setting a
-     * value of <code>null</code> will cause a Noop AnalysisCache to be used.
-     * 
+     * value of {@code null} will cause a Noop AnalysisCache to be used.
+     * If incremental analysis was explicitly disabled ({@link #isIgnoreIncrementalAnalysis()}),
+     * then this method is a noop.
+     *
      * @param cache The analysis cache to be used.
      */
     public void setAnalysisCache(final AnalysisCache cache) {
-        if (cache == null) {
-            analysisCache = new NoopAnalysisCache();
-        } else {
-            analysisCache = cache;
-        }
+        // the doc says it's a noop if incremental analysis was disabled,
+        // but it's actually the getter that enforces that
+        this.analysisCache = cache == null ? new NoopAnalysisCache() : cache;
     }
 
     /**
@@ -596,10 +596,32 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param cacheLocation The location of the analysis cache to be used.
      */
     public void setAnalysisCacheLocation(final String cacheLocation) {
-        if (cacheLocation == null) {
-            setAnalysisCache(null);
-        } else {
-            setAnalysisCache(new FileAnalysisCache(new File(cacheLocation)));
-        }
+        setAnalysisCache(cacheLocation == null
+                                 ? new NoopAnalysisCache()
+                                 : new FileAnalysisCache(new File(cacheLocation)));
+    }
+
+
+    /**
+     * Sets whether the user has explicitly disabled incremental analysis or not.
+     * If so, incremental analysis is not used, and all suggestions to use it are
+     * disabled. The analysis cached location is ignored, even if it's specified.
+     *
+     * @param noCache Whether to ignore incremental analysis or not
+     */
+    public void setIgnoreIncrementalAnalysis(boolean noCache) {
+        // see #getAnalysisCache for the implementation.
+        this.ignoreIncrementalAnalysis = noCache;
+    }
+
+
+    /**
+     * Returns whether incremental analysis was explicitly disabled by the user
+     * or not.
+     *
+     * @return {@code true} if incremental analysis is explicitly disabled
+     */
+    public boolean isIgnoreIncrementalAnalysis() {
+        return ignoreIncrementalAnalysis;
     }
 }

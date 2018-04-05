@@ -237,14 +237,34 @@ public abstract class AbstractNode implements Node {
         return parents;
     }
 
+    @SafeVarargs
+    @Override
+    public final <T> T getFirstParentOfAnyType(Class<? extends T>... parentTypes) {
+        Node parentNode = jjtGetParent();
+        while (parentNode != null) {
+            for (Class<? extends T> c : parentTypes) {
+                if (c.isInstance(parentNode)) {
+                    return c.cast(parentNode);
+                }
+            }
+            parentNode = parentNode.jjtGetParent();
+        }
+        return null;
+    }
 
     @Override
     public <T> List<T> findDescendantsOfType(Class<T> targetType) {
         List<T> list = new ArrayList<>();
-        findDescendantsOfType(this, targetType, list, true);
+        findDescendantsOfType(this, targetType, list, false);
         return list;
     }
 
+    // TODO : Add to Node interface in 7.0.0
+    public <T> List<T> findDescendantsOfType(final Class<T> targetType, final boolean crossBoundaries) {
+        final List<T> list = new ArrayList<>();
+        findDescendantsOfType(this, targetType, list, crossBoundaries);
+        return list;
+    }
 
     @Override
     public <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossBoundaries) {
@@ -254,17 +274,15 @@ public abstract class AbstractNode implements Node {
     private static <T> void findDescendantsOfType(Node node, Class<T> targetType, List<T> results,
             boolean crossFindBoundaries) {
 
-        if (!crossFindBoundaries && node.isFindBoundary()) {
-            return;
-        }
-
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node child = node.jjtGetChild(i);
             if (child.getClass() == targetType) {
                 results.add(targetType.cast(child));
             }
 
-            findDescendantsOfType(child, targetType, results, crossFindBoundaries);
+            if (crossFindBoundaries || !child.isFindBoundary()) {
+                findDescendantsOfType(child, targetType, results, crossFindBoundaries);
+            }
         }
     }
 
@@ -340,16 +358,18 @@ public abstract class AbstractNode implements Node {
     }
 
 
-    private static <T> T getFirstDescendantOfType(Class<T> descendantType, Node node) {
-        int n = node.jjtGetNumChildren();
+    private static <T> T getFirstDescendantOfType(final Class<T> descendantType, final Node node) {
+        final int n = node.jjtGetNumChildren();
         for (int i = 0; i < n; i++) {
             Node n1 = node.jjtGetChild(i);
-            if (n1.getClass() == descendantType) {
+            if (descendantType.isAssignableFrom(n1.getClass())) {
                 return descendantType.cast(n1);
             }
-            T n2 = getFirstDescendantOfType(descendantType, n1);
-            if (n2 != null) {
-                return n2;
+            if (!n1.isFindBoundary()) {
+                final T n2 = getFirstDescendantOfType(descendantType, n1);
+                if (n2 != null) {
+                    return n2;
+                }
             }
         }
         return null;

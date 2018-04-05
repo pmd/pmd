@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
@@ -127,10 +126,6 @@ public class PMDASMVisitor extends ClassVisitor {
     }
 
     @Override
-    public void visitSource(String source, String debug) {
-    }
-
-    @Override
     public void visitInnerClass(String name, String outerName, String innerName, int access) {
         if (!this.outerName.replace('.', '/').equals(outerName)) {
             // do not consider the inner class if it is not a member of our
@@ -145,14 +140,6 @@ public class PMDASMVisitor extends ClassVisitor {
             innerClasses.add(name.replace('/', '.'));
         }
         packages.put(innerName, name.replace('/', '.'));
-    }
-
-    @Override
-    public void visitOuterClass(String owner, String name, String desc) {
-    }
-
-    @Override
-    public void visitEnd() {
     }
 
     private void addMethodDesc(String desc) {
@@ -181,10 +168,6 @@ public class PMDASMVisitor extends ClassVisitor {
         }
     }
 
-    @Override
-    public void visitAttribute(Attribute attr) {
-    }
-
     /*
      * Start visitors
      */
@@ -202,14 +185,6 @@ public class PMDASMVisitor extends ClassVisitor {
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
             parent.addType(Type.getType(desc));
             return parent.annotationVisitor;
-        }
-
-        @Override
-        public void visitAttribute(Attribute attr) {
-        }
-
-        @Override
-        public void visitEnd() {
         }
     }
 
@@ -238,10 +213,6 @@ public class PMDASMVisitor extends ClassVisitor {
         }
 
         @Override
-        public void visitEnd() {
-        }
-
-        @Override
         public void visit(String name, Object value) {
             if (value instanceof Type) {
                 parent.addType((Type) value);
@@ -255,10 +226,6 @@ public class PMDASMVisitor extends ClassVisitor {
         PMDSignatureVisitor(PMDASMVisitor visitor) {
             super(Opcodes.ASM5);
             this.parent = visitor;
-        }
-
-        @Override
-        public void visitFormalTypeParameter(String name) {
         }
 
         @Override
@@ -297,14 +264,6 @@ public class PMDASMVisitor extends ClassVisitor {
         }
 
         @Override
-        public void visitBaseType(char descriptor) {
-        }
-
-        @Override
-        public void visitTypeVariable(String name) {
-        }
-
-        @Override
         public SignatureVisitor visitArrayType() {
             return this;
         }
@@ -320,16 +279,8 @@ public class PMDASMVisitor extends ClassVisitor {
         }
 
         @Override
-        public void visitTypeArgument() {
-        }
-
-        @Override
         public SignatureVisitor visitTypeArgument(char wildcard) {
             return this;
-        }
-
-        @Override
-        public void visitEnd() {
         }
     }
 
@@ -343,11 +294,6 @@ public class PMDASMVisitor extends ClassVisitor {
 
         @Override
         public AnnotationVisitor visitParameterAnnotation(int parameter, String desc, boolean visible) {
-            parent.addType(Type.getType(desc));
-            return parent.annotationVisitor;
-        }
-
-        public AnnotationVisitor visitAnnotation(String name, String desc) {
             parent.addType(Type.getType(desc));
             return parent.annotationVisitor;
         }
@@ -400,56 +346,8 @@ public class PMDASMVisitor extends ClassVisitor {
         }
 
         @Override
-        public void visitCode() {
-        }
-
-        @Override
-        public void visitFrame(int type, int nLocal, Object[] local, int nStack, Object[] stack) {
-        }
-
-        @Override
-        public void visitInsn(int opcode) {
-        }
-
-        @Override
-        public void visitIntInsn(int opcode, int operand) {
-        }
-
-        @Override
-        public void visitVarInsn(int opcode, int var) {
-        }
-
-        @Override
-        public void visitJumpInsn(int opcode, Label label) {
-        }
-
-        @Override
-        public void visitLabel(Label label) {
-        }
-
-        @Override
-        public void visitIincInsn(int var, int increment) {
-        }
-
-        @Override
-        public void visitTableSwitchInsn(int min, int max, Label dflt, Label... labels) {
-        }
-
-        @Override
-        public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
-        }
-
-        @Override
         public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
             parent.parseClassName(type);
-        }
-
-        @Override
-        public void visitLineNumber(int line, Label start) {
-        }
-
-        @Override
-        public void visitMaxs(int maxStack, int maxLocals) {
         }
 
         @Override
@@ -462,14 +360,5 @@ public class PMDASMVisitor extends ClassVisitor {
             parent.addType(Type.getType(desc));
             return parent.annotationVisitor;
         }
-
-        @Override
-        public void visitEnd() {
-        }
-
-        @Override
-        public void visitAttribute(Attribute attr) {
-        }
-
     }
 }

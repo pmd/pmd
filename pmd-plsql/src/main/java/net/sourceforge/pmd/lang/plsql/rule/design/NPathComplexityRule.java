@@ -364,7 +364,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
         }
         // add in npath of last label
         npath += caseRange;
-        LOGGER.exiting(CLASS_NAME, "visit(ASTCaseWhenClause)", (boolCompSwitch + npath));
+        LOGGER.exiting(CLASS_NAME, "visit(ASTCaseWhenClause)", boolCompSwitch + npath);
         return Integer.valueOf(boolCompSwitch + npath);
     }
 
@@ -386,7 +386,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
         }
         // add in npath of last label
         npath += caseRange;
-        LOGGER.exiting(CLASS_NAME, "visit(ASTCaseStatement)", (boolCompSwitch + npath));
+        LOGGER.exiting(CLASS_NAME, "visit(ASTCaseStatement)", boolCompSwitch + npath);
         return Integer.valueOf(boolCompSwitch + npath);
     }
 

@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.ast.xpath.Attribute;
  * @version $Id$
  */
 @Deprecated // to be removed with PMD 7.0.0
-public class AttributeToolkit {
+public final class AttributeToolkit {
 
     private AttributeToolkit() { }
 

@@ -46,7 +46,7 @@ import net.sourceforge.pmd.util.filter.Filters;
  *
  * @author Ryan Gustafson &lt;ryan.gustafson@gmail.com&gt;
  */
-public class DCD {
+public final class DCD {
     //
     // TODO Implement the direct users, indirect users, and dead code
     // candidate sets. Use the pmd.util.filter.Filter APIs. Need to come up
