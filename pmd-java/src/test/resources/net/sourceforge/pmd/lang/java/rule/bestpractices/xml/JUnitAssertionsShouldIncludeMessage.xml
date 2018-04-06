@@ -426,4 +426,21 @@ public class TestNgTestCase {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>
+Issue #1009: JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
+class SimpleTest {
+    @Test
+    public void simpleMethod() {
+        assertEquals(0, 1, "Not equals 0 != 1");
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>
