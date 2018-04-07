@@ -13,9 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -71,20 +69,18 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
         // A class without declarations shouldn't be reported
         boolean hasAny = false;
 
-        // we could probably enrich ASTAnyTypeBodyDeclaration
-        // with methods to know what kind of declaration it is
         for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
-            AccessNode accessNode = decl.getFirstChildOfType(AccessNode.class);
-            ASTInitializer initializer = decl.getFirstChildOfType(ASTInitializer.class);
-            if (accessNode != null && !(accessNode instanceof ASTConstructorDeclaration)) {
+            switch (decl.getKind()) {
+            case FIELD:
+            case METHOD:
                 hasAny = true;
-                if (!accessNode.isStatic()) {
+                if (!((AccessNode) decl.getDeclarationNode()).isStatic()) {
                     return false;
                 }
-            }
+                break;
 
-            if (initializer != null && !initializer.isStatic()) {
-                return false;
+            default:
+                break;
             }
         }
 
