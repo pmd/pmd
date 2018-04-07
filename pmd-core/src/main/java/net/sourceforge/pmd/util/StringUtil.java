@@ -603,4 +603,32 @@ public final class StringUtil {
     public static String[] getEmptyStrings() {
         return EMPTY_STRINGS;
     }
+
+
+    /**
+     * Converts the given string to Camel case,
+     * that is, removing all spaces, and capitalising
+     * the first letter of each word except the first.
+     *
+     * <p>If the first word starts with an uppercase
+     * letter, it's kept as is. This method can thus
+     * be used for Pascal case too.
+     *
+     * @param name The string to convert
+     *
+     * @return The string converted to Camel case
+     */
+    public static String toCamelCase(String name) {
+        StringBuilder sb = new StringBuilder();
+        boolean isFirst = true;
+        for (String word : name.trim().split("\\s++")) {
+            if (isFirst) {
+                sb.append(word);
+                isFirst = false;
+            } else {
+                sb.append(StringUtils.capitalize(word));
+            }
+        }
+        return sb.toString();
+    }
 }

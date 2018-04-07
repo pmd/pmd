@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -19,6 +17,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.RegexProperty;
 import net.sourceforge.pmd.properties.RegexProperty.RegexPBuilder;
+import net.sourceforge.pmd.util.StringUtil;
 
 
 /**
@@ -119,23 +118,8 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
     }
 
 
-    private static String toCamelCase(String name) {
-        StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for (String word : name.trim().split("\\s++")) {
-            if (isFirst) {
-                sb.append(word);
-                isFirst = false;
-            } else {
-                sb.append(StringUtils.capitalize(word));
-            }
-        }
-        return sb.toString();
-    }
-
-
     private static RegexPBuilder defaultProp(String name) {
-        return RegexProperty.named(toCamelCase(name) + "Pattern")
+        return RegexProperty.named(StringUtil.toCamelCase(name) + "Pattern")
                             .desc("Regex which applies to " + name.trim() + " names")
                             .defaultValue("[A-Z][a-zA-Z]+");
 
