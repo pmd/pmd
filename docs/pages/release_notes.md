@@ -18,7 +18,7 @@ This is a minor release.
     *   [Modified Rules](#modified-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
-  * [Deprecated Rules](#deprecated-rules)
+    *   [Deprecated Rules](#deprecated-rules)
 * [External Contributions](#external-contributions)
 
 ### New and noteworthy
@@ -37,12 +37,12 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
 
 #### Naming rules enhancements
 
- * [`ClassNamingConventions`](pmd_rules_java_codestyle.html#classnamingconventions)
-  has been enhanced to allow granular configuration of naming
-  conventions for different kinds of type declarations (eg enum or abstract
-  class). Each kind of declaration can use its own naming convention
-  using a regex property. See the rule's documentation for more info about
-  configuration and default conventions.
+ *   [`ClassNamingConventions`](pmd_rules_java_codestyle.html#classnamingconventions)
+     has been enhanced to allow granular configuration of naming
+     conventions for different kinds of type declarations (eg enum or abstract
+     class). Each kind of declaration can use its own naming convention
+     using a regex property. See the rule's documentation for more info about
+     configuration and default conventions.
 
 #### Modified Rules
 
@@ -73,12 +73,10 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
   in favour of [`ClassNamingConventions`](pmd_rules_java_codestyle.html#classnamingconventions).
   See [Naming rules enhancements](#naming-rules-enhancements).
 
-
-
-
 ### External Contributions
 
 *   [#1002](https://github.com/pmd/pmd/pull/1002): \[doc] Delete duplicate page contributing.md on the website - [Ishan Srivastava](https://github.com/ishanSrt)
 *   [#1008](https://github.com/pmd/pmd/pull/1008): \[core] DOC: fix closing tag for &lt;pmdVersion> - [stonio](https://github.com/stonio)
 *   [#1010](https://github.com/pmd/pmd/pull/1010): \[java] UnnecessaryConstructor triggered on required empty constructor (Dagger @Inject) - [BBG](https://github.com/djydewang)
 *   [#1012](https://github.com/pmd/pmd/pull/1012): \[java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5 - [BBG](https://github.com/djydewang)
+
