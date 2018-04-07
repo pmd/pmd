@@ -1528,28 +1528,14 @@ public class Foo {
           language="java"
           since="1.0"
           message="Avoid unnecessary constructors - the compiler will generate these for you"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryConstructorRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryconstructor">
         <description>
-This rule detects when a constructor is not necessary; i.e., when there is only one constructor,
-it's public, has an empty body, and takes no arguments.
+This rule detects when a constructor is not necessary; i.e., when there is only one constructor and the
+constructor is identical to the default constructor. The default constructor should has same access
+modifier as the declaring class. In an enum type, the default constructor is implicitly private.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceBody[count(ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)=1]
-/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration
-[@Public='true']
-[not(FormalParameters/*)]
-[not(BlockStatement)]
-[not(NameList)]
-[count(ExplicitConstructorInvocation/Arguments/ArgumentList/Expression)=0]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public class Foo {

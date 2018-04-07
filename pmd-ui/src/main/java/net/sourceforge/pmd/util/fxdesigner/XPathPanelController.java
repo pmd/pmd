@@ -12,6 +12,8 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.Validator;
 import org.reactfx.EventStreams;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
@@ -40,11 +42,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 
 /**
@@ -89,11 +98,58 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     public void initialize(URL location, ResourceBundle resources) {
         xpathExpressionArea.setSyntaxHighlightingEnabled(new XPathSyntaxHighlighter());
 
+        initGenerateXPathFromStackTrace();
+
         EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
                     .filter(Objects::nonNull)
                     .subscribe(parent::onNodeItemSelected);
 
         Platform.runLater(this::bindToParent);
+    }
+
+    private void initGenerateXPathFromStackTrace() {
+
+        ContextMenu menu = new ContextMenu();
+
+        MenuItem item = new MenuItem("Generate from stack trace...");
+        item.setOnAction(e -> {
+            try {
+                Stage popup = new Stage();
+                FXMLLoader loader = new FXMLLoader(DesignerUtil.getFxml("generate-xpath-from-stack-trace.fxml"));
+                Parent root = loader.load();
+                Button button = (Button) loader.getNamespace().get("generateButton");
+                TextArea area = (TextArea) loader.getNamespace().get("stackTraceArea");
+
+                ValidationSupport validation = new ValidationSupport();
+
+                validation.registerValidator(area, Validator.createEmptyValidator("The stack trace may not be empty"));
+                button.disableProperty().bind(validation.invalidProperty());
+
+                button.setOnAction(f -> {
+                    DesignerUtil.stackTraceToXPath(area.getText()).ifPresent(xpathExpressionArea::replaceText);
+                    popup.close();
+                });
+
+
+
+                popup.setScene(new Scene(root));
+                popup.initStyle(StageStyle.UTILITY);
+                popup.initModality(Modality.WINDOW_MODAL);
+                popup.initOwner(designerRoot.getMainStage());
+                popup.show();
+            } catch (IOException e1) {
+                throw new RuntimeException(e1);
+            }
+        });
+
+        menu.getItems().add(item);
+
+        xpathExpressionArea.addEventHandler(MouseEvent.MOUSE_CLICKED, t -> {
+            if (t.getButton() == MouseButton.SECONDARY
+                    || t.getButton() == MouseButton.PRIMARY && t.getClickCount() > 1) {
+                menu.show(xpathExpressionArea, t.getScreenX(), t.getScreenY());
+            }
+        });
     }
 
 

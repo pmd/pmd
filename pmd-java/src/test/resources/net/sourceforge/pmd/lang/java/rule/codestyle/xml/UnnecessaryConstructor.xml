@@ -161,4 +161,59 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Issue #1003: UnnecessaryConstructor triggered on required empty constructor (Dagger @Inject)
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+  @Inject
+  public Foo() {
+      super();
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+the class is declared protected -- 1
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  protected class Inner {
+    public Inner(){}
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+the class is declared protected -- 2
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+  protected class Inner {
+    protected Inner(){}
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+unnecessary constructor in enum
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public enum Foo {
+  MON, TUE;
+  private Foo() {}
+}
+     ]]></code>
+    </test-code>
 </test-data>

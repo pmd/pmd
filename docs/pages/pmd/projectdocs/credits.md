@@ -437,6 +437,16 @@ author: Tom Copeland <tom@infoether.org>
 
 <table>
     <tr>
+        <td><center><img src="images/credits/MD_logo4c_120x120.png"/></center></td>
+        <td>
+            <a href="https://www.microdoc.com">MicroDoc</a> for sponsoring PMD development.
+            MicroDoc is a software business serving an international customer base. Since 1991 MicroDoc
+            has grown into a technology oriented software engineering and professional services company.
+            Our focus on complex software technology and software infrastructure made us a well
+            respected partner for large corporations and even for other software businesses.
+        </td>
+    </tr>
+    <tr>
         <td><center><img src="images/credits/ae-logo.gif"/></center></td>
         <td>
             <a href="http://www.ae.be/">AE</a> for the JSP integration and especially for writing the JSP grammar.
