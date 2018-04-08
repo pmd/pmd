@@ -39,6 +39,18 @@ public class Foo {
 }
  ]]>    </code>
     </test-code>
+	<test-code>
+        <description><![CDATA[
+Enum wrong class name
+        ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public enum Foo {
+    TEST;
+    private static final Log LOG = LogFactory.getLog(Bar.class);
+}
+ ]]>    </code>
+    </test-code>
     <test-code>
         <description><![CDATA[
 bug 1626232, a separate variable initialization should not confuse the rule
@@ -51,6 +63,18 @@ public class Foo {
     Foo(Log log) {
         this.log = log;
     }
+}
+ ]]>    </code>
+    </test-code>
+	    <test-code>
+        <description><![CDATA[
+Enums shoud be accepted for declaration
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum Foo {
+    TEST;
+    private static final Log LOG = LogFactory.getLog(Foo.class);
 }
  ]]>    </code>
     </test-code>
