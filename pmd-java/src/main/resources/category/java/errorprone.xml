@@ -2577,7 +2577,7 @@ with the restriction that the logger needs to be passed into the constructor.
  and
  not(FieldDeclaration[@Final='true'][@Static='true'][@Private='true'][.//VariableDeclaratorId[@Image=$staticLoggerName]]
  and
- ((//ArgumentList//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDeclaration/@Image) or (//ArgumentList//ClassOrInterfaceType/@Image = ancestor::EnumDeclaration/@Image)))
+ //ArgumentList//ClassOrInterfaceType[@Image = ancestor::ClassOrInterfaceDeclaration/@Image or @Image = ancestor::EnumDeclaration/@Image])
  and
  not(FieldDeclaration[@Final='true'][@Private='true'][.//VariableDeclaratorId[@Image='log']]
  [count(.//VariableInitializer)=0]
