@@ -14,9 +14,11 @@ This is a minor release.
 
 * [New and noteworthy](#new-and-noteworthy)
     *   [Tree transversal revision](#tree-transversal-revision)
+    *   [Naming rules enhancements](#naming-rules-enhancements)
     *   [Modified Rules](#modified-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
+    *   [Deprecated Rules](#deprecated-rules)
 * [External Contributions](#external-contributions)
 
 ### New and noteworthy
@@ -33,12 +35,22 @@ This change implies several false positives / unexpected results (ie: `ASTBlockS
 have been fixed; and lots of searches are now restricted to smaller search areas, which improves performance (depending on the project,
 we have measured up to 10% improvements during Type Resolution, Symbol Table analysis, and some rule's application).
 
+#### Naming rules enhancements
+
+ *   [`ClassNamingConventions`](pmd_rules_java_codestyle.html#classnamingconventions)
+     has been enhanced to allow granular configuration of naming
+     conventions for different kinds of type declarations (eg enum or abstract
+     class). Each kind of declaration can use its own naming convention
+     using a regex property. See the rule's documentation for more info about
+     configuration and default conventions.
+
 #### Modified Rules
 
 *   The Java rule `UnnecessaryConstructor` (`java-codestyle`) has been rewritten as a Java rule (previously it was
     a XPath-based rule). It supports a new property `ignoredAnnotations` and ignores by default empty constructors,
     that are annotated with `javax.inject.Inject`. Additionally, it detects now also unnecessary private constructors
     in enums.
+
 
 ### Fixed Issues
 
@@ -55,9 +67,16 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
 
 ### API Changes
 
+#### Deprecated Rules
+
+  * The Java rule `AbstractNaming` (category `codestyle`) is deprecated
+  in favour of [`ClassNamingConventions`](pmd_rules_java_codestyle.html#classnamingconventions).
+  See [Naming rules enhancements](#naming-rules-enhancements).
+
 ### External Contributions
 
 *   [#1002](https://github.com/pmd/pmd/pull/1002): \[doc] Delete duplicate page contributing.md on the website - [Ishan Srivastava](https://github.com/ishanSrt)
 *   [#1008](https://github.com/pmd/pmd/pull/1008): \[core] DOC: fix closing tag for &lt;pmdVersion> - [stonio](https://github.com/stonio)
 *   [#1010](https://github.com/pmd/pmd/pull/1010): \[java] UnnecessaryConstructor triggered on required empty constructor (Dagger @Inject) - [BBG](https://github.com/djydewang)
 *   [#1012](https://github.com/pmd/pmd/pull/1012): \[java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5 - [BBG](https://github.com/djydewang)
+

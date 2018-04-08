@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.Rule;
 
-public class ASTClassOrInterfaceBodyDeclaration extends AbstractJavaNode implements CanSuppressWarnings, ASTAnyTypeBodyDeclaration {
+public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclaration implements CanSuppressWarnings, ASTAnyTypeBodyDeclaration {
 
     public ASTClassOrInterfaceBodyDeclaration(int id) {
         super(id);

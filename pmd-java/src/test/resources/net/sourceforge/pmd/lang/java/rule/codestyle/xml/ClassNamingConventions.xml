@@ -1,24 +1,183 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description><![CDATA[
-class names should not start with lowercase character
-     ]]></description>
-        <expected-problems>1</expected-problems>
+        <description>Default config reports on every type decl</description>
+        <expected-problems>5</expected-problems>
         <code><![CDATA[
-public class foo {};
+            public class foo {
+
+                public @interface Foo_Bar { }
+
+                public enum $Enum$ { }
+
+                interface café { }
+
+                public abstract class tehehe { }
+
+            }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-all is well
-     ]]></description>
+        <description>This is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class FooBar {};
-     ]]></code>
+            public class FooBar {
+            }
+            ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Control annotation convention</description>
+        <rule-property name="annotationPattern">[a-z][A-Za-z]*</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The class name 'foo' doesn't match '[A-Z][a-zA-Z]+'</message>
+        </expected-messages>
+        <code><![CDATA[
+            @covfefe
+            public class foo {
+
+                @interface covfefe {
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Utility class convention</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z]+Util'</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+
+                static final int ZERO = 0;
+
+                static int bar() {
+                    return bar();
+                }
+
+                static class BarUtil {
+
+                    static final int ONE = 1;
+
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class with only empty decls should not be a utility class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                ;;;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class with some instance fields should not be a utility class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Position {
+                final int x;
+                final int y;
+
+
+                private Position(int px, int py) {
+                    x = px;
+                    y = py;
+                }
+
+                static Position of(int px, int py) {
+                    new Position(px, py);
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class with static initializer alone should not be a utility class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                static {
+                    // ugly side effects
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class with instance initializer should not be a utility class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                {
+                    // ugly side effects
+                }
+
+                static final int ZERO = 0;
+
+
+                static int bar() {
+                    return bar();
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class with only static members except constructors should be a utility class</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z]+Util'</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+
+                private Foo() {
+                }
+
+                public Foo() {
+                    // This constructor shouldn't exist,
+                    // but we consider the class a utility class anyway
+                }
+
+                static final int ZERO = 0;
+
+
+                static int bar() {
+                    return bar();
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class with only constructors should not be a utility class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                private Foo() {
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>

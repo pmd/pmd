@@ -12,6 +12,7 @@ Rules which enforce a specific coding style.
     <rule name="AbstractNaming"
           language="java"
           since="1.4"
+          deprecated="true"
           message="Abstract classes should be named 'AbstractXXX'"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#abstractnaming">
@@ -370,16 +371,33 @@ public class Foo extends Bar{
 
     <rule name="ClassNamingConventions"
           since="1.2"
-          message="Class names should begin with an uppercase character"
+          message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.ClassNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#classnamingconventions">
         <description>
-Class names should always begin with an upper case character.
+            Configurable naming conventions for type declarations. This rule reports
+            type declarations which do not match the regex that applies to their
+            specific kind (e.g. enum or interface). Each regex can be configured through
+            properties.
+
+            By default this rule uses the standard Java naming convention (Pascal case),
+            and reports utility class names not ending with 'Util'.
         </description>
         <priority>1</priority>
         <example>
 <![CDATA[
-public class Foo {}
+// This is Pascal case, the recommended naming convention in Java
+// Note that the default values of this rule don't allow numbers,
+// underscores, or accented characters in type names
+public class FooBar {}
+
+// You may want abstract classes to be named 'AbstractXXX',
+// in which case you can customize the regex for abstract
+// classes to 'Abstract[A-Z]\w+'
+public abstract class Thing {}
+
+// This class doesn't respect the convention, and will be flagged
+public class Éléphant {}
 ]]>
         </example>
     </rule>

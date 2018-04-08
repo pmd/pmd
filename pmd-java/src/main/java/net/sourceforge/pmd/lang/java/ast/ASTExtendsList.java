@@ -5,6 +5,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * <pre>
+ *  ExtendsList ::= "extends" (TypeAnnotation)* ClassOrInterfaceType
+ *                ( "," (TypeAnnotation)* ClassOrInterfaceType )*
+ * </pre>
+ */
 public class ASTExtendsList extends AbstractJavaNode {
     public ASTExtendsList(int id) {
         super(id);
