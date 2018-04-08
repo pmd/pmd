@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -77,6 +78,11 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
                     return false;
                 }
                 break;
+                
+            case INITIALIZER:
+                if (!((ASTInitializer) decl.getDeclarationNode()).isStatic()) {
+                    return false;
+                }
 
             default:
                 break;
