@@ -9,6 +9,8 @@ keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, A
 ---
 ## AbstractNaming
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 1.4
 
 **Priority:** Medium (3)
@@ -365,15 +367,43 @@ public class Foo extends Bar{
 
 **Priority:** High (1)
 
-Class names should always begin with an upper case character.
+Configurable naming conventions for type declarations. This rule reports
+type declarations which do not match the regex that applies to their
+specific kind (e.g. enum or interface). Each regex can be configured through
+properties.
+
+By default this rule uses the standard Java naming convention (Pascal case),
+and reports utility class names not ending with 'Util'.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.ClassNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/ClassNamingConventionsRule.java)
 
 **Example(s):**
 
 ``` java
-public class Foo {}
+// This is Pascal case, the recommended naming convention in Java
+// Note that the default values of this rule don't allow numbers,
+// underscores, or accented characters in type names
+public class FooBar {}
+
+// You may want abstract classes to be named 'AbstractXXX',
+// in which case you can customize the regex for abstract
+// classes to 'Abstract[A-Z]\w+'
+public abstract class Thing {}
+
+// This class doesn't respect the convention, and will be flagged
+public class Éléphant {}
 ```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|classPattern|[A-Z][a-zA-Z]+|Regex which applies to concrete class names|
+|abstractClassPattern|[A-Z][a-zA-Z]+|Regex which applies to abstract class names|
+|interfacePattern|[A-Z][a-zA-Z]+|Regex which applies to interface names|
+|enumPattern|[A-Z][a-zA-Z]+|Regex which applies to enum names|
+|annotationPattern|[A-Z][a-zA-Z]+|Regex which applies to annotation names|
+|utilityClassPattern|[A-Z][a-zA-Z]+Util|Regex which applies to utility class names|
 
 **Use this rule by referencing it:**
 ``` xml
