@@ -11,7 +11,6 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 
 /**
@@ -24,8 +23,6 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
 
     /** Local index value for when the class is not local. */
     static final int NOTLOCAL_PLACEHOLDER = -1;
-
-    private static ClassLoader classLoader = PMDASMClassLoader.getInstance(JavaTypeQualifiedName.class.getClassLoader());
 
     // since we prepend each time, these lists are in the reversed order (innermost elem first).
     // we use ImmutableList.reverse() to get them in their usual, user-friendly order
@@ -44,6 +41,7 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
     private Class<?> representedType;
     private boolean typeLoaded;
 
+    private ClassLoader classLoader;
 
     JavaTypeQualifiedName(ImmutableList<String> packages, ImmutableList<String> classes, ImmutableList<Integer> localIndices) {
         Objects.requireNonNull(packages);
@@ -61,16 +59,12 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
 
 
     /**
-     * Sets the class loader used by qualified names to resolve their types.
-     * This method is called by the qualified name resolver during initialization.
-     *
-     * @param cl a class loader
+     * Sets the classloader to be used when resolving the actual type of this qualified name.
+     * @see #getType()
      */
-    static void setClassLoader(ClassLoader cl) {
-        ClassLoader asmCL = PMDASMClassLoader.getInstance(cl);
-        if (asmCL != null && !asmCL.equals(classLoader)) {
-            classLoader = asmCL;
-        }
+    JavaTypeQualifiedName withClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+        return this;
     }
 
 
@@ -203,8 +197,11 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
      * @throws ClassNotFoundException if the class is not found
      */
     private Class<?> loadType() throws ClassNotFoundException {
-        // hence why the toString should follow binary name specification
-        return classLoader.loadClass(getBinaryName());
+        if (classLoader != null) {
+            // hence why the toString should follow binary name specification
+            return classLoader.loadClass(getBinaryName());
+        }
+        return null;
     }
 
 

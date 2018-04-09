@@ -108,7 +108,7 @@ public final class QualifiedNameFactory {
             name = '.' + name; // unnamed package, marked by a full stop. See ofString's format below
         }
 
-        return (JavaTypeQualifiedName) ofString(name);
+        return ((JavaTypeQualifiedName) ofString(name)).withClassLoader(clazz.getClassLoader());
     }
 
 
