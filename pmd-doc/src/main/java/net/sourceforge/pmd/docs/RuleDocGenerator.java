@@ -314,7 +314,9 @@ public class RuleDocGenerator {
      */
     private void generateRuleSetIndex(Map<Language, List<RuleSet>> rulesets) throws IOException {
         for (Map.Entry<Language, List<RuleSet>> entry : rulesets.entrySet()) {
-            String languageTersename = entry.getKey().getTerseName();
+            Language language = entry.getKey();
+            String languageTersename = language.getTerseName();
+            String languageName = language.getName();
             for (RuleSet ruleset : entry.getValue()) {
                 String rulesetFilename = RuleSetUtils.getRuleSetFilename(ruleset);
                 String filename = RULESET_INDEX_FILENAME_PATTERN
@@ -336,6 +338,7 @@ public class RuleDocGenerator {
                 lines.add("sidebaractiveurl: /" + LANGUAGE_INDEX_PERMALINK_PATTERN.replace("${language.tersename}", languageTersename));
                 lines.add("editmepath: ../" + getRuleSetSourceFilepath(ruleset));
                 lines.add("keywords: " + getRuleSetKeywords(ruleset));
+                lines.add("language: " + languageName);
                 lines.add("---");
 
                 for (Rule rule : getSortedRules(ruleset)) {
