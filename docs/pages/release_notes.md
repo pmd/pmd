@@ -65,6 +65,7 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
     *   [#1009](https://github.com/pmd/pmd/issues/1009): \[java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5
 *   java-codestyle
     *   [#1003](https://github.com/pmd/pmd/issues/1003): \[java] UnnecessaryConstructor triggered on required empty constructor (Dagger @Inject)
+    *   [#1023](https://github.com/pmd/pmd/issues/1023): \[java] False positive for useless parenthesis
 
 ### API Changes
 
