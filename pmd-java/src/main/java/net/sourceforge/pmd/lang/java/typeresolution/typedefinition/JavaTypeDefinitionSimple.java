@@ -246,6 +246,11 @@ import java.util.logging.Logger;
                 .append(", definitionType=").append(getDefinitionType())
                 .append(", genericArgs=[");
         
+        // Forcefully resolve all generic types
+        for (int i = 0; i < genericArgs.size(); i++) {
+            getGenericType(i);
+        }
+        
         for (final JavaTypeDefinition jtd : genericArgs) {
             sb.append(jtd.shallowString()).append(", ");
         }
