@@ -6,6 +6,7 @@ folder: pmd/rules/ecmascript
 sidebaractiveurl: /pmd_rules_ecmascript.html
 editmepath: ../pmd-javascript/src/main/resources/category/ecmascript/errorprone.xml
 keywords: Error Prone, AvoidTrailingComma, EqualComparison, InnaccurateNumericLiteral
+language: Ecmascript
 ---
 ## AvoidTrailingComma
 

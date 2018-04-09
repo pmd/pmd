@@ -6,6 +6,7 @@ folder: pmd/rules/xsl
 sidebaractiveurl: /pmd_rules_xsl.html
 editmepath: ../pmd-xml/src/main/resources/category/xsl/performance.xml
 keywords: Performance, AvoidAxisNavigation
+language: XSL
 ---
 ## AvoidAxisNavigation
 

@@ -6,6 +6,7 @@ folder: pmd/rules/vf
 sidebaractiveurl: /pmd_rules_vf.html
 editmepath: ../pmd-visualforce/src/main/resources/category/vf/security.xml
 keywords: Security, VfCsrf, VfUnescapeEl
+language: Salesforce VisualForce
 ---
 ## VfCsrf
 

@@ -6,6 +6,7 @@ folder: pmd/rules/plsql
 sidebaractiveurl: /pmd_rules_plsql.html
 editmepath: ../pmd-plsql/src/main/resources/category/plsql/codestyle.xml
 keywords: Code Style, MisplacedPragma
+language: PLSQL
 ---
 ## MisplacedPragma
 

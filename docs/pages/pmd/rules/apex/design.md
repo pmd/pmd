@@ -6,6 +6,7 @@ folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/category/apex/design.xml
 keywords: Design, AvoidDeeplyNestedIfStmts, CyclomaticComplexity, ExcessiveClassLength, ExcessiveParameterList, ExcessivePublicCount, NcssConstructorCount, NcssMethodCount, NcssTypeCount, StdCyclomaticComplexity, TooManyFields
+language: Apex
 ---
 ## AvoidDeeplyNestedIfStmts
 

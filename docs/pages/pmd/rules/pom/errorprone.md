@@ -6,6 +6,7 @@ folder: pmd/rules/pom
 sidebaractiveurl: /pmd_rules_pom.html
 editmepath: ../pmd-xml/src/main/resources/category/pom/errorprone.xml
 keywords: Error Prone, InvalidDependencyTypes, ProjectVersionAsDependencyVersion
+language: Maven POM
 ---
 ## InvalidDependencyTypes
 

@@ -6,6 +6,7 @@ folder: pmd/rules/ecmascript
 sidebaractiveurl: /pmd_rules_ecmascript.html
 editmepath: ../pmd-javascript/src/main/resources/category/ecmascript/codestyle.xml
 keywords: Code Style, AssignmentInOperand, ForLoopsMustUseBraces, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, NoElseReturn, UnnecessaryBlock, UnnecessaryParentheses, UnreachableCode, WhileLoopsMustUseBraces
+language: Ecmascript
 ---
 ## AssignmentInOperand
 

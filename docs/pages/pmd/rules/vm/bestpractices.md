@@ -6,6 +6,7 @@ folder: pmd/rules/vm
 sidebaractiveurl: /pmd_rules_vm.html
 editmepath: ../pmd-vm/src/main/resources/category/vm/bestpractices.xml
 keywords: Best Practices, AvoidReassigningParameters, UnusedMacroParameter
+language: VM
 ---
 ## AvoidReassigningParameters
 

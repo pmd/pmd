@@ -6,6 +6,7 @@ folder: pmd/rules/plsql
 sidebaractiveurl: /pmd_rules_plsql.html
 editmepath: ../pmd-plsql/src/main/resources/category/plsql/design.xml
 keywords: Design, CyclomaticComplexity, ExcessiveMethodLength, ExcessiveObjectLength, ExcessivePackageBodyLength, ExcessivePackageSpecificationLength, ExcessiveParameterList, ExcessiveTypeLength, NcssMethodCount, NcssObjectCount, NPathComplexity, TooManyFields, TooManyMethods
+language: PLSQL
 ---
 ## CyclomaticComplexity
 

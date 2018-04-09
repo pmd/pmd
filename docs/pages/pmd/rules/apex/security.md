@@ -6,6 +6,7 @@ folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/category/apex/security.xml
 keywords: Security, ApexBadCrypto, ApexCRUDViolation, ApexCSRF, ApexDangerousMethods, ApexInsecureEndpoint, ApexOpenRedirect, ApexSharingViolations, ApexSOQLInjection, ApexSuggestUsingNamedCred, ApexXSSFromEscapeFalse, ApexXSSFromURLParam
+language: Apex
 ---
 ## ApexBadCrypto
 

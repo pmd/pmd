@@ -6,6 +6,7 @@ folder: pmd/rules/xml
 sidebaractiveurl: /pmd_rules_xml.html
 editmepath: ../pmd-xml/src/main/resources/category/xml/errorprone.xml
 keywords: Error Prone, MistypedCDATASection
+language: XML
 ---
 ## MistypedCDATASection
 

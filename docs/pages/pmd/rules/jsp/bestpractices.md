@@ -6,6 +6,7 @@ folder: pmd/rules/jsp
 sidebaractiveurl: /pmd_rules_jsp.html
 editmepath: ../pmd-jsp/src/main/resources/category/jsp/bestpractices.xml
 keywords: Best Practices, DontNestJsfInJstlIteration, NoClassAttribute, NoHtmlComments, NoJspForward
+language: Java Server Pages
 ---
 ## DontNestJsfInJstlIteration
 

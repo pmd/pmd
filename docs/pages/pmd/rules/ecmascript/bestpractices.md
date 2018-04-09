@@ -6,6 +6,7 @@ folder: pmd/rules/ecmascript
 sidebaractiveurl: /pmd_rules_ecmascript.html
 editmepath: ../pmd-javascript/src/main/resources/category/ecmascript/bestpractices.xml
 keywords: Best Practices, AvoidWithStatement, ConsistentReturn, GlobalVariable, ScopeForInVariable, UseBaseWithParseInt
+language: Ecmascript
 ---
 ## AvoidWithStatement
 

@@ -6,6 +6,7 @@ folder: pmd/rules/vm
 sidebaractiveurl: /pmd_rules_vm.html
 editmepath: ../pmd-vm/src/main/resources/category/vm/errorprone.xml
 keywords: Error Prone, EmptyForeachStmt, EmptyIfStmt
+language: VM
 ---
 ## EmptyForeachStmt
 

@@ -6,6 +6,7 @@ folder: pmd/rules/jsp
 sidebaractiveurl: /pmd_rules_jsp.html
 editmepath: ../pmd-jsp/src/main/resources/category/jsp/errorprone.xml
 keywords: Error Prone, JspEncoding
+language: Java Server Pages
 ---
 ## JspEncoding
 

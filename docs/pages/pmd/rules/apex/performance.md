@@ -6,6 +6,7 @@ folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/category/apex/performance.xml
 keywords: Performance, AvoidDmlStatementsInLoops, AvoidSoqlInLoops, AvoidSoslInLoops
+language: Apex
 ---
 ## AvoidDmlStatementsInLoops
 

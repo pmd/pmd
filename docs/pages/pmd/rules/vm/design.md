@@ -6,6 +6,7 @@ folder: pmd/rules/vm
 sidebaractiveurl: /pmd_rules_vm.html
 editmepath: ../pmd-vm/src/main/resources/category/vm/design.xml
 keywords: Design, AvoidDeeplyNestedIfStmts, CollapsibleIfStatements, ExcessiveTemplateLength, NoInlineJavaScript, NoInlineStyles
+language: VM
 ---
 ## AvoidDeeplyNestedIfStmts
 

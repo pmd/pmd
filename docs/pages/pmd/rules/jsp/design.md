@@ -6,6 +6,7 @@ folder: pmd/rules/jsp
 sidebaractiveurl: /pmd_rules_jsp.html
 editmepath: ../pmd-jsp/src/main/resources/category/jsp/design.xml
 keywords: Design, NoInlineScript, NoInlineStyleInformation, NoLongScripts, NoScriptlets
+language: Java Server Pages
 ---
 ## NoInlineScript
 

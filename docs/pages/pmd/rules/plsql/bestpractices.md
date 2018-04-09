@@ -6,6 +6,7 @@ folder: pmd/rules/plsql
 sidebaractiveurl: /pmd_rules_plsql.html
 editmepath: ../pmd-plsql/src/main/resources/category/plsql/bestpractices.xml
 keywords: Best Practices, TomKytesDespair
+language: PLSQL
 ---
 ## TomKytesDespair
 
