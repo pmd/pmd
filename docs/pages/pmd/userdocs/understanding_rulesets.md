@@ -92,4 +92,4 @@ the appropriate property value:
 ```
 
 
-{% include note.html content="More information about rulesets can be found on [Making Rulesets](pmd_devdocs_making_rulesets.html)." %}
+{% include note.html content="More information about rulesets can be found on [Making Rulesets](pmd_userdocs_making_rulesets.html)." %}
