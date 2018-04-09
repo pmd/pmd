@@ -1493,7 +1493,7 @@ public void doSomething() {
 |Name|Default Value|Description|
 |----|-------------|-----------|
 |allowCommentedBlocks|false|Empty blocks containing comments will be skipped|
-|allowExceptionNameRegex|^(ignored|expected)$|Empty blocks catching exceptions with names matching this regular expression will be skipped|
+|allowExceptionNameRegex|^(ignored\|expected)$|Empty blocks catching exceptions with names matching this regular expression will be skipped|
 
 **Use this rule by referencing it:**
 ``` xml
