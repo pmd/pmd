@@ -83,6 +83,7 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
                 if (!((ASTInitializer) decl.getDeclarationNode()).isStatic()) {
                     return false;
                 }
+                break;
 
             default:
                 break;

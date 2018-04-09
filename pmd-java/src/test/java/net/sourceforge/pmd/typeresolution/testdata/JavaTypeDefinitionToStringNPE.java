@@ -13,9 +13,9 @@ public class JavaTypeDefinitionToStringNPE<A extends JavaTypeDefinitionToStringN
 
     Map<TypeLink<?, ? super A>, Collection<?>> contents = new HashMap<>();
 
-    public static class TypeLink<U, T> {}
+    public static class TypeLink<U, T> { }
 
-    public static class SelfReferringType<T extends SelfReferringType<T>> {}
+    public static class SelfReferringType<T extends SelfReferringType<T>> { }
 
     public final void putNull(TypeLink<?, ? super A> field) {
         contents.put(field, Collections.singleton(null));
