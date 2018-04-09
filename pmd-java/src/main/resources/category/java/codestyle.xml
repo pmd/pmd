@@ -1664,7 +1664,7 @@ public class Foo {
   /PrimaryPrefix/Expression
     [not(./CastExpression)]
     [not(./ConditionalExpression[@Ternary='true'])]
-    [not(./AdditiveExpression[//Literal[@StringLiteral='true']])]
+    [not(./AdditiveExpression)]
 |
 //Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)=1]
   /PrimaryPrefix/Expression

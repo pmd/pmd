@@ -471,4 +471,19 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] False positive for useless parenthesis #1023</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private String str1;
+
+    public String themeName() {
+        return (Character.toUpperCase(str1.charAt(0))
+                + str1.substring(1)).replace('_', ' ');
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
