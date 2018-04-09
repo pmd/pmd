@@ -427,7 +427,7 @@ public class RuleDocGenerator {
                                         + description.substring(DEPRECATED_RULE_PROPERTY_MARKER.length());
                             }
                             lines.add("|" + propertyDescriptor.name()
-                                + "|" + (propertyDescriptor.defaultValue() != null ? String.valueOf(propertyDescriptor.defaultValue()) : "")
+                                + "|" + (propertyDescriptor.defaultValue() != null ? String.valueOf(propertyDescriptor.defaultValue()) : "").replace("|", "\\|")
                                 + "|" + description
                                 + "|");
                         }
