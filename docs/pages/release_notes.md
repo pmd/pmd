@@ -58,6 +58,9 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
     *   [#988](https://github.com/pmd/pmd/issues/988): \[core] FileNotFoundException for missing classes directory with analysis cache enabled
 *   documentation
     *   [#994](https://github.com/pmd/pmd/issues/994): \[doc] Delete duplicate page contributing.md on the website
+*   java
+    *   [#894](https://github.com/pmd/pmd/issues/894): \[java] Maven PMD plugin fails to process some files without any explanation
+    *   [#899](https://github.com/pmd/pmd/issues/899): \[java] JavaTypeDefinitionSimple.toString can cause NPEs
 *   java-bestpractices
     *   [#370](https://github.com/pmd/pmd/issues/370): \[java] GuardLogStatementJavaUtil not considering lambdas
     *   [#558](https://github.com/pmd/pmd/issues/558): \[java] ProperLogger Warnings for enums

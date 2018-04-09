@@ -92,6 +92,7 @@ import net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper;
 import net.sourceforge.pmd.typeresolution.testdata.GenericMethodsImplicit;
 import net.sourceforge.pmd.typeresolution.testdata.GenericsArrays;
 import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
+import net.sourceforge.pmd.typeresolution.testdata.JavaTypeDefinitionToStringNPE;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.MethodAccessibility;
 import net.sourceforge.pmd.typeresolution.testdata.MethodFirstPhase;
@@ -177,6 +178,15 @@ public class ClassTypeResolverTest {
         Class<?> inner = acu.getFirstDescendantOfType(ASTAllocationExpression.class)
                 .getFirstDescendantOfType(ASTClassOrInterfaceType.class).getType();
         assertEquals("net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass$2", inner.getName());
+    }
+    
+    /**
+     * See bug #899 toString causes NPE
+     */
+    @Test
+    public void testNPEInJavaTypeDefinitionToString() {
+        // Just parsing this file throws a NPE
+        parseAndTypeResolveForClass(JavaTypeDefinitionToStringNPE.class, "1.8");
     }
 
     @Test
