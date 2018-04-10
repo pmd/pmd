@@ -64,10 +64,8 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-null assignment in ternary
-     ]]></description>
-        <expected-problems>1</expected-problems>
+        <description>null assignment in ternary - initialization</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void foo() {
@@ -77,14 +75,36 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-null assignment in ternary, part deux
-     ]]></description>
+        <description>null assignment in ternary</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void foo() {
+  String x;
+  x = bar() ? "fiz" : null;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>null assignment in ternary, part deux - initialization</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
   String x = bar() ? null : "fiz";
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>null assignment in ternary, part deux</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  String x;
+  x = bar() ? null : "fiz";
  }
 }
      ]]></code>
@@ -128,5 +148,42 @@ public class Foo {
  }
 }
      ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] NullAssignment false positive - initialization #629</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NullAssignmentFP {
+    public void foo() {
+        Type result = someHash.computeIfAbsent(a, _unused -> test ? truthy : null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] NullAssignment false positive - actual assignment #629</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class NullAssignmentFP {
+    public void foo() {
+        Type result;
+        result = someHash.computeIfAbsent(a, _unused -> test ? truthy : null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] NullAssignment false positive - return with ternary #629</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NullAssignmentFP {
+    public DateTime foo(DateTime dateTime) {
+        return dateTime.getYear() < 2100 ? dateTime : null;
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>
