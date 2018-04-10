@@ -56,6 +56,8 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
 
 *   all
     *   [#988](https://github.com/pmd/pmd/issues/988): \[core] FileNotFoundException for missing classes directory with analysis cache enabled
+*   apex-errorprone
+    *   [#776](https://github.com/pmd/pmd/issues/776): \[apex] AvoidHardcodingId false positives
 *   documentation
     *   [#994](https://github.com/pmd/pmd/issues/994): \[doc] Delete duplicate page contributing.md on the website
 *   java
