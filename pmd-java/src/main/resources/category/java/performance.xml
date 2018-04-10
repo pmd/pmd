@@ -206,7 +206,17 @@ adverse impacts on performance.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimitiveType[@Image = 'short'][name(../..) != 'CastExpression']
+//FieldDeclaration/Type/PrimitiveType[@Image = 'short']
+|
+//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeof(@Image, 'java.lang.Override', 'Override')])]
+    /MethodDeclaration/ResultType/Type/PrimitiveType[@Image = 'short']
+|
+//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeof(@Image, 'java.lang.Override', 'Override')])]
+    /MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/Type/PrimitiveType[@Image = 'short']
+|
+//LocalVariableDeclaration/Type/PrimitiveType[@Image = 'short']
+|
+//AnnotationMethodDeclaration/Type/PrimitiveType[@Image = 'short']
 ]]>
                 </value>
             </property>

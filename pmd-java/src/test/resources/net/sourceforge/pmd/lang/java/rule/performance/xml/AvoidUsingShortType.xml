@@ -82,4 +82,68 @@ public class CastToShort {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>short as method parameter</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class AvoidUsingShortTypeTest {
+    public void method(short doNotUseShort) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>short as method parameter with @Override</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidUsingShortTypeTest extends OtherClass {
+    @Override
+    public void method(short doNotUseShort) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] AvoidUsingShortType erroneously triggered on overrides of 3rd party methods (anon. class) #586</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ShortTest {
+    public org.w3c.dom.traversal.NodeFilter create() {
+        return new org.w3c.dom.traversal.NodeFilter() {
+            @Override
+            public short acceptNode(@Nullable Node node) {
+                return 0;
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] AvoidUsingShortType erroneously triggered on overrides of 3rd party methods #586</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.w3c.dom.traversal.NodeFilter;
+public class ShortTest implements NodeFilter {
+    @Override
+    public short acceptNode(@Nullable Node node) {
+        return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>short as annotation property</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public @interface MyAnnotation {
+    short dontUseShort();
+}
+        ]]></code>
+    </test-code>
 </test-data>
