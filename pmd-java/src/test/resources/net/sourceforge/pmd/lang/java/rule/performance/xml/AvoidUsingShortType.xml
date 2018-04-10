@@ -136,4 +136,14 @@ public class ShortTest implements NodeFilter {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>short as annotation property</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public @interface MyAnnotation {
+    short dontUseShort();
+}
+        ]]></code>
+    </test-code>
 </test-data>
