@@ -202,7 +202,17 @@ and convert the int back to a short. Thus any storage gains found through use of
 adverse impacts on performance.
 
 ```
-//PrimitiveType[@Image = 'short'][name(../..) != 'CastExpression']
+//FieldDeclaration/Type/PrimitiveType[@Image = 'short']
+|
+//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeof(@Image, 'java.lang.Override', 'Override')])]
+    /MethodDeclaration/ResultType/Type/PrimitiveType[@Image = 'short']
+|
+//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeof(@Image, 'java.lang.Override', 'Override')])]
+    /MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/Type/PrimitiveType[@Image = 'short']
+|
+//LocalVariableDeclaration/Type/PrimitiveType[@Image = 'short']
+|
+//AnnotationMethodDeclaration/Type/PrimitiveType[@Image = 'short']
 ```
 
 **Example(s):**
