@@ -194,6 +194,7 @@ public class Something {
           since="4.1"
           message="Do not use the short type"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidusingshorttype">
         <description>
 Java uses the 'short' type to reduce memory usage, not to optimize calculation. In fact, the JVM does not have any
