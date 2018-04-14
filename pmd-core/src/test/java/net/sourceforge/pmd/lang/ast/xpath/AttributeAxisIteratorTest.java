@@ -4,11 +4,14 @@
 
 package net.sourceforge.pmd.lang.ast.xpath;
 
-import static junit.framework.TestCase.assertTrue;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hamcrest.collection.IsMapContaining;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,7 +28,7 @@ public class AttributeAxisIteratorTest {
     @Test
     public void testAttributeDeprecation() {
         Node dummy = new DummyNodeWithDeprecatedAttribute(2);
-        assertTrue(toMap(new AttributeAxisIterator(dummy)).containsKey("Size"));
+        assertThat(toMap(new AttributeAxisIterator(dummy)), IsMapContaining.hasKey("Size"));
     }
 
     /**
@@ -40,13 +43,13 @@ public class AttributeAxisIteratorTest {
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
         Map<String, Attribute> atts = toMap(it);
         Assert.assertEquals(7, atts.size());
-        Assert.assertTrue(atts.containsKey("BeginColumn"));
-        Assert.assertTrue(atts.containsKey("BeginLine"));
-        Assert.assertTrue(atts.containsKey("FindBoundary"));
-        Assert.assertTrue(atts.containsKey("Image"));
-        Assert.assertTrue(atts.containsKey("SingleLine"));
-        Assert.assertTrue(atts.containsKey("EndColumn"));
-        Assert.assertTrue(atts.containsKey("EndLine"));
+        assertTrue(atts.containsKey("BeginColumn"));
+        assertTrue(atts.containsKey("BeginLine"));
+        assertTrue(atts.containsKey("FindBoundary"));
+        assertTrue(atts.containsKey("Image"));
+        assertTrue(atts.containsKey("SingleLine"));
+        assertTrue(atts.containsKey("EndColumn"));
+        assertTrue(atts.containsKey("EndLine"));
     }
 
 
