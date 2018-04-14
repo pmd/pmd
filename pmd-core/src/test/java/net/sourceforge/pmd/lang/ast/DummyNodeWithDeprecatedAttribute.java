@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ast;
 
 /**
  * @author Clément Fournier
- * @since 6.2.0
+ * @since 6.3.0
  */
 public class DummyNodeWithDeprecatedAttribute extends DummyNode {
 
@@ -15,7 +15,7 @@ public class DummyNodeWithDeprecatedAttribute extends DummyNode {
         super(id);
     }
 
-
+    // this is the deprecated attribute
     @Deprecated
     public int getSize() {
         return 2;

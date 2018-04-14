@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,7 +20,7 @@ public class Attribute {
 
 
     private static final Logger LOG = Logger.getLogger(Attribute.class.getName());
-    private static final Set<String> DETECTED_DEPRECATED_ATTRIBUTES = new HashSet<>();
+    private static final Map<String, Boolean> DETECTED_DEPRECATED_ATTRIBUTES = new ConcurrentHashMap<>();
 
 
     private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
@@ -48,8 +48,8 @@ public class Attribute {
             return value;
         }
 
-        if (method.isAnnotationPresent(Deprecated.class) && LOG.isLoggable(Level.WARNING) && !DETECTED_DEPRECATED_ATTRIBUTES.contains(getLoggableAttributeName())) {
-            DETECTED_DEPRECATED_ATTRIBUTES.add(getLoggableAttributeName());
+        if (method.isAnnotationPresent(Deprecated.class) && LOG.isLoggable(Level.WARNING) && !DETECTED_DEPRECATED_ATTRIBUTES.containsKey(getLoggableAttributeName())) {
+            DETECTED_DEPRECATED_ATTRIBUTES.put(getLoggableAttributeName(), Boolean.TRUE);
             LOG.warning("Use of deprecated attribute '" + getLoggableAttributeName() + "' in xpath query");
         }
 
