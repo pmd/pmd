@@ -9,17 +9,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.StringWriter;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-
 import org.jaxen.JaxenException;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 import junitparams.JUnitParamsRunner;
@@ -33,6 +29,9 @@ import junitparams.Parameters;
 public class AbstractNodeTest {
     private static final int NUM_CHILDREN = 3;
     private static final int NUM_GRAND_CHILDREN = 3;
+
+    @Rule
+    public JavaUtilLoggingRule loggingRule = new JavaUtilLoggingRule(Attribute.class.getName());
 
     // Note that in order to successfully run JUnitParams, we need to explicitly use `Integer` instead of `int`
 
@@ -232,8 +231,6 @@ public class AbstractNodeTest {
 
     @Test
     public void testDeprecatedAttributeXPathQuery() throws JaxenException {
-        final StringWriter writer = new StringWriter();
-
         class MyRootNode extends DummyNode implements RootNode {
 
             private MyRootNode(int id) {
@@ -241,34 +238,13 @@ public class AbstractNodeTest {
             }
         }
 
-        // intercept log
-        Logger.getLogger(Attribute.class.getName()).setLevel(Level.WARNING);
-        Logger.getLogger(Attribute.class.getName()).addHandler(new Handler() {
-            @Override
-            public void publish(LogRecord record) {
-                writer.write(record.getMessage());
-                writer.write('\n');
-            }
-
-
-            @Override
-            public void flush() {
-                writer.flush();
-            }
-
-
-            @Override
-            public void close() throws SecurityException {
-                // empty
-            }
-        });
         addChild(new MyRootNode(nextId()), new DummyNodeWithDeprecatedAttribute(2)).findChildNodesWithXPath("//dummyNode[@Size=1]");
 
-        writer.flush();
+        String log = loggingRule.getLog();
 
-        assertTrue(writer.toString().contains("deprecated"));
-        assertTrue(writer.toString().contains("attribute"));
-        assertTrue(writer.toString().contains("dummyNode/@Size"));
+        assertTrue(log.contains("deprecated"));
+        assertTrue(log.contains("attribute"));
+        assertTrue(log.contains("dummyNode/@Size"));
     }
 
 
