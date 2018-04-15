@@ -14,15 +14,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -580,28 +575,6 @@ public class RuleSetFactoryTest {
         assertEquals(0, ruleset.getRules().size());
     }
 
-    private static class InMemoryLogHandler extends Handler {
-        private List<LogRecord> records = Collections.synchronizedList(new ArrayList<LogRecord>());
-
-        @Override
-        public void close() throws SecurityException {
-        }
-
-        @Override
-        public void flush() {
-            records.clear();
-        }
-
-        @Override
-        public void publish(LogRecord record) {
-            records.add(record);
-        }
-
-        public List<LogRecord> getLogRecords() {
-            return new ArrayList<>(records);
-        }
-    }
-
     /**
      * See https://github.com/pmd/pmd/issues/782
      * Empty ruleset should be interpreted as deprecated.
@@ -611,26 +584,18 @@ public class RuleSetFactoryTest {
      */
     @Test
     public void testEmptyRuleSetReferencedShouldNotBeDeprecated() throws Exception {
-        InMemoryLogHandler logHandler = new InMemoryLogHandler();
-        Logger logger = Logger.getLogger(RuleSetFactory.class.getName());
-        try {
-            logger.addHandler(logHandler);
+        RuleSetReferenceId ref = createRuleSetReferenceId("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "\n"
+                + "<ruleset name=\"Custom ruleset\" xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
+                + "    xmlns:xsi=\"http:www.w3.org/2001/XMLSchema-instance\"\n"
+                + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n"
+                + "    <description>Ruleset which references a empty ruleset</description>\n" + "\n"
+                + "    <rule ref=\"rulesets/dummy/empty-ruleset.xml\" />\n"
+                + "</ruleset>\n");
+        RuleSetFactory ruleSetFactory = new RuleSetFactory(new ResourceLoader(), RulePriority.LOW, true, true);
+        RuleSet ruleset = ruleSetFactory.createRuleSet(ref);
+        assertEquals(0, ruleset.getRules().size());
 
-            RuleSetReferenceId ref = createRuleSetReferenceId("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "\n"
-                    + "<ruleset name=\"Custom ruleset\" xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
-                    + "    xmlns:xsi=\"http:www.w3.org/2001/XMLSchema-instance\"\n"
-                    + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n"
-                    + "    <description>Ruleset which references a empty ruleset</description>\n" + "\n"
-                    + "    <rule ref=\"rulesets/dummy/empty-ruleset.xml\" />\n"
-                    + "</ruleset>\n");
-            RuleSetFactory ruleSetFactory = new RuleSetFactory(new ResourceLoader(), RulePriority.LOW, true, true);
-            RuleSet ruleset = ruleSetFactory.createRuleSet(ref);
-            assertEquals(0, ruleset.getRules().size());
-
-            assertEquals(0, logHandler.getLogRecords().size());
-        } finally {
-            logger.removeHandler(logHandler);
-        }
+        assertTrue(logging.getLog().isEmpty());
     }
 
     /**
