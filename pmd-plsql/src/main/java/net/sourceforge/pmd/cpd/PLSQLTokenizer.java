@@ -9,19 +9,21 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.ast.SimpleCharStream;
+import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
+import net.sourceforge.pmd.cpd.token.TokenFilter;
+import net.sourceforge.pmd.lang.plsql.PLSQLTokenManager;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserConstants;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserTokenManager;
 import net.sourceforge.pmd.lang.plsql.ast.Token;
 
 public class PLSQLTokenizer implements Tokenizer {
     private static final Logger LOGGER = Logger.getLogger(PLSQLTokenizer.class.getName());
 
+    // This is actually useless, the comments are special tokens, never taken into account by CPD
+    @Deprecated
     public static final String IGNORE_COMMENTS = "ignore_comments";
     public static final String IGNORE_IDENTIFIERS = "ignore_identifiers";
     public static final String IGNORE_LITERALS = "ignore_literals";
 
-    private boolean ignoreComments;
     private boolean ignoreIdentifiers;
     private boolean ignoreLiterals;
 
@@ -32,13 +34,13 @@ public class PLSQLTokenizer implements Tokenizer {
          * interested in comment variation, so we shall default ignoreComments
          * to true
          */
-        ignoreComments = Boolean.parseBoolean(properties.getProperty(IGNORE_COMMENTS, "true"));
         ignoreIdentifiers = Boolean.parseBoolean(properties.getProperty(IGNORE_IDENTIFIERS, "false"));
         ignoreLiterals = Boolean.parseBoolean(properties.getProperty(IGNORE_LITERALS, "false"));
     }
 
+    @Deprecated
     public void setIgnoreComments(boolean ignore) {
-        this.ignoreComments = ignore;
+        // This is actually useless, the comments are special tokens, never taken into account by CPD
     }
 
     public void setIgnoreLiterals(boolean ignore) {
@@ -65,7 +67,6 @@ public class PLSQLTokenizer implements Tokenizer {
         long addedTokens = 0;
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("PLSQLTokenizer: ignoreComments==" + ignoreComments);
             LOGGER.fine("PLSQLTokenizer: ignoreIdentifiers==" + ignoreIdentifiers);
             LOGGER.fine("PLSQLTokenizer: ignoreLiterals==" + ignoreLiterals);
         }
@@ -73,21 +74,12 @@ public class PLSQLTokenizer implements Tokenizer {
         String fileName = sourceCode.getFileName();
         StringBuilder sb = sourceCode.getCodeBuffer();
 
-        PLSQLParserTokenManager tokenMgr = new PLSQLParserTokenManager(
-                new SimpleCharStream(new StringReader(sb.toString())));
-        Token currentToken = tokenMgr.getNextToken();
-        while (currentToken.image.length() > 0) {
+        TokenFilter tokenFilter = new JavaCCTokenFilter(new PLSQLTokenManager(new StringReader(sb.toString())));
+        Token currentToken = (Token) tokenFilter.getNextToken();
+        while (currentToken != null) {
             String image = currentToken.image;
 
             encounteredTokens++;
-            if (ignoreComments && (currentToken.kind == PLSQLParserConstants.SINGLE_LINE_COMMENT
-                    || currentToken.kind == PLSQLParserConstants.MULTI_LINE_COMMENT
-                    || currentToken.kind == PLSQLParserConstants.FORMAL_COMMENT
-                    || currentToken.kind == PLSQLParserConstants.COMMENT
-                    || currentToken.kind == PLSQLParserConstants.IN_MULTI_LINE_COMMENT
-                    || currentToken.kind == PLSQLParserConstants.IN_FORMAL_COMMENT)) {
-                image = String.valueOf(currentToken.kind);
-            }
 
             if (ignoreIdentifiers && currentToken.kind == PLSQLParserConstants.IDENTIFIER) {
                 image = String.valueOf(currentToken.kind);
@@ -104,7 +96,7 @@ public class PLSQLTokenizer implements Tokenizer {
 
             tokenEntries.add(new TokenEntry(image, fileName, currentToken.beginLine));
             addedTokens++;
-            currentToken = tokenMgr.getNextToken();
+            currentToken = (Token) tokenFilter.getNextToken();
         }
         tokenEntries.add(TokenEntry.getEOF());
         if (LOGGER.isLoggable(Level.FINE)) {
