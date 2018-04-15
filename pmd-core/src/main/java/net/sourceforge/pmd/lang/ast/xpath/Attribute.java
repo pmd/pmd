@@ -55,7 +55,8 @@ public class Attribute {
 
         // this lazy loading reduces calls to Method.invoke() by about 90%
         try {
-            return value = method.invoke(parent, EMPTY_OBJ_ARRAY);
+            value = method.invoke(parent, EMPTY_OBJ_ARRAY);
+            return value;
         } catch (IllegalAccessException | InvocationTargetException iae) {
             iae.printStackTrace();
         }
