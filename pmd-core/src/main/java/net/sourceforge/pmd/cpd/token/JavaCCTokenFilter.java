@@ -31,12 +31,11 @@ public class JavaCCTokenFilter implements TokenFilter {
             analyzeToken(currentToken);
             processCPDSuppression(currentToken);
 
-            if (isDiscarding()) {
-                currentToken = (GenericToken) tokenManager.getNextToken();
-                continue;
+            if (!isDiscarding()) {
+                return currentToken;
             }
 
-            return currentToken;
+            currentToken = (GenericToken) tokenManager.getNextToken();
         }
         
         return null;
