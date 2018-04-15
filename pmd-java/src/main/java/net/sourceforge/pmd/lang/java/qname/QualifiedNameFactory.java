@@ -108,7 +108,13 @@ public final class QualifiedNameFactory {
             name = '.' + name; // unnamed package, marked by a full stop. See ofString's format below
         }
 
-        return (JavaTypeQualifiedName) ofString(name);
+        JavaTypeQualifiedName qualifiedName = (JavaTypeQualifiedName) ofString(name);
+        if (qualifiedName != null) {
+            // Note: this assumes, that clazz has been loaded through the correct classloader,
+            // specifically through the auxclasspath classloader.
+            qualifiedName.withClassLoader(clazz.getClassLoader());
+        }
+        return qualifiedName;
     }
 
 

@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiableNode;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.qname.ImmutableList.ListFactory;
+import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 
 /**
@@ -98,6 +99,12 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
      */
     private ImmutableList<String> classNames;
 
+    /**
+     * The classloader that must be used to load classes for resolving types,
+     * e.g. for qualified names.
+     * This is the auxclasspath.
+     */
+    private ClassLoader classLoader;
 
     /**
      * Initialises the visitor and starts it.
@@ -106,7 +113,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
      * @param rootNode The root hierarchy
      */
     public void initializeWith(ClassLoader classLoader, ASTCompilationUnit rootNode) {
-        JavaTypeQualifiedName.setClassLoader(classLoader);
+        this.classLoader = PMDASMClassLoader.getInstance(classLoader);
         rootNode.jjtAccept(this, null);
     }
 
@@ -348,7 +355,8 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
 
     /** Creates a new class qname from the current context (fields). */
     private JavaTypeQualifiedName contextClassQName() {
-        return new JavaTypeQualifiedName(packages, classNames, localIndices);
+        return new JavaTypeQualifiedName(packages, classNames, localIndices)
+                    .withClassLoader(classLoader);
     }
 
 

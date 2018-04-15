@@ -61,6 +61,7 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
 *   java
     *   [#894](https://github.com/pmd/pmd/issues/894): \[java] Maven PMD plugin fails to process some files without any explanation
     *   [#899](https://github.com/pmd/pmd/issues/899): \[java] JavaTypeDefinitionSimple.toString can cause NPEs
+    *   [#1030](https://github.com/pmd/pmd/pull/1030): \[java] NoClassDefFoundError when analyzing PMD with PMD
 *   java-bestpractices
     *   [#370](https://github.com/pmd/pmd/issues/370): \[java] GuardLogStatementJavaUtil not considering lambdas
     *   [#558](https://github.com/pmd/pmd/issues/558): \[java] ProperLogger Warnings for enums
