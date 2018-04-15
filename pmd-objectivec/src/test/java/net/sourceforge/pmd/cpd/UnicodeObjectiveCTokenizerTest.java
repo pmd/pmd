@@ -42,7 +42,7 @@ public class UnicodeObjectiveCTokenizerTest extends AbstractTokenizerTest {
     public void testIgnoreBetweenSpecialComments() throws IOException {
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(
             "// CPD-OFF" + PMD.EOL
-            + "static SecCertificateRef gNСServerLogonCertificate;" +  PMD.EOL
+            + "static SecCertificateRef gNСServerLogonCertificate;" + PMD.EOL
             + "// CPD-ON" + PMD.EOL
             + "@end" + PMD.EOL
         ));
