@@ -6,14 +6,21 @@ package net.sourceforge.pmd.lang.ast;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.jaxen.JaxenException;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+
 
 /**
  * Unit test for {@link AbstractNode}.
@@ -22,6 +29,9 @@ import junitparams.Parameters;
 public class AbstractNodeTest {
     private static final int NUM_CHILDREN = 3;
     private static final int NUM_GRAND_CHILDREN = 3;
+
+    @Rule
+    public JavaUtilLoggingRule loggingRule = new JavaUtilLoggingRule(Attribute.class.getName());
 
     // Note that in order to successfully run JUnitParams, we need to explicitly use `Integer` instead of `int`
 
@@ -65,9 +75,10 @@ public class AbstractNodeTest {
         return new DummyNode(nextId());
     }
 
-    private static void addChild(final Node parent, final Node child) {
+    private static Node addChild(final Node parent, final Node child) {
         parent.jjtAddChild(child, parent.jjtGetNumChildren()); // Append child at the end
         child.jjtSetParent(parent);
+        return parent;
     }
 
     @Before
@@ -216,4 +227,25 @@ public class AbstractNodeTest {
         // Check that this node still does not have any children
         assertEquals(0, grandChild.jjtGetNumChildren());
     }
+
+
+    @Test
+    public void testDeprecatedAttributeXPathQuery() throws JaxenException {
+        class MyRootNode extends DummyNode implements RootNode {
+
+            private MyRootNode(int id) {
+                super(id);
+            }
+        }
+
+        addChild(new MyRootNode(nextId()), new DummyNodeWithDeprecatedAttribute(2)).findChildNodesWithXPath("//dummyNode[@Size=1]");
+
+        String log = loggingRule.getLog();
+
+        assertTrue(log.contains("deprecated"));
+        assertTrue(log.contains("attribute"));
+        assertTrue(log.contains("dummyNode/@Size"));
+    }
+
+
 }

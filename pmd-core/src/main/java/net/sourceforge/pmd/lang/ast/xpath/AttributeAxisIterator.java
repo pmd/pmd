@@ -101,6 +101,9 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         return new Attribute(node, m.name, m.method);
     }
 
+
+
+
     private static final Set<Class<?>> CONSIDERED_RETURN_TYPES 
         = new HashSet<>(Arrays.<Class<?>>asList(Integer.TYPE, Boolean.TYPE, Double.TYPE, String.class, Long.TYPE, Character.TYPE, Float.TYPE));
     
@@ -109,10 +112,8 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     
     protected boolean isAttributeAccessor(Method method) {
         String methodName = method.getName();
-        boolean deprecated = method.getAnnotation(Deprecated.class) != null;
 
-        return !deprecated
-               && CONSIDERED_RETURN_TYPES.contains(method.getReturnType())
+        return CONSIDERED_RETURN_TYPES.contains(method.getReturnType())
                && method.getParameterTypes().length == 0
                && !methodName.startsWith("jjt")
                && !FILTERED_OUT_NAMES.contains(methodName);
