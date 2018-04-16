@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description><![CDATA[
-method names should start with lowercase character
-     ]]></description>
+        <description>method names should start with lowercase character</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -15,9 +13,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-method names should not contain underscores
-     ]]></description>
+        <description>method names should not contain underscores</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -26,9 +22,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-all is well
-     ]]></description>
+        <description>all is well</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -58,7 +52,7 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>#1343 MethodNamingConventions for overrided methods</description>
+        <description>#1343 MethodNamingConventions for overridden methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MethodNamingConventions implements SomeInterface {
@@ -68,4 +62,110 @@ public class MethodNamingConventions implements SomeInterface {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Static method pattern</description>
+        <rule-property name="staticPattern">st_[a-z][A-Za-z]*</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+            class Foo {
+                static void foo() {
+                }
+
+
+                static void st_whatever() {
+                }
+
+
+                // not reported
+                void bar() {
+                }
+
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Native method pattern</description>
+        <rule-property name="nativePattern">nt_[a-z][A-Za-z]*</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+            class Foo {
+                native void foo() {
+                }
+
+
+                native void nt_whatever() {
+                }
+
+
+                // not reported
+                void bar() {
+                }
+
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 3 test detection</description>
+        <rule-property name="junit3TestPattern">test_[a-z][A-Za-z]*</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+            import junit.framework.Assert;
+            import junit.framework.TestCase;
+
+
+            public class TournamentTest extends TestCase {
+                Tournament tournament;
+
+
+                public void testGetBestTeam() {
+                }
+
+                // this is ok tho
+                public void test_getBestTeam() {
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>JUnit 4 test detection</description>
+        <rule-property name="junit4TestPattern">[a-z][A-Za-z]*Test</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>12,16</expected-linenumbers>
+        <code><![CDATA[
+            import junit.framework.Assert;
+            import junit.framework.TestCase;
+
+            import org.junit.Test;
+
+
+            public class TournamentTest extends TestCase {
+                Tournament tournament;
+
+
+                @Test // note that this is also a junit 3 test, but the junit4 rule applies
+                public void testGetBestTeam() {
+                }
+
+                @Test // this is just a junit 4 test
+                public void getBestTeam() {
+                }
+
+                // this is ok
+                @Test
+                public void getBestTeamTest() {
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
 </test-data>
