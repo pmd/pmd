@@ -5,13 +5,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Iterator;
+
+
 /**
+ * Represents the {@code extends} clause of a class or interface declaration.
+ * If the parent is an interface declaration, then these types are all interface
+ * types. Otherwise, then this list contains exactly one element.
+ *
  * <pre>
  *  ExtendsList ::= "extends" (TypeAnnotation)* ClassOrInterfaceType
  *                ( "," (TypeAnnotation)* ClassOrInterfaceType )*
  * </pre>
  */
-public class ASTExtendsList extends AbstractJavaNode {
+public class ASTExtendsList extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {
     public ASTExtendsList(int id) {
         super(id);
     }
@@ -23,7 +30,14 @@ public class ASTExtendsList extends AbstractJavaNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+
+    @Override    // TODO this doesn't preserve the annotations.
+    public Iterator<ASTClassOrInterfaceType> iterator() {
+        return new NodeChildrenIterator<>(this, ASTClassOrInterfaceType.class);
     }
 }

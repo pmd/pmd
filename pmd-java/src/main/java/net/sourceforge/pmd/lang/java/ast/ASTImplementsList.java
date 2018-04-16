@@ -5,7 +5,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTImplementsList extends AbstractJavaNode {
+import java.util.Iterator;
+
+
+/**
+ * Represents the {@code implements} clause of a class declaration.
+ *
+ * <pre>
+ *  ExtendsList ::= "implements" (TypeAnnotation)* ClassOrInterfaceType
+ *                ( "," (TypeAnnotation)* ClassOrInterfaceType )*
+ * </pre>
+ */
+public class ASTImplementsList extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {
     public ASTImplementsList(int id) {
         super(id);
     }
@@ -19,5 +30,11 @@ public class ASTImplementsList extends AbstractJavaNode {
      */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+
+    @Override
+    public Iterator<ASTClassOrInterfaceType> iterator() {
+        return new NodeChildrenIterator<>(this, ASTClassOrInterfaceType.class);
     }
 }

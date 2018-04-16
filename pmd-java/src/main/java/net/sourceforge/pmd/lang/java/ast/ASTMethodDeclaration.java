@@ -146,4 +146,12 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
     public ASTFormalParameters getFormalParameters() {
         return getFirstChildOfType(ASTMethodDeclarator.class).getFirstChildOfType(ASTFormalParameters.class);
     }
+
+
+    /**
+     * Returns the method declarator. Never null.
+     */
+    public ASTMethodDeclarator getMethodDeclarator() {
+        return getFirstChildOfType(ASTMethodDeclarator.class);
+    }
 }
