@@ -30,7 +30,7 @@ Hard coded Iv field, bad
  
  public class Foo {
  	
- 	byte[] ivBytes = new byte[] { { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, }; 
+ 	byte[] ivBytes = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, }; 
  	
  	void encrypt() {
 		
@@ -50,7 +50,7 @@ Hard coded Iv local var, bad
  public class Foo {
 
  	void encrypt() {
-		byte[] ivBytes = new byte[] { 32, 87, -14, 25, 78, -104, 98, 40 };
+		byte[] ivBytes = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, }; 
 		IvParameterSpec iv = new IvParameterSpec(ivBytes);
 	}
 }
