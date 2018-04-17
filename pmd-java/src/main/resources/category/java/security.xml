@@ -8,5 +8,28 @@
     <description>
 Rules that flag potential security flaws.
     </description>
+    
+        <rule name="InsecureCryptoIv"
+          since="6.1"
+          message="Do not use hard coded initialization vector in crypto operations"
+          class="net.sourceforge.pmd.lang.java.rule.security.InsecureCryptoIvRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_security.html#insecurecryptoiv">
+        <description>
+Do not use hard coded initialization vector in cryptographic operations. Please use randomly generated IV.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    void good() {
+    }
+
+    void bad() {
+    }
+}
+]]>
+        </example>
+    </rule>
+    
 
 </ruleset>

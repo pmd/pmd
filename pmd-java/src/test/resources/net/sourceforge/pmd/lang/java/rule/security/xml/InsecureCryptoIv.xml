@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+	<test-code>
+		<description><![CDATA[
+Hard coded Iv from string, bad
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+ import javax.crypto.spec.IvParameterSpec;       
+ 
+ public class Foo {
+
+ 	void encrypt() {
+		byte[] staticIv = "ALL_ZEROS_HERE".getBytes();
+		IvParameterSpec iv = new IvParameterSpec(staticIv);
+	}
+}
+     ]]></code>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+Hard coded Iv field, bad
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+ import javax.crypto.spec.IvParameterSpec;       
+ 
+ public class Foo {
+ 	
+ 	byte[] ivBytes = new byte[] { 32, 87, -14, 25, 78, -104, 98, 40 };
+ 	
+ 	void encrypt() {
+		
+		IvParameterSpec iv = new IvParameterSpec(ivBytes);
+	}
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+Hard coded Iv local var, bad
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+ import javax.crypto.spec.IvParameterSpec;       
+ 
+ public class Foo {
+
+ 	void encrypt() {
+		byte[] ivBytes = new byte[] { 32, 87, -14, 25, 78, -104, 98, 40 };
+		IvParameterSpec iv = new IvParameterSpec(ivBytes);
+	}
+}
+     ]]></code>
+	</test-code>
+
+
+	<test-code>
+		<description><![CDATA[
+Random IV, good
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+import javax.crypto.spec.IvParameterSpec;        
+import java.security.SecureRandom;        
+        
+public class Foo {
+ 	void encrypt() {
+		byte[] iv = new byte[16];
+		SecureRandom sprng = new SecureRandom();
+		sprng.nextBytes(iv); 
+		IvParameterSpec ivs = new IvParameterSpec(ivBytes);
+	}	
+}
+     ]]></code>
+	</test-code>
+</test-data>
