@@ -10,22 +10,31 @@ Rules that flag potential security flaws.
     </description>
     
         <rule name="InsecureCryptoIv"
-          since="6.1"
+          since="6.3"
           message="Do not use hard coded initialization vector in crypto operations"
           class="net.sourceforge.pmd.lang.java.rule.security.InsecureCryptoIvRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_security.html#insecurecryptoiv">
         <description>
-Do not use hard coded initialization vector in cryptographic operations. Please use randomly generated IV.
+Do not use hard coded initialization vector in cryptographic operations. Please use a randomly generated IV.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
 public class Foo {
     void good() {
+        SecureRandom random = new SecureRandom();
+        byte iv[] = new byte[16];
+        random.nextBytes(bytes);
     }
 
     void bad() {
+        byte[] iv = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, };
     }
+    
+    void alsoBad() {
+        byte[] iv = "secret iv in here".getBytes();
+    }
+    
 }
 ]]>
         </example>
