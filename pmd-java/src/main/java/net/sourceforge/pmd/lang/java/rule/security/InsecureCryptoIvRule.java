@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -16,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
@@ -53,19 +55,19 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
             foundFields.addAll(extractPrimitiveTypes(field));
         }
 
-        List<ASTLocalVariableDeclaration> localVars = node.findDescendantsOfType(ASTLocalVariableDeclaration.class);
-        for (ASTLocalVariableDeclaration localVar : localVars) {
-            // byte[] local vars
-            foundLocalVars.addAll(extractPrimitiveTypes(localVar));
+        // find new javax.crypto.spec.IvParameterSpec(...)
+        List<ASTAllocationExpression> allocations = node.findDescendantsOfType(ASTAllocationExpression.class);
+        for (ASTAllocationExpression allocation : allocations) {
 
-            // find javax.crypto.spec.IvParameterSpec
-            ASTClassOrInterfaceType declClassName = localVar.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+            ASTClassOrInterfaceType declClassName = allocation.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
             if (declClassName != null) {
                 Class<?> foundClass = declClassName.getTypeDefinition() == null ? null
                         : declClassName.getTypeDefinition().getType();
 
                 if (foundClass != null && foundClass.equals(javax.crypto.spec.IvParameterSpec.class)) {
-                    ASTVariableInitializer init = localVar.getFirstDescendantOfType(ASTVariableInitializer.class);
+                    // ASTVariableInitializer init =
+                    // allocation.getFirstDescendantOfType(ASTVariableInitializer.class);
+                    ASTPrimaryExpression init = allocation.getFirstDescendantOfType(ASTPrimaryExpression.class);
                     if (init != null) {
                         ASTName name = init.getFirstDescendantOfType(ASTName.class);
                         if (name != null) {
@@ -75,19 +77,23 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
 
                 }
             }
+        }
 
-            for (ASTFieldDeclaration foundField : foundFields) {
-                if (passedInIvVarNames.contains(foundField.getVariableName())) {
-                    validateProperIv(data, foundField.getFirstDescendantOfType(ASTVariableInitializer.class));
-                }
+        List<ASTLocalVariableDeclaration> localVars = node.findDescendantsOfType(ASTLocalVariableDeclaration.class);
+        for (ASTLocalVariableDeclaration localVar : localVars) {
+            foundLocalVars.addAll(extractPrimitiveTypes(localVar));
+        }
+
+        for (ASTFieldDeclaration foundField : foundFields) {
+            if (passedInIvVarNames.contains(foundField.getVariableName())) {
+                validateProperIv(data, foundField.getFirstDescendantOfType(ASTVariableInitializer.class));
             }
+        }
 
-            for (ASTLocalVariableDeclaration foundLocalVar : foundLocalVars) {
-                if (passedInIvVarNames.contains(foundLocalVar.getVariableName())) {
-                    validateProperIv(data, foundLocalVar.getFirstDescendantOfType(ASTVariableInitializer.class));
-                }
+        for (ASTLocalVariableDeclaration foundLocalVar : foundLocalVars) {
+            if (passedInIvVarNames.contains(foundLocalVar.getVariableName())) {
+                validateProperIv(data, foundLocalVar.getFirstDescendantOfType(ASTVariableInitializer.class));
             }
-
         }
 
         return data;
