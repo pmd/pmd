@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
@@ -34,13 +33,13 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * javax.crypto.spec.IvParameterSpec must not be created from a static sources
  * 
  * @author sergeygorbaty
- * @since 6.3
+ * @since 6.3.0
  *
  */
 public class InsecureCryptoIvRule extends AbstractJavaRule {
 
     public InsecureCryptoIvRule() {
-        addRuleChainVisit(ASTCompilationUnit.class);
+        addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
     }
 
     @Override
@@ -61,10 +60,8 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
 
             ASTClassOrInterfaceType declClassName = allocation.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
             if (declClassName != null) {
-                Class<?> foundClass = declClassName.getTypeDefinition() == null ? null
-                        : declClassName.getTypeDefinition().getType();
-
-                if (foundClass != null && foundClass.equals(javax.crypto.spec.IvParameterSpec.class)) {
+                Class<?> foundClass = declClassName.getType();
+                if (foundClass != null && javax.crypto.spec.IvParameterSpec.class.isAssignableFrom(foundClass)) {
                     ASTPrimaryExpression init = allocation.getFirstDescendantOfType(ASTPrimaryExpression.class);
                     if (init != null) {
                         ASTName name = init.getFirstDescendantOfType(ASTName.class);
