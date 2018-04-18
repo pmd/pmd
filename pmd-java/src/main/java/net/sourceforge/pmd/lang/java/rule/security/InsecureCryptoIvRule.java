@@ -65,8 +65,6 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
                         : declClassName.getTypeDefinition().getType();
 
                 if (foundClass != null && foundClass.equals(javax.crypto.spec.IvParameterSpec.class)) {
-                    // ASTVariableInitializer init =
-                    // allocation.getFirstDescendantOfType(ASTVariableInitializer.class);
                     ASTPrimaryExpression init = allocation.getFirstDescendantOfType(ASTPrimaryExpression.class);
                     if (init != null) {
                         ASTName name = init.getFirstDescendantOfType(ASTName.class);
@@ -74,7 +72,6 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
                             passedInIvVarNames.add(name.getImage());
                         }
                     }
-
                 }
             }
         }
