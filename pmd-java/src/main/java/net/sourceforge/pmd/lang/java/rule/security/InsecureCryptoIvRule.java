@@ -6,21 +6,24 @@ package net.sourceforge.pmd.lang.java.rule.security;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * Finds hardcoded static Initialization Vectors vectors used with cryptographic
@@ -39,20 +42,13 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class InsecureCryptoIvRule extends AbstractJavaRule {
 
     public InsecureCryptoIvRule() {
-        addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
+        addRuleChainVisit(ASTClassOrInterfaceBodyDeclaration.class);
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        Set<ASTFieldDeclaration> foundFields = new HashSet<>();
+    public Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
         Set<ASTLocalVariableDeclaration> foundLocalVars = new HashSet<>();
         Set<String> passedInIvVarNames = new HashSet<>();
-
-        // byte[] fields
-        List<ASTFieldDeclaration> fields = node.findDescendantsOfType(ASTFieldDeclaration.class);
-        for (ASTFieldDeclaration field : fields) {
-            foundFields.addAll(extractPrimitiveTypes(field));
-        }
 
         // find new javax.crypto.spec.IvParameterSpec(...)
         List<ASTAllocationExpression> allocations = node.findDescendantsOfType(ASTAllocationExpression.class);
@@ -78,9 +74,15 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
             foundLocalVars.addAll(extractPrimitiveTypes(localVar));
         }
 
-        for (ASTFieldDeclaration foundField : foundFields) {
-            if (passedInIvVarNames.contains(foundField.getVariableName())) {
-                validateProperIv(data, foundField.getFirstDescendantOfType(ASTVariableInitializer.class));
+        Map<VariableNameDeclaration, List<NameOccurrence>> globalDecls = node.getScope()
+                .getDeclarations(VariableNameDeclaration.class);
+
+        for (VariableNameDeclaration fieldVar : globalDecls.keySet()) {
+            if (passedInIvVarNames.contains(fieldVar.getNode().getImage())) {
+                ASTVariableDeclarator var = fieldVar.getNode().getFirstParentOfType(ASTVariableDeclarator.class);
+                if (var != null) {
+                    validateProperIv(data, var.getFirstDescendantOfType(ASTVariableInitializer.class));
+                }
             }
         }
 
@@ -97,15 +99,6 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
         List<ASTPrimitiveType> types = localVar.findDescendantsOfType(ASTPrimitiveType.class);
         Set<ASTLocalVariableDeclaration> retVal = new HashSet<>();
         extractPrimitiveTypesInner(retVal, localVar, types);
-
-        return retVal;
-    }
-
-    private Set<ASTFieldDeclaration> extractPrimitiveTypes(ASTFieldDeclaration field) {
-        List<ASTPrimitiveType> types = field.findDescendantsOfType(ASTPrimitiveType.class);
-        Set<ASTFieldDeclaration> retVal = new HashSet<>();
-
-        extractPrimitiveTypesInner(retVal, field, types);
 
         return retVal;
     }
