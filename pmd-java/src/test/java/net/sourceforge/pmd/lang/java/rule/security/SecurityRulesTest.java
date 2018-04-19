@@ -12,7 +12,7 @@ public class SecurityRulesTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
-        addRule(RULESET, "InsecureCryptoIv");
+//        addRule(RULESET, "InsecureCryptoIv");
+        addRule(RULESET, "HardCodedCryptoKey");
     }
-
 }

@@ -9,14 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
@@ -48,26 +44,8 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
         Set<ASTLocalVariableDeclaration> foundLocalVars = new HashSet<>();
-        Set<String> passedInIvVarNames = new HashSet<>();
-
         // find new javax.crypto.spec.IvParameterSpec(...)
-        List<ASTAllocationExpression> allocations = node.findDescendantsOfType(ASTAllocationExpression.class);
-        for (ASTAllocationExpression allocation : allocations) {
-
-            ASTClassOrInterfaceType declClassName = allocation.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-            if (declClassName != null) {
-                Class<?> foundClass = declClassName.getType();
-                if (foundClass != null && javax.crypto.spec.IvParameterSpec.class.isAssignableFrom(foundClass)) {
-                    ASTPrimaryExpression init = allocation.getFirstDescendantOfType(ASTPrimaryExpression.class);
-                    if (init != null) {
-                        ASTName name = init.getFirstDescendantOfType(ASTName.class);
-                        if (name != null) {
-                            passedInIvVarNames.add(name.getImage());
-                        }
-                    }
-                }
-            }
-        }
+        Set<String> passedInIvVarNames = Util.findVariablesPassedToAnyParam(node, javax.crypto.spec.IvParameterSpec.class);
 
         List<ASTLocalVariableDeclaration> localVars = node.findDescendantsOfType(ASTLocalVariableDeclaration.class);
         for (ASTLocalVariableDeclaration localVar : localVars) {
