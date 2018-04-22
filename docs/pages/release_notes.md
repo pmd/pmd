@@ -50,9 +50,9 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
 Back in PMD 5.6.0 we introduced the ability to suppress CPD warnings in Java using comments, by
 including `CPD-OFF` (to start ignoring code), or `CPD-ON` (to resume analysis) during CPD execution.
 This has proved to be much more flexible and versatile than the old annotation-based approach,
-and has since been the prefered way to suppress CPD warnings.
+and has since been the preferred way to suppress CPD warnings.
 
-On this ocassion, we are xtending support for comment-based suppressions to many other languages:
+On this ocassion, we are extending support for comment-based suppressions to many other languages:
 
 *   C/C++
 *   Ecmascript / Javascript
