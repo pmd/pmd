@@ -61,6 +61,7 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
 *   java
     *   [#894](https://github.com/pmd/pmd/issues/894): \[java] Maven PMD plugin fails to process some files without any explanation
     *   [#899](https://github.com/pmd/pmd/issues/899): \[java] JavaTypeDefinitionSimple.toString can cause NPEs
+    *   [#1020](https://github.com/pmd/pmd/issues/1020): \[java] The CyclomaticComplexity rule runs forever in 6.2.0
     *   [#1030](https://github.com/pmd/pmd/pull/1030): \[java] NoClassDefFoundError when analyzing PMD with PMD
 *   java-bestpractices
     *   [#370](https://github.com/pmd/pmd/issues/370): \[java] GuardLogStatementJavaUtil not considering lambdas
@@ -88,4 +89,5 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
 *   [#1010](https://github.com/pmd/pmd/pull/1010): \[java] UnnecessaryConstructor triggered on required empty constructor (Dagger @Inject) - [BBG](https://github.com/djydewang)
 *   [#1012](https://github.com/pmd/pmd/pull/1012): \[java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5 - [BBG](https://github.com/djydewang)
 *   [#1024](https://github.com/pmd/pmd/pull/1024): \[java]Issue 558: Properlogger for enums - [Utku Cuhadaroglu](https://github.com/utkuc)
+*   [#1041](https://github.com/pmd/pmd/pull/1041): \[java] Make BasicProjectMemoizer thread safe. - [bergander](https://github.com/bergander)
 
