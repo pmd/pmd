@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.lang.java.rule.security;
 
@@ -11,9 +14,17 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 
+/**
+ * @author sergeygorbaty
+ *
+ */
 public class Util {
 
-    static public Set<String> findVariablesPassedToAnyParam(ASTClassOrInterfaceBodyDeclaration node,
+    private Util() {
+        // intentionally
+    }
+
+    public static Set<String> findVariablesPassedToAnyParam(ASTClassOrInterfaceBodyDeclaration node,
             Class<?> classToFind) {
         Set<String> passedInIvVarNames = new HashSet<>();
 
