@@ -34,11 +34,11 @@ public class SingleMethodSingletonRule extends AbstractJavaRule {
 
         int count = 0;
         for (ASTMethodDeclaration method : methods) {
-            
+
             if (method.getName().equals("getInstance")) {
                 count++;
-                if(count > 1){
-                   addViolation(data, node); 
+                if (count > 1) {
+                    addViolation(data, node);
                     break;
                 }
             }
