@@ -163,8 +163,8 @@ public class NullAssignmentFP {
     </test-code>
 
     <test-code>
-        <description>[java] NullAssignment false positive - actual assignment #629</description>
-        <expected-problems>1</expected-problems>
+        <description>[java] NullAssignment false positive - no direct assignment, but lambda #629</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class NullAssignmentFP {
     public void foo() {

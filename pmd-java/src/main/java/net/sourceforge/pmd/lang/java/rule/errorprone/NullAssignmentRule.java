@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
@@ -59,18 +60,19 @@ public class NullAssignmentRule extends AbstractJavaRule {
                 && ((AccessNode) ((VariableNameDeclaration) name.getNameDeclaration()).getAccessNodeParent()).isFinal();
     }
 
-    private boolean isBadTernary(ASTConditionalExpression n) {
+    private boolean isBadTernary(ASTConditionalExpression ternary) {
         boolean isInitializer = false;
 
-        ASTVariableInitializer variableInitializer = n.getFirstParentOfType(ASTVariableInitializer.class);
+        ASTVariableInitializer variableInitializer = ternary.getFirstParentOfType(ASTVariableInitializer.class);
         if (variableInitializer != null) {
-            ASTBlockStatement statement = n.getFirstParentOfType(ASTBlockStatement.class);
+            ASTBlockStatement statement = ternary.getFirstParentOfType(ASTBlockStatement.class);
             isInitializer = statement == variableInitializer.getFirstParentOfType(ASTBlockStatement.class);
         }
 
-        return n.isTernary()
-                && !(n.jjtGetChild(0) instanceof ASTEqualityExpression)
+        return ternary.isTernary()
+                && !(ternary.jjtGetChild(0) instanceof ASTEqualityExpression)
                 && !isInitializer
-                && !(n.getNthParent(2) instanceof ASTReturnStatement);
+                && !(ternary.getNthParent(2) instanceof ASTReturnStatement)
+                && !(ternary.getNthParent(2) instanceof ASTLambdaExpression);
     }
 }
