@@ -44,7 +44,6 @@ public class HardCodedCryptoKeyRule extends AbstractJavaRule {
         Set<ASTLocalVariableDeclaration> foundLocalVars = new HashSet<>();
 
         // find new javax.crypto.spec.SecretKeySpec("literal".getBytes(),...);
-
         List<ASTAllocationExpression> allocations = node.findDescendantsOfType(ASTAllocationExpression.class);
         for (ASTAllocationExpression allocation : allocations) {
 

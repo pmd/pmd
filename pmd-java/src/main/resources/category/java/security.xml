@@ -44,7 +44,7 @@ public class Foo {
 		class="net.sourceforge.pmd.lang.java.rule.security.HardCodedCryptoKeyRule"
 		externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_security.html#hardcodedcryptokey">
 		<description>
-Do not use hard coded encryption keys used in asymmetric cryptographic operations. Please store keys outside of source code.
+Do not use hard coded values for cryptographic operations. Please store keys outside of source code.
         </description>
 		<priority>3</priority>
 		<example>

@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 	<test-code>
 		<description><![CDATA[
-Hard coded inline crypto key, bad
+Hard coded inline cryptographic key, bad
      ]]></description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
@@ -21,7 +21,7 @@ Hard coded inline crypto key, bad
 
 	<test-code>
 		<description><![CDATA[
-Key stored in property, good
+Key stored in a property, good
      ]]></description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
@@ -38,7 +38,7 @@ Key stored in property, good
 
 	<test-code>
 		<description><![CDATA[
-Hard coded crypto key, bad
+Hard coded in field cryptographic key, bad
      ]]></description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
