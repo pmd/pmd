@@ -29,31 +29,22 @@ public class SingleMethodSingletonRule extends AbstractJavaRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 
-        String a = node.getImage(); // Get the name of the Class it's part of
-        System.out.println(a);
 
         List<ASTMethodDeclaration> methods = node.findDescendantsOfType(ASTMethodDeclaration.class); // Find the name of methods in it
 
-        System.out.println(methods);
-
         int count = 0;
         for (ASTMethodDeclaration method : methods) {
-
-            System.out.println(method.getName());
+            
             if (method.getName().equals("getInstance")) {
                 count++;
+                if(count > 1){
+                   addViolation(data, node); 
+                    break;
+                }
             }
 
         }
 
-        if (count > 1) {
-            System.out.println("error");
-            addViolation(data, node);
-        }
-
-        /*
-        Can now check if each class has only one getInstance methods than it's all sorted.
-        */
 
         return super.visit(node, data);
 
