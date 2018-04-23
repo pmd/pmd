@@ -15,6 +15,7 @@ This is a minor release.
 * [New and noteworthy](#new-and-noteworthy)
     *   [Tree traversal revision](#tree-traversal-revision)
     *   [Naming rules enhancements](#naming-rules-enhancements)
+    *   [CPD Suppression](#cpd-suppression)
     *   [Modified Rules](#modified-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
@@ -44,6 +45,46 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
      using a regex property. See the rule's documentation for more info about
      configuration and default conventions.
 
+#### CPD Suppression
+
+Back in PMD 5.6.0 we introduced the ability to suppress CPD warnings in Java using comments, by
+including `CPD-OFF` (to start ignoring code), or `CPD-ON` (to resume analysis) during CPD execution.
+This has proved to be much more flexible and versatile than the old annotation-based approach,
+and has since been the preferred way to suppress CPD warnings.
+
+On this ocassion, we are extending support for comment-based suppressions to many other languages:
+
+*   C/C++
+*   Ecmascript / Javascript
+*   Matlab
+*   Objective-C
+*   PL/SQL
+*   Python
+
+So for instance, in Python we could now do:
+
+```python
+class BaseHandler(object):
+    def __init__(self):
+        # some unignored code
+
+        # tell cpd to start ignoring code - CPD-OFF
+
+        # mission critical code, manually loop unroll
+        GoDoSomethingAwesome(x + x / 2);
+        GoDoSomethingAwesome(x + x / 2);
+        GoDoSomethingAwesome(x + x / 2);
+        GoDoSomethingAwesome(x + x / 2);
+        GoDoSomethingAwesome(x + x / 2);
+        GoDoSomethingAwesome(x + x / 2);
+
+        # resume CPD analysis - CPD-ON
+
+        # further code will *not* be ignored
+```
+
+Other languages are equivalent.
+
 #### Modified Rules
 
 *   The Java rule `UnnecessaryConstructor` (`java-codestyle`) has been rewritten as a Java rule (previously it was
@@ -55,6 +96,7 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
 ### Fixed Issues
 
 *   all
+    *   [#695](https://github.com/pmd/pmd/issues/695): \[core] Extend comment-based suppression to all JavaCC languages
     *   [#988](https://github.com/pmd/pmd/issues/988): \[core] FileNotFoundException for missing classes directory with analysis cache enabled
 *   documentation
     *   [#994](https://github.com/pmd/pmd/issues/994): \[doc] Delete duplicate page contributing.md on the website
