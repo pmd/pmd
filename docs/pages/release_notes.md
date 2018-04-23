@@ -15,6 +15,7 @@ This is a minor release.
 * [New and noteworthy](#new-and-noteworthy)
     *   [Tree transversal revision](#tree-transversal-revision)
     *   [Naming rules enhancements](#naming-rules-enhancements)
+    *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
@@ -44,10 +45,17 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
      using a regex property. See the rule's documentation for more info about
      configuration and default conventions.
 
+#### New Rules
+
+*   The new Java rule [`InsecureCryptoIv`](pmd_rules_java_security.html#insecurecryptoiv) (`java-security`)
+    detects hard coded initialization vectors used in cryptographic operations. It is recommended to use
+    a randomly generated IV.
+
 #### Modified Rules
 
-*   The Java rule `UnnecessaryConstructor` (`java-codestyle`) has been rewritten as a Java rule (previously it was
-    a XPath-based rule). It supports a new property `ignoredAnnotations` and ignores by default empty constructors,
+*   The Java rule [`UnnecessaryConstructor`](pmd_rules_java_codestyle.html#unnecessaryconstructor) (`java-codestyle`)
+    has been rewritten as a Java rule (previously it was a XPath-based rule). It supports a new property
+    `ignoredAnnotations` and ignores by default empty constructors,
     that are annotated with `javax.inject.Inject`. Additionally, it detects now also unnecessary private constructors
     in enums.
 
@@ -87,5 +95,6 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
 *   [#1008](https://github.com/pmd/pmd/pull/1008): \[core] DOC: fix closing tag for &lt;pmdVersion> - [stonio](https://github.com/stonio)
 *   [#1010](https://github.com/pmd/pmd/pull/1010): \[java] UnnecessaryConstructor triggered on required empty constructor (Dagger @Inject) - [BBG](https://github.com/djydewang)
 *   [#1012](https://github.com/pmd/pmd/pull/1012): \[java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5 - [BBG](https://github.com/djydewang)
-*   [#1024](https://github.com/pmd/pmd/pull/1024): \[java]Issue 558: Properlogger for enums - [Utku Cuhadaroglu](https://github.com/utkuc)
+*   [#1024](https://github.com/pmd/pmd/pull/1024): \[java] Issue 558: Properlogger for enums - [Utku Cuhadaroglu](https://github.com/utkuc)
+*   [#1042](https://github.com/pmd/pmd/pull/1042): \[java] New security rule: report usage of hard coded IV in crypto operations - [Sergey Gorbaty](https://github.com/sgorbaty)
 
