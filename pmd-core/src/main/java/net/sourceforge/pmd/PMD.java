@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Handler;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,7 +45,6 @@ import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
-import net.sourceforge.pmd.util.log.ConsoleLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
 /**
@@ -450,8 +449,7 @@ public class PMD {
         final PMDConfiguration configuration = params.toConfiguration();
 
         final Level logLevel = params.isDebug() ? Level.FINER : Level.INFO;
-        final Handler logHandler = new ConsoleLogHandler();
-        final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, logHandler);
+        final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, new ConsoleHandler());
         final Level oldLogLevel = LOG.getLevel();
         // Need to do this, since the static logger has already been initialized
         // at this point

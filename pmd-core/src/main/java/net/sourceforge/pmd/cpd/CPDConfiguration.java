@@ -351,7 +351,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             }
         }
 
-        FilenameFilter filter = new FilenameFilter() {
+        return new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 File f = new File(dir, name);
@@ -362,7 +362,6 @@ public class CPDConfiguration extends AbstractConfiguration {
                 return languageFilter.accept(dir, name);
             }
         };
-        return filter;
     }
 
     /**

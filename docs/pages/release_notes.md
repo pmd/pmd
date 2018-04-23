@@ -98,6 +98,7 @@ Other languages are equivalent.
 *   all
     *   [#695](https://github.com/pmd/pmd/issues/695): \[core] Extend comment-based suppression to all JavaCC languages
     *   [#988](https://github.com/pmd/pmd/issues/988): \[core] FileNotFoundException for missing classes directory with analysis cache enabled
+    *   [#1036](https://github.com/pmd/pmd/issues/1036): \[core] Non-XML output breaks XML-based CLI integrations
 *   documentation
     *   [#994](https://github.com/pmd/pmd/issues/994): \[doc] Delete duplicate page contributing.md on the website
 *   java
