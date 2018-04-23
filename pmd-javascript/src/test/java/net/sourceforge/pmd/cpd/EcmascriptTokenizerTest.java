@@ -33,6 +33,22 @@ public class EcmascriptTokenizerTest {
         t.tokenize(sourceCode, tokens);
         assertEquals(45, tokens.size());
     }
+    
+    @Test
+    public void testIgnoreBetweenSpecialComments() throws IOException {
+        final String code = "// CPD-OFF" + PMD.EOL
+            + "function switchToRealPassword() {" + PMD.EOL
+            + "var real = $('realPass');" + PMD.EOL
+            + " var prompt = $('promptPass');" + PMD.EOL
+            + "// CPD-ON" + PMD.EOL
+            + "}" + PMD.EOL;
+        
+        Tokenizer t = new EcmascriptTokenizer();
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(code));
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        assertEquals(2, tokens.size()); // Only "}" and EOL
+    }
 
     /**
      * See: https://sourceforge.net/p/pmd/bugs/1239/

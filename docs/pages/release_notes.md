@@ -13,8 +13,10 @@ This is a minor release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
-    *   [Tree transversal revision](#tree-transversal-revision)
+    *   [Tree traversal revision](#tree-traversal-revision)
     *   [Naming rules enhancements](#naming-rules-enhancements)
+    *   [CPD Suppression](#cpd-suppression)
+    *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
@@ -23,7 +25,7 @@ This is a minor release.
 
 ### New and noteworthy
 
-#### Tree transversal revision
+#### Tree traversal revision
 
 As described in [#904](https://github.com/pmd/pmd/issues/904), when searching for child nodes of the AST methods
 such as `hasDescendantOfType`, `getFirstDescendantOfType` and `findDescendantsOfType` were found to behave inconsistently,
@@ -33,7 +35,7 @@ find boundaries.
 
 This change implies several false positives / unexpected results (ie: `ASTBlockStatement` falsely returning `true` to `isAllocation()`)
 have been fixed; and lots of searches are now restricted to smaller search areas, which improves performance (depending on the project,
-we have measured up to 10% improvements during Type Resolution, Symbol Table analysis, and some rule's application).
+we have measured up to 10% improvements during Type Resolution, Symbol Table analysis, and some rules' application).
 
 #### Naming rules enhancements
 
@@ -44,10 +46,57 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
      using a regex property. See the rule's documentation for more info about
      configuration and default conventions.
 
+#### CPD Suppression
+
+Back in PMD 5.6.0 we introduced the ability to suppress CPD warnings in Java using comments, by
+including `CPD-OFF` (to start ignoring code), or `CPD-ON` (to resume analysis) during CPD execution.
+This has proved to be much more flexible and versatile than the old annotation-based approach,
+and has since been the preferred way to suppress CPD warnings.
+
+On this ocassion, we are extending support for comment-based suppressions to many other languages:
+
+*   C/C++
+*   Ecmascript / Javascript
+*   Matlab
+*   Objective-C
+*   PL/SQL
+*   Python
+
+So for instance, in Python we could now do:
+
+```python
+class BaseHandler(object):
+    def __init__(self):
+        # some unignored code
+
+        # tell cpd to start ignoring code - CPD-OFF
+
+        # mission critical code, manually loop unroll
+        GoDoSomethingAwesome(x + x / 2);
+        GoDoSomethingAwesome(x + x / 2);
+        GoDoSomethingAwesome(x + x / 2);
+        GoDoSomethingAwesome(x + x / 2);
+        GoDoSomethingAwesome(x + x / 2);
+        GoDoSomethingAwesome(x + x / 2);
+
+        # resume CPD analysis - CPD-ON
+
+        # further code will *not* be ignored
+```
+
+Other languages are equivalent.
+
+#### New Rules
+
+*   The new Java rule [`InsecureCryptoIv`](pmd_rules_java_security.html#insecurecryptoiv) (`java-security`)
+    detects hard coded initialization vectors used in cryptographic operations. It is recommended to use
+    a randomly generated IV.
+
 #### Modified Rules
 
-*   The Java rule `UnnecessaryConstructor` (`java-codestyle`) has been rewritten as a Java rule (previously it was
-    a XPath-based rule). It supports a new property `ignoredAnnotations` and ignores by default empty constructors,
+*   The Java rule [`UnnecessaryConstructor`](pmd_rules_java_codestyle.html#unnecessaryconstructor) (`java-codestyle`)
+    has been rewritten as a Java rule (previously it was a XPath-based rule). It supports a new property
+    `ignoredAnnotations` and ignores by default empty constructors,
     that are annotated with `javax.inject.Inject`. Additionally, it detects now also unnecessary private constructors
     in enums.
 
@@ -55,12 +104,15 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
 ### Fixed Issues
 
 *   all
+    *   [#695](https://github.com/pmd/pmd/issues/695): \[core] Extend comment-based suppression to all JavaCC languages
     *   [#988](https://github.com/pmd/pmd/issues/988): \[core] FileNotFoundException for missing classes directory with analysis cache enabled
+    *   [#1036](https://github.com/pmd/pmd/issues/1036): \[core] Non-XML output breaks XML-based CLI integrations
 *   documentation
     *   [#994](https://github.com/pmd/pmd/issues/994): \[doc] Delete duplicate page contributing.md on the website
 *   java
     *   [#894](https://github.com/pmd/pmd/issues/894): \[java] Maven PMD plugin fails to process some files without any explanation
     *   [#899](https://github.com/pmd/pmd/issues/899): \[java] JavaTypeDefinitionSimple.toString can cause NPEs
+    *   [#1020](https://github.com/pmd/pmd/issues/1020): \[java] The CyclomaticComplexity rule runs forever in 6.2.0
     *   [#1030](https://github.com/pmd/pmd/pull/1030): \[java] NoClassDefFoundError when analyzing PMD with PMD
 *   java-bestpractices
     *   [#370](https://github.com/pmd/pmd/issues/370): \[java] GuardLogStatementJavaUtil not considering lambdas
@@ -70,6 +122,8 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
 *   java-codestyle
     *   [#1003](https://github.com/pmd/pmd/issues/1003): \[java] UnnecessaryConstructor triggered on required empty constructor (Dagger @Inject)
     *   [#1023](https://github.com/pmd/pmd/issues/1023): \[java] False positive for useless parenthesis
+*   java-errorprone
+    *   [#816](https://github.com/pmd/pmd/issues/816): \[java] SingleMethodSingleton false positives with inner classes
 *   java-performance
     *   [#586](https://github.com/pmd/pmd/issues/586): \[java] AvoidUsingShortType erroneously triggered on overrides of 3rd party methods
 
@@ -87,5 +141,8 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
 *   [#1008](https://github.com/pmd/pmd/pull/1008): \[core] DOC: fix closing tag for &lt;pmdVersion> - [stonio](https://github.com/stonio)
 *   [#1010](https://github.com/pmd/pmd/pull/1010): \[java] UnnecessaryConstructor triggered on required empty constructor (Dagger @Inject) - [BBG](https://github.com/djydewang)
 *   [#1012](https://github.com/pmd/pmd/pull/1012): \[java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5 - [BBG](https://github.com/djydewang)
-*   [#1024](https://github.com/pmd/pmd/pull/1024): \[java]Issue 558: Properlogger for enums - [Utku Cuhadaroglu](https://github.com/utkuc)
+*   [#1024](https://github.com/pmd/pmd/pull/1024): \[java] Issue 558: Properlogger for enums - [Utku Cuhadaroglu](https://github.com/utkuc)
+*   [#1041](https://github.com/pmd/pmd/pull/1041): \[java] Make BasicProjectMemoizer thread safe. - [bergander](https://github.com/bergander)
+*   [#1042](https://github.com/pmd/pmd/pull/1042): \[java] New security rule: report usage of hard coded IV in crypto operations - [Sergey Gorbaty](https://github.com/sgorbaty)
+*   [#1044](https://github.com/pmd/pmd/pull/1044): \[java] Fix for issue #816 - [Akshat Bahety](https://github.com/akshatbahety)
 

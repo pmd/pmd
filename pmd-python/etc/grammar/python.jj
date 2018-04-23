@@ -33,7 +33,11 @@ SKIP :
 |   "\014"
 |   <CONTINUATION: ("\\") ("\r\n"|"\n"|"\r")>
 |   <NEWLINE: ("\r\n"|"\n"|"\r")>
-|   <TRAILING_COMMENT: "#" (~["\n","\r"])* >
+}
+
+SPECIAL_TOKEN :
+{
+    <TRAILING_COMMENT: "#" (~["\n","\r"])* >
 }
 
 TOKEN : /* SEPARATORS */

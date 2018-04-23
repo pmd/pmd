@@ -720,7 +720,7 @@ public class GUI implements CPDListener {
 
         final long start = System.currentTimeMillis();
 
-        Timer t = new Timer(1000, new ActionListener() {
+        return new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 long now = System.currentTimeMillis();
@@ -731,7 +731,6 @@ public class GUI implements CPDListener {
                 timeField.setText(formatTime(minutes, seconds));
             }
         });
-        return t;
     }
 
     private static String formatTime(long minutes, long seconds) {
@@ -762,7 +761,7 @@ public class GUI implements CPDListener {
 
     private TableModel tableModelFrom(final List<Match> items) {
 
-        TableModel model = new SortingTableModel<Match>() {
+        return new SortingTableModel<Match>() {
 
             private int sortColumn;
             private boolean sortDescending;
@@ -837,8 +836,6 @@ public class GUI implements CPDListener {
                 }
             }
         };
-
-        return model;
     }
 
     private void sortOnColumn(int columnIndex) {

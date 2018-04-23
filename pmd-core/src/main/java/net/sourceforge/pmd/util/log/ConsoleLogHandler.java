@@ -14,7 +14,9 @@ import java.util.logging.LogRecord;
  * Log to the console using a basic formatter.
  *
  * @author Wouter Zelle
+ * @deprecated This class will be complety removed in 7.0.0
  */
+@Deprecated
 public class ConsoleLogHandler extends Handler {
 
     private static final Formatter FORMATTER = new PmdLogFormatter();
