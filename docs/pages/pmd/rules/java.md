@@ -323,6 +323,12 @@ folder: pmd/rules
 *   [UseStringBufferForStringAppends](pmd_rules_java_performance.html#usestringbufferforstringappends): The use of the '+=' operator for appending strings causes the JVM to create and use an internal S...
 *   [UseStringBufferLength](pmd_rules_java_performance.html#usestringbufferlength): Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toStrin...
 
+## Security
+
+{% include callout.html content="Rules that flag potential security flaws." %}
+
+*   [InsecureCryptoIv](pmd_rules_java_security.html#insecurecryptoiv): Do not use hard coded initialization vector in cryptographic operations. Please use a randomly ge...
+
 ## Additional rulesets
 
 *   Android (`rulesets/java/android.xml`):
