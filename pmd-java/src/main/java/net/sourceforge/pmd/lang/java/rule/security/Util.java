@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
  * @author sergeygorbaty
  *
  */
-public class Util {
+public final class Util {
 
     private Util() {
         // intentionally
