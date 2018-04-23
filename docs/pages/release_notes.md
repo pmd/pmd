@@ -13,7 +13,7 @@ This is a minor release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
-    *   [Tree transversal revision](#tree-transversal-revision)
+    *   [Tree traversal revision](#tree-traversal-revision)
     *   [Naming rules enhancements](#naming-rules-enhancements)
     *   [Modified Rules](#modified-rules)
 * [Fixed Issues](#fixed-issues)
@@ -23,7 +23,7 @@ This is a minor release.
 
 ### New and noteworthy
 
-#### Tree transversal revision
+#### Tree traversal revision
 
 As described in [#904](https://github.com/pmd/pmd/issues/904), when searching for child nodes of the AST methods
 such as `hasDescendantOfType`, `getFirstDescendantOfType` and `findDescendantsOfType` were found to behave inconsistently,
@@ -33,7 +33,7 @@ find boundaries.
 
 This change implies several false positives / unexpected results (ie: `ASTBlockStatement` falsely returning `true` to `isAllocation()`)
 have been fixed; and lots of searches are now restricted to smaller search areas, which improves performance (depending on the project,
-we have measured up to 10% improvements during Type Resolution, Symbol Table analysis, and some rule's application).
+we have measured up to 10% improvements during Type Resolution, Symbol Table analysis, and some rules' application).
 
 #### Naming rules enhancements
 
