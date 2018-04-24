@@ -57,7 +57,8 @@ After you add these references it’ll look something like this:
 	<!-- Now we'll customize a rule's property value -->
 	<rule ref="category/java/design.xml/CyclomaticComplexity">
 		<properties>
-			<property name="reportLevel" value="5"/>
+			<property name="classReportLevel" value="40"/>
+			<property name="methodReportLevel" value="5"/>
 		</properties>
 	</rule>
 
