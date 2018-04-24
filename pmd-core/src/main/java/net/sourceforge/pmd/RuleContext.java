@@ -5,8 +5,6 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 
@@ -33,14 +31,40 @@ public class RuleContext {
     private File sourceCodeFile;
     private String sourceCodeFilename;
     private LanguageVersion languageVersion;
-    private final ConcurrentMap<String, Object> attributes;
+    private final RuleContextMap<String, Object> attributes;
     private boolean ignoreExceptions = true;
 
     /**
-     * Default constructor.
+     * Instances an appropriate RuleContext according to the number of threads.
+     *
+     * @param threads the number of threads on which PMD will run
+     * @return a thread-safe rule context if the number of threads is greater than zero; else a non thread-safe rule
+     * context if the number of threads is equal to zero (i.e. PMD will run on a unique thread)
+     */
+    /* default */ static RuleContext fromNumberOfThreads(final int threads) {
+        if (threads > 0) {
+            return RuleContext.forMultiThread();
+        }
+        return RuleContext.forSingleThread();
+    }
+
+    private static RuleContext forSingleThread() {
+        return new RuleContext(new SingleThreadedRuleContextMap<String, Object>());
+    }
+
+    private static RuleContext forMultiThread() {
+        return new RuleContext(new MultiThreadedRuleContextMap<String, Object>());
+    }
+
+    private RuleContext(final RuleContextMap<String, Object> attributes) {
+        this.attributes = attributes;
+    }
+
+    /**
+     * Default constructor (MultiThread Rule Context).
      */
     public RuleContext() {
-        attributes = new ConcurrentHashMap<>();
+        this(new MultiThreadedRuleContextMap<String, Object>());
     }
 
     /**

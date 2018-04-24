@@ -216,7 +216,7 @@ public class PMD {
 
             Benchmarker.mark(Benchmark.Reporting, System.nanoTime() - reportStart, 0);
 
-            RuleContext ctx = new RuleContext();
+            RuleContext ctx = RuleContext.fromNumberOfThreads(configuration.getThreads());
             final AtomicInteger violations = new AtomicInteger(0);
             ctx.getReport().addListener(new ThreadSafeReportListener() {
                 @Override
