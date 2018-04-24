@@ -74,4 +74,21 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
+
+    <test-code>
+        <description>[apex] AvoidHardcodingId false positives #776</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        // this is a false positive, we can't say, whether it's a salesforce id or not
+        @SuppressWarnings('PMD.AvoidHardcodingId')
+        String IMEI__c = '359040082913024';
+
+        // now the 6th character is non-0, definitive not a salesforce id
+        String IMEI2__c = '359041082913024';
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
