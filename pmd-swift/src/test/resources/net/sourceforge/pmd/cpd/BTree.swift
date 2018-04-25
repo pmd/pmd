@@ -888,3 +888,128 @@ extension BTree {
         self.init(builder.finish())
     }
 }
+
+/// Swift 4 news
+
+
+extension BTree {
+
+    // Multi-line String Literals
+
+    func multiline() {
+        let star = "⭐️"
+        let introString = """
+          A long time ago in a galaxy far,
+          far away....
+
+          You could write multi-lined strings
+          without "escaping" single quotes.
+
+          The indentation of the closing quotes
+               below deside where the text line
+          begins.
+
+          You can even dynamically add values
+          from properties: \(star)
+          """
+        print(introString) // prints the string exactly as written above with the value of star
+    }
+
+    // One-Sided Ranges
+
+    func planets() {
+        var planets = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
+        let outsideAsteroidBelt = planets[4...] // Before: planets[4..<planets.endIndex]
+        let firstThree = planets[..<4]          // Before: planets[planets.startIndex..<4]
+
+        temperature(planetNumber: 3) // Earth
+    }
+
+    func temperature(planetNumber: Int) {
+      switch planetNumber {
+      case ...2: // anything less than or equal to 2
+        print("Too hot")
+      case 4...: // anything greater than or equal to 4
+        print("Too cold")
+      default:
+        print("Justtttt right")
+      }
+    }
+
+
+}
+
+// Generic Subscripts
+
+struct GenericDictionary<Key: Hashable, Value> {
+  private var data: [Key: Value]
+
+  init(data: [Key: Value]) {
+    self.data = data
+  }
+
+  subscript<T>(key: Key) -> T? {
+    return data[key] as? T
+  }
+}
+
+func useSomeGenericSubscript() {
+    // Dictionary of type: [String: Any]
+    var earthData = GenericDictionary(data: ["name": "Earth", "population": 7500000000, "moons": 1])
+
+    // Automatically infers return type without "as? String"
+    let name: String? = earthData["name"]
+
+    // Automatically infers return type without "as? Int"
+    let population: Int? = earthData["population"]
+}
+
+extension GenericDictionary {
+  subscript<Keys: Sequence>(keys: Keys) -> [Value] where Keys.Iterator.Element == Key {
+    var values: [Value] = []
+    for key in keys {
+      if let value = data[key] {
+        values.append(value)
+      }
+    }
+    return values
+  }
+}
+
+func useSomeGenericFromExtension() {
+    // Array subscript value
+    let nameAndMoons = earthData[["moons", "name"]]        // [1, "Earth"]
+    // Set subscript value
+    let nameAndMoons2 = earthData[Set(["moons", "name"])]  // [1, "Earth"]
+}
+
+// Associated Type Constraints
+
+protocol MyProtocol {
+  associatedtype Element
+  associatedtype SubSequence : Sequence where SubSequence.Iterator.Element == Iterator.Element
+}
+
+// Class and Protocol Existential
+
+protocol MyProtocol { }
+class View { }
+class ViewSubclass: View, MyProtocol { }
+
+class MyClass {
+  var delegate: (View & MyProtocol)?
+}
+
+let myClass = MyClass()
+//myClass.delegate = View() // error: cannot assign value of type 'View' to type '(View & MyProtocol)?'
+myClass.delegate = ViewSubclass()
+
+// 4.1 conditional
+
+#if canImport(SomeModule)
+let someModuleImportedVersion = SomeModule.version
+#endif
+
+#if targetEnvironment(simulator)
+print("code only compiled for simulator")
+#endif
