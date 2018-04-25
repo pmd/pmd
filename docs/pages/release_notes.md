@@ -125,6 +125,7 @@ Other languages are equivalent.
     *   [#1003](https://github.com/pmd/pmd/issues/1003): \[java] UnnecessaryConstructor triggered on required empty constructor (Dagger @Inject)
     *   [#1023](https://github.com/pmd/pmd/issues/1023): \[java] False positive for useless parenthesis
 *   java-errorprone
+    *   [#629](https://github.com/pmd/pmd/issues/629): \[java] NullAssignment false positive
     *   [#816](https://github.com/pmd/pmd/issues/816): \[java] SingleMethodSingleton false positives with inner classes
 *   java-performance
     *   [#586](https://github.com/pmd/pmd/issues/586): \[java] AvoidUsingShortType erroneously triggered on overrides of 3rd party methods

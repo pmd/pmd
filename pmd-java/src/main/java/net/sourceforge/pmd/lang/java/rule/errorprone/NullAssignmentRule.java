@@ -5,20 +5,25 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
-// TODO - should check that this is not the first assignment.  e.g., this is OK:
-// Object x;
-// x = null;
 public class NullAssignmentRule extends AbstractJavaRule {
+
+    public NullAssignmentRule() {
+        addRuleChainVisit(ASTNullLiteral.class);
+    }
 
     @Override
     public Object visit(ASTNullLiteral node, Object data) {
@@ -55,7 +60,19 @@ public class NullAssignmentRule extends AbstractJavaRule {
                 && ((AccessNode) ((VariableNameDeclaration) name.getNameDeclaration()).getAccessNodeParent()).isFinal();
     }
 
-    private boolean isBadTernary(ASTConditionalExpression n) {
-        return n.isTernary() && !(n.jjtGetChild(0) instanceof ASTEqualityExpression);
+    private boolean isBadTernary(ASTConditionalExpression ternary) {
+        boolean isInitializer = false;
+
+        ASTVariableInitializer variableInitializer = ternary.getFirstParentOfType(ASTVariableInitializer.class);
+        if (variableInitializer != null) {
+            ASTBlockStatement statement = ternary.getFirstParentOfType(ASTBlockStatement.class);
+            isInitializer = statement == variableInitializer.getFirstParentOfType(ASTBlockStatement.class);
+        }
+
+        return ternary.isTernary()
+                && !(ternary.jjtGetChild(0) instanceof ASTEqualityExpression)
+                && !isInitializer
+                && !(ternary.getNthParent(2) instanceof ASTReturnStatement)
+                && !(ternary.getNthParent(2) instanceof ASTLambdaExpression);
     }
 }
