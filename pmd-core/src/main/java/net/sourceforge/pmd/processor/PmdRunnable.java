@@ -24,8 +24,6 @@ public class PmdRunnable implements Callable<Report> {
 
     private static final Logger LOG = Logger.getLogger(PmdRunnable.class.getName());
 
-    private static final ThreadLocal<ThreadContext> LOCAL_THREAD_CONTEXT = new ThreadLocal<>();
-
     private final DataSource dataSource;
     private final String fileName;
     private final List<Renderer> renderers;
@@ -43,8 +41,11 @@ public class PmdRunnable implements Callable<Report> {
         this.sourceCodeProcessor = sourceCodeProcessor;
     }
 
+    @Deprecated
     public static void reset() {
-        LOCAL_THREAD_CONTEXT.remove();
+        /*
+        This method is useless for the next major release, as the thread context is not saved in a thread  local anymore
+         */
     }
 
     private void addError(Report report, Exception e, String errorMessage) {
@@ -55,24 +56,21 @@ public class PmdRunnable implements Callable<Report> {
 
     @Override
     public Report call() {
-        ThreadContext tc = LOCAL_THREAD_CONTEXT.get();
-        if (tc == null) {
-            tc = new ThreadContext(new RuleSets(ruleSets), new RuleContext(ruleContext));
-            LOCAL_THREAD_CONTEXT.set(tc);
-        }
+        final RuleSets ruleSetsCopy = new RuleSets(ruleSets);
+        final RuleContext ruleContextCopy = new RuleContext(ruleContext);
 
-        Report report = Report.createReport(tc.ruleContext, fileName);
+        Report report = Report.createReport(ruleContextCopy, fileName);
 
         if (LOG.isLoggable(Level.FINE)) {
-            LOG.fine("Processing " + tc.ruleContext.getSourceCodeFilename());
+            LOG.fine("Processing " + ruleContextCopy.getSourceCodeFilename());
         }
         for (Renderer r : renderers) {
             r.startFileAnalysis(dataSource);
         }
 
         try (InputStream stream = new BufferedInputStream(dataSource.getInputStream())) {
-            tc.ruleContext.setLanguageVersion(null);
-            sourceCodeProcessor.processSourceCode(stream, tc.ruleSets, tc.ruleContext);
+            ruleContextCopy.setLanguageVersion(null);
+            sourceCodeProcessor.processSourceCode(stream, ruleSetsCopy, ruleContextCopy);
         } catch (PMDException pmde) {
             addError(report, pmde, "Error while processing file: " + fileName);
         } catch (IOException ioe) {
@@ -82,15 +80,5 @@ public class PmdRunnable implements Callable<Report> {
         }
 
         return report;
-    }
-
-    private static class ThreadContext {
-        /* default */ final RuleSets ruleSets;
-        /* default */ final RuleContext ruleContext;
-
-        ThreadContext(RuleSets ruleSets, RuleContext ruleContext) {
-            this.ruleSets = ruleSets;
-            this.ruleContext = ruleContext;
-        }
     }
 }

@@ -34,8 +34,5 @@ public final class MonoThreadProcessor extends AbstractPMDProcessor {
         for (Report r : reports) {
             super.renderReports(renderers, r);
         }
-
-        // Since this thread may run PMD again, clean up the runnable
-        PmdRunnable.reset();
     }
 }
