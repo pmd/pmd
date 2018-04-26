@@ -237,6 +237,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
      */
     public void onNodeItemSelected(Node selectedValue) {
         nodeInfoPanelController.displayInfo(selectedValue);
+        // The following line causes problems, since it wipes out the name occurrence highlighting,
+        // but it's already fixed in a PR to come soon
         sourceEditorController.clearNodeHighlight();
         sourceEditorController.highlightNodePrimary(selectedValue);
         sourceEditorController.focusNodeInTreeView(selectedValue);

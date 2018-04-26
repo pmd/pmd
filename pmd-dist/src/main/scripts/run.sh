@@ -78,7 +78,7 @@ jre_specific_vm_options() {
   # java_ver is eg "18" for java 1.8, "90" for java 9.0
   java_ver=$(java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;')
   options=""
-  
+
   if [ $java_ver -ge 90 ] && [ "${APPNAME}" = "designer" ]
   then # open internal module of javafx to reflection
     options="--add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED"
