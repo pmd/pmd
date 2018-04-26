@@ -172,6 +172,9 @@ entries:
         - title: Performance
           output: web, pdf
           url: /pmd_rules_java_performance.html
+        - title: Security
+          output: web, pdf
+          url: /pmd_rules_java_security.html
     - title: null
       output: web, pdf
       subfolders:

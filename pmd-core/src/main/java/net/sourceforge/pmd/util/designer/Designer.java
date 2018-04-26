@@ -312,7 +312,7 @@ public class Designer implements ClipboardOwner {
 
         @Override
         public Enumeration<TreeNode> children() {
-            Enumeration<TreeNode> e = new Enumeration<TreeNode>() {
+            return new Enumeration<TreeNode>() {
                 int i = 0;
 
                 @Override
@@ -325,7 +325,6 @@ public class Designer implements ClipboardOwner {
                     return kids[i++];
                 }
             };
-            return e;
         }
 
         @Override
@@ -395,7 +394,7 @@ public class Designer implements ClipboardOwner {
                 getChildAt(0); // force it to build kids
             }
 
-            Enumeration<TreeNode> e = new Enumeration<TreeNode>() {
+            return new Enumeration<TreeNode>() {
                 int i = 0;
 
                 @Override
@@ -408,7 +407,6 @@ public class Designer implements ClipboardOwner {
                     return kids[i++];
                 }
             };
-            return e;
         }
 
         @Override

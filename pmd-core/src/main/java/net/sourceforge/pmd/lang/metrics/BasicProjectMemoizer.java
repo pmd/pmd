@@ -28,6 +28,8 @@ public abstract class BasicProjectMemoizer<T extends QualifiableNode, O extends 
     private Map<QualifiedName, MetricMemoizer<T>> classes = new WeakHashMap<>();
     private Map<QualifiedName, MetricMemoizer<O>> operations = new WeakHashMap<>();
 
+    private final Object classesSynchronizer = new Object();
+    private final Object operationsSynchronizer = new Object();
 
     /** Clears all memoizers. Used for tests. */
     public void reset() {
@@ -38,8 +40,10 @@ public abstract class BasicProjectMemoizer<T extends QualifiableNode, O extends 
 
     @Override
     public MetricMemoizer<O> getOperationMemoizer(QualifiedName qname) {
-        if (!operations.containsKey(qname)) {
-            operations.put(qname, new BasicMetricMemoizer<O>());
+        synchronized (operationsSynchronizer) {
+            if (!operations.containsKey(qname)) {
+                operations.put(qname, new BasicMetricMemoizer<O>());
+            }
         }
 
         return operations.get(qname);
@@ -48,8 +52,10 @@ public abstract class BasicProjectMemoizer<T extends QualifiableNode, O extends 
 
     @Override
     public MetricMemoizer<T> getClassMemoizer(QualifiedName qname) {
-        if (!classes.containsKey(qname)) {
-            classes.put(qname, new BasicMetricMemoizer<T>());
+        synchronized (classesSynchronizer) {
+            if (!classes.containsKey(qname)) {
+                classes.put(qname, new BasicMetricMemoizer<T>());
+            }
         }
 
         return classes.get(qname);

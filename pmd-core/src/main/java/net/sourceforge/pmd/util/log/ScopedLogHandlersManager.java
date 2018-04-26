@@ -36,7 +36,9 @@ public class ScopedLogHandlersManager {
         }
         for (Handler handler : newHandlers) {
             logger.addHandler(handler);
+            handler.setLevel(level);
         }
+        logger.setUseParentHandlers(false);
     }
 
     public void close() {
@@ -47,5 +49,6 @@ public class ScopedLogHandlersManager {
             logger.addHandler(handler);
         }
         logger.setLevel(oldLogLevel);
+        logger.setUseParentHandlers(true);
     }
 }

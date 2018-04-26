@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
@@ -19,7 +20,7 @@ public class CPPTokenizerTest {
     @Test
     public void testUTFwithBOM() {
         Tokens tokens = parse("\ufeffint start()\n{ int ret = 1;\nreturn ret;\n}\n");
-        assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
+        assertNotSame(TokenEntry.getEOF(), tokens.getTokens().get(0));
         assertEquals(15, tokens.size());
     }
 
@@ -29,8 +30,18 @@ public class CPPTokenizerTest {
                 + "int main()\n" + "{\n" + "    std::string text(\"ąęćśźńó\");\n" + "    std::cout << text;\n"
                 + "    return 0;\n" + "}\n";
         Tokens tokens = parse(code);
-        assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
+        assertNotSame(TokenEntry.getEOF(), tokens.getTokens().get(0));
         assertEquals(24, tokens.size());
+    }
+    
+    @Test
+    public void testIgnoreBetweenSpecialComments() {
+        String code = "#include <iostream>\n" + "#include <string>\n" + "\n" + "// CPD-OFF\n"
+                + "int main()\n" + "{\n" + "    std::string text(\"ąęćśźńó\");\n" + "    std::cout << text;\n"
+                + "    return 0;\n" + "// CPD-ON\n" + "}\n";
+        Tokens tokens = parse(code);
+        assertNotSame(TokenEntry.getEOF(), tokens.getTokens().get(0));
+        assertEquals(2, tokens.size()); // "}" + EOF
     }
 
     @Test
