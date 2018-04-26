@@ -77,14 +77,14 @@ check_lib_dir() {
 jre_specific_vm_options() {
   # java_ver is eg "18" for java 1.8, "90" for java 9.0
   java_ver=$(java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;')
-
-  if [ $java_ver -ge 90 ]
-  then
-    # Opens internal module of javafx to reflection
+  options=""
+  
+  if [ $java_ver -ge 90 ] && [ "${APPNAME}" = "designer" ]
+  then # open internal module of javafx to reflection
     options="--add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED"
-
-    echo $options
   fi
+
+  echo $options
 }
 
 readonly APPNAME="${1}"
