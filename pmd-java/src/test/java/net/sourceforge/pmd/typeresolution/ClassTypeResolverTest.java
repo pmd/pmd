@@ -127,7 +127,7 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassAOther2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB2;
 
-
+// TODO split that class 
 public class ClassTypeResolverTest {
 
     @Test
