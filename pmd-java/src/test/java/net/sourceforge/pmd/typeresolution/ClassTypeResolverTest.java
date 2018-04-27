@@ -13,6 +13,7 @@ import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.Inferen
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
@@ -51,6 +52,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
@@ -802,20 +804,27 @@ public class ClassTypeResolverTest {
 
     // subtest
     private void testPrimitiveTypeFieldDecl(Node declaration) throws JaxenException {
+        // public int[] a, b[];
 
-        // public String[] c, d[];
-        boolean primDeclMatches = declaration.jjtGetParent().hasDescendantMatchingXPath("//" + declaration.getXPathNodeName() + "\n"
-                                                                                                + "  [child::Type/ReferenceType[@Array='true' and @ArrayDepth=1]/PrimitiveType[@Image='int']]\n"
-                                                                                                + "  [child::VariableDeclarator/VariableDeclaratorId[@Image='a' and @Array='false' and @ArrayDepth=0]]\n"
-                                                                                                + "  [child::VariableDeclarator/VariableDeclaratorId[@Image='b' and @Array='true' and @ArrayDepth=1]]");
+        ASTReferenceType typeNode = declaration.getFirstChildOfType(ASTType.class).getFirstChildOfType(ASTReferenceType.class);
+        assertNotNull(typeNode);
+        assertTrue(typeNode.isArray());
+        assertEquals(1, typeNode.getArrayDepth());
+        assertEquals("int", typeNode.getFirstChildOfType(ASTPrimitiveType.class).getImage());
 
-        assertTrue(primDeclMatches);
+        ASTVariableDeclaratorId aID = declaration.getFirstChildOfType(ASTVariableDeclarator.class).getFirstChildOfType(ASTVariableDeclaratorId.class);
+        assertNotNull(aID);
+        assertEquals("a", aID.getImage());
+        assertFalse(aID.isArray());
+        assertEquals(0, aID.getArrayDepth());
+        assertEquals(int[].class, aID.getType());
 
-        ASTVariableDeclaratorId aDeclarator = (ASTVariableDeclaratorId) declaration.findChildNodesWithXPath("//VariableDeclaratorId[@Image='a']").get(0);
-        assertEquals(int[].class, aDeclarator.getType());
-
-        ASTVariableDeclaratorId bDeclarator = (ASTVariableDeclaratorId) declaration.findChildNodesWithXPath("//VariableDeclaratorId[@Image='b']").get(0);
-        assertEquals(int[][].class, bDeclarator.getType());
+        ASTVariableDeclaratorId bID = declaration.findChildrenOfType(ASTVariableDeclarator.class).get(1).getFirstChildOfType(ASTVariableDeclaratorId.class);
+        assertNotNull(bID);
+        assertEquals("b", bID.getImage());
+        assertTrue(bID.isArray());
+        assertEquals(1, bID.getArrayDepth());
+        assertEquals(int[][].class, bID.getType());
     }
 
 
@@ -823,18 +832,26 @@ public class ClassTypeResolverTest {
     private void testRefTypeFieldDecl(Node declaration) throws JaxenException {
 
         // public String[] c, d[];
-        boolean refDeclMatches = declaration.jjtGetParent().hasDescendantMatchingXPath("//" + declaration.getXPathNodeName() + "\n"
-                                                                                               + "  [child::Type/ReferenceType[@Array='true' and @ArrayDepth=1]/ClassOrInterfaceType[@Image='String']]\n"
-                                                                                               + "  [child::VariableDeclarator/VariableDeclaratorId[@Image='c' and @Array='false' and @ArrayDepth=0]]\n"
-                                                                                               + "  [child::VariableDeclarator/VariableDeclaratorId[@Image='d' and @Array='true' and @ArrayDepth=1]]");
 
-        assertTrue(refDeclMatches);
+        ASTReferenceType typeNode = declaration.getFirstChildOfType(ASTType.class).getFirstChildOfType(ASTReferenceType.class);
+        assertNotNull(typeNode);
+        assertTrue(typeNode.isArray());
+        assertEquals(1, typeNode.getArrayDepth());
+        assertEquals("String", typeNode.getFirstChildOfType(ASTClassOrInterfaceType.class).getImage());
 
-        ASTVariableDeclaratorId cDeclarator = (ASTVariableDeclaratorId) declaration.findChildNodesWithXPath("//VariableDeclaratorId[@Image='c']").get(0);
-        assertEquals(String[].class, cDeclarator.getType());
+        ASTVariableDeclaratorId cID = declaration.getFirstChildOfType(ASTVariableDeclarator.class).getFirstChildOfType(ASTVariableDeclaratorId.class);
+        assertNotNull(cID);
+        assertEquals("c", cID.getImage());
+        assertFalse(cID.isArray());
+        assertEquals(0, cID.getArrayDepth());
+        assertEquals(String[].class, cID.getType());
 
-        ASTVariableDeclaratorId dDeclarator = (ASTVariableDeclaratorId) declaration.findChildNodesWithXPath("//VariableDeclaratorId[@Image='d']").get(0);
-        assertEquals(String[][].class, dDeclarator.getType());
+        ASTVariableDeclaratorId dID = declaration.findChildrenOfType(ASTVariableDeclarator.class).get(1).getFirstChildOfType(ASTVariableDeclaratorId.class);
+        assertNotNull(dID);
+        assertEquals("d", dID.getImage());
+        assertTrue(dID.isArray());
+        assertEquals(1, dID.getArrayDepth());
+        assertEquals(String[][].class, dID.getType());
     }
 
 
