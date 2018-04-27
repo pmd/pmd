@@ -39,6 +39,7 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class RuleDocGenerator {
@@ -421,8 +422,8 @@ public class RuleDocGenerator {
                     if (!properties.isEmpty()) {
                         lines.add("**This rule has the following properties:**");
                         lines.add("");
-                        lines.add("|Name|Default Value|Description|");
-                        lines.add("|----|-------------|-----------|");
+                        lines.add("|Name|Default Value|Description|Multivalued|");
+                        lines.add("|----|-------------|-----------|-----------|");
                         for (PropertyDescriptor<?> propertyDescriptor : properties) {
                             String description = propertyDescriptor.description();
                             if (description != null && description.toLowerCase(Locale.ROOT).startsWith(DEPRECATED_RULE_PROPERTY_MARKER)) {
@@ -441,9 +442,18 @@ public class RuleDocGenerator {
                                 }
                             }
 
+                            String multiValued = "no";
+                            if (propertyDescriptor.isMultiValue()) {
+                                MultiValuePropertyDescriptor<?> multiValuePropertyDescriptor =
+                                        (MultiValuePropertyDescriptor<?>) propertyDescriptor;
+                                multiValued = "yes. Delimiter is '"
+                                        + multiValuePropertyDescriptor.multiValueDelimiter() + "'";
+                            }
+
                             lines.add("|" + propertyDescriptor.name()
                                 + "|" + defaultValue.replace("|", "\\|")
                                 + "|" + description
+                                + "|" + multiValued.replace("|", "\\|")
                                 + "|");
                         }
                         lines.add("");
