@@ -272,7 +272,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testLiterals() throws JaxenException {
-        List<ASTLiteral> literals = selectNodes(Literals.class, ASTLiteral.class, "//Literal");
+        List<ASTLiteral> literals = selectNodes(Literals.class, ASTLiteral.class);
         int index = 0;
 
         // String s = "s";

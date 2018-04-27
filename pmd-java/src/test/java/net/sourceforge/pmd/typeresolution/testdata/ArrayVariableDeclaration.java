@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.typeresolution.testdata;
 
 /**
- * @since 6.1.0
+ * @since 6.3.0
  */
 @SuppressWarnings("unused")
 public class ArrayVariableDeclaration {

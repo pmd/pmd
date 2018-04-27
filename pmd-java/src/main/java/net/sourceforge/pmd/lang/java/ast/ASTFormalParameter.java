@@ -25,6 +25,7 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
     /**
      * @deprecated Will be made private in 7.0.0
      */
+    // Should be made package-private
     @Deprecated
     public void setVarargs() {
         isVarargs = true;
