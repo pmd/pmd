@@ -489,6 +489,7 @@ boolean bar(int x, int y) {
         <priority>3</priority>
         <properties>
             <property name="checkIfElseStmt" type="Boolean" value="true" description="Require that 'if ... else' statements use braces" />
+            <property name="checkSingleIfStmt" type="Boolean" value="true" description="Require that 'if' statements with a single branch use braces" />
             <property name="checkWhileStmt" type="Boolean" value="true" description="Require that 'while' loops use braces" />
             <property name="checkForStmt" type="Boolean" value="true" description="Require that 'for' loops should use braces" />
             <property name="checkDoWhileStmt" type="Boolean" value="true" description="Require that 'do ... while' loops use braces" />
@@ -506,7 +507,13 @@ boolean bar(int x, int y) {
                 //DoStatement[$checkDoWhileStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
                 |
                 (: The violation is reported on the sub statement -- not the if statement :)
-                //Statement[$checkIfElseStmt and parent::IfStatement and not(child::Block or child::IfStatement)]
+                //Statement[$checkIfElseStmt and parent::IfStatement and not(child::Block or child::IfStatement)
+                            (: Whitelists single if statements :)
+                            and ($checkSingleIfStmt
+                                 (: Inside this not(...) is the definition of a "single if statement" :)
+                                 or not(count(../Statement) = 1 (: No else stmt :)
+                                        (: Not the last branch of an 'if ... else if' chain :)
+                                        and not(parent::IfStatement[parent::Statement[parent::IfStatement]])))]
                 |
                 (: Reports case labels if one of their subordinate statements is not braced :)
                 //SwitchLabel[$checkCaseStmt]

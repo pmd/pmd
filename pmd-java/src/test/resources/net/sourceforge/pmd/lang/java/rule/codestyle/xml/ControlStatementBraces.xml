@@ -310,6 +310,98 @@
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Single if, allowed</description>
+        <rule-property name="checkSingleIfStmt">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    if (true)
+                        x++; // this is allowed
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>If chain, checkSingleIfStmt doesn't apply</description>
+        <rule-property name="checkSingleIfStmt">false</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,10</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    if (true)
+                        x++; // here
+                     else if (false) {
+                        x--;
+                    } else
+
+                        ; // and here
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>If chain, checkSingleIfStmt doesn't apply (even on last branch)</description>
+        <!-- This test is necessary because if chains are represented as nested if stmt nodes. The
+        last branch, if it has no catch-all 'else' branch, could be naively identified as a "single
+        if statement" -->
+        <rule-property name="checkSingleIfStmt">false</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,7</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    if (true)
+                        x++; // here
+                    else if (false)
+                        x--; // and here
+
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>If else, braces on else, checkSingleIfStmt doesn't apply</description>
+        <rule-property name="checkSingleIfStmt">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    if (true)
+                        x++;
+                    else {
+                        x--;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Single if, checkIfElseStmt overrides checkSingleIfStmt</description>
+        <rule-property name="checkSingleIfStmt">true</rule-property>
+        <rule-property name="checkIfElseStmt">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    int x = 0;
+                    if (true)
+                        x++; // this is allowed
+                }
+            }
+            ]]></code>
+    </test-code>
+
 
     <test-code>
         <description>Case, no braces, allowed</description>
