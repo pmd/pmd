@@ -115,7 +115,7 @@ from the comunity during the processm but if you have a legitimate use case for 
     in enums.
 
 *   The Java rule [`ControlStatementBraces`](pmd_rules_java_codestyle.html#controlstatementbraces) (`java-codestyle`)
-    supports a new boolean property `checkSingleIfStmts`. When unset, the rule won't report if statements which lack
+    supports a new boolean property `checkSingleIfStmts`. When unset, the rule won't report `if` statements which lack
     braces, if the statement is not part of an `if ... else if` chain. This property defaults to true.
 
 ### Fixed Issues
