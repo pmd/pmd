@@ -429,8 +429,20 @@ public class RuleDocGenerator {
                                 description = DEPRECATION_LABEL_SMALL
                                         + description.substring(DEPRECATED_RULE_PROPERTY_MARKER.length());
                             }
+
+                            String defaultValue = "";
+                            if (propertyDescriptor.defaultValue() != null) {
+                                if (propertyDescriptor.isMultiValue()) {
+                                    @SuppressWarnings("unchecked") // multi valued properties are using a List
+                                    PropertyDescriptor<List<?>> multiPropertyDescriptor = (PropertyDescriptor<List<?>>) propertyDescriptor;
+                                    defaultValue = multiPropertyDescriptor.asDelimitedString(multiPropertyDescriptor.defaultValue());
+                                } else {
+                                    defaultValue = String.valueOf(propertyDescriptor.defaultValue());
+                                }
+                            }
+
                             lines.add("|" + propertyDescriptor.name()
-                                + "|" + (propertyDescriptor.defaultValue() != null ? String.valueOf(propertyDescriptor.defaultValue()) : "").replace("|", "\\|")
+                                + "|" + defaultValue.replace("|", "\\|")
                                 + "|" + description
                                 + "|");
                         }
