@@ -121,6 +121,9 @@ from the comunity during the processm but if you have a legitimate use case for 
     is now deprecated, as it is now superseded by `nativePattern`. Support for that property will be maintained until
     7.0.0.
 
+*   The Java rule [`ControlStatementBraces`](pmd_rules_java_codestyle.html#controlstatementbraces) (`java-codestyle`)
+    supports a new boolean property `checkSingleIfStmt`. When unset, the rule won't report `if` statements which lack
+    braces, if the statement is not part of an `if ... else if` chain. This property defaults to true.
 
 ### Fixed Issues
 
@@ -146,6 +149,7 @@ from the comunity during the processm but if you have a legitimate use case for 
 *   java-codestyle
     *   [#1003](https://github.com/pmd/pmd/issues/1003): \[java] UnnecessaryConstructor triggered on required empty constructor (Dagger @Inject)
     *   [#1023](https://github.com/pmd/pmd/issues/1023): \[java] False positive for useless parenthesis
+    *   [#1004](https://github.com/pmd/pmd/issues/1004): \[java] ControlStatementBraces is missing checkIfStmt property
 *   java-design
     *   [#1056](https://github.com/pmd/pmd/issues/1056): \[java] Property ignoredAnnotations does not work for SingularField and ImmutableField
 *   java-errorprone
