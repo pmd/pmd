@@ -12,7 +12,6 @@ import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDe
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_BOUND;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_WILDCARD;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -255,6 +254,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
         }
 
+        // FIXME, we should discard the array depth on this node, it should only be known to ASTReferenceType (#910)
         populateType(node, typeName, node.getArrayDepth());
 
         ASTTypeArguments typeArguments = node.getFirstChildOfType(ASTTypeArguments.class);
@@ -275,6 +275,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * Set's the node's type to the found Class in the node's name (if there is a class to be found).
      *
      * @param node
+     *
      * @return The index in the array produced by splitting the node's name by '.', which is not part of the
      * class name found. Example: com.package.SomeClass.staticField.otherField, return would be 3
      */
@@ -480,6 +481,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * @param typeToSearch   The type def. to search the field in.
      * @param fieldImage     The simple name of the field.
      * @param accessingClass The class that is trying to access the field, some Class declared in the current ACU.
+     *
      * @return JavaTypeDefinition of the resolved field or null if it could not be found.
      */
     private JavaTypeDefinition getFieldType(JavaTypeDefinition typeToSearch, String fieldImage, Class<?>
@@ -514,6 +516,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * @param scope          The scope to start the search from.
      * @param image          The name of the field, local variable or method parameter.
      * @param accessingClass The Class (which is defined in the current ACU) that is trying to access the field.
+     *
      * @return Type def. of the field, or null if it could not be resolved.
      */
     private JavaTypeDefinition getTypeDefinitionOfVariableFromScope(Scope scope, String image, Class<?>
@@ -600,12 +603,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (node == null || node.getNameDeclaration() == null) {
+        if (node == null || node.isTypeInferred()) {
             return super.visit(node, data);
         }
-        String name = node.getNameDeclaration().getTypeImage();
-        if (name != null) {
-            populateType(node, name, node.getNameDeclaration().getArrayDepth());
+
+        // Type common to all declarations in the same statement
+        JavaTypeDefinition baseType = node.getTypeNode().getTypeDefinition();
+
+        if (baseType != null) {
+            // add the dimensions specific to the declarator id
+            node.setTypeDefinition(baseType.withDimensions(node.getArrayDepth()));
         }
         return super.visit(node, data);
     }
@@ -621,6 +628,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTReferenceType node, Object data) {
         super.visit(node, data);
         rollupTypeUnary(node);
+
+        JavaTypeDefinition elementTypeDef = node.getTypeDefinition();
+        if (elementTypeDef != null) {
+            // FIXME when ClassOrInterfaceType resolves type without dimensions, remove the test here
+            if (!elementTypeDef.isArrayType()) {
+                node.setTypeDefinition(elementTypeDef.withDimensions(node.getArrayDepth()));
+            }
+        }
         return data;
     }
 
@@ -865,6 +880,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * Returns the the first Class declaration around the node.
      *
      * @param node The node with the enclosing Class declaration.
+     *
      * @return The JavaTypeDefinition of the enclosing Class declaration.
      */
     private TypeNode getEnclosingTypeDeclaration(Node node) {
@@ -905,6 +921,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      *
      * @param node  The node from which to start searching.
      * @param clazz The type of the enclosing class.
+     *
      * @return The TypeDefinition of the superclass.
      */
     private JavaTypeDefinition getSuperClassTypeDefinition(Node node, Class<?> clazz) {
@@ -1060,9 +1077,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         final ASTArrayDimsAndInits dims = node.getFirstChildOfType(ASTArrayDimsAndInits.class);
         if (dims != null) {
-            final Class<?> arrayType = ((TypeNode) node.jjtGetChild(0)).getType();
-            if (arrayType != null) {
-                node.setType(Array.newInstance(arrayType, (int[]) Array.newInstance(int.class, dims.getArrayDepth())).getClass());
+            final JavaTypeDefinition elementType = ((TypeNode) node.jjtGetChild(0)).getTypeDefinition();
+            if (elementType != null) {
+                node.setTypeDefinition(elementType.withDimensions(dims.getArrayDepth()));
             }
         } else {
             rollupTypeUnary(node);
@@ -1081,11 +1098,15 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTFormalParameter node, Object data) {
         super.visit(node, data);
-        node.setTypeDefinition(node.getTypeNode().getTypeDefinition());
-        if (node.isVarargs() && node.getType() != null) {
-            node.setType(Array.newInstance(node.getType(), 0).getClass());
-        }
+        JavaTypeDefinition varType = node.getVariableDeclaratorId().getTypeDefinition();
 
+        if (varType != null) {
+            if (node.isVarargs()) {
+                // The type of the formal parameter is defined in terms of the type
+                // of the declarator ID
+                node.getVariableDeclaratorId().setTypeDefinition(varType.withDimensions(1));
+            }
+        }
         return data;
     }
 
@@ -1120,9 +1141,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     // Roll up the type based on type of the first child node.
     private void rollupTypeUnary(TypeNode typeNode) {
-        Node node = typeNode;
-        if (node.jjtGetNumChildren() >= 1) {
-            Node child = node.jjtGetChild(0);
+        if (typeNode.jjtGetNumChildren() >= 1) {
+            Node child = typeNode.jjtGetChild(0);
             if (child instanceof TypeNode) {
                 typeNode.setTypeDefinition(((TypeNode) child).getTypeDefinition());
             }
@@ -1245,10 +1265,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 node.setTypeDefinition(parameter.getTypeDefinition());
             }
         } else {
-            if (arrayDimens > 0) {
-                myType = Array.newInstance(myType, (int[]) Array.newInstance(int.class, arrayDimens)).getClass();
-            }
-            node.setType(myType);
+            JavaTypeDefinition def = JavaTypeDefinition.forClass(myType);
+            node.setTypeDefinition(def.withDimensions(arrayDimens));
         }
     }
 
@@ -1381,9 +1399,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
     }
 
+
     private void populateClassName(ASTCompilationUnit node, String className) throws ClassNotFoundException {
         node.setType(pmdClassLoader.loadClass(className));
         importedClasses.putAll(pmdClassLoader.getImportedClasses(className));
     }
-
 }

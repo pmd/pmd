@@ -13,6 +13,7 @@ import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.Inferen
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
@@ -48,10 +49,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
@@ -75,6 +78,7 @@ import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.AnoymousExtendingObject;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayTypes;
+import net.sourceforge.pmd.typeresolution.testdata.ArrayVariableDeclaration;
 import net.sourceforge.pmd.typeresolution.testdata.DefaultJavaLangImport;
 import net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ExtraTopLevelClass;
@@ -126,7 +130,7 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassAOther2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB2;
 
-
+// TODO split that class 
 public class ClassTypeResolverTest {
 
     @Test
@@ -288,8 +292,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testLiterals() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(Literals.class);
-        List<ASTLiteral> literals = convertList(acu.findChildNodesWithXPath("//Literal"), ASTLiteral.class);
+        List<ASTLiteral> literals = selectNodes(Literals.class, ASTLiteral.class);
         int index = 0;
 
         // String s = "s";
@@ -707,15 +710,9 @@ public class ClassTypeResolverTest {
     }
 
     @Test
-    public void testThisExpression() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(ThisExpression.class);
-
-        List<ASTPrimaryExpression> expressions = convertList(
-                acu.findChildNodesWithXPath("//PrimaryExpression"),
-                ASTPrimaryExpression.class);
-        List<ASTPrimaryPrefix> prefixes = convertList(
-                acu.findChildNodesWithXPath("//PrimaryPrefix"),
-                ASTPrimaryPrefix.class);
+    public void testThisExpression() {
+        List<ASTPrimaryExpression> expressions = selectNodes(ThisExpression.class, ASTPrimaryExpression.class);
+        List<ASTPrimaryPrefix> prefixes = selectNodes(ThisExpression.class, ASTPrimaryPrefix.class);
 
         int index = 0;
 
@@ -747,11 +744,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testSuperExpression() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(SuperExpression.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(SuperExpression.class, AbstractJavaTypeNode.class,
+                                                             "//VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix");
 
         int index = 0;
 
@@ -772,12 +766,8 @@ public class ClassTypeResolverTest {
     }
 
     @Test
-    public void testArrayTypes() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(ArrayTypes.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//VariableDeclarator"),
-                AbstractJavaTypeNode.class);
+    public void testArrayTypes() {
+        List<ASTVariableDeclarator> expressions = selectNodes(ArrayTypes.class, ASTVariableDeclarator.class);
 
         int index = 0;
 
@@ -793,10 +783,99 @@ public class ClassTypeResolverTest {
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
     }
-    
+
+
+    @Test
+    public void testReferenceType() {
+        List<ASTReferenceType> expressions = selectNodes(ArrayTypes.class, ASTReferenceType.class);
+
+        int index = 0;
+
+        // int[] a = new int[1];
+        testSubtreeNodeTypes(expressions.get(index++), int[].class);
+
+        // Object[][] b = new Object[1][0];
+        testSubtreeNodeTypes(expressions.get(index++), Object[][].class);
+
+        // ArrayTypes[][][] c = new ArrayTypes[][][] { new ArrayTypes[1][2] };
+        testSubtreeNodeTypes(expressions.get(index++), ArrayTypes[][][].class);
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+
+    @Test
+    public void testHeterogeneousArrayFieldDeclaration() throws JaxenException {
+        List<ASTFieldDeclaration> fields = selectNodes(ArrayVariableDeclaration.class, ASTFieldDeclaration.class);
+        List<ASTLocalVariableDeclaration> locals = selectNodes(ArrayVariableDeclaration.class, ASTLocalVariableDeclaration.class);
+
+        // public int[] a, b[];
+        testPrimitiveTypeFieldDecl(fields.get(0));
+        testPrimitiveTypeFieldDecl(locals.get(0));
+
+        // public String[] c, d[];
+        testRefTypeFieldDecl(fields.get(1));
+        testRefTypeFieldDecl(locals.get(1));
+    }
+
+
+    // subtest
+    private void testPrimitiveTypeFieldDecl(Node declaration) throws JaxenException {
+        // public int[] a, b[];
+
+        ASTReferenceType typeNode = declaration.getFirstChildOfType(ASTType.class).getFirstChildOfType(ASTReferenceType.class);
+        assertNotNull(typeNode);
+        assertTrue(typeNode.isArray());
+        assertEquals(1, typeNode.getArrayDepth());
+        assertEquals("int", typeNode.getFirstChildOfType(ASTPrimitiveType.class).getImage());
+
+        ASTVariableDeclaratorId aID = declaration.getFirstChildOfType(ASTVariableDeclarator.class).getFirstChildOfType(ASTVariableDeclaratorId.class);
+        assertNotNull(aID);
+        assertEquals("a", aID.getImage());
+        assertFalse(aID.isArray());
+        assertEquals(0, aID.getArrayDepth());
+        assertEquals(int[].class, aID.getType());
+
+        ASTVariableDeclaratorId bID = declaration.findChildrenOfType(ASTVariableDeclarator.class).get(1).getFirstChildOfType(ASTVariableDeclaratorId.class);
+        assertNotNull(bID);
+        assertEquals("b", bID.getImage());
+        assertTrue(bID.isArray());
+        assertEquals(1, bID.getArrayDepth());
+        assertEquals(int[][].class, bID.getType());
+    }
+
+
+    // subtest
+    private void testRefTypeFieldDecl(Node declaration) throws JaxenException {
+
+        // public String[] c, d[];
+
+        ASTReferenceType typeNode = declaration.getFirstChildOfType(ASTType.class).getFirstChildOfType(ASTReferenceType.class);
+        assertNotNull(typeNode);
+        assertTrue(typeNode.isArray());
+        assertEquals(1, typeNode.getArrayDepth());
+        assertEquals("String", typeNode.getFirstChildOfType(ASTClassOrInterfaceType.class).getImage());
+
+        ASTVariableDeclaratorId cID = declaration.getFirstChildOfType(ASTVariableDeclarator.class).getFirstChildOfType(ASTVariableDeclaratorId.class);
+        assertNotNull(cID);
+        assertEquals("c", cID.getImage());
+        assertFalse(cID.isArray());
+        assertEquals(0, cID.getArrayDepth());
+        assertEquals(String[].class, cID.getType());
+
+        ASTVariableDeclaratorId dID = declaration.findChildrenOfType(ASTVariableDeclarator.class).get(1).getFirstChildOfType(ASTVariableDeclaratorId.class);
+        assertNotNull(dID);
+        assertEquals("d", dID.getImage());
+        assertTrue(dID.isArray());
+        assertEquals(1, dID.getArrayDepth());
+        assertEquals(String[][].class, dID.getType());
+    }
+
+
     private void testSubtreeNodeTypes(final AbstractJavaTypeNode node, final Class<?> expectedType) {
         assertEquals(expectedType, node.getType());
-        // Check all typeable nodes in the tree
+        // FIXME this doesn't test anything, since findDescendantsOfType considers only exact type match! -> other PR
         for (AbstractJavaTypeNode n : node.findDescendantsOfType(AbstractJavaTypeNode.class)) {
             assertEquals(expectedType, n.getType());
         }
@@ -804,11 +883,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testFieldAccess() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccess.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccess.class, AbstractJavaTypeNode.class,
+                                                             "//StatementExpression/PrimaryExpression");
 
         int index = 0;
 
@@ -841,11 +917,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testFieldAccessNested() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessNested.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessNested.class, AbstractJavaTypeNode.class,
+                                                             "//StatementExpression/PrimaryExpression");
 
         int index = 0;
 
@@ -875,11 +948,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testFieldAccessShadow() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessShadow.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessShadow.class, AbstractJavaTypeNode.class,
+                                                             "//StatementExpression/PrimaryExpression");
 
         int index = 0;
 
@@ -911,11 +981,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testFieldAccessSuper() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessSuper.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessSuper.class, AbstractJavaTypeNode.class,
+                                                             "//StatementExpression/PrimaryExpression");
 
         int index = 0;
 
@@ -970,11 +1037,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testBoundsGenericFieldAccess() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessGenericBounds.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessGenericBounds.class, AbstractJavaTypeNode.class,
+                                                             "//StatementExpression/PrimaryExpression");
 
 
         int index = 0;
@@ -1010,11 +1074,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testParameterGenericFieldAccess() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessGenericParameter.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessGenericParameter.class, AbstractJavaTypeNode.class,
+                                                             "//StatementExpression/PrimaryExpression");
 
 
         int index = 0;
@@ -1041,11 +1102,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testSimpleGenericFieldAccess() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessGenericSimple.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessGenericSimple.class, AbstractJavaTypeNode.class,
+                                                             "//StatementExpression/PrimaryExpression");
 
         int index = 0;
 
@@ -1104,11 +1162,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testRawGenericFieldAccess() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessGenericRaw.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessGenericRaw.class, AbstractJavaTypeNode.class,
+                                                             "//StatementExpression/PrimaryExpression");
 
 
         int index = 0;
@@ -1178,11 +1233,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testPrimarySimpleGenericFieldAccess() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessPrimaryGenericSimple.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessPrimaryGenericSimple.class, AbstractJavaTypeNode.class,
+                                                             "//StatementExpression/PrimaryExpression");
 
 
         int index = 0;
@@ -1233,11 +1285,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testFieldAccessGenericNested() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessGenericNested.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessGenericNested.class, AbstractJavaTypeNode.class,
+                                                             "//StatementExpression/PrimaryExpression");
 
         int index = 0;
 
@@ -1255,11 +1304,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testFieldAccessStatic() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessStatic.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessStatic.class, AbstractJavaTypeNode.class,
+                                                             "//StatementExpression/PrimaryExpression");
 
         int index = 0;
 
@@ -1304,11 +1350,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodPotentialApplicability() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodPotentialApplicability.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(MethodPotentialApplicability.class, AbstractJavaTypeNode.class,
+                                                             "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1348,11 +1391,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodAccessibility() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodAccessibility.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(MethodAccessibility.class, AbstractJavaTypeNode.class,
+                                                             "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1373,11 +1413,8 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodFirstPhase() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass(MethodFirstPhase.class, "1.8");
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(MethodFirstPhase.class, "1.8", AbstractJavaTypeNode.class,
+                                                             "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1403,11 +1440,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodMostSpecific() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodMostSpecific.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(MethodMostSpecific.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1432,11 +1465,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodSecondPhase() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodSecondPhase.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(MethodSecondPhase.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1472,11 +1501,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodThirdPhase() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodThirdPhase.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(MethodThirdPhase.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1503,11 +1528,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodStaticAccess() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodStaticAccess.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(MethodStaticAccess.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1538,11 +1559,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodGenericExplicit() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodGenericExplicit.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(MethodGenericExplicit.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1558,11 +1575,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testGenericArrays() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(GenericsArrays.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(GenericsArrays.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
         
         int index = 0;
 
@@ -1588,11 +1601,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodTypeInference() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(GenericMethodsImplicit.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(GenericMethodsImplicit.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1607,11 +1616,7 @@ public class ClassTypeResolverTest {
     
     @Test
     public void testMethodTypeInferenceVarargsZeroArity() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(VarargsZeroArity.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(VarargsZeroArity.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1627,11 +1632,7 @@ public class ClassTypeResolverTest {
     
     @Test
     public void testMethodTypeInferenceVarargsAsFixedArity() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(VarargsAsFixedArity.class);
-
-        List<AbstractJavaTypeNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
-                AbstractJavaTypeNode.class);
+        List<AbstractJavaTypeNode> expressions = selectNodes(VarargsAsFixedArity.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1737,11 +1738,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodInitialConstraints() throws NoSuchMethodException, JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(GenericMethodsImplicit.class);
-
-        List<AbstractJavaNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//ArgumentList"),
-                AbstractJavaNode.class);
+        List<AbstractJavaNode> expressions = selectNodes(GenericMethodsImplicit.class, AbstractJavaNode.class, "//ArgumentList");
 
         List<Variable> variables = new ArrayList<>();
         for (int i = 0; i < 2; ++i) {
@@ -1767,18 +1764,12 @@ public class ClassTypeResolverTest {
     }
 
     @Test
-    public void testMethodParameterization() throws JaxenException, NoSuchMethodException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(GenericMethodsImplicit.class);
+    public void testMethodParameterization() throws NoSuchMethodException {
+        ASTArgumentList argList = selectNodes(GenericMethodsImplicit.class, ASTArgumentList.class).get(0);
 
-        List<AbstractJavaNode> expressions = convertList(
-                acu.findChildNodesWithXPath("//ArgumentList"),
-                AbstractJavaNode.class);
-
-        JavaTypeDefinition context = forClass(GenericMethodsImplicit.class,
-                                                                 forClass(Thread.class));
+        JavaTypeDefinition context = forClass(GenericMethodsImplicit.class, forClass(Thread.class));
         Method method = GenericMethodsImplicit.class.getMethod("bar", Object.class, Object.class,
                                                                Integer.class, Object.class);
-        ASTArgumentList argList = (ASTArgumentList) expressions.get(0);
 
         MethodType inferedMethod = MethodTypeResolution.parameterizeInvocation(context, method, argList);
 
@@ -1843,6 +1834,32 @@ public class ClassTypeResolverTest {
     private Class<?> getChildType(Node node, int childIndex) {
         return ((TypeNode) node.jjtGetChild(childIndex)).getType();
     }
+
+
+    private <T> List<T> selectNodes(String source, Class<T> resultType, String xpath) throws JaxenException {
+        return selectNodes(source, "1.5", resultType, xpath);
+    }
+
+    // This is the master overload, others just default the parameters
+    private <T> List<T> selectNodes(String source, String version, Class<T> resultType, String xpath) throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForString(source, version);
+        return convertList(acu.findChildNodesWithXPath(xpath), resultType);
+    }
+
+
+    private <T> List<T> selectNodes(Class<?> source, Class<T> resultType) {
+        return parseAndTypeResolveForClass(source, "1.5").findDescendantsOfType(resultType);
+    }
+
+    private <T> List<T> selectNodes(Class<?> source, Class<T> resultType, String xpath) throws JaxenException {
+        return selectNodes(source, "1.5", resultType, xpath);
+    }
+
+
+    private <T> List<T> selectNodes(Class<?> source, String version, Class<T> resultType, String xpath) throws JaxenException {
+        return selectNodes(ParserTstUtil.getSourceFromClass(source), version, resultType, xpath);
+    }
+
 
     private void assertChildTypeArgsEqualTo(Node node, int childIndex, Class<?>... classes) {
         JavaTypeDefinition typeDef = ((TypeNode) node.jjtGetChild(childIndex)).getTypeDefinition();
