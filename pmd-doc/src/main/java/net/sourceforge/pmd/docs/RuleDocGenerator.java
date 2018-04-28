@@ -28,6 +28,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -435,8 +436,14 @@ public class RuleDocGenerator {
                             if (propertyDescriptor.defaultValue() != null) {
                                 if (propertyDescriptor.isMultiValue()) {
                                     @SuppressWarnings("unchecked") // multi valued properties are using a List
-                                    PropertyDescriptor<List<?>> multiPropertyDescriptor = (PropertyDescriptor<List<?>>) propertyDescriptor;
+                                    MultiValuePropertyDescriptor<List<?>> multiPropertyDescriptor = (MultiValuePropertyDescriptor<List<?>>) propertyDescriptor;
                                     defaultValue = multiPropertyDescriptor.asDelimitedString(multiPropertyDescriptor.defaultValue());
+
+                                    // surround the delimiter with spaces, so that the browser can wrap
+                                    // the value nicely
+                                    defaultValue = defaultValue.replaceAll(Pattern.quote(
+                                            String.valueOf(multiPropertyDescriptor.multiValueDelimiter())),
+                                            " " + multiPropertyDescriptor.multiValueDelimiter() + " ");
                                 } else {
                                     defaultValue = String.valueOf(propertyDescriptor.defaultValue());
                                 }
@@ -447,7 +454,7 @@ public class RuleDocGenerator {
                                 MultiValuePropertyDescriptor<?> multiValuePropertyDescriptor =
                                         (MultiValuePropertyDescriptor<?>) propertyDescriptor;
                                 multiValued = "yes. Delimiter is '"
-                                        + multiValuePropertyDescriptor.multiValueDelimiter() + "'";
+                                        + multiValuePropertyDescriptor.multiValueDelimiter() + "'.";
                             }
 
                             lines.add("|" + propertyDescriptor.name()
