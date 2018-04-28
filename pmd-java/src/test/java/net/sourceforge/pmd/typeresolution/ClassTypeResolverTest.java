@@ -711,8 +711,10 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testThisExpression() {
-        List<ASTPrimaryExpression> expressions = selectNodes(ThisExpression.class, ASTPrimaryExpression.class);
-        List<ASTPrimaryPrefix> prefixes = selectNodes(ThisExpression.class, ASTPrimaryPrefix.class);
+        ASTCompilationUnit compilationUnit = parseAndTypeResolveForClass15(ThisExpression.class);
+        // need to cross borders, to find expressions of the nested classes
+        List<ASTPrimaryExpression> expressions = compilationUnit.findDescendantsOfType(ASTPrimaryExpression.class, true);
+        List<ASTPrimaryPrefix> prefixes = compilationUnit.findDescendantsOfType(ASTPrimaryPrefix.class, true);
 
         int index = 0;
 
