@@ -135,6 +135,7 @@ from the comunity during the processm but if you have a legitimate use case for 
     *   [#776](https://github.com/pmd/pmd/issues/776): \[apex] AvoidHardcodingId false positives
 *   documentation
     *   [#994](https://github.com/pmd/pmd/issues/994): \[doc] Delete duplicate page contributing.md on the website
+    *   [#1057](https://github.com/pmd/pmd/issues/1057): \[doc] Documentation of ignoredAnnotations property is misleading
 *   java
     *   [#894](https://github.com/pmd/pmd/issues/894): \[java] Maven PMD plugin fails to process some files without any explanation
     *   [#899](https://github.com/pmd/pmd/issues/899): \[java] JavaTypeDefinitionSimple.toString can cause NPEs

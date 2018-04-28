@@ -60,10 +60,11 @@ public class JumbledIncrementerRule1 {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|sampleAdditionalProperty|the value|This is a additional property for tests|
-|sampleDeprecatedProperty|test|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This is a sample deprecated property for tests|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|sampleAdditionalProperty|the value|This is a additional property for tests|no|
+|sampleMultiStringProperty|Value1 \| Value2|Test property with multiple strings|yes. Delimiter is '\|'.|
+|sampleDeprecatedProperty|test|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This is a sample deprecated property for tests|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -197,10 +198,11 @@ public class JumbledIncrementerRule1 {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|sampleAdditionalProperty|the value|This is a additional property for tests|
-|sampleDeprecatedProperty|test|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This is a sample deprecated property for tests|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|sampleAdditionalProperty|the value|This is a additional property for tests|no|
+|sampleMultiStringProperty|Value1 \| Value2|Test property with multiple strings|yes. Delimiter is '\|'.|
+|sampleDeprecatedProperty|test|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This is a sample deprecated property for tests|no|
 
 **Use this rule by referencing it:**
 ``` xml
