@@ -36,12 +36,12 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-|problemDepth|3|The if statement depth reporting threshold|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+|problemDepth|3|The if statement depth reporting threshold|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -101,13 +101,13 @@ public class Complicated {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|methodReportLevel|10|Cyclomatic complexity reporting threshold|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-|classReportLevel|40|Total class complexity reporting threshold|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|methodReportLevel|10|Cyclomatic complexity reporting threshold|no|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+|classReportLevel|40|Total class complexity reporting threshold|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -147,14 +147,14 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -187,14 +187,14 @@ public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -232,14 +232,14 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -276,14 +276,14 @@ public class Foo extends Bar {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -319,14 +319,14 @@ public class Foo extends Bar {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -364,14 +364,14 @@ public class Foo extends Bar {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -434,14 +434,14 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|showMethodsComplexity|true|Add method average violations to the report|
-|showClassesComplexity|true|Add class average violations to the report|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-|reportLevel|10|Cyclomatic Complexity reporting threshold|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|showMethodsComplexity|true|Add method average violations to the report|no|
+|showClassesComplexity|true|Add class average violations to the report|no|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+|reportLevel|10|Cyclomatic Complexity reporting threshold|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -481,12 +481,12 @@ public class Person {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-|maxfields|15|Max allowable fields|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+|maxfields|15|Max allowable fields|no|
 
 **Use this rule by referencing it:**
 ``` xml

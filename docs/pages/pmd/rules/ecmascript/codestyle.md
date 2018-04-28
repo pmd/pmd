@@ -47,14 +47,14 @@ function getX() {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|allowIf|false|Allow assignment within the conditional expression of an if statement|
-|allowFor|false|Allow assignment within the conditional expression of a for statement|
-|allowWhile|false|Allow assignment within the conditional expression of a while statement|
-|allowTernary|false|Allow assignment within the conditional expression of a ternary operator|
-|allowTernaryResults|false|Allow assignment within the result expressions of a ternary operator|
-|allowIncrementDecrement|false|Allow increment or decrement operators within the conditional expression of an if, for, or while statement|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|allowIf|false|Allow assignment within the conditional expression of an if statement|no|
+|allowFor|false|Allow assignment within the conditional expression of a for statement|no|
+|allowWhile|false|Allow assignment within the conditional expression of a while statement|no|
+|allowTernary|false|Allow assignment within the conditional expression of a ternary operator|no|
+|allowTernaryResults|false|Allow assignment within the result expressions of a ternary operator|no|
+|allowIncrementDecrement|false|Allow increment or decrement operators within the conditional expression of an if, for, or while statement|no|
 
 **Use this rule by referencing it:**
 ``` xml

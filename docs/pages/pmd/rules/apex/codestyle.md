@@ -26,11 +26,11 @@ public class Foo {}
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -66,11 +66,11 @@ for (int i = 0; i < 42; i++) { // preferred approach
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -108,11 +108,11 @@ else
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -146,11 +146,11 @@ if (foo) {  // preferred approach
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -178,11 +178,11 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -213,22 +213,22 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|parameterSuffix|[]|Method parameter variable suffixes|
-|parameterPrefix|[]|Method parameter variable prefixes|
-|localSuffix|[]|Local variable suffixes|
-|localPrefix|[]|Local variable prefixes|
-|memberSuffix|[]|Member variable suffixes|
-|memberPrefix|[]|Member variable prefixes|
-|staticSuffix|[]|Static variable suffixes|
-|staticPrefix|[]|Static variable prefixes|
-|checkParameters|true|Check constructor and method parameter variables|
-|checkLocals|true|Check local variables|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-|checkMembers|true|Check member variables|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|parameterSuffix||Method parameter variable suffixes|yes. Delimiter is ','.|
+|parameterPrefix||Method parameter variable prefixes|yes. Delimiter is ','.|
+|localSuffix||Local variable suffixes|yes. Delimiter is ','.|
+|localPrefix||Local variable prefixes|yes. Delimiter is ','.|
+|memberSuffix||Member variable suffixes|yes. Delimiter is ','.|
+|memberPrefix||Member variable prefixes|yes. Delimiter is ','.|
+|staticSuffix||Static variable suffixes|yes. Delimiter is ','.|
+|staticPrefix||Static variable prefixes|yes. Delimiter is ','.|
+|checkParameters|true|Check constructor and method parameter variables|no|
+|checkLocals|true|Check local variables|no|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+|checkMembers|true|Check member variables|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -262,11 +262,11 @@ while (true) {  // preferred approach
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml

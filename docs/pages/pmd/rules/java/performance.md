@@ -370,9 +370,9 @@ buf.append("1m");           // good
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|threshold|1|Max consecutive appends|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|threshold|1|Max consecutive appends|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -768,9 +768,9 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|minimumNumberCaseForASwitch|3|Minimum number of branches for a switch|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|minimumNumberCaseForASwitch|3|Minimum number of branches for a switch|no|
 
 **Use this rule by referencing it:**
 ``` xml

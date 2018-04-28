@@ -36,10 +36,10 @@ function(arg) {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|allowObjectLiteral|false|Allow a trailing comma within an object literal|
-|allowArrayLiteral|false|Allow a trailing comma within an array literal|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|allowObjectLiteral|false|Allow a trailing comma within an object literal|no|
+|allowArrayLiteral|false|Allow a trailing comma within an array literal|no|
 
 **Use this rule by referencing it:**
 ``` xml

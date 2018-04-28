@@ -108,9 +108,9 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|problemDepth|3|The if statement depth reporting threshold|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|problemDepth|3|The if statement depth reporting threshold|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -382,9 +382,9 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|threshold|20|Unique type reporting threshold|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|threshold|20|Unique type reporting threshold|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -446,12 +446,12 @@ class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cycloOptions|[]|Choose options for the computation of Cyclo|
-|classReportLevel|80|Total class complexity reporting threshold|
-|methodReportLevel|10|Cyclomatic complexity reporting threshold|
-|reportLevel|10|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Cyclomatic Complexity reporting threshold|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cycloOptions||Choose options for the computation of Cyclo|yes. Delimiter is '\|'.|
+|classReportLevel|80|Total class complexity reporting threshold|no|
+|methodReportLevel|10|Cyclomatic complexity reporting threshold|no|
+|reportLevel|10|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Cyclomatic Complexity reporting threshold|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -589,11 +589,11 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -625,11 +625,11 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -661,11 +661,11 @@ public void doSomething() {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -701,11 +701,11 @@ public void addPerson(      // preferred approach
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -743,11 +743,11 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -834,9 +834,9 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoredAnnotations|[lombok.Setter, lombok.Getter, lombok.Builder, lombok.Data, lombok.RequiredArgsConstructor, lombok.AllArgsConstructor, lombok.Value, lombok.NoArgsConstructor]|Fully qualified names of the annotation types that should be ignored by this rule|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -951,10 +951,10 @@ public class Bar {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|classes|[]|Allowed classes|
-|packages|[]|Restricted packages|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|classes||Allowed classes|yes. Delimiter is ','.|
+|packages||Restricted packages|yes. Delimiter is ','.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1020,11 +1020,11 @@ public class Foo {    // This has a Cyclomatic Complexity = 9
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|showMethodsComplexity|true|Add method average violations to the report|
-|showClassesComplexity|true|Add class average violations to the report|
-|reportLevel|10|Cyclomatic Complexity reporting threshold|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|showMethodsComplexity|true|Add method average violations to the report|no|
+|showClassesComplexity|true|Add class average violations to the report|no|
+|reportLevel|10|Cyclomatic Complexity reporting threshold|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1064,11 +1064,11 @@ public class Foo extends Bar {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1120,11 +1120,11 @@ class Foo {                         // +1, total Ncss = 12
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ncssOptions|[]|Choose options for the calculation of Ncss|
-|methodReportLevel|12|Metric reporting threshold for methods|
-|classReportLevel|250|Metric reporting threshold for classes|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ncssOptions||Choose options for the calculation of Ncss|yes. Delimiter is '\|'.|
+|methodReportLevel|12|Metric reporting threshold for methods|no|
+|classReportLevel|250|Metric reporting threshold for classes|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1165,11 +1165,11 @@ public class Foo extends Bar {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1209,11 +1209,11 @@ public class Foo extends Bar {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1278,10 +1278,10 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|minimum|200.0|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Minimum reporting threshold|
-|reportLevel|200|N-Path Complexity reporting threshold|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|minimum|200.0|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Minimum reporting threshold|no|
+|reportLevel|200|N-Path Complexity reporting threshold|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1310,9 +1310,9 @@ public void foo() throws Exception {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|IgnoreJUnitCompletely|false|Allow all methods in a JUnit testcase to throw Exceptions|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|IgnoreJUnitCompletely|false|Allow all methods in a JUnit testcase to throw Exceptions|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1552,11 +1552,11 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|disallowNotAssignment|false|Disallow violations where the first usage is not an assignment|
-|checkInnerClasses|false|Check inner classes|
-|ignoredAnnotations|[lombok.Setter, lombok.Getter, lombok.Builder, lombok.Data, lombok.RequiredArgsConstructor, lombok.AllArgsConstructor, lombok.Value, lombok.NoArgsConstructor]|Fully qualified names of the annotation types that should be ignored by this rule|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|disallowNotAssignment|false|Disallow violations where the first usage is not an assignment|no|
+|checkInnerClasses|false|Check inner classes|no|
+|ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1621,11 +1621,11 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|showMethodsComplexity|true|Add method average violations to the report|
-|showClassesComplexity|true|Add class average violations to the report|
-|reportLevel|10|Cyclomatic Complexity reporting threshold|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|showMethodsComplexity|true|Add method average violations to the report|no|
+|showClassesComplexity|true|Add class average violations to the report|no|
+|reportLevel|10|Cyclomatic Complexity reporting threshold|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1664,11 +1664,11 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|topscore||Top score value|no|
+|minimum||Minimum reporting threshold|no|
+|sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1706,9 +1706,9 @@ public class Person {   // this is more manageable
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|maxfields|15|Max allowable fields|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|maxfields|15|Max allowable fields|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1741,9 +1741,9 @@ complexity and find a way to have more fine grained objects.
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|maxmethods|10|The method count reporting threshold|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|maxmethods|10|The method count reporting threshold|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1779,9 +1779,9 @@ public Long getId() {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoreAnnotations|false|Ignore annotations|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoreAnnotations|false|Ignore annotations|no|
 
 **Use this rule by referencing it:**
 ``` xml

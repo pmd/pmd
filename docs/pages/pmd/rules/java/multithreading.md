@@ -257,10 +257,10 @@ public static Foo getFoo() {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|checkNonStaticFields|false|Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.|
-|checkNonStaticMethods|true|Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|checkNonStaticFields|false|Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.|no|
+|checkNonStaticMethods|true|Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.|no|
 
 **Use this rule by referencing it:**
 ``` xml

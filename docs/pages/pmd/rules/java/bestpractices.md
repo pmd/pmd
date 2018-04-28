@@ -244,10 +244,10 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|checkAddressTypes|[IPv4, IPv6, IPv4 mapped IPv6]|Check for IP address types.|
-|pattern|^"[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"$|Regular Expression|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|checkAddressTypes|IPv4 \| IPv6 \| IPv4 mapped IPv6|Check for IP address types.|yes. Delimiter is '\|'.|
+|pattern|^"[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"$|Regular Expression|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -327,9 +327,9 @@ public interface YetAnotherConstantInterface {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoreIfHasMethods|true|Whether to ignore constants in interfaces if the interface defines any methods|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoreIfHasMethods|true|Whether to ignore constants in interfaces if the interface defines any methods|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -429,10 +429,10 @@ otherwise skip the associate String creation and manipulation.
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|guardsMethods|[isTraceEnabled, isDebugEnabled, isInfoEnabled, isWarnEnabled, isErrorEnabled, isLoggable]|method use to guard the log statement|
-|logLevels|[trace, debug, info, warn, error, log, finest, finer, fine, info, warning, severe]|LogLevels to guard|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|guardsMethods|isTraceEnabled , isDebugEnabled , isInfoEnabled , isWarnEnabled , isErrorEnabled , isLoggable|method use to guard the log statement|yes. Delimiter is ','.|
+|logLevels|trace , debug , info , warn , error , log , finest , finer , fine , info , warning , severe|LogLevels to guard|yes. Delimiter is ','.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -643,9 +643,9 @@ public class MyTestCase extends TestCase {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|maximumAsserts|1|Maximum number of Asserts in a test method|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|maximumAsserts|1|Maximum number of Asserts in a test method|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -843,9 +843,9 @@ String name,
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|strictMode|false|If true, mark combined declaration even if the declarations are on separate lines.|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|strictMode|false|If true, mark combined declaration even if the declarations are on separate lines.|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1146,9 +1146,9 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|checkAll|false|Check all methods, including non-private ones|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|checkAll|false|Check all methods, including non-private ones|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1230,9 +1230,9 @@ public class Something {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoredAnnotations|[lombok.Setter, lombok.Getter, lombok.Builder, lombok.Data, lombok.RequiredArgsConstructor, lombok.AllArgsConstructor, lombok.Value, lombok.NoArgsConstructor, java.lang.Deprecated, javafx.fxml.FXML]|Fully qualified names of the annotation types that should be ignored by this rule|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor \| java.lang.Deprecated \| javafx.fxml.FXML|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1259,9 +1259,9 @@ public class Something {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoredAnnotations|[java.lang.Deprecated]|Fully qualified names of the annotation types that should be ignored by this rule|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoredAnnotations|java.lang.Deprecated|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml

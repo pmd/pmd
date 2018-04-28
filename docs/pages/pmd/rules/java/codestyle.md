@@ -38,9 +38,9 @@ public abstract class Foo { // should be AbstractFoo
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|strict|true|Also flag classes, that are named Abstract, but are not abstract.|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|strict|true|Also flag classes, that are named Abstract, but are not abstract.|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -316,9 +316,9 @@ public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|checkParameterizedMethods|false|Check parameterized methods|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|checkParameterizedMethods|false|Check parameterized methods|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -397,14 +397,14 @@ public class Éléphant {}
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|classPattern|[A-Z][a-zA-Z]+|Regex which applies to concrete class names|
-|abstractClassPattern|[A-Z][a-zA-Z]+|Regex which applies to abstract class names|
-|interfacePattern|[A-Z][a-zA-Z]+|Regex which applies to interface names|
-|enumPattern|[A-Z][a-zA-Z]+|Regex which applies to enum names|
-|annotationPattern|[A-Z][a-zA-Z]+|Regex which applies to annotation names|
-|utilityClassPattern|[A-Z][a-zA-Z]+Util|Regex which applies to utility class names|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|classPattern|[A-Z][a-zA-Z]+|Regex which applies to concrete class names|no|
+|abstractClassPattern|[A-Z][a-zA-Z]+|Regex which applies to abstract class names|no|
+|interfacePattern|[A-Z][a-zA-Z]+|Regex which applies to interface names|no|
+|enumPattern|[A-Z][a-zA-Z]+|Regex which applies to enum names|no|
+|annotationPattern|[A-Z][a-zA-Z]+|Regex which applies to annotation names|no|
+|utilityClassPattern|[A-Z][a-zA-Z]+Util|Regex which applies to utility class names|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -450,9 +450,9 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|regex||Regular expression|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|regex||Regular expression|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -484,9 +484,9 @@ boolean bar(int x, int y) {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoreElseIf|false|Ignore conditions with an else-if case|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoreElseIf|false|Ignore conditions with an else-if case|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -515,7 +515,13 @@ and IfElseStmtMustUseBraces.
                 //DoStatement[$checkDoWhileStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
                 |
                 (: The violation is reported on the sub statement -- not the if statement :)
-                //Statement[$checkIfElseStmt and parent::IfStatement and not(child::Block or child::IfStatement)]
+                //Statement[$checkIfElseStmt and parent::IfStatement and not(child::Block or child::IfStatement)
+                            (: Whitelists single if statements :)
+                            and ($checkSingleIfStmt
+                                 (: Inside this not(...) is the definition of a "single if statement" :)
+                                 or not(count(../Statement) = 1 (: No else stmt :)
+                                        (: Not the last branch of an 'if ... else if' chain :)
+                                        and not(parent::IfStatement[parent::Statement[parent::IfStatement]])))]
                 |
                 (: Reports case labels if one of their subordinate statements is not braced :)
                 //SwitchLabel[$checkCaseStmt]
@@ -538,14 +544,15 @@ while (true) {  // preferred approach
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|checkIfElseStmt|true|Require that 'if ... else' statements use braces|
-|checkWhileStmt|true|Require that 'while' loops use braces|
-|checkForStmt|true|Require that 'for' loops should use braces|
-|checkDoWhileStmt|true|Require that 'do ... while' loops use braces|
-|checkCaseStmt|false|Require that cases of a switch have braces|
-|allowEmptyLoop|false|Allow loops with an empty statement, e.g. 'while(true);'|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|checkIfElseStmt|true|Require that 'if ... else' statements use braces|no|
+|checkSingleIfStmt|true|Require that 'if' statements with a single branch use braces|no|
+|checkWhileStmt|true|Require that 'while' loops use braces|no|
+|checkForStmt|true|Require that 'for' loops should use braces|no|
+|checkDoWhileStmt|true|Require that 'do ... while' loops use braces|no|
+|checkCaseStmt|false|Require that cases of a switch have braces|no|
+|allowEmptyLoop|false|Allow loops with an empty statement, e.g. 'while(true);'|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -728,11 +735,11 @@ public class HelloWorldBean {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoreInterfaceDeclarations|false|Ignore Interface Declarations that precede fields.|
-|ignoreAnonymousClassDeclarations|true|Ignore Field Declarations, that are initialized with anonymous class declarations|
-|ignoreEnumDeclarations|true|Ignore Enum Declarations that precede fields.|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoreInterfaceDeclarations|false|Ignore Interface Declarations that precede fields.|no|
+|ignoreAnonymousClassDeclarations|true|Ignore Field Declarations, that are initialized with anonymous class declarations|no|
+|ignoreEnumDeclarations|true|Ignore Enum Declarations that precede fields.|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1032,9 +1039,9 @@ public class Something {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|minimum|17|The variable length reporting threshold|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|minimum|17|The variable length reporting threshold|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1111,7 +1118,12 @@ public void foo2 (final String param) { // better, do stuff with param never ass
 
 **Priority:** High (1)
 
-Method names should always begin with a lower case character, and should not contain underscores.
+Configurable naming conventions for method declarations. This rule reports
+method declarations which do not match the regex that applies to their
+specific kind (e.g. JUnit test or native method). Each regex can be
+configured through properties.
+
+By default this rule uses the standard Java naming convention (Camel case).
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.MethodNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/MethodNamingConventionsRule.java)
 
@@ -1126,9 +1138,14 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|checkNativeMethods|true|Check native methods|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|checkNativeMethods|true|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Check native methods|no|
+|methodPattern|[a-z][a-zA-Z0-9]+|Regex which applies to instance method names|no|
+|staticPattern|[a-z][a-zA-Z0-9]+|Regex which applies to static method names|no|
+|nativePattern|[a-z][a-zA-Z0-9]+|Regex which applies to native method names|no|
+|junit3TestPattern|test[A-Z0-9][a-zA-Z0-9]*|Regex which applies to JUnit 3 test method names|no|
+|junit4TestPattern|[a-z][a-zA-Z0-9]+|Regex which applies to JUnit 4 test method names|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1375,9 +1392,9 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|minimum|5|Number of characters that are required as a minimum for a class name.|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|minimum|5|Number of characters that are required as a minimum for a class name.|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1407,9 +1424,9 @@ public class ShortMethod {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|minimum|3|Number of characters that are required as a minimum for a method name.|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|minimum|3|Number of characters that are required as a minimum for a method name.|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1450,9 +1467,9 @@ public class Something {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|minimum|3|Number of characters that are required as a minimum for a variable name.|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|minimum|3|Number of characters that are required as a minimum for a variable name.|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1518,9 +1535,9 @@ import static Yoko; // Too much !
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|maximumStaticImports|4|All static imports can be disallowed by setting this to 0|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|maximumStaticImports|4|All static imports can be disallowed by setting this to 0|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1596,9 +1613,9 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoredAnnotations|[javax.inject.Inject]|Fully qualified names of the annotation types that should be ignored by this rule|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoredAnnotations|javax.inject.Inject|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1655,9 +1672,9 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|statementOrderMatters|true|If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|statementOrderMatters|true|If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1891,20 +1908,20 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|parameterSuffix|[]|Method parameter variable suffixes|
-|parameterPrefix|[]|Method parameter variable prefixes|
-|localSuffix|[]|Local variable suffixes|
-|localPrefix|[]|Local variable prefixes|
-|memberSuffix|[]|Member variable suffixes|
-|memberPrefix|[]|Member variable prefixes|
-|staticSuffix|[]|Static variable suffixes|
-|checkParameters|true|Check constructor and method parameter variables|
-|checkNativeMethodParameters|true|Check method parameter of native methods|
-|staticPrefix|[]|Static variable prefixes|
-|checkLocals|true|Check local variables|
-|checkMembers|true|Check member variables|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|parameterSuffix||Method parameter variable suffixes|yes. Delimiter is ','.|
+|parameterPrefix||Method parameter variable prefixes|yes. Delimiter is ','.|
+|localSuffix||Local variable suffixes|yes. Delimiter is ','.|
+|localPrefix||Local variable prefixes|yes. Delimiter is ','.|
+|memberSuffix||Member variable suffixes|yes. Delimiter is ','.|
+|memberPrefix||Member variable prefixes|yes. Delimiter is ','.|
+|staticSuffix||Static variable suffixes|yes. Delimiter is ','.|
+|checkParameters|true|Check constructor and method parameter variables|no|
+|checkNativeMethodParameters|true|Check method parameter of native methods|no|
+|staticPrefix||Static variable prefixes|yes. Delimiter is ','.|
+|checkLocals|true|Check local variables|no|
+|checkMembers|true|Check member variables|no|
 
 **Use this rule by referencing it:**
 ``` xml

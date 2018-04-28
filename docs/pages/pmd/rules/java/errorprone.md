@@ -31,12 +31,12 @@ public void bar() {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|allowIncrementDecrement|false|Allow increment or decrement operators within the conditional expression of an if, for, or while statement|
-|allowWhile|false|Allow assignment within the conditional expression of a while statement|
-|allowFor|false|Allow assignment within the conditional expression of a for statement|
-|allowIf|false|Allow assignment within the conditional expression of an if statement|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|allowIncrementDecrement|false|Allow increment or decrement operators within the conditional expression of an if, for, or while statement|no|
+|allowWhile|false|Allow assignment within the conditional expression of a while statement|no|
+|allowFor|false|Allow assignment within the conditional expression of a for statement|no|
+|allowIf|false|Allow assignment within the conditional expression of an if statement|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -200,11 +200,11 @@ for (int i = 0; i < 10; i++) {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|checkReturnLoopTypes|[for, do, while]|Check for return statements in loop types|
-|checkContinueLoopTypes|[for, do, while]|Check for continue statements in loop types|
-|checkBreakLoopTypes|[for, do, while]|Check for break statements in loop types|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|checkReturnLoopTypes|for \| do \| while|Check for return statements in loop types|yes. Delimiter is '\|'.|
+|checkContinueLoopTypes|for \| do \| while|Check for continue statements in loop types|yes. Delimiter is '\|'.|
+|checkBreakLoopTypes|for \| do \| while|Check for break statements in loop types|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -375,14 +375,14 @@ private void buz(String x) {}
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|exceptionfile||File containing strings to skip (one string per line), only used if ignore list is not set|
-|separator|,|Ignore list separator|
-|exceptionList||Strings to ignore|
-|maxDuplicateLiterals|4|Max duplicate literals|
-|minimumLength|3|Minimum string length to check|
-|skipAnnotations|false|Skip literals within annotations|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|exceptionfile||File containing strings to skip (one string per line), only used if ignore list is not set|no|
+|separator|,|Ignore list separator|no|
+|exceptionList||Strings to ignore|no|
+|maxDuplicateLiterals|4|Max duplicate literals|no|
+|minimumLength|3|Minimum string length to check|no|
+|skipAnnotations|false|Skip literals within annotations|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -550,9 +550,9 @@ public void checkRequests() {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|ignoreMagicNumbers|-1,0|Comma-separated list of magic numbers, that should be ignored|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoreMagicNumbers|-1,0|Comma-separated list of magic numbers, that should be ignored|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -659,9 +659,9 @@ k = i * j;      // set k with 80 not 120
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|strict|false|Detect violations between 00 and 07|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|strict|false|Detect violations between 00 and 07|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -726,9 +726,9 @@ private int getMoreFoo(){
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|prefix||A variable prefix to skip, i.e., m_|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|prefix||A variable prefix to skip, i.e., m_|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1106,11 +1106,11 @@ public class Bar {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|closeAsDefaultTarget|true|Consider 'close' as a target by default|
-|types|[java.sql.Connection, java.sql.Statement, java.sql.ResultSet]|Affected types|
-|closeTargets|[]|Methods which may close this resource|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|closeAsDefaultTarget|true|Consider 'close' as a target by default|no|
+|types|java.sql.Connection , java.sql.Statement , java.sql.ResultSet|Affected types|yes. Delimiter is ','.|
+|closeTargets||Methods which may close this resource|yes. Delimiter is ','.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1214,10 +1214,10 @@ public void foo() {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|maxViolations|100|Maximum number of anomalies per class|
-|maxPaths|1000|Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|maxViolations|100|Maximum number of anomalies per class|no|
+|maxPaths|1000|Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1491,10 +1491,10 @@ public void doSomething() {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|allowCommentedBlocks|false|Empty blocks containing comments will be skipped|
-|allowExceptionNameRegex|^(ignored\|expected)$|Empty blocks catching exceptions with names matching this regular expression will be skipped|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|allowCommentedBlocks|false|Empty blocks containing comments will be skipped|no|
+|allowExceptionNameRegex|^(ignored\|expected)$|Empty blocks catching exceptions with names matching this regular expression will be skipped|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -2667,9 +2667,9 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|staticLoggerName|LOG|Name of the static Logger variable|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|staticLoggerName|LOG|Name of the static Logger variable|no|
 
 **Use this rule by referencing it:**
 ``` xml

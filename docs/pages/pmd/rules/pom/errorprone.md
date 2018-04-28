@@ -44,9 +44,9 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|validTypes|[pom, jar, maven-plugin, ejb, war, ear, rar, par]|Set of valid types.|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|validTypes|pom , jar , maven-plugin , ejb , war , ear , rar , par|Set of valid types.|yes. Delimiter is ','.|
 
 **Use this rule by referencing it:**
 ``` xml

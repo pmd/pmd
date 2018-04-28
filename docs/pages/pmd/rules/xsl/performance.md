@@ -44,9 +44,9 @@ cutting through 100% of the document.
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|checkSelfDescendantAbreviation|false|descendant::self abreviation, '//', will also trigger this rule.|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|checkSelfDescendantAbreviation|false|descendant::self abreviation, '//', will also trigger this rule.|no|
 
 **Use this rule by referencing it:**
 ``` xml
