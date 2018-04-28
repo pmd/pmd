@@ -1076,11 +1076,16 @@ public void foo2 (final String param) { // better, do stuff with param never ass
 
     <rule name="MethodNamingConventions"
           since="1.2"
-          message="Method name does not begin with a lower case character."
+          message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.MethodNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#methodnamingconventions">
         <description>
-Method names should always begin with a lower case character, and should not contain underscores.
+            Configurable naming conventions for method declarations. This rule reports
+            method declarations which do not match the regex that applies to their
+            specific kind (e.g. JUnit test or native method). Each regex can be
+            configured through properties.
+
+            By default this rule uses the standard Java naming convention (Camel case).
         </description>
         <priority>1</priority>
         <example>

@@ -47,6 +47,9 @@ we have measured up to 10% improvements during Type Resolution, Symbol Table ana
      using a regex property. See the rule's documentation for more info about
      configuration and default conventions.
 
+ *  [`MethodNamingConventions`](pmd_rules_java_codestyle.html#methodnamingconventions)
+    has been enhanced in the same way.
+
 #### CPD Suppression
 
 Back in PMD 5.6.0 we introduced the ability to suppress CPD warnings in Java using comments, by
@@ -113,6 +116,11 @@ from the comunity during the processm but if you have a legitimate use case for 
     `ignoredAnnotations` and ignores by default empty constructors,
     that are annotated with `javax.inject.Inject`. Additionally, it detects now also unnecessary private constructors
     in enums.
+
+*   The property `checkNativeMethods` of the Java rule [`MethodNamingConventions`](pmd_rules_java_codestyle.html#methodnamingconventions)
+    is now deprecated, as it is now superseded by `nativePattern`. Support for that property will be maintained until
+    7.0.0.
+
 
 ### Fixed Issues
 

@@ -5,9 +5,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**
@@ -99,4 +101,37 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
         return getFirstChildOfType(ASTClassOrInterfaceBody.class)
             .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
     }
+
+
+    /**
+     * Returns the superclass type node if this node is a class
+     * declaration and explicitly declares an {@code extends}
+     * clause. Superinterfaces of an interface are not considered.
+     *
+     * <p>Returns {@code null} otherwise.
+     */
+    public ASTClassOrInterfaceType getSuperClassTypeNode() {
+        if (isInterface()) {
+            return null;
+        }
+
+        ASTExtendsList extendsList = getFirstChildOfType(ASTExtendsList.class);
+        return extendsList == null ? null : extendsList.iterator().next();
+    }
+
+
+    /**
+     * Returns the interfaces implemented by this class, or
+     * extended by this interface. Returns an empty list if
+     * none is specified.
+     */
+    public List<ASTClassOrInterfaceType> getSuperInterfacesTypeNodes() {
+
+        Iterable<ASTClassOrInterfaceType> it = isInterface()
+                ? getFirstChildOfType(ASTExtendsList.class)
+                : getFirstChildOfType(ASTImplementsList.class);
+
+        return it == null ? Collections.<ASTClassOrInterfaceType>emptyList() : CollectionUtil.toList(it.iterator());
+    }
+
 }
