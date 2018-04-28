@@ -767,7 +767,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>6.0</version>
+                <version>6.1.1</version>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.pmd</groupId>
