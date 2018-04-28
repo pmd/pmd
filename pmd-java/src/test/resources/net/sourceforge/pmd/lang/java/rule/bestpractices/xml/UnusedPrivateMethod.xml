@@ -1579,4 +1579,28 @@ class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify property ignoredAnnotations is used</description>
+        <rule-property name="ignoredAnnotations">java.lang.Override</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @Override // well override doesn't really make sense, but it's good enough for the test case
+    private void foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Verify property ignoredAnnotations is used - 2</description>
+        <rule-property name="ignoredAnnotations"></rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @Deprecated
+    private void foo() {}
+}
+        ]]></code>
+    </test-code>
 </test-data>

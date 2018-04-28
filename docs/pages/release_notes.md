@@ -138,6 +138,8 @@ from the comunity during the processm but if you have a legitimate use case for 
 *   java-codestyle
     *   [#1003](https://github.com/pmd/pmd/issues/1003): \[java] UnnecessaryConstructor triggered on required empty constructor (Dagger @Inject)
     *   [#1023](https://github.com/pmd/pmd/issues/1023): \[java] False positive for useless parenthesis
+*   java-design
+    *   [#1056](https://github.com/pmd/pmd/issues/1056): \[java] Property ignoredAnnotations does not work for SingularField and ImmutableField
 *   java-errorprone
     *   [#629](https://github.com/pmd/pmd/issues/629): \[java] NullAssignment false positive
     *   [#816](https://github.com/pmd/pmd/issues/816): \[java] SingleMethodSingleton false positives with inner classes

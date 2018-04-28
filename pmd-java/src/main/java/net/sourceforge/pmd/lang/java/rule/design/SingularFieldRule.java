@@ -51,7 +51,7 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
         boolean checkInnerClasses = getProperty(CHECK_INNER_CLASSES);
         boolean disallowNotAssignment = getProperty(DISALLOW_NOT_ASSIGNMENT);
 
-        if (node.isPrivate() && !node.isStatic() && !hasClassLombokAnnotation() && !hasLombokAnnotation(node)) {
+        if (node.isPrivate() && !node.isStatic() && !hasClassLombokAnnotation() && !hasIgnoredAnnotation(node)) {
             for (ASTVariableDeclarator declarator : node.findChildrenOfType(ASTVariableDeclarator.class)) {
                 ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId) declarator.jjtGetChild(0);
                 List<NameOccurrence> usages = declaration.getUsages();

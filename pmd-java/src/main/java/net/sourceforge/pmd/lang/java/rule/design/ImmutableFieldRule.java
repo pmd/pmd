@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -54,7 +55,8 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
             AccessNode accessNodeParent = field.getAccessNodeParent();
             if (accessNodeParent.isStatic() || !accessNodeParent.isPrivate() || accessNodeParent.isFinal()
                     || accessNodeParent.isVolatile()
-                    || hasClassLombokAnnotation()) {
+                    || hasClassLombokAnnotation()
+                    || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
                 continue;
             }
 
