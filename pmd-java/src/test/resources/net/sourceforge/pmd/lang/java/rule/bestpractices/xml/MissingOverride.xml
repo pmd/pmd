@@ -458,4 +458,39 @@
         </code>
     </test-code>
 
+    <test-code>
+        <description>Protected methods of Object redefined in an interface cannot have @Override</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
+
+            interface CloneableInterface extends Cloneable {
+                // nothing to report
+                Foo clone() throws CloneNotSupportedException;
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Overriding of method from interface needs @Override, even if it's a protected Object method</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'clone()' is missing an @Override annotation.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
+
+            public interface CloneableInterfaceOverride extends CloneableInterface {
+
+                // Missing @Override
+                CloneableInterface clone() throws CloneNotSupportedException;
+            }
+            ]]>
+        </code>
+    </test-code>
+
+
 </test-data>

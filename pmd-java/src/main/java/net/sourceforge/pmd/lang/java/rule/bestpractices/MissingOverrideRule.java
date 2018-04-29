@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,7 +39,6 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
     private static final Logger LOG = Logger.getLogger(MissingOverrideRule.class.getName());
     private final Stack<MethodLookup> currentLookup = new Stack<>();
-
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
@@ -137,11 +137,11 @@ public class MissingOverrideRule extends AbstractJavaRule {
      * @param exploredType The type to explore
      */
     private Set<Method> overriddenMethods(Class<?> exploredType) {
-        return overriddenMethodsRec(exploredType, true, new HashSet<>(Arrays.asList(exploredType.getDeclaredMethods())), new HashSet<Method>(), new HashSet<Class<?>>());
+        return overriddenMethodsRec(exploredType, true, new HashSet<>(Arrays.asList(exploredType.getDeclaredMethods())), new HashSet<Method>(), new HashSet<Class<?>>(), false);
     }
 
 
-    private Set<Method> overriddenMethodsRec(Class<?> exploredType, boolean skip, Set<Method> candidates, Set<Method> result, Set<Class<?>> alreadyExplored) {
+    private Set<Method> overriddenMethodsRec(Class<?> exploredType, boolean skip, Set<Method> candidates, Set<Method> result, Set<Class<?>> alreadyExplored, boolean onlyPublic) {
 
         if (candidates.isEmpty() || alreadyExplored.contains(exploredType)) {
             return result;
@@ -152,6 +152,10 @@ public class MissingOverrideRule extends AbstractJavaRule {
         if (!skip) {
             Set<Method> toRemove = new HashSet<>();
             for (Method dm : exploredType.getDeclaredMethods()) {
+                if (onlyPublic && !Modifier.isPublic(dm.getModifiers())) {
+                    continue;
+                }
+
                 for (Method cand : candidates) {
                     if (cand.getName().equals(dm.getName()) && Arrays.equals(cand.getParameterTypes(), dm.getParameterTypes())) {
                         // cand is overriden
@@ -173,17 +177,17 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
         Class<?> superClass = exploredType.getSuperclass();
         if (superClass != null) {
-            overriddenMethodsRec(superClass, false, candidates, result, alreadyExplored);
+            overriddenMethodsRec(superClass, false, candidates, result, alreadyExplored, false);
         }
 
         for (Class<?> iface : exploredType.getInterfaces()) {
-            overriddenMethodsRec(iface, false, candidates, result, alreadyExplored);
+            overriddenMethodsRec(iface, false, candidates, result, alreadyExplored, false);
         }
 
         if (exploredType.isInterface() && exploredType.getInterfaces().length == 0) {
-            // implicit object member declarations
+            // implicit public object member declarations
             if (!alreadyExplored.contains(Object.class)) {
-                overriddenMethodsRec(Object.class, false, candidates, result, alreadyExplored);
+                overriddenMethodsRec(Object.class, false, candidates, result, alreadyExplored, true);
             }
         }
 
@@ -207,7 +211,6 @@ public class MissingOverrideRule extends AbstractJavaRule {
         try {
             boolean overridden = currentLookup.peek().isOverridden(node.getName(), node.getFormalParameters());
             if (overridden) {
-
                 addViolation(data, node, new Object[]{node.getQualifiedName().getOperation()});
             }
         } catch (NoSuchMethodException e) {
