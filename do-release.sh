@@ -77,7 +77,7 @@ echo "    pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION}.xml f
 echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
-echo "*   Add **../pmd.github.io/_posts/$(date -u +%d-%m-%Y)-PMD-${RELEASE_VERSION}.md"
+echo "*   Add **../pmd.github.io/_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
 echo
 echo "Press enter to continue..."
 read
