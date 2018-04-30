@@ -21,8 +21,8 @@ This is a bug fixing release.
 
 ### Fixed Issues
 
-*   all
-*   java
+*   java-bestpractices
+    *   [#1063](https://github.com/pmd/pmd/issues/1063): \[java] MissingOverride is triggered in illegal places
 *   java-codestyle
     *   [#1065](https://github.com/pmd/pmd/issues/1065): \[java] ClassNamingConventions shouldn't prohibit numbers in class names
 
