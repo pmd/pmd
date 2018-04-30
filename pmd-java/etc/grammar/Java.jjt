@@ -1,4 +1,8 @@
 /**
+ * Add support for Java 10 Local Variable Type Inference
+ * See #743. In Java 10 mode, "var" as local variable type is handled special.
+ * Andreas Dangel 04/2018
+ *====================================================================
  * Fixes #888 [java] ParseException occurs with valid '<>' in Java 1.8 mode
  * Juan Martin Sotuyo Dodero 01/2018
  *====================================================================
@@ -1872,11 +1876,13 @@ void Initializer() :
  * Type, name and expression syntax follows.
  */
 void Type():
-{}
 {
-   LOOKAHEAD(2) ReferenceType()
- |
-   PrimitiveType()
+    Token t;
+}
+{
+  LOOKAHEAD( { jdkVersion >= 10 && isKeyword("var") } ) t=<IDENTIFIER> {jjtThis.setImage(t.image); jjtThis.setVarType(true); }
+ | LOOKAHEAD(2) ReferenceType()
+ | PrimitiveType()
 }
 
 void ReferenceType():

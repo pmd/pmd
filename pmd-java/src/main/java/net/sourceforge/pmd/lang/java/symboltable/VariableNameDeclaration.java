@@ -63,6 +63,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
 
     public boolean isPrimitiveType() {
         return !isLambdaTypelessParameter()
+                && getAccessNodeParent().hasDescendantOfType(ASTPrimitiveType.class)
                 && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTPrimitiveType;
     }
 
@@ -97,7 +98,8 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         if (isPrimitiveType()) {
             return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0);
         }
-        if (!isLambdaTypelessParameter()) {
+        if (!isLambdaTypelessParameter()
+                && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetNumChildren() > 0) {
             return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0).jjtGetChild(0);
         }
         return null;

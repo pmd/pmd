@@ -154,6 +154,11 @@ public class ParserTstUtil {
     }
 
     /** @see #parseJava(LanguageVersionHandler, String)  */
+    public static ASTCompilationUnit parseJava10(String code) {
+        return parseJava(getLanguageVersionHandler("10"), code);
+    }
+
+    /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava13(Class<?> source) {
         return parseJava13(getSourceFromClass(source));
     }
@@ -181,6 +186,11 @@ public class ParserTstUtil {
     /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava9(Class<?> source) {
         return parseJava9(getSourceFromClass(source));
+    }
+
+    /** @see #parseJava(LanguageVersionHandler, String)  */
+    public static ASTCompilationUnit parseJava10(Class<?> source) {
+        return parseJava10(getSourceFromClass(source));
     }
 
     /** @see #parseJava(LanguageVersionHandler, String) */

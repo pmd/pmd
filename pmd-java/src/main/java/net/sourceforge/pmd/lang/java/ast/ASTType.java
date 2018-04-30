@@ -14,6 +14,8 @@ public class ASTType extends AbstractJavaTypeNode {
         super(p, id);
     }
 
+    private boolean varType;
+
     /**
      * Accept the visitor. *
      */
@@ -43,4 +45,15 @@ public class ASTType extends AbstractJavaTypeNode {
         return getArrayDepth() > 0;
     }
 
+    void setVarType(boolean varType) {
+        this.varType = varType;
+    }
+
+    /**
+     * If true, this type represents a type of a local variable declaration, which
+     * uses the java10 "var" type inference.
+     */
+    public boolean isVarType() {
+        return varType;
+    }
 }
