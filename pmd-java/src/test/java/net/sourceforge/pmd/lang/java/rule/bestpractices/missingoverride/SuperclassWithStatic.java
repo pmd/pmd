@@ -10,6 +10,11 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
  */
 public class SuperclassWithStatic {
 
+    protected SuperclassWithStatic() {
+
+    }
+
+
     public static void fooBar(String f) {
 
     }
