@@ -13,7 +13,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.symboltable.Applier;
-import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
@@ -60,7 +59,7 @@ public class MethodScope extends AbstractJavaScope {
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
             return Collections.emptySet();
         }
-        ImageFinderFunction finder = new ImageFinderFunction(occurrence.getImage());
+        DeclarationFinderFunction finder = new DeclarationFinderFunction(occurrence);
         Applier.apply(finder, getVariableDeclarations().keySet().iterator());
         if (finder.getDecl() != null) {
             return Collections.singleton(finder.getDecl());

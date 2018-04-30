@@ -28,6 +28,12 @@ public class AvoidReassigningParametersRule extends AbstractJavaRule {
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : params.entrySet()) {
             VariableNameDeclaration decl = entry.getKey();
             List<NameOccurrence> usages = entry.getValue();
+
+            // Only look for formal parameters
+            if (!decl.getDeclaratorId().isFormalParameter()) {
+                continue;
+            }
+
             for (NameOccurrence occ : usages) {
                 JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
                 if ((jocc.isOnLeftHandSide() || jocc.isSelfAssignment())

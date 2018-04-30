@@ -280,20 +280,25 @@ public class ClassScopeTest extends STBBaseTst {
     public void testNestedClassFieldAndParameter() {
         parseCode(NESTED_CLASS_FIELD_AND_PARAM);
         ASTMethodDeclaration node = acu.getFirstDescendantOfType(ASTMethodDeclaration.class);
-        Map<NameDeclaration, List<NameOccurrence>> vd = node.getScope().getDeclarations();
-        assertEquals(1, vd.size());
+        Map<VariableNameDeclaration, List<NameOccurrence>> vd = node.getScope().getDeclarations(VariableNameDeclaration.class);
+        assertEquals(2, vd.size());
 
-        for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : vd.entrySet()) {
-            assertEquals("field", entry.getKey().getImage());
-
-            List<NameOccurrence> occurrences = entry.getValue();
-            assertEquals(2, occurrences.size());
-            NameOccurrence no1 = occurrences.get(0);
-            assertEquals(8, no1.getLocation().getBeginLine());
-            NameOccurrence no2 = occurrences.get(1);
-            assertEquals(9, no2.getLocation().getBeginLine());
+        int paramCount = 0;
+        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vd.entrySet()) {
+            if (entry.getKey().getDeclaratorId().isFormalParameter()) {
+                assertEquals("field", entry.getKey().getImage());
+    
+                List<NameOccurrence> occurrences = entry.getValue();
+                assertEquals(2, occurrences.size());
+                NameOccurrence no1 = occurrences.get(0);
+                assertEquals(8, no1.getLocation().getBeginLine());
+                NameOccurrence no2 = occurrences.get(1);
+                assertEquals(9, no2.getLocation().getBeginLine());
+                paramCount++;
+            }
         }
 
+        assertEquals(1, paramCount);
     }
 
     @Test

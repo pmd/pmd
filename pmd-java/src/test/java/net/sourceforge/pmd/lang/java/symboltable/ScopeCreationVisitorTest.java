@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 
 public class ScopeCreationVisitorTest extends STBBaseTst {
@@ -16,7 +17,8 @@ public class ScopeCreationVisitorTest extends STBBaseTst {
     @Test
     public void testScopesAreCreated() {
         parseCode(TEST1);
-        ASTIfStatement n = acu.findDescendantsOfType(ASTIfStatement.class).get(0);
+        ASTBlock n = acu.findDescendantsOfType(ASTIfStatement.class).get(0)
+                .getFirstDescendantOfType(ASTBlock.class);
         assertTrue(n.getScope() instanceof LocalScope);
     }
 

@@ -63,6 +63,10 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return jjtGetParent().jjtGetParent() instanceof ASTTryStatement;
     }
 
+    public boolean isFormalParameter() {
+        return jjtGetParent() instanceof ASTFormalParameter;
+    }
+
     public void setExplicitReceiverParameter() {
         explicitReceiverParameter = true;
     }

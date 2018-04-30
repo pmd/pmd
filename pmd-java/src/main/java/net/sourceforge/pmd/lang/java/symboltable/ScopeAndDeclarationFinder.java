@@ -17,10 +17,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -207,20 +205,21 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTBlock node, Object data) {
-        createLocalScope(node);
-        cont(node);
+        // top-level blocks for methods should have the same scope as parameters, just skip them
+        // same applies to catch statements defining exceptions + the catch block, and for-blocks
+        if (node.jjtGetParent() instanceof ASTMethodDeclaration
+                || node.jjtGetParent() instanceof ASTCatchStatement
+                || node.jjtGetParent() instanceof ASTForStatement) {
+            super.visit(node, null);
+        } else {
+            createLocalScope(node);
+            cont(node);
+        }
         return data;
     }
 
     @Override
     public Object visit(ASTCatchStatement node, Object data) {
-        createLocalScope(node);
-        cont(node);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTFinallyStatement node, Object data) {
         createLocalScope(node);
         cont(node);
         return data;
@@ -299,13 +298,6 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     // TODO - what about while loops and do loops?
     @Override
     public Object visit(ASTForStatement node, Object data) {
-        createLocalScope(node);
-        cont(node);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTIfStatement node, Object data) {
         createLocalScope(node);
         cont(node);
         return data;
