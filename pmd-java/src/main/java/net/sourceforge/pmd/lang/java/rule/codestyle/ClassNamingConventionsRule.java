@@ -128,7 +128,7 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
     private static RegexPBuilder defaultProp(String name) {
         return RegexProperty.named(StringUtil.toCamelCase(name) + "Pattern")
                             .desc("Regex which applies to " + name.trim() + " names")
-                            .defaultValue("[A-Z][a-zA-Z]+");
+                            .defaultValue("[A-Z][a-zA-Z0-9]+");
 
     }
 }
