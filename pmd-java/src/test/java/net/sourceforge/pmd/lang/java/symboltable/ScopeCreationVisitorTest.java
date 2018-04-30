@@ -17,7 +17,7 @@ public class ScopeCreationVisitorTest extends STBBaseTst {
     @Test
     public void testScopesAreCreated() {
         parseCode(TEST1);
-        ASTBlock n = acu.findDescendantsOfType(ASTIfStatement.class).get(0)
+        ASTBlock n = acu.getFirstDescendantOfType(ASTIfStatement.class)
                 .getFirstDescendantOfType(ASTBlock.class);
         assertTrue(n.getScope() instanceof LocalScope);
     }
