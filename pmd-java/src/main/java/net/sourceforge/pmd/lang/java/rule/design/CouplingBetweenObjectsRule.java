@@ -119,7 +119,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     private void handleASTTypeChildren(Node node) {
         for (int x = 0; x < node.jjtGetNumChildren(); x++) {
             Node sNode = node.jjtGetChild(x);
-            if (sNode instanceof ASTType) {
+            if (sNode instanceof ASTType && !((ASTType) sNode).isVarType()) {
                 Node nameNode = sNode.jjtGetChild(0);
                 checkVariableType(nameNode, nameNode.getImage());
             }

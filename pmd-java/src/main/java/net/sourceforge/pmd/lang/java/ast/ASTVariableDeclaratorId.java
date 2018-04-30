@@ -96,7 +96,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     // TODO unreliable, not typesafe and not useful, should be deprecated
     public Node getTypeNameNode() {
         ASTType type = getTypeNode();
-        return type == null ? null : getTypeNode().jjtGetChild(0);
+        return type == null || type.isVarType() ? null : getTypeNode().jjtGetChild(0);
     }
 
 

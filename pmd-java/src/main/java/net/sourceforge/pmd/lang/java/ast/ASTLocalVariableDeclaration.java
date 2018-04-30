@@ -38,6 +38,9 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
     }
 
     public boolean isArray() {
+        if (getTypeNode().isVarType()) {
+            return false;
+        }
         return checkType() + checkDecl() > 0;
     }
 
@@ -46,12 +49,7 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
     }
 
     public ASTType getTypeNode() {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTType) {
-                return (ASTType) jjtGetChild(i);
-            }
-        }
-        throw new IllegalStateException("ASTType not found");
+        return getFirstChildOfType(ASTType.class);
     }
 
     private int checkType() {

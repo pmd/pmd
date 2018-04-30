@@ -121,7 +121,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         for (ASTLocalVariableDeclaration var : vars) {
             ASTType type = var.getTypeNode();
 
-            if (type.jjtGetChild(0) instanceof ASTReferenceType) {
+            if (!type.isVarType() && type.jjtGetChild(0) instanceof ASTReferenceType) {
                 ASTReferenceType ref = (ASTReferenceType) type.jjtGetChild(0);
                 if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
                     ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
