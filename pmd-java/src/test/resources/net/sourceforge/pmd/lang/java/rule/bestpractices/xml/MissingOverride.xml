@@ -492,5 +492,41 @@
         </code>
     </test-code>
 
+    <test-code>
+        <description>Private methods can't be overridden</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
+
+            public class SubclassPrivateNoOverride extends SuperclassWithPrivate {
+
+                // No override
+                public void foo() {
+
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Static methods can't be overridden</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
+
+            public class SubclassWithStatic extends SuperclassWithStatic {
+
+                public static void fooBar(String f) {
+
+                }
+
+            }
+            ]]>
+        </code>
+    </test-code>
+
 
 </test-data>

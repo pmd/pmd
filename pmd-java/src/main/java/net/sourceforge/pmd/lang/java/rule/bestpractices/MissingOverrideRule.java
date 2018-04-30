@@ -152,11 +152,17 @@ public class MissingOverrideRule extends AbstractJavaRule {
         if (!skip) {
             Set<Method> toRemove = new HashSet<>();
             for (Method dm : exploredType.getDeclaredMethods()) {
-                if (onlyPublic && !Modifier.isPublic(dm.getModifiers())) {
+                if (onlyPublic && !Modifier.isPublic(dm.getModifiers())
+                        || Modifier.isPrivate(dm.getModifiers())
+                        || Modifier.isStatic(dm.getModifiers())) {
                     continue;
                 }
 
                 for (Method cand : candidates) {
+                    if (Modifier.isPrivate(dm.getModifiers()) || Modifier.isStatic(dm.getModifiers())) {
+                        continue;
+                    }
+
                     if (cand.getName().equals(dm.getName()) && Arrays.equals(cand.getParameterTypes(), dm.getParameterTypes())) {
                         // cand is overriden
                         result.add(cand);
