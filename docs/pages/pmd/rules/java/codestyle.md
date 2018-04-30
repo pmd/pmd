@@ -399,11 +399,11 @@ public class Éléphant {}
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|classPattern|[A-Z][a-zA-Z]+|Regex which applies to concrete class names|no|
-|abstractClassPattern|[A-Z][a-zA-Z]+|Regex which applies to abstract class names|no|
-|interfacePattern|[A-Z][a-zA-Z]+|Regex which applies to interface names|no|
-|enumPattern|[A-Z][a-zA-Z]+|Regex which applies to enum names|no|
-|annotationPattern|[A-Z][a-zA-Z]+|Regex which applies to annotation names|no|
+|classPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to concrete class names|no|
+|abstractClassPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to abstract class names|no|
+|interfacePattern|[A-Z][a-zA-Z0-9]+|Regex which applies to interface names|no|
+|enumPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to enum names|no|
+|annotationPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to annotation names|no|
 |utilityClassPattern|[A-Z][a-zA-Z]+Util|Regex which applies to utility class names|no|
 
 **Use this rule by referencing it:**
