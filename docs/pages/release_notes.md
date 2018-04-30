@@ -21,6 +21,11 @@ This is a bug fixing release.
 
 ### Fixed Issues
 
+*   all
+*   java
+*   java-codestyle
+    *   [#1065](https://github.com/pmd/pmd/issues/1065): \[java] ClassNamingConventions shouldn't prohibit numbers in class names
+
 ### API Changes
 
 ### External Contributions
