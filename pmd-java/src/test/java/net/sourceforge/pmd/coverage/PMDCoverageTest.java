@@ -52,10 +52,12 @@ public class PMDCoverageTest {
         try {
             f = File.createTempFile("pmd", ".txt");
             int n = args.length;
-            String[] a = new String[n + 2];
+            String[] a = new String[n + 2 + 2];
             System.arraycopy(args, 0, a, 0, n);
             a[n] = "-reportfile";
             a[n + 1] = f.getAbsolutePath();
+            a[n + 2] = "-threads";
+            a[n + 3] = String.valueOf(Runtime.getRuntime().availableProcessors());
             args = a;
 
             PMD.run(args);
