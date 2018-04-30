@@ -21,6 +21,9 @@ This is a bug fixing release.
 
 ### Fixed Issues
 
+*   java-bestpractices
+    *    [#1063](https://github.com/pmd/pmd/issues/1063): \[java] MissingOverride is triggered in illegal places
+
 ### API Changes
 
 ### External Contributions
