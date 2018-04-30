@@ -7,10 +7,8 @@ package net.sourceforge.pmd.lang.java.symboltable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -18,7 +16,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -26,7 +23,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -208,6 +204,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         // top-level blocks for methods should have the same scope as parameters, just skip them
         // same applies to catch statements defining exceptions + the catch block, and for-blocks
         if (node.jjtGetParent() instanceof ASTMethodDeclaration
+                || node.jjtGetParent() instanceof ASTConstructorDeclaration
                 || node.jjtGetParent() instanceof ASTCatchStatement
                 || node.jjtGetParent() instanceof ASTForStatement) {
             super.visit(node, null);
@@ -227,48 +224,8 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        /*
-         * Local variables declared inside the constructor need to be in a
-         * different scope so special handling is needed
-         */
         createMethodScope(node);
-
-        Scope methodScope = node.getScope();
-
-        Node formalParameters = node.jjtGetChild(0);
-        int i = 1;
-        int n = node.jjtGetNumChildren();
-        if (!(formalParameters instanceof ASTFormalParameters)) {
-            visit((ASTTypeParameters) formalParameters, data);
-            formalParameters = node.jjtGetChild(1);
-            i++;
-        }
-        visit((ASTFormalParameters) formalParameters, data);
-
-        Scope localScope = null;
-        for (; i < n; i++) {
-            JavaNode b = (JavaNode) node.jjtGetChild(i);
-            if (b instanceof ASTBlockStatement) {
-                if (localScope == null) {
-                    createLocalScope(node);
-                    localScope = node.getScope();
-                }
-                b.setScope(localScope);
-                visit(b, data);
-            } else {
-                visit(b, data);
-            }
-        }
-        if (localScope != null) {
-            // pop the local scope
-            scopes.pop();
-
-            // reset the correct scope for the constructor
-            node.setScope(methodScope);
-        }
-        // pop the method scope
-        scopes.pop();
-
+        cont(node);
         return data;
     }
 
