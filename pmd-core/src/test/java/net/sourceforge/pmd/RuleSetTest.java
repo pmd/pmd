@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -30,6 +31,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 public class RuleSetTest {
 
@@ -506,5 +508,47 @@ public class RuleSetTest {
         node.setImage("Foo");
         nodes.add(node);
         return nodes;
+    }
+
+    @Test
+    public void ruleExceptionShouldBeReported() {
+        RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported")
+                .addRule(new MockRule() {
+                    @Override
+                    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+                        throw new RuntimeException("Test exception while applying rule");
+                    }
+                })
+                .build();
+        RuleContext context = new RuleContext();
+        context.setReport(new Report());
+        context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        context.setSourceCodeFilename(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported");
+        context.setIgnoreExceptions(true); // the default
+        ruleset.apply(makeCompilationUnits(), context);
+
+        assertTrue("Report should have processing errors", context.getReport().hasErrors());
+        List<ProcessingError> errors = CollectionUtil.toList(context.getReport().errors());
+        assertEquals("Errors expected", 1, errors.size());
+        assertEquals("Wrong error message", "Test exception while applying rule", errors.get(0).getMsg());
+        assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void ruleExceptionShouldBeThrownIfNotIgnored() {
+        RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported")
+                .addRule(new MockRule() {
+                    @Override
+                    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+                        throw new RuntimeException("Test exception while applying rule");
+                    }
+                })
+                .build();
+        RuleContext context = new RuleContext();
+        context.setReport(new Report());
+        context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        context.setSourceCodeFilename(RuleSetTest.class.getName() + ".ruleExceptionShouldBeThrownIfNotIgnored");
+        context.setIgnoreExceptions(false);
+        ruleset.apply(makeCompilationUnits(), context);
     }
 }
