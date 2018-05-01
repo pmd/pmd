@@ -255,7 +255,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         Optional.ofNullable(declaration.getNode().getScope().getDeclarations().get(declaration))
                 .ifPresent(sourceEditorController::highlightNameOccurences);
 
-        sourceEditorController.setFocusNode(declaration.getNode());
+        Platform.runLater(() -> onNodeItemSelected(declaration.getNode()));
     }
 
     /**
