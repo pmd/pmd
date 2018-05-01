@@ -58,7 +58,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     private ASTManager astManager;
     private TreeViewWrapper<Node> treeViewWrapper;
-
+    private ASTTreeItem selectedTreeItem;
 
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
         parent = mainController;
@@ -165,19 +165,23 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         highlightNodes(nodes, Collections.singleton("secondary-highlight"));
     }
 
-
     public void focusNodeInTreeView(Node node) {
-        ASTTreeItem found = ((ASTTreeItem) astTreeView.getRoot()).findItem(node);
-        if (found != null) {
-            SelectionModel<TreeItem<Node>> selectionModel = astTreeView.getSelectionModel();
-            selectionModel.select(found);
+        SelectionModel<TreeItem<Node>> selectionModel = astTreeView.getSelectionModel();
+
+        // node is different from the old one
+        if (selectedTreeItem == null && node != null
+                || selectedTreeItem != null && !Objects.equals(node, selectedTreeItem.getValue())) {
+            ASTTreeItem found = ((ASTTreeItem) astTreeView.getRoot()).findItem(node);
+            if (found != null) {
+                selectionModel.select(found);
+            }
+
             astTreeView.getFocusModel().focus(selectionModel.getSelectedIndex());
             if (!treeViewWrapper.isIndexVisible(selectionModel.getSelectedIndex())) {
                 astTreeView.scrollTo(selectionModel.getSelectedIndex());
             }
         }
     }
-
 
     private void invalidateAST(boolean error) {
         astTitleLabel.setText("Abstract syntax tree (" + (error ? "error" : "outdated") + ")");
