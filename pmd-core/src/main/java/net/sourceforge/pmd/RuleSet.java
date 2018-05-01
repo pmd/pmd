@@ -504,6 +504,7 @@ public class RuleSet implements ChecksumAware {
                 }
             } catch (RuntimeException e) {
                 if (ctx.isIgnoreExceptions()) {
+                    ctx.getReport().addError(new Report.ProcessingError(e, ctx.getSourceCodeFilename()));
                     if (LOG.isLoggable(Level.WARNING)) {
                         LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
                                 + ctx.getSourceCodeFilename() + ", continuing with next rule", e);

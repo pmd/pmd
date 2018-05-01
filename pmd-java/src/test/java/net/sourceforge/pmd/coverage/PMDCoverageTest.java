@@ -18,6 +18,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.StandardErrorStreamLog;
 import org.junit.contrib.java.lang.system.StandardOutputStreamLog;
 
 import net.sourceforge.pmd.PMD;
@@ -26,6 +27,9 @@ public class PMDCoverageTest {
 
     @Rule
     public StandardOutputStreamLog output = new StandardOutputStreamLog();
+
+    @Rule
+    public StandardErrorStreamLog errorStream = new StandardErrorStreamLog();
 
     /**
      * Test some of the PMD command line options
@@ -48,17 +52,22 @@ public class PMDCoverageTest {
         try {
             f = File.createTempFile("pmd", ".txt");
             int n = args.length;
-            String[] a = new String[n + 2];
+            String[] a = new String[n + 2 + 2];
             System.arraycopy(args, 0, a, 0, n);
             a[n] = "-reportfile";
             a[n + 1] = f.getAbsolutePath();
+            a[n + 2] = "-threads";
+            a[n + 3] = String.valueOf(Runtime.getRuntime().availableProcessors());
             args = a;
 
             PMD.run(args);
 
-            assertFalse("There was at least one exception mentioned in the output", output.getLog().contains("Exception applying rule"));
-            assertFalse("Wrong configuration? Ruleset not found", output.getLog().contains("Ruleset not found"));
-            assertFalse("Some XPath rules use deprecated attributes", output.getLog().contains("Use of deprecated attribute"));
+            assertEquals("Nothing should be output to stdout", 0, output.getLog().length());
+
+
+            assertEquals("No exceptions expected", 0, StringUtils.countMatches(errorStream.getLog(), "Exception applying rule"));
+            assertFalse("Wrong configuration? Ruleset not found", errorStream.getLog().contains("Ruleset not found"));
+            assertEquals("No usage of deprected XPath attributes expected", 0, StringUtils.countMatches(errorStream.getLog(), "Use of deprecated attribute"));
 
             String report = FileUtils.readFileToString(f);
             assertEquals("No processing errors expected", 0, StringUtils.countMatches(report, "Error while processing"));
