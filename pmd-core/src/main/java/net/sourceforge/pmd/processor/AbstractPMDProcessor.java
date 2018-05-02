@@ -19,8 +19,8 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.SourceCodeProcessor;
-import net.sourceforge.pmd.benchmark.Benchmark;
-import net.sourceforge.pmd.benchmark.Benchmarker;
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -40,16 +40,15 @@ public abstract class AbstractPMDProcessor {
 
     public void renderReports(final List<Renderer> renderers, final Report report) {
 
-        long start = System.nanoTime();
-
+        TimeTracker.startOperation(TimedOperationCategory.REPORTING);
         try {
             for (Renderer r : renderers) {
                 r.renderFileReport(report);
             }
-            long end = System.nanoTime();
-            Benchmarker.mark(Benchmark.Reporting, end - start, 1);
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
+        } finally {
+            TimeTracker.finishOperation();
         }
     }
 

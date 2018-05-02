@@ -16,8 +16,8 @@ import java.util.Set;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.benchmark.Benchmark;
-import net.sourceforge.pmd.benchmark.Benchmarker;
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -59,12 +59,12 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
 
         // Perform a visitation of the AST to index nodes which need visiting by
         // type
-        long start = System.nanoTime();
+        TimeTracker.startOperation(TimedOperationCategory.RULECHAIN_VISIT);
         indexNodes(nodes, ctx);
-        long end = System.nanoTime();
-        Benchmarker.mark(Benchmark.RuleChainVisit, end - start, 1);
+        TimeTracker.finishOperation();
 
         // For each RuleSet, only if this source file applies
+        TimeTracker.startOperation(TimedOperationCategory.RULECHAIN_RULE);
         for (Map.Entry<RuleSet, List<Rule>> entry : ruleSetRules.entrySet()) {
             RuleSet ruleSet = entry.getKey();
             if (!ruleSet.applies(ctx.getSourceCodeFile())) {
@@ -72,12 +72,12 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
             }
 
             // For each rule, allow it to visit the nodes it desires
-            start = System.nanoTime();
             for (Rule rule : entry.getValue()) {
                 int visits = 0;
                 if (!RuleSet.applies(rule, ctx.getLanguageVersion())) {
                     continue;
                 }
+                TimeTracker.startOperation(TimedOperationCategory.RULECHAIN_RULE, rule.getName());
                 final List<String> nodeNames = rule.getRuleChainVisits();
                 for (int j = 0; j < nodeNames.size(); j++) {
                     List<Node> ns = nodeNameToNodes.get(nodeNames.get(j));
@@ -91,11 +91,10 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
                     }
                     visits += ns.size();
                 }
-                end = System.nanoTime();
-                Benchmarker.mark(Benchmark.RuleChainRule, rule.getName(), end - start, visits);
-                start = end;
+                TimeTracker.finishOperation(visits);
             }
         }
+        TimeTracker.finishOperation();
     }
 
     /**

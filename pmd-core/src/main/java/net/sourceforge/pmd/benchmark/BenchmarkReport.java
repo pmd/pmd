@@ -12,6 +12,7 @@ import java.util.Set;
  *
  * @author Brian Remedios
  */
+@Deprecated
 public interface BenchmarkReport {
 
     /**

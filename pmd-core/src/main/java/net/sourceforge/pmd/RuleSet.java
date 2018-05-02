@@ -18,8 +18,8 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.benchmark.Benchmark;
-import net.sourceforge.pmd.benchmark.Benchmarker;
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.ChecksumAware;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -493,18 +493,19 @@ public class RuleSet implements ChecksumAware {
      *            the current context
      */
     public void apply(List<? extends Node> acuList, RuleContext ctx) {
-        long start = System.nanoTime();
+        TimeTracker.startOperation(TimedOperationCategory.RULE);
         for (Rule rule : rules) {
             try {
                 if (!rule.isRuleChain() && applies(rule, ctx.getLanguageVersion())) {
+                    TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName());
                     rule.apply(acuList, ctx);
-                    long end = System.nanoTime();
-                    Benchmarker.mark(Benchmark.Rule, rule.getName(), end - start, 1);
-                    start = end;
+                    TimeTracker.finishOperation();
                 }
             } catch (RuntimeException e) {
                 if (ctx.isIgnoreExceptions()) {
+                    TimeTracker.finishOperation();
                     ctx.getReport().addError(new Report.ProcessingError(e, ctx.getSourceCodeFilename()));
+                    
                     if (LOG.isLoggable(Level.WARNING)) {
                         LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
                                 + ctx.getSourceCodeFilename() + ", continuing with next rule", e);
@@ -514,6 +515,7 @@ public class RuleSet implements ChecksumAware {
                 }
             }
         }
+        TimeTracker.finishOperation();
     }
 
     /**

@@ -6,6 +6,8 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,9 +21,11 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.benchmark.Benchmark;
-import net.sourceforge.pmd.benchmark.Benchmarker;
-import net.sourceforge.pmd.benchmark.TextReport;
+import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.benchmark.TimingReport;
+import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PMDParameters;
@@ -206,7 +210,7 @@ public class PMD {
         Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
         List<DataSource> files = getApplicableFiles(configuration, languages);
 
-        long reportStart = System.nanoTime();
+        TimeTracker.startOperation(TimedOperationCategory.REPORTING);
         try {
             Renderer renderer = configuration.createRenderer();
             List<Renderer> renderers = Collections.singletonList(renderer);
@@ -214,14 +218,14 @@ public class PMD {
             renderer.setWriter(IOUtil.createWriter(configuration.getReportFile()));
             renderer.start();
 
-            Benchmarker.mark(Benchmark.Reporting, System.nanoTime() - reportStart, 0);
+            TimeTracker.finishOperation();
 
             RuleContext ctx = new RuleContext();
             final AtomicInteger violations = new AtomicInteger(0);
             ctx.getReport().addListener(new ThreadSafeReportListener() {
                 @Override
                 public void ruleViolationAdded(RuleViolation ruleViolation) {
-                    violations.incrementAndGet();
+                    violations.getAndIncrement();
                 }
 
                 @Override
@@ -230,9 +234,11 @@ public class PMD {
                 }
             });
 
+            TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING);
             processFiles(configuration, ruleSetFactory, files, ctx, renderers);
+            TimeTracker.finishOperation();
 
-            reportStart = System.nanoTime();
+            TimeTracker.startOperation(TimedOperationCategory.REPORTING);
             renderer.end();
             renderer.flush();
             return violations.get();
@@ -247,8 +253,8 @@ public class PMD {
             LOG.info(PMDCommandLineInterface.buildUsageText());
             return 0;
         } finally {
-            Benchmarker.mark(Benchmark.Reporting, System.nanoTime() - reportStart, 0);
-
+            TimeTracker.finishOperation();
+            
             /*
              * Make sure it's our own classloader before attempting to close it....
              * Maven + Jacoco provide us with a cloaseable classloader that if closed
@@ -355,10 +361,9 @@ public class PMD {
      * @return List of {@link DataSource} of files
      */
     public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
-        long startFiles = System.nanoTime();
+        TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES);
         List<DataSource> files = internalGetApplicableFiles(configuration, languages);
-        long endFiles = System.nanoTime();
-        Benchmarker.mark(Benchmark.CollectFiles, endFiles - startFiles, 0);
+        TimeTracker.finishOperation();
         return files;
     }
 
@@ -443,9 +448,13 @@ public class PMD {
      *         violations found.
      */
     public static int run(String[] args) {
-        int status = 0;
-        long start = System.nanoTime();
         final PMDParameters params = PMDCommandLineInterface.extractParameters(new PMDParameters(), args, "pmd");
+        
+        if (params.isBenchmark()) {
+            TimeTracker.startGlobalTracking();
+        }
+        
+        int status = 0;
         final PMDConfiguration configuration = params.toConfiguration();
 
         final Level logLevel = params.isDebug() ? Level.FINER : Level.INFO;
@@ -470,14 +479,19 @@ public class PMD {
         } finally {
             logHandlerManager.close();
             LOG.setLevel(oldLogLevel);
+            
             if (params.isBenchmark()) {
-                long end = System.nanoTime();
-                Benchmarker.mark(Benchmark.TotalPMD, end - start, 0);
+                final TimingReport timingReport = TimeTracker.stopGlobalTracking();
 
                 // TODO get specified report format from config
-                TextReport report = new TextReport();
-
-                report.generate(Benchmarker.values(), System.err);
+                final TimingReportRenderer renderer = new TextTimingReportRenderer();
+                try {
+                    // Don't close this writer, we don't want to close stderr
+                    final Writer writer = new OutputStreamWriter(System.err);
+                    renderer.render(timingReport, writer);
+                } catch (final IOException e) {
+                    System.err.println(e.getMessage());
+                }
             }
         }
         return status;
