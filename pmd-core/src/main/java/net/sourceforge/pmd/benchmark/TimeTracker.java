@@ -12,6 +12,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.google.common.base.Objects;
+
 /**
  * A time tracker class to measure time spent on different sections of PMD analysis.
  * The class is thread-aware, allowing to differentiate CPU and wall clock time.
@@ -97,7 +99,7 @@ public final class TimeTracker {
     }
     
     /**
-     * Starts tracking an operation
+     * Starts tracking an operation.
      * @param category The category under which to track the operation.
      */
     public static void startOperation(final TimedOperationCategory category) {
@@ -105,7 +107,7 @@ public final class TimeTracker {
     }
     
     /**
-     * Starts tracking an operation
+     * Starts tracking an operation.
      * @param category The category under which to track the operation.
      * @param label A label to be added to the category. Allows to differentiate measures within a single category.
      */
@@ -118,15 +120,17 @@ public final class TimeTracker {
     }
     
     /**
-     * Finishes tracking an operation
+     * Finishes tracking an operation.
      */
     public static void finishOperation() {
         finishOperation(0);
     }
     
     /**
-     * Finishes tracking an operation
-     * @param extraDataCounter An optional additional data counter to track along the measurements
+     * Finishes tracking an operation.
+     * @param extraDataCounter An optional additional data counter to track along the measurements.
+     *                         Users are free to track any extra value they want (ie: number of analyzed nodes,
+     *                         iterations in a loop, etc.)
      */
     public static void finishOperation(final long extraDataCounter) {
         if (!trackTime) {
@@ -150,6 +154,9 @@ public final class TimeTracker {
         }
     }
     
+    /**
+     * An entry in the open timers queue. Defines an operation that has started and hasn't finished yet.
+     */
     private static class TimerEntry {
         /* package */ final TimedOperation operation;
         /* package */ final long start;
@@ -166,12 +173,21 @@ public final class TimeTracker {
         }
     }
     
+    /**
+     * Aggregate results measured so far for a given category + label.
+     */
     /* package */ static class TimedResult {
         /* package */ AtomicLong totalTime = new AtomicLong();
         /* package */ AtomicLong selfTime = new AtomicLong();
         /* package */ AtomicInteger callCount = new AtomicInteger();
         /* package */ AtomicLong extraDataCounter = new AtomicLong();
         
+        /**
+         * Adds a new {@link TimerEntry} to the results.
+         * @param timerEntry The entry to be added
+         * @param extraData Any extra data counter to be added
+         * @return The delta time transcurred since the {@link TimerEntry} began.
+         */
         /* package */ long accumulate(final TimerEntry timerEntry, final long extraData) {
             final long delta = System.nanoTime() - timerEntry.start;
             
@@ -183,12 +199,19 @@ public final class TimeTracker {
             return delta;
         }
         
+        /**
+         * Merges the times (and only the times) from another {@link TimedResult} into self.
+         * @param timedResult The {@link TimedResult} to merge
+         */
         /* package */ void mergeTimes(final TimedResult timedResult) {
             totalTime.getAndAdd(timedResult.totalTime.get());
             selfTime.getAndAdd(timedResult.selfTime.get());
         }
     }
     
+    /**
+     * A unique identifier for a timed operation
+     */
     /* package */ static class TimedOperation {
         /* package */ final TimedOperationCategory category;
         /* package */ final String label;
@@ -222,14 +245,7 @@ public final class TimeTracker {
             if (category != other.category) {
                 return false;
             }
-            if (label == null) {
-                if (other.label != null) {
-                    return false;
-                }
-            } else if (!label.equals(other.label)) {
-                return false;
-            }
-            return true;
+            return Objects.equal(label, other.label);
         }
 
         @Override

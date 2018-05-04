@@ -25,7 +25,7 @@ public class TimingReport {
         results = accumulatedResults;
     }
     
-    public Map<String, TimedResult> getLabeledMeassurements(final TimedOperationCategory category) {
+    public Map<String, TimedResult> getLabeledMeasurements(final TimedOperationCategory category) {
         final Map<String, TimedResult> ret = new HashMap<>();
         
         for (final Map.Entry<TimedOperation, TimedResult> entry : results.entrySet()) {
@@ -38,7 +38,7 @@ public class TimingReport {
         return ret;
     }
     
-    public TimedResult getUnlabeledMeassurements(final TimedOperationCategory category) {
+    public TimedResult getUnlabeledMeasurements(final TimedOperationCategory category) {
         for (final Map.Entry<TimedOperation, TimedResult> entry : results.entrySet()) {
             final TimedOperation timedOperation = entry.getKey();
             if (timedOperation.category == category && timedOperation.label == null) {

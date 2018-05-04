@@ -18,7 +18,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.benchmark.TimeTracker.TimedResult;
 
 /**
- * A text based renderer for {@link TimingReport}
+ * A text based renderer for {@link TimingReport}.
  * @author Juan Martín Sotuyo Dodero
  */
 public class TextTimingReportRenderer implements TimingReportRenderer {
@@ -38,18 +38,18 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
     @Override
     public void render(final TimingReport report, final Writer writer) throws IOException {
         for (final TimedOperationCategory category : TimedOperationCategory.values()) {
-            final Map<String, TimedResult> labeledMeassurements = report.getLabeledMeassurements(category);
-            if (!labeledMeassurements.isEmpty()) {
-                renderCategoryMeassurements(category, labeledMeassurements, writer);
+            final Map<String, TimedResult> labeledMeasurements = report.getLabeledMeasurements(category);
+            if (!labeledMeasurements.isEmpty()) {
+                renderCategoryMeasurements(category, labeledMeasurements, writer);
             }
         }
         
         renderHeader("Summary", writer);
         
         for (final TimedOperationCategory category : TimedOperationCategory.values()) {
-            final TimedResult timedResult = report.getUnlabeledMeassurements(category);
+            final TimedResult timedResult = report.getUnlabeledMeasurements(category);
             if (timedResult != null) {
-                renderMeassurement(category.displayName(), timedResult, writer);
+                renderMeasurement(category.displayName(), timedResult, writer);
             }
         }
         
@@ -64,7 +64,7 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
         writer.flush();
     }
 
-    private void renderMeassurement(final String label, final TimedResult timedResult,
+    private void renderMeasurement(final String label, final TimedResult timedResult,
             final Writer writer) throws IOException {
         writer.write(StringUtils.rightPad(label, LABEL_COLUMN_WIDTH));
         
@@ -87,8 +87,8 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
         writer.write(PMD.EOL);
     }
 
-    private void renderCategoryMeassurements(final TimedOperationCategory category,
-            final Map<String, TimedResult> labeledMeassurements, final Writer writer) throws IOException {
+    private void renderCategoryMeasurements(final TimedOperationCategory category,
+            final Map<String, TimedResult> labeledMeasurements, final Writer writer) throws IOException {
         renderHeader(category.displayName(), writer);
         
         final TimedResult grandTotal = new TimedResult();
@@ -96,24 +96,18 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
             new Comparator<Map.Entry<String, TimedResult>>() {
                 @Override
                 public int compare(final Entry<String, TimedResult> o1, final Entry<String, TimedResult> o2) {
-                    final long diff = o1.getValue().selfTime.get() - o2.getValue().selfTime.get();
-                    if (diff > 0) {
-                        return 1;
-                    } else if (diff < 0) {
-                        return -1;
-                    }
-                    return 0;
+                    return Long.compare(o1.getValue().selfTime.get(), o2.getValue().selfTime.get());
                 }
             });
-        sortedKeySet.addAll(labeledMeassurements.entrySet());
+        sortedKeySet.addAll(labeledMeasurements.entrySet());
         
         for (final Map.Entry<String, TimedResult> entry : sortedKeySet) {
-            renderMeassurement(entry.getKey(), entry.getValue(), writer);
+            renderMeasurement(entry.getKey(), entry.getValue(), writer);
             grandTotal.mergeTimes(entry.getValue());
         }
         
         writer.write(PMD.EOL);
-        renderMeassurement("Total " + category.displayName(), grandTotal, writer);
+        renderMeasurement("Total " + category.displayName(), grandTotal, writer);
         writer.write(PMD.EOL);
     }
 

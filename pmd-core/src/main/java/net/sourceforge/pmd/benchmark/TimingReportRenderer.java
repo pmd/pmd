@@ -8,13 +8,13 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * Defines a renderer for {@link TimingReport}
+ * Defines a renderer for {@link TimingReport}.
  * @author Juan Martín Sotuyo Dodero
  */
 public interface TimingReportRenderer {
 
     /**
-     * Renders the given report into the given writer
+     * Renders the given report into the given writer.
      * @param report The report data to render
      * @param writer The writer on which to render
      * @throws IOException if the write operation fails
