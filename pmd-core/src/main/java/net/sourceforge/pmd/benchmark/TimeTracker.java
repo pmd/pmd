@@ -6,13 +6,12 @@ package net.sourceforge.pmd.benchmark;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-
-import com.google.common.base.Objects;
 
 /**
  * A time tracker class to measure time spent on different sections of PMD analysis.
@@ -245,7 +244,7 @@ public final class TimeTracker {
             if (category != other.category) {
                 return false;
             }
-            return Objects.equal(label, other.label);
+            return Objects.equals(label, other.label);
         }
 
         @Override
