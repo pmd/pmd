@@ -32,6 +32,7 @@ public class MethodScope extends AbstractJavaScope {
         return getDeclarations(VariableNameDeclaration.class);
     }
 
+    @Override
     public Set<NameDeclaration> addNameOccurrence(NameOccurrence occurrence) {
         JavaNameOccurrence javaOccurrence = (JavaNameOccurrence) occurrence;
         Set<NameDeclaration> declarations = findVariableHere(javaOccurrence);
@@ -47,6 +48,7 @@ public class MethodScope extends AbstractJavaScope {
         return declarations;
     }
 
+    @Override
     public void addDeclaration(NameDeclaration variableDecl) {
         if (!(variableDecl instanceof VariableNameDeclaration || variableDecl instanceof ClassNameDeclaration)) {
             throw new IllegalArgumentException(
@@ -55,6 +57,7 @@ public class MethodScope extends AbstractJavaScope {
         super.addDeclaration(variableDecl);
     }
 
+    @Override
     public Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence) {
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
             return Collections.emptySet();
@@ -74,6 +77,7 @@ public class MethodScope extends AbstractJavaScope {
         return node.jjtGetChild(1).getImage();
     }
 
+    @Override
     public String toString() {
         return "MethodScope:" + glomNames(getVariableDeclarations().keySet());
     }

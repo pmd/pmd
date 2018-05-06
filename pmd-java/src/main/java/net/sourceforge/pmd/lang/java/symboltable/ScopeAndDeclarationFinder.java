@@ -205,6 +205,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         // same applies to catch statements defining exceptions + the catch block, and for-blocks
         if (node.jjtGetParent() instanceof ASTMethodDeclaration
                 || node.jjtGetParent() instanceof ASTConstructorDeclaration
+                || node.jjtGetParent() instanceof ASTLambdaExpression
                 || node.jjtGetParent() instanceof ASTCatchStatement
                 || node.jjtGetParent() instanceof ASTForStatement) {
             super.visit(node, null);
