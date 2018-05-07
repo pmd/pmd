@@ -6,11 +6,13 @@ package net.sourceforge.pmd.util.log;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
 
 /**
@@ -23,9 +25,51 @@ public class AntLogHandler extends Handler {
     private Project project;
 
     private static final Formatter FORMATTER = new PmdLogFormatter();
+    private static final Level[] LOG_LEVELS = new Level[] {
+        Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINEST,
+    };
 
     public AntLogHandler(Project project) {
         this.project = project;
+    }
+    
+    public Level getAntLogLevel() {
+        Class<?> clazz;
+        int maxLevel = Project.MSG_ERR;
+        for (final BuildListener l : project.getBuildListeners()) {
+            clazz = l.getClass();
+            Field declaredField = null;
+            try {
+                while (BuildListener.class.isAssignableFrom(clazz)) {
+                    try {
+                        declaredField = l.getClass().getDeclaredField("msgOutputLevel");
+                    } catch (final NoSuchFieldException ignored) {
+                        try {
+                            declaredField = l.getClass().getDeclaredField("logLevel");
+                        } catch (final NoSuchFieldException expected) {
+                            // ignore it
+                        }
+                    }
+                    if (declaredField != null) {
+                        break;
+                    }
+                    
+                    clazz = clazz.getSuperclass();
+                }
+                
+                if (declaredField != null) {
+                    declaredField.setAccessible(true);
+                    final int level = declaredField.getInt(l);
+                    if (maxLevel < level) {
+                        maxLevel = level;
+                    }
+                }
+            } catch (final IllegalArgumentException | IllegalAccessException ignored) {
+                // Just ignore it
+            }
+        }
+        
+        return LOG_LEVELS[maxLevel];
     }
 
     @Override
