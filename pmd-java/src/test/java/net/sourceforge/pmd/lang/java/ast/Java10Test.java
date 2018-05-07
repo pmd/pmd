@@ -8,10 +8,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -33,7 +35,9 @@ public class Java10Test {
     @Test
     public void testLocalVarInferenceBeforeJava10() {
         // note, it can be parsed, but we'll have a ReferenceType of "var"
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseJava9(loadSource("LocalVariableTypeInference.java"));
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("9",
+                loadSource("LocalVariableTypeInference.java"));
+
         List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
         assertEquals(2, localVars.size());
 
@@ -51,11 +55,19 @@ public class Java10Test {
         assertNull(classType.getType());
         assertNull(type.getType());
         assertFalse(type.isVarType());
+
+        // check the type of the variable initializer's expression
+        ASTExpression initExpression = localVars.get(0)
+                .getFirstChildOfType(ASTVariableDeclarator.class)
+                .getFirstChildOfType(ASTVariableInitializer.class)
+                .getFirstChildOfType(ASTExpression.class);
+        assertSame("type should be ArrayList", ArrayList.class, initExpression.getType());
     }
 
     @Test
     public void testLocalVarInferenceCanBeParsedJava10() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseJava10(loadSource("LocalVariableTypeInference.java"));
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10",
+                loadSource("LocalVariableTypeInference.java"));
         List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
         assertEquals(2, localVars.size());
 
@@ -64,5 +76,6 @@ public class Java10Test {
         assertEquals("var", type.getImage());
         assertTrue(type.isVarType());
         assertEquals(0, type.jjtGetNumChildren());
+        assertSame("type should be ArrayList", ArrayList.class, type.getType());
     }
 }

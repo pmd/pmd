@@ -51,6 +51,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInstanceOfExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMultiplicativeExpression;
@@ -80,6 +81,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardBounds;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -621,6 +623,22 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTType node, Object data) {
         super.visit(node, data);
         rollupTypeUnary(node);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTLocalVariableDeclaration node, Object data) {
+        super.visit(node, data);
+        // resolve "var" types: Upward projection of the type of the initializer expression
+        ASTType type = node.getFirstChildOfType(ASTType.class);
+        if (type.isVarType()) {
+            ASTVariableInitializer initializer = node.getFirstDescendantOfType(ASTVariableInitializer.class);
+            if (initializer.jjtGetChild(0) instanceof ASTExpression) {
+                // only Expression is allowed, ArrayInitializer is not allowed in combination with "var".
+                ASTExpression expression = (ASTExpression) initializer.jjtGetChild(0);
+                type.setTypeDefinition(expression.getTypeDefinition());
+            }
+        }
         return data;
     }
 

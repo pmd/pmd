@@ -244,4 +244,17 @@ public class ParserTstUtil {
         }
         return source;
     }
+
+    public static ASTCompilationUnit parseAndTypeResolveJava(String javaVersion, String sourceCode) {
+        LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler(javaVersion);
+        ASTCompilationUnit rootNode = (ASTCompilationUnit) languageVersionHandler
+                .getParser(languageVersionHandler.getDefaultParserOptions())
+                    .parse(null, new StringReader(sourceCode));
+        languageVersionHandler.getQualifiedNameResolutionFacade(ParserTstUtil.class.getClassLoader()).start(rootNode);
+        languageVersionHandler.getSymbolFacade().start(rootNode);
+        languageVersionHandler.getDataFlowFacade().start(rootNode);
+        languageVersionHandler.getTypeResolutionFacade(ParserTstUtil.class.getClassLoader()).start(rootNode);
+        languageVersionHandler.getMultifileFacade().start(rootNode);
+        return rootNode;
+    }
 }
