@@ -21,6 +21,8 @@ This is a bug fixing release.
 
 ### Fixed Issues
 
+*   java
+    *   [#1077](https://github.com/pmd/pmd/issues/1077): \[java] Analyzing enum with lambda passed in constructor fails with "The enclosing scope must exist."
 *   java-bestpractices
     *   [#1063](https://github.com/pmd/pmd/issues/1063): \[java] MissingOverride is triggered in illegal places
 *   java-codestyle
