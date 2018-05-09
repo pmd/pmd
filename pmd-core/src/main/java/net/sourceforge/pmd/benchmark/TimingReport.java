@@ -6,7 +6,6 @@ package net.sourceforge.pmd.benchmark;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
 
 import net.sourceforge.pmd.benchmark.TimeTracker.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimeTracker.TimedResult;
@@ -17,11 +16,11 @@ import net.sourceforge.pmd.benchmark.TimeTracker.TimedResult;
  */
 public class TimingReport {
 
-    private final long wallClockMs;
-    private final ConcurrentMap<TimedOperation, TimedResult> results;
+    private final long wallClockMillis;
+    private final Map<TimedOperation, TimedResult> results;
     
-    /* package */ TimingReport(final long wallClock, final ConcurrentMap<TimedOperation, TimedResult> accumulatedResults) {
-        wallClockMs = wallClock;
+    /* package */ TimingReport(final long wallClockMillis, final Map<TimedOperation, TimedResult> accumulatedResults) {
+        this.wallClockMillis = wallClockMillis;
         results = accumulatedResults;
     }
     
@@ -49,7 +48,7 @@ public class TimingReport {
         return null;
     }
     
-    public long getWallClockTimeMs() {
-        return wallClockMs;
+    public long getWallClockMillis() {
+        return wallClockMillis;
     }
 }

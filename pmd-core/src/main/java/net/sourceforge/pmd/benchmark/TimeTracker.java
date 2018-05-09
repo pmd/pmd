@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public final class TimeTracker {
 
     private static boolean trackTime = false;
-    private static long wallClockStart = -1;
+    private static long wallClockStartMillis = -1;
     private static final ThreadLocal<Queue<TimerEntry>> TIMER_ENTRIES;
     private static final ConcurrentMap<TimedOperation, TimedResult> ACCUMULATED_RESULTS = new ConcurrentHashMap<>();
     
@@ -46,8 +46,9 @@ public final class TimeTracker {
      * Must be called once PMD starts if tracking is desired, no tracking will be performed otherwise.
      */
     public static void startGlobalTracking() {
-        wallClockStart = System.currentTimeMillis();
+        wallClockStartMillis = System.currentTimeMillis();
         trackTime = true;
+        ACCUMULATED_RESULTS.clear(); // just in case
         initThread(); // init main thread
     }
     
@@ -68,7 +69,7 @@ public final class TimeTracker {
                 new TimedOperation(TimedOperationCategory.UNACCOUNTED, null));
         unaccountedResult.totalTime.set(unaccountedResult.selfTime.get());
         
-        return new TimingReport(System.currentTimeMillis() - wallClockStart, ACCUMULATED_RESULTS);
+        return new TimingReport(System.currentTimeMillis() - wallClockStartMillis, ACCUMULATED_RESULTS);
     }
     
     /**

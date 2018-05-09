@@ -57,7 +57,7 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
         renderHeader("Total", writer);
         
         writer.write(StringUtils.rightPad("Wall Clock Time", LABEL_COLUMN_WIDTH));
-        final String wallClockTime = MessageFormat.format(TIME_FORMAT, report.getWallClockTimeMs() / 1000.0);
+        final String wallClockTime = MessageFormat.format(TIME_FORMAT, report.getWallClockMillis() / 1000.0);
         writer.write(StringUtils.leftPad(wallClockTime, TIME_COLUMN_WIDTH));
         writer.write(PMD.EOL);
         
