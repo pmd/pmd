@@ -30,9 +30,7 @@ public final class TimeTracker {
         TIMER_ENTRIES = new ThreadLocal<Queue<TimerEntry>>() {
             @Override
             protected Queue<TimerEntry> initialValue() {
-                final Queue<TimerEntry> queue = Collections.asLifoQueue(new LinkedList<TimerEntry>());
-                queue.add(new TimerEntry(TimedOperationCategory.UNACCOUNTED, null));
-                return queue;
+                return Collections.asLifoQueue(new LinkedList<TimerEntry>());
             }
         };
     }
@@ -64,10 +62,11 @@ public final class TimeTracker {
         finishThread(); // finish the main thread
         trackTime = false;
         
-        // Fix UNACCOUNTED metric (total time is meaningless)
+        // Fix UNACCOUNTED metric (total time is meaningless as is call count)
         final TimedResult unaccountedResult = ACCUMULATED_RESULTS.get(
                 new TimedOperation(TimedOperationCategory.UNACCOUNTED, null));
         unaccountedResult.totalTime.set(unaccountedResult.selfTime.get());
+        unaccountedResult.callCount.set(0);
         
         return new TimingReport(System.currentTimeMillis() - wallClockStartMillis, ACCUMULATED_RESULTS);
     }
@@ -80,7 +79,7 @@ public final class TimeTracker {
             return;
         }
         
-        TIMER_ENTRIES.get(); // Just make sure it's initialized
+        startOperation(TimedOperationCategory.UNACCOUNTED);
     }
     
     /**
@@ -91,9 +90,10 @@ public final class TimeTracker {
             return;
         }
         
+        finishOperation();
+        
         // if using a mono-thread, we may not be empty...
-        if (TIMER_ENTRIES.get().size() == 1) {
-            finishOperation();
+        if (TIMER_ENTRIES.get().isEmpty()) {
             TIMER_ENTRIES.remove();
         }
     }
