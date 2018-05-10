@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.util.ResourceLoader;
 
@@ -62,14 +63,9 @@ public final class RulesetsFactoryUtils {
      *             a ruleset couldn't be found.
      */
     public static RuleSets getRuleSetsWithBenchmark(String rulesets, RuleSetFactory factory) {
-        TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES);
-        RuleSets ruleSets = null;
-        try {
-            ruleSets = getRuleSets(rulesets, factory);
-        } finally {
-            TimeTracker.finishOperation();
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
+            return getRuleSets(rulesets, factory);
         }
-        return ruleSets;
     }
 
     public static RuleSetFactory getRulesetFactory(final PMDConfiguration configuration,

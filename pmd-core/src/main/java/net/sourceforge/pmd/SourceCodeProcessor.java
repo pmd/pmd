@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -106,23 +107,23 @@ public class SourceCodeProcessor {
     }
 
     private Node parse(RuleContext ctx, Reader sourceCode, Parser parser) {
-        TimeTracker.startOperation(TimedOperationCategory.PARSER);
-        Node rootNode = parser.parse(ctx.getSourceCodeFilename(), sourceCode);
-        ctx.getReport().suppress(parser.getSuppressMap());
-        TimeTracker.finishOperation();
-        return rootNode;
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.PARSER)) {
+            Node rootNode = parser.parse(ctx.getSourceCodeFilename(), sourceCode);
+            ctx.getReport().suppress(parser.getSuppressMap());
+            return rootNode;
+        }
     }
 
     private void symbolFacade(Node rootNode, LanguageVersionHandler languageVersionHandler) {
-        TimeTracker.startOperation(TimedOperationCategory.SYMBOL_TABLE);
-        languageVersionHandler.getSymbolFacade(configuration.getClassLoader()).start(rootNode);
-        TimeTracker.finishOperation();
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.SYMBOL_TABLE)) {
+            languageVersionHandler.getSymbolFacade(configuration.getClassLoader()).start(rootNode);
+        }
     }
 
     private void resolveQualifiedNames(Node rootNode, LanguageVersionHandler handler) {
-        TimeTracker.startOperation(TimedOperationCategory.QUALIFIED_NAME_RESOLUTION);
-        handler.getQualifiedNameResolutionFacade(configuration.getClassLoader()).start(rootNode);
-        TimeTracker.finishOperation();
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.QUALIFIED_NAME_RESOLUTION)) {
+            handler.getQualifiedNameResolutionFacade(configuration.getClassLoader()).start(rootNode);
+        }
     }
 
     // private ParserOptions getParserOptions(final LanguageVersionHandler
@@ -136,10 +137,10 @@ public class SourceCodeProcessor {
 
     private void usesDFA(LanguageVersion languageVersion, Node rootNode, RuleSets ruleSets, Language language) {
         if (ruleSets.usesDFA(language)) {
-            TimeTracker.startOperation(TimedOperationCategory.DFA);
-            VisitorStarter dataFlowFacade = languageVersion.getLanguageVersionHandler().getDataFlowFacade();
-            dataFlowFacade.start(rootNode);
-            TimeTracker.finishOperation();
+            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.DFA)) {
+                VisitorStarter dataFlowFacade = languageVersion.getLanguageVersionHandler().getDataFlowFacade();
+                dataFlowFacade.start(rootNode);
+            }
         }
     }
 
@@ -147,10 +148,10 @@ public class SourceCodeProcessor {
             Language language) {
 
         if (ruleSets.usesTypeResolution(language)) {
-            TimeTracker.startOperation(TimedOperationCategory.TYPE_RESOLUTION);
-            languageVersion.getLanguageVersionHandler().getTypeResolutionFacade(configuration.getClassLoader())
-                    .start(rootNode);
-            TimeTracker.finishOperation();
+            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.TYPE_RESOLUTION)) {
+                languageVersion.getLanguageVersionHandler().getTypeResolutionFacade(configuration.getClassLoader())
+                        .start(rootNode);
+            }
         }
     }
 
@@ -159,9 +160,9 @@ public class SourceCodeProcessor {
                                Language language) {
 
         if (ruleSets.usesMultifile(language)) {
-            TimeTracker.startOperation(TimedOperationCategory.MULTIFILE_ANALYSIS);
-            languageVersionHandler.getMultifileFacade().start(rootNode);
-            TimeTracker.finishOperation();
+            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.MULTIFILE_ANALYSIS)) {
+                languageVersionHandler.getMultifileFacade().start(rootNode);
+            }
         }
     }
 

@@ -24,7 +24,24 @@ public final class TimeTracker {
     private static boolean trackTime = false;
     private static long wallClockStartMillis = -1;
     private static final ThreadLocal<Queue<TimerEntry>> TIMER_ENTRIES;
-    private static final ConcurrentMap<TimedOperation, TimedResult> ACCUMULATED_RESULTS = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<TimedOperationKey, TimedResult> ACCUMULATED_RESULTS = new ConcurrentHashMap<>();
+    private static final TimedOperation NOOP_TIMED_OPERATION = new TimedOperation() {
+
+        @Override
+        public void close() {
+            // noop
+        }
+
+        @Override
+        public void stop(final int count) {
+         // noop
+        }
+
+        @Override
+        public void stop() {
+         // noop
+        }
+    };
     
     static {
         TIMER_ENTRIES = new ThreadLocal<Queue<TimerEntry>>() {
@@ -64,7 +81,7 @@ public final class TimeTracker {
         
         // Fix UNACCOUNTED metric (total time is meaningless as is call count)
         final TimedResult unaccountedResult = ACCUMULATED_RESULTS.get(
-                new TimedOperation(TimedOperationCategory.UNACCOUNTED, null));
+                new TimedOperationKey(TimedOperationCategory.UNACCOUNTED, null));
         unaccountedResult.totalTime.set(unaccountedResult.selfTime.get());
         unaccountedResult.callCount.set(0);
         
@@ -74,12 +91,12 @@ public final class TimeTracker {
     /**
      * Initialize a thread, starting to track it's own time.
      */
-    public static void initThread() {
+    public static TimedOperation initThread() {
         if (!trackTime) {
-            return;
+            return NOOP_TIMED_OPERATION;
         }
         
-        startOperation(TimedOperationCategory.UNACCOUNTED);
+        return startOperation(TimedOperationCategory.UNACCOUNTED);
     }
     
     /**
@@ -90,7 +107,7 @@ public final class TimeTracker {
             return;
         }
         
-        finishOperation();
+        finishOperation(0);
         
         // if using a mono-thread, we may not be empty...
         if (TIMER_ENTRIES.get().isEmpty()) {
@@ -102,8 +119,8 @@ public final class TimeTracker {
      * Starts tracking an operation.
      * @param category The category under which to track the operation.
      */
-    public static void startOperation(final TimedOperationCategory category) {
-        startOperation(category, null);
+    public static TimedOperation startOperation(final TimedOperationCategory category) {
+        return startOperation(category, null);
     }
     
     /**
@@ -111,19 +128,13 @@ public final class TimeTracker {
      * @param category The category under which to track the operation.
      * @param label A label to be added to the category. Allows to differentiate measures within a single category.
      */
-    public static void startOperation(final TimedOperationCategory category, final String label) {
+    public static TimedOperation startOperation(final TimedOperationCategory category, final String label) {
         if (!trackTime) {
-            return;
+            return NOOP_TIMED_OPERATION;
         }
         
         TIMER_ENTRIES.get().add(new TimerEntry(category, label));
-    }
-    
-    /**
-     * Finishes tracking an operation.
-     */
-    public static void finishOperation() {
-        finishOperation(0);
+        return new TimedOperationImpl();
     }
     
     /**
@@ -132,7 +143,7 @@ public final class TimeTracker {
      *                         Users are free to track any extra value they want (ie: number of analyzed nodes,
      *                         iterations in a loop, etc.)
      */
-    public static void finishOperation(final long extraDataCounter) {
+    /* default */ static void finishOperation(final long extraDataCounter) {
         if (!trackTime) {
             return;
         }
@@ -158,12 +169,12 @@ public final class TimeTracker {
      * An entry in the open timers queue. Defines an operation that has started and hasn't finished yet.
      */
     private static class TimerEntry {
-        /* package */ final TimedOperation operation;
+        /* package */ final TimedOperationKey operation;
         /* package */ final long start;
         /* package */ long inNestedOperations = 0;
         
         /* package */ TimerEntry(final TimedOperationCategory category, final String label) {
-            this.operation = new TimedOperation(category, label);
+            this.operation = new TimedOperationKey(category, label);
             this.start = System.nanoTime();
         }
 
@@ -212,11 +223,11 @@ public final class TimeTracker {
     /**
      * A unique identifier for a timed operation
      */
-    /* package */ static class TimedOperation {
+    /* package */ static class TimedOperationKey {
         /* package */ final TimedOperationCategory category;
         /* package */ final String label;
         
-        /* package */ TimedOperation(final TimedOperationCategory category, final String label) {
+        /* package */ TimedOperationKey(final TimedOperationCategory category, final String label) {
             this.category = category;
             this.label = label;
         }
@@ -241,7 +252,7 @@ public final class TimeTracker {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            TimedOperation other = (TimedOperation) obj;
+            TimedOperationKey other = (TimedOperationKey) obj;
             if (category != other.category) {
                 return false;
             }
@@ -252,5 +263,34 @@ public final class TimeTracker {
         public String toString() {
             return "TimedOperation [category=" + category + ", label=" + label + "]";
         }
+    }
+    
+    /**
+     * A standard timed operation implementation.
+     */
+    private static class TimedOperationImpl implements TimedOperation {
+
+        private boolean closed = false;
+
+        @Override
+        public void close() {
+            stop(0);
+        }
+
+        @Override
+        public void stop(int extraDataCounter) {
+            if (closed) {
+                return;
+            }
+
+            closed = true;
+            TimeTracker.finishOperation(extraDataCounter);
+        }
+
+        @Override
+        public void stop() {
+            stop(0);
+        }
+        
     }
 }

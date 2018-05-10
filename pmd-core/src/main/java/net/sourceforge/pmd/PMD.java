@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
@@ -210,15 +211,16 @@ public class PMD {
         Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
         List<DataSource> files = getApplicableFiles(configuration, languages);
 
-        TimeTracker.startOperation(TimedOperationCategory.REPORTING);
         try {
-            Renderer renderer = configuration.createRenderer();
-            List<Renderer> renderers = Collections.singletonList(renderer);
+            Renderer renderer;
+            List<Renderer> renderers;
+            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                renderer = configuration.createRenderer();
+                renderers = Collections.singletonList(renderer);
 
-            renderer.setWriter(IOUtil.createWriter(configuration.getReportFile()));
-            renderer.start();
-
-            TimeTracker.finishOperation();
+                renderer.setWriter(IOUtil.createWriter(configuration.getReportFile()));
+                renderer.start();
+            }
 
             RuleContext ctx = new RuleContext();
             final AtomicInteger violations = new AtomicInteger(0);
@@ -234,14 +236,15 @@ public class PMD {
                 }
             });
 
-            TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING);
-            processFiles(configuration, ruleSetFactory, files, ctx, renderers);
-            TimeTracker.finishOperation();
+            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
+                processFiles(configuration, ruleSetFactory, files, ctx, renderers);
+            }
 
-            TimeTracker.startOperation(TimedOperationCategory.REPORTING);
-            renderer.end();
-            renderer.flush();
-            return violations.get();
+            try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                renderer.end();
+                renderer.flush();
+                return violations.get();
+            }
         } catch (Exception e) {
             String message = e.getMessage();
             if (message != null) {
@@ -253,8 +256,6 @@ public class PMD {
             LOG.info(PMDCommandLineInterface.buildUsageText());
             return 0;
         } finally {
-            TimeTracker.finishOperation();
-            
             /*
              * Make sure it's our own classloader before attempting to close it....
              * Maven + Jacoco provide us with a cloaseable classloader that if closed
@@ -361,10 +362,9 @@ public class PMD {
      * @return List of {@link DataSource} of files
      */
     public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
-        TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES);
-        List<DataSource> files = internalGetApplicableFiles(configuration, languages);
-        TimeTracker.finishOperation();
-        return files;
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
+            return internalGetApplicableFiles(configuration, languages);
+        }
     }
 
     private static List<DataSource> internalGetApplicableFiles(PMDConfiguration configuration,

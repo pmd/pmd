@@ -20,6 +20,7 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -40,15 +41,12 @@ public abstract class AbstractPMDProcessor {
 
     public void renderReports(final List<Renderer> renderers, final Report report) {
 
-        TimeTracker.startOperation(TimedOperationCategory.REPORTING);
-        try {
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
             for (Renderer r : renderers) {
                 r.renderFileReport(report);
             }
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
-        } finally {
-            TimeTracker.finishOperation();
         }
     }
 
