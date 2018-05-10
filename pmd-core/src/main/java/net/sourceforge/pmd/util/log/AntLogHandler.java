@@ -25,7 +25,7 @@ public class AntLogHandler extends Handler {
     private Project project;
 
     private static final Formatter FORMATTER = new PmdLogFormatter();
-    private static final Level[] LOG_LEVELS = new Level[] {
+    private static final Level[] LOG_LEVELS = {
         Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINEST,
     };
 
@@ -42,10 +42,10 @@ public class AntLogHandler extends Handler {
             try {
                 while (BuildListener.class.isAssignableFrom(clazz)) {
                     try {
-                        declaredField = l.getClass().getDeclaredField("msgOutputLevel");
+                        declaredField = clazz.getDeclaredField("msgOutputLevel");
                     } catch (final NoSuchFieldException ignored) {
                         try {
-                            declaredField = l.getClass().getDeclaredField("logLevel");
+                            declaredField = clazz.getDeclaredField("logLevel");
                         } catch (final NoSuchFieldException expected) {
                             // ignore it
                         }
