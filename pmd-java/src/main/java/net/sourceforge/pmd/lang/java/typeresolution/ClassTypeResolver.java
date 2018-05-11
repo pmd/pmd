@@ -67,6 +67,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTShiftExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSingleMemberAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
@@ -631,13 +632,25 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         super.visit(node, data);
         // resolve "var" types: Upward projection of the type of the initializer expression
         ASTType type = node.getFirstChildOfType(ASTType.class);
-        if (type.isVarType()) {
+        if (type != null && type.isVarType()) {
             ASTVariableInitializer initializer = node.getFirstDescendantOfType(ASTVariableInitializer.class);
-            if (initializer.jjtGetChild(0) instanceof ASTExpression) {
+            if (initializer != null && initializer.jjtGetChild(0) instanceof ASTExpression) {
                 // only Expression is allowed, ArrayInitializer is not allowed in combination with "var".
                 ASTExpression expression = (ASTExpression) initializer.jjtGetChild(0);
                 type.setTypeDefinition(expression.getTypeDefinition());
             }
+        }
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTResource node, Object data) {
+        super.visit(node, data);
+        // resolve "var" types: the type of the initializer expression
+        ASTType type = node.getTypeNode();
+        if (type != null && type.isVarType()) {
+            ASTExpression initializer = node.getFirstChildOfType(ASTExpression.class);
+            type.setTypeDefinition(initializer.getTypeDefinition());
         }
         return data;
     }

@@ -11,6 +11,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class Java10Test {
             throw new RuntimeException(e);
         }
     }
-    
+
     @Test
     public void testLocalVarInferenceBeforeJava10() {
         // note, it can be parsed, but we'll have a ReferenceType of "var"
@@ -77,5 +78,47 @@ public class Java10Test {
         assertTrue(type.isVarType());
         assertEquals(0, type.jjtGetNumChildren());
         assertSame("type should be ArrayList", ArrayList.class, type.getType());
+    }
+
+    @Test
+    public void testForLoopWithVar() {
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10",
+                loadSource("LocalVariableTypeInferenceForLoop.java"));
+        List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
+        assertEquals(1, localVars.size());
+
+        ASTType type = localVars.get(0).getFirstChildOfType(ASTType.class);
+        assertEquals("var", type.getImage());
+        assertTrue(type.isVarType());
+        assertEquals(0, type.jjtGetNumChildren());
+        assertSame("type should be int", Integer.TYPE, type.getType());
+    }
+
+    @Test
+    public void testForLoopEnhancedWithVar() {
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10",
+                loadSource("LocalVariableTypeInferenceForLoopEnhanced.java"));
+        List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
+        assertEquals(1, localVars.size());
+
+        ASTType type = localVars.get(0).getFirstChildOfType(ASTType.class);
+        assertEquals("var", type.getImage());
+        assertTrue(type.isVarType());
+        assertEquals(0, type.jjtGetNumChildren());
+        //TODO: the type is not known...
+        //assertSame("type should be String", String.class, type.getType());
+    }
+
+    @Test
+    public void testTryWithResourcesWithVar() {
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10",
+                loadSource("LocalVariableTypeInferenceTryWithResources.java"));
+        List<ASTResource> resources = compilationUnit.findDescendantsOfType(ASTResource.class);
+        assertEquals(1, resources.size());
+
+        ASTType type = resources.get(0).getTypeNode();
+        assertEquals("var", type.getImage());
+        assertEquals(0, type.jjtGetNumChildren());
+        assertSame("type should be FileInputStream", FileInputStream.class, type.getType());
     }
 }
