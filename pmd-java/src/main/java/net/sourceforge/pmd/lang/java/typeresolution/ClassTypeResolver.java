@@ -638,6 +638,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 // only Expression is allowed, ArrayInitializer is not allowed in combination with "var".
                 ASTExpression expression = (ASTExpression) initializer.jjtGetChild(0);
                 type.setTypeDefinition(expression.getTypeDefinition());
+
+                // also assign this type to VariableDeclarator and VariableDeclaratorId
+                TypeNode var = node.getFirstChildOfType(ASTVariableDeclarator.class);
+                if (var != null) {
+                    var.setTypeDefinition(expression.getTypeDefinition());
+                    var = var.getFirstChildOfType(ASTVariableDeclaratorId.class);
+                }
+                if (var != null) {
+                    var.setTypeDefinition(expression.getTypeDefinition());
+                }
             }
         }
         return data;

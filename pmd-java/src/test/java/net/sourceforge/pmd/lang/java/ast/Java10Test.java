@@ -21,6 +21,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.ParserTstUtil;
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 public class Java10Test {
 
@@ -33,6 +34,12 @@ public class Java10Test {
         }
     }
 
+    private static void assertVarType(ASTType type) {
+        assertEquals("var", type.getImage());
+        assertEquals(0, type.jjtGetNumChildren());
+        assertTrue(type.isVarType());
+    }
+
     @Test
     public void testLocalVarInferenceBeforeJava10() {
         // note, it can be parsed, but we'll have a ReferenceType of "var"
@@ -40,7 +47,7 @@ public class Java10Test {
                 loadSource("LocalVariableTypeInference.java"));
 
         List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
-        assertEquals(2, localVars.size());
+        assertEquals(3, localVars.size());
 
         // first: var list = new ArrayList<String>();
         ASTType type = localVars.get(0).getFirstChildOfType(ASTType.class);
@@ -70,14 +77,30 @@ public class Java10Test {
         ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10",
                 loadSource("LocalVariableTypeInference.java"));
         List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
-        assertEquals(2, localVars.size());
+        assertEquals(3, localVars.size());
 
         // first: var list = new ArrayList<String>();
         ASTType type = localVars.get(0).getTypeNode();
-        assertEquals("var", type.getImage());
-        assertTrue(type.isVarType());
-        assertEquals(0, type.jjtGetNumChildren());
+        assertVarType(type);
         assertSame("type should be ArrayList", ArrayList.class, type.getType());
+        assertEquals("type should be ArrayList<String>", JavaTypeDefinition.forClass(ArrayList.class, JavaTypeDefinition.forClass(String.class)),
+                type.getTypeDefinition());
+
+        // second: var stream = list.stream();
+        ASTType type2 = localVars.get(1).getTypeNode();
+        assertVarType(type2);
+        // TODO: return type of method call is unknown
+        //assertEquals("type should be Stream<String>", JavaTypeDefinition.forClass(Stream.class, JavaTypeDefinition.forClass(String.class)),
+        //        type2.getTypeDefinition());
+
+        // third: var s = "Java 10";
+        ASTType type3 = localVars.get(2).getTypeNode();
+        assertVarType(type3);
+        assertEquals("type should be String", JavaTypeDefinition.forClass(String.class), type3.getTypeDefinition());
+
+        ASTArgumentList argumentList = compilationUnit.getFirstDescendantOfType(ASTArgumentList.class);
+        ASTExpression expression3 = argumentList.getFirstChildOfType(ASTExpression.class);
+        assertEquals("type should be String", JavaTypeDefinition.forClass(String.class), expression3.getTypeDefinition());
     }
 
     @Test
@@ -88,9 +111,7 @@ public class Java10Test {
         assertEquals(1, localVars.size());
 
         ASTType type = localVars.get(0).getTypeNode();
-        assertEquals("var", type.getImage());
-        assertTrue(type.isVarType());
-        assertEquals(0, type.jjtGetNumChildren());
+        assertVarType(type);
         assertSame("type should be int", Integer.TYPE, type.getType());
     }
 
@@ -102,9 +123,7 @@ public class Java10Test {
         assertEquals(1, localVars.size());
 
         ASTType type = localVars.get(0).getTypeNode();
-        assertEquals("var", type.getImage());
-        assertTrue(type.isVarType());
-        assertEquals(0, type.jjtGetNumChildren());
+        assertVarType(type);
         assertSame("type should be String", String.class, type.getType());
     }
 
@@ -116,15 +135,11 @@ public class Java10Test {
         assertEquals(4, localVars.size());
 
         ASTType type2 = localVars.get(1).getTypeNode();
-        assertEquals("var", type2.getImage());
-        assertTrue(type2.isVarType());
-        assertEquals(0, type2.jjtGetNumChildren());
+        assertVarType(type2);
         assertSame("type should be String", String.class, type2.getType());
 
         ASTType type4 = localVars.get(3).getTypeNode();
-        assertEquals("var", type4.getImage());
-        assertTrue(type4.isVarType());
-        assertEquals(0, type4.jjtGetNumChildren());
+        assertVarType(type4);
         assertSame("type should be int", Integer.TYPE, type4.getType());
     }
 
@@ -136,8 +151,7 @@ public class Java10Test {
         assertEquals(1, resources.size());
 
         ASTType type = resources.get(0).getTypeNode();
-        assertEquals("var", type.getImage());
-        assertEquals(0, type.jjtGetNumChildren());
+        assertVarType(type);
         assertSame("type should be FileInputStream", FileInputStream.class, type.getType());
     }
 }
