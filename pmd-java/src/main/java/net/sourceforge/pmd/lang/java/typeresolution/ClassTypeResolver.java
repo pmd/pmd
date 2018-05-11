@@ -627,6 +627,19 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
+    private void populateVariableDeclaratorFromType(ASTLocalVariableDeclaration node) {
+        ASTType type = node.getTypeNode();
+        // also assign this type to VariableDeclarator and VariableDeclaratorId
+        TypeNode var = node.getFirstChildOfType(ASTVariableDeclarator.class);
+        if (var != null) {
+            var.setTypeDefinition(type.getTypeDefinition());
+            var = var.getFirstChildOfType(ASTVariableDeclaratorId.class);
+        }
+        if (var != null) {
+            var.setTypeDefinition(type.getTypeDefinition());
+        }
+    }
+
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         super.visit(node, data);
@@ -639,15 +652,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 ASTExpression expression = (ASTExpression) initializer.jjtGetChild(0);
                 type.setTypeDefinition(expression.getTypeDefinition());
 
-                // also assign this type to VariableDeclarator and VariableDeclaratorId
-                TypeNode var = node.getFirstChildOfType(ASTVariableDeclarator.class);
-                if (var != null) {
-                    var.setTypeDefinition(expression.getTypeDefinition());
-                    var = var.getFirstChildOfType(ASTVariableDeclaratorId.class);
-                }
-                if (var != null) {
-                    var.setTypeDefinition(expression.getTypeDefinition());
-                }
+                populateVariableDeclaratorFromType(node);
             }
         }
         return data;
@@ -658,10 +663,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         super.visit(node, data);
         // resolve potential "var" type
         if (node.jjtGetChild(0) instanceof ASTLocalVariableDeclaration) {
-            ASTType type = node.jjtGetChild(0).getFirstChildOfType(ASTType.class);
+            ASTLocalVariableDeclaration localVariableDeclaration = (ASTLocalVariableDeclaration) node.jjtGetChild(0);
+            ASTType type = localVariableDeclaration.getTypeNode();
             if (type != null && type.isVarType()) {
                 ASTExpression expression = node.getFirstChildOfType(ASTExpression.class);
-                if (expression != null) {
+                if (expression != null && expression.getTypeDefinition() != null) {
                     // see https://docs.oracle.com/javase/specs/jls/se10/html/jls-14.html#jls-14.14.2
                     // if the type is an array, then take the component type
                     // if the type is Iterable<X>, then take X as type
@@ -675,6 +681,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         type.setTypeDefinition(JavaTypeDefinition.forClass(Object.class));
                     }
                 }
+
+                populateVariableDeclaratorFromType(localVariableDeclaration);
             }
         }
         return data;
@@ -688,6 +696,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (type != null && type.isVarType()) {
             ASTExpression initializer = node.getFirstChildOfType(ASTExpression.class);
             type.setTypeDefinition(initializer.getTypeDefinition());
+
+            if (node.getVariableDeclaratorId() != null) {
+                node.getVariableDeclaratorId().setTypeDefinition(initializer.getTypeDefinition());
+            }
         }
         return data;
     }

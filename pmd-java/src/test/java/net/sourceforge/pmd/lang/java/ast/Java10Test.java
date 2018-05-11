@@ -85,6 +85,10 @@ public class Java10Test {
         assertSame("type should be ArrayList", ArrayList.class, type.getType());
         assertEquals("type should be ArrayList<String>", JavaTypeDefinition.forClass(ArrayList.class, JavaTypeDefinition.forClass(String.class)),
                 type.getTypeDefinition());
+        ASTVariableDeclarator varDecl = localVars.get(0).getFirstChildOfType(ASTVariableDeclarator.class);
+        assertEquals("type should be equal", type.getTypeDefinition(), varDecl.getTypeDefinition());
+        ASTVariableDeclaratorId varId = varDecl.getFirstChildOfType(ASTVariableDeclaratorId.class);
+        assertEquals("type should be equal", type.getTypeDefinition(), varId.getTypeDefinition());
 
         // second: var stream = list.stream();
         ASTType type2 = localVars.get(1).getTypeNode();
@@ -137,6 +141,10 @@ public class Java10Test {
         ASTType type2 = localVars.get(1).getTypeNode();
         assertVarType(type2);
         assertSame("type should be String", String.class, type2.getType());
+        ASTVariableDeclarator varDecl2 = localVars.get(1).getFirstChildOfType(ASTVariableDeclarator.class);
+        assertSame("type should be String", String.class, varDecl2.getType());
+        ASTVariableDeclaratorId varId2 = varDecl2.getFirstChildOfType(ASTVariableDeclaratorId.class);
+        assertSame("type should be String", String.class, varId2.getType());
 
         ASTType type4 = localVars.get(3).getTypeNode();
         assertVarType(type4);
@@ -153,5 +161,7 @@ public class Java10Test {
         ASTType type = resources.get(0).getTypeNode();
         assertVarType(type);
         assertSame("type should be FileInputStream", FileInputStream.class, type.getType());
+        ASTVariableDeclaratorId varId = resources.get(0).getVariableDeclaratorId();
+        assertSame("type should be FileInputStream", FileInputStream.class, varId.getType());
     }
 }
