@@ -1880,7 +1880,7 @@ void Type():
     Token t;
 }
 {
-  LOOKAHEAD( { jdkVersion >= 10 && isKeyword("var") } ) t=<IDENTIFIER> {jjtThis.setImage(t.image); jjtThis.setVarType(true); }
+  LOOKAHEAD( { jdkVersion >= 10 && isKeyword("var") } ) t=<IDENTIFIER> {jjtThis.setImage(t.image); jjtThis.setTypeInferred(true); }
  | LOOKAHEAD(2) ReferenceType()
  | PrimitiveType()
 }

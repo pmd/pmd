@@ -37,7 +37,7 @@ public class Java10Test {
     private static void assertVarType(ASTType type) {
         assertEquals("var", type.getImage());
         assertEquals(0, type.jjtGetNumChildren());
-        assertTrue(type.isVarType());
+        assertTrue(type.isTypeInferred());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class Java10Test {
         // in that case, we don't have a class named "var", so the type will be null
         assertNull(classType.getType());
         assertNull(type.getType());
-        assertFalse(type.isVarType());
+        assertFalse(type.isTypeInferred());
 
         // check the type of the variable initializer's expression
         ASTExpression initExpression = localVars.get(0)

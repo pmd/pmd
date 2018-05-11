@@ -38,7 +38,7 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
     }
 
     public boolean isArray() {
-        if (getTypeNode().isVarType()) {
+        if (getTypeNode().isTypeInferred()) {
             return false;
         }
         return checkType() + checkDecl() > 0;

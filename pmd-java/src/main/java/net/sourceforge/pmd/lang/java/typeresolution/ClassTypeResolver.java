@@ -645,7 +645,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         super.visit(node, data);
         // resolve "var" types: Upward projection of the type of the initializer expression
         ASTType type = node.getFirstChildOfType(ASTType.class);
-        if (type != null && type.isVarType()) {
+        if (type != null && type.isTypeInferred()) {
             ASTVariableInitializer initializer = node.getFirstDescendantOfType(ASTVariableInitializer.class);
             if (initializer != null && initializer.jjtGetChild(0) instanceof ASTExpression) {
                 // only Expression is allowed, ArrayInitializer is not allowed in combination with "var".
@@ -665,7 +665,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (node.jjtGetChild(0) instanceof ASTLocalVariableDeclaration) {
             ASTLocalVariableDeclaration localVariableDeclaration = (ASTLocalVariableDeclaration) node.jjtGetChild(0);
             ASTType type = localVariableDeclaration.getTypeNode();
-            if (type != null && type.isVarType()) {
+            if (type != null && type.isTypeInferred()) {
                 ASTExpression expression = node.getFirstChildOfType(ASTExpression.class);
                 if (expression != null && expression.getTypeDefinition() != null) {
                     // see https://docs.oracle.com/javase/specs/jls/se10/html/jls-14.html#jls-14.14.2
@@ -693,7 +693,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         super.visit(node, data);
         // resolve "var" types: the type of the initializer expression
         ASTType type = node.getTypeNode();
-        if (type != null && type.isVarType()) {
+        if (type != null && type.isTypeInferred()) {
             ASTExpression initializer = node.getFirstChildOfType(ASTExpression.class);
             type.setTypeDefinition(initializer.getTypeDefinition());
 

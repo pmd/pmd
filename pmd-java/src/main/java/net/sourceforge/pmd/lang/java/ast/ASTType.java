@@ -5,6 +5,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents a type reference.
+ * 
+ * <pre>
+ * Type ::= "var" | ReferenceType | PrimitiveType
+ * </pre>
+ * 
+ * Note: it is not exactly the same the "LocalVariableType" defined in JLS.
+ */
 public class ASTType extends AbstractJavaTypeNode {
     public ASTType(int id) {
         super(id);
@@ -14,7 +23,7 @@ public class ASTType extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-    private boolean varType;
+    private boolean typeInferred;
 
     /**
      * Accept the visitor. *
@@ -25,7 +34,7 @@ public class ASTType extends AbstractJavaTypeNode {
     }
 
     public String getTypeImage() {
-        if (isVarType()) {
+        if (isTypeInferred()) {
             return getImage();
         }
 
@@ -49,15 +58,19 @@ public class ASTType extends AbstractJavaTypeNode {
         return getArrayDepth() > 0;
     }
 
-    void setVarType(boolean varType) {
-        this.varType = varType;
+    void setTypeInferred(boolean typeInferred) {
+        this.typeInferred = typeInferred;
     }
 
     /**
-     * If true, this type represents a type of a local variable declaration, which
-     * uses the java10 "var" type inference.
+     * If true, this type represents a type, that has been inferred.
+     * It can be e.g. a local variable declaration, which
+     * uses the java10 "var" type inference feature.
+     * The method {@link #getType()} will return the correct type, if PMD could determine it.
+     *
+     * @see ASTVariableDeclaratorId#isTypeInferred()
      */
-    public boolean isVarType() {
-        return varType;
+    public boolean isTypeInferred() {
+        return typeInferred;
     }
 }
