@@ -92,7 +92,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
                             }
                             visits += ns.size();
                         }
-                        rcto.stop(visits);
+                        rcto.close(visits);
                     }
                 }
             }

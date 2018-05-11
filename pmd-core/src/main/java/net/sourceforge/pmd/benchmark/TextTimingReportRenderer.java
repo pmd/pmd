@@ -68,10 +68,10 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
             final Writer writer) throws IOException {
         writer.write(StringUtils.rightPad(label, LABEL_COLUMN_WIDTH));
         
-        final String time = MessageFormat.format(TIME_FORMAT, timedResult.totalTime.get() / 1000000000.0);
+        final String time = MessageFormat.format(TIME_FORMAT, timedResult.totalTimeNanos.get() / 1000000000.0);
         writer.write(StringUtils.leftPad(time, TIME_COLUMN_WIDTH));
         
-        final String selfTime = MessageFormat.format(TIME_FORMAT, timedResult.selfTime.get() / 1000000000.0);
+        final String selfTime = MessageFormat.format(TIME_FORMAT, timedResult.selfTimeNanos.get() / 1000000000.0);
         writer.write(StringUtils.leftPad(selfTime, SELF_TIME_COLUMN_WIDTH));
         
         if (timedResult.callCount.get() > 0) {
@@ -96,7 +96,7 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
             new Comparator<Map.Entry<String, TimedResult>>() {
                 @Override
                 public int compare(final Entry<String, TimedResult> o1, final Entry<String, TimedResult> o2) {
-                    return Long.compare(o1.getValue().selfTime.get(), o2.getValue().selfTime.get());
+                    return Long.compare(o1.getValue().selfTimeNanos.get(), o2.getValue().selfTimeNanos.get());
                 }
             });
         sortedKeySet.addAll(labeledMeasurements.entrySet());
