@@ -46,6 +46,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
@@ -369,11 +370,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (node.getNameDeclaration() != null
                 && previousType == null // if it's not null, then let other code handle things
                 && node.getNameDeclaration().getNode() instanceof TypeNode) {
-            // Carry over the type from the declaration
-            Class<?> nodeType = ((TypeNode) node.getNameDeclaration().getNode()).getType();
-            // FIXME : generic classes and class with generic super types could have the wrong type assigned here
+            // Carry over the type (including generics) from the declaration
+            JavaTypeDefinition nodeType = ((TypeNode) node.getNameDeclaration().getNode()).getTypeDefinition();
             if (nodeType != null) {
-                node.setType(nodeType);
+                node.setTypeDefinition(nodeType);
                 return super.visit(node, data);
             }
         }
@@ -638,6 +638,33 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 // only Expression is allowed, ArrayInitializer is not allowed in combination with "var".
                 ASTExpression expression = (ASTExpression) initializer.jjtGetChild(0);
                 type.setTypeDefinition(expression.getTypeDefinition());
+            }
+        }
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTForStatement node, Object data) {
+        super.visit(node, data);
+        // resolve potential "var" type
+        if (node.jjtGetChild(0) instanceof ASTLocalVariableDeclaration) {
+            ASTType type = node.jjtGetChild(0).getFirstChildOfType(ASTType.class);
+            if (type != null && type.isVarType()) {
+                ASTExpression expression = node.getFirstChildOfType(ASTExpression.class);
+                if (expression != null) {
+                    // see https://docs.oracle.com/javase/specs/jls/se10/html/jls-14.html#jls-14.14.2
+                    // if the type is an array, then take the component type
+                    // if the type is Iterable<X>, then take X as type
+                    // if the type is Iterable, take Object as type
+                    JavaTypeDefinition typeDefinition = expression.getTypeDefinition();
+                    if (typeDefinition.isArrayType()) {
+                        type.setTypeDefinition(typeDefinition.getComponentType());
+                    } else if (typeDefinition.isGeneric() && typeDefinition.getGenericType(0) != null) {
+                        type.setTypeDefinition(typeDefinition.getGenericType(0));
+                    } else {
+                        type.setTypeDefinition(JavaTypeDefinition.forClass(Object.class));
+                    }
+                }
             }
         }
         return data;
