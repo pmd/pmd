@@ -447,11 +447,9 @@ Note that new Integer() is deprecated since JDK 9 for that reason.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryPrefix
- /AllocationExpression
+//AllocationExpression
   [not (ArrayDimsAndInits)
-   and (ClassOrInterfaceType/@Image='Integer'
-    or ClassOrInterfaceType/@Image='java.lang.Integer')]
+   and ClassOrInterfaceType[typeof(@Image, 'java.lang.Integer', 'Integer')]]
 ]]>
                 </value>
             </property>
@@ -481,11 +479,9 @@ Note that new Long() is deprecated since JDK 9 for that reason.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryPrefix
-/AllocationExpression
+//AllocationExpression
 [not (ArrayDimsAndInits)
-and (ClassOrInterfaceType/@Image='Long'
-or ClassOrInterfaceType/@Image='java.lang.Long')]
+and ClassOrInterfaceType[typeof(@Image, 'java.lang.Long', 'Long')]]
 ]]>
                 </value>
             </property>
