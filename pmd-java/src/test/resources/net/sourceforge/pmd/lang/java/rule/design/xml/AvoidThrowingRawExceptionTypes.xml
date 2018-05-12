@@ -56,4 +56,18 @@ public class PmdTest {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>False negative when importing another exception</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+
+public class Foo {
+
+    public void bar() {
+        throw new Exception();
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
