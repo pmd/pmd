@@ -143,8 +143,7 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
      * @return boolean
      */
     private static boolean hasReferencesIn(ASTBlockStatement block, String varName) {
-
-        List<ASTName> names = block.findDescendantsOfType(ASTName.class);
+        List<ASTName> names = block.findDescendantsOfType(ASTName.class, true); // allow for closures on the var
 
         for (ASTName name : names) {
             if (isReference(varName, name.getImage())) {
@@ -220,7 +219,7 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
         int count = block.jjtGetNumChildren();
         int start = indexOf(block, node.jjtGetParent()) + 1;
 
-        List<ASTBlockStatement> nextBlocks = new ArrayList<>(count);
+        List<ASTBlockStatement> nextBlocks = new ArrayList<>(count - start);
 
         for (int i = start; i < count; i++) {
             Node maybeBlock = block.jjtGetChild(i);

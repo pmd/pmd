@@ -313,6 +313,17 @@ public class JavaQualifiedNameTest {
         }
     }
 
+    @Test
+    public void testParseLambdaInEnumConstant() {
+        final String LAMBA_IN_ENUM_CONSTANT = "package foo; import java.util.function.Function; enum Bar { CONST(e -> e); Bar(Function<Object,Object> o) {} }";
+        final String QNAME = "foo.Bar#lambda$static$0";
+
+        ASTLambdaExpression node = getNodes(ASTLambdaExpression.class, LAMBA_IN_ENUM_CONSTANT).get(0);
+        assertNotNull(node);
+
+        assertEquals(QualifiedNameFactory.ofString(QNAME), node.getQualifiedName());
+    }
+
 
     @Test
     public void testParseMalformed() {

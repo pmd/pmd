@@ -3,6 +3,7 @@
         xmlns="http://pmd.sourceforge.net/rule-tests"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Default config reports on every type decl</description>
         <expected-problems>5</expected-problems>
@@ -185,6 +186,31 @@
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class Md5Checksum {
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class extending another class should not be utility class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class StringList extends ArrayList<String> {
+                static StringList emptyList() {
+                    return new StringList();
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class extending another class should not be utility class 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            // I couldn't reproduce the original failure, but we can use another regression test.
+            public class MyException extends RuntimeException {
+                public MyException(Exception exception) {
+                    super(exception);
+                }
             }
             ]]></code>
     </test-code>

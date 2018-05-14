@@ -105,4 +105,17 @@ public class PrematureDeclarationLambda {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#1067 PrematureDeclaration lambda closure false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PrematureDeclarationLambda {
+    public boolean lengthSumOf() {
+        String foo = "";
+        return new ArrayList<String>().stream().anyMatch(bar -> foo.equals(bar));
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

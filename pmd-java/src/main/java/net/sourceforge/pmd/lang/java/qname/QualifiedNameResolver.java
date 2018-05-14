@@ -370,6 +370,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
         Node parent = node.jjtGetParent();
         while (parent != null
                 && !(parent instanceof ASTFieldDeclaration)
+                && !(parent instanceof ASTEnumConstant)
                 && !(parent instanceof ASTInitializer)
                 && !(parent instanceof MethodLikeNode)) {
             parent = parent.jjtGetParent();
@@ -385,6 +386,8 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
             return "new";
         } else if (parent instanceof ASTLambdaExpression) {
             return "null";
+        } else if (parent instanceof ASTEnumConstant) {
+            return "static";
         } else if (parent instanceof ASTFieldDeclaration) {
             ASTFieldDeclaration field = (ASTFieldDeclaration) parent;
             if (field.isStatic() || field.isInterfaceMember()) {

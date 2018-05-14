@@ -66,10 +66,18 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
             return false;
         }
 
+        ASTClassOrInterfaceDeclaration classNode = (ASTClassOrInterfaceDeclaration) node;
+
+        // A class with a superclass or interfaces should not be considered
+        if (classNode.getSuperClassTypeNode() != null
+                || !classNode.getSuperInterfacesTypeNodes().isEmpty()) {
+            return false;
+        }
+
         // A class without declarations shouldn't be reported
         boolean hasAny = false;
 
-        for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
+        for (ASTAnyTypeBodyDeclaration decl : classNode.getDeclarations()) {
             switch (decl.getKind()) {
             case FIELD:
             case METHOD:
