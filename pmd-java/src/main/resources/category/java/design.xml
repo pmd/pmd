@@ -488,6 +488,7 @@ public class DataClass {
 
     <rule name="DoNotExtendJavaLangError"
           language="java"
+          typeResolution="true"
           since="4.0"
           message="Exceptions should not extend java.lang.Error"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -501,7 +502,9 @@ Errors are system exceptions. Do not extend them.
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
-  [@Image="Error" or @Image="java.lang.Error"]
+  [typeof(@Image,'java.lang.Error','Error')]
+
+
 ]]>
                 </value>
             </property>
