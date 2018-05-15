@@ -254,6 +254,7 @@ public class Foo {
           since="1.8"
           message="Avoid throwing raw exception types."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidthrowingrawexceptiontypes">
         <description>
 Avoid throwing certain exception types. Rather than throw a raw RuntimeException, Throwable,
