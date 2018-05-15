@@ -293,10 +293,9 @@ It makes use of an internal cache that recycles earlier instances making it more
 Note that new Byte() is deprecated since JDK 9 for that reason.
 
 ```
-//PrimaryPrefix/AllocationExpression
+//AllocationExpression
 [not (ArrayDimsAndInits)
-and (ClassOrInterfaceType/@Image='Byte'
-or ClassOrInterfaceType/@Image='java.lang.Byte')]
+and ClassOrInterfaceType[typeof(@Image, 'java.lang.Byte', 'Byte')]]
 ```
 
 **Example(s):**
@@ -476,11 +475,9 @@ It makes use of an internal cache that recycles earlier instances making it more
 Note that new Integer() is deprecated since JDK 9 for that reason.
 
 ```
-//PrimaryPrefix
- /AllocationExpression
+//AllocationExpression
   [not (ArrayDimsAndInits)
-   and (ClassOrInterfaceType/@Image='Integer'
-    or ClassOrInterfaceType/@Image='java.lang.Integer')]
+   and ClassOrInterfaceType[typeof(@Image, 'java.lang.Integer', 'Integer')]]
 ```
 
 **Example(s):**
@@ -507,11 +504,9 @@ It makes use of an internal cache that recycles earlier instances making it more
 Note that new Long() is deprecated since JDK 9 for that reason.
 
 ```
-//PrimaryPrefix
-/AllocationExpression
+//AllocationExpression
 [not (ArrayDimsAndInits)
-and (ClassOrInterfaceType/@Image='Long'
-or ClassOrInterfaceType/@Image='java.lang.Long')]
+and ClassOrInterfaceType[typeof(@Image, 'java.lang.Long', 'Long')]]
 ```
 
 **Example(s):**
@@ -626,11 +621,9 @@ It makes use of an internal cache that recycles earlier instances making it more
 Note that new Short() is deprecated since JDK 9 for that reason.
 
 ```
-//PrimaryPrefix
-/AllocationExpression
+//AllocationExpression
 [not (ArrayDimsAndInits)
-and (ClassOrInterfaceType/@Image='Short'
-or ClassOrInterfaceType/@Image='java.lang.Short')]
+and ClassOrInterfaceType[typeof(@Image, 'java.lang.Short', 'Short')]]
 ```
 
 **Example(s):**
