@@ -31,6 +31,8 @@ This is a bug fixing release.
     *   [#1067](https://github.com/pmd/pmd/issues/1067): \[java] [6.3.0] PrematureDeclaration false-positive
 *   java-design
     *   [#824](https://github.com/pmd/pmd/issues/824): \[java] UseUtilityClass false positive when extending
+*   java-performance
+    *   [#1098](https://github.com/pmd/pmd/pull/1098): \[java] Simplify LongInstantiation, IntegerInstantiation, ByteInstantiation, and ShortInstantiation using type resolution
 
 ### API Changes
 
