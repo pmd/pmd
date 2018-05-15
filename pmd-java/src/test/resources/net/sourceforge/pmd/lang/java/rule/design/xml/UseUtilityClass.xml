@@ -345,4 +345,19 @@ public class Foo {
      ]]></code>
     </test-code>
 
+	<test-code>
+        <description><![CDATA[
+#824 False Positive when extending another class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+
+public class FooLocal extends ThreadLocal<Integer> {
+ public static FooLocal get() {
+  return new FooLocal();
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>

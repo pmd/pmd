@@ -253,13 +253,13 @@ Exception, or Error, use a subclassed exception or error instead.
 ```
 //ThrowStatement//AllocationExpression
  /ClassOrInterfaceType[
- (@Image='Throwable' and count(//ImportDeclaration/Name[ends-with(@Image,'Throwable')]) = 0)
+ typeof(@Image, 'java.lang.Throwable', 'Throwable')
 or
- (@Image='Exception' and count(//ImportDeclaration/Name[ends-with(@Image,'Exception')]) = 0)
+ typeof(@Image, 'java.lang.Exception', 'Exception')
 or
- (@Image='Error'  and count(//ImportDeclaration/Name[ends-with(@Image,'Error')]) = 0)
+ typeof(@Image, 'java.lang.Error', 'Error')
 or
-( @Image='RuntimeException'  and count(//ImportDeclaration/Name[ends-with(@Image,'RuntimeException')]) = 0)
+ typeof(@Image, 'java.lang.RuntimeException', 'RuntimeException')
 ]
 ```
 
