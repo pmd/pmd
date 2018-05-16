@@ -390,17 +390,17 @@ public class RuleDocGenerator {
                     lines.add("");
 
                     if (rule instanceof XPathRule || rule instanceof RuleReference && ((RuleReference) rule).getRule() instanceof XPathRule) {
+                        lines.add("**This rule is defined by the following XPath expression:** ");
                         lines.add("```");
                         lines.addAll(toLines(StringUtils.stripToEmpty(rule.getProperty(XPathRule.XPATH_DESCRIPTOR))));
                         lines.add("```");
-                        lines.add("");
                     } else {
                         lines.add("**This rule is defined by the following Java class:** "
                                 + "[" + rule.getRuleClass() + "]("
                                 + GITHUB_SOURCE_LINK + getRuleClassSourceFilepath(rule.getRuleClass())
                                 + ")");
-                        lines.add("");
                     }
+                    lines.add("");
 
                     if (!rule.getExamples().isEmpty()) {
                         lines.add("**Example(s):**");
