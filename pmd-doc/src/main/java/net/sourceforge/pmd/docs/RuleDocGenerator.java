@@ -390,7 +390,7 @@ public class RuleDocGenerator {
                     lines.add("");
 
                     if (rule instanceof XPathRule || rule instanceof RuleReference && ((RuleReference) rule).getRule() instanceof XPathRule) {
-                        lines.add("**This rule is defined by the following XPath expression:** ");
+                        lines.add("**This rule is defined by the following XPath expression:**");
                         lines.add("```");
                         lines.addAll(toLines(StringUtils.stripToEmpty(rule.getProperty(XPathRule.XPATH_DESCRIPTOR))));
                         lines.add("```");

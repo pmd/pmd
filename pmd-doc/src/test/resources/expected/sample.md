@@ -18,6 +18,7 @@ language: Java
 
 Just some description of a deprecated rule.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ForStatement
 ```
@@ -35,6 +36,7 @@ Just some description of a deprecated rule.
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ForStatement
  [
@@ -83,6 +85,7 @@ The rule has been moved to another ruleset. Use instead: [JumbledIncrementer](pm
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ForStatement
   [
@@ -173,6 +176,7 @@ This rule has been renamed. Use instead: [JumbledIncrementer](#jumbledincremente
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ForStatement
  [
