@@ -654,5 +654,15 @@ NOW() is a safe call
 		<source-type>vf</source-type>
 	</test-code>
 
+	<test-code>
+		<description><![CDATA[
+URLENCODE is ignored as valid escape method #1100
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<a onclick="openTab('/apex/Download?redirectUrl={!URLENCODE(downloadURL)}', 'test');">
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
 
 </test-data>

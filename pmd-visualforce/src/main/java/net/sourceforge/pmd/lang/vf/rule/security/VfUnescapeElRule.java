@@ -226,7 +226,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     }
 
                     if (doesElContainAnyUnescapedIdentifiers(el,
-                            EnumSet.of(Escaping.JSINHTMLENCODE, Escaping.JSENCODE))) {
+                            EnumSet.of(Escaping.ANY))) {
                         isEL = true;
                         toReport.add(el);
                     }
