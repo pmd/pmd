@@ -18,6 +18,7 @@ Method-level synchronization can cause problems when new code is added to the me
 Block-level synchronization helps to ensure that only the code that needs synchronization
 gets it.
 
+**This rule is defined by the following XPath expression:**
 ```
 //MethodDeclaration[@Synchronized='true']
 ```
@@ -61,6 +62,7 @@ public class Foo {
 Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment
 it contains methods that are not thread-safe.
 
+**This rule is defined by the following XPath expression:**
 ```
 //AllocationExpression/ClassOrInterfaceType[pmd-java:typeof(@Image, 'java.lang.ThreadGroup')]|
 //PrimarySuffix[contains(@Image, 'getThreadGroup')]
@@ -94,6 +96,7 @@ Use of the keyword 'volatile' is generally used to fine tune a Java application,
 a good expertise of the Java Memory Model. Moreover, its range of action is somewhat misknown. Therefore,
 the volatile keyword should not be used for maintenance purpose and portability.
 
+**This rule is defined by the following XPath expression:**
 ```
 //FieldDeclaration[contains(@Volatile,'true')]
 ```
@@ -120,6 +123,7 @@ public class ThrDeux {
 
 The J2EE specification explicitly forbids the use of threads.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ClassOrInterfaceType[@Image = 'Thread' or @Image = 'Runnable']
 ```
@@ -154,6 +158,7 @@ public class OtherThread implements Runnable {
 
 Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.
 
+**This rule is defined by the following XPath expression:**
 ```
 //StatementExpression/PrimaryExpression
 [
@@ -309,6 +314,7 @@ public class Foo {
 Since Java5 brought a new implementation of the Map designed for multi-threaded access, you can
 perform efficient map reads without blocking other threads.
 
+**This rule is defined by the following XPath expression:**
 ```
 //Type[../VariableDeclarator/VariableInitializer//AllocationExpression/ClassOrInterfaceType[@Image != 'ConcurrentHashMap']]
 /ReferenceType/ClassOrInterfaceType[@Image = 'Map']
@@ -342,6 +348,7 @@ public class ConcurrentApp {
 Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
 one is chosen.  The thread chosen is arbitrary; thus its usually safer to call notifyAll() instead.
 
+**This rule is defined by the following XPath expression:**
 ```
 //StatementExpression/PrimaryExpression
 [PrimarySuffix/Arguments[@ArgumentCount = '0']]

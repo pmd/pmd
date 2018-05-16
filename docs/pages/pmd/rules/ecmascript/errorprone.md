@@ -16,6 +16,7 @@ language: Ecmascript
 
 This rule helps improve code portability due to differences in browser treatment of trailing commas in object or array literals.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ObjectLiteral[$allowObjectLiteral = "false" and @TrailingComma = 'true']
 |
@@ -55,6 +56,7 @@ function(arg) {
 Using == in condition may lead to unexpected results, as the variables are automatically casted to be of the
 same type. The === operator avoids the casting.
 
+**This rule is defined by the following XPath expression:**
 ```
 //InfixExpression[(@Image = "==" or @Image = "!=")
   and
@@ -99,6 +101,7 @@ if (someVar != 3) {
 The numeric literal will have a different value at runtime, which can happen if you provide too much
 precision in a floating point number.  This may result in numeric calculations being in error.
 
+**This rule is defined by the following XPath expression:**
 ```
 //NumberLiteral[
     @Image != @Number

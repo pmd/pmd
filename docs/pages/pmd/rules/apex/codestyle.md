@@ -47,6 +47,7 @@ Avoid using 'for' statements without using surrounding braces. If the code forma
 indentation is lost then it becomes difficult to separate the code being controlled
 from the rest.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ForLoopStatement/BlockStatement[@CurlyBrace='false']
 |
@@ -87,6 +88,7 @@ Avoid using if..else statements without using surrounding braces. If the code fo
 or indentation is lost then it becomes difficult to separate the code being controlled
 from the rest.
 
+**This rule is defined by the following XPath expression:**
 ```
 //IfBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
 |
@@ -129,6 +131,7 @@ Avoid using if statements without using braces to surround the code block. If th
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.
 
+**This rule is defined by the following XPath expression:**
 ```
 //IfBlockStatement/BlockStatement[@CurlyBrace='false']
 ```
@@ -245,6 +248,7 @@ Avoid using 'while' statements without using braces to surround the code block. 
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.
 
+**This rule is defined by the following XPath expression:**
 ```
 //WhileLoopStatement/BlockStatement[@CurlyBrace='false']
 ```

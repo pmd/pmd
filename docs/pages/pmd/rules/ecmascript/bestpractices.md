@@ -16,6 +16,7 @@ language: Ecmascript
 
 Avoid using with - it's bad news
 
+**This rule is defined by the following XPath expression:**
 ```
 //WithStatement
 ```
@@ -87,6 +88,7 @@ function bar() {
 This rule helps to avoid using accidently global variables by simply missing the "var" declaration.
 Global variables can lead to side-effects that are hard to debug.
 
+**This rule is defined by the following XPath expression:**
 ```
 //Assignment[Name/@GlobalName = 'true']
 ```
@@ -121,6 +123,7 @@ has finished, the variable will contain the last value used in the for-in, and t
 the for-in loop will be gone.  Since the for-in variable name is most likely intended to be a temporary name, it
 is better to explicitly scope the variable name to the nearest enclosing scope with 'var'.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ForInLoop[not(child::VariableDeclaration)]/Name[1]
 ```
@@ -173,6 +176,7 @@ It also improves readability, if the base is given.
 
 See also: [parseInt()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt)
 
+**This rule is defined by the following XPath expression:**
 ```
 //FunctionCall/Name[
      @Image = 'parseInt'

@@ -17,6 +17,7 @@ language: Java
 The conversion of literals to strings by concatenating them with empty strings is inefficient.
 It is much better to use one of the type-specific toString() methods instead.
 
+**This rule is defined by the following XPath expression:**
 ```
 //AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""']
 ```
@@ -66,6 +67,7 @@ sb.append('a');     // use this instead
 
 Instead of manually copying data between two arrays, use the efficient Arrays.copyOf or System.arraycopy method instead.
 
+**This rule is defined by the following XPath expression:**
 ```
 //Statement[(ForStatement or WhileStatement) and
 count(*//AssignmentOperator[@Image = '='])=1
@@ -127,6 +129,7 @@ The FileReader and FileWriter constructors instantiate FileInputStream and FileO
 * Use `Files.newBufferedReader(Paths.get(fileName))` instead of `new FileReader(fileName)`.
 * Use `Files.newBufferedWriter(Paths.get(fileName))` instead of `new FileWriter(fileName)`.
 
+**This rule is defined by the following XPath expression:**
 ```
 //PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[
        typeof(@Image, 'java.io.FileInputStream', 'FileInputStream')
@@ -201,6 +204,7 @@ arithmetic capabilities for the short type: the JVM must convert the short into 
 and convert the int back to a short. Thus any storage gains found through use of the 'short' type may be offset by
 adverse impacts on performance.
 
+**This rule is defined by the following XPath expression:**
 ```
 //FieldDeclaration/Type/PrimitiveType[@Image = 'short']
 |
@@ -292,6 +296,7 @@ Calling new Byte() causes memory allocation that can be avoided by the static By
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Byte() is deprecated since JDK 9 for that reason.
 
+**This rule is defined by the following XPath expression:**
 ```
 //AllocationExpression
 [not (ArrayDimsAndInits)
@@ -474,6 +479,7 @@ Calling new Integer() causes memory allocation that can be avoided by the static
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Integer() is deprecated since JDK 9 for that reason.
 
+**This rule is defined by the following XPath expression:**
 ```
 //AllocationExpression
   [not (ArrayDimsAndInits)
@@ -503,6 +509,7 @@ Calling new Long() causes memory allocation that can be avoided by the static Lo
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Long() is deprecated since JDK 9 for that reason.
 
+**This rule is defined by the following XPath expression:**
 ```
 //AllocationExpression
 [not (ArrayDimsAndInits)
@@ -542,6 +549,7 @@ See also [Arrays of Wisdom of the Ancients](https://shipilev.net/blog/2016/array
 Note: If you don't need an array of the correct type, then the simple `toArray()` method without an array
 is faster, but returns only an array of type `Object[]`.
 
+**This rule is defined by the following XPath expression:**
 ```
 //PrimaryExpression
 [PrimaryPrefix/Name[ends-with(@Image, 'toArray')]]
@@ -620,6 +628,7 @@ Calling new Short() causes memory allocation that can be avoided by the static S
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Short() is deprecated since JDK 9 for that reason.
 
+**This rule is defined by the following XPath expression:**
 ```
 //AllocationExpression
 [not (ArrayDimsAndInits)
@@ -648,6 +657,7 @@ public class Foo {
 Since it passes in a literal of length 1, calls to (string).startsWith can be rewritten using (string).charAt(0)
 at the expense of some readability.
 
+**This rule is defined by the following XPath expression:**
 ```
 //PrimaryExpression
  [PrimaryPrefix/Name
@@ -736,6 +746,7 @@ Switch statements are intended to be used to support complex branching behaviour
 cases is ill-advised, since switches are not as easy to understand as if-then statements. In these cases use the
 if-then statement to increase code readability.
 
+**This rule is defined by the following XPath expression:**
 ```
 //SwitchStatement[
     (count(.//SwitchLabel) < $minimumNumberCaseForASwitch)
@@ -814,6 +825,7 @@ public int convert(String s) {
 
 ArrayList is a much better Collection implementation than Vector if thread-safe operation is not required.
 
+**This rule is defined by the following XPath expression:**
 ```
 //CompilationUnit[count(ImportDeclaration) = 0 or count(ImportDeclaration/Name[@Image='java.util.Vector']) > 0]
   //AllocationExpression/ClassOrInterfaceType
@@ -853,6 +865,7 @@ You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you
 
 	
 
+**This rule is defined by the following XPath expression:**
 ```
 //Statement[
     (ForStatement) and (ForStatement//VariableInitializer//Literal[@IntLiteral='true' and @Image='0']) and (count(.//IfStatement)=0)

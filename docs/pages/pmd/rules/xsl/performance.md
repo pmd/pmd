@@ -19,6 +19,7 @@ through 100% of the document in the worst case.  Also, try to avoid using 'desce
 or 'descendant-self' axes, as if you're at the top of the Document, it necessarily means
 cutting through 100% of the document.
 
+**This rule is defined by the following XPath expression:**
 ```
 //node()[
   contains(@select,'preceeding::')

@@ -19,6 +19,7 @@ an incomplete implementation, which is to be completed by subclasses implementin
 abstract methods. If the class is intended to be used as a base class only (not to be instantiated
 directly) a protected constructor can be provided prevent direct instantiation.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ClassOrInterfaceDeclaration
  [@Abstract='true'
@@ -147,6 +148,7 @@ public class Foo {
 
 Avoid printStackTrace(); use a logger call instead.
 
+**This rule is defined by the following XPath expression:**
 ```
 //PrimaryExpression
  [PrimaryPrefix/Name[contains(@Image,'printStackTrace')]]
@@ -206,6 +208,7 @@ public class Foo {
 StringBuffers/StringBuilders can grow considerably, and so may become a source of memory leaks
 if held within objects with long lifetimes.
 
+**This rule is defined by the following XPath expression:**
 ```
 //FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[@Image = 'StringBuffer' or @Image = 'StringBuilder']
 ```
@@ -296,6 +299,7 @@ if (rst.next()) {    // result is properly examined and used
 Avoid constants in interfaces. Interfaces should define types, constants are implementation details
 better placed in classes or enums. See Effective Java, item 19.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ClassOrInterfaceDeclaration[@Interface='true'][$ignoreIfHasMethods='false' or not(.//MethodDeclaration)]//FieldDeclaration
 ```
@@ -344,6 +348,7 @@ public interface YetAnotherConstantInterface {
 
 By convention, the default label should be the last label in a switch statement.
 
+**This rule is defined by the following XPath expression:**
 ```
 //SwitchStatement
  [not(SwitchLabel[position() = last()][@Default='true'])]
@@ -448,6 +453,7 @@ otherwise skip the associate String creation and manipulation.
 In JUnit 3, test suites are indicated by the suite() method. In JUnit 4, suites are indicated
 through the @RunWith(Suite.class) annotation.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='suite']]
 [MethodDeclaration/ResultType/Type/ReferenceType/ClassOrInterfaceType[@Image='Test' or @Image = 'junit.framework.Test']]
@@ -484,6 +490,7 @@ public class GoodTest {
 In JUnit 3, the tearDown method was used to clean up all data entities required in running tests. 
 JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test
 
+**This rule is defined by the following XPath expression:**
 ```
 //CompilationUnit[not(ImportDeclaration/Name[starts-with(@Image, "org.testng")])]
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='tearDown']]
@@ -519,6 +526,7 @@ public class MyTest2 {
 In JUnit 3, the setUp method was used to set up all data entities required in running tests. 
 JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests
 
+**This rule is defined by the following XPath expression:**
 ```
 //CompilationUnit[not(ImportDeclaration/Name[starts-with(@Image, "org.testng")])]
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='setUp']]
@@ -554,6 +562,7 @@ public class MyTest2 {
 In JUnit 3, the framework executed all methods which started with the word test as a unit test. 
 In JUnit 4, only methods annotated with the @Test annotation are executed.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public='true']/MethodDeclarator[starts-with(@Image,'test')]]
 [count(Annotation//Name[@Image='Test'])=0]
@@ -618,6 +627,7 @@ JUnit tests should not contain too many asserts.  Many asserts are indicative of
 it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.  
 Customize the maximum number of assertions used by this Rule to suit your needs.
 
+**This rule is defined by the following XPath expression:**
 ```
 //MethodDeclarator[(@Image[fn:matches(.,'^test')] or ../../Annotation/MarkerAnnotation/Name[@Image='Test']) and count(..//PrimaryPrefix/Name[@Image[fn:matches(.,'^assert')]]) > $maximumAsserts]
 ```
@@ -822,6 +832,7 @@ public class Foo implements Runnable {
 Java allows the use of several variables declaration of the same type on one line. However, it
 can lead to quite messy code. This rule looks for several declarations on the same line.
 
+**This rule is defined by the following XPath expression:**
 ```
 //LocalVariableDeclaration
    [count(VariableDeclarator) > 1]
@@ -861,6 +872,7 @@ String name,
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
 
+**This rule is defined by the following XPath expression:**
 ```
 //PrimaryExpression[
         PrimaryPrefix[Name
@@ -902,6 +914,7 @@ class Foo {
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
 
+**This rule is defined by the following XPath expression:**
 ```
 //PrimaryExpression[
     PrimaryPrefix[Name[(ends-with(@Image, '.equals'))]]
@@ -981,6 +994,7 @@ public class Foo {
 
 Consider replacing Enumeration usages with the newer java.util.Iterator
 
+**This rule is defined by the following XPath expression:**
 ```
 //ImplementsList/ClassOrInterfaceType[@Image='Enumeration']
 ```
@@ -1012,6 +1026,7 @@ public class Foo implements Enumeration {
 
 Consider replacing Hashtable usage with the newer java.util.Map if thread safety is not required.
 
+**This rule is defined by the following XPath expression:**
 ```
 //Type/ReferenceType/ClassOrInterfaceType[@Image='Hashtable']
 ```
@@ -1039,6 +1054,7 @@ public class Foo {
 
 Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required.
 
+**This rule is defined by the following XPath expression:**
 ```
 //Type/ReferenceType/ClassOrInterfaceType[@Image='Vector']
 ```
@@ -1066,6 +1082,7 @@ public class Foo {
 
 All switch statements should include a default option to catch any unspecified values.
 
+**This rule is defined by the following XPath expression:**
 ```
 //SwitchStatement[not(SwitchLabel[@Default='true'])]
 ```
@@ -1098,6 +1115,7 @@ References to System.(out|err).print are usually intended for debugging purposes
 the codebase even in production code. By using a logger one can enable/disable this behaviour at
 will (and by priority) and avoid clogging the Standard out log.
 
+**This rule is defined by the following XPath expression:**
 ```
 //Name[
     starts-with(@Image, 'System.out.print')
@@ -1276,6 +1294,7 @@ public class Something {
 
 This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.
 
+**This rule is defined by the following XPath expression:**
 ```
 //PrimaryExpression[
     PrimaryPrefix/Name[@Image = 'assertTrue']
@@ -1312,6 +1331,7 @@ public class FooTest extends TestCase {
 This rule detects JUnit assertions in object references equality. These assertions should be made by 
 more specific methods, like assertNull, assertNotNull.
 
+**This rule is defined by the following XPath expression:**
 ```
 //PrimaryExpression[
  PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
@@ -1351,6 +1371,7 @@ public class FooTest extends TestCase {
 This rule detects JUnit assertions in object references equality. These assertions should be made 
 by more specific methods, like assertSame, assertNotSame.
 
+**This rule is defined by the following XPath expression:**
 ```
 //PrimaryExpression[
     PrimaryPrefix/Name
@@ -1387,6 +1408,7 @@ public class FooTest extends TestCase {
 
 When asserting a value is the same as a literal or Boxed boolean, use assertTrue/assertFalse, instead of assertEquals.
 
+**This rule is defined by the following XPath expression:**
 ```
 //PrimaryExpression[PrimaryPrefix/Name[@Image = 'assertEquals']]
 [
@@ -1470,6 +1492,7 @@ Java 5 introduced the varargs parameter declaration for methods and constructors
 sugar provides flexibility for users of these methods and constructors, allowing them to avoid
 having to deal with the creation of an array.
 
+**This rule is defined by the following XPath expression:**
 ```
 //FormalParameters/FormalParameter
     [position()=last()]

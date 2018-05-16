@@ -16,6 +16,7 @@ language: Apex
 
 Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Triggers should be bulkified and iterate through the map to handle the actions for each item separately.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ArrayLoadExpression[TriggerVariableExpression and LiteralExpression]
 ```
@@ -95,6 +96,7 @@ Empty Catch Block finds instances where an exception is caught, but nothing is d
 In most circumstances, this swallows an exception which should either be acted on 
 or reported.
 
+**This rule is defined by the following XPath expression:**
 ```
 //CatchBlockStatement[./BlockStatement[count(*) = 0]]
 ```
@@ -133,6 +135,7 @@ public void doSomething() {
 
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
 
+**This rule is defined by the following XPath expression:**
 ```
 //IfBlockStatement
  [BlockStatement[count(*) = 0]]
@@ -171,6 +174,7 @@ public class Foo {
 
 Empty block statements serve no purpose and should be removed.
 
+**This rule is defined by the following XPath expression:**
 ```
 //Method/ModifierNode[@Abstract!='true' and ../BlockStatement[count(*) = 0]]
 | //Method/BlockStatement//BlockStatement[count(*) = 0 and @Location != parent::*/@Location]
@@ -211,6 +215,7 @@ public class Foo {
 
 Avoid empty try or finally blocks - what's the point?
 
+**This rule is defined by the following XPath expression:**
 ```
 //TryCatchFinallyBlockStatement[./BlockStatement[count(*) = 0]]
 ```
@@ -262,6 +267,7 @@ Empty While Statement finds all instances where a while statement does nothing.
 If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.
 
+**This rule is defined by the following XPath expression:**
 ```
 //WhileLoopStatement[./BlockStatement[count(*) = 0]]
 ```

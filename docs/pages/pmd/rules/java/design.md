@@ -18,6 +18,7 @@ If an abstract class does not provides any methods, it may be acting as a simple
 that is not meant to be instantiated. In this case, it is probably better to use a private or
 protected constructor in order to prevent instantiation than make the class misleadingly abstract.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ClassOrInterfaceDeclaration
     [@Abstract = 'true']
@@ -47,6 +48,7 @@ public abstract class Example {
 
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 
+**This rule is defined by the following XPath expression:**
 ```
 //CatchStatement/FormalParameter/Type/ReferenceType/ClassOrInterfaceType[
     @Image='NullPointerException' or
@@ -125,6 +127,7 @@ public class Foo {
 
 Catch blocks that merely rethrow a caught exception only add to code size and runtime complexity.
 
+**This rule is defined by the following XPath expression:**
 ```
 //CatchStatement[FormalParameter
  /VariableDeclaratorId/@Image = Block/BlockStatement/Statement
@@ -158,6 +161,7 @@ public void bar() {
 Catch blocks that merely rethrow a caught exception wrapped inside a new instance of the same type only add to
 code size and runtime complexity.
 
+**This rule is defined by the following XPath expression:**
 ```
 //CatchStatement[
   count(Block/BlockStatement/Statement) = 1
@@ -222,6 +226,7 @@ public class Foo {
   }
 ```
 
+**This rule is defined by the following XPath expression:**
 ```
 //AllocationExpression/ClassOrInterfaceType[@Image='NullPointerException']
 ```
@@ -250,6 +255,7 @@ public class Foo {
 Avoid throwing certain exception types. Rather than throw a raw RuntimeException, Throwable,
 Exception, or Error, use a subclassed exception or error instead.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ThrowStatement//AllocationExpression
  /ClassOrInterfaceType[
@@ -287,6 +293,7 @@ public class Foo {
 A class with only private constructors should be final, unless the private constructor
 is invoked by a inner class.
 
+**This rule is defined by the following XPath expression:**
 ```
 TypeDeclaration[count(../TypeDeclaration) = 1]/ClassOrInterfaceDeclaration
 [@Final = 'false']
@@ -316,6 +323,7 @@ public class Foo {  //Should be final
 
 Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
 
+**This rule is defined by the following XPath expression:**
 ```
 //IfStatement[@Else='false']/Statement
  /IfStatement[@Else='false']
@@ -507,6 +515,7 @@ public class DataClass {
 
 Errors are system exceptions. Do not extend them.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
   [@Image="Error" or @Image="java.lang.Error"]
@@ -763,6 +772,7 @@ public class Foo {
 If a final field is assigned to a compile-time constant, it could be made static, thus saving overhead
 in each object at runtime.
 
+**This rule is defined by the following XPath expression:**
 ```
 //FieldDeclaration
  [@Final='true' and @Static='false']
@@ -900,6 +910,7 @@ public class Foo {
 
 Use opposite operator instead of negating the whole expression with a logic complement operator.
 
+**This rule is defined by the following XPath expression:**
 ```
 //UnaryExpressionNotPlusMinus[@Image='!']/PrimaryExpression/PrimaryPrefix/Expression[EqualityExpression or RelationalExpression]
 ```
@@ -1335,6 +1346,7 @@ or
 `!condition || foo` when the literalBoolean is true
 `condition && foo`  when the literalBoolean is false
 
+**This rule is defined by the following XPath expression:**
 ```
 //ConditionalExpression[@Ternary='true'][not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
 |
@@ -1384,6 +1396,7 @@ as:
 
     assertFalse(expr);
 
+**This rule is defined by the following XPath expression:**
 ```
 //StatementExpression
 [
@@ -1420,6 +1433,7 @@ public class SimpleTest extends TestCase {
 
 Avoid unnecessary comparisons in boolean expressions, they serve no purpose and impacts readability.
 
+**This rule is defined by the following XPath expression:**
 ```
 //EqualityExpression/PrimaryExpression
  /PrimaryPrefix/Literal/BooleanLiteral
@@ -1482,6 +1496,7 @@ public boolean isBarEqualTo(int x) {
 
 No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
 
+**This rule is defined by the following XPath expression:**
 ```
 //Expression
  [ConditionalOrExpression
@@ -1724,6 +1739,7 @@ public class Person {   // this is more manageable
 A class with too many methods is probably a good suspect for refactoring, in order to reduce its
 complexity and find a way to have more fine grained objects.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
      [
@@ -1801,6 +1817,7 @@ API (such as doWork(Workload workload), rather than a tedious series of Strings)
 point to pass extra data, you'll be able to do so by simply modifying or extending Workload without any modification to
 your API.
 
+**This rule is defined by the following XPath expression:**
 ```
 //MethodDeclaration[@Public]/MethodDeclarator/FormalParameters[
      count(FormalParameter/Type/ReferenceType/ClassOrInterfaceType[@Image = 'String']) > 3
