@@ -9,21 +9,6 @@ DOC_PREFIX="pmd-${RELEASE_VERSION}/"
 LATEST_PRIORITY=0.8
 DATE=`date +%Y-%m-%d`
 
-writePage () {
-local pageLoc=$1
-
-
-cat << ENTRY_END >> sitemap.xml
-<url>
-    <loc>${WEBSITE_PREFIX}$pageLoc</loc> 
-    <priority>$LATEST_PRIORITY</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>$DATE</lastmod>
-</url>
-
-ENTRY_END
-}
-
 
 # Start of the output writing
 
@@ -36,13 +21,17 @@ HEADER_END
 
 for page in pmd-${RELEASE_VERSION}/pmd_*.html
 do
-	writePage $page
-done
 
+cat << ENTRY_END >> sitemap.xml
+<url>
+    <loc>${WEBSITE_PREFIX}$page</loc> 
+    <priority>$LATEST_PRIORITY</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>$DATE</lastmod>
+</url>
 
-for page in latest/pmd_*.html
-do
-	writePage $page
+ENTRY_END
+
 done
 
 echo "</urlset>" >> sitemap.xml 
