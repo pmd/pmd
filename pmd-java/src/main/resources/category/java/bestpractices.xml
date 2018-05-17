@@ -534,12 +534,17 @@ In JUnit 4, only methods annotated with the @Test annotation are executed.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[ends-with(@Image, 'Test') or ExtendsList/ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase', 'TestCase')]]
-    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public='true']/MethodDeclarator[starts-with(@Image,'test')]]
-[count(Annotation//Name[@Image='Test'])=0]
+//ClassOrInterfaceDeclaration[
+       matches(@Image, $testClassPattern)
+        or ExtendsList/ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase', 'TestCase')]]
+
+    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true()]/MethodDeclarator[starts-with(@Image, 'test')]]
+    [not(Annotation//Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')])]
 ]]>
                 </value>
             </property>
+            <property name="testClassPattern" type="Regex" description="The regex pattern used to identify test classes" value="Test" />
+            <property name="version" value="2.0"/>
         </properties>
         <example>
 <![CDATA[
