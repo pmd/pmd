@@ -523,6 +523,7 @@ public class MyTest2 {
           since="4.0"
           message="JUnit 4 tests that execute tests should use the @Test annotation"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation">
         <description>
 In JUnit 3, the framework executed all methods which started with the word test as a unit test. 
@@ -533,7 +534,8 @@ In JUnit 4, only methods annotated with the @Test annotation are executed.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public='true']/MethodDeclarator[starts-with(@Image,'test')]]
+//ClassOrInterfaceDeclaration[ends-with(@Image, 'Test') or ExtendsList/ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase', 'TestCase')]]
+    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public='true']/MethodDeclarator[starts-with(@Image,'test')]]
 [count(Annotation//Name[@Image='Test'])=0]
 ]]>
                 </value>
