@@ -81,7 +81,7 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
     private static boolean isReference(String shortName, String compoundName) {
         int dotPos = compoundName.indexOf('.');
 
-        return dotPos < 0 ? shortName.equals(compoundName) : shortName.endsWith(compoundName.substring(0, dotPos));
+        return dotPos < 0 ? shortName.equals(compoundName) : shortName.equals(compoundName.substring(0, dotPos));
     }
 
 

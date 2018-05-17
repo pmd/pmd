@@ -105,7 +105,29 @@ public class PrematureDeclarationLambda {
 }
         ]]></code>
     </test-code>
-    
+
+    <test-code>
+        <description>PrematureDeclaration false negative with reference that is a suffix of the variable name</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class PrematureDeclarationLambda {
+                public int lengthSumOf(String[] foo) {
+
+                    int snafoo = 0;
+
+                    if (foo == null || foo.length == 0)
+                        return 0;
+
+                    for (String aFoo : foo) {
+                        snafoo += aFoo.length();
+                    }
+
+                    return snafoo;
+                }
+            }
+            ]]></code>
+    </test-code>
+
     <test-code>
         <description>#1067 PrematureDeclaration lambda closure false positive</description>
         <expected-problems>0</expected-problems>
