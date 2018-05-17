@@ -518,7 +518,7 @@ Errors are system exceptions. Do not extend them.
 **This rule is defined by the following XPath expression:**
 ```
 //ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
-  [@Image="Error" or @Image="java.lang.Error"]
+  [typeof(@Image,'java.lang.Error','Error')]
 ```
 
 **Example(s):**
