@@ -65,6 +65,7 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
      */
     private static boolean hasReferencesIn(ASTBlockStatement block, String varName) {
 
+        // allow for closures on the var
         for (ASTName name : block.findDescendantsOfType(ASTName.class, true)) {
             if (isReference(varName, name.getImage())) {
                 return true;

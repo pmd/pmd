@@ -159,4 +159,30 @@ public class PrematureDeclarationLambda {
             }
             ]]></code>
     </test-code>
+
+
+    <test-code>
+        <description>PrematureDeclaration should also check inside lambdas</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class PrematureDeclarationLambda {
+                public boolean lengthSumOf() {
+
+                    return Try.of(() -> {
+                        // Inside that lambda *is* a premature declaration of `sum`
+                        int sum = 0;
+
+                        if (strings == null || strings.length == 0)
+                            return 0;
+
+                        for (int i = 0; i < strings.length; i++) {
+                            sum += strings[i].length();
+                        }
+
+                        return sum;
+                    });
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
