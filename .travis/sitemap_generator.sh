@@ -6,8 +6,10 @@
 
 WEBSITE_PREFIX="https://pmd.github.io/"
 DOC_PREFIX="pmd-${RELEASE_VERSION}/"
-LATEST_PRIORITY=0.8
 DATE=`date +%Y-%m-%d`
+# Priority is relative to the website, can be chosen in {0.1, 0.2, ..., 1}
+# Default priority is 0.5
+LATEST_PRIORITY=0.8
 
 
 # Start of the output writing
@@ -50,5 +52,5 @@ ENTRY_END
 
 done
 
-echo "</urlset>" >> sitemap.xml 
+echo "</urlset>" >> sitemap.xml
 

@@ -64,10 +64,15 @@ mkdir pmd.github.io
     rsync -a ../docs/pmd-doc-${RELEASE_VERSION}/ pmd-${RELEASE_VERSION}/
     git add pmd-${RELEASE_VERSION}
     git commit -q -m "Added pmd-${RELEASE_VERSION}"
+
     git rm -qr latest
     cp -a pmd-${RELEASE_VERSION} latest
     git add latest
     git commit -q -m "Copying pmd-${RELEASE_VERSION} to latest"
+
+    ./sitemap_generator.sh
+    git add sitemap.xml
+    git commit -q -m "Generated sitemap.xml"
     git push origin master
 )
 
