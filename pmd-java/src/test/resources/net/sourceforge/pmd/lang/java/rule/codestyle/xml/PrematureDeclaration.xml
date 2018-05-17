@@ -118,4 +118,23 @@ public class PrematureDeclarationLambda {
 }
         ]]></code>
     </test-code>
+
+
+    <test-code>
+        <description>#1108 PrematureDeclaration lambda false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class PrematureDeclarationLambda {
+                public boolean lengthSumOf() {
+                    String signingInput = Stream.of(a, b)
+                                                .filter(Objects::nonNull)
+                                                .map(String::valueOf)
+                                                .collect(Collectors.joining(EMPTY));
+
+                    return Try.of(() -> sign(signingInput))
+                              .getOrElse(() -> null);
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
