@@ -70,7 +70,7 @@ mkdir pmd.github.io
     git add latest
     git commit -q -m "Copying pmd-${RELEASE_VERSION} to latest"
 
-    ./sitemap_generator.sh
+    ./sitemap_generator.sh > sitemap.xml
     git add sitemap.xml
     git commit -q -m "Generated sitemap.xml"
     git push origin master

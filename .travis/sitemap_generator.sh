@@ -12,9 +12,9 @@ DATE=`date +%Y-%m-%d`
 LATEST_PRIORITY=0.8
 
 
-# Start of the output writing
+# Writes to standard output
 
-cat << HEADER_END > sitemap.xml
+cat << HEADER_END
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
@@ -40,7 +40,7 @@ HEADER_END
 for page in ${DOC_PREFIX}pmd_*.html
 do
 
-    cat << ENTRY_END >> sitemap.xml
+    cat << ENTRY_END
     <url>
         <loc>${WEBSITE_PREFIX}$page</loc>
         <priority>$LATEST_PRIORITY</priority>
@@ -52,5 +52,5 @@ ENTRY_END
 
 done
 
-echo "</urlset>" >> sitemap.xml
+echo "</urlset>"
 
