@@ -14,48 +14,34 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.RegexProperty;
-import net.sourceforge.pmd.properties.RegexProperty.RegexPBuilder;
-import net.sourceforge.pmd.util.StringUtil;
 
 
 /**
  * Configurable naming conventions for type declarations.
  */
-public class ClassNamingConventionsRule extends AbstractJavaRule {
+public class ClassNamingConventionsRule extends AbstractNamingConventionRule<ASTAnyTypeDeclaration> {
 
-    private static final RegexProperty CLASS_REGEX = defaultProp("class").desc("Regex which applies to concrete class names").build();
-    private static final RegexProperty ABSTRACT_CLASS_REGEX = defaultProp("abstract class").build();
-    private static final RegexProperty INTERFACE_REGEX = defaultProp("interface").build();
-    private static final RegexProperty ENUMERATION_REGEX = defaultProp("enum").build();
-    private static final RegexProperty ANNOTATION_REGEX = defaultProp("annotation").build();
-    private static final RegexProperty UTILITY_CLASS_REGEX = defaultProp("utility class").defaultValue("[A-Z][a-zA-Z]+Util").build();
+    private final RegexProperty classRegex = defaultProp("class", "concrete class").build();
+    private final RegexProperty abstractClassRegex = defaultProp("abstract class").build();
+    private final RegexProperty interfaceRegex = defaultProp("interface").build();
+    private final RegexProperty enumerationRegex = defaultProp("enum").build();
+    private final RegexProperty annotationRegex = defaultProp("annotation").build();
+    private final RegexProperty utilityClassRegex = defaultProp("utility class").defaultValue("[A-Z][a-zA-Z]+Util").build();
 
 
     public ClassNamingConventionsRule() {
-        definePropertyDescriptor(CLASS_REGEX);
-        definePropertyDescriptor(ABSTRACT_CLASS_REGEX);
-        definePropertyDescriptor(INTERFACE_REGEX);
-        definePropertyDescriptor(ENUMERATION_REGEX);
-        definePropertyDescriptor(ANNOTATION_REGEX);
-        definePropertyDescriptor(UTILITY_CLASS_REGEX);
+        definePropertyDescriptor(classRegex);
+        definePropertyDescriptor(abstractClassRegex);
+        definePropertyDescriptor(interfaceRegex);
+        definePropertyDescriptor(enumerationRegex);
+        definePropertyDescriptor(annotationRegex);
+        definePropertyDescriptor(utilityClassRegex);
 
         addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
         addRuleChainVisit(ASTEnumDeclaration.class);
         addRuleChainVisit(ASTAnnotationTypeDeclaration.class);
-    }
-
-
-    private void checkMatches(ASTAnyTypeDeclaration node, PropertyDescriptor<Pattern> regex, Object data) {
-        if (!getProperty(regex).matcher(node.getImage()).matches()) {
-            addViolation(data, node, new Object[]{
-                    isUtilityClass(node) ? "utility class" : node.getTypeKind().getPrintableName(),
-                    node.getImage(),
-                    getProperty(regex).toString(),
-            });
-        }
     }
 
 
@@ -106,13 +92,13 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 
         if (node.isAbstract()) {
-            checkMatches(node, ABSTRACT_CLASS_REGEX, data);
+            checkMatches(node, abstractClassRegex, data);
         } else if (isUtilityClass(node)) {
-            checkMatches(node, UTILITY_CLASS_REGEX, data);
+            checkMatches(node, utilityClassRegex, data);
         } else if (node.isInterface()) {
-            checkMatches(node, INTERFACE_REGEX, data);
+            checkMatches(node, interfaceRegex, data);
         } else {
-            checkMatches(node, CLASS_REGEX, data);
+            checkMatches(node, classRegex, data);
         }
 
         return data;
@@ -121,22 +107,26 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
-        checkMatches(node, ENUMERATION_REGEX, data);
+        checkMatches(node, enumerationRegex, data);
         return data;
     }
 
 
     @Override
     public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
-        checkMatches(node, ANNOTATION_REGEX, data);
+        checkMatches(node, annotationRegex, data);
         return data;
     }
 
 
-    private static RegexPBuilder defaultProp(String name) {
-        return RegexProperty.named(StringUtil.toCamelCase(name) + "Pattern")
-                            .desc("Regex which applies to " + name.trim() + " names")
-                            .defaultValue("[A-Z][a-zA-Z0-9]+");
+    @Override
+    String defaultConvention() {
+        return "[A-Z][a-zA-Z0-9]+";
+    }
 
+
+    @Override
+    String kindDisplayName(ASTAnyTypeDeclaration node, PropertyDescriptor<Pattern> descriptor) {
+        return isUtilityClass(node) ? "utility class" : node.getTypeKind().getPrintableName();
     }
 }

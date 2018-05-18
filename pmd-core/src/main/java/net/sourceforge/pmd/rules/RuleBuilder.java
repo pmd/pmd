@@ -12,6 +12,7 @@ import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -20,7 +21,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * Builds a rule, validating its parameters throughout. The builder can define property descriptors, but not override
- * them. For that, use {@link RuleFactory#decorateRule(Rule, Element)}.
+ * them. For that, use {@link RuleFactory#decorateRule(Rule, RuleSetReference, Element)}.
  *
  * @author Clément Fournier
  * @since 6.0.0
@@ -34,7 +35,7 @@ public class RuleBuilder {
     private String minimumVersion;
     private String maximumVersion;
     private String since;
-    private String message;
+    private String message = "";
     private String externalInfoUrl;
     private String description;
     private List<String> examples = new ArrayList<>(1);
@@ -185,9 +186,13 @@ public class RuleBuilder {
             rule.setLanguage(language);
         }
 
+        // The message can be set in Java, but the XML takes precedence
+        if (!StringUtils.isBlank(message)) {
+            rule.setMessage(message);
+        }
+
         loadLanguageMinMaxVersions(rule);
         rule.setSince(since);
-        rule.setMessage(message);
         rule.setExternalInfoUrl(externalInfoUrl);
         rule.setDeprecated(isDeprecated);
         rule.setDescription(description);

@@ -371,7 +371,6 @@ public class Foo extends Bar{
 
     <rule name="ClassNamingConventions"
           since="1.2"
-          message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.ClassNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#classnamingconventions">
         <description>
@@ -1083,7 +1082,6 @@ public void foo2 (final String param) { // better, do stuff with param never ass
 
     <rule name="MethodNamingConventions"
           since="1.2"
-          message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.MethodNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#methodnamingconventions">
         <description>
