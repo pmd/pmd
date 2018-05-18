@@ -118,6 +118,14 @@ public interface Node {
 
     void setDataFlowNode(DataFlowNode dataFlowNode);
 
+
+    /**
+     * Returns true if this node is considered a boundary by traversal methods.
+     * Traversal methods such as {@link #getFirstDescendantOfType(Class)} don't
+     * look past such boundaries by default, which is usually the expected thing
+     * to do. For example, in Java, lambdas and nested classes are considered
+     * find boundaries.
+     */
     boolean isFindBoundary();
 
 

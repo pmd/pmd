@@ -44,7 +44,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
 
     @Override
     public boolean isFindBoundary() {
-        return isNested();
+        return isNested() || isLocal();
     }
 
     /**
