@@ -5,7 +5,7 @@
 # https://www.sitemaps.org/protocol.html
 
 WEBSITE_PREFIX="https://pmd.github.io/"
-DOC_PREFIX="pmd-${RELEASE_VERSION}/"
+DOC_PREFIX="latest/" # "pmd-${RELEASE_VERSION}/"
 DATE=`date +%Y-%m-%d`
 # Priority is relative to the website, can be chosen in {0.1, 0.2, ..., 1}
 # Default priority is 0.5
