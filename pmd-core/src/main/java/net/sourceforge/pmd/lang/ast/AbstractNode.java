@@ -135,7 +135,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public boolean hasImageEqualTo(String image) {
-        return Objects.equals(this.image, image);
+        return Objects.equals(this.getImage(), image);
     }
 
     @Override
