@@ -90,10 +90,20 @@ public interface Node {
 
     int jjtGetId();
 
+
+    /**
+     * Returns a string token, usually filled-in by the parser, which describes some textual
+     * characteristic of this node. This is usually an identifier.
+     */
     String getImage();
 
     void setImage(String image);
 
+    /**
+     * Returns true if this node's image is equal to the given string.
+     *
+     * @param image The image to check
+     */
     boolean hasImageEqualTo(String image);
 
     int getBeginLine();
