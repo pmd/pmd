@@ -340,8 +340,10 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
             Node prefix = suffix.jjtGetParent().jjtGetChild(0);
 
-            if (!(prefix instanceof ASTPrimaryPrefix) && prefix.jjtGetNumChildren() != 1
-                && !(prefix.jjtGetChild(0) instanceof ASTName)) {
+            if (!(prefix instanceof ASTPrimaryPrefix) || prefix.jjtGetNumChildren() != 1
+                || !(prefix.jjtGetChild(0) instanceof ASTName)) {
+                // it's either not a primary prefix, doesn't have children (can happen with this./super.)
+                // or first child is not a name
                 return false;
             }
 
