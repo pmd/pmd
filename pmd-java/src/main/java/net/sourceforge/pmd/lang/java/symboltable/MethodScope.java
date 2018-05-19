@@ -13,7 +13,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.symboltable.Applier;
-import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
@@ -33,6 +32,7 @@ public class MethodScope extends AbstractJavaScope {
         return getDeclarations(VariableNameDeclaration.class);
     }
 
+    @Override
     public Set<NameDeclaration> addNameOccurrence(NameOccurrence occurrence) {
         JavaNameOccurrence javaOccurrence = (JavaNameOccurrence) occurrence;
         Set<NameDeclaration> declarations = findVariableHere(javaOccurrence);
@@ -48,6 +48,7 @@ public class MethodScope extends AbstractJavaScope {
         return declarations;
     }
 
+    @Override
     public void addDeclaration(NameDeclaration variableDecl) {
         if (!(variableDecl instanceof VariableNameDeclaration || variableDecl instanceof ClassNameDeclaration)) {
             throw new IllegalArgumentException(
@@ -56,11 +57,12 @@ public class MethodScope extends AbstractJavaScope {
         super.addDeclaration(variableDecl);
     }
 
+    @Override
     public Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence) {
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
             return Collections.emptySet();
         }
-        ImageFinderFunction finder = new ImageFinderFunction(occurrence.getImage());
+        DeclarationFinderFunction finder = new DeclarationFinderFunction(occurrence);
         Applier.apply(finder, getVariableDeclarations().keySet().iterator());
         if (finder.getDecl() != null) {
             return Collections.singleton(finder.getDecl());
@@ -75,6 +77,7 @@ public class MethodScope extends AbstractJavaScope {
         return node.jjtGetChild(1).getImage();
     }
 
+    @Override
     public String toString() {
         return "MethodScope:" + glomNames(getVariableDeclarations().keySet());
     }

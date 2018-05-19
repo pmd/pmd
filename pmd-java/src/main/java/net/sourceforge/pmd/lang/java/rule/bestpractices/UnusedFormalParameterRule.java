@@ -87,8 +87,8 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
             for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
                 VariableNameDeclaration nameDecl = entry.getKey();
                 
-                ASTVariableDeclaratorId declNode = (ASTVariableDeclaratorId) nameDecl.getNode();
-                if (declNode.isExplicitReceiverParameter()) {
+                ASTVariableDeclaratorId declNode = nameDecl.getDeclaratorId();
+                if (!declNode.isFormalParameter() || declNode.isExplicitReceiverParameter()) {
                     continue;
                 }
                 
