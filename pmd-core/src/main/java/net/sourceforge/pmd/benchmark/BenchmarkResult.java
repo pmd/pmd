@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.benchmark;
 
+@Deprecated
 class BenchmarkResult implements Comparable<BenchmarkResult> {
 
     public final Benchmark type;
