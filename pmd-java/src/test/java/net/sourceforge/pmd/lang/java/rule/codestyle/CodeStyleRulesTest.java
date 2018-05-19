@@ -37,6 +37,7 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "FieldDeclarationsShouldBeAtStartOfClass");
         addRule(RULESET, "ForLoopsMustUseBraces");
         addRule(RULESET, "ForLoopShouldBeWhileLoop");
+        addRule(RULESET, "FormalParameterNamingConventions");
         addRule(RULESET, "GenericsNaming");
         addRule(RULESET, "IdenticalCatchBranches");
         addRule(RULESET, "IfElseStmtsMustUseBraces");
@@ -44,7 +45,7 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "LocalHomeNamingConvention");
         addRule(RULESET, "LocalInterfaceSessionNamingConvention");
         addRule(RULESET, "LocalVariableCouldBeFinal");
-        addRule(RULESET, "LongVariable");
+        addRule(RULESET, "LocalVariableNamingConventions");
         addRule(RULESET, "MDBAndSessionBeanNamingConvention");
         addRule(RULESET, "MethodArgumentCouldBeFinal");
         addRule(RULESET, "MethodNamingConventions");

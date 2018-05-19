@@ -100,7 +100,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
 
     @Override
     String defaultConvention() {
-        return "[a-z][a-zA-Z0-9]+";
+        return CAMEL_CASE;
     }
 
 

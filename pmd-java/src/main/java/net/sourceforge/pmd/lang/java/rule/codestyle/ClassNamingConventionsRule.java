@@ -142,7 +142,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
     @Override
     String defaultConvention() {
-        return "[A-Z][a-zA-Z0-9]+";
+        return PASCAL_CASE;
     }
 
 

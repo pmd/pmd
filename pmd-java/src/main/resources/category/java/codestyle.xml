@@ -747,6 +747,28 @@ for (int i = 0; i < 42; i++)
         </example>
     </rule>
 
+
+    <rule name="FormalParameterNamingConventions"
+          since="6.6.0"
+          message="The {0} name ''{1}'' doesn''t match ''{2}''"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.FormalParameterNamingConventionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#formalparameternamingconventions">
+        <description>
+            Configurable naming conventions for formal parameters of methods and lambdas.
+            This rule reports formal parameters which do not match the regex that applies to their
+            specific kind (e.g. lambda parameter, or final formal parameter). Each regex can be
+            configured through properties.
+
+            By default this rule uses the standard Java naming convention (Camel case).
+        </description>
+        <priority>1</priority>
+        <example>
+            <![CDATA[
+            // TODO
+            ]]>
+        </example>
+    </rule>
+
     <rule name="GenericsNaming"
           language="java"
           since="4.2.6"
@@ -992,6 +1014,27 @@ public class Bar {
     }
 }
 ]]>
+        </example>
+    </rule>
+
+    <rule name="LocalVariableNamingConventions"
+          since="6.6.0"
+          message="The {0} name ''{1}'' doesn''t match ''{2}''"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableNamingConventionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#localvariablenamingconventions">
+        <description>
+            Configurable naming conventions for local variable declarations. This rule reports
+            variable declarations which do not match the regex that applies to their
+            specific kind (e.g. final variable, or catch-clause parameter). Each regex can be configured through
+            properties.
+
+            By default this rule uses the standard Java naming convention (Camel case).
+        </description>
+        <priority>1</priority>
+        <example>
+            <![CDATA[
+            // TODO
+            ]]>
         </example>
     </rule>
 
