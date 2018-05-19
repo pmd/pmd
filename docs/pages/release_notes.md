@@ -43,6 +43,13 @@ This is a bug fixing release.
 
 ### API Changes
 
+* The following classes in package `net.sourceforge.pmd.benchmark` have been deprecated: `Benchmark`, `Benchmarker`,
+  `BenchmarkReport`, `BenchmarkResult`, `RuleDuration`, `StringBuilderCR` and `TextReport`. Their API is not supported anymore
+  and is disconnected from the internals of PMD. Use the newer API based around `TimeTracker` instead, which can be found
+  in the same package.
+
+
+
 ### External Contributions
 
 *   [#1101](https://github.com/pmd/pmd/pull/1101): \[java] Fixes false positive for `DoNotExtendJavaLangError`  - [Akshat Bahety](https://github.com/akshatbahety)
