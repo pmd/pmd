@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.ParserTstUtil;
@@ -163,5 +164,12 @@ public class Java10Test {
         assertSame("type should be FileInputStream", FileInputStream.class, type.getType());
         ASTVariableDeclaratorId varId = resources.get(0).getVariableDeclaratorId();
         assertSame("type should be FileInputStream", FileInputStream.class, varId.getType());
+    }
+
+    @Test
+    public void testTypeResNullPointer() {
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10",
+                loadSource("LocalVariableTypeInference_typeres.java"));
+        Assert.assertNotNull(compilationUnit);
     }
 }
