@@ -13,7 +13,10 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 import org.apache.tools.ant.BuildListener;
+import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.XmlLogger;
+import org.apache.tools.ant.taskdefs.RecorderEntry;
 
 /**
  * AntLogHandler sends log messages to an Ant Task, so the regular Ant logging
@@ -34,42 +37,33 @@ public class AntLogHandler extends Handler {
     }
     
     public Level getAntLogLevel() {
-        Class<?> clazz;
-        int maxLevel = Project.MSG_ERR;
         for (final BuildListener l : project.getBuildListeners()) {
-            clazz = l.getClass();
             Field declaredField = null;
             try {
-                while (BuildListener.class.isAssignableFrom(clazz)) {
+                if (l instanceof DefaultLogger) {
+                    declaredField = DefaultLogger.class.getDeclaredField("msgOutputLevel");
+                } else if (l instanceof XmlLogger) {
+                    declaredField = XmlLogger.class.getDeclaredField("msgOutputLevel");
+                } else if (l instanceof RecorderEntry) {
+                    declaredField = RecorderEntry.class.getDeclaredField("loglevel");
+                } else {
                     try {
-                        declaredField = clazz.getDeclaredField("msgOutputLevel");
-                    } catch (final NoSuchFieldException ignored) {
-                        try {
-                            declaredField = clazz.getDeclaredField("logLevel");
-                        } catch (final NoSuchFieldException expected) {
-                            // ignore it
-                        }
+                        declaredField = l.getClass().getDeclaredField("logLevel");
+                    } catch (final NoSuchFieldException e) {
+                        project.log("Unsupported build listener: " + l.getClass(), Project.MSG_WARN);
                     }
-                    if (declaredField != null) {
-                        break;
-                    }
-                    
-                    clazz = clazz.getSuperclass();
                 }
                 
                 if (declaredField != null) {
                     declaredField.setAccessible(true);
-                    final int level = declaredField.getInt(l);
-                    if (maxLevel < level) {
-                        maxLevel = level;
-                    }
+                    return LOG_LEVELS[declaredField.getInt(l)];
                 }
-            } catch (final IllegalArgumentException | IllegalAccessException ignored) {
+            } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException ignored) {
                 // Just ignore it
             }
         }
         
-        return LOG_LEVELS[maxLevel];
+        return Level.FINEST;
     }
 
     @Override
