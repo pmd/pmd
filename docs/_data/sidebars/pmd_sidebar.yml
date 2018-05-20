@@ -34,23 +34,23 @@ entries:
     - title: Installation and basic CLI usage
       url: /pmd_userdocs_installation.html
       output: web, pdf
-    - title: Full CLI reference
-      url: /pmd_userdocs_cli_reference.html
-      output: web, pdf
     - title: Understanding rulesets
       url: /pmd_userdocs_understanding_rulesets.html
       output: web, pdf
     - title: Making rulesets
       url: /pmd_userdocs_making_rulesets.html
       output: web, pdf
-    - title: Using rule properties
-      url: /pmd_userdocs_using_properties.html
+    - title: Configuring rules
+      url: /pmd_userdocs_configuring_rules.html
       output: web, pdf
     - title: Best practices
       url: /pmd_userdocs_best_practices.html
       output: web, pdf
     - title: Suppressing warnings
       url: /pmd_userdocs_suppressing_warnings.html
+      output: web, pdf
+    - title: PMD CLI reference
+      url: /pmd_userdocs_cli_reference.html
       output: web, pdf
     - title: null
       output: web, pdf

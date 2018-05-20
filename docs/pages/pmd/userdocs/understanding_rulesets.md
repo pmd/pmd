@@ -1,9 +1,9 @@
 ---
 title: Understanding Rulesets
-tags: [rulesets]
+tags: [essentials, userdocs]
 permalink: pmd_userdocs_understanding_rulesets.html
-summary: Rules belong to categories and rulesets are custom collections of rules
-last_updated: November 2017
+summary: "Learn how to specify which rules you want to run, and how, by creating your own rulesets."
+last_updated: May 2018 (6.4.0)
 ---
 
 
@@ -19,7 +19,7 @@ Rulesets are written in XML. The following sections walk you through the creatio
 
 ## Creating a custom ruleset
 
-The first step is to create a new XML file. You can use the following template:
+The first step is to create a new empty ruleset. You can use the following template:
 
 ``` xml
 <?xml version="1.0"?>
@@ -74,5 +74,4 @@ How to read the `ref` attribute?
 
 ### Configuring individual rules
 
-Many rules give you some freedom of configuration by letting you use **rule properties**.
-Configuring rules this way [is described on this page](pmd_userdocs_using_properties.html).
+Main documentation page: [Configuring rules](pmd_userdocs_configuring_rules.html)

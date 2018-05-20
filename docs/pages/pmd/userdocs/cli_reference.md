@@ -1,6 +1,6 @@
 ---
-title: Full CLI reference
-summary: "Full reference for the command-line interface, including options, output formats and supported languages"
+title: PMD CLI reference
+summary: "Full reference for PMD's command-line interface, including options, output formats and supported languages"
 tags: [essentials, userdocs]
 permalink: pmd_userdocs_cli_reference.html
 author: Tom Copeland <tom@infoether.com>, Xavier Le Vourch <xlv@users.sourceforge.net>, Juan Martín Sotuyo Dodero <juansotuyo@gmail.com>
