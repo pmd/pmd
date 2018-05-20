@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -452,8 +453,14 @@ public abstract class AbstractRuleSetFactoryTest {
             List<PropertyDescriptor<?>> propertyDescriptors2 = rule2.getPropertyDescriptors();
             assertEquals(message + ", Rule property descriptor ", propertyDescriptors1, propertyDescriptors2);
             for (int j = 0; j < propertyDescriptors1.size(); j++) {
-                assertEquals(message + ", Rule property value " + j, rule1.getProperty(propertyDescriptors1.get(j)),
-                        rule2.getProperty(propertyDescriptors2.get(j)));
+                Object value1 = rule1.getProperty(propertyDescriptors1.get(j));
+                Object value2 = rule2.getProperty(propertyDescriptors2.get(j));
+                // special case for Pattern, there is no equals method
+                if (propertyDescriptors1.get(j).type() == Pattern.class) {
+                    value1 = ((Pattern) value1).pattern();
+                    value2 = ((Pattern) value2).pattern();
+                }
+                assertEquals(message + ", Rule property value " + j, value1, value2);
             }
             assertEquals(message + ", Rule property descriptor count", propertyDescriptors1.size(),
                     propertyDescriptors2.size());
