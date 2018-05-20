@@ -90,8 +90,9 @@ First time user? Then you may be interested in our [quickstart page](TODO).
 
 
 {% include custom/shuffle_panel.html
-   tag="getting_started"
-   title="Getting started" %}
+   tag="essentials"
+   description="These pages summarize the Gist of PMD usage to get you started quickly:"
+   title="Essential resources" %}
 
 
 {% include custom/shuffle_panel.html

@@ -31,11 +31,11 @@ entries:
   - title: User Documentation
     output: web, pdf
     folderitems:
-    - title: Getting started
-      url: /pmd_userdocs_getting_started.html
-      output: web, pdf
     - title: Installation and basic CLI usage
       url: /pmd_userdocs_installation.html
+      output: web, pdf
+    - title: Full CLI reference
+      url: /pmd_userdocs_cli_reference.html
       output: web, pdf
     - title: Understanding rulesets
       url: /pmd_userdocs_understanding_rulesets.html

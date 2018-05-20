@@ -1,5 +1,7 @@
 ---
 title: Installation and basic CLI usage
+tags: [essentials, userdocs]
+summary: "Sums up the first steps to set up a CLI installation and get started using PMD"
 permalink: pmd_userdocs_installation.html
 sidebar: pmd_sidebar
 ---

@@ -185,6 +185,7 @@ public class RuleDocGenerator {
             lines.add("---");
             lines.add("title: " + entry.getKey().getName() + " Rules");
             lines.add("tags: [rule_references, " + languageTersename + "]");
+            lines.add("summary: Index of all built-in rules available for " + entry.getKey().getName());
             lines.add("language_name: " + entry.getKey().getName());
             lines.add("permalink: " + LANGUAGE_INDEX_PERMALINK_PATTERN.replace("${language.tersename}", languageTersename));
             lines.add("folder: pmd/rules");
