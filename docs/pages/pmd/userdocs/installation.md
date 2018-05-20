@@ -27,12 +27,13 @@ Unzip it into any directory, optionally add the `bin` subdirectory in your `PATH
 
 ## Running PMD via command line
 
-{% include callout.html type="primary" content="PMD comes with several command line utilities, like CPD, the rule 
-designer or PMD itself. 
-On Unix, you can run any of them using the script `run.sh`, located inside the `bin/` directory of the PMD distribution
-. The first argument is the name of the utility you want to execute ('pmd', 'designer', ...), e.g. PMD is launched via 
-`run.sh pmd`. The rest of the arguments are specific to the utility used.<br/><br/>
-On Windows, each utility has its own startup script, e.g. `pmd.bat`, `cpd.bat`." %}
+{% include callout.html type="primary"
+   content="PMD comes with several command line utilities, like CPD, the rule designer or PMD itself.
+            On Unix, you can run any of them using the script `run.sh`, located inside the `bin/`
+            directory of the PMD distribution. The first argument is the name of the utility you want
+            to execute ('pmd', 'designer', ...), e.g. PMD is launched via `run.sh pmd`. The rest of
+            the arguments are specific to the utility used.<br/><br/>
+            On Windows, each utility has its own startup script, e.g. `pmd.bat`, `cpd.bat`." %}
 
 The PMD command (`pmd.bat` or `run.sh pmd`) requires three options:
 
