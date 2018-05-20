@@ -1,7 +1,7 @@
 ---
-title: PMD Introduction
+title: PMD Documentation website
 keywords: java
-tags: [getting_started]
+tags: []
 permalink: index.html
 toc: false
 summary: >
@@ -12,88 +12,113 @@ last_updated: August 2017
 author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel.org>
 ---
 
-{% include image.html file="pmd-logo-big.png" alt="PMD Logo" %}
 
-<br>
+## Welcome to PMD!
 
-**PMD** scans source code in Java and other languages and looks for potential problems like:
-
-*   Possible bugs - empty try/catch/finally/switch statements
-*   Dead code - unused local variables, parameters and private methods
-*   Suboptimal code - wasteful String/StringBuffer usage
-*   Overcomplicated expressions - unnecessary if statements, for loops that could be while loops
-
-**CPD**, the copy-paste-detector, finds duplicated code in many languages:
-
-*   Duplicate code is often just copied and pasted. This means, the bugs are also copied and pasted. Fixing
-    them means, fix all duplicated code locations.
-
-## Features
-
-{::options parse_block_html="true" /}
-
-<div class="row"><div class="col-lg-6">
-### PMD
-
-Features:
-
-*   Supporting 8 languages
-*   Many ready-to-use built-in rules.
-*   Custom rules can be written in Java
-*   Custom rules can be written using XPath expression that query the AST of the sources
-*   Many output formats
-*   Many integrations into IDEs, build tools
-
-Supported Languages:
-
-*   [Java](pmd_rules_java.html)
-*   [JSP](pmd_rules_jsp.html)
-*   [JavaScript](pmd_rules_ecmascript.html)
-*   [Salesforce.com Apex](pmd_rules_apex.html) and [Visualforce](pmd_rules_vf.html)
-*   [PLSQL](pmd_rules_plsql.html)
-*   [Apache Velocity](pmd_rules_vm.html)
-*   [XML](pmd_rules_xml.html) and [Maven POM](pmd_rules_pom.html)
-*   [XSL](pmd_rules_xsl.html)
-
-</div><div class="col-lg-6">
-### CPD
-
-Features:
-
-*   Supporting 19 languages
-*   Simple GUI
-*   Fast
-*   Many integrations
-
-Supported Languages:
-
-*   Java
-*   C, C++
-*   C#
-*   Groovy
-*   PHP
-*   Ruby
-*   Fortran
-*   JavaScript
-*   PLSQL
-*   Apache Velocity
-*   Scala
-*   Objective C
-*   Matlab
-*   Python
-*   Go
-*   Swift
-*   Salesforce.com Apex and Visualforce
-
-</div></div>
-
-## Download PMD {{ site.pmd.version }}
-
-Latest Version: {{ site.pmd.version }} ({{ site.pmd.date }})
-
-*   [Release Notes](pmd_release_notes.html)
-*   [Download](https://github.com/pmd/pmd/releases)
+First time user? Then you may be interested in our [quickstart page](TODO).
 
 
+
+<div class="row">
+         <div class="col-lg-12">
+             <h2 class="page-header">Quick access</h2>
+         </div>
+         <div class="col-md-3 col-sm-6">
+             <div class="panel panel-default text-center">
+                 <div class="panel-heading">
+                     <span class="fa-stack fa-5x">
+                           <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                           <i class="fa fa-paper-plane fa-stack-1x fa-inverse"></i>
+                     </span>
+                 </div>
+                 <div class="panel-body">
+                     <h4>Getting started</h4>
+                     <p>A collection of pages explaining the gist of PMD <b>usage</b> and <b>ruleset making</b>.</p>
+                     <a href="tag_getting_started.html" class="btn btn-primary">Learn More</a>
+                 </div>
+             </div>
+         </div>
+         <div class="col-md-3 col-sm-6">
+             <div class="panel panel-default text-center">
+                 <div class="panel-heading">
+                     <span class="fa-stack fa-5x">
+                           <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                           <i class="fa fa-expand fa-stack-1x fa-inverse"></i>
+                     </span>
+                 </div>
+                 <div class="panel-body">
+                     <h4>Extending PMD</h4>
+                     <p>Guides about <b>writing rules</b>, metrics, and testing them properly.</p>
+                     <a href="tag_navigation.html" class="btn btn-primary">Learn More</a>
+                 </div>
+             </div>
+         </div>
+         <div class="col-md-3 col-sm-6">
+             <div class="panel panel-default text-center">
+                 <div class="panel-heading">
+                     <span class="fa-stack fa-5x">
+                           <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                           <i class="fa fa-list fa-stack-1x fa-inverse"></i>
+                     </span>
+                 </div>
+                 <div class="panel-body">
+                     <h4>Rule reference</h4>
+                     <p>Find an <b>existing rule</b> to craft your own rulesets.</p>
+                     <a href="tag_single_sourcing.html" class="btn btn-primary">Learn More</a>
+                 </div>
+             </div>
+         </div>
+         <div class="col-md-3 col-sm-6">
+             <div class="panel panel-default text-center">
+                 <div class="panel-heading">
+                     <span class="fa-stack fa-5x">
+                           <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                           <i class="fa fa-code-fork fa-stack-1x fa-inverse"></i>
+                     </span>
+                 </div>
+                 <div class="panel-body">
+                     <h4>Contributing</h4>
+                     <p>Help us make PMD better!</p>
+                     <a href="tag_formatting.html" class="btn btn-primary">Learn More</a>
+                 </div>
+             </div>
+         </div>
+</div>
+
+
+# More details
+
+
+<div id="grid" class="row">
+           <div class="col-xs-6 col-sm-4 col-md-4" data-groups='["rule_references"]'>
+             <div class="panel panel-default">
+               <div class="panel-heading text-center">
+                 <span class="fa-stack fa-5x">
+                   <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                   <i class="fa fa-list fa-stack-1x fa-inverse"></i>
+                 </span>
+               </div>
+               <div class="panel-body">
+                 <div class="text-center landing-page cat-title">
+                   <h4>Rule references</h4>
+                 </div>
+                 <p class="landing-page cat-description">
+                   Pick your language to find out about the rule it supports.
+                 </p>
+                 <ul>
+                   {% for page in site.pages %}
+                   {% for tag in page.tags %}
+                   {% if tag == "rule_references" %}
+                     <li><a href="{{page.url | remove: '/'}}">{{page.language_name}}</a></li>
+                   {% endif %}
+                   {% endfor %}
+                   {% endfor %}
+                 </ul>
+               </div>
+             </div>
+           </div>
+</div>
+
+<!-- {% include image.html file="pmd-logo-big.png" alt="PMD Logo" %} -->
 
 {% include links.html %}

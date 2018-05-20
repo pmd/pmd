@@ -1,5 +1,7 @@
 ---
 title: Maven POM Rules
+tags: [rule_references, pom]
+language_name: Maven POM
 permalink: pmd_rules_pom.html
 folder: pmd/rules
 ---

@@ -1,5 +1,7 @@
 ---
 title: XSL Rules
+tags: [rule_references, xsl]
+language_name: XSL
 permalink: pmd_rules_xsl.html
 folder: pmd/rules
 ---

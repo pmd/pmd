@@ -1,5 +1,7 @@
 ---
 title: Ecmascript Rules
+tags: [rule_references, ecmascript]
+language_name: Ecmascript
 permalink: pmd_rules_ecmascript.html
 folder: pmd/rules
 ---

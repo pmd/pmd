@@ -1,5 +1,7 @@
 ---
 title: Java Rules
+tags: [rule_references, java]
+language_name: Java
 permalink: pmd_rules_java.html
 folder: pmd/rules
 ---

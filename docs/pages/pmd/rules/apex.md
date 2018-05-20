@@ -1,5 +1,7 @@
 ---
 title: Apex Rules
+tags: [rule_references, apex]
+language_name: Apex
 permalink: pmd_rules_apex.html
 folder: pmd/rules
 ---

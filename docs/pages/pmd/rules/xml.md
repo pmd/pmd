@@ -1,5 +1,7 @@
 ---
 title: XML Rules
+tags: [rule_references, xml]
+language_name: XML
 permalink: pmd_rules_xml.html
 folder: pmd/rules
 ---
