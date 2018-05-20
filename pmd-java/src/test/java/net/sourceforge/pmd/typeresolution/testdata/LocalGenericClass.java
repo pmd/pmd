@@ -12,15 +12,18 @@ public class LocalGenericClass {
 
             @Override
             public void accept(T t) { }
+
             @Override
             public Optional<T> get() {
                 return Optional.empty();
             }
+
             @Override
             public void combine(MyLocalClass other) {
                 accept(other.state);
             }
         }
+
         new MyLocalClass();
     }
 
@@ -28,12 +31,14 @@ public class LocalGenericClass {
         void combine(T t);
     }
 
-    private static interface MyConsumer<R> {
+    private interface MyConsumer<R> {
         void accept(R r);
     }
-    private static interface MySupplier<S> {
+
+    private interface MySupplier<S> {
         S get();
     }
+
     private static class Optional<T> {
         public static <T> Optional<T> empty() {
             return new Optional<T>();
