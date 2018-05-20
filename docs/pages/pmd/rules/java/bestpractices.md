@@ -564,8 +564,12 @@ In JUnit 4, only methods annotated with the @Test annotation are executed.
 
 **This rule is defined by the following XPath expression:**
 ```
-//ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public='true']/MethodDeclarator[starts-with(@Image,'test')]]
-[count(Annotation//Name[@Image='Test'])=0]
+//ClassOrInterfaceDeclaration[
+       matches(@Image, $testClassPattern)
+        or ExtendsList/ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase', 'TestCase')]]
+
+    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true()]/MethodDeclarator[starts-with(@Image, 'test')]]
+    [not(Annotation//Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')])]
 ```
 
 **Example(s):**
@@ -582,6 +586,12 @@ public class MyTest {
     }
 }
 ```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|testClassPattern|Test|The regex pattern used to identify test classes|no|
 
 **Use this rule by referencing it:**
 ``` xml
