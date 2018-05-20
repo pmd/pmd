@@ -89,35 +89,22 @@ First time user? Then you may be interested in our [quickstart page](TODO).
 # More details
 
 
-<div id="grid" class="row">
-           <div class="col-xs-6 col-sm-4 col-md-4" data-groups='["rule_references"]'>
-             <div class="panel panel-default">
-               <div class="panel-heading text-center">
-                 <span class="fa-stack fa-5x">
-                   <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                   <i class="fa fa-list fa-stack-1x fa-inverse"></i>
-                 </span>
-               </div>
-               <div class="panel-body">
-                 <div class="text-center landing-page cat-title">
-                   <h4>Rule references</h4>
-                 </div>
-                 <p class="landing-page cat-description">
-                   Pick your language to find out about the rule it supports.
-                 </p>
-                 <ul>
-                   {% for page in site.pages %}
-                   {% for tag in page.tags %}
-                   {% if tag == "rule_references" %}
-                     <li><a href="{{page.url | remove: '/'}}">{{page.language_name}}</a></li>
-                   {% endif %}
-                   {% endfor %}
-                   {% endfor %}
-                 </ul>
-               </div>
-             </div>
-           </div>
-</div>
+{% include custom/shuffle_panel.html
+   tag="getting_started"
+   title="Getting started" %}
+
+
+{% include custom/shuffle_panel.html
+   tag="rule_references"
+   title="Rule references"
+   description="Pick your language to find out about the rule it supports:"
+   image="fa-database"
+   titlemaker="page.language_name" %}
+
+{% include custom/shuffle_panel_filler.html %}
+
+
+
 
 <!-- {% include image.html file="pmd-logo-big.png" alt="PMD Logo" %} -->
 
