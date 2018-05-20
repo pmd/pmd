@@ -65,14 +65,10 @@ public final class ScopeHierarchyTreeItem extends TreeItem<Object> {
 
         ScopeHierarchyTreeItem parent = buildAscendantHierarchyHelper(scope.getParent());
 
-        if (parent == null) {
-            return scopeTreeNode;
-        } else {
-            if (scopeTreeNode.getChildren().size() > 0) { // hides empty scopes
-                parent.getChildren().add(scopeTreeNode);
-            }
-            return scopeTreeNode;
+        if (parent != null) {
+            parent.getChildren().add(scopeTreeNode);
         }
+        return scopeTreeNode;
     }
 
 
