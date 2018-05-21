@@ -21,12 +21,14 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 /**
  * Finds hardcoded static Initialization Vectors vectors used with cryptographic
  * operations.
- * 
+ *
+ * <code>
  * //bad: byte[] ivBytes = new byte[] {32, 87, -14, 25, 78, -104, 98, 40};
- * //bad: byte[] ivBytes = "hardcoded".getBytes(); //bad: byte[] ivBytes =
- * someString.getBytes();
- * 
- * javax.crypto.spec.IvParameterSpec must not be created from a static sources
+ * //bad: byte[] ivBytes = "hardcoded".getBytes();
+ * //bad: byte[] ivBytes = someString.getBytes();
+ * </code>
+ *
+ * <p>{@link javax.crypto.spec.IvParameterSpec} must not be created from a static sources
  * 
  * @author sergeygorbaty
  * @since 6.3.0
