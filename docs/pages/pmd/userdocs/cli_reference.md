@@ -7,7 +7,7 @@ author: Tom Copeland <tom@infoether.com>, Xavier Le Vourch <xlv@users.sourceforg
 ---
 
 
-### Options
+## Options
 
 The tool comes with a rather extensive help text, simply running with `-help`!
 
@@ -167,7 +167,7 @@ The tool comes with a rather extensive help text, simply running with `-help`!
 </table>
 
 
-### Exit Status
+## Exit Status
 
 Please note that if PMD detects any violations, it will exit with status 4 (since 5.3).
 This behavior has been introduced to ease PMD integration into scripts or hooks, such as SVN hooks.
@@ -179,7 +179,7 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 </table>
 
 
-### Supported Languages
+## Supported Languages
 
 *   [apex](pmd_rules_apex.html) (Salesforce Apex)
 *   [java](pmd_rules_java.html)
@@ -191,7 +191,7 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 *   [xml and xsl](/pmd_rules_xml.html)
 
 
-### Available Report Formats / Renderers
+## Available Report Formats / Renderers
 
 PMD comes with many different renderer types:
 
@@ -266,7 +266,7 @@ PMD comes with many different renderer types:
     *   outputDir: Output directory.
 
 
-### Incremental Analysis
+## Incremental Analysis
 
 Ever since PMD 5.6.0, PMD has been able to perform Incremental Analysis.
 
@@ -280,7 +280,7 @@ Files included in the final report will reflect exactly those files in your file
 untouched, files with violations will be listed with full detail.
 
 
-#### Enabling Incremental Analysis
+### Enabling Incremental Analysis
 
 Incremental analysis is enabled automatically once a location to store the cache has been defined.
 From Command Line that is done through the `-cache` argument, but support for the feature is
