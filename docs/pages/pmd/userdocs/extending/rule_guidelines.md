@@ -1,5 +1,5 @@
 ---
-title: PMD Rule Guidelines
+title: Rule guidelines
 tags: [extending, userdocs]
 summary: Rule Guidelines
 last_updated: July 3, 2016

@@ -15,8 +15,10 @@
 
 
 {% capture titlemaker %} {{ include.titlemaker | default: "page.title" }} {% endcapture %}
-{% assign include_tags = {{ include.tags | split: "," }} %}
-{% assign exclude_tags = {{ include.except_tags | split: "," }} %}
+{% assign include_tags = include.tags | split: "," %}
+{% assign exclude_tags = include.except_tags | split: "," %}
+
+{% assign sorted_pages = site.pages | sort_using: site.data.sidebars.pmd_sidebar %}
 
 
 <div class="col-xs-6 col-sm-4 col-md-4" data-groups='{{ include.datagroups }}'>
@@ -39,7 +41,7 @@
                 {{ include.description }}
             </p>
             <ul>
-                {% for page in site.pages %}
+                {% for page in sorted_pages %}
                     {% capture included %}{{ page.tags | intersect: include_tags | equals: include_tags }}{% endcapture %}
                     {% capture excluded %}{{ page.tags | intersect: exclude_tags | empty }}{% endcapture %}
 

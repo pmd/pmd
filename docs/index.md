@@ -12,9 +12,9 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
 ---
 
 
-## Welcome to PMD!
+<!-- ## Welcome to PMD! -->
 
-First time user? Then you may be interested in our [quickstart series](TODO)!
+<!-- First time user? Then you may be interested in our [quickstart series](TODO)! -->
 
 <br/>
 
@@ -24,6 +24,14 @@ First time user? Then you may be interested in our [quickstart series](TODO)!
 <script src="js/jquery.ba-throttle-debounce.min.js"></script>
 {% endunless %}
 
+
+
+
+<div class="col-lg-12">
+    <h2 class="page-header">Welcome to PMD!</h2>
+</div>
+
+
 <div class="filter-options">
       <button class="btn btn-primary" data-group="all">All</button>
       <button class="btn btn-primary" data-group="getting_started">Getting Started</button>
@@ -31,6 +39,9 @@ First time user? Then you may be interested in our [quickstart series](TODO)!
       <button class="btn btn-primary" data-group="extending">Extending PMD</button>
       <button class="btn btn-primary" data-group="contributing">Contributing</button>
 </div>
+
+
+<!--  Initialize it, to speed up the rest -->
 
 
 <div id="grid" class="row">
@@ -91,6 +102,7 @@ First time user? Then you may be interested in our [quickstart series](TODO)!
        title="Major contributions"
        description=""
     %}
+
 
 
 

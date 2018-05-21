@@ -1,7 +1,7 @@
 ---
-title:  PMD Writing a Custom Rule
+title:  Writing a custom rule
 tags: [extending, userdocs]
-summary: Writing a Custom Rule for PMD
+summary: "Learn how to write a custom rule for PMD"
 last_updated: July 3, 2016
 permalink: pmd_userdocs_extending_writing_pmd_rules.html
 author: Tom Copeland <tomcopeland@users.sourceforge.net>

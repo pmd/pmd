@@ -1,5 +1,5 @@
 ---
-title:  Writing XPath Rules
+title:  Writing XPath rules
 tags: [extending, userdocs]
 summary: "Writing XPath rules for PMD"
 last_updated: July 3, 2016
