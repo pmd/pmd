@@ -1,5 +1,6 @@
 ---
 title: Roadmap
+tags: [devdocs]
 permalink: pmd_devdocs_roadmap.html
 author: >
     Tom Copeland <tom@infoether.com>, Ryan Gustavson, Romain Pelisse <belaran@gmail.com>,

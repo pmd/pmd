@@ -14,16 +14,16 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
 
 ## Welcome to PMD!
 
-First time user? Then you may be interested in our [quickstart page](TODO).
+First time user? Then you may be interested in our [quickstart series](TODO)!
 
 <br/>
 
 <div id="grid" class="row">
 
     {% include custom/shuffle_panel.html
-       tag="essentials"
-       description="These pages summarize the Gist of PMD usage to get you started quickly:"
-       title="Essential resources" %}
+       tag="getting_started"
+       description="These pages summarize the gist of PMD usage to get you started quickly:"
+       title="Getting started" %}
 
 
     {% include custom/shuffle_panel.html

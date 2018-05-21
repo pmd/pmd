@@ -1,7 +1,7 @@
 ---
 title: Making rulesets
 keywords: [rulesets, reference, rule, exclude, include, pattern, filter]
-tags: [customizing, essentials, userdocs]
+tags: [getting_started, userdocs]
 summary: Making Custom Rulesets for PMD
 last_updated: November 2017
 summary: "A ruleset is an XML configuration file, which describes a collection of rules to be executed

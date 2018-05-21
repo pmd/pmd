@@ -1,5 +1,6 @@
 ---
 title: Writing documentation
+tags: [devdocs]
 last_update: August 2017
 permalink: pmd_devdocs_writing_documentation.html
 keywords: documentation, jekyll, markdown

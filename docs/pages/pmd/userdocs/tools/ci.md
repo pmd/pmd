@@ -1,5 +1,6 @@
 ---
 title: Continuous Integrations plugins
+tags: [userdocs, tools]
 permalink: pmd_userdocs_tools_ci.html
 author: Romain PELISSE <belaran@gmail.com>
 ---

@@ -1,7 +1,7 @@
 ---
 title: Adding PMD support for a new language
 short_title: Adding a new language
-tags: [customizing]
+tags: [devdocs, extending]
 summary: "How to add a new language to PMD."
 last_updated: July 3, 2016
 sidebar: pmd_sidebar

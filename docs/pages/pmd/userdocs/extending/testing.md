@@ -1,6 +1,6 @@
 ---
 title: Testing your rules
-tags: [customizing, testing]
+tags: [extending, userdocs]
 summary: "Learn how to use PMD's simple test framework for unit testing rules."
 permalink: pmd_userdocs_extending_testing.html
 last_updated: September 2017

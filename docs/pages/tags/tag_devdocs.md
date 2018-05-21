@@ -1,8 +1,8 @@
 ---
-title: "Customizing PMD Pages"
-tagName: customizing
+title: "Developer and contributor documentation"
+tagName: devdocs
 search: exclude
-permalink: tag_customizing.html
+permalink: tag_devdocs.html
 sidebar: pmd_sidebar
 folder: tags
 ---

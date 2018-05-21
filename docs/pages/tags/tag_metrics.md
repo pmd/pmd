@@ -1,8 +1,8 @@
 ---
-title: "Extending PMD"
-tagName: extending
+title: "Code metrics"
+tagName: metrics
 search: exclude
-permalink: tag_extending.html
+permalink: tag_metrics.html
 sidebar: pmd_sidebar
 folder: tags
 ---

@@ -1,6 +1,6 @@
 ---
 title: Finding duplicated code with CPD
-tags: [cpd]
+tags: [cpd, userdocs]
 summary: "Learn how to use CPD, the copy-paste detector shipped with PMD."
 permalink: pmd_userdocs_cpd.html
 author: Tom Copeland <tom@infoether.com>
