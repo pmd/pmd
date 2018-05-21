@@ -26,7 +26,8 @@ This is a bug fixing release.
 *   The new Java rule [`HardCodedCryptoKey`](pmd_rules_java_security.html#hardcodedcryptokey) (`java-security`)
     detects hard coded keys used for encryption. It is recommended to store keys outside of the source code.
 
-*   The new Java rule [`IdenticalCatchBranches`](pmd_rules_codestyle.xml#identicalcatchbranches) find catch blocks,
+*   The new Java rule [`IdenticalCatchBranches`](pmd_rules_codestyle.html#identicalcatchbranches) (`java-codestyle`)
+    finds catch blocks,
     that catch different exception but perform the same exception handling and thus can be collapsed into a
     multi-catch try statement.
 
