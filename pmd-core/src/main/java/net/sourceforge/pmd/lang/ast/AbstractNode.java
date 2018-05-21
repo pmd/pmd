@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -134,7 +135,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public boolean hasImageEqualTo(String image) {
-        return this.getImage() != null && this.getImage().equals(image);
+        return Objects.equals(this.getImage(), image);
     }
 
     @Override

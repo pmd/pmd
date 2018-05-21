@@ -59,7 +59,7 @@ public class NodeInfoPanelController implements Initializable {
     @FXML
     private TreeView<Object> scopeHierarchyTreeView;
     private MetricEvaluator metricEvaluator = new MetricEvaluator();
-
+    private Node selectedNode;
 
     public NodeInfoPanelController(MainDesignerController mainController) {
         parent = mainController;
@@ -74,7 +74,7 @@ public class NodeInfoPanelController implements Initializable {
                     .filterMap(o -> o instanceof NameDeclaration, o -> (NameDeclaration) o)
                     .subscribe(parent::onNameDeclarationSelected);
 
-        scopeHierarchyTreeView.setCellFactory(view -> new ScopeHierarchyTreeCell(parent));
+        scopeHierarchyTreeView.setCellFactory(view -> new ScopeHierarchyTreeCell());
     }
 
 
@@ -84,8 +84,11 @@ public class NodeInfoPanelController implements Initializable {
      * @param node Node to inspect
      */
     public void displayInfo(Node node) {
-
         Objects.requireNonNull(node, "Node cannot be null");
+
+        if (node.equals(selectedNode)) {
+            return;
+        }
 
         ObservableList<String> atts = getAttributes(node);
         xpathAttributesListView.setItems(atts);

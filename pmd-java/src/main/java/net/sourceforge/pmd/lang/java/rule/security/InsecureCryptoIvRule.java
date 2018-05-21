@@ -115,6 +115,11 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
     }
 
     private void validateProperIv(Object data, ASTVariableInitializer varInit) {
+        if (varInit == null) {
+            // the variable has no initializer, just a declaration
+            return;
+        }
+
         // hard coded array
         ASTArrayInitializer arrayInit = varInit.getFirstDescendantOfType(ASTArrayInitializer.class);
         if (arrayInit != null) {

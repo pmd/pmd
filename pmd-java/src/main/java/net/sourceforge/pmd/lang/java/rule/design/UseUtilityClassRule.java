@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -22,16 +21,20 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class UseUtilityClassRule extends AbstractJavaRule {
 
+    public UseUtilityClassRule() {
+        addRuleChainVisit(ASTClassOrInterfaceBody.class);
+    }
+
     @Override
     public Object visit(ASTClassOrInterfaceBody decl, Object data) {
         if (decl.jjtGetParent() instanceof ASTClassOrInterfaceDeclaration) {
             ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration) decl.jjtGetParent();
-            if (parent.isAbstract() || parent.isInterface() || isExceptionType(parent)) {
-                return super.visit(decl, data);
+            if (parent.isAbstract() || parent.isInterface() || parent.getSuperClassTypeNode() != null) {
+                return data;
             }
 
             if (isOkUsingLombok(parent)) {
-                return super.visit(decl, data);
+                return data;
             }
 
             int i = decl.jjtGetNumChildren();
@@ -78,7 +81,7 @@ public class UseUtilityClassRule extends AbstractJavaRule {
                 addViolation(data, decl);
             }
         }
-        return super.visit(decl, data);
+        return data;
     }
 
     private boolean isOkUsingLombok(ASTClassOrInterfaceDeclaration parent) {
@@ -115,19 +118,5 @@ public class UseUtilityClassRule extends AbstractJavaRule {
             n = p.jjtGetChild(index++);
         }
         return n;
-    }
-
-    private boolean isExceptionType(ASTClassOrInterfaceDeclaration parent) {
-        ASTExtendsList extendsList = parent.getFirstChildOfType(ASTExtendsList.class);
-        if (extendsList != null) {
-            ASTClassOrInterfaceType superClass = extendsList.getFirstChildOfType(ASTClassOrInterfaceType.class);
-            if (superClass.getType() != null && Throwable.class.isAssignableFrom(superClass.getType())) {
-                return true;
-            }
-            if (superClass.getType() == null && superClass.getImage().endsWith("Exception")) {
-                return true;
-            }
-        }
-        return false;
     }
 }

@@ -5,13 +5,27 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
-variable and param named enum
+variable named enum
      ]]></description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String enum = "hi";
+ }
+}
+     ]]></code>
+     <source-type>java 1.4</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+param named enum
+     ]]></description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
  void bar(String enum) {
-  String enum = "hi";
+  enum = "hi";
  }
 }
      ]]></code>

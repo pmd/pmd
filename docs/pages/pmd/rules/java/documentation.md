@@ -128,6 +128,7 @@ contain statements, but there is no comment. By explicitly commenting empty
 constructors it is easier to distinguish between intentional (commented)
 and unintentional empty constructors.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ConstructorDeclaration[@Private='false']
                         [count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
@@ -164,6 +165,7 @@ statements, but there is no comment. By explicitly commenting empty method bodie
 it is easier to distinguish between intentional (commented) and unintentional
 empty methods.
 
+**This rule is defined by the following XPath expression:**
 ```
 //MethodDeclaration/Block[count(BlockStatement) = 0 and @containsComment = 'false']
 ```

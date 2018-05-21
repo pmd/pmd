@@ -63,6 +63,10 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
                 .getDeclarations(VariableNameDeclaration.class);
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
             VariableNameDeclaration variableDeclaration = entry.getKey();
+            if (variableDeclaration.getDeclaratorId().isFormalParameter()) {
+                continue;
+            }
+            
             List<NameOccurrence> usages = entry.getValue();
 
             if (usages.size() == 1) { // If there is more than 1 usage, then it's not only returned

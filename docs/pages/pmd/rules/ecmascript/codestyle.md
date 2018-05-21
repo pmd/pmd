@@ -17,6 +17,7 @@ language: Ecmascript
 Avoid assignments in operands; this can make code more complicated and harder to read.  This is sometime
 indicative of the bug where the assignment operator '=' was used instead of the equality operator '=='.
 
+**This rule is defined by the following XPath expression:**
 ```
 //IfStatement[$allowIf = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
 |
@@ -69,6 +70,7 @@ function getX() {
 
 Avoid using 'for' statements without using curly braces.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ForLoop[not(child::Scope)]
 |
@@ -101,6 +103,7 @@ for (var i = 0; i < 42; i++)
 
 Avoid using if..else statements without using curly braces.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ExpressionStatement[parent::IfStatement[@Else = "true"]]
    [not(child::Scope)]
@@ -137,6 +140,7 @@ else
 
 Avoid using if statements without using curly braces.
 
+**This rule is defined by the following XPath expression:**
 ```
 //IfStatement[@Else = "false" and not(child::Scope)]
 ```
@@ -170,6 +174,7 @@ Then the content of the else block can be put outside.
 
 See also: <http://eslint.org/docs/rules/no-else-return>
 
+**This rule is defined by the following XPath expression:**
 ```
 //IfStatement[@Else="true"][Scope[1]/ReturnStatement]
 ```
@@ -206,6 +211,7 @@ An unnecessary Block is present.  Such Blocks are often used in other languages 
 introduce a new variable scope.  Blocks do not behave like this in ECMAScipt, and using them can
 be misleading.  Considering removing this unnecessary Block.
 
+**This rule is defined by the following XPath expression:**
 ```
 //Block[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
     or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
@@ -240,6 +246,7 @@ if (bar) {
 
 Unnecessary parentheses should be removed.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ParenthesizedExpression/ParenthesizedExpression
 ```
@@ -266,6 +273,7 @@ var z = ((1 + 1)); // Bad
 A 'return', 'break', 'continue', or 'throw' statement should be the last in a block. Statements after these
 will never execute.  This is a bug, or extremely poor style.
 
+**This rule is defined by the following XPath expression:**
 ```
 //ReturnStatement[following-sibling::node()]
 |
@@ -304,6 +312,7 @@ function bar() {
 
 Avoid using 'while' statements without using curly braces.
 
+**This rule is defined by the following XPath expression:**
 ```
 //WhileLoop[not(child::Scope)]
 ```

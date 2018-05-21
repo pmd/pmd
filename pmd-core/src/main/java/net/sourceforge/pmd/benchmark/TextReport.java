@@ -20,6 +20,7 @@ import net.sourceforge.pmd.PMD;
  *
  *
  */
+@Deprecated
 public class TextReport implements BenchmarkReport {
 
     private static final int TIME_COLUMN = 48;

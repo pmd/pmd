@@ -17,6 +17,7 @@ language: Java Server Pages
 IFrames which are missing a src element can cause security information popups in IE if you are accessing the page
 through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 
+**This rule is defined by the following XPath expression:**
 ```
 //Element[upper-case(@Name)="IFRAME"][count(Attribute[upper-case(@Name)="SRC" ]) = 0]
 ```
