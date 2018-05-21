@@ -1,16 +1,15 @@
 <!-- Argument summary: -->
 
-<!-- tag: tag determining the pages included in the panel -->
+<!-- tags: tag determining the pages included in the panel -->
 <!-- title: Display title of the panel -->
 <!-- description: Description of the panel -->
 <!-- image (optional) : Name of the image to use, as a css class, eg "fa-list" -->
 <!-- titlemaker (optional) : name of a variable that's evaluated to determine the displayed title of the page. Default is page.title -->
 
 
-{% capture titlemaker %} {{ include.titlemaker | or_else: "page.title" }} {% endcapture %}
+{% capture titlemaker %} {{ include.titlemaker | default: "page.title" }} {% endcapture %}
 
-
-<div class="col-xs-6 col-sm-4 col-md-4" data-groups='["{{ include.tag }}"]'>
+<div class="col-xs-6 col-sm-4 col-md-4" data-groups='{{ include.datagroups }}'>
     <div class="panel panel-default">
 
 
@@ -31,11 +30,11 @@
             </p>
             <ul>
                 {% for page in site.pages %}
-                {% for tag in page.tags %}
-                {% if tag == include.tag %}
-                <li><a href="{{page.url | remove: '/'}}">{% eval titlemaker %}</a></li>
-                {% endif %}
-                {% endfor %}
+                    {% capture alltags %}{{ page.tags | contains_all: include.tags }}{% endcapture %}
+                    <!-- ugly, but one can only capture string values -->
+                    {% if alltags contains "true" %}
+                        <li><a href="{{page.url | remove: '/'}}">{% eval titlemaker %}</a></li>
+                    {% endif %}
                 {% endfor %}
             </ul>
         </div>

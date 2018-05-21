@@ -1,13 +1,27 @@
 module CustomFilters
-  # returns the input if it's a non-blank string, otherwise return default value
-  def or_else(input, default)
-    if input
-      input.strip != "" ? input : default
+
+  def contains_all(input, test)
+    if !test
+      !input
+    elsif !input
+      false
     else
-      default
+      test.split(",").all? {|val| input.include?(val)}
+
     end
   end
 
+  def intersect(xs, ys)
+    xs & ys
+  end
+
+  def union(xs, ys)
+    xs | ys
+  end
+
+  def diff(xs, ys)
+    xs - ys
+  end
 end
 
 Liquid::Template.register_filter(CustomFilters)
