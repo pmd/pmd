@@ -91,6 +91,8 @@ Other languages are equivalent.
 *   The new Java rule [`InsecureCryptoIv`](pmd_rules_java_security.html#insecurecryptoiv) (`java-security`)
     detects hard coded initialization vectors used in cryptographic operations. It is recommended to use
     a randomly generated IV.
+*   The new Java rule [`HardCodedCryptoKey`](pmd_rules_java_security.html#hardcodedcryptokey) (`java-security`)
+    detects hard coded keys used for encryption. It is recommended to store keys outside of the source code.
 
 #### Modified Rules
 
@@ -145,4 +147,5 @@ Other languages are equivalent.
 *   [#1041](https://github.com/pmd/pmd/pull/1041): \[java] Make BasicProjectMemoizer thread safe. - [bergander](https://github.com/bergander)
 *   [#1042](https://github.com/pmd/pmd/pull/1042): \[java] New security rule: report usage of hard coded IV in crypto operations - [Sergey Gorbaty](https://github.com/sgorbaty)
 *   [#1044](https://github.com/pmd/pmd/pull/1044): \[java] Fix for issue #816 - [Akshat Bahety](https://github.com/akshatbahety)
+*   [#1046](https://github.com/pmd/pmd/pull/1046): \[java] New security rule for finding hard-coded keys used for cryptographic operations - [Sergey Gorbaty](https://github.com/sgorbaty)
 
