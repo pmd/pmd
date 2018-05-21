@@ -327,6 +327,7 @@ folder: pmd/rules
 
 {% include callout.html content="Rules that flag potential security flaws." %}
 
+*   [HardCodedCryptoKey](pmd_rules_java_security.html#hardcodedcryptokey): Do not use hard coded values for cryptographic operations. Please store keys outside of source code.
 *   [InsecureCryptoIv](pmd_rules_java_security.html#insecurecryptoiv): Do not use hard coded initialization vector in cryptographic operations. Please use a randomly ge...
 
 ## Additional rulesets

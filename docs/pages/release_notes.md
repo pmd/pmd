@@ -13,12 +13,18 @@ This is a bug fixing release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
+    *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
 * [External Contributions](#external-contributions)
 
 ### New and noteworthy
+
+#### New Rules
+
+*   The new Java rule [`HardCodedCryptoKey`](pmd_rules_java_security.html#hardcodedcryptokey) (`java-security`)
+    detects hard coded keys used for encryption. It is recommended to store keys outside of the source code.
 
 #### Modified Rules
 
@@ -60,8 +66,8 @@ This is a bug fixing release.
   in the same package.
 
 
-
 ### External Contributions
 
+*   [#1046](https://github.com/pmd/pmd/pull/1046): \[java] New security rule for finding hard-coded keys used for cryptographic operations - [Sergey Gorbaty](https://github.com/sgorbaty)
 *   [#1101](https://github.com/pmd/pmd/pull/1101): \[java] Fixes false positive for `DoNotExtendJavaLangError`  - [Akshat Bahety](https://github.com/akshatbahety)
 *   [#1106](https://github.com/pmd/pmd/pull/1106): \[vf] URLENCODE is ignored as valid escape method - [Robert Sösemann](https://github.com/rsoesemann)
