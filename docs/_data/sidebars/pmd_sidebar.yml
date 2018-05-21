@@ -18,7 +18,7 @@ entries:
   - title: About
     output: web, pdf
     folderitems:
-    - title: Introduction
+    - title: Home
       url: /index.html
       output: web, pdf
       type: homepage
@@ -33,9 +33,6 @@ entries:
     folderitems:
     - title: Installation and basic CLI usage
       url: /pmd_userdocs_installation.html
-      output: web, pdf
-    - title: Understanding rulesets
-      url: /pmd_userdocs_understanding_rulesets.html
       output: web, pdf
     - title: Making rulesets
       url: /pmd_userdocs_making_rulesets.html

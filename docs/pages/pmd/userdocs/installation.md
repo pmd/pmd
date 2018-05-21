@@ -35,24 +35,36 @@ Unzip it into any directory, optionally add the `bin` subdirectory in your `PATH
             the arguments are specific to the utility used.<br/><br/>
             On Windows, each utility has its own startup script, e.g. `pmd.bat`, `cpd.bat`." %}
 
-The PMD command (`pmd.bat` or `run.sh pmd`) requires three options:
+The PMD command (`pmd.bat` or `run.sh pmd`) requires two options:
 
-* `-d <path>`: path to the sources to analyse. This can be a file name, a directory or a jar or zip file containing the 
+* `-d <path>`: path to the sources to analyse. This can be a file name, a directory, or a jar or zip file containing the
 sources.
-* `-f <format>`: report format. PMD supports many report formats out of the box, you may want to start with the basic 
-`text` 
-format or `xml` format.
 * `-R <path>`: the ruleset file you want to use. PMD uses xml configuration files, called *rulesets*, which specify 
-which rules to check for in your sources. PMD provides standard rulesets for each language it supports, grouping the
-rules by theme. Instead of a path, you can reference those standard rulesets with the lightweight syntax 
-`rulesets/<lang>/<name.xml>`, e .g. `rulesets/java/codesize.xml`.
+which rules to execute on your sources. You can also run a single rule by referencing it using its *category* and
+name (more details [here](pmd_userdocs_making_rulesets.html#referencing-rules)). For example, you can check for unnecessary
+modifiers on Java sources with `-R category/java/codestyle.xml/UnnecessaryModifier`.
 
 {% include note.html
-   content="At the moment most of the formerly provided rulesets are deprecated, though you can still use them. PMD
-            will soon propose updated rulesets to use as default configurations." %}
+   content="At the moment the formerly provided rulesets (eg `rulesets/java/basic.xml`) are deprecated,
+   though you can still use them. PMD will soon include standard rulesets as default configurations,
+   but you're strongly encouraged to [create your own ruleset](pmd_userdocs_making_rulesets.html) from
+   the start." %}
+
+Additionnally, the following options, are specified most of the time even though they're not required:
+* `-f <format>`: report format. PMD supports many report formats out of the box, you may want to start with the basic
+`text` format or `xml` format.
+* `-auxclasspath <classpath>`: class path containing the compiled class files of the analysed Java sources, if any.
+  Setting this up correctly allows PMD to do much deeper analysis using reflection. Some rules, such as [MissingOverride](http://localhost:4005/pmd_rules_java_bestpractices.html#missingoverride),
+  require it to function properly.
+
+{%include tip.html content="A full CLI reference, including report formats, is available under [PMD CLI Reference](pmd_userdocs_cli_reference.html)" %}
 
 
-Sample usage with the `text` format:
+
+### Sample usage
+
+ The following shows a sample run of with the `text` format:
+
 
 <div class="text-left">
   <ul class="nav nav-tabs" role="tablist">
@@ -82,13 +94,7 @@ Sample usage with the `text` format:
   .../src/main/java/com/me/RuleSetWriter.java:66     Avoid empty catch blocks</code></pre></figure>
     </div>
   </div>
-</div>          
-
-
-Also, the PMD binary distribution includes the ruleset files
-inside the jar file - even though the "rulesets/java/unusedcode.xml" parameter
-above looks like a filesystem reference, it's really being used by a getResourceAsStream() call
-to load it out of the PMD jar file.
+</div>
 
 
 ## Running CPD via command line
