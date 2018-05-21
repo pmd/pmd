@@ -1321,14 +1321,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             try {
                 return pmdClassLoader.loadClass(fullClassName);
             } catch (ClassNotFoundException ignored) {
+                // ignored
+            } catch (LinkageError e) {
                 if (LOG.isLoggable(Level.FINE)) {
                     LOG.log(Level.FINE, "Tried to load class " + fullClassName + " from on demand import, "
-                            + "which apparently doesn't exist.", ignored);
-                }
-            } catch (LinkageError ignored) {
-                if (LOG.isLoggable(Level.FINE)) {
-                    LOG.log(Level.FINE, "Tried to load class " + fullClassName + " from on demand import, "
-                            + "which apparently doesn't exist.", ignored);
+                            + "with an incomplete classpath.", e);
                 }
             }
         }
