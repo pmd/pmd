@@ -1,13 +1,23 @@
 <!-- Argument summary: -->
 
-<!-- tags: tag determining the pages included in the panel -->
+<!-- tags: comma-separated tags determining the pages included in the panel -->
+<!-- except_tags: comma-separated tags to filter out some pages -->
+
+<!-- A page is included if it has all the include tags and none of the exclude tags -->
+
+
 <!-- title: Display title of the panel -->
 <!-- description: Description of the panel -->
+<!-- datagroups: json array containing the data groups for the shuffle logic -->
+
 <!-- image (optional) : Name of the image to use, as a css class, eg "fa-list" -->
 <!-- titlemaker (optional) : name of a variable that's evaluated to determine the displayed title of the page. Default is page.title -->
 
 
 {% capture titlemaker %} {{ include.titlemaker | default: "page.title" }} {% endcapture %}
+{% assign include_tags = {{ include.tags | split: "," }} %}
+{% assign exclude_tags = {{ include.except_tags | split: "," }} %}
+
 
 <div class="col-xs-6 col-sm-4 col-md-4" data-groups='{{ include.datagroups }}'>
     <div class="panel panel-default">
@@ -30,9 +40,10 @@
             </p>
             <ul>
                 {% for page in site.pages %}
-                    {% capture alltags %}{{ page.tags | contains_all: include.tags }}{% endcapture %}
-                    <!-- ugly, but one can only capture string values -->
-                    {% if alltags contains "true" %}
+                    {% capture included %}{{ page.tags | intersect: include_tags | equals: include_tags }}{% endcapture %}
+                    {% capture excluded %}{{ page.tags | intersect: exclude_tags | empty }}{% endcapture %}
+
+                    {% if included contains "true" and excluded contains "true" %}
                         <li><a href="{{page.url | remove: '/'}}">{% eval titlemaker %}</a></li>
                     {% endif %}
                 {% endfor %}

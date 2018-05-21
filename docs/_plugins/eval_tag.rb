@@ -1,6 +1,5 @@
 
-# This tag takes a variable name as an input, and evaluates its value twice
-# (follows one indirection)
+# This tag takes a variable name as an input, and evaluates its value twice (dereferences it once)
 # E.g. if the symbol table is E = {"foo" => "bar", "bar" => "baz"},
 # then {% eval foo %} ~> E[E["foo"]] ~> E["bar"] ~> "baz"
 

@@ -1,27 +1,24 @@
 module CustomFilters
 
-  def contains_all(input, test)
-    if !test
-      !input
-    elsif !input
-      false
+  def intersect(xs, ys)
+    if !xs || !ys
+      []
     else
-      test.split(",").all? {|val| input.include?(val)}
-
+      Array(xs) & Array(ys)
     end
   end
 
-  def intersect(xs, ys)
-    xs & ys
+  def equals(xs, ys)
+    a = Array(xs)
+    b = Array(ys)
+
+    ((a | b) - (a & b)).empty?
   end
 
-  def union(xs, ys)
-    xs | ys
+  def empty(xs)
+    Array(xs).empty?
   end
 
-  def diff(xs, ys)
-    xs - ys
-  end
 end
 
 Liquid::Template.register_filter(CustomFilters)
