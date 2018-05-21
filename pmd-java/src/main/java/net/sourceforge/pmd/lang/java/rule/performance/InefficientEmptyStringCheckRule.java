@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
  * This rule finds code which inefficiently determines empty strings. This code
  *
  * <pre>
- *         if(str.trim().length()==0){....
+ * str.trim().length()==0
  * </pre>
  *
  * <p>
@@ -22,8 +22,16 @@ import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
  * </p>
  *
  * <pre>
- * Character.isWhitespace(str.charAt(i));
+ * private boolean checkTrimEmpty(String str) {
+ *     for(int i=0; i<str.length(); i++) {
+ *         if(!Character.isWhitespace(str.charAt(i))) {
+ *             return false;
+ *         }
+ *     }
+ *     return true;
+ * }
  * </pre>
+ * or Apache commons-lang's <code>StringUtils.isBlank</code>.
  *
  * @author acaplan
  */
