@@ -1,6 +1,8 @@
 ---
 title: Suppressing warnings
-tags: [suppressing, warnings]
+keywords: [suppressing, warnings, suppresswarnings, nopmd, violationSuppressXPath, violationSuppressRegex]
+tags: [userdocs]
+summary: "Learn how to suppress some rule violations, from the source code using annotations or comments, or globally from the ruleset"
 permalink: pmd_userdocs_suppressing_warnings.html
 author: Tom Copeland <tom@infoether.com>
 ---
@@ -35,7 +37,7 @@ Otherwise, the other suppression methods are explained in the following sections
 
 ## Annotations
 
-When using Java 1.5 or later,you can use annotations to suppress PMD warnings, like this:
+When using Java 1.5 or later, you can use annotations to suppress PMD warnings, like this:
 
     // This will suppress all the PMD warnings in this class
     @SuppressWarnings("PMD")
@@ -45,7 +47,7 @@ When using Java 1.5 or later,you can use annotations to suppress PMD warnings, l
         }
     }
 
-When using Apex make sure to use Single Quotes instead of Double Quotes 
+When using Apex make sure to use single quotes instead of double quotes
 
 ``` 
     // This will suppress all the PMD warnings in this class
@@ -87,17 +89,17 @@ PMD Java also obeys the JDK annotation @SuppressWarnings("unused"), which will a
     }
 
 
-## NOPMD
+## NOPMD comment
 
-Alternatively, you can tell PMD to ignore a specific line by using the "NOPMD" marker, like this:
+Alternatively, you can tell PMD to ignore a specific line by using the "NOPMD" marker in a comment, like this:
 
     public class Bar {
         // 'bar' is accessed by a native method, so we want to suppress warnings for it
         private int bar; //NOPMD
     }
 
-You can use whatever text string you want to suppress warnings, for example, here's
-how to use TURN\_OFF\_WARNINGS as the suppressor:
+You can use whatever text string you want to suppress warnings, by using the `-suppressmarker` CLI option.
+For example, here's how to use `TURN_OFF_WARNINGS` as the suppressor:
 
     $ cat Foo.java
     public class Foo {
@@ -111,8 +113,8 @@ how to use TURN\_OFF\_WARNINGS as the suppressor:
     UnusedLocalVariable rule violation suppressed by //NOPMD in /home/tom/pmd/pmd/bin/Foo.java
 
 Note that PMD expects the //NOPMD marker to be on the same line as the violation. So, for
-example, if you want to suppress an "empty if statement" warning, you'll need to place it on
-the line containing the "if" keyword, e.g.:
+example, if you want to suppress an "empty `if` statement" warning, you'll need to place it on
+the line containing the `if` keyword, e.g.:
 
     $ cat ~/tmp/Foo.java
     public class Foo {
@@ -136,17 +138,23 @@ A message placed after the NOPMD marker will get placed in the report, e.g.:
         }
     }
 
-## Violation Suppress Regex
+## XPath and Regex message suppression
 
-If a particular Rule does not provide a property to customize behavior
-sufficiently, you can fall back to using the global 'violationSuppressRegex'
-property.  This property defines a regular expression to match against the
+If a particular rule fails consistently in a particular context, you can fall
+back to disabling the rule for all these contexts using one of two rule properties
+that are defined on every rule. Depending on what you're after, you can suppress
+violations for **specific messages** using regular expressions, or **specific nodes**
+using an XPath expression.
+
+
+### The property `violationSuppressRegex`
+
+This property defines a regular expression to match against the
 message of the violation.  If the regular expression matches,
 then the violation will be suppressed.
 
-When using a Rule reference in a RuleSet XML, you can customize the
-Rule by adding the 'violationSuppressRegex' property.  For example, to
-suppress reporting specifically named parameters which are unused:
+For example, to suppress reporting specifically named parameters which
+are unused:
 
 
     <rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
@@ -160,17 +168,13 @@ a regular expression that matches the message of violations you wish to
 suppress. Regular expressions are explained in the JavaDoc for standard
 Java class java.util.regex.Pattern.
 
-## Violation Suppress XPath
+###  The property `violationSuppressXPath`
 
-If a particular Rule does not provide a property to customize behavior
-sufficiently, you can fall back to using the global 'violationSuppressXPath'
-property.  This property defines an XPath query to be executed using the
+This property defines an XPath query to be executed using the
 violation node as the starting point.  If the XPath query matches anything,
 then the violation will be suppressed.
 
-When using a Rule reference in a RuleSet XML, you can customize the
-Rule by adding the 'violationSuppressXPath' property.  For example, to
-suppress reporting specifically typed parameters which are unused:
+For example, to suppress reporting specifically typed parameters which are unused:
 
     <rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
       <properties>
