@@ -5,12 +5,12 @@ permalink: pmd_rules_java_security.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/security.xml
-keywords: Security, InsecureCryptoIv, HardCodedCryptoKey
+keywords: Security, HardCodedCryptoKey, InsecureCryptoIv
 language: Java
 ---
 ## HardCodedCryptoKey
 
-**Since:** PMD 6.3.0
+**Since:** PMD 6.4.0
 
 **Priority:** Medium (3)
 
@@ -23,11 +23,11 @@ Do not use hard coded values for cryptographic operations. Please store keys out
 ``` java
 public class Foo {
     void good() {
-		SecretKeySpec secretKeySpec = new SecretKeySpec(Properties.getKey(), "AES");		
+        SecretKeySpec secretKeySpec = new SecretKeySpec(Properties.getKey(), "AES");
     }
 
     void bad() {
-		SecretKeySpec secretKeySpec = new SecretKeySpec("my secret here".getBytes(), "AES");
+        SecretKeySpec secretKeySpec = new SecretKeySpec("my secret here".getBytes(), "AES");
     }
 }
 ```
@@ -64,7 +64,6 @@ public class Foo {
     void alsoBad() {
         byte[] iv = "secret iv in here".getBytes();
     }
-    
 }
 ```
 
