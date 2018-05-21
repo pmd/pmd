@@ -64,6 +64,10 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
     `IfElseStmtMustUseBraces`. More than covering the use cases of those rules, this rule also supports
     `do ... while` statements and `case` labels of `switch` statements (disabled by default).
 
+*   The new Java rule [`IdenticalCatchBranches`](pmd_rules_codestyle.xml#identicalcatchbranches) find catch blocks,
+    that catch different exception but perform the same exception handling and thus can be collapsed into a
+    multi-catch try statement.
+
 #### Modified Rules
 
 *   The Java rule `CommentContentRule` (`java-documentation`) previously had the property `wordsAreRegex`. But this 
@@ -92,6 +96,7 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
 *   java-codestyle
     *   [#974](https://github.com/pmd/pmd/issues/974): \[java] Merge *StmtMustUseBraces rules
     *   [#983](https://github.com/pmd/pmd/issues/983): \[java] Detect annotations with single value element
+    *   [#955](https://github.com/pmd/pmd/issues/955): \[java] Detect identical catch statements
 *   java-design
     *   [#832](https://github.com/pmd/pmd/issues/832): \[java] AvoidThrowingNullPointerException documentation suggestion
     *   [#837](https://github.com/pmd/pmd/issues/837): \[java] CFGs of declared but not called lambdas are treated as parts of an enclosing method's CFG
@@ -127,4 +132,5 @@ On both scenarios, disabling the cache takes precedence over setting a cache loc
 * [#989](https://github.com/pmd/pmd/pull/989): \[core] Update Contribute.md to close Issue #978 - [Bolarinwa Saheed Olayemi](https://github.com/refactormyself)
 * [#990](https://github.com/pmd/pmd/pull/990): \[java] Updated Doc on AvoidThrowingNullPointerException to close Issue #832 - [Bolarinwa Saheed Olayemi](https://github.com/refactormyself)
 * [#993](https://github.com/pmd/pmd/pull/993): \[core] Update writing_documentation.md to fix Issue #992 - [Bolarinwa Saheed Olayemi](https://github.com/refactormyself)
+* [#966](https://github.com/pmd/pmd/pull/966): \[java] Issue #955: add new rule to detect identical catch statement - [Clément Fournier](https://github.com/oowekyala) and [BBG](https://github.com/djydewang)
 

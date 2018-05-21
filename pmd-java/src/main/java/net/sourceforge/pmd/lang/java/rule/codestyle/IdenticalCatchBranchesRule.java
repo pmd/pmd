@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * Flags identical catch branches, which can be collapsed into a multi-catch.
  *
  * @author Clément Fournier
- * @since 6.2.0
+ * @since 6.4.0
  */
 public class IdenticalCatchBranchesRule extends AbstractJavaRule {
 

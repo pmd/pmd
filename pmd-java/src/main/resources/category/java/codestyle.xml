@@ -791,7 +791,7 @@ public interface GenericDao<EF extends BaseModel, K extends Serializable> {
 
     <rule name="IdenticalCatchBranches"
           language="java"
-          since="6.2.0"
+          since="6.4.0"
           minimumLanguageVersion="1.7"
           message="''catch'' branch identical to ''{0}'' branch"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.IdenticalCatchBranchesRule"
