@@ -42,7 +42,6 @@ First time user? Then you may be interested in our [quickstart series](TODO)!
        title="Getting started" %}
 
 
-
     {% include custom/shuffle_panel.html
        tags="rule_references"
        datagroups='["userdocs"]'
@@ -53,10 +52,46 @@ First time user? Then you may be interested in our [quickstart series](TODO)!
 
     {% include custom/shuffle_panel.html
        tags="userdocs,extending"
-       datagroups='["userdocs", "extending"]'
+       datagroups='["userdocs", "extending", "contributing"]'
        title="Writing rules"
        description="These pages document the process of writing and testing custom rules and metrics for PMD."
     %}
+
+    {% include custom/shuffle_panel.html
+       tags="userdocs"
+       except_tags="extending,tools"
+       datagroups='["userdocs"]'
+       image="fa-cog"
+       title="Usage and configuration"
+       description="Learn how to build effective and versatile rulesets."
+    %}
+
+
+    {% include custom/shuffle_panel.html
+       tags="devdocs"
+       except_tags="extending"
+       datagroups='["contributing"]'
+       image="fa-github"
+       title="Contributing"
+       description="If you'd like to help us build PMD, these topics may interest you. See you around!"
+    %}
+
+
+
+    {% include custom/shuffle_panel.html
+       tags="tools"
+       datagroups='["userdocs"]'
+       title="Tools and integrations"
+       description="These pages describe solutions that integrate PMD within your build process."
+    %}
+
+    {% include custom/shuffle_panel.html
+       tags="devdocs,extending"
+       datagroups='["contributing","extending"]'
+       title="Major contributions"
+       description=""
+    %}
+
 
 
    <!-- {% include custom/shuffle_panel_filler.html %} -->
