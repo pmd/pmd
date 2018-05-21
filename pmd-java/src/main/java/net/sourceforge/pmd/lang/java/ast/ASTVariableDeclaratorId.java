@@ -142,9 +142,26 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * since the type node is absent.
      */
     public boolean isTypeInferred() {
+        return isLambdaExpression() || isLocalVariableTypeInferred();
+    }
+
+    private boolean isLambdaExpression() {
         return jjtGetParent() instanceof ASTLambdaExpression;
     }
 
+    private boolean isLocalVariableTypeInferred() {
+        ASTType type = null;
+
+        if (jjtGetParent() instanceof ASTResource) {
+            // covers "var" in try-with-resources
+            type = jjtGetParent().getFirstChildOfType(ASTType.class);
+        } else if (getNthParent(2) instanceof ASTLocalVariableDeclaration) {
+            // covers "var" as local variables and in for statements
+            type = getNthParent(2).getFirstChildOfType(ASTType.class);
+        }
+
+        return type != null && type.isTypeInferred();
+    }
 
     /**
      * Returns the first child of the node returned by {@link #getTypeNode()}.

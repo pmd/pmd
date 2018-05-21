@@ -644,7 +644,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         super.visit(node, data);
         // resolve "var" types: Upward projection of the type of the initializer expression
-        ASTType type = node.getFirstChildOfType(ASTType.class);
+        ASTType type = node.getTypeNode();
         if (type != null && type.isTypeInferred()) {
             ASTVariableInitializer initializer = node.getFirstDescendantOfType(ASTVariableInitializer.class);
             if (initializer != null && initializer.jjtGetChild(0) instanceof ASTExpression) {
