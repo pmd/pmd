@@ -387,8 +387,8 @@ public class Foo extends Bar{
         <example>
 <![CDATA[
 // This is Pascal case, the recommended naming convention in Java
-// Note that the default values of this rule don't allow numbers,
-// underscores, or accented characters in type names
+// Note that the default values of this rule don't allow underscores, 
+// or accented characters in type names
 public class FooBar {}
 
 // You may want abstract classes to be named 'AbstractXXX',
