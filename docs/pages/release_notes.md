@@ -58,6 +58,7 @@ This is a bug fixing release.
 *   java-performance
     *   [#1051](https://github.com/pmd/pmd/issues/1051): \[java] ConsecutiveAppendsShouldReuse false-negative
     *   [#1098](https://github.com/pmd/pmd/pull/1098): \[java] Simplify LongInstantiation, IntegerInstantiation, ByteInstantiation, and ShortInstantiation using type resolution
+    *   [#1125](https://github.com/pmd/pmd/issues/1125): \[java] Improve message of InefficientEmptyStringCheck for String.trim().isEmpty()
 *   doc
     *   [#999](https://github.com/pmd/pmd/issues/999): \[doc] Add a header before the XPath expression in rules
     *   [#1082](https://github.com/pmd/pmd/issues/1082): \[doc] Multifile analysis doc is invalid
@@ -79,3 +80,4 @@ This is a bug fixing release.
 *   [#1101](https://github.com/pmd/pmd/pull/1101): \[java] Fixes false positive for `DoNotExtendJavaLangError`  - [Akshat Bahety](https://github.com/akshatbahety)
 *   [#1106](https://github.com/pmd/pmd/pull/1106): \[vf] URLENCODE is ignored as valid escape method - [Robert Sösemann](https://github.com/rsoesemann)
 *   [#1126](https://github.com/pmd/pmd/pull/1126): \[java] Improve implementation hint in InefficientEmptyStringCheck - [krichter722](https://github.com/krichter722)
+*   [#1129](https://github.com/pmd/pmd/pull/1129): \[java] Adjust InefficientEmptyStringCheck documentation - [krichter722](https://github.com/krichter722)
