@@ -8,11 +8,13 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration.DeclarationKind;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -58,7 +60,6 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
         }
     }
 
-
     // This could probably be moved to ClassOrInterfaceDeclaration
     // to share the implementation and be used from XPath
     private boolean isUtilityClass(ASTAnyTypeDeclaration node) {
@@ -81,7 +82,7 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
             switch (decl.getKind()) {
             case FIELD:
             case METHOD:
-                hasAny = true;
+                hasAny = !isMainMethod(decl);
                 if (!((AccessNode) decl.getDeclarationNode()).isStatic()) {
                     return false;
                 }
@@ -99,6 +100,21 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
         }
 
         return hasAny;
+    }
+
+
+    private boolean isMainMethod(ASTAnyTypeBodyDeclaration bodyDeclaration) {
+        if (!DeclarationKind.METHOD.equals(bodyDeclaration.getKind())) {
+            return false;
+        }
+
+        ASTMethodDeclaration decl = (ASTMethodDeclaration) bodyDeclaration.getDeclarationNode();
+
+        return decl.isStatic()
+                && "main".equals(decl.getMethodName())
+                && decl.getResultType().isVoid()
+                && decl.getFormalParameters().getParameterCount() == 1
+                && String[].class.equals(decl.getFormalParameters().iterator().next().getType());
     }
 
 
