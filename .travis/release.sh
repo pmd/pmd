@@ -76,5 +76,9 @@ mkdir pmd.github.io
     git push origin master
 )
 
+echo -e "\n\nUploading the new release to pmd.sourceforge.net which serves as an archive...\n\n"
+travis_wait rsync -ah --stats pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${VERSION}/
+
+
 fi
 
