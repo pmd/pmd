@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.util.fxdesigner.model;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import java.util.Objects;
+
+import org.reactfx.EventStream;
+import org.reactfx.value.Var;
 
 /**
  * Logs events.
@@ -15,20 +17,13 @@ import javafx.collections.ObservableList;
  */
 public class EventLogger {
 
-    private ObservableList<LogEntry> log = FXCollections.observableArrayList();
-
+    private Var<LogEntry> latestEvent = Var.newSimpleVar(null);
 
     public void logEvent(LogEntry event) {
-        log.add(event);
+        latestEvent.setValue(event);
     }
 
-
-    /**
-     * Gets an observable view of the log.
-     *
-     * @return The log
-     */
-    public ObservableList<LogEntry> getLog() {
-        return log;
+    public EventStream<LogEntry> getLog() {
+        return latestEvent.values().filter(Objects::nonNull);
     }
 }

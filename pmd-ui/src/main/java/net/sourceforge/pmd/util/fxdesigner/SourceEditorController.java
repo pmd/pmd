@@ -5,12 +5,8 @@
 package net.sourceforge.pmd.util.fxdesigner;
 
 import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.time.Duration;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -56,7 +52,6 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     private ASTManager astManager;
 
-
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
         parent = mainController;
         astManager = new ASTManager(owner);
@@ -73,6 +68,11 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         EventStreams.valuesOf(astTreeView.getSelectionModel().selectedItemProperty())
                     .filterMap(Objects::nonNull, TreeItem::getValue)
                     .subscribe(parent::onNodeItemSelected);
+
+        codeEditorArea.richChanges()
+                .filter(t -> !t.getInserted().equals(t.getRemoved()))
+                .successionEnds(Duration.ofMillis(100))
+                .subscribe(richChange -> parent.onRefreshASTClicked());
 
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
     }
@@ -118,7 +118,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     private void updateSyntaxHighlighter(Language language) {
         Optional<SyntaxHighlighter> highlighter = AvailableSyntaxHighlighters.getHighlighterForLanguage(language);
-        
+
         if (highlighter.isPresent()) {
             codeEditorArea.setSyntaxHighlightingEnabled(highlighter.get());
         } else {

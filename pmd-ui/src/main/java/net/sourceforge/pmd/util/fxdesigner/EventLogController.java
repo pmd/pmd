@@ -7,12 +7,15 @@ package net.sourceforge.pmd.util.fxdesigner;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 import java.util.ResourceBundle;
 
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 
+import org.reactfx.EventStream;
+import org.reactfx.EventStreams;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -69,7 +72,17 @@ public class EventLogController implements Initializable {
             }
         });
 
-        eventLogTableView.setItems(designerRoot.getLogger().getLog());
+        EventStream<LogEntry> e1 = designerRoot.getLogger().getLog()
+                .filter(x -> x.getCategory().equals(Category.PARSE_EXCEPTION))
+                .successionEnds(Duration.ofMillis(1000));
+
+        EventStream<LogEntry> e2 = designerRoot.getLogger().getLog()
+                .filter(x -> !x.getCategory().equals(Category.PARSE_EXCEPTION));
+
+
+        EventStreams.merge(e1, e2)
+                .subscribe(t -> eventLogTableView.getItems().add(t));
+
 
         eventLogTableView
             .getSelectionModel()
