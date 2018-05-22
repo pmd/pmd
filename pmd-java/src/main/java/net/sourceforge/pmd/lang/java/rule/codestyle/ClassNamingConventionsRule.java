@@ -31,7 +31,7 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
     private static final RegexProperty INTERFACE_REGEX = defaultProp("interface").build();
     private static final RegexProperty ENUMERATION_REGEX = defaultProp("enum").build();
     private static final RegexProperty ANNOTATION_REGEX = defaultProp("annotation").build();
-    private static final RegexProperty UTILITY_CLASS_REGEX = defaultProp("utility class").defaultValue("[A-Z][a-zA-Z0-9]+Util").build();
+    private static final RegexProperty UTILITY_CLASS_REGEX = defaultProp("utility class").defaultValue("[A-Z][a-zA-Z0-9]+Utils?").build();
 
 
     public ClassNamingConventionsRule() {
