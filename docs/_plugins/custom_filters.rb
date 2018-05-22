@@ -1,5 +1,6 @@
 module CustomFilters
 
+  # set intersection
   def intersect(xs, ys)
     if !xs || !ys
       []
@@ -8,6 +9,7 @@ module CustomFilters
     end
   end
 
+  # set equality between two arrays
   def equals(xs, ys)
     a = Array(xs)
     b = Array(ys)
@@ -54,25 +56,13 @@ module CustomFilters
   def sort_using(xs, sidebar)
     # caching is possible but doesn't improve significantly the build times
 
-
     rank_lookup = rank_lookup_from_sidebar(sidebar)
 
     xs.sort {|x, y|
+      rx = rank_lookup[x.url] || 10000
+      ry = rank_lookup[y.url] || 10000
 
-      rx = rank_lookup[x.url] || -1
-      ry = rank_lookup[y.url] || -1
-
-      if rx == ry
-        0
-      elsif rx < 0
-        +1 # x after y
-      elsif ry < 0
-        -1 # x before y
-      elsif rx < ry
-        -1
-      else
-        +1
-      end
+      rx <=> ry
     }
 
   end

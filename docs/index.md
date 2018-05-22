@@ -104,17 +104,13 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
     %}
 
 
-
-
-   <!-- {% include custom/shuffle_panel_filler.html %} -->
-
 </div>
 
 <!-- {% include image.html file="pmd-logo-big.png" alt="PMD Logo" %} -->
 
 {% unless site.output == "pdf" %}
 
-{% include initialize_shuffle.html %}<!-- new attempt-->
+{% include initialize_shuffle.html %}
 
 {% endunless %}
 

@@ -21,9 +21,6 @@ class EvalTag < Liquid::Tag
   end
 
   def render(context)
-    # puts "evaluating: #{@name_expression}"
-    # puts "1: #{lookup(context, @name_expression)}"
-    # puts "2: #{lookup(context, lookup(context, @name_expression).strip)}"
     lookup(context, lookup(context, @name_expression).strip)
   end
 end
