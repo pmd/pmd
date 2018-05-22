@@ -24,34 +24,6 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-/**
- * Original rule was written with XPath, but didn't verify whether the two calls
- * to append would have been done on the same variable.
- * 
- * <pre>
-//BlockStatement[./Statement/StatementExpression//PrimaryPrefix/Name[ends-with(@Image,'.append')]
-                                      [substring-before(@Image, '.') =
-                                         ancestor::Block//LocalVariableDeclaration[./Type//ClassOrInterfaceType[@Image='StringBuffer']]//VariableDeclaratorId/@Image
-                                      ]
-                ]/following-sibling::*[1][./Statement/StatementExpression//PrimaryPrefix/Name[ends-with(@Image,'.append')]
-                                         [substring-before(@Image, '.') = 
-                                             ancestor::Block//LocalVariableDeclaration[./Type//ClassOrInterfaceType[@Image='StringBuffer']]//VariableDeclaratorId/@Image
-                                         ]
-                                      ] 
-|
-//BlockStatement[./Statement/StatementExpression//PrimaryPrefix/Name[ends-with(@Image,'.append')]
-                                      [substring-before(@Image, '.') = 
-                                         ancestor::Block//LocalVariableDeclaration[./Type//ClassOrInterfaceType[@Image='StringBuilder']]//VariableDeclaratorId/@Image
-                                      ]
-                ]/following-sibling::*[1][./Statement/StatementExpression//PrimaryPrefix/Name[ends-with(@Image,'.append')]
-                                         [substring-before(@Image, '.') = 
-                                             ancestor::Block//LocalVariableDeclaration[./Type//ClassOrInterfaceType[@Image='StringBuilder']]//VariableDeclaratorId/@Image
-                                         ]
-                                      ]
- * 
- * </pre>
- *
- */
 public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
 
     @Override

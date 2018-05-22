@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+
+    <test-code>
+        <description>Collapsible statement</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'catch' branch identical to 'IllegalArgumentException' branch</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+                {
+                    try {
+                        // do something
+                    } catch (IllegalArgumentException e) {
+                        throw e;
+                    } catch (IllegalStateException e) { // Can be collapsed into the previous block
+                        throw e;
+                    }
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Different statement</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            class Foo {
+                {
+                    try {
+                        // do something
+                    } catch (IllegalArgumentException e) {
+                        throw e;
+                    } catch (IllegalStateException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Identical statements, with different exception names</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'catch' branch identical to 'IllegalArgumentException' branch</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+                {
+                    try {
+                        // do something
+                    } catch (IllegalArgumentException e) {
+                        throw new RuntimeException(e);
+                    } catch (IllegalStateException ise) {
+                        throw new RuntimeException(ise);
+                    }
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+
+</test-data>

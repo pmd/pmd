@@ -237,6 +237,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
      */
     public void onNodeItemSelected(Node selectedValue) {
         nodeInfoPanelController.displayInfo(selectedValue);
+        // The following line causes problems, since it wipes out the name occurrence highlighting,
+        // but it's already fixed in a PR to come soon
         sourceEditorController.clearNodeHighlight();
         sourceEditorController.highlightNodePrimary(selectedValue);
         sourceEditorController.focusNodeInTreeView(selectedValue);
@@ -244,7 +246,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
 
     public void onNameDeclarationSelected(NameDeclaration declaration) {
-        sourceEditorController.clearNodeHighlight();
+        Platform.runLater(() -> onNodeItemSelected(declaration.getNode()));
 
         List<NameOccurrence> occ = declaration.getNode().getScope().getDeclarations().get(declaration);
         if (occ != null) {
@@ -253,7 +255,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
                                                               .collect(Collectors.toList()));
         }
 
-        sourceEditorController.highlightNodePrimary(declaration.getNode());
     }
 
 

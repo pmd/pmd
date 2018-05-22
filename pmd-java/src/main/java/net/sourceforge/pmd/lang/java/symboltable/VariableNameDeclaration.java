@@ -54,15 +54,23 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public boolean isExceptionBlockParameter() {
-        return ((ASTVariableDeclaratorId) node).isExceptionBlockParameter();
+        return getDeclaratorId().isExceptionBlockParameter();
     }
 
+    /**
+     * @deprecated use {@link #isTypeInferred()}
+     */
+    @Deprecated
     public boolean isLambdaTypelessParameter() {
-        return getAccessNodeParent() instanceof ASTLambdaExpression;
+        return isTypeInferred();
+    }
+    
+    public boolean isTypeInferred() {
+        return getDeclaratorId().isTypeInferred();
     }
 
     public boolean isPrimitiveType() {
-        return !isLambdaTypelessParameter()
+        return !isTypeInferred()
                 && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTPrimitiveType;
     }
 
@@ -78,7 +86,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
      * Note that an array of primitive types (int[]) is a reference type.
      */
     public boolean isReferenceType() {
-        return !isLambdaTypelessParameter()
+        return !isTypeInferred()
                 && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTReferenceType;
     }
 
@@ -97,7 +105,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         if (isPrimitiveType()) {
             return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0);
         }
-        if (!isLambdaTypelessParameter()) {
+        if (!isTypeInferred()) {
             return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0).jjtGetChild(0);
         }
         return null;

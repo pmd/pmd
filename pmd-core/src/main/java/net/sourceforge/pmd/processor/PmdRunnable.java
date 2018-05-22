@@ -17,6 +17,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SourceCodeProcessor;
+import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -55,6 +56,8 @@ public class PmdRunnable implements Callable<Report> {
 
     @Override
     public Report call() {
+        TimeTracker.initThread();
+        
         ThreadContext tc = LOCAL_THREAD_CONTEXT.get();
         if (tc == null) {
             tc = new ThreadContext(new RuleSets(ruleSets), new RuleContext(ruleContext));
@@ -81,6 +84,8 @@ public class PmdRunnable implements Callable<Report> {
             addError(report, re, "RuntimeException during processing of " + fileName);
         }
 
+        TimeTracker.finishThread();
+        
         return report;
     }
 

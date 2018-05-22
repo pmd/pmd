@@ -9,6 +9,7 @@ Contains test, no @Test
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class Foo extends TestCase{
     public void testFoo() {
     }
@@ -21,6 +22,7 @@ OK
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class Foo extends TestCase{
     @Test
     public void testFoo() {
@@ -34,6 +36,7 @@ OK, renamed test
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class Foo extends TestCase{
     @Test
     public void foo() {
@@ -47,6 +50,7 @@ One test proper, the other incorrect
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class Foo extends TestCase{
     public void testFoo() {
     }
@@ -62,6 +66,7 @@ Two tests
      ]]></description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class Foo extends TestCase{
     public void testOne() {
     }
@@ -74,6 +79,9 @@ public class Foo extends TestCase{
         <description>#1197 JUnit4TestShouldUseTestAnnotation for private method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
+import static org.junit.Assert.fail;
+
 public class Faa
 {
     @Test
@@ -87,6 +95,62 @@ public class Faa
     {
         return false;
     }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#572 [java] False Alarm of JUnit4TestShouldUseTestAnnotation on Predicates</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Predicate;
+
+public final class Whatever<T> implements Predicate<T> {
+    @Override
+    public boolean test(T t) {
+        return false;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test class with test method not annotated</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+public class MyTest {
+    // should be annotated
+    public void testBad() { }
+
+    @Test
+    public void testGood() { }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test class named TestCase with test method not annotated</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class MyTestCase {
+    public void testBad() { }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test class prefix with Test with test method not annotated</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class TestForX {
+    public void testBad() { }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test class named MyTests with test method not annotated</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class MyTests {
+    public void testBad() { }
 }
         ]]></code>
     </test-code>

@@ -24,7 +24,9 @@ import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.Pe
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -51,15 +53,25 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private CustomCodeArea codeEditorArea;
 
     private ASTManager astManager;
+    private TreeViewWrapper<Node> treeViewWrapper;
+    private ASTTreeItem selectedTreeItem;
+
 
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
         parent = mainController;
         astManager = new ASTManager(owner);
+
     }
+
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        treeViewWrapper = new TreeViewWrapper<>(astTreeView);
+
+        astTreeView.setCellFactory(treeView -> new ASTTreeCell(parent));
+
         languageVersionProperty().values()
                                  .filterMap(Objects::nonNull, LanguageVersion::getLanguage)
                                  .distinct()
@@ -155,17 +167,23 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         highlightNodes(nodes, Collections.singleton("secondary-highlight"));
     }
 
-
     public void focusNodeInTreeView(Node node) {
-        ASTTreeItem found = ((ASTTreeItem) astTreeView.getRoot()).findItem(node);
-        if (found != null) {
-            SelectionModel<TreeItem<Node>> selectionModel = astTreeView.getSelectionModel();
-            selectionModel.select(found);
+        SelectionModel<TreeItem<Node>> selectionModel = astTreeView.getSelectionModel();
+
+        // node is different from the old one
+        if (selectedTreeItem == null && node != null
+                || selectedTreeItem != null && !Objects.equals(node, selectedTreeItem.getValue())) {
+            ASTTreeItem found = ((ASTTreeItem) astTreeView.getRoot()).findItem(node);
+            if (found != null) {
+                selectionModel.select(found);
+            }
+
             astTreeView.getFocusModel().focus(selectionModel.getSelectedIndex());
-            // astTreeView.scrollTo(selectionModel.getSelectedIndex());
+            if (!treeViewWrapper.isIndexVisible(selectionModel.getSelectedIndex())) {
+                astTreeView.scrollTo(selectionModel.getSelectedIndex());
+            }
         }
     }
-
 
     private void invalidateAST(boolean error) {
         astTitleLabel.setText("Abstract syntax tree (" + (error ? "error" : "outdated") + ")");

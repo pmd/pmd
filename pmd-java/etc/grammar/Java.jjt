@@ -374,11 +374,11 @@ public class JavaParser {
   // Note that this can't be replaced with a syntactic lookahead
   // since "assert" isn't a string literal token
   private boolean isNextTokenAnAssert() {
-    boolean res = getToken(1).image.equals("assert");
-    if (res && jdkVersion <= 3 && getToken(2).image.equals("(")) {
-     res = false;
+    if (jdkVersion <= 3) {
+      return false;
     }
-    return res;
+    
+    return getToken(1).image.equals("assert");
   }
 
   private boolean isPrecededByComment(Token tok) {
@@ -2379,7 +2379,6 @@ void IfStatement() :
 {}
 {
   "if" "(" Expression() ")" Statement() [ LOOKAHEAD(1) "else" {jjtThis.setHasElse();} Statement() ]
-{}
 }
 
 void WhileStatement() :
