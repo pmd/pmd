@@ -270,7 +270,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <pmd.website.baseurl>http://pmd.sourceforge.net/snapshot</pmd.website.baseurl>
+        <pmd.website.baseurl>https://pmd.github.io/pmd</pmd.website.baseurl>
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
