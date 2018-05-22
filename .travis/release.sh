@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+source .travis/colors.sh
+
 echo "BUILD: $BUILD"
 RELEASE_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 echo "RELEASE_VERSION: $RELEASE_VERSION"
@@ -9,10 +11,22 @@ if [ "${BUILD}" = "deploy" ]; then
 
 # Deploy to ossrh has already been done with the usual build. See build-deploy.sh
 
-# The site has been built before, the files have already been uploaded to sourceforge.
-# Since this is a release, making the binary the new default file...
-curl -H "Accept: application/json" -X PUT -d "default=windows&default=mac&default=linux&default=bsd&default=solaris&default=others" \
-     -d "api_key=${PMD_SF_APIKEY}" https://sourceforge.net/projects/pmd/files/pmd/${RELEASE_VERSION}/pmd-bin-${RELEASE_VERSION}.zip
+(
+    # disable fast fail, exit immediately, in this subshell
+    set +e
+
+    # The site has been built before, the files have already been uploaded to sourceforge.
+    # Since this is a release, making the binary the new default file...
+    echo_yellow "[ INFO] Selecting pmd-bin-${RELEASE_VERSION} as default on sourceforge.net..."
+    curl -H "Accept: application/json" -X PUT -d "default=windows&default=mac&default=linux&default=bsd&default=solaris&default=others" \
+         -d "api_key=${PMD_SF_APIKEY}" https://sourceforge.net/projects/pmd/files/pmd/${RELEASE_VERSION}/pmd-bin-${RELEASE_VERSION}.zip
+    if [ $? -ne 0 ]; then
+        echo_red   "[ERROR] Couldn't select latest binary as default on sourceforge.net"
+    else
+        echo_green "[ INFO] pmd-bin-${RELEASE_VERSION} is now the default download option."
+    fi
+    true
+)
 
 
 # Assumes, the release has already been created by travis github releases provider
@@ -29,7 +43,7 @@ cat > release-edit-request.json <<EOF
   "body": "$RELEASE_BODY"
 }
 EOF
-echo "Updating release at https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID}..."
+echo_yellow "[ INFO] Updating release at https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID}..."
 
 
 RESPONSE=$(curl -i -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/json" --data "@release-edit-request.json" -X PATCH https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID})
@@ -48,7 +62,8 @@ fi
 
 if [ "${BUILD}" = "doc" ]; then
 
-echo "Adding the new doc to pmd.github.io..."
+echo -e "\n\n"
+echo_yellow "[ INFO] Adding the new doc to pmd.github.io..."
 # clone pmd.github.io. Note: This uses the ssh key setup earlier
 # In order to speed things up, we use a sparse checkout - no need to checkout all directories here
 mkdir pmd.github.io
@@ -76,8 +91,26 @@ mkdir pmd.github.io
     git push origin master
 )
 
-echo -e "\n\nUploading the new release to pmd.sourceforge.net which serves as an archive...\n\n"
-travis_wait rsync -ah --stats pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${VERSION}/
+
+
+(
+    echo -e "\n\n"
+
+    # disable fast fail, exit immediately, in this subshell
+    set +e
+
+    echo_yellow "[ INFO] Uploading the new release to pmd.sourceforge.net which serves as an archive..."
+
+    travis_wait rsync -ah --stats pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${RELEASE_VERSION}/
+
+    if [ $? -ne 0 ]; then
+        echo_red   "[ERROR] Uploading documentation to pmd.sourceforge.net failed..."
+        echo_red   "[ERROR] Please upload manually (PMD Version: ${RELEASE_VERSION})"
+    else
+        echo_green "[ INFO] The documentation is now available under http://pmd.sourceforge.net/pmd-${RELEASE_VERSION}/"
+    fi
+    true
+)
 
 
 fi
