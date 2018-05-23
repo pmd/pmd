@@ -1425,13 +1425,17 @@ Fields, local variables, or parameter names that are very short are not helpful 
         <priority>3</priority>
         <properties>
             <property name="minimum" type="Integer" value="3" min="1" max="100" description="Number of characters that are required as a minimum for a variable name."/>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //VariableDeclaratorId[string-length(@Image) < $minimum]
- [not(ancestor::ForInit)]
- [not(../../VariableDeclarator and ../../../LocalVariableDeclaration and ../../../../ForStatement)]
- [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
+ (: ForStatement :)
+ [not(../../..[self::ForInit])]
+ (: Foreach statement :)
+ [not(../../..[self::ForStatement])]
+ (: Catch statement parameter :)
+ [not(../..[self::CatchStatement])]
 ]]>
                 </value>
             </property>
