@@ -25,45 +25,7 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
 {% endunless %}
 
 
-<div class="row" >
-
-{% include custom/knowledge_base_topic.html
-           title="Getting started"
-           datagroup="getting_started"
-           image="fa-paper-plane"
-           description="Get set-up and learn how to use PMD in a few simple steps."
-%}
-
-{% include custom/knowledge_base_topic.html
-           title="User documentation"
-           datagroup="userdocs"
-           image="fa-cogs"
-           description="Topics to learn how to use PMD, and rule references."
-%}
-
-{% include custom/knowledge_base_topic.html
-           title="Writing rules"
-           datagroup="extending"
-           image="fa-edit"
-           description="Writing your own rules allows you to adapt PMD to your most specific needs."
-%}
-
-{% include custom/knowledge_base_topic.html
-           title="Contributing"
-           datagroup="contributing"
-           image="fa-github"
-           description="You can contribute to PMD really easily lol."
-%}
-
-</div>
-
-
-
-
-
-<div class="col-lg-12">
-     <h2 class="page-header" id='grid-rule'/>
-</div>
+<div class="col-lg-12" id='grid-rule' />
 
 
 <div class="filter-options">
