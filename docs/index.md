@@ -1,20 +1,19 @@
 ---
-title: PMD Documentation website
+title: PMD Documentation Index
 keywords: java
 permalink: index.html
 toc: false
 summary: >
-    Welcome to PMD, an extensible cross-language static code analyzer.
-    It finds common programming flaws like unused variables, empty catch blocks, unnecessary object creation,
-    and so forth. Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code.
+    Welcome to the documentation index for PMD and CPD! This page exposes
+    the contents of the documentation site thematically, which you can further
+    scope down using the blue filter buttons. To navigate the site, you may also use
+    the search bar in the top right, or the sidebar on the left.
 last_updated: August 2017
-author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel.org>
+author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel.org>,
+        Clément Fournier <clement.fournier76@gmail.com>
 ---
 
 
-<!-- ## Welcome to PMD! -->
-
-<!-- First time user? Then you may be interested in our [quickstart series](TODO)! -->
 
 <br/>
 
@@ -25,10 +24,8 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
 {% endunless %}
 
 
-<div class="col-lg-12" id='grid-rule' />
 
-
-<div class="filter-options">
+<div class="filter-options" id='grid-rule' >
       <button class="btn btn-primary" data-group="all">All</button>
       <button class="btn btn-primary" data-group="getting_started">Getting Started</button>
       <button class="btn btn-primary" data-group="userdocs">User documentation</button>
@@ -38,9 +35,10 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
 
 
 
-
+<div class="container-fluid" >
 <div id="grid" class="row">
 
+<!--  TODO the "getting started" panel is not that useful. It would be better to make a page series. -->
     {% include custom/shuffle_panel.html
        tags="getting_started"
        datagroups='["getting_started"]'
@@ -102,6 +100,7 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
 <!-- sizer -->
 <div class="col-xs-6 col-sm-4 col-md-1 shuffle_sizer"></div>
 
+</div>
 </div>
 
 <!-- {% include image.html file="pmd-logo-big.png" alt="PMD Logo" %} -->
