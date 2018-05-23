@@ -140,7 +140,7 @@ A message placed after the NOPMD marker will get placed in the report, e.g.:
 
 ## XPath and Regex message suppression
 
-If a particular rule fails consistently in a particular context, you can fall
+If a particular rule consistently reports a warning in a particular context, you can fall
 back to disabling the rule for all these contexts using one of two rule properties
 that are defined on every rule. Depending on what you're after, you can suppress
 violations for **specific messages** using regular expressions, or **specific nodes**
@@ -168,10 +168,14 @@ a regular expression that matches the message of violations you wish to
 suppress. Regular expressions are explained in the JavaDoc for standard
 Java class java.util.regex.Pattern.
 
+This technique of course relies on how the rule's message is implemented.
+Some rules always report the same message, in which case this property is
+of no use.
+
 ###  The property `violationSuppressXPath`
 
-This property defines an XPath query to be executed using the
-violation node as the starting point.  If the XPath query matches anything,
+This property defines an XPath query to be executed *using the
+violation node as the starting point*.  If the XPath query matches anything,
 then the violation will be suppressed.
 
 For example, to suppress reporting specifically typed parameters which are unused:
@@ -186,5 +190,3 @@ Note for XPath based suppression to work, you must know how to write
 an XPath query that matches the AST structure of the nodes of the
 violations you wish to suppress.  XPath queries are explained in
 [XPath Rule tutorial](pmd_userdocs_extending_writing_xpath_rules.html).
-
-Suggestions?  Comments? Post them [here](https://github.com/pmd/pmd/issues). Thanks!

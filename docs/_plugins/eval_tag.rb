@@ -14,14 +14,14 @@ class EvalTag < Liquid::Tag
   # Lookup allows access to the page/post variables through the tag context
   def lookup(context, name)
     lookup = context
-    name.split(".").each {|value|
+    name.strip.split(".").each {|value|
       lookup = lookup[value]
     }
     lookup
   end
 
   def render(context)
-    lookup(context, lookup(context, @name_expression).strip)
+    lookup(context, lookup(context, @name_expression))
   end
 end
 
