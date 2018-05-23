@@ -38,7 +38,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
@@ -88,8 +87,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     @FXML
     private Menu fileMenu;
     /* Center toolbar */
-    @FXML
-    private Button refreshASTButton;
     @FXML
     private ChoiceBox<LanguageVersion> languageChoiceBox;
     @FXML
@@ -150,7 +147,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         DesignerUtil.rewire(xpathPanelController.xpathVersionProperty(),
                             xpathVersion, this::setXpathVersion);
 
-        refreshASTButton.setOnAction(e -> onRefreshASTClicked());
+
         licenseMenuItem.setOnAction(e -> showLicensePopup());
         openFileMenuItem.setOnAction(e -> onOpenFileClicked());
         openRecentMenu.setOnAction(e -> updateRecentFilesMenu());
