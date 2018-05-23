@@ -1510,9 +1510,14 @@ Fields, local variables, or parameter names that are very short are not helpful 
 **This rule is defined by the following XPath expression:**
 ```
 //VariableDeclaratorId[string-length(@Image) < $minimum]
- [not(ancestor::ForInit)]
- [not(../../VariableDeclarator and ../../../LocalVariableDeclaration and ../../../../ForStatement)]
- [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
+ (: ForStatement :)
+ [not(../../..[self::ForInit])]
+ (: Foreach statement :)
+ [not(../../..[self::ForStatement])]
+ (: Catch statement parameter :)
+ [not(../..[self::CatchStatement])]
+ (: Lambda expression parameter :)
+ [not(parent::LambdaExpression or ../../..[self::LambdaExpression])]
 ```
 
 **Example(s):**
