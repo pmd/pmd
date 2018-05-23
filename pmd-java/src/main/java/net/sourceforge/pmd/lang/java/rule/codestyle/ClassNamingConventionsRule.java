@@ -82,7 +82,7 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
             switch (decl.getKind()) {
             case FIELD:
             case METHOD:
-                hasAny = !isMainMethod(decl);
+                hasAny = isNonPrivate(decl) && !isMainMethod(decl);
                 if (!((AccessNode) decl.getDeclarationNode()).isStatic()) {
                     return false;
                 }
@@ -100,6 +100,10 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
         }
 
         return hasAny;
+    }
+
+    private boolean isNonPrivate(ASTAnyTypeBodyDeclaration decl) {
+        return !((AccessNode) decl.getDeclarationNode()).isPrivate();
     }
 
 
