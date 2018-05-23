@@ -368,4 +368,20 @@ final class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1114 - Star import overwritten by explicit import is not correctly handled</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import One.*;
+            import Two.Problem;
+
+
+            public class CauseProblem {
+                public Problem convert(One.Problem original) {
+                    return new Problem();
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

@@ -178,11 +178,31 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             }
         }
 
-        // Is it a conflict with a class in the same file?
         final String unqualifiedName = name.substring(name.lastIndexOf('.') + 1);
         final int unqualifiedNameLength = unqualifiedName.length();
+
+        // There could be a conflict between an import on demand and another import, e.g.
+        // import One.*;
+        // import Two.Problem;
+        // Where One.Problem is a legitimate qualification
+        if (firstMatch.isImportOnDemand() && !firstMatch.isStatic()) {
+            for (ASTImportDeclaration importDeclaration : imports) {
+                if (!Objects.equals(importDeclaration, firstMatch)
+                        && !importDeclaration.isStatic()
+                        && !importDeclaration.isImportOnDemand()) {
+
+                    // Duplicate imports are legal
+                    if (!importDeclaration.getPackageName().equals(firstMatch.getPackageName())
+                            && importDeclaration.getImportedSimpleName().equals(unqualifiedName)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // Is it a conflict with a class in the same file?
         final Set<String> qualifiedTypes = node.getScope().getEnclosingScope(SourceFileScope.class)
-                .getQualifiedTypeNames().keySet();
+                                               .getQualifiedTypeNames().keySet();
         for (final String qualified : qualifiedTypes) {
             int fullLength = qualified.length();
             if (qualified.endsWith(unqualifiedName)
