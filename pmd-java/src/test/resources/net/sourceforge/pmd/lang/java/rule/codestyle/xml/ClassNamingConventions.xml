@@ -229,6 +229,19 @@
     </test-code>
 
     <test-code>
+        <description>Class with only main method should not be utility class - varargs case</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class MyException {
+
+                public static void main(String... args) {
+                    // whitelisted
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Class with main method and private static fields should not be utility class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

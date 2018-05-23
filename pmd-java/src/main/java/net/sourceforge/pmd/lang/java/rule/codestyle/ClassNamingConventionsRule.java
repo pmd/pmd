@@ -108,7 +108,7 @@ public class ClassNamingConventionsRule extends AbstractJavaRule {
 
 
     private boolean isMainMethod(ASTAnyTypeBodyDeclaration bodyDeclaration) {
-        if (!DeclarationKind.METHOD.equals(bodyDeclaration.getKind())) {
+        if (DeclarationKind.METHOD != bodyDeclaration.getKind()) {
             return false;
         }
 
