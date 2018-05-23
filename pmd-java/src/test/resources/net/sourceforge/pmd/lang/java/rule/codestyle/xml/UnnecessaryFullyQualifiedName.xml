@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-1, nothing wrong
-     ]]></description>
+        <description>1, nothing wrong</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.List;
@@ -15,10 +14,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-2, valid implements
-     ]]></description>
+        <description>2, valid implements</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.List;
@@ -26,10 +24,9 @@ public class Foo implements List {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-3, invalid implements
-     ]]></description>
+        <description>3, invalid implements</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.List;
@@ -37,10 +34,9 @@ public class Foo implements java.util.List {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-4, valid extends
-     ]]></description>
+        <description>4, valid extends</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.ArrayList;
@@ -48,10 +44,9 @@ public class Foo implements ArrayList {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-5, invalid extends
-     ]]></description>
+        <description>5, invalid extends</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.ArrayList;
@@ -59,10 +54,9 @@ public class Foo implements java.util.ArrayList {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-6, valid field
-     ]]></description>
+        <description>6, valid field</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.List;
@@ -71,10 +65,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-7, invalid field
-     ]]></description>
+        <description>7, invalid field</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.List;
@@ -83,10 +76,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-8, valid return type
-     ]]></description>
+        <description>8, valid return type</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.List;
@@ -95,10 +87,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-9, invalid return type
-     ]]></description>
+        <description>9, invalid return type</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.List;
@@ -107,10 +98,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-10, valid formal parameter
-     ]]></description>
+        <description>10, valid formal parameter</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.List;
@@ -119,10 +109,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-11, invalid formal parameter
-     ]]></description>
+        <description>11, invalid formal parameter</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.List;
@@ -131,10 +120,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-12, valid static method call
-     ]]></description>
+        <description>12, valid static method call</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.Arrays;
@@ -143,10 +131,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-13, invalid static method call
-     ]]></description>
+        <description>13, invalid static method call</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.Arrays;
@@ -155,10 +142,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-14, valid static import method call
-     ]]></description>
+        <description>14, valid static import method call</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import static java.util.Arrays.asList;
@@ -167,10 +153,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-15, invalid static import method call
-     ]]></description>
+        <description>15, invalid static import method call</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import static java.util.Arrays.asList;
@@ -179,10 +164,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-16, valid static import method call with class import
-     ]]></description>
+        <description>16, valid static import method call with class import</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.Arrays;
@@ -192,10 +176,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-17, invalid static import method call with class import
-     ]]></description>
+        <description>17, invalid static import method call with class import</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.Arrays;
@@ -205,10 +188,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-18, on-demand, valid field
-     ]]></description>
+        <description>18, on-demand, valid field</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.*;
@@ -217,10 +199,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-19, on-demand, invalid field
-     ]]></description>
+        <description>19, on-demand, invalid field</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.*;
@@ -229,10 +210,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-20, on-demand, valid static import method call 
-     ]]></description>
+        <description>20, on-demand, valid static import method call </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import static java.util.Arrays.asList;
@@ -241,10 +221,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-21, on-demand, invalid static import method call
-     ]]></description>
+        <description>21, on-demand, invalid static import method call</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import static java.util.Arrays.*;
@@ -253,10 +232,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-22, valid on-demand static import method call with class import
-     ]]></description>
+        <description>22, valid on-demand static import method call with class import</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.Arrays;
@@ -266,10 +244,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-23, invalid on-demand static import method call with class import
-     ]]></description>
+        <description>23, invalid on-demand static import method call with class import</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.Arrays;
@@ -367,6 +344,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1555 - UnnecessaryFullyQualifiedName for conflict resolution with inner class</description>
         <expected-problems>0</expected-problems>
