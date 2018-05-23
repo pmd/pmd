@@ -55,7 +55,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private ASTManager astManager;
     private TreeViewWrapper<Node> treeViewWrapper;
     private ASTTreeItem selectedTreeItem;
-
+    private Duration timeDuration = Duration.ofMillis(100);
 
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
         parent = mainController;
@@ -83,7 +83,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
         codeEditorArea.richChanges()
                 .filter(t -> !t.getInserted().equals(t.getRemoved()))
-                .successionEnds(Duration.ofMillis(100))
+                .successionEnds(timeDuration)
                 .subscribe(richChange -> parent.onRefreshASTClicked());
 
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));

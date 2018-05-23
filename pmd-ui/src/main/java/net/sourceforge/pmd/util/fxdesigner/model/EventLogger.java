@@ -17,11 +17,17 @@ import org.reactfx.value.Var;
  */
 public class EventLogger {
 
-    private Var<LogEntry> latestEvent = Var.newSimpleVar(null);
+    private final Var<LogEntry> latestEvent = Var.newSimpleVar(null);
 
     public void logEvent(LogEntry event) {
         latestEvent.setValue(event);
     }
+
+    /**
+     * Gets a Stream of Log Events
+     *
+     * @return The Event Stream of Log
+     */
 
     public EventStream<LogEntry> getLog() {
         return latestEvent.values().filter(Objects::nonNull);

@@ -11,11 +11,13 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import org.reactfx.EventStream;
+import org.reactfx.EventStreams;
+
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 
-import org.reactfx.EventStream;
-import org.reactfx.EventStreams;
+
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -34,6 +36,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class EventLogController implements Initializable {
 
     private final DesignerRoot designerRoot;
+
+    private final Duration timeDuration = Duration.ofMillis(100);
 
     @FXML
     private TableView<LogEntry> eventLogTableView;
@@ -74,7 +78,7 @@ public class EventLogController implements Initializable {
 
         EventStream<LogEntry> e1 = designerRoot.getLogger().getLog()
                 .filter(x -> x.getCategory().equals(Category.PARSE_EXCEPTION))
-                .successionEnds(Duration.ofMillis(1000));
+                .successionEnds(timeDuration);
 
         EventStream<LogEntry> e2 = designerRoot.getLogger().getLog()
                 .filter(x -> !x.getCategory().equals(Category.PARSE_EXCEPTION));

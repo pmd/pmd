@@ -209,7 +209,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         }
 
         xpathResultListView.refresh();
-        xpathExpressionArea.requestFocus();
+
     }
 
 
