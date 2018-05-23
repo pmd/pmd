@@ -1436,6 +1436,8 @@ Fields, local variables, or parameter names that are very short are not helpful 
  [not(../../..[self::ForStatement])]
  (: Catch statement parameter :)
  [not(../..[self::CatchStatement])]
+ (: Lambda expression parameter :)
+ [not(parent::LambdaExpression or ../../..[self::LambdaExpression])]
 ]]>
                 </value>
             </property>

@@ -133,4 +133,19 @@ public class ShortVariable {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#720 Whitelist lambda parameters</description>
+        <rule-property name="minimum">1</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ShortVariable {
+    public void bar() {
+        String thisIsOk = a -> foo();
+        String foo = (a, b) -> foo();
+        String bar = (String a, Boolean b) -> foo();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
