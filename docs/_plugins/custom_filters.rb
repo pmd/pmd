@@ -28,6 +28,24 @@ module CustomFilters
     any
   end
 
+  # sorts an array using the order defined by the given sidebar
+  def sort_using(xs, sidebar)
+    # caching is possible but doesn't improve significantly the build times
+
+    rank_lookup = rank_lookup_from_sidebar(sidebar)
+
+    xs.sort {|x, y|
+      # The default rank is very high so that pages that don't appear in the sidebar are put at the end
+      rx = rank_lookup[x.url] || 10000
+      ry = rank_lookup[y.url] || 10000
+
+      rx <=> ry
+    }
+
+  end
+
+  private
+
   def flatten_rec(seq)
     seq.map {|h|
       if (subs = h["folderitems"] || h["subfolderitems"] || h["subfolders"])
@@ -47,24 +65,6 @@ module CustomFilters
     }
 
     Hash[ordered.zip (0...ordered.size)]
-
-  end
-
-
-
-  # sorts an array using the order defined by the given sidebar
-  def sort_using(xs, sidebar)
-    # caching is possible but doesn't improve significantly the build times
-
-    rank_lookup = rank_lookup_from_sidebar(sidebar)
-
-    xs.sort {|x, y|
-      # The default rank is very high so that pages that don't appear in the sidebar are put at the end
-      rx = rank_lookup[x.url] || 10000
-      ry = rank_lookup[y.url] || 10000
-
-      rx <=> ry
-    }
 
   end
 

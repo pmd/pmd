@@ -42,7 +42,7 @@ The PMD command (`pmd.bat` or `run.sh pmd`) requires two options:
 sources.
 * `-R <path>`: the ruleset file you want to use. PMD uses xml configuration files, called *rulesets*, which specify 
 which rules to execute on your sources. You can also run a single rule by referencing it using its *category* and
-name (more details [here](pmd_userdocs_making_rulesets.html#referencing-rules)). For example, you can check for unnecessary
+name (more details [here](pmd_userdocs_making_rulesets.html#referencing-a-single-rule)). For example, you can check for unnecessary
 modifiers on Java sources with `-R category/java/codestyle.xml/UnnecessaryModifier`.
 
 {% include note.html

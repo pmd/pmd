@@ -44,13 +44,13 @@ The tool comes with a rather extensive help text, simply running with `-help`!
             specified.
         </td>
         <td>no</td>
-        <td></td>
+        <td>Java</td>
     </tr>
     <tr>
         <td>-uri / -u</td>
         <td>Database URI for sources. If this is given, then you don't need to provide `-dir`.</td>
         <td>no</td>
-        <td>plsql</td>
+        <td>PLSQL</td>
     </tr>
     <tr>
         <td>-filelist</td>
