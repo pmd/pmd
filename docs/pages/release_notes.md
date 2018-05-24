@@ -8,7 +8,7 @@ keywords: changelog, release notes
 
 The PMD team is pleased to announce PMD 6.4.0.
 
-This is a bug fixing release.
+This is a minor release.
 
 ### Table Of Contents
 
