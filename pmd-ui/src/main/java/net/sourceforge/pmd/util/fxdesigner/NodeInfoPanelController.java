@@ -146,7 +146,7 @@ public class NodeInfoPanelController implements Initializable {
         }
 
         if (node instanceof TypeNode) {
-            result.add("typeof() = " + ((TypeNode) node).getType());
+            result.add("typeIs() = " + ((TypeNode) node).getType());
         }
         Collections.sort(result);
         return result;

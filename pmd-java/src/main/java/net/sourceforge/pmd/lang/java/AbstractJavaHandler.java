@@ -27,6 +27,8 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
 import net.sourceforge.pmd.lang.java.xpath.GetCommentOnFunction;
 import net.sourceforge.pmd.lang.java.xpath.JavaFunctions;
 import net.sourceforge.pmd.lang.java.xpath.MetricFunction;
+import net.sourceforge.pmd.lang.java.xpath.TypeIsExactlyFunction;
+import net.sourceforge.pmd.lang.java.xpath.TypeIsFunction;
 import net.sourceforge.pmd.lang.java.xpath.TypeOfFunction;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
@@ -53,6 +55,8 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
                 TypeOfFunction.registerSelfInSimpleContext();
                 GetCommentOnFunction.registerSelfInSimpleContext();
                 MetricFunction.registerSelfInSimpleContext();
+                TypeIsFunction.registerSelfInSimpleContext();
+                TypeIsExactlyFunction.registerSelfInSimpleContext();
             }
 
             @Override

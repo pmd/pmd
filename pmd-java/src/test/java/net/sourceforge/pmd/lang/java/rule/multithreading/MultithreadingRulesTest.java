@@ -34,4 +34,9 @@ public class MultithreadingRulesTest extends SimpleAggregatorTst {
             System.out.println("test");
         }
     }
+    
+    // Used by AvoidThreadGroup test cases
+    public static class ThreadGroup {
+        
+    }
 }
