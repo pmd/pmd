@@ -153,7 +153,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             // Is there any other static import conflictive?
             for (final ASTImportDeclaration importDeclaration : imports) {
                 if (!Objects.equals(importDeclaration, firstMatch) && importDeclaration.isStatic()) {
-                    if (declarationMatches(firstMatch, importDeclaration.getImportedName())){
+                    if (declarationMatches(firstMatch, importDeclaration.getImportedName())) {
                         // A conflict against the same class is not an excuse,
                         // ie:
                         // import java.util.Arrays;
