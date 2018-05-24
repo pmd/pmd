@@ -1,5 +1,5 @@
 ---
-title: PMD Documentation Index
+title: Documentation Index
 keywords: java
 permalink: index.html
 toc: false
