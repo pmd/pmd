@@ -2,7 +2,7 @@
 set -e
 
 source .travis/common-functions.sh
-source .travis/colors.sh
+source .travis/logger.sh
 
 function push_docs() {
     if git diff --quiet docs; then

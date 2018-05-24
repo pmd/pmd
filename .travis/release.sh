@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-source .travis/colors.sh
+source .travis/logger.sh
 
 echo "BUILD: $BUILD"
 RELEASE_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)

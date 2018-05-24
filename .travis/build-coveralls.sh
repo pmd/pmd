@@ -2,7 +2,7 @@
 set -e
 
 source .travis/common-functions.sh
-source .travis/colors.sh
+source .travis/logger.sh
 
 VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 log_info "Building PMD Coveralls.io report ${VERSION} on branch ${TRAVIS_BRANCH}"
