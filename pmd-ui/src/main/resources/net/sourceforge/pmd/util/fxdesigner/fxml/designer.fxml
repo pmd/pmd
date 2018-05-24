@@ -3,7 +3,6 @@
 <!--suppress JavaFxDefaultTag -->
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -14,13 +13,14 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.MainDesignerController">
+<AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@../css/designer.css"
+            xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="net.sourceforge.pmd.util.fxdesigner.MainDesignerController">
     <children>
         <BorderPane prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
@@ -63,14 +63,6 @@
                                     <bottom>
                                         <ToolBar id="main-toolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                             <items>
-                                                <Button fx:id="refreshASTButton" maxHeight="22.0" minHeight="22.0" mnemonicParsing="true" prefHeight="20.0" text="_Refresh AST">
-                                                    <tooltip>
-                                                        <Tooltip text="Refresh the AST, and XPath results if there's an expression to evaluate" />
-                                                    </tooltip>
-                                                    <padding>
-                                                        <Insets bottom="-3.0" left="5.0" right="5.0" top="-3.0" />
-                                                    </padding>
-                                                </Button>
                                                 <ChoiceBox fx:id="languageChoiceBox" maxHeight="22.0" prefHeight="22.0" prefWidth="115.0">
                                                     <padding>
                                                         <Insets bottom="-3.0" left="-3.0" right="-3.0" top="-3.0" />

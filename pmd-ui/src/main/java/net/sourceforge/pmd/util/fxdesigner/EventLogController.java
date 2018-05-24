@@ -37,7 +37,7 @@ public class EventLogController implements Initializable {
 
     private final DesignerRoot designerRoot;
 
-    private final Duration timeDuration = Duration.ofMillis(100);
+    private static final Duration PARSEEXCEPTION_DELAY = Duration.ofMillis(100);
 
     @FXML
     private TableView<LogEntry> eventLogTableView;
@@ -78,7 +78,7 @@ public class EventLogController implements Initializable {
 
         EventStream<LogEntry> e1 = designerRoot.getLogger().getLog()
                 .filter(x -> x.getCategory().equals(Category.PARSE_EXCEPTION))
-                .successionEnds(timeDuration);
+                .successionEnds(PARSEEXCEPTION_DELAY);
 
         EventStream<LogEntry> e2 = designerRoot.getLogger().getLog()
                 .filter(x -> !x.getCategory().equals(Category.PARSE_EXCEPTION));

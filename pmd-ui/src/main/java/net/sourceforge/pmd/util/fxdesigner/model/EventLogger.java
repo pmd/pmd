@@ -24,9 +24,8 @@ public class EventLogger {
     }
 
     /**
-     * Gets a Stream of Log Events
+     * Returns a stream that emits an event each time an exception is logged by the parser.
      *
-     * @return The Event Stream of Log
      */
 
     public EventStream<LogEntry> getLog() {
