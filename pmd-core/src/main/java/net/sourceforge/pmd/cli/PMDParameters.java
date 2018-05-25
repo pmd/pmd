@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
 import com.beust.jcommander.IStringConverter;
+import com.beust.jcommander.IValueValidator;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.validators.PositiveInteger;
@@ -25,14 +26,13 @@ public class PMDParameters {
             required = true)
     private String rulesets;
 
-    @Parameter(names = { "-uri", "-u" }, description = "Database URI for sources.", required = false)
+    @Parameter(names = { "-uri", "-u" }, description = "Database URI for sources.")
     private String uri;
 
-    @Parameter(names = { "-dir", "-d" }, description = "Root directory for sources.", required = false)
+    @Parameter(names = { "-dir", "-d" }, description = "Root directory for sources.")
     private String sourceDir;
 
-    @Parameter(names = { "-filelist" }, description = "Path to a file containing a list of files to analyze.",
-            required = false)
+    @Parameter(names = "-filelist", description = "Path to a file containing a list of files to analyze.")
     private String fileListPath;
 
     @Parameter(names = { "-format", "-f" }, description = "Report format type.")
@@ -50,7 +50,7 @@ public class PMDParameters {
 
     @Parameter(names = { "-threads", "-t" }, description = "Sets the number of threads used by PMD.",
             validateWith = PositiveInteger.class)
-    private Integer threads = 1;
+    private int threads = 1;
 
     @Parameter(names = { "-benchmark", "-b" },
             description = "Benchmark mode - output a benchmark report upon completion; default to System.err.")
@@ -70,9 +70,10 @@ public class PMDParameters {
     private String suppressmarker = "NOPMD";
 
     @Parameter(names = { "-minimumpriority", "-min" },
-            description = "Rule priority threshold; rules with lower priority than configured here won't be used. Default is '5' which is the lowest priority.",
-            converter = RulePriorityConverter.class)
-    private RulePriority minimumPriority = RulePriority.LOW;
+            description = "Rule priority threshold; rules with lower priority than configured here won't be used. "
+                    + "Valid values are integers between 1 and 5 (inclusive), with 5 being the lowest priority.",
+            validateValueWith = RulePriorityValidator.class)
+    private int minimumPriority = RulePriority.LOW.getPriority();
 
     @Parameter(names = { "-property", "-P" }, description = "{name}={value}: Define a property for the report format.",
             converter = PropertyConverter.class)
@@ -125,7 +126,20 @@ public class PMDParameters {
         }
     }
 
+
+    public static class RulePriorityValidator implements IValueValidator<Integer> {
+
+        @Override
+        public void validate(String name, Integer value) throws ParameterException {
+            if (value < 1 || value > 5) {
+                throw new ParameterException("Priority values can only be integer value, between 1 and 5," + value + " is not valid");
+            }
+        }
+    }
+
     // this has to be a public static class, so that JCommander can use it!
+    /** @deprecated Will be removed in 7.0.0 */
+    @Deprecated
     public static class RulePriorityConverter implements IStringConverter<RulePriority> {
 
         public int validate(String value) throws ParameterException {
@@ -243,7 +257,7 @@ public class PMDParameters {
     }
 
     public RulePriority getMinimumPriority() {
-        return minimumPriority;
+        return RulePriority.valueOf(minimumPriority);
     }
 
     public Properties getProperties() {
