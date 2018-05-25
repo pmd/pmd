@@ -39,104 +39,115 @@ Otherwise, the other suppression methods are explained in the following sections
 
 When using Java 1.5 or later, you can use annotations to suppress PMD warnings, like this:
 
-    // This will suppress all the PMD warnings in this class
-    @SuppressWarnings("PMD")
-    public class Bar {
-        void bar() {
-            int foo;
-        }
+```java
+// This will suppress all the PMD warnings in this class
+@SuppressWarnings("PMD")
+public class Bar {
+    void bar() {
+        int foo;
     }
+}
+```
 
 When using Apex make sure to use single quotes instead of double quotes
 
-``` 
-    // This will suppress all the PMD warnings in this class
-    @SuppressWarnings('PMD') 
+```java
+// This will suppress all the PMD warnings in this class
+@SuppressWarnings('PMD')
 ```
 
 
 Or you can suppress one rule with an annotation like this:
 
-    // This will suppress UnusedLocalVariable warnings in this class
-    @SuppressWarnings("PMD.UnusedLocalVariable")
-    public class Bar {
-        void bar() {
-            int foo;
-        }
+```java
+// This will suppress UnusedLocalVariable warnings in this class
+@SuppressWarnings("PMD.UnusedLocalVariable")
+public class Bar {
+    void bar() {
+        int foo;
     }
+}
+```
 
 Multiple rules can be suppressed by providing multiple values, ie:
 
-```
+```java
 @SuppressWarnings({"PMD.UnusedLocalVariable", "PMD.UnusedPrivateMethod"})
 ```
 
 For Apex, the syntax for this is slightly different:
 
-```
+```java
 @SuppressWarnings('PMD.UnusedLocalVariable, PMD.UnusedPrivateMethod')
 ```
 
 PMD Java also obeys the JDK annotation @SuppressWarnings("unused"), which will apply to all rules in the unused ruleset.
 
-    // This will suppress UnusedLocalVariable and UnusedPrivateMethod warnings in this class
-    @SuppressWarnings("unused")
-    public class Bar {
-        void bar() {
-            int foo;
-        }
-        private void foobar(){}
+```java
+// This will suppress UnusedLocalVariable and UnusedPrivateMethod warnings in this class
+@SuppressWarnings("unused")
+public class Bar {
+    void bar() {
+        int foo;
     }
-
+    private void foobar(){}
+}
+```
 
 ## NOPMD comment
 
 Alternatively, you can tell PMD to ignore a specific line by using the "NOPMD" marker in a comment, like this:
 
-    public class Bar {
-        // 'bar' is accessed by a native method, so we want to suppress warnings for it
-        private int bar; //NOPMD
-    }
+```java
+public class Bar {
+    // 'bar' is accessed by a native method, so we want to suppress warnings for it
+    private int bar; //NOPMD
+}
+```
 
 You can use whatever text string you want to suppress warnings, by using the `-suppressmarker` CLI option.
 For example, here's how to use `TURN_OFF_WARNINGS` as the suppressor:
 
-    $ cat Foo.java
-    public class Foo {
-        void bar() {
-            int x = 2; // TURN_OFF_WARNINGS
-        }
+```java
+$ cat Foo.java
+public class Foo {
+    void bar() {
+        int x = 2; // TURN_OFF_WARNINGS
     }
+}
 
-    $ ./run.sh pmd -d Foo.java -f text -R java-unusedcode -suppressmarker TURN_OFF_WARNINGS
-    No problems found!
-    UnusedLocalVariable rule violation suppressed by //NOPMD in /home/tom/pmd/pmd/bin/Foo.java
-
+$ ./run.sh pmd -d Foo.java -f text -R java-unusedcode -suppressmarker TURN_OFF_WARNINGS
+No problems found!
+UnusedLocalVariable rule violation suppressed by //NOPMD in /home/tom/pmd/pmd/bin/Foo.java
+```
 Note that PMD expects the //NOPMD marker to be on the same line as the violation. So, for
 example, if you want to suppress an "empty `if` statement" warning, you'll need to place it on
 the line containing the `if` keyword, e.g.:
 
-    $ cat ~/tmp/Foo.java
-    public class Foo {
-        void bar() {
-            int x = 42;
-            if (x &gt; 5) { // NOPMD
-            }
+```java
+$ cat ~/tmp/Foo.java
+public class Foo {
+    void bar() {
+        int x = 42;
+        if (x &gt; 5) { // NOPMD
         }
     }
-    $ java net.sourceforge.pmd.PMD -d ~/tmp/Foo.java -f text -R java-basic
-    No problems found!
-    $
+}
+$ java net.sourceforge.pmd.PMD -d ~/tmp/Foo.java -f text -R java-basic
+No problems found!
+```
 
 A message placed after the NOPMD marker will get placed in the report, e.g.:
 
-    public class Foo {
-        void bar() {
-            try {
-                bar();
-            } catch (FileNotFoundException e) {} // NOPMD - this surely will never happen
-        }
+```java
+public class Foo {
+    void bar() {
+        try {
+            bar();
+        } catch (FileNotFoundException e) {} // NOPMD - this surely will never happen
     }
+}
+```
 
 ## XPath and Regex message suppression
 
@@ -156,12 +167,13 @@ then the violation will be suppressed.
 For example, to suppress reporting specifically named parameters which
 are unused:
 
-
-    <rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
-      <properties>
-        <property name="violationSuppressRegex" value=".*'mySpecialParameterName'.*"/>
-      </properties>
-    </rule>
+```xml
+<rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
+  <properties>
+    <property name="violationSuppressRegex" value=".*'mySpecialParameterName'.*"/>
+  </properties>
+</rule>
+```
 
 Note for message based suppression to work, you must know who to write
 a regular expression that matches the message of violations you wish to
@@ -180,11 +192,13 @@ then the violation will be suppressed.
 
 For example, to suppress reporting specifically typed parameters which are unused:
 
-    <rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
-      <properties>
-        <property name="violationSuppressXPath" value=".[typeof('java.lang.String')]"/>
-      </properties>
-    </rule>
+```xml
+<rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
+  <properties>
+    <property name="violationSuppressXPath" value=".[typeof('java.lang.String')]"/>
+  </properties>
+</rule>
+```
 
 Note for XPath based suppression to work, you must know how to write
 an XPath query that matches the AST structure of the nodes of the
