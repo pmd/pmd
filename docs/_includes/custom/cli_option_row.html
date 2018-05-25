@@ -1,0 +1,23 @@
+<!-- Row of the CLI reference table, describing an option -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+{% assign arg = {{ include.option_arg | prepend: "&nbsp;<" | append: ">" | escape_once | keep_if: include.option_arg }} %}
+{% capture required_label %}{% if include.required %}<span class="label label-primary">Required</span>  {% endif %}{% endcapture %}
+<tr>
+    <td><code>{{ include.options | split: ',' | mappend: arg | join: "</code><br/><code>" }}</code></td>
+    <td>{{ required_label }}
+        {{ include.description
+           | regex_replace: "`(.*?)`", "<code>\1</code>"
+           | regex_replace: "\*\*(.*?)\*\*", "<b>\1</b>"
+           | regex_replace: "\*(.*?)\*", "<i>\1</i>"
+           | regex_replace: "\[(.*?)\]\((.*?)\)", "<a href='\2'>\1</a>" }}
+    </td>
+    <td><code>{{ include.default }}</code></td>
+    <td>{{ include.languages }}</td>
+</tr>

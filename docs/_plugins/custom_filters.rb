@@ -44,6 +44,31 @@ module CustomFilters
 
   end
 
+  def regex_replace(str, regex, subst)
+    if str && regex
+      str.gsub(Regexp::new(regex), subst || "")
+    end
+  end
+
+  def regex_split(str, regex = nil)
+    if str
+      str.split(regex && Regexp::new(regex))
+    end
+  end
+
+  # Takes an array of strings and maps every element x to {{ x | append: suffix }}
+  def mappend(xs, suffix)
+    Array(xs).map {|x| "#{x}#{suffix}" }
+  end
+
+  # Returns the initial argument only if the second argument is truthy
+  def keep_if(any, test)
+    if test
+      any
+    end
+  end
+
+
   private
 
   def flatten_rec(seq)
