@@ -39,7 +39,7 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     {% include custom/cli_option_row.html options="-auxclasspath"
                option_arg="cp"
                description="Specifies the classpath for libraries used by the source code.
-               This is used by the type resolution. Alternatively a `file://` URL
+               This is used to resolve types in source files. Alternatively, a `file://` URL
                to a text file containing path elements on consecutive lines can be specified."
                languages="Java"
     %}

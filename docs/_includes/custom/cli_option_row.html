@@ -11,13 +11,7 @@
 {% capture required_label %}{% if include.required %}<span class="label label-primary">Required</span>  {% endif %}{% endcapture %}
 <tr>
     <td><code>{{ include.options | split: ',' | mappend: arg | join: "</code><br/><code>" }}</code></td>
-    <td>{{ required_label }}
-        {{ include.description
-           | regex_replace: "`(.*?)`", "<code>\1</code>"
-           | regex_replace: "\*\*(.*?)\*\*", "<b>\1</b>"
-           | regex_replace: "\*(.*?)\*", "<i>\1</i>"
-           | regex_replace: "\[(.*?)\]\((.*?)\)", "<a href='\2'>\1</a>" }}
-    </td>
+    <td>{{ required_label }}{{ include.description | render_markdown }}</td>
     <td><code>{{ include.default }}</code></td>
     <td>{{ include.languages }}</td>
 </tr>
