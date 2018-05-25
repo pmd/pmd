@@ -140,7 +140,7 @@ keywords: changelog, release notes
 
 The PMD team is pleased to announce PMD ${DEVELOPMENT_VERSION%-SNAPSHOT}.
 
-This is a bug fixing release.
+This is a minor release.
 
 ### Table Of Contents
 

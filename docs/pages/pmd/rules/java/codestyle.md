@@ -391,8 +391,8 @@ and reports utility class names not ending with 'Util'.
 
 ``` java
 // This is Pascal case, the recommended naming convention in Java
-// Note that the default values of this rule don't allow numbers,
-// underscores, or accented characters in type names
+// Note that the default values of this rule don't allow underscores 
+// or accented characters in type names
 public class FooBar {}
 
 // You may want abstract classes to be named 'AbstractXXX',
@@ -413,7 +413,7 @@ public class Éléphant {}
 |interfacePattern|[A-Z][a-zA-Z0-9]+|Regex which applies to interface names|no|
 |enumPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to enum names|no|
 |annotationPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to annotation names|no|
-|utilityClassPattern|[A-Z][a-zA-Z]+Util|Regex which applies to utility class names|no|
+|utilityClassPattern|[A-Z][a-zA-Z0-9]+(Utils?\|Helper)|Regex which applies to utility class names|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1510,9 +1510,14 @@ Fields, local variables, or parameter names that are very short are not helpful 
 **This rule is defined by the following XPath expression:**
 ```
 //VariableDeclaratorId[string-length(@Image) < $minimum]
- [not(ancestor::ForInit)]
- [not(../../VariableDeclarator and ../../../LocalVariableDeclaration and ../../../../ForStatement)]
- [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
+ (: ForStatement :)
+ [not(../../..[self::ForInit])]
+ (: Foreach statement :)
+ [not(../../..[self::ForStatement])]
+ (: Catch statement parameter :)
+ [not(../..[self::CatchStatement])]
+ (: Lambda expression parameter :)
+ [not(parent::LambdaExpression or ../../..[self::LambdaExpression])]
 ```
 
 **Example(s):**

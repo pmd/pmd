@@ -387,8 +387,8 @@ public class Foo extends Bar{
         <example>
 <![CDATA[
 // This is Pascal case, the recommended naming convention in Java
-// Note that the default values of this rule don't allow numbers,
-// underscores, or accented characters in type names
+// Note that the default values of this rule don't allow underscores 
+// or accented characters in type names
 public class FooBar {}
 
 // You may want abstract classes to be named 'AbstractXXX',
@@ -1425,13 +1425,19 @@ Fields, local variables, or parameter names that are very short are not helpful 
         <priority>3</priority>
         <properties>
             <property name="minimum" type="Integer" value="3" min="1" max="100" description="Number of characters that are required as a minimum for a variable name."/>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //VariableDeclaratorId[string-length(@Image) < $minimum]
- [not(ancestor::ForInit)]
- [not(../../VariableDeclarator and ../../../LocalVariableDeclaration and ../../../../ForStatement)]
- [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
+ (: ForStatement :)
+ [not(../../..[self::ForInit])]
+ (: Foreach statement :)
+ [not(../../..[self::ForStatement])]
+ (: Catch statement parameter :)
+ [not(../..[self::CatchStatement])]
+ (: Lambda expression parameter :)
+ [not(parent::LambdaExpression or ../../..[self::LambdaExpression])]
 ]]>
                 </value>
             </property>
