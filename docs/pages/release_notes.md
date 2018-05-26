@@ -24,8 +24,8 @@ This is a bug fixing release.
 
 #### XPath Type Resolution Methods
 
-For some time now PMD has supported Type Resolution, and exposed this functionality to XPath rules for Java language
-with the `typeof` method. This method however had a number of shortcomings:
+For some time now PMD has supported Type Resolution, and exposed this functionality to XPath rules for the Java language
+with the `typeof` function. This function however had a number of shortcomings:
 
 *   It would take a first arg with the name to match if types couldn't be resolved. In all cases this was `@Image`
     but was still required.
@@ -34,7 +34,7 @@ with the `typeof` method. This method however had a number of shortcomings:
 *   If only the Fully Qualified Class Name was provided, no short name check was performed (not documented,
     but abused on some rules to "fix" some false positives).
 
-In this release we are deprecating `typeof` in favor of a simpler `typeIs` method, which behaves exactly as the
+In this release we are deprecating `typeof` in favor of a simpler `typeIs` function, which behaves exactly as the
 old `typeof` when given all 3 arguments.
 
 `typeIs` receives a single parameter, containing the fully qualified name of the class to test against.
@@ -51,8 +51,8 @@ can now we expressed much more concisely as:
 //ClassOrInterfaceType[typeIs('junit.framework.TestCase')]
 ```
 
-Additionally, we have introduced a companion `typeIsExactly` method, that receives the same parameters, but
-will check for exact type matches without transversing the type hierarchy. That is, when using
+Additionally, we have introduced a companion `typeIsExactly` function, that receives the same parameters, but
+will check for exact type matches without traversing the type hierarchy. That is, when using
 `typeIsExactly('junit.framework.TestCase')` will match only if the class is an instance of `TestCase`, but
 not if it's a subclass of `TestCase`.
 
