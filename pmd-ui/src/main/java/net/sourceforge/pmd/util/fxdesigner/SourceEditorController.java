@@ -60,7 +60,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private ASTManager astManager;
     private TreeViewWrapper<Node> treeViewWrapper;
     private ASTTreeItem selectedTreeItem;
-    private static final Duration CODE_EDITOR_REFRESH = Duration.ofMillis(100);
+    private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
         parent = mainController;
@@ -86,9 +86,9 @@ public class SourceEditorController implements Initializable, SettingsOwner {
                     .subscribe(parent::onNodeItemSelected);
 
         codeEditorArea.richChanges()
-                .filter(t -> !t.getInserted().equals(t.getRemoved()))
-                .successionEnds(CODE_EDITOR_REFRESH)
-                .subscribe(richChange -> parent.refreshAST());
+                      .filter(t -> !t.getInserted().equals(t.getRemoved()))
+                      .successionEnds(AST_REFRESH_DELAY)
+                      .subscribe(richChange -> parent.refreshAST());
 
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
     }
@@ -181,6 +181,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
             if (found != null) {
                 selectionModel.select(found);
             }
+            selectedTreeItem = found;
 
             astTreeView.getFocusModel().focus(selectionModel.getSelectedIndex());
             if (!treeViewWrapper.isIndexVisible(selectionModel.getSelectedIndex())) {
