@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     private List<ASTImportDeclaration> imports = new ArrayList<>();
-    private List<ASTImportDeclaration> matches = new ArrayList<>();
 
     public UnnecessaryFullyQualifiedNameRule() {
         super.addRuleChainVisit(ASTCompilationUnit.class);
@@ -80,7 +79,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     private void checkImports(JavaNode node, Object data) {
         String name = node.getImage();
-        matches.clear();
+        List<ASTImportDeclaration> matches = new ArrayList<>();
 
         // Find all "matching" import declarations
         for (ASTImportDeclaration importDeclaration : imports) {
@@ -140,8 +139,6 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                 addViolation(data, node, new Object[] { node.getImage(), importStr, type });
             }
         }
-
-        matches.clear();
     }
 
     private boolean isAvoidingConflict(final JavaNode node, final String name,
@@ -187,7 +184,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         // Where One.Problem is a legitimate qualification
         if (firstMatch.isImportOnDemand() && !firstMatch.isStatic()) {
             for (ASTImportDeclaration importDeclaration : imports) {
-                if (!Objects.equals(importDeclaration, firstMatch)
+                if (importDeclaration != firstMatch     // NOPMD
                         && !importDeclaration.isStatic()
                         && !importDeclaration.isImportOnDemand()) {
 
