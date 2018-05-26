@@ -84,14 +84,11 @@ public class EventLogController implements Initializable {
                 .filter(x -> !x.getCategory().equals(Category.PARSE_EXCEPTION));
 
 
-        EventStreams.merge(e1, e2)
-                .subscribe(t -> eventLogTableView.getItems().add(t));
-
         EventStream<LogEntry> e3 = designerRoot.getLogger().getLog()
                 .filter(x -> x.getCategory().equals(Category.XPATH_EVALUATION_EXCEPTION))
                 .successionEnds(PARSE_EXCEPTION_DELAY);
 
-        EventStreams.merge(e3)
+        EventStreams.merge(e1, e2, e3)
                 .subscribe(t -> eventLogTableView.getItems().add(t));
 
 
