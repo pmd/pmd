@@ -141,9 +141,15 @@ cygwin_paths
 
 java_heapsize_settings
 
-# Construct a pipe to capture output from the java command. Ref https://unix.stackexchange.com/a/3521/128823
-mkfifo mypipe
-if java ${HEAPSIZE} $(jre_specific_vm_options) -cp "${classpath}" "${CLASSNAME}" "$@" 2> mypipe | grep "net.sourceforge.pmd.util.fxdesigner.Designer" mypipe; then
+# Create a temporary file to direct the java command's output to
+temp_file=$(mktemp)
+java ${HEAPSIZE} $(jre_specific_vm_options) -cp "${classpath}" "${CLASSNAME}" "$@" 2>&1 | tee -a temp_file
+exit_code=${PIPESTATUS[0]}
+
+# Did the java command fail because we're missing net.sourceforge.pmd.util.fxdesigner.Designer?
+if grep -q "net.sourceforge.pmd.util.fxdesigner.Designer" temp_file; then
   echo "It looks like you're missing the class net.sourceforge.pmd.util.fxdesigner.Designer. A solution might be available here: https://github.com/pmd/pmd/issues/962"
 fi
 
+rm ${temp_file}
+exit $exit_code
