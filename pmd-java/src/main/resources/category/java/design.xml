@@ -267,13 +267,13 @@ Exception, or Error, use a subclassed exception or error instead.
 <![CDATA[
 //ThrowStatement//AllocationExpression
  /ClassOrInterfaceType[
- typeIs('java.lang.Throwable')
+ typeIsExactly('java.lang.Throwable')
 or
- typeIs('java.lang.Exception')
+ typeIsExactly('java.lang.Exception')
 or
- typeIs('java.lang.Error')
+ typeIsExactly('java.lang.Error')
 or
- typeIs('java.lang.RuntimeException')
+ typeIsExactly('java.lang.RuntimeException')
 ]
 ]]>
                 </value>
