@@ -174,7 +174,7 @@ suppress reporting specifically typed parameters which are unused:
 
     <rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
       <properties>
-        <property name="violationSuppressXPath" value=".[typeof('java.lang.String')]"/>
+        <property name="violationSuppressXPath" value=".[typeIs('java.lang.String')]"/>
       </properties>
     </rule>
 

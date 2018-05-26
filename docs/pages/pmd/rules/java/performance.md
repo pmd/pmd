@@ -132,10 +132,10 @@ The FileReader and FileWriter constructors instantiate FileInputStream and FileO
 **This rule is defined by the following XPath expression:**
 ```
 //PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[
-       typeof(@Image, 'java.io.FileInputStream', 'FileInputStream')
-    or typeof(@Image, 'java.io.FileOutputStream', 'FileOutputStream')
-    or typeof(@Image, 'java.io.FileReader', 'FileReader')
-    or typeof(@Image, 'java.io.FileWriter', 'FileWriter')
+       typeIs('java.io.FileInputStream')
+    or typeIs('java.io.FileOutputStream')
+    or typeIs('java.io.FileReader')
+    or typeIs('java.io.FileWriter')
   ]
 ```
 
@@ -208,10 +208,10 @@ adverse impacts on performance.
 ```
 //FieldDeclaration/Type/PrimitiveType[@Image = 'short']
 |
-//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeof(@Image, 'java.lang.Override', 'Override')])]
+//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeIs('java.lang.Override')])]
     /MethodDeclaration/ResultType/Type/PrimitiveType[@Image = 'short']
 |
-//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeof(@Image, 'java.lang.Override', 'Override')])]
+//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeIs('java.lang.Override')])]
     /MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/Type/PrimitiveType[@Image = 'short']
 |
 //LocalVariableDeclaration/Type/PrimitiveType[@Image = 'short']
@@ -300,7 +300,7 @@ Note that new Byte() is deprecated since JDK 9 for that reason.
 ```
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeof(@Image, 'java.lang.Byte', 'Byte')]]
+and ClassOrInterfaceType[typeIs('java.lang.Byte')]]
 ```
 
 **Example(s):**
@@ -498,7 +498,7 @@ Note that new Integer() is deprecated since JDK 9 for that reason.
 ```
 //AllocationExpression
   [not (ArrayDimsAndInits)
-   and ClassOrInterfaceType[typeof(@Image, 'java.lang.Integer', 'Integer')]]
+   and ClassOrInterfaceType[typeIs('java.lang.Integer')]]
 ```
 
 **Example(s):**
@@ -528,7 +528,7 @@ Note that new Long() is deprecated since JDK 9 for that reason.
 ```
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeof(@Image, 'java.lang.Long', 'Long')]]
+and ClassOrInterfaceType[typeIs('java.lang.Long')]]
 ```
 
 **Example(s):**
@@ -647,7 +647,7 @@ Note that new Short() is deprecated since JDK 9 for that reason.
 ```
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeof(@Image, 'java.lang.Short', 'Short')]]
+and ClassOrInterfaceType[typeIs('java.lang.Short')]]
 ```
 
 **Example(s):**

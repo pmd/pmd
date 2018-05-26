@@ -256,13 +256,13 @@ More information about writing XPath rules is [available here](pmd_userdocs_exte
 
 ### Inside an XPath query
 
-PMD XPath syntax includes now a new function called `typeof` which determines if a node (ClassOrInterfaceType only right now) is of the provided type. It also scans the type’s hierarchy, so if you extend a class it will also find this out.
+PMD XPath syntax includes two functions called `typeIs` and `typeIsExactly` which determines if a node is of the provided type (either exactly or any subtype).
 
 Here a an example of use, inside an XPath Query:
 
 ```xpath
 //ClassOrInterfaceDeclaration[
-    //ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')]
+    //ClassOrInterfaceType[typeIs('junit.framework.TestCase')]
 ]
 ```
 
