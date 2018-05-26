@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
+import org.apache.commons.lang3.ClassUtils;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
@@ -61,7 +63,7 @@ public final class TypeHelper {
                 }
     
                 // If the requested type is in the classpath, using the same classloader should work
-                return classLoader.loadClass(clazzName);
+                return ClassUtils.getClass(classLoader, clazzName);
             } catch (final ClassNotFoundException ignored) {
                 // The requested type is not on the auxclasspath. This might happen, if the type node
                 // is probed for a specific type (e.g. is is a JUnit5 Test Annotation class).
