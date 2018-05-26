@@ -208,7 +208,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     private void clearLayer(LayerId id) {
         codeEditorArea.clearStyleLayer(id);
-        Platform.runLater(codeEditorArea::paintCss);
+//        Platform.runLater(codeEditorArea::paintCss);
     }
 
     /** Highlights the given node. Removes highlighting on the previously highlighted node. */

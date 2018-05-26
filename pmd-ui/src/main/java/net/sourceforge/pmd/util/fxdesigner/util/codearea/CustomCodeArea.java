@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.FOCUS;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.SECONDARY;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.SYNTAX_HIGHLIGHT_LAYER_ID;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.XPATH_RESULTS;
 
 import java.time.Duration;
@@ -13,13 +14,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpans;
+import org.reactfx.EventStreams;
 import org.reactfx.Subscription;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -43,8 +44,6 @@ import javafx.concurrent.Task;
  * @since 6.0.0
  */
 public class CustomCodeArea extends CodeArea {
-
-    private static final String SYNTAX_HIGHLIGHT_LAYER_ID = "syntax";
 
     private ExecutorService executorService;
     private Subscription syntaxAutoRefresh;
@@ -239,24 +238,20 @@ public class CustomCodeArea extends CodeArea {
 
         if (isSyntaxHighlightingEnabled.get() && syntaxHighlighter != null) {
             executorService = Executors.newSingleThreadExecutor();
-            syntaxAutoRefresh = this.richChanges()
-                                    .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
-                                    .successionEnds(Duration.ofMillis(100))
-                                    .supplyTask(() -> computeHighlightingAsync(this.getText()))
-                                    .awaitLatest(this.richChanges())
-                                    .filterMap(t -> {
-                                        if (t.isSuccess()) {
-                                            return Optional.of(t.get());
-                                        } else {
-                                            t.getFailure().printStackTrace();
-                                            return Optional.empty();
-                                        }
-                                    })
-                                    .subscribe(spans -> {
-                                        StyleLayer layer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
-                                        layer.reset(spans);
-                                        this.paintCss();
-                                    });
+            //            syntaxAutoRefresh = this.richChanges().filter(ch -> !ch.isIdentity())
+            syntaxAutoRefresh = EventStreams.valuesOf(textProperty()).distinct()
+                                            .successionEnds(Duration.ofMillis(100))
+                                            .supplyTask(() -> computeHighlightingAsync(this.getText()))
+                                            .awaitLatest(this.richChanges().filter(ch -> !ch.isIdentity()))
+                                            .filterMap(t -> {
+                                                t.ifFailure(Throwable::printStackTrace);
+                                                return t.toOptional();
+                                            })
+                                            .subscribe(spans -> {
+                                                StyleLayer layer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
+                                                layer.reset(spans);
+                                                this.paintCss();
+                                            });
         }
     }
 
@@ -283,6 +278,8 @@ public class CustomCodeArea extends CodeArea {
         SECONDARY("secondary"),
         /** For xpath results. */
         XPATH_RESULTS("xpath");
+
+        static final String SYNTAX_HIGHLIGHT_LAYER_ID = "syntax";
 
         private final String id;
 
