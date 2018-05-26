@@ -145,8 +145,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         menu.getItems().add(item);
 
         xpathExpressionArea.addEventHandler(MouseEvent.MOUSE_CLICKED, t -> {
-            if (t.getButton() == MouseButton.SECONDARY
-                    || t.getButton() == MouseButton.PRIMARY && t.getClickCount() > 1) {
+            if (t.getButton() == MouseButton.SECONDARY) {
                 menu.show(xpathExpressionArea, t.getScreenX(), t.getScreenY());
             }
         });
