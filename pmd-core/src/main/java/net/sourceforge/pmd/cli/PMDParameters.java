@@ -127,6 +127,7 @@ public class PMDParameters {
     }
 
 
+    // this has to be a public static class, so that JCommander can use it!
     public static class RulePriorityValidator implements IValueValidator<Integer> {
 
         @Override
@@ -137,7 +138,6 @@ public class PMDParameters {
         }
     }
 
-    // this has to be a public static class, so that JCommander can use it!
     /** @deprecated Will be removed in 7.0.0 */
     @Deprecated
     public static class RulePriorityConverter implements IStringConverter<RulePriority> {
