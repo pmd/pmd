@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -65,13 +66,11 @@ import javafx.stage.StageStyle;
  */
 public class XPathPanelController implements Initializable, SettingsOwner {
 
+    private static final Duration XPATH_REFRESH_DELAY = Duration.ofMillis(100);
     private final DesignerRoot designerRoot;
     private final MainDesignerController parent;
-
     private final XPathEvaluator xpathEvaluator = new XPathEvaluator();
-
     private final ObservableXPathRuleBuilder ruleBuilder = new ObservableXPathRuleBuilder();
-
 
     @FXML
     private PropertyTableView propertyView;
@@ -101,11 +100,18 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         initGenerateXPathFromStackTrace();
 
         EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
+                    .conditionOn(xpathResultListView.focusedProperty())
                     .filter(Objects::nonNull)
                     .subscribe(parent::onNodeItemSelected);
 
         Platform.runLater(this::bindToParent);
+
+        xpathExpressionArea.richChanges()
+                           .filter(t -> !t.getInserted().equals(t.getRemoved()))
+                           .successionEnds(XPATH_REFRESH_DELAY)
+                           .subscribe(x -> parent.refreshXPathResults());
     }
+
 
     private void initGenerateXPathFromStackTrace() {
 
@@ -129,8 +135,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                     DesignerUtil.stackTraceToXPath(area.getText()).ifPresent(xpathExpressionArea::replaceText);
                     popup.close();
                 });
-
-
 
                 popup.setScene(new Scene(root));
                 popup.initStyle(StageStyle.UTILITY);
@@ -188,9 +192,9 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         try {
             String xpath = getXpathExpression();
-
             if (StringUtils.isBlank(xpath)) {
                 xpathResultListView.getItems().clear();
+                invalidateResults(false);
                 return;
             }
 
@@ -208,7 +212,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         }
 
         xpathResultListView.refresh();
-        xpathExpressionArea.requestFocus();
+
+
     }
 
 
