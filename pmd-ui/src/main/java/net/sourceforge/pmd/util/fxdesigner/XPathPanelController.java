@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -72,6 +73,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
     private final ObservableXPathRuleBuilder ruleBuilder = new ObservableXPathRuleBuilder();
 
+    private static final Duration XPATH_REFRESH = Duration.ofMillis(3000);
 
     @FXML
     private PropertyTableView propertyView;
@@ -105,6 +107,11 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                     .subscribe(parent::onNodeItemSelected);
 
         Platform.runLater(this::bindToParent);
+
+        xpathExpressionArea.richChanges()
+                .filter(t -> !t.getInserted().equals(t.getRemoved()))
+                .successionEnds(XPATH_REFRESH)
+                .subscribe(x -> parent.xPathEvaluate());
     }
 
     private void initGenerateXPathFromStackTrace() {

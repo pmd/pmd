@@ -225,7 +225,12 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     public void onRefreshASTClicked() {
         sourceEditorController.refreshAST();
         xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(),
-                                           getLanguageVersion());
+                getLanguageVersion());
+    }
+
+    public void xPathEvaluate() {
+        xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(),
+                getLanguageVersion());
     }
 
 

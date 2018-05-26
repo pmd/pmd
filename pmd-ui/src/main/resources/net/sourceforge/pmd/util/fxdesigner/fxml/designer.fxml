@@ -4,6 +4,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -63,11 +64,13 @@
                                     <bottom>
                                         <ToolBar id="main-toolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                             <items>
+                                                <Label text="Java Version"/>
                                                 <ChoiceBox fx:id="languageChoiceBox" maxHeight="22.0" prefHeight="22.0" prefWidth="115.0">
                                                     <padding>
                                                         <Insets bottom="-3.0" left="-3.0" right="-3.0" top="-3.0" />
                                                     </padding>
                                                 </ChoiceBox>
+                                                <Label prefHeight="17.0" prefWidth="79.0" text="XPath Version"/>
                                                 <ChoiceBox maxHeight="22.0" minHeight="20.0" prefHeight="22.0" prefWidth="115.0" fx:id="xpathVersionChoiceBox">
                                                     <padding>
                                                         <Insets bottom="-3.0" left="-3.0" right="-3.0" top="-3.0" />

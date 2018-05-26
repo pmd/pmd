@@ -37,7 +37,7 @@ public class EventLogController implements Initializable {
 
     private final DesignerRoot designerRoot;
 
-    private static final Duration PARSEEXCEPTION_DELAY = Duration.ofMillis(100);
+    private static final Duration PARSE_EXCEPTION_DELAY = Duration.ofMillis(3000);
 
     @FXML
     private TableView<LogEntry> eventLogTableView;
@@ -78,13 +78,20 @@ public class EventLogController implements Initializable {
 
         EventStream<LogEntry> e1 = designerRoot.getLogger().getLog()
                 .filter(x -> x.getCategory().equals(Category.PARSE_EXCEPTION))
-                .successionEnds(PARSEEXCEPTION_DELAY);
+                .successionEnds(PARSE_EXCEPTION_DELAY);
 
         EventStream<LogEntry> e2 = designerRoot.getLogger().getLog()
                 .filter(x -> !x.getCategory().equals(Category.PARSE_EXCEPTION));
 
 
         EventStreams.merge(e1, e2)
+                .subscribe(t -> eventLogTableView.getItems().add(t));
+
+        EventStream<LogEntry> e3 = designerRoot.getLogger().getLog()
+                .filter(x -> x.getCategory().equals(Category.XPATH_EVALUATION_EXCEPTION))
+                .successionEnds(PARSE_EXCEPTION_DELAY);
+
+        EventStreams.merge(e3)
                 .subscribe(t -> eventLogTableView.getItems().add(t));
 
 

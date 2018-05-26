@@ -60,7 +60,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private ASTManager astManager;
     private TreeViewWrapper<Node> treeViewWrapper;
     private ASTTreeItem selectedTreeItem;
-    private Duration timeDuration = Duration.ofMillis(100);
+    private static final Duration CODE_EDITOR_REFRESH = Duration.ofMillis(100);
 
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
         parent = mainController;
@@ -74,7 +74,6 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     public void initialize(URL location, ResourceBundle resources) {
 
         treeViewWrapper = new TreeViewWrapper<>(astTreeView);
-
         astTreeView.setCellFactory(treeView -> new ASTTreeCell(parent));
 
         languageVersionProperty().values()
@@ -88,7 +87,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
         codeEditorArea.richChanges()
                 .filter(t -> !t.getInserted().equals(t.getRemoved()))
-                .successionEnds(timeDuration)
+                .successionEnds(CODE_EDITOR_REFRESH)
                 .subscribe(richChange -> parent.onRefreshASTClicked());
 
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
