@@ -1249,7 +1249,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     + qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
             try {
                 myType = pmdClassLoader.loadClass(qualifiedNameInner);
-            } catch (Exception ignored) {
+            } catch (ClassNotFoundException ignored) {
                 // ignored, we'll try again with a different package name/fqcn
             } catch (LinkageError e) {
                 // we found the class, but there is a problem with it (see https://github.com/pmd/pmd/issues/1131)

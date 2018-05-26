@@ -42,6 +42,9 @@ public final class TypeHelper {
                 // The requested type is not on the auxclasspath. This might happen, if the type node
                 // is probed for a specific type (e.g. is is a JUnit5 Test Annotation class).
                 // Failing to resolve clazzName does not necessarily indicate an incomplete auxclasspath.
+            } catch (final LinkageError expected) {
+                // We found the class but it's invalid / incomplete. This may be an incomplete auxclasspath
+                // if it was a NoClassDefFoundError. TODO : Report it?
             }
         }
 
