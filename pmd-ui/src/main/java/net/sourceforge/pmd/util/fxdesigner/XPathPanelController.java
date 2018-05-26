@@ -107,9 +107,11 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         Platform.runLater(this::bindToParent);
 
         xpathExpressionArea.richChanges()
-                           .filter(t -> !t.getInserted().equals(t.getRemoved()))
+                           .filter(t -> !t.isIdentity())
                            .successionEnds(XPATH_REFRESH_DELAY)
-                           .subscribe(x -> parent.refreshXPathResults());
+                           // Reevaluate XPath anytime the expression or the XPath version changes
+                           .or(xpathVersionProperty().changes())
+                           .subscribe(tick -> parent.refreshXPathResults());
     }
 
 

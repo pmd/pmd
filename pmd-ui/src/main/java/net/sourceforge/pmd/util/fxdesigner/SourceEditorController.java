@@ -86,9 +86,15 @@ public class SourceEditorController implements Initializable, SettingsOwner {
                     .subscribe(parent::onNodeItemSelected);
 
         codeEditorArea.richChanges()
-                      .filter(t -> !t.getInserted().equals(t.getRemoved()))
+                      .filter(t -> !t.isIdentity())
                       .successionEnds(AST_REFRESH_DELAY)
-                      .subscribe(richChange -> parent.refreshAST());
+                      // Refresh the AST anytime the text or the language version changes
+                      .or(languageVersionProperty().changes())
+                      .subscribe(tick -> {
+                          // Discard the AST if the language version has changed
+                          tick.ifRight(c -> astTreeView.setRoot(null));
+                          parent.refreshAST();
+                      });
 
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
     }
