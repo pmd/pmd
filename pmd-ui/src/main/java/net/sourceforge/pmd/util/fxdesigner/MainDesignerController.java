@@ -222,7 +222,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     }
 
 
-    public void onRefreshASTClicked() {
+    public void refreshAST() {
         sourceEditorController.refreshAST();
         refreshXPathResults();
     }
@@ -297,7 +297,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
                 LanguageVersion guess = DesignerUtil.getLanguageVersionFromExtension(file.getName());
                 if (guess != null) { // guess the language from the extension
                     languageChoiceBox.getSelectionModel().select(guess);
-                    onRefreshASTClicked();
+                    refreshAST();
                 }
 
                 recentFiles.push(file);

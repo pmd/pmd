@@ -70,7 +70,7 @@
                                                         <Insets bottom="-3.0" left="-3.0" right="-3.0" top="-3.0" />
                                                     </padding>
                                                 </ChoiceBox>
-                                                <Label prefHeight="17.0" prefWidth="79.0" text="XPath Version"/>
+                                                <Label text="XPath Version"/>
                                                 <ChoiceBox maxHeight="22.0" minHeight="20.0" prefHeight="22.0" prefWidth="115.0" fx:id="xpathVersionChoiceBox">
                                                     <padding>
                                                         <Insets bottom="-3.0" left="-3.0" right="-3.0" top="-3.0" />

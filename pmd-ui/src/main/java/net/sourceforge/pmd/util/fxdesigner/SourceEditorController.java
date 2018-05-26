@@ -88,7 +88,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         codeEditorArea.richChanges()
                 .filter(t -> !t.getInserted().equals(t.getRemoved()))
                 .successionEnds(CODE_EDITOR_REFRESH)
-                .subscribe(richChange -> parent.onRefreshASTClicked());
+                .subscribe(richChange -> parent.refreshAST());
 
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
     }

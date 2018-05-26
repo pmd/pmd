@@ -104,8 +104,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
                 .conditionOn(xpathResultListView.focusedProperty())
-                    .filter(Objects::nonNull)
-                    .subscribe(parent::onNodeItemSelected);
+                .filter(Objects::nonNull)
+                .subscribe(parent::onNodeItemSelected);
 
         Platform.runLater(this::bindToParent);
 
@@ -197,7 +197,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         try {
             String xpath = getXpathExpression();
-
+            invalidateResults(false);
             if (StringUtils.isBlank(xpath)) {
                 xpathResultListView.getItems().clear();
                 return;
