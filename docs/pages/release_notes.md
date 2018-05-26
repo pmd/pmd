@@ -51,6 +51,9 @@ can now we expressed much more concisely as:
 //ClassOrInterfaceType[typeIs('junit.framework.TestCase')]
 ```
 
+With this change, we also allow to check against array types by just append `[]` to the fully quallified class name.
+These can be repeated for arrays of arrays (ie: `byte[][]` or `java.lang.String[]`)
+
 Additionally, we have introduced a companion `typeIsExactly` function, that receives the same parameters, but
 will check for exact type matches without traversing the type hierarchy. That is, when using
 `typeIsExactly('junit.framework.TestCase')` will match only if the class is an instance of `TestCase`, but
