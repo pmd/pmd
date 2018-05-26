@@ -77,15 +77,15 @@ public class EventLogController implements Initializable {
         });
 
         EventStream<LogEntry> e1 = designerRoot.getLogger().getLog()
-                .filter(x -> x.getCategory().equals(Category.PARSE_EXCEPTION))
+                .filter(x -> x.getCategory() == Category.PARSE_EXCEPTION)
                 .successionEnds(PARSE_EXCEPTION_DELAY);
 
         EventStream<LogEntry> e2 = designerRoot.getLogger().getLog()
-                .filter(x -> !x.getCategory().equals(Category.PARSE_EXCEPTION));
+                .filter(x -> x.getCategory() != Category.PARSE_EXCEPTION);
 
 
         EventStream<LogEntry> e3 = designerRoot.getLogger().getLog()
-                .filter(x -> x.getCategory().equals(Category.XPATH_EVALUATION_EXCEPTION))
+                .filter(x -> x.getCategory() == Category.XPATH_EVALUATION_EXCEPTION)
                 .successionEnds(PARSE_EXCEPTION_DELAY);
 
         EventStreams.merge(e1, e2, e3)

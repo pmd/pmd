@@ -64,8 +64,8 @@
                                     <bottom>
                                         <ToolBar id="main-toolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                             <items>
-                                                <Label text="Java Version"/>
-                                                <ChoiceBox fx:id="languageChoiceBox" maxHeight="22.0" prefHeight="22.0" prefWidth="115.0">
+                                                <Label text="Language Version"/>
+                                                <ChoiceBox fx:id="languageChoiceBox" maxHeight="22.0">
                                                     <padding>
                                                         <Insets bottom="-3.0" left="-3.0" right="-3.0" top="-3.0" />
                                                     </padding>

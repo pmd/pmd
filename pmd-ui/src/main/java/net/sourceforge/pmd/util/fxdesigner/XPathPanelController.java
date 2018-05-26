@@ -73,7 +73,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
     private final ObservableXPathRuleBuilder ruleBuilder = new ObservableXPathRuleBuilder();
 
-    private static final Duration XPATH_REFRESH = Duration.ofMillis(3000);
+    private static final Duration XPATH_REFRESH = Duration.ofMillis(300);
 
     @FXML
     private PropertyTableView propertyView;
@@ -103,6 +103,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         initGenerateXPathFromStackTrace();
 
         EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
+                .conditionOn(xpathResultListView.focusedProperty())
                     .filter(Objects::nonNull)
                     .subscribe(parent::onNodeItemSelected);
 
@@ -111,7 +112,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         xpathExpressionArea.richChanges()
                 .filter(t -> !t.getInserted().equals(t.getRemoved()))
                 .successionEnds(XPATH_REFRESH)
-                .subscribe(x -> parent.xPathEvaluate());
+                .subscribe(x -> parent.refreshXPathResults());
     }
 
     private void initGenerateXPathFromStackTrace() {
@@ -216,6 +217,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         }
 
         xpathResultListView.refresh();
+
 
     }
 
