@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.typeresolution;
 
 import org.apache.commons.lang3.ClassUtils;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 
@@ -76,7 +75,8 @@ public final class TypeHelper {
         
         return null;
     }
-    
+
+    /** @see #isA(TypeNode, String) */
     public static boolean isA(TypeNode n, Class<?> clazz) {
         return subclasses(n, clazz);
     }
@@ -128,7 +128,7 @@ public final class TypeHelper {
     public static boolean subclasses(TypeNode n, Class<?> clazz) {
         Class<?> type = n.getType();
         if (type == null) {
-            return clazz.getSimpleName().equals(((Node) n).getImage()) || clazz.getName().equals(((Node) n).getImage());
+            return n.hasImageEqualTo(clazz.getSimpleName()) || n.hasImageEqualTo(clazz.getName());
         }
 
         return clazz.isAssignableFrom(type);

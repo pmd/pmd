@@ -13,7 +13,7 @@ This is a bug fixing release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
-    *   [XPath Type Resolution Methods](#xpath-type-resolution-methods)
+    *   [XPath Type Resolution Functions](#xpath-type-resolution-functions)
     *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
 * [Fixed Issues](#fixed-issues)
@@ -22,42 +22,43 @@ This is a bug fixing release.
 
 ### New and noteworthy
 
-#### XPath Type Resolution Methods
+#### XPath Type Resolution Functions
 
 For some time now PMD has supported Type Resolution, and exposed this functionality to XPath rules for the Java language
 with the `typeof` function. This function however had a number of shortcomings:
 
 *   It would take a first arg with the name to match if types couldn't be resolved. In all cases this was `@Image`
     but was still required.
-*   It required 2 separate arguments for the Fully Qualified Class Name and the short name of the class against
+*   It required 2 separate arguments for the Fully Qualified Class Name and the simple name of the class against
     which to test.
-*   If only the Fully Qualified Class Name was provided, no short name check was performed (not documented,
+*   If only the Fully Qualified Class Name was provided, no simple name check was performed (not documented,
     but abused on some rules to "fix" some false positives).
 
 In this release we are deprecating `typeof` in favor of a simpler `typeIs` function, which behaves exactly as the
 old `typeof` when given all 3 arguments.
 
-`typeIs` receives a single parameter, containing the fully qualified name of the class to test against.
+`typeIs` receives a single parameter, which is the fully qualified name of the class to test against.
 
 So, calls such as:
 
-```xml`
+```ruby
 //ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase', 'TestCase')]
 ```
 
 can now we expressed much more concisely as:
 
-```xml`
+```ruby
 //ClassOrInterfaceType[typeIs('junit.framework.TestCase')]
 ```
 
-With this change, we also allow to check against array types by just append `[]` to the fully quallified class name.
-These can be repeated for arrays of arrays (ie: `byte[][]` or `java.lang.String[]`)
+With this change, we also allow to check against array types by just appending `[]` to the fully qualified class name.
+These can be repeated for arrays of arrays (e.g. `byte[][]` or `java.lang.String[]`).
 
-Additionally, we have introduced a companion `typeIsExactly` function, that receives the same parameters, but
-will check for exact type matches without traversing the type hierarchy. That is, when using
-`typeIsExactly('junit.framework.TestCase')` will match only if the class is an instance of `TestCase`, but
-not if it's a subclass of `TestCase`.
+Additionally, we introduce the companion function `typeIsExactly`, that receives the same parameters as `typeIs`,
+but checks for exact type matches, without considering the type hierarchy. That is, the test
+`typeIsExactly('junit.framework.TestCase')` will match only if the context node is an instance of `TestCase`, but
+not if it's an instance of a subclass of `TestCase`. Be aware then, that using that method with abstract types will
+never match.
 
 #### New Rules
 

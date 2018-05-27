@@ -256,23 +256,33 @@ More information about writing XPath rules is [available here](pmd_userdocs_exte
 
 ### Inside an XPath query
 
-PMD XPath syntax includes two functions called `typeIs` and `typeIsExactly` which determines if a node is of the provided type (either exactly or any subtype).
+PMD's XPath extensions include two functions called `typeIs` and `typeIsExactly`,
+which determine if a node is of a specific type (either any subtype or exactly,
+respectively).
 
-Here a an example of use, inside an XPath Query:
+Here a an example of use, inside an XPath query:
 
-```xpath
-//ClassOrInterfaceDeclaration[
-    //ClassOrInterfaceType[typeIs('junit.framework.TestCase')]
-]
+```ruby
+//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType[typeIs('junit.framework.TestCase')]
 ```
 
-This query will match on such source code:
+This query will for instance match the following class declaration:
 
 ```java
 import junit.framework.TestCase;
 
 public class Foo extends TestCase { }
 ```
+
+It will also match against classes which extend a *subtype* of `junit.framework.TestCase`,
+i.e. a base class itself extending `TestCase` transitively. If you don't want this behaviour,
+then use `typeIsExactly` instead of `typeIs`.
+
+Checking against an array type is possible with the double bracket syntax.
+An array type is denoted by just appending `[]` to the fully qualified class name
+of the component type. These can be repeated for arrays of arrays
+(e.g. `byte[][]` or `java.lang.String[]`).
+
 
 ### With Java code
 
