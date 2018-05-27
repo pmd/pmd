@@ -428,7 +428,7 @@ public class Éléphant {}
 
 To avoid mistakes if we want that a Method, Constructor, Field or Nested class have a default access modifier
 we must add a comment at the beginning of it's declaration.
-By default the comment must be /* default */, if you want another, you have to provide a regexp.
+By default the comment must be /* default */ or /* package */, if you want another, you have to provide a regular expression.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.CommentDefaultAccessModifierRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/CommentDefaultAccessModifierRule.java)
 
@@ -461,7 +461,7 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|regex||Regular expression|no|
+|regex|\/\*\s+(default\|package)\s+\*\/|Regular expression|no|
 
 **Use this rule by referencing it:**
 ``` xml
