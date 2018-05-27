@@ -37,6 +37,10 @@ This is a minor release.
     has a new parameter "testClassPattern". It is used to distinguish test classes from other classes and
     avoid false positives. By default, any class, that has "Test" in its name, is considered a test class.
 
+*   The Java rule [CommentDefaultAccessModifier](pmd_rules_java_codestyle.html#commentdefaultaccessmodifier) (`java-codestyle`)
+    allows now by default the comment "`/* package */` in addition to "`/* default */`. This behavior can
+    still be adjusted by setting the property `regex`.
+
 ### Fixed Issues
 
 *   all
