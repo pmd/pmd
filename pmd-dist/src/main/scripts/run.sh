@@ -148,7 +148,7 @@ exit_code=${PIPESTATUS[0]}
 
 # Did the java command fail because we're missing net.sourceforge.pmd.util.fxdesigner.Designer?
 if grep -q "net.sourceforge.pmd.util.fxdesigner.Designer" temp_file; then
-  echo "It looks like you're missing the class net.sourceforge.pmd.util.fxdesigner.Designer. A solution might be available here: https://github.com/pmd/pmd/issues/962"
+  echo "You seem to be missing the JavaFX runtime. Please install JavaFX on your system and try again."
 fi
 
 rm ${temp_file}
