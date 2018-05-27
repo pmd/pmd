@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.rule.documentation.AbstractCommentRule;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.RegexProperty;
 
 /**
  * Check for Methods, Fields and Nested Classes that have a default access
@@ -31,7 +31,8 @@ import net.sourceforge.pmd.properties.StringProperty;
  */
 public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
 
-    private static final StringProperty REGEX_DESCRIPTOR = new StringProperty("regex", "Regular expression", "", 1.0f);
+    private static final RegexProperty REGEX_DESCRIPTOR = RegexProperty.named("regex")
+            .desc("Regular expression").defaultValue("\\/\\*\\s+(default|package)\\s+\\*\\/").uiOrder(1.0f).build();
     private static final String MESSAGE = "To avoid mistakes add a comment "
             + "at the beginning of the %s %s if you want a default access modifier";
     private final Set<Integer> interestingLineNumberComments = new HashSet<Integer>();
@@ -40,21 +41,12 @@ public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
         definePropertyDescriptor(REGEX_DESCRIPTOR);
     }
 
-    public CommentDefaultAccessModifierRule(final String regex) {
-        this();
-        setRegex(regex);
-    }
-
-    public void setRegex(final String regex) {
-        setProperty(CommentDefaultAccessModifierRule.REGEX_DESCRIPTOR, regex);
-    }
-
     @Override
     public Object visit(final ASTCompilationUnit node, final Object data) {
         interestingLineNumberComments.clear();
         final List<Comment> comments = node.getComments();
         for (final Comment comment : comments) {
-            if (comment.getImage().matches(getProperty(REGEX_DESCRIPTOR).trim())) {
+            if (getProperty(REGEX_DESCRIPTOR).matcher(comment.getImage()).matches()) {
                 interestingLineNumberComments.add(comment.getBeginLine());
             }
         }
