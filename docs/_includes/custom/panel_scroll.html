@@ -1,0 +1,29 @@
+<script src="../../js/jquery-ui.min.js"></script>
+
+<script>
+// Adds a pretty animation to links to shuffle panels
+$(function () {
+    $('a[href^=#shuffle-panel]').click(function () {
+        if (location.pathname.replace(/^\//, '') === this.pathname.replace(/^\//, '')
+            && location.hostname === this.hostname) {
+            var target = $(this.hash);
+
+            target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+            if (target.length) {
+                $('html,body').animate({
+                    scrollTop: target.offset().top - 250,
+                }, {
+                    duration: 500,
+                    complete: function () {
+                        target.effect("highlight", {}, 1000);
+                    }
+                });
+
+                // $(this.hash).effect("highlight", {}, 3000);
+                // $(this.hash).toggle("highlight");
+                return false;
+            }
+        }
+    });
+});
+</script>
