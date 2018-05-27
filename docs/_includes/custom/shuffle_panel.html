@@ -46,7 +46,7 @@
                     {% capture excluded %}{{ page.tags | intersect: exclude_tags | empty }}{% endcapture %}
 
                     {% if included contains "true" and excluded contains "true" %}
-                        <li><a href="{{page.url | remove: '/'}}">{{ titlemaker }}</a></li>
+                        <li><a href="{{page.url | remove: '/'}}">{% eval titlemaker %}</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>

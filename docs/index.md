@@ -38,8 +38,8 @@ also support an extensive API to [**write your own rules**](#shuffle-panel-writi
 which you can do either in Java or as a self-contained XPath query.
 
 PMD is most useful when **integrated into your build process**. It can then be
-used as a quality gate, to enforce a coding standard for your codebase. PMD
-can be used:
+used as a quality gate, to enforce a coding standard for your codebase. Among other
+things, PMD can be run:
 * As a [Maven goal](pmd_userdocs_tools_maven.html)
 * As an [Ant task](pmd_userdocs_tools_ant.html)
 * As a [Gradle task](https://docs.gradle.org/current/userguide/pmd_plugin.html)
