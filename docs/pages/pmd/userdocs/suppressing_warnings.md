@@ -195,7 +195,7 @@ For example, to suppress reporting specifically typed parameters which are unuse
 ```xml
 <rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
   <properties>
-    <property name="violationSuppressXPath" value=".[typeof('java.lang.String')]"/>
+    <property name="violationSuppressXPath" value=".[typeIs('java.lang.String')]"/>
   </properties>
 </rule>
 ```

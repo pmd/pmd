@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -65,13 +66,11 @@ import javafx.stage.StageStyle;
  */
 public class XPathPanelController implements Initializable, SettingsOwner {
 
+    private static final Duration XPATH_REFRESH_DELAY = Duration.ofMillis(100);
     private final DesignerRoot designerRoot;
     private final MainDesignerController parent;
-
     private final XPathEvaluator xpathEvaluator = new XPathEvaluator();
-
     private final ObservableXPathRuleBuilder ruleBuilder = new ObservableXPathRuleBuilder();
-
 
     @FXML
     private PropertyTableView propertyView;
@@ -101,11 +100,20 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         initGenerateXPathFromStackTrace();
 
         EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
+                    .conditionOn(xpathResultListView.focusedProperty())
                     .filter(Objects::nonNull)
                     .subscribe(parent::onNodeItemSelected);
 
         Platform.runLater(this::bindToParent);
+
+        xpathExpressionArea.richChanges()
+                           .filter(t -> !t.isIdentity())
+                           .successionEnds(XPATH_REFRESH_DELAY)
+                           // Reevaluate XPath anytime the expression or the XPath version changes
+                           .or(xpathVersionProperty().changes())
+                           .subscribe(tick -> parent.refreshXPathResults());
     }
+
 
     private void initGenerateXPathFromStackTrace() {
 
@@ -130,8 +138,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                     popup.close();
                 });
 
-
-
                 popup.setScene(new Scene(root));
                 popup.initStyle(StageStyle.UTILITY);
                 popup.initModality(Modality.WINDOW_MODAL);
@@ -145,8 +151,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         menu.getItems().add(item);
 
         xpathExpressionArea.addEventHandler(MouseEvent.MOUSE_CLICKED, t -> {
-            if (t.getButton() == MouseButton.SECONDARY
-                    || t.getButton() == MouseButton.PRIMARY && t.getClickCount() > 1) {
+            if (t.getButton() == MouseButton.SECONDARY) {
                 menu.show(xpathExpressionArea, t.getScreenX(), t.getScreenY());
             }
         });
@@ -189,9 +194,9 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         try {
             String xpath = getXpathExpression();
-
             if (StringUtils.isBlank(xpath)) {
                 xpathResultListView.getItems().clear();
+                invalidateResults(false);
                 return;
             }
 
@@ -209,7 +214,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         }
 
         xpathResultListView.refresh();
-        xpathExpressionArea.requestFocus();
+
+
     }
 
 

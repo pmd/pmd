@@ -24,10 +24,10 @@ public class ArrayVariableDeclaration {
      |   + PrimitiveType
      |
      |+ VariableDeclarator
-     | + VariableDeclaratorId[@Image="a" and @Array=false() and ArrayDims=0 and typeof(.)='int[].class']
+     | + VariableDeclaratorId[@Image="a" and @Array=false() and ArrayDims=0 and typeIs(.)='int[].class']
      |
      |+ VariableDeclarator
-     | + VariableDeclaratorId[@Image="b" and @Array=true() and ArrayDims=1 and typeof(.)='int[][].class']
+     | + VariableDeclaratorId[@Image="b" and @Array=true() and ArrayDims=1 and typeIs(.)='int[][].class']
     */
     public int[] a, b[];    // SUPPRESS CHECKSTYLE now
     public String[] c, d[]; // SUPPRESS CHECKSTYLE now

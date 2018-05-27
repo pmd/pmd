@@ -76,6 +76,7 @@ public class XPathEvaluator {
 
             RuleContext ruleContext = new RuleContext();
             ruleContext.setLanguageVersion(languageVersion);
+            ruleContext.setIgnoreExceptions(false);
 
             List<Node> nodes = new ArrayList<>();
             nodes.add(compilationUnit);

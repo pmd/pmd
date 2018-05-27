@@ -19,31 +19,24 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
 /**
- * Finds hardcoded static Initialization Vectors vectors used with cryptographic
- * operations.
- *
- * <code>
- * //bad: byte[] ivBytes = new byte[] {32, 87, -14, 25, 78, -104, 98, 40};
- * //bad: byte[] ivBytes = "hardcoded".getBytes();
- * //bad: byte[] ivBytes = someString.getBytes();
- * </code>
- *
- * <p>{@link javax.crypto.spec.IvParameterSpec} must not be created from a static sources
+ * Finds hard coded encryption keys that are passed to
+ * javax.crypto.spec.SecretKeySpec(key, algorithm).
  * 
  * @author sergeygorbaty
- * @since 6.3.0
- *
+ * @since 6.4.0
  */
-public class InsecureCryptoIvRule extends AbstractJavaRule {
+public class HardCodedCryptoKeyRule extends AbstractJavaRule {
 
-    public InsecureCryptoIvRule() {
+    private static final Class<?> SECRET_KEY_SPEC = javax.crypto.spec.SecretKeySpec.class;
+
+    public HardCodedCryptoKeyRule() {
         addRuleChainVisit(ASTAllocationExpression.class);
     }
 
     @Override
     public Object visit(ASTAllocationExpression node, Object data) {
         ASTClassOrInterfaceType declClassName = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
-        if (declClassName != null && TypeHelper.isA(declClassName, javax.crypto.spec.IvParameterSpec.class)) {
+        if (declClassName != null && TypeHelper.isA(declClassName, SECRET_KEY_SPEC)) {
             Node firstArgument = null;
 
             ASTArguments arguments = node.getFirstChildOfType(ASTArguments.class);
@@ -53,13 +46,22 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
 
             if (firstArgument != null) {
                 ASTPrimaryPrefix prefix = firstArgument.getFirstDescendantOfType(ASTPrimaryPrefix.class);
-                validateProperIv(data, prefix);
+                validateProperKeyArgument(data, prefix);
             }
         }
         return super.visit(node, data);
     }
 
-    private void validateProperIv(Object data, ASTPrimaryPrefix firstArgumentExpression) {
+    /**
+     * Recursively resolves the argument again, if the variable initializer
+     * is itself a expression.
+     *
+     * Then checks the expression for being a string literal or array
+     *
+     * @param data
+     * @param firstArgumentExpression
+     */
+    private void validateProperKeyArgument(Object data, ASTPrimaryPrefix firstArgumentExpression) {
         if (firstArgumentExpression == null) {
             return;
         }
@@ -72,7 +74,7 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
                 VariableNameDeclaration varDecl = (VariableNameDeclaration) namedVar.getNameDeclaration();
                 ASTVariableInitializer initializer = varDecl.getAccessNodeParent().getFirstDescendantOfType(ASTVariableInitializer.class);
                 if (initializer != null) {
-                    validateProperIv(data, initializer.getFirstDescendantOfType(ASTPrimaryPrefix.class));
+                    validateProperKeyArgument(data, initializer.getFirstDescendantOfType(ASTPrimaryPrefix.class));
                 }
             }
         }
@@ -80,13 +82,13 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
         // hard coded array
         ASTArrayInitializer arrayInit = firstArgumentExpression.getFirstDescendantOfType(ASTArrayInitializer.class);
         if (arrayInit != null) {
-            addViolation(data, firstArgumentExpression);
+            addViolation(data, arrayInit);
         }
 
         // string literal
         ASTLiteral literal = firstArgumentExpression.getFirstDescendantOfType(ASTLiteral.class);
         if (literal != null && literal.isStringLiteral()) {
-            addViolation(data, firstArgumentExpression);
+            addViolation(data, literal);
         }
     }
 }

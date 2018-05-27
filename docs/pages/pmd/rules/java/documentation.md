@@ -132,7 +132,7 @@ and unintentional empty constructors.
 ```
 //ConstructorDeclaration[@Private='false']
                         [count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
-                        [not(../Annotation/MarkerAnnotation/Name[typeof(@Image, 'javax.inject.Inject', 'Inject')])]
+                        [not(../Annotation/MarkerAnnotation/Name[typeIs('javax.inject.Inject')])]
 ```
 
 **Example(s):**

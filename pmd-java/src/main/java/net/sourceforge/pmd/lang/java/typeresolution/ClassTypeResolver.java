@@ -1234,7 +1234,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 } catch (ClassNotFoundException e) {
                     myType = processOnDemand(qualifiedName);
                 } catch (LinkageError e) {
-                    myType = processOnDemand(qualifiedName);
+                    // we found the class, but there is a problem with it (see https://github.com/pmd/pmd/issues/1131)
+                    if (LOG.isLoggable(Level.FINE)) {
+                        LOG.log(Level.FINE, "Tried to load class " + qualifiedName + " from on demand import, "
+                                + "with an incomplete classpath.", e);
+                    }
+                    return;
                 }
             }
         }
@@ -1244,8 +1249,15 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     + qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
             try {
                 myType = pmdClassLoader.loadClass(qualifiedNameInner);
-            } catch (Exception ignored) {
+            } catch (ClassNotFoundException ignored) {
                 // ignored, we'll try again with a different package name/fqcn
+            } catch (LinkageError e) {
+                // we found the class, but there is a problem with it (see https://github.com/pmd/pmd/issues/1131)
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.log(Level.FINE, "Tried to load class " + qualifiedNameInner + " from on demand import, "
+                            + "with an incomplete classpath.", e);
+                }
+                return;
             }
         }
         if (myType == null && qualifiedName != null && !qualifiedName.contains(".")) {
@@ -1302,8 +1314,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         try {
             pmdClassLoader.loadClass(fullyQualifiedClassName);
             return true; // Class found
-        } catch (ClassNotFoundException | NoClassDefFoundError e) {
+        } catch (ClassNotFoundException e) {
             return false;
+        } catch (LinkageError e2) {
+            // Class exists, but may be invalid (see https://github.com/pmd/pmd/issues/1131)
+            return true;
         }
     }
 
@@ -1311,6 +1326,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         try {
             return pmdClassLoader.loadClass(fullyQualifiedClassName);
         } catch (ClassNotFoundException e) {
+            return null;
+        } catch (LinkageError e2) {
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.log(Level.FINE, "Tried to load class " + fullyQualifiedClassName + " from on demand import, "
+                        + "with an incomplete classpath.", e2);
+            }
             return null;
         }
     }

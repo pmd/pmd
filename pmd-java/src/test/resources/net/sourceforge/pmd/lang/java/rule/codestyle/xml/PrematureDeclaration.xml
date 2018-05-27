@@ -105,7 +105,29 @@ public class PrematureDeclarationLambda {
 }
         ]]></code>
     </test-code>
-    
+
+    <test-code>
+        <description>PrematureDeclaration false negative with reference that is a suffix of the variable name</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class PrematureDeclarationLambda {
+                public int lengthSumOf(String[] foo) {
+
+                    int snafoo = 0;
+
+                    if (foo == null || foo.length == 0)
+                        return 0;
+
+                    for (String aFoo : foo) {
+                        snafoo += aFoo.length();
+                    }
+
+                    return snafoo;
+                }
+            }
+            ]]></code>
+    </test-code>
+
     <test-code>
         <description>#1067 PrematureDeclaration lambda closure false positive</description>
         <expected-problems>0</expected-problems>
@@ -133,6 +155,32 @@ public class PrematureDeclarationLambda {
 
                     return Try.of(() -> sign(signingInput))
                               .getOrElse(() -> null);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>PrematureDeclaration should also check inside lambdas</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class PrematureDeclarationLambda {
+                public boolean lengthSumOf() {
+
+                    return Try.of(() -> {
+                        // Inside that lambda *is* a premature declaration of `sum`
+                        int sum = 0;
+
+                        if (strings == null || strings.length == 0)
+                            return 0;
+
+                        for (int i = 0; i < strings.length; i++) {
+                            sum += strings[i].length();
+                        }
+
+                        return sum;
+                    });
                 }
             }
             ]]></code>

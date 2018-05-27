@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     private List<ASTImportDeclaration> imports = new ArrayList<>();
-    private List<ASTImportDeclaration> matches = new ArrayList<>();
 
     public UnnecessaryFullyQualifiedNameRule() {
         super.addRuleChainVisit(ASTCompilationUnit.class);
@@ -45,6 +44,10 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
+        // This name has no qualification, it can't be unnecessarily qualified
+        if (node.getImage().indexOf('.') < 0) {
+            return data;
+        }
         checkImports(node, data);
         return data;
     }
@@ -53,38 +56,44 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     public Object visit(ASTName node, Object data) {
         if (!(node.jjtGetParent() instanceof ASTImportDeclaration)
                 && !(node.jjtGetParent() instanceof ASTPackageDeclaration)) {
+            // This name has no qualification, it can't be unnecessarily qualified
+            if (node.getImage().indexOf('.') < 0) {
+                return data;
+            }
             checkImports(node, data);
         }
         return data;
     }
 
+
+    /**
+     * Returns true if the name could be imported by this declaration.
+     * The name must be fully qualified, the import is either on-demand
+     * or static, that is its {@link ASTImportDeclaration#getImportedName()}
+     * is the enclosing package or type name of the imported type or static member.
+     */
+    private boolean declarationMatches(ASTImportDeclaration decl, String name) {
+        return name.startsWith(decl.getImportedName())
+                && name.lastIndexOf('.') == decl.getImportedName().length();
+    }
+
     private void checkImports(JavaNode node, Object data) {
         String name = node.getImage();
-        matches.clear();
+        List<ASTImportDeclaration> matches = new ArrayList<>();
 
         // Find all "matching" import declarations
         for (ASTImportDeclaration importDeclaration : imports) {
-            if (importDeclaration.isImportOnDemand()) {
-                // On demand import exactly matches the package of the type
-                if (name.startsWith(importDeclaration.getImportedName())) {
-                    if (name.lastIndexOf('.') == importDeclaration.getImportedName().length()) {
-                        matches.add(importDeclaration);
-                        continue;
-                    }
-                }
-            } else {
+            if (!importDeclaration.isImportOnDemand()) {
                 // Exact match of imported class
                 if (name.equals(importDeclaration.getImportedName())) {
                     matches.add(importDeclaration);
                     continue;
                 }
-                // Match of static method call on imported class
-                if (name.startsWith(importDeclaration.getImportedName())) {
-                    if (name.lastIndexOf('.') == importDeclaration.getImportedName().length()) {
-                        matches.add(importDeclaration);
-                        continue;
-                    }
-                }
+            }
+            // On demand import exactly matches the package of the type
+            // Or match of static method call on imported class
+            if (declarationMatches(importDeclaration, name)) {
+                matches.add(importDeclaration);
             }
         }
 
@@ -98,7 +107,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         // List list1 = Arrays.asList("foo"); // Array class name not needed!
         // List list2 = asList("foo"); // Preferred, used static import
         // }
-        if (matches.isEmpty() && name.indexOf('.') >= 0) {
+        if (matches.isEmpty()) {
             for (ASTImportDeclaration importDeclaration : imports) {
                 if (importDeclaration.isStatic()) {
                     String[] importParts = importDeclaration.getImportedName().split("\\.");
@@ -130,22 +139,18 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                 addViolation(data, node, new Object[] { node.getImage(), importStr, type });
             }
         }
-
-        matches.clear();
     }
 
     private boolean isAvoidingConflict(final JavaNode node, final String name,
             final ASTImportDeclaration firstMatch) {
         // is it a conflict between different imports?
-        if (firstMatch.isImportOnDemand() && firstMatch.isStatic() && name.indexOf('.') != -1) {
+        if (firstMatch.isImportOnDemand() && firstMatch.isStatic()) {
             final String methodCalled = name.substring(name.indexOf('.') + 1);
 
             // Is there any other static import conflictive?
             for (final ASTImportDeclaration importDeclaration : imports) {
                 if (!Objects.equals(importDeclaration, firstMatch) && importDeclaration.isStatic()) {
-                    if (importDeclaration.getImportedName().startsWith(firstMatch.getImportedName())
-                            && importDeclaration.getImportedName().lastIndexOf('.') == firstMatch.getImportedName()
-                                    .length()) {
+                    if (declarationMatches(firstMatch, importDeclaration.getImportedName())) {
                         // A conflict against the same class is not an excuse,
                         // ie:
                         // import java.util.Arrays;
@@ -170,11 +175,31 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             }
         }
 
-        // Is it a conflict with a class in the same file?
         final String unqualifiedName = name.substring(name.lastIndexOf('.') + 1);
         final int unqualifiedNameLength = unqualifiedName.length();
+
+        // There could be a conflict between an import on demand and another import, e.g.
+        // import One.*;
+        // import Two.Problem;
+        // Where One.Problem is a legitimate qualification
+        if (firstMatch.isImportOnDemand() && !firstMatch.isStatic()) {
+            for (ASTImportDeclaration importDeclaration : imports) {
+                if (importDeclaration != firstMatch     // NOPMD
+                        && !importDeclaration.isStatic()
+                        && !importDeclaration.isImportOnDemand()) {
+
+                    // Duplicate imports are legal
+                    if (!importDeclaration.getPackageName().equals(firstMatch.getPackageName())
+                            && importDeclaration.getImportedSimpleName().equals(unqualifiedName)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // Is it a conflict with a class in the same file?
         final Set<String> qualifiedTypes = node.getScope().getEnclosingScope(SourceFileScope.class)
-                .getQualifiedTypeNames().keySet();
+                                               .getQualifiedTypeNames().keySet();
         for (final String qualified : qualifiedTypes) {
             int fullLength = qualified.length();
             if (qualified.endsWith(unqualifiedName)
