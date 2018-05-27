@@ -50,7 +50,7 @@ public class StringInstantiationRule extends AbstractJavaRule {
             return data;
         }
 
-        if (nd instanceof TypedNameDeclaration && TypeHelper.isA((TypedNameDeclaration) nd, String.class)) {
+        if (nd instanceof TypedNameDeclaration && TypeHelper.isExactlyAny((TypedNameDeclaration) nd, String.class)) {
             addViolation(data, node);
         }
         return data;

@@ -64,7 +64,7 @@ it contains methods that are not thread-safe.
 
 **This rule is defined by the following XPath expression:**
 ```
-//AllocationExpression/ClassOrInterfaceType[pmd-java:typeof(@Image, 'java.lang.ThreadGroup')]|
+//AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.ThreadGroup')]|
 //PrimarySuffix[contains(@Image, 'getThreadGroup')]
 ```
 
@@ -166,8 +166,8 @@ Explicitly calling Thread.run() method will execute in the caller's thread of co
     [
         ./Name[ends-with(@Image, '.run') or @Image = 'run']
         and substring-before(Name/@Image, '.') =//VariableDeclarator/VariableDeclaratorId/@Image
-            [../../../Type/ReferenceType/ClassOrInterfaceType[typeof(@Image, 'java.lang.Thread', 'Thread')]]
-        or (./AllocationExpression/ClassOrInterfaceType[typeof(@Image, 'java.lang.Thread', 'Thread')]
+            [../../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.Thread')]]
+        or (./AllocationExpression/ClassOrInterfaceType[typeIs('java.lang.Thread')]
         and ../PrimarySuffix[@Image = 'run'])
     ]
 ]

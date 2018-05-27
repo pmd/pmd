@@ -236,7 +236,7 @@ class Foo {
 			violation suppression xpath works, by type
 		]]>
 	</description>
-	<rule-property name="violationSuppressXPath">.[typeof('java.lang.String')]</rule-property>
+	<rule-property name="violationSuppressXPath">.[typeIs('java.lang.String')]</rule-property>
 	<expected-problems>0</expected-problems>
 	<code>
 	<![CDATA[

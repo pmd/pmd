@@ -13,6 +13,7 @@ This is a minor release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
+    *   [XPath Type Resolution Functions](#xpath-type-resolution-functions)
     *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
 * [Fixed Issues](#fixed-issues)
@@ -20,6 +21,44 @@ This is a minor release.
 * [External Contributions](#external-contributions)
 
 ### New and noteworthy
+
+#### XPath Type Resolution Functions
+
+For some time now PMD has supported Type Resolution, and exposed this functionality to XPath rules for the Java language
+with the `typeof` function. This function however had a number of shortcomings:
+
+*   It would take a first arg with the name to match if types couldn't be resolved. In all cases this was `@Image`
+    but was still required.
+*   It required 2 separate arguments for the Fully Qualified Class Name and the simple name of the class against
+    which to test.
+*   If only the Fully Qualified Class Name was provided, no simple name check was performed (not documented,
+    but abused on some rules to "fix" some false positives).
+
+In this release we are deprecating `typeof` in favor of a simpler `typeIs` function, which behaves exactly as the
+old `typeof` when given all 3 arguments.
+
+`typeIs` receives a single parameter, which is the fully qualified name of the class to test against.
+
+So, calls such as:
+
+```ruby
+//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase', 'TestCase')]
+```
+
+can now we expressed much more concisely as:
+
+```ruby
+//ClassOrInterfaceType[typeIs('junit.framework.TestCase')]
+```
+
+With this change, we also allow to check against array types by just appending `[]` to the fully qualified class name.
+These can be repeated for arrays of arrays (e.g. `byte[][]` or `java.lang.String[]`).
+
+Additionally, we introduce the companion function `typeIsExactly`, that receives the same parameters as `typeIs`,
+but checks for exact type matches, without considering the type hierarchy. That is, the test
+`typeIsExactly('junit.framework.TestCase')` will match only if the context node is an instance of `TestCase`, but
+not if it's an instance of a subclass of `TestCase`. Be aware then, that using that method with abstract types will
+never match.
 
 #### New Rules
 
@@ -47,7 +86,9 @@ This is a minor release.
     *   [#1018](https://github.com/pmd/pmd/issues/1018): \[java] Performance degradation of 250% between 6.1.0 and 6.2.0
     *   [#1145](https://github.com/pmd/pmd/issues/1145): \[core] JCommander's help text for option -min is wrong
 *   java
+    *   [#672](https://github.com/pmd/pmd/issues/672): \[java] Support exact type matches for type resolution from XPath
     *   [#1077](https://github.com/pmd/pmd/issues/1077): \[java] Analyzing enum with lambda passed in constructor fails with "The enclosing scope must exist."
+    *   [#1115](https://github.com/pmd/pmd/issues/1115): \[java] Simplify xpath typeof syntax
     *   [#1131](https://github.com/pmd/pmd/issues/1131): \[java] java.lang.ClassFormatError: Absent Code attribute in method that is not native or abstract in class file javax/faces/application/FacesMessage$Severity
 *   java-bestpractices
     *   [#527](https://github.com/pmd/pmd/issues/572): \[java] False Alarm of JUnit4TestShouldUseTestAnnotation on Predicates
