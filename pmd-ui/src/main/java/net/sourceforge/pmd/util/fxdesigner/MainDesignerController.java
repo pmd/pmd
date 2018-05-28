@@ -229,13 +229,12 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
 
     public void refreshAST() {
-        sourceEditorController.refreshAST();
+        sourceEditorController.refreshAST().ifPresent(root -> xpathPanelController.evaluateXPath(root, getLanguageVersion()));
         refreshXPathResults();
     }
 
     public void refreshXPathResults() {
-        xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(),
-                getLanguageVersion());
+        xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(), getLanguageVersion());
     }
 
 
@@ -253,7 +252,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         sourceEditorController.clearSecondaryHighlight();
 
         Optional.ofNullable(declaration.getNode().getScope().getDeclarations().get(declaration))
-                .ifPresent(sourceEditorController::highlightNameOccurences);
+                .ifPresent(sourceEditorController::highlightNameOccurrences);
 
         Platform.runLater(() -> onNodeItemSelected(declaration.getNode()));
     }
@@ -293,8 +292,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         sourceEditorController.clearXPathHighlight();
     }
 
+    /** Replaces previously highlighted XPath results with the given nodes. */
     public void highlightXPathResults(List<Node> nodes) {
-        resetXPathResults();
         sourceEditorController.highlightXPathResults(nodes);
     }
 

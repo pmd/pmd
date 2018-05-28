@@ -7,7 +7,7 @@
 /* With syntax highlighting, it's more readable to not change the fill color */
 
 .styled-text-area .focus-highlight {
-    -fx-font-weight: bolder;
+    -fx-font-weight: bold;
 }
 
 /* Add a border around highlighted nodes if they fit in one line */

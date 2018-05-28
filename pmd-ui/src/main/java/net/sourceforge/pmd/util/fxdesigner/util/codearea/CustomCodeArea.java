@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singleton;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.FOCUS;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.SECONDARY;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.SYNTAX_HIGHLIGHT_LAYER_ID;
@@ -17,14 +19,17 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpans;
-import org.reactfx.EventStreams;
+import org.reactfx.EventSource;
 import org.reactfx.Subscription;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.ContextUpdate.LayerUpdate;
 
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
@@ -33,7 +38,7 @@ import javafx.concurrent.Task;
 
 /**
  * Code area that can handle syntax highlighting as well as regular node highlighting. Regular node highlighting is
- * handled in several {@link StyleLayer}s, which you can affect with {@link #styleCss(Node, LayerId, String...)},
+ * handled in several {@link StyleLayer}s, which you can affect with {@link #styleCss(Collection, LayerId, boolean, String...)},
  * {@link #clearStyleLayer(LayerId)} and the like. Highlighting
  *
  * <p>Syntax highlighting uses another internal style layer. Syntax highlighting
@@ -51,6 +56,11 @@ public class CustomCodeArea extends CodeArea {
     private StyleContext styleContext;
     private SyntaxHighlighter syntaxHighlighter;
 
+    private static final Duration UPDATE_DELAY = Duration.ofMillis(130);
+    private static final Duration TEXT_CHANGE_DELAY = Duration.ofMillis(100);
+    private final EventSource<ContextUpdate> styleContextUpdateQueue = new EventSource<>();
+
+    private final StyleHelper styleHelper = new StyleHelper(this);
 
     public CustomCodeArea() {
         super();
@@ -59,13 +69,20 @@ public class CustomCodeArea extends CodeArea {
         styleContext.addLayer(XPATH_RESULTS.id, new StyleLayer(XPATH_RESULTS.id, this));
         styleContext.addLayer(FOCUS.id, new StyleLayer(FOCUS.id, this));
         styleContext.addLayer(SECONDARY.id, new StyleLayer(SECONDARY.id, this));
+
+        styleContextUpdateQueue.reduceSuccessions(ContextUpdate::unit, ContextUpdate::reduce, UPDATE_DELAY)
+                               .hook(styleContext::executeUpdate)
+                               .hook(up -> System.out.println("update: " + up.getSpansById().keySet()))
+                               .supplyTask(() -> computeHighlightingAsync(getText()))
+                               .subscribe(update -> Platform.runLater(this::paintCss));
     }
 
     // FIXME the highlighting offsets to the left (right) when characters are deleted (inserted)
     // Probably, auto-parsing of the source will fix that to some extent.
 
+
     /**
-     * Styles the node in the given layer.
+     * Styles the nodes in the given layer.
      *
      * <p>The focus layer is meant for the node in primary focus, in contrast
      * with the secondary layer, which highlights some nodes that are related
@@ -74,22 +91,27 @@ public class CustomCodeArea extends CodeArea {
      * highlights nodes that are independent from any selection (they depend
      * on the xpath results).
      *
-     * @param node       node to style
-     * @param layerId    Layer id
-     * @param cssClasses css classes to apply
+     * @param nodes      Nodes to style
+     * @param layerId    Id of the layer in which to save the node highlight
+     * @param resetLayer Whether to replace the contents of the layer with the
+     *                   styling for these nodes
+     * @param cssClasses CSS classes to apply
      */
-    // TODO we can probably be more efficient if we style batches of n nodes, and create only one span for them instead of overlaying n spans
-    public void styleCss(Node node, LayerId layerId, String... cssClasses) {
+    public void styleCss(Collection<? extends Node> nodes, LayerId layerId, boolean resetLayer, String... cssClasses) {
         Set<String> fullClasses = new HashSet<>(Arrays.asList(cssClasses));
         fullClasses.add("text");
         fullClasses.add("styled-text-area");
         fullClasses.add(layerId.id + "-highlight"); // focus-highlight, xpath-highlight, secondary-highlight
 
-        if (layerId == XPATH_RESULTS && useInlineHighlight(node)) {
-            fullClasses.add("inline-highlight");
-        }
+        ContextUpdate update = new ContextUpdate(layerId.id, new LayerUpdate(resetLayer, styleHelper.style(nodes, fullClasses, extraClassesFinder(layerId))));
+        styleContextUpdateQueue.push(update);
+    }
 
-        styleContext.getLayer(layerId.id).style(node.getBeginLine(), node.getBeginColumn(), node.getEndLine(), node.getEndColumn(), fullClasses);
+
+    private Function<Node, Set<String>> extraClassesFinder(LayerId layerId) {
+        return layerId == XPATH_RESULTS
+                ? n -> useInlineHighlight(n) ? singleton("inline-highlight") : emptySet()
+                : n -> emptySet();
     }
 
 
@@ -114,43 +136,43 @@ public class CustomCodeArea extends CodeArea {
         return node.getBeginLine() == node.getEndLine() && (node.getEndColumn() - node.getBeginColumn()) <= maxInlineLength;
     }
 
-    /**
-     * Clears a style layer.
-     *
-     * @param id layer id.
-     */
-    public void clearStyleLayer(LayerId id) {
-        styleContext.getLayer(id.id).clearStyles();
-    }
 
 
     /**
-     * Returns true if the node is in the range of the current text.
-     *
-     * @param n The node to check
-     *
-     * @return True or false
+     * Forcefully applies the possibly updated css classes.
+     * This operation is expensive, and should not be executed
+     * in a loop for example.
      */
-    public boolean isInRange(Node n) {
-        return n.getEndLine() <= getParagraphs().size()
-                && (n.getEndLine() != getParagraphs().size()
-                || n.getEndColumn() <= getParagraph(n.getEndLine() - 1).length());
+    public void paintCss() {
+        this.setStyleSpans(0, styleContext.getStyleSpans());
     }
-
 
 
     /**
      * Clears all style layers from their contents.
      */
     public void clearStyleLayers() {
-        for (StyleLayer layer : styleContext) {
-            layer.clearStyles();
+        for (LayerId id : LayerId.values()) {
+            clearStyleLayer(id);
         }
+
+        clearStyleLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
+
     }
 
 
-    public boolean isSyntaxHighlightingEnabled() {
-        return isSyntaxHighlightingEnabled.get();
+    /**
+     * Clears a style layer.
+     *
+     * @param id layer id.
+     */
+    public void clearStyleLayer(LayerId id) {
+        clearStyleLayer(id.id);
+    }
+
+
+    private void clearStyleLayer(String id) {
+        styleContextUpdateQueue.push(ContextUpdate.resetUpdate(id));
     }
 
 
@@ -164,11 +186,7 @@ public class CustomCodeArea extends CodeArea {
 
         try { // refresh the highlighting.
             Task<StyleSpans<Collection<String>>> t = computeHighlightingAsync(this.getText());
-            t.setOnSucceeded(e -> {
-                StyleLayer layer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
-                layer.reset(t.getValue());
-                this.paintCss();
-            });
+            t.setOnSucceeded(e -> styleContextUpdateQueue.push(ContextUpdate.resetUpdate(SYNTAX_HIGHLIGHT_LAYER_ID, t.getValue())));
         } catch (Exception ignored) {
             // nevermind
         }
@@ -179,15 +197,6 @@ public class CustomCodeArea extends CodeArea {
         return isSyntaxHighlightingEnabled;
     }
 
-
-    /**
-     * Forcefully applies the possibly updated css classes.
-     * This operation is expensive, and should not be executed
-     * in a loop for example.
-     */
-    public void paintCss() {
-        this.setStyleSpans(0, styleContext.getStyleSpans());
-    }
 
 
     /**
@@ -204,10 +213,8 @@ public class CustomCodeArea extends CodeArea {
             if (executorService != null) {
                 executorService.shutdown();
             }
-            StyleLayer syntaxHighlightLayer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
-            if (syntaxHighlightLayer != null) {
-                syntaxHighlightLayer.clearStyles();
-            }
+
+            styleContextUpdateQueue.push(ContextUpdate.resetUpdate(SYNTAX_HIGHLIGHT_LAYER_ID));
         }
         paintCss();
     }
@@ -238,20 +245,16 @@ public class CustomCodeArea extends CodeArea {
 
         if (isSyntaxHighlightingEnabled.get() && syntaxHighlighter != null) {
             executorService = Executors.newSingleThreadExecutor();
-            //            syntaxAutoRefresh = this.richChanges().filter(ch -> !ch.isIdentity())
-            syntaxAutoRefresh = EventStreams.valuesOf(textProperty()).distinct()
-                                            .successionEnds(Duration.ofMillis(100))
-                                            .supplyTask(() -> computeHighlightingAsync(this.getText()))
-                                            .awaitLatest(this.richChanges().filter(ch -> !ch.isIdentity()))
-                                            .filterMap(t -> {
-                                                t.ifFailure(Throwable::printStackTrace);
-                                                return t.toOptional();
-                                            })
-                                            .subscribe(spans -> {
-                                                StyleLayer layer = styleContext.getLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
-                                                layer.reset(spans);
-                                                this.paintCss();
-                                            });
+            syntaxAutoRefresh = this.richChanges().filter(ch -> !ch.isIdentity())
+                                    //            syntaxAutoRefresh = EventStreams.valuesOf(textProperty()).distinct()
+                                    .successionEnds(TEXT_CHANGE_DELAY)
+                                    .supplyTask(() -> computeHighlightingAsync(this.getText()))
+                                    .awaitLatest(this.richChanges())
+                                    .filterMap(t -> {
+                                        t.ifFailure(Throwable::printStackTrace);
+                                        return t.toOptional();
+                                    })
+                                    .subscribe(spans -> styleContextUpdateQueue.push(ContextUpdate.resetUpdate(SYNTAX_HIGHLIGHT_LAYER_ID, spans)));
         }
     }
 

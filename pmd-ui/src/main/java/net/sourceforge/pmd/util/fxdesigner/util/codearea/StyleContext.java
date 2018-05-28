@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -18,15 +17,18 @@ import java.util.stream.Collectors;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.ContextUpdate.LayerUpdate;
+
 
 /**
  * Stores the current style layers and can overlay them into a {@link StyleSpans} to style the text.
  */
-class StyleContext implements Iterable<StyleLayer> {
+class StyleContext {
 
 
     private final CustomCodeArea codeArea;
 
+    private final Object updateLock = new Object();
     /** Contains the highlighting layers. */
     private Map<String, StyleLayer> layersById = new HashMap<>();
 
@@ -41,23 +43,28 @@ class StyleContext implements Iterable<StyleLayer> {
     }
 
 
-    public StyleLayer getLayer(String id) {
-        return layersById.get(id);
-    }
-
-
-    /** Clears the spans of a layer. */
-    public void clearLayer(String id) {
-        StyleLayer layer = layersById.get(id);
-        if (layer != null) {
-            layer.clearStyles();
-        }
-    }
-
-
     /** Removes a layer entirely. */
     public void dropLayer(String id) {
         layersById.remove(id);
+    }
+
+
+    /** Performs the side effects specified by the given update. */
+    public void executeUpdate(ContextUpdate update) {
+        synchronized (updateLock) {
+            for (String layerId : update.getSpansById().keySet()) {
+                StyleLayer layer = layersById.get(layerId);
+                if (layer == null) {
+                    throw new IllegalStateException("Non-existent layer!");
+                }
+                LayerUpdate up = update.getSpansById().get(layerId);
+                if (up.isReset()) {
+                    layer.clearStyles();
+                }
+
+                layer.addSpans(up.getUpdates());
+            }
+        }
     }
 
 
@@ -97,12 +104,4 @@ class StyleContext implements Iterable<StyleLayer> {
                        );
 
     }
-
-
-    @Override
-    public Iterator<StyleLayer> iterator() {
-        return layersById.values().iterator();
-    }
-
-
 }

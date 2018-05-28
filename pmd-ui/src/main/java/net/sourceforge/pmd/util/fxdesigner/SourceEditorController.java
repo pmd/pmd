@@ -41,7 +41,6 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -58,7 +57,6 @@ import javafx.scene.control.TreeView;
  */
 public class SourceEditorController implements Initializable, SettingsOwner {
     private final MainDesignerController parent;
-
 
     @FXML
     private Label astTitleLabel;
@@ -122,26 +120,28 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     /**
      * Refreshes the AST.
      */
-    public void refreshAST() {
+    public Optional<Node> refreshAST() {
         String source = getText();
         Node previous = getCompilationUnit();
         Node current;
 
         if (StringUtils.isBlank(source)) {
             astTreeView.setRoot(null);
-            return;
+            return Optional.empty();
         }
 
         try {
             current = astManager.updateCompilationUnit(source, auxclasspathClassLoader.getValue());
         } catch (ParseAbortedException e) {
             invalidateAST(true);
-            return;
+            return Optional.empty();
         }
         if (!Objects.equals(previous, current)) {
             parent.invalidateAst();
             setUpToDateCompilationUnit(current);
+            return Optional.of(current);
         }
+        return Optional.empty();
     }
 
 
@@ -151,17 +151,6 @@ public class SourceEditorController implements Initializable, SettingsOwner {
                                                    auxclasspathFiles::setValue);
     }
 
-
-    @PersistentProperty
-    public String getAuxclasspathFiles() {
-        return auxclasspathFiles.getValue().stream().map(p -> p.getAbsolutePath()).collect(Collectors.joining(File.pathSeparator));
-    }
-
-
-    public void setAuxclasspathFiles(String files) {
-        List<File> newVal = Arrays.asList(files.split(File.pathSeparator)).stream().map(File::new).collect(Collectors.toList());
-        auxclasspathFiles.setValue(newVal);
-    }
 
 
     private void setUpToDateCompilationUnit(Node node) {
@@ -208,49 +197,43 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     private void clearLayer(LayerId id) {
         codeEditorArea.clearStyleLayer(id);
-//        Platform.runLater(codeEditorArea::paintCss);
     }
 
     /** Highlights the given node. Removes highlighting on the previously highlighted node. */
     public void setFocusNode(Node node) {
-        clearFocusHighlight();
-        highlightNodes(Collections.singleton(node), LayerId.FOCUS, true);
+        highlightNodes(Collections.singleton(node), LayerId.FOCUS, true, true);
     }
 
 
     /** Highlights xpath results (xpath highlight). */
     public void highlightXPathResults(Collection<? extends Node> nodes) {
-        clearXPathHighlight();
-        highlightNodes(nodes, LayerId.XPATH_RESULTS, false);
+        highlightNodes(nodes, LayerId.XPATH_RESULTS, true, false);
     }
 
 
-    /** Highlights name occurences (secondary highlight). */
-    public void highlightNameOccurences(Collection<? extends NameOccurrence> occs) {
-        clearSecondaryHighlight();
-        highlightNodes(occs.stream().map(NameOccurrence::getLocation).collect(Collectors.toList()), LayerId.SECONDARY, false, "name-occurence");
+    /** Highlights name occurrences (secondary highlight). */
+    public void highlightNameOccurrences(Collection<? extends NameOccurrence> occs) {
+        highlightNodes(occs.stream().map(NameOccurrence::getLocation).collect(Collectors.toList()), LayerId.SECONDARY, true, false, "name-occurence");
     }
 
 
     /** Highlights nodes that are in error (secondary highlight). */
     public void highlightErrorNodes(Collection<? extends Node> nodes) {
-        clearSecondaryHighlight();
-        highlightNodes(nodes, LayerId.SECONDARY, true, "error-highlight");
+        highlightNodes(nodes, LayerId.SECONDARY, true, true, "error-highlight");
     }
 
 
-    private void highlightNodes(Collection<? extends Node> nodes, LayerId layer, boolean autoScroll, String... cssClasses) {
-        for (Node node : nodes) {
-            if (codeEditorArea.isInRange(node)) {
-                codeEditorArea.styleCss(node, layer, cssClasses);
-                if (autoScroll) {
-                    moveCaret(node.getBeginLine() - 1, 0);
-                }
-            }
+    private void highlightNodes(Collection<? extends Node> nodes, LayerId layer, boolean resetLayer, boolean autoScroll, String... cssClasses) {
+        codeEditorArea.styleCss(nodes, layer, resetLayer, cssClasses);
+
+        if (autoScroll && !nodes.isEmpty()) {
+            moveCaret(nodes.iterator().next().getBeginLine() - 1, 0);
         }
-        if (!nodes.isEmpty()) {
-            codeEditorArea.paintCss();
-        }
+    }
+
+
+    public void clearStyleLayers() {
+        codeEditorArea.clearStyleLayers();
     }
 
 
@@ -283,6 +266,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         codeEditorArea.moveTo(line, column);
         codeEditorArea.requestFollowCaret();
     }
+
 
     @PersistentProperty
     public LanguageVersion getLanguageVersion() {
@@ -326,8 +310,16 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    public void clearStyleLayers() {
-        codeEditorArea.clearStyleLayers();
+    @PersistentProperty
+    public String getAuxclasspathFiles() {
+        return auxclasspathFiles.getValue().stream().map(p -> p.getAbsolutePath()).collect(Collectors.joining(File.pathSeparator));
     }
+
+
+    public void setAuxclasspathFiles(String files) {
+        List<File> newVal = Arrays.asList(files.split(File.pathSeparator)).stream().map(File::new).collect(Collectors.toList());
+        auxclasspathFiles.setValue(newVal);
+    }
+
 
 }
