@@ -35,7 +35,7 @@ public class ASTType extends AbstractJavaTypeNode {
 
     public String getTypeImage() {
         if (isTypeInferred()) {
-            return getImage();
+            return null;
         }
 
         ASTClassOrInterfaceType refType = getFirstDescendantOfType(ASTClassOrInterfaceType.class);
