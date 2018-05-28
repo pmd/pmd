@@ -172,4 +172,29 @@ public class Java10Test {
                 loadSource("LocalVariableTypeInference_typeres.java"));
         Assert.assertNotNull(compilationUnit);
     }
+
+    @Test
+    public void testVarAsIdentifier() {
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10",
+                loadSource("LocalVariableTypeInference_varAsIdentifier.java"));
+        Assert.assertNotNull(compilationUnit);
+    }
+
+    @Test(expected = ParseException.class)
+    public void testVarAsTypeIdentifier() {
+        ParserTstUtil.parseAndTypeResolveJava("10",
+                loadSource("LocalVariableTypeInference_varAsTypeIdentifier.java"));
+    }
+
+    @Test(expected = ParseException.class)
+    public void testVarAsAnnotationName() {
+        ParserTstUtil.parseAndTypeResolveJava("10",
+                loadSource("LocalVariableTypeInference_varAsAnnotationName.java"));
+    }
+
+    @Test(expected = ParseException.class)
+    public void testVarAsEnumName() {
+        ParserTstUtil.parseAndTypeResolveJava("10",
+                loadSource("LocalVariableTypeInference_varAsEnumName.java"));
+    }
 }

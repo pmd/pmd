@@ -373,6 +373,11 @@ public class JavaParser {
       throwParseException("Cannot use concise try-with-resources when running in JDK inferior to 9 mode!");
     }
   }
+  private void checkForBadTypeIdentifierUsage(String image) {
+    if (jdkVersion >= 10 && "var".equals(image)) {
+      throwParseException("With JDK 10, 'var' is a restricted local variable type and cannot be used for type declarations!");
+    }
+  }
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
@@ -1651,7 +1656,7 @@ void ClassOrInterfaceDeclaration(int modifiers):
 {
   ( /* See note about this optional final modifier in BlockStatement */
     ["final"|"abstract"] "class" | "interface" { jjtThis.setInterface(); inInterface = true; } )
-  t=<IDENTIFIER> { jjtThis.setImage(t.image); }
+  t=<IDENTIFIER> { checkForBadTypeIdentifierUsage(t.image); jjtThis.setImage(t.image); }
   [ TypeParameters() ]
   [ ExtendsList() ]
   [ ImplementsList() ]
@@ -1683,7 +1688,7 @@ jjtThis.setModifiers(modifiers);
 }
 {
   t = <IDENTIFIER> {
-    if (!t.image.equals("enum")) {
+    if (!"enum".equals(t.image)) {
       throw new ParseException("ERROR: expecting enum");
     }
 
@@ -1691,7 +1696,7 @@ jjtThis.setModifiers(modifiers);
       throw new ParseException("ERROR: Can't use enum as a keyword in pre-JDK 1.5 target");
     }
   }
-  t=<IDENTIFIER> {jjtThis.setImage(t.image);}
+  t=<IDENTIFIER> {checkForBadTypeIdentifierUsage(t.image); jjtThis.setImage(t.image);}
   [ ImplementsList() ]
   EnumBody()
 }
@@ -2626,7 +2631,13 @@ Token t;
 jjtThis.setModifiers(modifiers);
 }
 {
-  "@" "interface" t=<IDENTIFIER> {checkForBadAnnotationUsage();jjtThis.setImage(t.image);} AnnotationTypeBody()
+  "@" "interface" t=<IDENTIFIER>
+    {
+        checkForBadAnnotationUsage();
+        checkForBadTypeIdentifierUsage(t.image);
+        jjtThis.setImage(t.image);
+    }
+  AnnotationTypeBody()
 }
 
 void AnnotationTypeBody():

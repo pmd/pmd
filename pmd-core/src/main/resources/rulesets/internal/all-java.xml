@@ -19,6 +19,9 @@
     <exclude-pattern>.*/net/sourceforge/pmd/lang/java/ast/jdkversiontests/assert_test7.java</exclude-pattern>
     <exclude-pattern>.*/net/sourceforge/pmd/lang/java/ast/jdkversiontests/jdk14_enum.java</exclude-pattern>
     <exclude-pattern>.*/net/sourceforge/pmd/lang/java/ast/jdkversiontests/jdk9_invalid_identifier.java</exclude-pattern>
+    <exclude-pattern>.*/net/sourceforge/pmd/lang/java/ast/jdkversiontests/java10/LocalVariableTypeInference_varAsAnnotationName.java</exclude-pattern>
+    <exclude-pattern>.*/net/sourceforge/pmd/lang/java/ast/jdkversiontests/java10/LocalVariableTypeInference_varAsEnumName.java</exclude-pattern>
+    <exclude-pattern>.*/net/sourceforge/pmd/lang/java/ast/jdkversiontests/java10/LocalVariableTypeInference_varAsTypeIdentifier.java</exclude-pattern>
 
     <rule ref="category/java/bestpractices.xml" />
     <rule ref="category/java/codestyle.xml" />
