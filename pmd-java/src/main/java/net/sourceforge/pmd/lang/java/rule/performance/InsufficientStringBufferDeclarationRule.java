@@ -55,7 +55,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!TypeHelper.isEither(node.getNameDeclaration(), StringBuffer.class, StringBuilder.class)) {
+        if (!TypeHelper.isExactlyAny(node.getNameDeclaration(), StringBuffer.class, StringBuilder.class)) {
             return data;
         }
         Node rootNode = node;

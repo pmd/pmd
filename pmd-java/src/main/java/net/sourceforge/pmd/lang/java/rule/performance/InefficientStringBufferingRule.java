@@ -160,7 +160,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         if (argList == null || argList.jjtGetNumChildren() > 1) {
             return false;
         }
-        return TypeHelper.isEither((TypedNameDeclaration) n.getNameDeclaration(), StringBuffer.class,
+        return TypeHelper.isExactlyAny((TypedNameDeclaration) n.getNameDeclaration(), StringBuffer.class,
                 StringBuilder.class);
     }
 

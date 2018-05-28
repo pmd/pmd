@@ -129,7 +129,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
         Map<VariableNameDeclaration, List<NameOccurrence>> declarations = node.getScope()
                 .getDeclarations(VariableNameDeclaration.class);
         for (VariableNameDeclaration decl : declarations.keySet()) {
-            if (decl.getName().equals(name) && TypeHelper.isEither(decl, StringBuilder.class, StringBuffer.class)) {
+            if (decl.getName().equals(name) && TypeHelper.isExactlyAny(decl, StringBuilder.class, StringBuffer.class)) {
                 return true;
             }
         }

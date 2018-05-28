@@ -100,7 +100,7 @@ import java.util.logging.Logger;
     @Override
     public JavaTypeDefinition getGenericType(final String parameterName) {
         for (JavaTypeDefinition currTypeDef = this; currTypeDef != null;
-             currTypeDef = currTypeDef.getEnclosingClass()) {
+                currTypeDef = currTypeDef.getEnclosingClass()) {
             
             int paramIndex = getGenericTypeIndex(currTypeDef.getType().getTypeParameters(), parameterName);
             if (paramIndex != -1) {
@@ -111,16 +111,16 @@ import java.util.logging.Logger;
         // throw because we could not find parameterName
         StringBuilder builder = new StringBuilder("No generic parameter by name ").append(parameterName);
         for (JavaTypeDefinition currTypeDef = this; currTypeDef != null;
-             currTypeDef = currTypeDef.getEnclosingClass()) {
+                currTypeDef = currTypeDef.getEnclosingClass()) {
             
             builder.append("\n on class ");
-            builder.append(clazz.getSimpleName());
+            builder.append(currTypeDef.getType().getSimpleName());
         }
 
         LOG.log(Level.FINE, builder.toString());
         // TODO: throw eventually
         //throw new IllegalArgumentException(builder.toString());
-        return null;
+        return forClass(Object.class);
     }
 
     @Override
@@ -283,8 +283,9 @@ import java.util.logging.Logger;
         }
 
         if (!genericArgs.isEmpty()) {
-            sb.delete(sb.length() - 3, sb.length() - 1); // remove last comma
+            sb.replace(sb.length() - 3, sb.length() - 1, "");   // remove last comma
         }
+
         return sb.append("], isGeneric=").append(isGeneric)
             .append("]\n").toString();
     }

@@ -5,6 +5,14 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents an import declaration in a Java file.
+ *
+ * <pre>
+ *   ImportDeclaration ::= "import" [ "static" ] Name [ "." "*" ] ";"
+ * </pre>
+ *
+ */
 public class ASTImportDeclaration extends AbstractJavaTypeNode {
 
     private boolean isImportOnDemand;
@@ -41,10 +49,35 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         return (ASTName) jjtGetChild(0);
     }
 
+
+    /**
+     * Returns the full name of the import. For on-demand imports, this is the name without
+     * the final asterisk.
+     */
     public String getImportedName() {
-        return ((ASTName) jjtGetChild(0)).getImage();
+        return jjtGetChild(0).getImage();
     }
 
+
+    /**
+     * Returns the simple name of the type or method imported by this declaration.
+     * For on-demand imports, returns {@code null}.
+     */
+    public String getImportedSimpleName() {
+        if (isImportOnDemand) {
+            return null;
+        }
+
+        String importName = getImportedName();
+        return importName.substring(importName.lastIndexOf('.') + 1);
+    }
+
+
+    /**
+     * Returns the "package" prefix of the imported name. For type imports, including on-demand
+     * imports, this is really the package name of the imported type(s). For static imports,
+     * this is actually the qualified name of the enclosing type, including the type name.
+     */
     public String getPackageName() {
         String importName = getImportedName();
         if (isImportOnDemand) {
@@ -57,9 +90,6 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         return importName.substring(0, lastDot);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -69,6 +99,13 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         this.pkg = packge;
     }
 
+
+    /**
+     * Returns the {@link Package} instance representing the package of the
+     * type or method imported by this declaration. This may be null if the
+     * auxclasspath is not correctly set, as this method depends on correct
+     * type resolution.
+     */
     public Package getPackage() {
         return this.pkg;
     }

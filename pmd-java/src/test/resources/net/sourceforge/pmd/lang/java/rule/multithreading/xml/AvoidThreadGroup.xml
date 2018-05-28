@@ -61,7 +61,8 @@ ThreadGroup() but not java.lang.ThreadGroup
      ]]></description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
-import some.pkg.ThreadGroup;
+import net.sourceforge.pmd.lang.java.rule.multithreading.MultithreadingRulesTest.ThreadGroup;
+
 public class Foo {
  void bar() {
   ThreadGroup t = new ThreadGroup();

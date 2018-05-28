@@ -7,8 +7,12 @@ package net.sourceforge.pmd.util.fxdesigner;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 import java.util.ResourceBundle;
+
+import org.reactfx.EventStream;
+import org.reactfx.EventStreams;
 
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
@@ -29,6 +33,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @since 6.0.0
  */
 public class EventLogController implements Initializable {
+
+    /**
+     * Exceptions from XPath evaluation or parsing are never emitted
+     * within less than that time interval to keep them from flooding the tableview.
+     */
+    private static final Duration PARSE_EXCEPTION_DELAY = Duration.ofMillis(3000);
 
     private final DesignerRoot designerRoot;
 
@@ -69,13 +79,25 @@ public class EventLogController implements Initializable {
             }
         });
 
-        eventLogTableView.setItems(designerRoot.getLogger().getLog());
+        EventStream<LogEntry> onlyParseException = designerRoot.getLogger().getLog()
+                                                               .filter(x -> x.getCategory() == Category.PARSE_EXCEPTION)
+                                                               .successionEnds(PARSE_EXCEPTION_DELAY);
 
-        eventLogTableView
-            .getSelectionModel()
-            .selectedItemProperty()
-            .addListener((obs, oldVal, newVal) -> logDetailsTextArea.setText(
-                newVal == null ? "" : newVal.getStackTrace()));
+        EventStream<LogEntry> onlyXPathException = designerRoot.getLogger().getLog()
+                                                               .filter(x -> x.getCategory() == Category.XPATH_EVALUATION_EXCEPTION)
+                                                               .successionEnds(PARSE_EXCEPTION_DELAY);
+
+        EventStream<LogEntry> otherExceptions = designerRoot.getLogger().getLog()
+                                                            .filter(x -> x.getCategory() != Category.PARSE_EXCEPTION)
+                                                            .filter(y -> y.getCategory() != Category.XPATH_EVALUATION_EXCEPTION);
+
+        EventStreams.merge(onlyParseException, otherExceptions, onlyXPathException)
+                    .subscribe(t -> eventLogTableView.getItems().add(t));
+
+        eventLogTableView.getSelectionModel()
+                         .selectedItemProperty()
+                         .addListener((obs, oldVal, newVal) -> logDetailsTextArea.setText(
+                                 newVal == null ? "" : newVal.getStackTrace()));
 
         eventLogTableView.resizeColumn(logMessageColumn, -1);
 

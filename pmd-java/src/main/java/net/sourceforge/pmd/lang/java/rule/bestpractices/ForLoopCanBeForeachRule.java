@@ -63,7 +63,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
         List<NameOccurrence> occurrences = indexDecl.getValue();
         VariableNameDeclaration index = indexDecl.getKey();
 
-        if (TypeHelper.isA(index, Iterator.class)) {
+        if (TypeHelper.isExactlyAny(index, Iterator.class)) {
             Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo = getIterableDeclOfIteratorLoop(index, node.getScope());
 
             if (iterableInfo != null && isReplaceableIteratorLoop(indexDecl, guardCondition, iterableInfo, node)) {

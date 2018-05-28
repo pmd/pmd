@@ -23,7 +23,7 @@ protected constructor in order to prevent instantiation than make the class misl
 //ClassOrInterfaceDeclaration
     [@Abstract = 'true']
     [count(//MethodDeclaration) + count(//ConstructorDeclaration) = 0]
-    [not(../Annotation/MarkerAnnotation/Name[typeof(@Image, 'com.google.auto.value.AutoValue', 'AutoValue')])]
+    [not(../Annotation/MarkerAnnotation/Name[typeIs('com.google.auto.value.AutoValue')])]
 ```
 
 **Example(s):**
@@ -259,13 +259,13 @@ Exception, or Error, use a subclassed exception or error instead.
 ```
 //ThrowStatement//AllocationExpression
  /ClassOrInterfaceType[
- typeof(@Image, 'java.lang.Throwable', 'Throwable')
+ typeIsExactly('java.lang.Throwable')
 or
- typeof(@Image, 'java.lang.Exception', 'Exception')
+ typeIsExactly('java.lang.Exception')
 or
- typeof(@Image, 'java.lang.Error', 'Error')
+ typeIsExactly('java.lang.Error')
 or
- typeof(@Image, 'java.lang.RuntimeException', 'RuntimeException')
+ typeIsExactly('java.lang.RuntimeException')
 ]
 ```
 
@@ -518,7 +518,7 @@ Errors are system exceptions. Do not extend them.
 **This rule is defined by the following XPath expression:**
 ```
 //ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
-  [typeof(@Image,'java.lang.Error','Error')]
+  [typeIs('java.lang.Error')]
 ```
 
 **Example(s):**
@@ -1406,7 +1406,7 @@ PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
  /Expression/UnaryExpressionNotPlusMinus[@Image='!']
 /PrimaryExpression/PrimaryPrefix
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
 ```
 
 **Example(s):**

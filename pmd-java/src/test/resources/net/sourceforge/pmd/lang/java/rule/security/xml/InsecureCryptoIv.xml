@@ -20,7 +20,7 @@ public class Foo {
         cipher.init(Cipher.ENCRYPT_MODE, keySpec, new IvParameterSpec(ivBytes));
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
     <test-code>
         <description>Randomly generated IV, good</description>
@@ -36,7 +36,7 @@ public class Foo {
         IvParameterSpec iv = new IvParameterSpec(ivBytes);
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
     <test-code>
         <description>Hard coded Iv from string, bad</description>
@@ -82,7 +82,7 @@ public class Foo {
         IvParameterSpec iv = new IvParameterSpec(ivBytes);
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
     <test-code>
         <description>Random IV, good</description>

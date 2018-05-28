@@ -10,20 +10,34 @@ import net.sourceforge.pmd.lang.java.rule.AbstractInefficientZeroCheck;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 
 /**
- * This rule finds code which inefficiently determines empty strings. This code
- *
- * <pre>
- *         if(str.trim().length()==0){....
- * </pre>
+ * This rule finds code which inefficiently determines empty strings.
  *
  * <p>
- * is quite inefficient as trim() causes a new String to be created. Smarter
- * code to check for an empty string would be:
- * </p>
+ * <pre>
+ * str.trim().length()==0
+ * </pre>
+ * or
+ * <pre>
+ * str.trim().isEmpty()
+ * </pre>
+ * (for the same reason) is quite inefficient as trim() causes a new String to
+ * be created. A Smarter code to check for an empty string would be:
  *
  * <pre>
- * Character.isWhitespace(str.charAt(i));
+ * private boolean checkTrimEmpty(String str) {
+ *     for(int i = 0; i < str.length(); i++) {
+ *         if(!Character.isWhitespace(str.charAt(i))) {
+ *             return false;
+ *         }
+ *     }
+ *     return true;
+ * }
  * </pre>
+ * or you can refer to Apache's <code>StringUtils#isBlank</code>
+ * (in commons-lang), Spring's <code>StringUtils#hasText</code> (in the Spring
+ * framework) or Google's <code>CharMatcher#whitespace</code> (in Guava) for
+ * existing implementations (some might include the check for != null).
+ * </p>
  *
  * @author acaplan
  */

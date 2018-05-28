@@ -402,6 +402,11 @@ public abstract class AbstractNode implements Node {
      * @param types Types to test
      */
     public final boolean hasDescendantOfAnyType(Class<?>... types) {
+        // TODO consider implementing that with a single traversal!
+        // hasDescendantOfType could then be a special case of this one
+        // But to really share implementations, getFirstDescendantOfType's
+        // internal helper could have to give up some type safety to rely
+        // instead on a getFirstDescendantOfAnyType, then cast to the correct type
         for (Class<?> type : types) {
             if (hasDescendantOfType(type)) {
                 return true;

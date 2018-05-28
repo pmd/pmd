@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util.fxdesigner;
 
 import java.net.URL;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
@@ -59,6 +60,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private ASTManager astManager;
     private TreeViewWrapper<Node> treeViewWrapper;
     private ASTTreeItem selectedTreeItem;
+    private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
         parent = mainController;
@@ -72,7 +74,6 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     public void initialize(URL location, ResourceBundle resources) {
 
         treeViewWrapper = new TreeViewWrapper<>(astTreeView);
-
         astTreeView.setCellFactory(treeView -> new ASTTreeCell(parent));
 
         languageVersionProperty().values()
@@ -83,6 +84,17 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         EventStreams.valuesOf(astTreeView.getSelectionModel().selectedItemProperty())
                     .filterMap(Objects::nonNull, TreeItem::getValue)
                     .subscribe(parent::onNodeItemSelected);
+
+        codeEditorArea.richChanges()
+                      .filter(t -> !t.isIdentity())
+                      .successionEnds(AST_REFRESH_DELAY)
+                      // Refresh the AST anytime the text or the language version changes
+                      .or(languageVersionProperty().changes())
+                      .subscribe(tick -> {
+                          // Discard the AST if the language version has changed
+                          tick.ifRight(c -> astTreeView.setRoot(null));
+                          parent.refreshAST();
+                      });
 
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
     }
@@ -128,7 +140,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     private void updateSyntaxHighlighter(Language language) {
         Optional<SyntaxHighlighter> highlighter = AvailableSyntaxHighlighters.getHighlighterForLanguage(language);
-        
+
         if (highlighter.isPresent()) {
             codeEditorArea.setSyntaxHighlightingEnabled(highlighter.get());
         } else {
@@ -175,6 +187,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
             if (found != null) {
                 selectionModel.select(found);
             }
+            selectedTreeItem = found;
 
             astTreeView.getFocusModel().focus(selectionModel.getSelectedIndex());
             if (!treeViewWrapper.isIndexVisible(selectionModel.getSelectedIndex())) {
