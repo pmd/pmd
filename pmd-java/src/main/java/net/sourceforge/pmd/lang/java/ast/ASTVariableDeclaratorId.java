@@ -150,17 +150,17 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     }
 
     private boolean isLocalVariableTypeInferred() {
-        ASTType type = null;
+        boolean hasType = true;
 
         if (jjtGetParent() instanceof ASTResource) {
             // covers "var" in try-with-resources
-            type = jjtGetParent().getFirstChildOfType(ASTType.class);
+            hasType = jjtGetParent().getFirstChildOfType(ASTType.class) != null;
         } else if (getNthParent(2) instanceof ASTLocalVariableDeclaration) {
             // covers "var" as local variables and in for statements
-            type = getNthParent(2).getFirstChildOfType(ASTType.class);
+            hasType = getNthParent(2).getFirstChildOfType(ASTType.class) != null;
         }
 
-        return type != null && type.isTypeInferred();
+        return !hasType;
     }
 
     /**
@@ -171,7 +171,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     // TODO unreliable, not typesafe and not useful, should be deprecated
     public Node getTypeNameNode() {
         ASTType type = getTypeNode();
-        return type == null || type.isTypeInferred() ? null : getTypeNode().jjtGetChild(0);
+        return type == null ? null : getTypeNode().jjtGetChild(0);
     }
 
 

@@ -5,11 +5,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,12 +33,6 @@ public class Java10Test {
         }
     }
 
-    private static void assertVarType(ASTType type) {
-        assertEquals("var", type.getImage());
-        assertEquals(0, type.jjtGetNumChildren());
-        assertTrue(type.isTypeInferred());
-    }
-
     @Test
     public void testLocalVarInferenceBeforeJava10() {
         // note, it can be parsed, but we'll have a ReferenceType of "var"
@@ -63,7 +55,6 @@ public class Java10Test {
         // in that case, we don't have a class named "var", so the type will be null
         assertNull(classType.getType());
         assertNull(type.getType());
-        assertFalse(type.isTypeInferred());
 
         // check the type of the variable initializer's expression
         ASTExpression initExpression = localVars.get(0)
@@ -81,27 +72,25 @@ public class Java10Test {
         assertEquals(3, localVars.size());
 
         // first: var list = new ArrayList<String>();
-        ASTType type = localVars.get(0).getTypeNode();
-        assertVarType(type);
-        assertSame("type should be ArrayList", ArrayList.class, type.getType());
-        assertEquals("type should be ArrayList<String>", JavaTypeDefinition.forClass(ArrayList.class, JavaTypeDefinition.forClass(String.class)),
-                type.getTypeDefinition());
+        assertNull(localVars.get(0).getTypeNode());
         ASTVariableDeclarator varDecl = localVars.get(0).getFirstChildOfType(ASTVariableDeclarator.class);
-        assertEquals("type should be equal", type.getTypeDefinition(), varDecl.getTypeDefinition());
+        assertSame("type should be ArrayList", ArrayList.class, varDecl.getType());
+        assertEquals("type should be ArrayList<String>", JavaTypeDefinition.forClass(ArrayList.class, JavaTypeDefinition.forClass(String.class)),
+                varDecl.getTypeDefinition());
         ASTVariableDeclaratorId varId = varDecl.getFirstChildOfType(ASTVariableDeclaratorId.class);
-        assertEquals("type should be equal", type.getTypeDefinition(), varId.getTypeDefinition());
+        assertEquals("type should be equal", varDecl.getTypeDefinition(), varId.getTypeDefinition());
 
         // second: var stream = list.stream();
-        ASTType type2 = localVars.get(1).getTypeNode();
-        assertVarType(type2);
+        assertNull(localVars.get(1).getTypeNode());
+        //ASTVariableDeclarator varDecl2 = localVars.get(1).getFirstChildOfType(ASTVariableDeclarator.class);
         // TODO: return type of method call is unknown
-        //assertEquals("type should be Stream<String>", JavaTypeDefinition.forClass(Stream.class, JavaTypeDefinition.forClass(String.class)),
-        //        type2.getTypeDefinition());
+        // assertEquals("type should be Stream<String>", JavaTypeDefinition.forClass(Stream.class, JavaTypeDefinition.forClass(String.class)),
+        //         varDecl2.getTypeDefinition());
 
         // third: var s = "Java 10";
-        ASTType type3 = localVars.get(2).getTypeNode();
-        assertVarType(type3);
-        assertEquals("type should be String", JavaTypeDefinition.forClass(String.class), type3.getTypeDefinition());
+        assertNull(localVars.get(2).getTypeNode());
+        ASTVariableDeclarator varDecl3 = localVars.get(2).getFirstChildOfType(ASTVariableDeclarator.class);
+        assertEquals("type should be String", JavaTypeDefinition.forClass(String.class), varDecl3.getTypeDefinition());
 
         ASTArgumentList argumentList = compilationUnit.getFirstDescendantOfType(ASTArgumentList.class);
         ASTExpression expression3 = argumentList.getFirstChildOfType(ASTExpression.class);
@@ -115,9 +104,9 @@ public class Java10Test {
         List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
         assertEquals(1, localVars.size());
 
-        ASTType type = localVars.get(0).getTypeNode();
-        assertVarType(type);
-        assertSame("type should be int", Integer.TYPE, type.getType());
+        assertNull(localVars.get(0).getTypeNode());
+        ASTVariableDeclarator varDecl = localVars.get(0).getFirstChildOfType(ASTVariableDeclarator.class);
+        assertSame("type should be int", Integer.TYPE, varDecl.getType());
     }
 
     @Test
@@ -127,9 +116,9 @@ public class Java10Test {
         List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
         assertEquals(1, localVars.size());
 
-        ASTType type = localVars.get(0).getTypeNode();
-        assertVarType(type);
-        assertSame("type should be String", String.class, type.getType());
+        assertNull(localVars.get(0).getTypeNode());
+        ASTVariableDeclarator varDecl = localVars.get(0).getFirstChildOfType(ASTVariableDeclarator.class);
+        assertSame("type should be String", String.class, varDecl.getType());
     }
 
     @Test
@@ -139,17 +128,15 @@ public class Java10Test {
         List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
         assertEquals(4, localVars.size());
 
-        ASTType type2 = localVars.get(1).getTypeNode();
-        assertVarType(type2);
-        assertSame("type should be String", String.class, type2.getType());
+        assertNull(localVars.get(1).getTypeNode());
         ASTVariableDeclarator varDecl2 = localVars.get(1).getFirstChildOfType(ASTVariableDeclarator.class);
         assertSame("type should be String", String.class, varDecl2.getType());
         ASTVariableDeclaratorId varId2 = varDecl2.getFirstChildOfType(ASTVariableDeclaratorId.class);
         assertSame("type should be String", String.class, varId2.getType());
 
-        ASTType type4 = localVars.get(3).getTypeNode();
-        assertVarType(type4);
-        assertSame("type should be int", Integer.TYPE, type4.getType());
+        assertNull(localVars.get(3).getTypeNode());
+        ASTVariableDeclarator varDecl4 = localVars.get(3).getFirstChildOfType(ASTVariableDeclarator.class);
+        assertSame("type should be int", Integer.TYPE, varDecl4.getType());
     }
 
     @Test
@@ -159,9 +146,7 @@ public class Java10Test {
         List<ASTResource> resources = compilationUnit.findDescendantsOfType(ASTResource.class);
         assertEquals(1, resources.size());
 
-        ASTType type = resources.get(0).getTypeNode();
-        assertVarType(type);
-        assertSame("type should be FileInputStream", FileInputStream.class, type.getType());
+        assertNull(resources.get(0).getTypeNode());
         ASTVariableDeclaratorId varId = resources.get(0).getVariableDeclaratorId();
         assertSame("type should be FileInputStream", FileInputStream.class, varId.getType());
     }

@@ -23,8 +23,6 @@ public class ASTType extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-    private boolean typeInferred;
-
     /**
      * Accept the visitor. *
      */
@@ -34,10 +32,6 @@ public class ASTType extends AbstractJavaTypeNode {
     }
 
     public String getTypeImage() {
-        if (isTypeInferred()) {
-            return null;
-        }
-
         ASTClassOrInterfaceType refType = getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         if (refType != null) {
             return refType.getImage();
@@ -55,21 +49,5 @@ public class ASTType extends AbstractJavaTypeNode {
 
     public boolean isArray() {
         return getArrayDepth() > 0;
-    }
-
-    void setTypeInferred(boolean typeInferred) {
-        this.typeInferred = typeInferred;
-    }
-
-    /**
-     * If true, this type represents a type, that has been inferred.
-     * It can be e.g. a local variable declaration, which
-     * uses the java10 "var" type inference feature.
-     * The method {@link #getType()} will return the correct type, if PMD could determine it.
-     *
-     * @see ASTVariableDeclaratorId#isTypeInferred()
-     */
-    public boolean isTypeInferred() {
-        return typeInferred;
     }
 }

@@ -1879,14 +1879,16 @@ void Initializer() :
 
 /*
  * Type, name and expression syntax follows.
+ * Type is the same as "UnannType" in JLS
+ *
+ * See https://docs.oracle.com/javase/specs/jls/se10/html/jls-8.html#jls-UnannType
  */
 void Type():
 {
     Token t;
 }
 {
-  LOOKAHEAD( { jdkVersion >= 10 && isKeyword("var") } ) t=<IDENTIFIER> {jjtThis.setImage(t.image); jjtThis.setTypeInferred(true); }
- | LOOKAHEAD(2) ReferenceType()
+ LOOKAHEAD(2) ReferenceType()
  | PrimitiveType()
 }
 
@@ -2338,13 +2340,23 @@ void BlockStatement():
   LOOKAHEAD( (Annotation())* ["final"|"abstract"] "class") (Annotation())* ClassOrInterfaceDeclaration(0)
 }
 
+/*
+ * See https://docs.oracle.com/javase/specs/jls/se10/html/jls-14.html#jls-14.4
+ */
 void LocalVariableDeclaration() :
 {}
 {
   ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-  Type()
+  LocalVariableType()
   VariableDeclarator()
   ( "," VariableDeclarator() )*
+}
+
+void LocalVariableType() #void :
+{}
+{
+  LOOKAHEAD( { jdkVersion >= 10 && isKeyword("var") } ) <IDENTIFIER>
+  | Type()
 }
 
 void EmptyStatement() :
@@ -2502,7 +2514,7 @@ void Resources() :
 void Resource() :
 {}
 {
-   LOOKAHEAD(2) ( ( "final" {jjtThis.setFinal(true);} | Annotation() )* Type() VariableDeclaratorId() "=" Expression() )
+   LOOKAHEAD(2) ( ( "final" {jjtThis.setFinal(true);} | Annotation() )* LocalVariableType() VariableDeclaratorId() "=" Expression() )
    |
    Name() {checkForBadConciseTryWithResourcesUsage();}
 }

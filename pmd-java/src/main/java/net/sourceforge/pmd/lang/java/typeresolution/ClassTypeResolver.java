@@ -535,7 +535,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 if (entry.getKey().getImage().equals(image)) {
                     ASTType typeNode = entry.getKey().getDeclaratorId().getTypeNode();
 
-                    if (typeNode == null || typeNode.isTypeInferred()) {
+                    if (typeNode == null) {
                         // TODO : Type is inferred, ie, this is a lambda such as (var) -> var.equals(other) or a local var
                         return null;
                     }
@@ -627,16 +627,15 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
-    private void populateVariableDeclaratorFromType(ASTLocalVariableDeclaration node) {
-        ASTType type = node.getTypeNode();
-        // also assign this type to VariableDeclarator and VariableDeclaratorId
+    private void populateVariableDeclaratorFromType(ASTLocalVariableDeclaration node, JavaTypeDefinition typeDefinition) {
+        // assign this type to VariableDeclarator and VariableDeclaratorId
         TypeNode var = node.getFirstChildOfType(ASTVariableDeclarator.class);
         if (var != null) {
-            var.setTypeDefinition(type.getTypeDefinition());
+            var.setTypeDefinition(typeDefinition);
             var = var.getFirstChildOfType(ASTVariableDeclaratorId.class);
         }
         if (var != null) {
-            var.setTypeDefinition(type.getTypeDefinition());
+            var.setTypeDefinition(typeDefinition);
         }
     }
 
@@ -645,14 +644,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         super.visit(node, data);
         // resolve "var" types: Upward projection of the type of the initializer expression
         ASTType type = node.getTypeNode();
-        if (type != null && type.isTypeInferred()) {
+        if (type == null) {
+            // no type node -> type is inferred
             ASTVariableInitializer initializer = node.getFirstDescendantOfType(ASTVariableInitializer.class);
             if (initializer != null && initializer.jjtGetChild(0) instanceof ASTExpression) {
                 // only Expression is allowed, ArrayInitializer is not allowed in combination with "var".
                 ASTExpression expression = (ASTExpression) initializer.jjtGetChild(0);
-                type.setTypeDefinition(expression.getTypeDefinition());
-
-                populateVariableDeclaratorFromType(node);
+                populateVariableDeclaratorFromType(node, expression.getTypeDefinition());
             }
         }
         return data;
@@ -665,24 +663,25 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (node.jjtGetChild(0) instanceof ASTLocalVariableDeclaration) {
             ASTLocalVariableDeclaration localVariableDeclaration = (ASTLocalVariableDeclaration) node.jjtGetChild(0);
             ASTType type = localVariableDeclaration.getTypeNode();
-            if (type != null && type.isTypeInferred()) {
+            if (type == null) {
+                // no type node -> type is inferred
                 ASTExpression expression = node.getFirstChildOfType(ASTExpression.class);
                 if (expression != null && expression.getTypeDefinition() != null) {
                     // see https://docs.oracle.com/javase/specs/jls/se10/html/jls-14.html#jls-14.14.2
                     // if the type is an array, then take the component type
                     // if the type is Iterable<X>, then take X as type
                     // if the type is Iterable, take Object as type
-                    JavaTypeDefinition typeDefinition = expression.getTypeDefinition();
-                    if (typeDefinition.isArrayType()) {
-                        type.setTypeDefinition(typeDefinition.getComponentType());
-                    } else if (typeDefinition.isGeneric() && typeDefinition.getGenericType(0) != null) {
-                        type.setTypeDefinition(typeDefinition.getGenericType(0));
+                    JavaTypeDefinition typeDefinitionIterable = expression.getTypeDefinition();
+                    JavaTypeDefinition typeDefinition = null;
+                    if (typeDefinitionIterable.isArrayType()) {
+                        typeDefinition = typeDefinitionIterable.getComponentType();
+                    } else if (typeDefinitionIterable.isGeneric() && typeDefinitionIterable.getGenericType(0) != null) {
+                        typeDefinition = typeDefinitionIterable.getGenericType(0);
                     } else {
-                        type.setTypeDefinition(JavaTypeDefinition.forClass(Object.class));
+                        typeDefinition = JavaTypeDefinition.forClass(Object.class);
                     }
+                    populateVariableDeclaratorFromType(localVariableDeclaration, typeDefinition);
                 }
-
-                populateVariableDeclaratorFromType(localVariableDeclaration);
             }
         }
         return data;
@@ -693,9 +692,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         super.visit(node, data);
         // resolve "var" types: the type of the initializer expression
         ASTType type = node.getTypeNode();
-        if (type != null && type.isTypeInferred()) {
+        if (type == null) {
+            // no type node -> type is inferred
             ASTExpression initializer = node.getFirstChildOfType(ASTExpression.class);
-            type.setTypeDefinition(initializer.getTypeDefinition());
 
             if (node.getVariableDeclaratorId() != null) {
                 node.getVariableDeclaratorId().setTypeDefinition(initializer.getTypeDefinition());
