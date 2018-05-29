@@ -131,6 +131,11 @@ never match.
   `BenchmarkReport`, `BenchmarkResult`, `RuleDuration`, `StringBuilderCR` and `TextReport`. Their API is not supported anymore
   and is disconnected from the internals of PMD. Use the newer API based around `TimeTracker` instead, which can be found
   in the same package.
+* The class `net.sourceforge.pmd.lang.java.xpath.TypeOfFunction` has been deprecated. Use the newer `TypeIsFunction` in the same package.
+* The `typeof` methdos in `net.sourceforge.pmd.lang.java.xpath.JavaFunctions` have been deprecated.
+  Use the newer `typeIs` method in the same class instead..
+* The methods `isA`, `isEither` and `isNeither` of `net.sourceforge.pmd.lang.java.typeresolution.TypeHelper`.
+  Use the new `isExactlyAny` and `isExactlyNone` methods in the same class instead.
 
 
 ### External Contributions
