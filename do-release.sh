@@ -128,14 +128,19 @@ echo " --> move any open issues to the next milestone, close the current milesto
 echo " --> Maybe there are some milestones on sourceforge, too: <https://sourceforge.net/p/pmd/bugs/milestones>."
 echo
 echo
-echo
 echo "Prepare Next development version:"
-echo "*   Move version/release info from **docs/pages/release_notes.md** to **docs/pages/release_notes_old.md**."
 echo "*   Update version/date info in **docs/_config.yml**."
 echo
 echo
 echo "Press enter to continue..."
 read
+
+# update release_notes_old
+OLD_RELEASE_NOTES=$(tail -n +5 docs/pages/release_notes_old.md)
+NEW_RELEASE_NOTES=$(tail -n +6 docs/pages/release_notes.md)
+echo "$(head -n 5 docs/pages/release_notes_old.md)" > docs/pages/release_notes_old.md
+echo "$NEW_RELEASE_NOTES" >> docs/pages/release_notes_old.md
+echo "$OLD_RELEASE_NOTES" >> docs/pages/release_notes_old.md
 
 # reset release notes template
 cat > docs/pages/release_notes.md <<EOF
