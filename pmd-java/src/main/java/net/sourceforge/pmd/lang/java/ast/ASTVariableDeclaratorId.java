@@ -150,17 +150,15 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     }
 
     private boolean isLocalVariableTypeInferred() {
-        boolean hasType = true;
-
         if (jjtGetParent() instanceof ASTResource) {
             // covers "var" in try-with-resources
-            hasType = jjtGetParent().getFirstChildOfType(ASTType.class) != null;
+            return jjtGetParent().getFirstChildOfType(ASTType.class) == null;
         } else if (getNthParent(2) instanceof ASTLocalVariableDeclaration) {
             // covers "var" as local variables and in for statements
-            hasType = getNthParent(2).getFirstChildOfType(ASTType.class) != null;
+            return getNthParent(2).getFirstChildOfType(ASTType.class) == null;
         }
 
-        return !hasType;
+        return false;
     }
 
     /**

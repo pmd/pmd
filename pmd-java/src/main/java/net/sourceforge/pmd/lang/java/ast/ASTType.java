@@ -9,10 +9,10 @@ package net.sourceforge.pmd.lang.java.ast;
  * Represents a type reference.
  * 
  * <pre>
- * Type ::= "var" | ReferenceType | PrimitiveType
+ * Type ::= ReferenceType | PrimitiveType
  * </pre>
  * 
- * Note: it is not exactly the same the "LocalVariableType" defined in JLS.
+ * Note: it is not exactly the same the "UnnanType" defined in JLS.
  */
 public class ASTType extends AbstractJavaTypeNode {
     public ASTType(int id) {

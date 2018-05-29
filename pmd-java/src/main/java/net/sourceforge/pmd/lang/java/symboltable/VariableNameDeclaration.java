@@ -105,8 +105,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         if (isPrimitiveType()) {
             return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0);
         }
-        if (!isTypeInferred()
-            && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetNumChildren() > 0) {
+        if (!isTypeInferred()) {
             return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0).jjtGetChild(0);
         }
         return null;
