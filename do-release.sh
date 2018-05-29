@@ -163,9 +163,9 @@ This is a minor release.
 
 EOF
 
-./mvwn release:clean
 git commit -a -m "Prepare next development version"
 git push origin ${CURRENT_BRANCH}
+./mvwn -B release:clean
 echo
 echo
 echo
