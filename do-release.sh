@@ -161,6 +161,7 @@ EOF
 echo
 echo "Press enter to continue..."
 read
+./mvwn release:clean
 git commit -a -m "Prepare next development version"
 git push origin ${CURRENT_BRANCH}
 echo
