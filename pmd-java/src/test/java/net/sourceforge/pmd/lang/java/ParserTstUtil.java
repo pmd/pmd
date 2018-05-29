@@ -154,6 +154,11 @@ public class ParserTstUtil {
     }
 
     /** @see #parseJava(LanguageVersionHandler, String)  */
+    public static ASTCompilationUnit parseJava10(String code) {
+        return parseJava(getLanguageVersionHandler("10"), code);
+    }
+
+    /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava13(Class<?> source) {
         return parseJava13(getSourceFromClass(source));
     }
@@ -181,6 +186,11 @@ public class ParserTstUtil {
     /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava9(Class<?> source) {
         return parseJava9(getSourceFromClass(source));
+    }
+
+    /** @see #parseJava(LanguageVersionHandler, String)  */
+    public static ASTCompilationUnit parseJava10(Class<?> source) {
+        return parseJava10(getSourceFromClass(source));
     }
 
     /** @see #parseJava(LanguageVersionHandler, String) */
@@ -233,5 +243,18 @@ public class ParserTstUtil {
             throw new RuntimeException(e);
         }
         return source;
+    }
+
+    public static ASTCompilationUnit parseAndTypeResolveJava(String javaVersion, String sourceCode) {
+        LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler(javaVersion);
+        ASTCompilationUnit rootNode = (ASTCompilationUnit) languageVersionHandler
+                .getParser(languageVersionHandler.getDefaultParserOptions())
+                    .parse(null, new StringReader(sourceCode));
+        languageVersionHandler.getQualifiedNameResolutionFacade(ParserTstUtil.class.getClassLoader()).start(rootNode);
+        languageVersionHandler.getSymbolFacade().start(rootNode);
+        languageVersionHandler.getDataFlowFacade().start(rootNode);
+        languageVersionHandler.getTypeResolutionFacade(ParserTstUtil.class.getClassLoader()).start(rootNode);
+        languageVersionHandler.getMultifileFacade().start(rootNode);
+        return rootNode;
     }
 }

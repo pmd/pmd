@@ -12,15 +12,24 @@ This is a minor release.
 
 ### Table Of Contents
 
-* [New and noteworthy](#new-and-noteworthy)
+*   [New and noteworthy](#new-and-noteworthy)
+    *   [Java 10 Support](#java-10-support)
     *   [XPath Type Resolution Functions](#xpath-type-resolution-functions)
     *   [New Rules](#new-rules)
     *   [Modified Rules](#modified-rules)
-* [Fixed Issues](#fixed-issues)
-* [API Changes](#api-changes)
-* [External Contributions](#external-contributions)
+*   [Fixed Issues](#fixed-issues)
+*   [API Changes](#api-changes)
+*   [External Contributions](#external-contributions)
 
 ### New and noteworthy
+
+#### Java 10 Support
+
+PMD is now able to understand local-variable type inference as introduced by Java 10.
+Simple type resolution features are available, e.g. the type of the variable `s` is inferred
+correctly as `String`:
+
+    var s = "Java 10";
 
 #### XPath Type Resolution Functions
 
@@ -87,6 +96,7 @@ never match.
     *   [#1145](https://github.com/pmd/pmd/issues/1145): \[core] JCommander's help text for option -min is wrong
 *   java
     *   [#672](https://github.com/pmd/pmd/issues/672): \[java] Support exact type matches for type resolution from XPath
+    *   [#743](https://github.com/pmd/pmd/issues/743): \[java] Prepare for Java 10
     *   [#1077](https://github.com/pmd/pmd/issues/1077): \[java] Analyzing enum with lambda passed in constructor fails with "The enclosing scope must exist."
     *   [#1115](https://github.com/pmd/pmd/issues/1115): \[java] Simplify xpath typeof syntax
     *   [#1131](https://github.com/pmd/pmd/issues/1131): \[java] java.lang.ClassFormatError: Absent Code attribute in method that is not native or abstract in class file javax/faces/application/FacesMessage$Severity
@@ -99,7 +109,7 @@ never match.
     *   [#1114](https://github.com/pmd/pmd/issues/1114): \[java] Star import overwritten by explicit import is not correctly handled
     *   [#1064](https://github.com/pmd/pmd/issues/1064): \[java] ClassNamingConventions suggests to add Util suffix for simple exception wrappers
     *   [#1065](https://github.com/pmd/pmd/issues/1065): \[java] ClassNamingConventions shouldn't prohibit numbers in class names
-    *   [#1067](https://github.com/pmd/pmd/issues/1067): \[java] [6.3.0] PrematureDeclaration false-positive
+    *   [#1067](https://github.com/pmd/pmd/issues/1067): \[java] \[6.3.0] PrematureDeclaration false-positive
     *   [#1096](https://github.com/pmd/pmd/issues/1096): \[java] ClassNamingConventions is too ambitious on finding utility classes
 *   java-design
     *   [#824](https://github.com/pmd/pmd/issues/824): \[java] UseUtilityClass false positive when extending
