@@ -82,6 +82,11 @@ echo
 echo "Press enter to continue..."
 read
 echo "Committing current changes (pmd)"
+
+if [[ -e pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml ]]
+    git add pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml
+fi
+
 git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 (
     echo "Committing current changes (pmd.github.io)"
