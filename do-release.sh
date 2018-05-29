@@ -127,9 +127,13 @@ echo
 echo "Prepare Next development version:"
 echo "*   Move version/release info from **docs/pages/release_notes.md** to **docs/pages/release_notes_old.md**."
 echo "*   Update version/date info in **docs/_config.yml**."
-echo "*   Update version/release info in **docs/pages/release_notes.md**."
 echo
-cat <<EOF
+echo
+echo "Press enter to continue..."
+read
+
+# reset release notes template
+cat > docs/pages/release_notes.md <<EOF
 ---
 title: PMD Release Notes
 permalink: pmd_release_notes.html
@@ -158,9 +162,7 @@ This is a minor release.
 ### External Contributions
 
 EOF
-echo
-echo "Press enter to continue..."
-read
+
 ./mvwn release:clean
 git commit -a -m "Prepare next development version"
 git push origin ${CURRENT_BRANCH}
