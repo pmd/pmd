@@ -73,7 +73,7 @@ echo
 echo "*   Update date info in **docs/_config.yml**."
 echo
 echo "*   Ensure all the new rules are listed in a the proper file:"
-echo "    pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION}.xml file."
+echo "    pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml file."
 echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
