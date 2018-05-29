@@ -109,7 +109,7 @@ never match.
     *   [#1114](https://github.com/pmd/pmd/issues/1114): \[java] Star import overwritten by explicit import is not correctly handled
     *   [#1064](https://github.com/pmd/pmd/issues/1064): \[java] ClassNamingConventions suggests to add Util suffix for simple exception wrappers
     *   [#1065](https://github.com/pmd/pmd/issues/1065): \[java] ClassNamingConventions shouldn't prohibit numbers in class names
-    *   [#1067](https://github.com/pmd/pmd/issues/1067): \[java] [6.3.0] PrematureDeclaration false-positive
+    *   [#1067](https://github.com/pmd/pmd/issues/1067): \[java] \[6.3.0] PrematureDeclaration false-positive
     *   [#1096](https://github.com/pmd/pmd/issues/1096): \[java] ClassNamingConventions is too ambitious on finding utility classes
 *   java-design
     *   [#824](https://github.com/pmd/pmd/issues/824): \[java] UseUtilityClass false positive when extending
