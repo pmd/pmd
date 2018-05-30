@@ -9,16 +9,21 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.rule.documentation.AbstractCommentRule;
 import net.sourceforge.pmd.properties.RegexProperty;
@@ -89,10 +94,16 @@ public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
     }
 
     private boolean shouldReport(final AbstractJavaAccessNode decl) {
-        List<ASTClassOrInterfaceDeclaration> parentClassOrInterface = decl
-                .getParentsOfType(ASTClassOrInterfaceDeclaration.class);
-        // ignore if is a Interface
-        return !parentClassOrInterface.isEmpty() && !parentClassOrInterface.get(0).isInterface()
+        final AbstractAnyTypeDeclaration parentClassOrInterface = decl
+                .getFirstParentOfType(AbstractAnyTypeDeclaration.class);
+        
+        final boolean isConcreteClass = parentClassOrInterface instanceof ASTClassOrInterfaceDeclaration
+                && !((ASTClassOrInterfaceDeclaration) parentClassOrInterface).isInterface();
+        final boolean isEnumConstructor = parentClassOrInterface instanceof ASTEnumDeclaration
+                && decl instanceof ASTConstructorDeclaration;
+        
+        // ignore if it's an Interface / Annotation / Enum constructor
+        return (isConcreteClass || !isEnumConstructor)
                 // check if the field/method/nested class has a default access
                 // modifier
                 && decl.isPackagePrivate()
