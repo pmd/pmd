@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<AnchorPane prefHeight="444.0" prefWidth="594.0" xmlns="http://javafx.com/javafx/9.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="net.sourceforge.pmd.util.fxdesigner.util.AuxClassPathController">
+    <children>
+        <BorderPane layoutX="14.0" layoutY="14.0" prefHeight="374.0" prefWidth="571.0">
+            <top>
+                <TitledPane animated="false" prefHeight="420.0" prefWidth="571.0" text="PMD Configure"
+                            textAlignment="CENTER" BorderPane.alignment="CENTER">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="542.0" prefWidth="569.0">
+                            <children>
+                                <Pane layoutX="17.0" layoutY="95.0" prefHeight="260.0" prefWidth="536.0">
+                                    <children>
+                                        <TableView id="fileSelected" layoutX="34.0" layoutY="30.0" prefHeight="200.0"
+                                                   prefWidth="172.0">
+                                            <columns>
+                                                <TableColumn fx:id="fileList" prefWidth="171.0" text="Files Selected"/>
+                                            </columns>
+                                        </TableView>
+                                        <TableView fx:id="fileTable" id="fileTable" layoutX="247.0" layoutY="30.0"
+                                                   prefHeight="200.0" prefWidth="200.0">
+                                            <columns>
+                                                <TableColumn fx:id="fileAdd" prefWidth="199.0"
+                                                             text="Files to be Added"/>
+                                            </columns>
+                                        </TableView>
+                                        <Button fx:id="removeFiles" layoutX="463.0" layoutY="98.0"
+                                                mnemonicParsing="false" text="Remove"/>
+                                    </children>
+                                </Pane>
+                                <Label layoutX="47.0" layoutY="78.0" prefHeight="17.0" prefWidth="58.0"
+                                       text="Classpath">
+                                    <effect>
+                                        <Blend/>
+                                    </effect>
+                                </Label>
+                                <Button fx:id="selectFile" layoutX="39.0" layoutY="32.0" mnemonicParsing="false"
+                                        text="Select Files"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </TitledPane>
+            </top>
+        </BorderPane>
+    </children>
+</AnchorPane>

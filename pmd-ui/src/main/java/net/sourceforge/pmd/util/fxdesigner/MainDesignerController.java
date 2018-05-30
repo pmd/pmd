@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.util.fxdesigner.util.AuxClassPathController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
@@ -73,7 +74,10 @@ public class MainDesignerController implements Initializable, SettingsOwner {
      */
     private final DesignerRoot designerRoot;
 
+
     /* Menu bar */
+    @FXML
+    private MenuItem pmdconfig;
     @FXML
     private MenuItem openFileMenuItem;
     @FXML
@@ -111,6 +115,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     private SourceEditorController sourceEditorController;
     @FXML
     private EventLogController eventLogPanelController;
+    @FXML
+    private AuxClassPathController auxClassPathController;
 
     // Other fields
     private Stack<File> recentFiles = new LimitedSizeStack<>(5);
@@ -160,6 +166,16 @@ public class MainDesignerController implements Initializable, SettingsOwner {
                 e1.printStackTrace();
             }
         });
+
+        pmdconfig.setOnAction(e -> {
+            try {
+                auxClassPathController.showAuxPathWizard();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        });
+
+
 
         sourceEditorController.refreshAST();
         xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(),

@@ -18,14 +18,16 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
-
-<AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.MainDesignerController">
+<AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@../css/designer.css"
+            xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="net.sourceforge.pmd.util.fxdesigner.MainDesignerController">
     <children>
         <BorderPane prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
                 <AnchorPane>
                     <children>
-                        <MenuBar maxHeight="20.0" prefHeight="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <MenuBar layoutX="-11.0" maxHeight="20.0" prefHeight="20.0" AnchorPane.bottomAnchor="0.0"
+                                 AnchorPane.leftAnchor="-11.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="0.0">
                             <menus>
                                 <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
                                     <items>
@@ -42,6 +44,12 @@
                                         <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License" />
                                     </items>
                                 </Menu>
+                                <Menu mnemonicParsing="false" text="PMD Configuration">
+                                    <items>
+                                        <MenuItem fx:id="pmdconfig" mnemonicParsing="false" text="AuxClassPath SetUp"/>
+                                    </items>
+                                </Menu>
+
                             </menus>
                         </MenuBar>
                     </children>
