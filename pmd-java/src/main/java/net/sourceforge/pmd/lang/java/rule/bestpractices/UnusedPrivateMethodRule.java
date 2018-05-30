@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +33,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
-        Collection<String> defaultValues = new ArrayList<>();
-        defaultValues.add("java.lang.Deprecated");
-        return defaultValues;
+        return Collections.singletonList("java.lang.Deprecated");
     }
 
     /**
