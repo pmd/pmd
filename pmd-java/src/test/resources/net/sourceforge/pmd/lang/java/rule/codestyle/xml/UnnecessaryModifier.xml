@@ -598,4 +598,19 @@ class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Private constructor of enum</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+enum Foo {
+    BAR("bar");
+    
+    private String name;
+    
+    private Foo(String s) {
+        name = s;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

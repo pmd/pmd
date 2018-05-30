@@ -10,6 +10,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -28,6 +30,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
         addRuleChainVisit(ASTResource.class);
         addRuleChainVisit(ASTFieldDeclaration.class);
         addRuleChainVisit(ASTAnnotationMethodDeclaration.class);
+        addRuleChainVisit(ASTConstructorDeclaration.class);
     }
     
     @Override
@@ -143,6 +146,15 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     public Object visit(ASTAnnotationMethodDeclaration node, Object data) {
         if (node.isPublic() || node.isAbstract()) {
             check(node, data);
+        }
+        return data;
+    }
+    
+    public Object visit(ASTConstructorDeclaration node, Object data) {
+        if (node.getNthParent(2) instanceof ASTEnumBody) {
+            if (node.isPrivate()) {
+                addViolation(data, node);
+            }
         }
         return data;
     }
