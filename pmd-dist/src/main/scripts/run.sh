@@ -75,8 +75,8 @@ check_lib_dir() {
 }
 
 jre_specific_vm_options() {
-  # java_ver is eg "18" for java 1.8, "90" for java 9.0
-  java_ver=$(java -version 2>&1 | sed -n ';s/^.* version "\(.*\)\.\(.*\)\..*".*$/\1\2/p;')
+  # java_ver is eg "18" for java 1.8, "90" for java 9.0, "100" for java 10.0.x
+  java_ver=$(java -version 2>&1 | sed -n -e 's/-ea/.0.0/i' -e 's/^.* version "\(.*\)\.\(.*\)\..*".*$/\1\2/p')
   options=""
 
   if [ "$java_ver" -ge 90 ] && [ "${APPNAME}" = "designer" ]
