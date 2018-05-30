@@ -20,6 +20,8 @@ This is a minor release.
 ### New and noteworthy
 
 ### Fixed Issues
+*   xml
+    *   [#715](https://github.com/pmd/pmd/issues/715): \[xml] ProjectVersionAsDependencyVersion false positive
 
 ### API Changes
 
