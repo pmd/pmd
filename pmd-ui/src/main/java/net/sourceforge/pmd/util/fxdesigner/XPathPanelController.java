@@ -226,7 +226,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
 
     public void showExportXPathToRuleWizard() throws IOException {
-        // doesn't work for some reason
         ExportXPathWizardController wizard
                 = new ExportXPathWizardController(xpathExpressionProperty());
 

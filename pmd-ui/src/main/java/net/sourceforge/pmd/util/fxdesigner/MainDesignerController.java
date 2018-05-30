@@ -115,8 +115,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     private SourceEditorController sourceEditorController;
     @FXML
     private EventLogController eventLogPanelController;
-    @FXML
-    private AuxClassPathController auxClassPathController;
+
+    private final AuxClassPathController auxClassPathController;
 
     // Other fields
     private Stack<File> recentFiles = new LimitedSizeStack<>(5);
@@ -127,6 +127,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
     public MainDesignerController(DesignerRoot owner) {
         this.designerRoot = owner;
+        this.auxClassPathController = new AuxClassPathController(designerRoot, this);
     }
 
 
