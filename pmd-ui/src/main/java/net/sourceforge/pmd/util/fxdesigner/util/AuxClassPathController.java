@@ -30,19 +30,14 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
 
     @FXML
     private Button removeFiles;
-
     @FXML
     private TableView fileTable;
-
     @FXML
     private Button selectFile;
-
     @FXML
     private TableColumn fileList;
-
     @FXML
     private TableColumn fileAdd;
-
     @FXML
     private final MainDesignerController parent;
 
@@ -71,12 +66,20 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
 
     public void showAuxPathWizard() throws Exception {
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/aux-controller.fxml"));
-        Parent root1 = (Parent) fxmlLoader.load();
+        FXMLLoader fxmlLoader = new FXMLLoader(DesignerUtil.getFxml("aux-controller.fxml"));
+
+        fxmlLoader.setControllerFactory(type -> {
+            if (type == AuxClassPathController.class) {
+                return this;
+            } else {
+                throw new IllegalStateException("Wrong controller!");
+            }
+        });
+
+        Parent root1 = fxmlLoader.load();
         Stage stage = new Stage();
         stage.setScene(new Scene(root1));
         stage.show();
-
     }
 
 
