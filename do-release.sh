@@ -66,6 +66,8 @@ export RELEASE_VERSION
 export DEVELOPMENT_VERSION
 export CURRENT_BRANCH
 
+RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml"
+
 echo "*   Update version/release info in **docs/pages/release_notes.md**."
 echo
 echo "    ## $(date -u +%d-%B-%Y) - ${RELEASE_VERSION}"
@@ -73,7 +75,7 @@ echo
 echo "*   Update date info in **docs/_config.yml**."
 echo
 echo "*   Ensure all the new rules are listed in a the proper file:"
-echo "    pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml file."
+echo "    ${RELEASE_RULESET}"
 echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
@@ -83,8 +85,9 @@ echo "Press enter to continue..."
 read
 echo "Committing current changes (pmd)"
 
-if [[ -e pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml ]]
-    git add pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml
+if [[ -e ${RELEASE_RULESET} ]]
+then
+    git add ${RELEASE_RULESET}
 fi
 
 git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
@@ -136,10 +139,11 @@ echo "Press enter to continue..."
 read
 
 # update release_notes_old
-OLD_RELEASE_NOTES=$(tail -n +5 docs/pages/release_notes_old.md)
+OLD_RELEASE_NOTES=$(tail -n +8 docs/pages/release_notes_old.md)
 NEW_RELEASE_NOTES=$(tail -n +6 docs/pages/release_notes.md)
-echo "$(head -n 5 docs/pages/release_notes_old.md)" > docs/pages/release_notes_old.md
+echo "$(head -n 7 docs/pages/release_notes_old.md)" > docs/pages/release_notes_old.md
 echo "$NEW_RELEASE_NOTES" >> docs/pages/release_notes_old.md
+echo >> docs/pages/release_notes_old.md
 echo "$OLD_RELEASE_NOTES" >> docs/pages/release_notes_old.md
 
 # reset release notes template
