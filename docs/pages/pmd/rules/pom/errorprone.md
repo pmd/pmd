@@ -65,7 +65,13 @@ By far the most common problem is the use of ${project.version} in a BOM or pare
 
 **This rule is defined by the following XPath expression:**
 ```
-//dependency/version/text[contains(@Image,'{project.version}')]
+//dependencies/dependency
+    [contains(version/text/@Image,'{project.version}')]
+    [
+        (/project/parent/groupId and groupId/text/@Image != /project/parent/groupId/text/@Image)
+        or
+        (/project/groupId and groupId/text/@Image != /project/groupId/text/@Image)
+    ]/version
 ```
 
 **Example(s):**
