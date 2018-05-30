@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.util.fxdesigner.util.AuxClassPathController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
@@ -77,7 +76,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
     /* Menu bar */
     @FXML
-    private MenuItem pmdconfig;
+    private MenuItem setupAuxclasspathMenuItem;
     @FXML
     private MenuItem openFileMenuItem;
     @FXML
@@ -168,7 +167,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
             }
         });
 
-        pmdconfig.setOnAction(e -> {
+        setupAuxclasspathMenuItem.setOnAction(e -> {
             try {
                 auxClassPathController.showAuxPathWizard();
             } catch (Exception e1) {

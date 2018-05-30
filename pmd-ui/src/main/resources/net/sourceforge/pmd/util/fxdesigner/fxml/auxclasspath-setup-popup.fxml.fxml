@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+<AnchorPane prefHeight="307.0" prefWidth="359.0" scaleShape="false" xmlns="http://javafx.com/javafx/9.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="net.sourceforge.pmd.util.fxdesigner.AuxClassPathController">
+    <children>
+        <TitledPane animated="false" collapsible="false" prefWidth="40.0" text="PMD Configure" textAlignment="CENTER">
+            <content>
+                <BorderPane prefHeight="281.0" prefWidth="414.0">
+                    <top>
+                        <AnchorPane prefHeight="261.0" prefWidth="426.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <Button fx:id="selectFile" layoutX="248.0" layoutY="51.0" mnemonicParsing="false"
+                                        prefHeight="25.0" prefWidth="83.0" text="Select Files"/>
+                                <Button fx:id="removeFiles" layoutX="248.0" layoutY="86.0" mnemonicParsing="false"
+                                        text="Remove File"/>
+                                <Label layoutX="37.0" layoutY="14.0" prefHeight="29.0" prefWidth="148.0"
+                                       text="File List">
+                                    <effect>
+                                        <Blend/>
+                                    </effect>
+                                    <font>
+                                        <Font size="18.0"/>
+                                    </font>
+                                </Label>
+                                <ListView fx:id="fileList" layoutX="26.0" layoutY="43.0" prefHeight="210.0"
+                                          prefWidth="171.0"/>
+                                <Button fx:id="setClassPath" layoutX="248.0" layoutY="118.0" mnemonicParsing="false"
+                                        prefHeight="25.0" prefWidth="81.0" text="Apply" textAlignment="CENTER"/>
+                            </children>
+                        </AnchorPane>
+                    </top>
+                </BorderPane>
+            </content>
+        </TitledPane>
+    </children>
+</AnchorPane>

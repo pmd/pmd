@@ -46,7 +46,8 @@
                                 </Menu>
                                 <Menu mnemonicParsing="false" text="PMD Configuration">
                                     <items>
-                                        <MenuItem fx:id="pmdconfig" mnemonicParsing="false" text="AuxClassPath SetUp"/>
+                                        <MenuItem fx:id="setupAuxclasspathMenuItem" mnemonicParsing="false"
+                                                  text="Set up the auxclasspath"/>
                                     </items>
                                 </Menu>
 
