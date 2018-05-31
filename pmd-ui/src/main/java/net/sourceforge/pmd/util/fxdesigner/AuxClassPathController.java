@@ -7,7 +7,6 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -28,7 +27,7 @@ import javafx.stage.Stage;
 public class AuxClassPathController implements Initializable, SettingsOwner {
 
     private final DesignerRoot designerRoot;
-    private List<File> list = new ArrayList<>();
+
     @FXML
     private Button removeFiles;
     @FXML
@@ -48,13 +47,13 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        selectFile.setOnAction(e -> fileSelected());
-        removeFiles.setOnAction(e -> setRemoveFiles());
+        selectFile.setOnAction(e -> onSelectFileClicked());
+        removeFiles.setOnAction(e -> onRemoveFileClicked());
 
     }
 
 
-    private void fileSelected() {
+    private void onSelectFileClicked() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Select Files");
         chooser.getExtensionFilters().addAll(
@@ -63,34 +62,22 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
             new FileChooser.ExtensionFilter("Java EARs", "*.ear"),
             new FileChooser.ExtensionFilter("Java class files", "*.class")
         );
-        File file = chooser.showOpenDialog((designerRoot.getMainStage()));
-        list.add(file);
-        displayFiles();
-    }
-
-
-    private void displayFiles() {
-
-        for (int i = 0; i < list.size(); i++) {
-            fileList.refresh();
-            fileList.getItems().add(new File(String.valueOf(list.get(i))));
+        List<File> file = chooser.showOpenMultipleDialog((designerRoot.getMainStage()));
+        for (File f : file) {
+            fileList.getItems().add(f);
         }
     }
 
 
-    private void setRemoveFiles() {
-
+    private void onRemoveFileClicked() {
         File f = fileList.getSelectionModel().getSelectedItem();
-        list.remove(f);
-        int selectedId = fileList.getSelectionModel().getSelectedIndex();
-        fileList.getItems().remove(selectedId);
-
+        fileList.getItems().remove(f);
     }
 
 
     public void showAuxPathWizard() throws Exception {
 
-        FXMLLoader fxmlLoader = new FXMLLoader(DesignerUtil.getFxml("auxclasspath-setup-popup.fxml.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(DesignerUtil.getFxml("auxclasspath-setup-popup.fxml"));
 
         fxmlLoader.setControllerFactory(type -> {
             if (type == AuxClassPathController.class) {
@@ -102,6 +89,7 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
 
         Parent root1 = fxmlLoader.load();
         Stage stage = new Stage();
+        stage.initOwner(designerRoot.getMainStage());
         stage.initModality(Modality.WINDOW_MODAL);
         stage.setScene(new Scene(root1));
         stage.show();
