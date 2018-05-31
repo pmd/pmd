@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.4.0-SNAPSHOT</version>
+        <version>6.5.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -27,6 +27,16 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+            <!-- TODO uncomment when the new build-tools artifact is out, refs pmd/build-tools#7  -->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-pmd-plugin</artifactId>-->
+                <!--<configuration combine.self="override">-->
+                    <!-- <rulesets> -->
+                        <!-- <ruleset>/net/sourceforge/pmd/pmd-ui-dogfood-config.xml</ruleset> -->
+                    <!-- </rulesets> -->
+                <!--</configuration>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 

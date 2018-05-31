@@ -52,11 +52,17 @@ deploy:
 after_deploy: bash .travis/release.sh
 
 notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/0e6dd310db54b96c2653
+      - https://webhooks.gitter.im/e/65efc1ea65175ad23ab6
+    on_success: always  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: never     # options: [always|never|change] default: always
   email:
     recipients:
     - andreas.dangel@adangel.org
-    - pmd-commits@lists.sourceforge.net
-    on_success: always
+    on_success: change
     on_failure: always
 cache:
   directories:

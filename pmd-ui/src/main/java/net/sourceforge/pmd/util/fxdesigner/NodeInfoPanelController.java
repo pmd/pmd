@@ -47,11 +47,11 @@ public class NodeInfoPanelController implements Initializable {
     @FXML
     private TabPane nodeInfoTabPane;
     @FXML
-    private Tab xpathAttributesTitledPane;
+    private Tab xpathAttributesTab;
     @FXML
     private ListView<String> xpathAttributesListView;
     @FXML
-    private Tab metricResultsTitledPane;
+    private Tab metricResultsTab;
     @FXML
     private ListView<MetricResult> metricResultsListView;
     @FXML
@@ -118,9 +118,9 @@ public class NodeInfoPanelController implements Initializable {
 
 
     private void notifyMetricsAvailable(long numMetrics) {
-        metricResultsTitledPane.setText("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + ")");
+        metricResultsTab.setText("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + ")");
         metricsTitleLabel.setText("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + " available)");
-        metricResultsTitledPane.setDisable(numMetrics == 0);
+        metricResultsTab.setDisable(numMetrics == 0);
     }
 
 

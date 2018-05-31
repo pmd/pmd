@@ -25,7 +25,7 @@
                                     AnchorPane.topAnchor="0.0">
                             <content>
                                 <AnchorPane>
-                                    <PropertyTableView fx:id="propertyView"
+                                    <PropertyTableView fx:id="propertyTableView"
                                                        AnchorPane.bottomAnchor="0.0"
                                                        AnchorPane.leftAnchor="0.0"
                                                        AnchorPane.rightAnchor="0.0"
