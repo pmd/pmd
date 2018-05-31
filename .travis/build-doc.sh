@@ -36,4 +36,24 @@ if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]]; then
     travis_wait rsync -ah --stats --delete pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
 fi
 
+
+#
+# Push the generated site to gh-pages branch
+#
+if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]]; then
+    git config user.name "Travis CI (pmd-bot)"
+    git config user.email "andreas.dangel+pmd-bot@adangel.org"
+    git clone --branch gh-pages --depth 1 git@github.com:pmd/pmd.git pmd-gh-pages
+    # clear the files first
+    rm -rf pmd-gh-pages/*
+    # copy the new site
+    cp -a pmd-doc-${VERSION}/* pmd-gh-pages/
+    (
+        cd pmd-gh-pages
+        git add -A
+        git commit -m "Update documentation"
+        git push git@github.com:pmd/pmd.git HEAD:gh-pages
+    )
+fi
+
 popd
