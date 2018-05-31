@@ -347,4 +347,16 @@ public class GuardLogStatement {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#869 [java] GuardLogStatement false positive with something.error on return</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class GuardLogStatement {
+    public String foo() {
+        return ThisIsNotALogger.error("message " + "");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

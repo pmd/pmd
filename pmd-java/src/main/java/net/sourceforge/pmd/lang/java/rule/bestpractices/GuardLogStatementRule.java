@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.StringMultiProperty;
 
@@ -93,17 +94,23 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
     }
 
     @Override
-    public Object visit(ASTPrimaryExpression node, Object data) {
-        if (node.jjtGetNumChildren() >= 2 && node.jjtGetChild(0) instanceof ASTPrimaryPrefix) {
-            ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.jjtGetChild(0);
+    public Object visit(ASTStatementExpression node, Object data) {
+        if (node.jjtGetNumChildren() < 1 || !(node.jjtGetChild(0) instanceof ASTPrimaryExpression)) {
+            // only consider primary expressions
+            return node;
+        }
+
+        ASTPrimaryExpression primary = (ASTPrimaryExpression) node.jjtGetChild(0);
+        if (primary.jjtGetNumChildren() >= 2 && primary.jjtGetChild(0) instanceof ASTPrimaryPrefix) {
+            ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) primary.jjtGetChild(0);
             String methodCall = getMethodCallName(prefix);
-            String logLevel = getLogLevelName(node, methodCall);
+            String logLevel = getLogLevelName(primary, methodCall);
 
             if (guardStmtByLogLevel.containsKey(methodCall) && logLevel != null
-                    && node.jjtGetChild(1) instanceof ASTPrimarySuffix
-                    && node.jjtGetChild(1).hasDescendantOfType(ASTAdditiveExpression.class)) {
+                    && primary.jjtGetChild(1) instanceof ASTPrimarySuffix
+                    && primary.jjtGetChild(1).hasDescendantOfType(ASTAdditiveExpression.class)) {
 
-                if (!hasGuard(node, methodCall, logLevel)) {
+                if (!hasGuard(primary, methodCall, logLevel)) {
                     super.addViolation(data, node);
                 }
             }
