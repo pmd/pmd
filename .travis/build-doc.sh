@@ -51,7 +51,7 @@ if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]]; then
     (
         cd pmd-gh-pages
         git add -A
-        git commit -m "Update documentation"
+        git commit -q -m "Update documentation"
         git push git@github.com:pmd/pmd.git HEAD:gh-pages
     )
 fi
