@@ -126,7 +126,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
     public MainDesignerController(DesignerRoot owner) {
         this.designerRoot = owner;
-        this.auxClassPathController = new AuxClassPathController(designerRoot, this);
+        this.auxClassPathController = new AuxClassPathController(designerRoot);
     }
 
 
