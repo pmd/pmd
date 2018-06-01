@@ -63,4 +63,14 @@ var x = 1.12345678901234567e-4;
      ]]></code>
         <source-type>ecmascript 3</source-type>
     </test-code>
+
+    <test-code>
+        <description>#861 [ecmascript] InnaccurateNumericLiteral false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+var hex1 = 0x20;
+var hex2 = 0X20;
+        ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
 </test-data>
