@@ -15,12 +15,12 @@
         <TitledPane animated="false" collapsible="false" prefWidth="40.0" text="PMD Configure" textAlignment="CENTER">
             <content>
                 <BorderPane prefHeight="281.0" prefWidth="414.0">
-                    <top>
+                    <right>
                         <AnchorPane prefHeight="261.0" prefWidth="426.0" BorderPane.alignment="CENTER">
                             <children>
-                                <Button fx:id="selectFile" layoutX="248.0" layoutY="51.0" mnemonicParsing="false"
+                                <Button fx:id="selectFilesButton" layoutX="248.0" layoutY="51.0" mnemonicParsing="false"
                                         prefHeight="25.0" prefWidth="83.0" text="Select Files"/>
-                                <Button fx:id="removeFiles" layoutX="248.0" layoutY="86.0" mnemonicParsing="false"
+                                <Button fx:id="removeFileButton" layoutX="248.0" layoutY="86.0" mnemonicParsing="false"
                                         text="Remove File"/>
                                 <Label layoutX="37.0" layoutY="14.0" prefHeight="29.0" prefWidth="148.0"
                                        text="File List">
@@ -31,13 +31,19 @@
                                         <Font size="18.0"/>
                                     </font>
                                 </Label>
-                                <ListView fx:id="fileList" layoutX="26.0" layoutY="43.0" prefHeight="210.0"
+                                <ListView fx:id="fileListView" layoutX="26.0" layoutY="43.0" prefHeight="210.0"
                                           prefWidth="171.0"/>
-                                <Button fx:id="setClassPath" layoutX="248.0" layoutY="118.0" mnemonicParsing="false"
-                                        prefHeight="25.0" prefWidth="81.0" text="Apply" textAlignment="CENTER"/>
+                                <Button fx:id="setClassPathButton" layoutX="248.0" layoutY="118.0"
+                                        mnemonicParsing="false" prefHeight="25.0" prefWidth="81.0" text="setClassPath"
+                                        textAlignment="CENTER"/>
+                                <Button fx:id="moveItemUpButton" layoutX="271.0" layoutY="148.0" mnemonicParsing="false"
+                                        text="Up"/>
+                                <Button fx:id="moveItemDownButton" layoutX="264.0" layoutY="179.0"
+                                        mnemonicParsing="false"
+                                        text="Down"/>
                             </children>
                         </AnchorPane>
-                    </top>
+                    </right>
                 </BorderPane>
             </content>
         </TitledPane>
