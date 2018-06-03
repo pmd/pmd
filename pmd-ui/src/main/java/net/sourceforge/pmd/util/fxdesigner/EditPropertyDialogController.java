@@ -115,6 +115,7 @@ public class EditPropertyDialogController implements Initializable {
         backingDescriptor.ifPresent(PropertyDescriptorSpec::unbind);
         backingDescriptor.setValue(null);
         backingDescriptorList.setValue(null);
+        this.nameProperty().setValue(""); // necessary to get the validator to reevaluate each time
     }
 
 
