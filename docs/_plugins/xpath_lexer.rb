@@ -13,6 +13,12 @@ module Rouge
       filenames '*.xpath'
       mimetypes 'text/x-xpath'
 
+      state :root do
+        mixin :basic
+        mixin :operators
+        mixin :names
+      end
+
       state :basic do
         rule /\s+/, Text::Whitespace
         rule /[(]:(?![)])/, Comment, :nested_comment
@@ -28,7 +34,7 @@ module Rouge
       end
 
       state :operators do
-        rule /(<|>|=<|>=|==|\/\/|[|\/*+-])(?=\s|[a-zA-Z0-9\[])/, Operator
+        rule /(<|>|=<|>=|==|:=|\/\/|[|\/*+-])(?=\s|[a-zA-Z0-9\[])/, Operator
         # operators
         rule /(or|and|not|mod|ne|eq|lt|le|gt|ge)/, Operator::Word
         # keywords
@@ -45,17 +51,11 @@ module Rouge
         # Attributes
         rule /@[a-zA-Z][_\-a-zA-Z0-9]*/, Name::Attribute
         # XPath variables
-        rule /\$[a-zA-Z][_\-a-zA-Z0-9]*/, Name::Variable
+        rule /\$\s*[a-zA-Z][_\-a-zA-Z0-9]*/, Name::Variable
         # Functions
         rule /[a-zA-Z\-]+(?=\s*+\()/, Name::Function
         # Node names
-        rule /[a-zA-Z]+/, Name::Class
-      end
-
-      state :root do
-        mixin :basic
-        mixin :operators
-        mixin :names
+        rule /[a-zA-Z]+/, Name::Tag
       end
 
       state :nested_comment do
