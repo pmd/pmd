@@ -274,7 +274,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>1.1.0</pmd.build-tools.version>
+        <pmd.build-tools.version>1.1.1-SNAPSHOT</pmd.build-tools.version>
     </properties>
 
     <build>
