@@ -1028,8 +1028,7 @@ All switch statements should include a default option to catch any unspecified v
             <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
-                //SwitchStatement[not(SwitchLabel[@Default = true()]
-                                  or Expression[pmd-java:typeIs('java.lang.Enum')])]
+                //SwitchStatement[@DefaultCase = false() and @ExhaustiveEnumSwitch = false()]
             ]]></value>
             </property>
         </properties>

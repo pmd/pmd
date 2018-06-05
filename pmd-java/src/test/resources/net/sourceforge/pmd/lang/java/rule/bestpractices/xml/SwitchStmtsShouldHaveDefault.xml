@@ -46,7 +46,7 @@ public class Foo {
 
                     // This switch is NOT exhaustive
                     switch (a) {
-                    case SimpleEnum.BZAZ:
+                    case BZAZ:
                         int y = 8;
                         break;
                     }
@@ -67,12 +67,12 @@ public class Foo {
 
                     // This switch is exhaustive
                     switch (x) {
-                    case SimpleEnum.BZAZ:
+                    case BZAZ:
                         int y = 8;
                         break;
-                    case SimpleEnum.FOO:
+                    case FOO:
                         break;
-                    case SimpleEnum.BAR:
+                    case BAR:
                         int w = 8;
                         break;
                     }
