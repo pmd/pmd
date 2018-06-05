@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
+import java.io.File;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Collection;
@@ -33,6 +34,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -61,6 +63,9 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private TreeViewWrapper<Node> treeViewWrapper;
     private ASTTreeItem selectedTreeItem;
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
+
+    public static ObservableList<File> auxclasspathFiles;
+    private Var<ClassLoader> auxclasspathClassLoader;
 
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
         parent = mainController;
@@ -123,6 +128,24 @@ public class SourceEditorController implements Initializable, SettingsOwner {
             parent.invalidateAst();
             setUpToDateCompilationUnit(current);
         }
+    }
+
+
+    public void showAuxClassPathController(DesignerRoot root) {
+        AuxClassPathController auxClassPathController = new AuxClassPathController(auxclasspathFiles, root);
+
+
+    }
+
+
+    @PersistentProperty
+    public ObservableList<File> getAuxclasspathFiles() {
+        return auxclasspathFiles;
+    }
+
+
+    public void setAuxClassPathFiles(ObservableList<File> auxclasspathFiles) {
+        this.auxclasspathFiles = auxclasspathFiles;
     }
 
 

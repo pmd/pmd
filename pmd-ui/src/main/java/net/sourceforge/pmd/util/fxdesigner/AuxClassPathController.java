@@ -11,11 +11,14 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.controlsfx.validation.ValidationSupport;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -31,7 +34,7 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
 
     private final DesignerRoot designerRoot;
     private ClassLoader classLoader = getClass().getClassLoader();
-
+    private ValidationSupport validationSupport = new ValidationSupport();
 
 
     @FXML
@@ -39,19 +42,31 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
     @FXML
     private Button selectFilesButton;
     @FXML
-    private ListView<File> fileListView;
+    private ListView<File> fileListView = new ListView<>();
     @FXML
     private Button moveItemUpButton;
     @FXML
     private Button moveItemDownButton;
     @FXML
     private Button setClassPathButton;
+    @FXML
+    private Button cancelButton;
 
 
-    public AuxClassPathController(DesignerRoot designerRoot) {
+    public AuxClassPathController(ObservableList<File> auxClassPathFiles, DesignerRoot designerRoot) {
         this.designerRoot = designerRoot;
-    }
 
+        if (auxClassPathFiles != null) {
+            fileListView.setItems(auxClassPathFiles);
+        }
+
+        try {
+            showAuxPathWizard();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -65,8 +80,11 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
                 e1.printStackTrace();
             }
         });
+
+
         moveItemUpButton.setOnAction(e -> moveUp());
         moveItemDownButton.setOnAction(e -> moveDown());
+        cancelButton.setOnAction(e -> closePopup());
     }
 
 
@@ -79,10 +97,8 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
             new FileChooser.ExtensionFilter("Java EARs", "*.ear"),
             new FileChooser.ExtensionFilter("Java class files", "*.class")
         );
-        List<File> file = chooser.showOpenMultipleDialog(designerRoot.getMainStage());
-        for (File f : file) {
-            fileListView.getItems().add(f);
-        }
+        List<File> files = chooser.showOpenMultipleDialog(designerRoot.getMainStage());
+        fileListView.getItems().addAll(files);
     }
 
 
@@ -128,12 +144,16 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
     }
 
 
+    private void setValidationSupport() {
+
+    }
+
     private String classPathGenerator() throws IOException {
 
         String classPath = "";
 
         for (File f : fileListView.getItems()) {
-            classPath = classPath + ";" + f.getAbsolutePath();
+            classPath = classPath + File.pathSeparator + f.getAbsolutePath();
         }
 
         setClassPath(classPath);
@@ -149,6 +169,7 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
         if (classPath != null) {
             classLoader = new ClasspathClassLoader(classPath, classLoader);
         }
+        SourceEditorController.auxclasspathFiles = fileListView.getItems();
 
         closePopup();
     }
