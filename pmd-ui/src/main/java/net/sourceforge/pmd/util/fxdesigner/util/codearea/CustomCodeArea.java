@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
@@ -27,7 +28,6 @@ import org.reactfx.EventSource;
 import org.reactfx.Subscription;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.ContextUpdate.LayerUpdate;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -37,52 +37,59 @@ import javafx.concurrent.Task;
 
 
 /**
- * Code area that can handle syntax highlighting as well as regular node highlighting. Regular node highlighting is
- * handled in several {@link StyleLayer}s, which you can affect with {@link #styleCss(Collection, LayerId, boolean, String...)},
- * {@link #clearStyleLayer(LayerId)} and the like. Highlighting
+ * Code area that can handle syntax highlighting as well as regular node highlighting.
+ * Regular node highlighting is handled in several layers, identified by a {@link LayerId}.
+ * The contents of these layers can be handled independently with {@link #styleCss(Collection, LayerId, boolean, String...)},
+ * {@link #clearStyleLayer(LayerId)} and the like.
  *
  * <p>Syntax highlighting uses another internal style layer. Syntax highlighting
- * is performed asynchronously by another thread. You must shut down the executor
- * gracefully by calling {@link #disableSyntaxHighlighting()} before exiting the application.
+ * is performed asynchronously by another thread.
  *
  * @author Clément Fournier
  * @since 6.0.0
  */
 public class CustomCodeArea extends CodeArea {
 
-    private ExecutorService executorService;
+    /** Minimum delay between each style update. Updates are reduced together until then. */
+    private static final Duration UPDATE_DELAY = Duration.ofMillis(50);
+    /** Minimum delay between each code highlighting recomputation. Changes are ignored until then. */
+    private static final Duration TEXT_CHANGE_DELAY = Duration.ofMillis(20);
+
+    /** Stacks styling updates and reduces them together. */
+    private final EventSource<ContextUpdate> styleContextUpdateQueue = new EventSource<>();
+
     private Subscription syntaxAutoRefresh;
+
     private BooleanProperty isSyntaxHighlightingEnabled = new SimpleBooleanProperty(false);
+
     private StyleContext styleContext;
     private SyntaxHighlighter syntaxHighlighter;
 
-    private static final Duration UPDATE_DELAY = Duration.ofMillis(130);
-    private static final Duration TEXT_CHANGE_DELAY = Duration.ofMillis(100);
-    private final EventSource<ContextUpdate> styleContextUpdateQueue = new EventSource<>();
+
+    /** Used to schedule tasks that must be restarted upon new changes, eg syntax highlighting */
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
 
     private final StyleHelper styleHelper = new StyleHelper(this);
 
     public CustomCodeArea() {
         super();
-        styleContext = new StyleContext(this);
-        styleContext.addLayer(SYNTAX_HIGHLIGHT_LAYER_ID, new StyleLayer(SYNTAX_HIGHLIGHT_LAYER_ID, this));
-        styleContext.addLayer(XPATH_RESULTS.id, new StyleLayer(XPATH_RESULTS.id, this));
-        styleContext.addLayer(FOCUS.id, new StyleLayer(FOCUS.id, this));
-        styleContext.addLayer(SECONDARY.id, new StyleLayer(SECONDARY.id, this));
+        styleContext = new StyleContext(new TreeSet<>(Arrays.asList(SYNTAX_HIGHLIGHT_LAYER_ID,
+                                                                    XPATH_RESULTS.id,
+                                                                    FOCUS.id,
+                                                                    SECONDARY.id)));
 
         styleContextUpdateQueue.reduceSuccessions(ContextUpdate::unit, ContextUpdate::reduce, UPDATE_DELAY)
                                .hook(styleContext::executeUpdate)
-                               .hook(up -> System.out.println("update: " + up.getSpansById().keySet()))
-                               .supplyTask(() -> computeHighlightingAsync(getText()))
                                .subscribe(update -> Platform.runLater(this::paintCss));
     }
 
-    // FIXME the highlighting offsets to the left (right) when characters are deleted (inserted)
-    // Probably, auto-parsing of the source will fix that to some extent.
-
+    // FIXME the highlighting is offset to the left (right) each time we insert some text before (after)
+    // This is because all layers stay the same, while the syntax highlighting is updated more often and
+    // overlaid with those outdated spans, whose indices are offset by the length of the insertion
 
     /**
-     * Styles the nodes in the given layer.
+     * Styles some nodes in a given layer.
      *
      * <p>The focus layer is meant for the node in primary focus, in contrast
      * with the secondary layer, which highlights some nodes that are related
@@ -103,8 +110,18 @@ public class CustomCodeArea extends CodeArea {
         fullClasses.add("styled-text-area");
         fullClasses.add(layerId.id + "-highlight"); // focus-highlight, xpath-highlight, secondary-highlight
 
-        ContextUpdate update = new ContextUpdate(layerId.id, new LayerUpdate(resetLayer, styleHelper.style(nodes, fullClasses, extraClassesFinder(layerId))));
+        ContextUpdate update = ContextUpdate.layerUpdate(layerId.id, resetLayer, styleHelper.style(nodes, fullClasses, extraClassesFinder(layerId)));
         styleContextUpdateQueue.push(update);
+    }
+
+
+    /**
+     * Forcefully applies the possibly updated css classes.
+     * This operation is expensive, and should not be executed
+     * in a loop for example.
+     */
+    private void paintCss() {
+        this.setStyleSpans(0, styleContext.getStyleSpans(this::getLength));
     }
 
 
@@ -125,7 +142,7 @@ public class CustomCodeArea extends CodeArea {
      * another node that should be bordered is included inside
      * the node, in which case it would be unnoticeable.
      *
-     * <p>This is a pretty dumb heuristic, it would be better
+     * <p>TODO This is a pretty dumb heuristic, it would be better
      * to have a way to know if a node is included in another
      * highlighted node and in that case display the border...
      *
@@ -136,16 +153,6 @@ public class CustomCodeArea extends CodeArea {
         return node.getBeginLine() == node.getEndLine() && (node.getEndColumn() - node.getBeginColumn()) <= maxInlineLength;
     }
 
-
-
-    /**
-     * Forcefully applies the possibly updated css classes.
-     * This operation is expensive, and should not be executed
-     * in a loop for example.
-     */
-    public void paintCss() {
-        this.setStyleSpans(0, styleContext.getStyleSpans());
-    }
 
 
     /**
@@ -246,7 +253,6 @@ public class CustomCodeArea extends CodeArea {
         if (isSyntaxHighlightingEnabled.get() && syntaxHighlighter != null) {
             executorService = Executors.newSingleThreadExecutor();
             syntaxAutoRefresh = this.richChanges().filter(ch -> !ch.isIdentity())
-                                    //            syntaxAutoRefresh = EventStreams.valuesOf(textProperty()).distinct()
                                     .successionEnds(TEXT_CHANGE_DELAY)
                                     .supplyTask(() -> computeHighlightingAsync(this.getText()))
                                     .awaitLatest(this.richChanges())

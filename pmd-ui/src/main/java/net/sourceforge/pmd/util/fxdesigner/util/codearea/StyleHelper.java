@@ -54,6 +54,7 @@ class StyleHelper {
     }
 
 
+    // FIXME this is not very resilient to brutal changes in the text occurring during the computation
     Collection<StyleSpans<Collection<String>>> style(Collection<? extends Node> nodes, Set<String> cssClasses, Function<Node, Set<String>> extraClassesFinder) {
         if (nodes.isEmpty() || cssClasses.isEmpty()) {
             return Collections.emptySet();
@@ -75,10 +76,6 @@ class StyleHelper {
         Set<Node> nextPass = new HashSet<>();
 
         for (Node n : sortedNodes) {
-            //            if (!isInRange(n)) {
-            //                continue;
-            //            }
-
             int newOffset = getAbsolutePosition(n.getBeginLine(), n.getBeginColumn() - 1);
 
             Set<String> newClasses = new HashSet<>(cssClasses);
@@ -89,10 +86,10 @@ class StyleHelper {
 
                 if (newClasses.equals(previousClasses)) {
                     // accumulate the length and move on
-                    spanLength = Math.max(getAbsolutePosition(n.getEndLine(), n.getEndColumn()) - offset, spanLength);
+                    spanLength = Math.max(getAbsolutePosition(n.getBeginLine(), n.getBeginColumn()) - offset, spanLength);
                 } else {
                     // We have overlap and different classes, we'll treat that on the next pass
-                    // This is a lazy technique to have the overlay work done by RichtextFX instead of here
+                    // TODO This is a lazy technique to have the overlay work done by RichtextFX instead of here
                     nextPass.add(n);
                 }
                 continue;

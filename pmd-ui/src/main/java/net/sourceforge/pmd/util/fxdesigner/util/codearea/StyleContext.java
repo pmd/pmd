@@ -6,18 +6,18 @@ package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
-
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.ContextUpdate.LayerUpdate;
 
 
 /**
@@ -26,54 +26,37 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.ContextUpdate.LayerUpda
 class StyleContext {
 
 
-    private final CustomCodeArea codeArea;
-
-    private final Object updateLock = new Object();
     /** Contains the highlighting layers. */
-    private Map<String, StyleLayer> layersById = new HashMap<>();
+    private final Map<String, StyleLayer> layersById;
 
 
-    StyleContext(CustomCodeArea codeArea) {
-        this.codeArea = codeArea;
+    StyleContext(SortedSet<String> ids) {
+        layersById = ids.stream()
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toConcurrentMap(id -> id, id -> new StyleLayer()));
     }
 
 
-    public void addLayer(String id, StyleLayer layer) {
-        layersById.put(id, layer);
-    }
-
-
-    /** Removes a layer entirely. */
-    public void dropLayer(String id) {
-        layersById.remove(id);
+    public Optional<StyleLayer> getLayer(String id) {
+        return Optional.ofNullable(layersById.get(id));
     }
 
 
     /** Performs the side effects specified by the given update. */
     public void executeUpdate(ContextUpdate update) {
-        synchronized (updateLock) {
-            for (String layerId : update.getSpansById().keySet()) {
-                StyleLayer layer = layersById.get(layerId);
-                if (layer == null) {
-                    throw new IllegalStateException("Non-existent layer!");
-                }
-                LayerUpdate up = update.getSpansById().get(layerId);
-                if (up.isReset()) {
-                    layer.clearStyles();
-                }
-
-                layer.addSpans(up.getUpdates());
-            }
-        }
+        update.apply(this);
     }
 
 
     /**
      * Overlays every style layer and returns the bounds. Has no side effect on the layers.
      *
+     * @param lengthCallBack A callback to get the current length of the text in the code area.
+     *                       Evaluating it each time catches some bugs when the source changes quickly.
+     *
      * @return The style spans
      */
-    public StyleSpans<Collection<String>> getStyleSpans() {
+    public StyleSpans<Collection<String>> getStyleSpans(Supplier<Integer> lengthCallBack) {
 
         List<StyleSpans<Collection<String>>> allSpans = layersById.values()
                                                                   .stream()
@@ -85,8 +68,8 @@ class StyleContext {
 
         if (allSpans.isEmpty()) {
             return new StyleSpansBuilder<Collection<String>>()
-                .add(Collections.emptySet(), codeArea.getLength())
-                .create();
+                    .add(Collections.emptySet(), lengthCallBack.get())
+                    .create();
         }
 
         final StyleSpans<Collection<String>> base = allSpans.get(0);
@@ -94,7 +77,7 @@ class StyleContext {
 
         return allSpans.stream()
                        .filter(spans -> spans != base)
-                       .filter(spans -> spans.length() <= codeArea.getLength())
+                       .filter(spans -> spans.length() <= lengthCallBack.get())
                        .reduce(allSpans.get(0),
                            (accumulator, elt) -> accumulator.overlay(elt, (style1, style2) -> {
                                Set<String> styles = new HashSet<>(style1);

@@ -23,7 +23,9 @@ class ContextUpdate {
 
     private static final ContextUpdate UNIT = new ContextUpdate(Collections.emptyMap());
     private final Map<String, LayerUpdate> spansById = new HashMap<>();
-    ContextUpdate(String layerId, LayerUpdate idsUpdates) {
+
+
+    private ContextUpdate(String layerId, LayerUpdate idsUpdates) {
         spansById.put(layerId, idsUpdates);
     }
 
@@ -33,11 +35,17 @@ class ContextUpdate {
     }
 
 
-    public Map<String, LayerUpdate> getSpansById() {
-        return spansById;
+    /**
+     * Updates the given style context according to the
+     * changes specified by this object. If some layer
+     * ids don't exist, they're ignored.
+     */
+    public void apply(StyleContext context) {
+        spansById.forEach((id, layerUpdate) -> context.getLayer(id).ifPresent(layerUpdate::apply));
     }
 
 
+    /** Accumulates the given update into the update already contained in this one if it exists. */
     private void accumulate(String layerId, LayerUpdate update) {
         LayerUpdate previous = spansById.putIfAbsent(layerId, update);
         if (previous != null) {
@@ -46,21 +54,47 @@ class ContextUpdate {
     }
 
 
+    /**
+     * Returns an update that performs nothing.
+     */
     public static ContextUpdate unit() {
         return UNIT;
     }
 
 
+    /**
+     * Returns an update that resets the given layer entirely,
+     * stripping it of all styling.
+     *
+     * @param layerId The id of layer to reset
+     */
     public static ContextUpdate resetUpdate(String layerId) {
         return new ContextUpdate(layerId, new LayerUpdate(true, Collections.emptySet()));
     }
 
 
+    /**
+     * Returns an update that replaces the styling contained within
+     * the given layer by the style spans parameter.
+     */
     public static ContextUpdate resetUpdate(String layerId, StyleSpans<Collection<String>> spans) {
         return new ContextUpdate(layerId, new LayerUpdate(true, Collections.singleton(spans)));
     }
 
 
+    /**
+     * Returns an update that may or may not reset the updated layer
+     * depending on the boolean parameter.
+     */
+    public static ContextUpdate layerUpdate(String layerId, boolean reset, Collection<StyleSpans<Collection<String>>> spans) {
+        return new ContextUpdate(layerId, new LayerUpdate(reset, spans));
+    }
+
+
+    /**
+     * Merges two context updates into a single one which is
+     * equivalent to the previous ones.
+     */
     static ContextUpdate reduce(ContextUpdate update, ContextUpdate update2) {
         Map<String, LayerUpdate> newMap = new HashMap<>(update.spansById);
 
@@ -73,7 +107,10 @@ class ContextUpdate {
     }
 
 
-    static class LayerUpdate {
+    /**
+     * Represents an update to carry out on a style layer.
+     */
+    private static class LayerUpdate {
         private final boolean reset;
         private final Collection<StyleSpans<Collection<String>>> updates;
 
@@ -84,26 +121,24 @@ class ContextUpdate {
         }
 
 
-        public boolean isReset() {
-            return reset;
+        void apply(StyleLayer layer) {
+            if (reset) {
+                layer.clearStyles();
+            }
+            layer.addSpans(updates);
         }
 
 
-        public Collection<StyleSpans<Collection<String>>> getUpdates() {
-            return updates;
-        }
-
-
-        /** u2 is the most recent. */
-        static LayerUpdate reduce(LayerUpdate u1, LayerUpdate u2) {
-            if (u2.reset) {
-                return u2;
+        /** Reduces two updates into an equivalent one. */
+        static LayerUpdate reduce(LayerUpdate older, LayerUpdate newer) {
+            if (newer.reset) {
+                return newer;
             }
 
-            Set<StyleSpans<Collection<String>>> merged = new HashSet<>(u1.updates);
-            merged.addAll(u2.updates);
+            Set<StyleSpans<Collection<String>>> merged = new HashSet<>(older.updates);
+            merged.addAll(newer.updates);
 
-            return new LayerUpdate(u1.reset, merged);
+            return new LayerUpdate(older.reset, merged);
         }
 
     }
