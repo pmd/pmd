@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavede
  * @author Clément Fournier
  * @since 6.5.0
  */
-public enum  SimpleEnum {
+public enum SimpleEnum {
     FOO,
     BAR,
     BZAZ
