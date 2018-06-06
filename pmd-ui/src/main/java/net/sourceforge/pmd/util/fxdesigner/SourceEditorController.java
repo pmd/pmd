@@ -5,14 +5,18 @@
 package net.sourceforge.pmd.util.fxdesigner;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -25,6 +29,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
+import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
@@ -34,13 +39,17 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 
 /**
@@ -51,6 +60,7 @@ import javafx.scene.control.TreeView;
  */
 public class SourceEditorController implements Initializable, SettingsOwner {
     private final MainDesignerController parent;
+
 
     @FXML
     private Label astTitleLabel;
@@ -64,16 +74,14 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private ASTTreeItem selectedTreeItem;
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
-    public static ObservableList<File> auxclasspathFiles;
-    private Var<ClassLoader> auxclasspathClassLoader;
+    private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(Collections.emptyList());
+    private Val<ClassLoader> auxclasspathClassLoader;
 
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
         parent = mainController;
         astManager = new ASTManager(owner);
 
     }
-
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -132,20 +140,59 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
 
     public void showAuxClassPathController(DesignerRoot root) {
-        AuxClassPathController auxClassPathController = new AuxClassPathController(auxclasspathFiles, root);
+        AuxClassPathController auxClassPathController = new AuxClassPathController(root);
+
+        FXMLLoader fxmlLoader = new FXMLLoader(DesignerUtil.getFxml("auxclasspath-setup-popup.fxml"));
+
+        fxmlLoader.setControllerFactory(type -> {
+            if (type == AuxClassPathController.class) {
+                return auxClassPathController;
+            } else {
+                throw new IllegalStateException("Wrong controller!");
+            }
+        });
+        try {
+            Parent root1 = fxmlLoader.load();
+
+            auxClassPathController.setAuxclasspathFiles(auxclasspathFiles.getValue());
+
+            Stage stage = new Stage();
+            stage.initOwner(root.getMainStage());
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.setScene(new Scene(root1));
+            stage.show();
+
+            auxClassPathController.setOnApply(files -> {
+                stage.close();
+                auxclasspathFiles.setValue(files);
+            });
+
+            auxClassPathController.setOnCancel(stage::close);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
     }
 
 
     @PersistentProperty
-    public ObservableList<File> getAuxclasspathFiles() {
-        return auxclasspathFiles;
+    public String getAuxclasspathFiles() {
+
+        StringBuilder sb = new StringBuilder();
+
+        for (File f : auxclasspathFiles.getValue()) {
+            sb.append(';').append(f.getAbsolutePath());
+        }
+        return sb.length() > 0 ? sb.substring(1) : "";
     }
 
 
-    public void setAuxClassPathFiles(ObservableList<File> auxclasspathFiles) {
-        this.auxclasspathFiles = auxclasspathFiles;
+    public void setAuxClassPathFiles(String files) {
+        List<File> newVal = Arrays.asList(files.split(";")).stream().map(File::new).collect(Collectors.toList());
+        auxclasspathFiles.setValue(newVal);
     }
 
 
@@ -205,7 +252,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
         // node is different from the old one
         if (selectedTreeItem == null && node != null
-                || selectedTreeItem != null && !Objects.equals(node, selectedTreeItem.getValue())) {
+            || selectedTreeItem != null && !Objects.equals(node, selectedTreeItem.getValue())) {
             ASTTreeItem found = ((ASTTreeItem) astTreeView.getRoot()).findItem(node);
             if (found != null) {
                 selectionModel.select(found);

@@ -6,35 +6,28 @@
 package net.sourceforge.pmd.util.fxdesigner;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
-import org.controlsfx.validation.ValidationSupport;
+import org.reactfx.value.Var;
 
-import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.util.ClasspathClassLoader;
-import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 
-import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 public class AuxClassPathController implements Initializable, SettingsOwner {
 
     private final DesignerRoot designerRoot;
-    private ClassLoader classLoader = getClass().getClassLoader();
-    private ValidationSupport validationSupport = new ValidationSupport();
+
+    private final Var<Runnable> onCancel = Var.newSimpleVar(() -> {});
+    private final Var<Consumer<List<File>>> onApply = Var.newSimpleVar(l -> {});
 
 
     @FXML
@@ -53,38 +46,27 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
     private Button cancelButton;
 
 
-    public AuxClassPathController(ObservableList<File> auxClassPathFiles, DesignerRoot designerRoot) {
+    public AuxClassPathController(DesignerRoot designerRoot) {
         this.designerRoot = designerRoot;
-
-        if (auxClassPathFiles != null) {
-            fileListView.setItems(auxClassPathFiles);
-        }
-
-        try {
-            showAuxPathWizard();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+
+        removeFileButton.disableProperty().bind(fileListView.getSelectionModel().selectedItemProperty().isNull());
+        moveItemUpButton.disableProperty().bind(fileListView.getSelectionModel().selectedItemProperty().isNull());
+        moveItemDownButton.disableProperty().bind(fileListView.getSelectionModel().selectedItemProperty().isNull());
+        setClassPathButton.disableProperty().bind(fileListView.getSelectionModel().selectedItemProperty().isNull());
+
+
         selectFilesButton.setOnAction(e -> onSelectFileClicked());
         removeFileButton.setOnAction(e -> onRemoveFileClicked());
-        setClassPathButton.setOnAction(e -> {
-            try {
-                setClassPath(classPathGenerator());
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        });
-
-
+        setClassPathButton.setOnAction(e -> onApply.ifPresent(f -> f.accept(fileListView.getItems())));
         moveItemUpButton.setOnAction(e -> moveUp());
         moveItemDownButton.setOnAction(e -> moveDown());
-        cancelButton.setOnAction(e -> closePopup());
+        cancelButton.setOnAction(e -> onCancel.ifPresent(Runnable::run));
+
     }
 
 
@@ -105,6 +87,21 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
     private void onRemoveFileClicked() {
         File f = fileListView.getSelectionModel().getSelectedItem();
         fileListView.getItems().remove(f);
+    }
+
+
+    public void setAuxclasspathFiles(List<File> lst) {
+        fileListView.setItems(FXCollections.observableArrayList(lst));
+    }
+
+
+    public void setOnCancel(Runnable run) {
+        onCancel.setValue(run);
+    }
+
+
+    public void setOnApply(Consumer<List<File>> onApply) {
+        this.onApply.setValue(onApply);
     }
 
 
@@ -144,61 +141,8 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
     }
 
 
-    private void setValidationSupport() {
-
-    }
-
-    private String classPathGenerator() throws IOException {
-
-        String classPath = "";
-
-        for (File f : fileListView.getItems()) {
-            classPath = classPath + File.pathSeparator + f.getAbsolutePath();
-        }
-
-        setClassPath(classPath);
-        return classPath;
-    }
 
 
-    public void setClassPath(String classPath) throws IOException {
-
-        if (classLoader == null) {
-            classLoader = PMDConfiguration.class.getClassLoader();
-        }
-        if (classPath != null) {
-            classLoader = new ClasspathClassLoader(classPath, classLoader);
-        }
-        SourceEditorController.auxclasspathFiles = fileListView.getItems();
-
-        closePopup();
-    }
-
-
-    private void closePopup() {
-        Stage stage = (Stage) setClassPathButton.getScene().getWindow();
-        stage.close();
-    }
-
-    public void showAuxPathWizard() throws Exception {
-
-        FXMLLoader fxmlLoader = new FXMLLoader(DesignerUtil.getFxml("auxclasspath-setup-popup.fxml"));
-
-        fxmlLoader.setControllerFactory(type -> {
-            if (type == AuxClassPathController.class) {
-                return this;
-            } else {
-                throw new IllegalStateException("Wrong controller!");
-            }
-        });
-
-        Parent root1 = fxmlLoader.load();
-        Stage stage = new Stage();
-        stage.initOwner(designerRoot.getMainStage());
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.setScene(new Scene(root1));
-        stage.show();
-    }
 
 
 }
