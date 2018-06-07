@@ -90,8 +90,6 @@ public class UniformStyleCollection {
     private Set<String> styleForDepth(int depth, boolean inlineHighlight) {
         if (depth < 0) {
             return Collections.emptySet();
-        } else if (depth == 0) {
-            return style;
         } else {
             DEPTH_STYLE_CACHE.putIfAbsent(style, new HashMap<>());
             Map<Integer, Map<Boolean, Set<String>>> depthToStyle = DEPTH_STYLE_CACHE.get(style);

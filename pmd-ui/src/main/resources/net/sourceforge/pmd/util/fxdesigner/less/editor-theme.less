@@ -1,8 +1,20 @@
 /* Presets for the editor theme and syntax highlighting. */
 
 /* CSS reference of the code area:
- https://github.com/FXMisc/RichTextFX/wiki/RichTextFX-CSS-Reference-Guide
+     https://github.com/FXMisc/RichTextFX/wiki/RichTextFX-CSS-Reference-Guide
+
+   Less reference (we use Less 1.7.0):
+     http://lesscss.org/features/
+
 */
+
+@xpath-color-stack:
+        rgba(249, 248, 113, 0.25),
+        rgba(255, 199, 95, 0.4),
+        rgba(255, 150, 113, 0.5),
+        rgba(255, 111, 145, 0.6),
+        rgba(214, 93, 177, 0.7),
+        rgba(132, 94, 194, 0.8);
 
 
 /* With syntax highlighting, it's more readable to not change the fill color */
@@ -17,50 +29,33 @@
     -rtfx-border-stroke-type: centered;
 }
 
-.error-highlight {
+.xpath-highlight {
+
+    // mixin to iterate over xpath colors and create ruleset for each one
+    .make-color-classes(@depth: length(@xpath-color-stack) - 1) when (@depth >= 0) {
+        .make-color-classes(@depth - 1);
+
+        @background: extract(@xpath-color-stack, @depth + 1);
+        @border: darken(@background, 30%);
+
+        &.depth-@{depth} {
+            -rtfx-background-color: @background;
+            -rtfx-border-stroke-color: @border;
+        }
+    }
+
+    .make-color-classes;
+}
+
+.error-highlight.depth-0 {
     -rtfx-border-stroke-color: darkred;
     -rtfx-background-color: lightcoral;
 }
 
-.name-occurence {
+.name-occurence.depth-0 {
     -rtfx-border-stroke-color: olivedrab;
     -rtfx-background-color: palegreen;
 }
-
-.xpath-mixin(@background) {
-    -rtfx-background-color: @background;
-    -rtfx-border-stroke-color: darken(@background, 30%);
-}
-
-.xpath-highlight {
-    .xpath-mixin(rgba(249, 248, 113, 0.25))
-}
-
-.xpath-highlight.depth-1 {
-    .xpath-mixin(rgba(255, 199, 95, 0.4));
-}
-
-.xpath-highlight.depth-2 {
-    .xpath-mixin(rgba(255, 150, 113, 0.5));
-}
-
-.xpath-highlight.depth-3 {
-    .xpath-mixin(rgba(255, 111, 145, 0.6));
-}
-
-.xpath-highlight.depth-4 {
-    .xpath-mixin(rgba(214, 93, 177, 0.7));
-}
-
-.xpath-highlight.depth-5 {
-    .xpath-mixin(rgba(132, 94, 194, 0.8));
-}
-
-/* This rule removes the vertical border around eg name occurrences included in XPath highlight */
-/*.name-occurence.xpath-highlight,*/
-/*.error-highlight.xpath-highlight {*/
-/*-rtfx-border-stroke-color: darkgoldenrod;*/
-/*}*/
 
 
 
