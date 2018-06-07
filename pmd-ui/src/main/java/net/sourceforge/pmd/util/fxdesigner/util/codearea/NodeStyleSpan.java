@@ -130,5 +130,9 @@ public class NodeStyleSpan {
             return endIndex - beginIndex;
         }
 
+
+        public Node getNode() {
+            return NodeStyleSpan.this.getNode();
+        }
     }
 }

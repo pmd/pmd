@@ -5,16 +5,25 @@
 */
 
 /* With syntax highlighting, it's more readable to not change the fill color */
-
-.styled-text-area .focus-highlight {
+.focus-highlight {
     -fx-font-weight: bold;
 }
 
 /* Add a border around highlighted nodes if they fit in one line */
 /* Otherwise, the background variation should be enough to spot them */
-.styled-text-area .inline-highlight {
+.inline-highlight {
     -rtfx-border-stroke-width: .75pt;
     -rtfx-border-stroke-type: centered;
+}
+
+.error-highlight {
+    -rtfx-border-stroke-color: darkred;
+    -rtfx-background-color: lightcoral;
+}
+
+.name-occurence {
+    -rtfx-border-stroke-color: olivedrab;
+    -rtfx-background-color: palegreen;
 }
 
 .xpath-highlight {
@@ -43,20 +52,12 @@
 }
 
 /* This rule removes the vertical border around eg name occurrences included in XPath highlight */
-.styled-text-area .name-occurence.xpath-highlight,
-.styled-text-area .error-highlight.xpath-highlight {
-    -rtfx-border-stroke-color: darkgoldenrod;
-}
+/*.name-occurence.xpath-highlight,*/
+/*.error-highlight.xpath-highlight {*/
+/*-rtfx-border-stroke-color: darkgoldenrod;*/
+/*}*/
 
-.styled-text-area .error-highlight {
-    -rtfx-border-stroke-color: darkred;
-    -rtfx-background-color: lightcoral;
-}
 
-.styled-text-area .name-occurence {
-    -rtfx-border-stroke-color: olivedrab;
-    -rtfx-background-color: palegreen;
-}
 
 /********/
 /* Base */

@@ -19,16 +19,21 @@ import java.util.Set;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.NodeStyleSpan.PositionSnapshot;
 
 
 /**
+ * Collection of nodes that share the same style. In case of overlap,
+ * the nested ones gain css classes like depth-1, depth-2, etc.
+ *
  * @author Clément Fournier
  * @since 6.5.0
  */
 public class UniformStyleCollection {
 
-    private static final Map<Set<String>, Map<Integer, Set<String>>> DEPTH_STYLE_CACHE = new HashMap<>();
+    private static final Map<Set<String>, Map<Integer, Map<Boolean, Set<String>>>> DEPTH_STYLE_CACHE = new HashMap<>();
+
     private final Set<String> style;
     // sorted in document order
     private final List<NodeStyleSpan> nodes;
@@ -67,29 +72,59 @@ public class UniformStyleCollection {
     }
 
 
+    private boolean useInlineHighlight(Node node) {
+        return node.getBeginLine() == node.getEndLine();
+    }
+
+
+    private Set<String> styleForDepth(int depth, Node n) {
+        return styleForDepth(depth, useInlineHighlight(n));
+    }
+
+
     private Set<String> styleForDepth(int depth) {
+        return styleForDepth(depth, false);
+    }
+
+
+    private Set<String> styleForDepth(int depth, boolean inlineHighlight) {
         if (depth < 0) {
             return Collections.emptySet();
         } else if (depth == 0) {
             return style;
         } else {
             DEPTH_STYLE_CACHE.putIfAbsent(style, new HashMap<>());
-            Map<Integer, Set<String>> depthToStyle = DEPTH_STYLE_CACHE.get(style);
+            Map<Integer, Map<Boolean, Set<String>>> depthToStyle = DEPTH_STYLE_CACHE.get(style);
 
-            if (depthToStyle.containsKey(depth)) {
-                return depthToStyle.get(depth);
+            depthToStyle.putIfAbsent(depth, new HashMap<>());
+            Map<Boolean, Set<String>> isInlineToStyle = depthToStyle.get(depth);
+
+            if (isInlineToStyle.containsKey(inlineHighlight)) {
+                return isInlineToStyle.get(inlineHighlight);
             }
 
             Set<String> s = new HashSet<>(style);
             s.add("depth-" + depth);
-            depthToStyle.put(depth, s);
+            if (inlineHighlight) {
+                s.add("inline-highlight");
+            }
+            isInlineToStyle.put(inlineHighlight, s);
             return s;
         }
     }
 
 
-
-
+    /**
+     * Overlays all the nodes in this collection into a single StyleSpans.
+     * This algorithm makes the strong assumption that the nodes can be
+     * ordered as a tree, that is, given two nodes n and m, then one of the
+     * following holds true:
+     * - m and n are disjoint
+     * - m is entirely contained within n, or the reverse is true
+     *
+     * E.g. [    m        ] but not [  m  ]
+     *        [ n ] [ n' ]              [   n   ]
+     */
     public StyleSpans<Collection<String>> toSpans() {
 
         if (nodes.isEmpty()) {
@@ -132,7 +167,7 @@ public class UniformStyleCollection {
                 // gap
                 builder.add(styleForDepth(overlappingNodes.size() - 1), previous.getBeginIndex() - lastSpanEnd);
                 // common part
-                builder.add(styleForDepth(overlappingNodes.size()), current.getBeginIndex() - previous.getBeginIndex());
+                builder.add(styleForDepth(overlappingNodes.size(), current.getNode()), current.getBeginIndex() - previous.getBeginIndex());
                 lastSpanEnd = current.getBeginIndex();
 
                 overlappingNodes.addFirst(previous);
@@ -145,7 +180,7 @@ public class UniformStyleCollection {
                 // the depth - 1 is for the gap
                 builder.add(styleForDepth(overlappingNodes.size() - 1), previous.getBeginIndex() - lastSpanEnd);
                 // previous node
-                builder.add(styleForDepth(overlappingNodes.size()), previous.getLength());
+                builder.add(styleForDepth(overlappingNodes.size(), previous.getNode()), previous.getLength());
                 lastSpanEnd = previous.getEndIndex();
                 previous = current;
             }
@@ -157,7 +192,7 @@ public class UniformStyleCollection {
                 if (enclosing.getEndIndex() < current.getBeginIndex()) {
                     overlaps.remove();
                     // this is the underscored part [ [ ]_]
-                    builder.add(styleForDepth(overlappingNodes.size()), enclosing.getEndIndex() - lastSpanEnd);
+                    builder.add(styleForDepth(overlappingNodes.size(), enclosing.getNode()), enclosing.getEndIndex() - lastSpanEnd);
                     lastSpanEnd = enclosing.getEndIndex();
                 }
             }
@@ -165,14 +200,14 @@ public class UniformStyleCollection {
 
         builder.add(styleForDepth(overlappingNodes.size() - 1), previous.getBeginIndex() - lastSpanEnd);
         // last node
-        builder.add(styleForDepth(overlappingNodes.size()), previous.getLength());
+        builder.add(styleForDepth(overlappingNodes.size(), previous.getNode()), previous.getLength());
         lastSpanEnd = previous.getEndIndex();
 
         // close the enclosing contexts
         int depth = overlappingNodes.size();
         for (PositionSnapshot enclosing : overlappingNodes) {
             depth--;
-            builder.add(styleForDepth(depth), enclosing.getEndIndex() - lastSpanEnd);
+            builder.add(styleForDepth(depth, enclosing.getNode()), enclosing.getEndIndex() - lastSpanEnd);
             lastSpanEnd = enclosing.getEndIndex();
         }
 
