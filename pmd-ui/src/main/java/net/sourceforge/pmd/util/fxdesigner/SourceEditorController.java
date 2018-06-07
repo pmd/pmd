@@ -78,7 +78,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(Collections.emptyList());
     private final Val<ClassLoader> auxclasspathClassLoader = auxclasspathFiles.map(files -> {
         try {
-            new ClasspathClassLoader(files, SourceEditorController.class.getClassLoader());
+            return new ClasspathClassLoader(files, SourceEditorController.class.getClassLoader());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -192,7 +192,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    public void setAuxClassPathFiles(String files) {
+    public void setAuxclasspathFiles(String files) {
         List<File> newVal = Arrays.asList(files.split(File.pathSeparator)).stream().map(File::new).collect(Collectors.toList());
         auxclasspathFiles.setValue(newVal);
     }

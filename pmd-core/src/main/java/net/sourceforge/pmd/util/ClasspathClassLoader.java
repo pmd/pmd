@@ -49,7 +49,7 @@ public class ClasspathClassLoader extends URLClassLoader {
         List<URL> urlList = new ArrayList<>();
 
         for (File f : files) {
-            addFileURLs(urlList, f.toURI().toURL());
+            urlList.add(f.toURI().toURL());
         }
         return urlList.toArray(new URL[urlList.size()]);
     }
