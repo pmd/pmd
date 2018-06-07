@@ -47,8 +47,7 @@ public class NodeStyleSpan {
 
             int lastKnownStart = getAbsolutePosition(node.getBeginLine(), node.getBeginColumn() - 1);
             int lastKnownEnd = getAbsolutePosition(node.getEndLine(), node.getEndColumn());
-            int offset = codeArea.getAccumulatedOffsetSinceLastAstRefresh(lastKnownStart);
-            return new PositionSnapshot(lastKnownStart + offset, lastKnownEnd + offset);
+            return new PositionSnapshot(lastKnownStart, lastKnownEnd);
 
         } catch (IndexOutOfBoundsException e) {
             return null;
@@ -91,8 +90,8 @@ public class NodeStyleSpan {
 
 
     class PositionSnapshot {
-        private final int beginIndex;
-        private final int endIndex;
+        private int beginIndex;
+        private int endIndex;
 
 
         private PositionSnapshot(int beginIndex, int endIndex) {
@@ -100,6 +99,13 @@ public class NodeStyleSpan {
             this.endIndex = endIndex;
         }
 
+
+        public PositionSnapshot update() {
+            PositionSnapshot newSnap = NodeStyleSpan.this.snapshot();
+            beginIndex = newSnap.beginIndex;
+            endIndex = newSnap.endIndex;
+            return this;
+        }
 
         @Override
         public String toString() {

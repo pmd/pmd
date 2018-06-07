@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.reactfx.value.Var;
 
+import javafx.scene.control.IndexRange;
+
 
 /**
  * Stores the current style layers and can overlay them into a {@link StyleSpans} to style the text.
@@ -62,6 +64,19 @@ class StyleContext {
     }
 
 
+    public StyleSpans<Collection<String>> updateSyntaxHighlight(StyleSpans<Collection<String>> newSyntax) {
+        StyleSpans<Collection<String>> currentSpans = codeArea.getStyleSpans(new IndexRange(0, codeArea.getLength()));
+        StyleSpans<Collection<String>> base = syntaxHighlight.map(s -> subtract(currentSpans, s)).getOrElse(currentSpans);
+        syntaxHighlight.setValue(newSyntax);
+
+        return base.overlay(newSyntax, (style1, style2) -> {
+            Set<String> styles = new HashSet<>(style1);
+            styles.addAll(style2);
+            return styles;
+        }).subView(0, codeArea.getLength());
+    }
+
+
     /**
      * Recomputes a single style spans from the syntax highlighting layer and nodes to highlight.
      *
@@ -94,4 +109,14 @@ class StyleContext {
 
 
     }
+
+
+    static StyleSpans<Collection<String>> subtract(StyleSpans<Collection<String>> base, StyleSpans<Collection<String>> diff) {
+        return base.overlay(diff, (style1, style2) -> {
+            Set<String> styles = new HashSet<>(style1);
+            styles.removeAll(style2);
+            return styles;
+        });
+    }
+
 }

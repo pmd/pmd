@@ -139,7 +139,6 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         if (!Objects.equals(previous, current)) {
             parent.invalidateAst();
             setUpToDateCompilationUnit(current);
-            codeEditorArea.resetOffsets();
             return Optional.of(current);
         }
         return Optional.empty();

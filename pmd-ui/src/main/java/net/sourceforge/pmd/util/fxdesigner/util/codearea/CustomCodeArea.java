@@ -15,11 +15,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
@@ -35,7 +32,6 @@ import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 
@@ -57,7 +53,7 @@ public class CustomCodeArea extends CodeArea {
     /** Minimum delay between each style update. Updates are reduced together until then. */
     private static final Duration UPDATE_DELAY = Duration.ofMillis(50);
     /** Minimum delay between each code highlighting recomputation. Changes are ignored until then. */
-    private static final Duration TEXT_CHANGE_DELAY = Duration.ofMillis(20);
+    private static final Duration TEXT_CHANGE_DELAY = Duration.ofMillis(1000);
 
     /** Stacks styling updates and reduces them together. */
     private final EventSource<ContextUpdate> styleContextUpdateQueue = new EventSource<>();
@@ -71,7 +67,6 @@ public class CustomCodeArea extends CodeArea {
     /** Used to schedule tasks that must be restarted upon new changes, eg syntax highlighting */
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    private Map<Integer, Integer> offsetAccumulator = new TreeMap<>();
 
     public CustomCodeArea() {
         super();
@@ -82,18 +77,11 @@ public class CustomCodeArea extends CodeArea {
 
         styleContext = new StyleContext(collect, this);
 
-        richChanges().map(RichTextChange::toPlainTextChange)
-                     .filter(ch -> ch.getNetLength() != 0)
-                     .subscribe(ch -> offsetAccumulator.put(ch.getPosition(), ch.getNetLength()));
-
         styleContextUpdateQueue.reduceSuccessions(ContextUpdate::unit, ContextUpdate::reduce, UPDATE_DELAY)
                                .hook(styleContext::executeUpdate)
-                               .subscribe(update -> Platform.runLater(this::paintCss));
+                               .subscribe(update -> this.paintCss());
     }
 
-    // FIXME the highlighting is offset to the left (right) each time we insert some text before (after)
-    // This is because all layers stay the same, while the syntax highlighting is updated more often and
-    // overlaid with those outdated spans, whose indices are offset by the length of the insertion
 
     /**
      * Styles some nodes in a given layer.
@@ -132,24 +120,6 @@ public class CustomCodeArea extends CodeArea {
      */
     private void paintCss() {
         this.setStyleSpans(0, styleContext.recomputePainting()); // TODO
-    }
-
-
-    public void resetOffsets() {
-        offsetAccumulator.clear();
-        paintCss();
-    }
-
-
-    int getAccumulatedOffsetSinceLastAstRefresh(int pos) {
-        int accumulatedOffset = 0;
-        for (Entry<Integer, Integer> entry : offsetAccumulator.entrySet()) {
-            if (entry.getKey() >= pos) {
-                break;
-            }
-            accumulatedOffset += entry.getValue();
-        }
-        return accumulatedOffset;
     }
 
 
@@ -282,15 +252,14 @@ public class CustomCodeArea extends CodeArea {
                        .map(RichTextChange::toPlainTextChange)
                        .filter(ch -> !ch.isIdentity())
                        .distinct()
-                       .successionEnds(UPDATE_DELAY)
+                       .successionEnds(TEXT_CHANGE_DELAY)
                        .supplyTask(() -> computeHighlightingAsync(this.getText()))
                        .awaitLatest(this.richChanges())
                        .filterMap(t -> {
                            t.ifFailure(Throwable::printStackTrace);
                            return t.toOptional();
                        })
-                       .hook(styleContext::setSyntaxHighlight)
-                       .subscribe(spans -> paintCss());
+                       .subscribe(spans -> setStyleSpans(0, styleContext.updateSyntaxHighlight(spans)));
         }
         return null;
     }

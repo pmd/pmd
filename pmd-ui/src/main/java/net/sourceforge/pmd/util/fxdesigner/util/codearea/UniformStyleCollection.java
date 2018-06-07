@@ -90,7 +90,13 @@ public class UniformStyleCollection {
     }
 
 
+    StyleSpans<Collection<String>> cachedSpans;
+
+
     public StyleSpans<Collection<String>> toSpans() {
+        if (cachedSpans != null) {
+            return cachedSpans;
+        }
 
         if (nodes.isEmpty()) {
             return StyleSpans.singleton(Collections.emptyList(), 0);
@@ -124,6 +130,10 @@ public class UniformStyleCollection {
 
             if (previous.getEndIndex() > current.getBeginIndex()) {
                 // The current overlaps with the previous
+
+                int length = current.getLength();
+                int offset = current.getBeginIndex() - lastSpanEnd;
+
 
                 // common part
                 builder.add(styleForDepth(overlappingNodes.size()), current.getBeginIndex() - lastSpanEnd);
@@ -168,7 +178,8 @@ public class UniformStyleCollection {
             lastSpanEnd = enclosing.getEndIndex();
         }
 
-        return builder.create();
+        cachedSpans = builder.create();
+        return cachedSpans;
     }
 
 
