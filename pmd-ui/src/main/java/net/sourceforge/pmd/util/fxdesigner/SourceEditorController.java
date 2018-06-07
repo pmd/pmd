@@ -76,15 +76,14 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
     private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(Collections.emptyList());
-    private final Val<ClassLoader> auxclasspathClassLoader
-        = auxclasspathFiles.map(files -> {
-            try {
-                new ClasspathClassLoader(files, SourceEditorController.class.getClassLoader());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return SourceEditorController.class.getClassLoader();
-        });
+    private final Val<ClassLoader> auxclasspathClassLoader = auxclasspathFiles.map(files -> {
+        try {
+            new ClasspathClassLoader(files, SourceEditorController.class.getClassLoader());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return SourceEditorController.class.getClassLoader();
+    });
 
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
         parent = mainController;
