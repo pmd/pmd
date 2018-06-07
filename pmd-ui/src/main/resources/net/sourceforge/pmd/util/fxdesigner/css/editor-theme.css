@@ -17,9 +17,29 @@
     -rtfx-border-stroke-type: centered;
 }
 
-.styled-text-area .xpath-highlight {
+.xpath-highlight {
     -rtfx-border-stroke-color: darkgoldenrod;
-    -rtfx-background-color: #f6e8d3;
+    -rtfx-background-color: rgba(249, 248, 113, 0.25);
+}
+
+.xpath-highlight.depth-1 {
+    -rtfx-background-color: rgba(255, 199, 95, 0.4);
+}
+
+.xpath-highlight.depth-2 {
+    -rtfx-background-color: rgba(255, 150, 113, 0.5);
+}
+
+.xpath-highlight.depth-3 {
+    -rtfx-background-color: rgba(255, 111, 145, 0.6);
+}
+
+.xpath-highlight.depth-4 {
+    -rtfx-background-color: rgba(214, 93, 177, 0.7);
+}
+
+.xpath-highlight.depth-5 {
+    -rtfx-background-color: rgba(132, 94, 194, 0.8);
 }
 
 /* This rule removes the vertical border around eg name occurrences included in XPath highlight */

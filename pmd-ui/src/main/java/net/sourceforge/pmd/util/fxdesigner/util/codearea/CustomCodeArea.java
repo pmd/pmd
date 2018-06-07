@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -116,8 +117,8 @@ public class CustomCodeArea extends CodeArea {
         fullClasses.add("styled-text-area");
         fullClasses.add(layerId.id + "-highlight"); // focus-highlight, xpath-highlight, secondary-highlight
 
-        StyleCollection collection = new StyleCollection();
-        nodes.stream().map(n -> NodeStyleSpan.fromNode(n, fullClasses, this)).forEach(collection::add);
+        List<NodeStyleSpan> wrappedNodes = nodes.stream().map(n -> NodeStyleSpan.fromNode(n, fullClasses, this)).collect(Collectors.toList());
+        UniformStyleCollection collection = new UniformStyleCollection(fullClasses, wrappedNodes);
 
         ContextUpdate update = ContextUpdate.layerUpdate(layerId.id, resetLayer, collection);
         styleContextUpdateQueue.push(update);

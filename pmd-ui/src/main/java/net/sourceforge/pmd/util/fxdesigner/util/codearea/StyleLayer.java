@@ -4,7 +4,12 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 
 /**
@@ -15,16 +20,26 @@ import java.util.Objects;
 class StyleLayer {
 
 
-    private final StyleCollection nodesToCssClass = new StyleCollection();
+    private final Map<Set<String>, UniformStyleCollection> styleToCollection = new HashMap<>();
+
 
     /** Reset this layer to its empty state, clearing all the styles. */
     public void clearStyles() {
-        nodesToCssClass.clear();
+        styleToCollection.clear();
     }
 
 
-    public StyleCollection getStyleSpansCoordinates() {
-        return nodesToCssClass;
+    public Collection<UniformStyleCollection> getCollections() {
+        return styleToCollection.values();
+    }
+
+
+    public void styleNodes(UniformStyleCollection updates) {
+        UniformStyleCollection newValue = Optional.ofNullable(styleToCollection.get(updates.getStyle()))
+                                                  .map(updates::merge)
+                                                  .orElse(updates);
+
+        styleToCollection.put(updates.getStyle(), newValue);
     }
 
 
@@ -37,18 +52,13 @@ class StyleLayer {
             return false;
         }
         StyleLayer that = (StyleLayer) o;
-        return Objects.equals(nodesToCssClass, that.nodesToCssClass);
+        return Objects.equals(styleToCollection, that.styleToCollection);
     }
 
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(nodesToCssClass);
-    }
-
-
-    public void styleNodes(StyleCollection updates) {
-        nodesToCssClass.addAll(updates);
+        return Objects.hash(styleToCollection);
     }
 }

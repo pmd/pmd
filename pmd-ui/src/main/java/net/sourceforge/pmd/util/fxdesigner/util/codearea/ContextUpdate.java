@@ -4,10 +4,14 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -35,7 +39,9 @@ class ContextUpdate {
      * ids don't exist, they're ignored.
      */
     public void apply(StyleContext context) {
-        spansById.forEach((id, layerUpdate) -> context.getLayer(id).ifPresent(layerUpdate::apply));
+        spansById.forEach((id, layerUpdate) -> {
+            context.getLayer(id).ifPresent(layerUpdate::apply);
+        });
     }
 
 
@@ -63,7 +69,7 @@ class ContextUpdate {
      * @param layerId The id of layer to reset
      */
     public static ContextUpdate clearUpdate(String layerId) {
-        return new ContextUpdate(layerId, new LayerUpdate(true, StyleCollection.empty()));
+        return new ContextUpdate(layerId, new LayerUpdate(true, UniformStyleCollection.empty()));
     }
 
 
@@ -71,7 +77,7 @@ class ContextUpdate {
      * Returns an update that replaces the styling contained within
      * the given layer by the style spans parameter.
      */
-    public static ContextUpdate resetUpdate(String layerId, StyleCollection spans) {
+    public static ContextUpdate resetUpdate(String layerId, UniformStyleCollection spans) {
         return new ContextUpdate(layerId, new LayerUpdate(true, spans));
     }
 
@@ -80,7 +86,7 @@ class ContextUpdate {
      * Returns an update that may or may not reset the updated layer
      * depending on the boolean parameter.
      */
-    public static ContextUpdate layerUpdate(String layerId, boolean reset, StyleCollection spans) {
+    public static ContextUpdate layerUpdate(String layerId, boolean reset, UniformStyleCollection spans) {
         return new ContextUpdate(layerId, new LayerUpdate(reset, spans));
     }
 
@@ -106,10 +112,16 @@ class ContextUpdate {
      */
     private static class LayerUpdate {
         private final boolean reset;
-        private final StyleCollection updates;
+        private final Collection<UniformStyleCollection> updates;
 
 
-        LayerUpdate(boolean reset, StyleCollection updates) {
+        LayerUpdate(boolean reset, UniformStyleCollection updates) {
+            this.reset = reset;
+            this.updates = Collections.singleton(updates);
+        }
+
+
+        LayerUpdate(boolean reset, Collection<UniformStyleCollection> updates) {
             this.reset = reset;
             this.updates = updates;
         }
@@ -119,22 +131,22 @@ class ContextUpdate {
             if (reset) {
                 layer.clearStyles();
             }
-            layer.styleNodes(updates);
+            updates.forEach(layer::styleNodes);
         }
 
 
         /** Reduces two updates into an equivalent one. */
         static LayerUpdate reduce(LayerUpdate older, LayerUpdate newer) {
+            if (newer == older) {
+                return older;
+            }
+
             if (newer.reset) {
                 return newer;
             }
 
-            StyleCollection merged = new StyleCollection();
-            merged.addAll(older.updates);
-            merged.addAll(newer.updates);
-
+            List<UniformStyleCollection> merged = Stream.concat(older.updates.stream(), newer.updates.stream()).collect(Collectors.toList());
             return new LayerUpdate(older.reset, merged);
         }
-
     }
 }

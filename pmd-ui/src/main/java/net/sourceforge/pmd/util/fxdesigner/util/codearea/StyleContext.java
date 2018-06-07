@@ -12,14 +12,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.fxmisc.richtext.model.StyleSpans;
-import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.reactfx.value.Var;
-
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.NodeStyleSpan.PositionSnapshot;
 
 
 /**
@@ -60,54 +56,6 @@ class StyleContext {
     }
 
 
-    /**
-     * Computes the style spans corresponding to the styling of the given nodes
-     *
-     * @param highlightedNodes Nodes to highlight, mapped to their highlight class, sorted in document order
-     */
-    private List<StyleSpans<Collection<String>>> nodeHighlight(StyleCollection highlightedNodes) {
-
-        if (highlightedNodes.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<StyleSpans<Collection<String>>> result = new Stack<>();
-
-        final StyleSpansBuilder<Collection<String>> builder = new StyleSpansBuilder<>();
-
-        PositionSnapshot previous = null;
-        StyleCollection nextPass = new StyleCollection();
-
-        // Sorted in document order
-        for (NodeStyleSpan coord : highlightedNodes) {
-
-            // snapshots the node's position, which factors in changes to the nodes's position
-            // that occurred since the node was parsed
-            PositionSnapshot snapshot = coord.snapshot();
-            if (snapshot == null) {
-                continue;
-            }
-            int previousEnd = previous == null ? 0 : previous.getEndIndex();
-
-            if (snapshot.getBeginIndex() < previousEnd) {
-                // This node overlaps with the previous one
-                // TODO This is a lazy technique to have the overlay work done by RichtextFX instead of here
-                nextPass.add(coord);
-                continue;
-            }
-
-            // This is the in-between, empty span
-            builder.add(Collections.emptySet(), snapshot.getBeginIndex() - previousEnd);
-            builder.add(snapshot.toSpan());
-            previous = snapshot;
-        }
-
-        result.add(builder.create());
-        result.addAll(nodeHighlight(nextPass));
-
-        return result;
-    }
-
 
     private StyleSpans<Collection<String>> emptySpan() {
         return StyleSpans.singleton(Collections.emptyList(), codeArea.getLength());
@@ -120,13 +68,10 @@ class StyleContext {
      */
     public StyleSpans<Collection<String>> recomputePainting() {
 
-        final StyleCollection allCoordinates = new StyleCollection();
-
-        layersById.values().stream()
-                  .map(StyleLayer::getStyleSpansCoordinates)
-                  .forEach(allCoordinates::addAll);
-
-        List<StyleSpans<Collection<String>>> allSpans = nodeHighlight(allCoordinates);
+        List<StyleSpans<Collection<String>>> allSpans = layersById.values().stream()
+                                                                  .flatMap(layer -> layer.getCollections().stream())
+                                                                  .map(UniformStyleCollection::toSpans)
+                                                                  .collect(Collectors.toList());
 
         if (allSpans.isEmpty()) {
             return syntaxHighlight.getOrElse(emptySpan());

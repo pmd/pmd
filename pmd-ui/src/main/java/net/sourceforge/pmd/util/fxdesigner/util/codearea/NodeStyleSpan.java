@@ -103,9 +103,13 @@ public class NodeStyleSpan {
 
         @Override
         public String toString() {
-            return "[" + beginIndex + "," + endIndex + '[';
+            // debug only
+            return getText() + "@[" + beginIndex + "," + endIndex + ']';
         }
 
+        private String getText() {
+            return codeArea.getText(beginIndex, endIndex);
+        }
 
         public int getBeginIndex() {
             return beginIndex;
@@ -119,11 +123,6 @@ public class NodeStyleSpan {
 
         public int getLength() {
             return endIndex - beginIndex;
-        }
-
-
-        public boolean isInRange() {
-            return codeArea.getLength() > getEndIndex();
         }
 
         //        public boolean isBefore(PositionSnapshot other) {
