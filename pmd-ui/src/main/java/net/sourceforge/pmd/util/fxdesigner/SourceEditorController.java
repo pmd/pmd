@@ -31,6 +31,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
 import net.sourceforge.pmd.util.fxdesigner.popups.AuxclasspathSetupController;
+import net.sourceforge.pmd.util.fxdesigner.util.ConvenienceNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
@@ -267,6 +268,10 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
+    public ConvenienceNodeWrapper wrapNode(Node node) {
+        return codeEditorArea.wrapNode(node);
+    }
+
     @PersistentProperty
     public LanguageVersion getLanguageVersion() {
         return astManager.getLanguageVersion();
@@ -311,12 +316,12 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     @PersistentProperty
     public String getAuxclasspathFiles() {
-        return auxclasspathFiles.getValue().stream().map(p -> p.getAbsolutePath()).collect(Collectors.joining(File.pathSeparator));
+        return auxclasspathFiles.getValue().stream().map(File::getAbsolutePath).collect(Collectors.joining(File.pathSeparator));
     }
 
 
     public void setAuxclasspathFiles(String files) {
-        List<File> newVal = Arrays.asList(files.split(File.pathSeparator)).stream().map(File::new).collect(Collectors.toList());
+        List<File> newVal = Arrays.stream(files.split(File.pathSeparator)).map(File::new).collect(Collectors.toList());
         auxclasspathFiles.setValue(newVal);
     }
 

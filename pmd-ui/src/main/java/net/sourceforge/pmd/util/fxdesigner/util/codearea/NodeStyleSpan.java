@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import org.fxmisc.richtext.model.Paragraph;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.fxdesigner.util.ConvenienceNodeWrapper;
 
 
 /**
@@ -21,7 +22,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author Clément Fournier
  * @since 6.5.0
  */
-public class NodeStyleSpan {
+class NodeStyleSpan {
 
     private static final Pattern TAB_INDENT = Pattern.compile("^(\t*).*$");
     private static final Comparator<NodeStyleSpan> COMPARATOR = Comparator.comparing(NodeStyleSpan::getNode, Comparator.comparingInt(Node::getBeginLine).thenComparing(Node::getBeginColumn));
@@ -93,7 +94,7 @@ public class NodeStyleSpan {
     }
 
 
-    class PositionSnapshot {
+    class PositionSnapshot implements ConvenienceNodeWrapper  {
         private int beginIndex;
         private int endIndex;
 
@@ -107,11 +108,11 @@ public class NodeStyleSpan {
         @Override
         public String toString() {
             // debug only
-            return getText() + "@[" + beginIndex + "," + endIndex + ']';
+            return getNodeText() + "@[" + beginIndex + "," + endIndex + ']';
         }
 
-
-        private String getText() {
+        @Override
+        public String getNodeText() {
             return codeArea.getText(beginIndex, endIndex);
         }
 

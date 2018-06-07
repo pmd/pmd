@@ -5,35 +5,31 @@
 package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
 
-import net.sourceforge.pmd.lang.ast.Node;
+import java.util.regex.Pattern;
+
+import net.sourceforge.pmd.util.fxdesigner.util.ConvenienceNodeWrapper;
 
 import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.util.Callback;
 
 
 /**
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class XpathViolationListCell extends ListCell<Node> {
-
+public class XpathViolationListCell extends ListCell<ConvenienceNodeWrapper> {
+    private static final Pattern TRUNCATION_PATTERN = Pattern.compile("\\R.*$", Pattern.DOTALL);
 
     @Override
-    protected void updateItem(Node item, boolean empty) {
+    protected void updateItem(ConvenienceNodeWrapper item, boolean empty) {
         super.updateItem(item, empty);
 
         if (empty || item == null) {
             setText(null);
             setGraphic(null);
         } else {
-            setText(item.toString() + " (l. " + item.getBeginLine() + ", c. " + item.getBeginColumn() + ")");
+            String text = TRUNCATION_PATTERN.matcher(item.getNodeText()).replaceFirst("...");
+            setText("(l. " + item.getNode().getBeginLine() + ", c. " + item.getNode().getBeginColumn() + "): " + text);
         }
-    }
-
-
-    public static Callback<ListView<Node>, XpathViolationListCell> callback() {
-        return p -> new XpathViolationListCell();
     }
 
 }

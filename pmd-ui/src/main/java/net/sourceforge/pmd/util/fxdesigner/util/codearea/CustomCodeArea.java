@@ -26,6 +26,7 @@ import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.fxdesigner.util.ConvenienceNodeWrapper;
 
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -239,6 +240,11 @@ public class CustomCodeArea extends CodeArea {
             executorService.execute(task);
         }
         return task;
+    }
+
+
+    public ConvenienceNodeWrapper wrapNode(Node node) {
+        return NodeStyleSpan.fromNode(node, this).snapshot();
     }
 
 

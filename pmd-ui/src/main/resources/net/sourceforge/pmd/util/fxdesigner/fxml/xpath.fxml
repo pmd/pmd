@@ -77,11 +77,7 @@
                     <children>
                         <TitledPane fx:id="violationsTitledPane" animated="false" collapsible="false" styleClass="accent-header" text="Matched Nodes" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <content>
-                                <ListView fx:id="xpathResultListView">
-                                    <cellFactory>
-
-                                    </cellFactory>
-                                </ListView>
+                                <ListView fx:id="xpathResultListView"/>
                             </content>
                         </TitledPane>
                     </children>

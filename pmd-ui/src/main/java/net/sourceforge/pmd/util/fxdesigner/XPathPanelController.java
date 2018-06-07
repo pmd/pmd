@@ -11,11 +11,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
 import org.reactfx.EventStreams;
+import org.reactfx.collection.LiveArrayList;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
@@ -29,12 +31,14 @@ import net.sourceforge.pmd.util.fxdesigner.model.ObservableXPathRuleBuilder;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
+import net.sourceforge.pmd.util.fxdesigner.util.ConvenienceNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.XpathViolationListCell;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -81,7 +85,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     @FXML
     private TitledPane violationsTitledPane;
     @FXML
-    private ListView<Node> xpathResultListView;
+    private ListView<ConvenienceNodeWrapper> xpathResultListView;
     @FXML
     private ToggleButton resultHighlightingToggle;
 
@@ -104,14 +108,17 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         initGenerateXPathFromStackTrace();
 
+        xpathResultListView.setCellFactory(v -> new XpathViolationListCell());
+
         EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
                     .conditionOn(xpathResultListView.focusedProperty())
                     .filter(Objects::nonNull)
+                    .map(ConvenienceNodeWrapper::getNode)
                     .subscribe(parent::onNodeItemSelected);
 
         resultHighlightingToggle.setOnAction(e -> {
             if (resultHighlightingToggle.isSelected()) {
-                parent.highlightXPathResults(xpathResultListView.getItems());
+                parent.highlightXPathResults(xpathResultListView.getItems().stream().map(ConvenienceNodeWrapper::getNode).collect(Collectors.toList()));
             } else {
                 parent.resetXPathResults();
             }
@@ -222,7 +229,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                                                                                      getXpathVersion(),
                                                                                      xpath,
                                                                                      ruleBuilder.getRuleProperties()));
-            xpathResultListView.setItems(results);
+            xpathResultListView.setItems(results.stream().map(parent::wrapNode).collect(Collectors.toCollection(LiveArrayList::new)));
             if (resultHighlightingToggle.isSelected()) {
                 parent.highlightXPathResults(results);
             }
