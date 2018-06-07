@@ -78,7 +78,7 @@ public class ExportXPathWizardController implements Initializable {
 
         languageChoiceBox.getSelectionModel().select(LanguageRegistry.getDefaultLanguage());
 
-        exportResultArea.setSyntaxHighlightingEnabled(new XmlSyntaxHighlighter());
+        exportResultArea.setSyntaxHighlighter(new XmlSyntaxHighlighter());
 
         registerListener(nameField.textProperty(), updateResultListener());
         registerListener(messageField.textProperty(), updateResultListener());

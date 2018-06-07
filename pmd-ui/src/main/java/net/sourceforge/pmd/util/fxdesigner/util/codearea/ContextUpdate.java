@@ -4,15 +4,10 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-
-import org.fxmisc.richtext.model.StyleSpans;
 
 
 /**
@@ -33,7 +28,6 @@ class ContextUpdate {
     private ContextUpdate(Map<String, LayerUpdate> updateMap) {
         spansById.putAll(updateMap);
     }
-
 
     /**
      * Updates the given style context according to the
@@ -68,8 +62,8 @@ class ContextUpdate {
      *
      * @param layerId The id of layer to reset
      */
-    public static ContextUpdate resetUpdate(String layerId) {
-        return new ContextUpdate(layerId, new LayerUpdate(true, Collections.emptySet()));
+    public static ContextUpdate clearUpdate(String layerId) {
+        return new ContextUpdate(layerId, new LayerUpdate(true, StyleCollection.empty()));
     }
 
 
@@ -77,8 +71,8 @@ class ContextUpdate {
      * Returns an update that replaces the styling contained within
      * the given layer by the style spans parameter.
      */
-    public static ContextUpdate resetUpdate(String layerId, StyleSpans<Collection<String>> spans) {
-        return new ContextUpdate(layerId, new LayerUpdate(true, Collections.singleton(spans)));
+    public static ContextUpdate resetUpdate(String layerId, StyleCollection spans) {
+        return new ContextUpdate(layerId, new LayerUpdate(true, spans));
     }
 
 
@@ -86,7 +80,7 @@ class ContextUpdate {
      * Returns an update that may or may not reset the updated layer
      * depending on the boolean parameter.
      */
-    public static ContextUpdate layerUpdate(String layerId, boolean reset, Collection<StyleSpans<Collection<String>>> spans) {
+    public static ContextUpdate layerUpdate(String layerId, boolean reset, StyleCollection spans) {
         return new ContextUpdate(layerId, new LayerUpdate(reset, spans));
     }
 
@@ -112,10 +106,10 @@ class ContextUpdate {
      */
     private static class LayerUpdate {
         private final boolean reset;
-        private final Collection<StyleSpans<Collection<String>>> updates;
+        private final StyleCollection updates;
 
 
-        LayerUpdate(boolean reset, Collection<StyleSpans<Collection<String>>> updates) {
+        LayerUpdate(boolean reset, StyleCollection updates) {
             this.reset = reset;
             this.updates = updates;
         }
@@ -125,7 +119,7 @@ class ContextUpdate {
             if (reset) {
                 layer.clearStyles();
             }
-            layer.addSpans(updates);
+            layer.styleNodes(updates);
         }
 
 
@@ -135,7 +129,8 @@ class ContextUpdate {
                 return newer;
             }
 
-            Set<StyleSpans<Collection<String>>> merged = new HashSet<>(older.updates);
+            StyleCollection merged = new StyleCollection();
+            merged.addAll(older.updates);
             merged.addAll(newer.updates);
 
             return new LayerUpdate(older.reset, merged);

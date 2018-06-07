@@ -100,7 +100,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        xpathExpressionArea.setSyntaxHighlightingEnabled(new XPathSyntaxHighlighter());
+        xpathExpressionArea.setSyntaxHighlighter(new XPathSyntaxHighlighter());
 
         initGenerateXPathFromStackTrace();
 

@@ -6,8 +6,6 @@ package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
-import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.FOCUS;
-import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.SECONDARY;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.SYNTAX_HIGHLIGHT_LAYER_ID;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.XPATH_RESULTS;
 
@@ -15,23 +13,28 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.model.RichTextChange;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.reactfx.EventSource;
 import org.reactfx.Subscription;
+import org.reactfx.value.Val;
+import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 
@@ -60,24 +63,27 @@ public class CustomCodeArea extends CodeArea {
 
     private Subscription syntaxAutoRefresh;
 
-    private BooleanProperty isSyntaxHighlightingEnabled = new SimpleBooleanProperty(false);
-
     private StyleContext styleContext;
-    private SyntaxHighlighter syntaxHighlighter;
+    private Var<SyntaxHighlighter> syntaxHighlighter = Var.newSimpleVar(null);
 
 
     /** Used to schedule tasks that must be restarted upon new changes, eg syntax highlighting */
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-
-    private final StyleHelper styleHelper = new StyleHelper(this);
+    private Map<Integer, Integer> offsetAccumulator = new TreeMap<>();
 
     public CustomCodeArea() {
         super();
-        styleContext = new StyleContext(new TreeSet<>(Arrays.asList(SYNTAX_HIGHLIGHT_LAYER_ID,
-                                                                    XPATH_RESULTS.id,
-                                                                    FOCUS.id,
-                                                                    SECONDARY.id)));
+
+        Set<String> collect = Arrays.stream(LayerId.values())
+                                    .map(LayerId::getId)
+                                    .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        styleContext = new StyleContext(collect, this);
+
+        richChanges().map(RichTextChange::toPlainTextChange)
+                     .filter(ch -> ch.getNetLength() != 0)
+                     .subscribe(ch -> offsetAccumulator.put(ch.getPosition(), ch.getNetLength()));
 
         styleContextUpdateQueue.reduceSuccessions(ContextUpdate::unit, ContextUpdate::reduce, UPDATE_DELAY)
                                .hook(styleContext::executeUpdate)
@@ -110,7 +116,10 @@ public class CustomCodeArea extends CodeArea {
         fullClasses.add("styled-text-area");
         fullClasses.add(layerId.id + "-highlight"); // focus-highlight, xpath-highlight, secondary-highlight
 
-        ContextUpdate update = ContextUpdate.layerUpdate(layerId.id, resetLayer, styleHelper.style(nodes, fullClasses, extraClassesFinder(layerId)));
+        StyleCollection collection = new StyleCollection();
+        nodes.stream().map(n -> NodeStyleSpan.fromNode(n, fullClasses, this)).forEach(collection::add);
+
+        ContextUpdate update = ContextUpdate.layerUpdate(layerId.id, resetLayer, collection);
         styleContextUpdateQueue.push(update);
     }
 
@@ -121,10 +130,29 @@ public class CustomCodeArea extends CodeArea {
      * in a loop for example.
      */
     private void paintCss() {
-        this.setStyleSpans(0, styleContext.getStyleSpans(this::getLength));
+        this.setStyleSpans(0, styleContext.recomputePainting()); // TODO
     }
 
 
+    public void resetOffsets() {
+        offsetAccumulator.clear();
+        paintCss();
+    }
+
+
+    int getAccumulatedOffsetSinceLastAstRefresh(int pos) {
+        int accumulatedOffset = 0;
+        for (Entry<Integer, Integer> entry : offsetAccumulator.entrySet()) {
+            if (entry.getKey() >= pos) {
+                break;
+            }
+            accumulatedOffset += entry.getValue();
+        }
+        return accumulatedOffset;
+    }
+
+
+    // TODO
     private Function<Node, Set<String>> extraClassesFinder(LayerId layerId) {
         return layerId == XPATH_RESULTS
                 ? n -> useInlineHighlight(n) ? singleton("inline-highlight") : emptySet()
@@ -163,8 +191,8 @@ public class CustomCodeArea extends CodeArea {
             clearStyleLayer(id);
         }
 
-        clearStyleLayer(SYNTAX_HIGHLIGHT_LAYER_ID);
-
+        styleContext.setSyntaxHighlight(null);
+        paintCss();
     }
 
 
@@ -179,7 +207,7 @@ public class CustomCodeArea extends CodeArea {
 
 
     private void clearStyleLayer(String id) {
-        styleContextUpdateQueue.push(ContextUpdate.resetUpdate(id));
+        styleContextUpdateQueue.push(ContextUpdate.clearUpdate(id));
     }
 
 
@@ -188,20 +216,33 @@ public class CustomCodeArea extends CodeArea {
      *
      * @param highlighter The highlighter to use (not null)
      */
-    public void setSyntaxHighlightingEnabled(SyntaxHighlighter highlighter) {
-        this.setSyntaxHighlighter(highlighter);
+    public void setSyntaxHighlighter(SyntaxHighlighter highlighter) {
+
+        ObservableList<String> styleClasses = this.getStyleClass();
+
+        syntaxHighlighter.ifPresent(previous -> styleClasses.remove("." + previous.getLanguageTerseName()));
+
+        syntaxHighlighter.setValue(highlighter);
+
+        if (syntaxHighlighter.isEmpty()) {
+            disableSyntaxHighlighting();
+        }
+
+        styleClasses.add("." + highlighter.getLanguageTerseName());
+
+        syntaxAutoRefresh = launchAsyncSyntaxHighlighting();
 
         try { // refresh the highlighting.
             Task<StyleSpans<Collection<String>>> t = computeHighlightingAsync(this.getText());
-            t.setOnSucceeded(e -> styleContextUpdateQueue.push(ContextUpdate.resetUpdate(SYNTAX_HIGHLIGHT_LAYER_ID, t.getValue())));
+            t.setOnSucceeded(e -> styleContext.setSyntaxHighlight(t.getValue()));
         } catch (Exception ignored) {
             // nevermind
         }
     }
 
 
-    public BooleanProperty syntaxHighlightingEnabledProperty() {
-        return isSyntaxHighlightingEnabled;
+    public Val<Boolean> syntaxHighlightingEnabledProperty() {
+        return syntaxHighlighter.map(Objects::nonNull);
     }
 
 
@@ -210,8 +251,7 @@ public class CustomCodeArea extends CodeArea {
      * Disables syntax highlighting gracefully, if enabled.
      */
     public void disableSyntaxHighlighting() {
-        if (isSyntaxHighlightingEnabled.get()) {
-            isSyntaxHighlightingEnabled.set(false);
+        if (syntaxHighlightingEnabledProperty().getValue()) {
 
             if (syntaxAutoRefresh != null) {
                 syntaxAutoRefresh.unsubscribe();
@@ -221,47 +261,37 @@ public class CustomCodeArea extends CodeArea {
                 executorService.shutdown();
             }
 
-            styleContextUpdateQueue.push(ContextUpdate.resetUpdate(SYNTAX_HIGHLIGHT_LAYER_ID));
+            syntaxHighlighter.setValue(null);
+
+            styleContextUpdateQueue.push(ContextUpdate.clearUpdate(SYNTAX_HIGHLIGHT_LAYER_ID));
         }
-        paintCss();
     }
 
 
-    private void setSyntaxHighlighter(SyntaxHighlighter newHighlighter) {
-        isSyntaxHighlightingEnabled.set(true);
-        Objects.requireNonNull(newHighlighter, "The syntax highlighting highlighter cannot be null");
-
-        ObservableList<String> styleClasses = this.getStyleClass();
-        if (syntaxHighlighter != null) {
-            styleClasses.remove("." + syntaxHighlighter.getLanguageTerseName());
-        }
-        styleClasses.add("." + newHighlighter.getLanguageTerseName());
-
-        launchAsyncSyntaxHighlighting(newHighlighter);
-    }
-
-
-    private synchronized void launchAsyncSyntaxHighlighting(SyntaxHighlighter computer) {
+    private synchronized Subscription launchAsyncSyntaxHighlighting() {
 
         if (executorService != null) {
             executorService.shutdown();
             executorService = null;
         }
 
-        this.syntaxHighlighter = computer;
-
-        if (isSyntaxHighlightingEnabled.get() && syntaxHighlighter != null) {
+        if (syntaxHighlighter.isPresent()) {
             executorService = Executors.newSingleThreadExecutor();
-            syntaxAutoRefresh = this.richChanges().filter(ch -> !ch.isIdentity())
-                                    .successionEnds(TEXT_CHANGE_DELAY)
-                                    .supplyTask(() -> computeHighlightingAsync(this.getText()))
-                                    .awaitLatest(this.richChanges())
-                                    .filterMap(t -> {
-                                        t.ifFailure(Throwable::printStackTrace);
-                                        return t.toOptional();
-                                    })
-                                    .subscribe(spans -> styleContextUpdateQueue.push(ContextUpdate.resetUpdate(SYNTAX_HIGHLIGHT_LAYER_ID, spans)));
+            return this.richChanges()
+                       .map(RichTextChange::toPlainTextChange)
+                       .filter(ch -> !ch.isIdentity())
+                       .distinct()
+                       .successionEnds(UPDATE_DELAY)
+                       .supplyTask(() -> computeHighlightingAsync(this.getText()))
+                       .awaitLatest(this.richChanges())
+                       .filterMap(t -> {
+                           t.ifFailure(Throwable::printStackTrace);
+                           return t.toOptional();
+                       })
+                       .hook(styleContext::setSyntaxHighlight)
+                       .subscribe(spans -> paintCss());
         }
+        return null;
     }
 
 
@@ -269,7 +299,7 @@ public class CustomCodeArea extends CodeArea {
         Task<StyleSpans<Collection<String>>> task = new Task<StyleSpans<Collection<String>>>() {
             @Override
             protected StyleSpans<Collection<String>> call() {
-                return syntaxHighlighter.computeHighlighting(text);
+                return syntaxHighlighter.getValue().computeHighlighting(text);
             }
         };
         if (!executorService.isShutdown()) {
@@ -289,6 +319,12 @@ public class CustomCodeArea extends CodeArea {
         XPATH_RESULTS("xpath");
 
         static final String SYNTAX_HIGHLIGHT_LAYER_ID = "syntax";
+
+
+        String getId() {
+            return id;
+        }
+
 
         private final String id;
 

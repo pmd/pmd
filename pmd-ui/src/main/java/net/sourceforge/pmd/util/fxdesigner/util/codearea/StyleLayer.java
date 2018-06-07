@@ -4,10 +4,7 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
-import java.util.Collection;
-import java.util.Stack;
-
-import org.fxmisc.richtext.model.StyleSpans;
+import java.util.Objects;
 
 
 /**
@@ -17,27 +14,17 @@ import org.fxmisc.richtext.model.StyleSpans;
  */
 class StyleLayer {
 
-    private Stack<StyleSpans<Collection<String>>> spans = new Stack<>();
 
-    /**
-     * Returns the stack of all spans contained in this one.
-     *
-     * @return The stack of all spans
-     */
-    public Stack<StyleSpans<Collection<String>>> getSpans() {
-        return spans;
-    }
-
-
-    /** Adds new spans. */
-    public void addSpans(Collection<StyleSpans<Collection<String>>> spans) {
-        this.spans.addAll(spans);
-    }
-
+    private final StyleCollection nodesToCssClass = new StyleCollection();
 
     /** Reset this layer to its empty state, clearing all the styles. */
     public void clearStyles() {
-        spans.clear();
+        nodesToCssClass.clear();
+    }
+
+
+    public StyleCollection getStyleSpansCoordinates() {
+        return nodesToCssClass;
     }
 
 
@@ -49,15 +36,19 @@ class StyleLayer {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         StyleLayer that = (StyleLayer) o;
-
-        return spans.equals(that.spans);
+        return Objects.equals(nodesToCssClass, that.nodesToCssClass);
     }
 
 
     @Override
     public int hashCode() {
-        return spans.hashCode();
+
+        return Objects.hash(nodesToCssClass);
+    }
+
+
+    public void styleNodes(StyleCollection updates) {
+        nodesToCssClass.addAll(updates);
     }
 }

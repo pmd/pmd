@@ -102,7 +102,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
                     .subscribe(parent::onNodeItemSelected);
 
         codeEditorArea.richChanges()
-                      .filter(t -> !t.isIdentity())
+                      .filter(t -> !t.toPlainTextChange().isIdentity())
                       .successionEnds(AST_REFRESH_DELAY)
                       // Refresh the AST anytime the text, classloader, or language version changes
                       .or(auxclasspathClassLoader.changes())
@@ -139,6 +139,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         if (!Objects.equals(previous, current)) {
             parent.invalidateAst();
             setUpToDateCompilationUnit(current);
+            codeEditorArea.resetOffsets();
             return Optional.of(current);
         }
         return Optional.empty();
@@ -169,7 +170,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         Optional<SyntaxHighlighter> highlighter = AvailableSyntaxHighlighters.getHighlighterForLanguage(language);
 
         if (highlighter.isPresent()) {
-            codeEditorArea.setSyntaxHighlightingEnabled(highlighter.get());
+            codeEditorArea.setSyntaxHighlighter(highlighter.get());
         } else {
             codeEditorArea.disableSyntaxHighlighting();
         }
