@@ -39,7 +39,7 @@ public class ASTManager {
     private LanguageVersion lastLanguageVersion;
     /**
      * Latest computed compilation unit (only null before the first call to
-     * {@link #updateCompilationUnit(String, Val<ClassLoader>)})
+     * {@link #updateCompilationUnit(String, ClassLoader)})
      */
     private Var<Node> compilationUnit = Var.newSimpleVar(null);
     /**
@@ -85,7 +85,7 @@ public class ASTManager {
      *
      * @throws ParseAbortedException if parsing fails and cannot recover
      */
-    public Node updateCompilationUnit(String source, Val<ClassLoader> classLoader) throws ParseAbortedException {
+    public Node updateCompilationUnit(String source, ClassLoader classLoader) throws ParseAbortedException {
         if (compilationUnit.isPresent()
                 && getLanguageVersion().equals(lastLanguageVersion)
                 && StringUtils.equals(source, lastValidSource)) {
@@ -108,14 +108,14 @@ public class ASTManager {
         }
         try {
             // TODO this should use the aux classpath
-            languageVersionHandler.getQualifiedNameResolutionFacade(classLoader.getValue());
+            languageVersionHandler.getQualifiedNameResolutionFacade(classLoader);
         } catch (Exception e) {
             designerRoot.getLogger().logEvent(new LogEntry(e, Category.QUALIFIED_NAME_RESOLUTION_EXCEPTION));
         }
 
         try {
             // TODO this should use the aux classpath
-            languageVersionHandler.getTypeResolutionFacade(classLoader.getValue());
+            languageVersionHandler.getTypeResolutionFacade(classLoader);
         } catch (Exception e) {
             designerRoot.getLogger().logEvent(new LogEntry(e, Category.TYPERESOLUTION_EXCEPTION));
         }

@@ -78,7 +78,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(Collections.emptyList());
     private final Val<ClassLoader> auxclasspathClassLoader = auxclasspathFiles.map(files -> {
         try {
-            new ClasspathClassLoader(auxclasspathFiles.getValue(), SourceEditorController.class.getClassLoader());
+            new ClasspathClassLoader(files, SourceEditorController.class.getClassLoader());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -135,7 +135,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         }
 
         try {
-            current = astManager.updateCompilationUnit(source, auxclasspathClassLoader);
+            current = astManager.updateCompilationUnit(source, auxclasspathClassLoader.getValue());
         } catch (ParseAbortedException e) {
             invalidateAST(true);
             return;
@@ -188,7 +188,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     @PersistentProperty
     public String getAuxclasspathFiles() {
-        return  auxclasspathFiles.getValue().stream().map(p -> File.pathSeparator + p.getAbsolutePath()).collect(Collectors.joining(""));
+        return auxclasspathFiles.getValue().stream().map(p -> p.getAbsolutePath()).collect(Collectors.joining(File.pathSeparator));
     }
 
 
