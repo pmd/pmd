@@ -130,7 +130,7 @@ public class UniformStyleCollection {
         } else if (nodes.size() == 1) {
             PositionSnapshot snapshot = nodes.get(0).snapshot();
             return new StyleSpansBuilder<Collection<String>>().add(Collections.emptyList(), snapshot.getBeginIndex())
-                                                              .add(style, snapshot.getLength())
+                                                              .add(styleForDepth(0, snapshot), snapshot.getLength())
                                                               .create();
         }
 
