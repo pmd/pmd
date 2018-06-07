@@ -244,7 +244,19 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         codeEditorArea.styleCss(nodes, layer, resetLayer, cssClasses);
 
         if (autoScroll && !nodes.isEmpty()) {
-            moveCaret(nodes.iterator().next().getBeginLine() - 1, 0);
+            scrollEditorToNode(nodes.iterator().next());
+        }
+    }
+
+
+    private void scrollEditorToNode(Node node) {
+
+        codeEditorArea.moveTo(node.getBeginLine() - 1, 0);
+
+        if (node.getBeginLine() < codeEditorArea.firstVisibleParToAllParIndex()) {
+            codeEditorArea.showParagraphAtTop(Math.max(node.getBeginLine() - 2, 0));
+        } else if (node.getEndLine() > codeEditorArea.lastVisibleParToAllParIndex()) {
+            codeEditorArea.showParagraphAtBottom(Math.min(node.getEndLine(), codeEditorArea.getParagraphs().size()));
         }
     }
 
