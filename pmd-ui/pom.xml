@@ -27,6 +27,24 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.lesscss</groupId>
+                <artifactId>lesscss-maven-plugin</artifactId>
+                <version>1.7.0.1.1</version>
+                <configuration>
+                    <sourceDirectory>${project.basedir}/src/main/resources/net/sourceforge/pmd/util/fxdesigner/less</sourceDirectory>
+                    <outputDirectory>${project.build.outputDirectory}/net/sourceforge/pmd/util/fxdesigner/css</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>

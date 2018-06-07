@@ -77,8 +77,8 @@ public class UniformStyleCollection {
     }
 
 
-    private Set<String> styleForDepth(int depth, Node n) {
-        return styleForDepth(depth, useInlineHighlight(n));
+    private Set<String> styleForDepth(int depth, PositionSnapshot n) {
+        return styleForDepth(depth, n != null && useInlineHighlight(n.getNode()));
     }
 
 
@@ -165,9 +165,9 @@ public class UniformStyleCollection {
                 // the code area is recomputed.
 
                 // gap
-                builder.add(styleForDepth(overlappingNodes.size() - 1), previous.getBeginIndex() - lastSpanEnd);
+                builder.add(styleForDepth(overlappingNodes.size() - 1, overlappingNodes.peek()), previous.getBeginIndex() - lastSpanEnd);
                 // common part
-                builder.add(styleForDepth(overlappingNodes.size(), current.getNode()), current.getBeginIndex() - previous.getBeginIndex());
+                builder.add(styleForDepth(overlappingNodes.size(), current), current.getBeginIndex() - previous.getBeginIndex());
                 lastSpanEnd = current.getBeginIndex();
 
                 overlappingNodes.addFirst(previous);
@@ -178,9 +178,9 @@ public class UniformStyleCollection {
                 // no overlap, the previous span can be added
 
                 // the depth - 1 is for the gap
-                builder.add(styleForDepth(overlappingNodes.size() - 1), previous.getBeginIndex() - lastSpanEnd);
+                builder.add(styleForDepth(overlappingNodes.size() - 1, overlappingNodes.peek()), previous.getBeginIndex() - lastSpanEnd);
                 // previous node
-                builder.add(styleForDepth(overlappingNodes.size(), previous.getNode()), previous.getLength());
+                builder.add(styleForDepth(overlappingNodes.size(), previous), previous.getLength());
                 lastSpanEnd = previous.getEndIndex();
                 previous = current;
             }
@@ -192,7 +192,7 @@ public class UniformStyleCollection {
                 if (enclosing.getEndIndex() < current.getBeginIndex()) {
                     overlaps.remove();
                     // this is the underscored part [ [ ]_]
-                    builder.add(styleForDepth(overlappingNodes.size(), enclosing.getNode()), enclosing.getEndIndex() - lastSpanEnd);
+                    builder.add(styleForDepth(overlappingNodes.size(), enclosing), enclosing.getEndIndex() - lastSpanEnd);
                     lastSpanEnd = enclosing.getEndIndex();
                 }
             }
@@ -200,14 +200,14 @@ public class UniformStyleCollection {
 
         builder.add(styleForDepth(overlappingNodes.size() - 1), previous.getBeginIndex() - lastSpanEnd);
         // last node
-        builder.add(styleForDepth(overlappingNodes.size(), previous.getNode()), previous.getLength());
+        builder.add(styleForDepth(overlappingNodes.size(), previous), previous.getLength());
         lastSpanEnd = previous.getEndIndex();
 
         // close the enclosing contexts
         int depth = overlappingNodes.size();
         for (PositionSnapshot enclosing : overlappingNodes) {
             depth--;
-            builder.add(styleForDepth(depth, enclosing.getNode()), enclosing.getEndIndex() - lastSpanEnd);
+            builder.add(styleForDepth(depth, enclosing), enclosing.getEndIndex() - lastSpanEnd);
             lastSpanEnd = enclosing.getEndIndex();
         }
 

@@ -61,7 +61,7 @@
                                     </children>
                                 </GridPane>
                                 <CustomCodeArea fx:id="exportResultArea" prefHeight="221.0" prefWidth="563.0"
-                                                stylesheets="@../css/editor-theme.css" VBox.vgrow="ALWAYS"/>
+                                                stylesheets="@../less/editor-theme.less" VBox.vgrow="ALWAYS"/>
                             </children>
                         </VBox>
                     </children>
