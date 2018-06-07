@@ -27,6 +27,7 @@ import org.reactfx.value.Var;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
@@ -75,7 +76,15 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
     private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(Collections.emptyList());
-    private Val<ClassLoader> auxclasspathClassLoader;
+    private final Val<ClassLoader> auxclasspathClassLoader
+        = auxclasspathFiles.map(files -> {
+            try {
+                new ClasspathClassLoader(files, SourceEditorController.class.getClassLoader());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return SourceEditorController.class.getClassLoader();
+        });
 
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
         parent = mainController;
@@ -127,7 +136,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         }
 
         try {
-            current = astManager.updateCompilationUnit(source);
+            current = astManager.updateCompilationUnit(source, auxclasspathClassLoader);
         } catch (ParseAbortedException e) {
             invalidateAST(true);
             return;
@@ -180,18 +189,14 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     @PersistentProperty
     public String getAuxclasspathFiles() {
-
-        StringBuilder sb = new StringBuilder();
-
-        for (File f : auxclasspathFiles.getValue()) {
-            sb.append(';').append(f.getAbsolutePath());
-        }
-        return sb.length() > 0 ? sb.substring(1) : "";
+        String files = auxclasspathFiles.getValue().stream().map(p -> File.pathSeparator + p.getAbsolutePath())
+                                        .collect(Collectors.joining(""));
+        return files;
     }
 
 
     public void setAuxClassPathFiles(String files) {
-        List<File> newVal = Arrays.asList(files.split(";")).stream().map(File::new).collect(Collectors.toList());
+        List<File> newVal = Arrays.asList(files.split(File.pathSeparator)).stream().map(File::new).collect(Collectors.toList());
         auxclasspathFiles.setValue(newVal);
     }
 

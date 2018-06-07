@@ -38,6 +38,22 @@ public class ClasspathClassLoader extends URLClassLoader {
         super(initURLs(classpath), parent);
     }
 
+
+    public ClasspathClassLoader(List<File> files, ClassLoader parent) throws IOException {
+        super(fileToURL(files), parent);
+    }
+
+
+    private static URL[] fileToURL(List<File> files) throws IOException {
+
+        List<URL> urlList = new ArrayList<>();
+
+        for (File f : files) {
+            addFileURLs(urlList, f.toURI().toURL());
+        }
+        return urlList.toArray(new URL[urlList.size()]);
+    }
+
     private static URL[] initURLs(String classpath) throws IOException {
         if (classpath == null) {
             throw new IllegalArgumentException("classpath argument cannot be null");
