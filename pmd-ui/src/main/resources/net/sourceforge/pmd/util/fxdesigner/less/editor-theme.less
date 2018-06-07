@@ -8,6 +8,8 @@
 
 */
 
+@import "constants";
+
 @xpath-color-stack:
         rgba(249, 248, 113, 0.25),
         rgba(255, 199, 95, 0.4),
@@ -80,6 +82,7 @@
     -fx-background-color: derive(black, 90%);
 }
 
+@active-line-focus-color: #fbf4e1;
 
 .paragraph-box:has-caret {
     -fx-background-color: #fbf4e1;
@@ -91,10 +94,22 @@
 }
 
 /* Line numbers */
-.lineno {
+.label.lineno {
+
     -fx-fill: #586E75;
     -fx-font-size: 80%;
     -fx-font-weight: normal;
+
+    //noinspection CssInvalidPseudoSelector
+    &:has-caret {
+
+        -fx-background-color: darken(average(@active-line-focus-color, @darker-accent), 15%);
+
+        .text {
+            -fx-fill: white;
+            -fx-font-weight: bolder;
+        }
+    }
 }
 
 /****************************/

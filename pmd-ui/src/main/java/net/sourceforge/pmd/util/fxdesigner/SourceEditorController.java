@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +43,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -114,7 +116,22 @@ public class SourceEditorController implements Initializable, SettingsOwner {
                           parent.refreshAST();
                       });
 
-        codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
+        codeEditorArea.setParagraphGraphicFactory(lineNumberFactory());
+    }
+
+
+    private IntFunction<javafx.scene.Node> lineNumberFactory() {
+        IntFunction<javafx.scene.Node> base = LineNumberFactory.get(codeEditorArea);
+        Val<Integer> activePar = Val.wrap(codeEditorArea.currentParagraphProperty());
+        return idx -> {
+
+            Label label = (Label) base.apply(idx);
+
+            activePar.conditionOnShowing(label)
+                     .values()
+                     .subscribe(p -> label.pseudoClassStateChanged(PseudoClass.getPseudoClass("has-caret"), idx == p));
+            return label;
+        };
     }
 
 
