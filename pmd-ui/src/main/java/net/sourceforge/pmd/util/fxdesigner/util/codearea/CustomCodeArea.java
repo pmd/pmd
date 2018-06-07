@@ -4,10 +4,7 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singleton;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.SYNTAX_HIGHLIGHT_LAYER_ID;
-import static net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId.XPATH_RESULTS;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -19,11 +16,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.fxmisc.richtext.CodeArea;
-import org.fxmisc.richtext.model.RichTextChange;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.reactfx.EventSource;
 import org.reactfx.Subscription;
@@ -53,7 +48,7 @@ public class CustomCodeArea extends CodeArea {
     /** Minimum delay between each style update. Updates are reduced together until then. */
     private static final Duration UPDATE_DELAY = Duration.ofMillis(50);
     /** Minimum delay between each code highlighting recomputation. Changes are ignored until then. */
-    private static final Duration TEXT_CHANGE_DELAY = Duration.ofMillis(1000);
+    private static final Duration TEXT_CHANGE_DELAY = Duration.ofMillis(50);
 
     /** Stacks styling updates and reduces them together. */
     private final EventSource<ContextUpdate> styleContextUpdateQueue = new EventSource<>();
@@ -105,7 +100,7 @@ public class CustomCodeArea extends CodeArea {
         fullClasses.add("styled-text-area");
         fullClasses.add(layerId.id + "-highlight"); // focus-highlight, xpath-highlight, secondary-highlight
 
-        List<NodeStyleSpan> wrappedNodes = nodes.stream().map(n -> NodeStyleSpan.fromNode(n, fullClasses, this)).collect(Collectors.toList());
+        List<NodeStyleSpan> wrappedNodes = nodes.stream().map(n -> NodeStyleSpan.fromNode(n, this)).collect(Collectors.toList());
         UniformStyleCollection collection = new UniformStyleCollection(fullClasses, wrappedNodes);
 
         ContextUpdate update = ContextUpdate.layerUpdate(layerId.id, resetLayer, collection);
@@ -121,37 +116,6 @@ public class CustomCodeArea extends CodeArea {
     private void paintCss() {
         this.setStyleSpans(0, styleContext.recomputePainting()); // TODO
     }
-
-
-    // TODO
-    private Function<Node, Set<String>> extraClassesFinder(LayerId layerId) {
-        return layerId == XPATH_RESULTS
-                ? n -> useInlineHighlight(n) ? singleton("inline-highlight") : emptySet()
-                : n -> emptySet();
-    }
-
-
-    /**
-     * Returns whether the node should be styled inline or not.
-     * Inline highlight basically adds a border around a node.
-     * Borders are only used around short (text-wise) nodes,
-     * since otherwise the background variation is enough to
-     * spot the node. Also, borders can't stack, so having only
-     * short nodes bear the border reduces the chance that
-     * another node that should be bordered is included inside
-     * the node, in which case it would be unnoticeable.
-     *
-     * <p>TODO This is a pretty dumb heuristic, it would be better
-     * to have a way to know if a node is included in another
-     * highlighted node and in that case display the border...
-     *
-     * @param node node to test
-     */
-    private boolean useInlineHighlight(Node node) {
-        final int maxInlineLength = 10;
-        return node.getBeginLine() == node.getEndLine() && (node.getEndColumn() - node.getBeginColumn()) <= maxInlineLength;
-    }
-
 
 
     /**
@@ -205,7 +169,7 @@ public class CustomCodeArea extends CodeArea {
 
         try { // refresh the highlighting.
             Task<StyleSpans<Collection<String>>> t = computeHighlightingAsync(this.getText());
-            t.setOnSucceeded(e -> styleContext.setSyntaxHighlight(t.getValue()));
+            t.setOnSucceeded(e -> styleContext.updateSyntaxHighlight(t.getValue()));
         } catch (Exception ignored) {
             // nevermind
         }
@@ -248,8 +212,7 @@ public class CustomCodeArea extends CodeArea {
 
         if (syntaxHighlighter.isPresent()) {
             executorService = Executors.newSingleThreadExecutor();
-            return this.richChanges()
-                       .map(RichTextChange::toPlainTextChange)
+            return this.plainTextChanges()
                        .filter(ch -> !ch.isIdentity())
                        .distinct()
                        .successionEnds(TEXT_CHANGE_DELAY)

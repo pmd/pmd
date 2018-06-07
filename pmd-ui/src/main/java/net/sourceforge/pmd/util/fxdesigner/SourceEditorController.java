@@ -101,8 +101,8 @@ public class SourceEditorController implements Initializable, SettingsOwner {
                     .filterMap(Objects::nonNull, TreeItem::getValue)
                     .subscribe(parent::onNodeItemSelected);
 
-        codeEditorArea.richChanges()
-                      .filter(t -> !t.toPlainTextChange().isIdentity())
+        codeEditorArea.plainTextChanges()
+                      .filter(t -> !t.isIdentity())
                       .successionEnds(AST_REFRESH_DELAY)
                       // Refresh the AST anytime the text, classloader, or language version changes
                       .or(auxclasspathClassLoader.changes())
@@ -118,7 +118,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
 
     /**
-     * Refreshes the AST.
+     * Refreshes the AST and returns the new compilation unit if the parse didn't fail.
      */
     public Optional<Node> refreshAST() {
         String source = getText();
@@ -139,9 +139,8 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         if (!Objects.equals(previous, current)) {
             parent.invalidateAst();
             setUpToDateCompilationUnit(current);
-            return Optional.of(current);
         }
-        return Optional.empty();
+        return Optional.of(current);
     }
 
 

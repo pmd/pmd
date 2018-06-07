@@ -5,30 +5,32 @@
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.fxmisc.richtext.model.Paragraph;
-import org.fxmisc.richtext.model.StyleSpan;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
 
 /**
+ * Wrapper around a node used to declutter the layering algorithm with
+ * convenience methods. See {@link #snapshot()}.
+ *
  * @author Clément Fournier
  * @since 6.5.0
  */
 public class NodeStyleSpan {
 
     private static final Pattern TAB_INDENT = Pattern.compile("^(\t*).*$");
+    private static final Comparator<NodeStyleSpan> COMPARATOR = Comparator.comparing(NodeStyleSpan::getNode, Comparator.comparingInt(Node::getBeginLine).thenComparing(Node::getBeginColumn));
     private final Node node;
-    private final Collection<String> style;
     private final CustomCodeArea codeArea;
 
 
-    private NodeStyleSpan(Node node, Collection<String> style, CustomCodeArea codeArea) {
+    private NodeStyleSpan(Node node, CustomCodeArea codeArea) {
         this.node = node;
-        this.style = style;
         this.codeArea = codeArea;
     }
 
@@ -39,12 +41,11 @@ public class NodeStyleSpan {
 
 
     /**
-     * Snapshots the node's position, which factors-in changes to the nodes's position
-     * that occurred since the node was parsed.
+     * Snapshots the absolute coordinates of the node in the code area
+     * for the duration of the layering algorithm.
      */
     public PositionSnapshot snapshot() {
         try {
-
             int lastKnownStart = getAbsolutePosition(node.getBeginLine(), node.getBeginColumn() - 1);
             int lastKnownEnd = getAbsolutePosition(node.getEndLine(), node.getEndColumn());
             return new PositionSnapshot(lastKnownStart, lastKnownEnd);
@@ -54,12 +55,6 @@ public class NodeStyleSpan {
         }
 
     }
-
-
-    public Collection<String> getStyle() {
-        return style;
-    }
-
 
     private int getAbsolutePosition(int line, int column) {
         return codeArea.getAbsolutePosition(line - 1, column) - indentationOffset(line - 1);
@@ -84,8 +79,17 @@ public class NodeStyleSpan {
     }
 
 
-    public static NodeStyleSpan fromNode(Node node, Collection<String> styles, CustomCodeArea codeArea) {
-        return new NodeStyleSpan(node, styles, codeArea);
+    /**
+     * Returns a comparator that orders spans according to the start
+     * index of the node they wrap.
+     */
+    public static Comparator<NodeStyleSpan> documentOrderComparator() {
+        return COMPARATOR;
+    }
+
+
+    public static NodeStyleSpan fromNode(Node node, CustomCodeArea codeArea) {
+        return new NodeStyleSpan(node, codeArea);
     }
 
 
@@ -100,22 +104,17 @@ public class NodeStyleSpan {
         }
 
 
-        public PositionSnapshot update() {
-            PositionSnapshot newSnap = NodeStyleSpan.this.snapshot();
-            beginIndex = newSnap.beginIndex;
-            endIndex = newSnap.endIndex;
-            return this;
-        }
-
         @Override
         public String toString() {
             // debug only
             return getText() + "@[" + beginIndex + "," + endIndex + ']';
         }
 
+
         private String getText() {
             return codeArea.getText(beginIndex, endIndex);
         }
+
 
         public int getBeginIndex() {
             return beginIndex;
@@ -131,18 +130,5 @@ public class NodeStyleSpan {
             return endIndex - beginIndex;
         }
 
-        //        public boolean isBefore(PositionSnapshot other) {
-        //            return other.getBeginIndex()
-        //        }
-
-
-        public Collection<String> getStyle() {
-            return NodeStyleSpan.this.getStyle();
-        }
-
-
-        public StyleSpan<Collection<String>> toSpan() {
-            return new StyleSpan<>(getStyle(), getLength());
-        }
     }
 }

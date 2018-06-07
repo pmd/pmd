@@ -229,8 +229,13 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
 
     public void refreshAST() {
-        sourceEditorController.refreshAST().ifPresent(root -> xpathPanelController.evaluateXPath(root, getLanguageVersion()));
-        refreshXPathResults();
+        Optional<Node> root = sourceEditorController.refreshAST();
+
+        if (root.isPresent()) {
+            xpathPanelController.evaluateXPath(root.get(), getLanguageVersion());
+        } else {
+            xpathPanelController.invalidateResults(true);
+        }
     }
 
     public void refreshXPathResults() {

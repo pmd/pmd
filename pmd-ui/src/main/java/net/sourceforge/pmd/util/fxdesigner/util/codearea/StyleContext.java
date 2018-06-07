@@ -53,12 +53,6 @@ class StyleContext {
     }
 
 
-    public void setSyntaxHighlight(StyleSpans<Collection<String>> spans) {
-        syntaxHighlight.setValue(spans);
-    }
-
-
-
     private StyleSpans<Collection<String>> emptySpan() {
         return StyleSpans.singleton(Collections.emptyList(), codeArea.getLength());
     }
@@ -69,11 +63,17 @@ class StyleContext {
         StyleSpans<Collection<String>> base = syntaxHighlight.map(s -> subtract(currentSpans, s)).getOrElse(currentSpans);
         syntaxHighlight.setValue(newSyntax);
 
-        return base.overlay(newSyntax, (style1, style2) -> {
-            Set<String> styles = new HashSet<>(style1);
-            styles.addAll(style2);
-            return styles;
-        }).subView(0, codeArea.getLength());
+        return base.overlay(newSyntax, StyleContext::additiveOverlay).subView(0, codeArea.getLength());
+    }
+
+
+    /** Returns the style of the code area where the first arg is replaced by the second arg. */
+    private StyleSpans<Collection<String>> diffSpans(Optional<StyleSpans<Collection<String>>> base, StyleSpans<Collection<String>> newSpans) {
+        StyleSpans<Collection<String>> currentSpans = codeArea.getStyleSpans(new IndexRange(0, codeArea.getLength()));
+        return base.map(b -> subtract(currentSpans, b))
+                   .orElse(currentSpans)
+                   .overlay(newSpans, StyleContext::additiveOverlay)
+                   .subView(0, codeArea.getLength());
     }
 
 
@@ -99,19 +99,24 @@ class StyleContext {
         return allSpans.stream()
                        .filter(spans -> spans != base)
                        .filter(spans -> spans.length() <= codeArea.getLength())
-                       .reduce(base,
-                               (accumulator, elt) -> accumulator.overlay(elt, (style1, style2) -> {
-                                   Set<String> styles = new HashSet<>(style1);
-                                   styles.addAll(style2);
-                                   return styles;
-                               })
-                       );
+                       .reduce(base, (accumulator, elt) -> accumulator.overlay(elt, StyleContext::additiveOverlay));
 
 
     }
 
+    public void setSyntaxHighlight(StyleSpans<Collection<String>> syntaxHighlight) {
+        this.syntaxHighlight.setValue(syntaxHighlight);
+    }
 
-    static StyleSpans<Collection<String>> subtract(StyleSpans<Collection<String>> base, StyleSpans<Collection<String>> diff) {
+
+    private static Collection<String> additiveOverlay(Collection<String> style1, Collection<String> style2) {
+        Set<String> styles = new HashSet<>(style1);
+        styles.addAll(style2);
+        return styles;
+    }
+
+
+    private static StyleSpans<Collection<String>> subtract(StyleSpans<Collection<String>> base, StyleSpans<Collection<String>> diff) {
         return base.overlay(diff, (style1, style2) -> {
             Set<String> styles = new HashSet<>(style1);
             styles.removeAll(style2);

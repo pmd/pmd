@@ -8,7 +8,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +19,6 @@ import java.util.Set;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.NodeStyleSpan.PositionSnapshot;
 
 
@@ -39,7 +37,7 @@ public class UniformStyleCollection {
     public UniformStyleCollection(Set<String> style, Collection<NodeStyleSpan> ns) {
         this.style = style;
         this.nodes = new ArrayList<>(ns);
-        nodes.sort(Comparator.comparing(NodeStyleSpan::getNode, Comparator.comparingInt(Node::getBeginLine).thenComparing(Node::getBeginColumn)));
+        nodes.sort(NodeStyleSpan.documentOrderComparator());
     }
 
 
@@ -90,13 +88,9 @@ public class UniformStyleCollection {
     }
 
 
-    StyleSpans<Collection<String>> cachedSpans;
 
 
     public StyleSpans<Collection<String>> toSpans() {
-        if (cachedSpans != null) {
-            return cachedSpans;
-        }
 
         if (nodes.isEmpty()) {
             return StyleSpans.singleton(Collections.emptyList(), 0);
@@ -131,12 +125,14 @@ public class UniformStyleCollection {
             if (previous.getEndIndex() > current.getBeginIndex()) {
                 // The current overlaps with the previous
 
-                int length = current.getLength();
-                int offset = current.getBeginIndex() - lastSpanEnd;
+                // This part sometimes throws exceptions when the text changes while the computation is in progress
+                // In practice, they can totally be ignored since the highlighting will be recomputed next time
+                // the code area is recomputed.
 
-
+                // gap
+                builder.add(styleForDepth(overlappingNodes.size() - 1), previous.getBeginIndex() - lastSpanEnd);
                 // common part
-                builder.add(styleForDepth(overlappingNodes.size()), current.getBeginIndex() - lastSpanEnd);
+                builder.add(styleForDepth(overlappingNodes.size()), current.getBeginIndex() - previous.getBeginIndex());
                 lastSpanEnd = current.getBeginIndex();
 
                 overlappingNodes.addFirst(previous);
@@ -145,14 +141,16 @@ public class UniformStyleCollection {
                 continue;
             } else {
                 // no overlap, the previous span can be added
-                // the depth - 1 is for the "empty" span
+
+                // the depth - 1 is for the gap
                 builder.add(styleForDepth(overlappingNodes.size() - 1), previous.getBeginIndex() - lastSpanEnd);
                 // previous node
-                builder.add(styleForDepth(overlappingNodes.size()), previous.getEndIndex() - previous.getBeginIndex());
+                builder.add(styleForDepth(overlappingNodes.size()), previous.getLength());
                 lastSpanEnd = previous.getEndIndex();
                 previous = current;
             }
 
+            // first check whether some of the enclosing spans end between the end of the previous and the beginning of the current
             Iterator<PositionSnapshot> overlaps = overlappingNodes.iterator();
             while (overlaps.hasNext()) {
                 PositionSnapshot enclosing = overlaps.next();
@@ -178,8 +176,7 @@ public class UniformStyleCollection {
             lastSpanEnd = enclosing.getEndIndex();
         }
 
-        cachedSpans = builder.create();
-        return cachedSpans;
+        return builder.create();
     }
 
 
