@@ -7,6 +7,8 @@ package net.sourceforge.pmd.util.fxdesigner;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -50,6 +52,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -84,6 +88,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     @SuppressWarnings("PMD.SingularField")
     private ChoiceBox<String> xpathVersionChoiceBox;
 
+    private ContextMenu autoCompletePopup;
+
 
     public XPathPanelController(DesignerRoot owner, MainDesignerController mainController) {
         this.designerRoot = owner;
@@ -112,7 +118,50 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            // Reevaluate XPath anytime the expression or the XPath version changes
                            .or(xpathVersionProperty().changes())
                            .subscribe(tick -> parent.refreshXPathResults());
+
+        xpathExpressionArea.richChanges()
+                           .subscribe(t -> autoComplete());
+
     }
+
+    private void autoComplete() {
+
+        autoCompletePopup = new ContextMenu();
+
+        List<MenuItem> resultToDisplay = new ArrayList<>();
+        String[] array = xpathExpressionArea.getText().split("/");
+        List<String> list = Arrays.asList(array);
+
+        /*
+        * Here is what needs to be done
+        * I need to get the AST parse convert it into a Trie data structure
+        * Find a way to get the current typing expression and result
+        * and display results based on the search
+        * but trie may not be the best option because it is like a dictionary search
+        * just thinking right now
+        *
+        * */
+        MenuItem item = new MenuItem("Test");
+        autoCompletePopup.getItems().add(item);
+
+        if (xpathExpressionArea.getText().length() > 0) {
+
+            xpathExpressionArea.addEventHandler(KeyEvent.KEY_TYPED, t -> {
+                if (t.getCode() != KeyCode.ESCAPE) {
+                    autoCompletePopup.show(xpathExpressionArea, 500, 500);
+                }
+            });
+
+            xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
+                if (t.getCode() == KeyCode.ESCAPE) {
+                    autoCompletePopup.hide();
+                }
+            });
+
+
+        }
+    }
+
 
 
     private void initGenerateXPathFromStackTrace() {
