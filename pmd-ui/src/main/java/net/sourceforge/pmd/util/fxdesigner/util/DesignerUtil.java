@@ -157,14 +157,13 @@ public final class DesignerUtil {
      */
     public static <T> void rewire(Property<T> underlying, ObservableValue<? extends T> ui, Consumer<? super T> setter) {
         setter.accept(underlying.getValue());
-        underlying.unbind();
-        underlying.bind(ui); // Bindings are garbage collected after the popup dies
+        rewire(underlying, ui);
     }
     
     /** Like rewire, with no initialisation. */
     public static <T> void rewire(Property<T> underlying, ObservableValue<? extends T> source) {
         underlying.unbind();
-        underlying.bind(source);
+        underlying.bind(source); // Bindings are garbage collected after the popup dies
     }
 
 

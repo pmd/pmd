@@ -73,7 +73,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     private final ObservableXPathRuleBuilder ruleBuilder = new ObservableXPathRuleBuilder();
 
     @FXML
-    private PropertyTableView propertyView;
+    private PropertyTableView propertyTableView;
     @FXML
     private CustomCodeArea xpathExpressionArea;
     @FXML
@@ -167,7 +167,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         DesignerUtil.rewire(getRuleBuilder().xpathExpressionProperty(), xpathExpressionProperty());
 
         DesignerUtil.rewire(getRuleBuilder().rulePropertiesProperty(),
-                            propertyView.rulePropertiesProperty(), propertyView::setRuleProperties);
+                            propertyTableView.rulePropertiesProperty(), propertyTableView::setRuleProperties);
     }
 
 

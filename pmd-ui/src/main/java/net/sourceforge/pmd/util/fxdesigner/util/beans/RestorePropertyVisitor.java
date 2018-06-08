@@ -6,9 +6,11 @@ package net.sourceforge.pmd.util.fxdesigner.util.beans;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -90,6 +92,9 @@ public class RestorePropertyVisitor extends BeanNodeVisitor<SettingsOwner> {
 
         Iterator<SettingsOwner> existingItems = container.iterator();
         Class<?> itemType = null;
+        // use a buffer to avoid concurrent modification
+        List<SettingsOwner> itemsToAdd = new ArrayList<>();
+
         for (SimpleBeanModelNode child : model.getChildrenNodes()) {
             SettingsOwner item;
             if (existingItems.hasNext()) {
@@ -108,8 +113,10 @@ public class RestorePropertyVisitor extends BeanNodeVisitor<SettingsOwner> {
             }
 
             child.accept(this, item);
-            container.add(item);
+            itemsToAdd.add(item);
         }
+
+        container.addAll(itemsToAdd);
 
         try {
             PropertyUtils.setProperty(target, model.getPropertyName(), container);

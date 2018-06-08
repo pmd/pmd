@@ -20,6 +20,11 @@ This is a minor release.
 ### New and noteworthy
 
 ### Fixed Issues
+
+*   ecmascript
+    *   [#861](https://github.com/pmd/pmd/issues/861): \[ecmascript] InnaccurateNumericLiteral false positive with hex literals
+*   java-codestyle
+    *   [#1158](https://github.com/pmd/pmd/issues/1158): \[java] Fix IdenticalCatchBranches false positive
 *   xml
     *   [#715](https://github.com/pmd/pmd/issues/715): \[xml] ProjectVersionAsDependencyVersion false positive
 
