@@ -76,9 +76,9 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
     private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(Collections.emptyList());
-    private final Val<ClassLoader> auxclasspathClassLoader = auxclasspathFiles.map(files -> {
+    private final Val<ClassLoader> auxclasspathClassLoader = auxclasspathFiles.map(fileList -> {
         try {
-            return new ClasspathClassLoader(files, SourceEditorController.class.getClassLoader());
+            return new ClasspathClassLoader(fileList, SourceEditorController.class.getClassLoader());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -116,6 +116,8 @@ public class SourceEditorController implements Initializable, SettingsOwner {
                           tick.ifRight(c -> astTreeView.setRoot(null));
                           parent.refreshAST();
                       });
+
+        auxclasspathClassLoader.changes().subscribe(t -> parent.refreshAST());
 
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
     }

@@ -57,7 +57,7 @@ public class AuxClassPathController implements Initializable, SettingsOwner {
         removeFileButton.disableProperty().bind(fileListView.getSelectionModel().selectedItemProperty().isNull());
         moveItemUpButton.disableProperty().bind(fileListView.getSelectionModel().selectedItemProperty().isNull());
         moveItemDownButton.disableProperty().bind(fileListView.getSelectionModel().selectedItemProperty().isNull());
-        setClassPathButton.disableProperty().bind(fileListView.getSelectionModel().selectedItemProperty().isNull());
+
 
 
         selectFilesButton.setOnAction(e -> onSelectFileClicked());

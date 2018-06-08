@@ -33,16 +33,14 @@ public class ClasspathClassLoader extends URLClassLoader {
     static {
         registerAsParallelCapable();
     }
-    
-    public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
-        super(initURLs(classpath), parent);
-    }
-
 
     public ClasspathClassLoader(List<File> files, ClassLoader parent) throws IOException {
         super(fileToURL(files), parent);
     }
 
+    public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
+        super(initURLs(classpath), parent);
+    }
 
     private static URL[] fileToURL(List<File> files) throws IOException {
 
@@ -51,7 +49,7 @@ public class ClasspathClassLoader extends URLClassLoader {
         for (File f : files) {
             urlList.add(f.toURI().toURL());
         }
-        return urlList.toArray(new URL[urlList.size()]);
+        return urlList.toArray(new URL[0]);
     }
 
     private static URL[] initURLs(String classpath) throws IOException {
