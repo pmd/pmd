@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util;
 
+import java.util.Collection;
+
+import org.fxmisc.richtext.model.StyledDocument;
+
 import net.sourceforge.pmd.lang.ast.Node;
 
 
@@ -12,6 +16,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @since 6.5.0
  */
 public interface ConvenienceNodeWrapper {
+
+
+    StyledDocument<Collection<String>, String, Collection<String>> getNodeRichText();
 
 
     Node getNode();

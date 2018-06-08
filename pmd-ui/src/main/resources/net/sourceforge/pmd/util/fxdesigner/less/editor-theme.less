@@ -18,6 +18,7 @@
         rgba(214, 93, 177, 0.7),
         rgba(132, 94, 194, 0.8);
 
+@active-line-focus-color: #fbf4e1;
 
 /* With syntax highlighting, it's more readable to not change the fill color */
 .focus-highlight {
@@ -82,7 +83,6 @@
     -fx-background-color: derive(black, 90%);
 }
 
-@active-line-focus-color: #fbf4e1;
 
 .paragraph-box:has-caret {
     -fx-background-color: #fbf4e1;
@@ -90,6 +90,9 @@
 
 .text {
     -fx-fill: #585858;
+}
+
+.styled-text-area .text {
     -fx-font-size: 10.5pt;
 }
 
@@ -124,33 +127,33 @@
 /* Syntax highlighting base */
 /****************************/
 
-.styled-text-area .keyword {
+.keyword {
     -fx-fill: #B58900;
     /* -fx-font-weight: bold; */
 }
 
-.styled-text-area .punctuation {
+.punctuation {
 
 }
 
 
-.styled-text-area .literal {
+.literal {
     -fx-fill: #317ECC;
 }
 
 
-.styled-text-area .comment {
+.comment {
     -fx-fill: #93A1A1;
     -fx-font-style: italic; /* doesn't work... */
 }
 
-.styled-text-area .annotation {
+.annotation {
     -fx-fill: #d30102;
 }
 
 /* Java specific */
 
-.styled-text-area .java.class-identifier {
+.java.class-identifier {
     -fx-fill: #B05A65;
 }
 
@@ -162,48 +165,48 @@
     -fx-font-size: 11.5pt;
 }
 
-.styled-text-area .xpath.path {
+.xpath.path {
     -fx-font-weight: bold;
 }
 
-.styled-text-area .xpath.axis {
+.xpath.axis {
     -fx-fill: #B05A65;
 }
 
-.styled-text-area .xpath.bracket {
+.xpath.bracket {
     -fx-font-weight: bolder;
 }
 
-.styled-text-area .xpath.attribute {
+.xpath.attribute {
     -fx-fill: #B05A65;
 }
 
-.styled-text-area .xpath.function {
+.xpath.function {
     -fx-fill: #cc971b;
 }
 
 /* XML specific */
 
-.styled-text-area .xml.xml-prolog {
+.xml.xml-prolog {
     -fx-font-weight: bolder;
 }
 
-.styled-text-area .xml.tag-name {
+.xml.tag-name {
     -fx-fill: #B05A65;
 }
 
-.styled-text-area .xml.lt-gt {
+.xml.lt-gt {
     -fx-fill: #B05A65;
 }
 
-.styled-text-area .xml.attribute-name {
+.xml.attribute-name {
     -fx-fill: #B58900;
 }
 
-.styled-text-area .xml.cdata-tag {
+.xml.cdata-tag {
     -fx-fill: #B58900;
 }
 
-.styled-text-area .xml.cdata-content {
+.xml.cdata-content {
     -fx-fill: #93A1A1;
 }

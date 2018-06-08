@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.fxmisc.richtext.model.Paragraph;
+import org.fxmisc.richtext.model.StyledDocument;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.util.ConvenienceNodeWrapper;
@@ -116,6 +117,11 @@ class NodeStyleSpan {
             return codeArea.getText(beginIndex, endIndex);
         }
 
+
+        @Override
+        public StyledDocument<Collection<String>, String, Collection<String>> getNodeRichText() {
+            return codeArea.subDocument(beginIndex, endIndex);
+        }
 
         public int getBeginIndex() {
             return beginIndex;
