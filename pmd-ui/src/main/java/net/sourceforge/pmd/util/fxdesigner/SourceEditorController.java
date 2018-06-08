@@ -59,7 +59,8 @@ import javafx.scene.control.TreeView;
  * @since 6.0.0
  */
 public class SourceEditorController implements Initializable, SettingsOwner {
-    private final MainDesignerController parent;
+
+    private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
     @FXML
     private Label astTitleLabel;
@@ -70,8 +71,11 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     private ASTManager astManager;
     private TreeViewWrapper<Node> treeViewWrapper;
+
+    private final MainDesignerController parent;
+
+    private Var<Node> currentFocusNode = Var.newSimpleVar(null);
     private ASTTreeItem selectedTreeItem;
-    private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
     private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(Collections.emptyList());
     private final Val<ClassLoader> auxclasspathClassLoader = auxclasspathFiles.map(fileList -> {
@@ -123,13 +127,21 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private IntFunction<javafx.scene.Node> lineNumberFactory() {
         IntFunction<javafx.scene.Node> base = LineNumberFactory.get(codeEditorArea);
         Val<Integer> activePar = Val.wrap(codeEditorArea.currentParagraphProperty());
+
         return idx -> {
 
-            Label label = (Label) base.apply(idx);
+            javafx.scene.Node label = base.apply(idx);
 
             activePar.conditionOnShowing(label)
                      .values()
                      .subscribe(p -> label.pseudoClassStateChanged(PseudoClass.getPseudoClass("has-caret"), idx == p));
+
+            // adds a pseudo class if part of the focus node appears on this line
+            currentFocusNode.conditionOnShowing(label)
+                            .values()
+                            .subscribe(n -> label.pseudoClassStateChanged(PseudoClass.getPseudoClass("is-focus-node"),
+                                                                          n != null && idx <= n.getEndLine() - 1 && idx >= n.getBeginLine() - 1));
+
             return label;
         };
     }
@@ -219,6 +231,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     /** Highlights the given node. Removes highlighting on the previously highlighted node. */
     public void setFocusNode(Node node) {
         highlightNodes(Collections.singleton(node), LayerId.FOCUS, true, true);
+        currentFocusNode.setValue(node);
     }
 
 

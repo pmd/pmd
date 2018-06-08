@@ -94,16 +94,24 @@
 }
 
 /* Line numbers */
-.label.lineno {
+.lineno {
 
     -fx-fill: #586E75;
     -fx-font-size: 80%;
     -fx-font-weight: normal;
 
-    //noinspection CssInvalidPseudoSelector
-    &:has-caret {
+    @lineno-focus-base: average(@active-line-focus-color, @darker-accent);
 
-        -fx-background-color: darken(average(@active-line-focus-color, @darker-accent), 15%);
+    &:is-focus-node {
+        -fx-background-color: darken(@lineno-focus-base, 5%);
+
+        .text {
+            -fx-font-weight: bolder;
+        }
+    }
+
+    &:has-caret {
+        -fx-background-color: darken(@lineno-focus-base, 15%);
 
         .text {
             -fx-fill: white;
