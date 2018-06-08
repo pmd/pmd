@@ -31,3 +31,5 @@ This is a minor release.
 ### API Changes
 
 ### External Contributions
+
+*   [#1159](https://github.com/pmd/pmd/pull/1159): \[ui] Allow to setup the auxclasspath in the designer - [Akshat Bahety](https://github.com/akshatbahety)
