@@ -81,11 +81,6 @@ public final class DesignerUtil {
     }
 
 
-    public static URL getCss(String simpleName) {
-        return DesignerUtil.class.getResource("/net/sourceforge/pmd/util/fxdesigner/css/" + simpleName);
-    }
-
-
     /**
      * Name of the designer's settings file.
      *

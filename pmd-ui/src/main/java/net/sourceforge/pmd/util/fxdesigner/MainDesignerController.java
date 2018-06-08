@@ -277,7 +277,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
                                                   getLanguageVersion(), query);
     }
 
-    // TODO consider using a messenger pattern instead of mediator
 
     /**
      * Handles nodes that potentially caused an error.

@@ -6,13 +6,11 @@ package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
 
 import java.util.Collection;
-import java.util.regex.Pattern;
 
 import org.fxmisc.richtext.model.StyleSpan;
 import org.fxmisc.richtext.model.StyledDocument;
 
 import net.sourceforge.pmd.util.fxdesigner.util.ConvenienceNodeWrapper;
-import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 import javafx.scene.control.ListCell;
 import javafx.scene.text.Text;
@@ -24,7 +22,6 @@ import javafx.scene.text.TextFlow;
  * @since 6.0.0
  */
 public class XpathViolationListCell extends ListCell<ConvenienceNodeWrapper> {
-    private static final Pattern TRUNCATION_PATTERN = Pattern.compile("\\R.*$", Pattern.DOTALL);
 
     @Override
     protected void updateItem(ConvenienceNodeWrapper item, boolean empty) {
@@ -35,8 +32,6 @@ public class XpathViolationListCell extends ListCell<ConvenienceNodeWrapper> {
             setGraphic(null);
         } else {
             setGraphic(richTextForNode(item));
-//            String text = TRUNCATION_PATTERN.matcher(item.getNodeText()).replaceFirst("...");
-//            setText("(l. " + item.getNode().getBeginLine() + ", c. " + item.getNode().getBeginColumn() + "): " + text);
         }
     }
 
@@ -66,8 +61,6 @@ public class XpathViolationListCell extends ListCell<ConvenienceNodeWrapper> {
         if (lastSpanEnd < richText.length()) {
             result.getChildren().add(new Text("..."));
         }
-
-        result.getStylesheets().add(DesignerUtil.getCss("editor-theme.css").toExternalForm());
 
         return result;
     }
