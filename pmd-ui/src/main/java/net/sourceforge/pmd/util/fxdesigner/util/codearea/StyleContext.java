@@ -58,25 +58,6 @@ class StyleContext {
     }
 
 
-    public StyleSpans<Collection<String>> updateSyntaxHighlight(StyleSpans<Collection<String>> newSyntax) {
-        StyleSpans<Collection<String>> currentSpans = codeArea.getStyleSpans(new IndexRange(0, codeArea.getLength()));
-        StyleSpans<Collection<String>> base = syntaxHighlight.map(s -> subtract(currentSpans, s)).getOrElse(currentSpans);
-        syntaxHighlight.setValue(newSyntax);
-
-        return base.overlay(newSyntax, StyleContext::additiveOverlay).subView(0, codeArea.getLength());
-    }
-
-
-    /** Returns the style of the code area where the first arg is replaced by the second arg. */
-    private StyleSpans<Collection<String>> diffSpans(Optional<StyleSpans<Collection<String>>> base, StyleSpans<Collection<String>> newSpans) {
-        StyleSpans<Collection<String>> currentSpans = codeArea.getStyleSpans(new IndexRange(0, codeArea.getLength()));
-        return base.map(b -> subtract(currentSpans, b))
-                   .orElse(currentSpans)
-                   .overlay(newSpans, StyleContext::additiveOverlay)
-                   .subView(0, codeArea.getLength());
-    }
-
-
     /**
      * Recomputes a single style spans from the syntax highlighting layer and nodes to highlight.
      *
@@ -92,6 +73,12 @@ class StyleContext {
             return syntaxHighlight.getOrElse(emptySpan());
         }
 
+        // TODO highlighting on the primary editor could maybe be
+        // made more resilient to rapid changes if we used an
+        // up-to-date syntax highlight layer here and don't compute
+        // it asynchronously.
+        // But our other areas (like XPath) which don't refresh other
+        // highlighting after compilation need autorefresh.
         syntaxHighlight.ifPresent(allSpans::add);
 
         final StyleSpans<Collection<String>> base = allSpans.get(0);
@@ -104,8 +91,20 @@ class StyleContext {
 
     }
 
-    public void setSyntaxHighlight(StyleSpans<Collection<String>> syntaxHighlight) {
-        this.syntaxHighlight.setValue(syntaxHighlight);
+
+    /**
+     * Update the syntax highlighting to the specified value.
+     * If null, syntax highlighting is stripped off.
+     */
+    public void setSyntaxHighlight(StyleSpans<Collection<String>> newSyntax) {
+        StyleSpans<Collection<String>> currentSpans = codeArea.getStyleSpans(new IndexRange(0, codeArea.getLength()));
+        StyleSpans<Collection<String>> base = syntaxHighlight.map(s -> subtract(currentSpans, s)).getOrElse(currentSpans);
+        this.syntaxHighlight.setValue(newSyntax);
+
+        codeArea.setStyleSpans(0, Optional.ofNullable(newSyntax)
+                                          .map(s -> base.overlay(s, StyleContext::additiveOverlay))
+                                          .orElse(base)
+                                          .subView(0, codeArea.getLength()));
     }
 
 

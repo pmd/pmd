@@ -4,13 +4,15 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,7 +40,6 @@ import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.Pe
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
@@ -77,7 +78,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private Var<Node> currentFocusNode = Var.newSimpleVar(null);
     private ASTTreeItem selectedTreeItem;
 
-    private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(Collections.emptyList());
+    private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(emptyList());
     private final Val<ClassLoader> auxclasspathClassLoader = auxclasspathFiles.map(fileList -> {
         try {
             return new ClasspathClassLoader(fileList, SourceEditorController.class.getClassLoader());
@@ -189,26 +190,9 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    public void shutdown() {
-        codeEditorArea.disableSyntaxHighlighting();
-    }
-
-
     private void updateSyntaxHighlighter(Language language) {
-        Optional<SyntaxHighlighter> highlighter = AvailableSyntaxHighlighters.getHighlighterForLanguage(language);
-
-        if (highlighter.isPresent()) {
-            codeEditorArea.setSyntaxHighlighter(highlighter.get());
-        } else {
-            codeEditorArea.disableSyntaxHighlighting();
-        }
-    }
-
-
-    /** Clears the focus node highlight. */
-    public void clearFocusHighlight() {
-        clearLayer(LayerId.FOCUS);
-
+        codeEditorArea.setSyntaxHighlighter(AvailableSyntaxHighlighters.getHighlighterForLanguage(language)
+                                                                       .orElse(null));
     }
 
 
@@ -228,12 +212,15 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         codeEditorArea.clearStyleLayer(id);
     }
 
-    /** Highlights the given node. Removes highlighting on the previously highlighted node. */
+
+    /**
+     * Highlights the given node (or nothing if null).
+     * Removes highlighting on the previously highlighted node.
+     */
     public void setFocusNode(Node node) {
-        highlightNodes(Collections.singleton(node), LayerId.FOCUS, true, true);
+        highlightNodes(node == null ? emptyList() : singleton(node), LayerId.FOCUS, true, true);
         currentFocusNode.setValue(node);
     }
-
 
     /** Highlights xpath results (xpath highlight). */
     public void highlightXPathResults(Collection<? extends Node> nodes) {

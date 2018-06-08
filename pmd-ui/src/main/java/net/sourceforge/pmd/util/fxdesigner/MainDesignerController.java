@@ -223,9 +223,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
             // nevermind
             ioe.printStackTrace();
         }
-
-        sourceEditorController.shutdown(); // shutdown syntax highlighting
-        xpathPanelController.shutdown();
     }
 
 
@@ -396,7 +393,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     public void invalidateAst() {
         nodeInfoPanelController.invalidateInfo();
         xpathPanelController.invalidateResults(false);
-        sourceEditorController.clearFocusHighlight();
+        sourceEditorController.setFocusNode(null);
     }
 
 

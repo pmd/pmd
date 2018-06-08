@@ -94,7 +94,6 @@ public class ExportXPathWizardController implements Initializable {
         registeredListeners.entrySet().stream()
                            .filter(e -> e.getKey() != null)
                            .forEach(e -> e.getKey().removeListener(e.getValue()));
-        exportResultArea.disableSyntaxHighlighting();
     }
 
 

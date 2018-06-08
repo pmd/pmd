@@ -277,11 +277,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     }
 
 
-    public void shutdown() {
-        xpathExpressionArea.disableSyntaxHighlighting();
-    }
-
-
     @PersistentProperty
     public boolean isResultHighlightingOn() {
         return resultHighlightingToggle.isSelected();
