@@ -222,7 +222,7 @@ public class XmlNodeWrapper extends AbstractDomNodeProxy implements XmlNode {
             @Override
             public Attribute next() {
                 org.w3c.dom.Node attributeNode = attributes.item(index++);
-                return new Attribute(parser.wrapDomNode(node),
+                return new Attribute(XmlNodeWrapper.this,
                                      attributeNode.getNodeName(),
                                      attributeNode.getNodeValue());
             }
