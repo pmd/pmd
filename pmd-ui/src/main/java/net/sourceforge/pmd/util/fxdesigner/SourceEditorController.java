@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
-import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
+import net.sourceforge.pmd.util.fxdesigner.popups.AuxclasspathSetupController;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
@@ -41,16 +41,11 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 
 /**
@@ -148,42 +143,10 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    public void showAuxClassPathController(DesignerRoot root) {
-        AuxClassPathController auxClassPathController = new AuxClassPathController(root);
-
-        FXMLLoader fxmlLoader = new FXMLLoader(DesignerUtil.getFxml("auxclasspath-setup-popup.fxml"));
-
-        fxmlLoader.setControllerFactory(type -> {
-            if (type == AuxClassPathController.class) {
-                return auxClassPathController;
-            } else {
-                throw new IllegalStateException("Wrong controller!");
-            }
-        });
-        try {
-            Parent root1 = fxmlLoader.load();
-
-            auxClassPathController.setAuxclasspathFiles(auxclasspathFiles.getValue());
-
-            Stage stage = new Stage();
-            stage.initOwner(root.getMainStage());
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.setScene(new Scene(root1));
-            stage.show();
-
-            auxClassPathController.setOnApply(files -> {
-                stage.close();
-                auxclasspathFiles.setValue(files);
-            });
-
-            auxClassPathController.setOnCancel(stage::close);
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
+    public void showAuxclasspathSetupPopup(DesignerRoot root) {
+        new AuxclasspathSetupController(root).show(root.getMainStage(),
+                                                   auxclasspathFiles.getValue(),
+                                                   auxclasspathFiles::setValue);
     }
 
 

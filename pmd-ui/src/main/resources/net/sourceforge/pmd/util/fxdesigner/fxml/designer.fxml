@@ -44,10 +44,11 @@
                                         <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License" />
                                     </items>
                                 </Menu>
-                                <Menu mnemonicParsing="false" text="PMD Configuration">
+                                <Menu mnemonicParsing="false" text="Configuration">
                                     <items>
                                         <MenuItem fx:id="setupAuxclasspathMenuItem" mnemonicParsing="false"
-                                                  text="Set up the auxclasspath"/>
+                                                  text="Set up the auxclasspath" >
+                                        </MenuItem>
                                     </items>
                                 </Menu>
 

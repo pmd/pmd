@@ -164,13 +164,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
             }
         });
 
-        setupAuxclasspathMenuItem.setOnAction(e -> {
-            try {
-                sourceEditorController.showAuxClassPathController(designerRoot);
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        });
+        setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup(designerRoot));
 
 
 

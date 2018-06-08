@@ -28,6 +28,7 @@ import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.model.ObservableXPathRuleBuilder;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
+import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;

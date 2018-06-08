@@ -66,6 +66,20 @@
             <artifactId>commons-beanutils-core</artifactId>
             <version>1.8.3</version>
         </dependency>
+
+        <!-- Icon packs -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fontawesome-pack</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
+        <!-- PMD dependencies -->
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-apex</artifactId>
