@@ -109,15 +109,14 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         codeEditorArea.richChanges()
                       .filter(t -> !t.isIdentity())
                       .successionEnds(AST_REFRESH_DELAY)
-                      // Refresh the AST anytime the text or the language version changes
+                      // Refresh the AST anytime the text, classloader, or language version changes
+                      .or(auxclasspathClassLoader.changes())
                       .or(languageVersionProperty().changes())
                       .subscribe(tick -> {
                           // Discard the AST if the language version has changed
                           tick.ifRight(c -> astTreeView.setRoot(null));
                           parent.refreshAST();
                       });
-
-        auxclasspathClassLoader.changes().subscribe(t -> parent.refreshAST());
 
         codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
     }
