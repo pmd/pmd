@@ -73,7 +73,10 @@ public class MainDesignerController implements Initializable, SettingsOwner {
      */
     private final DesignerRoot designerRoot;
 
+
     /* Menu bar */
+    @FXML
+    private MenuItem setupAuxclasspathMenuItem;
     @FXML
     private MenuItem openFileMenuItem;
     @FXML
@@ -160,6 +163,10 @@ public class MainDesignerController implements Initializable, SettingsOwner {
                 e1.printStackTrace();
             }
         });
+
+        setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup(designerRoot));
+
+
 
         sourceEditorController.refreshAST();
         xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(),

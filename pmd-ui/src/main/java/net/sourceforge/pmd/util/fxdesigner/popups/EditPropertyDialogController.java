@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.fxdesigner;
+package net.sourceforge.pmd.util.fxdesigner.popups;
 
 import static net.sourceforge.pmd.properties.MultiValuePropertyDescriptor.DEFAULT_DELIMITER;
 import static net.sourceforge.pmd.properties.MultiValuePropertyDescriptor.DEFAULT_NUMERIC_DELIMITER;

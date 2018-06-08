@@ -4,14 +4,19 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -22,8 +27,10 @@ import org.reactfx.value.Var;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
+import net.sourceforge.pmd.util.fxdesigner.popups.AuxclasspathSetupController;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
@@ -50,6 +57,7 @@ import javafx.scene.control.TreeView;
 public class SourceEditorController implements Initializable, SettingsOwner {
     private final MainDesignerController parent;
 
+
     @FXML
     private Label astTitleLabel;
     @FXML
@@ -62,13 +70,21 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private ASTTreeItem selectedTreeItem;
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
+    private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(Collections.emptyList());
+    private final Val<ClassLoader> auxclasspathClassLoader = auxclasspathFiles.map(fileList -> {
+        try {
+            return new ClasspathClassLoader(fileList, SourceEditorController.class.getClassLoader());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return SourceEditorController.class.getClassLoader();
+    });
+
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
         parent = mainController;
         astManager = new ASTManager(owner);
 
     }
-
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -88,7 +104,8 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         codeEditorArea.richChanges()
                       .filter(t -> !t.isIdentity())
                       .successionEnds(AST_REFRESH_DELAY)
-                      // Refresh the AST anytime the text or the language version changes
+                      // Refresh the AST anytime the text, classloader, or language version changes
+                      .or(auxclasspathClassLoader.changes())
                       .or(languageVersionProperty().changes())
                       .subscribe(tick -> {
                           // Discard the AST if the language version has changed
@@ -114,7 +131,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         }
 
         try {
-            current = astManager.updateCompilationUnit(source);
+            current = astManager.updateCompilationUnit(source, auxclasspathClassLoader.getValue());
         } catch (ParseAbortedException e) {
             invalidateAST(true);
             return;
@@ -123,6 +140,25 @@ public class SourceEditorController implements Initializable, SettingsOwner {
             parent.invalidateAst();
             setUpToDateCompilationUnit(current);
         }
+    }
+
+
+    public void showAuxclasspathSetupPopup(DesignerRoot root) {
+        new AuxclasspathSetupController(root).show(root.getMainStage(),
+                                                   auxclasspathFiles.getValue(),
+                                                   auxclasspathFiles::setValue);
+    }
+
+
+    @PersistentProperty
+    public String getAuxclasspathFiles() {
+        return auxclasspathFiles.getValue().stream().map(p -> p.getAbsolutePath()).collect(Collectors.joining(File.pathSeparator));
+    }
+
+
+    public void setAuxclasspathFiles(String files) {
+        List<File> newVal = Arrays.asList(files.split(File.pathSeparator)).stream().map(File::new).collect(Collectors.toList());
+        auxclasspathFiles.setValue(newVal);
     }
 
 
@@ -182,7 +218,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
         // node is different from the old one
         if (selectedTreeItem == null && node != null
-                || selectedTreeItem != null && !Objects.equals(node, selectedTreeItem.getValue())) {
+            || selectedTreeItem != null && !Objects.equals(node, selectedTreeItem.getValue())) {
             ASTTreeItem found = ((ASTTreeItem) astTreeView.getRoot()).findItem(node);
             if (found != null) {
                 selectionModel.select(found);

@@ -28,6 +28,7 @@ import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.model.ObservableXPathRuleBuilder;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
+import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
@@ -226,7 +227,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
 
     public void showExportXPathToRuleWizard() throws IOException {
-        // doesn't work for some reason
         ExportXPathWizardController wizard
                 = new ExportXPathWizardController(xpathExpressionProperty());
 
