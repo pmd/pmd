@@ -195,7 +195,7 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
      * @return the found child node or <code>null</code>
      */
     @SafeVarargs
-    private static <N> N getFirstChild(Node root, Class<? extends Node> ... childrenTypes) {
+    private static <N extends Node> N getFirstChild(Node root, Class<? extends Node> ... childrenTypes) {
         Node current = root;
         for (Class<? extends Node> clazz : childrenTypes) {
             Node child = current.getFirstChildOfType(clazz);
