@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
@@ -30,6 +31,7 @@ import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.model.ObservableXPathRuleBuilder;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
+import net.sourceforge.pmd.util.fxdesigner.model.XPathSuggestions;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
@@ -127,23 +129,24 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     private void autoComplete() {
 
         autoCompletePopup = new ContextMenu();
-
         List<MenuItem> resultToDisplay = new ArrayList<>();
+        File folder = new File("G:\\pmd\\pmd-java\\src\\main\\java\\net\\sourceforge\\pmd\\lang\\java\\ast\\");
+
+        XPathSuggestions xPathSuggestions = new XPathSuggestions(folder);
+        List<String> suggestions = xPathSuggestions.getXPathSuggestions();
+
         String[] array = xpathExpressionArea.getText().split("/");
         List<String> list = Arrays.asList(array);
 
-        /*
-        * Here is what needs to be done
-        * I need to get the AST parse convert it into a Trie data structure
-        * Find a way to get the current typing expression and result
-        * and display results based on the search
-        * but trie may not be the best option because it is like a dictionary search
-        * just thinking right now
-        *
-        * */
-        MenuItem item = new MenuItem("Test");
-        autoCompletePopup.getItems().add(item);
 
+        for (String s : suggestions) {
+            if (s.contains(list.get(list.size() - 1))) {
+                MenuItem m = new MenuItem(s);
+                resultToDisplay.add(m);
+            }
+        }
+
+        autoCompletePopup.getItems().addAll(resultToDisplay);
         if (xpathExpressionArea.getText().length() > 0) {
 
             xpathExpressionArea.addEventHandler(KeyEvent.KEY_TYPED, t -> {

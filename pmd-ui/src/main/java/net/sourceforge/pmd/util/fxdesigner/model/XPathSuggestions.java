@@ -10,8 +10,14 @@ import java.util.List;
 
 
 public class XPathSuggestions {
+    private List<String> xPathSuggestions = new ArrayList<>();
+    final private File folder ;
 
-    //G:\pmd\pmd-java\src\main\java\net\sourceforge\pmd\lang\java\ast\ASTMethodDeclaration.java
+    public XPathSuggestions(File folder) {
+        this.folder = folder;
+        xPathSuggestions = evaluateXpathSuggestions(getFileList(folder));
+    }
+
 
 
     private List<String> getFileList(final File folder) {
@@ -31,27 +37,23 @@ public class XPathSuggestions {
         return fileNameList;
     }
 
-    public List<String> getXpathSuggestions(List<String> fileNameList) {
-
-        List<String> xPathSuggestions = new ArrayList<>();
+    private List<String> evaluateXpathSuggestions(List<String> fileNameList) {
         for (String s : fileNameList) {
-            if (s.contains("AST")) {
-                s.replace("AST", "");
-                s.replace("java", "");
-                xPathSuggestions.add(s);
-            }
+                xPathSuggestions.add(s.replace("AST", "").replace(".java",""));
         }
+        return xPathSuggestions;
+    }
 
+    public List<String> getXPathSuggestions() {
         return xPathSuggestions;
     }
 
 
-    public static void main(String[] args) {
-        final File folder = new File("G:\\pmd\\pmd-java\\src\\main\\java\\net\\sourceforge\\pmd\\lang\\java\\ast\\");
-        XPathSuggestions suggestions = new XPathSuggestions();
-        System.out.println(suggestions.getFileList(folder));
-        System.out.println(suggestions.getXpathSuggestions(suggestions.getFileList(folder)));
-
-    }
+//    public static void main(String[] args) {
+//        final
+//        XPathSuggestions suggestions = new XPathSuggestions();
+//        System.out.println(suggestions.getFileList(folder));
+//        System.out.println(suggestions.getXpathSuggestions(suggestions.getFileList(folder)));
+//    }
 
 }
