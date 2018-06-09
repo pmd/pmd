@@ -21,6 +21,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   all
+    *   [#1168](https://github.com/pmd/pmd/issues/1168): \[core] xml renderer schema definitions (#538) break included xslt files
 *   ecmascript
     *   [#861](https://github.com/pmd/pmd/issues/861): \[ecmascript] InnaccurateNumericLiteral false positive with hex literals
 *   java-codestyle
@@ -31,3 +33,5 @@ This is a minor release.
 ### API Changes
 
 ### External Contributions
+
+*    [#1169](https://github.com/pmd/pmd/pull/1169): \[core] Update stylesheets with a default namespace - [Matthew Duggan](https://github.com/mduggan)
