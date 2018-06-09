@@ -95,7 +95,7 @@ class NodeStyleSpan {
     }
 
 
-    class PositionSnapshot implements ConvenienceNodeWrapper  {
+    class PositionSnapshot implements ConvenienceNodeWrapper {
         private int beginIndex;
         private int endIndex;
 

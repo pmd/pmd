@@ -22,6 +22,7 @@ import javafx.scene.control.IndexRange;
 
 /**
  * Stores the current style layers and can overlay them into a {@link StyleSpans} to style the text.
+ * The style context is updated
  */
 class StyleContext {
 
@@ -31,7 +32,6 @@ class StyleContext {
     private final CustomCodeArea codeArea;
 
     private final Var<StyleSpans<Collection<String>>> syntaxHighlight = Var.newSimpleVar(null);
-
 
     StyleContext(Set<String> ids, CustomCodeArea codeArea) {
 
@@ -60,7 +60,6 @@ class StyleContext {
 
     /**
      * Recomputes a single style spans from the syntax highlighting layer and nodes to highlight.
-     *
      */
     public StyleSpans<Collection<String>> recomputePainting() {
 
@@ -73,12 +72,15 @@ class StyleContext {
             return syntaxHighlight.getOrElse(emptySpan());
         }
 
-        // TODO highlighting on the primary editor could maybe be
-        // made more resilient to rapid changes if we used an
-        // up-to-date syntax highlight layer here and don't compute
-        // it asynchronously.
-        // But our other areas (like XPath) which don't refresh other
-        // highlighting after compilation need autorefresh.
+        if (syntaxHighlight.map(StyleSpans::length).map(l -> l != codeArea.getLength()).getOrElse(false)) {
+            // This is only executed if the text has changed (we use the length as an approximation)
+            // This makes the highlighting much more resilient to staccato code changes,
+            // which previously would have overlaid an outdated syntax highlighting layer on the
+            // up-to-date node highlights, making the highlighting twitch briefly before the
+            // asynchronous syntax highlight catches up
+            codeArea.getUpToDateSyntaxHighlighting().ifPresent(syntaxHighlight::setValue);
+        }
+
         syntaxHighlight.ifPresent(allSpans::add);
 
         final StyleSpans<Collection<String>> base = allSpans.get(0);
@@ -95,6 +97,11 @@ class StyleContext {
     /**
      * Update the syntax highlighting to the specified value.
      * If null, syntax highlighting is stripped off.
+     *
+     * <p>Syntax highlighting is not treated in a layer because
+     * otherwise each syntax refresh would also overlay the highlight
+     * spans, whose positions often would have been outdated since the
+     * AST refresh is more space out than syntax refresh.
      */
     public void setSyntaxHighlight(StyleSpans<Collection<String>> newSyntax) {
         StyleSpans<Collection<String>> currentSpans = codeArea.getStyleSpans(new IndexRange(0, codeArea.getLength()));
@@ -108,15 +115,25 @@ class StyleContext {
     }
 
 
+    /** Overlay operation that stacks up the style classes of the two overlaid spans. */
     private static Collection<String> additiveOverlay(Collection<String> style1, Collection<String> style2) {
+        if (style1.isEmpty()) {
+            return style2;
+        } else if (style2.isEmpty()) {
+            return style1;
+        }
         Set<String> styles = new HashSet<>(style1);
         styles.addAll(style2);
         return styles;
     }
 
 
+    /** Subtracts the second argument from the first. */
     private static StyleSpans<Collection<String>> subtract(StyleSpans<Collection<String>> base, StyleSpans<Collection<String>> diff) {
         return base.overlay(diff, (style1, style2) -> {
+            if (style2.isEmpty()) {
+                return style1;
+            }
             Set<String> styles = new HashSet<>(style1);
             styles.removeAll(style2);
             return styles;

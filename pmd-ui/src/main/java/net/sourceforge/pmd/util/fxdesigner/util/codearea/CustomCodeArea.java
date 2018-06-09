@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,7 +46,7 @@ import javafx.concurrent.Task;
 public class CustomCodeArea extends CodeArea {
 
     /** Minimum delay between each style update. Updates are reduced together until then. */
-    private static final Duration UPDATE_DELAY = Duration.ofMillis(50);
+    private static final Duration UPDATE_DELAY = Duration.ofMillis(40);
     /** Minimum delay between each code highlighting recomputation. Changes are ignored until then. */
     private static final Duration TEXT_CHANGE_DELAY = Duration.ofMillis(30);
 
@@ -91,8 +92,6 @@ public class CustomCodeArea extends CodeArea {
      */
     public void styleCss(Collection<? extends Node> nodes, LayerId layerId, boolean resetLayer, String... cssClasses) {
         Set<String> fullClasses = new HashSet<>(Arrays.asList(cssClasses));
-        fullClasses.add("text");
-        fullClasses.add("styled-text-area");
         fullClasses.add(layerId.id + "-highlight"); // focus-highlight, xpath-highlight, secondary-highlight
 
         List<NodeStyleSpan> wrappedNodes = nodes.stream().map(n -> NodeStyleSpan.fromNode(n, this)).collect(Collectors.toList());
@@ -147,7 +146,7 @@ public class CustomCodeArea extends CodeArea {
 
     /**
      * Enables syntax highlighting if disabled and sets it to use the given highlighter.
-     * If null, then this method disables syntax highlighting.
+     * If the argument is null, then this method disables syntax highlighting.
      */
     public void setSyntaxHighlighter(SyntaxHighlighter highlighter) {
 
@@ -219,6 +218,16 @@ public class CustomCodeArea extends CodeArea {
     }
 
 
+    /**
+     * Gets the most up to date syntax highlighting layer, synchronously.
+     * Returns empty if there is not syntax highlighter.
+     */
+    Optional<StyleSpans<Collection<String>>> getUpToDateSyntaxHighlighting() {
+        return syntaxHighlighter.getOpt().map(h -> h.computeHighlighting(getText()));
+    }
+
+
+    /** Wraps a node into a convenience layer that can for example provide the rich text associated with it. */
     public ConvenienceNodeWrapper wrapNode(Node node) {
         return NodeStyleSpan.fromNode(node, this).snapshot();
     }
@@ -228,8 +237,8 @@ public class CustomCodeArea extends CodeArea {
     public enum LayerId {
         /** For the currently selected node. */
         FOCUS("focus"),
-        // TODO using a specific layer for each of those may be a better idea
         /** For nodes in error, declaration usages. */
+        // TODO using a specific layer for each of those may be a better idea
         SECONDARY("secondary"),
         /** For xpath results. */
         XPATH_RESULTS("xpath");
