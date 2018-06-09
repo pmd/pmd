@@ -1094,7 +1094,7 @@ All switch statements should include a default option to catch any unspecified v
 
 **This rule is defined by the following XPath expression:**
 ```
-//SwitchStatement[not(SwitchLabel[@Default='true'])]
+//SwitchStatement[@DefaultCase = false() and @ExhaustiveEnumSwitch = false()]
 ```
 
 **Example(s):**
