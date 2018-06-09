@@ -13,12 +13,13 @@ import org.fxmisc.richtext.model.Paragraph;
 import org.fxmisc.richtext.model.StyledDocument;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.fxdesigner.util.ConvenienceNodeWrapper;
+import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 
 
 /**
  * Wrapper around a node used to declutter the layering algorithm with
- * convenience methods. See {@link #snapshot()}.
+ * convenience methods. The point is that it's aware of the code area.
+ * See also {@link #snapshot()}.
  *
  * @author Clément Fournier
  * @since 6.5.0
@@ -37,6 +38,7 @@ class NodeStyleSpan {
     }
 
 
+    /** Gets the underlying node. */
     public Node getNode() {
         return node;
     }
@@ -47,15 +49,9 @@ class NodeStyleSpan {
      * for the duration of the layering algorithm.
      */
     public PositionSnapshot snapshot() {
-        try {
-            int lastKnownStart = getAbsolutePosition(node.getBeginLine(), node.getBeginColumn() - 1);
-            int lastKnownEnd = getAbsolutePosition(node.getEndLine(), node.getEndColumn());
-            return new PositionSnapshot(lastKnownStart, lastKnownEnd);
-
-        } catch (IndexOutOfBoundsException e) {
-            return null;
-        }
-
+        int lastKnownStart = getAbsolutePosition(node.getBeginLine(), node.getBeginColumn() - 1);
+        int lastKnownEnd = getAbsolutePosition(node.getEndLine(), node.getEndColumn());
+        return new PositionSnapshot(lastKnownStart, lastKnownEnd);
     }
 
     private int getAbsolutePosition(int line, int column) {
@@ -90,17 +86,21 @@ class NodeStyleSpan {
     }
 
 
+    /** Builds a new node style span. */
     public static NodeStyleSpan fromNode(Node node, CustomCodeArea codeArea) {
         return new NodeStyleSpan(node, codeArea);
     }
 
 
-    class PositionSnapshot implements ConvenienceNodeWrapper {
+    /**
+     * Snapshot of the node's absolute position in the code area.
+     */
+    class PositionSnapshot implements TextAwareNodeWrapper {
         private int beginIndex;
         private int endIndex;
 
 
-        private PositionSnapshot(int beginIndex, int endIndex) {
+        PositionSnapshot(int beginIndex, int endIndex) {
             this.beginIndex = beginIndex;
             this.endIndex = endIndex;
         }
@@ -111,6 +111,7 @@ class NodeStyleSpan {
             // debug only
             return getNodeText() + "@[" + beginIndex + "," + endIndex + ']';
         }
+
 
         @Override
         public String getNodeText() {
@@ -123,21 +124,23 @@ class NodeStyleSpan {
             return codeArea.subDocument(beginIndex, endIndex);
         }
 
-        public int getBeginIndex() {
+
+        int getBeginIndex() {
             return beginIndex;
         }
 
 
-        public int getEndIndex() {
+        int getEndIndex() {
             return endIndex;
         }
 
 
-        public int getLength() {
+        int getLength() {
             return endIndex - beginIndex;
         }
 
 
+        @Override
         public Node getNode() {
             return NodeStyleSpan.this.getNode();
         }

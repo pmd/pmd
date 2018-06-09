@@ -10,7 +10,7 @@ import java.util.Collection;
 import org.fxmisc.richtext.model.StyleSpan;
 import org.fxmisc.richtext.model.StyledDocument;
 
-import net.sourceforge.pmd.util.fxdesigner.util.ConvenienceNodeWrapper;
+import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 
 import javafx.scene.control.ListCell;
 import javafx.scene.text.Text;
@@ -21,10 +21,10 @@ import javafx.scene.text.TextFlow;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class XpathViolationListCell extends ListCell<ConvenienceNodeWrapper> {
+public class XpathViolationListCell extends ListCell<TextAwareNodeWrapper> {
 
     @Override
-    protected void updateItem(ConvenienceNodeWrapper item, boolean empty) {
+    protected void updateItem(TextAwareNodeWrapper item, boolean empty) {
         super.updateItem(item, empty);
 
         if (empty || item == null) {
@@ -36,7 +36,7 @@ public class XpathViolationListCell extends ListCell<ConvenienceNodeWrapper> {
     }
 
 
-    private TextFlow richTextForNode(ConvenienceNodeWrapper node) {
+    private TextFlow richTextForNode(TextAwareNodeWrapper node) {
         StyledDocument<Collection<String>, String, Collection<String>> richText = node.getNodeRichText();
 
         TextFlow result = new TextFlow();

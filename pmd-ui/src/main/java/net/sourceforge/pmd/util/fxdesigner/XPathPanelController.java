@@ -31,7 +31,7 @@ import net.sourceforge.pmd.util.fxdesigner.model.ObservableXPathRuleBuilder;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
-import net.sourceforge.pmd.util.fxdesigner.util.ConvenienceNodeWrapper;
+import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
@@ -85,7 +85,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     @FXML
     private TitledPane violationsTitledPane;
     @FXML
-    private ListView<ConvenienceNodeWrapper> xpathResultListView;
+    private ListView<TextAwareNodeWrapper> xpathResultListView;
     @FXML
     private ToggleButton resultHighlightingToggle;
 
@@ -113,12 +113,12 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
                     .conditionOn(xpathResultListView.focusedProperty())
                     .filter(Objects::nonNull)
-                    .map(ConvenienceNodeWrapper::getNode)
+                    .map(TextAwareNodeWrapper::getNode)
                     .subscribe(parent::onNodeItemSelected);
 
         resultHighlightingToggle.setOnAction(e -> {
             if (resultHighlightingToggle.isSelected()) {
-                parent.highlightXPathResults(xpathResultListView.getItems().stream().map(ConvenienceNodeWrapper::getNode).collect(Collectors.toList()));
+                parent.highlightXPathResults(xpathResultListView.getItems().stream().map(TextAwareNodeWrapper::getNode).collect(Collectors.toList()));
             } else {
                 parent.resetXPathResults();
             }

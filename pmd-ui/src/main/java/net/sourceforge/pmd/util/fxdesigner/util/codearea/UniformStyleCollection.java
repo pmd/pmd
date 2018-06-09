@@ -25,7 +25,9 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.NodeStyleSpan.PositionS
 
 /**
  * Collection of nodes that share the same style. In case of overlap,
- * the nested ones gain css classes like depth-1, depth-2, etc.
+ * the nested ones gain css classes like depth-1, depth-2, etc. A
+ * collection can be overlaid into a single span in one pass using
+ * {@link #toSpans()}.
  *
  * @author Clément Fournier
  * @since 6.5.0
@@ -82,15 +84,14 @@ public class UniformStyleCollection {
     }
 
 
-    private Set<String> styleForDepth(int depth) {
-        return styleForDepth(depth, false);
-    }
-
-
     private Set<String> styleForDepth(int depth, boolean inlineHighlight) {
         if (depth < 0) {
+            // that's the style when we're outside any node
             return Collections.emptySet();
         } else {
+            // Caching reduces the number of sets used by this step of the overlaying routine to
+            // only a few. The number is probably blowing up during the actual spans overlaying
+            // in StyleContext#recomputePainting
             DEPTH_STYLE_CACHE.putIfAbsent(style, new HashMap<>());
             Map<Integer, Map<Boolean, Set<String>>> depthToStyle = DEPTH_STYLE_CACHE.get(style);
 
@@ -104,6 +105,7 @@ public class UniformStyleCollection {
             Set<String> s = new HashSet<>(style);
             s.add("depth-" + depth);
             if (inlineHighlight) {
+                // inline highlight can be used to add boxing around a node if it wouldn't be ugly
                 s.add("inline-highlight");
             }
             isInlineToStyle.put(inlineHighlight, s);
@@ -131,12 +133,14 @@ public class UniformStyleCollection {
             PositionSnapshot snapshot = nodes.get(0).snapshot();
             return new StyleSpansBuilder<Collection<String>>().add(Collections.emptyList(), snapshot.getBeginIndex())
                                                               .add(styleForDepth(0, snapshot), snapshot.getLength())
+                                                              // we don't bother adding the remainder
                                                               .create();
         }
 
         final StyleSpansBuilder<Collection<String>> builder = new StyleSpansBuilder<>();
 
-        Deque<PositionSnapshot> overlappingNodes = new ArrayDeque<>();
+        // stores the parents of the node we're in, to account for nesting depth
+        final Deque<PositionSnapshot> overlappingNodes = new ArrayDeque<>();
         PositionSnapshot previous = null;
         int lastSpanEnd = 0;
 
@@ -164,7 +168,8 @@ public class UniformStyleCollection {
 
                 // gap
                 builder.add(styleForDepth(overlappingNodes.size() - 1, overlappingNodes.peek()), previous.getBeginIndex() - lastSpanEnd);
-                // common part
+                // Part between the start of the previous node and the start of the current one.
+                // The current node will be styled on the next iteration.
                 builder.add(styleForDepth(overlappingNodes.size(), current), current.getBeginIndex() - previous.getBeginIndex());
                 lastSpanEnd = current.getBeginIndex();
 
@@ -183,7 +188,7 @@ public class UniformStyleCollection {
                 previous = current;
             }
 
-            // first check whether some of the enclosing spans end between the end of the previous and the beginning of the current
+            // Check whether some of the enclosing spans end between the end of the previous and the beginning of the current
             Iterator<PositionSnapshot> overlaps = overlappingNodes.iterator();
             while (overlaps.hasNext()) {
                 PositionSnapshot enclosing = overlaps.next();
@@ -196,12 +201,13 @@ public class UniformStyleCollection {
             }
         }
 
-        builder.add(styleForDepth(overlappingNodes.size() - 1), previous.getBeginIndex() - lastSpanEnd);
+        // gap
+        builder.add(styleForDepth(overlappingNodes.size() - 1, overlappingNodes.peek()), previous.getBeginIndex() - lastSpanEnd);
         // last node
         builder.add(styleForDepth(overlappingNodes.size(), previous), previous.getLength());
         lastSpanEnd = previous.getEndIndex();
 
-        // close the enclosing contexts
+        // close the remaining enclosing contexts
         int depth = overlappingNodes.size();
         for (PositionSnapshot enclosing : overlappingNodes) {
             depth--;
@@ -213,9 +219,8 @@ public class UniformStyleCollection {
     }
 
 
+    /** Returns an empty style collection. */
     public static UniformStyleCollection empty() {
         return new UniformStyleCollection(Collections.emptySet(), Collections.emptySet());
     }
-
-
 }

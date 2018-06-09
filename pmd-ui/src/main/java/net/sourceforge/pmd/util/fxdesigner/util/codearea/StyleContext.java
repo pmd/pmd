@@ -23,6 +23,8 @@ import javafx.scene.control.IndexRange;
 /**
  * Stores the current style layers and can overlay them into a {@link StyleSpans} to style the text.
  * The style context is updated
+ *
+ * @since 6.0.0
  */
 class StyleContext {
 

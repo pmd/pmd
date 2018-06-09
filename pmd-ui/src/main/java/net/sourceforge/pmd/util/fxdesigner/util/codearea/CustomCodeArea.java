@@ -26,7 +26,7 @@ import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.fxdesigner.util.ConvenienceNodeWrapper;
+import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 
 import javafx.concurrent.Task;
 
@@ -34,11 +34,12 @@ import javafx.concurrent.Task;
 /**
  * Code area that can handle syntax highlighting as well as regular node highlighting.
  * Regular node highlighting is handled in several layers, identified by a {@link LayerId}.
- * The contents of these layers can be handled independently with {@link #styleCss(Collection, LayerId, boolean, String...)},
- * {@link #clearStyleLayer(LayerId)} and the like.
+ * The contents of these layers can be handled independently with
+ * {@link #styleCss(Collection, LayerId, boolean, String...)}, {@link #clearStyleLayer(LayerId)} and the like.
  *
- * <p>Syntax highlighting uses another internal style layer. Syntax highlighting
- * is performed asynchronously by another thread.
+ * <p>Syntax highlighting is performed asynchronously by another thread. It can be enabled
+ * by providing a {@link SyntaxHighlighter} to {@link #setSyntaxHighlighter(SyntaxHighlighter)},
+ * and disabled by passing a {@code null} reference to that method.
  *
  * @author Clément Fournier
  * @since 6.0.0
@@ -228,7 +229,7 @@ public class CustomCodeArea extends CodeArea {
 
 
     /** Wraps a node into a convenience layer that can for example provide the rich text associated with it. */
-    public ConvenienceNodeWrapper wrapNode(Node node) {
+    public TextAwareNodeWrapper wrapNode(Node node) {
         return NodeStyleSpan.fromNode(node, this).snapshot();
     }
 

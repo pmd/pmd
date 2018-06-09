@@ -28,6 +28,10 @@
                 </configuration>
             </plugin>
 
+            <!-- Compiles Less files into CSS files. Currently compatible with Less 1.7.0 -->
+            <!-- If need be, we can probably update the Less version by using the lessJs
+                 configuration property and having a custom less.js file around. -->
+            <!-- See https://github.com/marceloverdijk/lesscss-maven-plugin -->
             <plugin>
                 <groupId>org.lesscss</groupId>
                 <artifactId>lesscss-maven-plugin</artifactId>

@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
-import net.sourceforge.pmd.util.fxdesigner.util.ConvenienceNodeWrapper;
+import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
@@ -240,7 +240,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(), getLanguageVersion());
     }
 
-    public ConvenienceNodeWrapper wrapNode(Node node) {
+    public TextAwareNodeWrapper wrapNode(Node node) {
         return sourceEditorController.wrapNode(node);
     }
 
