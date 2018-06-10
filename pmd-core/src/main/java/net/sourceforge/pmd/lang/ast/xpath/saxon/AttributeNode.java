@@ -15,12 +15,20 @@ import net.sf.saxon.value.Value;
 
 /**
  * A Saxon OM Attribute node for an AST Node Attribute.
+ * Belongs to an {@link ElementNode}, and wraps an
+ * {@link Attribute}.
  */
 public class AttributeNode extends AbstractNodeInfo {
     protected final Attribute attribute;
     protected final int id;
     protected Value value;
 
+
+    /**
+     * Creates a new AttributeNode from a PMD Attribute.
+     *
+     * @param id The index within the attribute order
+     */
     public AttributeNode(Attribute attribute, int id) {
         this.attribute = attribute;
         this.id = id;

@@ -5,11 +5,13 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 /**
@@ -322,4 +324,14 @@ public interface Node {
      * @return The XPath node name
      */
     String getXPathNodeName();
+
+
+    /**
+     * Returns an iterator enumerating all the attributes that are available
+     * from XPath for this node.
+     *
+     * @return An attribute iterator for this node
+     */
+    Iterator<Attribute> getXPathAttributesIterator();
+
 }
