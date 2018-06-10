@@ -139,7 +139,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         XPathSuggestions xPathSuggestions = new XPathSuggestions("net.sourceforge.pmd.lang." + "java" + ".ast");
         List<String> suggestions = xPathSuggestions.getXPathSuggestions();
 
-
         for (String s1 : suggestions) {
             if (s1.contains(s)) {
                 MenuItem m = new MenuItem(s1);
