@@ -24,9 +24,9 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
-import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
+import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
@@ -168,10 +168,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
         setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup(designerRoot));
 
+        Platform.runLater(this::refreshAST); // initial refreshing
 
-
-        sourceEditorController.refreshAST();
-        Platform.runLater(() -> xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(), getLanguageVersion()));
         Platform.runLater(() -> sourceEditorController.moveCaret(0, 0));
         Platform.runLater(() -> { // fixes choicebox bad rendering on first opening
             languageChoiceBox.show();
@@ -227,6 +225,10 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     }
 
 
+    /**
+     * Attempts to refresh the AST with the up-to-date source,
+     * also updating XPath results.
+     */
     public void refreshAST() {
         Optional<Node> root = sourceEditorController.refreshAST();
 
@@ -237,10 +239,20 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         }
     }
 
+
+    /**
+     * Refreshes the XPath results if the compilation unit is valid.
+     * Otherwise does nothing.
+     */
     public void refreshXPathResults() {
-        xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(), getLanguageVersion());
+        sourceEditorController.getCompilationUnit().ifPresent(root -> xpathPanelController.evaluateXPath(root, getLanguageVersion()));
     }
 
+
+    /**
+     * Returns a wrapper around the given node that gives access
+     * to its textual representation in the editor area.
+     */
     public TextAwareNodeWrapper wrapNode(Node node) {
         return sourceEditorController.wrapNode(node);
     }
@@ -274,8 +286,9 @@ public class MainDesignerController implements Initializable, SettingsOwner {
      * @throws XPathEvaluationException if the query fails
      */
     public List<Node> runXPathQuery(String query) throws XPathEvaluationException {
-        return xpathPanelController.runXPathQuery(sourceEditorController.getCompilationUnit(),
-                                                  getLanguageVersion(), query);
+        return sourceEditorController.getCompilationUnit()
+                                     .map(n -> xpathPanelController.runXPathQuery(n, getLanguageVersion(), query))
+                                     .orElseGet(Collections::emptyList);
     }
 
 

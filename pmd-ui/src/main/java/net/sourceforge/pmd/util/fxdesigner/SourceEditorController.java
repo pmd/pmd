@@ -153,25 +153,26 @@ public class SourceEditorController implements Initializable, SettingsOwner {
      */
     public Optional<Node> refreshAST() {
         String source = getText();
-        Node previous = getCompilationUnit();
-        Node current;
 
         if (StringUtils.isBlank(source)) {
             astTreeView.setRoot(null);
             return Optional.empty();
         }
 
+        Optional<Node> current;
+
         try {
-            current = astManager.updateCompilationUnit(source, auxclasspathClassLoader.getValue());
+            current = astManager.updateIfChanged(source, auxclasspathClassLoader.getValue());
         } catch (ParseAbortedException e) {
             invalidateAST(true);
             return Optional.empty();
         }
-        if (!Objects.equals(previous, current)) {
+
+        current.ifPresent(n -> {
             parent.invalidateAst();
-            setUpToDateCompilationUnit(current);
-        }
-        return Optional.of(current);
+            setUpToDateCompilationUnit(n);
+        });
+        return current;
     }
 
 
@@ -317,13 +318,11 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    public Node getCompilationUnit() {
+    /**
+     * Returns the most up-to-date compilation unit, or empty if it can't be parsed.
+     */
+    public Optional<Node> getCompilationUnit() {
         return astManager.getCompilationUnit();
-    }
-
-
-    public Val<Node> compilationUnitProperty() {
-        return astManager.compilationUnitProperty();
     }
 
 
