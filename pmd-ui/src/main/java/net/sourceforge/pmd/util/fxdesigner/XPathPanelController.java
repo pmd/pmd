@@ -137,9 +137,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         autoCompletePopup = new ContextMenu();
         List<MenuItem> resultToDisplay = new ArrayList<>();
-        XPathSuggestions xPathSuggestions = new XPathSuggestions("net.sourceforge.pmd.lang." + parent
-            .getLanguageVersion().getName().replaceAll("[0-9]", "").replaceAll("//s", "").toLowerCase() + ".ast");
-
+        XPathSuggestions xPathSuggestions = new XPathSuggestions("net.sourceforge.pmd.lang." + "java" + ".ast");
         List<String> suggestions = xPathSuggestions.getXPathSuggestions();
 
         String[] array = xpathExpressionArea.getText().split("/");
@@ -159,6 +157,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
             xpathExpressionArea.addEventHandler(KeyEvent.KEY_TYPED, t -> {
                 if (t.getCode() != KeyCode.ESCAPE) {
+                    autoCompletePopup.hide();
                     autoCompletePopup.show(xpathExpressionArea, 500, 500);
                 }
             });

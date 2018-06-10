@@ -88,8 +88,7 @@ public class XPathSuggestions {
     private List<String> evaluateXpathSuggestions(List<String> fileNameList) {
         for (String s : fileNameList) {
             //Check if the package name should be hardcoded
-            xPathSuggestions.add(s.replace("AST", "").replace(".java", "").replace("net.sourceforge.pmd.lang.ast"
-                                                                                          + ".", ""));
+            xPathSuggestions.add(s.replace("AST", "").replace(".java", "").replace("net.sourceforge.pmd.lang.ast" + ".", ""));
         }
         return xPathSuggestions;
     }
