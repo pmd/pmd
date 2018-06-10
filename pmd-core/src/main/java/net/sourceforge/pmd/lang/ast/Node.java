@@ -329,6 +329,8 @@ public interface Node {
     /**
      * Returns an iterator enumerating all the attributes that are available
      * from XPath for this node.
+     *
+     * @return An attribute iterator for this node
      */
     Iterator<Attribute> getXPathAttributesIterator();
 
