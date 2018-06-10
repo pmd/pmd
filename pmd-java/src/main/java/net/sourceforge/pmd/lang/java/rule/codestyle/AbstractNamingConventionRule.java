@@ -27,9 +27,6 @@ import net.sourceforge.pmd.util.StringUtil;
 abstract class AbstractNamingConventionRule<T extends JavaNode> extends AbstractJavaRule {
 
 
-    AbstractNamingConventionRule() {
-    }
-
     /** The argument is interpreted as the display name, and is converted to camel case to get the property name. */
     RegexPBuilder defaultProp(String name) {
         return defaultProp(StringUtil.toCamelCase(name, true), name);
@@ -59,9 +56,9 @@ abstract class AbstractNamingConventionRule<T extends JavaNode> extends Abstract
         String name = nameExtractor(node);
         if (!getProperty(regex).matcher(name).matches()) {
             addViolation(data, node, new Object[]{
-                    kindDisplayName(node, regex),
-                    name,
-                    getProperty(regex).toString(),
+                kindDisplayName(node, regex),
+                name,
+                getProperty(regex).toString(),
             });
         }
     }
