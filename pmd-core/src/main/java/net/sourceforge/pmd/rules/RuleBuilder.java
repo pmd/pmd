@@ -188,6 +188,7 @@ public class RuleBuilder {
 
         loadLanguageMinMaxVersions(rule);
         rule.setSince(since);
+        rule.setMessage(message);
         rule.setExternalInfoUrl(externalInfoUrl);
         rule.setDeprecated(isDeprecated);
         rule.setDescription(description);
