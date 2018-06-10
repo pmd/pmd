@@ -519,7 +519,7 @@ public abstract class AbstractNode implements Node {
 
 
     @Override
-    public Iterator<Attribute> getXPathAttributes() {
+    public Iterator<Attribute> getXPathAttributesIterator() {
         return new AttributeAxisIterator(this);
     }
 }

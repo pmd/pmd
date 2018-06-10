@@ -138,7 +138,7 @@ public class NodeInfoPanelController implements Initializable {
      */
     private static ObservableList<String> getAttributes(Node node) {
         ObservableList<String> result = FXCollections.observableArrayList();
-        Iterator<Attribute> attributeAxisIterator = node.getXPathAttributes();
+        Iterator<Attribute> attributeAxisIterator = node.getXPathAttributesIterator();
         while (attributeAxisIterator.hasNext()) {
             Attribute attribute = attributeAxisIterator.next();
             // TODO the display should be handled in a ListCell

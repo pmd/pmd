@@ -44,7 +44,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     /**
      * Creates a new iterator that enumerates the attributes of the given node.
      * Note: if you want to access the attributes of a node, don't use this directly,
-     * use instead the overridable {@link Node#getXPathAttributes()}.
+     * use instead the overridable {@link Node#getXPathAttributesIterator()}.
      */
     public AttributeAxisIterator(Node contextNode) {
         this.node = contextNode;

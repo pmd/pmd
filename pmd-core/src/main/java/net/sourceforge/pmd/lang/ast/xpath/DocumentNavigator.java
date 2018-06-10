@@ -135,7 +135,7 @@ public class DocumentNavigator extends DefaultNavigator {
 
     @Override
     public Iterator<Attribute> getAttributeAxisIterator(Object arg0) {
-        return ((Node) arg0).getXPathAttributes();
+        return ((Node) arg0).getXPathAttributesIterator();
     }
 
     /**

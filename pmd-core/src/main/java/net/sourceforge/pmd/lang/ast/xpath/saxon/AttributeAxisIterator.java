@@ -27,7 +27,7 @@ public class AttributeAxisIterator extends Navigator.BaseEnumeration {
      */
     public AttributeAxisIterator(ElementNode startNodeInfo) {
         this.startNodeInfo = startNodeInfo;
-        this.iterator = startNodeInfo.node.getXPathAttributes();
+        this.iterator = startNodeInfo.node.getXPathAttributesIterator();
     }
 
     @Override

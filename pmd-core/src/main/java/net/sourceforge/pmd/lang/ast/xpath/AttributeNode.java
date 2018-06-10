@@ -12,7 +12,7 @@ import java.util.Iterator;
  * access to it's attributes, versus having them be determined via
  * introspection.
  *
- * @deprecated See {@link net.sourceforge.pmd.lang.ast.Node#getXPathAttributes()}.
+ * @deprecated See {@link net.sourceforge.pmd.lang.ast.Node#getXPathAttributesIterator()}.
  *             Will be removed in 7.0.0
  */
 @Deprecated
