@@ -1,6 +1,7 @@
 /* Useful links: */
 /* http://hg.openjdk.java.net/openjfx/jfx-dev/rt/file/762a57e4b74a/modules/javafx.controls/src/main/resources/com/sun/javafx/scene/control/skin/modena/modena.css */
-/* https://materialdesignicons.com */
+/* https://fontawesome.com/icons?d=gallery */
+/* TODO convert to Less */
 
 .list-view, .tree-view, .table-view {
     -fx-selection-bar: royalblue;

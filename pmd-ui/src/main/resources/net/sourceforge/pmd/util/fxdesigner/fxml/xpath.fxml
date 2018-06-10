@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
@@ -9,10 +12,6 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.shape.SVGPath?>
-<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
-<?import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView?>
-
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1200.0" stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.XPathPanelController">
     <children>
         <SplitPane dividerPositions="0.2, 0.8" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -39,14 +38,9 @@
                            <children>
                               <ToolBar maxHeight="155.0" maxWidth="30.0" minWidth="0.0" orientation="VERTICAL" prefWidth="30.0" styleClass="editor-tools" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <items>
-                                     <ToggleButton fx:id="resultHighlightingToggle" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="0.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" selected="true">
+                                     <ToggleButton fx:id="resultHighlightingToggle" styleClass="icon-button" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="0.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" selected="true">
                                        <graphic>
-                                             <SVGPath scaleX="0.9" scaleY="0.9" styleClass="buttonIcon">
-                                                 <content>
-                                                     M9,10L6,5H18L15,10H9M18,4H6V2H18V4M9,22V11H15V22H9M12,13A1,1 0 0,0 11,14A1,1 0 0,0
-                                                     12,15A1,1 0 0,0 13,14A1,1 0 0,0 12,13Z
-                                                 </content>
-                                             </SVGPath>
+                                            <FontIcon iconLiteral="fa-eye"/>
                                        </graphic>
                                        <padding>
                                           <Insets bottom="0.1" left="0.1" right="0.1" top="0.1" />
