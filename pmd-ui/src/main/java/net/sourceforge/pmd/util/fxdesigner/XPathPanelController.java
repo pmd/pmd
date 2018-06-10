@@ -120,10 +120,14 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .subscribe(tick -> parent.refreshXPathResults());
 
         xpathExpressionArea.plainTextChanges()
-                           .filter(t -> t.getInserted().split("/")[0].matches("[a-zA-Z]"))
+                           .filter(t -> (t.getInserted().matches("[a-zA-Z]")) || t.getInserted().matches("/"))
                            .subscribe(t -> {
                                try {
-                                   autoComplete(t.getInserted().split("/")[0]);
+                                   if (t.getInserted().equals("/")) {
+                                       autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea.getText().indexOf("/")));
+                                   } else if (!t.getInserted().equals("/")) {
+                                       autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea.getText().lastIndexOf("/")));
+                                   }
                                } catch (IOException e) {
                                    e.printStackTrace();
                                } catch (ClassNotFoundException e) {
@@ -136,17 +140,21 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         autoCompletePopup = new ContextMenu();
         List<MenuItem> resultToDisplay = new ArrayList<>();
-        XPathSuggestions xPathSuggestions = new XPathSuggestions("net.sourceforge.pmd.lang." + "java" + ".ast");
+
+        String language = parent.getLanguageVersion().getName().replaceAll("[0-9]", "").replaceAll("//s", "").toLowerCase().trim();
+        XPathSuggestions xPathSuggestions = new XPathSuggestions("net.sourceforge.pmd.lang." + language + ".ast");
+
         List<String> suggestions = xPathSuggestions.getXPathSuggestions();
 
         for (String s1 : suggestions) {
-            if (s1.contains(s)) {
+            if (s1.contains(s.replace("/", "").trim())) {
                 MenuItem m = new MenuItem(s1);
                 if (!resultToDisplay.contains(m)) {
                     resultToDisplay.add(m);
                 }
             }
         }
+
 
         autoCompletePopup.getItems().addAll(resultToDisplay);
 
