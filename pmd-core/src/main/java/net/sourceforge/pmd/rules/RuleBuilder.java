@@ -35,7 +35,7 @@ public class RuleBuilder {
     private String minimumVersion;
     private String maximumVersion;
     private String since;
-    private String message = "";
+    private String message;
     private String externalInfoUrl;
     private String description;
     private List<String> examples = new ArrayList<>(1);
