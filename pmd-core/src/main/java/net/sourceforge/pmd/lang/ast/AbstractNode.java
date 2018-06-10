@@ -21,6 +21,7 @@ import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
@@ -514,5 +515,11 @@ public abstract class AbstractNode implements Node {
     @Override
     public String toString() {
         return getXPathNodeName();
+    }
+
+
+    @Override
+    public Iterator<Attribute> getXPathAttributes() {
+        return new AttributeAxisIterator(this);
     }
 }

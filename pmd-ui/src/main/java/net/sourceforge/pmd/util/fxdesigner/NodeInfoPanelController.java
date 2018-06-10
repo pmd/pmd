@@ -14,8 +14,6 @@ import org.reactfx.EventStreams;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
-import net.sourceforge.pmd.lang.ast.xpath.AttributeNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricEvaluator;
@@ -140,7 +138,7 @@ public class NodeInfoPanelController implements Initializable {
      */
     private static ObservableList<String> getAttributes(Node node) {
         ObservableList<String> result = FXCollections.observableArrayList();
-        Iterator<Attribute> attributeAxisIterator = node instanceof AttributeNode ? ((AttributeNode) node).getAttributeIterator() : new AttributeAxisIterator(node);
+        Iterator<Attribute> attributeAxisIterator = node.getXPathAttributes();
         while (attributeAxisIterator.hasNext()) {
             Attribute attribute = attributeAxisIterator.next();
             // TODO the display should be handled in a ListCell

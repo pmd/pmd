@@ -12,7 +12,8 @@ import net.sf.saxon.om.Navigator;
 import net.sf.saxon.om.SequenceIterator;
 
 /**
- * This is an Attribute axis iterator.
+ * An adapter over our {@link net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator}
+ * for the Saxon model.
  */
 public class AttributeAxisIterator extends Navigator.BaseEnumeration {
 
@@ -26,9 +27,7 @@ public class AttributeAxisIterator extends Navigator.BaseEnumeration {
      */
     public AttributeAxisIterator(ElementNode startNodeInfo) {
         this.startNodeInfo = startNodeInfo;
-        this.iterator = startNodeInfo.node instanceof net.sourceforge.pmd.lang.ast.xpath.AttributeNode
-                ? ((net.sourceforge.pmd.lang.ast.xpath.AttributeNode) startNodeInfo.node).getAttributeIterator()
-                : new net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator(startNodeInfo.node);
+        this.iterator = startNodeInfo.node.getXPathAttributes();
     }
 
     @Override

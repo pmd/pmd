@@ -204,7 +204,7 @@ public class XmlNodeWrapper extends AbstractDomNodeProxy implements XmlNode {
 
 
     @Override
-    public Iterator<Attribute> getAttributeIterator() {
+    public Iterator<Attribute> getXPathAttributes() {
         List<Iterator<Attribute>> iterators = new ArrayList<>();
 
         // Expose DOM Attributes
@@ -246,6 +246,16 @@ public class XmlNodeWrapper extends AbstractDomNodeProxy implements XmlNode {
         Iterator<Attribute>[] it = (Iterator<Attribute>[]) new Iterator[iterators.size()];
 
         return new CompoundIterator<>(iterators.toArray(it));
+    }
+
+
+    /**
+     * @deprecated use {@link #getXPathAttributes()}
+     */
+    @Override
+    @Deprecated
+    public Iterator<Attribute> getAttributeIterator() {
+        return getXPathAttributes();
     }
 
 
