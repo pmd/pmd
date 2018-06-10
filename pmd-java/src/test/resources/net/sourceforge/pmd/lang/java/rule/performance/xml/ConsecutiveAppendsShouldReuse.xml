@@ -253,4 +253,17 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1051 ConsecutiveAppendsShouldReuse not detect on parameter</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void asd(StringBuilder builder, String b) {
+        builder.append("asd");
+        builder.append(b);
+        builder.append(123);
+	}
+}
+        ]]></code>
+    </test-code>
 </test-data>

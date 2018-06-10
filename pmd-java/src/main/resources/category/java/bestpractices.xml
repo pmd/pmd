@@ -523,6 +523,7 @@ public class MyTest2 {
           since="4.0"
           message="JUnit 4 tests that execute tests should use the @Test annotation"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation">
         <description>
 In JUnit 3, the framework executed all methods which started with the word test as a unit test. 
@@ -533,11 +534,17 @@ In JUnit 4, only methods annotated with the @Test annotation are executed.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public='true']/MethodDeclarator[starts-with(@Image,'test')]]
-[count(Annotation//Name[@Image='Test'])=0]
+//ClassOrInterfaceDeclaration[
+       matches(@Image, $testClassPattern)
+        or ExtendsList/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]]
+
+    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true()]/MethodDeclarator[starts-with(@Image, 'test')]]
+    [not(Annotation//Name[pmd-java:typeIs('org.junit.Test')])]
 ]]>
                 </value>
             </property>
+            <property name="testClassPattern" type="Regex" description="The regex pattern used to identify test classes" value="Test" />
+            <property name="version" value="2.0"/>
         </properties>
         <example>
 <![CDATA[
@@ -1010,6 +1017,7 @@ public class Foo {
           language="java"
           since="1.0"
           message="Switch statements should have a default label"
+          typeResolution="true"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">
         <description>
@@ -1017,8 +1025,11 @@ All switch statements should include a default option to catch any unspecified v
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
-                <value>//SwitchStatement[not(SwitchLabel[@Default='true'])]</value>
+                <value><![CDATA[
+                //SwitchStatement[@DefaultCase = false() and @ExhaustiveEnumSwitch = false()]
+            ]]></value>
             </property>
         </properties>
         <example>
@@ -1200,7 +1211,7 @@ This rule detects JUnit assertions in object equality. These assertions should b
     PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
     [ends-with(@Image, '.equals')]
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
 ]]>
                 </value>
             </property>
@@ -1240,7 +1251,7 @@ more specific methods, like assertNull, assertNotNull.
   Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
  ]
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
 ]]>
                 </value>
             </property>
@@ -1282,7 +1293,7 @@ by more specific methods, like assertSame, assertNotSame.
 [PrimarySuffix/Arguments
  /ArgumentList/Expression
  /EqualityExpression[count(.//NullLiteral) = 0]]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
 ]]>
                 </value>
             </property>

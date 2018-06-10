@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.fxdesigner;
+package net.sourceforge.pmd.util.fxdesigner.popups;
 
 import java.net.URL;
 import java.util.Map;

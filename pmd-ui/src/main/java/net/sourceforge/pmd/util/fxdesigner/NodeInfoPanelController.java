@@ -47,11 +47,11 @@ public class NodeInfoPanelController implements Initializable {
     @FXML
     private TabPane nodeInfoTabPane;
     @FXML
-    private Tab xpathAttributesTitledPane;
+    private Tab xpathAttributesTab;
     @FXML
     private ListView<String> xpathAttributesListView;
     @FXML
-    private Tab metricResultsTitledPane;
+    private Tab metricResultsTab;
     @FXML
     private ListView<MetricResult> metricResultsListView;
     @FXML
@@ -59,7 +59,7 @@ public class NodeInfoPanelController implements Initializable {
     @FXML
     private TreeView<Object> scopeHierarchyTreeView;
     private MetricEvaluator metricEvaluator = new MetricEvaluator();
-
+    private Node selectedNode;
 
     public NodeInfoPanelController(MainDesignerController mainController) {
         parent = mainController;
@@ -74,7 +74,7 @@ public class NodeInfoPanelController implements Initializable {
                     .filterMap(o -> o instanceof NameDeclaration, o -> (NameDeclaration) o)
                     .subscribe(parent::onNameDeclarationSelected);
 
-        scopeHierarchyTreeView.setCellFactory(view -> new ScopeHierarchyTreeCell(parent));
+        scopeHierarchyTreeView.setCellFactory(view -> new ScopeHierarchyTreeCell());
     }
 
 
@@ -84,8 +84,11 @@ public class NodeInfoPanelController implements Initializable {
      * @param node Node to inspect
      */
     public void displayInfo(Node node) {
-
         Objects.requireNonNull(node, "Node cannot be null");
+
+        if (node.equals(selectedNode)) {
+            return;
+        }
 
         ObservableList<String> atts = getAttributes(node);
         xpathAttributesListView.setItems(atts);
@@ -115,9 +118,9 @@ public class NodeInfoPanelController implements Initializable {
 
 
     private void notifyMetricsAvailable(long numMetrics) {
-        metricResultsTitledPane.setText("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + ")");
+        metricResultsTab.setText("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + ")");
         metricsTitleLabel.setText("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + " available)");
-        metricResultsTitledPane.setDisable(numMetrics == 0);
+        metricResultsTab.setDisable(numMetrics == 0);
     }
 
 
@@ -143,7 +146,7 @@ public class NodeInfoPanelController implements Initializable {
         }
 
         if (node instanceof TypeNode) {
-            result.add("typeof() = " + ((TypeNode) node).getType());
+            result.add("typeIs() = " + ((TypeNode) node).getType());
         }
         Collections.sort(result);
         return result;

@@ -103,11 +103,7 @@ precision in a floating point number.  This may result in numeric calculations b
 
 **This rule is defined by the following XPath expression:**
 ```
-//NumberLiteral[
-    @Image != @Number
-    and translate(@Image, "e", "E") != @Number
-    and concat(@Image, ".0") != @Number
-    and @Image != substring-before(translate(@Number, ".", ""), "E")]
+//NumberLiteral[@NormalizedImage != @Number]
 ```
 
 **Example(s):**

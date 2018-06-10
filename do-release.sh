@@ -66,6 +66,8 @@ export RELEASE_VERSION
 export DEVELOPMENT_VERSION
 export CURRENT_BRANCH
 
+RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml"
+
 echo "*   Update version/release info in **docs/pages/release_notes.md**."
 echo
 echo "    ## $(date -u +%d-%B-%Y) - ${RELEASE_VERSION}"
@@ -73,7 +75,7 @@ echo
 echo "*   Update date info in **docs/_config.yml**."
 echo
 echo "*   Ensure all the new rules are listed in a the proper file:"
-echo "    pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION}.xml file."
+echo "    ${RELEASE_RULESET}"
 echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
@@ -82,6 +84,12 @@ echo
 echo "Press enter to continue..."
 read
 echo "Committing current changes (pmd)"
+
+if [[ -e ${RELEASE_RULESET} ]]
+then
+    git add ${RELEASE_RULESET}
+fi
+
 git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 (
     echo "Committing current changes (pmd.github.io)"
@@ -123,13 +131,23 @@ echo " --> move any open issues to the next milestone, close the current milesto
 echo " --> Maybe there are some milestones on sourceforge, too: <https://sourceforge.net/p/pmd/bugs/milestones>."
 echo
 echo
-echo
 echo "Prepare Next development version:"
-echo "*   Move version/release info from **docs/pages/release_notes.md** to **docs/pages/release_notes_old.md**."
 echo "*   Update version/date info in **docs/_config.yml**."
-echo "*   Update version/release info in **docs/pages/release_notes.md**."
 echo
-cat <<EOF
+echo
+echo "Press enter to continue..."
+read
+
+# update release_notes_old
+OLD_RELEASE_NOTES=$(tail -n +8 docs/pages/release_notes_old.md)
+NEW_RELEASE_NOTES=$(tail -n +6 docs/pages/release_notes.md)
+echo "$(head -n 7 docs/pages/release_notes_old.md)" > docs/pages/release_notes_old.md
+echo "$NEW_RELEASE_NOTES" >> docs/pages/release_notes_old.md
+echo >> docs/pages/release_notes_old.md
+echo "$OLD_RELEASE_NOTES" >> docs/pages/release_notes_old.md
+
+# reset release notes template
+cat > docs/pages/release_notes.md <<EOF
 ---
 title: PMD Release Notes
 permalink: pmd_release_notes.html
@@ -140,7 +158,7 @@ keywords: changelog, release notes
 
 The PMD team is pleased to announce PMD ${DEVELOPMENT_VERSION%-SNAPSHOT}.
 
-This is a bug fixing release.
+This is a minor release.
 
 ### Table Of Contents
 
@@ -158,11 +176,10 @@ This is a bug fixing release.
 ### External Contributions
 
 EOF
-echo
-echo "Press enter to continue..."
-read
+
 git commit -a -m "Prepare next development version"
 git push origin ${CURRENT_BRANCH}
+./mvwn -B release:clean
 echo
 echo
 echo

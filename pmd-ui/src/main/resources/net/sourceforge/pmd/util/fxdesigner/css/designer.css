@@ -124,6 +124,11 @@
     -fx-border-radius: 3;
 }
 
+.button.icon-button {
+    -fx-pref-width: 20;
+    -fx-pref-height: 20;
+}
+
 .tool-bar .choice-box {
     -fx-background-color: derive(-fx-base, 10%);
     -fx-border-color: derive(-fx-base, -20%);

@@ -53,7 +53,7 @@
         <description>Utility class convention</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z]+Util'</message>
+            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z0-9]+(Utils?|Helper)'</message>
         </expected-messages>
         <code><![CDATA[
             public class Foo {
@@ -144,7 +144,7 @@
         <description>Class with only static members except constructors should be a utility class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z]+Util'</message>
+            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z0-9]+(Utils?|Helper)'</message>
         </expected-messages>
         <code><![CDATA[
             public class Foo {
@@ -210,6 +210,46 @@
             public class MyException extends RuntimeException {
                 public MyException(Exception exception) {
                     super(exception);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class with only main method should not be utility class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class MyException {
+
+                public static void main(String[] args) {
+                    // whitelisted
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class with only main method should not be utility class - varargs case</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class MyException {
+
+                public static void main(String... args) {
+                    // whitelisted
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class with main method and private static fields should not be utility class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class MyException {
+                private static final String foo = "FOOO";
+
+                public static void main(String[] args) {
+                    // whitelisted
                 }
             }
             ]]></code>

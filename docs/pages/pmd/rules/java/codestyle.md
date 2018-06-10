@@ -5,7 +5,7 @@ permalink: pmd_rules_java_codestyle.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/codestyle.xml
-keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, GenericsNaming, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
+keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
 language: Java
 ---
 ## AbstractNaming
@@ -391,8 +391,8 @@ and reports utility class names not ending with 'Util'.
 
 ``` java
 // This is Pascal case, the recommended naming convention in Java
-// Note that the default values of this rule don't allow numbers,
-// underscores, or accented characters in type names
+// Note that the default values of this rule don't allow underscores 
+// or accented characters in type names
 public class FooBar {}
 
 // You may want abstract classes to be named 'AbstractXXX',
@@ -413,7 +413,7 @@ public class Éléphant {}
 |interfacePattern|[A-Z][a-zA-Z0-9]+|Regex which applies to interface names|no|
 |enumPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to enum names|no|
 |annotationPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to annotation names|no|
-|utilityClassPattern|[A-Z][a-zA-Z]+Util|Regex which applies to utility class names|no|
+|utilityClassPattern|[A-Z][a-zA-Z0-9]+(Utils?\|Helper)|Regex which applies to utility class names|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -428,7 +428,7 @@ public class Éléphant {}
 
 To avoid mistakes if we want that a Method, Constructor, Field or Nested class have a default access modifier
 we must add a comment at the beginning of it's declaration.
-By default the comment must be /* default */, if you want another, you have to provide a regexp.
+By default the comment must be /* default */ or /* package */, if you want another, you have to provide a regular expression.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.CommentDefaultAccessModifierRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/CommentDefaultAccessModifierRule.java)
 
@@ -461,7 +461,7 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|regex||Regular expression|no|
+|regex|\/\*\s+(default\|package)\s+\*\/|Regular expression|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -860,6 +860,43 @@ public interface GenericDao<EF extends BaseModel, K extends Serializable> {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/GenericsNaming" />
+```
+
+## IdenticalCatchBranches
+
+**Since:** PMD 6.4.0
+
+**Priority:** Medium (3)
+
+**Minimum Language Version:** Java 1.7
+
+Identical `catch` branches use up vertical space and increase the complexity of code without
+adding functionality. It's better style to collapse identical branches into a single multi-catch
+branch.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.IdenticalCatchBranchesRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/IdenticalCatchBranchesRule.java)
+
+**Example(s):**
+
+``` java
+try {
+    // do something
+} catch (IllegalArgumentException e) {
+    throw e;
+} catch (IllegalStateException e) { // Can be collapsed into the previous block
+    throw e;
+}
+
+try {
+    // do something
+} catch (IllegalArgumentException | IllegalStateException e) { // This is better
+    throw e;
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/IdenticalCatchBranches" />
 ```
 
 ## IfElseStmtsMustUseBraces
@@ -1473,9 +1510,14 @@ Fields, local variables, or parameter names that are very short are not helpful 
 **This rule is defined by the following XPath expression:**
 ```
 //VariableDeclaratorId[string-length(@Image) < $minimum]
- [not(ancestor::ForInit)]
- [not(../../VariableDeclarator and ../../../LocalVariableDeclaration and ../../../../ForStatement)]
- [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
+ (: ForStatement :)
+ [not(../../..[self::ForInit])]
+ (: Foreach statement :)
+ [not(../../..[self::ForStatement])]
+ (: Catch statement parameter :)
+ [not(../..[self::CatchStatement])]
+ (: Lambda expression parameter :)
+ [not(parent::LambdaExpression or ../../..[self::LambdaExpression])]
 ```
 
 **Example(s):**

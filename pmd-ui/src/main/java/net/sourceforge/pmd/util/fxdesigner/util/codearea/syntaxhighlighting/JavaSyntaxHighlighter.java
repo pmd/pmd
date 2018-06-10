@@ -43,7 +43,7 @@ public final class JavaSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         "switch", "synchronized", "transient", "try", "volatile",
         "do", "strictfp", "goto", "const", "open", 
         "module", "requires", "transitive", "exports", 
-        "opens", "to", "uses", "provides", "with",
+        "opens", "to", "uses", "provides", "var", "with",
         };
 
 

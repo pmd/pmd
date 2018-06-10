@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.xpath;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.jaxen.Context;
 import org.jaxen.Function;
@@ -13,11 +14,16 @@ import org.jaxen.FunctionCallException;
 import org.jaxen.SimpleFunctionContext;
 import org.jaxen.XPathFunctionContext;
 
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 
+@Deprecated
 public class TypeOfFunction implements Function {
+
+    private static final Logger LOG = Logger.getLogger(TypeOfFunction.class.getName());
+    private static boolean deprecationWarned = false;
 
     public static void registerSelfInSimpleContext() {
         ((SimpleFunctionContext) XPathFunctionContext.getInstance()).registerFunction(null, "typeof",
@@ -25,7 +31,8 @@ public class TypeOfFunction implements Function {
     }
 
     public Object call(Context context, List args) throws FunctionCallException {
-
+        nagDeprecatedFunction();
+        
         String nodeTypeName = null;
         String fullTypeName = null;
         String shortTypeName = null;
@@ -57,8 +64,28 @@ public class TypeOfFunction implements Function {
         return typeof(n, nodeTypeName, fullTypeName, shortTypeName);
     }
 
-    // TEST //ClassOrInterfaceType[typeof(@Image, 'java.lang.String')]
+    private static void nagDeprecatedFunction() {
+        if (!deprecationWarned) {
+            deprecationWarned = true;
+            LOG.warning("The XPath function typeof() is deprecated and will be removed in "
+                    + PMDVersion.getNextMajorRelease() + ". Use typeIs() instead.");
+        }
+    }
+
+    /**
+     * Example XPath 1.0: {@code //ClassOrInterfaceType[typeof(@Image, 'java.lang.String', 'String')]}
+     * <p>
+     * Example XPath 2.0: {@code //ClassOrInterfaceType[pmd-java:typeof(@Image, 'java.lang.String', 'String')]}
+     *
+     * @param n
+     * @param nodeTypeName Usually the {@code @Image} attribute of the node
+     * @param fullTypeName The fully qualified name of the class or any supertype
+     * @param shortTypeName The simple class name, might be <code>null</code>
+     * @return
+     */
     public static boolean typeof(Node n, String nodeTypeName, String fullTypeName, String shortTypeName) {
+        nagDeprecatedFunction();
+        
         if (n instanceof TypeNode) {
             Class<?> type = ((TypeNode) n).getType();
             if (type == null) {

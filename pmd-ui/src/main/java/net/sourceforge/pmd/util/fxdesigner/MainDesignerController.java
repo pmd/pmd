@@ -38,7 +38,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
@@ -74,7 +73,10 @@ public class MainDesignerController implements Initializable, SettingsOwner {
      */
     private final DesignerRoot designerRoot;
 
+
     /* Menu bar */
+    @FXML
+    private MenuItem setupAuxclasspathMenuItem;
     @FXML
     private MenuItem openFileMenuItem;
     @FXML
@@ -88,8 +90,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     @FXML
     private Menu fileMenu;
     /* Center toolbar */
-    @FXML
-    private Button refreshASTButton;
     @FXML
     private ChoiceBox<LanguageVersion> languageChoiceBox;
     @FXML
@@ -150,7 +150,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         DesignerUtil.rewire(xpathPanelController.xpathVersionProperty(),
                             xpathVersion, this::setXpathVersion);
 
-        refreshASTButton.setOnAction(e -> onRefreshASTClicked());
+
         licenseMenuItem.setOnAction(e -> showLicensePopup());
         openFileMenuItem.setOnAction(e -> onOpenFileClicked());
         openRecentMenu.setOnAction(e -> updateRecentFilesMenu());
@@ -163,6 +163,10 @@ public class MainDesignerController implements Initializable, SettingsOwner {
                 e1.printStackTrace();
             }
         });
+
+        setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup(designerRoot));
+
+
 
         sourceEditorController.refreshAST();
         xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(),
@@ -225,10 +229,14 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     }
 
 
-    private void onRefreshASTClicked() {
+    public void refreshAST() {
         sourceEditorController.refreshAST();
+        refreshXPathResults();
+    }
+
+    public void refreshXPathResults() {
         xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(),
-                                           getLanguageVersion());
+                getLanguageVersion());
     }
 
 
@@ -237,6 +245,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
      */
     public void onNodeItemSelected(Node selectedValue) {
         nodeInfoPanelController.displayInfo(selectedValue);
+        // The following line causes problems, since it wipes out the name occurrence highlighting,
+        // but it's already fixed in a PR to come soon
         sourceEditorController.clearNodeHighlight();
         sourceEditorController.highlightNodePrimary(selectedValue);
         sourceEditorController.focusNodeInTreeView(selectedValue);
@@ -244,7 +254,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
 
     public void onNameDeclarationSelected(NameDeclaration declaration) {
-        sourceEditorController.clearNodeHighlight();
+        Platform.runLater(() -> onNodeItemSelected(declaration.getNode()));
 
         List<NameOccurrence> occ = declaration.getNode().getScope().getDeclarations().get(declaration);
         if (occ != null) {
@@ -253,7 +263,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
                                                               .collect(Collectors.toList()));
         }
 
-        sourceEditorController.highlightNodePrimary(declaration.getNode());
     }
 
 
@@ -295,7 +304,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
                 LanguageVersion guess = DesignerUtil.getLanguageVersionFromExtension(file.getName());
                 if (guess != null) { // guess the language from the extension
                     languageChoiceBox.getSelectionModel().select(guess);
-                    onRefreshASTClicked();
+                    refreshAST();
                 }
 
                 recentFiles.push(file);

@@ -98,6 +98,7 @@ import net.sourceforge.pmd.typeresolution.testdata.GenericsArrays;
 import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.JavaTypeDefinitionToStringNPE;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
+import net.sourceforge.pmd.typeresolution.testdata.LocalGenericClass;
 import net.sourceforge.pmd.typeresolution.testdata.MethodAccessibility;
 import net.sourceforge.pmd.typeresolution.testdata.MethodFirstPhase;
 import net.sourceforge.pmd.typeresolution.testdata.MethodGenericExplicit;
@@ -1827,6 +1828,11 @@ public class ClassTypeResolverTest {
     @Test
     public void testVarArgsMethodUseCase() throws Exception {
         parseAndTypeResolveForClass(VarArgsMethodUseCase.class, "1.8");
+    }
+
+    @Test
+    public void testLocalGenericClass() throws Exception {
+        parseAndTypeResolveForClass(LocalGenericClass.class, "9");
     }
 
     private JavaTypeDefinition getChildTypeDef(Node node, int childIndex) {

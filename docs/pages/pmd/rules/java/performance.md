@@ -132,10 +132,10 @@ The FileReader and FileWriter constructors instantiate FileInputStream and FileO
 **This rule is defined by the following XPath expression:**
 ```
 //PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[
-       typeof(@Image, 'java.io.FileInputStream', 'FileInputStream')
-    or typeof(@Image, 'java.io.FileOutputStream', 'FileOutputStream')
-    or typeof(@Image, 'java.io.FileReader', 'FileReader')
-    or typeof(@Image, 'java.io.FileWriter', 'FileWriter')
+       typeIs('java.io.FileInputStream')
+    or typeIs('java.io.FileOutputStream')
+    or typeIs('java.io.FileReader')
+    or typeIs('java.io.FileWriter')
   ]
 ```
 
@@ -208,10 +208,10 @@ adverse impacts on performance.
 ```
 //FieldDeclaration/Type/PrimitiveType[@Image = 'short']
 |
-//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeof(@Image, 'java.lang.Override', 'Override')])]
+//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeIs('java.lang.Override')])]
     /MethodDeclaration/ResultType/Type/PrimitiveType[@Image = 'short']
 |
-//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeof(@Image, 'java.lang.Override', 'Override')])]
+//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeIs('java.lang.Override')])]
     /MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/Type/PrimitiveType[@Image = 'short']
 |
 //LocalVariableDeclaration/Type/PrimitiveType[@Image = 'short']
@@ -300,7 +300,7 @@ Note that new Byte() is deprecated since JDK 9 for that reason.
 ```
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeof(@Image, 'java.lang.Byte', 'Byte')]]
+and ClassOrInterfaceType[typeIs('java.lang.Byte')]]
 ```
 
 **Example(s):**
@@ -389,12 +389,27 @@ buf.append("1m");           // good
 
 **Priority:** Medium (3)
 
-String.trim().length() is an inefficient way to check if a String is really empty, as it
-creates a new String object just to check its size. Consider creating a static function that
-loops through a string, checking Character.isWhitespace() on each character and returning
-false if a non-whitespace character is found. You can refer to Apache's StringUtils#isBlank (in commons-lang),
-Spring's StringUtils#hasText (in the Spring framework) or Google's CharMatcher#whitespace (in Guava) for
-existing implementations.
+String.trim().length() == 0 (or String.trim().isEmpty() for the same reason) is an inefficient
+way to check if a String is really blank, as it creates a new String object just to check its size.
+Consider creating a static function that loops through a string, checking Character.isWhitespace()
+on each character and returning false if a non-whitespace character is found. A Smarter code to
+check for an empty string would be:
+
+```java
+private boolean checkTrimEmpty(String str) {
+    for(int i = 0; i < str.length(); i++) {
+        if(!Character.isWhitespace(str.charAt(i))) {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+You can refer to Apache's StringUtils#isBlank (in commons-lang),
+Spring's StringUtils#hasText (in the Spring framework) or Google's
+CharMatcher#whitespace (in Guava) for existing implementations (some might
+include the check for != null).
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.performance.InefficientEmptyStringCheckRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/InefficientEmptyStringCheckRule.java)
 
@@ -402,7 +417,7 @@ existing implementations.
 
 ``` java
 public void bar(String string) {
-    if (string != null && string.trim().size() > 0) {
+    if (string != null && string.trim().length() > 0) {
         doSomething();
     }
 }
@@ -483,7 +498,7 @@ Note that new Integer() is deprecated since JDK 9 for that reason.
 ```
 //AllocationExpression
   [not (ArrayDimsAndInits)
-   and ClassOrInterfaceType[typeof(@Image, 'java.lang.Integer', 'Integer')]]
+   and ClassOrInterfaceType[typeIs('java.lang.Integer')]]
 ```
 
 **Example(s):**
@@ -513,7 +528,7 @@ Note that new Long() is deprecated since JDK 9 for that reason.
 ```
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeof(@Image, 'java.lang.Long', 'Long')]]
+and ClassOrInterfaceType[typeIs('java.lang.Long')]]
 ```
 
 **Example(s):**
@@ -632,7 +647,7 @@ Note that new Short() is deprecated since JDK 9 for that reason.
 ```
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeof(@Image, 'java.lang.Short', 'Short')]]
+and ClassOrInterfaceType[typeIs('java.lang.Short')]]
 ```
 
 **Example(s):**
@@ -993,7 +1008,7 @@ public class Foo {
         a += " bar";
         // better would be:
         // StringBuilder a = new StringBuilder("foo");
-        // a.append(" bar);
+        // a.append(" bar");
     }
 }
 ```

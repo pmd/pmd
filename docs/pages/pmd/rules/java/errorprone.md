@@ -796,9 +796,9 @@ Super should be called at the start of the method
     /Block[not(
       (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image]))]
 [ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
-  typeof(@Image, 'android.app.Activity', 'Activity') or
-  typeof(@Image, 'android.app.Application', 'Application') or
-  typeof(@Image, 'android.app.Service', 'Service')
+  typeIs('android.app.Activity') or
+  typeIs('android.app.Application') or
+  typeIs('android.app.Service')
 ]]]
 ```
 
@@ -839,9 +839,9 @@ Super should be called at the end of the method
    /Block/BlockStatement[last()]
     [not(Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image])]
 [ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
-  typeof(@Image, 'android.app.Activity', 'Activity') or
-  typeof(@Image, 'android.app.Application', 'Application') or
-  typeof(@Image, 'android.app.Service', 'Service')
+  typeIs('android.app.Activity') or
+  typeIs('android.app.Application') or
+  typeIs('android.app.Service')
 ]]]
 ```
 
@@ -2176,7 +2176,7 @@ Some JUnit framework methods are easy to misspell.
  or (not(@Image = 'tearDown')
  and translate(@Image, 'TEARdOWN', 'tearDown') = 'tearDown')]
  [FormalParameters[count(*) = 0]]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
 ```
 
 **Example(s):**
@@ -2208,7 +2208,7 @@ The suite() method in a JUnit test needs to be both public and static.
 //MethodDeclaration[not(@Static='true') or not(@Public='true')]
 [MethodDeclarator/@Image='suite']
 [MethodDeclarator/FormalParameters/@ParameterCount=0]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
 ```
 
 **Example(s):**
@@ -3196,7 +3196,7 @@ or
 UnaryExpressionNotPlusMinus[@Image='!']
 /PrimaryExpression/PrimaryPrefix[Literal/BooleanLiteral or Name[count(../../*)=1]]]
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
 ```
 
 **Example(s):**

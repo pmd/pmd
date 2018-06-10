@@ -40,7 +40,6 @@ class DOMLineNumbers {
         int textLength = 0;
         if (n.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
             nextIndex = xmlString.indexOf("<!DOCTYPE", nextIndex);
-            nodeLength = "<!DOCTYPE".length();
         } else if (n.getNodeType() == Node.COMMENT_NODE) {
             nextIndex = xmlString.indexOf("<!--", nextIndex);
         } else if (n.getNodeType() == Node.ELEMENT_NODE) {
@@ -67,15 +66,23 @@ class DOMLineNumbers {
             nextIndex = xmlString.indexOf("&" + n.getNodeName() + ";", nextIndex);
         }
         setBeginLocation(n, nextIndex);
+
+        nextIndex += nodeLength;
+
         if (n.hasChildNodes()) {
-            // next nodes begin after the current start tag
-            nextIndex += nodeLength;
             NodeList childs = n.getChildNodes();
             for (int i = 0; i < childs.getLength(); i++) {
                 nextIndex = determineLocation(childs.item(i), nextIndex);
             }
         }
-        if (n.getNodeType() == Node.ELEMENT_NODE) {
+
+        // autoclosing element, eg <a />
+        boolean isAutoClose = !n.hasChildNodes()
+                && n.getNodeType() == Node.ELEMENT_NODE
+                // nextIndex is up to the closing > at this point
+                && xmlString.startsWith("/>", nextIndex - 2);
+
+        if (n.getNodeType() == Node.ELEMENT_NODE && !isAutoClose) {
             nextIndex += 2 + n.getNodeName().length() + 1; // </nodename>
         } else if (n.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
             Node nextSibling = n.getNextSibling();

@@ -366,8 +366,7 @@ public class XmlParserTest {
         LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions options = (XmlParserOptions) xmlVersionHandler.getDefaultParserOptions();
         Parser parser = xmlVersionHandler.getParser(options);
-        Node document = parser.parse(null, new StringReader(xml));
-        return document;
+        return parser.parse(null, new StringReader(xml));
     }
 
     @Test
@@ -375,6 +374,12 @@ public class XmlParserTest {
         String xml = IOUtils.toString(XmlParserTest.class.getResourceAsStream("parsertests/bug1518.xml"));
         Node document = parseXml(xml);
         assertNotNull(document);
+    }
+
+    @Test
+    public void testAutoclosingElementLength() {
+        final String xml = "<elementName att1='foo' att2='bar' att3='other' />";
+        assertLineNumbers(parseXml(xml), 1, 1, 1, xml.length());
     }
 
     /**

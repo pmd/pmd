@@ -1,4 +1,8 @@
 /**
+ * Add support for Java 10 Local Variable Type Inference
+ * See #743. In Java 10 mode, "var" as local variable type is handled special.
+ * Andreas Dangel 04/2018
+ *====================================================================
  * Fixes #888 [java] ParseException occurs with valid '<>' in Java 1.8 mode
  * Juan Martin Sotuyo Dodero 01/2018
  *====================================================================
@@ -369,16 +373,21 @@ public class JavaParser {
       throwParseException("Cannot use concise try-with-resources when running in JDK inferior to 9 mode!");
     }
   }
+  private void checkForBadTypeIdentifierUsage(String image) {
+    if (jdkVersion >= 10 && "var".equals(image)) {
+      throwParseException("With JDK 10, 'var' is a restricted local variable type and cannot be used for type declarations!");
+    }
+  }
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
   // since "assert" isn't a string literal token
   private boolean isNextTokenAnAssert() {
-    boolean res = getToken(1).image.equals("assert");
-    if (res && jdkVersion <= 3 && getToken(2).image.equals("(")) {
-     res = false;
+    if (jdkVersion <= 3) {
+      return false;
     }
-    return res;
+    
+    return getToken(1).image.equals("assert");
   }
 
   private boolean isPrecededByComment(Token tok) {
@@ -1647,7 +1656,7 @@ void ClassOrInterfaceDeclaration(int modifiers):
 {
   ( /* See note about this optional final modifier in BlockStatement */
     ["final"|"abstract"] "class" | "interface" { jjtThis.setInterface(); inInterface = true; } )
-  t=<IDENTIFIER> { jjtThis.setImage(t.image); }
+  t=<IDENTIFIER> { checkForBadTypeIdentifierUsage(t.image); jjtThis.setImage(t.image); }
   [ TypeParameters() ]
   [ ExtendsList() ]
   [ ImplementsList() ]
@@ -1679,7 +1688,7 @@ jjtThis.setModifiers(modifiers);
 }
 {
   t = <IDENTIFIER> {
-    if (!t.image.equals("enum")) {
+    if (!"enum".equals(t.image)) {
       throw new ParseException("ERROR: expecting enum");
     }
 
@@ -1687,7 +1696,7 @@ jjtThis.setModifiers(modifiers);
       throw new ParseException("ERROR: Can't use enum as a keyword in pre-JDK 1.5 target");
     }
   }
-  t=<IDENTIFIER> {jjtThis.setImage(t.image);}
+  t=<IDENTIFIER> {checkForBadTypeIdentifierUsage(t.image); jjtThis.setImage(t.image);}
   [ ImplementsList() ]
   EnumBody()
 }
@@ -1870,13 +1879,17 @@ void Initializer() :
 
 /*
  * Type, name and expression syntax follows.
+ * Type is the same as "UnannType" in JLS
+ *
+ * See https://docs.oracle.com/javase/specs/jls/se10/html/jls-8.html#jls-UnannType
  */
 void Type():
-{}
 {
-   LOOKAHEAD(2) ReferenceType()
- |
-   PrimitiveType()
+    Token t;
+}
+{
+ LOOKAHEAD(2) ReferenceType()
+ | PrimitiveType()
 }
 
 void ReferenceType():
@@ -2327,13 +2340,23 @@ void BlockStatement():
   LOOKAHEAD( (Annotation())* ["final"|"abstract"] "class") (Annotation())* ClassOrInterfaceDeclaration(0)
 }
 
+/*
+ * See https://docs.oracle.com/javase/specs/jls/se10/html/jls-14.html#jls-14.4
+ */
 void LocalVariableDeclaration() :
 {}
 {
   ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-  Type()
+  LocalVariableType()
   VariableDeclarator()
   ( "," VariableDeclarator() )*
+}
+
+void LocalVariableType() #void :
+{}
+{
+  LOOKAHEAD( { jdkVersion >= 10 && isKeyword("var") } ) <IDENTIFIER>
+  | Type()
 }
 
 void EmptyStatement() :
@@ -2379,7 +2402,6 @@ void IfStatement() :
 {}
 {
   "if" "(" Expression() ")" Statement() [ LOOKAHEAD(1) "else" {jjtThis.setHasElse();} Statement() ]
-{}
 }
 
 void WhileStatement() :
@@ -2492,7 +2514,7 @@ void Resources() :
 void Resource() :
 {}
 {
-   LOOKAHEAD(2) ( ( "final" {jjtThis.setFinal(true);} | Annotation() )* Type() VariableDeclaratorId() "=" Expression() )
+   LOOKAHEAD(2) ( ( "final" {jjtThis.setFinal(true);} | Annotation() )* LocalVariableType() VariableDeclaratorId() "=" Expression() )
    |
    Name() {checkForBadConciseTryWithResourcesUsage();}
 }
@@ -2621,7 +2643,13 @@ Token t;
 jjtThis.setModifiers(modifiers);
 }
 {
-  "@" "interface" t=<IDENTIFIER> {checkForBadAnnotationUsage();jjtThis.setImage(t.image);} AnnotationTypeBody()
+  "@" "interface" t=<IDENTIFIER>
+    {
+        checkForBadAnnotationUsage();
+        checkForBadTypeIdentifierUsage(t.image);
+        jjtThis.setImage(t.image);
+    }
+  AnnotationTypeBody()
 }
 
 void AnnotationTypeBody():

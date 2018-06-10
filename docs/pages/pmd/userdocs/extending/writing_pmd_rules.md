@@ -250,77 +250,39 @@ Note that access modifiers are held as attributes, so, for example,
 
 finds all private fields. You can see the code that determines all the attributes [here](pmd-core/xref/net/sourceforge/pmd/lang/ast/xpath/AttributeAxisIterator.html)
 
-Thanks to Miguel Griffa for writing a longer [XPath tutorial](xpathruletutorial.html).
-
-## I want to implement a rule that analyze more than the class!
-
-An obvious limitation of the previous mechanism is the “class-centric” focus of the rule. How can you implement a rule that checks stuff across the all source code? Let’s take a dummy example. Let’s say you want to implement a rule that count how many Expression Node you have in your source code (told you, it was a dummy example :) ).
-
-You realize quite simply. You just have to add static field to the RulesContext, as an attribute, and uses Rule.start() and Rule.end() hook to initialized and finalize your rule’s implementation:
-
-```java
-package net.sourceforge.pmd.rules;
-
-import java.util.concurrent.atomic.AtomicLong;
-
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-
-public class CountRule extends AbstractJavaRule {
-
-       private static final String COUNT = "count";
-
-       @Override
-       public void start(RuleContext ctx) {
-               ctx.setAttribute(COUNT, new AtomicLong());
-               super.start(ctx);
-       }
-
-       @Override
-       public Object visit(ASTExpression node, Object data) {
-               // How many Expression nodes are there in all files parsed!  I must know!
-               RuleContext ctx = (RuleContext)data;
-               AtomicLong total = (AtomicLong)ctx.getAttribute(COUNT);
-               total.incrementAndGet();
-               return super.visit(node, data);
-       }
-
-       @Override
-       public void end(RuleContext ctx) {
-               AtomicLong total = (AtomicLong)ctx.getAttribute(COUNT);
-               addViolation(ctx, null, new Object[] { total });
-               ctx.removeAttribute(COUNT);
-               super.end(ctx);
-       }
-}
-```
-
-As you can see in this example, the method start will be call the first time the rule is going to be used, so you can initialize properly your rule here. Once the rule will have finished to parses the source code, the method end() will be invoke you can assert there if, or not, your rule has been violated.
-
->Note that the example logs a violation **without** a proper classname. This is not really a good idea. Indeed, a lot of aggregating tools that PMD (Such as [XRadar](http://xradar.sourceforge.net), or [Sonar](http://www.sonarsource.com/)) probably uses this kind of meta data on their aggregation processes. So, when implements such a rule, always try to find a way to add classname to the violation report.
+More information about writing XPath rules is [available here](pmd_userdocs_extending_writing_xpath_rules.html).
 
 ## I need some kind of Type Resolution for my rule!
 
 ### Inside an XPath query
 
-PMD XPath syntax includes now a new function called `typeof` which determines if a node (ClassOrInterfaceType only right now) is of the provided type. It also scans the type’s hierarchy, so if you extend a class it will also find this out.
+PMD's XPath extensions include two functions called `typeIs` and `typeIsExactly`,
+which determine if a node is of a specific type (either any subtype or exactly,
+respectively).
 
-Here a an example of use, inside an XPath Query:
+Here a an example of use, inside an XPath query:
 
-```xpath
-//ClassOrInterfaceDeclaration[
-    //ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')]
-]
+```ruby
+//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType[typeIs('junit.framework.TestCase')]
 ```
 
-This query will match on such source code:
+This query will for instance match the following class declaration:
 
 ```java
 import junit.framework.TestCase;
 
 public class Foo extends TestCase { }
 ```
+
+It will also match against classes which extend a *subtype* of `junit.framework.TestCase`,
+i.e. a base class itself extending `TestCase` transitively. If you don't want this behaviour,
+then use `typeIsExactly` instead of `typeIs`.
+
+Checking against an array type is possible with the double bracket syntax.
+An array type is denoted by just appending `[]` to the fully qualified class name
+of the component type. These can be repeated for arrays of arrays
+(e.g. `byte[][]` or `java.lang.String[]`).
+
 
 ### With Java code
 

@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.4.0-SNAPSHOT</version>
+        <version>6.5.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -25,6 +25,15 @@
                 <configuration combine.self="override">
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <rulesets>
+                        <ruleset>/net/sourceforge/pmd/pmd-ui-dogfood-config.xml</ruleset>
+                    </rulesets>
                 </configuration>
             </plugin>
         </plugins>
@@ -57,6 +66,20 @@
             <artifactId>commons-beanutils-core</artifactId>
             <version>1.8.3</version>
         </dependency>
+
+        <!-- Icon packs -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fontawesome-pack</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
+        <!-- PMD dependencies -->
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-apex</artifactId>

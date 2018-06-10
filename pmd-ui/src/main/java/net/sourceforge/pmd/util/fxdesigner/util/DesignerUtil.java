@@ -30,6 +30,10 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 
 import javafx.beans.property.Property;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Tooltip;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 
@@ -82,6 +86,25 @@ public final class DesignerUtil {
      */
     public static File getSettingsFile() {
         return DESIGNER_SETTINGS_FILE;
+    }
+
+
+    public static <T> Callback<ListView<T>, ListCell<T>> simpleListCellFactory(Function<T, String> converter, Function<T, String> toolTipMaker) {
+        return collection -> new ListCell<T>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                    Tooltip.uninstall(this, getTooltip());
+                } else {
+                    setText(converter.apply(item));
+                    Tooltip.install(this, new Tooltip(toolTipMaker.apply(item)));
+                }
+            }
+        };
     }
 
 
@@ -157,14 +180,13 @@ public final class DesignerUtil {
      */
     public static <T> void rewire(Property<T> underlying, ObservableValue<? extends T> ui, Consumer<? super T> setter) {
         setter.accept(underlying.getValue());
-        underlying.unbind();
-        underlying.bind(ui); // Bindings are garbage collected after the popup dies
+        rewire(underlying, ui);
     }
     
     /** Like rewire, with no initialisation. */
     public static <T> void rewire(Property<T> underlying, ObservableValue<? extends T> source) {
         underlying.unbind();
-        underlying.bind(source);
+        underlying.bind(source); // Bindings are garbage collected after the popup dies
     }
 
 

@@ -9,6 +9,7 @@ package net.sourceforge.pmd.benchmark;
  *
  * @author Brian Remedios
  */
+@Deprecated
 public enum Benchmark {
     // The constants must be sorted in execution order,
     // the index is derived from the ordinal of the constant

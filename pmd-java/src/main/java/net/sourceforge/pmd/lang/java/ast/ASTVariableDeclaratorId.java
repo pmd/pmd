@@ -11,6 +11,29 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
+// @formatter:off
+/**
+ * Represents an identifier in the context of variable or parameter declarations (not their use in
+ * expressions). Such a node declares a name in the scope it's defined in, and can occur in the following
+ * contexts:
+ *
+ * <ul>
+ *    <li> Field declarations;
+ *    <li> Local variable declarations;
+ *    <li> Method, constructor and lambda parameter declarations;
+ *    <li> Method and constructor explicit receiver parameter declarations;
+ *    <li> Exception parameter declarations occurring in catch clauses;
+ *    <li> Resource declarations occurring in try-with-resources statements.
+ * </ul>
+ *
+ * <p>Since this node conventionally represents the declared variable in PMD, our symbol table
+ * populates it with a {@link VariableNameDeclaration}, and its usages can be accessed through
+ * the method {@link #getUsages()}.
+ *
+ * <p>Type resolution assigns the type of the variable to this node. See {@link #getType()}'s
+ * documentation for the contract of this method.
+ */
+// @formatter:on
 public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dimensionable {
 
     private int arrayDepth;
@@ -45,6 +68,8 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return getScope().getDeclarations(VariableNameDeclaration.class).get(nameDeclaration);
     }
 
+    // TODO Dimensionable will be deprecated
+
     public void bumpArrayDepth() {
         arrayDepth++;
     }
@@ -59,16 +84,49 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return arrayDepth > 0;
     }
 
+
+    /**
+     * Returns true if this nodes declares an exception parameter in
+     * a {@code catch} statement.
+     */
     public boolean isExceptionBlockParameter() {
-        return jjtGetParent().jjtGetParent() instanceof ASTTryStatement;
+        return jjtGetParent().jjtGetParent() instanceof ASTCatchStatement;
+    }
+
+
+    /**
+     * Returns true if this node declares a formal parameter for a method
+     * declaration or a lambda expression. In particular, returns false
+     * if the node is a receiver parameter (see {@link #isExplicitReceiverParameter()}).
+     */
+    public boolean isFormalParameter() {
+        return jjtGetParent() instanceof ASTFormalParameter && !isExceptionBlockParameter() && !isResourceDeclaration()
+                || jjtGetParent() instanceof ASTLambdaExpression;
     }
 
     public void setExplicitReceiverParameter() {
         explicitReceiverParameter = true;
     }
 
+
+    /**
+     * Returns true if this node is a receiver parameter for a method or constructor
+     * declaration. The receiver parameter has the name {@code this}, and must be declared
+     * at the beginning of the parameter list. Its only purpose is to annotate
+     * the type of the object on which the method call is issued. It was introduced
+     * in Java 8.
+     */
     public boolean isExplicitReceiverParameter() {
+        // TODO this could be inferred from the image tbh
         return explicitReceiverParameter;
+    }
+
+
+    /**
+     * Returns true if this declarator id declares a resource in a try-with-resources statement.
+     */
+    public boolean isResourceDeclaration() {
+        return jjtGetParent() instanceof ASTResource;
     }
 
 
@@ -84,9 +142,24 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * since the type node is absent.
      */
     public boolean isTypeInferred() {
+        return isLambdaExpression() || isLocalVariableTypeInferred();
+    }
+
+    private boolean isLambdaExpression() {
         return jjtGetParent() instanceof ASTLambdaExpression;
     }
 
+    private boolean isLocalVariableTypeInferred() {
+        if (jjtGetParent() instanceof ASTResource) {
+            // covers "var" in try-with-resources
+            return jjtGetParent().getFirstChildOfType(ASTType.class) == null;
+        } else if (getNthParent(2) instanceof ASTLocalVariableDeclaration) {
+            // covers "var" as local variables and in for statements
+            return getNthParent(2).getFirstChildOfType(ASTType.class) == null;
+        }
+
+        return false;
+    }
 
     /**
      * Returns the first child of the node returned by {@link #getTypeNode()}.
@@ -113,6 +186,8 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      */
     public ASTType getTypeNode() {
         if (jjtGetParent() instanceof ASTFormalParameter) {
+            // ASTResource is a subclass of ASTFormal parameter for now but this will change
+            // and this will need to be corrected here, see #998
             return ((ASTFormalParameter) jjtGetParent()).getTypeNode();
         } else if (isTypeInferred()) {
             // lambda expression with lax types. The type is inferred...

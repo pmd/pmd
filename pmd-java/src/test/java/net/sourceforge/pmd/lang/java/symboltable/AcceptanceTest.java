@@ -49,7 +49,7 @@ public class AcceptanceTest extends STBBaseTst {
         ASTCatchStatement c = acu.findDescendantsOfType(ASTCatchStatement.class).get(0);
         ASTBlock a = c.findDescendantsOfType(ASTBlock.class).get(0);
         Scope s = a.getScope();
-        Map<NameDeclaration, List<NameOccurrence>> vars = s.getParent().getDeclarations();
+        Map<NameDeclaration, List<NameOccurrence>> vars = s.getDeclarations();
         assertEquals(1, vars.size());
         NameDeclaration v = vars.keySet().iterator().next();
         assertEquals("e", v.getImage());

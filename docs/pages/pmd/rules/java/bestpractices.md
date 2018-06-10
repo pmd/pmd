@@ -564,8 +564,12 @@ In JUnit 4, only methods annotated with the @Test annotation are executed.
 
 **This rule is defined by the following XPath expression:**
 ```
-//ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public='true']/MethodDeclarator[starts-with(@Image,'test')]]
-[count(Annotation//Name[@Image='Test'])=0]
+//ClassOrInterfaceDeclaration[
+       matches(@Image, $testClassPattern)
+        or ExtendsList/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]]
+
+    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true()]/MethodDeclarator[starts-with(@Image, 'test')]]
+    [not(Annotation//Name[pmd-java:typeIs('org.junit.Test')])]
 ```
 
 **Example(s):**
@@ -582,6 +586,12 @@ public class MyTest {
     }
 }
 ```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|testClassPattern|Test|The regex pattern used to identify test classes|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1084,7 +1094,7 @@ All switch statements should include a default option to catch any unspecified v
 
 **This rule is defined by the following XPath expression:**
 ```
-//SwitchStatement[not(SwitchLabel[@Default='true'])]
+//SwitchStatement[@DefaultCase = false() and @ExhaustiveEnumSwitch = false()]
 ```
 
 **Example(s):**
@@ -1302,7 +1312,7 @@ This rule detects JUnit assertions in object equality. These assertions should b
     PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
     [ends-with(@Image, '.equals')]
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
 ```
 
 **Example(s):**
@@ -1340,7 +1350,7 @@ more specific methods, like assertNull, assertNotNull.
   Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
  ]
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
 ```
 
 **Example(s):**
@@ -1380,7 +1390,7 @@ by more specific methods, like assertSame, assertNotSame.
 [PrimarySuffix/Arguments
  /ArgumentList/Expression
  /EqualityExpression[count(.//NullLiteral) = 0]]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[pmd-java:typeof(@Image, 'org.junit.Test', 'Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
 ```
 
 **Example(s):**

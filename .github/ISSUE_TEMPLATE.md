@@ -1,5 +1,5 @@
-Please, prefix the report title with the language it applies to within brackets, such as [java] or [apex].
-If not specific to a language, you can use [core].
+<!-- Please, prefix the report title with the language it applies to within brackets, such as [java] or [apex].
+If not specific to a language, you can use [core]. -->
 
 **Affects PMD Version:** 
 
@@ -15,3 +15,4 @@ If not specific to a language, you can use [core].
 
 **Running PMD through:** *[CLI | Ant | Maven | Gradle | Designer | Other]*
 
+<!-- If relevant, also include your JDK and OS information, e.g. for ClassNotFoundException, LinkageError, reflection failures, etc. -->
