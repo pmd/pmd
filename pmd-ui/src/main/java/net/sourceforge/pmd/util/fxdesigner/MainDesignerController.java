@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.reactfx.value.Val;
@@ -432,21 +433,12 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
     @PersistentProperty
     public String getRecentFiles() {
-        StringBuilder sb = new StringBuilder();
-        for (File f : recentFiles) {
-            sb.append(',').append(f.getAbsolutePath());
-        }
-        return sb.length() > 0 ? sb.substring(1) : "";
+        return recentFiles.stream().map(File::getAbsolutePath).collect(Collectors.joining(File.pathSeparator));
     }
 
 
     public void setRecentFiles(String files) {
-        List<String> fileNames = Arrays.asList(files.split(","));
-        Collections.reverse(fileNames);
-        for (String fileName : fileNames) {
-            File f = new File(fileName);
-            recentFiles.push(f);
-        }
+        Arrays.stream(files.split(File.pathSeparator)).map(File::new).forEach(recentFiles::push);
     }
 
 
