@@ -186,11 +186,6 @@ public class RuleBuilder {
             rule.setLanguage(language);
         }
 
-        // The message can be set in Java, but the XML takes precedence
-        if (!StringUtils.isBlank(message)) {
-            rule.setMessage(message);
-        }
-
         loadLanguageMinMaxVersions(rule);
         rule.setSince(since);
         rule.setExternalInfoUrl(externalInfoUrl);

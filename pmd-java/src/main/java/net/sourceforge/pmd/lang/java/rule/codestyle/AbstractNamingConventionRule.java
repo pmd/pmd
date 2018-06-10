@@ -28,7 +28,6 @@ abstract class AbstractNamingConventionRule<T extends JavaNode> extends Abstract
 
 
     AbstractNamingConventionRule() {
-        setMessage("The {0} name ''{1}'' doesn''t match ''{2}''");
     }
 
     /** The argument is interpreted as the display name, and is converted to camel case to get the property name. */
