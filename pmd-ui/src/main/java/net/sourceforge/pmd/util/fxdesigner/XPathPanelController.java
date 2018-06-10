@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -121,10 +120,10 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .subscribe(tick -> parent.refreshXPathResults());
 
         xpathExpressionArea.plainTextChanges()
-                           .filter(t -> t.getInserted().split("/", 2)[0].matches("[a-zA-Z]"))
+                           .filter(t -> t.getInserted().split("/")[0].matches("[a-zA-Z]"))
                            .subscribe(t -> {
                                try {
-                                   autoComplete(t.getInserted().split("/", 2)[0]);
+                                   autoComplete(t.getInserted().split("/")[0]);
                                } catch (IOException e) {
                                    e.printStackTrace();
                                } catch (ClassNotFoundException e) {
@@ -140,11 +139,9 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         XPathSuggestions xPathSuggestions = new XPathSuggestions("net.sourceforge.pmd.lang." + "java" + ".ast");
         List<String> suggestions = xPathSuggestions.getXPathSuggestions();
 
-        String[] array = xpathExpressionArea.getText().split("/");
-        List<String> list = Arrays.asList(array);
 
         for (String s1 : suggestions) {
-            if (s1.contains(list.get(list.size() - 1))) {
+            if (s1.contains(s)) {
                 MenuItem m = new MenuItem(s1);
                 if (!resultToDisplay.contains(m)) {
                     resultToDisplay.add(m);
@@ -153,6 +150,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         }
 
         autoCompletePopup.getItems().addAll(resultToDisplay);
+
         if (xpathExpressionArea.getText().length() > 0) {
 
             xpathExpressionArea.addEventHandler(KeyEvent.KEY_TYPED, t -> {
