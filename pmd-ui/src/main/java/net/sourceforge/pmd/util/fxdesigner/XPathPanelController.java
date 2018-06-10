@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
@@ -121,28 +120,37 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .or(xpathVersionProperty().changes())
                            .subscribe(tick -> parent.refreshXPathResults());
 
-        xpathExpressionArea.richChanges()
-                           .subscribe(t -> autoComplete());
-
+        xpathExpressionArea.plainTextChanges()
+                           .filter(t -> t.getInserted().split("/", 2)[0].matches("[a-zA-Z]"))
+                           .subscribe(t -> {
+                               try {
+                                   autoComplete(t.getInserted().split("/", 2)[0]);
+                               } catch (IOException e) {
+                                   e.printStackTrace();
+                               } catch (ClassNotFoundException e) {
+                                   e.printStackTrace();
+                               }
+                           });
     }
 
-    private void autoComplete() {
+    private void autoComplete(String s) throws IOException, ClassNotFoundException {
 
         autoCompletePopup = new ContextMenu();
         List<MenuItem> resultToDisplay = new ArrayList<>();
-        File folder = new File("G:\\pmd\\pmd-java\\src\\main\\java\\net\\sourceforge\\pmd\\lang\\java\\ast\\");
+        XPathSuggestions xPathSuggestions = new XPathSuggestions("net.sourceforge.pmd.lang." + parent
+            .getLanguageVersion().getName().replaceAll("[0-9]", "").replaceAll("//s", "").toLowerCase() + ".ast");
 
-        XPathSuggestions xPathSuggestions = new XPathSuggestions(folder);
         List<String> suggestions = xPathSuggestions.getXPathSuggestions();
 
         String[] array = xpathExpressionArea.getText().split("/");
         List<String> list = Arrays.asList(array);
 
-
-        for (String s : suggestions) {
-            if (s.contains(list.get(list.size() - 1))) {
-                MenuItem m = new MenuItem(s);
-                resultToDisplay.add(m);
+        for (String s1 : suggestions) {
+            if (s1.contains(list.get(list.size() - 1))) {
+                MenuItem m = new MenuItem(s1);
+                if (!resultToDisplay.contains(m)) {
+                    resultToDisplay.add(m);
+                }
             }
         }
 
