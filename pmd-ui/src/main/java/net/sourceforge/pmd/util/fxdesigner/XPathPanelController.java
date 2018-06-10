@@ -155,15 +155,14 @@ public class XPathPanelController implements Initializable, SettingsOwner {
             }
         }
 
-
+        //TODO: Work on the implementation of the Result to be selected and added to the Code Area
         autoCompletePopup.getItems().addAll(resultToDisplay);
 
         if (xpathExpressionArea.getText().length() > 0) {
 
             xpathExpressionArea.addEventHandler(KeyEvent.KEY_TYPED, t -> {
                 if (t.getCode() != KeyCode.ESCAPE) {
-                    autoCompletePopup.hide();
-                    autoCompletePopup.show(xpathExpressionArea, 500, 500);
+                    xpathExpressionArea.setContextMenu(autoCompletePopup);
                 }
             });
 
