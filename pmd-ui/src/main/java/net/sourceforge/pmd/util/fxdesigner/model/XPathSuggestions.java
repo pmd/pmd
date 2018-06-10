@@ -13,6 +13,8 @@ import java.util.Enumeration;
 import java.util.List;
 
 
+
+
 public class XPathSuggestions {
     private List<String> xPathSuggestions = new ArrayList<>();
     String packagename;
@@ -31,7 +33,6 @@ public class XPathSuggestions {
         List<String> foo = new ArrayList<>();
 
         for (Class c : fileNameList) {
-
             if (c.getName().contains("AST")) {
                 foo.add(c.getName());
             }
@@ -86,10 +87,9 @@ public class XPathSuggestions {
     }
 
     private List<String> evaluateXpathSuggestions(List<String> fileNameList) {
+        String language = packagename.replace("net.sourceforge.pmd.lang.", "").replace(".ast", "").trim();
         for (String s : fileNameList) {
-            //Check if the package name should be hardcoded
-            xPathSuggestions.add(s.replace("AST", "").replace(".java", "").replace("net.sourceforge.pmd.lang.ast" + ".", ""));
-        }
+            xPathSuggestions.add(s.replace("AST", "").replace("." + language, "").replace("net.sourceforge.pmd.lang.ast" + ".", "")); }
         return xPathSuggestions;
     }
 

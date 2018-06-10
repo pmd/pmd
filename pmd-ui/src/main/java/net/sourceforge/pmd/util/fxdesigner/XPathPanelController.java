@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -123,10 +124,12 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .filter(t -> (t.getInserted().matches("[a-zA-Z]")) || t.getInserted().matches("/"))
                            .subscribe(t -> {
                                try {
-                                   if (t.getInserted().equals("/")) {
-                                       autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea.getText().indexOf("/")));
-                                   } else if (!t.getInserted().equals("/")) {
-                                       autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea.getText().lastIndexOf("/")));
+                                   if (xpathExpressionArea.getText().contains("/")) {
+                                       if (t.getInserted().equals("/")) {
+                                           autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea.getText().indexOf("/")));
+                                       } else if (!t.getInserted().equals("/")) {
+                                           autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea.getText().lastIndexOf("/")));
+                                       }
                                    }
                                } catch (IOException e) {
                                    e.printStackTrace();
@@ -145,7 +148,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         XPathSuggestions xPathSuggestions = new XPathSuggestions("net.sourceforge.pmd.lang." + language + ".ast");
 
         List<String> suggestions = xPathSuggestions.getXPathSuggestions();
-
         for (String s1 : suggestions) {
             if (s1.contains(s.replace("/", "").trim())) {
                 MenuItem m = new MenuItem(s1);
@@ -162,7 +164,15 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
             xpathExpressionArea.addEventHandler(KeyEvent.KEY_TYPED, t -> {
                 if (t.getCode() != KeyCode.ESCAPE) {
-                    xpathExpressionArea.setContextMenu(autoCompletePopup);
+                    autoCompletePopup.show(xpathExpressionArea, 500, 500);
+
+                    autoCompletePopup.setOnAction(e -> {
+                        List<String> temp = Arrays.asList(xpathExpressionArea.getText().split("/"));
+                        xpathExpressionArea.insertText(xpathExpressionArea.getCaretPosition(), ((MenuItem) e.getTarget()).getText().replace(temp.get(temp.size() - 1)
+                                                                           .replace("/", "").trim(), "").trim());
+                        autoCompletePopup.hide();
+
+                    });
                 }
             });
 
