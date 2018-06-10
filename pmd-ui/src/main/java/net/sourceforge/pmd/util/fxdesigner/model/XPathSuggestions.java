@@ -62,7 +62,7 @@ public class XPathSuggestions {
             classes.addAll(findClasses(directory, packageName));
         }
 
-        return classes.toArray(new Class[classes.size()]);
+        return classes.toArray(new Class[0]);
     }
 
 

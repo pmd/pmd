@@ -121,13 +121,13 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .subscribe(tick -> parent.refreshXPathResults());
 
         xpathExpressionArea.plainTextChanges()
-                           .filter(t -> (t.getInserted().matches("[a-zA-Z]")) || t.getInserted().matches("/"))
+                           .filter(t -> (t.getInserted().matches("[a-zA-Z/]")))
                            .subscribe(t -> {
                                try {
                                    if (xpathExpressionArea.getText().contains("/")) {
                                        if (t.getInserted().equals("/")) {
                                            autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea.getText().indexOf("/")));
-                                       } else if (!t.getInserted().equals("/")) {
+                                       } else {
                                            autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea.getText().lastIndexOf("/")));
                                        }
                                    }
