@@ -231,7 +231,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     /** Highlights name occurrences (secondary highlight). */
     public void highlightNameOccurrences(Collection<? extends NameOccurrence> occs) {
-        highlightNodes(occs.stream().map(NameOccurrence::getLocation).collect(Collectors.toList()), LayerId.SECONDARY, true, false, "name-occurence");
+        highlightNodes(occs.stream().map(NameOccurrence::getLocation).collect(Collectors.toList()), LayerId.SECONDARY, true, false, "name-occurence-highlight");
     }
 
 

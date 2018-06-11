@@ -39,7 +39,7 @@ public class UniformStyleCollection {
     private final Set<String> style;
     // sorted in document order
     private final List<NodeStyleSpan> nodes;
-
+    private StyleSpans<Collection<String>> spanCache;
 
     public UniformStyleCollection(Set<String> style, Collection<NodeStyleSpan> ns) {
         this.style = style;
@@ -126,6 +126,15 @@ public class UniformStyleCollection {
      *        [ n ] [ n' ]              [   n   ]
      */
     public StyleSpans<Collection<String>> toSpans() {
+        // We cache the result so that eg if only the focus node changes,
+        // we don't have to overlay all XPath results again
+        if (spanCache == null) {
+            spanCache = buildSpans();
+        }
+        return spanCache;
+    }
+
+    public StyleSpans<Collection<String>> buildSpans() {
 
         if (nodes.isEmpty()) {
             return StyleSpans.singleton(Collections.emptyList(), 0);
@@ -144,7 +153,7 @@ public class UniformStyleCollection {
         PositionSnapshot previous = null;
         int lastSpanEnd = 0;
 
-        for (NodeStyleSpan span : nodes) {
+        for (NodeStyleSpan span : nodes) { // sorted in document order
 
             PositionSnapshot current = span.snapshot();
             if (current == null) {
@@ -164,11 +173,12 @@ public class UniformStyleCollection {
 
                 // This part sometimes throws exceptions when the text changes while the computation is in progress
                 // In practice, they can totally be ignored since the highlighting will be recomputed next time
-                // the code area is recomputed.
+                // the AST is refreshed, which *will* happen... because the text is being edited
 
                 // gap
                 builder.add(styleForDepth(overlappingNodes.size() - 1, overlappingNodes.peek()), previous.getBeginIndex() - lastSpanEnd);
                 // Part between the start of the previous node and the start of the current one.
+                // this is the underscored part [_[ ] ]
                 // The current node will be styled on the next iteration.
                 builder.add(styleForDepth(overlappingNodes.size(), current), current.getBeginIndex() - previous.getBeginIndex());
                 lastSpanEnd = current.getBeginIndex();

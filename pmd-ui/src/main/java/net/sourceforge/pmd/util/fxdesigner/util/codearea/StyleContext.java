@@ -67,6 +67,7 @@ class StyleContext {
 
         List<StyleSpans<Collection<String>>> allSpans = layersById.values().stream()
                                                                   .flatMap(layer -> layer.getCollections().stream())
+                                                                  .filter(c -> !c.isEmpty())
                                                                   .map(UniformStyleCollection::toSpans)
                                                                   .collect(Collectors.toList());
 
@@ -103,7 +104,7 @@ class StyleContext {
      * <p>Syntax highlighting is not treated in a layer because
      * otherwise each syntax refresh would also overlay the highlight
      * spans, whose positions often would have been outdated since the
-     * AST refresh is more space out than syntax refresh.
+     * AST refresh is more spaced out than syntax refresh, causing twitching
      */
     public void setSyntaxHighlight(StyleSpans<Collection<String>> newSyntax) {
         StyleSpans<Collection<String>> currentSpans = codeArea.getStyleSpans(new IndexRange(0, codeArea.getLength()));

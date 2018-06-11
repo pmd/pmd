@@ -35,8 +35,8 @@
 .xpath-highlight {
 
     // mixin to iterate over xpath colors and create ruleset for each one
-    .make-color-classes(@depth: length(@xpath-color-stack) - 1) when (@depth >= 0) {
-        .make-color-classes(@depth - 1);
+    .make-depth-classes(@depth: length(@xpath-color-stack) - 1) when (@depth >= 0) {
+        .make-depth-classes(@depth - 1);
 
         @background: extract(@xpath-color-stack, @depth + 1);
         @border: darken(@background, 30%);
@@ -47,7 +47,7 @@
         }
     }
 
-    .make-color-classes;
+    .make-depth-classes;
 }
 
 .error-highlight.depth-0 {
@@ -55,7 +55,7 @@
     -rtfx-background-color: lightcoral;
 }
 
-.name-occurence.depth-0 {
+.name-occurence-highlight.depth-0 {
     -rtfx-border-stroke-color: olivedrab;
     -rtfx-background-color: palegreen;
 }
@@ -85,7 +85,7 @@
 
 
 .paragraph-box:has-caret {
-    -fx-background-color: #fbf4e1;
+    -fx-background-color: @active-line-focus-color;
 }
 
 .text {
