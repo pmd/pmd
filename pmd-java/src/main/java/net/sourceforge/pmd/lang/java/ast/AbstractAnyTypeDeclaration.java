@@ -45,11 +45,10 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
     // TODO 7.0.0 move that up to ASTAnyTypeDeclaration
     public final boolean enclosingTypeIsA(TypeKind... kinds) {
 
-        if (!isNested()) {
+        ASTAnyTypeDeclaration parent = getEnclosingTypeDeclaration();
+        if (parent == null) {
             return false;
         }
-
-        ASTAnyTypeDeclaration parent = getEnclosingTypeDeclaration();
 
         for (TypeKind k : kinds) {
             if (parent.getTypeKind() == k) {
@@ -72,7 +71,7 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
         }
         Node parent = getNthParent(3);
 
-        return parent instanceof ASTAnyTypeDeclaration ? (ASTAnyTypeDeclaration) getNthParent(3) : null;
+        return parent instanceof ASTAnyTypeDeclaration ? (ASTAnyTypeDeclaration) parent : null;
     }
 
     @Override
