@@ -11,3 +11,12 @@
 .landing-page.cat-description {
     margin-top: .4cm;
 }
+
+/* Offsets contents by the height of the nav bar */
+#topbar-content-offset {
+    overflow: scroll;
+    position: absolute;
+    top: 50px; /* height of the nav bar */
+    bottom: 0px;
+    width: 100%;
+}

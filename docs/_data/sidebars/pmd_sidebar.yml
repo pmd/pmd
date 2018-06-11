@@ -46,6 +46,9 @@ entries:
     - title: Suppressing warnings
       url: /pmd_userdocs_suppressing_warnings.html
       output: web, pdf
+    - title: Incremental analysis
+      url: /pmd_userdocs_incremental_analysis.html
+      output: web, pdf
     - title: PMD CLI reference
       url: /pmd_userdocs_cli_reference.html
       output: web, pdf
