@@ -125,9 +125,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .subscribe(t -> {
                                try {
                                    if (xpathExpressionArea.getText().contains("/")) {
-                                       if (t.getInserted().equals("/")) {
-                                           autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea.getText().indexOf("/")));
-                                       } else {
+                                       if (!t.getInserted().equals("/")) {
                                            autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea.getText().lastIndexOf("/")));
                                        }
                                    }
@@ -145,7 +143,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         List<MenuItem> resultToDisplay = new ArrayList<>();
 
         String language = parent.getLanguageVersion().getName().replaceAll("[0-9]", "").replaceAll("//s", "").toLowerCase().trim();
-        XPathSuggestions xPathSuggestions = new XPathSuggestions("net.sourceforge.pmd.lang." + language + ".ast");
+        XPathSuggestions xPathSuggestions = new XPathSuggestions(language);
 
         List<String> suggestions = xPathSuggestions.getXPathSuggestions();
         for (String s1 : suggestions) {
@@ -171,7 +169,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                         xpathExpressionArea.insertText(xpathExpressionArea.getCaretPosition(), ((MenuItem) e.getTarget()).getText().replace(temp.get(temp.size() - 1)
                                                                            .replace("/", "").trim(), "").trim());
                         autoCompletePopup.hide();
-
                     });
                 }
             });

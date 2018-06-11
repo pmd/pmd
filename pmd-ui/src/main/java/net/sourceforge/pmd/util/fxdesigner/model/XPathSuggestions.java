@@ -17,10 +17,12 @@ import java.util.List;
 
 public class XPathSuggestions {
     private List<String> xPathSuggestions = new ArrayList<>();
-    String packagename;
+    private String packagename;
+    private String language;
 
-    public XPathSuggestions(String packageName) {
-        this.packagename = packageName;
+    public XPathSuggestions(String language) {
+        this.packagename = "net.sourceforge.pmd.lang." + language + ".ast";
+        this.language = language;
     }
 
 
@@ -87,7 +89,6 @@ public class XPathSuggestions {
     }
 
     private List<String> evaluateXpathSuggestions(List<String> fileNameList) {
-        String language = packagename.replace("net.sourceforge.pmd.lang.", "").replace(".ast", "").trim();
         for (String s : fileNameList) {
             xPathSuggestions.add(s.replace("AST", "").replace("." + language, "").replace("net.sourceforge.pmd.lang.ast" + ".", "")); }
         return xPathSuggestions;
