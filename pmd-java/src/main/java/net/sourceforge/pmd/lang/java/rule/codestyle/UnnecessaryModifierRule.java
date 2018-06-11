@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.EnumSet;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -49,12 +47,12 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
 
     private void reportUnnecessaryModifiers(Object data, Node node,
                                             Modifier unnecessaryModifier, String explanation) {
-        reportUnnecessaryModifiers(data, node, Collections.singletonList(unnecessaryModifier), explanation);
+        reportUnnecessaryModifiers(data, node, EnumSet.of(unnecessaryModifier), explanation);
     }
 
 
     private void reportUnnecessaryModifiers(Object data, Node node,
-                                            List<Modifier> unnecessaryModifiers, String explanation) {
+                                            Set<Modifier> unnecessaryModifiers, String explanation) {
         if (unnecessaryModifiers.isEmpty()) {
             return;
         }
@@ -69,16 +67,19 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
 
     // TODO this should probably make it into a PrettyPrintingUtil or something.
     private String getNodeName(Node node) {
-        return node instanceof ASTMethodDeclaration
-               ? ((ASTMethodDeclaration) node).getMethodName()
-               : node instanceof ASTMethodOrConstructorDeclaration
-                 // constructors are differentiated by their parameters, while we only use method name for methods
-                 ? ((ASTConstructorDeclaration) node).getQualifiedName().getOperation()
-                 : node instanceof ASTFieldDeclaration
-                   ? ((ASTFieldDeclaration) node).getVariableName()
-                   : node instanceof ASTResource
-                     ? ((ASTResource) node).getVariableDeclaratorId().getImage()
-                     : node.getImage();
+        // constructors are differentiated by their parameters, while we only use method name for methods
+        if (node instanceof ASTMethodDeclaration) {
+            return ((ASTMethodDeclaration) node).getMethodName();
+        } else if (node instanceof ASTMethodOrConstructorDeclaration) {
+            // constructors are differentiated by their parameters, while we only use method name for methods
+            return ((ASTConstructorDeclaration) node).getQualifiedName().getOperation();
+        } else if (node instanceof ASTFieldDeclaration) {
+            return ((ASTFieldDeclaration) node).getVariableName();
+        } else if (node instanceof ASTResource) {
+            return ((ASTResource) node).getVariableDeclaratorId().getImage();
+        } else {
+            return node.getImage();
+        }
     }
 
 
@@ -97,15 +98,10 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     }
 
 
-    private String formatUnnecessaryModifiers(List<Modifier> lst) {
-        // prints in the standard modifier order, regardless of the actual order in which we checked
-        Collections.sort(lst, new Comparator<Modifier>() {
-            @Override
-            public int compare(Modifier o1, Modifier o2) {
-                return Integer.compare(o1.ordinal(), o2.ordinal());
-            }
-        });
-        return (lst.size() > 1 ? "s" : "") + " '" + StringUtils.join(lst, " ") + "'";
+    private String formatUnnecessaryModifiers(Set<Modifier> set) {
+        // prints in the standard modifier order (sorted by enum constant ordinal),
+        // regardless of the actual order in which we checked
+        return (set.size() > 1 ? "s" : "") + " '" + StringUtils.join(set, " ") + "'";
     }
 
 
@@ -113,7 +109,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     public Object visit(ASTEnumDeclaration node, Object data) {
 
         if (node.isPublic()) {
-            checkDeclarationInInterfaceType(data, node, Collections.singletonList(Modifier.PUBLIC));
+            checkDeclarationInInterfaceType(data, node, EnumSet.of(Modifier.PUBLIC));
         }
 
         if (node.isStatic()) {
@@ -178,7 +174,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     }
     
     public Object visit(final ASTMethodDeclaration node, Object data) {
-        List<Modifier> unnecessary = new ArrayList<>();
+        Set<Modifier> unnecessary = EnumSet.noneOf(Modifier.class);
 
         if (node.isSyntacticallyPublic()) {
             unnecessary.add(Modifier.PUBLIC);
@@ -218,7 +214,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     }
 
     public Object visit(ASTFieldDeclaration node, Object data) {
-        List<Modifier> unnecessary = new ArrayList<>();
+        Set<Modifier> unnecessary = EnumSet.noneOf(Modifier.class);
         if (node.isSyntacticallyPublic()) {
             unnecessary.add(Modifier.PUBLIC);
         }
@@ -234,7 +230,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     }
 
     public Object visit(ASTAnnotationMethodDeclaration node, Object data) {
-        List<Modifier> unnecessary = new ArrayList<>();
+        Set<Modifier> unnecessary = EnumSet.noneOf(Modifier.class);
         if (node.isPublic()) {
             unnecessary.add(Modifier.PUBLIC);
         }
@@ -260,7 +256,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     }
 
 
-    private void checkDeclarationInInterfaceType(Object data, Node fieldOrMethod, List<Modifier> unnecessary) {
+    private void checkDeclarationInInterfaceType(Object data, Node fieldOrMethod, Set<Modifier> unnecessary) {
         // third ancestor could be an AllocationExpression
         // if this is a method in an anonymous inner class
         Node parent = fieldOrMethod.jjtGetParent().jjtGetParent().jjtGetParent();

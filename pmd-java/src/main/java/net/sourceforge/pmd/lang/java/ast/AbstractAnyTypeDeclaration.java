@@ -49,10 +49,10 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
             return false;
         }
 
-        Node parent = getNthParent(3);
+        ASTAnyTypeDeclaration parent = getEnclosingTypeDeclaration();
 
         for (TypeKind k : kinds) {
-            if (((ASTAnyTypeDeclaration) parent).getTypeKind() == k) {
+            if (parent.getTypeKind() == k) {
                 return true;
             }
         }
@@ -70,7 +70,9 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
         if (!isNested()) {
             return null;
         }
-        return (ASTAnyTypeDeclaration) getNthParent(3);
+        Node parent = getNthParent(3);
+
+        return parent instanceof ASTAnyTypeDeclaration ? (ASTAnyTypeDeclaration) getNthParent(3) : null;
     }
 
     @Override
