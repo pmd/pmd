@@ -207,7 +207,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     
     public Object visit(final ASTResource node, final Object data) {
         if (node.isFinal()) {
-            reportUnnecessaryModifiers(data, node, Modifier.FINAL, "resources specifications are implicitly final");
+            reportUnnecessaryModifiers(data, node, Modifier.FINAL, "resource specifications are implicitly final");
         }
         
         return data;
