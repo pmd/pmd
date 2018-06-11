@@ -1634,7 +1634,7 @@ public class Foo {
     <rule name="UnnecessaryModifier"
           language="java"
           since="1.02"
-          message="Avoid modifiers which are implied by the context"
+          message="Unnecessary modifier{0} on {1} ''{2}''{3}"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryModifierRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarymodifier">
         <description>
