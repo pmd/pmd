@@ -636,7 +636,7 @@ public class Foo {
     <description>Unnecessary final of try-with-resources resource</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary modifier 'final' on resource specification 'fw': resources specifications are implicitly final</message>
+            <message>Unnecessary modifier 'final' on resource specification 'fw': resource specifications are implicitly final</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
