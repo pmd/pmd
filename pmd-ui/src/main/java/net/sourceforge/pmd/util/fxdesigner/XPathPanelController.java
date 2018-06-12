@@ -123,15 +123,16 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         xpathExpressionArea.plainTextChanges()
                            .map(m -> {
-                               Integer a = xpathExpressionArea.getText().lastIndexOf("/", m.getInsertionEnd());
-                               String s = xpathExpressionArea.getText().substring(a + 1);
-                               return Tuples.t(a, s);
+                               int indexOfSlash = reverseStringSearch('/', xpathExpressionArea.getText(), m.getInsertionEnd());
+                               String input = xpathExpressionArea.getText().substring(indexOfSlash + 1, m.getInsertionEnd());
+                               return Tuples.t(indexOfSlash, input, m.getInsertionEnd());
                            })
                            .filter(t -> t._2.matches("[a-zA-Z]+"))
-                           .subscribe(e -> autoComplete(e._1, e._2));
+                           .subscribe(e -> autoComplete(e._1, e._2, e._3));
     }
 
-    private void autoComplete(int slashPosition, String input) {
+    private void autoComplete(int slashPosition, String input, int endOfInsertion) {
+        System.out.println(input);
         autoCompletePopup.getItems().clear();
 
         XPathSuggestions xPathSuggestions = new XPathSuggestions(parent.getLanguageVersion().getLanguage());
@@ -139,7 +140,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         List<MenuItem> resultToDisplay = suggestions.stream().map(m -> new MenuItem(m)).limit(5).collect(Collectors
                                                                                                             .toList());
-
         //TODO: Work on the implementation of the Result to be selected and added to the Code Area
         autoCompletePopup.getItems().addAll(resultToDisplay);
 
@@ -152,7 +152,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
                     autoCompletePopup.setOnAction(e -> {
                         xpathExpressionArea.getText().replace(input, "");
-                        xpathExpressionArea.replaceText(slashPosition + 1, xpathExpressionArea.getText().length(), (
+                        xpathExpressionArea.replaceText(slashPosition + 1, endOfInsertion, (
                             (MenuItem) e.getTarget()).getText());
                         autoCompletePopup.hide();
                     });
@@ -168,6 +168,15 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         }
     }
 
+    private int reverseStringSearch(char search, String input, int begin) {
+
+        for (int i = begin - 1; i >= 0; --i) {
+            if (input.charAt(i) == search) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
 
     private void initGenerateXPathFromStackTrace() {
