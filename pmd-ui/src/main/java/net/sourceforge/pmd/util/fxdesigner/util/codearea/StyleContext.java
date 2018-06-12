@@ -43,18 +43,6 @@ class StyleContext {
         this.codeArea = codeArea;
     }
 
-
-    public Optional<StyleLayer> getLayer(String id) {
-        return Optional.ofNullable(layersById.get(id));
-    }
-
-
-    /** Performs the side effects specified by the given update. */
-    public void executeUpdate(ContextUpdate update) {
-        update.apply(this);
-    }
-
-
     private StyleSpans<Collection<String>> emptySpan() {
         return StyleSpans.singleton(Collections.emptyList(), codeArea.getLength());
     }
@@ -63,7 +51,8 @@ class StyleContext {
     /**
      * Recomputes a single style spans from the syntax highlighting layer and nodes to highlight.
      */
-    public StyleSpans<Collection<String>> recomputePainting() {
+    public StyleSpans<Collection<String>> recomputePainting(ContextUpdate update) {
+        update.apply(this);
 
         List<StyleSpans<Collection<String>>> allSpans = layersById.values().stream()
                                                                   .flatMap(layer -> layer.getCollections().stream())
@@ -143,4 +132,53 @@ class StyleContext {
         });
     }
 
+
+    /** Returns an update that removes all styling from the given layer. */
+    public ContextUpdate clearUpdate(String layerId) {
+        return ctx -> ctx.layersById.get(layerId).clearStyles();
+    }
+
+
+    /**
+     * Returns an update that replaces the styling contained within
+     * the given layer by the style spans parameter.
+     */
+    public ContextUpdate resetUpdate(String layerId, UniformStyleCollection spans) {
+        return layerUpdate(layerId, true, spans);
+    }
+
+
+    /**
+     * Returns an update that may or may not reset the updated layer
+     * depending on the boolean parameter.
+     */
+    public ContextUpdate layerUpdate(String layerId, boolean reset, UniformStyleCollection spans) {
+        return ctx -> ctx.layersById.get(layerId).styleNodes(reset, spans);
+    }
+
+
+    /**
+     * Returns an update that removes all styling from this context.
+     */
+    public ContextUpdate resetAllUpdate() {
+        return ctx -> {
+            ctx.layersById.values().forEach(StyleLayer::clearStyles);
+            setSyntaxHighlight(null);
+        };
+    }
+
+
+    /** Returns an update that does nothing. */
+    public ContextUpdate unitUpdate() {
+        return ctx -> {
+        };
+    }
+
+
+    /**
+     * Specifies an update to carry out on this context.
+     */
+    interface ContextUpdate {
+        void apply(StyleContext ctx);
+    }
 }

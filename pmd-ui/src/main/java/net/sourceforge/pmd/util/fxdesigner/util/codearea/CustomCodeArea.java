@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpans;
-import org.reactfx.EventSource;
 import org.reactfx.EventStream;
 import org.reactfx.Subscription;
 import org.reactfx.value.Val;
@@ -27,6 +26,7 @@ import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.StyleContext.ContextUpdate;
 
 import javafx.concurrent.Task;
 
@@ -46,14 +46,10 @@ import javafx.concurrent.Task;
  */
 public class CustomCodeArea extends CodeArea {
 
-    /** Minimum delay between each style update. Updates are reduced together until then. */
-    private static final Duration UPDATE_DELAY = Duration.ofMillis(40);
     /** Minimum delay between each code highlighting recomputation. Changes are ignored until then. */
     private static final Duration TEXT_CHANGE_DELAY = Duration.ofMillis(30);
 
-    /** Stacks styling updates and reduces them together. */
-    private final EventSource<ContextUpdate> styleContextUpdateQueue = new EventSource<>();
-
+    /** Current subscription to syntax highlighting auto-refresh. Never null (noop when absent). */
     private Subscription syntaxAutoRefresh = () -> { };
 
     private final StyleContext styleContext;
@@ -68,10 +64,6 @@ public class CustomCodeArea extends CodeArea {
                                     .collect(Collectors.toCollection(LinkedHashSet::new));
 
         styleContext = new StyleContext(collect, this);
-
-        styleContextUpdateQueue.reduceSuccessions(ContextUpdate::unit, ContextUpdate::reduce, UPDATE_DELAY)
-                               .hook(styleContext::executeUpdate)
-                               .subscribe(update -> this.paintCss());
     }
 
 
@@ -98,19 +90,17 @@ public class CustomCodeArea extends CodeArea {
         List<NodeStyleSpan> wrappedNodes = nodes.stream().map(n -> NodeStyleSpan.fromNode(n, this)).collect(Collectors.toList());
         UniformStyleCollection collection = new UniformStyleCollection(fullClasses, wrappedNodes);
 
-        ContextUpdate update = ContextUpdate.layerUpdate(layerId.id, resetLayer, collection);
-        styleContextUpdateQueue.push(update);
+        updateStyling(styleContext.layerUpdate(layerId.id, resetLayer, collection));
     }
 
 
     /**
-     * Forcefully applies the possibly updated css classes.
-     * This operation is expensive, and should not be executed
-     * in a loop for example.
+     * Applies the given update and applies the styling to the code area.
+     * @param update Update to carry out
      */
-    private void paintCss() {
+    private void updateStyling(ContextUpdate update) {
         try {
-            this.setStyleSpans(0, styleContext.recomputePainting());
+            this.setStyleSpans(0, styleContext.recomputePainting(update));
         } catch (IllegalArgumentException e) {
             // we ignore this particular exception because it's
             // commonly thrown when the text is being edited while
@@ -126,12 +116,7 @@ public class CustomCodeArea extends CodeArea {
      * Clears all style layers from their contents.
      */
     public void clearStyleLayers() {
-        for (LayerId id : LayerId.values()) {
-            clearStyleLayer(id);
-        }
-
-        styleContext.setSyntaxHighlight(null);
-        paintCss();
+        updateStyling(styleContext.resetAllUpdate());
     }
 
 
@@ -141,7 +126,7 @@ public class CustomCodeArea extends CodeArea {
      * @param id layer id.
      */
     public void clearStyleLayer(LayerId id) {
-        styleContextUpdateQueue.push(ContextUpdate.clearUpdate(id.id));
+        updateStyling(styleContext.clearUpdate(id.id));
     }
 
 

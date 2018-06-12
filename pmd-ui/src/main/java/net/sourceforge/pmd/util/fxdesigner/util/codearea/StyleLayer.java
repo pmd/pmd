@@ -35,6 +35,15 @@ class StyleLayer {
 
 
     public void styleNodes(UniformStyleCollection updates) {
+        styleNodes(false, updates);
+    }
+
+
+    public void styleNodes(boolean reset, UniformStyleCollection updates) {
+        if (reset) {
+            clearStyles();
+        }
+
         UniformStyleCollection newValue = Optional.ofNullable(styleToCollection.get(updates.getStyle()))
                                                   .map(updates::merge)
                                                   .orElse(updates);
