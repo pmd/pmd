@@ -1,85 +1,101 @@
-/****************************/
-/* Syntax highlighting base */
-/****************************/
+/*
+  Rules for the syntax highlighters.
+  This file doesn't include highlight rules, so that highlight is not displayed
+  on controls that display node rich text if only this file is set as stylesheet.
+ */
 
-.keyword {
-  -fx-fill: #B58900;
-  /* -fx-font-weight: bold; */
-}
 
-.punctuation {
+.code {
 
-}
+  /* Common classes */
 
-.literal {
-  -fx-fill: #317ECC;
-}
+  &.keyword {
+    -fx-fill: #B58900;
+    /* -fx-font-weight: bold; */
+  }
 
-.comment {
-  -fx-fill: #93A1A1;
-  -fx-font-style: italic; /* doesn't work... */
-}
+  &.punctuation {
 
-.annotation {
-  -fx-fill: #d30102;
-}
+  }
 
-/* Java specific */
+  &.literal {
+    -fx-fill: #317ECC;
+  }
 
-.java.class-identifier {
-  -fx-fill: #B05A65;
-}
+  &.comment {
+    -fx-fill: #93A1A1;
+    -fx-font-style: italic; /* doesn't work... */
+  }
 
-/* Apex specific */
+  &.annotation {
+    -fx-fill: #d30102;
+  }
 
-/* XPath specific */
+  /* Java specific */
 
-#xpathExpressionArea .text {
-  -fx-font-size: 11.5pt;
-}
+  &.java {
+    &.class-identifier {
+      -fx-fill: #B05A65;
+    }
+  }
 
-.xpath.path {
-  -fx-font-weight: bold;
-}
+  /* XPath specific */
 
-.xpath.axis {
-  -fx-fill: #B05A65;
-}
+  #xpathExpressionArea .text {
+    -fx-font-size: 11.5pt;
+  }
 
-.xpath.bracket {
-  -fx-font-weight: bolder;
-}
+  &.xpath {
 
-.xpath.attribute {
-  -fx-fill: #B05A65;
-}
+    &.path {
+      -fx-font-weight: bold;
+    }
 
-.xpath.function {
-  -fx-fill: #cc971b;
-}
+    &.axis {
+      -fx-fill: #B05A65;
+    }
 
-/* XML specific */
+    &.bracket {
+      -fx-font-weight: bolder;
+    }
 
-.xml.xml-prolog {
-  -fx-font-weight: bolder;
-}
+    &.attribute {
+      -fx-fill: #B05A65;
+    }
 
-.xml.tag-name {
-  -fx-fill: #B05A65;
-}
+    &.function {
+      -fx-fill: #cc971b;
+    }
 
-.xml.lt-gt {
-  -fx-fill: #B05A65;
-}
+  }
 
-.xml.attribute-name {
-  -fx-fill: #B58900;
-}
+  /* XML specific */
 
-.xml.cdata-tag {
-  -fx-fill: #B58900;
-}
+  &.xml {
 
-.xml.cdata-content {
-  -fx-fill: #93A1A1;
+    &.xml-prolog {
+      -fx-font-weight: bolder;
+    }
+
+    &.tag-name {
+      -fx-fill: #B05A65;
+    }
+
+    &.lt-gt {
+      -fx-fill: #B05A65;
+    }
+
+    &.attribute-name {
+      -fx-fill: #B58900;
+    }
+
+    &.cdata-tag {
+      -fx-fill: #B58900;
+    }
+
+    &.cdata-content {
+      -fx-fill: #93A1A1;
+    }
+
+  }
 }

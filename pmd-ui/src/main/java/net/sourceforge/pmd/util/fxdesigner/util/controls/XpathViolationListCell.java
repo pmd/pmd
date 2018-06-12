@@ -18,6 +18,8 @@ import javafx.scene.text.TextFlow;
 
 
 /**
+ * Represents an XPath result in the list view of the XPath panel.
+ *
  * @author Clément Fournier
  * @since 6.0.0
  */
@@ -31,12 +33,13 @@ public class XpathViolationListCell extends ListCell<TextAwareNodeWrapper> {
             setText(null);
             setGraphic(null);
         } else {
+            // Use the first line of the rich text of the node
             setGraphic(richTextForNode(item));
         }
     }
 
 
-    private TextFlow richTextForNode(TextAwareNodeWrapper node) {
+    private static TextFlow richTextForNode(TextAwareNodeWrapper node) {
         StyledDocument<Collection<String>, String, Collection<String>> richText = node.getNodeRichText();
 
         TextFlow result = new TextFlow();
@@ -47,7 +50,6 @@ public class XpathViolationListCell extends ListCell<TextAwareNodeWrapper> {
 
             Text text = new Text(truncateTo < 0 ? spanText : spanText.substring(0, truncateTo));
             text.getStyleClass().addAll(span.getStyle());
-            text.getStyleClass().removeIf(s -> s.endsWith("-highlight"));
 
             result.getChildren().add(text);
 

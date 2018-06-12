@@ -45,6 +45,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
         this.grammar = grammar;
         this.languageName = languageName;
 
+        grammar.addCommonClass("code");
         grammar.addCommonClass(languageName);
     }
 
@@ -223,9 +224,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
          * @param css The css class to add
          */
         void addCommonClass(String css) {
-            for (String key : namesToCssClass.keySet()) {
-                namesToCssClass.get(key).add(css);
-            }
+            namesToCssClass.values().forEach(e -> e.add(css));
         }
 
 

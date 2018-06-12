@@ -229,13 +229,11 @@ public class CustomCodeArea extends CodeArea {
         /** For xpath results. */
         XPATH_RESULTS("xpath");
 
+        private final String id;
 
         String getId() {
             return id;
         }
-
-
-        private final String id;
 
         LayerId(String id) {
             this.id = id;
