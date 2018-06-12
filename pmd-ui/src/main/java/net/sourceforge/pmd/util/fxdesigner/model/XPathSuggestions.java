@@ -17,17 +17,32 @@ import java.util.List;
 
 public class XPathSuggestions {
     private List<String> xPathSuggestions = new ArrayList<>();
-    private String packagename;
     private String language;
+    private List<String> listOfSuggestions;
+
 
     public XPathSuggestions(String language) {
-        this.packagename = "net.sourceforge.pmd.lang." + language + ".ast";
-        this.language = language;
+        this.language = language.replaceAll("[0-9]", "").replaceAll("//s", "").trim().toLowerCase();
+        try {
+            this.listOfSuggestions = createList(getClasses("net.sourceforge.pmd.lang."
+                                                               + language.replaceAll("[0-9]", "").replaceAll("//s", "").trim().toLowerCase() + ".ast"));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
-    public List<String> getXPathSuggestions() throws IOException, ClassNotFoundException {
-        return evaluateXpathSuggestions(createList(getClasses(packagename)));
+    public List<String> getXPathSuggestions(String input) {
+
+        List<String> resultsToDisplay = new ArrayList<>();
+        for (String s: listOfSuggestions) {
+            if (s.contains(input)) {
+                resultsToDisplay.add(s);
+            }
+        }
+        return resultsToDisplay;
     }
 
     private List<String> createList(Class[] classArray) {
@@ -40,7 +55,13 @@ public class XPathSuggestions {
             }
         }
 
-        return foo;
+        for (String s1 : foo) {
+            xPathSuggestions.add(s1.replace("AST", "").replace("net.sourceforge.pmd" + ".lang." + language + ".ast"
+                                                                   + ".", ""));
+        }
+
+        return xPathSuggestions;
+
     }
 
     private static Class[] getClasses(String packageName) throws ClassNotFoundException, IOException {
@@ -88,11 +109,6 @@ public class XPathSuggestions {
         return classes;
     }
 
-    private List<String> evaluateXpathSuggestions(List<String> fileNameList) {
-        for (String s : fileNameList) {
-            xPathSuggestions.add(s.replace("AST", "").replace("." + language, "").replace("net.sourceforge.pmd.lang.ast" + ".", "")); }
-        return xPathSuggestions;
-    }
 
 
 }

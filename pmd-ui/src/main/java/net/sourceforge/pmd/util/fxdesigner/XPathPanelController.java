@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
+
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
@@ -89,7 +90,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     @SuppressWarnings("PMD.SingularField")
     private ChoiceBox<String> xpathVersionChoiceBox;
 
-    private ContextMenu autoCompletePopup;
+    private ContextMenu autoCompletePopup = new ContextMenu();
 
 
     public XPathPanelController(DesignerRoot owner, MainDesignerController mainController) {
@@ -121,53 +122,52 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .subscribe(tick -> parent.refreshXPathResults());
 
         xpathExpressionArea.plainTextChanges()
-                           .filter(t -> (t.getInserted().matches("[a-zA-Z/]")))
-                           .subscribe(t -> {
-                               try {
-                                   if (xpathExpressionArea.getText().contains("/")) {
-                                       if (!t.getInserted().equals("/")) {
-                                           autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea.getText().lastIndexOf("/")));
-                                       }
-                                   }
-                               } catch (IOException e) {
-                                   e.printStackTrace();
-                               } catch (ClassNotFoundException e) {
-                                   e.printStackTrace();
+                           .filter(t -> {
+                               if (t.getInserted().contains("/")) {
+                                   return xpathExpressionArea.getText().substring(xpathExpressionArea.getText().lastIndexOf("/", xpathExpressionArea.getText()
+                                                                               .lastIndexOf("/"))).matches("[a-zA-Z/]");
+                               } else {
+                                   return xpathExpressionArea.getText().substring(xpathExpressionArea
+                                                                                               .getText().lastIndexOf(("/"))).matches("[a-zA-Z/]");
                                }
+                           })
+                           .subscribe(t -> {
+                               if (t.getInserted().equals("/")) {
+                                   autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea
+                                       .getText().lastIndexOf("/", xpathExpressionArea.getText().lastIndexOf("/"))));
+                               } else {
+                                   autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea
+                                                                                                    .getText().lastIndexOf(("/"))));
+                               }
+
                            });
     }
 
-    private void autoComplete(String s) throws IOException, ClassNotFoundException {
+    private void autoComplete(String input) {
 
-        autoCompletePopup = new ContextMenu();
-        List<MenuItem> resultToDisplay = new ArrayList<>();
+        autoCompletePopup.getItems().clear();
+        List<MenuItem> resultToDisplay;
 
-        String language = parent.getLanguageVersion().getName().replaceAll("[0-9]", "").replaceAll("//s", "").toLowerCase().trim();
-        XPathSuggestions xPathSuggestions = new XPathSuggestions(language);
+        XPathSuggestions xPathSuggestions = new XPathSuggestions(parent.getLanguageVersion().getShortName());
+        List<String> suggestions = xPathSuggestions.getXPathSuggestions(input.replace("/", "").trim());
 
-        List<String> suggestions = xPathSuggestions.getXPathSuggestions();
-        for (String s1 : suggestions) {
-            if (s1.contains(s.replace("/", "").trim())) {
-                MenuItem m = new MenuItem(s1);
-                if (!resultToDisplay.contains(m)) {
-                    resultToDisplay.add(m);
-                }
-            }
-        }
+        resultToDisplay = suggestions.stream().map(m -> new MenuItem(m)).limit(5).collect(Collectors.toList());
 
         //TODO: Work on the implementation of the Result to be selected and added to the Code Area
         autoCompletePopup.getItems().addAll(resultToDisplay);
 
         if (xpathExpressionArea.getText().length() > 0) {
 
-            xpathExpressionArea.addEventHandler(KeyEvent.KEY_TYPED, t -> {
-                if (t.getCode() != KeyCode.ESCAPE) {
+            xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
+                if (t.isControlDown() && (t.getCode() == KeyCode.SPACE)) {
+
                     autoCompletePopup.show(xpathExpressionArea, 500, 500);
 
                     autoCompletePopup.setOnAction(e -> {
                         List<String> temp = Arrays.asList(xpathExpressionArea.getText().split("/"));
                         xpathExpressionArea.insertText(xpathExpressionArea.getCaretPosition(), ((MenuItem) e.getTarget()).getText().replace(temp.get(temp.size() - 1)
                                                                            .replace("/", "").trim(), "").trim());
+
                         autoCompletePopup.hide();
                     });
                 }
