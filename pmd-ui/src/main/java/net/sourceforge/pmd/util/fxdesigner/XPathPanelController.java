@@ -8,7 +8,6 @@ package net.sourceforge.pmd.util.fxdesigner;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
 import org.reactfx.EventStreams;
+import org.reactfx.util.Tuples;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
@@ -122,26 +122,21 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .subscribe(tick -> parent.refreshXPathResults());
 
         xpathExpressionArea.plainTextChanges()
-                           .map(m -> m.getInserted())
-                           .filter(t -> t.matches("[a-zA-Z/]"))
-                           .subscribe(e -> {
-                               if (e.matches("/")) {
-                                   autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea
-                                                                                            .getText().lastIndexOf("/", xpathExpressionArea.getText().lastIndexOf("/")),
-                                                                                        xpathExpressionArea.getText()
-                                                                                                           .length() - 1));
-                               } else {
-                                   autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea
-                                                                                            .getText().lastIndexOf(("/"))));
-                               }
-                           });
+                           .map(m -> {
+                               Integer a = xpathExpressionArea.getText().lastIndexOf("/", m.getInsertionEnd());
+                               String s = xpathExpressionArea.getText().substring(a + 1);
+                               return Tuples.t(a, s);
+                           })
+                           .filter(t -> t._2.matches("[a-zA-Z]+"))
+                           .subscribe(e -> autoComplete(e._1, e._2));
     }
 
-    private void autoComplete(String input) {
+    private void autoComplete(int slashPosition, String input) {
+        System.out.println(input);
         autoCompletePopup.getItems().clear();
 
         XPathSuggestions xPathSuggestions = new XPathSuggestions(parent.getLanguageVersion().getLanguage());
-        List<String> suggestions = xPathSuggestions.getXPathSuggestions(input.replace("/", "").trim());
+        List<String> suggestions = xPathSuggestions.getXPathSuggestions(input.trim());
 
         List<MenuItem> resultToDisplay = suggestions.stream().map(m -> new MenuItem(m)).limit(5).collect(Collectors
                                                                                                             .toList());
@@ -157,9 +152,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                     autoCompletePopup.show(xpathExpressionArea, 500, 500);
 
                     autoCompletePopup.setOnAction(e -> {
-                        List<String> temp = Arrays.asList(xpathExpressionArea.getText().split("/"));
-                        xpathExpressionArea.insertText(xpathExpressionArea.getCaretPosition(), ((MenuItem) e.getTarget()).getText().replace(temp.get(temp.size() - 1)
-                                                                           .replace("/", "").trim(), "").trim());
+                        xpathExpressionArea.getText().replace(input, "");
+                        xpathExpressionArea.replaceText(slashPosition + 1, xpathExpressionArea.getText().length() - 1, ((MenuItem) e.getTarget()).getText());
 
                         autoCompletePopup.hide();
                     });
