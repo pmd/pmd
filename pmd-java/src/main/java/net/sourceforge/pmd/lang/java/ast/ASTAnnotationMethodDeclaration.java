@@ -6,7 +6,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTAnnotationMethodDeclaration extends AbstractJavaAccessNode {
+public class ASTAnnotationMethodDeclaration extends AbstractMethodLikeNode {
     public ASTAnnotationMethodDeclaration(int id) {
         super(id);
     }
@@ -18,6 +18,12 @@ public class ASTAnnotationMethodDeclaration extends AbstractJavaAccessNode {
     /** Accept the visitor. **/
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+
+    @Override
+    public MethodLikeKind getKind() {
+        return MethodLikeKind.METHOD;
     }
 }
 /*
