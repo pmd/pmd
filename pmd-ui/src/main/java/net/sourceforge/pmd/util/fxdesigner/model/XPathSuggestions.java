@@ -12,20 +12,18 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
-
+import net.sourceforge.pmd.lang.Language;
 
 
 public class XPathSuggestions {
     private List<String> xPathSuggestions = new ArrayList<>();
-    private String language;
-    private List<String> listOfSuggestions;
 
 
-    public XPathSuggestions(String language) {
-        this.language = language.replaceAll("[0-9]", "").replaceAll("//s", "").trim().toLowerCase();
+    public XPathSuggestions(Language language) {
+
         try {
             this.xPathSuggestions = createList(getClasses("net.sourceforge.pmd.lang."
-                                                               + language.replaceAll("[0-9]", "").replaceAll("//s", "").trim().toLowerCase() + ".ast"));
+                                                               + language.getTerseName() + ".ast"));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -34,6 +32,9 @@ public class XPathSuggestions {
     }
 
 
+    /**
+     * Get Suggestions based on the input by the user.
+     */
     public List<String> getXPathSuggestions(String input) {
         List<String> resultsToDisplay = new ArrayList<>();
         for (String s: xPathSuggestions) {
@@ -44,6 +45,12 @@ public class XPathSuggestions {
         return resultsToDisplay;
     }
 
+
+    /**
+     * Creates a list of of AST Names.
+     * @param classArray
+     * @return List<String>
+     */
     private List<String> createList(Class[] classArray) {
         List<Class> fileNameList = Arrays.asList(classArray);
 

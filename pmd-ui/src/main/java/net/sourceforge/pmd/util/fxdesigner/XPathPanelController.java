@@ -128,7 +128,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                                if (e.matches("/")) {
                                    autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea
                                                                                             .getText().lastIndexOf("/", xpathExpressionArea.getText().lastIndexOf("/")),
-                                                                                        xpathExpressionArea.getCaretPosition() - 1));
+                                                                                        xpathExpressionArea.getText()
+                                                                                                           .length() - 1));
                                } else {
                                    autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea
                                                                                             .getText().lastIndexOf(("/"))));
@@ -139,7 +140,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     private void autoComplete(String input) {
         autoCompletePopup.getItems().clear();
 
-        XPathSuggestions xPathSuggestions = new XPathSuggestions(parent.getLanguageVersion().getTerseName());
+        XPathSuggestions xPathSuggestions = new XPathSuggestions(parent.getLanguageVersion().getLanguage());
         List<String> suggestions = xPathSuggestions.getXPathSuggestions(input.replace("/", "").trim());
 
         List<MenuItem> resultToDisplay = suggestions.stream().map(m -> new MenuItem(m)).limit(5).collect(Collectors
