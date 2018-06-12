@@ -84,7 +84,7 @@ public class CustomCodeArea extends CodeArea {
      */
     public void styleNodes(Collection<? extends Node> nodes, LayerId layerId, boolean resetLayer) {
         Objects.requireNonNull(nodes, "Pass an empty collection to represent absence, not null!");
-        
+
         if (nodes.isEmpty() && resetLayer) {
             clearStyleLayer(layerId);
             return;

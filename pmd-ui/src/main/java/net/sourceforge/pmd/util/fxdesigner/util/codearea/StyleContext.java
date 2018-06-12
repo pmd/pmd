@@ -22,7 +22,9 @@ import javafx.scene.control.IndexRange;
 
 /**
  * Stores the current style layers and can overlay them into a {@link StyleSpans} to style the text.
- * The style context is updated
+ * This is a helper class for {@link CustomCodeArea} that manages the actual styling algorithms. It
+ * kind of displays Feature envy, and we'll probably need to refactor it heavily if we are to abstract
+ * the code area to specialise it further.
  *
  * @since 6.0.0
  */

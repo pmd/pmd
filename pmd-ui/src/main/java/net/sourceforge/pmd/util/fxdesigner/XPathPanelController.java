@@ -55,7 +55,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -86,8 +85,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     private TitledPane violationsTitledPane;
     @FXML
     private ListView<TextAwareNodeWrapper> xpathResultListView;
-    @FXML
-    private ToggleButton resultHighlightingToggle;
 
     // Actually a child of the main view toolbar, but this controller is responsible for it
     @SuppressWarnings("PMD.SingularField")
@@ -115,14 +112,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                     .filter(Objects::nonNull)
                     .map(TextAwareNodeWrapper::getNode)
                     .subscribe(parent::onNodeItemSelected);
-
-        resultHighlightingToggle.setOnAction(e -> {
-            if (resultHighlightingToggle.isSelected()) {
-                parent.highlightXPathResults(xpathResultListView.getItems().stream().map(TextAwareNodeWrapper::getNode).collect(Collectors.toList()));
-            } else {
-                parent.resetXPathResults();
-            }
-        });
 
         Platform.runLater(this::bindToParent);
 
@@ -218,7 +207,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         try {
             String xpath = getXpathExpression();
             if (StringUtils.isBlank(xpath)) {
-                xpathResultListView.getItems().clear();
                 invalidateResults(false);
                 return;
             }
@@ -230,9 +218,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                                                                                      xpath,
                                                                                      ruleBuilder.getRuleProperties()));
             xpathResultListView.setItems(results.stream().map(parent::wrapNode).collect(Collectors.toCollection(LiveArrayList::new)));
-            if (resultHighlightingToggle.isSelected()) {
-                parent.highlightXPathResults(results);
-            }
+            parent.highlightXPathResults(results);
             violationsTitledPane.setText("Matched nodes\t(" + results.size() + ")");
         } catch (XPathEvaluationException e) {
             invalidateResults(true);
@@ -276,16 +262,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         dialog.show();
     }
 
-
-    @PersistentProperty
-    public boolean isResultHighlightingOn() {
-        return resultHighlightingToggle.isSelected();
-    }
-
-
-    public void setResultHighlightingOn(boolean b) {
-        resultHighlightingToggle.setSelected(b);
-    }
 
     @PersistentProperty
     public String getXpathExpression() {
