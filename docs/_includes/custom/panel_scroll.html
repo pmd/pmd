@@ -1,6 +1,6 @@
 <script src="../../js/jquery-ui.min.js"></script>
 
-<script>
+<script type="text/javascript">
 // Adds a pretty animation to links to shuffle panels
 $(function () {
     $('a[href^=#shuffle-panel]').click(function () {
@@ -10,8 +10,8 @@ $(function () {
 
             target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
             if (target.length) {
-                $('html,body').animate({
-                    scrollTop: target.offset().top - 250,
+                $('#topbar-content-offset').animate({
+                    scrollTop: $('#grid-rule').position().top
                 }, {
                     duration: 500,
                     complete: function () {
@@ -19,8 +19,6 @@ $(function () {
                     }
                 });
 
-                // $(this.hash).effect("highlight", {}, 3000);
-                // $(this.hash).toggle("highlight");
                 return false;
             }
         }
