@@ -122,36 +122,28 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .subscribe(tick -> parent.refreshXPathResults());
 
         xpathExpressionArea.plainTextChanges()
-                           .filter(t -> {
-                               if (t.getInserted().contains("/")) {
-                                   return xpathExpressionArea.getText().substring(xpathExpressionArea.getText().lastIndexOf("/", xpathExpressionArea.getText()
-                                                                               .lastIndexOf("/"))).matches("[a-zA-Z/]");
-                               } else {
-                                   return xpathExpressionArea.getText().substring(xpathExpressionArea
-                                                                                               .getText().lastIndexOf(("/"))).matches("[a-zA-Z/]");
-                               }
-                           })
-                           .subscribe(t -> {
-                               if (t.getInserted().equals("/")) {
+                           .map(m -> m.getInserted())
+                           .filter(t -> t.matches("[a-zA-Z/]"))
+                           .subscribe(e -> {
+                               if (e.matches("/")) {
                                    autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea
-                                       .getText().lastIndexOf("/", xpathExpressionArea.getText().lastIndexOf("/"))));
+                                                                                            .getText().lastIndexOf("/", xpathExpressionArea.getText().lastIndexOf("/")),
+                                                                                        xpathExpressionArea.getCaretPosition() - 1));
                                } else {
                                    autoComplete(xpathExpressionArea.getText().substring(xpathExpressionArea
-                                                                                                    .getText().lastIndexOf(("/"))));
+                                                                                            .getText().lastIndexOf(("/"))));
                                }
-
                            });
     }
 
     private void autoComplete(String input) {
-
         autoCompletePopup.getItems().clear();
-        List<MenuItem> resultToDisplay;
 
-        XPathSuggestions xPathSuggestions = new XPathSuggestions(parent.getLanguageVersion().getShortName());
+        XPathSuggestions xPathSuggestions = new XPathSuggestions(parent.getLanguageVersion().getTerseName());
         List<String> suggestions = xPathSuggestions.getXPathSuggestions(input.replace("/", "").trim());
 
-        resultToDisplay = suggestions.stream().map(m -> new MenuItem(m)).limit(5).collect(Collectors.toList());
+        List<MenuItem> resultToDisplay = suggestions.stream().map(m -> new MenuItem(m)).limit(5).collect(Collectors
+                                                                                                            .toList());
 
         //TODO: Work on the implementation of the Result to be selected and added to the Code Area
         autoCompletePopup.getItems().addAll(resultToDisplay);

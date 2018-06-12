@@ -24,7 +24,7 @@ public class XPathSuggestions {
     public XPathSuggestions(String language) {
         this.language = language.replaceAll("[0-9]", "").replaceAll("//s", "").trim().toLowerCase();
         try {
-            this.listOfSuggestions = createList(getClasses("net.sourceforge.pmd.lang."
+            this.xPathSuggestions = createList(getClasses("net.sourceforge.pmd.lang."
                                                                + language.replaceAll("[0-9]", "").replaceAll("//s", "").trim().toLowerCase() + ".ast"));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -35,9 +35,8 @@ public class XPathSuggestions {
 
 
     public List<String> getXPathSuggestions(String input) {
-
         List<String> resultsToDisplay = new ArrayList<>();
-        for (String s: listOfSuggestions) {
+        for (String s: xPathSuggestions) {
             if (s.contains(input)) {
                 resultsToDisplay.add(s);
             }
@@ -47,17 +46,12 @@ public class XPathSuggestions {
 
     private List<String> createList(Class[] classArray) {
         List<Class> fileNameList = Arrays.asList(classArray);
-        List<String> foo = new ArrayList<>();
 
         for (Class c : fileNameList) {
-            if (c.getName().contains("AST")) {
-                foo.add(c.getName());
-            }
-        }
+            if (c.getSimpleName().startsWith("AST")) {
+                xPathSuggestions.add(c.getSimpleName().substring("AST".length()));
 
-        for (String s1 : foo) {
-            xPathSuggestions.add(s1.replace("AST", "").replace("net.sourceforge.pmd" + ".lang." + language + ".ast"
-                                                                   + ".", ""));
+            }
         }
 
         return xPathSuggestions;
