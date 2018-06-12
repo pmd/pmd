@@ -132,7 +132,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     }
 
     private void autoComplete(int slashPosition, String input) {
-        System.out.println(input);
         autoCompletePopup.getItems().clear();
 
         XPathSuggestions xPathSuggestions = new XPathSuggestions(parent.getLanguageVersion().getLanguage());
@@ -153,8 +152,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
                     autoCompletePopup.setOnAction(e -> {
                         xpathExpressionArea.getText().replace(input, "");
-                        xpathExpressionArea.replaceText(slashPosition + 1, xpathExpressionArea.getText().length() - 1, ((MenuItem) e.getTarget()).getText());
-
+                        xpathExpressionArea.replaceText(slashPosition + 1, xpathExpressionArea.getText().length(), (
+                            (MenuItem) e.getTarget()).getText());
                         autoCompletePopup.hide();
                     });
                 }
@@ -165,7 +164,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                     autoCompletePopup.hide();
                 }
             });
-
 
         }
     }

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.Language;
 
@@ -24,9 +25,7 @@ public class XPathSuggestions {
         try {
             this.xPathSuggestions = createList(getClasses("net.sourceforge.pmd.lang."
                                                                + language.getTerseName() + ".ast"));
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -36,13 +35,10 @@ public class XPathSuggestions {
      * Get Suggestions based on the input by the user.
      */
     public List<String> getXPathSuggestions(String input) {
-        List<String> resultsToDisplay = new ArrayList<>();
-        for (String s: xPathSuggestions) {
-            if (s.contains(input)) {
-                resultsToDisplay.add(s);
-            }
-        }
-        return resultsToDisplay;
+        return xPathSuggestions.stream()
+                               .filter(s -> s.contains(input))
+                               .collect(Collectors.toList());
+
     }
 
 
@@ -52,6 +48,7 @@ public class XPathSuggestions {
      * @return List<String>
      */
     private List<String> createList(Class[] classArray) {
+
         List<Class> fileNameList = Arrays.asList(classArray);
 
         for (Class c : fileNameList) {
@@ -62,7 +59,6 @@ public class XPathSuggestions {
         }
 
         return xPathSuggestions;
-
     }
 
     private static Class[] getClasses(String packageName) throws ClassNotFoundException, IOException {
