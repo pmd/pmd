@@ -269,7 +269,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
 
     public void onNameDeclarationSelected(NameDeclaration declaration) {
-        sourceEditorController.clearSecondaryHighlight();
+        sourceEditorController.clearNameOccurences();
 
         Optional.ofNullable(declaration.getNode().getScope().getDeclarations().get(declaration))
                 .ifPresent(sourceEditorController::highlightNameOccurrences);
@@ -305,7 +305,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     }
 
     public void resetSelectedErrorNodes() {
-        sourceEditorController.clearSecondaryHighlight();
+        sourceEditorController.clearErrorNodes();
     }
 
     public void resetXPathResults() {

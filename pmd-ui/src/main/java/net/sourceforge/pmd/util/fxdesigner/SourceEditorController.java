@@ -197,20 +197,21 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    /** Clears the secondary highlight. Doesn't clear the primary focus.. */
-    public void clearSecondaryHighlight() {
-        clearLayer(LayerId.SECONDARY);
+    /** Clears the name occurences. */
+    public void clearErrorNodes() {
+        codeEditorArea.clearStyleLayer(LayerId.ERROR);
+    }
+
+
+    /** Clears the name occurences. */
+    public void clearNameOccurences() {
+        codeEditorArea.clearStyleLayer(LayerId.ERROR);
     }
 
 
     /** Clears the highlighting of XPath results. */
     public void clearXPathHighlight() {
-        clearLayer(LayerId.XPATH_RESULTS);
-    }
-
-
-    private void clearLayer(LayerId id) {
-        codeEditorArea.clearStyleLayer(id);
+        codeEditorArea.clearStyleLayer(LayerId.XPATH_RESULTS);
     }
 
 
@@ -219,37 +220,41 @@ public class SourceEditorController implements Initializable, SettingsOwner {
      * Removes highlighting on the previously highlighted node.
      */
     public void setFocusNode(Node node) {
-        highlightNodes(node == null ? emptyList() : singleton(node), LayerId.FOCUS, true, true);
+        if (Objects.equals(node, currentFocusNode.getValue())) {
+            return;
+        }
+
+        codeEditorArea.styleNodes(node == null ? emptyList() : singleton(node), LayerId.FOCUS, true);
+
+        if (node != null) {
+            scrollEditorToNode(node);
+        }
+
         currentFocusNode.setValue(node);
     }
 
     /** Highlights xpath results (xpath highlight). */
     public void highlightXPathResults(Collection<? extends Node> nodes) {
-        highlightNodes(nodes, LayerId.XPATH_RESULTS, true, false);
+        codeEditorArea.styleNodes(nodes, LayerId.XPATH_RESULTS, true);
     }
 
 
     /** Highlights name occurrences (secondary highlight). */
     public void highlightNameOccurrences(Collection<? extends NameOccurrence> occs) {
-        highlightNodes(occs.stream().map(NameOccurrence::getLocation).collect(Collectors.toList()), LayerId.SECONDARY, true, false, "name-occurence-highlight");
+        codeEditorArea.styleNodes(occs.stream().map(NameOccurrence::getLocation).collect(Collectors.toList()), LayerId.NAME_OCCURENCES, true);
     }
 
 
     /** Highlights nodes that are in error (secondary highlight). */
     public void highlightErrorNodes(Collection<? extends Node> nodes) {
-        highlightNodes(nodes, LayerId.SECONDARY, true, true, "error-highlight");
-    }
-
-
-    private void highlightNodes(Collection<? extends Node> nodes, LayerId layer, boolean resetLayer, boolean autoScroll, String... cssClasses) {
-        codeEditorArea.styleCss(nodes, layer, resetLayer, cssClasses);
-
-        if (autoScroll && !nodes.isEmpty()) {
+        codeEditorArea.styleNodes(nodes, LayerId.ERROR, true);
+        if (!nodes.isEmpty()) {
             scrollEditorToNode(nodes.iterator().next());
         }
     }
 
 
+    /** Scroll the editor to a node and makes it visible. */
     private void scrollEditorToNode(Node node) {
 
         codeEditorArea.moveTo(node.getBeginLine() - 1, 0);

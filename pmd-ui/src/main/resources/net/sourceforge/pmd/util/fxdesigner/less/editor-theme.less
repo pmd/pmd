@@ -18,14 +18,13 @@
         rgba(214, 93, 177, 0.7),
         rgba(132, 94, 194, 0.8);
 
-@active-line-focus-color: #fbf4e1;
+@active-line-background-color: #fbf4e1;
+@area-background-color: whitesmoke;
+@code-color: #585858;
 
-/* With syntax highlighting, it's more readable to not change the fill color */
-.focus-highlight {
-    -fx-font-weight: bold;
-}
+/* Highlight classes */
 
-/* Add a border around highlighted nodes if they fit in one line */
+/* Add a border around highlighted nodes if they fit on one line */
 /* Otherwise, the background variation should be enough to spot them */
 .inline-highlight {
     -rtfx-border-stroke-width: .75pt;
@@ -60,41 +59,40 @@
     -rtfx-background-color: palegreen;
 }
 
+/* With syntax highlighting, it's more readable to not change the fill color */
+.focus-highlight {
+    -fx-font-weight: bold;
+}
 
 
-/********/
 /* Base */
-/*******/
-
 .styled-text-area {
-    -fx-background-color: whitesmoke;
+    -fx-background-color: @area-background-color;
     -fx-border-color: -fx-outer-border, -fx-text-box-border;
     -fx-border-insets: -4 -4 -6 -5, -2 -2 -5 -3;
+
+    .scroll-bar {
+        * {
+            -fx-background-color: @area-background-color;
+            -fx-border-color: @area-background-color;
+        }
+
+        .thumb {
+            -fx-background-color: derive(black, 90%);
+        }
+    }
+
+    .paragraph-box:has-caret {
+        -fx-background-color: @active-line-background-color;
+    }
+
+    .text {
+        -fx-fill: @code-color;
+        -fx-font-size: 10.5pt;
+    }
+
 }
 
-
-.styled-text-area .scroll-bar * {
-    -fx-background-color: whitesmoke;
-    -fx-border-color: whitesmoke;
-}
-
-
-.styled-text-area .scroll-bar .thumb {
-    -fx-background-color: derive(black, 90%);
-}
-
-
-.paragraph-box:has-caret {
-    -fx-background-color: @active-line-focus-color;
-}
-
-.text {
-    -fx-fill: #585858;
-}
-
-.styled-text-area .text {
-    -fx-font-size: 10.5pt;
-}
 
 /* Line numbers */
 .lineno {
@@ -103,7 +101,7 @@
     -fx-font-size: 80%;
     -fx-font-weight: normal;
 
-    @lineno-focus-base: average(@active-line-focus-color, @darker-accent);
+    @lineno-focus-base: average(@active-line-background-color, @darker-accent);
 
     &:is-focus-node {
         -fx-background-color: darken(@lineno-focus-base, 5%);
