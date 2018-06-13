@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -18,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.rule.documentation.AbstractCommentRule;
@@ -89,10 +91,15 @@ public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
     }
 
     private boolean shouldReport(final AbstractJavaAccessNode decl) {
-        List<ASTClassOrInterfaceDeclaration> parentClassOrInterface = decl
-                .getParentsOfType(ASTClassOrInterfaceDeclaration.class);
-        // ignore if is a Interface
-        return !parentClassOrInterface.isEmpty() && !parentClassOrInterface.get(0).isInterface()
+        final AbstractAnyTypeDeclaration parentClassOrInterface = decl
+                .getFirstParentOfType(AbstractAnyTypeDeclaration.class);
+
+        boolean isConcreteClass = parentClassOrInterface.getTypeKind() == ASTAnyTypeDeclaration.TypeKind.CLASS;
+        boolean isEnumConstructor = parentClassOrInterface.getTypeKind() == ASTAnyTypeDeclaration.TypeKind.ENUM
+                && decl instanceof ASTConstructorDeclaration;
+
+        // ignore if it's an Interface / Annotation / Enum constructor
+        return (isConcreteClass || !isEnumConstructor)
                 // check if the field/method/nested class has a default access
                 // modifier
                 && decl.isPackagePrivate()
