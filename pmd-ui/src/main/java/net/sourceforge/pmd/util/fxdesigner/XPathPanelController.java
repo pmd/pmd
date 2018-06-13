@@ -8,11 +8,11 @@ package net.sourceforge.pmd.util.fxdesigner;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.model.ObservableXPathRuleBuilder;
+import net.sourceforge.pmd.util.fxdesigner.model.Style;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathSuggestions;
@@ -50,6 +51,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
@@ -125,47 +128,50 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .map(m -> {
                                int indexOfSlash = reverseStringSearch('/', xpathExpressionArea.getText(), m.getInsertionEnd());
                                String input = xpathExpressionArea.getText().substring(indexOfSlash + 1, m.getInsertionEnd());
-                               return Tuples.t(indexOfSlash, input, m.getInsertionEnd());
+                               return Tuples.t(indexOfSlash, input);
                            })
                            .filter(t -> t._2.matches("[a-zA-Z]+"))
-                           .subscribe(e -> autoComplete(e._1, e._2, e._3));
+                           .subscribe(e -> autoComplete(e._1, e._2));
+
+        xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
+            autoCompletePopup.show(xpathExpressionArea, 500, 500);
+        });
+
+        xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
+            if (t.getCode() == KeyCode.ESCAPE) {
+                autoCompletePopup.hide();
+            }
+        });
+
+
     }
 
-    private void autoComplete(int slashPosition, String input, int endOfInsertion) {
-        System.out.println(input);
+    private void autoComplete(int slashPosition, String input) {
         autoCompletePopup.getItems().clear();
 
         XPathSuggestions xPathSuggestions = new XPathSuggestions(parent.getLanguageVersion().getLanguage());
         List<String> suggestions = xPathSuggestions.getXPathSuggestions(input.trim());
 
-        List<MenuItem> resultToDisplay = suggestions.stream().map(m -> new MenuItem(m)).limit(5).collect(Collectors
-                                                                                                            .toList());
-        //TODO: Work on the implementation of the Result to be selected and added to the Code Area
-        autoCompletePopup.getItems().addAll(resultToDisplay);
+        List<CustomMenuItem> resultToDisplay = new ArrayList<>();
+        if (suggestions.size() > 0) {
 
-        if (xpathExpressionArea.getText().length() > 0) {
+            for (int i = 0; i < suggestions.size() && i<5; i++) {
+                final String resultSearch = suggestions.get(i);
+                Label entryLabel = new Label();
+                entryLabel.setGraphic(Style.highlight(suggestions.get(i), input));
+                entryLabel.setPrefHeight(5);
+                CustomMenuItem item = new CustomMenuItem(entryLabel, true);
+                resultToDisplay.add(item);
 
-            xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
-                if (t.isControlDown() && (t.getCode() == KeyCode.SPACE)) {
 
-                    autoCompletePopup.show(xpathExpressionArea, 500, 500);
-
-                    autoCompletePopup.setOnAction(e -> {
-                        xpathExpressionArea.getText().replace(input, "");
-                        xpathExpressionArea.replaceText(slashPosition + 1, endOfInsertion, (
-                            (MenuItem) e.getTarget()).getText());
-                        autoCompletePopup.hide();
-                    });
-                }
-            });
-
-            xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
-                if (t.getCode() == KeyCode.ESCAPE) {
+                item.setOnAction(e -> {
+                    xpathExpressionArea.replaceText(
+                        slashPosition +1, slashPosition + input.length(),resultSearch);
                     autoCompletePopup.hide();
-                }
-            });
-
+                });
+            }
         }
+        autoCompletePopup.getItems().addAll(resultToDisplay);
     }
 
     private int reverseStringSearch(char search, String input, int begin) {
