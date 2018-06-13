@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
@@ -93,12 +93,11 @@ public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
     private boolean shouldReport(final AbstractJavaAccessNode decl) {
         final AbstractAnyTypeDeclaration parentClassOrInterface = decl
                 .getFirstParentOfType(AbstractAnyTypeDeclaration.class);
-        
-        final boolean isConcreteClass = parentClassOrInterface instanceof ASTClassOrInterfaceDeclaration
-                && !((ASTClassOrInterfaceDeclaration) parentClassOrInterface).isInterface();
-        final boolean isEnumConstructor = parentClassOrInterface instanceof ASTEnumDeclaration
+
+        boolean isConcreteClass = parentClassOrInterface.getTypeKind() == ASTAnyTypeDeclaration.TypeKind.CLASS;
+        boolean isEnumConstructor = parentClassOrInterface.getTypeKind() == ASTAnyTypeDeclaration.TypeKind.ENUM
                 && decl instanceof ASTConstructorDeclaration;
-        
+
         // ignore if it's an Interface / Annotation / Enum constructor
         return (isConcreteClass || !isEnumConstructor)
                 // check if the field/method/nested class has a default access
