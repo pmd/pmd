@@ -94,7 +94,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     private ChoiceBox<String> xpathVersionChoiceBox;
 
     private ContextMenu autoCompletePopup = new ContextMenu();
-
+    private int positionTo;
+    private int positionFrom;
 
     public XPathPanelController(DesignerRoot owner, MainDesignerController mainController) {
         this.designerRoot = owner;
@@ -127,8 +128,17 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         xpathExpressionArea.plainTextChanges()
                            .map(m -> {
-                               System.out.println(m.getInsertionEnd() + " ins");
-                               System.out.println(m.getRemovalEnd() + " rem");
+                               if (m.getInsertionEnd() > m.getRemovalEnd()) {
+                                   positionFrom = m.getRemovalEnd();
+                                   positionTo = m.getInsertionEnd();
+                               } else {
+                                   positionFrom = m.getInsertionEnd();
+                                   positionTo = m.getRemovalEnd();
+                               }
+                               if (m.getRemoved().length() > 0) {
+                                   positionFrom--;
+                                   positionTo--;
+                               }
                                int indexOfSlash = reverseStringSearch('/', xpathExpressionArea.getText(), m.getInsertionEnd());
                                String input = xpathExpressionArea.getText().substring(
                                    indexOfSlash + 1, m.getInsertionEnd());
@@ -140,17 +150,18 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
             if ((t.isControlDown() && t.getCode().isWhitespaceKey()) || t.getCode() == KeyCode.BACK_SPACE) {
-                autoCompletePopup.show(xpathExpressionArea, 500, 500);
+                autoCompletePopup.show(xpathExpressionArea, xpathExpressionArea.getCharacterBoundsOnScreen(positionFrom, positionTo)
+                                                                               .get()
+                                                                               .getMaxX(), xpathExpressionArea
+                                           .getCharacterBoundsOnScreen(positionFrom, positionTo).get().getMaxY());
             }
         });
-
 
         xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
             if (t.getCode() == KeyCode.ESCAPE) {
                 autoCompletePopup.hide();
             }
         });
-
 
     }
 
@@ -164,6 +175,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
             for (int i = 0; i < suggestions.size() && i < 5; i++) {
                 final String searchResult = suggestions.get(i);
+
                 Label entryLabel = new Label();
                 entryLabel.setGraphic(Style.highlight(suggestions.get(i), input));
                 entryLabel.setPrefHeight(5);
@@ -177,7 +189,10 @@ public class XPathPanelController implements Initializable, SettingsOwner {
             }
         }
         autoCompletePopup.getItems().setAll(resultToDisplay);
-        autoCompletePopup.show(xpathExpressionArea, 500, 500);
+        autoCompletePopup.show(xpathExpressionArea, xpathExpressionArea.getCharacterBoundsOnScreen(positionFrom, positionTo)
+                                                                       .get()
+                                                                       .getMaxX(), xpathExpressionArea
+                                   .getCharacterBoundsOnScreen(positionFrom, positionTo).get().getMaxY());
     }
 
     private int reverseStringSearch(char search, String input, int begin) {
