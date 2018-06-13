@@ -21,6 +21,9 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   java-codestyle
+    *   [#1154](https://github.com/pmd/pmd/pull/1154): [java] CommentDefaultAccessModifierRule FP with nested enums
+
 ### API Changes
 
 ### External Contributions
