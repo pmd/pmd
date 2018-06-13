@@ -155,8 +155,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         List<CustomMenuItem> resultToDisplay = new ArrayList<>();
         if (suggestions.size() > 0) {
 
-            for (int i = 0; i < suggestions.size() && i<5; i++) {
-                final String resultSearch = suggestions.get(i);
+            for (int i = 0; i < suggestions.size() && i < 5; i++) {
+                final String searchResult = suggestions.get(i);
                 Label entryLabel = new Label();
                 entryLabel.setGraphic(Style.highlight(suggestions.get(i), input));
                 entryLabel.setPrefHeight(5);
@@ -166,7 +166,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
                 item.setOnAction(e -> {
                     xpathExpressionArea.replaceText(
-                        slashPosition +1, slashPosition + input.length(),resultSearch);
+                        slashPosition + 1, slashPosition + input.length(), searchResult);
                     autoCompletePopup.hide();
                 });
             }
