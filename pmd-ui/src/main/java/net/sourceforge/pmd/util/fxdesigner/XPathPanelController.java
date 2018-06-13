@@ -134,7 +134,10 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .subscribe(e -> autoComplete(e._1, e._2));
 
         xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
-            autoCompletePopup.show(xpathExpressionArea, 500, 500);
+            if (t.getCode().isLetterKey() || (t.isControlDown() && t.getCode().isWhitespaceKey()) || t.getCode() == KeyCode.BACK_SPACE) {
+                autoCompletePopup.show(xpathExpressionArea, 500, 500);
+            }
+
         });
 
         xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
