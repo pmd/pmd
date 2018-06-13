@@ -124,21 +124,26 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .or(xpathVersionProperty().changes())
                            .subscribe(tick -> parent.refreshXPathResults());
 
+
         xpathExpressionArea.plainTextChanges()
                            .map(m -> {
+                               System.out.println(m.getInsertionEnd() + " ins");
+                               System.out.println(m.getRemovalEnd() + " rem");
                                int indexOfSlash = reverseStringSearch('/', xpathExpressionArea.getText(), m.getInsertionEnd());
-                               String input = xpathExpressionArea.getText().substring(indexOfSlash + 1, m.getInsertionEnd());
+                               String input = xpathExpressionArea.getText().substring(
+                                   indexOfSlash + 1, m.getInsertionEnd());
+                               m.getRemovalEnd();
                                return Tuples.t(indexOfSlash, input);
                            })
                            .filter(t -> t._2.matches("[a-zA-Z]+"))
                            .subscribe(e -> autoComplete(e._1, e._2));
 
         xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
-            if (t.getCode().isLetterKey() || (t.isControlDown() && t.getCode().isWhitespaceKey()) || t.getCode() == KeyCode.BACK_SPACE) {
+            if ((t.isControlDown() && t.getCode().isWhitespaceKey()) || t.getCode() == KeyCode.BACK_SPACE) {
                 autoCompletePopup.show(xpathExpressionArea, 500, 500);
             }
-
         });
+
 
         xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
             if (t.getCode() == KeyCode.ESCAPE) {
@@ -150,7 +155,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     }
 
     private void autoComplete(int slashPosition, String input) {
-        autoCompletePopup.getItems().clear();
 
         XPathSuggestions xPathSuggestions = new XPathSuggestions(parent.getLanguageVersion().getLanguage());
         List<String> suggestions = xPathSuggestions.getXPathSuggestions(input.trim());
@@ -166,15 +170,14 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                 CustomMenuItem item = new CustomMenuItem(entryLabel, true);
                 resultToDisplay.add(item);
 
-
                 item.setOnAction(e -> {
-                    xpathExpressionArea.replaceText(
-                        slashPosition + 1, slashPosition + input.length(), searchResult);
+                    xpathExpressionArea.replaceText(slashPosition + 1, slashPosition + input.length(), searchResult);
                     autoCompletePopup.hide();
                 });
             }
         }
-        autoCompletePopup.getItems().addAll(resultToDisplay);
+        autoCompletePopup.getItems().setAll(resultToDisplay);
+        autoCompletePopup.show(xpathExpressionArea, 500, 500);
     }
 
     private int reverseStringSearch(char search, String input, int begin) {
