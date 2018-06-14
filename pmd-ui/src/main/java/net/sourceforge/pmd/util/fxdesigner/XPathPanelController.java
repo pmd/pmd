@@ -131,7 +131,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         EventStream<Integer> changesEventStream = xpathExpressionArea.plainTextChanges()
                                                                      .map(m -> {
                                                                          if (m.getRemoved().length() > 0) {
-                                                                             return m.getRemovalEnd();
+                                                                             return m.getRemovalEnd() - 2;
                                                                          }
                                                                          return m.getInsertionEnd();
                                                                      });
@@ -141,8 +141,11 @@ public class XPathPanelController implements Initializable, SettingsOwner {
             .map(key -> xpathExpressionArea.getCaretPosition());
 
         EventStreams.merge(keyCombo, changesEventStream).map(searchPoint -> {
-            int indexOfSlash = xpathExpressionArea.getText().lastIndexOf(",", searchPoint - 1);
+            int indexOfSlash = xpathExpressionArea.getText().lastIndexOf("/", searchPoint - 1);
+            System.out.println(indexOfSlash);
+            System.out.println(searchPoint);
             String input = xpathExpressionArea.getText().substring(indexOfSlash + 1, searchPoint);
+            System.out.println(input);
             return Tuples.t(indexOfSlash, input);
         })
                  .filter(t -> t._2.matches("[a-zA-Z]+"))
