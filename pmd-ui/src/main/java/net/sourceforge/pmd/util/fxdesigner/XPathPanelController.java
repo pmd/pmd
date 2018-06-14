@@ -128,19 +128,21 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
 
 
-        EventStream<Integer> changesEventStream = xpathExpressionArea.plainTextChanges().map(m -> m.getInsertionEnd());
+        EventStream<Integer> changesEventStream = xpathExpressionArea.plainTextChanges()
+                                                                     .map(m -> {
+                                                                         if (m.getRemoved().length() > 0) {
+                                                                             return m.getRemovalEnd();
+                                                                         }
+                                                                         return m.getInsertionEnd();
+                                                                     });
 
-        EventStream<KeyEvent> keyPressed = EventStreams.eventsOf(xpathExpressionArea, KeyEvent.KEY_PRESSED);
-
-        EventStream<Integer> keyCombo = keyPressed
-            .filter(key -> (key.getCode().equals(KeyCode.CONTROL) && key.getCode().equals(KeyCode.SPACE)))
+        EventStream<Integer> keyCombo = EventStreams.eventsOf(xpathExpressionArea, KeyEvent.KEY_PRESSED)
+            .filter(key -> (key.isControlDown() && key.getCode().equals(KeyCode.SPACE)))
             .map(key -> xpathExpressionArea.getCaretPosition());
 
-        EventStream<Integer> keyEvents = EventStreams.merge(keyCombo, changesEventStream);
-        keyEvents.map(m -> {
-
-            int indexOfSlash = reverseStringSearch('/', xpathExpressionArea.getText(), m);
-            String input = xpathExpressionArea.getText().substring(indexOfSlash + 1, m);
+        EventStreams.merge(keyCombo, changesEventStream).map(searchPoint -> {
+            int indexOfSlash = xpathExpressionArea.getText().lastIndexOf(",", searchPoint - 1);
+            String input = xpathExpressionArea.getText().substring(indexOfSlash + 1, searchPoint);
             return Tuples.t(indexOfSlash, input);
         })
                  .filter(t -> t._2.matches("[a-zA-Z]+"))
@@ -179,20 +181,10 @@ public class XPathPanelController implements Initializable, SettingsOwner {
             }
         }
         autoCompletePopup.getItems().setAll(resultToDisplay);
-        autoCompletePopup.show(xpathExpressionArea, xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length()).get().getMaxX(),
-                               xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length()).get().getMaxY());
+
+        autoCompletePopup.show(xpathExpressionArea, xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length()
+        ).get().getMaxX(), xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length()).get().getMaxY());
     }
-
-    private int reverseStringSearch(char search, String input, int begin) {
-
-        for (int i = begin - 1; i >= 0; --i) {
-            if (input.charAt(i) == search) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
 
     private void initGenerateXPathFromStackTrace() {
 
