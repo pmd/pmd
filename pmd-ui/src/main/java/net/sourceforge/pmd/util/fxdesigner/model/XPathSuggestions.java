@@ -51,7 +51,7 @@ public class XPathSuggestions {
 
         return Arrays.asList(classArray).stream()
                     .filter(files -> files.getSimpleName().startsWith("AST"))
-                    .map(m -> m.getSimpleName().substring(("AST").length()))
+                    .map(m -> m.getSimpleName().substring("AST".length()))
                     .collect(Collectors.toList());
 
     }
@@ -94,7 +94,7 @@ public class XPathSuggestions {
                 assert !file.getName().contains(".");
                 classes.addAll(findClasses(file, packageName + "." + file.getName()));
             } else if (file.getName().endsWith(".class")) {
-                classes.add(Class.forName(packageName + "." + file.getName().substring(0, file.getName().length() - 6)));
+                classes.add(Class.forName(packageName + "." + file.getName().substring(0, file.getName().length() - ".class".length())));
             }
         }
 

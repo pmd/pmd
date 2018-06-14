@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
+import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.util.Tuples;
 import org.reactfx.value.Val;
@@ -126,36 +127,25 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .subscribe(tick -> parent.refreshXPathResults());
 
 
-        xpathExpressionArea.plainTextChanges()
-                           .map(m -> {
-                               if (m.getInsertionEnd() > m.getRemovalEnd()) {
-                                   positionFrom = m.getRemovalEnd();
-                                   positionTo = m.getInsertionEnd();
-                               } else {
-                                   positionFrom = m.getInsertionEnd();
-                                   positionTo = m.getRemovalEnd();
-                               }
-                               if (m.getRemoved().length() > 0) {
-                                   positionFrom--;
-                                   positionTo--;
-                               }
-                               int indexOfSlash = reverseStringSearch('/', xpathExpressionArea.getText(), m.getInsertionEnd());
-                               String input = xpathExpressionArea.getText().substring(
-                                   indexOfSlash + 1, m.getInsertionEnd());
-                               m.getRemovalEnd();
-                               return Tuples.t(indexOfSlash, input);
-                           })
-                           .filter(t -> t._2.matches("[a-zA-Z]+"))
-                           .subscribe(e -> autoComplete(e._1, e._2));
 
-        xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
-            if ((t.isControlDown() && t.getCode().isWhitespaceKey()) || t.getCode() == KeyCode.BACK_SPACE) {
-                autoCompletePopup.show(xpathExpressionArea, xpathExpressionArea.getCharacterBoundsOnScreen(positionFrom, positionTo)
-                                                                               .get()
-                                                                               .getMaxX(), xpathExpressionArea
-                                           .getCharacterBoundsOnScreen(positionFrom, positionTo).get().getMaxY());
-            }
-        });
+        EventStream<Integer> changesEventStream = xpathExpressionArea.plainTextChanges().map(m -> m.getInsertionEnd());
+
+        EventStream<KeyEvent> keyPressed = EventStreams.eventsOf(xpathExpressionArea, KeyEvent.KEY_PRESSED);
+
+        EventStream<Integer> keyCombo = keyPressed
+            .filter(key -> (key.getCode().equals(KeyCode.CONTROL) && key.getCode().equals(KeyCode.SPACE)))
+            .map(key -> xpathExpressionArea.getCaretPosition());
+
+        EventStream<Integer> keyEvents = EventStreams.merge(keyCombo, changesEventStream);
+        keyEvents.map(m -> {
+
+            int indexOfSlash = reverseStringSearch('/', xpathExpressionArea.getText(), m);
+            String input = xpathExpressionArea.getText().substring(indexOfSlash + 1, m);
+            return Tuples.t(indexOfSlash, input);
+        })
+                 .filter(t -> t._2.matches("[a-zA-Z]+"))
+                 .subscribe(s -> autoComplete(s._1, s._2));
+
 
         xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
             if (t.getCode() == KeyCode.ESCAPE) {
@@ -189,10 +179,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
             }
         }
         autoCompletePopup.getItems().setAll(resultToDisplay);
-        autoCompletePopup.show(xpathExpressionArea, xpathExpressionArea.getCharacterBoundsOnScreen(positionFrom, positionTo)
-                                                                       .get()
-                                                                       .getMaxX(), xpathExpressionArea
-                                   .getCharacterBoundsOnScreen(positionFrom, positionTo).get().getMaxY());
+        autoCompletePopup.show(xpathExpressionArea, xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length()).get().getMaxX(),
+                               xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length()).get().getMaxY());
     }
 
     private int reverseStringSearch(char search, String input, int begin) {
