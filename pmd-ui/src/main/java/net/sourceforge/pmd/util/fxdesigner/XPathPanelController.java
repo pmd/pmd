@@ -95,8 +95,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     private ChoiceBox<String> xpathVersionChoiceBox;
 
     private ContextMenu autoCompletePopup = new ContextMenu();
-    private int positionTo;
-    private int positionFrom;
 
     public XPathPanelController(DesignerRoot owner, MainDesignerController mainController) {
         this.designerRoot = owner;
@@ -141,11 +139,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
             .map(key -> xpathExpressionArea.getCaretPosition());
 
         EventStreams.merge(keyCombo, changesEventStream).map(searchPoint -> {
-            int indexOfSlash = xpathExpressionArea.getText().lastIndexOf("/", searchPoint - 1);
-            System.out.println(indexOfSlash);
-            System.out.println(searchPoint);
-            String input = xpathExpressionArea.getText().substring(indexOfSlash + 1, searchPoint);
-            System.out.println(input);
+            int indexOfSlash = xpathExpressionArea.getText().lastIndexOf("/", searchPoint - 1) + 1;
+            String input = xpathExpressionArea.getText().substring(indexOfSlash, searchPoint);
             return Tuples.t(indexOfSlash, input);
         })
                  .filter(t -> t._2.matches("[a-zA-Z]+"))
@@ -178,15 +173,17 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                 resultToDisplay.add(item);
 
                 item.setOnAction(e -> {
-                    xpathExpressionArea.replaceText(slashPosition + 1, slashPosition + input.length(), searchResult);
+                    xpathExpressionArea.replaceText(slashPosition, slashPosition + input.length(), searchResult);
                     autoCompletePopup.hide();
                 });
             }
         }
         autoCompletePopup.getItems().setAll(resultToDisplay);
 
-        autoCompletePopup.show(xpathExpressionArea, xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length()
-        ).get().getMaxX(), xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length()).get().getMaxY());
+        autoCompletePopup.show(xpathExpressionArea, xpathExpressionArea
+            .getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length()
+        ).get().getMaxX(), xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input
+            .length()).get().getMaxY());
     }
 
     private void initGenerateXPathFromStackTrace() {
