@@ -29,10 +29,10 @@ class NodeStyleSpan {
     private static final Pattern TAB_INDENT = Pattern.compile("^(\t*).*$");
     private static final Comparator<NodeStyleSpan> COMPARATOR = Comparator.comparing(NodeStyleSpan::getNode, Comparator.comparingInt(Node::getBeginLine).thenComparing(Node::getBeginColumn));
     private final Node node;
-    private final CustomCodeArea codeArea;
+    private final SyntaxHighlightingCodeArea codeArea;
 
 
-    private NodeStyleSpan(Node node, CustomCodeArea codeArea) {
+    private NodeStyleSpan(Node node, SyntaxHighlightingCodeArea codeArea) {
         this.node = node;
         this.codeArea = codeArea;
     }
@@ -87,7 +87,7 @@ class NodeStyleSpan {
 
 
     /** Builds a new node style span. */
-    public static NodeStyleSpan fromNode(Node node, CustomCodeArea codeArea) {
+    public static NodeStyleSpan fromNode(Node node, SyntaxHighlightingCodeArea codeArea) {
         return new NodeStyleSpan(node, codeArea);
     }
 

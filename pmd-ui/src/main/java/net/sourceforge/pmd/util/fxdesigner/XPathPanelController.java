@@ -35,7 +35,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.XpathViolationListCell;
@@ -80,7 +80,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     @FXML
     private PropertyTableView propertyTableView;
     @FXML
-    private CustomCodeArea xpathExpressionArea;
+    private SyntaxHighlightingCodeArea xpathExpressionArea;
     @FXML
     private TitledPane violationsTitledPane;
     @FXML

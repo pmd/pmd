@@ -38,8 +38,8 @@ import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea.LayerId;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea.LayerId;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
@@ -68,7 +68,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     @FXML
     private TreeView<Node> astTreeView;
     @FXML
-    private CustomCodeArea codeEditorArea;
+    private HighlightLayerCodeArea<StyleLayerIds> codeEditorArea;
 
     private ASTManager astManager;
     private TreeViewWrapper<Node> treeViewWrapper;
@@ -199,19 +199,19 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     /** Clears the name occurences. */
     public void clearErrorNodes() {
-        codeEditorArea.clearStyleLayer(LayerId.ERROR);
+        codeEditorArea.clearStyleLayer(StyleLayerIds.ERROR);
     }
 
 
     /** Clears the name occurences. */
     public void clearNameOccurences() {
-        codeEditorArea.clearStyleLayer(LayerId.ERROR);
+        codeEditorArea.clearStyleLayer(StyleLayerIds.ERROR);
     }
 
 
     /** Clears the highlighting of XPath results. */
     public void clearXPathHighlight() {
-        codeEditorArea.clearStyleLayer(LayerId.XPATH_RESULTS);
+        codeEditorArea.clearStyleLayer(StyleLayerIds.XPATH_RESULT);
     }
 
 
@@ -224,7 +224,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
             return;
         }
 
-        codeEditorArea.styleNodes(node == null ? emptyList() : singleton(node), LayerId.FOCUS, true);
+        codeEditorArea.styleNodes(node == null ? emptyList() : singleton(node), StyleLayerIds.FOCUS, true);
 
         if (node != null) {
             scrollEditorToNode(node);
@@ -235,19 +235,19 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     /** Highlights xpath results (xpath highlight). */
     public void highlightXPathResults(Collection<? extends Node> nodes) {
-        codeEditorArea.styleNodes(nodes, LayerId.XPATH_RESULTS, true);
+        codeEditorArea.styleNodes(nodes, StyleLayerIds.XPATH_RESULT, true);
     }
 
 
     /** Highlights name occurrences (secondary highlight). */
     public void highlightNameOccurrences(Collection<? extends NameOccurrence> occs) {
-        codeEditorArea.styleNodes(occs.stream().map(NameOccurrence::getLocation).collect(Collectors.toList()), LayerId.NAME_OCCURENCES, true);
+        codeEditorArea.styleNodes(occs.stream().map(NameOccurrence::getLocation).collect(Collectors.toList()), StyleLayerIds.NAME_OCCURENCE, true);
     }
 
 
     /** Highlights nodes that are in error (secondary highlight). */
     public void highlightErrorNodes(Collection<? extends Node> nodes) {
-        codeEditorArea.styleNodes(nodes, LayerId.ERROR, true);
+        codeEditorArea.styleNodes(nodes, StyleLayerIds.ERROR, true);
         if (!nodes.isEmpty()) {
             scrollEditorToNode(nodes.iterator().next());
         }
@@ -358,5 +358,32 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         auxclasspathFiles.setValue(newVal);
     }
 
+
+    /** Style layers for the code area. */
+    private enum StyleLayerIds implements LayerId {
+        // caution, the name of the constants are used as style classes
+
+        /** For the currently selected node. */
+        FOCUS,
+        /** For declaration usages. */
+        NAME_OCCURENCE,
+        /** For nodes in error. */
+        ERROR,
+        /** For xpath results. */
+        XPATH_RESULT;
+
+        private final String styleClass; // the id will be used as a style class
+
+
+        StyleLayerIds() {
+            this.styleClass = name().toLowerCase().replace('_', '-') + "-highlight";
+        }
+
+
+        /** focus-highlight, xpath-highlight, error-highlight, name-occurrence-highlight */
+        public String getStyleClass() {
+            return styleClass;
+        }
+    }
 
 }

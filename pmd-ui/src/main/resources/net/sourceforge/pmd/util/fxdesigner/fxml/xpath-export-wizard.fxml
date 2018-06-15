@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.codearea.*?>
-<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
@@ -60,8 +60,8 @@
                                         <Label text="Description" GridPane.rowIndex="4"/>
                                     </children>
                                 </GridPane>
-                                <CustomCodeArea fx:id="exportResultArea" prefHeight="221.0" prefWidth="563.0"
-                                                stylesheets="@../css/editor-theme.css" VBox.vgrow="ALWAYS"/>
+                                <SyntaxHighlightingCodeArea fx:id="exportResultArea" prefHeight="221.0" prefWidth="563.0"
+                                                            stylesheets="@../css/editor-theme.css" VBox.vgrow="ALWAYS"/>
                             </children>
                         </VBox>
                     </children>

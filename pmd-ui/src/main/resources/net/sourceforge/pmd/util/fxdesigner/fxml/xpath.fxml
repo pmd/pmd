@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
-<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ListView?>
@@ -30,9 +30,9 @@
                     <children>
                         <TitledPane collapsible="false" styleClass="accent-header" text="XPath Expression" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <content>
-                                <CustomCodeArea stylesheets="@../css/editor-theme.css"
-                                                fx:id="xpathExpressionArea">
-                                </CustomCodeArea>
+                                <SyntaxHighlightingCodeArea stylesheets="@../css/editor-theme.css"
+                                                            fx:id="xpathExpressionArea">
+                                </SyntaxHighlightingCodeArea>
                             </content>
                         </TitledPane>
                     </children>

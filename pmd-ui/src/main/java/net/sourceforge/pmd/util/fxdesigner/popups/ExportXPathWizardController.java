@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XmlSyntaxHighlighter;
 
 import javafx.beans.value.ChangeListener;
@@ -36,7 +36,7 @@ public class ExportXPathWizardController implements Initializable {
     private final ObservableValue<String> xpathExpression;
     Map<ObservableValue<?>, ChangeListener<Object>> registeredListeners = new WeakHashMap<>();
     @FXML
-    private CustomCodeArea exportResultArea;
+    private SyntaxHighlightingCodeArea exportResultArea;
     @FXML
     private TextField descriptionField;
     @FXML
