@@ -22,8 +22,10 @@ import javafx.beans.NamedArg;
 
 /**
  * Code area that can manipulate different layers of styling independently,
- * in addition to syntax highlighting. Layers are identified by a {@link LayerId}.
+ * in addition to syntax highlighting. Layers are identified by a {@link LayerId},
+ * which are listed in an enum.
  *
+ * @param <K> Enum type listing the layer ids to use
  * @author Clément Fournier
  * @since 6.5.0
  */
@@ -61,6 +63,9 @@ public class HighlightLayerCodeArea<K extends Enum<K> & LayerId> extends SyntaxH
      * @param resetLayer Whether to replace the contents of the layer with the
      *                   styling for these nodes, or just add them.
      */
+    // TODO there's no reason to only be able to style nodes, in fact, this causes problem
+    // to highlight errors that are not bound to a node, eg parsing errors
+    // We'll need to abstract away NodeStyleSpan
     public void styleNodes(Collection<? extends Node> nodes, K layerId, boolean resetLayer) {
         Objects.requireNonNull(nodes, "Pass an empty collection to represent absence, not null!");
 
@@ -90,24 +95,26 @@ public class HighlightLayerCodeArea<K extends Enum<K> & LayerId> extends SyntaxH
 
         try {
             this.setStyleSpans(0, recomputePainting());
-        } catch (IllegalArgumentException e) {
-            // we ignore this particular exception because it's
+        } catch (Exception e) {
+            // we ignore these particular exceptions because they're
             // commonly thrown when the text is being edited while
             // the layering algorithm runs, and it doesn't matter
-            if (!"StyleSpan's length cannot be negative".equals(e.getMessage())) {
-                throw new RuntimeException("Unhandled error while recomputing the styling", e);
+            if ("StyleSpan's length cannot be negative".equals(e.getMessage())
+                    || e.getMessage().contains("is not a valid range within")) {
+                return;
             }
+            throw new RuntimeException("Unhandled error while recomputing the styling", e);
         }
     }
 
 
     /**
-     * Clears all style layers from their contents.
+     * Clears all style layers from their contents, including syntax highlighting.
      */
     public void clearStyleLayers() {
         updateStyling(() -> {
             layersById.values().forEach(StyleLayer::clearStyles);
-            setCurrentSyntaxHighlight(null);
+            clearSyntaxHighlighting();
         });
     }
 
@@ -125,7 +132,7 @@ public class HighlightLayerCodeArea<K extends Enum<K> & LayerId> extends SyntaxH
     /**
      * Recomputes a single style spans from the syntax highlighting layer and nodes to highlight.
      */
-    public StyleSpans<Collection<String>> recomputePainting() {
+    private StyleSpans<Collection<String>> recomputePainting() {
 
         List<StyleSpans<Collection<String>>> allSpans = layersById.values().stream()
                                                                   .flatMap(layer -> layer.getCollections().stream())
@@ -158,9 +165,15 @@ public class HighlightLayerCodeArea<K extends Enum<K> & LayerId> extends SyntaxH
 
     }
 
-    /** Instances of implementors identify a highlighting layer. */
+
+    /** Identifier for a highlighting layer. */
     public interface LayerId {
-        /** Returns the style class associated with that layer. */
+        /**
+         * Returns the style class associated with that layer.
+         * Nodes styled in that layer will have this style class.
+         *
+         * @return The style class
+         */
         String getStyleClass();
     }
 }

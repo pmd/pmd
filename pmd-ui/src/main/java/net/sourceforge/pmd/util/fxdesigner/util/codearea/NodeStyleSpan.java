@@ -48,6 +48,11 @@ class NodeStyleSpan {
      * Snapshots the absolute coordinates of the node in the code area
      * for the duration of the layering algorithm.
      */
+    // TODO I don't think there's any good reason for this laziness,
+    // if anything, it may cause trouble if the layering algorithm uses
+    // a snapshot taken too late, with outdated line and column coordinates
+    // I originally wrote it like that because I didn't think enough about it,
+    // and I don't have time to simplify it before 6.5.0
     public PositionSnapshot snapshot() {
         int lastKnownStart = getAbsolutePosition(node.getBeginLine(), node.getBeginColumn() - 1);
         int lastKnownEnd = getAbsolutePosition(node.getEndLine(), node.getEndColumn());

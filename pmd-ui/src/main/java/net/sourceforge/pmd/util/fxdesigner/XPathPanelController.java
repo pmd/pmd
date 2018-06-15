@@ -232,7 +232,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
 
     public List<Node> runXPathQuery(Node compilationUnit, LanguageVersion version, String query) throws XPathEvaluationException {
-        return xpathEvaluator.evaluateQuery(compilationUnit, version, "2.0", query, ruleBuilder.getRuleProperties());
+        return xpathEvaluator.evaluateQuery(compilationUnit, version, XPathRuleQuery.XPATH_2_0, query, ruleBuilder.getRuleProperties());
     }
 
 

@@ -156,11 +156,8 @@ public class EventLogController implements Initializable {
 
 
     private void onExceptionSelectionChanges(LogEntry oldVal, LogEntry newVal) {
-        if (newVal != null) {
-            logDetailsTextArea.setText(newVal.getStackTrace());
-        } else {
-            logDetailsTextArea.clear();
-        }
+        logDetailsTextArea.setText(newVal == null ? "" : newVal.getStackTrace());
+
         if (!Objects.equals(newVal, oldVal)) {
             handleSelectedEntry(newVal);
         }

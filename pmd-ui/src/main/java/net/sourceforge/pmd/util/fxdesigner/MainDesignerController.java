@@ -168,6 +168,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
         setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup(designerRoot));
 
+        Platform.runLater(this::updateRecentFilesMenu);
         Platform.runLater(this::refreshAST); // initial refreshing
 
         Platform.runLater(() -> sourceEditorController.moveCaret(0, 0));
@@ -344,7 +345,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         chooser.setTitle("Load source from file");
         File file = chooser.showOpenDialog(designerRoot.getMainStage());
         loadSourceFromFile(file);
-        sourceEditorController.clearStyleLayers();
     }
 
     private void loadSourceFromFile(File file) {

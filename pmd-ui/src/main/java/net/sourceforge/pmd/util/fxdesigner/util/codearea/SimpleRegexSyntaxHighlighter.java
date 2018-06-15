@@ -123,7 +123,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
     /**
      * Builds a highlight grammar in a concise way.
      */
-    protected static class RegexHighlightGrammarBuilder {
+    protected static final class RegexHighlightGrammarBuilder {
 
         private Map<String, String> groupNameToRegex = new LinkedHashMap<>();
         private Map<String, Set<String>> groupNameToCssClasses = new LinkedHashMap<>();

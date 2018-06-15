@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -141,7 +142,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
             currentFocusNode.conditionOnShowing(label)
                             .values()
                             .subscribe(n -> label.pseudoClassStateChanged(PseudoClass.getPseudoClass("is-focus-node"),
-                                                                          n != null && idx <= n.getEndLine() - 1 && idx >= n.getBeginLine() - 1));
+                                                                          n != null && idx + 1 <= n.getEndLine() && idx + 1 >= n.getBeginLine()));
 
             return label;
         };
@@ -164,14 +165,11 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         try {
             current = astManager.updateIfChanged(source, auxclasspathClassLoader.getValue());
         } catch (ParseAbortedException e) {
-            invalidateAST(true);
+            astTitleLabel.setText("Abstract syntax tree (error)");
             return Optional.empty();
         }
 
-        current.ifPresent(n -> {
-            parent.invalidateAst();
-            setUpToDateCompilationUnit(n);
-        });
+        current.ifPresent(this::setUpToDateCompilationUnit);
         return current;
     }
 
@@ -182,10 +180,9 @@ public class SourceEditorController implements Initializable, SettingsOwner {
                                                    auxclasspathFiles::setValue);
     }
 
-
-
     private void setUpToDateCompilationUnit(Node node) {
-        astTitleLabel.setText("Abstract Syntax Tree");
+        parent.invalidateAst();
+        astTitleLabel.setText("Abstract syntax tree");
         ASTTreeItem root = ASTTreeItem.getRoot(node);
         astTreeView.setRoot(root);
     }
@@ -233,6 +230,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         currentFocusNode.setValue(node);
     }
 
+
     /** Highlights xpath results (xpath highlight). */
     public void highlightXPathResults(Collection<? extends Node> nodes) {
         codeEditorArea.styleNodes(nodes, StyleLayerIds.XPATH_RESULT, true);
@@ -259,7 +257,10 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
         codeEditorArea.moveTo(node.getBeginLine() - 1, 0);
 
-        if (node.getBeginLine() < codeEditorArea.firstVisibleParToAllParIndex()) {
+        int visibleLength = codeEditorArea.lastVisibleParToAllParIndex() - codeEditorArea.firstVisibleParToAllParIndex();
+
+        if (node.getEndLine() - node.getBeginLine() > visibleLength
+                || node.getBeginLine() < codeEditorArea.firstVisibleParToAllParIndex()) {
             codeEditorArea.showParagraphAtTop(Math.max(node.getBeginLine() - 2, 0));
         } else if (node.getEndLine() > codeEditorArea.lastVisibleParToAllParIndex()) {
             codeEditorArea.showParagraphAtBottom(Math.min(node.getEndLine(), codeEditorArea.getParagraphs().size()));
@@ -289,10 +290,6 @@ public class SourceEditorController implements Initializable, SettingsOwner {
                 astTreeView.scrollTo(selectionModel.getSelectedIndex());
             }
         }
-    }
-
-    private void invalidateAST(boolean error) {
-        astTitleLabel.setText("Abstract syntax tree (" + (error ? "error" : "outdated") + ")");
     }
 
 
@@ -376,11 +373,12 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
 
         StyleLayerIds() {
-            this.styleClass = name().toLowerCase().replace('_', '-') + "-highlight";
+            this.styleClass = name().toLowerCase(Locale.ROOT).replace('_', '-') + "-highlight";
         }
 
 
         /** focus-highlight, xpath-highlight, error-highlight, name-occurrence-highlight */
+        @Override
         public String getStyleClass() {
             return styleClass;
         }
