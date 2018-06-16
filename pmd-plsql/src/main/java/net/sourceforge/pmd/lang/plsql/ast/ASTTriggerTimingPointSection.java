@@ -19,15 +19,17 @@ public class ASTTriggerTimingPointSection extends AbstractPLSQLNode implements E
     }
 
     /** Accept the visitor. **/
+    @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
     /**
      * return executable's name.
-     * 
+     *
      * @return
      */
+    @Override
     public String getMethodName() {
         return getImage();
     }

@@ -23,6 +23,7 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode implements Jav
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -48,6 +49,7 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode implements Jav
      *
      * @see #isAnonymousClass()
      */
+    @Override
     public JavaTypeQualifiedName getQualifiedName() {
         return qualifiedName;
     }

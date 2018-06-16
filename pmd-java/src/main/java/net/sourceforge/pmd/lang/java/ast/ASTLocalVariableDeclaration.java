@@ -25,6 +25,7 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
         return visitor.visit(this, data);
     }
 
+    @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
         for (int i = 0; i < jjtGetNumChildren(); i++) {
             if (jjtGetChild(i) instanceof ASTAnnotation) {
@@ -48,10 +49,12 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
         return getTypeNode() == null;
     }
 
+    @Override
     public boolean isArray() {
         return getArrayDepth() > 0;
     }
 
+    @Override
     public int getArrayDepth() {
         return getArrayDimensionOnType() + getArrayDimensionOnDeclaratorId();
     }

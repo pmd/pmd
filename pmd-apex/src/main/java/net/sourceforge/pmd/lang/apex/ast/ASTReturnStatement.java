@@ -12,6 +12,7 @@ public class ASTReturnStatement extends AbstractApexNode<ReturnStatement> {
         super(returnStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

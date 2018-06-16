@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class PositionalIteratorRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTWhileStatement node, Object data) {
         if (hasNameAsChild(node.jjtGetChild(0))) {
             String exprName = getName(node.jjtGetChild(0));

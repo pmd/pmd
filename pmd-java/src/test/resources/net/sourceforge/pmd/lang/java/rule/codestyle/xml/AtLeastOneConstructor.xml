@@ -100,8 +100,8 @@ skip classes with only static methods
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public static class Foo {
-	public static void method() {}
-	public static void otherMethods() {}
+    public static void method() {}
+    public static void otherMethods() {}
 }
      ]]></code>
     </test-code>
@@ -113,6 +113,37 @@ public class TestAtLeastOneConstructor {
     public void NotStatic() {
         System.out.println("This class should have a constructor");
     }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore classes with lombok-generated constructors</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Value;
+
+@Value
+public class TestAtLeastOneConstructor {
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Report classes with at least one non-static method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class TestAtLeastOneConstructor {
+    public static void foo() { }
+    public void bar () { }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Report classes with at least one non-static field</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class TestAtLeastOneConstructor {
+    public int bar;
+    public static void foo() { }
 }
         ]]></code>
     </test-code>

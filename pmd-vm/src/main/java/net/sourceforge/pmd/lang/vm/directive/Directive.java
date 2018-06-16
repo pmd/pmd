@@ -17,7 +17,7 @@ package net.sourceforge.pmd.lang.vm.directive;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 /**
@@ -41,21 +41,21 @@ public abstract class Directive implements Cloneable {
 
     /**
      * Return the name of this directive.
-     * 
+     *
      * @return The name of this directive.
      */
     public abstract String getName();
 
     /**
      * Get the directive type BLOCK/LINE.
-     * 
+     *
      * @return The directive type BLOCK/LINE.
      */
     public abstract int getType();
 
     /**
      * Allows the template location to be set.
-     * 
+     *
      * @param line
      * @param column
      */
@@ -66,7 +66,7 @@ public abstract class Directive implements Cloneable {
 
     /**
      * Allows the template location to be set.
-     * 
+     *
      * @param line
      * @param column
      */
@@ -77,7 +77,7 @@ public abstract class Directive implements Cloneable {
 
     /**
      * for log msg purposes
-     * 
+     *
      * @return The current line for log msg purposes.
      */
     public int getLine() {
@@ -86,7 +86,7 @@ public abstract class Directive implements Cloneable {
 
     /**
      * for log msg purposes
-     * 
+     *
      * @return The current column for log msg purposes.
      */
     public int getColumn() {

@@ -31,14 +31,17 @@ public class Ecmascript3Parser extends AbstractParser {
         return new Ecmascript5TokenManager(source);
     }
 
+    @Override
     public boolean canParse() {
         return true;
     }
 
+    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         return ecmascriptParser.parse(source);
     }
 
+    @Override
     public Map<Integer, String> getSuppressMap() {
         return ecmascriptParser.getSuppressMap();
     }

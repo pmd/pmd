@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class LocalVariableCouldBeFinalRule extends AbstractOptimizationRule {
 
+    @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         if (node.isFinal()) {
             return data;

@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTArrayDimsAndInits extends AbstractJavaNode implements Dimensionable {
     private int arrayDepth;
-    
+
     public ASTArrayDimsAndInits(int id) {
         super(id);
     }
@@ -19,10 +19,11 @@ public class ASTArrayDimsAndInits extends AbstractJavaNode implements Dimensiona
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-    
+
     public void bumpArrayDepth() {
         arrayDepth++;
     }

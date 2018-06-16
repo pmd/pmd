@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class SimplifyBooleanReturnsRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         // only boolean methods should be inspected
         ASTResultType r = node.getResultType();
@@ -34,6 +35,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRule {
         return data;
     }
 
+    @Override
     public Object visit(ASTIfStatement node, Object data) {
         // that's the case: if..then..return; return;
         if (!node.hasElse() && isIfJustReturnsBoolean(node) && isJustReturnsBooleanAfter(node)) {
@@ -154,7 +156,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRule {
     /**
      * Checks, whether there is a statement after the given if statement, and if
      * so, whether this is just a return boolean statement.
-     * 
+     *
      * @param node
      *            the if statement
      * @return
@@ -173,7 +175,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRule {
     /**
      * Checks whether the given ifstatement just returns a boolean in the if
      * clause.
-     * 
+     *
      * @param node
      *            the if statement
      * @return

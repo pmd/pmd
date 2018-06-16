@@ -18,7 +18,7 @@ public class Ecmascript5TokenManager implements TokenManager {
 
     /**
      * Creates a new Ecmascript 5 Token Manager from the given source code.
-     * 
+     *
      * @param source
      *            the source code
      */
@@ -26,6 +26,7 @@ public class Ecmascript5TokenManager implements TokenManager {
         tokenManager = new Ecmascript5ParserTokenManager(new SimpleCharStream(source));
     }
 
+    @Override
     public Object getNextToken() {
         return tokenManager.getNextToken();
     }

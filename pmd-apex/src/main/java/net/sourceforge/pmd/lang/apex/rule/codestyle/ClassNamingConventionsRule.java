@@ -17,6 +17,7 @@ public class ClassNamingConventionsRule extends AbstractApexRule {
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
+    @Override
     public Object visit(ASTUserClass node, Object data) {
         if (Character.isLowerCase(node.getImage().charAt(0))) {
             addViolation(data, node);
@@ -24,6 +25,7 @@ public class ClassNamingConventionsRule extends AbstractApexRule {
         return data;
     }
 
+    @Override
     public Object visit(ASTUserInterface node, Object data) {
         if (Character.isLowerCase(node.getImage().charAt(0))) {
             addViolation(data, node);

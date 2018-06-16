@@ -22,6 +22,7 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclarat
         return isAnonymousInnerClass();
     }
 
+    @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
         for (int i = 0; i < jjtGetNumChildren(); i++) {
             if (jjtGetChild(i) instanceof ASTAnnotation) {
@@ -37,6 +38,7 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclarat
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

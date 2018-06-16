@@ -12,6 +12,7 @@ public class ASTArrayStoreExpression extends AbstractApexNode<ArrayStoreExpressi
         super(arrayStoreExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

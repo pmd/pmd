@@ -121,6 +121,7 @@ public abstract class AbstractApexRule extends AbstractRule
         return new ApexParserOptions();
     }
 
+    @Override
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
         visitAll(nodes, ctx);
     }

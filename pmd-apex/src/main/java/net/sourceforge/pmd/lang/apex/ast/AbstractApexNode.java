@@ -99,6 +99,7 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object childrenAccept(ApexParserVisitor visitor, Object data) {
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {
@@ -111,6 +112,7 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
         return data;
     }
 
+    @Override
     public T getNode() {
         return node;
     }

@@ -17,7 +17,7 @@ package net.sourceforge.pmd.lang.vm.directive;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 /**
@@ -46,9 +46,10 @@ public class Parse extends InputBase {
 
     /**
      * Return name of this directive.
-     * 
+     *
      * @return The name of this directive.
      */
+    @Override
     public String getName() {
         return "parse";
     }
@@ -57,15 +58,17 @@ public class Parse extends InputBase {
      * Overrides the default to use "template", so that all templates can use
      * the same scope reference, whether rendered via #parse or direct merge.
      */
+    @Override
     public String getScopeName() {
         return "template";
     }
 
     /**
      * Return type of this directive.
-     * 
+     *
      * @return The type of this directive.
      */
+    @Override
     public int getType() {
         return LINE;
     }

@@ -56,6 +56,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
             this.node = node;
         }
 
+        @Override
         public String toString() {
             return "accessType = " + accessType + ", line = " + node.getLine();
         }
@@ -66,12 +67,14 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
         definePropertyDescriptor(MAX_VIOLATIONS_DESCRIPTOR);
     }
 
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         maxRuleViolations = getProperty(MAX_VIOLATIONS_DESCRIPTOR);
         currentRuleViolationCount = 0;
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTMethodDeclaration methodDeclaration, Object data) {
         rc = (RuleContext) data;
         daaRuleViolations = new ArrayList<>();
@@ -85,6 +88,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
         return data;
     }
 
+    @Override
     public void execute(CurrentPath path) {
 
         if (maxNumberOfViolationsReached()) {
@@ -149,7 +153,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
 
     /**
      * Maximum number of violations was already reached?
-     * 
+     *
      * @return <code>true</code> if the maximum number of violations was
      *         reached, <code>false</code> otherwise.
      */
@@ -160,7 +164,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
     /**
      * Checks if a violation already exists. This is needed because on the
      * different paths same anomalies can occur.
-     * 
+     *
      * @param type
      * @param var
      * @param startLine

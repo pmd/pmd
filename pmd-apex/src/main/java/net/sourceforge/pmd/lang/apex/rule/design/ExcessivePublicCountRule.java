@@ -36,6 +36,7 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
+    @Override
     public Object visit(ASTMethod node, Object data) {
         if (node.getNode().getModifiers().has(PUBLIC) && !node.getImage().matches("<clinit>|<init>|clone")) {
             return NumericConstants.ONE;
@@ -43,6 +44,7 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
         return NumericConstants.ZERO;
     }
 
+    @Override
     public Object visit(ASTFieldDeclarationStatements node, Object data) {
         if (node.getNode().getModifiers().has(PUBLIC) && !node.getNode().getModifiers().has(STATIC)) {
             return NumericConstants.ONE;

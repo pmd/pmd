@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 
 public class ApexRuleChainVisitor extends AbstractRuleChainVisitor {
 
+    @Override
     protected void indexNodes(List<Node> nodes, RuleContext ctx) {
         Stack<Node> stack = new Stack<>();
         stack.addAll(nodes);
@@ -33,6 +34,7 @@ public class ApexRuleChainVisitor extends AbstractRuleChainVisitor {
         }
     }
 
+    @Override
     protected void visit(Rule rule, Node node, RuleContext ctx) {
         if (rule instanceof XPathRule) {
             ((XPathRule) rule).evaluate(node, ctx);

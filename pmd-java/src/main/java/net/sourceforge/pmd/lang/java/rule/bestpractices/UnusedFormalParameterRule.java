@@ -36,11 +36,13 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
         definePropertyDescriptor(CHECKALL_DESCRIPTOR);
     }
 
+    @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         check(node, data);
         return data;
     }
 
+    @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         if (!node.isPrivate() && !getProperty(CHECKALL_DESCRIPTOR)) {
             return data;
@@ -86,12 +88,12 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
                     .getDeclarations(VariableNameDeclaration.class);
             for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
                 VariableNameDeclaration nameDecl = entry.getKey();
-                
+
                 ASTVariableDeclaratorId declNode = nameDecl.getDeclaratorId();
                 if (!declNode.isFormalParameter() || declNode.isExplicitReceiverParameter()) {
                     continue;
                 }
-                
+
                 if (actuallyUsed(nameDecl, entry.getValue())) {
                     continue;
                 }

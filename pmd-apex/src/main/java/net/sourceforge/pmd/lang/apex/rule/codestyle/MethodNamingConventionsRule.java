@@ -20,10 +20,12 @@ public class MethodNamingConventionsRule extends AbstractApexRule {
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
+    @Override
     public Object visit(ASTUserClass node, Object data) {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTMethod node, Object data) {
         if (isOverriddenMethod(node) || isPropertyAccessor(node) || isConstructor(node)) {
             return data;

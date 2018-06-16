@@ -17,13 +17,14 @@ public class ASTPackageBody extends net.sourceforge.pmd.lang.plsql.ast.AbstractP
     }
 
     /** Accept the visitor. **/
+    @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
     /**
      * Gets the name of the Oracle Object.
-     * 
+     *
      * @return a String representing the name of the Oracle Object
      */
     @Override

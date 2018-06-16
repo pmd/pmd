@@ -12,6 +12,7 @@ public class ASTBinaryExpression extends AbstractApexNode<BinaryExpression> {
         super(binaryExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -12,6 +12,7 @@ public class ASTArrayLoadExpression extends AbstractApexNode<ArrayLoadExpression
         super(arrayLoadExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

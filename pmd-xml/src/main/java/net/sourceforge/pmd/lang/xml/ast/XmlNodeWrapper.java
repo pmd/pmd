@@ -243,7 +243,7 @@ public class XmlNodeWrapper extends AbstractDomNodeProxy implements XmlNode {
         // iterators.add(new AttributeAxisIterator((net.sourceforge.pmd.lang.ast.Node) p));
 
         @SuppressWarnings("unchecked")
-        Iterator<Attribute>[] it = (Iterator<Attribute>[]) new Iterator[iterators.size()];
+        Iterator<Attribute>[] it = new Iterator[iterators.size()];
 
         return new CompoundIterator<>(iterators.toArray(it));
     }

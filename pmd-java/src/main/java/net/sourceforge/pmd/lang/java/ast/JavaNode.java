@@ -19,6 +19,7 @@ public interface JavaNode extends ScopedNode {
      */
     Object childrenAccept(JavaParserVisitor visitor, Object data);
 
+    @Override
     Scope getScope();
 
     void setScope(Scope scope);

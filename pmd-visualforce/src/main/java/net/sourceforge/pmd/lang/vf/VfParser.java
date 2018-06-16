@@ -29,15 +29,18 @@ public class VfParser extends AbstractParser {
         return new VfTokenManager(source);
     }
 
+    @Override
     public boolean canParse() {
         return true;
     }
 
+    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
         return new net.sourceforge.pmd.lang.vf.ast.VfParser(new VfSimpleCharStream(source)).CompilationUnit();
     }
 
+    @Override
     public Map<Integer, String> getSuppressMap() {
         return new HashMap<>(); // FIXME
     }

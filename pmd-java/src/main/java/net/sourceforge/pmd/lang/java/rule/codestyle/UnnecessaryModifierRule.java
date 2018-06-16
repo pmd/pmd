@@ -121,6 +121,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     }
 
 
+    @Override
     public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
         if (node.isAbstract()) {
             // may have several violations, with different explanations
@@ -147,6 +148,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     }
 
 
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 
         if (node.isInterface() && node.isAbstract()) {
@@ -172,7 +174,8 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
 
         return data;
     }
-    
+
+    @Override
     public Object visit(final ASTMethodDeclaration node, Object data) {
         Set<Modifier> unnecessary = EnumSet.noneOf(Modifier.class);
 
@@ -201,18 +204,20 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
                 }
             }
         }
-        
+
         return data;
     }
-    
+
+    @Override
     public Object visit(final ASTResource node, final Object data) {
         if (node.isFinal()) {
             reportUnnecessaryModifiers(data, node, Modifier.FINAL, "resource specifications are implicitly final");
         }
-        
+
         return data;
     }
 
+    @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
         Set<Modifier> unnecessary = EnumSet.noneOf(Modifier.class);
         if (node.isSyntacticallyPublic()) {
@@ -229,6 +234,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
         return data;
     }
 
+    @Override
     public Object visit(ASTAnnotationMethodDeclaration node, Object data) {
         Set<Modifier> unnecessary = EnumSet.noneOf(Modifier.class);
         if (node.isPublic()) {
@@ -240,7 +246,8 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
         checkDeclarationInInterfaceType(data, node, unnecessary);
         return data;
     }
-    
+
+    @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         if (node.getNthParent(2) instanceof ASTEnumBody) {
             if (node.isPrivate()) {

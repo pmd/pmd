@@ -18,7 +18,7 @@ public class ObjectiveCTokenManager implements TokenManager {
 
     /**
      * Creates a new Objective-C Token Manager from the given source code.
-     * 
+     *
      * @param source
      *            the source code
      */
@@ -26,6 +26,7 @@ public class ObjectiveCTokenManager implements TokenManager {
         tokenManager = new ObjectiveCParserTokenManager(new SimpleCharStream(source));
     }
 
+    @Override
     public Object getNextToken() {
         return tokenManager.getNextToken();
     }

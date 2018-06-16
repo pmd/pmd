@@ -15,10 +15,12 @@ public class ASTFieldDeclarationStatements extends AbstractApexNode<FieldDeclara
         super(fieldDeclarationStatements);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
+    @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
         for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
             for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {

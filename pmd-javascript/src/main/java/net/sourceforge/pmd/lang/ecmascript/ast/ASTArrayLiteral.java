@@ -17,18 +17,22 @@ public class ASTArrayLiteral extends AbstractEcmascriptNode<ArrayLiteral>
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
+    @Override
     public boolean isDestructuring() {
         return node.isDestructuring();
     }
 
+    @Override
     public boolean isTrailingComma() {
         return trailingComma;
     }
 
+    @Override
     public void setTrailingComma(boolean trailingComma) {
         this.trailingComma = trailingComma;
     }

@@ -12,6 +12,7 @@ public class ASTNewListLiteralExpression extends AbstractApexNode<NewListLiteral
         super(newListLiteralExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

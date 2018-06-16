@@ -27,6 +27,7 @@ public class ASTIfStatement extends net.sourceforge.pmd.lang.plsql.ast.AbstractP
     }
 
     /** Accept the visitor. **/
+    @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -17,7 +17,7 @@ package net.sourceforge.pmd.lang.vm.directive;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 /**
@@ -32,18 +32,20 @@ package net.sourceforge.pmd.lang.vm.directive;
 public class Foreach extends Directive {
     /**
      * Return name of this directive.
-     * 
+     *
      * @return The name of this directive.
      */
+    @Override
     public String getName() {
         return "foreach";
     }
 
     /**
      * Return type of this directive.
-     * 
+     *
      * @return The type of this directive.
      */
+    @Override
     public int getType() {
         return BLOCK;
     }

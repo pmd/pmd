@@ -8,7 +8,7 @@ public interface ApexParserVisitor {
     Object visit(ApexNode<?> node, Object data);
 
     Object visit(ASTAnnotation node, Object data);
-    
+
     Object visit(ASTAnnotationParameter node, Object data);
 
     Object visit(ASTAnonymousClass node, Object data);
@@ -38,7 +38,7 @@ public interface ApexParserVisitor {
     Object visit(ASTClassRefExpression node, Object data);
 
     Object visit(ASTConstructorPreamble node, Object data);
-    
+
     Object visit(ASTConstructorPreambleStatement node, Object data);
 
     Object visit(ASTContinueStatement node, Object data);

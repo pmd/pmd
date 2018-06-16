@@ -12,6 +12,7 @@ public class ASTSoslExpression extends AbstractApexNode<SoslExpression> {
         super(soslExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

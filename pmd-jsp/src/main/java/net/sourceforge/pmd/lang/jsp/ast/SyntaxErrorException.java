@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 /**
  * Exception indicating that a syntactic error has been found.
- * 
+ *
  * @author Pieter_Van_Raemdonck
  * @since Created on 11-jan-2006
  */

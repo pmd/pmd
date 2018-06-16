@@ -19,6 +19,7 @@ public class DuplicateImportsRule extends AbstractJavaRule {
     private Set<ImportWrapper> singleTypeImports;
     private Set<ImportWrapper> importOnDemandImports;
 
+    @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         singleTypeImports = new HashSet<>();
         importOnDemandImports = new HashSet<>();
@@ -49,7 +50,7 @@ public class DuplicateImportsRule extends AbstractJavaRule {
     /**
      * Check whether this seemingly duplicate import is actually a
      * disambiguation import.
-     * 
+     *
      * Example: import java.awt.*; import java.util.*; import java.util.List;
      * //Needed because java.awt.List exists
      */
@@ -83,6 +84,7 @@ public class DuplicateImportsRule extends AbstractJavaRule {
         return node.getClassTypeResolver().classNameExists(fullyQualifiedClassName);
     }
 
+    @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         ImportWrapper wrapper = new ImportWrapper(node.getImportedName(), node.getImportedName(),
                 node.getImportedNameNode(), node.isStatic() && node.isImportOnDemand());

@@ -19,6 +19,7 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -57,7 +58,7 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
         }
         return false;
     }
-    
+
     public int getArrayDepth() {
         Node p = jjtGetParent();
         if (p instanceof ASTReferenceType) {

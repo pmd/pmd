@@ -16,6 +16,7 @@ public interface PLSQLNode extends Node, ScopedNode {
     /** Accept the visitor. **/
     Object childrenAccept(PLSQLParserVisitor visitor, Object data);
 
+    @Override
     Scope getScope();
 
     void setScope(Scope scope);

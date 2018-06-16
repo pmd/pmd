@@ -18,7 +18,7 @@ public class PythonTokenManager implements TokenManager {
 
     /**
      * Creates a new Python Token Manager from the given source code.
-     * 
+     *
      * @param source
      *            the source code
      */
@@ -26,6 +26,7 @@ public class PythonTokenManager implements TokenManager {
         tokenManager = new PythonParserTokenManager(new SimpleCharStream(source));
     }
 
+    @Override
     public Object getNextToken() {
         return tokenManager.getNextToken();
     }

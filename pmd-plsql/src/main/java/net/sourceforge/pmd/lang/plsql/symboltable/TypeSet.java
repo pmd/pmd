@@ -32,6 +32,7 @@ public class TypeSet {
             this.importStmts = importStmts;
         }
 
+        @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
             for (String importStmt : importStmts) {
                 if (importStmt.endsWith(name)) {
@@ -49,6 +50,7 @@ public class TypeSet {
             this.pkg = pkg;
         }
 
+        @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
             return Class.forName(pkg + name);
         }
@@ -56,6 +58,7 @@ public class TypeSet {
 
     // TODO cite the JLS section on implicit imports
     public static class ImplicitImportResolver implements Resolver {
+        @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
             return Class.forName("java.lang." + name);
         }
@@ -68,6 +71,7 @@ public class TypeSet {
             this.importStmts = importStmts;
         }
 
+        @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
             for (String importStmt : importStmts) {
                 if (importStmt.endsWith("*")) {
@@ -99,6 +103,7 @@ public class TypeSet {
             primitiveTypes.put("char", char.class);
         }
 
+        @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
             if (!primitiveTypes.containsKey(name)) {
                 throw new ClassNotFoundException();
@@ -108,6 +113,7 @@ public class TypeSet {
     }
 
     public static class VoidResolver implements Resolver {
+        @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
             if ("void".equals(name)) {
                 return void.class;
@@ -117,6 +123,7 @@ public class TypeSet {
     }
 
     public static class FullyQualifiedNameResolver implements Resolver {
+        @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
             return Class.forName(name);
         }

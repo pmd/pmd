@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import java.util.List;
 
-
-
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -27,6 +25,7 @@ public class SingleMethodSingletonRule extends AbstractJavaRule {
      */
 
 
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 
 

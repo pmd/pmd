@@ -17,6 +17,7 @@ public class ASTArguments extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLS
     }
 
     /** Accept the visitor. **/
+    @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

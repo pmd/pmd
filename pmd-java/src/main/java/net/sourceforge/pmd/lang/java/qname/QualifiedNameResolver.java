@@ -118,6 +118,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
     }
 
 
+    @Override
     public Object visit(ASTCompilationUnit node, Object data) {
 
         // update the package list

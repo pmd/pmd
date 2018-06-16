@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
  * Implementation of LanguageVersionHandler for the JSP parser.
- * 
+ *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public class JspHandler extends AbstractLanguageVersionHandler {
@@ -30,10 +30,12 @@ public class JspHandler extends AbstractLanguageVersionHandler {
         return new DefaultASTXPathHandler();
     }
 
+    @Override
     public RuleViolationFactory getRuleViolationFactory() {
         return JspRuleViolationFactory.INSTANCE;
     }
 
+    @Override
     public Parser getParser(ParserOptions parserOptions) {
         return new JspParser(parserOptions);
     }
@@ -41,6 +43,7 @@ public class JspHandler extends AbstractLanguageVersionHandler {
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {
+            @Override
             public void start(Node rootNode) {
                 new DumpFacade().initializeWith(writer, prefix, recurse, (JspNode) rootNode);
             }

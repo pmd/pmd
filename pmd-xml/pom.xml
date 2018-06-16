@@ -51,6 +51,17 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Disable rule MissingOverride, see https://github.com/pmd/pmd/issues/1074 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <rulesets>
+                        <ruleset>pmd-xml-ruleset.xml</ruleset>
+                    </rulesets>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>

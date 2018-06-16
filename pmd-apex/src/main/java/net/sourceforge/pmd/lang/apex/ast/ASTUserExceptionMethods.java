@@ -12,6 +12,7 @@ public class ASTUserExceptionMethods extends AbstractApexNode<UserExceptionMetho
         super(userExceptionMethods);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
