@@ -20,6 +20,8 @@ This is a minor release.
 ### New and noteworthy
 
 ### Fixed Issues
+*   java-codestyle
+    *   [#667](https://github.com/pmd/pmd/issues/667): [java] Make AtLeastOneConstructor Lombok-aware
 
 ### API Changes
 
