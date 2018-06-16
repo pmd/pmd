@@ -440,6 +440,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                             <excludeRoot>target/generated-sources/antlr4</excludeRoot>
                         </excludeRoots>
                         <skipPmdError>false</skipPmdError>
+                        <failurePriority>2</failurePriority>
                         <failOnViolation>true</failOnViolation>
                         <printFailingErrors>true</printFailingErrors>
                     </configuration>
