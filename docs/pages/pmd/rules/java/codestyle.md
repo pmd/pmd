@@ -54,19 +54,10 @@ public abstract class Foo { // should be AbstractFoo
 
 **Priority:** Medium (3)
 
-Each class should declare at least one constructor.
+Each non-static class should declare at least one constructor.
+Classes with solely static members are ignored, refer to [UseUtilityClassRule](pmd_rules_java_design.html#useutilityclass) to detect those.
 
-**This rule is defined by the following XPath expression:**
-```
-//ClassOrInterfaceDeclaration[
-  not(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)
-  and
-  (@Static = 'false')
-  and
-  (count(./descendant::MethodDeclaration[@Static = 'true']) < 1)
-]
-  [@Interface='false']
-```
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.AtLeastOneConstructorRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/AtLeastOneConstructorRule.java)
 
 **Example(s):**
 
@@ -77,6 +68,12 @@ public class Foo {
   public void doOtherThing { ... }
 }
 ```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoredAnnotations|lombok.Data \| lombok.Value \| lombok.Builder \| lombok.NoArgsConstructor \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructorAtLeastOneConstructor|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
