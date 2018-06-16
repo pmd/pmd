@@ -66,17 +66,17 @@ public class SyntaxHighlightingCodeArea extends CodeArea {
         // handles auto shutdown of executor services
         // by attaching a handler to the
         Val.wrap(sceneProperty())
-           .filter(Objects::nonNull)
-           .map(Scene::getWindow)
-           .changes()
-           .hook(c -> {
-               if (c.getOldValue() != null) {
-                   c.getOldValue().removeEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, autoCloseHandler);
-               }
-               if (c.getNewValue() != null) {
-                   c.getNewValue().addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, autoCloseHandler);
-               }
-           });
+            .filter(Objects::nonNull)
+            .map(Scene::getWindow)
+            .changes()
+            .hook(c -> {
+                if (c.getOldValue() != null) {
+                    c.getOldValue().removeEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, autoCloseHandler);
+                }
+                if (c.getNewValue() != null) {
+                    c.getNewValue().addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, autoCloseHandler);
+                }
+            });
     }
 
 
