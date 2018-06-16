@@ -63,8 +63,6 @@ zip -qr pmd-doc-${VERSION}.zip pmd-doc-${VERSION}/
 if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]]; then
     echo -e "\n\n"
     log_info "Pushing the new site to github pages..."
-    git config user.name "Travis CI (pmd-bot)"
-    git config user.email "andreas.dangel+pmd-bot@adangel.org"
     git clone --branch gh-pages --depth 1 git@github.com:pmd/pmd.git pmd-gh-pages
     # clear the files first
     rm -rf pmd-gh-pages/*
@@ -72,6 +70,8 @@ if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]]; then
     cp -a pmd-doc-${VERSION}/* pmd-gh-pages/
     (
         cd pmd-gh-pages
+        git config user.name "Travis CI (pmd-bot)"
+        git config user.email "andreas.dangel+pmd-bot@adangel.org"
         git add -A
         git commit -q -m "Update documentation"
         git push git@github.com:pmd/pmd.git HEAD:gh-pages
