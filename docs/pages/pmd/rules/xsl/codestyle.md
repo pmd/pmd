@@ -18,7 +18,7 @@ The XPath concat() functions accepts as many arguments as required so you can ha
 "concat($a,'b',$c)" rather than "concat($a,concat('b',$c)".
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //node()[contains(substring-after(@select,'concat'),'concat')]
 ```
 

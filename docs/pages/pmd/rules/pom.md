@@ -1,6 +1,7 @@
 ---
 title: Maven POM Rules
 tags: [rule_references, pom]
+summary: Index of all built-in rules available for Maven POM
 language_name: Maven POM
 permalink: pmd_rules_pom.html
 folder: pmd/rules

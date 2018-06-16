@@ -1,6 +1,7 @@
 ---
 title: Java Server Pages Rules
 tags: [rule_references, jsp]
+summary: Index of all built-in rules available for Java Server Pages
 language_name: Java Server Pages
 permalink: pmd_rules_jsp.html
 folder: pmd/rules

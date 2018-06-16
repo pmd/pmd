@@ -1,6 +1,7 @@
 ---
 title: Ecmascript Rules
 tags: [rule_references, ecmascript]
+summary: Index of all built-in rules available for Ecmascript
 language_name: Ecmascript
 permalink: pmd_rules_ecmascript.html
 folder: pmd/rules

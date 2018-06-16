@@ -1,6 +1,7 @@
 ---
 title: Apex Rules
 tags: [rule_references, apex]
+summary: Index of all built-in rules available for Apex
 language_name: Apex
 permalink: pmd_rules_apex.html
 folder: pmd/rules

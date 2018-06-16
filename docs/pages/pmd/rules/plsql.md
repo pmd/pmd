@@ -1,6 +1,7 @@
 ---
 title: PLSQL Rules
 tags: [rule_references, plsql]
+summary: Index of all built-in rules available for PLSQL
 language_name: PLSQL
 permalink: pmd_rules_plsql.html
 folder: pmd/rules

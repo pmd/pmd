@@ -20,7 +20,7 @@ or 'descendant-self' axes, as if you're at the top of the Document, it necessari
 cutting through 100% of the document.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //node()[
   contains(@select,'preceeding::')
   or

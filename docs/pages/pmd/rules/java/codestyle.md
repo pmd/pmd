@@ -19,7 +19,7 @@ language: Java
 Abstract classes should be named 'AbstractXXX'.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration
  [@Abstract='true' and @Interface='false']
  [not (starts-with(@Image,'Abstract'))]
@@ -111,7 +111,7 @@ public class Fo$o {  // not a recommended name
 Avoid using final local variables, turn them into fields.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //LocalVariableDeclaration[
   @Final = 'true'
   and not(../../ForStatement)
@@ -150,7 +150,7 @@ To indicate whether or not a parameter will be modify in a method, its better to
 behavior with Javadoc.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/VariableDeclaratorId[
         pmd:matches(@Image,'^in[A-Z].*','^out[A-Z].*','^in$','^out$')
 ]
@@ -200,7 +200,7 @@ Do not use protected fields in final classes since they cannot be subclassed.
 Clarify your intent by using private or package access modifiers instead.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[@Final='true']
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
 /FieldDeclaration[@Protected='true']
@@ -232,7 +232,7 @@ only be allowed in final classes that extend other classes with protected method
 visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[@Final='true' and not(ExtendsList)]
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
 /MethodDeclaration[@Protected='true'][MethodDeclarator/@Image != 'finalize']
@@ -262,7 +262,7 @@ Unnecessary reliance on Java Native Interface (JNI) calls directly reduces appli
 and increases the maintenance burden.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Name[starts-with(@Image,'System.loadLibrary')]
 ```
 
@@ -301,7 +301,7 @@ I.e, 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc.   Avoid the u
 prefix for these methods.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration[
 MethodDeclarator[count(FormalParameters/FormalParameter) = 0 or $checkParameterizedMethods = 'true']
                 [starts-with(@Image, 'get')]
@@ -340,7 +340,7 @@ It is a good practice to call super() in a constructor. If super() is not called
 another constructor (such as an overloaded constructor) is called, this rule will not report it.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[ count (ExtendsList/*) > 0 ]
 /ClassOrInterfaceBody
  /ClassOrInterfaceBodyDeclaration
@@ -514,7 +514,7 @@ From 6.2.0 on, this rule supersedes WhileLoopMustUseBraces, ForLoopMustUseBraces
 and IfElseStmtMustUseBraces.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //WhileStatement[$checkWhileStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
                 |
                 //ForStatement[$checkForStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
@@ -576,7 +576,7 @@ Use explicit scoping instead of accidental usage of default package private leve
 The rule allows methods and fields annotated with Guava's @VisibleForTesting.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[@Interface='false']
 /ClassOrInterfaceBody
 /ClassOrInterfaceBodyDeclaration
@@ -654,7 +654,7 @@ Empty or auto-generated methods in an abstract class should be tagged as abstrac
 usage by developers who should be implementing their own versions in the concrete subclasses.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[@Abstract = 'true']
     /ClassOrInterfaceBody
     /ClassOrInterfaceBodyDeclaration
@@ -700,7 +700,7 @@ public abstract class ShouldBeAbstract {
 No need to explicitly extend Object.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ExtendsList/ClassOrInterfaceType[@Image='Object' or @Image='java.lang.Object']
 ```
 
@@ -765,7 +765,7 @@ public class HelloWorldBean {
 Some for loops can be simplified to while loops, this makes them more concise.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ForStatement
   [not(LocalVariableDeclaration)]
   [not(ForInit)]
@@ -801,7 +801,7 @@ indentation is lost then it becomes difficult to separate the code being control
 from the rest.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ForStatement[not(Statement/Block)]
 ```
 
@@ -826,7 +826,7 @@ for (int i = 0; i < 42; i++)
 Names for references to generic values should be limited to a single uppercase letter.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //TypeDeclaration/ClassOrInterfaceDeclaration/TypeParameters/TypeParameter[
   string-length(@Image) > 1 
   or
@@ -909,7 +909,7 @@ or indentation is lost then it becomes difficult to separate the code being cont
 from the rest.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Statement
  [parent::IfStatement[@Else='true']]
  [not(child::Block)]
@@ -947,7 +947,7 @@ formatting or indentation is lost then it becomes difficult to separate the code
 controlled from the rest.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //IfStatement[count(*) < 3][not(Statement/Block)]
 ```
 
@@ -976,7 +976,7 @@ if (foo) {  // preferred approach
 The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration
 [
     (
@@ -1012,7 +1012,7 @@ public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}  // non-s
 The Local Interface of a Session EJB should be suffixed by 'Local'.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration
 [
     (
@@ -1074,7 +1074,7 @@ public class Bar {
 Fields, formal arguments, or local variable names that are too long can make the code difficult to follow.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //VariableDeclaratorId[string-length(@Image) > $minimum]
 ```
 
@@ -1112,7 +1112,7 @@ public class Something {
 The EJB Specification states that any MessageDrivenBean or SessionBean should be suffixed by 'Bean'.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //TypeDeclaration/ClassOrInterfaceDeclaration
 [
     (
@@ -1217,7 +1217,7 @@ public class Foo {
 Detects when a non-field has a name starting with 'm_'.  This usually denotes a field and could be confusing.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //VariableDeclaratorId
 [starts-with(@Image, 'm_')]
 [not (../../../FieldDeclaration)]
@@ -1248,7 +1248,7 @@ public class Foo {
 Detects when a class or interface does not have a package definition.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[count(preceding::PackageDeclaration) = 0]
 ```
 
@@ -1302,7 +1302,7 @@ public class OneReturnOnly1 {
 Detects when a package definition contains uppercase characters.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PackageDeclaration/Name[lower-case(@Image)!=@Image]
 ```
 
@@ -1361,7 +1361,7 @@ public int getLength(String[] strings) {
 Remote Interface of a Session EJB should not have a suffix.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration
 [
     (
@@ -1405,7 +1405,7 @@ public interface BadSuffixBean extends javax.ejb.EJBObject {}
 A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration
 [
     (
@@ -1441,7 +1441,7 @@ public interface MissingProperSuffix extends javax.ejb.EJBHome {}   // non-stand
 Short Classnames with fewer than e.g. five characters are not recommended.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[string-length(@Image) < $minimum]
 ```
 
@@ -1472,7 +1472,7 @@ public class Foo {
 Method names that are very short are not helpful to the reader.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclarator[string-length(@Image) < $minimum]
 ```
 
@@ -1505,7 +1505,7 @@ public class ShortMethod {
 Fields, local variables, or parameter names that are very short are not helpful to the reader.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //VariableDeclaratorId[string-length(@Image) < $minimum]
  (: ForStatement :)
  [not(../../..[self::ForInit])]
@@ -1555,7 +1555,7 @@ Field names using all uppercase characters - Sun's Java naming conventions indic
 be declared as final.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[@Interface='false']
  /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
   [@Final='false']
@@ -1590,7 +1590,7 @@ Readers of your code (including you, a few months after you wrote it) will not k
 which class a static member comes from (Sun 1.5 Language Guide).
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 .[count(ImportDeclaration[@Static = 'true']) > $maximumStaticImports]
 ```
 
@@ -1829,7 +1829,7 @@ public class Foo {
 Useless parentheses should be removed.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)>1]
   /PrimaryPrefix/Expression
     [not(./CastExpression)]
@@ -1914,7 +1914,7 @@ public class Foo {
 Look for qualified this usages in the same class.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryExpression
 [PrimaryPrefix/Name[@Image]]
 [PrimarySuffix[@Arguments='false']]
@@ -2014,7 +2014,7 @@ formatting or indentation is lost then it becomes difficult to separate the code
 controlled from the rest.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //WhileStatement[not(Statement/Block)]
 ```
 

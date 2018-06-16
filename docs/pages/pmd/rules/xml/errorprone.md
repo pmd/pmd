@@ -17,7 +17,7 @@ language: XML
 An XML CDATA section begins with a <!CDATA[ marker, which has only one [, and ends with a ]]> marker, which has only two ].
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //cdata-section[starts-with(@Image,'[') or ends-with(@Image,']')]
 ```
 

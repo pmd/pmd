@@ -17,7 +17,7 @@ language: PLSQL
 "WHEN OTHERS THEN NULL" hides all errors - (Re)RAISE an exception or call RAISE_APPLICATION_ERROR
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ExceptionHandler[QualifiedName/@Image='OTHERS' and upper-case(Statement/UnlabelledStatement/Expression/@Image)='NULL']
 ```
 

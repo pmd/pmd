@@ -1,6 +1,7 @@
 ---
 title: XSL Rules
 tags: [rule_references, xsl]
+summary: Index of all built-in rules available for XSL
 language_name: XSL
 permalink: pmd_rules_xsl.html
 folder: pmd/rules

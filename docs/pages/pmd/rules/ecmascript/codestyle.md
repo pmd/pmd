@@ -18,7 +18,7 @@ Avoid assignments in operands; this can make code more complicated and harder to
 indicative of the bug where the assignment operator '=' was used instead of the equality operator '=='.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //IfStatement[$allowIf = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
 |
     //WhileLoop[$allowWhile = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
@@ -71,7 +71,7 @@ function getX() {
 Avoid using 'for' statements without using curly braces.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ForLoop[not(child::Scope)]
 |
 //ForInLoop[not(child::Scope)]
@@ -104,7 +104,7 @@ for (var i = 0; i < 42; i++)
 Avoid using if..else statements without using curly braces.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ExpressionStatement[parent::IfStatement[@Else = "true"]]
    [not(child::Scope)]
    [not(child::IfStatement)]
@@ -141,7 +141,7 @@ else
 Avoid using if statements without using curly braces.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //IfStatement[@Else = "false" and not(child::Scope)]
 ```
 
@@ -175,7 +175,7 @@ Then the content of the else block can be put outside.
 See also: <http://eslint.org/docs/rules/no-else-return>
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //IfStatement[@Else="true"][Scope[1]/ReturnStatement]
 ```
 
@@ -212,7 +212,7 @@ introduce a new variable scope.  Blocks do not behave like this in ECMAScipt, an
 be misleading.  Considering removing this unnecessary Block.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Block[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
     or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
 |
@@ -247,7 +247,7 @@ if (bar) {
 Unnecessary parentheses should be removed.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ParenthesizedExpression/ParenthesizedExpression
 ```
 
@@ -274,7 +274,7 @@ A 'return', 'break', 'continue', or 'throw' statement should be the last in a bl
 will never execute.  This is a bug, or extremely poor style.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ReturnStatement[following-sibling::node()]
 |
     //ContinueStatement[following-sibling::node()]
@@ -313,7 +313,7 @@ function bar() {
 Avoid using 'while' statements without using curly braces.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //WhileLoop[not(child::Scope)]
 ```
 
