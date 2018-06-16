@@ -1,5 +1,7 @@
 ---
 title: Salesforce VisualForce Rules
+tags: [rule_references, vf]
+language_name: Salesforce VisualForce
 permalink: pmd_rules_vf.html
 folder: pmd/rules
 ---

@@ -1,5 +1,7 @@
 ---
 title: Tools / Integrations
+tags: [userdocs, tools]
+
 permalink: pmd_userdocs_tools.html
 author: David Dixon-Peugh <dpeugh@users.sourceforge.net>
 ---

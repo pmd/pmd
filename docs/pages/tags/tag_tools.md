@@ -1,8 +1,8 @@
 ---
-title: "Release Notes Pages"
-tagName: release_notes
+title: "Tools and integrations"
+tagName: tools
 search: exclude
-permalink: tag_release_notes.html
+permalink: tag_tools.html
 sidebar: pmd_sidebar
 folder: tags
 ---

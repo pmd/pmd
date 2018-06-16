@@ -1,5 +1,7 @@
 ---
 title: Java Server Pages Rules
+tags: [rule_references, jsp]
+language_name: Java Server Pages
 permalink: pmd_rules_jsp.html
 folder: pmd/rules
 ---

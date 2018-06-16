@@ -1,8 +1,8 @@
 ---
-title: "Release Notes Pages"
-tagName: release_notes
+title: "Developer and contributor documentation"
+tagName: devdocs
 search: exclude
-permalink: tag_release_notes.html
+permalink: tag_devdocs.html
 sidebar: pmd_sidebar
 folder: tags
 ---

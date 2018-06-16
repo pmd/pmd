@@ -1,5 +1,7 @@
 ---
 title: PLSQL Rules
+tags: [rule_references, plsql]
+language_name: PLSQL
 permalink: pmd_rules_plsql.html
 folder: pmd/rules
 ---

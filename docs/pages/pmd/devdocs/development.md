@@ -1,5 +1,6 @@
 ---
 title: Developer Resources
+tags: [devdocs]
 permalink: pmd_devdocs_development.html
 last_updated: August 2017
 ---
