@@ -38,15 +38,18 @@ public class PLSQLParser extends AbstractParser {
         return new net.sourceforge.pmd.lang.plsql.ast.PLSQLParser(in);
     }
 
+    @Override
     public boolean canParse() {
         return true;
     }
 
+    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
         return createPLSQLParser(source).Input();
     }
 
+    @Override
     public Map<Integer, String> getSuppressMap() {
         return new HashMap<>(); // FIXME
     }

@@ -12,6 +12,7 @@ public class ASTIfBlockStatement extends AbstractApexNode<IfBlockStatement> {
         super(ifBlockStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

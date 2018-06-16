@@ -87,11 +87,13 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
+    @Override
     public Object visit(ASTUserClass node, Object data) {
         init();
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTUserInterface node, Object data) {
         init();
         return super.visit(node, data);
@@ -111,6 +113,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         parameterSuffixes = getProperty(PARAMETER_SUFFIXES_DESCRIPTOR);
     }
 
+    @Override
     public Object visit(ASTField node, Object data) {
         if (!checkMembers) {
             return data;
@@ -122,6 +125,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
                 isStatic, isFinal, data);
     }
 
+    @Override
     public Object visit(ASTVariableDeclaration node, Object data) {
 
         if (!checkLocals) {
@@ -132,6 +136,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         return checkName(localPrefixes, localSuffixes, node, false, isFinal, data);
     }
 
+    @Override
     public Object visit(ASTParameter node, Object data) {
         if (!checkParameters) {
             return data;
@@ -216,6 +221,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         return false;
     }
 
+    @Override
     public String dysfunctionReason() {
         return hasPrefixesOrSuffixes() ? null : "No prefixes or suffixes specified";
     }

@@ -11,7 +11,7 @@ import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Non-commented source statement counter for constructors.
- * 
+ *
  * @author Jason Bennett
  */
 public class NcssConstructorCountRule extends AbstractNcssCountRule {
@@ -24,6 +24,7 @@ public class NcssConstructorCountRule extends AbstractNcssCountRule {
         setProperty(MINIMUM_DESCRIPTOR, 100d);
     }
 
+    @Override
     public Object visit(ASTExplicitConstructorInvocation node, Object data) {
         return NumericConstants.ONE;
     }

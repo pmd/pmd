@@ -23,7 +23,7 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
 
     /**
      * Indicate whether this node is allocating a new object.
-     * 
+     *
      * @param n
      *            node that might be allocating a new object
      * @return true if child 0 is an AllocationExpression
@@ -33,6 +33,7 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
                 && n.jjtGetParent().jjtGetNumChildren() == 1;
     }
 
+    @Override
     public Object visit(ASTEqualityExpression node, Object data) {
         Node c0 = node.jjtGetChild(0).jjtGetChild(0);
         Node c1 = node.jjtGetChild(1).jjtGetChild(0);
@@ -100,7 +101,7 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
     /**
      * Checks whether the given node contains a qualified name, consisting of
      * one ASTPrimaryPrefix and one or more ASTPrimarySuffix nodes.
-     * 
+     *
      * @param node
      *            the node
      * @return <code>true</code> if it is a qualified name

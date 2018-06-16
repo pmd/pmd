@@ -12,6 +12,7 @@ public class ASTStatement extends AbstractApexNode<Statement> {
         super(statement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

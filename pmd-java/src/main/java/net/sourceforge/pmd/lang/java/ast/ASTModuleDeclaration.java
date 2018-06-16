@@ -18,6 +18,7 @@ public class ASTModuleDeclaration extends AbstractJavaNode {
     }
 
     /** Accept the visitor. **/
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

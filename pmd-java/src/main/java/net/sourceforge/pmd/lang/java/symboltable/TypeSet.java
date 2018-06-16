@@ -36,7 +36,7 @@ public class TypeSet {
 
     /**
      * The {@link TypeSet} provides type resolution for the symbol facade.
-     * 
+     *
      * @param classLoader
      *            the class loader to use to search classes (could be an
      *            auxiliary class path)
@@ -52,7 +52,7 @@ public class TypeSet {
 
     /**
      * Whether the classloader is using the auxclasspath or not.
-     * 
+     *
      * @return <code>true</code> if the classloader is using the auxclasspath
      *         feature
      */
@@ -83,7 +83,7 @@ public class TypeSet {
          * Checks if the given class could be resolved by this resolver. Notice,
          * that a resolver's ability to resolve a class does not imply that the
          * class will actually be found and resolved.
-         * 
+         *
          * @param name
          *            the name of the class, might be fully classified or not.
          * @return whether the class can be resolved
@@ -102,7 +102,7 @@ public class TypeSet {
 
         /**
          * Creates a new AbstractResolver that uses the given class loader.
-         * 
+         *
          * @param pmdClassLoader
          *            the class loader to use
          */
@@ -164,6 +164,7 @@ public class TypeSet {
             return null;
         }
 
+        @Override
         public boolean couldResolve(final String name) {
             /*
              * Resolvers based on this one, will attempt to load the class from
@@ -182,7 +183,7 @@ public class TypeSet {
 
         /**
          * Creates a new {@link ExplicitImportResolver}.
-         * 
+         *
          * @param pmdClassLoader
          *            the class loader to use.
          * @param importStmts
@@ -232,7 +233,7 @@ public class TypeSet {
 
         /**
          * Creates a new {@link CurrentPackageResolver}
-         * 
+         *
          * @param pmdClassLoader
          *            the class loader to use
          * @param pkg
@@ -291,7 +292,7 @@ public class TypeSet {
 
         /**
          * Creates a {@link ImplicitImportResolver}
-         * 
+         *
          * @param pmdClassLoader
          *            the class loader
          */
@@ -338,7 +339,7 @@ public class TypeSet {
 
         /**
          * Creates a {@link ImportOnDemandResolver}
-         * 
+         *
          * @param pmdClassLoader
          *            the class loader to use
          * @param importStmts
@@ -454,7 +455,7 @@ public class TypeSet {
     public static class FullyQualifiedNameResolver extends AbstractResolver {
         /**
          * Creates a {@link FullyQualifiedNameResolver}
-         * 
+         *
          * @param pmdClassLoader
          *            the class loader to use
          */
@@ -500,7 +501,7 @@ public class TypeSet {
 
     /**
      * Adds a import to the list of imports
-     * 
+     *
      * @param importString
      *            the import to add
      */
@@ -518,7 +519,7 @@ public class TypeSet {
 
     /**
      * Resolves a class by its name using all known resolvers.
-     * 
+     *
      * @param name
      *            the name of the class, can be a simple name or a fully
      *            qualified name.

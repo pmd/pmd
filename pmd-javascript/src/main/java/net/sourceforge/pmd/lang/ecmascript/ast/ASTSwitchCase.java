@@ -14,6 +14,7 @@ public class ASTSwitchCase extends AbstractEcmascriptNode<SwitchCase> {
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

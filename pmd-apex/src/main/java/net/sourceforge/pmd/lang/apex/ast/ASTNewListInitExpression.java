@@ -12,6 +12,7 @@ public class ASTNewListInitExpression extends AbstractApexNode<NewListInitExpres
         super(newListInitExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

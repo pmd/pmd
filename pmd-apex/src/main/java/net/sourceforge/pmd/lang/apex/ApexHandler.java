@@ -31,6 +31,7 @@ public class ApexHandler extends AbstractLanguageVersionHandler {
         return new DefaultASTXPathHandler();
     }
 
+    @Override
     public RuleViolationFactory getRuleViolationFactory() {
         return ApexRuleViolationFactory.INSTANCE;
     }
@@ -40,6 +41,7 @@ public class ApexHandler extends AbstractLanguageVersionHandler {
         return new ApexParserOptions();
     }
 
+    @Override
     public Parser getParser(ParserOptions parserOptions) {
         return new ApexParser(parserOptions);
     }

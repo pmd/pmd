@@ -40,13 +40,14 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     /**
      * Visit each method declaration.
-     * 
+     *
      * @param node
      *            the method declaration
      * @param data
      *            data - rule context
      * @return data
      */
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
             return data;

@@ -17,6 +17,7 @@ public class ASTJspComment extends AbstractJspNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JspParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

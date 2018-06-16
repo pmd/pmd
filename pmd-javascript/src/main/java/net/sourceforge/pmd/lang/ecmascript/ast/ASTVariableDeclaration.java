@@ -18,6 +18,7 @@ public class ASTVariableDeclaration extends AbstractEcmascriptNode<VariableDecla
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

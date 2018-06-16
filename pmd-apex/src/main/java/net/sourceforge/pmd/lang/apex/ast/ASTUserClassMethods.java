@@ -12,6 +12,7 @@ public class ASTUserClassMethods extends AbstractApexNode<UserClassMethods> {
         super(userClassMethods);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

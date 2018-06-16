@@ -105,6 +105,7 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
      * Returns true if this qualified name identifies a
      * local class.
      */
+    @Override
     public boolean isLocalClass() {
         return localIndices.head() != NOTLOCAL_PLACEHOLDER;
     }
@@ -122,6 +123,7 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
     /**
      * Get the simple name of the class.
      */
+    @Override
     public String getClassSimpleName() {
         return classes.head();
     }
@@ -131,6 +133,7 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
      * Returns true if the class represented by this
      * qualified name is in the unnamed package.
      */
+    @Override
     public boolean isUnnamedPackage() {
         return packages.isEmpty();
     }

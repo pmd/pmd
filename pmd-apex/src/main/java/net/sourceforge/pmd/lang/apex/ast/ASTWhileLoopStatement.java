@@ -12,6 +12,7 @@ public class ASTWhileLoopStatement extends AbstractApexNode<WhileLoopStatement> 
         super(whileLoopStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

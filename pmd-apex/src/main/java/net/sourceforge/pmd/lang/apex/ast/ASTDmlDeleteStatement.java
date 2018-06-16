@@ -12,6 +12,7 @@ public class ASTDmlDeleteStatement extends AbstractApexNode<DmlDeleteStatement> 
         super(dmlDeleteStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

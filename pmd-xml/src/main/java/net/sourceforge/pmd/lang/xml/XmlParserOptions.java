@@ -43,6 +43,7 @@ public class XmlParserOptions extends ParserOptions {
             "Specifies whether XML parser will attempt to lookup the DTD.", Boolean.FALSE, 10.0f);
 
     public static final EntityResolver SILENT_ENTITY_RESOLVER = new EntityResolver() {
+        @Override
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
             return new InputSource(new ByteArrayInputStream("".getBytes()));
         }
@@ -81,7 +82,7 @@ public class XmlParserOptions extends ParserOptions {
     }
 
     /**
-     * 
+     *
      * @return the configured entity resolver. If {@link #lookupDescriptorDoc}
      *         is false it would normally force the XML parser to use its own
      *         resolver

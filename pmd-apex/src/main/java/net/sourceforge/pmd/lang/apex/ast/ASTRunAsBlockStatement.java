@@ -12,6 +12,7 @@ public class ASTRunAsBlockStatement extends AbstractApexNode<RunAsBlockStatement
         super(runAsBlockStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

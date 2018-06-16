@@ -41,6 +41,7 @@ public class NoInlineStyleInformationRule extends AbstractJspRule {
     private static final Set<String> STYLE_ATTRIBUTES = CollectionUtil
             .asSet(new String[] { "STYLE", "FONT", "SIZE", "COLOR", "FACE", "ALIGN", "VALIGN", "BGCOLOR" });
 
+    @Override
     public Object visit(ASTAttribute node, Object data) {
         if (isStyleAttribute(node)) {
             addViolation(data, node);
@@ -49,6 +50,7 @@ public class NoInlineStyleInformationRule extends AbstractJspRule {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTElement node, Object data) {
         if (isStyleElement(node)) {
             addViolation(data, node);

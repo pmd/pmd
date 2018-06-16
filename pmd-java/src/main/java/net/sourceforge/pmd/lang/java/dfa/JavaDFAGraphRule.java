@@ -21,6 +21,7 @@ public class JavaDFAGraphRule extends AbstractJavaRule implements DFAGraphRule {
         super.setDfa(true);
     }
 
+    @Override
     public List<DFAGraphMethod> getMethods() {
         return this.methods;
     }

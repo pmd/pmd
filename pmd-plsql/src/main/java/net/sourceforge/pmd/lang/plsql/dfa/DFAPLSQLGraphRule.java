@@ -24,6 +24,7 @@ public class DFAPLSQLGraphRule extends AbstractPLSQLRule implements DFAGraphRule
         super.setDfa(true);
     }
 
+    @Override
     public List<DFAGraphMethod> getMethods() {
         return this.executables;
     }

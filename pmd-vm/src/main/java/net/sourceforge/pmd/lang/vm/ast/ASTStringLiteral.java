@@ -10,9 +10,9 @@ import org.apache.commons.lang3.text.StrBuilder;
  * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -22,7 +22,7 @@ import org.apache.commons.lang3.text.StrBuilder;
 
 /**
  * ASTStringLiteral support. Will interpolate!
- * 
+ *
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @version $Id: ASTStringLiteral.java 705297 2008-10-16 17:59:24Z nbubna $
@@ -112,7 +112,7 @@ public class ASTStringLiteral extends AbstractVmNode {
 
     /**
      * Check to see if this is an interpolated string.
-     * 
+     *
      * @return true if this is constant (not an interpolated string)
      * @since 1.6
      */

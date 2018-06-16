@@ -7,11 +7,11 @@ package net.sourceforge.pmd.lang.java.ast;
 
 /**
  * Represents a type reference.
- * 
+ *
  * <pre>
  * Type ::= ReferenceType | PrimitiveType
  * </pre>
- * 
+ *
  * Note: it is not exactly the same the "UnnanType" defined in JLS.
  */
 public class ASTType extends AbstractJavaTypeNode {

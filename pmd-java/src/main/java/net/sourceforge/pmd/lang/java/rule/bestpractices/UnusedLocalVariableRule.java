@@ -19,6 +19,7 @@ public class UnusedLocalVariableRule extends AbstractJavaRule {
         addRuleChainVisit(ASTLocalVariableDeclaration.class);
     }
 
+    @Override
     public Object visit(ASTLocalVariableDeclaration decl, Object data) {
         for (int i = 0; i < decl.jjtGetNumChildren(); i++) {
             if (!(decl.jjtGetChild(i) instanceof ASTVariableDeclarator)) {

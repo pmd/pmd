@@ -36,7 +36,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
             return false;
         }
     }
-    
+
     public int getArrayDepth() {
         ASTVariableDeclaratorId astVariableDeclaratorId = (ASTVariableDeclaratorId) node;
         ASTType typeNode = astVariableDeclaratorId.getTypeNode();
@@ -64,7 +64,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     public boolean isLambdaTypelessParameter() {
         return isTypeInferred();
     }
-    
+
     public boolean isTypeInferred() {
         return getDeclaratorId().isTypeInferred();
     }
@@ -74,6 +74,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
                 && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTPrimitiveType;
     }
 
+    @Override
     public String getTypeImage() {
         TypeNode typeNode = getTypeNode();
         if (typeNode != null) {
@@ -111,6 +112,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         return null;
     }
 
+    @Override
     public Class<?> getType() {
         TypeNode typeNode = getTypeNode();
         if (typeNode != null) {

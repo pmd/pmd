@@ -13,10 +13,12 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTLabelledStatement;
 import net.sourceforge.pmd.lang.plsql.dfa.PLSQLDataFlowNode;
 
 public class PLSQLDataFlowHandler implements DataFlowHandler {
+    @Override
     public DataFlowNode createDataFlowNode(List<DataFlowNode> dataFlow, Node node) {
         return new PLSQLDataFlowNode(dataFlow, node);
     }
 
+    @Override
     public Class<ASTLabelledStatement> getLabelStatementNodeClass() {
         return ASTLabelledStatement.class;
     }

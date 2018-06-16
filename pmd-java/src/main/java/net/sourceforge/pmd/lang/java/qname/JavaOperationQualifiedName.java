@@ -65,6 +65,7 @@ public final class JavaOperationQualifiedName extends JavaQualifiedName {
      *
      * @return The operation string.
      */
+    @Override
     public String getOperation() {
         return operation;
     }

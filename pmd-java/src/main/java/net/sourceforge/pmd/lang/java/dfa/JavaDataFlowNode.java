@@ -18,6 +18,7 @@ public class JavaDataFlowNode extends AbstractDataFlowNode {
         super(dataFlow, node);
     }
 
+    @Override
     public String toString() {
         String res = "DataFlowNode: line " + this.getLine() + ", ";
         if (node instanceof ASTMethodDeclaration || node instanceof ASTConstructorDeclaration) {

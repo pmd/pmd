@@ -15,6 +15,7 @@ public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpressi
         super(methodCallExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

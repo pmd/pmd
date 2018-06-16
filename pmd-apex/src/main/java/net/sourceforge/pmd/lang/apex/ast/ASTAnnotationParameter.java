@@ -12,6 +12,7 @@ public class ASTAnnotationParameter extends AbstractApexNode<AnnotationParameter
         super(annotationParameter);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

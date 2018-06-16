@@ -17,6 +17,7 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
         super(method);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

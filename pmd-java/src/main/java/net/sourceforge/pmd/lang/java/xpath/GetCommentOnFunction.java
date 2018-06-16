@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.Comment;
  * The XPath query "//VariableDeclarator[contains(getCommentOn(),
  * '//password')]" will find all variables declared that are annotated with the
  * password comment.
- * 
+ *
  * @author Andy Throgmorton
  */
 public class GetCommentOnFunction implements Function {
@@ -32,6 +32,7 @@ public class GetCommentOnFunction implements Function {
                 new GetCommentOnFunction());
     }
 
+    @Override
     public Object call(Context context, List args) throws FunctionCallException {
         if (!args.isEmpty()) {
             return Boolean.FALSE;

@@ -28,6 +28,7 @@ public class XmlHandler extends AbstractLanguageVersionHandler {
         return new DefaultASTXPathHandler();
     }
 
+    @Override
     public RuleViolationFactory getRuleViolationFactory() {
         return XmlRuleViolationFactory.INSTANCE;
     }
@@ -37,6 +38,7 @@ public class XmlHandler extends AbstractLanguageVersionHandler {
         return new XmlParserOptions();
     }
 
+    @Override
     public Parser getParser(ParserOptions parserOptions) {
         return new XmlParser(parserOptions);
     }
@@ -44,6 +46,7 @@ public class XmlHandler extends AbstractLanguageVersionHandler {
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {
+            @Override
             public void start(Node rootNode) {
                 new DumpFacade().initializeWith(writer, prefix, recurse, (XmlNode) rootNode);
             }
