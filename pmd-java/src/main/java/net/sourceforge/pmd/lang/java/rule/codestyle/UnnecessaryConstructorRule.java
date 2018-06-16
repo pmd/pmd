@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -26,7 +26,7 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
-        return Arrays.asList("javax.inject.Inject");
+        return Collections.singletonList("javax.inject.Inject");
     }
 
     @Override

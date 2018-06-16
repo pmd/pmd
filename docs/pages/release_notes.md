@@ -27,7 +27,6 @@ This is a minor release.
     letting you know exactly which modifiers are redundant at each declaration.
 
 ### Fixed Issues
-
 *   all
     *   [#1168](https://github.com/pmd/pmd/issues/1168): \[core] xml renderer schema definitions (#538) break included xslt files
 *   ecmascript
@@ -36,6 +35,7 @@ This is a minor release.
     *   [#651](https://github.com/pmd/pmd/issues/651): \[java] SwitchStmtsShouldHaveDefault should be aware of enum types
     *   [#869](https://github.com/pmd/pmd/issues/869): \[java] GuardLogStatement false positive on return statements and Math.log
 *   java-codestyle
+    *   [#667](https://github.com/pmd/pmd/issues/667): [java] Make AtLeastOneConstructor Lombok-aware
     *   [#1154](https://github.com/pmd/pmd/pull/1154): [java] CommentDefaultAccessModifierRule FP with nested enums
     *   [#1158](https://github.com/pmd/pmd/issues/1158): \[java] Fix IdenticalCatchBranches false positive
 *   xml
