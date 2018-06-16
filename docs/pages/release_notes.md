@@ -21,6 +21,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   doc
+    *   [#1119](https://github.com/pmd/pmd/issues/1119): \[doc] Make the landing page of the documentation website more useful
 *   java-codestyle
     *   [#1158](https://github.com/pmd/pmd/issues/1158): \[java] Fix IdenticalCatchBranches false positive
 *   xml
