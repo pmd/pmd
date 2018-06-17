@@ -46,7 +46,6 @@ public class Designer extends Application {
     public void start(Stage stage) throws IOException {
         parseParameters(getParameters());
 
-        com.sun.javafx.util.Logging.getCSSLogger().setLevel(sun.util.logging.PlatformLogger.Level.OFF);
 
         FXMLLoader loader
             = new FXMLLoader(DesignerUtil.getFxml("designer.fxml"));
