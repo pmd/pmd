@@ -1,5 +1,5 @@
 ---
-title: Installation and basic CLI usage
+title: Incremental Analysis
 keywords: [pmd, options, command, incremental, analysis, performance]
 tags: [userdocs]
 summary: "Explains how to use incremental analysis to speed up analysis"
@@ -16,7 +16,7 @@ analysis time dramatically.
 
 The generated report will be *exactly the same* as it would if running without incremental analysis.
 Files included in the final report will reflect exactly those files in your filesystem. Even if
-untouched, files with violations will be listed with full detail.
+untouched, files with violations will be listed with full detail. Therefore, its usage is higly recommended.
 
 
 ### Enabling incremental analysis
