@@ -80,8 +80,15 @@ jre_specific_vm_options() {
   options=""
 
   if [ "$java_ver" -ge 90 ] && [ "${APPNAME}" = "designer" ]
-  then # open internal module of javafx to reflection
+  then # open internal module of javafx to reflection (for our TreeViewWrapper)
     options="--add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED"
+    # The rest here is for RichtextFX
+    options+=" --add-opens javafx.graphics/javafx.scene.text=ALL-UNNAMED"
+    options+=" --add-opens javafx.graphics/com.sun.javafx.scene.text=ALL-UNNAMED"
+    options+=" --add-opens javafx.graphics/com.sun.javafx.text=ALL-UNNAMED"
+    options+=" --add-opens javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED"
+    # Warn of remaining illegal accesses
+    options+=" --illegal-access=warn"
   fi
 
   echo $options

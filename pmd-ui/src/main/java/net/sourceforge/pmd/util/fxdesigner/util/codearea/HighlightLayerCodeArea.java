@@ -144,7 +144,7 @@ public class HighlightLayerCodeArea<K extends Enum<K> & LayerId> extends SyntaxH
             return syntaxHighlight.getOrElse(emptySpan());
         }
 
-        if (syntaxHighlight.map(StyleSpans::length).map(l -> l != getLength()).getOrElse(false)) {
+        if (syntaxHighlight.getOpt().map(StyleSpans::length).filter(l -> l != getLength()).isPresent()) {
             // This is only executed if the text has changed (we use the length as an approximation)
             // This makes the highlighting much more resilient to staccato code changes,
             // which previously would have overlaid an outdated syntax highlighting layer on the
