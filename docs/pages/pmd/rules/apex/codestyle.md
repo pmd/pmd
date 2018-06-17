@@ -48,7 +48,7 @@ indentation is lost then it becomes difficult to separate the code being control
 from the rest.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ForLoopStatement/BlockStatement[@CurlyBrace='false']
 |
 //ForEachStatement/BlockStatement[@CurlyBrace='false']
@@ -89,7 +89,7 @@ or indentation is lost then it becomes difficult to separate the code being cont
 from the rest.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //IfBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
 |
 //IfElseBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
@@ -132,7 +132,7 @@ formatting or indentation is lost then it becomes difficult to separate the code
 controlled from the rest.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //IfBlockStatement/BlockStatement[@CurlyBrace='false']
 ```
 
@@ -249,7 +249,7 @@ formatting or indentation is lost then it becomes difficult to separate the code
 controlled from the rest.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //WhileLoopStatement/BlockStatement[@CurlyBrace='false']
 ```
 

@@ -17,7 +17,7 @@ language: Apex
 Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Triggers should be bulkified and iterate through the map to handle the actions for each item separately.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ArrayLoadExpression[TriggerVariableExpression and LiteralExpression]
 ```
 
@@ -97,7 +97,7 @@ In most circumstances, this swallows an exception which should either be acted o
 or reported.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //CatchBlockStatement[./BlockStatement[count(*) = 0]]
 ```
 
@@ -136,7 +136,7 @@ public void doSomething() {
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //IfBlockStatement
  [BlockStatement[count(*) = 0]]
 ```
@@ -175,7 +175,7 @@ public class Foo {
 Empty block statements serve no purpose and should be removed.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Method/ModifierNode[@Abstract!='true' and ../BlockStatement[count(*) = 0]]
 | //Method/BlockStatement//BlockStatement[count(*) = 0 and @Location != parent::*/@Location]
 ```
@@ -216,7 +216,7 @@ public class Foo {
 Avoid empty try or finally blocks - what's the point?
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //TryCatchFinallyBlockStatement[./BlockStatement[count(*) = 0]]
 ```
 
@@ -268,7 +268,7 @@ If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //WhileLoopStatement[./BlockStatement[count(*) = 0]]
 ```
 

@@ -1,5 +1,8 @@
 ---
 title: Java Rules
+tags: [rule_references, java]
+summary: Index of all built-in rules available for Java
+language_name: Java
 permalink: pmd_rules_java.html
 folder: pmd/rules
 ---

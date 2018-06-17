@@ -1,6 +1,6 @@
 ---
 title:  Index of Java code metrics
-tags: [customizing]
+tags: [extending, metrics]
 summary: "Index of the code metrics available out of the box to Java rule developers."
 last_updated: July 20, 2017
 permalink: pmd_java_metrics_index.html

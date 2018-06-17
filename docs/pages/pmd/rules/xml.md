@@ -1,5 +1,8 @@
 ---
 title: XML Rules
+tags: [rule_references, xml]
+summary: Index of all built-in rules available for XML
+language_name: XML
 permalink: pmd_rules_xml.html
 folder: pmd/rules
 ---

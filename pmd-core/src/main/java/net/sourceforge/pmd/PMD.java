@@ -308,7 +308,7 @@ public class PMD {
                 && LOG.isLoggable(Level.WARNING)) {
             final String version = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
             LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
-                                + "https://pmd.github.io/" + version + "/pmd_userdocs_getting_started.html#incremental-analysis");
+                                + "https://pmd.github.io/" + version + "/pmd_userdocs_incremental_analysis.html");
         }
 
         sortFiles(configuration, files);

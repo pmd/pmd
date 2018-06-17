@@ -17,7 +17,7 @@ language: Java Server Pages
 A missing 'meta' tag or page directive will trigger this rule, as well as a non-UTF-8 charset.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //CompilationUnit/Content[
 not(Element[@Name="meta"][
    Attribute[@Name="content"]/AttributeValue[contains(lower-case(@Image),"charset=utf-8")]

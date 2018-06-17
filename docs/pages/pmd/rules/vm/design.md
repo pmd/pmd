@@ -91,7 +91,7 @@ Avoid inline JavaScript. Import .js files instead.
 Avoid inline styles. Use css classes instead.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Text[matches(@literal, "<[^>]+\s[sS][tT][yY][lL][eE]\s*=")]
 ```
 

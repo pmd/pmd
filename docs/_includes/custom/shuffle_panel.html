@@ -1,0 +1,55 @@
+<!-- Argument summary: -->
+
+<!-- tags: comma-separated tags determining the pages included in the panel -->
+<!-- except_tags: comma-separated tags to filter out some pages -->
+
+<!-- A page is included if it has all the include tags and none of the exclude tags -->
+
+
+<!-- title: Display title of the panel -->
+<!-- description: Description of the panel -->
+<!-- datagroups: json array containing the data groups for the shuffle logic -->
+
+<!-- image (optional) : Name of the image to use, as a css class, eg "fa-list" -->
+<!-- titlemaker (optional) : name of a variable that's evaluated to determine the displayed title of the page. Default is page.title -->
+
+
+{% assign titlemaker = include.titlemaker | default: "page.title" %}
+{% assign include_tags = include.tags | split: "," %}
+{% assign exclude_tags = include.except_tags | split: "," %}
+{% assign sorted_pages = site.pages | sort_using: site.data.sidebars.pmd_sidebar %}
+
+{% assign panel_id = include.title | downcase | strip | replace: ' ', '-' | prepend: "shuffle-panel-" %}
+
+<div class="col-xs-6 col-sm-4 col-md-4" data-groups='{{ include.datagroups }}' id="{{ panel_id }}">
+    <div class="panel panel-default">
+
+
+        {% if include.image != "" and include.image != nil %}
+            <div class="panel-heading text-center">
+                     <span class="fa-stack fa-5x">
+                       <i class="fa fa-circle fa-stack-2x text-secondary"></i>
+                       <i class="fa {{ include.image }} fa-stack-1x fa-inverse"></i>
+                     </span>
+            </div>
+        {% endif %}
+
+        <div class="panel-heading text-center">{{ include.title }}</div>
+        <div class="panel-body">
+
+            <p class="landing-page cat-description">
+                {{ include.description }}
+            </p>
+            <ul>
+                {% for page in sorted_pages %}
+                    {% capture included %}{{ page.tags | intersect: include_tags | equals: include_tags }}{% endcapture %}
+                    {% capture excluded %}{{ page.tags | intersect: exclude_tags | empty }}{% endcapture %}
+
+                    {% if included contains "true" and excluded contains "true" %}
+                        <li><a href="{{page.url | remove: '/'}}">{% eval titlemaker %}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
