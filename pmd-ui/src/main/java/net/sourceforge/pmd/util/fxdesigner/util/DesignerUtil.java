@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.util.fxdesigner.util;
 
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +21,8 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -228,9 +228,6 @@ public final class DesignerUtil {
      * @see #stackTraceToXPath(String)
      */
     public static Optional<String> stackTraceToXPath(Throwable e) {
-
-        StringWriter writer = new StringWriter();
-        e.printStackTrace(new PrintWriter(writer));
-        return stackTraceToXPath(writer.toString());
+        return stackTraceToXPath(ExceptionUtils.getStackTrace(e));
     }
 }

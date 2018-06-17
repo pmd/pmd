@@ -64,19 +64,13 @@ public class SyntaxHighlightingCodeArea extends CodeArea {
         final EventHandler<WindowEvent> autoCloseHandler = e -> syntaxAutoRefresh.ifPresent(Subscription::unsubscribe);
 
         // handles auto shutdown of executor services
-        // by attaching a handler to the
+        // by attaching a handler to the stage responsible for the control
         Val.wrap(sceneProperty())
-            .filter(Objects::nonNull)
-            .map(Scene::getWindow)
-            .changes()
-            .hook(c -> {
-                if (c.getOldValue() != null) {
-                    c.getOldValue().removeEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, autoCloseHandler);
-                }
-                if (c.getNewValue() != null) {
-                    c.getNewValue().addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, autoCloseHandler);
-                }
-            });
+           .filter(Objects::nonNull)
+           .flatMap(Scene::windowProperty)
+           .values()
+           .filter(Objects::nonNull)
+            .subscribe(c -> c.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, autoCloseHandler));
     }
 
 
