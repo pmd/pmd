@@ -102,7 +102,7 @@ case "${APPNAME}" in
     readonly CLASSNAME="net.sourceforge.pmd.cpd.CPD"
     ;;
   "designer")
-    readonly CLASSNAME="net.sourceforge.pmd.util.fxdesigner.Designer"
+    readonly CLASSNAME="net.sourceforge.pmd.util.fxdesigner.DesignerStarter"
     ;;
   "designerold")
     readonly CLASSNAME="net.sourceforge.pmd.util.designer.Designer"
