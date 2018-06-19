@@ -7,9 +7,12 @@ package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.fxmisc.richtext.model.StyleSpans;
@@ -18,6 +21,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea.LayerId;
 
 import javafx.beans.NamedArg;
+import javafx.scene.control.IndexRange;
 
 
 /**
@@ -165,6 +169,37 @@ public class HighlightLayerCodeArea<K extends Enum<K> & LayerId> extends SyntaxH
 
     }
 
+
+    /**
+     * Attempts to preserve the other layers when syntax highlighting changes. The result
+     * misplaces some style classes, which is undesirable, but covered up by the subsequent
+     * parsing update.
+     */
+    @Override
+    protected final StyleSpans<Collection<String>> styleSyntaxHighlightChange(final Optional<StyleSpans<Collection<String>>> oldSyntax,
+                                                                              final StyleSpans<Collection<String>> newSyntax) {
+
+        StyleSpans<Collection<String>> currentSpans = getStyleSpans(new IndexRange(0, getLength()));
+        StyleSpans<Collection<String>> base = oldSyntax.map(s -> subtract(currentSpans, s)).orElse(currentSpans);
+
+        return Optional.ofNullable(newSyntax)
+                       .map(s -> base.overlay(s, SyntaxHighlightingCodeArea::additiveOverlay))
+                       .orElse(base)
+                       .subView(0, getLength());
+    }
+
+
+    /** Subtracts the second argument from the first. */
+    private static StyleSpans<Collection<String>> subtract(StyleSpans<Collection<String>> base, StyleSpans<Collection<String>> diff) {
+        return base.overlay(diff, (style1, style2) -> {
+            if (style2.isEmpty()) {
+                return style1;
+            }
+            Set<String> styles = new HashSet<>(style1);
+            styles.removeAll(style2);
+            return styles;
+        });
+    }
 
     /** Identifier for a highlighting layer. */
     public interface LayerId {

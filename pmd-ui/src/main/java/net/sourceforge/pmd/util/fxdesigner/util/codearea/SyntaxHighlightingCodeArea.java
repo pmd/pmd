@@ -27,7 +27,6 @@ import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.IndexRange;
 import javafx.stage.WindowEvent;
 
 
@@ -155,21 +154,25 @@ public class SyntaxHighlightingCodeArea extends CodeArea {
     /**
      * Update the syntax highlighting to the specified value.
      * If null, syntax highlighting is stripped off.
-     *
-     * <p>Syntax highlighting is not treated in a layer because
-     * otherwise each syntax refresh would also overlay the highlight
-     * spans, whose positions often would have been outdated since the
-     * AST refresh is more spaced out than syntax refresh, causing twitching
      */
     private void setCurrentSyntaxHighlight(final StyleSpans<Collection<String>> newSyntax) {
-        StyleSpans<Collection<String>> currentSpans = getStyleSpans(new IndexRange(0, getLength()));
-        StyleSpans<Collection<String>> base = currentSyntaxHighlight.map(s -> subtract(currentSpans, s)).getOrElse(currentSpans);
+        Optional<StyleSpans<Collection<String>>> oldSyntaxHighlight = currentSyntaxHighlight.getOpt();
         this.currentSyntaxHighlight.setValue(newSyntax);
 
-        setStyleSpans(0, Optional.ofNullable(newSyntax)
-                                 .map(s -> base.overlay(s, SyntaxHighlightingCodeArea::additiveOverlay))
-                                 .orElse(base)
-                                 .subView(0, getLength()));
+        setStyleSpans(0, styleSyntaxHighlightChange(oldSyntaxHighlight, newSyntax));
+    }
+
+
+    /**
+     * Given the old value of the highlighting spans, and a newly computed value,
+     * computes the spans as they should be applied to the codearea. The default behaviour
+     * simply returns the newest spans, which works flawlessly when there is no other
+     * style layer in the game. Subclasses are free to override, to get a chance to
+     * preserve additional style layers.
+     */
+    protected StyleSpans<Collection<String>> styleSyntaxHighlightChange(final Optional<StyleSpans<Collection<String>>> oldSyntax,
+                                                                        final StyleSpans<Collection<String>> newSyntax) {
+        return newSyntax;
     }
 
 
@@ -191,6 +194,7 @@ public class SyntaxHighlightingCodeArea extends CodeArea {
 
     /** Overlay operation that stacks up the style classes of the two overlaid spans. */
     protected static Collection<String> additiveOverlay(Collection<String> style1, Collection<String> style2) {
+        // todo using persistent collections here may be beneficial
         if (style1.isEmpty()) {
             return style2;
         } else if (style2.isEmpty()) {
@@ -199,19 +203,6 @@ public class SyntaxHighlightingCodeArea extends CodeArea {
         Set<String> styles = new HashSet<>(style1);
         styles.addAll(style2);
         return styles;
-    }
-
-
-    /** Subtracts the second argument from the first. */
-    private static StyleSpans<Collection<String>> subtract(StyleSpans<Collection<String>> base, StyleSpans<Collection<String>> diff) {
-        return base.overlay(diff, (style1, style2) -> {
-            if (style2.isEmpty()) {
-                return style1;
-            }
-            Set<String> styles = new HashSet<>(style1);
-            styles.removeAll(style2);
-            return styles;
-        });
     }
 
 
