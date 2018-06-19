@@ -73,10 +73,14 @@ if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]]; then
         git config user.name "Travis CI (pmd-bot)"
         git config user.email "andreas.dangel+pmd-bot@adangel.org"
         git add -A
-        git commit -q -m "Update documentation"
-        git push git@github.com:pmd/pmd.git HEAD:gh-pages
+        if [[ $(git diff --cached --name-only) = "feed.xml" ]]; then
+            log_info "Skipping commit, only feed.xml changed"
+        else
+            git commit -q -m "Update documentation"
+            git push git@github.com:pmd/pmd.git HEAD:gh-pages
+            log_success "Successfully pushed site to https://pmd.github.io/pmd/"
+        fi
     )
-    log_success "Successfully pushed site to https://pmd.github.io/pmd/"
 fi
 
 popd
