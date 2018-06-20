@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-source .travis/common-functions.sh
 source .travis/logger.sh
+source .travis/common-functions.sh
 
 VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 log_info "Building PMD Documentation ${VERSION} on branch ${TRAVIS_BRANCH}"
@@ -41,7 +41,7 @@ zip -qr pmd-doc-${VERSION}.zip pmd-doc-${VERSION}/
     fi
 
     # rsync site to pmd.sourceforge.net/snapshot
-    if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]]; then
+    if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]] && has_docs_change; then
         echo -e "\n\n"
         log_info "Uploading snapshot site to pmd.sourceforge.net/snapshot..."
         travis_wait rsync -ah --stats --delete pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
@@ -55,18 +55,6 @@ zip -qr pmd-doc-${VERSION}.zip pmd-doc-${VERSION}/
     true
 )
 
-
-
-
-has_docs_change() {
-    if [[ $(git diff --name-only ${TRAVIS_COMMIT_RANGE}) = *"docs/"* ]]; then
-        log_info "Checking for changes in docs/ (TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}): changes found"
-        return 0
-    else
-        log_info "Checking for changes in docs/ (TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}): no changes"
-        return 1
-    fi
-}
 
 
 #
