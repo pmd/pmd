@@ -57,10 +57,22 @@ zip -qr pmd-doc-${VERSION}.zip pmd-doc-${VERSION}/
 
 
 
+
+has_docs_change() {
+    if [[ $(git diff --name-only ${TRAVIS_COMMIT_RANGE}) = *"docs/"* ]]; then
+        log_info "Checking for changes in docs/ (TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}): changes found"
+        return 0
+    else
+        log_info "Checking for changes in docs/ (TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}): no changes"
+        return 1
+    fi
+}
+
+
 #
 # Push the generated site to gh-pages branch
 #
-if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]]; then
+if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]] && has_docs_change; then
     echo -e "\n\n"
     log_info "Pushing the new site to github pages..."
     git clone --branch gh-pages --depth 1 git@github.com:pmd/pmd.git pmd-gh-pages
@@ -73,13 +85,9 @@ if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]]; then
         git config user.name "Travis CI (pmd-bot)"
         git config user.email "andreas.dangel+pmd-bot@adangel.org"
         git add -A
-        if [[ $(git diff --cached --name-only) = "feed.xml" ]]; then
-            log_info "Skipping commit, only feed.xml changed"
-        else
-            git commit -q -m "Update documentation"
-            git push git@github.com:pmd/pmd.git HEAD:gh-pages
-            log_success "Successfully pushed site to https://pmd.github.io/pmd/"
-        fi
+        git commit -q -m "Update documentation"
+        git push git@github.com:pmd/pmd.git HEAD:gh-pages
+        log_success "Successfully pushed site to https://pmd.github.io/pmd/"
     )
 fi
 
