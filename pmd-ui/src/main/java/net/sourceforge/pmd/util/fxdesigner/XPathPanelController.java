@@ -136,11 +136,18 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         EventStream<Integer> keyCombo = EventStreams.eventsOf(xpathExpressionArea, KeyEvent.KEY_PRESSED)
             .filter(key -> (key.isControlDown() && key.getCode().equals(KeyCode.SPACE)))
-            .map(key -> xpathExpressionArea.getCaretPosition());
+            .map(searchPoint -> xpathExpressionArea.getCaretPosition());
 
         EventStreams.merge(keyCombo, changesEventStream).map(searchPoint -> {
             int indexOfSlash = xpathExpressionArea.getText().lastIndexOf("/", searchPoint - 1) + 1;
-            String input = xpathExpressionArea.getText().substring(indexOfSlash, searchPoint);
+            String input = xpathExpressionArea.getText();
+            if(searchPoint > input.length()) {
+               input = input.substring(indexOfSlash, searchPoint-1);
+            }
+            else{
+                input = input.substring(indexOfSlash,searchPoint);
+            }
+
             return Tuples.t(indexOfSlash, input);
         })
                  .filter(t -> t._2.matches("[a-zA-Z]+"))
