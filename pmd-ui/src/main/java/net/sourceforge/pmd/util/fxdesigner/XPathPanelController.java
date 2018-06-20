@@ -127,11 +127,11 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
 
         EventStream<Integer> changesEventStream = xpathExpressionArea.plainTextChanges()
-                                                                     .map(m -> {
-                                                                         if (m.getRemoved().length() > 0) {
-                                                                             return m.getRemovalEnd() - 2;
+                                                                     .map(characterChanges -> {
+                                                                         if (characterChanges.getRemoved().length() > 0) {
+                                                                             return characterChanges.getRemovalEnd() - 1;
                                                                          }
-                                                                         return m.getInsertionEnd();
+                                                                         return characterChanges.getInsertionEnd();
                                                                      });
 
         EventStream<Integer> keyCombo = EventStreams.eventsOf(xpathExpressionArea, KeyEvent.KEY_PRESSED)
