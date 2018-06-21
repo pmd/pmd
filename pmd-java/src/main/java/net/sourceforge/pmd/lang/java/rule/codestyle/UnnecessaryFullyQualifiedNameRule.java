@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -128,6 +130,10 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             }
         }
 
+        if (matches.isEmpty() && isJavaLangImplicit(name)) {
+            addViolation(data, node, new Object[] { node.getImage(), "java.lang.*", "implicit "});
+        }
+
         if (!matches.isEmpty()) {
             ASTImportDeclaration firstMatch = matches.get(0);
 
@@ -139,6 +145,11 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                 addViolation(data, node, new Object[] { node.getImage(), importStr, type });
             }
         }
+    }
+
+    private boolean isJavaLangImplicit(String name) {
+        // only java.lang.* is implicitly imported, but not e.g. java.lang.reflection.*
+        return name != null && name.startsWith("java.lang.") && StringUtils.countMatches(name, '.') == 2;
     }
 
     private boolean isAvoidingConflict(final JavaNode node, final String name,
