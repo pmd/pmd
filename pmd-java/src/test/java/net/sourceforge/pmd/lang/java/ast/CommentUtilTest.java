@@ -28,8 +28,9 @@ public class CommentUtilTest {
         Map<String, Integer> javadocTagsIn = CommentUtil.javadocTagsIn(formalComment);
         Assert.assertEquals(3, javadocTagsIn.size());
         Assert.assertEquals(7, javadocTagsIn.get("see").intValue());
-        Assert.assertEquals("@see", formalComment.substring(7, 7+4));
-        Assert.assertEquals("@author", formalComment.substring(javadocTagsIn.get("author"), javadocTagsIn.get("author") + "author".length()+1));
+        Assert.assertEquals("@see", formalComment.substring(7, 7 + 4));
+        Assert.assertEquals("@author", formalComment.substring(javadocTagsIn.get("author"),
+                javadocTagsIn.get("author") + "author".length() + 1));
     }
 
     @Test
@@ -216,15 +217,15 @@ public class CommentUtilTest {
 
     @Test
     public void testJavadoc() {
-        String comment = "    /**\n" +
-                "     * Checks if the metric can be computed on the node.\n" +
-                "     *\n" +
-                "     * @param node The node to check\n" +
-                "     *\n" +
-                "     * @return True if the metric can be computed\n" +
-                "     */\n" +
-                "    boolean supports(N node);\n" +
-                "";
+        String comment = "    /**\n"
+                + "     * Checks if the metric can be computed on the node.\n"
+                + "     *\n"
+                + "     * @param node The node to check\n"
+                + "     *\n"
+                + "     * @return True if the metric can be computed\n"
+                + "     */\n"
+                + "    boolean supports(N node);\n"
+                + "";
         List<String> lines = CommentUtil.multiLinesIn(comment);
         lines = CommentUtil.trim(lines);
 
