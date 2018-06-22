@@ -77,11 +77,9 @@ public class CommentUtilTest {
                 + " * line 2\n"
                 + " */\n";
         List<String> lines = CommentUtil.multiLinesIn(comment);
-        Assert.assertEquals(4, lines.size());
-        Assert.assertEquals("", lines.get(0));
-        Assert.assertEquals("line 1", lines.get(1));
-        Assert.assertEquals("line 2", lines.get(2));
-        Assert.assertEquals("", lines.get(3));
+        Assert.assertEquals(2, lines.size());
+        Assert.assertEquals("line 1", lines.get(0));
+        Assert.assertEquals("line 2", lines.get(1));
     }
 
     @Test
@@ -92,11 +90,9 @@ public class CommentUtilTest {
                 + " * line 2\r\n"
                 + " */\r\n";
         List<String> lines = CommentUtil.multiLinesIn(comment);
-        Assert.assertEquals(4, lines.size());
-        Assert.assertEquals("", lines.get(0));
-        Assert.assertEquals("line 1", lines.get(1));
-        Assert.assertEquals("line 2", lines.get(2));
-        Assert.assertEquals("", lines.get(3));
+        Assert.assertEquals(2, lines.size());
+        Assert.assertEquals("line 1", lines.get(0));
+        Assert.assertEquals("line 2", lines.get(1));
     }
 
     @Test
@@ -107,11 +103,9 @@ public class CommentUtilTest {
                 + " * line 2\n"
                 + " */\n";
         List<String> lines = CommentUtil.multiLinesIn(comment);
-        Assert.assertEquals(4, lines.size());
-        Assert.assertEquals("", lines.get(0));
-        Assert.assertEquals("line 1", lines.get(1));
-        Assert.assertEquals("line 2", lines.get(2));
-        Assert.assertEquals("", lines.get(3));
+        Assert.assertEquals(2, lines.size());
+        Assert.assertEquals("line 1", lines.get(0));
+        Assert.assertEquals("line 2", lines.get(1));
     }
 
     @Test
@@ -122,11 +116,9 @@ public class CommentUtilTest {
                 + " * line 2\r\n"
                 + " */\r\n";
         List<String> lines = CommentUtil.multiLinesIn(comment);
-        Assert.assertEquals(4, lines.size());
-        Assert.assertEquals("", lines.get(0));
-        Assert.assertEquals("line 1", lines.get(1));
-        Assert.assertEquals("line 2", lines.get(2));
-        Assert.assertEquals("", lines.get(3));
+        Assert.assertEquals(2, lines.size());
+        Assert.assertEquals("line 1", lines.get(0));
+        Assert.assertEquals("line 2", lines.get(1));
     }
 
     @Test
@@ -138,12 +130,9 @@ public class CommentUtilTest {
                 + "\n"
                 + " */\n";
         List<String> lines = CommentUtil.multiLinesIn(comment);
-        Assert.assertEquals(5, lines.size());
-        Assert.assertEquals("", lines.get(0));
-        Assert.assertEquals("line 1", lines.get(1));
-        Assert.assertEquals("line 2", lines.get(2));
-        Assert.assertEquals("", lines.get(3));
-        Assert.assertEquals("", lines.get(4));
+        Assert.assertEquals(2, lines.size());
+        Assert.assertEquals("line 1", lines.get(0));
+        Assert.assertEquals("line 2", lines.get(1));
     }
 
     @Test

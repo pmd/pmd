@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,12 +13,20 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
+
+/**
+ *
+ * @deprecated This utility class is deprecated and will be removed with PMD 7.0.0.
+ *      Its methods have been intended to parse javadoc tags.
+ *      A more useful solution will be added around the AST node {@link FormalComment},
+ *      which contains as children {@link JavadocElement} nodes, which in
+ *      turn provide access to the {@link JavadocTag}.
+ */
+@Deprecated // will be remove with PMD 7.0.0
 public final class CommentUtil {
 
     private static final Pattern JAVADOC_TAG = Pattern.compile("@[A-Za-z0-9]+");
-    // single regex, that captures: the start of a multi-line comment (/**|/*), the start of a single line comment (//)
-    // or the start of line within a multine comment (*). It removes the end of the comment (*/) if existing.
-    private static final Pattern COMMENT_LINE_COMBINED = Pattern.compile("^(?://|/\\*\\*?|\\*)?(.*?)(?:\\*/|/)?$");
 
     private CommentUtil() {
     }
@@ -31,7 +38,14 @@ public final class CommentUtil {
      * @param text the complete text
      * @param position the position, at which the word starts
      * @return the word
+     *
+     * @deprecated This method is deprecated and will be removed with PMD 7.0.0.
+     *      This method has been intended to parse javadoc tags.
+     *      A more useful solution will be added around the AST node {@link FormalComment},
+     *      which contains as children {@link JavadocElement} nodes, which in
+     *      turn provide access to the {@link JavadocTag}.
      */
+    @Deprecated // will be removed with PMD 7.0.0
     public static String wordAfter(String text, int position) {
         if (text == null || position >= text.length()) {
             return null;
@@ -53,7 +67,14 @@ public final class CommentUtil {
      * @param text the complete text
      * @param position the position from which the comment should be returned
      * @return the part of the text
+     *
+     * @deprecated This method is deprecated and will be removed with PMD 7.0.0.
+     *      This method has been intended to parse javadoc tags.
+     *      A more useful solution will be added around the AST node {@link FormalComment},
+     *      which contains as children {@link JavadocElement} nodes, which in
+     *      turn provide access to the {@link JavadocTag}.
      */
+    @Deprecated // will be removed with PMD 7.0.0
     public static String javadocContentAfter(String text, int position) {
         if (text == null || position > text.length()) {
             return null;
@@ -90,7 +111,14 @@ public final class CommentUtil {
      *
      * @param comment the raw comment
      * @return mapping of javadoc tag to index position
+     *
+     * @deprecated This method is deprecated and will be removed with PMD 7.0.0.
+     *      This method has been intended to parse javadoc tags.
+     *      A more useful solution will be added around the AST node {@link FormalComment},
+     *      which contains as children {@link JavadocElement} nodes, which in
+     *      turn provide access to the {@link JavadocTag}.
      */
+    @Deprecated // will be removed with PMD 7.0.0
     public static Map<String, Integer> javadocTagsIn(String comment) {
         Map<String, Integer> tags = new HashMap<>();
 
@@ -112,21 +140,17 @@ public final class CommentUtil {
      *
      * @param comment the raw comment
      * @return List of lines of the comments
+     *
+     * @deprecated This method will be removed with PMD 7.0.0.
+     *      It has been replaced by {@link Comment#getFilteredComment()}.
      */
+    @Deprecated // will be removed with PMD 7.0.0
     public static List<String> multiLinesIn(String comment) {
-        String[] lines = comment.split("\\R");
-        List<String> filteredLines = new ArrayList<>(lines.length);
-
-        for (String rawLine : lines) {
-            String line = rawLine.trim();
-
-            Matcher allMatcher = COMMENT_LINE_COMBINED.matcher(line);
-            if (allMatcher.matches()) {
-                filteredLines.add(allMatcher.group(1).trim());
-            }
-        }
-
-        return filteredLines;
+        // temporary createa a Multiline Comment Node
+        Token t = new Token();
+        t.image = comment;
+        MultiLineComment node = new MultiLineComment(t);
+        return Arrays.asList(node.getFilteredComment().split("\\R"));
     }
 
     /**
@@ -134,30 +158,14 @@ public final class CommentUtil {
      * trailing empty/blank lines from the line list.
      *
      * @param lines the list of lines, which might contain empty lines
+     * @return the lines without leading or trailing blank lines.
+     *
+     * @deprecated This method will be removed with PMD 7.0.0.
+     *      It is not needed anymore, since {@link Comment#getFilteredComment()}
+     *      returns already the filtered and trimmed comment text.
      */
+    @Deprecated // will be removed with PMD 7.0.0
     public static List<String> trim(List<String> lines) {
-        if (lines == null) {
-            return Collections.emptyList();
-        }
-
-        List<String> result = new ArrayList<>(lines.size());
-        List<String> tempList = new ArrayList<>();
-        boolean foundFirstNonEmptyLine = false;
-        for (String line : lines) {
-            if (StringUtils.isNoneBlank(line)) {
-                // new non-empty line: add all previous empty lines occurred before
-                result.addAll(tempList);
-                tempList.clear();
-                result.add(line);
-
-                foundFirstNonEmptyLine = true;
-            } else {
-                if (foundFirstNonEmptyLine) {
-                    // add the empty line to a temporary list first
-                    tempList.add(line);
-                }
-            }
-        }
-        return result;
+        return Comment.trim(lines);
     }
 }

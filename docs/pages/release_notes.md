@@ -46,6 +46,19 @@ This is a minor release.
 
 ### API Changes
 
+*   The utility class `net.sourceforge.pmd.lang.java.ast.CommentUtil` has been deprecated and will be removed
+    with PMD 7.0.0. Its methods have been intended to parse javadoc tags. A more useful solution will be added
+    around the AST node `FormalComment`, which contains as children `JavadocElement` nodes, which in
+    turn provide access to the `JavadocTag`.
+    
+    All comment AST nodes (`FormalComment`, `MultiLineComment`, `SingleLineComment`) have a new method
+    `getFilteredComment()` which provide access to the comment text without the leading `/*` markers.
+
+*   The method `AbstractCommentRule.tagsIndicesIn()` has been deprecated and will be removed with
+    PMD 7.0.0. It is not very useful, since it doesn't extract the information
+    in a useful way. You would still need check, which tags have been found, and with which
+    data they might be accompanied.
+
 ### External Contributions
 
 *   [#1159](https://github.com/pmd/pmd/pull/1159): \[ui] Allow to setup the auxclasspath in the designer - [Akshat Bahety](https://github.com/akshatbahety)
