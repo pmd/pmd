@@ -16,16 +16,10 @@ import org.apache.commons.lang3.StringUtils;
 
 public final class CommentUtil {
 
-    private static final String CR = "\n";
     private static final Pattern JAVADOC_TAG = Pattern.compile("@[A-Za-z0-9]+");
-    // single line multi/formal comment: /** ... */
-    private static final Pattern COMMENT_LINE = Pattern.compile("^/\\*\\*?(.+)\\*/$");
-    // single line comment: // ....
-    private static final Pattern SINGLE_LINE_COMMENT = Pattern.compile("^//(.+)$");
-    // ending of a multi/formal comment: */
-    private static final Pattern COMMENT_END = Pattern.compile("^(.*)\\*/$");
-    // starting of a multi/formal comment: /* or /**
-    private static final Pattern COMMENT_START = Pattern.compile("^/\\*\\*?(.*)$");
+    // single regex, that captures: the start of a multi-line comment (/**|/*), the start of a single line comment (//)
+    // or the start of line within a multine comment (*). It removes the end of the comment (*/) if existing.
+    private static final Pattern COMMENT_LINE_COMBINED = Pattern.compile("^(?://|/\\*\\*?|\\*)?(.*?)(?:\\*/|/)?$");
 
     private CommentUtil() {
     }
@@ -113,38 +107,22 @@ public final class CommentUtil {
 
     /**
      * Removes the leading comment marker (like {@code *}) of each line
-     * of the comment.
+     * of the comment as well as the start marker ({@code //}, {@code /*} or {@code /**}
+     * and the end markers (<code>&#x2a;/</code>).
      *
      * @param comment the raw comment
      * @return List of lines of the comments
      */
     public static List<String> multiLinesIn(String comment) {
-        String[] lines = comment.split(CR);
+        String[] lines = comment.split("\\R");
         List<String> filteredLines = new ArrayList<>(lines.length);
 
         for (String rawLine : lines) {
             String line = rawLine.trim();
 
-            Matcher commentLineMatcher = COMMENT_LINE.matcher(line);
-            Matcher singleLineMatcher = SINGLE_LINE_COMMENT.matcher(line);
-            Matcher endCommentMatcher = COMMENT_END.matcher(line);
-            Matcher startCommentMatcher = COMMENT_START.matcher(line);
-
-            if (singleLineMatcher.matches()) {
-                filteredLines.add(singleLineMatcher.group(1).trim());
-            } else if (commentLineMatcher.matches()) {
-                filteredLines.add(commentLineMatcher.group(1).trim());
-            } else if (endCommentMatcher.matches()) {
-                line = endCommentMatcher.group(1).trim();
-                filteredLines.add(line);
-            } else if (!line.isEmpty() && line.charAt(0) == '*') {
-                filteredLines.add(line.substring(1).trim());
-            } else if (startCommentMatcher.matches()) {
-                line = startCommentMatcher.group(1).trim();
-                filteredLines.add(line);
-            } else {
-                // any other line is added as is
-                filteredLines.add(line.trim());
+            Matcher allMatcher = COMMENT_LINE_COMBINED.matcher(line);
+            if (allMatcher.matches()) {
+                filteredLines.add(allMatcher.group(1).trim());
             }
         }
 
