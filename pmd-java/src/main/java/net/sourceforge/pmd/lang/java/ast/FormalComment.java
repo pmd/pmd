@@ -16,9 +16,7 @@ public class FormalComment extends Comment {
     public FormalComment(Token t) {
         super(t);
 
-        if (t.image.trim().startsWith("/**")) {
-            findJavadocs(t.image);
-        }
+        findJavadocs(t.image);
     }
 
     @Override
