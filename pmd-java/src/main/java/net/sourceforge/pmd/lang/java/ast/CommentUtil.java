@@ -140,30 +140,24 @@ public final class CommentUtil {
             return Collections.emptyList();
         }
 
-        int firstNonEmpty = 0;
-        for (; firstNonEmpty < lines.size(); firstNonEmpty++) {
-            if (StringUtils.isNotBlank(lines.get(firstNonEmpty))) {
-                break;
+        List<String> result = new ArrayList<>(lines.size());
+        List<String> tempList = new ArrayList<>();
+        boolean foundFirstNonEmptyLine = false;
+        for (String line : lines) {
+            if (StringUtils.isNoneBlank(line)) {
+                // new non-empty line: add all previous empty lines occurred before
+                result.addAll(tempList);
+                tempList.clear();
+                result.add(line);
+
+                foundFirstNonEmptyLine = true;
+            } else {
+                if (foundFirstNonEmptyLine) {
+                    // add the empty line to a temporary list first
+                    tempList.add(line);
+                }
             }
         }
-
-        // all of them empty?
-        if (firstNonEmpty == lines.size()) {
-            return Collections.emptyList();
-        }
-
-        int lastNonEmpty = lines.size() - 1;
-        for (; lastNonEmpty > firstNonEmpty; lastNonEmpty--) {
-            if (StringUtils.isNotBlank(lines.get(lastNonEmpty))) {
-                break;
-            }
-        }
-
-        List<String> filtered = new ArrayList<>();
-        for (int i = firstNonEmpty; i <= lastNonEmpty; i++) {
-            filtered.add(lines.get(i));
-        }
-
-        return filtered;
+        return result;
     }
 }
