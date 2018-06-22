@@ -386,7 +386,7 @@ final class Test {
     </test-code>
 
     <test-code>
-        <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations</description>
+        <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: without import</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>Unnecessary use of fully qualified name 'java.lang.String' due to existing implicit import 'java.lang.*'</message>
@@ -402,7 +402,7 @@ public class JavaLang {
     </test-code>
 
     <test-code>
-        <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations</description>
+        <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: with import</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>Unnecessary use of fully qualified name 'java.lang.String' due to existing import 'java.lang.String'</message>
@@ -411,6 +411,18 @@ public class JavaLang {
 import java.lang.String;
 public class JavaLang {
     public void convert(java.lang.String s) { // violation here
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: with avoiding conflict import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.foo.String;
+public class JavaLang {
+    public void convert(java.lang.String s) { // no violation
     }
 }
         ]]></code>

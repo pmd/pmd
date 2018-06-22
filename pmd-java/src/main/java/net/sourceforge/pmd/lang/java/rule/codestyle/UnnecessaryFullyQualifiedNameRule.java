@@ -100,7 +100,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         }
 
         // If there is no direct match, consider if we match the tail end of a
-        // direct static import, but also a static method on a class import?
+        // direct static import, but also a static method on a class import.
         // For example:
         //
         // import java.util.Arrays;
@@ -109,11 +109,18 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         // List list1 = Arrays.asList("foo"); // Array class name not needed!
         // List list2 = asList("foo"); // Preferred, used static import
         // }
+        //
+        // Or: The usage of a FQN is correct, if there is another import with the same class.
+        // Example
+        // import foo.String;
+        // static {
+        // java.lang.String s = "a";
+        // }
         if (matches.isEmpty()) {
             for (ASTImportDeclaration importDeclaration : imports) {
+                String[] importParts = importDeclaration.getImportedName().split("\\.");
+                String[] nameParts = name.split("\\.");
                 if (importDeclaration.isStatic()) {
-                    String[] importParts = importDeclaration.getImportedName().split("\\.");
-                    String[] nameParts = name.split("\\.");
                     if (importDeclaration.isImportOnDemand()) {
                         // Name class part matches class part of static import?
                         if (nameParts[nameParts.length - 2].equals(importParts[importParts.length - 1])) {
@@ -125,6 +132,11 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                                 && nameParts[nameParts.length - 2].equals(importParts[importParts.length - 2])) {
                             matches.add(importDeclaration);
                         }
+                    }
+                } else {
+                    // last part matches?
+                    if (nameParts[nameParts.length - 1].equals(importParts[importParts.length - 1])) {
+                        matches.add(importDeclaration);
                     }
                 }
             }
@@ -205,6 +217,16 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                         return true;
                     }
                 }
+            }
+        }
+
+        // There could be a conflict between an import of a class with the same name as the FQN
+        if (!firstMatch.isImportOnDemand() && !firstMatch.isStatic()) {
+            String importName = firstMatch.getImportedName();
+            String importUnqualified = importName.substring(importName.lastIndexOf('.') + 1);
+            // the package is different, but the unqualified name is same
+            if (!firstMatch.getImportedName().equals(name) && importUnqualified.equals(unqualifiedName)) {
+                return true;
             }
         }
 
