@@ -141,5 +141,15 @@ cygwin_paths
 
 java_heapsize_settings
 
-java ${HEAPSIZE} $(jre_specific_vm_options) -cp "${classpath}" "${CLASSNAME}" "$@"
+# Create a temporary file to direct the java command's output to
+temp_file=$(mktemp)
+java ${HEAPSIZE} $(jre_specific_vm_options) -cp "${classpath}" "${CLASSNAME}" "$@" 2>&1 | tee -a temp_file
+exit_code=${PIPESTATUS[0]}
 
+# Did the java command fail because we're missing net.sourceforge.pmd.util.fxdesigner.Designer?
+if grep -q "net.sourceforge.pmd.util.fxdesigner.Designer" temp_file; then
+  echo "You seem to be missing the JavaFX runtime. Please install JavaFX on your system and try again."
+fi
+
+rm ${temp_file}
+exit $exit_code
