@@ -265,7 +265,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <checkstyle.version>3.0.0</checkstyle.version>
         <pmd.plugin.version>3.10.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
-        <javadoc.plugin.version>3.0.0-M1</javadoc.plugin.version>
+        <javadoc.plugin.version>3.0.1</javadoc.plugin.version>
         <antlr.version>4.7</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -395,6 +395,9 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <configuration>
                         <quiet>true</quiet>
                         <doclint>none</doclint>
+                        <additionalJOptions>
+                            <additionalJOption>-html5</additionalJOption>
+                        </additionalJOptions>
                         <additionalDependencies>
                             <!-- TODO: this is only needed to make javadoc happy -->
                             <additionalDependency>

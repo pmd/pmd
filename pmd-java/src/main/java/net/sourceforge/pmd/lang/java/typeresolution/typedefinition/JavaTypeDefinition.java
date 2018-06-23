@@ -167,8 +167,8 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
      * @param numDimensions Number of dimensions added to this type in
      *                      the resulting array type
      *
-     * @throws IllegalArgumentException if numDimensions < 0
      * @return A new type definition, or this if numDimensions == 0
+     * @throws IllegalArgumentException if numDimensions &lt; 0
      */
     // @formatter:on
     public abstract JavaTypeDefinition withDimensions(int numDimensions);

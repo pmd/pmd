@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
  *
  * <pre>
  * private boolean checkTrimEmpty(String str) {
- *     for(int i = 0; i < str.length(); i++) {
+ *     for(int i = 0; i &lt; str.length(); i++) {
  *         if(!Character.isWhitespace(str.charAt(i))) {
  *             return false;
  *         }
