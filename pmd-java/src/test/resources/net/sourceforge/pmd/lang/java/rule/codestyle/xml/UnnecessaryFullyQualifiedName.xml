@@ -427,4 +427,17 @@ public class JavaLang {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: static members of classes in java.lang</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class JavaLang {
+    public void foo() {
+        ProcessBuilder pb = new ProcessBuilder("echo");
+        pb.redirectError(java.lang.ProcessBuilder.Redirect.DISCARD); // violation
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

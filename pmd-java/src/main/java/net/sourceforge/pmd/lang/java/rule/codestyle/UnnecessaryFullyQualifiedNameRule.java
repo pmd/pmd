@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 
@@ -79,7 +79,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                 && name.lastIndexOf('.') == decl.getImportedName().length();
     }
 
-    private void checkImports(JavaNode node, Object data) {
+    private void checkImports(AbstractJavaTypeNode node, Object data) {
         String name = node.getImage();
         List<ASTImportDeclaration> matches = new ArrayList<>();
 
@@ -142,7 +142,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             }
         }
 
-        if (matches.isEmpty() && isJavaLangImplicit(name)) {
+        if (matches.isEmpty() && isJavaLangImplicit(node)) {
             addViolation(data, node, new Object[] { node.getImage(), "java.lang.*", "implicit "});
         }
 
@@ -159,12 +159,22 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         }
     }
 
-    private boolean isJavaLangImplicit(String name) {
-        // only java.lang.* is implicitly imported, but not e.g. java.lang.reflection.*
-        return name != null && name.startsWith("java.lang.") && StringUtils.countMatches(name, '.') == 2;
+    private boolean isJavaLangImplicit(AbstractJavaTypeNode node) {
+        String name = node.getImage();
+        boolean isJavaLang = name != null && name.startsWith("java.lang.");
+
+        if (isJavaLang && node.getType() != null) {
+            // valid would be ProcessBuilder.Redirect.PIPE but not java.lang.ProcessBuilder.Redirect.PIPE
+            String packageName = node.getType().getPackage().getName();
+            return "java.lang".equals(packageName);
+        } else if (isJavaLang) {
+            // only java.lang.* is implicitly imported, but not e.g. java.lang.reflection.*
+            return StringUtils.countMatches(name, '.') == 2;
+        }
+        return false;
     }
 
-    private boolean isAvoidingConflict(final JavaNode node, final String name,
+    private boolean isAvoidingConflict(final AbstractJavaTypeNode node, final String name,
             final ASTImportDeclaration firstMatch) {
         // is it a conflict between different imports?
         if (firstMatch.isImportOnDemand() && firstMatch.isStatic()) {
