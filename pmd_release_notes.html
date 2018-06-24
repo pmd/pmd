@@ -1268,6 +1268,7 @@ $('#toc').on('click', 'a', function() {
 <ul>
   <li><a href="#new-and-noteworthy">New and noteworthy</a>
     <ul>
+      <li><a href="#new-rules">New Rules</a></li>
       <li><a href="#modified-rules">Modified Rules</a></li>
     </ul>
   </li>
@@ -1277,6 +1278,15 @@ $('#toc').on('click', 'a', function() {
 </ul>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
+
+<h4 id="new-rules">New Rules</h4>
+
+<ul>
+  <li>The new Apex rule <a href="pmd_rules_apex_errorprone.html#avoidnonexistentannotations"><code class="highlighter-rouge">AvoidNonExistentAnnotations</code></a> (<code class="highlighter-rouge">apex-errorprone</code>)
+detects usages non-officially supported annotations. Apex supported non existent annotations for legacy reasons.
+In the future, use of such non-existent annotations could result in broken Apex code that will not compile.
+A full list of supported annotations can be found <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm">here</a></li>
+</ul>
 
 <h4 id="modified-rules">Modified Rules</h4>
 
@@ -1327,6 +1337,7 @@ letting you know exactly which modifiers are redundant at each declaration.</li>
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/836">#836</a>: [apex] Add a rule to prevent use of non-existent annotations - <a href="https://github.com/anand13s">anand13s</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1159">#1159</a>: [ui] Allow to setup the auxclasspath in the designer - <a href="https://github.com/akshatbahety">Akshat Bahety</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1169">#1169</a>: [core] Update stylesheets with a default namespace - <a href="https://github.com/mduggan">Matthew Duggan</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1183">#1183</a>: [java] fixed typos in rule remediation - <a href="https://github.com/jakehemmerle">Jake Hemmerle</a></li>
@@ -1347,7 +1358,7 @@ letting you know exactly which modifiers are redundant at each declaration.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 23, 2018 <br />
+ Site last generated: Jun 24, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
