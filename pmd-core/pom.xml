@@ -60,6 +60,34 @@
                     <suppressionsLocation>pmd-core-checkstyle-suppressions.xml</suppressionsLocation>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <configuration>
+                    <artifactSet>
+                        <includes>jaxen:jaxen</includes>
+                    </artifactSet>
+                    <filters>
+                        <filter>
+                            <artifact>jaxen:jaxen</artifact>
+                            <includes>
+                                <include>org/jaxen/**</include>
+                            </includes>
+                            <excludes>
+                                <exclude>org/w3c/dom/**</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
