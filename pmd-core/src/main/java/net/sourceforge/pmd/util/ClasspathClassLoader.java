@@ -102,13 +102,30 @@ public class ClasspathClassLoader extends URLClassLoader {
                 .append(StringUtils.join(getURLs(), ":"))
                 .append("] parent: ").append(getParent()).append(']').toString();
     }
-    
+
+    /**
+     * Tries to load the given class. Note: This classloader first tries to load the class
+     * itself and if that fails, delegates to the parent class loader.
+     * This is needed, if the project being analyzed by PMD uses the same dependencies as PMD itself
+     * (e.g. apache commons) but in a different version. Trying to resolve the class first
+     * within this classloader makes sure, to use the correct version for type resolution.
+     */
     @Override
     protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
         synchronized (getClassLoadingLock(name)) {
             // First, check if the class has already been loaded
             Class<?> c = findLoadedClass(name);
             if (c == null) {
+
+                // exception for org.w3c.dom.UserDataHandler, which is on the JDK classpath
+                // and on jaxen
+                // see https://github.com/pmd/pmd/issues/1074
+                // we can directly return here, since PMD needs to run with java 7+, which
+                // for sure has this interface on the JDK classpath
+                if ("org.w3c.dom.UserDataHandler".equals(name)) {
+                    return super.loadClass(name, resolve);
+                }
+
                 try {
                     // checking local
                     c = findClass(name);
@@ -118,7 +135,7 @@ public class ClasspathClassLoader extends URLClassLoader {
                     c = super.loadClass(name, resolve);
                 }
             }
-    
+
             if (resolve) {
                 resolveClass(c);
             }
