@@ -6,17 +6,20 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
 
 public class FormalComment extends Comment {
 
+    private static final Pattern JAVADOC_TAG = Pattern.compile("@([A-Za-z0-9]+)");
+
     public FormalComment(Token t) {
         super(t);
 
-        findJavadocs(t.image);
+        findJavadocs();
     }
 
     @Override
@@ -24,18 +27,18 @@ public class FormalComment extends Comment {
         return "FormalComment";
     }
 
-    private void findJavadocs(String commentText) {
+    private void findJavadocs() {
         Collection<JavadocElement> kids = new ArrayList<>();
 
-        Map<String, Integer> tags = CommentUtil.javadocTagsIn(commentText);
-        for (Map.Entry<String, Integer> entry : tags.entrySet()) {
-            JavadocTag tag = JavadocTag.tagFor(entry.getKey());
-            if (tag == null) {
-                continue;
+        Matcher javadocTagMatcher = JAVADOC_TAG.matcher(getFilteredComment());
+        while (javadocTagMatcher.find()) {
+            JavadocTag tag = JavadocTag.tagFor(javadocTagMatcher.group(1));
+            int tagStartIndex = javadocTagMatcher.start(1);
+            if (tag != null) {
+                kids.add(new JavadocElement(getBeginLine(), getBeginLine(),
+                        // TODO valid?
+                        tagStartIndex, tagStartIndex + tag.label.length() + 1, tag));
             }
-            kids.add(new JavadocElement(getBeginLine(), getBeginLine(),
-                    // TODO valid?
-                    entry.getValue() + 1, entry.getValue() + tag.label.length() + 1, tag));
         }
 
         children = kids.toArray(new Node[0]);

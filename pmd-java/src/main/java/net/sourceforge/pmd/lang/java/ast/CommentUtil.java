@@ -150,7 +150,7 @@ public final class CommentUtil {
         Token t = new Token();
         t.image = comment;
         MultiLineComment node = new MultiLineComment(t);
-        return Arrays.asList(node.getFilteredComment().split("\\R"));
+        return Arrays.asList(Comment.NEWLINES_PATTERN.split(node.getFilteredComment()));
     }
 
     /**

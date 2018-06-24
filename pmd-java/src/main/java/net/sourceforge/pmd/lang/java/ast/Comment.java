@@ -20,6 +20,9 @@ public abstract class Comment extends AbstractNode {
     // or the start of line within a multine comment (*). It removes the end of the comment (*/) if existing.
     private static final Pattern COMMENT_LINE_COMBINED = Pattern.compile("^(?://|/\\*\\*?|\\*)?(.*?)(?:\\*/|/)?$");
 
+    // Same as "\\R" - but \\R is only available with java8+
+    static final Pattern NEWLINES_PATTERN = Pattern.compile("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]");
+
     protected Comment(Token t) {
         super(-1, t.beginLine, t.endLine, t.beginColumn, t.endColumn);
 
@@ -54,7 +57,7 @@ public abstract class Comment extends AbstractNode {
      * @return List of lines of the comments
      */
     private List<String> multiLinesIn() {
-        String[] lines = getImage().split("\\R");
+        String[] lines = NEWLINES_PATTERN.split(getImage());
         List<String> filteredLines = new ArrayList<>(lines.length);
 
         for (String rawLine : lines) {
@@ -87,7 +90,7 @@ public abstract class Comment extends AbstractNode {
         List<String> tempList = new ArrayList<>();
         boolean foundFirstNonEmptyLine = false;
         for (String line : lines) {
-            if (StringUtils.isNoneBlank(line)) {
+            if (StringUtils.isNotBlank(line)) {
                 // new non-empty line: add all previous empty lines occurred before
                 result.addAll(tempList);
                 tempList.clear();
