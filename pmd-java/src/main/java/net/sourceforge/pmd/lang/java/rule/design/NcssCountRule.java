@@ -31,11 +31,19 @@ import net.sourceforge.pmd.properties.IntegerProperty;
 public final class NcssCountRule extends AbstractJavaMetricsRule {
 
 
-    private static final IntegerProperty METHOD_REPORT_LEVEL_DESCRIPTOR = new IntegerProperty(
-        "methodReportLevel", "Metric reporting threshold for methods", 1, 60, 12, 1.0f);
+    private static final IntegerProperty METHOD_REPORT_LEVEL_DESCRIPTOR =
+            IntegerProperty.named("methodReportLevel")
+                           .desc("NCSS reporting threshold for methods")
+                           .range(1, 2000)
+                           .defaultValue(60)
+                           .build();
 
-    private static final IntegerProperty CLASS_REPORT_LEVEL_DESCRIPTOR = new IntegerProperty(
-        "classReportLevel", "Metric reporting threshold for classes", 1, 1000, 250, 1.0f);
+    private static final IntegerProperty CLASS_REPORT_LEVEL_DESCRIPTOR =
+            IntegerProperty.named("classReportLevel")
+                           .desc("NCSS reporting threshold for classes")
+                           .range(1, 20000)
+                           .defaultValue(1500)
+                           .build();
 
     private static final Map<String, NcssOption> OPTION_MAP;
 
