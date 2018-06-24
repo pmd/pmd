@@ -5,7 +5,7 @@ permalink: pmd_rules_apex_errorprone.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/category/apex/errorprone.xml
-keywords: Error Prone, AvoidDirectAccessTriggerMap, AvoidHardcodingId, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass
+keywords: Error Prone, AvoidDirectAccessTriggerMap, AvoidHardcodingId, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass, AvoidNonExistentAnnotations
 language: Apex
 ---
 ## AvoidDirectAccessTriggerMap
@@ -84,6 +84,42 @@ public without sharing class Foo {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/AvoidHardcodingId" />
+```
+
+## AvoidNonExistentAnnotations
+
+**Since:** PMD 6.5.0
+
+**Priority:** Medium (3)
+
+Apex supported non existent annotations for legacy reasons.
+In the future, use of such non-existent annotations could result in broken apex code that will not compile.
+This will prevent users of garbage annotations from being able to use legitimate annotations added to Apex in the future.
+A full list of supported annotations can be found at https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidNonExistentAnnotationsRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/errorprone/AvoidNonExistentAnnotationsRule.java)
+
+**Example(s):**
+
+``` java
+@NonExistentAnnotation public class ClassWithNonexistentAnnotation {
+	@NonExistentAnnotation public void methodWithNonExistentAnnotation() {
+		// ...
+	}
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/apex/errorprone.xml/AvoidNonExistentAnnotations" />
 ```
 
 ## EmptyCatchBlock
