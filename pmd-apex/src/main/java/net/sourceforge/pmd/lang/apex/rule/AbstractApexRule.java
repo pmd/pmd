@@ -96,21 +96,16 @@ import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
-import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.renderers.CodeClimateRule;
 
 public abstract class AbstractApexRule extends AbstractRule
         implements ApexParserVisitor, ImmutableLanguage, CodeClimateRule {
-
-    public static final IntegerProperty CODACY_MINUTES_TO_FIX = new IntegerProperty("codacy_minutes_to_fix",
-        "Codacy.com Time to fix in minutes", 0, Integer.MAX_VALUE, 5, 1.0f);
 
     public AbstractApexRule() {
         super.setLanguage(LanguageRegistry.getLanguage(ApexLanguageModule.NAME));
         definePropertyDescriptor(CODECLIMATE_CATEGORIES);
         definePropertyDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER);
         definePropertyDescriptor(CODECLIMATE_BLOCK_HIGHLIGHTING);
-        definePropertyDescriptor(CODACY_MINUTES_TO_FIX);
     }
 
     @Override

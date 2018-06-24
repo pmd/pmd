@@ -18,7 +18,6 @@ public class ApexXPathRule extends XPathRule implements CodeClimateRule {
         definePropertyDescriptor(CODECLIMATE_CATEGORIES);
         definePropertyDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER);
         definePropertyDescriptor(CODECLIMATE_BLOCK_HIGHLIGHTING);
-        definePropertyDescriptor(AbstractApexRule.CODACY_MINUTES_TO_FIX);
     }
 
     @Override
