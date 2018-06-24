@@ -23,6 +23,7 @@ import org.reactfx.value.Val;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
@@ -272,8 +273,11 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     public void onNameDeclarationSelected(NameDeclaration declaration) {
         sourceEditorController.clearNameOccurences();
 
-        Optional.ofNullable(declaration.getNode().getScope().getDeclarations().get(declaration))
-                .ifPresent(sourceEditorController::highlightNameOccurrences);
+        List<NameOccurrence> occurrences = declaration.getNode().getScope().getDeclarations().get(declaration);
+
+        if (occurrences != null) {
+            sourceEditorController.highlightNameOccurrences(occurrences);
+        }
 
         Platform.runLater(() -> onNodeItemSelected(declaration.getNode()));
     }
