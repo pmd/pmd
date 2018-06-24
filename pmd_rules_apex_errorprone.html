@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, AvoidDirectAccessTriggerMap, AvoidHardcodingId, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass">
+<meta name="keywords" content=" Error Prone, AvoidDirectAccessTriggerMap, AvoidHardcodingId, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass, AvoidNonExistentAnnotations">
 <title>Error Prone | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -1380,6 +1380,65 @@ the logic can dynamically identify the proper data to operate against and not fa
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/AvoidHardcodingId"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="avoidnonexistentannotations">AvoidNonExistentAnnotations</h2>
+
+<p><strong>Since:</strong> PMD 6.5.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Apex supported non existent annotations for legacy reasons.
+In the future, use of such non-existent annotations could result in broken apex code that will not compile.
+This will prevent users of garbage annotations from being able to use legitimate annotations added to Apex in the future.
+A full list of supported annotations can be found at https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/errorprone/AvoidNonExistentAnnotationsRule.java">net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidNonExistentAnnotationsRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@NonExistentAnnotation</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">ClassWithNonexistentAnnotation</span> <span class="o">{</span>
+	<span class="nd">@NonExistentAnnotation</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">methodWithNonExistentAnnotation</span><span class="o">()</span> <span class="o">{</span>
+		<span class="c1">// ...</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>cc_categories</td>
+      <td>Style</td>
+      <td>Code Climate Categories</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
+    <tr>
+      <td>cc_remediation_points_multiplier</td>
+      <td>1</td>
+      <td>Code Climate Remediation Points multiplier</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>cc_block_highlighting</td>
+      <td>false</td>
+      <td>Code Climate Block Highlighting</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/AvoidNonExistentAnnotations"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="emptycatchblock">EmptyCatchBlock</h2>

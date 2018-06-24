@@ -2637,6 +2637,15 @@
 "url": "pmd_rules_apex_errorprone.html#methodwithsamenameasenclosingclass",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
+,
+
+{
+"title": "AvoidNonExistentAnnotations (Apex, Error Prone)",
+"tags": "",
+"keywords": "AvoidNonExistentAnnotations",
+"url": "pmd_rules_apex_errorprone.html#avoidnonexistentannotations",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
 
 
 
