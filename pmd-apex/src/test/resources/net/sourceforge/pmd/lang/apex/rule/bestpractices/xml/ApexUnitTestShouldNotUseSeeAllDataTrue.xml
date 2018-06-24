@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Problematic apex unit test class - uses SeeAllData = true</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@isTest (seeAllData = true)
+public class Foo {
+   public static testMethod void testSomething() {
+      Account a = null;
+      // This is better than having a NullPointerException
+      System.assertNotEquals(a, null, 'account not found');
+   }
+}
+		]]></code>
+    </test-code>
+    <test-code>
+        <description>Problematic apex unit test method - uses SeeAllData = true</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@isTest
+public class Foo {
+   @isTest (seeAllData = true)
+   public static void testSomething() {
+      Account a = null;
+      // This is better than having a NullPointerException
+      System.assertNotEquals(a, null, 'account not found');
+   }
+}
+		]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+
+public class Foo {
+
+   private FileInputStream _s = new FileInputStream("file");
+
+   public void skip(int n) throws IOException {
+      _s.skip(n); // You are not sure that exactly n bytes are skipped
+   }
+
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case but obfuscated
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+
+public class Foo {
+
+   private FileInputStream _s = new FileInputStream("file");
+
+   public void skip(int n) throws IOException {
+      (_s.skip(n));
+   }
+
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+return value is assigned to a variable
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+
+public class Foo {
+
+   private FileInputStream _s = new FileInputStream("file");
+
+   public void skip(int n) throws IOException {
+      while (n != 0) {
+         long skipped = _s.skip(n);
+         if (skipped == 0)
+            throw new EOFException();
+         n -= skipped;
+      }
+   }
+
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+return value is used in a function
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+
+public class Foo {
+
+   private FileInputStream _s = new FileInputStream("file");
+
+   public void skip(int n) throws IOException {
+      System.out.println(_s.skip(n));
+   }
+
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+return value is returned
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+
+public class Foo {
+
+   private FileInputStream _s = new FileInputStream("file");
+
+   public int skip(int n) throws IOException {
+      return _s.skip(n);
+   }
+
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Failure case: Empty Statement Block
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  public void foo() {
+  }
+
+  public abstract void bar() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Success case: Empty Statement Block
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  public void foo() {
+    system.debug(1);
+  }
+  public abstract void bar() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+#760 - false positive on non existing else block
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  public void foo() {
+    if (something) {
+      system.debug(1);
+    }
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+#760 - is reported on existing else block
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  public void foo() {
+    if (something) {
+      system.debug(1);
+    } else {
+    }
+  }
+}
+     ]]></code>
+    </test-code>
+</test-data>

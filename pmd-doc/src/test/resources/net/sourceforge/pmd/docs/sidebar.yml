@@ -1,0 +1,27 @@
+- title: null
+  output: web, pdf
+  subfolders:
+  - title: Java Rules
+    output: web, pdf
+    subfolderitems:
+    - title: Index
+      output: web, pdf
+      url: /pmd_rules_java.html
+    - title: test
+      output: web, pdf
+      url: /pmd_rules_java_bestpractices.html
+    - title: test2
+      output: web, pdf
+      url: /pmd_rules_java_codestyle.html
+- title: null
+  output: web, pdf
+  subfolders:
+  - title: Ecmascript Rules
+    output: web, pdf
+    subfolderitems:
+    - title: Index
+      output: web, pdf
+      url: /pmd_rules_ecmascript.html
+    - title: test
+      output: web, pdf
+      url: /pmd_rules_ecmascript_bestpractices.html

@@ -12,6 +12,7 @@ public class ASTThrowStatement extends AbstractApexNode<ThrowStatement> {
         super(throwStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

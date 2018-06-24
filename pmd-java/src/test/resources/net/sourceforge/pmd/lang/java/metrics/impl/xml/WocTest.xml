@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="full-example"><![CDATA[
+
+// Data class from ArgoUML
+/**
+* A property that can be displayed and edited within a PropertyTable.
+*
+* @author Jeremy Jones
+**/
+public class Property implements Comparable {
+
+private String      _name;
+private Class       _valueType;
+private Object      _initialValue;
+private Object      _currentValue;
+private Object[]    _availableValues;
+
+public Property(String name, Class valueType, Object initialValue) {
+this(name, valueType, initialValue, null);
+}
+
+
+public Property(String name, Class valueType, Object initialValue, Object[] values) {
+_name = name;
+_valueType = valueType;
+_initialValue = initialValue;
+_availableValues = values;
+_currentValue = _initialValue;
+}
+
+public String getName() {
+return _name;
+}
+
+public Class getValueType() {
+return _valueType;
+}
+
+public Object getInitialValue() {
+return _initialValue;
+}
+
+public Object[] getAvailableValues() {
+return _availableValues;
+}
+
+public Object getCurrentValue() {
+return _currentValue;
+}
+
+public void setCurrentValue(Object value) {
+_currentValue = value;
+}
+
+public int compareTo(Object o) {
+return _name.compareTo(((Property) o)._name);
+}
+}
+
+     ]]></code-fragment>
+
+
+    <test-code>
+        <description>Full example</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Property' has value 0.1111.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Test empty class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NOPA doesn't support enums, interfaces or annotations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public interface Foo {
+
+           public final int h;
+
+           enum Bar{
+             FOO;
+             public int bel = 0;
+           }
+
+           @interface Tag {
+              public static final int num = 0;
+           }
+        }
+        ]]></code>
+    </test-code>
+
+</test-data>

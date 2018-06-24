@@ -1,0 +1,20 @@
+entries:
+- title: sidebar
+  folders:
+  - title: 1
+  - title: 2
+  - title: 3
+  - title: Rules
+    folderitems:
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Java Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_java.html
+        - title: Sample
+          output: web, pdf
+          url: /pmd_rules_java_sample.html

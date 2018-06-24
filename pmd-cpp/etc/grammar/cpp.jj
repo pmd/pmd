@@ -129,10 +129,9 @@ public final class CppParser {
       return sym.IsCtor(GetFullyScopedName());
   }
 }
-
 PARSER_END(CppParser)
 
-SKIP :
+SKIP:
 {
   " "
 |
@@ -144,37 +143,27 @@ SKIP :
 |
   "\n"
 |
-  "//" : IN_LINE_COMMENT
-|
-  "/*"  : IN_COMMENT
-|
   "#" : PREPROCESSOR_OUTPUT
 }
 
-<IN_LINE_COMMENT> SKIP:
-{
-   "\n" : DEFAULT
-}
+<DEFAULT,PREPROCESSOR_OUTPUT> SPECIAL_TOKEN:
+{ <SINGLE_LINE_COMMENT: "//"(~["\n","\r"])* ("\n"|"\r"|"\r\n")?> }
 
-<IN_LINE_COMMENT> MORE:
-{
-  < ~[] >
-}
+MORE:
+{ "/*" : IN_MULTI_LINE_COMMENT }
 
-<IN_COMMENT> SKIP:
-{ "*/" : DEFAULT }
+<IN_MULTI_LINE_COMMENT> SPECIAL_TOKEN:
+{ <MULTI_LINE_COMMENT: "*/">: DEFAULT }
 
-<IN_COMMENT,IN_PREPROCESSOR_OUTPUT_COMMENT> MORE:
+<IN_MULTI_LINE_COMMENT,IN_PREPROCESSOR_OUTPUT_COMMENT> MORE:
 { < ~[] > }
 
-<IN_PREPROCESSOR_OUTPUT_COMMENT> SKIP:
-{ "*/" : PREPROCESSOR_OUTPUT }
+<IN_PREPROCESSOR_OUTPUT_COMMENT> SPECIAL_TOKEN:
+{ <PREPROCESSOR_OUTPUT_COMMENT: "*/">: PREPROCESSOR_OUTPUT }
 
 <PREPROCESSOR_OUTPUT> SKIP:
 {
    "\n" : DEFAULT
-   | "/*" : IN_PREPROCESSOR_OUTPUT_COMMENT
-   | "//" : IN_LINE_COMMENT
 }
 
 <PREPROCESSOR_OUTPUT> MORE:
@@ -182,6 +171,8 @@ SKIP :
   "\\\n"
   |
   "\\\r\n"
+  |
+  "/*": IN_PREPROCESSOR_OUTPUT_COMMENT 
   |
   < ~[] >
 }
@@ -288,6 +279,7 @@ TOKEN :
 | < FALSETOK: "false" >
 | < THROW: "throw" >
 | < AT: "@" >
+| < FINALLY: "finally" >
 }
 
 TOKEN [IGNORE_CASE] :
@@ -324,6 +316,12 @@ TOKEN :
 
 | <  RSTRING : "R\"(" ( ~[")"] | ( ")" ~["\""] ) )* ")\"" >
 }
+
+TOKEN :
+{
+  < ID : ["$", "a"-"z","A"-"Z", "_"] (["a"-"z","A"-"Z","0"-"9","_","$"])* >
+}
+
 
 void translation_unit() :
 {}
@@ -1560,11 +1558,5 @@ void exception_list() :
 {
    type_name() ( "," type_name())*
 }
-
-TOKEN :
-{
-  <  ID : ["$", "a"-"z","A"-"Z", "_"] (["a"-"z","A"-"Z","0"-"9","_","$"])* >
-}
-
 
 /*end*/

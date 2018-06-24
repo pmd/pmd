@@ -49,9 +49,6 @@ public class TextPadRenderer extends AbstractIncrementingRenderer {
         return "txt";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();

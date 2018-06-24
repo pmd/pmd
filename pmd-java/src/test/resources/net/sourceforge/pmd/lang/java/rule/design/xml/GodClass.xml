@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description>Simple god class</description>
         <expected-problems>1</expected-problems>
@@ -130,15 +133,52 @@ public class Foo {
         <description>#1085 NullPointerException by at net.sourceforge.pmd.lang.java.rule.design.GodClassRule.visit(GodClassRule.java:313)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public enum Color {
-  BLUE,
-  RED;
-  
-  public int toHex() {
-    return 0;
-  }
-}
+        public enum Color {
+          BLUE,
+          RED;
+
+          public int toHex() {
+            return 0;
+          }
+        }
         ]]>
+        </code>
+    </test-code>
+
+
+    <test-code>
+        <description>GodClass crashes with java.lang.NullPointerException, refs #827</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            package com.pack;
+
+            import java.util.ArrayList;
+            import java.util.Arrays;
+            import java.util.Date;
+            import java.util.HashMap;
+            import java.util.List;
+            import java.util.Map;
+
+            public class Pack implements IPack {
+
+
+                @Override
+                public Map<String, String> get() {
+
+                    class Inner implements IInner {
+
+                        private Map<String, String> results;
+
+                        public Inner(Map<String, String> results) {
+                            this.results = results;
+                        }
+                    }
+                    return null;
+                }
+
+            }
+            ]]>
         </code>
     </test-code>
 </test-data>

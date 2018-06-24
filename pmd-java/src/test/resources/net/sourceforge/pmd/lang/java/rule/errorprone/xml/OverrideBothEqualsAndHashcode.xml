@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+hash code only
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int hashCode() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+equals only
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean equals(Object other) {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+overrides both
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean equals(Object other) {}
+ public int hashCode() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+overrides neither
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+equals sig uses String, not Object
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean equals(String o) {
+  return true;
+ }
+ public int hashCode() {
+  return 0;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+interface
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public boolean equals(Object o);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+java.lang.Object
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean equals(java.lang.Object o) {
+  return true;
+ }
+ public int hashCode() {
+  return 0;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip Comparable implementations
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo implements Comparable {
+ public boolean equals(Object other) { return false; }
+ public int compareTo(Object other) { return 42; }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+implements equals but with 2 args
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean equals(java.lang.Object o1, java.lang.Object o2) {
+  return true;
+ }
+ public int hashCode(java.lang.Object o) {
+  return 0;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+overloaded hashCode
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo  {
+ public int hashCode(Object o1) { return false; }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+overloaded both
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo  {
+ public boolean equals(Object o1,Object o2) { return false; }
+ public int hashCode(Object o1) { return false; }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+overloaded hashCode, should fail on equals
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo  {
+ public boolean equals(Object o1) { return false; }
+ public int hashCode(Object o1) { return false; }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+implements hashCode but with args
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int hashCode(double a[]) {
+  return 0;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+implements interface other than Comparable, not resolvable
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo implements C {
+ public boolean equals(Object other) { return false; }
+ public int compareTo(Object other) { return 42; }
+}
+     ]]></code>
+    </test-code>
+   <test-code>
+        <description>implements interface other than Comparable, resolvable (#1303 OverrideBothEqualsAndHashcodeRule does not work on class implements resolvable interfaces)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo implements Runnable {
+ public boolean equals(Object other) { return false; }
+ public int compareTo(Object other) { return 42; }
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+A <B> element.
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<html><body><b>text</b></body></html>
+     ]]></code>
+        <source-type>jsp</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+A font and align attribute.
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+<html><body><p font='arial' align='center'>text</p></body></html>
+     ]]></code>
+        <source-type>jsp</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+No violations.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<html><body><p id='p_tag'>text</p></body></html>
+     ]]></code>
+        <source-type>jsp</source-type>
+    </test-code>
+</test-data>

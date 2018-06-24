@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+1
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() { 
+  for (int i = 0; i < 10; i++) { 
+   for (int k = 0; k < 20; i++) { 
+    int x = 2; 
+   } 
+  } 
+ } 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+2
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() { 
+  for (int i = 0; i < 10; i++) { 
+   for (int k = 0; k < 20; k++) { 
+    int x = 2; 
+   } 
+  } 
+ } 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+3
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() { 
+  for (int i=0; i<5; ) {
+   i++;
+  }
+  for (int i=0;;) {
+   if (i<5) {
+    break;
+   }
+   i++;
+  }
+  for (;;) {
+   int x =5;
+  }
+  for (int i=0; i<5;i++) ;
+  for (int i=0; i<5;i++) 
+   foo();
+ } 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+using outer loop incrementor as array index is OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() { 
+  for (int i = 0; i < 10; i++) { 
+   for (int k = 0; k < 20; j[i]++) { 
+    int x = 2; 
+   } 
+  } 
+ } 
+}
+     ]]></code>
+    </test-code>
+    <!--test-code>
+        <description><![CDATA[
+1424989, use of variable with same name in inner loop. Wontfix because this is smelly code.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+* Falsely notes the second for loop as modifying the
+* i variable in the first for loop.
+*/
+public class Foo {
+    public void bar() {
+        for (int i=0; i<7; i++) {
+            for (int i=0; i<10; i++) {
+               System.out.println("" + i);
+            }
+        }
+    }
+}
+     ]]></code>
+    </test-code-->
+</test-data>

@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+	<test-code>
+		<description>Scheduled classes don't need crud, run as system
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+class FooBatchJob implements Database.Batchable < sObject > , Database.Stateful { 	
+	public void justGiveMeFoo() {
+	 	AggregateResult[] test = [SELECT Id FROM Opportunity];
+	} 
+} 
+]]></code>
+	</test-code>
+
 
 	<test-code>
 		<description>Complex SOQL</description>
@@ -70,7 +87,8 @@ public class Foo {
 
 
 	<test-code>
-		<description>Proper CRUD checks for Aggregate Result return</description>
+		<description>Proper CRUD checks for Aggregate Result return
+		</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 	
@@ -785,4 +803,27 @@ public class MyProfilePageController {
 	
 ]]></code>
 	</test-code>
- </test-data>
+
+	<test-code>
+		<description>ClassCastException detection</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo {    
+    public list<A.B[]> bar;
+    public map<Id,A.B[]> baz;                
+}
+]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Regression issue #799 detection</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+    void chainedMethods() {
+    	firstMethod().lastMethod();
+    }
+}
+]]></code>
+	</test-code>
+</test-data>

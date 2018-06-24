@@ -53,6 +53,8 @@ public class RuleSetWriterTest {
     public void testWrite() throws Exception {
         RuleSet braces = new RuleSetFactory().createRuleSet("net/sourceforge/pmd/TestRuleset1.xml");
         RuleSet ruleSet = new RuleSetBuilder(new Random().nextLong())
+                .withName("ruleset")
+                .withDescription("ruleset description")
                 .addRuleSetByReference(braces, true, "MockRule2")
                 .build();
 

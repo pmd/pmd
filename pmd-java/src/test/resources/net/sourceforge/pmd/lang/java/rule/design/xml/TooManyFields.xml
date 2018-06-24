@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <code-fragment id="id-3-fields"><![CDATA[
+public class Foo {
+ int a1; 
+ int a2; 
+ int a3; 
+}
+ ]]></code-fragment>
+    <test-code>
+        <description><![CDATA[
+3 fields, max is 15
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="id-3-fields"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+3 fields, reduced max to 2
+     ]]></description>
+        <rule-property name="maxfields">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="id-3-fields"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+16 fields, bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ int a1; 
+ int a2; 
+ int a3; 
+ int a4; 
+ int a5; 
+ int a6; 
+ int a7; 
+ int a8; 
+ int a9; 
+ int a10; 
+ int a11; 
+ int a12; 
+ int a13; 
+ int a14; 
+ int a15; 
+ int a16; 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+12 fields, but 6 in inner and 6 in outer
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ int a1; 
+ int a2; 
+ int a3; 
+ int a4; 
+ int a5; 
+ int a6; 
+ public class Bar {
+  int a7; 
+  int a8; 
+  int a9; 
+  int a10; 
+  int a11; 
+  int a12; 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+outer class, inner interface, both OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ int a1; 
+ int a2; 
+ int a3; 
+ int a4; 
+ int a5; 
+ interface Bar {
+  int a6; 
+  int a7; 
+  int a8; 
+  int a9; 
+  int a10; 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+interface with 10 fields
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ int a1; 
+ int a2; 
+ int a3; 
+ int a4; 
+ int a5; 
+ int a6; 
+ int a7; 
+ int a8; 
+ int a9; 
+ int a10; 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+2 inner classes, each with > 10 fields
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public class Bar1 {
+  int b1; 
+  int b2; 
+  int b3; 
+  int b4; 
+  int b5; 
+  int b6; 
+  int b7; 
+  int b8; 
+  int b9; 
+  int b10; 
+  int b11; 
+  int b12; 
+  int b13; 
+  int b14; 
+  int b15; 
+  int b16; 
+ }
+ public class Bar2 {
+  int b1; 
+  int b2; 
+  int b3; 
+  int b4; 
+  int b5; 
+  int b6; 
+  int b7; 
+  int b8; 
+  int b9; 
+  int b10; 
+  int b11; 
+  int b12; 
+  int b13; 
+  int b14; 
+  int b15; 
+  int b16; 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+anonymous class with a field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public class Bar1 {
+  Object foo = new Object() {public int x;}; 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+lots of static finals, those are ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static final int a1 = 2 ; 
+ public static final int a2 = 2 ; 
+ public static final int a3 = 2 ; 
+ public static final int a4 = 2 ; 
+ public static final int a5 = 2 ; 
+ public static final int a6 = 2 ; 
+ public static final int a7 = 2 ; 
+ public static final int a8 = 2 ; 
+ public static final int a9 = 2 ; 
+ public static final int a10 = 2 ; 
+ public static final int a11 = 2 ; 
+ public static final int a12 = 2 ; 
+ public static final int a13 = 2 ; 
+ public static final int a14 = 2 ; 
+ public static final int a15 = 2 ; 
+ public static final int a16 = 2 ; 
+ public static final int a17 = 2 ; 
+}
+     ]]></code>
+    </test-code>
+</test-data>

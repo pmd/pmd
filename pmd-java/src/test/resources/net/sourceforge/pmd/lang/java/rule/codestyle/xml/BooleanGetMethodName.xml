@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Bad name
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public boolean getEnabled();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Good name
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public boolean isEnabled();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Should not match on multiple parameters by default
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public boolean getEnabled(boolean thisIsNotABean);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Should not match on methods annotated with @Override
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo implements Toggleable {
+    @Override
+    public boolean getEnabled() {
+        return true;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Should match on multiple parameters when checkParameterizedMethods = true
+     ]]></description>
+        <rule-property name="checkParameterizedMethods">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public boolean getEnabled(boolean thisIsNotABean);
+}
+     ]]></code>
+    </test-code>
+</test-data>

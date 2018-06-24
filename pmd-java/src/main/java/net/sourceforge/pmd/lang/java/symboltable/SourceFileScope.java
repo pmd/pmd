@@ -26,6 +26,7 @@ public class SourceFileScope extends AbstractJavaScope {
 
     private final String packageImage;
     private final TypeSet types;
+    private Map<String, Node> qualifiedTypeNames;
 
     public SourceFileScope(final ClassLoader classLoader) {
         this(classLoader, "");
@@ -39,7 +40,7 @@ public class SourceFileScope extends AbstractJavaScope {
 
     /**
      * Configures the type resolution for the symbol table.
-     * 
+     *
      * @param imports
      *            the import declarations
      */
@@ -61,7 +62,7 @@ public class SourceFileScope extends AbstractJavaScope {
      * Whether an auxclasspath has been configured or not. This can be used to
      * enable/disable more detailed symbol table analysis and type resolution
      * can be used - or to fall back to more simple implementation.
-     * 
+     *
      * @return <code>true</code> if the auxclasspath is configured and types can
      *         be resolved reliably.
      * @see #resolveType(String)
@@ -72,7 +73,7 @@ public class SourceFileScope extends AbstractJavaScope {
 
     /**
      * Tries to resolve a class by name.
-     * 
+     *
      * @param name
      *            the name of the class
      * @return the class or <code>null</code> if no class could be found
@@ -86,8 +87,8 @@ public class SourceFileScope extends AbstractJavaScope {
     }
 
     /**
-     * {@inheritDoc}
-     * 
+     *
+     *
      * @throws IllegalArgumentException
      *             if declaration is not a {@link ClassNameDeclaration}
      */
@@ -102,7 +103,7 @@ public class SourceFileScope extends AbstractJavaScope {
     /**
      * Convenience method that casts the declarations to
      * {@link ClassNameDeclaration}s.
-     * 
+     *
      * @see #getDeclarations()
      * @return all class name declarations
      */
@@ -110,6 +111,7 @@ public class SourceFileScope extends AbstractJavaScope {
         return getDeclarations(ClassNameDeclaration.class);
     }
 
+    @Override
     public String toString() {
         return "SourceFileScope: " + glomNames(getClassDeclarations().keySet());
     }
@@ -120,6 +122,7 @@ public class SourceFileScope extends AbstractJavaScope {
         return (ClassNameDeclaration) finder.getDecl();
     }
 
+    @Override
     protected Set<NameDeclaration> findVariableHere(JavaNameOccurrence occ) {
         ImageFinderFunction finder = new ImageFinderFunction(occ.getImage());
         Applier.apply(finder, getDeclarations().keySet().iterator());
@@ -132,11 +135,16 @@ public class SourceFileScope extends AbstractJavaScope {
     /**
      * Returns a set of all types defined within this source file. This includes
      * all top-level types and nested types.
-     * 
+     *
      * @return set of all types in this source file.
      */
     public Map<String, Node> getQualifiedTypeNames() {
-        return getSubTypes(null, this);
+        if (qualifiedTypeNames != null) {
+            return qualifiedTypeNames;
+        }
+
+        qualifiedTypeNames = getSubTypes(null, this);
+        return qualifiedTypeNames;
     }
 
     private Map<String, Node> getSubTypes(String qualifyingName, Scope subType) {

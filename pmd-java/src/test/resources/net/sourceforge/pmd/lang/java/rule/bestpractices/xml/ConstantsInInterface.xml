@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+constants in interface, no methods
+     ]]></description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+  public static final int CONST1 = 1;
+  static final int CONST2 = 1;
+  final int CONST3 = 1;
+  int CONST4 = 1;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+constants in interface, with methods, ignoreIfHasMethods is false
+     ]]></description>
+        <rule-property name="ignoreIfHasMethods">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface AnotherConstantInterface {
+  public static final int CONST1 = 1;
+  
+  int anyMethod();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+constants in interface, with methods, ignoreIfHasMethods is true
+     ]]></description>
+        <rule-property name="ignoreIfHasMethods">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface AnotherConstantInterface {
+  public static final int CONST1 = 1;
+  
+  int anyMethod();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1505 [java] ConstantsInInterface false negative</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+package some.pkg;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public interface SomeInterfaceName {
+
+    /**
+     * The logger service managers can use to record traces.
+     */
+    Logger LOGGER = LoggerFactory.getLogger(SomeInterfaceName.class);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>clear rule violation (from AvoidConstantsInInterface)</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public static final int FOO = 2;
+ public static final String BAR = "bar";
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok (from AvoidConstantsInInterface)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public static final int FOO = 2;
+ public void buz();
+}
+     ]]></code>
+    </test-code>
+</test-data>

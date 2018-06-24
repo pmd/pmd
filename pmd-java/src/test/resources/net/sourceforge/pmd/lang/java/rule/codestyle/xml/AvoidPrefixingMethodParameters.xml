@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+AvoidPrefixingMethodParameters basic test case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+	public void m(String inParam) {}
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+AvoidPrefixingMethodParameters basic test case, no violation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+	public void m(String param) {}
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+AvoidPrefixingMethodParameters basic test case, only one parameter is prefixed
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+	public void m(String param, int outParam) {}
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+AvoidPrefixingMethodParameters limit: if parameters is named in or out, report a violation.
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+	public void m(String out, int in) {}
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+AvoidPrefixingMethodParameters basic test case: in is not a prefix, not using camel case in parameter name.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void m(int index) {}
+	public void n(int timeout) {}
+}
+     ]]></code>
+    </test-code>
+
+</test-data>

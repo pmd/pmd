@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+		JUnit Test contains assertEquals on other than boolean literal
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+		public class MyTestCase extends TestCase {
+			public void testMyCase() {
+				String myVar = "test";
+				String myVar2 = "test";
+				assertEquals(myVar, myVar2);
+			}
+		}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+		JUnit Test contains assertEquals on boolean literal
+     ]]></description>
+        <expected-problems>5</expected-problems>
+        <code><![CDATA[
+		public class MyTestCase extends TestCase {
+			public void testMyCaseWithAssertEqualsOnBoolean() {
+				boolean myVar = true;
+				assertEquals("myVar is true", true, myVar);
+				assertEquals("myVar is true", myVar, true);
+				assertEquals("myVar is true", false, myVar);
+				assertEquals("myVar is true", myVar, false);
+                assertEquals(true, myVar);
+			}
+		}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1323 False positive case of UseAssertTrueInsteadOfAssertEquals</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.groupon.mostest.refractor;
+import static org.testng.Assert.assertEquals;
+import org.testng.annotations.Test;
+public class TestWithAssertEquals {
+    @Test
+    public void testMethodWithBooleanParam() {
+        assertEquals(methodWithBooleanParam(true), "a String value", "they should be equal!");
+    }
+    public String methodWithBooleanParam(boolean param) {
+        return "a String value";
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            <![CDATA[
+JUnit Test contains assertEquals with Boxed booleans
+            ]]>
+        </description>
+        <expected-problems>8</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void test() {
+		final boolean myVar = true;
+		assertEquals("myVar is true", Boolean.TRUE, myVar);
+		assertEquals("myVar is true", myVar, Boolean.TRUE);
+		assertEquals(Boolean.TRUE, myVar);
+		assertEquals(myVar, Boolean.TRUE);
+		assertEquals("myVar is false", Boolean.FALSE, myVar);
+		assertEquals("myVar is false", myVar, Boolean.FALSE);
+		assertEquals(myVar, Boolean.FALSE);
+		assertEquals(Boolean.FALSE, myVar);
+		assertTrue(myVar);
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            <![CDATA[
+JUnit Test contains assertEquals with Boxed booleans as param
+            ]]>
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void test() {
+		assertEquals(methodWithBooleanParam(Boolean.TRUE), "a String value", "they should be equal!");
+	}
+	public String methodWithBooleanParam(Boolean param) {
+		return "a String value";
+	}
+}
+     ]]></code>
+    </test-code>
+</test-data>

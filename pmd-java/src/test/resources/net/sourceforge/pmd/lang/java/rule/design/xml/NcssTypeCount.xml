@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+short
+     ]]></description>
+        <rule-property name="minimum">13</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+     bar();
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+lots of comments
+     ]]></description>
+        <rule-property name="minimum">13</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+     //nothing to see here
+     //nothing to see here
+     //nothing to see here
+     //nothing to see here
+     bar();
+     //nothing to see here
+     //nothing to see here
+     //nothing to see here
+     //nothing to see here
+     foo();
+    }
+}
+     ]]></code>
+    </test-code>
+    <code-fragment id="long-method"><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+     //nothing to see here
+     //nothing to see here
+     //nothing to see here
+     //nothing to see here
+     bar();
+     bar();
+     bar();
+     bar();
+     bar();
+     bar();
+     //nothing to see here
+     //nothing to see here
+     //nothing to see here
+     //nothing to see here
+     foo();
+     foo();
+     foo();
+     foo();
+     foo();
+     foo();
+    }
+}
+     ]]></code-fragment>
+    <test-code>
+        <description><![CDATA[
+long method
+     ]]></description>
+        <rule-property name="minimum">13</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="long-method"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+long method - changed minimum
+     ]]></description>
+        <!-- validated this number against NCSS -->
+        <rule-property name="minimum">15</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="long-method"/>
+    </test-code>
+</test-data>

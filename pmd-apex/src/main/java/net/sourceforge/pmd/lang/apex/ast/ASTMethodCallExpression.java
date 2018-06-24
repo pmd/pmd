@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.Iterator;
+
+import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
 
 public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpression> {
@@ -12,6 +15,7 @@ public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpressi
         super(methodCallExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -22,10 +26,10 @@ public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpressi
 
     public String getFullMethodName() {
         final String methodName = getMethodName();
-        String typeName = "";
-        if (!getNode().getReferenceExpression().getJadtIdentifiers().isEmpty()) {
-            typeName = getNode().getReferenceExpression().getJadtIdentifiers().get(0).value + ".";
+        StringBuilder typeName = new StringBuilder();
+        for (Iterator<Identifier> it = getNode().getReferenceContext().getNames().iterator(); it.hasNext();) {
+            typeName.append(it.next().getValue()).append('.');
         }
-        return typeName + methodName;
+        return typeName.toString() + methodName;
     }
 }

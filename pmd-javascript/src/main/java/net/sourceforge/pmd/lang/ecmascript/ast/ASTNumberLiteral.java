@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.NumberLiteral;
 
-// TODO The Rhino node does not tell us whether this was specified via decimal, octal or hexidecimal.
 public class ASTNumberLiteral extends AbstractEcmascriptNode<NumberLiteral> {
     public ASTNumberLiteral(NumberLiteral numberLiteral) {
         super(numberLiteral);
@@ -16,13 +15,26 @@ public class ASTNumberLiteral extends AbstractEcmascriptNode<NumberLiteral> {
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
     public String getNormalizedImage() {
-        // TODO Implement
-        return super.getImage();
+        String image = getImage();
+        image = normalizeHexIntegerLiteral(image);
+        image = image.replace('e', 'E');
+        if (image.indexOf('.') == -1 && image.indexOf('E') == -1) {
+            image = image + ".0";
+        }
+        return image;
+    }
+
+    private String normalizeHexIntegerLiteral(String image) {
+        if (image.startsWith("0x") || image.startsWith("0X")) {
+            return String.valueOf(Integer.parseInt(image.substring(2), 16));
+        }
+        return image;
     }
 
     public double getNumber() {

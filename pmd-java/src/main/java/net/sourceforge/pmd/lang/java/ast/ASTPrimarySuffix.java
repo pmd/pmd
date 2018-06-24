@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTPrimarySuffix extends AbstractJavaNode {
+public class ASTPrimarySuffix extends AbstractJavaTypeNode {
 
     private boolean isArguments;
     private boolean isArrayDereference;
@@ -38,7 +38,7 @@ public class ASTPrimarySuffix extends AbstractJavaNode {
      * Get the number of arguments for this primary suffix. One should call
      * {@link #isArguments()} to see if there are arguments. If this method is
      * called when there are no arguments it returns <code>-1</code>.
-     * 
+     *
      * @return A non-negative argument number when there are arguments,
      *         <code>-1</code> otherwise.
      */

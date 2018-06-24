@@ -12,7 +12,8 @@ import java.util.ResourceBundle;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
-public class NLS {
+@Deprecated // to be removed with PMD 7.0.0
+public final class NLS {
     private static final ResourceBundle BUNDLE;
 
     static {

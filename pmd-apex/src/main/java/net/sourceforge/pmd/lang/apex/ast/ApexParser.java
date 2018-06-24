@@ -11,9 +11,11 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
+import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
 
+import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.compilation.Compilation;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserEnum;
@@ -26,23 +28,19 @@ public class ApexParser {
     protected final ApexParserOptions parserOptions;
 
     private Map<Integer, String> suppressMap;
-    private String suppressMarker = "NOPMD";
 
     public ApexParser(ApexParserOptions parserOptions) {
+        ApexJorjeLogging.disableLogging();
         this.parserOptions = parserOptions;
-
-        if (parserOptions.getSuppressMarker() != null) {
-            suppressMarker = parserOptions.getSuppressMarker();
-        }
     }
 
     public Compilation parseApex(final String sourceCode) throws ParseException {
 
         TopLevelVisitor visitor = new TopLevelVisitor();
+        Locations.useIndexFactory();
         CompilerService.INSTANCE.visitAstFromString(sourceCode, visitor);
 
-        Compilation astRoot = visitor.getTopLevel();
-        return astRoot;
+        return visitor.getTopLevel();
     }
 
     public ApexNode<Compilation> parse(final Reader reader) {
@@ -56,8 +54,7 @@ public class ApexParser {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
-            ApexNode<Compilation> tree = treeBuilder.build(astRoot);
-            return tree;
+            return treeBuilder.build(astRoot);
         } catch (IOException e) {
             throw new ParseException(e);
         }

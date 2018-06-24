@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+TEST1
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   int bar;
+   void bar() {}
+} 
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+TEST2
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Bar {
+   class Dummy {
+		Foo foo;
+		void foo() {}
+   }
+} 
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+TEST3
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+   Foo foo;
+   class Dummy {
+		void foo() {}
+   }
+} 
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+TEST4
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+	void foo() {}
+   class Dummy {
+      Foo foo;
+   }
+} 
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Just skip interfaces
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Bar {
+  public static final int FOO = 5;
+} 
+     ]]></code>
+    </test-code>
+</test-data>

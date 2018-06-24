@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+constructor, use varargs
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public Foo(String[] args) { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+method, use varargs
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public bar(String[] args) { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+constructor, do not varargs
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public Foo(String[] args, int x) { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+method, do not varargs
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public bar(String[] args, int x) { }
+}
+     ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <description><![CDATA[
+method, do not varargs as the signature is dictated by an interface
+// TODO Once this is implemented, perhaps it should be optional? The compiler will technically let you use varargs.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+public class Foo implements InvocationHandler {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+	return null;
+    }
+}
+     ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description><![CDATA[
+method, do not varargs, allow byte[] as not varargs
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(File file, byte[] data) { }
+ public void bar2(File file, byte data[]) { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+method, do not varargs, allow Byte[] as not varargs
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(File file, Byte[] data) { }
+ public void bar2(File file, Byte data[]) { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+method, do not varargs, allow @Override
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ @Override
+ protected void bar(String[] args) { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+method, do not varargs, allow public static void main(String[]) as not varargs
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static void main(String[] args) { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+method, use varargs, deviation from exact main signature flagged
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static void main(int i, String[] args) { }
+}
+     ]]></code>
+    </test-code>
+</test-data>

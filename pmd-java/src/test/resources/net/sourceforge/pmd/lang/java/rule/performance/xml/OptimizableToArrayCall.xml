@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Preferred usage (sf #1454)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ {x.toArray(new Foo[0]);}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>Array dimensioner uses method call, performance issue</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ {x.toArray(new Foo[x.size()]);}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>Array dimensioner uses variable, performance issue</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ {x.toArray(new Foo[y]);}
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#937 OptimizableToArrayCall does not catch multilevel method chains</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void foo() {
+        x.y.toArray(new Foo[0]);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Array with a literal dimension, zero still better</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        x.toArray(new Foo[10]);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>toArray call without an array should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        x.toArray();
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

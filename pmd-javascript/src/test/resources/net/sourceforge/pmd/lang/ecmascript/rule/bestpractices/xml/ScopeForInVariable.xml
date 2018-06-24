@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Ok, global scope
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+for (var p in obj) {
+  obj[p] = obj[p];
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, function scope
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+function foo() {
+   for (var p in obj) {
+      obj[p] = obj[p];
+   }
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, nested function
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+// Ok
+function foo() {
+   var p = 'clean';
+   function() {
+	   var obj = { dirty: 'dirty' };
+	   for (var p in obj) { // Use 'var' here.
+	     obj[p] = obj[p];
+	   }
+	   return x;
+   }();
+
+   // 'p' still has value of 'clean'.
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, global scope
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+for (p in obj) {
+  obj[p] = obj[p];
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, function scope
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+function() {
+   for (p in obj) {
+      obj[p] = obj[p];
+   }
+};
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, nested function
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+// Bad
+function bar() {
+   var p = 'clean';
+   function() {
+	   var obj = { dirty: 'dirty' };
+	   for (p in obj) { // Oh no, missing 'var' here!
+	     obj[p] = obj[p];
+	   }
+	   return x;
+   }();
+
+   // 'p' is trashed and has value of 'dirty'! 
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+</test-data>

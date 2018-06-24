@@ -5,17 +5,20 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
-/* All AST nodes must implement this interface.  It provides basic
-   machinery for constructing the parent and child relationships
-   between nodes. */
-
+/**
+ * All AST nodes must implement this interface. It provides basic
+ * machinery for constructing the parent and child relationships
+ * between nodes.
+ */
 public interface Node {
 
     /**
@@ -29,16 +32,29 @@ public interface Node {
      */
     void jjtClose();
 
+
     /**
-     * This pair of methods are used to inform the node of its parent.
+     * Sets the parent of this node.
+     *
+     * @param parent The parent
      */
     void jjtSetParent(Node parent);
 
+
+    /**
+     * Returns the parent of this node.
+     *
+     * @return The parent of the node
+     */
     Node jjtGetParent();
+
 
     /**
      * This method tells the node to add its argument to the node's list of
      * children.
+     *
+     * @param child The child to add
+     * @param index The index to which the child will be added
      */
     void jjtAddChild(Node child, int index);
 
@@ -51,6 +67,12 @@ public interface Node {
      */
     void jjtSetChildIndex(int index);
 
+
+    /**
+     * Gets the index of this node in the children of its parent.
+     *
+     * @return The index of the node
+     */
     int jjtGetChildIndex();
 
     /**
@@ -64,16 +86,27 @@ public interface Node {
     Node jjtGetChild(int index);
 
     /**
-     * Return the number of children the node has.
+     * Returns the number of children the node has.
      */
     int jjtGetNumChildren();
 
     int jjtGetId();
 
+
+    /**
+     * Returns a string token, usually filled-in by the parser, which describes some textual
+     * characteristic of this node. This is usually an identifier, but you should check that
+     * using the Designer. On most nodes though, this method returns {@code null}.
+     */
     String getImage();
 
     void setImage(String image);
 
+    /**
+     * Returns true if this node's image is equal to the given string.
+     *
+     * @param image The image to check
+     */
     boolean hasImageEqualTo(String image);
 
     int getBeginLine();
@@ -88,16 +121,68 @@ public interface Node {
 
     void setDataFlowNode(DataFlowNode dataFlowNode);
 
-    boolean isFindBoundary();
-
-    Node getNthParent(int n);
-
-    <T> T getFirstParentOfType(Class<T> parentType);
-
-    <T> List<T> getParentsOfType(Class<T> parentType);
 
     /**
-     * Traverses the children to find all the instances of type childType.
+     * Returns true if this node is considered a boundary by traversal methods.
+     * Traversal methods such as {@link #getFirstDescendantOfType(Class)} don't
+     * look past such boundaries by default, which is usually the expected thing
+     * to do. For example, in Java, lambdas and nested classes are considered
+     * find boundaries.
+     */
+    boolean isFindBoundary();
+
+
+    /**
+     * Returns the n-th parent or null if there are less than {@code n} ancestors.
+     *
+     * @param n how many ancestors to iterate over.
+     *
+     * @return the n-th parent or null.
+     *
+     * @throws IllegalArgumentException if {@code n} is negative or zero.
+     */
+    Node getNthParent(int n);
+
+
+    /**
+     * Traverses up the tree to find the first parent instance of type
+     * parentType or one of its subclasses.
+     *
+     * @param parentType Class literal of the type you want to find
+     * @param <T>        The type you want to find
+     *
+     * @return Node of type parentType. Returns null if none found.
+     */
+    <T> T getFirstParentOfType(Class<T> parentType);
+
+
+    /**
+     * Traverses up the tree to find all of the parent instances of type
+     * parentType or one of its subclasses. The nodes are ordered
+     * deepest-first.
+     *
+     * @param parentType Class literal of the type you want to find
+     * @param <T>        The type you want to find
+     *
+     * @return List of parentType instances found.
+     */
+    <T> List<T> getParentsOfType(Class<T> parentType);
+
+
+    /**
+     * Gets the first parent that's an instance of any of the given types.
+     *
+     * @param parentTypes Types to look for
+     * @param <T>         Most specific common type of the parameters
+     *
+     * @return The first parent with a matching type. Returns null if there
+     * is no such parent
+     */
+    <T> T getFirstParentOfAnyType(Class<? extends T>... parentTypes);
+
+    /**
+     * Traverses the children to find all the instances of type childType or
+     * one of its subclasses.
      *
      * @see #findDescendantsOfType(Class) if traversal of the entire tree is
      *      needed.
@@ -111,7 +196,7 @@ public interface Node {
 
     /**
      * Traverses down the tree to find all the descendant instances of type
-     * descendantType.
+     * descendantType without crossing find boundaries.
      *
      * @param targetType
      *            class which you want to find.
@@ -148,7 +233,7 @@ public interface Node {
 
     /**
      * Traverses down the tree to find the first descendant instance of type
-     * descendantType.
+     * descendantType without crossing find boundaries.
      *
      * @param descendantType
      *            class which you want to find.
@@ -158,7 +243,7 @@ public interface Node {
     <T> T getFirstDescendantOfType(Class<T> descendantType);
 
     /**
-     * Finds if this node contains a descendant of the given type.
+     * Finds if this node contains a descendant of the given type without crossing find boundaries.
      *
      * @param type
      *            the node type to search
@@ -173,7 +258,7 @@ public interface Node {
      * @param xpathString
      *            the expression to check
      * @return List of all matching nodes. Returns an empty list if none found.
-     * @throws JaxenException
+     * @throws JaxenException if the xpath is incorrect or fails altogether
      */
     List<? extends Node> findChildNodesWithXPath(String xpathString) throws JaxenException;
 
@@ -204,12 +289,12 @@ public interface Node {
 
     /**
      * Set the user data associated with this node.
-     * <p>
-     * PMD itself will never set user data onto a node. Nor should any Rule
+     *
+     * <p>PMD itself will never set user data onto a node. Nor should any Rule
      * implementation, as the AST nodes are shared between concurrently
      * executing Rules (i.e. it is <strong>not</strong> thread-safe).
-     * <p>
-     * This API is most useful for external applications looking to leverage
+     *
+     * <p>This API is most useful for external applications looking to leverage
      * PMD's robust support for AST structures, in which case application
      * specific annotations on the AST nodes can be quite useful.
      *
@@ -217,4 +302,36 @@ public interface Node {
      *            The data to set on this node.
      */
     void setUserData(Object userData);
+
+    /**
+     * Remove the current node from its parent.
+     */
+    void remove();
+
+    /**
+     * This method tells the node to remove the child node at the given index from the node's list of
+     * children, if any; if not, no changes are done.
+     *
+     * @param childIndex
+     *          The index of the child to be removed
+     */
+    void removeChildAtIndex(int childIndex);
+
+
+    /**
+     * Gets the name of the node that is used to match it with XPath queries.
+     *
+     * @return The XPath node name
+     */
+    String getXPathNodeName();
+
+
+    /**
+     * Returns an iterator enumerating all the attributes that are available
+     * from XPath for this node.
+     *
+     * @return An attribute iterator for this node
+     */
+    Iterator<Attribute> getXPathAttributesIterator();
+
 }

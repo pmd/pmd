@@ -10,6 +10,7 @@ package net.sourceforge.pmd.benchmark;
  *
  * @author Brian Remedios
  */
+@Deprecated
 public class StringBuilderCR {
 
     private final String cr;

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Bad example #1
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<script type= "text/javascript"> alert("hello"); </script>
+     ]]></code>
+    <source-type>vm</source-type>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Good example #1
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+There is no script here
+     ]]></code>
+    <source-type>vm</source-type>
+    </test-code>
+    
+    <test-code>
+        <description><![CDATA[
+Good example #2
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<script type="text/javascript" src="somefile.js"></script>
+     ]]></code>
+    <source-type>vm</source-type>
+    </test-code>
+    
+</test-data>

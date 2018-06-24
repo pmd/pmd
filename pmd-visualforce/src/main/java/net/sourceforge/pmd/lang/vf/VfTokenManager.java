@@ -20,10 +20,12 @@ public class VfTokenManager implements TokenManager {
         tokenManager = new VfParserTokenManager(new JavaCharStream(source));
     }
 
+    @Override
     public Object getNextToken() {
         return tokenManager.getNextToken();
     }
 
+    @Override
     public void setFileName(String fileName) {
         VfParserTokenManager.setFileName(fileName);
     }

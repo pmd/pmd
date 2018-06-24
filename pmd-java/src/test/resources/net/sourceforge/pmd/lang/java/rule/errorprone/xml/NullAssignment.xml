@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+initial assignment
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public Object foo() {
+  Object x = null; // OK
+  return x;
+ }       
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad assignment
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  Object x;
+  x = new Object();
+  bar(x);  
+  x = null; // This is bad
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+check test
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  Object x;
+  if (x == null) { // This is OK
+   return;
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+null param on right hand sidel
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  String x = null;
+  x = new String(null);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>null assignment in ternary - initialization</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  String x = bar() ? "fiz" : null;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>null assignment in ternary</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  String x;
+  x = bar() ? "fiz" : null;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>null assignment in ternary, part deux - initialization</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  String x = bar() ? null : "fiz";
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>null assignment in ternary, part deux</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  String x;
+  x = bar() ? null : "fiz";
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+comparison is not assignment
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public String foo() {
+  return x == null ? "42" : x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+final fields must be assigned
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private final String x;
+ public Foo(String y) {
+  if (y == "") x = null;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+1556594 - Wonky detection of NullAssignment
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  assert isRoot() ? parentContext == null : parentContext != null;
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] NullAssignment false positive - initialization #629</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NullAssignmentFP {
+    public void foo() {
+        Type result = someHash.computeIfAbsent(a, _unused -> test ? truthy : null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] NullAssignment false positive - no direct assignment, but lambda #629</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NullAssignmentFP {
+    public void foo() {
+        Type result;
+        result = someHash.computeIfAbsent(a, _unused -> test ? truthy : null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] NullAssignment false positive - return with ternary #629</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NullAssignmentFP {
+    public DateTime foo(DateTime dateTime) {
+        return dateTime.getYear() < 2100 ? dateTime : null;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

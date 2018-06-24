@@ -10,4 +10,9 @@ public class FormalComment extends Comment {
         super(t);
     }
 
+
+    @Override
+    public String getXPathNodeName() {
+        return "FormalComment";
+    }
 }

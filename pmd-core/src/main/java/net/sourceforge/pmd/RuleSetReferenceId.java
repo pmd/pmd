@@ -12,11 +12,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.util.ResourceLoader;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * This class is used to parse a RuleSet reference value. Most commonly used for
@@ -200,7 +198,7 @@ public class RuleSetReferenceId {
                         ruleName = null;
                         allRules = true;
                     } else {
-                        external = externalRuleSetReferenceId != null ? externalRuleSetReferenceId.isExternal() : false;
+                        external = externalRuleSetReferenceId != null && externalRuleSetReferenceId.isExternal();
                         ruleSetFileName = externalRuleSetReferenceId != null
                                 ? externalRuleSetReferenceId.getRuleSetFileName() : null;
                         ruleName = id;
@@ -225,18 +223,13 @@ public class RuleSetReferenceId {
      * @return <code>true</code> if the ruleset could be loaded,
      *         <code>false</code> otherwise.
      */
-    private boolean checkRulesetExists(String name) {
+    private boolean checkRulesetExists(final String name) {
         boolean resourceFound = false;
         if (name != null) {
-            try {
-                InputStream resource = ResourceLoader.loadResourceAsStream(name,
-                        RuleSetReferenceId.class.getClassLoader());
-                if (resource != null) {
-                    resourceFound = true;
-                    IOUtils.closeQuietly(resource);
-                }
-            } catch (RuleSetNotFoundException e) {
-                resourceFound = false;
+            try (InputStream resource = new ResourceLoader().loadClassPathResourceAsStreamOrThrow(name)) {
+                resourceFound = true;
+            } catch (Exception ignored) {
+                // ignored
             }
         }
         return resourceFound;
@@ -258,7 +251,7 @@ public class RuleSetReferenceId {
             int index = name.indexOf('-');
             if (index >= 0) {
                 // Standard short name
-                result = "rulesets/" + name.substring(0, index) + "/" + name.substring(index + 1) + ".xml";
+                result = "rulesets/" + name.substring(0, index) + '/' + name.substring(index + 1) + ".xml";
             } else {
                 // A release RuleSet?
                 if (name.matches("[0-9]+.*")) {
@@ -300,17 +293,14 @@ public class RuleSetReferenceId {
             return false;
         }
 
-        if (stripped.startsWith("http://") || stripped.startsWith("https://")) {
-            return true;
-        }
-
-        return false;
+        return stripped.startsWith("http://") || stripped.startsWith("https://");
     }
 
     private static boolean isValidUrl(String name) {
         if (isHttpUrl(name)) {
             String url = StringUtils.strip(name);
             try {
+                // FIXME : Do we really need to perform a request? if it's a url we should treat it as one even if the server is down
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
                 connection.setRequestMethod("HEAD");
                 connection.setConnectTimeout(ResourceLoader.TIMEOUT);
@@ -394,22 +384,21 @@ public class RuleSetReferenceId {
     }
 
     /**
-     * Try to load the RuleSet resource with the specified ClassLoader. Multiple
+     * Try to load the RuleSet resource with the specified ResourceLoader. Multiple
      * attempts to get independent InputStream instances may be made, so
      * subclasses must ensure they support this behavior. Delegates to an
      * external RuleSetReferenceId if there is one associated with this
      * instance.
      *
-     * @param classLoader
-     *            The ClassLoader to use.
+     * @param rl The {@link ResourceLoader} to use.
      * @return An InputStream to that resource.
      * @throws RuleSetNotFoundException
      *             if unable to find a resource.
      */
-    public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
+    public InputStream getInputStream(final ResourceLoader rl) throws RuleSetNotFoundException {
         if (externalRuleSetReferenceId == null) {
-            InputStream in = StringUtil.isEmpty(ruleSetFileName) ? null
-                    : ResourceLoader.loadResourceAsStream(ruleSetFileName, classLoader);
+            InputStream in = StringUtils.isBlank(ruleSetFileName) ? null
+                    : rl.loadResourceAsStream(ruleSetFileName);
             if (in == null) {
                 throw new RuleSetNotFoundException("Can't find resource '" + ruleSetFileName + "' for rule '" + ruleName
                         + "'" + ".  Make sure the resource is a valid file or URL and is on the CLASSPATH. "
@@ -417,7 +406,7 @@ public class RuleSetReferenceId {
             }
             return in;
         } else {
-            return externalRuleSetReferenceId.getInputStream(classLoader);
+            return externalRuleSetReferenceId.getInputStream(rl);
         }
     }
 
@@ -435,7 +424,7 @@ public class RuleSetReferenceId {
             if (allRules) {
                 return ruleSetFileName;
             } else {
-                return ruleSetFileName + "/" + ruleName;
+                return ruleSetFileName + '/' + ruleName;
             }
 
         } else {

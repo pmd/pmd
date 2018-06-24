@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+TEST1
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(int a) {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+TEST2
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(int a, Object o) {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+TEST3
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(int a, Object o) {
+  int z = a;
+  Object x = o.clone();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+TEST4
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(final int a, Object o) {
+  int z = a;
+  Object x = o.clone();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+TEST5
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(int a, final Object o) {
+  int z = a;
+  Object x = o.clone();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+TEST6
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(final int a, final Object o) {
+  int z = a;
+  Object x = o.clone();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Shouldn't trigger on try blocks
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(final List batch) {
+   try {} catch (Exception e) {}
+   try {} catch (Exception ee) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Skip native methods
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public native void bar(Object x);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Skip abstract methods
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public abstract void bar(Object x);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+self assignment of a method param means it can't be final
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(int a) {
+  x[a++] = 1;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+same as above but prefix vs postfix
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(int a) {
+  x[--a] = 1;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+same as above but with extra parenthesis
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(int a) {
+  x[--(a)] = 1;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bug 1808158 - Constructor args could also be final
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ int field;
+ public Foo(int a) {
+  this.field = a;
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

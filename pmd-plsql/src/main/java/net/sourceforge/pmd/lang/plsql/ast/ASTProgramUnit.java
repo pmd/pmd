@@ -19,6 +19,7 @@ public class ASTProgramUnit extends AbstractPLSQLNode implements ExecutableCode,
     }
 
     /** Accept the visitor. **/
+    @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

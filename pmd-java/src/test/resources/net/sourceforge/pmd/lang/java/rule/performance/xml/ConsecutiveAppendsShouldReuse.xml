@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+1, Single append, should be ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
+   public void bar() {
+       StringBuffer sb = new StringBuffer(15);
+       sb.append("foo");
+   }
+   
+   public void bar2() {
+       StringBuilder sb = new StringBuilder(15);
+       sb.append("foo");
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+2, Consecutive appends with reuse, should be ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
+   public void bar() {
+       StringBuffer sb = new StringBuffer(15);
+       sb.append("Hello").append("World");
+   }
+   
+   public void bar2() {
+       StringBuilder sb = new StringBuilder(15);
+       sb.append("Hello").append("World");
+   }
+}
+     ]]></code>
+    </test-code>
+	<test-code>
+	    <description><![CDATA[
+3, Single append on different method, should be ok
+	     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
+   public void bar() {
+       StringBuffer sb = new StringBuffer(15);
+       sb.append("Hello");
+   }
+   
+   public void bar2() {
+       StringBuffer sb = new StringBuffer(15);
+       sb.append("Hello");
+   }
+   
+   public void bar3() {
+       StringBuilder sb = new StringBuilder(15);
+       sb.append("Hello");
+   }
+   
+   public void bar4() {
+       StringBuilder sb = new StringBuilder(15);
+       sb.append("Hello");
+   }
+}
+     ]]></code>
+    </test-code>			
+    <test-code>
+	        <description><![CDATA[
+4, Single append on different objects, should be ok
+	     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
+   public void bar() {
+       StringBuffer sb = new StringBuffer(15);
+       sb.append("Hello");
+       StringBuffer sb2 = new StringBuffer(15);
+       sb2.append("World");
+   }
+   
+   public void bar2() {
+       StringBuilder sb = new StringBuilder(15);
+       sb.append("Hello");
+       StringBuilder sb2 = new StringBuilder(15);
+       sb2.append("World");
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+5, Consecutive literal appends without reuse, not ok
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
+   public void bar() {
+       StringBuffer sb = new StringBuffer(15);
+       sb.append("Hello");
+       sb.append("World");
+   }
+   
+   public void bar2() {
+       StringBuilder sb = new StringBuilder(15);
+       sb.append("Hello");
+       sb.append("World");
+   }
+}
+     ]]></code>
+    </test-code>   
+        <test-code>
+        <description><![CDATA[
+6, Consecutive variable appends without reuse, not ok
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
+   public void bar() {
+       StringBuffer sb = new StringBuffer(15);
+       String foo = "Hello";
+       String foo2 = "World";
+       sb.append(foo);
+       sb.append(foo2);
+   }
+   
+   public void bar2() {
+       StringBuilder sb = new StringBuilder(15);
+       String foo = "Hello";
+       String foo2 = "World";
+       sb.append(foo);
+       sb.append(foo2);
+   }
+}
+     ]]></code>
+    </test-code> 
+    <test-code>
+        <description><![CDATA[
+7, Consecutive appends in different blocks, should be ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
+   public void bar() {
+       StringBuffer sb = new StringBuffer(15);
+       sb.append("Hello");
+       while(true) {
+          sb.append("World");
+       }
+   }
+   
+   public void bar2() {
+       StringBuffer sb = new StringBuffer(15);
+       sb.append("Hello");
+       if(true) {
+          sb.append("World");
+       }
+   }
+   
+   public void bar3() {
+       StringBuilder sb = new StringBuilder(15);
+       sb.append("Hello");
+       while(true) {
+          sb.append("World");
+       }
+   }
+   
+   public void bar4() {
+       StringBuilder sb = new StringBuilder(15);
+       sb.append("Hello");
+       if(true) {
+          sb.append("World");
+       }
+   }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1180 False Positive for ConsecutiveAppendsShouldReuse on different variable names</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuilder columns = new StringBuilder();
+        StringBuilder values = new StringBuilder();
+
+        columns.append(',');
+        values.append(',');
+    }
+    public void bar2() {
+        StringBuffer columns = new StringBuffer();
+        StringBuffer values = new StringBuffer();
+
+        columns.append(',');
+        values.append(',');
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1370 ConsecutiveAppendsShouldReuse not detected properly on StringBuffer</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        final StringBuffer stringBuffer = new StringBuffer().append("agrego ").append("un ");
+        stringBuffer.append("string ");
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1370 ConsecutiveAppendsShouldReuse not detected properly on StringBuffer - part 2</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
+        <code><![CDATA[
+public class StringBufferTest {
+    private static String TAG = "TAG";
+    public void test() {
+         final StringBuffer stringBuffer2 = new StringBuffer();
+        // the following 2 lines are reported as ConsecutiveAppendsShouldReuse
+        stringBuffer2.append("agrego ");
+        stringBuffer2.append("un ");
+        stringBuffer2.append("string ");    // but not on this one
+        Log.i(TAG, stringBuffer2.toString());
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1370 ConsecutiveAppendsShouldReuse not detected properly on StringBuffer - part 3</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        final StringBuffer stringBuffer; // declaration of the var is a different statement
+        stringBuffer = new StringBuffer().append("agrego ").append("un ");
+        stringBuffer.append("string ");
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1051 ConsecutiveAppendsShouldReuse not detect on parameter</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void asd(StringBuilder builder, String b) {
+        builder.append("asd");
+        builder.append(b);
+        builder.append(123);
+	}
+}
+        ]]></code>
+    </test-code>
+</test-data>

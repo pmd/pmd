@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ int x;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+interface methods are always public
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ void bar();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+interface field are always public
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ int bar = 10;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad
+        ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+ }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1410 DefaultPackage triggers on field annotated with @VisibleForTesting</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @VisibleForTesting static final int[] ints = {};
+}
+        ]]></code>
+    </test-code>
+</test-data>

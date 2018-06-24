@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>
+            <![CDATA[
+protected method clone with Object as return type
+            ]]>
+        </description>
+        <expected-problems>1</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo implements Cloneable {
+    @Override
+    protected Object clone() {
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>
+            <![CDATA[
+public method clone with Object as return type
+            ]]>
+        </description>
+        <expected-problems>1</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo implements Cloneable {
+    @Override
+    public Object clone() {
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>
+            <![CDATA[
+final class with public method clone
+            ]]>
+        </description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+public final class Foo implements Cloneable {
+    @Override
+    public Foo clone() {
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>
+            <![CDATA[
+final class with public method clone with Object as return type
+            ]]>
+        </description>
+        <expected-problems>1</expected-problems>
+        <code>
+            <![CDATA[
+public final class Foo implements Cloneable {
+    @Override
+    public Object clone() {
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>
+            <![CDATA[
+protected method clone with return type as the class name
+            ]]>
+        </description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo implements Cloneable {
+    @Override
+    protected Foo clone() {
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>
+            <![CDATA[
+public method clone with return type as the class name
+            ]]>
+        </description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo implements Cloneable {
+    @Override
+    public Foo clone() {
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+</test-data>

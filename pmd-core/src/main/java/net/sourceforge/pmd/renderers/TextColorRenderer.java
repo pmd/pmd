@@ -18,7 +18,7 @@ import org.apache.commons.io.IOUtils;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * <p>
@@ -67,6 +67,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
     private String yellowBold = "";
     private String whiteBold = "";
     private String redBold = "";
+    private String red = "";
     private String cyan = "";
     private String green = "";
 
@@ -96,6 +97,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
             this.yellowBold = "\u001B[1;33m";
             this.whiteBold = "\u001B[1;37m";
             this.redBold = "\u001B[1;31m";
+            this.red = "\u001B[0;31m";
             this.green = "\u001B[0;32m";
             this.cyan = "\u001B[0;36m";
 
@@ -107,12 +109,9 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         return property != null && !("0".equals(property) || "false".equalsIgnoreCase(property));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void end() throws IOException {
-        StringBuffer buf = new StringBuffer(500);
+        StringBuilder buf = new StringBuilder(500);
         buf.append(PMD.EOL);
         initializeColorsIfSupported();
         String lastFile = null;
@@ -157,13 +156,24 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
                 buf.append(this.redBold + "*" + this.colorReset + " file: " + this.whiteBold
                         + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);
             }
-            buf.append(this.green + "    err:  " + this.cyan + error.getMsg() + this.colorReset + PMD.EOL + PMD.EOL);
+            buf.append(this.green + "    err:  " + this.cyan + error.getMsg() + this.colorReset + PMD.EOL)
+                .append(this.red).append(error.getDetail()).append(colorReset).append(PMD.EOL).append(PMD.EOL);
+            writer.write(buf.toString());
+        }
+        
+        for (Iterator<Report.ConfigurationError> i = report.configErrors(); i.hasNext();) {
+            buf.setLength(0);
+            numberOfErrors++;
+            Report.ConfigurationError error = i.next();
+            buf.append(this.redBold + "*" + this.colorReset + " rule: " + this.whiteBold
+                    + error.rule().getName() + this.colorReset + PMD.EOL);
+            buf.append(this.green + "    err:  " + this.cyan + error.issue() + this.colorReset + PMD.EOL + PMD.EOL);
             writer.write(buf.toString());
         }
 
         // adding error message count, if any
         if (numberOfErrors > 0) {
-            writer.write(this.redBold + "*" + this.colorReset + " errors:   " + this.whiteBold + numberOfWarnings
+            writer.write(this.redBold + "*" + this.colorReset + " errors:   " + this.whiteBold + numberOfErrors
                     + this.colorReset + PMD.EOL);
         }
         writer.write(this.yellowBold + "*" + this.colorReset + " warnings: " + this.whiteBold + numberOfWarnings

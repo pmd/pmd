@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
 	<test-code>
-		<description>Apex class without sharing</description>
+		<description>Apex class that is queued</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
-public class Foo {
+public class FooBar implements Database.Batchable {
 	public void test1() {
+		List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
 	}
 }
 		]]></code>
@@ -48,7 +52,7 @@ public class Foo {
 		<code><![CDATA[
 public class Foo {
 	public List<SObject> test1() {
-		return Database.query("Select Id from Account LIMIT 100");
+		return Database.query('Select Id from Account LIMIT 100');
 	}
 }
 		]]></code>
@@ -61,7 +65,7 @@ public class Foo {
 		<code><![CDATA[
 public with sharing class Foo {
 	public List<SObject> test1() {
-		return Database.query("Select Id from Account LIMIT 100");
+		return Database.query('Select Id from Account LIMIT 100');
 	}
 }
 		]]></code>

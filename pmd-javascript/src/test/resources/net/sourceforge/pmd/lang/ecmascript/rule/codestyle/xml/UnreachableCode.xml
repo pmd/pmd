@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Ok, return
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+function foo() {
+   return 1;
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, loop continue
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+while (true) {
+   continue;
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, loop break;
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+while (true) {
+   break;
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, switch break
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+switch (foo) {
+   case 1:
+      break;
+   case 2:
+      break;
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, throw
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+if (true) {
+   throw new Error();
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, return
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+function foo() {
+   return 1;
+   x = 1;
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, loop continue
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+while (true) {
+   continue;
+   x = 1;
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, loop break;
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+while (true) {
+   break;
+   x = 1;
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, switch break
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+switch (foo) {
+   case 1:
+      break;
+      x = 1;
+   case 2:
+      break;
+      x = 1;
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, throw
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+if (true) {
+   throw new Error();
+   x = 1;
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+</test-data>

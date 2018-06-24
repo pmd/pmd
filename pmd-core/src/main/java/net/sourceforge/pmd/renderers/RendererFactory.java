@@ -14,14 +14,14 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * This class handles the creation of Renderers.
  *
  * @see Renderer
  */
-public class RendererFactory {
+public final class RendererFactory {
 
     private static final Logger LOG = Logger.getLogger(RendererFactory.class.getName());
 
@@ -42,6 +42,7 @@ public class RendererFactory {
         map.put(YAHTMLRenderer.NAME, YAHTMLRenderer.class);
         map.put(SummaryHTMLRenderer.NAME, SummaryHTMLRenderer.class);
         map.put(VBHTMLRenderer.NAME, VBHTMLRenderer.class);
+        map.put(EmptyRenderer.NAME, EmptyRenderer.class);
         REPORT_FORMAT_TO_RENDERER = Collections.unmodifiableMap(map);
     }
 
@@ -128,8 +129,8 @@ public class RendererFactory {
             if (!Modifier.isPublic(constructor.getModifiers())) {
                 constructor = null;
             }
-        } catch (NoSuchMethodException e) {
-            // Ok
+        } catch (NoSuchMethodException ignored) {
+            // Ignored, we'll check default constructor next
         }
 
         // 2) No-arg constructor?
@@ -138,8 +139,8 @@ public class RendererFactory {
             if (!Modifier.isPublic(constructor.getModifiers())) {
                 constructor = null;
             }
-        } catch (NoSuchMethodException e2) {
-            // Ok
+        } catch (NoSuchMethodException ignored) {
+            // Ignored, we'll eventually throw an exception, if there is no constructor
         }
 
         if (constructor == null) {

@@ -100,7 +100,7 @@ public final class PMDASMClassLoader extends ClassLoader {
     }
 
     public synchronized Map<String, String> getImportedClasses(String name) throws ClassNotFoundException {
-        if (dontBother.containsValue(name)) {
+        if (dontBother.containsKey(name)) {
             throw new ClassNotFoundException(name);
         }
         try (InputStream classResource = getResourceAsStream(name.replace('.', '/') + ".class")) {

@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.vf.ast.VfParserVisitorAdapter;
 
 public class VfRuleChainVisitor extends AbstractRuleChainVisitor {
 
+    @Override
     protected void indexNodes(List<Node> nodes, RuleContext ctx) {
         VfParserVisitor vfParserVisitor = new VfParserVisitorAdapter();
 
@@ -26,6 +27,7 @@ public class VfRuleChainVisitor extends AbstractRuleChainVisitor {
         }
     }
 
+    @Override
     protected void visit(Rule rule, Node node, RuleContext ctx) {
         // Rule better either be a vfParserVisitor, or a XPathRule
         if (rule instanceof VfParserVisitor) {

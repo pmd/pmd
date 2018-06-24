@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+!=, bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  x = a != b ? c : d;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+==, good
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  x = a == b ? c : d;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+!= inside if, bad
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if(true){
+  x = a != b ? c : d;
+ } else {
+  x = a != b ? c : d;
+ }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+match && match, not confusing, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  x = ((x && y) ? y : z);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>A couple of bad and good cases</description>
+        <expected-problems>34</expected-problems>
+        <code><![CDATA[
+public class BadTernaries {
+  public static void main(String[] args) {
+    int i = 0;
+    int j = 1;
+    int k = 2;
+    boolean x = true;
+    boolean y = false;
+    boolean z = true;
+
+    // flag all of these, lines 11 - 42:
+    if (i != 11) {a();} else {b();}
+    if (i != 12 && j != 0) {a();} else {b();}
+    if (i != 13 || j != 0) {a();} else {b();}
+    if (i != 14 && j != 0 && k != 0) {a();} else {b();}
+    if (i != 15 || j != 0 || k != 0) {a();} else {b();}
+    if (i != 16) {a();} else if (i != j) {b();} else{c();}
+    if (i != 17) {a();} else if (i == j) {b();} else{c();}
+    if (i == 18) {a();} else if (i != j) {b();} else{c();}
+    x = (!y ? x : y);
+    x = (!(x && y) ? y : z);
+    x = (!(x || y) ? y : z);
+    x = ((!x && !y) ? y : z);
+    x = ((!x || !y) ? y : z);
+    if (i != 24 && !x) {a();} else {b();}
+    if (i != 25 || !x) {a();} else {b();}
+    if (i != 26 && j != 0 && !y) {a();} else {b();}
+    if (i != 27 || j != 0 || !y) {a();} else {b();}
+    if (i != 28) {a();} else if (!x) {b();} else{c();}
+    if (i != 29) {a();} else if (x) {b();} else{c();}
+    if (i == 30) {a();} else if (!x) {b();} else{c();}
+    x = !(c() == y) ? y : !z;
+    if (!c()) {a();} else {b();}
+    if (c() != x) {a();} else {b();}
+    if (!c() != x) {a();} else {b();}
+    if (!c() != !x) {a();} else {b();}
+    if ((i != 36) || !(j == 0)) {a();} else {b();}
+    if ((i != 37) || !(x ? y : z)) {a();} else {b();}
+    if ((i != 38)) {a();} else {b();}
+    if (i != 39 || (j != 0 || k != 0)) {a();} else {b();}
+    if (i != 40 && (j != 0 && k != 0)) {a();} else {b();}
+    if (!x && (j != 41 && k != 0)) {a();} else {b();}
+    if (((x != y)) || !(x)) { a(); } else { b(); }
+
+    // don't flag these:
+    if (i != 0) {a();}
+    if (!x) {a();}
+    if (i == 0) {a();} else {b();}
+    if (i == 0 && j != 0) {a();} else {b();}
+    if (i == 0 || j != 0) {a();} else {b();}
+    if (i == 0 && !x) {a();} else {b();}
+    if (x) {a();} else {b();}
+    if (x ? y : !z) {a();} else {b();}
+    if (c() == !x) {a();} else {b();}
+    if (c() ? !x : !c()) {a();} else {b();}
+    if (!x && d() instanceof String) {a();} else {b();}
+    if (!x && (d() instanceof String)) {a();} else {b();}
+  }
+
+  private static void a() { }
+  private static void b() { }
+  private static boolean c() { return true; }
+  private static Object d() { return null; }
+}
+        ]]></code>
+    </test-code>
+    <code-fragment id="code-1161-confusing-ternary-ignore-else-if"><![CDATA[
+public class Test {
+  public void foo() {
+    if (!condition) {
+    }
+    else if (otherCondition) {
+    }
+    else {
+    }
+  }
+}
+        ]]></code-fragment>
+    <test-code>
+        <description>#1161 Confusing Ternary should skip else if statements (or have a property to do so) (ignoreElseIf=false)</description>
+        <rule-property name="ignoreElseIf">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="code-1161-confusing-ternary-ignore-else-if"/>
+    </test-code>
+    <test-code>
+        <description>#1161 Confusing Ternary should skip else if statements (or have a property to do so) (ignoreElseIf=true)</description>
+        <rule-property name="ignoreElseIf">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="code-1161-confusing-ternary-ignore-else-if"/>
+    </test-code>
+    <test-code>
+        <description>#1198 ConfusingTernary does not ignore else if blocks even when property is set</description>
+        <rule-property name="ignoreElseIf">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (noSave) {
+            //continue on
+        } else {
+            if (goBack == "Step") {
+                //do logic
+            } else if (currentStateID != -1 && selectedNextState != -2) {
+                //do different logic
+            } else {
+                //more logic
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

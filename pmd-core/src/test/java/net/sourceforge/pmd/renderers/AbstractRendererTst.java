@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
@@ -36,9 +37,17 @@ public abstract class AbstractRendererTst {
     public String getExpectedError(ProcessingError error) {
         return "";
     }
+    
+    public String getExpectedError(ConfigurationError error) {
+        return "";
+    }
 
     public String filter(String expected) {
         return expected;
+    }
+
+    protected String getSourceCodeFilename() {
+        return "n/a";
     }
 
     @Test(expected = NullPointerException.class)
@@ -46,27 +55,27 @@ public abstract class AbstractRendererTst {
         getRenderer().renderFileReport(null);
     }
 
-    private static Report reportOneViolation() {
+    private Report reportOneViolation() {
         Report report = new Report();
         report.addRuleViolation(newRuleViolation(1));
         return report;
     }
 
-    private static Report reportTwoViolations() {
+    private Report reportTwoViolations() {
         Report report = new Report();
         report.addRuleViolation(newRuleViolation(1));
         report.addRuleViolation(newRuleViolation(2));
         return report;
     }
 
-    private static RuleViolation newRuleViolation(int endColumn) {
+    private RuleViolation newRuleViolation(int endColumn) {
         DummyNode node = createNode(endColumn);
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("n/a");
+        ctx.setSourceCodeFilename(getSourceCodeFilename());
         return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, "blah");
     }
 
-    private static DummyNode createNode(int endColumn) {
+    protected static DummyNode createNode(int endColumn) {
         DummyNode node = new DummyNode(1);
         node.testingOnlySetBeginLine(1);
         node.testingOnlySetBeginColumn(1);
@@ -79,7 +88,7 @@ public abstract class AbstractRendererTst {
     public void testRuleWithProperties() throws Exception {
         DummyNode node = createNode(1);
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("n/a");
+        ctx.setSourceCodeFilename(getSourceCodeFilename());
         Report report = new Report();
         RuleWithProperties theRule = new RuleWithProperties();
         theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,
@@ -113,8 +122,17 @@ public abstract class AbstractRendererTst {
     @Test
     public void testError() throws Exception {
         Report rep = new Report();
-        Report.ProcessingError err = new Report.ProcessingError("Error", "file");
+        Report.ProcessingError err = new Report.ProcessingError(new RuntimeException("Error"), "file");
         rep.addError(err);
+        String actual = ReportTest.render(getRenderer(), rep);
+        assertEquals(filter(getExpectedError(err)), filter(actual));
+    }
+    
+    @Test
+    public void testConfigError() throws Exception {
+        Report rep = new Report();
+        Report.ConfigurationError err = new Report.ConfigurationError(new FooRule(), "a configuration error");
+        rep.addConfigError(err);
         String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(filter(getExpectedError(err)), filter(actual));
     }

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 Empty abstract method should trigger the rule nonetheless
@@ -48,6 +51,28 @@ public abstract class Foo {
 	public int otherField;
 
 	public abstract void m();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+#438 An abstract AutoValue class with no methods, no violation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.google.auto.value.AutoValue;
+
+@AutoValue public abstract class Something implements Some {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+#438 An abstract AutoValue class with no methods and fully qualified annotation, no violation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@com.google.auto.value.AutoValue public abstract class Something implements Some {
 }
      ]]></code>
     </test-code>

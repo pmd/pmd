@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+one
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>System.out.println is used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+ private void foo() { 
+ 	System.out.println("debug message");  
+ }  
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+many
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>System.out.println is used</message>
+            <message>System.out.println is used</message>
+            <message>System.out.println is used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+ private void foo1() { 
+ 	System.out.println("debug message");  
+ }  
+ private void foo2() { 
+ 	System.out.println("debug message");  
+ 	System.out.println("debug message");  
+ }  
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+none
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void foo() { 
+ 	int x = 2;  
+ }  
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1217 SystemPrintln always says "System.out.print is used"</description>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>System.out.print is used</message>
+            <message>System.out.println is used</message>
+            <message>System.err.print is used</message>
+            <message>System.err.println is used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class TestPrintLn {
+    public static void main(String args[]) {
+        System.out.print("Print out");
+        System.out.println("Print out line");
+        System.err.print("Print err");
+        System.err.println("Print err line");
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

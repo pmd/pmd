@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -13,9 +14,8 @@ import java.util.Set;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ParserTst;
 
-public class ASTLiteralTest extends ParserTst {
+public class ASTLiteralTest {
 
     @Test
     public void testIsStringLiteral() {
@@ -59,6 +59,46 @@ public class ASTLiteralTest extends ParserTst {
         assertTrue((literals.iterator().next()).isCharLiteral());
     }
 
+    @Test
+    public void testIntValueParsing() {
+        ASTLiteral literal = new ASTLiteral(1);
+        literal.setIntLiteral();
+        literal.setImage("1___234");
+        literal.testingOnlySetBeginColumn(1);
+        literal.testingOnlySetEndColumn(7);
+        assertEquals(1___234, literal.getValueAsInt());
+    }
+    
+    @Test
+    public void testIntValueParsingBinary() {
+        ASTLiteral literal = new ASTLiteral(1);
+        literal.setIntLiteral();
+        literal.setImage("0b0000_0010");
+        literal.testingOnlySetBeginColumn(1);
+        literal.testingOnlySetEndColumn(7);
+        assertEquals(0b0000_0010, literal.getValueAsInt());
+    }
+    
+    @Test
+    public void testIntValueParsingNegativeHexa() {
+        ASTLiteral literal = new ASTLiteral(1);
+        literal.setIntLiteral();
+        literal.setImage("-0X0000_000f");
+        literal.testingOnlySetBeginColumn(1);
+        literal.testingOnlySetEndColumn(7);
+        assertEquals(-0X0000_000f, literal.getValueAsInt());
+    }
+    
+    @Test
+    public void testFloatValueParsingNegative() {
+        ASTLiteral literal = new ASTLiteral(1);
+        literal.setIntLiteral();
+        literal.setImage("-3_456.123_456");
+        literal.testingOnlySetBeginColumn(1);
+        literal.testingOnlySetEndColumn(7);
+        assertEquals(-3_456.123_456f, literal.getValueAsFloat(), 0);
+    }
+    
     @Test
     public void testStringUnicodeEscapesNotEscaped() {
         ASTLiteral literal = new ASTLiteral(1);

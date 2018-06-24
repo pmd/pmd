@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="full-example">
+        <![CDATA[
+          public class Foo {
+            int y, z, t;
+            String q;
+
+            {
+              bar();
+              int x;
+              switch (x) {
+              case 1: foo(); break;
+              case 2:
+              case 3: bar(); break;
+              default: break;
+              }
+            }
+
+            public void foo() {}
+
+            public static void main(String args[]) {
+              String k, l, m;
+
+              bar();
+
+              do {
+                x++;
+              } while (x < 2);
+
+              while (x < 4) {
+                x++;
+              }
+
+              for (int i = 1; x < 6; ) {
+                x += i;
+              }
+
+              {
+                x++;;;;;
+              }
+
+              int p =
+                2 + 4 + 5;
+
+              try {
+                x++;
+              } catch (ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
+              } finally {
+                // Do nothing
+              }
+
+              bar();
+              x = (int) bar();
+              /*
+               * This is
+               * a comment
+               */
+              x.foobar();
+            }
+          }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Full example</description>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 58 highest 40.</message>
+            <message>'Foo#foo()' has value 1.</message>
+            <message>'Foo#main(String)' has value 40.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Empty method</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 5 highest 3.</message>
+            <message>'Foo#foo()' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+              public class Foo {
+                void foo() {
+                  // Comment is counted
+                }
+              }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Empty class</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 2 highest 0.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+              public class Foo {
+              }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Switch</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 12 highest 10.</message>
+            <message>'Foo#foo()' has value 10.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+              public class Foo {
+                void foo() {
+                  int x;
+                  switch (x) {
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4: foo(); break;
+                    default: break;
+                  }
+                }
+              }
+            ]]>
+        </code>
+    </test-code>
+</test-data>

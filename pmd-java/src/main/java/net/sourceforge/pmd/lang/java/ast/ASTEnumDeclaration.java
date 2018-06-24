@@ -5,7 +5,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTEnumDeclaration extends AbstractJavaAccessTypeNode {
+import java.util.List;
+
+public class ASTEnumDeclaration extends AbstractAnyTypeDeclaration {
+
+
     public ASTEnumDeclaration(int id) {
         super(id);
     }
@@ -14,8 +18,21 @@ public class ASTEnumDeclaration extends AbstractJavaAccessTypeNode {
         super(p, id);
     }
 
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
+
+    @Override
+    public TypeKind getTypeKind() {
+        return TypeKind.ENUM;
+    }
+
+
+    @Override
+    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
+        return getFirstChildOfType(ASTEnumBody.class)
+            .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
+    }
 }

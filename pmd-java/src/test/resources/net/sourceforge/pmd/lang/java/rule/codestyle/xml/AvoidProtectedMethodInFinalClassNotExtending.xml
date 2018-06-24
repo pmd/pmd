@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+ok, protected method in non final class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ protected int bar() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad, protected method in final class that doesn't extend anything
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+ protected int bar(){}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad, protected method in final class that doesn't extend anything but implements interface
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public final class Foo implements Serializable {
+ protected int bar(){}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, protected method in final class that does extend something
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo extends Bar {
+ protected int bar(){}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, private method in final class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+ private int bar(){}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+protected method in non-final inner class is ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+ private class Bar { protected int baz(){} }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+protected method in final inner class that extends something is ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+ private final class Bar extends Serializable { protected int baz(){} }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+protected method in final inner class that does not extend something is bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private final class Bar { protected int baz(){} }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1241 False+ AvoidProtectedMethodInFinalClassNotExtending</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+private final class Dummy {
+    @Override
+    protected void finalize() {
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

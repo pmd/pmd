@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Correct Syntax</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+create or replace package inline_pragma_ok is
+
+end;
+/
+
+create or replace package body inline_pragma_ok is
+  procedure do_transaction(p_input_token        in varchar(200)) is
+    PRAGMA AUTONOMOUS_TRANSACTION;
+  begin
+    bno74.log_hentglass_request(p_hentglass_request
+                               ,v_logging_req_seq_no);
+    COMMIT;
+   end do_transaction;
+
+end inline_pragma_ok;
+/
+]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Wrong Syntax</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+create or replace package inline_pragma_error is
+
+end;
+/
+
+create or replace package body inline_pragma_error is
+  procedure do_transaction(p_input_token        in varchar(200)) is
+
+  begin
+    PRAGMA AUTONOMOUS_TRANSACTION;
+    bno74.log_hentglass_request(p_hentglass_request
+                               ,v_logging_req_seq_no);
+    COMMIT;
+   end do_transaction;
+
+end inline_pragma_error;
+/
+]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+</test-data>
+

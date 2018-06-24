@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+concatenating a literal to a method return value
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void baz() {
+  StringBuffer sb = new StringBuffer();
+  sb.append("hello"+ world()); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+same as TEST1, but in SB constructor
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void baz() {
+  StringBuffer sb = new StringBuffer("hello"+ world());
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+chained appends
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void baz() {
+  StringBuffer sb = new StringBuffer();
+  sb.append("hello").append(world()); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+concatenating two literals in SB constructor
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void baz() {
+  StringBuffer sb = new StringBuffer("hello"+ "world");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+concatenating two literals post-construction
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void baz() {
+  StringBuffer sb = new StringBuffer();
+  sb.append("hello"+"world"); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+case where concatenation is not a child of a BlockStatement, but instead is a child of an ExplicitConstructorInvocation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public Foo() {
+  super("CauseMsg:" + ex.getMessage(), ex); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+don't error out on array instantiation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  int t[] = new int[x+y+1];
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+usage of the StringBuffer constructor that takes an int
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int foor() {return 2;}
+ public void bar(int x) {
+  StringBuffer buf = new StringBuffer(1 + foo());
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+nested
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(int x) {
+  StringBuffer buf = new StringBuffer(x);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+looking up too high
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  if (foo) {
+   StringBuffer buf = new StringBuffer();
+   buf.append("hello");
+   Object x = a("world" + x, buf.toString());
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+looking too deep
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(int i) {
+  StringBuffer buf = new StringBuffer();
+  buf.append(getFoo(getBar(i + "hi")));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+concatenating two non-literals
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(String a, String b) {
+  StringBuffer buf = new StringBuffer();
+  buf.append(a + b);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+concatenating method + int
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(Date a) {
+  StringBuffer buf = new StringBuffer();
+  buf.append(a.getYear() + 1900);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+JTextArea.append
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(JTextArea jta) {
+  jta.append(f + "hi");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+don't get thrown off by a buried literal
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void baz() {
+  StringBuffer sb = new StringBuffer("hello"+ System.getProperty("blah"));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+sb.delete shouldn't trigger it
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(StringBuffer sb) {
+  sb.delete(x, y+z);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip additions involving static finals, compiler will do constant folding for these
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static final String FOO = "bar";
+ public void bar(StringBuffer sb) {
+  sb.append("foo" + FOO);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+for statement without braces
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void baz() {
+  StringBuffer sb = new StringBuffer();
+  for(int ix = 0; ix < 100; ix++) 
+      sb.append("hello"+ world()); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+if statement without braces
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void baz() {
+  StringBuffer sb = new StringBuffer();
+  if(true) 
+      sb.append("hello"+ world()); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+3 args version of StringBuffer.append
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void baz(StringBuffer s, char[] chars, int start, int end) {
+  s.append(chars, start, start - end);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+compile-time concats are ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void baz() {
+StringBuffer buffer = new StringBuffer(
+"a" + "b" + "c");
+} }
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+compile-time concats are ok, v2
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+static final String BAR = "foo";
+ private void baz() {
+StringBuffer buffer = new StringBuffer(
+"a" + BAR + "b" + BAR);
+} }
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+1503099, init with two string lengths
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(String str1, String str2) {
+  StringBuffer buf = new StringBuffer(str1.length() + str2.length());
+  buf.append(str1);
+  buf.append(str2);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+1503099, append with two string lengths
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(String str1, String str2) {
+  StringBuffer buf = new StringBuffer();
+  buf.append(str1.length() + str2.length());
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+3109408, false + with adding two integers in constructor
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void method() {
+        int initialSizeGlobal = (int) (profilingContext.m_profileItems.size() * (150.0 * 0.30));
+        int initialSizeDetail = s_profiling_details_enabled ? profilingContext.m_overallProfileItems.size() * 150 : 0;
+        StringBuilder sb = new StringBuilder(initialSizeGlobal + initialSizeDetail);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+1503099, adding two integers
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(int a, int b, long c, long d) {
+  StringBuffer buf = new StringBuffer();
+  buf.append(a + b);
+  buf.append(c - d);
+  
+  String str1 = "a";
+  String str2 = "b";
+  StringBuffer sb = new StringBuffer(str1.length() + str2.length());
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+bad, toArray() with cast
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  Collection c = new ArrayList();
+  c.add(new Integer(1));
+  Integer[] a=(Integer [])c.toArray();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, no cast
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  Collection c = new ArrayList();
+  c.add(new Integer(1));
+  Integer[] a = (Integer [])c.toArray(new Integer[c.size()]);;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ensuring we don't have a few specific false positives, see bug 1697397
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	String bar(Vector vec) {
+		return (String)vec.toArray().toString();
+ 	}
+ 	String foo(Vector vec) {
+		return (String)vec.toArray()[0];
+ 	}
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#975 false positive in ClassCastExceptionWithToArray</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.dbutils.*;
+import org.apache.commons.dbutils.handlers.*;
+
+public class Test {
+    public void foo() {
+        QueryRunner qr = getQueryRunner();
+        List<?> parms = new java.util.ArrayList();
+        // public <T> T QueryRunner.query(String sql, ResultSetHandler<T> rsh, Object... params)
+        String result = (String) qr.query( sql, new ScalarHandler(), parms.toArray() );
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#998 False positive ClassCastExceptionWithToArray with generics</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static E[] toArrayWrapped(Collection c) {
+        // although you won't get a classcastexception here on the following line
+        E[] retVal = (E[]) c.toArray();
+        // you'll get it later on, when you try to use the return value.
+        // Depending on the Collection implementation, this method
+        // still returns an Object[] array type, and not E[].
+        return retVal;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

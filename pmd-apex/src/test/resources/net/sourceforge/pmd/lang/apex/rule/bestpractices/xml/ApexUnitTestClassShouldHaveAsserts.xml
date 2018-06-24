@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Problematic apex unit test - no assert calls</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@isTest
+public class Foo {
+   public static testMethod void testSomething() {
+      Account a = null;
+      // This is better than having a NullPointerException
+      // System.assertNotEquals(a, null, 'account not found');
+      a.toString();
+   }
+}
+		]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1543 [apex] ApexUnitTestClassShouldHaveAsserts assumes APEX is case sensitive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest
+public class Foo {
+   public static testMethod void testSomething() {
+      Account a = null;
+      SYSTEM.AssertNotEquals(a, null, 'account not found');
+   }
+}
+		]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1521 [apex] ApexUnitTestClassShouldHaveAsserts: Parsing error on APEX class: expected one element but was: &lt;BlockStatement, BlockStatement&gt;</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest
+private class C2_Assignment_Report_Job_Test {
+    
+    public static testMethod void testCreateAssignmentsForDifferentRoles() {
+        User u = C2_Test_Utils.getWFUser('testWfc', true);
+        System.runAs(u) {
+            C2_Assignment_Report_Data_Aggregate_Job job = new C2_Assignment_Report_Data_Aggregate_Job();
+            String query = job.start(null).getQuery();
+            C2_Receiver_Unit__c ru = new C2_Receiver_Unit__c(Name='RU1');
+            insert ru;
+            List<C2_Case__c> cases = new List<C2_Case__c>();
+            cases.add(new C2_Case__c(Name='TT0000000', Queue__c = 'PA-CSA', Status__c=C2_Case_Util.STATUS_NEW, PA_CSA__c=u.Id, DSA__c=u.Id, QR_CSA__c=u.Id, Receiver_Unit__c=ru.Id));
+            cases.add(new C2_Case__c(Name='TT0000001', Queue__c = 'PA-CSA', Status__c=C2_Case_Util.STATUS_NEW, PA_CSA__c=u.Id, DSA__c=u.Id, QR_CSA__c=u.Id, Receiver_Unit__c=ru.Id));
+            cases.add(new C2_Case__c(Name='TT0000002', Queue__c = 'PA-CSA', Status__c=C2_Case_Util.STATUS_NEW, PA_CSA__c=u.Id, DSA__c=u.Id, QR_CSA__c=u.Id, Receiver_Unit__c=ru.Id));
+            cases.add(new C2_Case__c(Name='TT0000011', Queue__c = 'DSA', Status__c=C2_Case_Util.STATUS_PACSA_COMPLETE, PA_CSA__c=u.Id, DSA__c=u.Id, QR_CSA__c=u.Id, Receiver_Unit__c=ru.Id));
+            cases.add(new C2_Case__c(Name='TT0000012', Queue__c = 'DSA', Status__c=C2_Case_Util.STATUS_PACSA_COMPLETE, PA_CSA__c=u.Id, DSA__c=u.Id, QR_CSA__c=u.Id, Receiver_Unit__c=ru.Id));
+            cases.add(new C2_Case__c(Name='TT0000021', Queue__c = 'QR-CSA', Status__c=C2_Case_Util.STATUS_DSA_COMPLETE, PA_CSA__c=u.Id, DSA__c=u.Id, QR_CSA__c=u.Id, Receiver_Unit__c=ru.Id));
+            insert cases;
+            List<C2_Case__c> scope = Database.query(query);
+            Test.startTest();
+            job.execute(null, scope);
+            Test.stopTest();
+            List<C2_Case_Assign_Report_Data__c> caseEventEntries = 
+                    [select Num_Cases_Assign__c, Num_Cases_Not_Completed__c, Num_Cases_Reassigned__c, Num_Cases_Completed__c, User__c, Role__c
+                    from C2_Case_Assign_Report_Data__c];
+            System.assertEquals(3, caseEventEntries.size());
+            Map<String, Integer> userIdWithRole2ReportData = getCaseEventEntriesMap(caseEventEntries);
+            System.assertEquals(3, userIdWithRole2ReportData.get(createUserRoleKey(u.Id, 'PA-CSA')));
+            System.assertEquals(2, userIdWithRole2ReportData.get(createUserRoleKey(u.Id, 'DSA')));
+            System.assertEquals(1, userIdWithRole2ReportData.get(createUserRoleKey(u.Id, 'QR-CSA')));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

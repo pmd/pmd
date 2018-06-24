@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.xml.rule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
+import net.sourceforge.pmd.properties.BooleanProperty;
 
 public class XmlXPathRule extends XPathRule {
 

@@ -10,7 +10,6 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
@@ -29,6 +28,7 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.VariableAccess;
 import net.sourceforge.pmd.util.StringUtil;
 
+@Deprecated // to be removed with PMD 7.0.0
 public class DFAPanel extends JComponent implements ListSelectionListener {
 
     public static class DFACanvas extends JPanel {

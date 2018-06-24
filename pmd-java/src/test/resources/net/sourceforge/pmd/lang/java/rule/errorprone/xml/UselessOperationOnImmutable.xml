@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+<!-- TODO - should use symbol table to catch all misuses of these types -->
+    <test-code>
+        <description><![CDATA[
+useless operation on BigDecimal
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  BigDecimal bd = new BigDecimal(5);
+  bd.divideToIntegralValue(new BigDecimal(5));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+useless operation on BigInteger
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  BigInteger bi = new BigInteger(5);
+  bi.modPow(new BigInteger(1), new BigInteger(5));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+using the result, so OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  BigInteger bi = new BigInteger(5);
+  bi = bi.add(new BigInteger(5));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+using the result in a method call, so OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  BigInteger bi = new BigInteger(5);
+  bar(bi.add(new BigInteger(5)));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+BigInteger obtained from compound method call
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String toString() {
+        Bar _b;
+        java.math.BigInteger n = _b.getBigIntContainer().n;
+        return n.toString();
+    }
+}
+             ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Using generics on List, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    List<BigDecimal> getSolution() {
+        List<BigDecimal> result = new ArrayList<BigDecimal>();
+        for (int i = 0; i < size(); i++) {
+           result.add(entry(size(),i).negate());
+           result.add(this.equations[i].check(solution));
+        }
+    }
+}
+     ]]></code>
+       <source-type>java 1.5</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+BigInteger in conditional statement
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Object get() {
+        java.math.BigDecimal bigDecimal = new java.math.BigDecimal(1);
+        return bigDecimal==null ? null : bigDecimal.setScale(0, java.math.BigDecimal.ROUND_UNNECESSARY);
+    }
+}
+             ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+1702782, Immutable used in comparison
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class RuleViolator {
+	public BigInteger foo() {
+		// some boiler plate code
+		final BigInteger anImmutable = BigInteger.ZERO;
+		final BigInteger anotherImmutable = BigInteger.ONE;
+		BigInteger unrelated = BigInteger.valueOf(42);
+
+		// the actual PMD problem occurs with the next statement
+		if (anImmutable.add(BigInteger.TEN).compareTo(anotherImmutable) == 0) {
+			// do something here that is not related to the actual comparison in
+			// the if clause
+			unrelated = unrelated.multiply(BigInteger.TEN);
+		}
+		
+		return unrelated;
+	}
+}
+             ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+String calls in expressions
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+	String s;
+	String s2 = "foo" + s.substring( 0, delimiterIndex ) + "/";
+	s2 = "foo" + s.substring( 0, delimiterIndex );
+	if (s.trim().length() > 0) {
+	}
+
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+BigInteger calls in expression
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+	BigInteger temp = BigInteger.valueOf((long) startMonth).add(dMonths);
+        setMonth(temp.subtract(BigInteger.ONE).mod(TWELVE).intValue() + 1);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+2645268, ClassCastException using Annotation on Local Field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  @NotNull
+  BigDecimal bd = new BigDecimal(5);
+  bd.divideToIntegralValue(new BigDecimal(5));
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

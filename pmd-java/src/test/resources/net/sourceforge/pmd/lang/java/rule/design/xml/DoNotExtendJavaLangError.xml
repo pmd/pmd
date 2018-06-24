@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Extends with fully qualified name
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo extends java.lang.Error {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Extends with implicit import
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo extends Error {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Extends something else
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo extends FooError {
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Extends name Error
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        import net.sourceforge.pmd.lang.java.rule.design.donotextendjavalangerror.Error;
+
+public class Foo extends Error {
+}
+     ]]></code>
+    </test-code>
+
+</test-data>

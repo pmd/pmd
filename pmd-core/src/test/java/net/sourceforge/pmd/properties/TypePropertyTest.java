@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.properties;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Observer;
 import java.util.Set;
-
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.lang.rule.properties.TypeMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
 
 /**
  * Evaluates the functionality of the TypeProperty descriptor by testing its
@@ -25,91 +24,56 @@ import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
  *
  * @author Brian Remedios
  */
-public class TypePropertyTest extends AbstractPropertyDescriptorTester {
+public class TypePropertyTest extends AbstractPackagedPropertyDescriptorTester<Class> {
 
-    private static final Class[] JAVA_LANG_CLASSES = new Class[] { String.class, Integer.class, Thread.class,
-        Object.class, Runtime.class, };
-    private static final Class[] JAVA_UTIL_CLASSES = new Class[] { HashMap.class, Map.class, Comparator.class, Set.class,
-        Observer.class, };
+    private static final List<Class> JAVA_LANG_CLASSES = Arrays.<Class>asList(String.class, Integer.class, Thread.class,
+                                                                              Object.class, Runtime.class);
+    private static final List<Class> JAVA_UTIL_CLASSES = Arrays.<Class>asList(HashMap.class, Map.class,
+                                                                              Comparator.class, Set.class,
+                                                                              Observer.class);
+
 
     public TypePropertyTest() {
         super("Class");
     }
 
-    /**
-     * Method createValue.
-     *
-     * @param count
-     *            int
-     * @return Object
-     */
+
     @Override
-    protected Object createValue(int count) {
-
-        if (count == 1) {
-            return randomChoice(JAVA_LANG_CLASSES);
-        }
-
-        Object[] values = new Object[count];
-        for (int i = 0; i < values.length; i++) {
-            values[i] = createValue(1);
-        }
-        return values;
+    protected Class createBadValue() {
+        return JAVA_UTIL_CLASSES.get(randomInt(0, JAVA_UTIL_CLASSES.size()));
     }
 
-    /**
-     * Method createBadValue.
-     *
-     * @param count
-     *            int
-     * @return Object
-     */
+
     @Override
-    protected Object createBadValue(int count) {
-
-        if (count == 1) {
-            return randomChoice(JAVA_UTIL_CLASSES);
-        }
-
-        Object[] values = new Object[count];
-        for (int i = 0; i < values.length; i++) {
-            values[i] = createBadValue(1);
-        }
-        return values;
+    protected PropertyDescriptor<Class> createProperty() {
+        return new TypeProperty("testType", "Test type property", createValue(), new String[] {"java.lang"},
+                                1.0f);
     }
 
-    /**
-     * Method createProperty.
-     *
-     * @param multiValue
-     *            boolean
-     * @return PropertyDescriptor
-     */
-    @Override
-    protected PropertyDescriptor createProperty(boolean multiValue) {
 
-        return multiValue
-                ? new TypeMultiProperty("testType", "Test type property", JAVA_LANG_CLASSES, new String[] { "java.lang" },
-                        1.0f)
-                : new TypeProperty("testType", "Test type property", JAVA_LANG_CLASSES[0], new String[] { "java.lang" },
-                        1.0f);
+    @Override
+    protected Class createValue() {
+        return JAVA_LANG_CLASSES.get(randomInt(0, JAVA_LANG_CLASSES.size()));
     }
 
-    /**
-     * Method createProperty.
-     *
-     * @param multiValue
-     *            boolean
-     * @return PropertyDescriptor
-     */
-    @Override
-    protected PropertyDescriptor createBadProperty(boolean multiValue) {
 
-        return multiValue
-                ? new TypeMultiProperty("testType", "Test type property", new Class[] { Set.class },
-                        new String[] { "java.lang" }, 1.0f)
-                : new TypeProperty("testType", "Test type property", JAVA_LANG_CLASSES[0], new String[] { "java.util" },
-                        1.0f);
+    @Override
+    protected PropertyDescriptor<List<Class>> createMultiProperty() {
+        return new TypeMultiProperty("testType", "Test type property", JAVA_LANG_CLASSES, new String[] {"java.lang"},
+                                     1.0f);
     }
 
+
+    @Override
+    protected PropertyDescriptor<Class> createBadProperty() {
+        return new TypeProperty("testType", "Test type property", createValue(), new String[] {"java.util"},
+                                1.0f);
+    }
+
+
+    @Override
+    protected PropertyDescriptor<List<Class>> createBadMultiProperty() {
+        return new TypeMultiProperty("testType", "Test type property", Collections.<Class>singletonList(Set.class),
+                                     new String[] {"java.lang"}, 1.0f);
+    }
 }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Trigger without logic</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+trigger Accounts on Account (before insert, after insert, before update, after update, before delete, after delete) {
+	// We recently switched to the awesome fflib Apex Commons library
+	fflib_SObjectDomain.triggerHandler(Accounts.class);
+}
+		]]></code>
+	</test-code>
+
+    <test-code>
+        <description>Trigger with logic</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+trigger AccountTrigger on Account (after insert, after update) {
+	for(Account a : Trigger.new){           
+		if(Trigger.isInsert){
+		                 
+		}
+		
+		if(Trigger.isDelete){
+		
+		}
+	}
+
+	for(Account a : Trigger.new){           
+		if(Trigger.isInsert){
+		                 
+		}
+		
+		if(Trigger.isDelete){
+		
+		}
+	}
+}
+		]]></code>
+	</test-code>
+    
+</test-data>

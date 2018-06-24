@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+
+    <test-code>
+        <description>Collapsible statement</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'catch' branch identical to 'IllegalArgumentException' branch</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+                {
+                    try {
+                        // do something
+                    } catch (IllegalArgumentException e) {
+                        throw e;
+                    } catch (IllegalStateException e) { // Can be collapsed into the previous block
+                        throw e;
+                    }
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Different statement</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            class Foo {
+                {
+                    try {
+                        // do something
+                    } catch (IllegalArgumentException e) {
+                        throw e;
+                    } catch (IllegalStateException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Identical statements, with different exception names</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'catch' branch identical to 'IllegalArgumentException' branch</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+                {
+                    try {
+                        // do something
+                    } catch (IllegalArgumentException e) {
+                        throw new RuntimeException(e);
+                    } catch (IllegalStateException ise) {
+                        throw new RuntimeException(ise);
+                    }
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>#1158 false positive 1</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            class Foo {
+                {
+                    try {
+                        // do something
+                    } catch (FieldNotFound e) {
+                        throw new IllegalStateException("field not found", e);
+                    } catch (FieldException | FieldConvertError e) {
+                        throw new IllegalArgumentException("field exception ", e);
+                    }
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>#1158 false positive 2</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            class Foo {
+                {
+                    try {
+                        // do something
+                    } catch (Exception1 exception) {
+                        throw new Exception3("Error message 1", exception);
+                    } catch (Exception2 exception) {
+                        throw new Exception3("Error message 2", exception);
+                    }
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with method name mistaken for exception parameter</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            class Foo {
+                static {
+                    try {
+                        // do something
+                    } catch (Exception1 exception) {
+                        exception(exception);
+                    } catch (Exception2 exception2) {
+                        exception2(exception2);
+                    }
+                }
+
+                private static void exception(Exception exception) {
+                    throw new Exception3("Error message 1", exception);
+                }
+
+
+                private static exception2(Exception exception) {
+                    throw new Exception3("Error message 2", exception);
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+
+</test-data>

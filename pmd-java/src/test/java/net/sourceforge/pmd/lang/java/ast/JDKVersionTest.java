@@ -4,15 +4,25 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava13;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava14;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava15;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava17;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava18;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava9;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.ParserTst;
-
-public class JDKVersionTest extends ParserTst {
+public class JDKVersionTest {
 
     private static String loadSource(String name) {
         try {
@@ -201,5 +211,85 @@ public class JDKVersionTest extends ParserTst {
     @Test
     public final void testMulticatchWithAnnotations() {
         parseJava17(loadSource("jdk17_multicatch_with_annotations.java"));
+    }
+
+    @Test(expected = ParseException.class)
+    public final void jdk9PrivateInterfaceMethodsInJava18() {
+        parseJava18(loadSource("jdk9_private_interface_methods.java"));
+    }
+
+    @Test
+    public final void testPrivateMethods() {
+        parseJava18("public class Foo { private void bar() { } }");
+    }
+
+    @Test
+    public final void testNestedPrivateMethods() {
+        parseJava18("public interface Baz { public static class Foo { private void bar() { } } }");
+    }
+
+    @Test
+    public final void jdk9PrivateInterfaceMethods() {
+        parseJava9(loadSource("jdk9_private_interface_methods.java"));
+    }
+
+    @Test
+    public final void jdk9InvalidIdentifierInJava18() {
+        parseJava18(loadSource("jdk9_invalid_identifier.java"));
+    }
+
+    @Test(expected = ParseException.class)
+    public final void jdk9InvalidIdentifier() {
+        parseJava9(loadSource("jdk9_invalid_identifier.java"));
+    }
+
+    @Test(expected = ParseException.class)
+    public final void jdk9AnonymousDiamondInJava8() {
+        parseJava18(loadSource("jdk9_anonymous_diamond.java"));
+    }
+
+    @Test
+    public final void jdk9AnonymousDiamond() {
+        parseJava9(loadSource("jdk9_anonymous_diamond.java"));
+    }
+
+    @Test(expected = ParseException.class)
+    public final void jdk9ModuleInfoInJava8() {
+        parseJava18(loadSource("jdk9_module_info.java"));
+    }
+
+    @Test
+    public final void jdk9ModuleInfo() {
+        parseJava9(loadSource("jdk9_module_info.java"));
+    }
+
+    @Test(expected = ParseException.class)
+    public final void jdk9TryWithResourcesInJava8() {
+        parseJava18(loadSource("jdk9_try_with_resources.java"));
+    }
+
+    @Test
+    public final void jdk9TryWithResources() {
+        parseJava9(loadSource("jdk9_try_with_resources.java"));
+    }
+
+    @Test
+    public final void jdk7PrivateMethodInnerClassInterface1() {
+        ASTCompilationUnit acu = parseJava17(loadSource("private_method_in_inner_class_interface1.java"));
+        List<ASTMethodDeclaration> methods = acu.findDescendantsOfType(ASTMethodDeclaration.class, true);
+        assertEquals(3, methods.size());
+        for (ASTMethodDeclaration method : methods) {
+            assertFalse(method.isInterfaceMember());
+        }
+    }
+
+    @Test
+    public final void jdk7PrivateMethodInnerClassInterface2() {
+        try {
+            ASTCompilationUnit acu = parseJava17(loadSource("private_method_in_inner_class_interface2.java"));
+            fail("Expected exception");
+        } catch (ParseException e) {
+            assertTrue(e.getMessage().startsWith("Line 19"));
+        }
     }
 }

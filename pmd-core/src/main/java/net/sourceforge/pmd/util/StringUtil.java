@@ -5,8 +5,12 @@
 package net.sourceforge.pmd.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A number of String-specific utility methods for use by PMD or its IDE
@@ -17,11 +21,28 @@ import java.util.List;
 public final class StringUtil {
 
     private static final String[] EMPTY_STRINGS = new String[0];
-    private static final boolean SUPPORTS_UTF8 = "yes"
-            .equals(System.getProperty("net.sourceforge.pmd.supportUTF8", "no"));
 
     private StringUtil() {
     }
+
+    /**
+     * Formats a double to a percentage, keeping {@code numDecimal} decimal places.
+     *
+     * @param val         a double value between 0 and 1
+     * @param numDecimals The number of decimal places to keep
+     *
+     * @return A formatted string
+     *
+     * @throws IllegalArgumentException if the double to format is not between 0 and 1
+     */
+    public static String percentageString(double val, int numDecimals) {
+        if (val < 0 || val > 1) {
+            throw new IllegalArgumentException("Expected a number between 0 and 1");
+        }
+
+        return String.format(Locale.ROOT, "%." + numDecimals + "f%%", 100 * val);
+    }
+
 
     /**
      * Return whether the non-null text arg starts with any of the prefix
@@ -29,8 +50,11 @@ public final class StringUtil {
      *
      * @param text
      * @param prefixes
+     *
      * @return boolean
+     * @deprecated {@link StringUtils#startsWithAny(CharSequence, CharSequence...)}
      */
+    @Deprecated
     public static boolean startsWithAny(String text, String... prefixes) {
 
         for (String prefix : prefixes) {
@@ -42,11 +66,13 @@ public final class StringUtil {
         return false;
     }
 
+
     /**
      * Returns whether the non-null text arg matches any of the test values.
      *
      * @param text
      * @param tests
+     *
      * @return boolean
      */
     public static boolean isAnyOf(String text, String... tests) {
@@ -60,12 +86,14 @@ public final class StringUtil {
         return false;
     }
 
+
     /**
      * Checks for the existence of any of the listed prefixes on the non-null
      * text and removes them.
      *
      * @param text
      * @param prefixes
+     *
      * @return String
      */
     public static String withoutPrefixes(String text, String... prefixes) {
@@ -79,39 +107,48 @@ public final class StringUtil {
         return text;
     }
 
-    /**
-     * Returns true if the value arg is either null, empty, or full of
-     * whitespace characters. More efficient that calling
-     * (string).trim().length() == 0
-     *
-     * @param value
-     * @return <code>true</code> if the value is empty, <code>false</code>
-     *         otherwise.
-     */
-    public static boolean isEmpty(String value) {
-
-        if (value == null || "".equals(value)) {
-            return true;
-        }
-
-        for (int i = 0; i < value.length(); i++) {
-            if (!Character.isWhitespace(value.charAt(i))) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     /**
+     * @param value String
      *
-     * @param value
-     *            String
      * @return boolean
+     * @deprecated {@link StringUtils#isNotBlank(CharSequence)}
      */
+    @Deprecated
     public static boolean isNotEmpty(String value) {
         return !isEmpty(value);
     }
+
+
+    /**
+     * Returns true if the value arg is either null, empty, or full of
+     * whitespace characters. More efficient that calling
+     * (string).trim().length() == 0.
+     *
+     * @param value String to test
+     *
+     * @return <code>true</code> if the value is empty, <code>false</code> otherwise.
+     * @deprecated {@link StringUtils#isBlank(CharSequence)}
+     */
+    @Deprecated
+    public static boolean isEmpty(String value) {
+        return StringUtils.isBlank(value);
+    }
+
+
+    /**
+     * Returns true if the argument is null or the empty string.
+     *
+     * @param value String to test
+     *
+     * @return True if the argument is null or the empty string
+     * @deprecated {@link StringUtils#isEmpty(CharSequence)}
+     */
+    @Deprecated
+    public static boolean isMissing(String value) {
+        return StringUtils.isEmpty(value);
+    }
+
 
     /**
      * Returns true if both strings are effectively null or whitespace, returns
@@ -119,8 +156,10 @@ public final class StringUtil {
      *
      * @param a
      * @param b
+     *
      * @return boolean
      */
+    @Deprecated
     public static boolean areSemanticEquals(String a, String b) {
 
         if (a == null) {
@@ -133,45 +172,16 @@ public final class StringUtil {
         return a.equals(b);
     }
 
-    /**
-     *
-     * @param original
-     *            String
-     * @param oldChar
-     *            char
-     * @param newString
-     *            String
-     * @return String
-     */
-    public static String replaceString(final String original, char oldChar, final String newString) {
-        int index = original.indexOf(oldChar);
-        if (index < 0) {
-            return original;
-        } else {
-            final String replace = newString == null ? "" : newString;
-            final StringBuilder buf = new StringBuilder(Math.max(16, original.length() + replace.length()));
-            int last = 0;
-            while (index != -1) {
-                buf.append(original.substring(last, index));
-                buf.append(replace);
-                last = index + 1;
-                index = original.indexOf(oldChar, last);
-            }
-            buf.append(original.substring(last));
-            return buf.toString();
-        }
-    }
 
     /**
+     * @param original  String
+     * @param oldString String
+     * @param newString String
      *
-     * @param original
-     *            String
-     * @param oldString
-     *            String
-     * @param newString
-     *            String
      * @return String
+     * @deprecated {@link StringUtils#replace(String, String, String)}
      */
+    @Deprecated
     public static String replaceString(final String original, final String oldString, final String newString) {
         int index = original.indexOf(oldString);
         if (index < 0) {
@@ -192,66 +202,11 @@ public final class StringUtil {
     }
 
     /**
-     * Appends to a StringBuilder the String src where non-ASCII and XML special
-     * chars are escaped.
-     *
-     * @param buf
-     *            The destination XML stream
-     * @param src
-     *            The String to append to the stream
-     *
-     * @deprecated use {@link #appendXmlEscaped(StringBuilder, String, boolean)}
-     *             instead
-     */
-    @Deprecated
-    public static void appendXmlEscaped(StringBuilder buf, String src) {
-        appendXmlEscaped(buf, src, SUPPORTS_UTF8);
-    }
-
-    /**
-     * Replace some whitespace characters so they are visually apparent.
-     *
-     * @param o
-     * @return String
-     */
-    public static String escapeWhitespace(Object o) {
-
-        if (o == null) {
-            return null;
-        }
-        String s = String.valueOf(o);
-        s = s.replace("\n", "\\n");
-        s = s.replace("\r", "\\r");
-        s = s.replace("\t", "\\t");
-        return s;
-    }
-
-    /**
-     *
-     * @param string
-     *            String
-     * @return String
-     */
-    public static String htmlEncode(String string) {
-        String encoded = replaceString(string, '&', "&amp;");
-        encoded = replaceString(encoded, '<', "&lt;");
-        return replaceString(encoded, '>', "&gt;");
-    }
-
-    /**
-     *
      * @param buf
      * @param src
-     * @param supportUTF8
-     *            override the default setting, whether special characters
-     *            should be replaced with entities ( <code>false</code>) or
-     *            should be included as is ( <code>true</code>).
-     * @see #appendXmlEscaped(StringBuilder, String)
+     * @param supportUTF8 override the default setting, whether special characters should be replaced with entities (
+     *                    <code>false</code>) or should be included as is ( <code>true</code>).
      *
-     *      TODO - unify the method above with the one below
-     *
-     *      public to support unit testing - make this package private, once the
-     *      unit test classes are in the same package.
      */
     public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
         char c;
@@ -285,20 +240,68 @@ public final class StringUtil {
         }
     }
 
+
+    /**
+     * Replace some whitespace characters so they are visually apparent.
+     *
+     * @param o
+     *
+     * @return String
+     */
+    public static String escapeWhitespace(Object o) {
+
+        if (o == null) {
+            return null;
+        }
+        String s = String.valueOf(o);
+        s = s.replace("\n", "\\n");
+        s = s.replace("\r", "\\r");
+        s = s.replace("\t", "\\t");
+        return s;
+    }
+
+    /**
+     * @param original  String
+     * @param oldChar   char
+     * @param newString String
+     *
+     * @return String
+     * @deprecated {@link StringUtils#replace(String, String, String)} or {@link StringUtils#replaceChars(String, char, char)}
+     */
+    @Deprecated
+    public static String replaceString(final String original, char oldChar, final String newString) {
+        int index = original.indexOf(oldChar);
+        if (index < 0) {
+            return original;
+        } else {
+            final String replace = newString == null ? "" : newString;
+            final StringBuilder buf = new StringBuilder(Math.max(16, original.length() + replace.length()));
+            int last = 0;
+            while (index != -1) {
+                buf.append(original.substring(last, index));
+                buf.append(replace);
+                last = index + 1;
+                index = original.indexOf(oldChar, last);
+            }
+            buf.append(original.substring(last));
+            return buf.toString();
+        }
+    }
+
+
     /**
      * Parses the input source using the delimiter specified. This method is
      * much faster than using the StringTokenizer or String.split(char) approach
      * and serves as a replacement for String.split() for JDK1.3 that doesn't
      * have it.
      *
-     * FIXME - we're on JDK 1.4 now, can we replace this with String.split?
+     * @param source    String
+     * @param delimiter char
      *
-     * @param source
-     *            String
-     * @param delimiter
-     *            char
      * @return String[]
+     * @deprecated {@link StringUtils#split(String, char)}
      */
+    @Deprecated
     public static String[] substringsOf(String source, char delimiter) {
 
         if (source == null || source.length() == 0) {
@@ -316,7 +319,7 @@ public final class StringUtil {
         }
 
         if (delimiterCount == 0) {
-            return new String[] { source };
+            return new String[] {source};
         }
 
         String[] results = new String[delimiterCount + 1];
@@ -336,15 +339,17 @@ public final class StringUtil {
         return results;
     }
 
+
     /**
      * Much more efficient than StringTokenizer.
      *
-     * @param str
-     *            String
-     * @param separator
-     *            char
+     * @param str       String
+     * @param separator char
+     *
      * @return String[]
+     * @deprecated {@link StringUtils#split(String, String)}
      */
+    @Deprecated
     public static String[] substringsOf(String str, String separator) {
 
         if (str == null || str.length() == 0) {
@@ -353,7 +358,7 @@ public final class StringUtil {
 
         int index = str.indexOf(separator);
         if (index == -1) {
-            return new String[] { str };
+            return new String[] {str};
         }
 
         List<String> list = new ArrayList<>();
@@ -365,20 +370,20 @@ public final class StringUtil {
             index = str.indexOf(separator, currPos);
         }
         list.add(str.substring(currPos));
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
+
 
     /**
      * Copies the elements returned by the iterator onto the string buffer each
      * delimited by the separator.
      *
-     * @param sb
-     *            StringBuffer
-     * @param iter
-     *            Iterator
-     * @param separator
-     *            String
+     * @param sb        StringBuffer
+     * @param iter      Iterator
+     * @param separator String
+     * @deprecated {@link StringUtils#join(Iterator, String)}
      */
+    @Deprecated
     public static void asStringOn(StringBuffer sb, Iterator<?> iter, String separator) {
 
         if (!iter.hasNext()) {
@@ -393,17 +398,17 @@ public final class StringUtil {
         }
     }
 
+
     /**
      * Copies the array items onto the string builder each delimited by the
      * separator. Does nothing if the array is null or empty.
      *
-     * @param sb
-     *            StringBuilder
-     * @param items
-     *            Object[]
-     * @param separator
-     *            String
+     * @param sb        StringBuilder
+     * @param items     Object[]
+     * @param separator String
+     * @deprecated {@link StringUtils#join(Iterable, String)}
      */
+    @Deprecated
     public static void asStringOn(StringBuilder sb, Object[] items, String separator) {
 
         if (items == null || items.length == 0) {
@@ -418,31 +423,6 @@ public final class StringUtil {
         }
     }
 
-    /**
-     * Return the length of the shortest string in the array. If the collection
-     * is empty or any one of them is null then it returns 0.
-     *
-     * @param strings
-     *            String[]
-     * @return int
-     */
-    public static int lengthOfShortestIn(String[] strings) {
-
-        if (CollectionUtil.isEmpty(strings)) {
-            return 0;
-        }
-
-        int minLength = Integer.MAX_VALUE;
-
-        for (int i = 0; i < strings.length; i++) {
-            if (strings[i] == null) {
-                return 0;
-            }
-            minLength = Math.min(minLength, strings[i].length());
-        }
-
-        return minLength;
-    }
 
     /**
      * Determine the maximum number of common leading whitespace characters the
@@ -450,8 +430,8 @@ public final class StringUtil {
      * leading characters can be removed to shift all the text in the strings to
      * the left without misaligning them.
      *
-     * @param strings
-     *            String[]
+     * @param strings String[]
+     *
      * @return int
      */
     public static int maxCommonLeadingWhitespaceForAll(String[] strings) {
@@ -480,12 +460,41 @@ public final class StringUtil {
         return shortest;
     }
 
+
+    /**
+     * Return the length of the shortest string in the array. If the collection
+     * is empty or any one of them is null then it returns 0.
+     *
+     * @param strings String[]
+     *
+     * @return int
+     */
+    public static int lengthOfShortestIn(String[] strings) {
+
+        if (CollectionUtil.isEmpty(strings)) {
+            return 0;
+        }
+
+        int minLength = Integer.MAX_VALUE;
+
+        for (int i = 0; i < strings.length; i++) {
+            if (strings[i] == null) {
+                return 0;
+            }
+            minLength = Math.min(minLength, strings[i].length());
+        }
+
+        return minLength;
+    }
+
+
     /**
      * Trims off the leading characters off the strings up to the trimDepth
      * specified. Returns the same strings if trimDepth = 0
      *
      * @param strings
      * @param trimDepth
+     *
      * @return String[]
      */
     public static String[] trimStartOn(String[] strings, int trimDepth) {
@@ -501,24 +510,27 @@ public final class StringUtil {
         return results;
     }
 
+
     /**
      * Left pads a string.
      *
-     * @param s
-     *            The String to pad
-     * @param length
-     *            The desired minimum length of the resulting padded String
+     * @param s      The String to pad
+     * @param length The desired minimum length of the resulting padded String
+     *
      * @return The resulting left padded String
+     * @deprecated {@link StringUtils#leftPad(String, int)}
      */
+    @Deprecated
     public static String lpad(String s, int length) {
         String res = s;
         if (length - s.length() > 0) {
             char[] arr = new char[length - s.length()];
-            java.util.Arrays.fill(arr, ' ');
+            Arrays.fill(arr, ' ');
             res = new StringBuilder(length).append(arr).append(s).toString();
         }
         return res;
     }
+
 
     /**
      * Are the two String values the same. The Strings can be optionally trimmed
@@ -526,23 +538,16 @@ public final class StringUtil {
      * The Strings can be have embedded whitespace standardized before
      * comparing. Two null values are treated as equal.
      *
-     * @param s1
-     *            The first String.
-     * @param s2
-     *            The second String.
-     * @param trim
-     *            Indicates if the Strings should be trimmed before comparison.
-     * @param ignoreCase
-     *            Indicates if the case of the Strings should ignored during
-     *            comparison.
-     * @param standardizeWhitespace
-     *            Indicates if the embedded whitespace should be standardized
-     *            before comparison.
-     * @return <code>true</code> if the Strings are the same, <code>false</code>
-     *         otherwise.
+     * @param s1                    The first String.
+     * @param s2                    The second String.
+     * @param trim                  Indicates if the Strings should be trimmed before comparison.
+     * @param ignoreCase            Indicates if the case of the Strings should ignored during comparison.
+     * @param standardizeWhitespace Indicates if the embedded whitespace should be standardized before comparison.
+     *
+     * @return <code>true</code> if the Strings are the same, <code>false</code> otherwise.
      */
     public static boolean isSame(String s1, String s2, boolean trim, boolean ignoreCase,
-            boolean standardizeWhitespace) {
+                                 boolean standardizeWhitespace) {
         if (s1 == null && s2 == null) {
             return true;
         } else if (s1 == null || s2 == null) {
@@ -562,14 +567,14 @@ public final class StringUtil {
         }
     }
 
+
     /**
      * Formats all items onto a string with separators if more than one exists,
      * return an empty string if the items are null or empty.
      *
-     * @param items
-     *            Object[]
-     * @param separator
-     *            String
+     * @param items     Object[]
+     * @param separator String
+     *
      * @return String
      */
     public static String asString(Object[] items, String separator) {
@@ -589,6 +594,7 @@ public final class StringUtil {
         return sb.toString();
     }
 
+
     /**
      * Returns an empty array of string
      *
@@ -597,4 +603,55 @@ public final class StringUtil {
     public static String[] getEmptyStrings() {
         return EMPTY_STRINGS;
     }
+
+
+    /**
+     * Converts the given string to Camel case,
+     * that is, removing all spaces, and capitalising
+     * the first letter of each word except the first.
+     *
+     * <p>If the first word starts with an uppercase
+     * letter, it's kept as is. This method can thus
+     * be used for Pascal case too.
+     *
+     * @param name The string to convert
+     *
+     * @return The string converted to Camel case
+     */
+    public static String toCamelCase(String name) {
+        return toCamelCase(name, false);
+    }
+
+
+    /**
+     * Converts the given string to Camel case,
+     * that is, removing all spaces, and capitalising
+     * the first letter of each word except the first.
+     *
+     * <p>The second parameter can be used to force the
+     * words to be converted to lowercase before capitalising.
+     * This can be useful if eg the first word contains
+     * several uppercase letters.
+     *
+     * @param name           The string to convert
+     * @param forceLowerCase Whether to force removal of all upper
+     *                       case letters except on word start
+     *
+     * @return The string converted to Camel case
+     */
+    public static String toCamelCase(String name, boolean forceLowerCase) {
+        StringBuilder sb = new StringBuilder();
+        boolean isFirst = true;
+        for (String word : name.trim().split("\\s++")) {
+            String pretreated = forceLowerCase ? word.toLowerCase(Locale.ROOT) : word;
+            if (isFirst) {
+                sb.append(pretreated);
+                isFirst = false;
+            } else {
+                sb.append(StringUtils.capitalize(pretreated));
+            }
+        }
+        return sb.toString();
+    }
+
 }

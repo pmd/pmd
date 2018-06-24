@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
@@ -19,7 +20,7 @@ public class CPPTokenizerTest {
     @Test
     public void testUTFwithBOM() {
         Tokens tokens = parse("\ufeffint start()\n{ int ret = 1;\nreturn ret;\n}\n");
-        assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
+        assertNotSame(TokenEntry.getEOF(), tokens.getTokens().get(0));
         assertEquals(15, tokens.size());
     }
 
@@ -29,8 +30,18 @@ public class CPPTokenizerTest {
                 + "int main()\n" + "{\n" + "    std::string text(\"ąęćśźńó\");\n" + "    std::cout << text;\n"
                 + "    return 0;\n" + "}\n";
         Tokens tokens = parse(code);
-        assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
+        assertNotSame(TokenEntry.getEOF(), tokens.getTokens().get(0));
         assertEquals(24, tokens.size());
+    }
+    
+    @Test
+    public void testIgnoreBetweenSpecialComments() {
+        String code = "#include <iostream>\n" + "#include <string>\n" + "\n" + "// CPD-OFF\n"
+                + "int main()\n" + "{\n" + "    std::string text(\"ąęćśźńó\");\n" + "    std::cout << text;\n"
+                + "    return 0;\n" + "// CPD-ON\n" + "}\n";
+        Tokens tokens = parse(code);
+        assertNotSame(TokenEntry.getEOF(), tokens.getTokens().get(0));
+        assertEquals(2, tokens.size()); // "}" + EOF
     }
 
     @Test
@@ -52,18 +63,6 @@ public class CPPTokenizerTest {
     @Test
     public void testWideCharacters() {
         parse(TEST4);
-    }
-
-    @Test
-    public void testContinuationIntraToken() {
-        Tokens tokens = parse(TEST5);
-        assertEquals(7, tokens.size());
-    }
-
-    @Test
-    public void testContinuationInterToken() {
-        Tokens tokens = parse(TEST6);
-        assertEquals(17, tokens.size());
     }
 
     @Test
@@ -161,14 +160,6 @@ public class CPPTokenizerTest {
     private static final String TEST3 = " void main() { int $x = 42; }";
 
     private static final String TEST4 = " void main() { char x = L'a'; }";
-
-    private static final String TEST5 = "v\\" + PMD.EOL + "o\\" + PMD.EOL + "i\\" + PMD.EOL + "d\\" + PMD.EOL + " \\"
-            + PMD.EOL + "m\\" + PMD.EOL + "a\\" + PMD.EOL + "i\\" + PMD.EOL + "n\\" + PMD.EOL + "(\\" + PMD.EOL + ")\\"
-            + PMD.EOL + " \\" + PMD.EOL + "{\\" + PMD.EOL + " \\" + PMD.EOL + "}\\" + PMD.EOL;
-
-    private static final String TEST6 = "#include <iostream>" + PMD.EOL + PMD.EOL + "int main()" + PMD.EOL + "{"
-            + PMD.EOL + "   std::cout << \"Hello, \" \\" + PMD.EOL + "                \"world!\\n\";" + PMD.EOL
-            + "   return 0;" + PMD.EOL + "}";
 
     private static final String TEST7 = "asm void eSPI_boot()" + PMD.EOL + "{" + PMD.EOL + "  // setup stack pointer"
             + PMD.EOL + "  lis r1, _stack_addr@h" + PMD.EOL + "  ori r1, r1, _stack_addr@l" + PMD.EOL + "}";

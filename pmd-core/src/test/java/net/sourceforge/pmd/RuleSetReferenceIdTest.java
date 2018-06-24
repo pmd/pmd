@@ -24,6 +24,8 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import net.sourceforge.pmd.util.ResourceLoader;
+
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class RuleSetReferenceIdTest {
@@ -119,9 +121,10 @@ public class RuleSetReferenceIdTest {
         RuleSetReferenceId ruleSetReferenceId = new RuleSetReferenceId("  " + rulesetUrl + "  ");
         assertRuleSetReferenceId(true, rulesetUrl, true, null, rulesetUrl, ruleSetReferenceId);
 
-        InputStream inputStream = ruleSetReferenceId.getInputStream(RuleSetReferenceIdTest.class.getClassLoader());
-        String loaded = IOUtils.toString(inputStream, "UTF-8");
-        assertEquals("xyz", loaded);
+        try (InputStream inputStream = ruleSetReferenceId.getInputStream(new ResourceLoader())) {
+            String loaded = IOUtils.toString(inputStream, "UTF-8");
+            assertEquals("xyz", loaded);
+        }
 
         verify(1, headRequestedFor(urlEqualTo(path)));
         verify(0, headRequestedFor(urlEqualTo("/profiles")));
@@ -147,9 +150,10 @@ public class RuleSetReferenceIdTest {
         assertRuleSetReferenceId(true, hostpart + path, false, "DummyBasicMockRule", hostpart + completePath,
                 ruleSetReferenceId);
 
-        InputStream inputStream = ruleSetReferenceId.getInputStream(RuleSetReferenceIdTest.class.getClassLoader());
-        String loaded = IOUtils.toString(inputStream, "UTF-8");
-        assertEquals(basicRuleSet, loaded);
+        try (InputStream inputStream = ruleSetReferenceId.getInputStream(new ResourceLoader())) {
+            String loaded = IOUtils.toString(inputStream, "UTF-8");
+            assertEquals(basicRuleSet, loaded);
+        }
 
         verify(1, headRequestedFor(urlEqualTo(completePath)));
         verify(1, headRequestedFor(urlEqualTo(path)));

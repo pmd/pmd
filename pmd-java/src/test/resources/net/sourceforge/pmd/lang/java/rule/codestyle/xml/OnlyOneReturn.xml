@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+two returns
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int foo(int x) {    
+  if (x > 0) {
+   return 3;
+  }
+  return 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+one
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int foo(int x) {    
+  return 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+none
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo(int x) {      
+  int y =2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+void
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo(int x) {      
+  if (x>2) {
+    return;
+  }
+  int y =2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+finally
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int foo(int x) {
+  try {
+   x += 2;
+   return x;
+  } finally {
+    int y;
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+return inside anonymous inner class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int foo() {
+  FileFilter f = new FileFilter() {
+   public boolean accept(File file) {
+    return false;
+   }
+  };
+  return 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1353 False positive "Only One Return" with lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class OnlyOneReturn {
+    public Try<SearchHit[]> search(final String indexName, final SearchRequest searchRequest) {
+        final SearchHit[] empty = new SearchHit[0];
+        final Optional<SearchDefinition> searchDefinition = settingsService.getSearchDefinition(indexName);
+        return searchDefinition.<Try<SearchHit[]>>map(
+            i -> {
+                final List<Try<ProviderSearchHit[]>> res = i.getSearchMapping().stream()
+                    .peek(m -> LOGGER.debug("Treating backend \"{}\"", m.getProviderRef()))
+                    .map(m -> invokeAdapter(getProviderSearchService(m.getProviderRef()), m, searchRequest))
+                    .collect(Collectors.toList());
+                return TryCollections.pull(res).map(l -> sortReturning(l.stream().collect(ArrayCollectors.arrayMerging(
+                        SearchServiceImpl::toSearchHit,
+                        SearchHit::getInternalId,
+                        Function.identity(),
+                        SearchServiceImpl::merge)).orElse(Collections.emptyList()), SearchServiceImpl.searchHitComparator()))
+                    .map(list -> list.toArray(empty));
+            }).orElse(Try.success(empty));
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

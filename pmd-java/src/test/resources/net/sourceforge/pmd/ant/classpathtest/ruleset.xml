@@ -51,7 +51,7 @@ public class JumbledIncrementerRule1 {
           language="java"
           since="0.4"
           message="Ensure you override both equals() and hashCode()"
-          class="net.sourceforge.pmd.lang.java.rule.basic.OverrideBothEqualsAndHashcodeRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/basic.html#OverrideBothEqualsAndHashcode">
       <description>
 Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.

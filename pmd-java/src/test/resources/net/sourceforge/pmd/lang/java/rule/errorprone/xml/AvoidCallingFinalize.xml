@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+simple failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo () {
+  finalize();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+calling finalize on an object
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo () {
+  Foo f;
+  f.finalize();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+calling super.finalize
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo () {
+  super.finalize();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+no call to finalize
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void finalize () {
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+it's ok in a finalizer
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void finalize () {
+  super.finalize(); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+finalizer in anon inner class is OK too
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo () {
+  Foo myFoo = new Foo(new FooOtherInterface() { 
+   protected void finalize() { 
+    super.finalize(); 
+   } 
+  }); 
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1440 NPE in AvoidCallingFinalize</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class InputFinalize {
+    {
+        super.finalize();
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

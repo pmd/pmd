@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+reassigned parameter, bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo(int bar) {
+  bar = 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+one parameter, not reassigned, good
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo(int bar) {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+instance variable and parameter have same name
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int bar;
+ void foo(float bar) {
+  bar = 2.2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+qualified instance variable same name as parameter
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int bar;
+ void foo(float bar) {
+  this.bar = 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+qualified name same as parameter
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Faz {
+ private class Foo {
+  public String bar;
+ }
+ void foo(String bar) {
+  Foo f = new Foo();
+  f.bar = bar;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment to parameter public field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo(Bar bar) {
+  bar.buz = 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment to array parameter slot
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo(Bar[] bar) {
+  bar[0] = 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+throws a stacktrace
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo(int x) {
+   try {
+     x = 2;
+   } catch (Throwable t) {
+   }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+postfix increment in array dereference is bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo(int x) {
+  y[x++] = 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment to array slot
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo(int x[]) {
+  x[2] = 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment to array
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ int y[];
+ void foo(int x[]) {
+  x = y;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+The rule should also detect parameter reassignment in constructors (at least to help young programmers still learning java basic)
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public Foo(int arg, String arg2, Object arg3) {
+		arg = arg + 3;
+		arg += arg + "some other string";
+		arg3 = arg3.clone();
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+    	<description>
+    		<![CDATA[
+The rule should take into account uses of field names, inherited or not, matching the method parameter name.
+    		]]>
+    	</description>
+    	<expected-problems>0</expected-problems>
+    	<code>
+    		<![CDATA[
+public class RealClass extends AbstractClass {
+	public void setString(String string) {
+		super.string = string; //violation
+		this.string = string; // or violation
+	}
+}
+    		]]>
+    	</code>
+    </test-code>
+    <test-code>
+    	<description>parameter name starting with "this" or "super" should still be flagged</description>
+    	<expected-problems>2</expected-problems>
+    	<code>
+    		<![CDATA[
+public class RealClass {
+	public void setString(int thisParam, int superParam) {
+		thisParam = 1;
+		superParam = 2;
+	}
+}
+    		]]>
+    	</code>
+    </test-code>
+    <test-code>
+    	<description>local variables should not be flagged</description>
+    	<expected-problems>0</expected-problems>
+    	<code>
+    		<![CDATA[
+public class RealClass {
+	public void setString(int thisParam, int superParam) {
+		int foo;
+		foo = 2;
+	}
+	public RealClass(int thisParam, int superParam) {
+		int foo;
+		foo = 2;
+	}
+}
+    		]]>
+    	</code>
+    </test-code>
+    <test-code>
+        <description>2410201, False+ AvoidReassigningParameters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PmdBug {
+    class Test {
+        public String field;
+        public Test t;
+    }
+    public void foo(String field) {
+        Test t = new Test();
+        t.field = field;
+        t.t.field = field;
+        t.field.toCharArray();
+    }
+    public static void main(String[] args) {
+        new PmdBug().foo("Hello world");
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1330 AvoidReassigningParameters does not work with varargs</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidReassigningParameters {
+    public void a(String... s) {
+        s[0] =  "";
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

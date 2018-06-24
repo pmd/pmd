@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Basic use case
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+     private Map _map = new TreeMap();
+
+      public void m() {
+         Map m = new HashMap();
+      }
+
+      public Map contructMap() {
+         return new HashMap(); //not detected
+      }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1034 UseConcurrentHashMap flags calls to methods that return Map</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void m() {
+        final Map myMap = myObject.methodThatReturnMap();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1342 UseConcurrentHashMap false positive (with documentation example)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class ConcurrentApp {
+  public void getMyInstance() {
+    Map map1 = new HashMap();   // fine for single-threaded access --- violation on this line
+    Map map2 = new ConcurrentHashMap();  // preferred for use with multiple threads
+
+    // the following case will be ignored by this rule
+    Map map3 = someModule.methodThatReturnMap(); // might be OK, if the returned map is already thread-safe
+  }
+}
+        ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Ok, all cases
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+function(arg) {
+  arg = 0;
+  var localVar = 1;
+  var f = function() {
+    localVar = 2; // as closure
+  };
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, all cases
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+function(arg) {
+  arg = 0;
+  aGlobalVariable = 3;
+  thisIsGlobalToo += 1;
+  var localVar = 1;
+  var f = function() {
+    localVar = 2; // as closure
+    anotherGlobal = 4;
+    
+    window.someOtherGlobal = 5; // will not trigger the rule
+  };
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+</test-data>

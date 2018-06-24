@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Too many lines
+     ]]></description>
+        <rule-property name="maxLines">5</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/* 1
+*  2
+*  3
+*  4
+*  5  too many after here..
+*  6  
+*  7
+*  8
+*/ 
+public class Foo {
+  public Foo() {
+  }
+  
+  public void doNothing() {
+  }
+}
+     ]]></code>
+    </test-code>
+ 
+</test-data>

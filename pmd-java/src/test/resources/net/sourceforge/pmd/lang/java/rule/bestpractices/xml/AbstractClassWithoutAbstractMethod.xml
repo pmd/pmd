@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+concrete class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case, 1 method
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {
+   int bar() {} 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+abstract class with abstract method
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {
+   abstract int bar(); 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+abstract class implements interface
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class Foo implements Foo {
+}
+     ]]></code>
+    </test-code>
+</test-data>

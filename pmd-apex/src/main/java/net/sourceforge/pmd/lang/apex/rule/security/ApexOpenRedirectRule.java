@@ -22,8 +22,8 @@ import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
-import apex.jorje.data.ast.Identifier;
-import apex.jorje.data.ast.TypeRef.ClassTypeRef;
+import apex.jorje.data.Identifier;
+import apex.jorje.data.ast.TypeRefs.ClassTypeRef;
 import apex.jorje.semantic.symbol.member.variable.StandardFieldInfo;
 
 /**
@@ -37,15 +37,15 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
 
     public ApexOpenRedirectRule() {
         super.addRuleChainVisit(ASTUserClass.class);
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
+        setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
-        if (Helper.isTestMethodOrClass(node)) {
-            return data;
+        if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
+            return data; // stops all the rules
         }
 
         List<ASTAssignmentExpression> assignmentExprs = node.findDescendantsOfType(ASTAssignmentExpression.class);
@@ -121,7 +121,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
 
                 } catch (NoSuchFieldException | SecurityException | IllegalArgumentException
                         | IllegalAccessException e) {
-                    // preventing exceptions from this code
+                    throw new RuntimeException(e);
                 }
             }
         }
@@ -160,9 +160,9 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
         }
 
         ClassTypeRef classRef = (ClassTypeRef) node.getNode().getTypeRef();
-        Identifier identifier = classRef.className.get(0);
+        Identifier identifier = classRef.getNames().get(0);
 
-        if (identifier.value.equalsIgnoreCase(PAGEREFERENCE)) {
+        if (identifier.getValue().equalsIgnoreCase(PAGEREFERENCE)) {
             getObjectValue(node, data);
         }
     }

@@ -6,12 +6,17 @@ package net.sourceforge.pmd.util.log;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import org.apache.tools.ant.BuildListener;
+import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.XmlLogger;
+import org.apache.tools.ant.taskdefs.RecorderEntry;
 
 /**
  * AntLogHandler sends log messages to an Ant Task, so the regular Ant logging
@@ -23,9 +28,42 @@ public class AntLogHandler extends Handler {
     private Project project;
 
     private static final Formatter FORMATTER = new PmdLogFormatter();
+    private static final Level[] LOG_LEVELS = {
+        Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINEST,
+    };
 
     public AntLogHandler(Project project) {
         this.project = project;
+    }
+    
+    public Level getAntLogLevel() {
+        for (final BuildListener l : project.getBuildListeners()) {
+            Field declaredField = null;
+            try {
+                if (l instanceof DefaultLogger) {
+                    declaredField = DefaultLogger.class.getDeclaredField("msgOutputLevel");
+                } else if (l instanceof XmlLogger) {
+                    declaredField = XmlLogger.class.getDeclaredField("msgOutputLevel");
+                } else if (l instanceof RecorderEntry) {
+                    declaredField = RecorderEntry.class.getDeclaredField("loglevel");
+                } else {
+                    try {
+                        declaredField = l.getClass().getDeclaredField("logLevel");
+                    } catch (final NoSuchFieldException e) {
+                        project.log("Unsupported build listener: " + l.getClass(), Project.MSG_WARN);
+                    }
+                }
+                
+                if (declaredField != null) {
+                    declaredField.setAccessible(true);
+                    return LOG_LEVELS[declaredField.getInt(l)];
+                }
+            } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException ignored) {
+                // Just ignore it
+            }
+        }
+        
+        return Level.FINEST;
     }
 
     @Override
@@ -62,9 +100,11 @@ public class AntLogHandler extends Handler {
 
     @Override
     public void close() throws SecurityException {
+        // nothing to do
     }
 
     @Override
     public void flush() {
+        // nothing to do
     }
 }

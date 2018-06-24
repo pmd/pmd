@@ -7,6 +7,7 @@
 *.md    text
 *.sh    text eol=lf
 *.bat   text eol=crlf
+mvnw.cmd text eol=crlf
 *.png   -text
 *.jpg   -text
 *.svgz  -text

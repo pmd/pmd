@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+void return method, with no return statement.
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+    public void couldBeAbstract()
+    {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+non-void return method, with just a, most likely, dummy return statement.
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+    public Object couldBeAbstract()
+    {
+	// Should be abstract method ?
+	return null;
+   }
+
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+A method with just a return statement, but a meaningful one.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+    public int isUseful(int i)
+    {
+	return (i +4 ) * 12;
+   }
+
+    public int anotherUseful(int i)
+    {
+	return i++;
+   }
+
+    public int anotherUseful(int i)
+    {
+	return i;
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Other valid methods.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+    public native int isUseful();
+
+    int i;
+
+    public int anotherUseful() {
+      i = i + 1;
+      return i;
+    }
+
+    public String anotherUseful(int j) {
+      i = j;
+      return null;
+   }
+
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+nested abstract class
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class NotAbstract
+{
+    public abstract class ShouldBeAbstract
+    {
+        public void couldBeAbstract()
+        {
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+nested class in abstract class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+    public class NotAbstract
+    {
+        public void couldBeAbstract()
+        {
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bug 1888967 : Detection of dummy method
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+   	public int couldBeAbstract()
+    {
+    	return 0;
+    }
+
+    public String couldBeAbstract()
+    {
+    	return "";
+    }
+
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bug 1888967 : Those methods should not be detected as a violation.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+	public boolean notAbstract(String str)
+    {
+    	return Boolean.valueOf(str);
+    }
+
+	public int neitherThisOne(int i)
+	{
+		return i + 3;
+	}
+
+	public int neitherThisOne(String str)
+	{
+		return Integer.valueOf(str);
+	}
+
+
+}
+     ]]></code>
+    </test-code>
+        <test-code>
+        <description><![CDATA[
+Bug 1888967 : This method should not be detected as a violation.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+	public boolean couldBeAbstract(String str)
+    {
+    	return Boolean.valueOf(str);
+    }
+
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+    	<description><![CDATA[
+    	Bug 1932242 : False +, returning a String does not count as an Empty Method
+    	]]></description>
+    	<expected-problems>0</expected-problems>
+    	<code><![CDATA[
+public abstract class Foo
+{
+	protected String bar()
+	{
+		return "A valid, not null, string";
+	}
+
+}
+    	]]></code>
+    </test-code>
+    <test-code>
+        <description>#1147 EmptyMethodInAbstractClassShouldBeAbstract false positives</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {
+    public boolean isVisible() {
+        return false;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Detect empty statements</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {
+    public void isVisible() {
+        ;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

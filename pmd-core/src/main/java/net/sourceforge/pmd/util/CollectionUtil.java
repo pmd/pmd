@@ -10,8 +10,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -24,14 +26,14 @@ import java.util.Set;
 public final class CollectionUtil {
 
     @SuppressWarnings("PMD.UnnecessaryFullyQualifiedName")
-    public static final TypeMap COLLECTION_INTERFACES_BY_NAMES = new TypeMap(new Class[] { java.util.List.class,
-        java.util.Collection.class, java.util.Map.class, java.util.Set.class, });
+    public static final TypeMap COLLECTION_INTERFACES_BY_NAMES = new TypeMap(List.class, Collection.class, Map.class, Set.class);
 
-    @SuppressWarnings({ "PMD.LooseCoupling", "PMD.UnnecessaryFullyQualifiedName" })
-    public static final TypeMap COLLECTION_CLASSES_BY_NAMES = new TypeMap(new Class[] { java.util.ArrayList.class,
-        java.util.LinkedList.class, java.util.Vector.class, java.util.HashMap.class, java.util.LinkedHashMap.class,
-        java.util.TreeMap.class, java.util.TreeSet.class, java.util.HashSet.class, java.util.LinkedHashSet.class,
-        java.util.Hashtable.class, });
+    @SuppressWarnings({"PMD.LooseCoupling", "PMD.UnnecessaryFullyQualifiedName" })
+    public static final TypeMap COLLECTION_CLASSES_BY_NAMES
+        = new TypeMap(ArrayList.class, java.util.LinkedList.class, java.util.Vector.class, HashMap.class,
+                      java.util.LinkedHashMap.class, java.util.TreeMap.class, java.util.TreeSet.class,
+                      HashSet.class, java.util.LinkedHashSet.class, java.util.Hashtable.class);
+
 
     private CollectionUtil() {
     }
@@ -44,11 +46,11 @@ public final class CollectionUtil {
      * @param target
      * @return int
      */
-    public static int addWithoutDuplicates(Collection<String> source, Collection<String> target) {
+    public static <T> int addWithoutDuplicates(Collection<T> source, Collection<T> target) {
 
         int added = 0;
 
-        for (String item : source) {
+        for (T item : source) {
             if (target.contains(item)) {
                 continue;
             }
@@ -161,6 +163,26 @@ public final class CollectionUtil {
         return map;
     }
 
+
+    /**
+     * Consumes all the elements of the iterator and
+     * returns a list containing them. The iterator is
+     * then unusable
+     *
+     * @param it An iterator
+     *
+     * @return a list containing the elements remaining
+     * on the iterator
+     */
+    public static <T> List<T> toList(Iterator<T> it) {
+        List<T> list = new ArrayList<>();
+        while (it.hasNext()) {
+            list.add(it.next());
+        }
+        return list;
+    }
+
+
     /**
      * Returns true if the objects are array instances and each of their
      * elements compares via equals as well.
@@ -170,7 +192,9 @@ public final class CollectionUtil {
      * @param otherValue
      *            Object
      * @return boolean
+     * @deprecated {@link Objects#deepEquals(Object, Object)}
      */
+    @Deprecated
     public static boolean arraysAreEqual(Object value, Object otherValue) {
         if (value instanceof Object[]) {
             if (otherValue instanceof Object[]) {
@@ -190,7 +214,9 @@ public final class CollectionUtil {
      * @param thatArray
      *            Object[]
      * @return boolean
+     * @deprecated {@link Arrays#deepEquals(Object[], Object[])}
      */
+    @Deprecated
     public static boolean valuesAreTransitivelyEqual(Object[] thisArray, Object[] thatArray) {
         if (thisArray == thatArray) {
             return true;
@@ -217,7 +243,9 @@ public final class CollectionUtil {
      * @param otherValue
      *            Object
      * @return boolean
+     * @deprecated {@link Objects#deepEquals(Object, Object)}
      */
+    @Deprecated
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
     public static boolean areEqual(Object value, Object otherValue) {
         if (value == otherValue) {
@@ -265,14 +293,15 @@ public final class CollectionUtil {
      * @param a
      * @param b
      * @return boolean
+     * @deprecated {@link Arrays#deepEquals(Object[], Object[])}
      */
+    @Deprecated
     public static <T> boolean areSemanticEquals(T[] a, T[] b) {
-
         if (a == null) {
-            return isEmpty(b);
+            return b == null || b.length == 0;
         }
         if (b == null) {
-            return isEmpty(a);
+            return a.length == 0;
         }
 
         if (a.length != b.length) {
@@ -288,6 +317,7 @@ public final class CollectionUtil {
         return true;
     }
 
+
     /**
      * If the newValue is already held within the values array then the values
      * array is returned, otherwise a new array is created appending the
@@ -298,6 +328,7 @@ public final class CollectionUtil {
      * @param newValue
      * @return an array containing the union of values and newValue
      */
+    @Deprecated
     public static <T> T[] addWithoutDuplicates(T[] values, T newValue) {
 
         for (T value : values) {
@@ -320,6 +351,7 @@ public final class CollectionUtil {
      * @param newValues
      * @return the union of the two arrays
      */
+    @Deprecated
     public static <T> T[] addWithoutDuplicates(T[] values, T[] newValues) {
 
         Set<T> originals = new HashSet<>(values.length);

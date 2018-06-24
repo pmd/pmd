@@ -8,13 +8,10 @@
 Contains rules for migrating to JDK 1.5
   </description>
 
-  <rule ref="rulesets/java/migrating.xml/AvoidEnumAsIdentifier"/>
-  <rule ref="rulesets/java/migrating.xml/IntegerInstantiation"/>
-  <rule ref="rulesets/java/migrating.xml/LongInstantiation"/>
-  <rule ref="rulesets/java/migrating.xml/ShortInstantiation"/>
-  <rule ref="rulesets/java/migrating.xml/ByteInstantiation"/>
+    <rule ref="category/java/errorprone.xml/AvoidEnumAsIdentifier" deprecated="true" />
+    <rule ref="category/java/performance.xml/ByteInstantiation" deprecated="true" />
+    <rule ref="category/java/performance.xml/IntegerInstantiation" deprecated="true" />
+    <rule ref="category/java/performance.xml/LongInstantiation" deprecated="true" />
+    <rule ref="category/java/performance.xml/ShortInstantiation" deprecated="true" />
 
 </ruleset>
-
-
-

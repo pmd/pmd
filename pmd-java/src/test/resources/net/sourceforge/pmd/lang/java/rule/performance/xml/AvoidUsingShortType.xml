@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Short as field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+			    public class UsingShort
+			    {
+			        private short doNotUseShort = 0;
+				}
+		     ]]>
+		</code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Short as local variable
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+    public class UsingShort
+    {
+		public UsingShort() {
+			short shouldNotBeUsed = 1;
+		}
+	}
+     ]]></code>
+    </test-code>
+     <test-code>
+        <description><![CDATA[
+Short as method return type
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code>
+        <![CDATA[
+		 public class UsingShort {
+		   	public short badReturntype() {
+				short var = 0;
+				return var;
+			}
+		}
+     	]]>
+     	</code>
+    </test-code>
+         <test-code>
+        <description><![CDATA[
+Short as method return type
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code>
+        <![CDATA[
+    public class TypeNameWithshort
+    {
+		// … is not an infraction !
+		int shortName = 0;
+
+		public void avoidCommonMisinterpretation() {
+			// … is not an infraction !
+			int shortName = 0;
+			TypeNameWithshort legal = new TypeNameWithshort(shortName);
+		}
+
+	}
+		]]>
+		</code>
+    </test-code>
+
+    <test-code>
+        <description>#1449 false positive when casting a variable to short</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class CastToShort {
+    public void testcase() {
+        ByteBuffer buffer = ByteBuffer.allocate(2);
+        buffer.putShort((short) "1111".getBytes().length);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>short as method parameter</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class AvoidUsingShortTypeTest {
+    public void method(short doNotUseShort) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>short as method parameter with @Override</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidUsingShortTypeTest extends OtherClass {
+    @Override
+    public void method(short doNotUseShort) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] AvoidUsingShortType erroneously triggered on overrides of 3rd party methods (anon. class) #586</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ShortTest {
+    public org.w3c.dom.traversal.NodeFilter create() {
+        return new org.w3c.dom.traversal.NodeFilter() {
+            @Override
+            public short acceptNode(@Nullable Node node) {
+                return 0;
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] AvoidUsingShortType erroneously triggered on overrides of 3rd party methods #586</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.w3c.dom.traversal.NodeFilter;
+public class ShortTest implements NodeFilter {
+    @Override
+    public short acceptNode(@Nullable Node node) {
+        return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>short as annotation property</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public @interface MyAnnotation {
+    short dontUseShort();
+}
+        ]]></code>
+    </test-code>
+</test-data>

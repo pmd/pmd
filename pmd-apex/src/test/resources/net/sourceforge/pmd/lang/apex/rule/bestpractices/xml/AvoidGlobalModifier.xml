@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Global class</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+global class Foo {
+
+}
+		]]></code>
+	</test-code>
+
+    <test-code>
+        <description>Global interface</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+global interface Foo {
+
+}
+		]]></code>
+	</test-code>
+
+    <test-code>
+        <description>Global method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+global class Foo {
+	global Integer bar() {
+	
+	}
+}
+		]]></code>
+	</test-code>
+
+    <test-code>
+        <description>Global inner interface</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+global class Foo {
+	global interface Bar { {
+	
+	}
+}
+		]]></code>
+	</test-code>
+    
+</test-data>

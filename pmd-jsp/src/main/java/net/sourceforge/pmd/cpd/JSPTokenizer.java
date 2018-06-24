@@ -18,6 +18,7 @@ import net.sourceforge.pmd.util.IOUtil;
 
 public class JSPTokenizer implements Tokenizer {
 
+    @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
         LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JspLanguageModule.NAME)

@@ -63,6 +63,7 @@ public class ClassScope extends AbstractJavaScope {
 
     // FIXME - this breaks given sufficiently nested code
     private static ThreadLocal<Integer> anonymousInnerClassCounter = new ThreadLocal<Integer>() {
+        @Override
         protected Integer initialValue() {
             return Integer.valueOf(1);
         }
@@ -90,7 +91,7 @@ public class ClassScope extends AbstractJavaScope {
      * <p>FIXME - should have name like Foo$1, not Anonymous$1 to get this working
      * right, the parent scope needs to be passed in when instantiating a
      * ClassScope</p>
-     * 
+     *
      * @param classNameDeclaration The declaration of this class, as known to the parent scope.
      */
     public ClassScope(final ClassNameDeclaration classNameDeclaration) {
@@ -100,6 +101,10 @@ public class ClassScope extends AbstractJavaScope {
         this.className = "Anonymous$" + v;
         anonymousInnerClassCounter.set(v + 1);
         classDeclaration = classNameDeclaration;
+    }
+
+    public ClassNameDeclaration getClassDeclaration() {
+        return classDeclaration;
     }
 
     public void setIsEnum(boolean isEnum) {
@@ -118,6 +123,7 @@ public class ClassScope extends AbstractJavaScope {
         return getDeclarations(VariableNameDeclaration.class);
     }
 
+    @Override
     public Set<NameDeclaration> addNameOccurrence(NameOccurrence occurrence) {
         JavaNameOccurrence javaOccurrence = (JavaNameOccurrence) occurrence;
         Set<NameDeclaration> declarations = findVariableHere(javaOccurrence);
@@ -127,7 +133,7 @@ public class ClassScope extends AbstractJavaScope {
                 List<NameOccurrence> nameOccurrences = getMethodDeclarations().get(decl);
                 if (nameOccurrences == null) {
                     // TODO may be a class name: Foo.this.super();
-                    
+
                     // search inner classes
                     for (ClassNameDeclaration innerClass : getClassDeclarations().keySet()) {
                         Scope innerClassScope = innerClass.getScope();
@@ -172,6 +178,7 @@ public class ClassScope extends AbstractJavaScope {
         return this.className;
     }
 
+    @Override
     protected Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence) {
         if (occurrence.isThisOrSuper() || className.equals(occurrence.getImage())) {
             // Reference to ourselves!
@@ -318,7 +325,7 @@ public class ClassScope extends AbstractJavaScope {
             variableDeclaratorId.setImage("arg" + i);
             formalParameter.jjtAddChild(variableDeclaratorId, 1);
             variableDeclaratorId.jjtSetParent(formalParameter);
-            
+
             ASTType type = new ASTType(JavaParserTreeConstants.JJTTYPE);
             formalParameter.jjtAddChild(type, 0);
             type.jjtSetParent(formalParameter);
@@ -348,7 +355,7 @@ public class ClassScope extends AbstractJavaScope {
     /**
      * Provide a list of types of the parameters of the given method
      * declaration. The types are simple type images.
-     * 
+     *
      * @param mnd
      *            the method declaration.
      * @return List of types
@@ -365,6 +372,10 @@ public class ClassScope extends AbstractJavaScope {
         Map<String, Node> qualifiedTypeNames = fileScope.getQualifiedTypeNames();
 
         for (ASTFormalParameter p : parameters) {
+            if (p.isExplicitReceiverParameter()) {
+                continue;
+            }
+
             String typeImage = p.getTypeNode().getTypeImage();
             // typeImage might be qualified/unqualified. If it refers to a type,
             // defined in the same toplevel class,
@@ -431,7 +442,7 @@ public class ClassScope extends AbstractJavaScope {
      * (e.g. because it is itself the result of a method call), the parameter
      * type is used - so it is assumed, it is of the correct type. This might
      * cause confusion when methods are overloaded.
-     * 
+     *
      * @param occurrence
      *            the method call
      * @param parameterTypes
@@ -655,6 +666,7 @@ public class ClassScope extends AbstractJavaScope {
         return null;
     }
 
+    @Override
     public String toString() {
         StringBuilder res = new StringBuilder("ClassScope (").append(className).append("): ");
         Map<ClassNameDeclaration, List<NameOccurrence>> classDeclarations = getClassDeclarations();
@@ -663,10 +675,10 @@ public class ClassScope extends AbstractJavaScope {
         }
         Map<MethodNameDeclaration, List<NameOccurrence>> methodDeclarations = getMethodDeclarations();
         if (!methodDeclarations.isEmpty()) {
-            for (MethodNameDeclaration mnd : methodDeclarations.keySet()) {
-                res.append(mnd.toString());
-                int usages = methodDeclarations.get(mnd).size();
-                res.append("(begins at line ").append(mnd.getNode().getBeginLine()).append(", ").append(usages)
+            for (Map.Entry<MethodNameDeclaration, List<NameOccurrence>> entry : methodDeclarations.entrySet()) {
+                res.append(entry.getKey().toString());
+                int usages = entry.getValue().size();
+                res.append("(begins at line ").append(entry.getKey().getNode().getBeginLine()).append(", ").append(usages)
                         .append(" usages)");
                 res.append(", ");
             }

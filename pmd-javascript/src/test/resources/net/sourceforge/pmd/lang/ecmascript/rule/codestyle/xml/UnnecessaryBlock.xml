@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Ok, function
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+function foo() {
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, if
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+if (true) {
+} else if (true) {
+} else {
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, for
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+for (var i = 0; i < 10; i++) {
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, for in
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+for (var i in obj) {
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, while
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+while(true) {
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, do while
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+do {
+} while(true)
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, switch
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+switch(1) {
+   case 1:
+      break;
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, try
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+try {
+} catch (e) {
+} finally {
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, global
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+{
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, function
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+function foo() {
+   {
+   }
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, if
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+if (true) {
+   {
+   }
+} else if (true) {
+   {
+   }
+} else {
+   {
+   }
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, for
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+for (var i = 0; i < 10; i++) {
+   {
+   }
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, for in
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+for (var i in obj) {
+   {
+   }
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, while
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+while(true) {
+   {
+   }
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, do while
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+do {
+   {
+   }
+} while(true)
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, switch
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+switch(1) {
+   case 1:
+      {
+      }
+      break;
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, try
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+try {
+   {
+   }
+} catch (e) {
+   {
+   }
+} finally {
+   {
+   }
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+</test-data>

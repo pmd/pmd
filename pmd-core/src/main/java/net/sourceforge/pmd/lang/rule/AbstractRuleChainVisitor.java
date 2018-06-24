@@ -16,8 +16,9 @@ import java.util.Set;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.benchmark.Benchmark;
-import net.sourceforge.pmd.benchmark.Benchmarker;
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperation;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -59,41 +60,41 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
 
         // Perform a visitation of the AST to index nodes which need visiting by
         // type
-        long start = System.nanoTime();
-        indexNodes(nodes, ctx);
-        long end = System.nanoTime();
-        Benchmarker.mark(Benchmark.RuleChainVisit, end - start, 1);
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULECHAIN_VISIT)) {
+            indexNodes(nodes, ctx);
+        }
 
         // For each RuleSet, only if this source file applies
-        for (Map.Entry<RuleSet, List<Rule>> entry : ruleSetRules.entrySet()) {
-            RuleSet ruleSet = entry.getKey();
-            if (!ruleSet.applies(ctx.getSourceCodeFile())) {
-                continue;
-            }
-
-            // For each rule, allow it to visit the nodes it desires
-            start = System.nanoTime();
-            for (Rule rule : entry.getValue()) {
-                int visits = 0;
-                if (!RuleSet.applies(rule, ctx.getLanguageVersion())) {
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULECHAIN_RULE)) {
+            for (Map.Entry<RuleSet, List<Rule>> entry : ruleSetRules.entrySet()) {
+                RuleSet ruleSet = entry.getKey();
+                if (!ruleSet.applies(ctx.getSourceCodeFile())) {
                     continue;
                 }
-                final List<String> nodeNames = rule.getRuleChainVisits();
-                for (int j = 0; j < nodeNames.size(); j++) {
-                    List<Node> ns = nodeNameToNodes.get(nodeNames.get(j));
-                    for (Node node : ns) {
-                        // Visit with underlying Rule, not the RuleReference
-                        Rule actualRule = rule;
-                        while (actualRule instanceof RuleReference) {
-                            actualRule = ((RuleReference) actualRule).getRule();
-                        }
-                        visit(actualRule, node, ctx);
+
+                // For each rule, allow it to visit the nodes it desires
+                for (Rule rule : entry.getValue()) {
+                    int visits = 0;
+                    if (!RuleSet.applies(rule, ctx.getLanguageVersion())) {
+                        continue;
                     }
-                    visits += ns.size();
+                    try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULECHAIN_RULE, rule.getName())) {
+                        final List<String> nodeNames = rule.getRuleChainVisits();
+                        for (int j = 0; j < nodeNames.size(); j++) {
+                            List<Node> ns = nodeNameToNodes.get(nodeNames.get(j));
+                            for (Node node : ns) {
+                                // Visit with underlying Rule, not the RuleReference
+                                Rule actualRule = rule;
+                                while (actualRule instanceof RuleReference) {
+                                    actualRule = ((RuleReference) actualRule).getRule();
+                                }
+                                visit(actualRule, node, ctx);
+                            }
+                            visits += ns.size();
+                        }
+                        rcto.close(visits);
+                    }
                 }
-                end = System.nanoTime();
-                Benchmarker.mark(Benchmark.RuleChainRule, rule.getName(), end - start, visits);
-                start = end;
             }
         }
     }
@@ -112,7 +113,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
      * Index a single node for visitation by rules.
      */
     protected void indexNode(Node node) {
-        List<Node> nodes = nodeNameToNodes.get(node.toString());
+        List<Node> nodes = nodeNameToNodes.get(node.getXPathNodeName());
         if (nodes != null) {
             nodes.add(node);
         }
@@ -138,7 +139,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
             Map.Entry<RuleSet, List<Rule>> entry = entryIterator.next();
             for (Iterator<Rule> ruleIterator = entry.getValue().iterator(); ruleIterator.hasNext();) {
                 Rule rule = ruleIterator.next();
-                if (rule.usesRuleChain()) {
+                if (rule.isRuleChain()) {
                     visitedNodes.addAll(rule.getRuleChainVisits());
                 } else {
                     // Drop rules which do not participate in the rule chain.

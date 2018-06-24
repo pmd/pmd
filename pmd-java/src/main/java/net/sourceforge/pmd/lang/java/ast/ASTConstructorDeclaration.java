@@ -5,7 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTConstructorDeclaration extends AbstractJavaAccessNode {
+
+public class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration {
 
     private boolean containsComment;
 
@@ -17,12 +18,10 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode {
         super(p, id);
     }
 
-    public ASTFormalParameters getParameters() {
-        return (ASTFormalParameters) (jjtGetChild(0) instanceof ASTFormalParameters ? jjtGetChild(0) : jjtGetChild(1));
-    }
 
-    public int getParameterCount() {
-        return getParameters().getParameterCount();
+    @Override
+    public MethodLikeKind getKind() {
+        return MethodLikeKind.CONSTRUCTOR;
     }
 
     /**
@@ -39,5 +38,22 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode {
 
     public void setContainsComment() {
         this.containsComment = true;
+    }
+
+    /**
+     * @deprecated to be removed with PMD 7.0.0 - use getFormalParameters() instead
+     */
+    @Deprecated
+    public ASTFormalParameters getParameters() {
+        return getFormalParameters();
+    }
+
+    public int getParameterCount() {
+        return getFormalParameters().getParameterCount();
+    }
+
+    //@Override // enable this with PMD 7.0.0 - see interface ASTMethodOrConstructorDeclaration
+    public ASTFormalParameters getFormalParameters() {
+        return getFirstChildOfType(ASTFormalParameters.class);
     }
 }

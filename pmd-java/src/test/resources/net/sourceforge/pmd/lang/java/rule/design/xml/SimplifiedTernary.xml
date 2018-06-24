@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>
+            <![CDATA[
+condition ? true : foo
+            ]]>
+        </description>
+        <expected-problems>1</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo {
+    public boolean test() {
+        return condition ? true : something();
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>
+            <![CDATA[
+condition ? false : foo
+            ]]>
+        </description>
+        <expected-problems>1</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo {
+    public void test() {
+        final boolean value = condition ? false : something();
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>
+            <![CDATA[
+condition ? foo : true
+            ]]>
+        </description>
+        <expected-problems>1</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo {
+    public boolean test() {
+        return condition ? something() : true;
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>
+            <![CDATA[
+condition ? foo : false
+            ]]>
+        </description>
+        <expected-problems>1</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo {
+    public void test() {
+        final boolean otherValue = condition ? something() : false;
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>
+            <![CDATA[
+condition ? true : false
+            ]]>
+        </description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo {
+    public boolean test() {
+        return condition ? true : false; // Existing rule
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>#1424 False positive with ternary operator</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SimplifiedTernary {
+    private SomeValue doStuff(SomeValue someValue) {
+        return THE_VALUE.equals(rangeValue.to) ? new SomeValue(someValue.from, null, true) : someValue;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#232 False positive with ternary operator using nullables</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SimplifiedTernary {
+    public Boolean getHasCustomName() {
+        return mHasCustomName ? true : null;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

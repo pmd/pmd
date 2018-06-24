@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+should be &&
+        ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ List bar(List list) {
+  if (list != null || !list.equals(buz)) {
+   return list;
+  }
+ }
+}
+     ]]></code>
+     </test-code>
+     <test-code>
+        <description><![CDATA[
+Ok, is &&
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ List bar(List list) {
+  if (list != null && !list.equals(buz)) {
+   return list;
+  }
+ }
+}
+     ]]></code>
+     </test-code>
+    <test-code>
+        <description><![CDATA[
+should be &&, but now with a longer expression
+        ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Foo {
+ void bar() {
+  if (books.getJane()!= null || !books.getJane().equals("")) { }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+should be ||
+        ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ List bar(List list) {
+  if (list == null && list.equals(buz)) {
+   return list;
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, is ||
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ List bar(List list) {
+  if (list == null || list.equals(buz)) {
+   return list;
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Arrays are Ok
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if (index >= 0 && books[index] == null) { }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Different method is Ok
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if (books[i].getJane() == null &&
+        books[i].getEyre() == null) { }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Using a shorter expression with the same variable in the second check should not crash the test
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if (books.getJane() == null &&
+        books == eyre) { }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+1633683, should be ||, but now with another compare
+        ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if (str == null && str.length() == 0) { }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+1633683, Arrays are Ok II
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if (p.length > 1 && p[0] == null) { }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Different literals in variables should not match
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if (p[0] == null && p[1].getJane()) { }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Assignments in checks are OK
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if (books == null &&
+   (books = getBook(janeEyre)) == null) { }
+ }
+}
+     ]]></code>
+    </test-code>
+    <!-- A rare edge case that is technically a false positive, 
+    although the code is senseless. Will not fix. -->
+<!--<test-code>
+        <description><![CDATA[
+Useless code, but it will not throw a NullPointerException
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if (family.plain == null && family.bold == null &&
+	    family.plain == null && family.bold == null) {
+ }
+}
+     ]]></code>
+    </test-code> -->
+        <test-code>
+        <description><![CDATA[
+Similar method calls with different arguments are OK
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+   if (library.getBooks(Jane.class) != null ||
+      library.getBooks(Eyre.class) != null) { }
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

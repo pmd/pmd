@@ -10,7 +10,7 @@ usage() {
 }
 
 valid_app_options () {
-    echo "pmd, cpd, cpdgui, designer, bgastviewer"
+    echo "pmd, cpd, cpdgui, designer, bgastviewer, designerold"
 }
 
 is_cygwin() {
@@ -59,7 +59,7 @@ java_heapsize_settings() {
 
 set_lib_dir() {
   if [ -z ${LIB_DIR} ]; then
-    local script_dir=$(dirname ${0})
+    local script_dir=$(dirname "${0}")
     local cwd="${PWD}"
 
     cd "${script_dir}/../lib"
@@ -72,6 +72,19 @@ check_lib_dir() {
   if [ ! -e "${LIB_DIR}" ]; then
     echo "The jar directory [${LIB_DIR}] does not exist"
   fi
+}
+
+jre_specific_vm_options() {
+  # java_ver is eg "18" for java 1.8, "90" for java 9.0, "100" for java 10.0.x
+  java_ver=$(java -version 2>&1 | sed -n -e 's/-ea/.0.0/i' -e 's/^.* version "\(.*\)\.\(.*\)\..*".*$/\1\2/p')
+  options=""
+
+  if [ "$java_ver" -ge 90 ] && [ "${APPNAME}" = "designer" ]
+  then # open internal module of javafx to reflection
+    options="--add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED"
+  fi
+
+  echo $options
 }
 
 readonly APPNAME="${1}"
@@ -89,6 +102,9 @@ case "${APPNAME}" in
     readonly CLASSNAME="net.sourceforge.pmd.cpd.CPD"
     ;;
   "designer")
+    readonly CLASSNAME="net.sourceforge.pmd.util.fxdesigner.DesignerStarter"
+    ;;
+  "designerold")
     readonly CLASSNAME="net.sourceforge.pmd.util.designer.Designer"
     ;;
   "bgastviewer")
@@ -113,7 +129,7 @@ classpath=$CLASSPATH
 
 cd "${CWD}"
 
-for jarfile in ${LIB_DIR}/*.jar; do
+for jarfile in "${LIB_DIR}"/*.jar; do
     if [ -n "$classpath" ]; then
         classpath=$classpath:$jarfile
     else
@@ -125,4 +141,5 @@ cygwin_paths
 
 java_heapsize_settings
 
-java ${HEAPSIZE} -cp "${classpath}" "${CLASSNAME}" "$@"
+java ${HEAPSIZE} $(jre_specific_vm_options) -cp "${classpath}" "${CLASSNAME}" "$@"
+

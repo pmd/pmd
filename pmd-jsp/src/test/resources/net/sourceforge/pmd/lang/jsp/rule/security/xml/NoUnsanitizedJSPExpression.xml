@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+	<test-code>
+		<description><![CDATA[
+An EL outside taglib #1
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %> 
+${shouldBeDetectedAsXSSSecurityBreach}
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+An EL outside taglib #2
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %> 
+<html>
+<input type="text" value="${shouldBeDetectedAsXSSSecurityBreach}" />
+</html>
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+An EL outside taglib #3
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %> 
+<html>
+<input
+	type="text"
+	value="${shouldBeDetectedAsXSSSecurityBreach}"
+	name="toto"
+/>
+</html>
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+Multiple EL outside taglib
+     ]]></description>
+		<expected-problems>3</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %>
+${shouldBeDetectedAsXSSSecurityBreach} 
+<html>
+${shouldBeDetectedAsXSSSecurityBreach}
+<input
+	type="text"
+	value="${shouldBeDetectedAsXSSSecurityBreach}"
+	name="toto"
+/>
+<c:out value="${expression}" />
+</html>
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+	<test-code>
+		<description>c:out fixes it</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %> 
+<html>
+<c:out value="${expression}" />
+</html>
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+
+	<test-code>
+		<description>fn:escape fixes it</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
+${fn:escapeXml(expression)}
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+	<test-code>
+		<description>fn:escape as attribute value</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
+<html>
+<input type="text" value="${fn:escapeXml(expression)}" />
+</html>
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+	<test-code>
+		<description>fn:escape as attribute value, multiline</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
+<html>
+<input
+	type="text"
+	value="${fn:escapeXml(expression)}"
+	name="toto"
+/>
+</html>
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+	<test-code>
+		<description>fn:escape and c:out mix</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+${fn:escapeXml( expression )} 
+<html>
+${fn:escapeXml(expression)}
+<input
+	type="text"
+	value="${fn:escapeXml(expression)}"
+	name="toto"
+/>
+<c:out value="${fn:escapeXml(expression)}" />
+</html>
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+</test-data>

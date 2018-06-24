@@ -12,13 +12,15 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,23 +32,26 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "codeclimate";
     public static final String BODY_PLACEHOLDER = "REPLACE_THIS_WITH_MARKDOWN";
     public static final int REMEDIATION_POINTS_DEFAULT = 50000;
-    public static final String[] CODECLIMATE_DEFAULT_CATEGORIES = new String[] { "Style" };
+    public static final String[] CODECLIMATE_DEFAULT_CATEGORIES = new String[] {"Style"};
 
     // Note: required by https://github.com/codeclimate/spec/blob/master/SPEC.md
     protected static final String NULL_CHARACTER = "\u0000";
-
+    protected static final List<String> INTERNAL_DEV_PROPERTIES = Arrays.asList("version", "xpath");
+    private static final String PMD_PROPERTIES_URL = getPmdPropertiesURL();
     private Rule rule;
-
-    private final String pmdDeveloperUrl;
 
     public CodeClimateRenderer() {
         super(NAME, "Code Climate integration.");
-        pmdDeveloperUrl = getPmdDeveloperURL();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    private static String getPmdPropertiesURL() {
+        String url = "https://pmd.github.io/pmd-" + PMDVersion.VERSION + "/pmd_devdocs_working_with_properties.html";
+        if (PMDVersion.isSnapshot() || PMDVersion.isUnknown()) {
+            url = "https://pmd.github.io/latest/pmd_devdocs_working_with_properties.html";
+        }
+        return url;
+    }
+
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
@@ -65,8 +70,8 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
      * Generate a CodeClimateIssue suitable for processing into JSON from the
      * given RuleViolation.
      *
-     * @param rv
-     *            RuleViolation to convert.
+     * @param rv RuleViolation to convert.
+     *
      * @return The generated issue.
      */
     private CodeClimateIssue asIssue(RuleViolation rv) {
@@ -107,7 +112,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         String pathWithoutCcRoot = StringUtils.removeStartIgnoreCase(rv.getFilename(), "/code/");
 
         if (rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)
-                && !rule.getProperty(CODECLIMATE_BLOCK_HIGHLIGHTING)) {
+            && !rule.getProperty(CODECLIMATE_BLOCK_HIGHLIGHTING)) {
             result = new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getBeginLine());
         } else {
             result = new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getEndLine());
@@ -130,11 +135,8 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         String[] result;
 
         if (rule.hasDescriptor(CODECLIMATE_CATEGORIES)) {
-            Object[] categories = rule.getProperty(CODECLIMATE_CATEGORIES);
-            result = new String[categories.length];
-            for (int i = 0; i < categories.length; i++) {
-                result[i] = String.valueOf(categories[i]);
-            }
+            List<String> categories = rule.getProperty(CODECLIMATE_CATEGORIES);
+            result = categories.toArray(new String[0]);
         } else {
             result = CODECLIMATE_DEFAULT_CATEGORIES;
         }
@@ -142,21 +144,13 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         return result;
     }
 
-    private static String getPmdDeveloperURL() {
-        String url = "http://pmd.github.io/pmd-" + PMD.VERSION + "/customizing/pmd-developer.html";
-        if (PMD.VERSION.contains("SNAPSHOT") || "unknown".equals(PMD.VERSION)) {
-            url = "http://pmd.sourceforge.net/snapshot/customizing/pmd-developer.html";
-        }
-        return url;
-    }
-
     private <T> String getBody() {
         String result = "## " + rule.getName() + "\\n\\n" + "Since: PMD " + rule.getSince() + "\\n\\n" + "Priority: "
-                + rule.getPriority() + "\\n\\n"
-                + "[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): "
-                + Arrays.toString(getCategories()).replaceAll("[\\[\\]]", "") + "\\n\\n"
-                + "[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): "
-                + getRemediationPoints() + "\\n\\n" + cleaned(rule.getDescription());
+            + rule.getPriority() + "\\n\\n"
+            + "[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): "
+            + Arrays.toString(getCategories()).replaceAll("[\\[\\]]", "") + "\\n\\n"
+            + "[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): "
+            + getRemediationPoints() + "\\n\\n" + cleaned(rule.getDescription());
 
         if (!rule.getExamples().isEmpty()) {
             result += "\\n\\n### Example:\\n\\n";
@@ -169,11 +163,16 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         }
 
         if (!rule.getPropertyDescriptors().isEmpty()) {
-            result += "\\n\\n### [PMD properties](" + pmdDeveloperUrl + ")\\n\\n";
+            result += "\\n\\n### [PMD properties](" + PMD_PROPERTIES_URL + ")\\n\\n";
             result += "Name | Value | Description\\n";
             result += "--- | --- | ---\\n";
 
             for (PropertyDescriptor<?> property : rule.getPropertyDescriptors()) {
+                String propertyName = property.name().replaceAll("\\_", "\\\\_");
+                if (INTERNAL_DEV_PROPERTIES.contains(propertyName)) {
+                    continue;
+                }
+
                 @SuppressWarnings("unchecked")
                 PropertyDescriptor<T> typed = (PropertyDescriptor<T>) property;
                 T value = rule.getProperty(typed);
@@ -183,10 +182,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 }
                 propertyValue = propertyValue.replaceAll("(\n|\r\n|\r)", "\\\\n");
 
-                String porpertyName = property.name();
-                porpertyName = porpertyName.replaceAll("\\_", "\\\\_");
-
-                result += porpertyName + " | " + propertyValue + " | " + property.description() + "\\n";
+                result += propertyName + " | " + propertyValue + " | " + property.description() + "\\n";
             }
         }
         return cleaned(result);

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+basic test case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Count {
+  public static void main(String[] args) {
+    final int START = 2000000000;
+    int count = 0;
+    for (float f = START; f < START + 50; f++)
+      count++;
+      //Prints 0 because (float) START == (float) (START + 50).
+      System.out.println(count);
+      //The termination test misbehaves due to floating point granularity.
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Should be all OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Count {
+  public static void main(String[] args) {
+    final double START = 2000000000;
+    int count = 0;
+    for (double indice = START; indice < START + 50; indice++)
+      count++;
+    }
+}
+     ]]></code>
+    </test-code>
+</test-data>

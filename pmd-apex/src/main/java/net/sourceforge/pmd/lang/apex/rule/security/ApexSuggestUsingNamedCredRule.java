@@ -34,7 +34,7 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
 
     public ApexSuggestUsingNamedCredRule() {
         super.addRuleChainVisit(ASTUserClass.class);
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
+        setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
@@ -67,7 +67,7 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
 
     private void findFieldLiterals(final ASTField fDecl) {
         Object f = fDecl.getNode().getFieldInfo().getValue();
-        if (f != null && f instanceof String) {
+        if (f instanceof String) {
             final String fieldValue = (String) f;
             if (AUTHORIZATION.equalsIgnoreCase(fieldValue)) {
                 listOfAuthorizationVariables.add(Helper.getFQVariableName(fDecl));

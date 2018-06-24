@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
 import com.beust.jcommander.IStringConverter;
+import com.beust.jcommander.IValueValidator;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.validators.PositiveInteger;
@@ -25,14 +26,13 @@ public class PMDParameters {
             required = true)
     private String rulesets;
 
-    @Parameter(names = { "-uri", "-u" }, description = "Database URI for sources.", required = false)
+    @Parameter(names = { "-uri", "-u" }, description = "Database URI for sources.")
     private String uri;
 
-    @Parameter(names = { "-dir", "-d" }, description = "Root directory for sources.", required = false)
+    @Parameter(names = { "-dir", "-d" }, description = "Root directory for sources.")
     private String sourceDir;
 
-    @Parameter(names = { "-filelist" }, description = "Path to a file containing a list of files to analyze.",
-            required = false)
+    @Parameter(names = "-filelist", description = "Path to a file containing a list of files to analyze.")
     private String fileListPath;
 
     @Parameter(names = { "-format", "-f" }, description = "Report format type.")
@@ -50,7 +50,7 @@ public class PMDParameters {
 
     @Parameter(names = { "-threads", "-t" }, description = "Sets the number of threads used by PMD.",
             validateWith = PositiveInteger.class)
-    private Integer threads = 1;
+    private int threads = 1;
 
     @Parameter(names = { "-benchmark", "-b" },
             description = "Benchmark mode - output a benchmark report upon completion; default to System.err.")
@@ -70,9 +70,10 @@ public class PMDParameters {
     private String suppressmarker = "NOPMD";
 
     @Parameter(names = { "-minimumpriority", "-min" },
-            description = "Rule priority threshold; rules with lower priority than configured here won't be used. Default is '5' which is the lowest priority.",
-            converter = RulePriorityConverter.class)
-    private RulePriority minimumPriority = RulePriority.LOW;
+            description = "Rule priority threshold; rules with lower priority than configured here won't be used. "
+                    + "Valid values are integers between 1 and 5 (inclusive), with 5 being the lowest priority.",
+            validateValueWith = RulePriorityValidator.class)
+    private int minimumPriority = RulePriority.LOW.getPriority();
 
     @Parameter(names = { "-property", "-P" }, description = "{name}={value}: Define a property for the report format.",
             converter = PropertyConverter.class)
@@ -102,6 +103,9 @@ public class PMDParameters {
     @Parameter(names = "-cache", description = "Specify the location of the cache file for incremental analysis.")
     private String cacheLocation = null;
 
+    @Parameter(names = "-no-cache", description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
+    private boolean noCache = false;
+
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
 
@@ -122,7 +126,20 @@ public class PMDParameters {
         }
     }
 
+
     // this has to be a public static class, so that JCommander can use it!
+    public static class RulePriorityValidator implements IValueValidator<Integer> {
+
+        @Override
+        public void validate(String name, Integer value) throws ParameterException {
+            if (value < 1 || value > 5) {
+                throw new ParameterException("Priority values can only be integer value, between 1 and 5," + value + " is not valid");
+            }
+        }
+    }
+
+    /** @deprecated Will be removed in 7.0.0 */
+    @Deprecated
     public static class RulePriorityConverter implements IStringConverter<RulePriority> {
 
         public int validate(String value) throws ParameterException {
@@ -140,43 +157,67 @@ public class PMDParameters {
         }
     }
 
-    public static PMDConfiguration transformParametersIntoConfiguration(PMDParameters params) {
-        if (null == params.getSourceDir() && null == params.getUri() && null == params.getFileListPath()) {
+
+    /**
+     * Converts these parameters into a configuration.
+     *
+     * @return A new PMDConfiguration corresponding to these parameters
+     *
+     * @throws IllegalArgumentException if the parameters are inconsistent or incomplete
+     */
+    public PMDConfiguration toConfiguration() {
+        if (null == this.getSourceDir() && null == this.getUri() && null == this.getFileListPath()) {
             throw new IllegalArgumentException(
                     "Please provide a parameter for source root directory (-dir or -d), database URI (-uri or -u), or file list path (-filelist).");
         }
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths(params.getSourceDir());
-        configuration.setInputFilePath(params.getFileListPath());
-        configuration.setInputUri(params.getUri());
-        configuration.setReportFormat(params.getFormat());
-        configuration.setBenchmark(params.isBenchmark());
-        configuration.setDebug(params.isDebug());
-        configuration.setMinimumPriority(params.getMinimumPriority());
-        configuration.setReportFile(params.getReportfile());
-        configuration.setReportProperties(params.getProperties());
-        configuration.setReportShortNames(params.isShortnames());
-        configuration.setRuleSets(params.getRulesets());
-        configuration.setRuleSetFactoryCompatibilityEnabled(!params.noRuleSetCompatibility);
-        configuration.setShowSuppressedViolations(params.isShowsuppressed());
-        configuration.setSourceEncoding(params.getEncoding());
-        configuration.setStressTest(params.isStress());
-        configuration.setSuppressMarker(params.getSuppressmarker());
-        configuration.setThreads(params.getThreads());
-        configuration.setFailOnViolation(params.isFailOnViolation());
-        configuration.setAnalysisCacheLocation(params.cacheLocation);
+        configuration.setInputPaths(this.getSourceDir());
+        configuration.setInputFilePath(this.getFileListPath());
+        configuration.setInputUri(this.getUri());
+        configuration.setReportFormat(this.getFormat());
+        configuration.setBenchmark(this.isBenchmark());
+        configuration.setDebug(this.isDebug());
+        configuration.setMinimumPriority(this.getMinimumPriority());
+        configuration.setReportFile(this.getReportfile());
+        configuration.setReportProperties(this.getProperties());
+        configuration.setReportShortNames(this.isShortnames());
+        configuration.setRuleSets(this.getRulesets());
+        configuration.setRuleSetFactoryCompatibilityEnabled(!this.noRuleSetCompatibility);
+        configuration.setShowSuppressedViolations(this.isShowsuppressed());
+        configuration.setSourceEncoding(this.getEncoding());
+        configuration.setStressTest(this.isStress());
+        configuration.setSuppressMarker(this.getSuppressmarker());
+        configuration.setThreads(this.getThreads());
+        configuration.setFailOnViolation(this.isFailOnViolation());
+        configuration.setAnalysisCacheLocation(this.cacheLocation);
+        configuration.setIgnoreIncrementalAnalysis(this.isIgnoreIncrementalAnalysis());
 
         LanguageVersion languageVersion = LanguageRegistry
-                .findLanguageVersionByTerseName(params.getLanguage() + " " + params.getVersion());
+                .findLanguageVersionByTerseName(this.getLanguage() + ' ' + this.getVersion());
         if (languageVersion != null) {
             configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
         }
         try {
-            configuration.prependClasspath(params.getAuxclasspath());
+            configuration.prependClasspath(this.getAuxclasspath());
         } catch (IOException e) {
             throw new IllegalArgumentException("Invalid auxiliary classpath: " + e.getMessage(), e);
         }
         return configuration;
+    }
+
+
+    public boolean isIgnoreIncrementalAnalysis() {
+        return noCache;
+    }
+
+
+    /**
+     * {@link #toConfiguration()}.
+     * @deprecated To be removed in 7.0.0. Use the instance method {@link #toConfiguration()}.
+     */
+    @Deprecated
+    public static PMDConfiguration transformParametersIntoConfiguration(PMDParameters params) {
+        return params.toConfiguration();
     }
 
     public boolean isDebug() {
@@ -216,7 +257,7 @@ public class PMDParameters {
     }
 
     public RulePriority getMinimumPriority() {
-        return minimumPriority;
+        return RulePriority.valueOf(minimumPriority);
     }
 
     public Properties getProperties() {

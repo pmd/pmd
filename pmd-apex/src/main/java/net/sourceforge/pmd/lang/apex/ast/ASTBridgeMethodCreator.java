@@ -12,6 +12,7 @@ public class ASTBridgeMethodCreator extends AbstractApexNode<BridgeMethodCreator
         super(bridgeMethodCreator);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+simple failure
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  try {} catch (Exception e) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  try {} catch (RuntimeException e) {e.getMessage();}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+no catch with nested catch in finally
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  try {} finally { 
+   try {
+    int x =2;
+   } catch (Exception e) {}
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+multiple catch blocks
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  try {
+  } catch (Exception e) {
+  } catch (Throwable t) {
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+empty try with finally
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  try {
+  } catch (Exception e) {
+   ;
+  } finally {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+InterruptedException is OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  try {
+  } catch (InterruptedException e) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+CloneNotSupportedException is OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  try {
+  } catch (CloneNotSupportedException e) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <!-- Commented blocks -->
+    <code-fragment id="single-line-comment"><![CDATA[
+public class Foo {
+ void bar() {
+  try {} catch (Exception e) { // Commented 
+ }
+ }
+}
+     ]]></code-fragment>
+    <test-code>
+        <description><![CDATA[
+single-line comment is not OK
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code-ref id="single-line-comment"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+single-line comment is OK
+     ]]></description>
+        <rule-property name="allowCommentedBlocks">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="single-line-comment"/>
+    </test-code>
+    <code-fragment id="multiple-line-comment"><![CDATA[
+public class Foo {
+ void bar() {
+  try {} catch (Exception e) { /* Commented */
+ }
+ }
+}
+     ]]></code-fragment>
+    <test-code>
+        <description><![CDATA[
+multiple-line comment is not OK
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code-ref id="multiple-line-comment"/>
+    </test-code>
+    <test-code>
+    <description><![CDATA[
+multiple-line comment is OK
+     ]]></description>
+        <rule-property name="allowCommentedBlocks">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="multiple-line-comment"/>
+    </test-code>
+    <code-fragment id="javadoc-comment"><![CDATA[
+public class Foo {
+ void bar() {
+  try {} catch (Exception e) { /** Commented */
+ }
+ }
+}
+     ]]></code-fragment>
+    <test-code>
+        <description><![CDATA[
+Javadoc comment is not OK
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code-ref id="javadoc-comment"/>
+    </test-code>
+ 
+    <!-- END Commented blocks -->
+    <test-code>
+        <description><![CDATA[
+Exceptions named "ignored" and "expected" are ignored by default
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  try {
+  } catch (NullPointerException expected) {
+  } catch (IllegalArgumentException ignored) {
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Allow to ignore exceptions by name
+     ]]></description>
+        <rule-property name="allowExceptionNameRegex">^idontcare$</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  try {
+  } catch (NullPointerException idontcare) {
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

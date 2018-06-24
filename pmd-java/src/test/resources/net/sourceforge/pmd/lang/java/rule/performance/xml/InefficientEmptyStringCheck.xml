@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+test is ok, ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        if(foo.length() == 0) {
+        // this is bad
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+String.trim.length is called, should have failed
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        if(foo.trim().length() == 0) {
+        // this is bad
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+String.trim.length not is called, ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        if(foo.trim().equals("")) {
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+String.trim.length is called, should have failed
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        while(foo.trim().length()==0) {
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+String.trim.length is called, assigned to int, ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        int i = foo.trim().length();
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+String.trim.length is called, assigned to boolean, should have failed
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        boolean b = foo.trim().length()==0;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Using trim.length to find the length and compare to 1, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        boolean b = foo.trim().length()==1;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Passes trim().length() and 0 to another method
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        boolean b = foo(foo.trim().length(),0);
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Compares the length against a mathematical function
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        boolean b = foo(foo.trim().length()==(2-1));
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+String.trim().isEmpty() is called, should have failed
+      ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        boolean b = foo.trim().isEmpty(); 
+    }
+}
+     ]]></code>
+    </test-code>
+    
+     <test-code>
+        <description><![CDATA[
+String.trim().isEmpty() is called after a chain call, should have failed
+      ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        boolean b =  Arrays.toString(foo.toCharArray()).trim().isEmpty();
+        int i = 2;
+        b =  String.valueOf(i).trim().isEmpty();
+    }
+}
+     ]]></code>
+    </test-code>
+    
+     <test-code>
+        <description><![CDATA[
+String.trim().isEmpty() is called after a chain call, should have failed twice
+      ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        boolean b =  Arrays.toString(foo.toCharArray()).trim().isEmpty();
+        b =  String.valueOf(2).trim().isEmpty();
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Verify no NPE is thrown</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        if (super.guardStmtByLogLevel.isEmpty() && logLevels.length > 0 && guardMethods.length > 0) {
+            configureGuards(logLevels, guardMethods);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

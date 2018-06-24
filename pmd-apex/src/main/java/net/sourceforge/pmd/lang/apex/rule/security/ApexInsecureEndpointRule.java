@@ -32,30 +32,30 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
     private final Set<String> httpEndpointStrings = new HashSet<>();
 
     public ApexInsecureEndpointRule() {
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
+        setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
     @Override
     public Object visit(ASTAssignmentExpression node, Object data) {
-        findInsecureEndpoints(node, data);
+        findInsecureEndpoints(node);
         return data;
     }
 
     @Override
     public Object visit(ASTVariableDeclaration node, Object data) {
-        findInsecureEndpoints(node, data);
+        findInsecureEndpoints(node);
         return data;
     }
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        findInsecureEndpoints(node, data);
+        findInsecureEndpoints(node);
         return data;
     }
 
-    private void findInsecureEndpoints(AbstractApexNode<?> node, Object data) {
+    private void findInsecureEndpoints(AbstractApexNode<?> node) {
         ASTVariableExpression variableNode = node.getFirstChildOfType(ASTVariableExpression.class);
         findInnerInsecureEndpoints(node, variableNode);
 

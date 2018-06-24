@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util.filter;
 
 import java.io.File;
+import java.util.Locale;
 
 public class FileExtensionFilter implements Filter<File> {
     protected final String[] extensions;
@@ -25,7 +26,7 @@ public class FileExtensionFilter implements Filter<File> {
         this.ignoreCase = ignoreCase;
         if (ignoreCase) {
             for (int i = 0; i < this.extensions.length; i++) {
-                this.extensions[i] = this.extensions[i].toUpperCase();
+                this.extensions[i] = this.extensions[i].toUpperCase(Locale.ROOT);
             }
         }
     }
@@ -36,7 +37,7 @@ public class FileExtensionFilter implements Filter<File> {
         if (!accept) {
             for (String extension : extensions) {
                 String name = file.getName();
-                if (ignoreCase ? name.toUpperCase().endsWith(extension) : name.endsWith(extension)) {
+                if (ignoreCase ? name.toUpperCase(Locale.ROOT).endsWith(extension) : name.endsWith(extension)) {
                     accept = true;
                     break;
                 }

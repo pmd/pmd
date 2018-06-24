@@ -64,6 +64,24 @@ public class RuleSetFactoryCompatibility {
         
         // PMD 5.6.0
         addFilterRuleRenamed("java", "design", "AvoidConstantsInterface", "ConstantsInInterface");
+        // unused/UnusedModifier moved AND renamed, order is important!
+        addFilterRuleMoved("java", "unusedcode", "unnecessary", "UnusedModifier");
+        addFilterRuleRenamed("java", "unnecessary", "UnusedModifier", "UnnecessaryModifier");
+
+        // PMD 6.0.0
+        addFilterRuleMoved("java", "controversial", "unnecessary", "UnnecessaryParentheses");
+        addFilterRuleRenamed("java", "unnecessary", "UnnecessaryParentheses", "UselessParentheses");
+        addFilterRuleMoved("java", "typeresolution", "coupling", "LooseCoupling");
+        addFilterRuleMoved("java", "typeresolution", "clone", "CloneMethodMustImplementCloneable");
+        addFilterRuleMoved("java", "typeresolution", "imports", "UnusedImports");
+        addFilterRuleMoved("java", "typeresolution", "strictexception", "SignatureDeclareThrowsException");
+        addFilterRuleRenamed("java", "naming", "MisleadingVariableName", "MIsLeadingVariableName");
+        addFilterRuleRenamed("java", "unnecessary", "UnnecessaryFinalModifier", "UnnecessaryModifier");
+        addFilterRuleRenamed("java", "empty", "EmptyStaticInitializer", "EmptyInitializer");
+        // GuardLogStatementJavaUtil moved and renamed...
+        addFilterRuleMoved("java", "logging-java", "logging-jakarta-commons", "GuardLogStatementJavaUtil");
+        addFilterRuleRenamed("java", "logging-jakarta-commons", "GuardLogStatementJavaUtil", "GuardLogStatement");
+        addFilterRuleRenamed("java", "logging-jakarta-commons", "GuardDebugLogging", "GuardLogStatement");
     }
 
     void addFilterRuleRenamed(String language, String ruleset, String oldName, String newName) {
@@ -97,8 +115,8 @@ public class RuleSetFactoryCompatibility {
         return new StringReader(ruleset);
     }
 
-    private String applyAllFilters(String in) {
-        String result = in;
+    private String applyAllFilters(String ruleset) {
+        String result = ruleset;
         for (RuleSetFilter filter : filters) {
             result = filter.apply(result);
         }
@@ -176,9 +194,9 @@ public class RuleSetFactoryCompatibility {
             return filter;
         }
 
-        String apply(String in) {
-            String result = in;
-            Matcher matcher = refPattern.matcher(in);
+        String apply(String ruleset) {
+            String result = ruleset;
+            Matcher matcher = refPattern.matcher(ruleset);
 
             if (matcher.find()) {
                 result = matcher.replaceAll(replacement);

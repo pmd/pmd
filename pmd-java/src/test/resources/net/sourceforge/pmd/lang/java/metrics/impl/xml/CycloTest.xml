@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="full-example">
+        <![CDATA[
+        public class Complicated {
+
+          public void exception() {
+            try {
+              int k = 0;
+              k++;
+            } catch (IOException ioe) {
+              ioe.printStackTrace();
+              throw new Exception("surprise", ioe);
+            } catch (Exception e) {
+              // do nothing
+            }
+          }
+
+
+          public void example() {
+            int x = 0, y = 1, z = 2, t = 2;
+            boolean a = false, b = true, c = false, d = true;
+
+            if (a && b || b && d) {
+              if (y == z) {
+                x = 2;
+              } else if (y == t && !d) {
+                x = a ? z : b ? y : x;
+              } else {
+                x = 2;
+              }
+            } else if (c && d) {
+              assert a : "fail";
+              while (z < y) {
+                x = 2;
+              }
+            } else if (a && !b) {
+              for (int n = 0; n < t; n++) {
+                x = 2;
+              }
+            } else if (b) {
+              assert b || a : "fail";
+              do {
+                x++;
+                y--;
+              } while (b);
+            } else {
+              switch (x) {
+              case 1:
+                x = 2;
+                break;
+
+              case 2:
+              case 3:
+                x = 2;
+                break;
+
+              default:
+                x = 2;
+                break;
+              }
+            }
+          }
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Full example - No options</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Complicated#exception()' has value 4.</message>
+            <message>'Complicated#example()' has value 23.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Full example - Ignore boolean path option</description>
+        <rule-property name="metricOptions">ignoreBooleanPaths</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Complicated#exception()' has value 4.</message>
+            <message>'Complicated#example()' has value 14.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Full example - Consider assert option</description>
+        <rule-property name="metricOptions">considerAssert</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Complicated#exception()' has value 4.</message>
+            <message>'Complicated#example()' has value 28.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Full example - considerAssert + ignoreBooleanPaths</description>
+        <rule-property name="metricOptions">ignoreBooleanPaths|considerAssert</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Complicated#exception()' has value 4.</message>
+            <message>'Complicated#example()' has value 18.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Empty methods should count 1</description>
+        <rule-property name="reportClasses">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo()' has value 1.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              void foo() {}
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <code-fragment id="constructor-violation">
+        <![CDATA[
+        public class Test {
+          public Test() {
+            if (a == 1) {
+              if (b == 2) {
+                System.out.println("b");
+              } else if (b == 1) {
+              }
+            } else {
+            }
+          }
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>#984 Cyclomatic complexity should treat constructors like methods</description>
+        <rule-property name="reportClasses">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#Test()' has value 4.</message>
+        </expected-messages>
+        <code-ref id="constructor-violation"/>
+    </test-code>
+
+
+    <code-fragment id="fallthroughSwitch">
+        <![CDATA[
+        class Foo {
+          void bar(){}
+          void foo() {
+            int x=0;
+            switch (x) {
+            case 1:
+            case 2: foo(); break;
+            default: bar(); break;
+            }
+          }
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Standard Cyclo should count empty switch labels too</description>
+        <rule-property name="reportClasses">false</rule-property>
+        <rule-property name="reportLevel">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo()' has value 3.</message>
+        </expected-messages>
+        <code-ref id="fallthroughSwitch"/>
+    </test-code>
+
+    <code-fragment id="manyBooleanOps">
+        <![CDATA[
+        class Foo {
+          void foo(){
+            int x=0, y=1;
+            boolean a, b;
+
+            if (x > 2 || y < 4) {
+              while (x++ < 10 && !(y++ < 0));
+            } else if (a && b || x < 4) {
+              return;
+            }
+          }
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Standard Cyclo should count boolean paths</description>
+        <rule-property name="reportClasses">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo()' has value 8.</message>
+        </expected-messages>
+        <code-ref id="manyBooleanOps"/>
+    </test-code>
+
+    <test-code>
+        <description>Ternary expression counts 1 + boolean complexity</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#bar()' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              void bar() {
+                boolean a, b;
+                boolean c = (a || b) ? a : b;
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Test consider assert option with ternary</description>
+        <rule-property name="metricOptions">considerAssert</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#bar()' has value 5.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              void bar() {
+                boolean a, b;
+                assert a : b ? "foo" : "bar";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <code-fragment id="lambdas">
+    <![CDATA[
+        public class LambdaTest {
+            public void notSoComplex(int intInput) {                    // +1, total method = 4
+                boolean binary;
+
+                switch (intInput) {
+                case 0:                                                 // +1
+                    binary = false;
+                    break;
+
+                case 1:                                                 // +1
+                    binary = true;
+                    break;
+
+                default:
+                    throw new RuntimeException();                       // +1
+                }
+
+                BiConsumer<Object, Object> lambda1 = (message, nme) -> {// lambda$notSoComplex$0, total = 2
+                    if (binary) {                                       // +1
+                        System.out.println(message);
+                    } else {
+                        System.out.println(nme);
+                    }
+                };
+
+                BiConsumer<Integer, Integer> lambda2 = (nme, message) -> {// lambda$notSoComplex$1, total = 8
+
+                    if ((nme != 0) && (message != 0)) {                  // +2
+                        try {
+                            System.out.println(nme);
+                        } catch (IllegalArgumentException illegalArgumentException) { // +1
+                            throw new RuntimeException();                // +1
+                        }
+
+                        if (binary) {                                    // +1
+                            System.out.println(nme);
+                        } else {
+                            System.out.println(nme);
+
+                            if (nme != 1) {                             // +1
+                                System.out.println(nme);
+                            }
+
+                            for (int i = 0; i < message; i++) {         // +1
+                                System.out.println(nme);
+                            }
+                        }
+                    }
+                };
+            }
+        }
+        ]]>
+    </code-fragment>
+    
+    <test-code>
+        <description>Complexity of lambdas doesn't affect the complexity of the method, refs #837</description>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>'LambdaTest#notSoComplex(int)' has value 4.</message>
+            <message>'LambdaTest#lambda$notSoComplex$0' has value 2.</message>
+            <message>'LambdaTest#lambda$notSoComplex$1' has value 8.</message>
+        </expected-messages>
+        <code-ref id="lambdas"/>
+    </test-code>
+
+
+</test-data>

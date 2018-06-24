@@ -1,0 +1,1350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+1, Single append, should be ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
+   public void bar() {
+       StringBuffer sb = new StringBuffer(15);
+       sb.append("foo");
+   }
+   
+   public void bar2() {
+       StringBuilder sb = new StringBuilder(15);
+       sb.append("foo");
+   }
+}
+     ]]></code>
+    </test-code>
+    <code-fragment id="back-to-back-append"><![CDATA[
+public class Foo {
+ public void bar() {
+   StringBuffer sb = new StringBuffer();
+   sb.append("Hello");
+   sb.append("World");
+ }
+ 
+ public void bar2() {
+   StringBuilder sb = new StringBuilder();
+   sb.append("Hello");
+   sb.append("World");
+ }
+}
+     ]]></code-fragment>
+    <test-code>
+        <description><![CDATA[
+2, Back to back append, not ok
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code-ref id="back-to-back-append"/>
+    </test-code>
+        <test-code>
+        <description><![CDATA[
+2, re-running with threshold
+     ]]></description>
+        <rule-property name="threshold">2</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="back-to-back-append"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+3, Appends broken up by variable
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  String foo = "Hello";
+  sb.append("Hello");
+  sb.append(foo);
+  sb.append("World");
+ }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  String foo = "Hello";
+  sb.append("Hello");
+  sb.append(foo);
+  sb.append("World");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+4, Appends with literal appends
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  sb.append("Hello").append("World");
+ }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  sb.append("Hello").append("World");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+5, Appends broken up by while loop
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  sb.append("Hello");
+  while(true){
+  }
+  sb.append("World");
+ }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  sb.append("Hello");
+  while(true){
+  }
+  sb.append("World");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+6, Appends, then a variable
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  String foo = "Hello";
+  sb.append("Hello");
+  sb.append("World");
+  sb.append(foo);
+  sb.append("World");
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  String foo = "Hello";
+  sb.append("Hello");
+  sb.append("World");
+  sb.append(foo);
+  sb.append("World");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+7, Appends, then a variable
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  sb.append("Hello");
+  while(true){
+   sb.append(foo);
+  }
+  sb.append("World");
+ }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  sb.append("Hello");
+  while(true){
+   sb.append(foo);
+  }
+  sb.append("World");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+8, Appends, then a while
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  sb.append("Hello");
+  while(true){
+       sb.append("World");
+  }
+  sb.append("World");
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  sb.append("Hello");
+  while(true){
+       sb.append("World");
+  }
+  sb.append("World");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+9, Multiple appends in same while
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  sb.append("Hello");
+  while(true){
+       sb.append("World");
+       sb.append("World");
+  }
+  sb.append("World");
+ }
+ 
+ public void bar() {
+  StringBuilder sb = new StringBuilder();
+  sb.append("Hello");
+  while(true){
+       sb.append("World");
+       sb.append("World");
+  }
+  sb.append("World");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+10, Multiple appends in same while, with multiple outside that while
+     ]]></description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  sb.append("Hello");
+  sb.append("Hello");
+  while(true){
+       sb.append("World");
+       sb.append("World");
+  }
+  sb.append("World");
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  sb.append("Hello");
+  sb.append("Hello");
+  while(true){
+       sb.append("World");
+       sb.append("World");
+  }
+  sb.append("World");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+11, Multiple appends in same while, none outside the loop
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  while(true){
+  StringBuffer sb = new StringBuffer();
+       sb.append("World");
+       sb.append("World");
+  }
+ }
+ 
+ public void bar2() {
+  while(true){
+  StringBuilder sb = new StringBuilder();
+       sb.append("World");
+       sb.append("World");
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+12, Two loops, not concurrent appends though
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+       StringBuffer sb = new StringBuffer();
+  while(true){
+       sb.append("World");
+  }
+       sb.append("World");
+  for(int ix = 0; ix < 2; ix++){
+       sb.append("World");
+ }
+       sb.append("World");
+ }
+ 
+ public void bar2() {
+       StringBuilder sb = new StringBuilder();
+  while(true){
+       sb.append("World");
+  }
+       sb.append("World");
+  for(int ix = 0; ix < 2; ix++){
+       sb.append("World");
+ }
+       sb.append("World");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+13, A bunch of loops, but nothing concurrent
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public void bar(List l) {
+       StringBuffer sb = new StringBuffer();
+       sb.append("Hello cruel world");
+       Iterator iter = l.iterator();
+       while (iter.hasNext()) {
+           List innerList = (List) iter.next();
+           sb.append(",");
+           for (Iterator ixtor = innerList.iterator(); ixtor.hasNext();) {
+               Integer integer = (Integer) ixtor.next();
+               sb.append("");
+               if (ixtor.hasNext()) {
+                   sb.append(",");
+               }
+           }
+           sb.append("foo");
+       }
+   }
+   
+   public void bar2(List l) {
+       StringBuilder sb = new StringBuilder();
+       sb.append("Hello cruel world");
+       Iterator iter = l.iterator();
+       while (iter.hasNext()) {
+           List innerList = (List) iter.next();
+           sb.append(",");
+           for (Iterator ixtor = innerList.iterator(); ixtor.hasNext();) {
+               Integer integer = (Integer) ixtor.next();
+               sb.append("");
+               if (ixtor.hasNext()) {
+                   sb.append(",");
+               }
+           }
+           sb.append("foo");
+       }
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+14, A bunch of loops, one concurrent
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public void bar(List l) {
+       StringBuffer sb = new StringBuffer();
+       sb.append("Hello cruel world");
+       Iterator iter = l.iterator();
+       while (iter.hasNext()) {
+           List innerList = (List) iter.next();
+           sb.append(",");
+           for (Iterator ixtor = innerList.iterator(); ixtor.hasNext();) {
+               Integer integer = (Integer) ixtor.next();
+               sb.append("");
+               if (ixtor.hasNext()) {
+                   sb.append(",");
+                   sb.append(",");
+               }
+           }
+           sb.append("foo");
+       }
+   }
+   
+    public void bar2(List l) {
+       StringBuilder sb = new StringBuilder();
+       sb.append("Hello cruel world");
+       Iterator iter = l.iterator();
+       while (iter.hasNext()) {
+           List innerList = (List) iter.next();
+           sb.append(",");
+           for (Iterator ixtor = innerList.iterator(); ixtor.hasNext();) {
+               Integer integer = (Integer) ixtor.next();
+               sb.append("");
+               if (ixtor.hasNext()) {
+                   sb.append(",");
+                   sb.append(",");
+               }
+           }
+           sb.append("foo");
+       }
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+15, A bunch of loops, none concurrent, separated by else
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public void bar(List l) {
+       StringBuffer sb = new StringBuffer();
+       sb.append("Hello cruel world");
+       Iterator iter = l.iterator();
+       while (iter.hasNext()) {
+           List innerList = (List) iter.next();
+           sb.append(",");
+           for (Iterator ixtor = innerList.iterator(); ixtor.hasNext();) {
+               Integer integer = (Integer) ixtor.next();
+               sb.append("");
+               if (ixtor.hasNext()) {
+                   sb.append(",");
+               } 
+           }
+           sb.append("foo");
+       }
+   }
+   
+   public void bar2(List l) {
+       StringBuilder sb = new StringBuilder();
+       sb.append("Hello cruel world");
+       Iterator iter = l.iterator();
+       while (iter.hasNext()) {
+           List innerList = (List) iter.next();
+           sb.append(",");
+           for (Iterator ixtor = innerList.iterator(); ixtor.hasNext();) {
+               Integer integer = (Integer) ixtor.next();
+               sb.append("");
+               if (ixtor.hasNext()) {
+                   sb.append(",");
+               } 
+           }
+           sb.append("foo");
+       }
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+16, Additive Expression 1
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  String foo = "World";
+  sb.append("Hello" + foo);
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  String foo = "World";
+  sb.append("Hello" + foo);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+17, Additive Expression 2
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  String foo = "World";
+  sb.append("Hello" + foo);
+  sb.append("World");
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  String foo = "World";
+  sb.append("Hello" + foo);
+  sb.append("World");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+18, End with literal append
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  String foo = "Hello";
+  sb.append("Hello");
+  sb.append(foo);
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  String foo = "Hello";
+  sb.append("Hello");
+  sb.append(foo);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+19, A bunch of appends
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  String foo = "World";
+  sb.append(foo).append("World");
+  sb.append(foo).append("World");
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  String foo = "World";
+  sb.append(foo).append("World");
+  sb.append(foo).append("World");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+20, Suffix append follwed by real append
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  String foo = "AAA";
+  sb.append(foo).append("BBB");
+  sb.append("CCC");
+ }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  String foo = "AAA";
+  sb.append(foo).append("BBB");
+  sb.append("CCC");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+21, Appends separated by an if
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  sb.append("BBB");
+  if(true){
+   sb.append("CCC");
+  }
+  sb.append("DDD");
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  sb.append("BBB");
+  if(true){
+   sb.append("CCC");
+  }
+  sb.append("DDD");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+22, calls to methods in append
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  sb.append(String.valueOf("2"));
+  sb.append(String.valueOf("3"));
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  sb.append(String.valueOf("2"));
+  sb.append(String.valueOf("3"));
+ }
+}
+     ]]></code>
+    </test-code>
+    <code-fragment id="three-appends-on-one-line"><![CDATA[
+public class Foo {
+ public void bar() {
+  String somevar = "";
+  StringBuffer sb = new StringBuffer();
+  sb.append("<bignode>");
+  sb.append("<somenode>").append(somevar).append("</somenode>");
+  sb.append("</bignode>");
+  sb.append("</bignode>");
+ }
+ 
+ public void bar2() {
+  String somevar = "";
+  StringBuilder sb = new StringBuilder();
+  sb.append("<bignode>");
+  sb.append("<somenode>").append(somevar).append("</somenode>");
+  sb.append("</bignode>");
+  sb.append("</bignode>");
+ }
+}
+ ]]></code-fragment>
+    <test-code>
+        <description><![CDATA[
+23, force 2 failures on 3 lines
+     ]]></description>
+        <expected-problems>4</expected-problems>
+        <code-ref id="three-appends-on-one-line"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+23, re-running with threshold
+     ]]></description>
+        <rule-property name="threshold">2</rule-property>
+        <expected-problems>2</expected-problems>
+        <code-ref id="three-appends-on-one-line"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+24, Appends from within switch statement
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String foo(int in) {
+        StringBuffer retval = new StringBuffer();
+        for (int i = 0; i < in; i++) {
+          switch (in){
+             case 0 :
+                continue;
+             case 1:
+                retval.append("0");
+                continue;
+             case 2:
+                retval.append("1");
+                continue;
+             case 3:
+                retval.append("2");
+                continue;
+             default:
+                retval.append("3");
+                continue;
+          }
+        }
+        return retval.toString();
+     }
+     
+    public String foo2(int in) {
+        StringBuilder retval = new StringBuilder();
+        for (int i = 0; i < in; i++) {
+          switch (in){
+             case 0 :
+                continue;
+             case 1:
+                retval.append("0");
+                continue;
+             case 2:
+                retval.append("1");
+                continue;
+             case 3:
+                retval.append("2");
+                continue;
+             default:
+                retval.append("3");
+                continue;
+          }
+        }
+        return retval.toString();
+     }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+25, Appends from within several different ifs
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  if(true){
+   sb.append("CCC");
+  }
+  if(true){
+   sb.append("CCC");
+  }
+  if(true){
+   sb.append("CCC");
+  }
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  if(true){
+   sb.append("CCC");
+  }
+  if(true){
+   sb.append("CCC");
+  }
+  if(true){
+   sb.append("CCC");
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+26, One append in if, one in else
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  sb.append("CCC");
+  if(true){
+   sb.append("CCC");
+  } else if (sb.length() == 2){
+   sb.append("CCC");
+  } else {
+   sb.append("CCC");
+  }
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  sb.append("CCC");
+  if(true){
+   sb.append("CCC");
+  } else if (sb.length() == 2){
+   sb.append("CCC");
+  } else {
+   sb.append("CCC");
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+27, Concurrent Appends from within switch statement
+     ]]></description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String foo(int in) {
+        StringBuffer retval = new StringBuffer();
+        for (int i = 0; i < in; i++) {
+          switch (in){
+             case 0 :
+                continue;
+             case 1:
+                retval.append("0");
+                continue;
+             case 2:
+                retval.append("1");
+                retval.append("1");
+                continue;
+             case 3:
+                retval.append("2");
+                continue;
+             default:
+                retval.append("3");
+                retval.append("3");
+                continue;
+          }
+        }
+        return retval.toString();
+     }
+
+    public String foo2(int in) {
+        StringBuilder retval = new StringBuilder();
+        for (int i = 0; i < in; i++) {
+          switch (in){
+             case 0 :
+                continue;
+             case 1:
+                retval.append("0");
+                continue;
+             case 2:
+                retval.append("1");
+                retval.append("1");
+                continue;
+             case 3:
+                retval.append("2");
+                continue;
+             default:
+                retval.append("3");
+                retval.append("3");
+                continue;
+          }
+        }
+        return retval.toString();
+     }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+28, Additive inside an if statement
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  String foo = "blah";
+  int count = 0;
+  if(true){
+   sb.append("CCC" + (++count) + "Ffalsd");
+  }else if(foo.length() == 2){
+   sb.append("CCC" + (++count) + "Ffalsd");
+  }
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  String foo = "blah";
+  int count = 0;
+  if(true){
+   sb.append("CCC" + (++count) + "Ffalsd");
+  }else if(foo.length() == 2){
+   sb.append("CCC" + (++count) + "Ffalsd");
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+29, Adding two strings only
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+   sb.append("CCC" + "Ffalsd");
+ }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder();
+   sb.append("CCC" + "Ffalsd");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+30, Method call in append
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  int count = 0;
+   sb.append("CCC" + String.valueOf(count++));
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  int count = 0;
+   sb.append("CCC" + String.valueOf(count++));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+31, Adding two strings together then another append
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+   sb.append("CCC" + "Ffalsd");
+   sb.append("CCC");
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+   sb.append("CCC" + "Ffalsd");
+   sb.append("CCC");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+32, Including the constructor's string
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer("CCC");
+   sb.append("CCC");
+ }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder("CCC");
+   sb.append("CCC");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+33, Additive in the constructor
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer(foo + "CCC");
+   sb.append("CCC");
+ }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder(foo + "CCC");
+   sb.append("CCC");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+34, Additive in the constructor
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer("CCC" + foo);
+   sb.append("CCC");
+ }
+ public void bar2() {
+  StringBuilder sb = new StringBuilder("CCC" + foo);
+   sb.append("CCC");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+35, For block without braces
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+       StringBuffer sb = new StringBuffer();
+ sb.append("World");
+  for(int ix = 0; ix < 2; ix++)
+     sb.append("World");
+ 
+ sb.append("World");
+ }
+ 
+ public void bar2() {
+       StringBuilder sb = new StringBuilder();
+ sb.append("World");
+  for(int ix = 0; ix < 2; ix++)
+     sb.append("World");
+ 
+ sb.append("World");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+36, Appends broken up by method call
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("World");
+        foo(sb);
+        sb.append("World");
+    }
+    
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("World");
+        foo(sb);
+        sb.append("World");
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+37, Intervening method call not related to append
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("World");
+        sb.toString();
+        sb.append("World");
+    }
+    
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("World");
+        sb.toString();
+        sb.append("World");
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+38, Intervening method call not related to append
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("World");
+        foo(sb.toString());
+        sb.append("World");
+    }
+    
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("World");
+        foo(sb.toString());
+        sb.append("World");
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+39, Buffer as class variable, accessed in 2 methods
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    StringBuffer sb = new StringBuffer();
+    public void foo() {
+        sb.append("World");
+    }
+    public void bar() {
+        sb.append("World");
+    }
+}
+
+public class Foo2 {
+    StringBuilder sb = new StringBuilder();
+    public void foo() {
+        sb.append("World");
+    }
+    public void bar() {
+        sb.append("World");
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+40, Call to external method with subtraction
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(int i) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(foo(i-2));
+        sb.append("World");
+    }
+    
+    public void foo2(int i) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(foo(i-2));
+        sb.append("World");
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+41, Call to external method with addition, not string appending
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(foo("".length()+2));
+        sb.append("World");
+    }
+    
+    public void foo2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(foo("".length()+2));
+        sb.append("World");
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+42, Using variable string array
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String[] a, int i) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(a[i]).append("Hello");
+        sb.append(a[i+1]).append("World");
+    }
+    
+    public void foo2(String[] a, int i) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(a[i]).append("Hello");
+        sb.append(a[i+1]).append("World");
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <description><![CDATA[
+43, Using variable char array
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    toString2(char[] a, int n){
+        StringBuffer sb = new StringBuffer();
+        sb.append("ab");
+        sb.append(a, 0, n);
+        sb.append('c');
+        return sb.toString();
+    }
+    
+    toString3(char[] a, int n){
+        StringBuilder sb = new StringBuilder();
+        sb.append("ab");
+        sb.append(a, 0, n);
+        sb.append('c');
+        return sb.toString();
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+44, Appending of not String additive expressions
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(int i) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Hello");
+        sb.append(i + 1);
+        sb.append(1 + i);
+        sb.append("World");
+    }
+    
+    public void foo2(int i) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Hello");
+        sb.append(i + 1);
+        sb.append(1 + i);
+        sb.append("World");
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1175 false positive for StringBuilder.append called 2 consecutive times</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Escape {
+    public static String escape(final String value)
+    {
+        StringBuilder s = new StringBuilder(value.length() + 2);
+        s.append('"');
+        for (int i = 0; i < value.length(); i++) {
+            s.append(value.charAt(i));
+        }
+        s.append('"');
+        return s.toString();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1369 ConsecutiveLiteralAppends not detected properly on StringBuffer</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,12</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer (or StringBuilder).append is called 3 consecutive times with literals. Use a single append with a single combined String.</message>
+            <message>StringBuffer (or StringBuilder).append is called 3 consecutive times with literals. Use a single append with a single combined String.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class StringBufferTest {
+
+    public void test() {
+
+        // This lint is reported as ConsecutiveLiteralAppends, but says ".append is called **5** consecutive times"
+        final StringBuffer stringBuffer = new StringBuffer().append("agrego ").append("un ");
+        stringBuffer.append("string "); // and in this line says ".append is called **4** consecutive times"
+        Log.i(TAG, stringBuffer.toString());
+
+        final StringBuffer stringBuffer2 = new StringBuffer();
+        // ConsecutiveLiteralAppends is not reported on any of these lines
+        stringBuffer2.append("agrego ");
+        stringBuffer2.append("un ");
+        stringBuffer2.append("string ");
+        Log.i(TAG, stringBuffer2.toString());
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1384 NullPointerException in ConsecutiveLiteralAppendsRule - 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ConsecutiveLiteralAppendsRuleTest {
+private StringBuilder cdata;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1384 NullPointerException in ConsecutiveLiteralAppendsRule - 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ConsecutiveLiteralAppendsRuleTest {
+    public void appendChar(final StringBuilder s) {
+        // do nothing
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1401 False positive for StringBuilder.append called with constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String foo(final String value)
+    {
+        StringBuilder s = new StringBuilder("start:").append(value).append(":end");
+
+        return s.toString();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consecutive append of literals other than string: integer</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuilder s = new StringBuilder();
+        s.append(1);
+        s.append(2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consecutive append of literals other than string: chars</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuilder s = new StringBuilder();
+        s.append('h');
+        s.append('e');
+        s.append('l');
+        s.append('l');
+        s.append('o');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consecutive append of literals other than string: mix chars and strings</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuilder s = new StringBuilder();
+        s.append('h');
+        s.append("ello");
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

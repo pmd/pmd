@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Bad example #1
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+#if( $XHTML )
+  #set( $br = "<br />" )
+  #if ($someValue)
+  	#if ($otherValue)
+  		do stuff
+  	#end
+  #end
+#else
+  #set( $br = "<br>" )
+#end
+     ]]></code>
+    <source-type>vm</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad example #2
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+#if( $XHTML )
+  #set( $br = "<br />" )
+  #if ($someValue)
+  	#if ($otherValue)
+  		do stuff
+  	#end
+  #end
+#elseif ($condition2)
+  #if ($condition3)
+  	something
+  #end
+#end
+     ]]></code>
+    <source-type>vm</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Good example #1
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+#if( $XHTML )
+  #set( $br = "<br />" )
+  #if ($someValue)
+	do something
+  #end
+#else
+  #set( $br = "<br>" )
+#end
+     ]]></code>
+    <source-type>vm</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Good example #2
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+#if( $XHTML )
+  #set( $br = "<br />" )
+  #if ($someValue)
+	do something
+  #end
+#elseif ($cond1)
+  #set( $br = "<br>" )
+#end
+#if ($cond2)
+	some2
+#elseif ($cond3)
+	some3
+#end
+     ]]></code>
+    <source-type>vm</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Good example #3
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+#macro(displayPhoneDropDown $path $options $defaultName $attributes $isPrimary)	
+	#springBind($path)
+	<select id="${status.expression}" name="${status.expression}" ${attributes}>
+    <option value="">$defaultName</option>
+        #foreach($option in $options.keySet())			
+    		#if($primary == "true")
+    			#if("H" == "$option" || "M" == "$option")
+    			<option value="${option}"						
+                    #if("$!status.value" == "$option")
+                        selected="selected"
+                    #end>
+    				${options.get($option)}</option>	
+    			#end
+    		#else
+    			<option value="${option}"						
+                    #if("$!status.value" == "$option")
+                        selected="selected"
+                    #end>
+    				${options.get($option)}</option>
+    		#end
+        #end
+    </select>
+#end	
+     ]]></code>
+    <source-type>vm</source-type>
+    </test-code>
+    
+    <test-code>
+        <description><![CDATA[
+Good example #4
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+#macro(displayPhoneDropDown $path $options $defaultName $attributes $isPrimary)	
+	#springBind($path)
+	<select id="${status.expression}" name="${status.expression}" ${attributes}>
+    <option value="">$defaultName</option>
+        #foreach($option in $options.keySet())			
+    		#if($primary == "true")
+    			#if("H" == "$option" || "M" == "$option")
+    			<option value="${option}"						
+                    #if("$!status.value" == "$option")
+                        selected="selected"
+                    #end>
+    				${options.get($option)}</option>	
+    			#end
+    		#elseif($secondary=="true")
+    			<option value="${option}"						
+                    #if("$!status.value" == "$option")
+                        selected="selected"
+                    #end>
+    				${options.get($option)}</option>
+    		#end
+        #end
+    </select>
+#end	
+     ]]></code>
+    <source-type>vm</source-type>
+    </test-code>
+    
+    <test-code>
+        <description><![CDATA[
+Good example #5
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+    #if( $c1 && $c2)
+    	something
+    #else
+        #if($c3 || $c4)
+            stuff
+            #if(!$c5 && !$c6)
+                stuff
+            #else
+                stuff
+            #end
+            stuff
+        #end
+    #end
+     ]]></code>
+    <source-type>vm</source-type>
+    </test-code>
+    
+    <test-code>
+        <description><![CDATA[
+Good example #6
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+#if($c1)
+	stuff
+#elseif($c2)
+	#if($c3)
+		stuff
+	#end
+#elseif($c4)
+	stuff
+#end
+     ]]></code>
+    <source-type>vm</source-type>
+    </test-code>
+    
+    <test-code>
+        <description><![CDATA[
+Good example #7
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        #if ($c1 || $c2)
+            #if ($c3)
+               stuff
+            #else
+               stuff
+            #end
+            #if(!$c4)
+                #if ($c5)
+                   #if ($c6)
+                       stuff
+                   #else
+                       stuff
+                   #end
+                   stuff
+                #end
+				stuff
+	        #end
+        #end
+     ]]></code>
+    <source-type>vm</source-type>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Good example #8
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+	#if (!$c1)
+	    #if($c2)
+	        stuff
+	    #else
+	        stuff
+	    #end
+	#end
+     ]]></code>
+    <source-type>vm</source-type>
+    </test-code>
+</test-data>

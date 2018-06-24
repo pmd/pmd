@@ -1,18 +1,33 @@
 #!/bin/bash
-set -ev
+set -e
 
-export PING_SLEEP=30s
-export BUILD_OUTPUT=/tmp/build-sonar.out
-export PING_PID_FILE=/tmp/build-sonar-ping.pid
+source .travis/logger.sh
+source .travis/common-functions.sh
 
-source .travis/background-job-funcs.sh
+VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
+log_info "Building PMD Sonar ${VERSION} on branch ${TRAVIS_BRANCH}"
 
-# Run the build, redirect output into the file
-mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN} -B -V >> $BUILD_OUTPUT 2>&1
+if ! travis_isPush; then
+    echo "Not updating sonar, since this is not a push!"
+    exit 0
+fi
 
-# The build finished without returning an error so dump a tail of the output
-dump_output
+#
+# for java9: enable all modules.
+# sonar plugin seems to need java.xml.bind module
+echo "MAVEN_OPTS='-Xms1g -Xmx1g --add-modules java.se.ee'" > ${HOME}/.mavenrc
 
-# nicely terminate the ping output loop
-kill_ping
+(
+    # disable fast fail, exit immediately, in this subshell
+    set +e
 
+    # Run the build
+    ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SONAR_TOKEN} -B -V
+
+    if [ $? -ne 0 ]; then
+        log_error "Error updating sonar..."
+    else
+        log_success "New sonar results: https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd"
+    fi
+    true
+)

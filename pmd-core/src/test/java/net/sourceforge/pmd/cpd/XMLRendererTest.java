@@ -9,15 +9,18 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 
 /**
  * @author Philippe T'Seyen
@@ -29,11 +32,13 @@ public class XMLRendererTest {
     private static final String ENCODING = (String) System.getProperties().get("file.encoding");
 
     @Test
-    public void testWithNoDuplication() {
+    public void testWithNoDuplication() throws IOException {
 
-        Renderer renderer = new XMLRenderer();
+        CPDRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
-        String report = renderer.render(list.iterator());
+        StringWriter sw = new StringWriter();
+        renderer.render(list.iterator(), sw);
+        String report = sw.toString();
         try {
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
                     .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
@@ -48,8 +53,8 @@ public class XMLRendererTest {
     }
 
     @Test
-    public void testWithOneDuplication() {
-        Renderer renderer = new XMLRenderer();
+    public void testWithOneDuplication() throws IOException {
+        CPDRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         int lineCount = 6;
         String codeFragment = "code\nfragment";
@@ -58,7 +63,9 @@ public class XMLRendererTest {
         Match match = new Match(75, mark1, mark2);
 
         list.add(match);
-        String report = renderer.render(list.iterator());
+        StringWriter sw = new StringWriter();
+        renderer.render(list.iterator(), sw);
+        String report = sw.toString();
         try {
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
                     .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
@@ -88,8 +95,8 @@ public class XMLRendererTest {
     }
 
     @Test
-    public void testRenderWithMultipleMatch() {
-        Renderer renderer = new XMLRenderer();
+    public void testRenderWithMultipleMatch() throws IOException {
+        CPDRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         int lineCount1 = 6;
         String codeFragment1 = "code fragment";
@@ -105,7 +112,9 @@ public class XMLRendererTest {
 
         list.add(match1);
         list.add(match2);
-        String report = renderer.render(list.iterator());
+        StringWriter sw = new StringWriter();
+        renderer.render(list.iterator(), sw);
+        String report = sw.toString();
         try {
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
                     .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
@@ -118,15 +127,18 @@ public class XMLRendererTest {
     }
 
     @Test
-    public void testRendererEncodedPath() {
-        Renderer renderer = new XMLRenderer();
+    public void testRendererEncodedPath() throws IOException {
+        CPDRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         final String espaceChar = "&lt;";
         Mark mark1 = createMark("public", "/var/F" + '<' + "oo.java", 48, 6, "code fragment");
         Mark mark2 = createMark("void", "/var/F<oo.java", 73, 6, "code fragment");
         Match match1 = new Match(75, mark1, mark2);
         list.add(match1);
-        String report = renderer.render(list.iterator());
+        
+        StringWriter sw = new StringWriter();
+        renderer.render(list.iterator(), sw);
+        String report = sw.toString();
         assertTrue(report.contains(espaceChar));
     }
 

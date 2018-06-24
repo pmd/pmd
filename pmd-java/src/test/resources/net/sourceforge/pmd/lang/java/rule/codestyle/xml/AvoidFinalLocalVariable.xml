@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>
+        	<![CDATA[
+Basic, common test case.
+     			]]>
+     	</description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+public class MyClass {
+	public void foo() {
+		final String finalLocalVariable;
+	}
+}	     
+	 ]]></code>
+    </test-code>
+        <test-code>
+        <description>
+        	<![CDATA[
+Other use of final should not raise violations.
+     			]]>
+     	</description>
+        <expected-problems>0</expected-problems>
+        <code>
+        	<![CDATA[
+public final class MyClass {
+
+	private final String field;
+	
+	public final void foo() {
+		String finalLocalVariable;
+	}
+}
+	 ]]></code>
+    </test-code>
+        <test-code>
+        <description><![CDATA[
+Bug 2027626, False + : AvoidFinalLocalVariable
+	]]></description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+public class A {
+  public String myMethod(final String str) {
+    final String foo = "foo";
+    final String bar = str.toLowerCase(Locale.getDefault());
+    final StringBuilder thing = new StringBuilder(128);
+  }
+}
+	 ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1095 AvoidFinalLocalVariable false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+
+    public void test() {
+        final File[] files = new File(".").listFiles();
+        for (final File f : files) { f.getAbsolutePath(); }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

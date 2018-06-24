@@ -31,9 +31,6 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
         return "html";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void end() throws IOException {
         writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);

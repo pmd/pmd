@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Contains suite
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo extends TestCase{
+    public static Test suite() {
+        TestSuite suite = new TestSuite("Tests");
+        suite.addTestSuite(MyTest.class);
+    	return suite;
+    }
+    @Test
+    public void foo() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Contains JUnit4TestAdapter suite
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo extends TestCase{
+    public static Test suite() {
+    	return new JUnit4TestAdapter(Foo.class);
+    }
+    @Test
+    public void foo() {
+    }
+}     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Uses propper suite
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@RunWith(Suite.class)
+@SuiteClasses(Foo.class)
+public class Foo extends TestCase{
+    @Test
+    public void foo() {
+    }
+}
+     ]]></code>
+    </test-code>
+</test-data>

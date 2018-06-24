@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+TEST1
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public Foo() {
+ super();
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+TEST2
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public Foo(Object o) {
+ 	this();
+}
+ public Foo() {
+ super();
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+don't flag classes w/o extends
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public Foo() {
+  int x = 2;
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Enum
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar extends Buz {
+ public static enum Foo {
+  ;
+  public Foo() {}
+ }
+}
+     ]]></code>
+        <source-type>java 1.5</source-type>
+    </test-code>
+</test-data>

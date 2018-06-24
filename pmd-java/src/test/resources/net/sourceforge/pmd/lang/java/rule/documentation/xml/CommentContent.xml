@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Includes bad words
+     ]]></description>
+        <rule-property name="disallowedTerms">idiot|jerk</rule-property>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+/** 
+*  This header method is ok
+*/ 
+public class Foo {
+  public Foo() {
+  }
+  
+  /* this method is a jerk */
+  public void doNothing() {
+  }
+  
+    // this method is an idiot
+  public void doNothing() {
+  }
+}
+     ]]></code>
+    </test-code>
+</test-data>

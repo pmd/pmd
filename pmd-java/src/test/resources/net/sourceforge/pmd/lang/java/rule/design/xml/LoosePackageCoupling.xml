@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+	<code-fragment id="default-package"><![CDATA[
+import some.other.package1.Class1;
+import some.other.package1.subpackage1.Class2;
+import some.other.package1.subpackage2.Class3;
+import some.other.package1.subpackage3.*;
+import some.other.package2.Class4;
+public class Foo {
+}
+	]]></code-fragment>
+	<code-fragment id="some-package"><![CDATA[
+package some.other.package1.subpackage1;
+import some.other.package1.Class1;
+import some.other.package1.subpackage1.Class2;
+import some.other.package1.subpackage2.Class3;
+import some.other.package1.subpackage3.*;
+import some.other.package2.Class4;
+public class Foo {
+}
+	]]></code-fragment>
+	<test-code>
+		<description>
+			default package: nothing configured, ok
+		</description>
+		<expected-problems>0</expected-problems>
+		<code-ref id="default-package" />
+	</test-code>
+	<test-code>
+		<description>default package: unused package, ok</description>
+		<rule-property name="packages">nothing.used</rule-property>
+		<rule-property name="classes">
+			nothing.used.AClass
+		</rule-property>
+		<expected-problems>0</expected-problems>
+		<code-ref id="default-package" />
+	</test-code>
+	<test-code>
+		<description>
+			default package: single package w/ exception, ok
+		</description>
+		<rule-property name="packages">
+			some.other.package2
+		</rule-property>
+		<rule-property name="classes">
+			some.other.package2.Class4
+		</rule-property>
+		<expected-problems>0</expected-problems>
+		<code-ref id="default-package" />
+	</test-code>
+	<test-code>
+		<description>
+			default package: single package w/o exception, bad
+		</description>
+		<rule-property name="packages">
+			some.other.package2
+		</rule-property>
+		<expected-problems>1</expected-problems>
+		<code-ref id="default-package" />
+	</test-code>
+	<test-code>
+		<description>
+			default package: nested package w/o exception, bad
+		</description>
+		<rule-property name="packages">
+			some.other.package1
+		</rule-property>
+		<expected-problems>4</expected-problems>
+		<code-ref id="default-package" />
+	</test-code>
+	<test-code>
+		<description>
+			default package: nested package w/ exception, bad
+		</description>
+		<rule-property name="packages">
+			some.other.package1
+		</rule-property>
+		<rule-property name="classes">
+			some.other.package1.Class1,some.other.package1.subpackage1.Class2,some.other.package1.subpackage2.Class3
+		</rule-property>
+		<expected-problems>1</expected-problems>
+		<code-ref id="default-package" />
+	</test-code>
+	<test-code>
+		<description>
+			some package: nothing configured, ok
+		</description>
+		<expected-problems>0</expected-problems>
+		<code-ref id="some-package" />
+	</test-code>
+	<test-code>
+		<description>some package: unused package, ok</description>
+		<rule-property name="packages">nothing.used</rule-property>
+		<rule-property name="classes">
+			nothing.used.AClass
+		</rule-property>
+		<expected-problems>0</expected-problems>
+		<code-ref id="some-package" />
+	</test-code>
+	<test-code>
+		<description>
+			some package: single package w/ exception, ok
+		</description>
+		<rule-property name="packages">
+			some.other.package2
+		</rule-property>
+		<rule-property name="classes">
+			some.other.package2.Class4
+		</rule-property>
+		<expected-problems>0</expected-problems>
+		<code-ref id="some-package" />
+	</test-code>
+	<test-code>
+		<description>
+			some package: single package w/o exception, bad
+		</description>
+		<rule-property name="packages">
+			some.other.package2
+		</rule-property>
+		<expected-problems>1</expected-problems>
+		<code-ref id="some-package" />
+	</test-code>
+	<test-code>
+		<description>
+			some package: nested package w/o exception, but in same package, ok
+		</description>
+		<rule-property name="packages">
+			some.other.package1
+		</rule-property>
+		<expected-problems>0</expected-problems>
+		<code-ref id="some-package" />
+	</test-code>
+	<test-code>
+		<description>
+			some package: nested package and sub-package, with different exceptions, bad
+		</description>
+		<rule-property name="packages">
+			some.other.package1,some.other.package1.subpackage2,some.other.package1.subpackage3,some.other.package2
+		</rule-property>
+		<rule-property name="classes">
+			some.other.package1.Class1,some.other.package1.subpackage2.Class3
+		</rule-property>
+		<expected-problems>2</expected-problems>
+		<code-ref id="some-package" />
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+bug fix: annotation before package
+		]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+@javax.xml.bind.annotation.XmlSchema(namespace=W3CEndpointReference.NS, location="http://www.w3.org/2006/03/addressing/ws-addr.xsd")
+@Deprecated
+package javax.xml.ws.wsaddressing;
+		]]></code>
+	</test-code>
+</test-data>

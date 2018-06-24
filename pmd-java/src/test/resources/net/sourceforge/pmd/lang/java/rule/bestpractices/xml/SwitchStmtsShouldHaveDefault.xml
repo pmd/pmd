@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+ <test-code>
+        <description>simple failure case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  int x = 2;
+  switch (x) {
+   case 2: int y=8;
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>simple ok case</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  int x = 2;
+  switch (x) {
+   case 2: int y=8;
+   default: int j=8;
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#651 Enum type, not ok</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+
+            public class Foo {
+                void bar() {
+                    SimpleEnum a;
+
+                    // This switch is NOT exhaustive
+                    switch (a) {
+                    case BZAZ:
+                        int y = 8;
+                        break;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#651 Enum type, ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+
+            public class Foo {
+                void bar() {
+                    SimpleEnum x;
+
+                    // This switch is exhaustive
+                    switch (x) {
+                    case BZAZ:
+                        int y = 8;
+                        break;
+                    case FOO:
+                        break;
+                    case BAR:
+                        int w = 8;
+                        break;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+</test-data>

@@ -5,22 +5,26 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
+import net.sourceforge.pmd.lang.ast.SignedNode;
 
 import apex.jorje.semantic.ast.member.Method;
 
-public class ASTMethod extends AbstractApexNode<Method> implements CanSuppressWarnings {
+public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode,
+       SignedNode<ASTMethod>, CanSuppressWarnings {
 
     public ASTMethod(Method method) {
         super(method);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
     @Override
     public String getImage() {
-        return node.getMethodInfo().getIdentifier().value;
+        return node.getMethodInfo().getCanonicalName();
     }
 
     @Override
@@ -43,6 +47,18 @@ public class ASTMethod extends AbstractApexNode<Method> implements CanSuppressWa
         return super.getEndColumn();
     }
 
+    @Override
+    public ApexQualifiedName getQualifiedName() {
+        return ApexQualifiedName.ofMethod(this);
+    }
+
+
+    @Override
+    public ApexOperationSignature getSignature() {
+        return ApexOperationSignature.of(this);
+    }
+
+    @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
         for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
             for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {

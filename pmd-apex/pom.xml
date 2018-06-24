@@ -1,168 +1,132 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>pmd-apex</artifactId>
-	<name>PMD Apex</name>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>pmd-apex</artifactId>
+  <name>PMD Apex</name>
 
-	<parent>
-		<groupId>net.sourceforge.pmd</groupId>
-		<artifactId>pmd</artifactId>
-		<version>5.6.0-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>net.sourceforge.pmd</groupId>
+    <artifactId>pmd</artifactId>
+    <version>6.5.0-SNAPSHOT</version>
+  </parent>
 
-	<properties>
-		<config.basedir>${basedir}/../pmd-core</config.basedir>
-		<java.version>1.8</java.version>
-	</properties>
+  <properties>
+    <java.version>8</java.version>
+    <!-- Workaround for https://youtrack.jetbrains.com/issue/IDEA-188690 -->
+    <maven.compiler.source>1.${java.version}</maven.compiler.source>
+    <maven.compiler.target>1.${java.version}</maven.compiler.target>
+  </properties>
 
-	<build>
-		<resources>
-			<resource>
-				<directory>${basedir}/src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<configuration>
-					<useDefaultDelimiters>false</useDefaultDelimiters>
-					<delimiters>
-						<delimiter>${*}</delimiter>
-					</delimiters>
-				</configuration>
-			</plugin>
+  <build>
+    <resources>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <useDefaultDelimiters>false</useDefaultDelimiters>
+          <delimiters>
+            <delimiter>${*}</delimiter>
+          </delimiters>
+        </configuration>
+      </plugin>
 
-			<plugin>
-				<groupId>net.sourceforge.pmd</groupId>
-				<artifactId>pmd-build</artifactId>
-			</plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>pmd-clean</id>
+            <phase>clean</phase>
+            <configuration>
+              <target>
+                <echo>PMD specific tasks: cleaning generated markdown</echo>
+                <delete quiet="true">
+                  <fileset dir="${basedir}/src/site/markdown/rules/" includes="**/*.md" />
+                  <fileset dir="${basedir}/src/site/markdown/" includes="mergedruleset.xml" />
+                  <fileset dir="${basedir}/src/site/" includes="site.xml" />
+                </delete>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>net.sourceforge.pmd</groupId>
+      <artifactId>pmd-core</artifactId>
+    </dependency>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>pmd-clean</id>
-						<phase>clean</phase>
-						<configuration>
-							<target>
-								<echo>PMD specific tasks: cleaning generated markdown</echo>
-								<delete quiet="true">
-									<fileset dir="${basedir}/src/site/markdown/rules/" includes="**/*.md" />
-									<fileset dir="${basedir}/src/site/markdown/" includes="mergedruleset.xml" />
-									<fileset dir="${basedir}/src/site/" includes="site.xml" />
-								</delete>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pmd-apex-jorje</artifactId>
+      <version>${project.version}</version>
+      <classifier>lib</classifier>
+    </dependency>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>apex</include>
-                                </includes>
-                                <excludes>
-                                    <exclude>${project.groupId}</exclude>
-                                </excludes>
-                            </artifactSet>
-                            <relocations>
-                                <!-- apex uses an older version of asm, hence we need to shaded it away -->
-                                <relocation>
-                                    <pattern>org.objectweb.asm</pattern>
-                                    <shadedPattern>shaded.org.objectweb.asm</shadedPattern>
-                                </relocation>
-                                <!-- apex uses an older version of jackson, hence we need to shaded it away -->
-                                <relocation>
-                                    <pattern>com.fasterxml.jackson</pattern>
-                                    <shadedPattern>shaded.com.fasterxml.jackson</shadedPattern>
-                                </relocation>
-                            </relocations>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>apex-jorje-shaded</shadedClassifierName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-		</plugins>
-	</build>
-	<dependencies>
-		<dependency>
-			<groupId>net.sourceforge.pmd</groupId>
-			<artifactId>pmd-core</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pmd-apex-jorje</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+    </dependency>
 
-		<dependency>
-			<groupId>net.sourceforge.pmd</groupId>
-			<artifactId>pmd-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
 
-		 <dependency>
-	        <groupId>apex</groupId>
-	        <artifactId>apex-jorje-ide</artifactId>
-	        <version>1.0-sfdc-187-SNAPSHOT-55042bfc2e</version>
-	    </dependency>
 
-		<dependency>
-	        <groupId>apex</groupId>
-	        <artifactId>apex-jorje-semantic</artifactId>
-	        <version>1.0-sfdc-187-SNAPSHOT-55042bfc2e</version>
-            <classifier>tests</classifier>
-	    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.saxon</groupId>
+      <artifactId>saxon</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr-runtime</artifactId>
-			<version>3.5.2</version>
-		</dependency>
 
-	</dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.pmd</groupId>
+      <artifactId>pmd-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-    <repositories>
-        <repository>
-            <id>local-apex-repo</id>
-            <url>file://${basedir}/repo</url>
-            </repository>
-    </repositories>
-
-    <profiles>
-        <profile>
-            <id>designer</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.4.0</version>
-                        <configuration>
-                            <mainClass>net.sourceforge.pmd.util.designer.Designer</mainClass>
-                            <includePluginDependencies>true</includePluginDependencies>
-                        </configuration>
-                        <dependencies>
-                            <dependency>
-                                <groupId>net.sourceforge.pmd</groupId>
-                                <artifactId>pmd-java</artifactId>
-                                <version>${project.version}</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+  <profiles>
+    <profile>
+      <id>designer</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.4.0</version>
+            <configuration>
+              <mainClass>net.sourceforge.pmd.util.designer.Designer</mainClass>
+              <includePluginDependencies>true</includePluginDependencies>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>net.sourceforge.pmd</groupId>
+                <artifactId>pmd-java</artifactId>
+                <version>${project.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

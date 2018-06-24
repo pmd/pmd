@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean bar(String x) {
+  return x.startsWith("x");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+startsWith multiple chars
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean bar(Fiddle x) {
+  return x.startsWith("abc");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+startsWith defined on some other class, doesn't take a String
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean bar(Fiddle x) {
+  return x.startsWith(123);
+ }
+}
+     ]]></code>
+    </test-code>
+<!--
+    <test-code>
+        <description><![CDATA[
+Document Jaxen exception parsing Unicode chars in startsWith
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  public boolean bar(String x) {
+    return x.startsWith("\u07FF\uF001");
+  }
+}
+     ]]></code>
+    </test-code>
+-->
+
+    <test-code>
+        <description>#1392 SimplifyStartsWith false-negative</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class SimplifyStartsWith {
+    private static boolean isImmediatelyFollowedByText(DetailNode tag) {
+        final DetailNode nextSibling = JavadocUtils.getNextSibling(tag);
+        return nextSibling.getType() == JavadocTokenTypes.NEWLINE
+                || nextSibling.getType() == JavadocTokenTypes.EOF
+                || nextSibling.getText().startsWith(" ");
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

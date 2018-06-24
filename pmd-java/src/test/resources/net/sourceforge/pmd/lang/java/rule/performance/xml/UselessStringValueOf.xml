@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+valueOf in concatenation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+void bar(int i) {
+    String s = "abc" + String.valueOf(i);
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+valueOf in String conversion
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+void bar(Object o) {
+    String s = String.valueOf(o);
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+valueOf as first expression in concatenation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+void bar(int i) {
+    char c = 'A';
+    char low = 'B';
+    String s = String.valueOf(c) + low;
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+valueOf as first/last expression in concatenation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+public static String bar25(int n) {
+    return String.valueOf(n) + n + String.valueOf(n); // no - yes
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+valueOf as first/last expression in concatenation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+public static String bar17(int n) {
+    return n + String.valueOf(n) + "n"; // no
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+[ 1977438 ] False positive for UselessStringValueOf
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private String getMessage(Object pPassedValue) {
+  return "someString" + (pPassedValue == null ? "null" : '\'' + String.valueOf(pPassedValue) + '\'') + "end of my string";
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#976 False positive for UselessStringValueOf</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class TestClass {
+
+  public void testMethod() {
+    char[] idFormat = {'0', '0', '0', '0', '0'};
+    String abc = "1" + String.valueOf(idFormat);
+    System.out.println(abc); // Output 100000
+ }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1084 NPE at UselessStringValueOfRule.java:36</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import android.os.Build;
+
+public class Test {
+
+    public String test() {
+        print(String.valueOf(Build.TIME));
+        print(String.valueOf(Build.VERSION.SDK_INT));
+    }
+
+    private void print(String s) {
+        System.out.println(s);
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

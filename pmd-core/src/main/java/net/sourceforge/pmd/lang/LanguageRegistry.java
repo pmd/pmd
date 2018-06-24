@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Created by christoferdutz on 20.09.14.
  */
@@ -90,7 +92,7 @@ public final class LanguageRegistry {
         String version;
         String terseName;
         if (terseNameAndVersion.contains(" ")) {
-            version = terseNameAndVersion.substring(terseNameAndVersion.lastIndexOf(' ') + 1);
+            version = StringUtils.trimToNull(terseNameAndVersion.substring(terseNameAndVersion.lastIndexOf(' ') + 1));
             terseName = terseNameAndVersion.substring(0, terseNameAndVersion.lastIndexOf(' '));
         } else {
             version = null;
@@ -120,9 +122,7 @@ public final class LanguageRegistry {
     public static List<LanguageVersion> findAllVersions() {
         List<LanguageVersion> versions = new ArrayList<>();
         for (Language language : getLanguages()) {
-            for (LanguageVersion languageVersion : language.getVersions()) {
-                versions.add(languageVersion);
-            }
+            versions.addAll(language.getVersions());
         }
         return versions;
     }

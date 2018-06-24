@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description><![CDATA[
 failure case
@@ -382,8 +385,8 @@ public class Foo {
         <description><![CDATA[
 Not ok, since inner classes are checked
      ]]></description>
-        <expected-problems>1</expected-problems>
         <rule-property name="checkInnerClasses">true</rule-property>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     private class Bar {
@@ -405,8 +408,8 @@ public class Foo {
         <description><![CDATA[
 Not ok, violation with first usage = non-assignment
      ]]></description>
-        <expected-problems>1</expected-problems>
         <rule-property name="disallowNotAssignment">true</rule-property>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
  private int x;
@@ -602,6 +605,42 @@ public final class Test {
       this.timer2.start();
     }
   };
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#527 [java] Lombok getter annotation on enum is not recognized correctly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+
+@Getter
+public enum Foo {
+    BAR(1);
+
+    private final int number;
+
+    Foo(final int number) {
+        this.number = number;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1056 [java] Property ignoredAnnotations does not work for SingularField and ImmutableField</description>
+        <rule-property name="ignoredAnnotations">java.lang.Deprecated</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Source {
+    @Deprecated
+    private Object o; //violation!
+
+    Object m() {
+        o = new Object();
+        return o;
+    }
 }
         ]]></code>
     </test-code>

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+skip void/native/abstract methods
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {}
+ public native int buz();
+ public abstract int baz();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip literal returns
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int bar() { return 5; }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+simple failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int bar() {
+  int x = doSomething();
+  return x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip complicated returns
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int bar() {
+  int x = doSomething();
+  return x == null ? foo : bar;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip method calls
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int bar() {
+  return doSomething(a, b, c);
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1495 [java] UnnecessaryLocalBeforeReturn with assert</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int res = 2; assert res>=0;
+        return res;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#219 ClassCastException in switch case with local variable returned</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int m(int val) {
+        switch (vl) {
+            default:
+                int i = 0;
+                return i;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Detect violation even if not on consecutive lines</description>
+        <rule-property name="statementOrderMatters">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int res = 2;
+        doSomething();
+        return res;
+    }
+    
+    public void doSomething() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No violations on multiple uses of the variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int res = 2;
+        doSomething(res);
+        return res;
+    }
+    
+    public void doSomething(int x) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No violations on multiple uses of the variable - statement order does not matter</description>
+        <rule-property name="statementOrderMatters">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int res = 2;
+        doSomething(res);
+        return res;
+    }
+    
+    public void doSomething(int x) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#933 UnnecessaryLocalBeforeReturn false positive for SuppressWarnings annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnnecessaryLocalBeforeReturnCase {
+    private <T extends UserVisibleEventTypeValue<?>> T findEventTypeValueByName(Class<T> entityClass, String eventTypeName, String eventTypeValueName) {
+        Criteria criteria = this.session.createCriteria(entityClass)
+            .add(Restrictions.eq(UserVisibleEventTypeValue_.internalName, eventTypeValueName))
+            .createCriteria(UserVisibleEventTypeValue_.type)
+                .add(Restrictions.eq(UserVisibleEventType_.name, eventTypeName))
+                .setCacheable(true);
+
+        @SuppressWarnings("unchecked")
+        T result = (T) criteria.uniqueResult();
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#282 UnnecessaryLocalBeforeReturn false positive when cloning Maps</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class CustomerErrorCollector {
+
+    private final ConcurrentHashMap<String, String> customerErrors = new ConcurrentHashMap<>();
+
+    public void error(String customerNr, String errorMsg) {
+        customerErrors.put(customerNr, errorMsg);
+    }
+
+    public Map<String, String> getAndReset() {
+        final Map<String, String> copy = new HashMap<>(customerErrors);
+        customerErrors.clear();
+        return copy; // PMD complains that variable could be avoided
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#310 UnnecessaryLocalBeforeReturn enhancement is overly restrictive -- method order matters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnnecessaryLocalBeforeReturnFP {
+    public int example1() {
+        int i = compute(); // might throw
+        markComputationDone();
+        return i; // PMD complains that variable could be avoided
+    }
+
+    public int example2() {
+        Mutable m = new Mutable();
+        int i = compute(m);
+        sideEffect(m);
+        return i;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#310 UnnecessaryLocalBeforeReturn statement order does not matter</description>
+        <rule-property name="statementOrderMatters">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class UnnecessaryLocalBeforeReturnFP {
+    public int example1() {
+        int i = compute(); // might throw
+        markComputationDone();
+        return i; // PMD complains that variable could be avoided
+    }
+
+    public int example2() {
+        Mutable m = new Mutable();
+        int i = compute(m);
+        sideEffect(m);
+        return i;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

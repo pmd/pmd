@@ -48,15 +48,18 @@ public abstract class AbstractJavaParser extends AbstractParser {
         return parser;
     }
 
+    @Override
     public boolean canParse() {
         return true;
     }
 
+    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
         return createJavaParser(source).CompilationUnit();
     }
 
+    @Override
     public Map<Integer, String> getSuppressMap() {
         return parser.getSuppressMap();
     }

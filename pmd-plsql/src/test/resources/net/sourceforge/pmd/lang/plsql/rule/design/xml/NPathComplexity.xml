@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+A too complex procedure which triggers NPathComplexityRule
+     ]]></description>
+        <rule-property name="minimum">1.0</rule-property>
+        <expected-problems>1</expected-problems>
+        <code>
+ <![CDATA[
+CREATE OR REPLACE
+PROCEDURE bar AS BEGIN	-- this is something more complex than it needs to be,
+	if (y) THEN	-- it should be broken down into smaller methods or functions
+		for j IN 0 .. j-1 LOOP
+			if (j > r) THEN
+				doSomething;
+				while (f < 5 ) LOOP
+					anotherThing;
+					f := f - 27;
+					END LOOP;
+			else
+				tryThis();
+			END IF;
+		END LOOP;
+	END IF;
+	if ( r - n > 45) THEN
+		while (doMagic) LOOP
+			findRabbits;
+		END LOOP;
+	END IF;
+	BEGIN
+		doSomethingDangerous();
+	EXCEPTION
+	WHEN FooException THEN
+		makeAmends;
+		BEGIN
+			dontDoItAgain;
+		EXCEPTION
+		WHEN OTHERS THEN
+			log_problem;
+		END;
+	END;
+END;
+ ]]>
+</code>
+    <source-type>plsql</source-type>
+    </test-code>
+</test-data>

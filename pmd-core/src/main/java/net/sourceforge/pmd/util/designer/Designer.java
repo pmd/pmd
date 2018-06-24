@@ -34,7 +34,7 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Map.Entry;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.ActionMap;
@@ -93,6 +93,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -100,6 +101,7 @@ import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -121,8 +123,8 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 import net.sourceforge.pmd.lang.xpath.Initializer;
-import net.sourceforge.pmd.util.StringUtil;
 
+@Deprecated // to be removed with PMD 7.0.0
 public class Designer implements ClipboardOwner {
 
     private boolean exitOnClose = true;
@@ -133,7 +135,7 @@ public class Designer implements ClipboardOwner {
     private final JTextArea xpathQueryArea = new JTextArea(15, 30);
     private final ButtonGroup xpathVersionButtonGroup = new ButtonGroup();
     private final TreeWidget symbolTableTreeWidget = new TreeWidget(new Object[0]);
-    private final JFrame frame = new JFrame("PMD Rule Designer (v " + PMD.VERSION + ')');
+    private final JFrame frame = new JFrame("PMD Rule Designer (v " + PMDVersion.VERSION + ')');
     private final DFAPanel dfaPanel = new DFAPanel();
     private final JRadioButtonMenuItem[] languageVersionMenuItems = new JRadioButtonMenuItem[getSupportedLanguageVersions().length];
     private static final String SETTINGS_FILE_NAME = System.getProperty("user.home")
@@ -220,7 +222,7 @@ public class Designer implements ClipboardOwner {
                 }
             }
         }
-        return languageVersions.toArray(new LanguageVersion[languageVersions.size()]);
+        return languageVersions.toArray(new LanguageVersion[0]);
     }
 
     private LanguageVersion getLanguageVersion() {
@@ -271,7 +273,7 @@ public class Designer implements ClipboardOwner {
         private void createKids() {
 
             String message = ((ParseException) item).getMessage();
-            String[] lines = StringUtil.substringsOf(message, PMD.EOL);
+            String[] lines = StringUtils.split(message, PMD.EOL);
 
             kids = new ExceptionNode[lines.length];
             for (int i = 0; i < lines.length; i++) {
@@ -310,7 +312,7 @@ public class Designer implements ClipboardOwner {
 
         @Override
         public Enumeration<TreeNode> children() {
-            Enumeration<TreeNode> e = new Enumeration<TreeNode>() {
+            return new Enumeration<TreeNode>() {
                 int i = 0;
 
                 @Override
@@ -323,7 +325,6 @@ public class Designer implements ClipboardOwner {
                     return kids[i++];
                 }
             };
-            return e;
         }
 
         @Override
@@ -393,7 +394,7 @@ public class Designer implements ClipboardOwner {
                 getChildAt(0); // force it to build kids
             }
 
-            Enumeration<TreeNode> e = new Enumeration<TreeNode>() {
+            return new Enumeration<TreeNode>() {
                 int i = 0;
 
                 @Override
@@ -406,7 +407,6 @@ public class Designer implements ClipboardOwner {
                     return kids[i++];
                 }
             };
-            return e;
         }
 
         @Override
@@ -593,7 +593,7 @@ public class Designer implements ClipboardOwner {
         @Override
         public void actionPerformed(ActionEvent ae) {
             xpathResults.clear();
-            if (StringUtil.isEmpty(xpathQueryArea.getText())) {
+            if (StringUtils.isBlank(xpathQueryArea.getText())) {
                 xpathResults.addElement("XPath query field is empty.");
                 xpathResultList.repaint();
                 codeEditorPane.requestFocus();
@@ -864,11 +864,11 @@ public class Designer implements ClipboardOwner {
     private JPanel createXPathVersionPanel() {
         JPanel p = new JPanel();
         p.add(new JLabel("XPath Version:"));
-        for (Object[] values : XPathRule.VERSION_DESCRIPTOR.choices()) {
+        for (Entry<String, String> values : XPathRule.VERSION_DESCRIPTOR.mappings().entrySet()) {
             JRadioButton b = new JRadioButton();
-            b.setText((String) values[0]);
+            b.setText(values.getKey());
             b.setActionCommand(b.getText());
-            if (values[0].equals(XPathRule.VERSION_DESCRIPTOR.defaultValue())) {
+            if (values.getKey().equals(XPathRule.VERSION_DESCRIPTOR.defaultValue())) {
                 b.setSelected(true);
             }
             xpathVersionButtonGroup.add(b);
@@ -910,6 +910,7 @@ public class Designer implements ClipboardOwner {
                         undoManager.undo();
                     }
                 } catch (CannotUndoException e) {
+                    throw new RuntimeException(e);
                 }
             }
         });
@@ -923,6 +924,7 @@ public class Designer implements ClipboardOwner {
                         undoManager.redo();
                     }
                 } catch (CannotRedoException e) {
+                    throw new RuntimeException(e);
                 }
             }
         });
@@ -986,6 +988,7 @@ public class Designer implements ClipboardOwner {
 
     @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
+        // ignored
     }
 
     private void loadSettings() {

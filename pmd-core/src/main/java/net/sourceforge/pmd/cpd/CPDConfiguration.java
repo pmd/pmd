@@ -21,6 +21,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import net.sourceforge.pmd.AbstractConfiguration;
+import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.FileUtil;
 
@@ -36,10 +37,17 @@ import com.beust.jcommander.converters.FileConverter;
 public class CPDConfiguration extends AbstractConfiguration {
 
     public static final String DEFAULT_LANGUAGE = "java";
-
     public static final String DEFAULT_RENDERER = "text";
 
-    private static final Map<String, Class<? extends Renderer>> RENDERERS = new HashMap<>();
+    private static final Map<String, Class<? extends CPDRenderer>> RENDERERS = new HashMap<>();
+    
+    static {
+        RENDERERS.put(DEFAULT_RENDERER, SimpleRenderer.class);
+        RENDERERS.put("xml", XMLRenderer.class);
+        RENDERERS.put("csv", CSVRenderer.class);
+        RENDERERS.put("csv_with_linecount_per_file", CSVWithLinecountPerFileRenderer.class);
+        RENDERERS.put("vs", VSRenderer.class);
+    }
 
     @Parameter(names = "--language", description = "Sources code language. Default value is " + DEFAULT_LANGUAGE,
             required = false, converter = LanguageConverter.class)
@@ -61,7 +69,10 @@ public class CPDConfiguration extends AbstractConfiguration {
      * The actual renderer. constructed by using the {@link #rendererName}. This
      * property is only valid after {@link #postContruct()} has been called!
      */
+    @Deprecated
     private Renderer renderer;
+    
+    private CPDRenderer cpdRenderer;
 
     private String encoding;
 
@@ -133,16 +144,6 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
     }
 
-    public CPDConfiguration() {
-    }
-
-    @Deprecated
-    public CPDConfiguration(int minimumTileSize, Language language, String encoding) {
-        setMinimumTileSize(minimumTileSize);
-        setLanguage(language);
-        setEncoding(encoding);
-    }
-
     @Parameter(names = "--encoding", description = "Character encoding to use when processing files", required = false)
     public void setEncoding(String encoding) {
         this.encoding = encoding;
@@ -150,7 +151,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
     public SourceCode sourceCodeFor(File file) {
-        return new SourceCode(new SourceCode.FileCodeLoader(file, getSourceEncoding()));
+        return new SourceCode(new SourceCode.FileCodeLoader(file, getSourceEncoding().name()));
     }
 
     public SourceCode sourceCodeFor(Reader reader, String sourceCodeName) {
@@ -158,44 +159,33 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
     public void postContruct() {
-        if (this.getLanguage() == null) {
-            this.setLanguage(CPDConfiguration.getLanguageFromString(DEFAULT_LANGUAGE));
+        if (getLanguage() == null) {
+            setLanguage(CPDConfiguration.getLanguageFromString(DEFAULT_LANGUAGE));
         }
-        if (this.getRendererName() == null) {
-            this.setRendererName(DEFAULT_RENDERER);
+        if (getRendererName() == null) {
+            setRendererName(DEFAULT_RENDERER);
         }
-        if (this.getRenderer() == null) {
-            this.setRenderer(getRendererFromString(getRendererName(), this.getEncoding()));
+        if (getRenderer() == null && getCPDRenderer() == null) {
+            try {
+                setCPDRenderer(getCPDRendererFromString(getRendererName(), getEncoding()));
+            } catch (ClassCastException e) {
+                // The renderer class configured is not using the new CPDRenderer interface...
+                setRenderer(getRendererFromString(getRendererName(), getEncoding()));
+            }
         }
     }
 
     /**
-     * Gets a renderer with the platform's default encoding.
-     *
-     * @param name
-     *            renderer name
-     * @return a fresh renderer instance
-     * @deprecated use {@link #getRendererFromString(String, String)} instead
+     * @deprecated Use {@link #getCPDRendererFromString(String, String)} instead
      */
     @Deprecated
-    public static Renderer getRendererFromString(String name) {
-        return getRendererFromString(name, System.getProperty("file.encoding"));
-    }
-
-    static {
-        RENDERERS.put(DEFAULT_RENDERER, SimpleRenderer.class);
-        RENDERERS.put("xml", XMLRenderer.class);
-        RENDERERS.put("csv", CSVRenderer.class);
-        RENDERERS.put("csv_with_linecount_per_file", CSVWithLinecountPerFileRenderer.class);
-        RENDERERS.put("vs", VSRenderer.class);
-    }
-
     public static Renderer getRendererFromString(String name, String encoding) {
         String clazzname = name;
         if (clazzname == null || "".equals(clazzname)) {
             clazzname = DEFAULT_RENDERER;
         }
-        Class<? extends Renderer> clazz = RENDERERS.get(clazzname.toLowerCase(Locale.ROOT));
+        @SuppressWarnings("unchecked") // Safe, all standard implementations implement both interfaces
+        Class<? extends Renderer> clazz = (Class<? extends Renderer>) RENDERERS.get(clazzname.toLowerCase(Locale.ROOT));
         if (clazz == null) {
             try {
                 clazz = Class.forName(clazzname).asSubclass(Renderer.class);
@@ -213,8 +203,32 @@ public class CPDConfiguration extends AbstractConfiguration {
             return new SimpleRenderer();
         }
     }
+    
+    public static CPDRenderer getCPDRendererFromString(String name, String encoding) {
+        String clazzname = name;
+        if (clazzname == null || "".equals(clazzname)) {
+            clazzname = DEFAULT_RENDERER;
+        }
+        Class<? extends CPDRenderer> clazz = RENDERERS.get(clazzname.toLowerCase(Locale.ROOT));
+        if (clazz == null) {
+            try {
+                clazz = Class.forName(clazzname).asSubclass(CPDRenderer.class);
+            } catch (ClassNotFoundException e) {
+                System.err.println("Can't find class '" + name + "', defaulting to SimpleRenderer.");
+                clazz = SimpleRenderer.class;
+            }
+        }
+        try {
+            CPDRenderer renderer = clazz.getDeclaredConstructor().newInstance();
+            setRendererEncoding(renderer, encoding);
+            return renderer;
+        } catch (Exception e) {
+            System.err.println("Couldn't instantiate renderer, defaulting to SimpleRenderer: " + e);
+            return new SimpleRenderer();
+        }
+    }
 
-    private static void setRendererEncoding(Renderer renderer, String encoding)
+    private static void setRendererEncoding(Object renderer, String encoding)
             throws IllegalAccessException, InvocationTargetException {
         try {
             PropertyDescriptor encodingProperty = new PropertyDescriptor("encoding", renderer.getClass());
@@ -222,7 +236,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             if (method != null) {
                 method.invoke(renderer, encoding);
             }
-        } catch (IntrospectionException e) {
+        } catch (IntrospectionException ignored) {
             // ignored - maybe this renderer doesn't have a encoding property
         }
     }
@@ -296,8 +310,16 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.rendererName = rendererName;
     }
 
+    /**
+     * @deprecated Use {@link #getCPDRenderer()} instead
+     */
+    @Deprecated
     public Renderer getRenderer() {
         return renderer;
+    }
+    
+    public CPDRenderer getCPDRenderer() {
+        return cpdRenderer;
     }
 
     public Tokenizer tokenizer() {
@@ -329,7 +351,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             }
         }
 
-        FilenameFilter filter = new FilenameFilter() {
+        return new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 File f = new File(dir, name);
@@ -340,11 +362,21 @@ public class CPDConfiguration extends AbstractConfiguration {
                 return languageFilter.accept(dir, name);
             }
         };
-        return filter;
     }
 
+    /**
+     * @deprecated Use {@link #setCPDRenderer(CPDRenderer)} instead
+     * @param renderer
+     */
+    @Deprecated
     public void setRenderer(Renderer renderer) {
         this.renderer = renderer;
+        this.cpdRenderer = null;
+    }
+    
+    public void setCPDRenderer(CPDRenderer renderer) {
+        this.cpdRenderer = renderer;
+        this.renderer = null;
     }
 
     public boolean isIgnoreLiterals() {

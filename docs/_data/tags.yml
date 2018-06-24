@@ -1,0 +1,12 @@
+allowed-tags:
+  - getting_started # Getting started series
+  - rule_references # For the generated rule indices
+  - release_notes
+  - news
+  - troubleshooting
+  - userdocs        # Pages about usage, making rulesets, configuring rules,
+  - extending       # Pages about writing rules, metrics, properties, etc.
+  - metrics         # About using metrics, and metrics indices
+  - tools           # About tools and integrations, Maven, gradle, etc.
+  - devdocs         # About PMD internals, contributing, building, projects
+  - languages

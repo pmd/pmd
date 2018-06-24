@@ -8,47 +8,8 @@
 The Performance ruleset contains a collection of good practices which should be followed.
   </description>
 
-  <rule name="AvoidSoqlInLoops"
-        since="5.5.0"
-        message="Avoid Soql queries inside loops"
-        class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoqlInLoopsRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/apex/performance.html#AvoidSoqlInLoops">
-    <description>
-New objects created within loops should be checked to see if they can created outside them and reused.
-    </description>
-      <priority>3</priority>
-    <example>
-<![CDATA[public class Something {
-	public static void main( String as[] ) {  
-		for (Integer i = 0; i < 10; i++) {
-			List<Account> accounts = [SELECT Id FROM Account];
-		}
-	}
-}
-]]>
-    </example>
-  </rule>
-  
-  <rule name="AvoidDmlStatementsInLoops"
-        since="5.5.0"
-        message="Avoid DML statements inside loops"
-        class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidDmlStatementsInLoopsRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/apex/performance.html#AvoidDmlStatementsInLoops">
-    <description>Avoid DML statements inside loops to avoid hitting the DML governor limit. Instead, try to batch up the data into a list and invoke your DML once on that list of data outside the loop.</description>
-      <priority>3</priority>
-    <example>
-<![CDATA[
-public class Something {
-	public void foo() {  
-		for (Integer i = 0; i < 151; i++) {
-		    Account account;
-		    ...
-		    insert account;
-		}
-	}
-}
-]]>
-    </example>
-  </rule>
+    <rule ref="category/apex/performance.xml/AvoidDmlStatementsInLoops" deprecated="true" />
+    <rule ref="category/apex/performance.xml/AvoidSoqlInLoops" deprecated="true" />
+    <rule ref="category/apex/performance.xml/AvoidSoslInLoops" deprecated="true" />
 
 </ruleset>

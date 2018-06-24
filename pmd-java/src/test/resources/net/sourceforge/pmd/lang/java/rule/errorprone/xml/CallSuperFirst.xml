@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+  <test-code>
+    <description><![CDATA[
+Success
+    ]]></description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class MyActivity extends Activity {
+  @Override
+  protected void onCreate(final Bundle state) {
+    super.onCreate(state);
+    foo();
+  }
+}
+    ]]></code>
+  </test-code>
+  <test-code>
+    <description><![CDATA[
+Success
+    ]]></description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class MyActivity extends Activity {
+  @Override
+  protected void onCreate(final Bundle state) {
+    super.onCreate(state);
+    foo();
+  }
+  @Override
+  protected void onResume() {
+    super.onResume();
+    foo();
+  }
+  @Override
+  protected void onStart() {
+    super.onStart();
+    foo();
+  }
+}
+    ]]></code>
+  </test-code>
+  <test-code>
+    <description><![CDATA[
+Failure
+    ]]></description>
+    <expected-problems>1</expected-problems>
+    <code><![CDATA[
+public class MyActivity extends Activity {
+  @Override
+  protected void onCreate(final Bundle state) {
+    foo();
+  }
+}
+    ]]></code>
+  </test-code>
+  <test-code>
+    <description>#1154 Call super onPause when there is no super</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class NotAnActivity {
+    Activity a = myActivity;
+    protected void onResume() {
+        doSomething();
+    }
+}
+    ]]></code>
+  </test-code>
+</test-data>

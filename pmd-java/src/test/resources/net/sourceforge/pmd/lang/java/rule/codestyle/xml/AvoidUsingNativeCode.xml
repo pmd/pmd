@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Basic test case : using native code
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code>
+        	<![CDATA[
+        	 public class SomeJNIClass {
+                        public SomeJNIClass() {
+                                System.loadLibrary("nativelib");
+                        }
+
+                        static {
+                             System.loadLibrary("nativelib");
+                        }
+
+                        public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
+                                System.loadLibrary("nativelib");
+                        }
+                }
+		     ]]>
+		</code>
+    </test-code>
+</test-data>

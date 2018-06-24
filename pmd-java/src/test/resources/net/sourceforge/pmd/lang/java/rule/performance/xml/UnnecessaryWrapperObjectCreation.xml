@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Bar {
+ void foo(float value) {
+  float border = Float.valueOf(value).floatValue();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+calling valueOf is OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+ void foo(float value) {
+  Float f = Float.valueOf(value);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case for 1.5+
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Bar {
+ void foo(boolean value) {
+  boolean b = Boolean.valueOf(value).booleanValue();
+ }
+}
+     ]]></code>
+    <source-type>java 1.5</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Patch 2075906: Add toString() to the rule UnnecessaryWrapperObjectCreation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Bar {
+ void foo(boolean value) {
+  String b = Boolean.valueOf(value).toString();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1057 False positive for UnnecessaryWrapperObjectCreation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+  public void test() {
+    Float.valueOf(5).toString(); // this will raise the rule
+    Float.toString(5); // this is the preferred way
+  }
+}
+        ]]></code>
+    </test-code>
+</test-data>

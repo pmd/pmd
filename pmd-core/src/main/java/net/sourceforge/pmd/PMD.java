@@ -6,27 +6,28 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Handler;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.IOUtils;
-
-import net.sourceforge.pmd.benchmark.Benchmark;
-import net.sourceforge.pmd.benchmark.Benchmarker;
-import net.sourceforge.pmd.benchmark.TextReport;
+import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperation;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.benchmark.TimingReport;
+import net.sourceforge.pmd.benchmark.TimingReportRenderer;
+import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PMDParameters;
 import net.sourceforge.pmd.lang.Language;
@@ -43,12 +44,12 @@ import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
-import net.sourceforge.pmd.util.log.ConsoleLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
 /**
@@ -79,8 +80,10 @@ public class PMD {
 
     /**
      * Constant that contains always the current version of PMD.
+     * @deprecated Use {@link PMDVersion#VERSION} instead.
      */
-    public static final String VERSION;
+    @Deprecated // to be removed with PMD 7.0.0.
+    public static final String VERSION = PMDVersion.VERSION;
 
     /**
      * Create a PMD instance using a default Configuration. Changes to the
@@ -170,54 +173,6 @@ public class PMD {
     }
 
     /**
-     * Create a report, filter out any defective rules, and keep a record of
-     * them.
-     *
-     * @param rs
-     *            the rules
-     * @param ctx
-     *            the rule context
-     * @param fileName
-     *            the filename of the source file, which should appear in the
-     *            report
-     * @return the Report
-     */
-    public static Report setupReport(RuleSets rs, RuleContext ctx, String fileName) {
-
-        Set<Rule> brokenRules = removeBrokenRules(rs);
-        Report report = Report.createReport(ctx, fileName);
-
-        for (Rule rule : brokenRules) {
-            report.addConfigError(new Report.RuleConfigurationError(rule, rule.dysfunctionReason()));
-        }
-
-        return report;
-    }
-
-    /**
-     * Remove and return the misconfigured rules from the rulesets and log them
-     * for good measure.
-     *
-     * @param ruleSets
-     *            RuleSets
-     * @return Set<Rule>
-     */
-    private static Set<Rule> removeBrokenRules(RuleSets ruleSets) {
-
-        Set<Rule> brokenRules = new HashSet<>();
-        ruleSets.removeDysfunctionalRules(brokenRules);
-
-        for (Rule rule : brokenRules) {
-            if (LOG.isLoggable(Level.WARNING)) {
-                LOG.log(Level.WARNING,
-                        "Removed misconfigured rule: " + rule.getName() + "  cause: " + rule.dysfunctionReason());
-            }
-        }
-
-        return brokenRules;
-    }
-
-    /**
      * Get the runtime configuration. The configuration can be modified to
      * affect how PMD behaves.
      *
@@ -247,7 +202,7 @@ public class PMD {
     public static int doPMD(PMDConfiguration configuration) {
 
         // Load the RuleSets
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration);
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, new ResourceLoader());
         RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null) {
             return 0;
@@ -256,35 +211,40 @@ public class PMD {
         Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
         List<DataSource> files = getApplicableFiles(configuration, languages);
 
-        long reportStart = System.nanoTime();
         try {
-            Renderer renderer = configuration.createRenderer();
-            List<Renderer> renderers = Collections.singletonList(renderer);
+            Renderer renderer;
+            List<Renderer> renderers;
+            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                renderer = configuration.createRenderer();
+                renderers = Collections.singletonList(renderer);
 
-            renderer.setWriter(IOUtil.createWriter(configuration.getReportFile()));
-            renderer.start();
-
-            Benchmarker.mark(Benchmark.Reporting, System.nanoTime() - reportStart, 0);
+                renderer.setWriter(IOUtil.createWriter(configuration.getReportFile()));
+                renderer.start();
+            }
 
             RuleContext ctx = new RuleContext();
             final AtomicInteger violations = new AtomicInteger(0);
             ctx.getReport().addListener(new ThreadSafeReportListener() {
                 @Override
                 public void ruleViolationAdded(RuleViolation ruleViolation) {
-                    violations.incrementAndGet();
+                    violations.getAndIncrement();
                 }
 
                 @Override
                 public void metricAdded(Metric metric) {
+                    // ignored - not needed for counting violations
                 }
             });
 
-            processFiles(configuration, ruleSetFactory, files, ctx, renderers);
+            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
+                processFiles(configuration, ruleSetFactory, files, ctx, renderers);
+            }
 
-            reportStart = System.nanoTime();
-            renderer.end();
-            renderer.flush();
-            return violations.get();
+            try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                renderer.end();
+                renderer.flush();
+                return violations.get();
+            }
         } catch (Exception e) {
             String message = e.getMessage();
             if (message != null) {
@@ -296,8 +256,6 @@ public class PMD {
             LOG.info(PMDCommandLineInterface.buildUsageText());
             return 0;
         } finally {
-            Benchmarker.mark(Benchmark.Reporting, System.nanoTime() - reportStart, 0);
-
             /*
              * Make sure it's our own classloader before attempting to close it....
              * Maven + Jacoco provide us with a cloaseable classloader that if closed
@@ -328,53 +286,6 @@ public class PMD {
     }
 
     /**
-     * A callback that would be implemented by IDEs keeping track of PMD's
-     * progress as it evaluates a set of files.
-     *
-     * @author Brian Remedios
-     */
-    public interface ProgressMonitor {
-        /**
-         * A status update reporting on current progress. Implementers will
-         * return true if it is to continue, false otherwise.
-         *
-         * @param total
-         *            total number of files to be analyzed
-         * @param totalDone
-         *            number of files, that have been done analyzing.
-         * @return <code>true</code> if the execution of PMD should continue,
-         *         <code>false</code> if the execution should be
-         *         cancelled/terminated.
-         */
-        boolean status(int total, int totalDone);
-    }
-
-    /**
-     * An entry point that would typically be used by IDEs intent on providing
-     * ongoing feedback and the ability to terminate it at will.
-     *
-     * @param configuration
-     *            the PMD configuration to use
-     * @param ruleSetFactory
-     *            ruleset factory
-     * @param files
-     *            the files to analyze
-     * @param ctx
-     *            the rule context to use for the execution
-     * @param monitor
-     *            PMD informs about the progress through this progress monitor.
-     *            It provides also the ability to terminate/cancel the
-     *            execution.
-     */
-    public static void processFiles(PMDConfiguration configuration, RuleSetFactory ruleSetFactory,
-            Collection<File> files, RuleContext ctx, ProgressMonitor monitor) {
-
-        // TODO
-        // call the main processFiles with just the new monitor and a single
-        // logRenderer
-    }
-
-    /**
      * Run PMD on a list of files using multiple threads - if more than one is
      * available
      *
@@ -391,6 +302,14 @@ public class PMD {
      */
     public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
             final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
+
+        if (!configuration.isIgnoreIncrementalAnalysis()
+                && configuration.getAnalysisCache() instanceof NoopAnalysisCache
+                && LOG.isLoggable(Level.WARNING)) {
+            final String version = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
+            LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
+                                + "https://pmd.github.io/" + version + "/pmd_userdocs_incremental_analysis.html");
+        }
 
         sortFiles(configuration, files);
 
@@ -443,11 +362,9 @@ public class PMD {
      * @return List of {@link DataSource} of files
      */
     public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
-        long startFiles = System.nanoTime();
-        List<DataSource> files = internalGetApplicableFiles(configuration, languages);
-        long endFiles = System.nanoTime();
-        Benchmarker.mark(Benchmark.CollectFiles, endFiles - startFiles, 0);
-        return files;
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
+            return internalGetApplicableFiles(configuration, languages);
+        }
     }
 
     private static List<DataSource> internalGetApplicableFiles(PMDConfiguration configuration,
@@ -531,14 +448,17 @@ public class PMD {
      *         violations found.
      */
     public static int run(String[] args) {
-        int status = 0;
-        long start = System.nanoTime();
         final PMDParameters params = PMDCommandLineInterface.extractParameters(new PMDParameters(), args, "pmd");
-        final PMDConfiguration configuration = PMDParameters.transformParametersIntoConfiguration(params);
+        
+        if (params.isBenchmark()) {
+            TimeTracker.startGlobalTracking();
+        }
+        
+        int status = 0;
+        final PMDConfiguration configuration = params.toConfiguration();
 
         final Level logLevel = params.isDebug() ? Level.FINER : Level.INFO;
-        final Handler logHandler = new ConsoleLogHandler();
-        final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, logHandler);
+        final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, new ConsoleHandler());
         final Level oldLogLevel = LOG.getLevel();
         // Need to do this, since the static logger has already been initialized
         // at this point
@@ -559,40 +479,21 @@ public class PMD {
         } finally {
             logHandlerManager.close();
             LOG.setLevel(oldLogLevel);
+            
             if (params.isBenchmark()) {
-                long end = System.nanoTime();
-                Benchmarker.mark(Benchmark.TotalPMD, end - start, 0);
+                final TimingReport timingReport = TimeTracker.stopGlobalTracking();
 
                 // TODO get specified report format from config
-                TextReport report = new TextReport();
-
-                report.generate(Benchmarker.values(), System.err);
+                final TimingReportRenderer renderer = new TextTimingReportRenderer();
+                try {
+                    // Don't close this writer, we don't want to close stderr
+                    final Writer writer = new OutputStreamWriter(System.err);
+                    renderer.render(timingReport, writer);
+                } catch (final IOException e) {
+                    System.err.println(e.getMessage());
+                }
             }
         }
         return status;
-    }
-
-    /**
-     * Determines the version from maven's generated pom.properties file.
-     */
-    static {
-        String pmdVersion = null;
-        InputStream stream = PMD.class
-                .getResourceAsStream("/META-INF/maven/net.sourceforge.pmd/pmd-core/pom.properties");
-        if (stream != null) {
-            try {
-                Properties properties = new Properties();
-                properties.load(stream);
-                pmdVersion = properties.getProperty("version");
-            } catch (IOException e) {
-                LOG.log(Level.FINE, "Couldn't determine version of PMD", e);
-            } finally {
-                IOUtils.closeQuietly(stream);
-            }
-        }
-        if (pmdVersion == null) {
-            pmdVersion = "unknown";
-        }
-        VERSION = pmdVersion;
     }
 }

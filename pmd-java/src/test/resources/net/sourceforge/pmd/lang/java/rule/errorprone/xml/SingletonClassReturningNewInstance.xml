@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+	<test-code>
+		<description><![CDATA[
+failure case
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code>
+        <![CDATA[
+public class Singleton {
+    private static Singleton instance = null;
+    public static Singleton getInstance() {
+	synchronized(Singleton.class){
+    	return new Singleton();
+	}
+    }
+}
+]]>
+		</code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+failure case
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code>
+        <![CDATA[
+public class Singleton{
+private static Singleton instance = null;
+    public static Singleton getInstance() {
+	synchronized(Singleton.class){
+		if(instance==null){
+    	Singleton instance = new Instance();
+    	return instance;
+    	}
+	}
+	return instance;
+    }
+}
+]]>
+		</code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+Works! Does not return locally created variable     
+]]></description>
+		<expected-problems>0</expected-problems>
+		<code>
+        <![CDATA[
+public class Singleton{
+private static Singleton instance = null;
+    public static Singleton getInstance() {
+	synchronized(Singleton.class){
+		if(instance==null){
+    	instance = new Instance();
+    	}
+	}
+    	return instance;
+    }
+}
+]]>
+		</code>
+	</test-code>
+</test-data>

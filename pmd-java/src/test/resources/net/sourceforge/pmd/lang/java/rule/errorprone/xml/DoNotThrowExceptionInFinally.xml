@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>
+        	<![CDATA[
+classic failure case
+     		]]>
+     	</description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+public class Foo 
+{
+	public void bar()
+	{
+		try {
+			// Here do some stuff
+		}
+		catch( Exception e) {
+			// Handling the issue
+		}
+		finally 
+		{
+			// is this really a good idea ?
+			throw new Exception();
+		}
+	}
+}
+     		]]>
+     	</code>
+    </test-code>
+</test-data>

@@ -1,49 +1,11 @@
+dist: trusty
 sudo: false
 addons:
-  apt:
-    packages:
-      - oracle-java8-installer
   ssh_known_hosts:
     - web.sourceforge.net
+
 language: java
-jdk: oraclejdk8
-before_install:
-  - bash .travis/setup-secrets.sh
-  - bash .travis/install-configure-maven.sh
-  - export M2_HOME=$HOME/apache-maven-3.3.9
-  - export PATH=$HOME/apache-maven-3.3.9/bin:${PATH}
-install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-before_script: true
-script:
-  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash .travis/build-pull-request.sh; fi'
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "${TRAVIS_SECURE_ENV_VARS}" = "true" ]; then bash .travis/build-push.sh; fi'
-after_success: true
 
-
-before_deploy: true
-deploy:
-  provider: releases
-  api_key: ${GITHUB_OAUTH_TOKEN}
-  file_glob: true
-  file:
-  - pmd-dist/target/pmd-*.zip
-  - target/pmd-doc-*.zip
-  skip_cleanup: true
-  on:
-    tags: true
-    repo: pmd/pmd
-    condition: "${TRAVIS_SECURE_ENV_VARS} = true"
-after_deploy: bash .travis/release.sh
-
-notifications:
-  email:
-    recipients:
-    - adangel@users.sourceforge.net
-    on_success: always
-    on_failure: always
-cache:
-  directories:
-  - "$HOME/.m2"
 env:
   global:
   - secure: KBEuB6U1p5RQXSYe157AwydFr/zpXQPA0IChVCgZV+X1mMyy9ZtrjH1J1AXuviseDDXDbaT25sRnsvpl82rfRw2xOkMGXHy4N95/ylTSr8DjHxTao71BhXsvFycNobFva5y2EGNWqDvpS8I2oSZo7Qk4la3yep3rcJQvcy6RDbbhpDTbL1QMFyadunIBm0WtqbunrMqtjSqaoPsXz8TiQuxHvX4vEXzVbaxV1QQt79Vi+daa6wAV3mRQAugnx+UffsC8JqMxgm06usWeJgCJzxgm8E7clZCLmf53B2TL8dK6bIYbqyvOY3uFxitsTG0d8Z0GOJwXBgZNgbniTRO8ZJSty5eZP8LBybbjVLSL25DNTWtCjADUL/uySnXIEidlMt2N/3QmH7zrGAfAk/tIwKpdRca2GLLydeXf6PSkiahnPEkIY/QupcsOLELhdifpdOjb8QW1OenA+vUbNM9dccLwKnX6Fj9cu4VQG601AcYDr2eyhq8WYkr3wYdw/6KdUa3hmplowTBs+qguppP+eOSgGuEsy38KLtqnvm6WlHy6tcLmcVYKG3DmR1b7TWXsOXC6/VMH8BHBkvsF1QdRg9+Cgx07vX3Hw7roPiYzmaO9Ajs20ATsUfRskMuWCTeTSK5pN8X27veRCZlhFjeKQMDdmfVwzpAfRgKsl3TEn1I=
@@ -54,6 +16,57 @@ env:
   - secure: "geOU/7VR83KYTOCR5XkgFqnHJEnXeB6hNDE7UFcN4ZsL9uVLhxlDVWV3ujJ87nyBzggG1KfSnUx11UwOQrbBl0K6sEXo/B2q5ytOsWoSLi7+0qm/uhhw/DTBOq57p8TIDKFM7rDhO7uajSn7Y86LeZkh9wIs5265Fh1yhCkiPbczDUMsX4P0GGg2qgkIKSBw4DZf6sPDc4xjJq/4/cLnjXo/K0ZYAIoSLqDfe1gmkzMtQlad+1t8Lwv/gOJ4BNRF4a5aEvGF6kbFovFoeFWCQTKlkn6VJtY+BETGKW2RH9efGeMs7JbBbNm+nnpoNsbJ0gdmGlhSbWT8enIm72/P0ThTBJWVcLJ30tUd0UeYD9C49wbJ3RHSxsoUKP9YhHJ+XKNx+8irkJ8LPCkNMQEFE153gEVvU7tCgah9Uq6laYZv9cQE0dWzNt3//Ymls8BzY38Ha4PbrIIJqEuWwnAX6ZgTgzVtXx1AJjkDFG9KFKPhN7NfNMbh7rn5C84a1h5zrIydm+6RcIBC+xTLDEiN7djiquf3PcNtyGLcO8dNN4Uv8iU0Jw8ch3+w0PJO53v5py+IS1V8pwwYaYF2iVPOoziS0tP8MsgYVGwpTZhvz3v8x0ge8r6KJE4zdvoPtCRNr2Oo3sJGYqkt86Hu6agKFiljP5AgJNx7iQD5GQn6J3w="
   - secure: "gqyPF3d75JuwZptnQQQKO6rGUILXGO09y9dZhShdX8qq5Mexa2ISk77Y/b0yyAdhJMgEglls5cWlbHkwCAB0i4yL25RE5CtQUe4er+CIKwBIs0M56ghbcOwWAFB/cXeyyWmXDHBVnVUeKm7IJ34txsEclnMzQSR/DInSzsCFMUQok8HEaWZNssMjyRgo6goKGdG5vNWGfLLY7mKGMe/6PpYJD0G8k+Na08aX06ZWph38He8O3imUAngoQrxiSp0UYmnHDkigbV7S2LdZOsj7kMxkiyigzK/P1eygHVbFAhohLroaqS9B4CBK7QeOyup2vxVKqJVzFwOCylD0786CImvaG2ZYMtvJkapvaEE0mdMlyYpHgdIkmHZu28aMW7hXEhxHyBAxKuPcj5eGCGziO+ztCvfYIA9CGs1uA4KLrED7SahvB0oXnt3KTFdRc857cWcpp2NmRKihLzVdgHlmT8zcYaec3zP1VdMoa2bmLHoaZtAwvMTcAG56FcET1p7f9v+uiU88ZeptEjTJfpAWlq34tpwZXNyIQi5IROocSHM+PKTgLAsAMP5klGascr8E0sEzREl7tg8hqEwXKym/sVKyT+HMptA3UZcrZZhm07/cmQ0pUVvbV9QDb0MzU3O2wF7vT3U7R7Fb1u0LxMjblPyEazTp8ldabVRJREwlsDc="
   - secure: "JIhuqaI0i+zvuqqXiQBHpuKr7AQ8jfk6Gbr8Qgiq4yJtdEWXZGxnAT9BmlbjkgT7ABXvLgxf2CIdUOMo1yYfBlxQL/y5+e89jaVpYF3tvNAzYQ1e12VzQRsd/jDb7qvm7tw3rDHEn3dSEot7Q6KbPcL6WzWJINVMCCmOgvq9gKHgE6Y5q5EgZ5rxiXyuO27ndzcbxaor4PIaiSzHO9+AJQ7p2zDLP+kG4nKVTBX0l9VoKiYFhIpIhpbigi3jyLDMDRiWpwTWZC6P8/RXfZg/lc5ADOuM2DM8oXPpZuqOa/g31LWQOSCuEnQ1G16vbLgipSPpgAc7jYWD5cywhG9dLkiKaZDh5x0meLM2RoAgz6eAnQfTTqJ68OM9o9yXjubEedsNpNRAr9/DXMd+fbh10W2vbvL5HCNB3lic3anehhR9le7PLuEKxg654wXt3KM2PZGVWbotIyBK0CvGzqGkppvwT23QdDDqSdkWuGQIhGQ0xBOdYkwebycxP5wwPUmObG+mymQ1Be2BXvmghttsiJdKlt4CVSYOJUMus6kU32G95hdTgKblsX4J1Of2i1nYsjyMKh3k945tqXwQrIsxOOQug0oIkz24zlLaOaQcorWtJ6Y1HPaZKpVIFUEF0y8Uq/O4oB2bOYC6WDUQfpj7nRG6xbi+BeBS84m1ttCEk4g="
+  matrix:
+  - BUILD=deploy
+  - BUILD=doc
+  - BUILD=sonar
+  - BUILD=coveralls
+
+matrix:
+  fast_finish: true
+
+before_install:
+  - wget https://github.com/sormuras/bach/raw/master/install-jdk.sh
+  - bash .travis/setup-secrets.sh
+  - bash .travis/configure-maven.sh
+# Install OracleJDK 10 - see https://sormuras.github.io/blog/2018-03-20-jdk-matrix.html
+install: . ./install-jdk.sh -F 10 -L BCL
+before_script: true
+script: source .travis/build-$BUILD.sh
+after_success: true
+
+
+before_deploy: true
+deploy:
+  provider: releases
+  api_key: ${GITHUB_OAUTH_TOKEN}
+  file_glob: true
+  file:
+  - pmd-dist/target/pmd-*.zip
+  - docs/pmd-doc-*.zip
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: pmd/pmd
+    condition: "${TRAVIS_SECURE_ENV_VARS} = true && ${BUILD} != sonar"
+after_deploy: bash .travis/release.sh
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/0e6dd310db54b96c2653
+      - https://webhooks.gitter.im/e/65efc1ea65175ad23ab6
+    on_success: always  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: never     # options: [always|never|change] default: always
+  email:
+    recipients:
+    - andreas.dangel@adangel.org
+    on_success: change
+    on_failure: always
+cache:
+  directories:
+  - "$HOME/.m2"
 
 
 # Secure Keys, that need to be set for snapshot builds

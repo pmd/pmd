@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<test-data>
- 	<test-code>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+	<test-code>
 		<description>Potentially unsafe SOQL on concatenation of variables 1
 		</description>
 		<expected-problems>1</expected-problems>
@@ -191,6 +194,52 @@ public class Foo {
 	</test-code>
 
 	<test-code>
+		<description>Dynamic SOQL with Integer
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		Integer field1 = 4; 
+		Database.query('SELECT Id FROM Account LIMIT ' + field1);		
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Dynamic safe escaped SOQL with multipart
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		String name = 'Name';
+		String someQuery = 'SELECT Id, ' + name + ' FROM ' + String.escapeSingleQuotes(objectName);
+        Database.query(someQuery);
+        
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Dynamic safe escaped SOQL with multipart
+		</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1(String objectName) {
+		String name = 'Name';
+		String someQuery = 'SELECT Id, ' + name + ' FROM ' + objectName;
+        Database.query(someQuery);
+        
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
 		<description>Unsafe SOQL merged from many variables</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
@@ -206,19 +255,75 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
-		<description>Dynamic SOQL with Integer
+		<description>Literal concatenation in the query method is safe
 		</description>
 		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+		<code><![CDATA[		
 public class Foo {
-	public void test1() {
-		Integer field1 = 4; 
-		Database.query('SELECT Id FROM Account LIMIT ' + field1);		
+
+	public List<SObject> test1(String objName) {
+		String baseQuery = 'Select Id, Name From ' + String.escapeSingleQuotes(objName);
+		return Database.query(baseQuery + ' LIMIT 1');	
 	}
 }
 		]]></code>
 	</test-code>
-		
+
+	<test-code>
+		<description>Integer is safe in query</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[		
+public class Foo {
+	public void test1(String objName, String limit) {
+		Integer nLimit = Integer.valueOf(limit);
+		List<SObject> res = Database.query('Select Id, Name From ' + String.escapeSingleQuotes(objName) + ' LIMIT ' + nLimit);	
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>ID var decl is safe in query</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[		
+public class Foo {
+	public void test1() {
+		ID someId;
+		someId = getId();
+		List<SObject> res = Database.query('Select Id, Name From Account Where Id=' + someId);	
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Safe ID and unsafe String from method signature
+		</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[		
+public class Foo {
+	public void test1(ID someId, String name) {
+		List<SObject> res = Database.query('Select Id,' + name + ' From Account Where Id=' + someId);	
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Ternary operator condition var is safe but resulting type
+			isn't
+		</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[		
+public class Foo {
+	public void test1(String name) {
+		List<SObject> res = Database.query('Select Id,Name From ' + (name == 'Account' ? name : 'Cases');	
+	}
+}
+		]]></code>
+	</test-code>
+
+
 </test-data>

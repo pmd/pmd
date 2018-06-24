@@ -23,7 +23,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
 
-public class ReportTest implements ReportListener {
+public class ReportTest implements ThreadSafeReportListener {
 
     private boolean violationSemaphore;
     private boolean metricSemaphore;

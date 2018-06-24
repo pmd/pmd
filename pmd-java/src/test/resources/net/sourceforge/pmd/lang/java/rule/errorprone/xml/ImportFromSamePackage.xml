@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+simple failure
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package foo;
+import foo.Bar;
+public class Baz{}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+class in default package importing from sub package
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package foo;
+import foo.buz.Bar;
+public class Baz{}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+class in default package importing from other package
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Baz{}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+class not in default package importing from default package
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package bar;
+import Foo;
+public class Baz{}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+class in default package importing from default package
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import Foo;
+public class Baz{}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+importing from subpackage
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package foo.bar;
+import foo.bar.baz.*;
+public class Baz{}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+importing all from same package
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package foo.bar;
+import foo.bar.*;
+public class Baz{}
+     ]]></code>
+    </test-code>
+</test-data>

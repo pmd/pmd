@@ -16,8 +16,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.regex.RegexHelper;
-import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.properties.StringMultiProperty;
+import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * <p>
@@ -84,22 +84,13 @@ public class GenericClassCounterRule extends AbstractJavaRule {
         definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
     }
 
-    private List<String> arrayAsList(String[] array) {
-        List<String> list = new ArrayList<>(array.length);
-        int nbItem = 0;
-        while (nbItem < array.length) {
-            list.add(array[nbItem++]);
-        }
-        return list;
-    }
-
     protected void init() {
         // Creating the attribute name for the rule context
         counterLabel = this.getClass().getSimpleName() + ".number of match";
         // Constructing the request from the input parameters
-        this.namesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getProperty(NAME_MATCH_DESCRIPTOR)));
+        this.namesMatch = RegexHelper.compilePatternsFromList(getProperty(NAME_MATCH_DESCRIPTOR));
         this.operand = getProperty(OPERAND_DESCRIPTOR);
-        this.typesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getProperty(TYPE_MATCH_DESCRIPTOR)));
+        this.typesMatch = RegexHelper.compilePatternsFromList(getProperty(TYPE_MATCH_DESCRIPTOR));
         String thresholdAsString = getProperty(THRESHOLD_DESCRIPTOR);
         this.threshold = Integer.valueOf(thresholdAsString);
         // Initializing list of match

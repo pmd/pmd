@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Ok, object literals
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+x = {a : 1};
+x = {a : 1, b : 2}; 
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, object literals
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+x = {a : 1,};
+x = {a : 1, b : 2,}; 
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, object literals, multi-line nested
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+x = {
+	a : 1,
+	b : {
+		c : {
+			d: {
+			},
+		},
+	},
+};
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, object literals, compressed nested
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+x={a:1,b:{c:{d:{},},},};
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, allow object literals
+     ]]></description>
+        <rule-property name="allowObjectLiteral">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+x = {,};
+x = {a : 1,};
+x = {a : 1, b : 2,}; 
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, array literals
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+x = [];
+x = [1];
+x = [1, 2]; 
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, array literals
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+x = [,];
+x = [1,];
+x = [1,2,]; 
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, array literals, multi-line nested
+     ]]></description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+x = [1,
+    [2,
+        [3,
+            [4,],
+        ],
+	],
+];
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, array literals, compressed nested
+     ]]></description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+x=[1,[2,[3,[4,],],],];
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, allow array literals
+     ]]></description>
+        <rule-property name="allowArrayLiteral">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+x = [,];
+x = [1,];
+x = [1,2,]; 
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+</test-data>

@@ -1,15 +1,12 @@
 # How to build PMD
 
-PMD uses [Maven](https://maven.apache.org/).
+PMD uses [Maven](https://maven.apache.org/) and requires [Java 9](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+for building.
 
-Additionally you'll need to have a `~/.m2/toolchains.xml` file setup
-with jdk 1.6 (for pmd 5.3.x), jdk 1.7 (for pmd 5.4.x and pmd 5.5.x) and jdk 1.8 (for some features in pmd 5.5.x).
-See [maven toolchains](https://maven.apache.org/guides/mini/guide-using-toolchains.html).
-A example file can be found here: [example-toolchains.xml](https://github.com/pmd/pmd/blob/master/example-toolchains.xml).
+PMD uses the [maven wrapper](https://github.com/takari/maven-wrapper), so you can simply build PMD as following:
 
-Use maven in the top-level directory:
-
-    mvn clean verify
+*   `./mvnw clean verify` (on Unix-like platform such as Linux and Mac OS X)
+*   `mvnw.cmd clean verify` (on Windows)
 
 This will create the zip files in the directory `pmd-dist/target`:
 
@@ -18,11 +15,14 @@ This will create the zip files in the directory `pmd-dist/target`:
 
 That's all !
 
-## How to build the documentation (maven site)?
+**Note:** While Java 9 is required for building, running PMD only requires Java 7 (or Java 8 for Apex).
 
-Building the maven site is done with the following commands:
+## How to build the documentation?
 
-    mvn clean install -DskipTests=true
-    mvn install site site:stage -Psite
+    cd docs
+    bundle install # once
+    bundle exec jekyll build
 
-You'll find the built site in the directory `target/staging/`.
+You'll find the built site in the directory `_site/`.
+
+For more info, see [README in docs directory](docs/README.md).

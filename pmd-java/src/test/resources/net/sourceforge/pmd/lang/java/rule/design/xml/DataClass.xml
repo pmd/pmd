@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="argoUML-dataclass">
+        <![CDATA[
+public class Property implements Comparable { // Woc = 10%, Noam = 6, Nopa = 0, Wmc = 10
+
+  private String      _name;
+  private Class       _valueType;
+  private Object      _initialValue;
+  private Object      _currentValue;
+  private Object[]    _availableValues;
+
+  public Property(String name, Class valueType, Object initialValue) {
+    this(name, valueType, initialValue, null);
+  }
+
+
+  public Property(String name, Class valueType, Object initialValue, Object[] values) {
+    _name = name;
+    _valueType = valueType;
+    _initialValue = initialValue;
+    _availableValues = values;
+    _currentValue = _initialValue;
+  }
+
+  public String getName() {
+    return _name;
+  }
+
+  public Class getValueType() {
+    return _valueType;
+  }
+
+  public Object getInitialValue() {
+    return _initialValue;
+  }
+
+  public Object[] getAvailableValues() {
+    return _availableValues;
+  }
+
+  public Object getCurrentValue() {
+    return _currentValue;
+  }
+
+  public void setCurrentValue(Object value) {
+    _currentValue = value;
+  }
+
+  public int compareTo(Object o) {
+    return _name.compareTo(((Property) o)._name);
+  }
+}
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>ArgoUML data class</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The class 'Property' is suspected to be a Data Class (WOC=11.111%, NOPA=0, NOAM=6, WMC=9)</message>
+        </expected-messages>
+        <code-ref id="argoUML-dataclass"/>
+    </test-code>
+
+
+    <code-fragment id="testDescriptor">
+        <![CDATA[
+public class TestDescriptor {
+    private Rule rule;
+    private Properties properties;
+    private String description;
+    private int numberOfProblemsExpected;
+    private List<String> expectedMessages = new ArrayList<>();
+    private List<Integer> expectedLineNumbers = new ArrayList<>();
+    private String code;
+    private LanguageVersion languageVersion;
+    // default, avoids unintentional mixing of state between test cases
+    private boolean reinitializeRule = true;
+    private boolean isRegressionTest = true;
+    private boolean useAuxClasspath = true;
+    private int numberInDocument = -1;
+
+    // Empty descriptor added to please mvn surefire plugin
+    public TestDescriptor() {
+
+    }
+
+    public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule) {
+        this(code, description, numberOfProblemsExpected, rule, rule.getLanguage().getDefaultVersion());
+    }
+
+    public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule,
+            LanguageVersion languageVersion) {
+        this.rule = rule;
+        this.code = code;
+        this.description = description;
+        this.numberOfProblemsExpected = numberOfProblemsExpected;
+        this.languageVersion = languageVersion;
+    }
+
+    public int getNumberInDocument() {
+        return numberInDocument;
+    }
+
+    public void setNumberInDocument(int numberInDocument) {
+        this.numberInDocument = numberInDocument;
+    }
+
+    public void setExpectedMessages(List<String> messages) {
+        expectedMessages.clear();
+        expectedMessages.addAll(messages);
+    }
+
+    public List<String> getExpectedMessages() {
+        return expectedMessages;
+    }
+
+    public void setExpectedLineNumbers(List<Integer> expectedLineNumbers) {
+        this.expectedLineNumbers.clear();
+        this.expectedLineNumbers.addAll(expectedLineNumbers);
+    }
+
+    public List<Integer> getExpectedLineNumbers() {
+        return expectedLineNumbers;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public LanguageVersion getLanguageVersion() {
+        return languageVersion;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getNumberOfProblemsExpected() {
+        return numberOfProblemsExpected;
+    }
+
+    public Rule getRule() {
+        return rule;
+    }
+
+    public boolean getReinitializeRule() {
+        return reinitializeRule;
+    }
+
+    public void setReinitializeRule(boolean reinitializeRule) {
+        this.reinitializeRule = reinitializeRule;
+    }
+
+    /**
+     * Checks whether we are testing for regression problems only. Return value
+     * is based on the system property "pmd.regress".
+     *
+     * @return <code>false</code> if system property "pmd.regress" is set to
+     *         <code>false</code>, <code>true</code> otherwise
+     */
+    public static boolean inRegressionTestMode() {
+        boolean inRegressionMode = true; // default
+        try {
+            // get the "pmd.regress" System property
+            String property = System.getProperty("pmd.regress");
+            if (property != null) {
+                inRegressionMode = Boolean.parseBoolean(property);
+            }
+        } catch (IllegalArgumentException e) {
+        }
+
+        return inRegressionMode;
+    }
+
+    public boolean isRegressionTest() {
+        return isRegressionTest;
+    }
+
+    public void setRegressionTest(boolean isRegressionTest) {
+        this.isRegressionTest = isRegressionTest;
+    }
+
+    public void setUseAuxClasspath(boolean useAuxClasspath) {
+        this.useAuxClasspath = useAuxClasspath;
+    }
+
+    public boolean isUseAuxClasspath() {
+        return useAuxClasspath;
+    }
+}
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>PMD data class</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The class 'TestDescriptor' is suspected to be a Data Class (WOC=13.043%, NOPA=0, NOAM=17, WMC=25)</message>
+        </expected-messages>
+        <code-ref id="testDescriptor"/>
+    </test-code>
+
+    <test-code>
+        <description>[java] [6.0.0] NPE in DataClass rule caused by empty declaration #785</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            public class Foo {
+                ;;
+            }
+            ]]>
+        </code>
+    </test-code>
+
+</test-data>

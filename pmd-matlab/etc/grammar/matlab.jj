@@ -39,27 +39,19 @@ PARSER_END(MatlabParser)
   "\r\n" : DEFAULT
 |
   "\n" : DEFAULT
-|
-  "%{"  : IN_COMMENT
-|
-  "%" : IN_LINE_COMMENT
-
 }
 
-<IN_COMMENT> SKIP:
-{
-    "%}" : DEFAULT
-}
+MORE:
+{ "%{": IN_COMMENT }
 
-<IN_LINE_COMMENT> SKIP:
-{
-   "\n" : DEFAULT
-}
+SPECIAL_TOKEN:
+{ <SINGLE_LINE_COMMENT: "%"(~["\n","\r"])* ("\n"|"\r"|"\r\n")?> }
 
-<IN_LINE_COMMENT, IN_COMMENT> MORE:
-{
-    < ~[] >
-}
+<IN_COMMENT> SPECIAL_TOKEN:
+{ <MULTI_LINE_COMMENT: "%}">: DEFAULT }
+
+<IN_COMMENT> MORE:
+{ < ~[] > }
 
 <DEFAULT, TRANSPOSE> TOKEN : /* SEPARATORS AND OTHER USEFULL LANGUAGE CONSTRUCTS*/
 {

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+simple failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Boolean b = new Boolean("true");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+new java.lang.Boolean
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Boolean b = new java.lang.Boolean("true");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Boolean b = Boolean.TRUE;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+don't use Boolean.valueOf() with literal
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Boolean b = Boolean.valueOf(true);
+ Boolean b1 = Boolean.valueOf(false);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+valueOf() with variable is fine
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Boolean b = Boolean.valueOf(x);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+don't use Boolean.valueOf() with string literal
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Boolean b = Boolean.valueOf("true");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+don't use Boolean.valueOf() in method call
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public void go(){
+     foo(new Boolean("true"));
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+don't use new Boolean() in method call
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public void go(){
+      foo(Boolean.valueOf("true"));
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public void go(){
+ foo(Boolean.TRUE);
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   static {
+ foo(Boolean.TRUE);
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+don't use new Boolean() in static block
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   static {
+      foo(Boolean.valueOf("true"));
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bug 1744065, should be ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import my.own.Boolean;
+
+public class Foo {
+   public void Bar() {
+      Boolean b = new Boolean("true");
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Test for failure after rule with custom Boolean, should report failure if rule reset done correctly
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Boolean b = Boolean.valueOf("true");
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1533 [java] BooleanInstantiation: ClassCastException with Annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        Object o = new @Interned MyObject();
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

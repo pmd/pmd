@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Too long javascript.
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<HTML>
+<BODY>
+<!--Java Script-->
+<SCRIPT language='JavaScript' type='text/javascript'>
+<!--
+function calcDays(){
+  var date1 = document.getElementById('d1').lastChild.data;
+  var date2 = document.getElementById('d2').lastChild.data;
+  date1 = date1.split("-");
+  date2 = date2.split("-");
+  var sDate = new Date(date1[0]+"/"+date1[1]+"/"+date1[2]);
+  var eDate = new Date(date2[0]+"/"+date2[1]+"/"+date2[2]);
+  var daysApart = Math.abs(Math.round((sDate-eDate)/86400000));
+  document.getElementById('diffDays').lastChild.data = daysApart;
+}
+
+onload=calcDays;
+//-->
+</SCRIPT>
+</BODY>
+</HTML>;
+     ]]></code>
+        <source-type>jsp</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Short javascript.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<HTML>
+<BODY>
+<!--Java Script-->
+<SCRIPT language='JavaScript' type='text/javascript'>
+<!--
+function calcDays(){
+  document.getElementById('diffDays').lastChild.data = daysApart;
+}
+
+onload=calcDays;
+//-->
+</SCRIPT>
+</BODY>
+</HTML>;
+     ]]></code>
+        <source-type>jsp</source-type>
+    </test-code>
+</test-data>

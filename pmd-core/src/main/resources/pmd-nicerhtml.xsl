@@ -1,26 +1,26 @@
-<xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:pmd="http://pmd.sourceforge.net/report/2.0.0">
 <xsl:output method="xml" indent="yes" doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
-doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+	doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 <xsl:decimal-format decimal-separator="." grouping-separator="," />
 
 <!-- keys for violations list -->
-<xsl:key name="violations" match="violation" use="@rule" />
+<xsl:key name="violations" match="pmd:violation" use="@rule" />
 
 <!-- XSL for PMD report. Author : Fabien Bancharel. -->
 <!-- Inspired by Checkstyle -->
 
 <xsl:template name="timestamp">
 	<!--** Timestamp processing to display date -->
-	<xsl:value-of select="substring-before(//pmd/@timestamp, 'T')"/> - <xsl:value-of select="substring-before(substring-after(//pmd/@timestamp, 'T'), '.')"/>
+	<xsl:value-of select="substring-before(//pmd:pmd/@timestamp, 'T')"/> - <xsl:value-of select="substring-before(substring-after(//pmd:pmd/@timestamp, 'T'), '.')"/>
 </xsl:template>
 
 
-
-<xsl:template match="pmd">
+<xsl:template match="pmd:pmd">
 	<!--** Process root node pmd : html header, style, call templates -->
 	<html>
 		<head>
-		<title>PMD <xsl:value-of select="//pmd/@version"/> Report</title>
+		<title>PMD <xsl:value-of select="//pmd:pmd/@version"/> Report</title>
 		<style type="text/css">
     .bannercell {
       border: 0px;
@@ -85,7 +85,7 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
       <tr>
         <td class="bannercell" rowspan="2">
         </td>
-    	<td class="text-align:right"><h2>PMD <xsl:value-of select="//pmd/@version"/> Report. Generated on <xsl:call-template name="timestamp"/></h2></td>
+    	<td class="text-align:right"><h2>PMD <xsl:value-of select="//pmd:pmd/@version"/> Report. Generated on <xsl:call-template name="timestamp"/></h2></td>
       </tr>
       </table>
     	<hr size="1"/>
@@ -103,7 +103,7 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 			<hr size="1" width="100%" align="left"/>
 
 			<!-- For each file create its part -->
-            <xsl:apply-templates select="file" />
+            <xsl:apply-templates select="pmd:file" />
 
 			<hr size="1" width="100%" align="left"/>
 
@@ -113,7 +113,7 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 </xsl:template>
 
 
-	<xsl:template match="pmd" mode="rulelist">
+	<xsl:template match="pmd:pmd" mode="rulelist">
 	<!--** Process root node pmd, for mode 'rulelist' : violated rules -->
 	<h3>Rules</h3>
 	<table class="log" border="0" cellpadding="5" cellspacing="2"
@@ -125,7 +125,7 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 		</tr>
 
 		<xsl:for-each
-			select="file/violation[@rule and generate-id(.) = generate-id(key('violations', @rule))]">
+			select="pmd:file/pmd:violation[@rule and generate-id(.) = generate-id(key('violations', @rule))]">
 			<!-- Sort by number of violations -->
 			<xsl:sort data-type="number" order="descending"
 				select="count(key('violations', @rule))" />
@@ -133,7 +133,7 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 			<xsl:variable name="currentRule" select="@rule" />
 			<xsl:variable name="currentSeverity" select="@priority" />
 			<xsl:variable name="violationCount"
-				select="count(../../file/violation[@rule=$currentRule])" />
+				select="count(../../pmd:file/pmd:violation[@rule=$currentRule])" />
 
 			<tr>
 				<xsl:call-template name="alternated-row" />
@@ -154,7 +154,7 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 	</xsl:template>
 
 
-	<xsl:template match="pmd" mode="filelist">
+	<xsl:template match="pmd:pmd" mode="filelist">
 	<!--** Process root node pmd, for mode 'filelist' : number of violations for each file -->
 	<h3>Files</h3>
 	<table class="log" border="0" cellpadding="5" cellspacing="2"
@@ -169,10 +169,10 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 		</tr>
 
 		<xsl:for-each
-			select="file">
+			select="pmd:file">
 			<!-- Sort by number of violations -->
 			<xsl:sort data-type="number" order="descending"
-				select="count(violation)" />
+				select="count(pmd:violation)" />
 
 			<xsl:variable name="currentSource" select="@name" />
 
@@ -182,11 +182,11 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 						<xsl:variable name="anchor" select="translate(@name, '\/', '__')"></xsl:variable>
 						<a href="#f-{$anchor}"><xsl:value-of select="@name" /></a>
 					</td>
-					<td><xsl:value-of select="count(violation[@priority = 5])" /></td>
-					<td><xsl:value-of select="count(violation[@priority = 4])" /></td>
-					<td><xsl:value-of select="count(violation[@priority = 3])" /></td>
-					<td><xsl:value-of select="count(violation[@priority = 2])" /></td>
-					<td><xsl:value-of select="count(violation[@priority = 1])" /></td>
+					<td><xsl:value-of select="count(pmd:violation[@priority = 5])" /></td>
+					<td><xsl:value-of select="count(pmd:violation[@priority = 4])" /></td>
+					<td><xsl:value-of select="count(pmd:violation[@priority = 3])" /></td>
+					<td><xsl:value-of select="count(pmd:violation[@priority = 2])" /></td>
+					<td><xsl:value-of select="count(pmd:violation[@priority = 1])" /></td>
 				</tr>
 
 		</xsl:for-each>
@@ -194,7 +194,7 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 	</xsl:template>
 
 
-	<xsl:template match="file">
+	<xsl:template match="pmd:file">
 		<!--** Process node 'file' : violations details -->
 		<xsl:variable name="anchor" select="translate(@name, '\/', '__')"></xsl:variable>
 		<a name="f-{$anchor}"></a>
@@ -207,7 +207,7 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 				<th>Error Description</th>
 				<th style="width:40px;">Line</th>
 			</tr>
-			<xsl:for-each select="violation">
+			<xsl:for-each select="pmd:violation">
 				<xsl:variable name="currentSeverity" select="@priority" />
 				<tr>
 					<xsl:call-template name="alternated-row" />
@@ -219,9 +219,9 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 						 -
 						 <xsl:choose>
 						 <xsl:when test="@externalInfoUrl">
-						 <a href="{@externalInfoUrl}"><xsl:value-of select="." disable-output-escaping="yes" /></a>
+						 <a href="{@externalInfoUrl}"><xsl:value-of select="text()" disable-output-escaping="yes" /></a>
 						 </xsl:when>
-						 <xsl:otherwise><xsl:value-of select="." disable-output-escaping="yes" /></xsl:otherwise>
+						 <xsl:otherwise><xsl:value-of select="text()" disable-output-escaping="yes" /></xsl:otherwise>
 						 </xsl:choose>
 					</td>
 					<td>
@@ -234,7 +234,7 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 	</xsl:template>
 
 
-	<xsl:template match="pmd" mode="summary">
+	<xsl:template match="pmd:pmd" mode="summary">
 		<!--** Process root node 'pmd',  for mode 'summary' : number of files, number of violations by severity -->
 		<h3>Summary</h3>
 		<table class="log" border="0" cellpadding="5" cellspacing="2"
@@ -250,13 +250,13 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 			</tr>
 			<tr>
 				<xsl:call-template name="alternated-row" />
-		        <td><xsl:value-of select="count(//file)"/></td>
-		        <td><xsl:value-of select="count(//violation)"/></td>
-		        <td><xsl:value-of select="count(//violation[@priority = 1])"/></td>
-		        <td><xsl:value-of select="count(//violation[@priority = 2])"/></td>
-		        <td><xsl:value-of select="count(//violation[@priority = 3])"/></td>
-		        <td><xsl:value-of select="count(//violation[@priority = 4])"/></td>
-		        <td><xsl:value-of select="count(//violation[@priority = 5])"/></td>
+		        <td><xsl:value-of select="count(//pmd:file)"/></td>
+		        <td><xsl:value-of select="count(//pmd:violation)"/></td>
+		        <td><xsl:value-of select="count(//pmd:violation[@priority = 1])"/></td>
+		        <td><xsl:value-of select="count(//pmd:violation[@priority = 2])"/></td>
+		        <td><xsl:value-of select="count(//pmd:violation[@priority = 3])"/></td>
+		        <td><xsl:value-of select="count(//pmd:violation[@priority = 4])"/></td>
+		        <td><xsl:value-of select="count(//pmd:violation[@priority = 5])"/></td>
 			</tr>
 		</table>
 	</xsl:template>
@@ -269,7 +269,3 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 		</xsl:attribute>
 	</xsl:template>
 </xsl:stylesheet>
-
-
-
-

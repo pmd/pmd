@@ -13,7 +13,7 @@ import java.util.StringTokenizer;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * Renderer for IntelliJ IDEA integration.
@@ -45,9 +45,6 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
         return "txt";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         classAndMethodName = getProperty(CLASS_AND_METHOD_NAME);

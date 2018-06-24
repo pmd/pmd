@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+misnamed param
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	void main(String m_foo) {
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+misnamed local
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	void main() {
+	 int m_foo = 42;
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+all's well
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	private int m_bar;
+	public static final int m_buz = 42;
+	private void buz(String biz) {}
+}
+     ]]></code>
+    </test-code>
+</test-data>

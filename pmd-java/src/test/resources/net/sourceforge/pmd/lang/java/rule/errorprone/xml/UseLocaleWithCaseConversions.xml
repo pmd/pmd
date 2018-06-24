@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+toLowerCase() with no args
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String x = y.toLowerCase();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+toUpperCase() with no args
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String x = y.toUpperCase();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+both ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String x = y.toUpperCase(Locale.EN);
+ String z = y.toLowerCase(Locale.EN);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+toHexString OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String x = y.toHexString().toUpperCase();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Compound method call
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  public String getString(){
+    String x = "hello world";
+    return x.toUpperCase(Locale.GERMANY).trim();
+  }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1556 [java] UseLocaleWithCaseConversions does not works with `ResultSet` (false negative)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+
+final class Test {
+  private Test() { }
+
+  public static String foo(ResultSet r) throws SQLException {
+    return r.getString("bar").toLowerCase();
+  }
+}
+        ]]></code>
+    </test-code>
+</test-data>

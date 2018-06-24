@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  void bar() {
+   try {
+   } catch (SomeException se) {
+    throw se;
+   }
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+doing something else before throwing it, ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  void bar() {
+   try {
+   } catch (SomeException se) {
+    System.out.println("something interesting");
+    throw se;
+   }
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+throwing the return value of a method call on the exception, ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  void bar() {
+   try {
+   } catch (SomeException se) {
+    throw se.getCause();
+   }
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+throwing a different exception, ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  void bar() {
+   try {
+   } catch (SomeException se) {
+    try {
+    } catch (OtherException oe) {
+     throw se;
+    }
+   }
+  }
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+throw exception but return from finally
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String bugga() {
+  try {
+   throw new Exception( "My Exception" );
+  } catch (Exception e) {
+   throw e;
+  } finally {
+   return "A. O. K."; // Very bad.
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+lots of returns
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String getBar() {
+  try {
+   return "buz";
+  } catch (Exception e) {
+   return "biz";
+  } finally {
+   return "fiddle!"; // bad!
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  String getBar() {
+  try {
+   return "buz";
+  } finally {
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

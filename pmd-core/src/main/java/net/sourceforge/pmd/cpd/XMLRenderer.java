@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Iterator;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,12 +21,14 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+
 /**
  * @author Philippe T'Seyen - original implementation
  * @author Romain Pelisse - javax.xml implementation
  *
  */
-public final class XMLRenderer implements Renderer {
+public final class XMLRenderer implements Renderer, CPDRenderer {
 
     private String encoding;
 
@@ -69,7 +72,7 @@ public final class XMLRenderer implements Renderer {
         }
     }
 
-    private String xmlDocToString(Document doc) {
+    private void dumpDocToWriter(Document doc, Writer writer) {
         try {
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer transformer = tf.newTransformer();
@@ -77,9 +80,7 @@ public final class XMLRenderer implements Renderer {
             transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty(OutputKeys.CDATA_SECTION_ELEMENTS, "codefragment");
-            StringWriter writer = new StringWriter();
             transformer.transform(new DOMSource(doc), new StreamResult(writer));
-            return writer.toString();
         } catch (TransformerException e) {
             throw new IllegalStateException(e);
         }
@@ -87,6 +88,17 @@ public final class XMLRenderer implements Renderer {
 
     @Override
     public String render(Iterator<Match> matches) {
+        StringWriter writer = new StringWriter();
+        try {
+            render(matches, writer);
+        } catch (IOException ignored) {
+            // Not really possible with a StringWriter
+        }
+        return writer.toString();
+    }
+    
+    @Override
+    public void render(Iterator<Match> matches, Writer writer) throws IOException {
         Document doc = createDocument();
         Element root = doc.createElement("pmd-cpd");
         doc.appendChild(root);
@@ -97,7 +109,8 @@ public final class XMLRenderer implements Renderer {
             root.appendChild(addCodeSnippet(doc,
                     addFilesToDuplicationElement(doc, createDuplicationElement(doc, match), match), match));
         }
-        return xmlDocToString(doc);
+        dumpDocToWriter(doc, writer);
+        writer.flush();
     }
 
     private Element addFilesToDuplicationElement(Document doc, Element duplication, Match match) {

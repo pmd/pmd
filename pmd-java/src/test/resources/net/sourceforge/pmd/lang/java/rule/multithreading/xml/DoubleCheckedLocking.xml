@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+simple ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+simple failure
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+      Object baz;
+      Object bar() {
+        if(baz == null) { //baz may be non-null yet not fully created
+          synchronized(this){
+            if(baz == null){
+              baz = new Object();
+            }
+          }
+        }
+        return baz;
+      }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip interfaces
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ void foo();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Generics
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public <T> Bar<T> foo() { /* blah */}
+}
+     ]]></code>
+        <source-type>java 1.5</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+inversed null check
+see bug 2835074 False -: DoubleCheckedLocking with reversed null check (1)
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+      Object baz;
+      Object bar() {
+        if(null == baz) { //baz may be non-null yet not fully created
+          synchronized(this){
+            if(baz == null){
+              baz = new Object();
+            }
+          }
+        }
+        return baz;
+      }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+inversed null check
+see bug 2835074 False -: DoubleCheckedLocking with reversed null check (2)
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+      Object baz;
+      Object bar() {
+        if(baz == null) { //baz may be non-null yet not fully created
+          synchronized(this){
+            if(null == baz){
+              baz = new Object();
+            }
+          }
+        }
+        return baz;
+      }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Use of volatile keyword
+see #884 False +: DoubleCheckedLocking warning with volatile field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+volatile Object baz;
+
+Object bar() {
+    if (baz == null) { // baz may be non-null yet not fully created
+        synchronized (this) {
+            if (baz == null) {
+                baz = new Object();
+            }
+        }
+    }
+    return baz;
+}
+
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1471 False positives for DoubleCheckedLocking</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static volatile Foo instance;
+
+    public static Foo getInstance() {
+        Foo result = instance;
+        if (result == null) {
+            synchronized (Foo.class) {
+                result = instance;
+                if (result == null) {
+                    result = instance = new Foo();
+                }
+            }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

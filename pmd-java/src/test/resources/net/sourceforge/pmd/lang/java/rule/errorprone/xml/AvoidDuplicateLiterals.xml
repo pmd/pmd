@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+duplicate literals in argument list
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("Howdy");
+    buz("Howdy");
+    buz("Howdy");
+    buz("Howdy");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+literal int argument, ok for now
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz(2);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+duplicate literals in field decl
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String[] FOO = {"foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo"};
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+duplicate literals in annotations
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+public class Foo {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+duplicate literals in annotations, skipped
+     ]]></description>
+        <rule-property name="skipAnnotations">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+public class Foo {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+threshold property
+     ]]></description>
+        <rule-property name="maxDuplicateLiterals">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("Howdy");
+    buz("Howdy");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+exception list property
+     ]]></description>
+        <rule-property name="exceptionList">Howdy,foo</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("Howdy"); buz("Howdy"); buz("Howdy"); buz("Howdy");
+    buz("foo"); buz("foo"); buz("foo"); buz("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+exception list and separator properties
+     ]]></description>
+        <rule-property name="exceptionList">Howdy:foo</rule-property>
+        <rule-property name="separator">:</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("Howdy"); buz("Howdy"); buz("Howdy"); buz("Howdy");
+    buz("foo"); buz("foo"); buz("foo"); buz("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+minimum length property, minimum length reached
+     ]]></description>
+        <rule-property name="minimumLength">5</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("Howdy"); buz("Howdy"); buz("Howdy"); buz("Howdy");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+minimum length property, minimum length not reached
+     ]]></description>
+        <rule-property name="minimumLength">5</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("foo"); buz("foo"); buz("foo"); buz("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+minimum length property, default value
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("foo"); buz("foo"); buz("foo"); buz("foo");
+    buz("fo"); buz("fo"); buz("fo"); buz("fo");
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1425 Invalid XML Characters in Output</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The String literal "Tokenizer \ud801\udc1ctest" appears 4 times in this file; the first occurrence is on line 2</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Duplicate {
+    String s1 = "Tokenizer \ud801\udc1ctest";
+    String s2 = "Tokenizer \ud801\udc1ctest";
+    String s3 = "Tokenizer \ud801\udc1ctest";
+    String s4 = "Tokenizer \ud801\udc1ctest";
+    char c = '\uffef';
+    char c\u0030 = 'a';
+}
+        ]]></code>
+    </test-code>
+</test-data>

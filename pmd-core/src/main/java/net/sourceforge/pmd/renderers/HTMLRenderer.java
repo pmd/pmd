@@ -9,11 +9,14 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
-import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * Renderer to basic HTML format.
@@ -69,11 +72,9 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         if (showSuppressedViolations) {
             glomSuppressions(writer, suppressed);
         }
+        glomConfigurationErrors(writer, configErrors);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void start() throws IOException {
         Writer writer = getWriter();
@@ -84,18 +85,12 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
                 + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
         glomRuleViolations(writer, violations);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void end() throws IOException {
         Writer writer = getWriter();
@@ -104,6 +99,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         if (showSuppressedViolations) {
             glomSuppressions(writer, suppressed);
         }
+        glomConfigurationErrors(writer, configErrors);
         writer.write("</body></html>" + PMD.EOL);
     }
 
@@ -122,15 +118,15 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             buf.append("> " + PMD.EOL);
             buf.append("<td align=\"center\">" + violationCount + "</td>" + PMD.EOL);
             buf.append("<td width=\"*%\">"
-                    + maybeWrap(rv.getFilename(),
+                    + maybeWrap(StringEscapeUtils.escapeHtml4(rv.getFilename()),
                             linePrefix == null ? "" : linePrefix + Integer.toString(rv.getBeginLine()))
                     + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\" width=\"5%\">" + Integer.toString(rv.getBeginLine()) + "</td>" + PMD.EOL);
 
-            String d = StringUtil.htmlEncode(rv.getDescription());
+            String d = StringEscapeUtils.escapeHtml4(rv.getDescription());
 
             String infoUrl = rv.getRule().getExternalInfoUrl();
-            if (StringUtil.isNotEmpty(infoUrl)) {
+            if (StringUtils.isNotBlank(infoUrl)) {
                 d = "<a href=\"" + infoUrl + "\">" + d + "</a>";
             }
             buf.append("<td width=\"*\">" + d + "</td>" + PMD.EOL);
@@ -162,7 +158,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             colorize = !colorize;
             buf.append("> " + PMD.EOL);
             buf.append("<td>" + pe.getFile() + "</td>" + PMD.EOL);
-            buf.append("<td>" + pe.getMsg() + "</td>" + PMD.EOL);
+            buf.append("<td><pre>" + pe.getDetail() + "</pre></td>" + PMD.EOL);
             buf.append("</tr>" + PMD.EOL);
             writer.write(buf.toString());
         }
@@ -200,9 +196,37 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         }
         writer.write("</table>");
     }
+    
+    private void glomConfigurationErrors(final Writer writer, final List<ConfigurationError> configErrors) throws IOException {
+        if (configErrors.isEmpty()) {
+            return;
+        }
+
+        writer.write("<hr/>");
+        writer.write("<center><h3>Configuration errors</h3></center>");
+        writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL
+                + "<th>Rule</th><th>Problem</th></tr>" + PMD.EOL);
+
+        StringBuilder buf = new StringBuilder(500);
+        boolean colorize = true;
+        for (Report.ConfigurationError ce : configErrors) {
+            buf.setLength(0);
+            buf.append("<tr");
+            if (colorize) {
+                buf.append(" bgcolor=\"lightgrey\"");
+            }
+            colorize = !colorize;
+            buf.append("> " + PMD.EOL);
+            buf.append("<td>" + ce.rule().getName() + "</td>" + PMD.EOL);
+            buf.append("<td>" + ce.issue() + "</td>" + PMD.EOL);
+            buf.append("</tr>" + PMD.EOL);
+            writer.write(buf.toString());
+        }
+        writer.write("</table>");
+    }
 
     private String maybeWrap(String filename, String line) {
-        if (StringUtil.isEmpty(linkPrefix)) {
+        if (StringUtils.isBlank(linkPrefix)) {
             return filename;
         }
         String newFileName = filename;

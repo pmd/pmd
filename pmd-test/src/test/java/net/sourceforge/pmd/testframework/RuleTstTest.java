@@ -36,14 +36,15 @@ public class RuleTstTest {
 
         verify(rule).start(any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
-        verify(rule, times(4)).getLanguage();
-        verify(rule).usesDFA();
-        verify(rule).usesTypeResolution();
-        verify(rule, times(2)).usesRuleChain();
+        verify(rule, times(5)).getLanguage();
+        verify(rule).isDfa();
+        verify(rule).isTypeResolution();
+        verify(rule).isMultifile();
+        verify(rule, times(2)).isRuleChain();
         verify(rule).getMinimumLanguageVersion();
         verify(rule).getMaximumLanguageVersion();
         verify(rule).apply(anyList(), any(RuleContext.class));
-        verify(rule, times(2)).getName();
+        verify(rule, times(4)).getName();
         verify(rule).getPropertiesByPropertyDescriptor();
         verifyNoMoreInteractions(rule);
     }

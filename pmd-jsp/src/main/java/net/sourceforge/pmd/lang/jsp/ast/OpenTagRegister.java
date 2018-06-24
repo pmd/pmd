@@ -15,9 +15,9 @@ import net.sourceforge.pmd.util.StringUtil;
  * tag list and it will mark the first tag named 'x' as closed. If other tags
  * have been opened after 'x' ( &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;/x&gt;) it
  * will mark y and z as unclosed.
- * 
+ *
  * @author Victor Bucutea
- * 
+ *
  */
 public class OpenTagRegister {
 
@@ -32,7 +32,7 @@ public class OpenTagRegister {
     }
 
     /**
-     * 
+     *
      * @param closingTagName
      * @return true if a matching tag was found. False if no tag with this name
      *         was ever opened ( or registered )

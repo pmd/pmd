@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTTypeBound extends AbstractJavaNode {
+public class ASTTypeBound extends AbstractJavaTypeNode {
     public ASTTypeBound(int id) {
         super(id);
     }
@@ -17,6 +17,7 @@ public class ASTTypeBound extends AbstractJavaNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

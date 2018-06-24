@@ -26,13 +26,18 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
     private WeakHashMap<ApexNode<?>, Object> localCacheOfReportedNodes = new WeakHashMap<>();
 
     public ApexSharingViolationsRule() {
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
+        setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
+
+        if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
+            return data; // stops all the rules
+        }
+
         if (!Helper.isTestMethodOrClass(node)) {
             boolean sharingFound = isSharingPresent(node);
             checkForSharingDeclaration(node, data, sharingFound);

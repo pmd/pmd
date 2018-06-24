@@ -31,14 +31,14 @@ This ruleset contains links to rules that are new in PMD v5.1.0
     <rule ref="rulesets/plsql/dates.xml/TO_TIMESTAMPWithoutDateFormat"/>
     <rule ref="rulesets/plsql/TomKytesDespair.xml/TomKytesDespair"/>
 
-    <rule ref="rulestes/vm/basic.xml/AvoidDeeplyNestedIfStmts"/>
-    <rule ref="rulestes/vm/basic.xml/CollapsibleIfStatements"/>
-    <rule ref="rulestes/vm/basic.xml/ExcessiveTemplateLength"/>
-    <rule ref="rulestes/vm/basic.xml/AvoidReassigningParameters"/>
-    <rule ref="rulestes/vm/basic.xml/EmptyIfStmt"/>
-    <rule ref="rulestes/vm/basic.xml/EmptyForeachStmt"/>
-    <rule ref="rulestes/vm/basic.xml/UnusedMacroParameter"/>
-    <rule ref="rulestes/vm/basic.xml/NoInlineJavaScript"/>
-    <rule ref="rulestes/vm/basic.xml/NoInlineStyles"/>
+    <rule ref="rulesets/vm/basic.xml/AvoidDeeplyNestedIfStmts"/>
+    <rule ref="rulesets/vm/basic.xml/CollapsibleIfStatements"/>
+    <rule ref="rulesets/vm/basic.xml/ExcessiveTemplateLength"/>
+    <rule ref="rulesets/vm/basic.xml/AvoidReassigningParameters"/>
+    <rule ref="rulesets/vm/basic.xml/EmptyIfStmt"/>
+    <rule ref="rulesets/vm/basic.xml/EmptyForeachStmt"/>
+    <rule ref="rulesets/vm/basic.xml/UnusedMacroParameter"/>
+    <rule ref="rulesets/vm/basic.xml/NoInlineJavaScript"/>
+    <rule ref="rulesets/vm/basic.xml/NoInlineStyles"/>
 </ruleset>
 

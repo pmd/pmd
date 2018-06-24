@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Ok, if/else
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+if (true) {
+   x=2;
+} else {
+   x=4;
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, if/else if/else
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+if (true) {
+   x=2;
+} else if (true) { 
+   x = 3; 
+} else { 
+   y=4;
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, if without braces
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+if (true) 
+   x=2;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, nest if without braces
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+if (true)
+   if (false)
+      x=2;
+     ]]></code>
+       <source-type>ecmascript 3</source-type>
+     </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, if/else with else missing braces
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+if (true) {
+   x=2;
+} else 
+   y=4;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, if/else with if and else missing braces
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+if (true) 
+   y=2;
+else 
+   x=4;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, if/else if/else, with else missing braces
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+if (true) {
+   x=2;
+} else if (true) { 
+   x = 3; 
+} else 
+   y=4;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, if/else if/else, with else if and else missing braces
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+if (true) {
+   x=2;
+} else if (true)
+   x = 3; 
+else 
+   y=4;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, if/else if/else, with if and else if and else missing braces
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+if (true)
+   x=2;
+else if (true) 
+   x = 3; 
+else 
+   y=4;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+</test-data>

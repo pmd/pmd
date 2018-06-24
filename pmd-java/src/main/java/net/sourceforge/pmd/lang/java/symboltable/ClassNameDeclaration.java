@@ -15,6 +15,7 @@ public class ClassNameDeclaration extends AbstractNameDeclaration implements Typ
         super(node);
     }
 
+    @Override
     public String toString() {
         if (node instanceof ASTClassOrInterfaceDeclaration) {
             if (((ASTClassOrInterfaceDeclaration) node).isInterface()) {
@@ -31,10 +32,12 @@ public class ClassNameDeclaration extends AbstractNameDeclaration implements Typ
         return node;
     }
 
+    @Override
     public String getTypeImage() {
         return ((ASTClassOrInterfaceDeclaration) node).getImage();
     }
 
+    @Override
     public Class<?> getType() {
         return ((ASTClassOrInterfaceDeclaration) node).getType();
     }

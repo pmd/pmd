@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+short
+     ]]></description>
+        <rule-property name="minimum">9</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+long
+     ]]></description>
+        <rule-property name="minimum">9</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(int p01, int p02, int p03, int p04, int p05, int p06, int p07, int p08, int p09, int p10 ) { }
+    public void bar(int p01, int p02, int p03, int p04, int p05 ) { }
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Only one case, this is useless
+     ]]></description>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class DumbSwitch {
+	public void foo(int i) {
+		switch (i) {
+			case 0:
+			{
+				System.err.println("I am a fish.");
+			}
+		}
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Even two branches is not enough for a switch statement
+     ]]></description>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class DumbSwitch {
+	public void foo(int i) {
+		switch (i) {
+			case 0:
+			{
+				System.err.println("I am a fish.");
+			}
+			case 1:
+			{
+				System.exit();
+			}
+		}
+	}
+}
+     ]]></code>
+    </test-code>
+        <test-code>
+        <description><![CDATA[
+Three branches in a switch statement is ok.
+     ]]></description>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ValidSwitch {
+	public void foo(int i) {
+		switch (i) {
+			case 0:
+			{
+				System.err.println("I am a fish.");
+			}
+			case 1:
+			{
+				System.exit();
+			}
+			case 2:
+			{
+				// ...
+			}
+		}
+	}
+}
+     ]]></code>
+    </test-code>
+</test-data>

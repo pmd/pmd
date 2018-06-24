@@ -4,8 +4,13 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +22,8 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.EnumeratedAttribute;
 import org.apache.tools.ant.types.FileSet;
+
+import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 
 /**
  * CPDTask
@@ -123,16 +130,28 @@ public class CPDTask extends Task {
         if (!cpd.getMatches().hasNext()) {
             log("No duplicates over " + minimumTokenCount + " tokens found", Project.MSG_INFO);
         }
-        Renderer renderer = createRenderer();
-        FileReporter reporter;
-        if (outputFile == null) {
-            reporter = new FileReporter(encoding);
-        } else if (outputFile.isAbsolute()) {
-            reporter = new FileReporter(outputFile, encoding);
-        } else {
-            reporter = new FileReporter(new File(getProject().getBaseDir(), outputFile.toString()), encoding);
+        CPDRenderer renderer = createRenderer();
+        
+        try {
+            final OutputStream os;
+            if (outputFile == null) {
+                os = System.out;
+            } else if (outputFile.isAbsolute()) {
+                os = new FileOutputStream(outputFile);
+            } else {
+                os = new FileOutputStream(new File(getProject().getBaseDir(), outputFile.toString()));
+            }
+            
+            if (encoding == null) {
+                encoding = System.getProperty("file.encoding");
+            }
+            
+            try (Writer writer = new BufferedWriter(new OutputStreamWriter(os, encoding))) {
+                renderer.render(cpd.getMatches(), writer);
+            }
+        } catch (IOException ioe) {
+            throw new ReportException(ioe);
         }
-        reporter.report(renderer.render(cpd.getMatches()));
     }
 
     private void tokenizeFiles(CPD cpd) throws IOException {
@@ -155,7 +174,7 @@ public class CPDTask extends Task {
         return stop - start;
     }
 
-    private Renderer createRenderer() {
+    private CPDRenderer createRenderer() {
         if (format.equals(TEXT_FORMAT)) {
             return new SimpleRenderer();
         } else if (format.equals(CSV_FORMAT)) {

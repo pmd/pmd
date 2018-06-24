@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+simple failure with method params
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar(String a, String b) {
+  return a == b;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+primitives are ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar(int a, int b) {
+  return a == b;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip nulls
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar(int a, int b) {
+  return a == null || null == b;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+missed hit - qualified names.  that's ok, we can't resolve the types yet, so better to skip this for now
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar(Foo b) {
+  return this.b == b.foo;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+more qualified name skippage
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar(String a, String b) {
+  return a.charAt(0) == b.charAt(0);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+locals
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar() {
+  String a = "foo";
+  String b = "bar";
+  return a == b;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+2 locals declared on one line
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String a,b;
+  a = "foo";
+  b = "bar";
+  if (a == b) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+array element comparison
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar(int[] a, String[] b) {
+  if (a[1] == b[1]) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Comparing against new object should always return false
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar(Date aDate) {
+    if ( aDate == new Date( 0 ) ) {
+    }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+qualified call in allocation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar(String b) {
+  return new File(b).exists() == false;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1028 False-positive: Compare objects with equals for Enums</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.RoundingMode;
+public class Test {
+    void doEnums() {
+        RoundingMode mode1 = determineFirstMode();
+        RoundingMode mode2 = determineSecondMode();
+        if (mode1 == mode2) {}
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1128 CompareObjectsWithEquals False Positive comparing boolean (primitive) values</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SonOfSomeClass extends SomeClass {
+    protected javax.swing.JCheckBox checkBox;
+    public class SomeEmbeddedClass {
+        public boolean someNotWorkingMethod(boolean valid){
+    // This line presents a CompareObjectsWithEquals violation
+            valid |= SonOfSomeClass.this.object.isConfigurationEnabled() != SonOfSomeClass.this.checkBox.isSelected();
+            return valid;
+        }
+        public boolean someWorkingMethod(boolean valid){
+    // This line does not present any violation
+            valid |= (SonOfSomeClass.this.object.isConfigurationEnabled()) != SonOfSomeClass.this.checkBox.isSelected();
+            return valid;
+        }
+    }
+}
+/*
+ // just for reference
+class SomeClass {
+    protected SomeObject object;
+}
+class SomeObject {
+    private boolean configuration;
+    public SomeObject() {
+        super();
+    }
+    public boolean isConfigurationEnabled() {
+        return configuration;
+    }
+    public void setConfiguration(boolean configuration) {
+        this.configuration = configuration;
+    }
+}
+*/
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1376 CompareObjectsWithEquals fails for type annotated method parameter</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class CompareWithEqualsTest {
+   public static boolean test(@Nullable Object a, Object b)
+   {
+      return a == b;
+   }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#885 CompareObjectsWithEquals fails with Enum class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class CompareWithEqualsTest {
+   public static boolean test(Enum<?> a, Enum<?> b)
+   {
+      return a == b;
+   }
+}
+        ]]></code>
+    </test-code>
+</test-data>

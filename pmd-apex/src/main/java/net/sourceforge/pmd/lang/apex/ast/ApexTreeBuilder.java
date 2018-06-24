@@ -14,6 +14,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import apex.jorje.semantic.ast.AstNode;
+import apex.jorje.semantic.ast.compilation.AnonymousClass;
+import apex.jorje.semantic.ast.compilation.ConstructorPreamble;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserClassMethods;
 import apex.jorje.semantic.ast.compilation.UserEnum;
@@ -27,20 +29,23 @@ import apex.jorje.semantic.ast.expression.AssignmentExpression;
 import apex.jorje.semantic.ast.expression.BinaryExpression;
 import apex.jorje.semantic.ast.expression.BindExpressions;
 import apex.jorje.semantic.ast.expression.BooleanExpression;
+import apex.jorje.semantic.ast.expression.CastExpression;
 import apex.jorje.semantic.ast.expression.ClassRefExpression;
-import apex.jorje.semantic.ast.expression.DottedExpression;
 import apex.jorje.semantic.ast.expression.Expression;
+import apex.jorje.semantic.ast.expression.IllegalStoreExpression;
 import apex.jorje.semantic.ast.expression.InstanceOfExpression;
 import apex.jorje.semantic.ast.expression.JavaMethodCallExpression;
 import apex.jorje.semantic.ast.expression.JavaVariableExpression;
 import apex.jorje.semantic.ast.expression.LiteralExpression;
 import apex.jorje.semantic.ast.expression.MapEntryNode;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
+import apex.jorje.semantic.ast.expression.NestedExpression;
+import apex.jorje.semantic.ast.expression.NestedStoreExpression;
+import apex.jorje.semantic.ast.expression.NewKeyValueObjectExpression;
 import apex.jorje.semantic.ast.expression.NewListInitExpression;
 import apex.jorje.semantic.ast.expression.NewListLiteralExpression;
 import apex.jorje.semantic.ast.expression.NewMapInitExpression;
 import apex.jorje.semantic.ast.expression.NewMapLiteralExpression;
-import apex.jorje.semantic.ast.expression.NewNameValueObjectExpression;
 import apex.jorje.semantic.ast.expression.NewObjectExpression;
 import apex.jorje.semantic.ast.expression.NewSetInitExpression;
 import apex.jorje.semantic.ast.expression.NewSetLiteralExpression;
@@ -64,11 +69,13 @@ import apex.jorje.semantic.ast.member.Property;
 import apex.jorje.semantic.ast.member.bridge.BridgeMethodCreator;
 import apex.jorje.semantic.ast.modifier.Annotation;
 import apex.jorje.semantic.ast.modifier.AnnotationParameter;
+import apex.jorje.semantic.ast.modifier.Modifier;
 import apex.jorje.semantic.ast.modifier.ModifierNode;
 import apex.jorje.semantic.ast.modifier.ModifierOrAnnotation;
 import apex.jorje.semantic.ast.statement.BlockStatement;
 import apex.jorje.semantic.ast.statement.BreakStatement;
 import apex.jorje.semantic.ast.statement.CatchBlockStatement;
+import apex.jorje.semantic.ast.statement.ConstructorPreambleStatement;
 import apex.jorje.semantic.ast.statement.ContinueStatement;
 import apex.jorje.semantic.ast.statement.DmlDeleteStatement;
 import apex.jorje.semantic.ast.statement.DmlInsertStatement;
@@ -80,30 +87,33 @@ import apex.jorje.semantic.ast.statement.DoLoopStatement;
 import apex.jorje.semantic.ast.statement.ExpressionStatement;
 import apex.jorje.semantic.ast.statement.FieldDeclaration;
 import apex.jorje.semantic.ast.statement.FieldDeclarationStatements;
-import apex.jorje.semantic.ast.statement.ForEachStatement;
 import apex.jorje.semantic.ast.statement.ForLoopStatement;
 import apex.jorje.semantic.ast.statement.IfBlockStatement;
 import apex.jorje.semantic.ast.statement.IfElseBlockStatement;
+import apex.jorje.semantic.ast.statement.MethodBlockStatement;
+import apex.jorje.semantic.ast.statement.MultiStatement;
 import apex.jorje.semantic.ast.statement.ReturnStatement;
 import apex.jorje.semantic.ast.statement.RunAsBlockStatement;
 import apex.jorje.semantic.ast.statement.Statement;
+import apex.jorje.semantic.ast.statement.StatementExecuted;
 import apex.jorje.semantic.ast.statement.ThrowStatement;
 import apex.jorje.semantic.ast.statement.TryCatchFinallyBlockStatement;
 import apex.jorje.semantic.ast.statement.VariableDeclaration;
 import apex.jorje.semantic.ast.statement.VariableDeclarationStatements;
 import apex.jorje.semantic.ast.statement.WhileLoopStatement;
+import apex.jorje.semantic.ast.statement.foreachstatement.ForEachStatement;
 import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
 import apex.jorje.semantic.exception.Errors;
-import apex.jorje.semantic.tester.TestNode;
 
 public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
-    private static final Map<Class<? extends AstNode>, Constructor<? extends ApexNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
+    private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractApexNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
 
     static {
         register(Annotation.class, ASTAnnotation.class);
         register(AnnotationParameter.class, ASTAnnotationParameter.class);
+        register(AnonymousClass.class, ASTAnonymousClass.class);
         register(ArrayLoadExpression.class, ASTArrayLoadExpression.class);
         register(ArrayStoreExpression.class, ASTArrayStoreExpression.class);
         register(AssignmentExpression.class, ASTAssignmentExpression.class);
@@ -113,8 +123,11 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(BooleanExpression.class, ASTBooleanExpression.class);
         register(BreakStatement.class, ASTBreakStatement.class);
         register(BridgeMethodCreator.class, ASTBridgeMethodCreator.class);
+        register(CastExpression.class, ASTCastExpression.class);
         register(CatchBlockStatement.class, ASTCatchBlockStatement.class);
         register(ClassRefExpression.class, ASTClassRefExpression.class);
+        register(ConstructorPreamble.class, ASTConstructorPreamble.class);
+        register(ConstructorPreambleStatement.class, ASTConstructorPreambleStatement.class);
         register(ContinueStatement.class, ASTContinueStatement.class);
         register(DmlDeleteStatement.class, ASTDmlDeleteStatement.class);
         register(DmlInsertStatement.class, ASTDmlInsertStatement.class);
@@ -123,7 +136,6 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(DmlUpdateStatement.class, ASTDmlUpdateStatement.class);
         register(DmlUpsertStatement.class, ASTDmlUpsertStatement.class);
         register(DoLoopStatement.class, ASTDoLoopStatement.class);
-        register(DottedExpression.class, ASTDottedExpression.class);
         register(Expression.class, ASTExpression.class);
         register(ExpressionStatement.class, ASTExpressionStatement.class);
         register(Field.class, ASTField.class);
@@ -133,20 +145,26 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(ForLoopStatement.class, ASTForLoopStatement.class);
         register(IfBlockStatement.class, ASTIfBlockStatement.class);
         register(IfElseBlockStatement.class, ASTIfElseBlockStatement.class);
+        register(IllegalStoreExpression.class, ASTIllegalStoreExpression.class);
         register(InstanceOfExpression.class, ASTInstanceOfExpression.class);
         register(JavaMethodCallExpression.class, ASTJavaMethodCallExpression.class);
         register(JavaVariableExpression.class, ASTJavaVariableExpression.class);
         register(LiteralExpression.class, ASTLiteralExpression.class);
         register(MapEntryNode.class, ASTMapEntryNode.class);
         register(Method.class, ASTMethod.class);
+        register(MethodBlockStatement.class, ASTMethodBlockStatement.class);
         register(MethodCallExpression.class, ASTMethodCallExpression.class);
+        register(Modifier.class, ASTModifier.class);
         register(ModifierNode.class, ASTModifierNode.class);
         register(ModifierOrAnnotation.class, ASTModifierOrAnnotation.class);
+        register(MultiStatement.class, ASTMultiStatement.class);
+        register(NestedExpression.class, ASTNestedExpression.class);
+        register(NestedStoreExpression.class, ASTNestedStoreExpression.class);
+        register(NewKeyValueObjectExpression.class, ASTNewKeyValueObjectExpression.class);
         register(NewListInitExpression.class, ASTNewListInitExpression.class);
         register(NewListLiteralExpression.class, ASTNewListLiteralExpression.class);
         register(NewMapInitExpression.class, ASTNewMapInitExpression.class);
         register(NewMapLiteralExpression.class, ASTNewMapLiteralExpression.class);
-        register(NewNameValueObjectExpression.class, ASTNewNameValueObjectExpression.class);
         register(NewObjectExpression.class, ASTNewObjectExpression.class);
         register(NewSetInitExpression.class, ASTNewSetInitExpression.class);
         register(NewSetLiteralExpression.class, ASTNewSetLiteralExpression.class);
@@ -162,28 +180,28 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(SoslExpression.class, ASTSoslExpression.class);
         register(StandardCondition.class, ASTStandardCondition.class);
         register(Statement.class, ASTStatement.class);
+        register(StatementExecuted.class, ASTStatementExecuted.class);
         register(SuperMethodCallExpression.class, ASTSuperMethodCallExpression.class);
         register(SuperVariableExpression.class, ASTSuperVariableExpression.class);
         register(TernaryExpression.class, ASTTernaryExpression.class);
-        register(TestNode.class, ASTTestNode.class);
         register(ThisMethodCallExpression.class, ASTThisMethodCallExpression.class);
         register(ThisVariableExpression.class, ASTThisVariableExpression.class);
         register(ThrowStatement.class, ASTThrowStatement.class);
         register(TriggerVariableExpression.class, ASTTriggerVariableExpression.class);
         register(TryCatchFinallyBlockStatement.class, ASTTryCatchFinallyBlockStatement.class);
         register(UserClass.class, ASTUserClass.class);
-        register(UserTrigger.class, ASTUserTrigger.class);
         register(UserClassMethods.class, ASTUserClassMethods.class);
-        register(UserEnum.class, ASTUserEnum.class);
         register(UserExceptionMethods.class, ASTUserExceptionMethods.class);
+        register(UserEnum.class, ASTUserEnum.class);
         register(UserInterface.class, ASTUserInterface.class);
+        register(UserTrigger.class, ASTUserTrigger.class);
         register(VariableDeclaration.class, ASTVariableDeclaration.class);
         register(VariableDeclarationStatements.class, ASTVariableDeclarationStatements.class);
         register(VariableExpression.class, ASTVariableExpression.class);
         register(WhileLoopStatement.class, ASTWhileLoopStatement.class);
     }
 
-    private static <T extends AstNode> void register(Class<T> nodeType, Class<? extends ApexNode<T>> nodeAdapterType) {
+    private static <T extends AstNode> void register(Class<T> nodeType, Class<? extends AbstractApexNode<T>> nodeAdapterType) {
         try {
             NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getConstructor(nodeType));
         } catch (SecurityException e) {
@@ -199,20 +217,22 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     // The Apex nodes with children to build.
     private Stack<AstNode> parents = new Stack<>();
 
-    private SourceCodePositioner sourceCodePositioner;
+    private final SourceCodePositioner sourceCodePositioner;
+    private final String sourceCode;
 
     public ApexTreeBuilder(String sourceCode) {
+        this.sourceCode = sourceCode;
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
     }
 
-    AdditionalPassScope scope = new AdditionalPassScope(new Errors());
+    AdditionalPassScope scope = new AdditionalPassScope(Errors.createErrors());
 
-    static <T extends AstNode> ApexNode<T> createNodeAdapter(T node) {
+    static <T extends AstNode> AbstractApexNode<T> createNodeAdapter(T node) {
         try {
             @SuppressWarnings("unchecked")
             // the register function makes sure only ApexNode<T> can be added,
             // where T is "T extends AstNode".
-            Constructor<? extends ApexNode<T>> constructor = (Constructor<? extends ApexNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE
+            Constructor<? extends AbstractApexNode<T>> constructor = (Constructor<? extends AbstractApexNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE
                     .get(node.getClass());
             if (constructor == null) {
                 throw new IllegalArgumentException(
@@ -230,8 +250,9 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     public <T extends AstNode> ApexNode<T> build(T astNode) {
         // Create a Node
-        ApexNode<T> node = createNodeAdapter(astNode);
-        calculateLineNumbers(node);
+        AbstractApexNode<T> node = createNodeAdapter(astNode);
+        node.calculateLineNumbers(sourceCodePositioner);
+        node.handleSourceCode(sourceCode);
 
         // Append to parent
         Node parent = nodes.isEmpty() ? null : nodes.peek();
@@ -248,11 +269,6 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         parents.pop();
 
         return node;
-    }
-
-    private void calculateLineNumbers(ApexNode<?> node) {
-        AbstractApexNode<?> apexNode = (AbstractApexNode<?>) node;
-        apexNode.calculateLineNumbers(sourceCodePositioner);
     }
 
     private boolean visit(AstNode node) {
@@ -370,11 +386,6 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     @Override
-    public boolean visit(NewNameValueObjectExpression node, AdditionalPassScope scope) {
-        return visit(node);
-    }
-
-    @Override
     public boolean visit(PackageVersionExpression node, AdditionalPassScope scope) {
         return visit(node);
     }
@@ -401,11 +412,6 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     @Override
     public boolean visit(TriggerVariableExpression node, AdditionalPassScope scope) {
-        return visit(node);
-    }
-
-    @Override
-    public boolean visit(DottedExpression node, AdditionalPassScope scope) {
         return visit(node);
     }
 
@@ -636,6 +642,21 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     @Override
     public boolean visit(Method node, AdditionalPassScope scope) {
+        return visit(node);
+    }
+
+    @Override
+    public boolean visit(AnonymousClass node, AdditionalPassScope scope) {
+        return visit(node);
+    }
+
+    @Override
+    public boolean visit(CastExpression node, AdditionalPassScope scope) {
+        return visit(node);
+    }
+
+    @Override
+    public boolean visit(NewKeyValueObjectExpression node, AdditionalPassScope scope) {
         return visit(node);
     }
 }

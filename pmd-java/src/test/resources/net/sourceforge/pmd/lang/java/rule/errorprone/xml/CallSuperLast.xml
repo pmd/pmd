@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+  <test-code>
+    <description><![CDATA[
+Success
+    ]]></description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class MyActivity extends Activity {
+  @Override
+  protected void onPause() {
+    foo();
+    super.onPause();
+  }
+}
+    ]]></code>
+  </test-code>
+  <test-code>
+    <description><![CDATA[
+Failure
+    ]]></description>
+    <expected-problems>1</expected-problems>
+    <code><![CDATA[
+public class MyActivity extends Activity {
+  @Override
+  protected void onPause() {
+    foo();
+  }
+}
+    ]]></code>
+  </test-code>
+  <test-code>
+    <description>#1154 Call super onPause when there is no super</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class NotAnActivity {
+    Activity a = myActivity;
+    protected void onPause() {
+        doSomething();
+    }
+}
+    ]]></code>
+  </test-code>
+</test-data>

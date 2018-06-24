@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+ <test-code>
+  <description><![CDATA[
+basic failure case
+     ]]></description>
+  <expected-problems>1</expected-problems>
+  <code><![CDATA[
+public class Foo {
+  void bar() {
+   try {
+   } catch (SomeException se) {
+     se.getMessage();
+   }
+  }
+}
+     ]]></code>
+ </test-code>
+ <test-code>
+  <description><![CDATA[
+fetch the value returned by getMessage(), ok
+     ]]></description>
+  <expected-problems>0</expected-problems>
+  <code><![CDATA[
+public class Foo {
+  void bar() {
+   try {
+   } catch (SomeException se) {
+     String msg = se.getMessage();
+   }
+  }
+}
+     ]]></code>
+ </test-code>
+ <test-code>
+  <description><![CDATA[
+fetch the value returned by getCause(), ok
+     ]]></description>
+  <expected-problems>0</expected-problems>
+  <code><![CDATA[
+public class Foo {
+  void bar() {
+   try {
+   } catch (SomeException se) {
+     Throwable t = se.getCause();
+   }
+  }
+}
+     ]]></code>
+ </test-code>
+ <test-code>
+  <description><![CDATA[
+a mix of guilty calls to getMessage(), getLocalizedMessage(), getCause() or getStackTrace(), failure
+     ]]></description>
+  <expected-problems>2</expected-problems>
+  <code><![CDATA[
+  public class Foo {
+   void bar() {
+    try {
+    // do something
+    }  catch (SomeException se) {
+       se.printStackTrace();
+      System.out.println("boo");
+      long l = 1L + 4L;
+      se.getMessage();
+      int a = 1;
+     se.getMessage();
+    }
+   }
+  }
+     ]]></code>
+ </test-code>
+ <test-code>
+  <description><![CDATA[
+a larger mix of guilty calls to getMessage(), getLocalizedMessage(), getCause(), getStackTrace() or toString(), failure
+     ]]></description>
+  <expected-problems>5</expected-problems>
+  <code><![CDATA[
+  public class Foo {
+   void bar() {
+    try {
+    // do something
+    }  catch (SomeException se) {
+       se.printStackTrace();
+      System.out.println("boo");
+      int i = 1;
+      se.getLocalizedMessage();
+      long l = 1L + 4L;
+      se.getMessage();
+      int a = 1;
+      se.toString();
+     se.getMessage();
+     System.out.println("far");
+     se.getStackTrace();
+    }
+   }
+  }
+     ]]></code>
+ </test-code> 
+</test-data>

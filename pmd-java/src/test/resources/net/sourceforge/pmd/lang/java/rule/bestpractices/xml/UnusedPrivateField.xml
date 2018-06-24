@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+simple unused private field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+private String foo;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private field referenced in another field's initializer
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private String foo;
+ private String bar = foo;
+ void buz() {
+  bar = bar + 1;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private field with field of same name in anonymous inner class
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private String foo;
+ void baz() {
+  Runnable r = new Runnable() {
+   public void run() {
+    String foo = "buz";
+   }
+  };   
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+field is used semantically before it's declared syntactically
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  foo[0] = foo[0] + 1;
+ }
+ private int[] foo;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private field referenced via 'this' modifier
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private String foo;
+ void bar() {   
+  bar = this.foo;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private referenced by anonymous inner class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private static final String FOO = "foo";
+  public Runnable bar() {      
+   return new Runnable() {
+    public void run() {
+     FOO.toString();
+    }
+   };
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+interface sanity test
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public static final String FOO = "FOO"; 
+ public boolean equals(Object another);
+ public int hashCode();
+ public String toString();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+unused private field in static inner class
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static class Services {
+  private String x;    
+ }
+}
+
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private field referenced in nonstatic inner class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ private class Bar {
+  void baz() {
+   x = x + 2;
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+unused private static field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private static String foo;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private static final referenced with qualifier
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private static final int BAR = 2;
+ int x = Foo.BAR;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+unused private field after class decl
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public class Foo {}
+ private int x;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+two unused private fields in separate inner classes
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public class Foo {private int x;}
+ public class Bar {private int x;}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+method param shadows unused private field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int value;
+ int doSomething(int value) { 
+  return value + 1; 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private field referenced via 'this' not shadowed by param of same name
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x; 
+ public Foo(int x) {
+  this.x= this.x + 1;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+don't catch public fields
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static final int FOO = 1;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+instantiate self and reference private field on other object
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ void foo() {
+  Foo foo = new Foo();  
+  foo.x = foo.x + 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+don't count Serialization fields as being unused
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private static final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField("foo", String.class)};
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+an assignment does not a usage make
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ void bar() {
+  x = 4;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment to field member is a usage
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Foo x = new Foo();
+ void bar() {
+  x.y = 42;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment to field member using this modifier is a usage
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Foo x = new Foo();
+ void bar() {
+  this.x.y = 42;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+this.foo++ shouldn't throw an NPE, but isn't a usage
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ void bar() {
+  this.x++;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+super.foo++ shouldn't throw an NPE
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  super.x++;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+SuppressWarnings("unused") unused private field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+@SuppressWarnings("unused")
+private String foo;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+631681, private field is accessed by outer class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class XPathFunctionContext {
+
+    private class Singleton {
+        private String foo = "";
+    }
+
+    public String getFoo() {
+        return (new Singleton()).foo;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+631681, private field in singleton is accessed by outer class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class XPathFunctionContext {
+
+    private static class Singleton {
+        private static XPathFunctionContext instance = new XPathFunctionContext();
+    }
+
+    public static XPathFunctionContext getInstance() {
+        return Singleton.instance;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1188 False positive in UnusedPrivateField</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum Operation
+{
+    LEFT( Action.PRIVATE_MOVE ), RIGHT( Action.PRIVATE_MOVE ), STOP( Action.PRIVATE_STAY );
+
+    private final int action;
+
+    private Operation(final int action)
+    {
+        this.action = action;
+    }
+
+    public int getAction()
+    {
+        return action;
+    }
+
+    private static final class Action
+    {
+        private static final int PRIVATE_STAY = 0;
+        private static final int PRIVATE_MOVE = 1;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private field in inner class accessed as method call
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class InnerPrivateFieldCall {
+    int method() {
+        return Inner.FIELD.length();
+    }
+    static class Inner {
+        private static final String FIELD = "";
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private field in inner class accessed by another inner class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class InnerPrivateFieldInAnotherInner {
+    static class InnerUsing {
+        int method() {
+            return InnerDeclaring.INNER_FIELD;
+        }
+    }
+    static class InnerDeclaring {
+        private static int INNER_FIELD;
+    }
+}
+     ]]></code>
+     </test-code>
+     <test-code>
+        <description>#1302 False Positive: UnusedPrivateField when accessed by inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnusedPrivateFieldClass
+{
+    private int m_number; // UnusedPrivateField incorrectly errors
+
+    public void increment()
+    {
+        m_number++; // Write
+    }
+
+    public User getUser()
+    {
+        return new User(this);
+    }
+
+    public static class User
+    {
+        private UnusedPrivateFieldClass m_bugTest;
+        private int m_number;
+
+        private User(UnusedPrivateFieldClass bugTest)
+        {
+            m_bugTest = bugTest;
+            m_number = bugTest.m_number; // Read
+        }
+
+        public boolean isValid()
+        {
+            return m_bugTest.m_number == m_number;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@lombok.Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Data;
+@Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 3</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.*;
+@Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 4</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+@Getter
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 5</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+public class Foo {
+    @Getter private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 6</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+public class Foo {
+    @Getter(lazy=true) private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 7</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#907 UnusedPrivateField false-positive with @FXML - 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        import javafx.fxml.FXML;
+
+        public class NodeInfoPanelController {
+            @FXML
+            private TabPane nodeInfoTabPane;
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#907 UnusedPrivateField false-positive with @FXML - 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+            @Deprecated
+            private String bar;
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#907 UnusedPrivateField false-positive with @FXML - 3</description>
+        <rule-property name="ignoredAnnotations">javafx.fxml.FXML</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+            @Deprecated
+            private String bar;
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1428 False positive in UnusedPrivateField when local variable hides member variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class IssueUnusedPrivateField {
+
+    private static Object helper;   // PMD warns unused
+
+    @BeforeClass
+    public static void setUpClass() {
+        helper = new Object();
+    }
+
+    @Test
+    public void testSomething() {
+        String str = helper.toString();     // used here
+        System.out.println("str = " + str);
+
+        String helper = "some new string";  // hidden here
+        System.out.println("helper = " + helper);
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

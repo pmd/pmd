@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+local var
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private String baz() {
+  String bar = "howdy";
+  return bar.toString();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+parameter
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private String baz(String bar) {
+  return bar.toString();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private String baz;
+ private int getBaz() {
+  return baz.toString();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+primitive
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int baz;
+ private int getBaz() {
+  return baz;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+multiple similar params
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private String getBaz(String foo, StringBuffer buffer) {
+  return buffer.toString();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+string array
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private String getBaz() {
+  String[] foo = {"hi"};
+  return foo[0].toString();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ToString on String Array Object
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String getFoo() {
+        String foo[] = new String[0];
+        foo.toString();
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+        Should only look at toString's of Arrays
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   protected static void parse_args(String argv[]){
+     int len = argv.length;
+     int i;
+     for (i=0; i<len; i++){
+         if (argv[i].equals("-package")){
+         }
+       }
+   }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#959 StringToString False Positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static String toString(MyObject o) {
+        return "MyObject: " + o;
+    }
+
+    public static vod main(String[] args) {
+        //in your code
+        MyObject o = new MyObject(); //MyObject has no relation with String
+        System.out.println(Foo.toString(o)); //PMD violation false positive
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1397 StringToString should ignore method references</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void log(Supplier<String> msg) { }
+    public void run() {
+        String abc = "abc";
+        log(abc::toString); // fails rule
+        log(() -> abc); // passes rule
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

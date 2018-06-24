@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util.viewer.gui.menu;
 
 import java.text.MessageFormat;
-
 import javax.swing.JMenu;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -18,6 +17,7 @@ import net.sourceforge.pmd.util.viewer.util.NLS;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
+@Deprecated // to be removed with PMD 7.0.0
 public class SimpleNodeSubMenu extends JMenu {
     private ViewerModel model;
     private Node node;

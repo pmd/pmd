@@ -5,6 +5,7 @@
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -12,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.junit.Test;
@@ -76,9 +78,9 @@ public class ConfigurationTest {
     @Test
     public void testSourceEncoding() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default source encoding", System.getProperty("file.encoding"), configuration.getSourceEncoding());
-        configuration.setSourceEncoding("some_other_encoding");
-        assertEquals("Changed source encoding", "some_other_encoding", configuration.getSourceEncoding());
+        assertEquals("Default source encoding", System.getProperty("file.encoding"), configuration.getSourceEncoding().name());
+        configuration.setSourceEncoding(StandardCharsets.UTF_16LE.name());
+        assertEquals("Changed source encoding", StandardCharsets.UTF_16LE, configuration.getSourceEncoding());
     }
 
     @Test
@@ -197,5 +199,22 @@ public class ConfigurationTest {
         assertNotNull("Not null cache location produces null cache", configuration.getAnalysisCache());
         assertTrue("File cache location doesn't produce a file cache",
                 configuration.getAnalysisCache() instanceof FileAnalysisCache);
+    }
+
+
+    @Test
+    public void testIgnoreIncrementalAnalysis() throws IOException {
+        final PMDConfiguration configuration = new PMDConfiguration();
+
+        // set dummy cache location
+        final File cacheFile = File.createTempFile("pmd-", ".cache");
+        cacheFile.deleteOnExit();
+        final FileAnalysisCache analysisCache = new FileAnalysisCache(cacheFile);
+        configuration.setAnalysisCache(analysisCache);
+        assertNotNull("Null cache location accepted", configuration.getAnalysisCache());
+        assertFalse("Non null cache location, cache should not be noop", configuration.getAnalysisCache() instanceof NoopAnalysisCache);
+
+        configuration.setIgnoreIncrementalAnalysis(true);
+        assertTrue("Ignoring incremental analysis should turn the cache into a noop", configuration.getAnalysisCache() instanceof NoopAnalysisCache);
     }
 }

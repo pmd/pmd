@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <code-fragment id="basic-violation">
+    <![CDATA[
+public class Foo {
+ public void example() {
+  int x = 0;
+  int a = 0;
+  int b = 0;
+  int c = 0;
+  int d = 0;
+  int a1 = 0;
+  int a2 = 0;
+  int b1 = 0;
+  int b2 = 0;
+  int z = 0;
+  int h = 0;
+  int e = 0;
+  int f = 0;
+
+  if (a == b) {
+      if (a1 == b1) {
+   x = 2;
+      } else if (a2 == b2) {
+   x = 2;
+      } else {
+   x = 2;
+      }
+  } else if (c == d) {
+      while (c == d) {
+   x = 2;
+      }
+  } else if (e == f) {
+      for (int n = 0; n < h; n++) {
+   x = 2;
+      }
+  } else {
+      switch (z) {
+      case 1:
+   x = 2;
+   break;
+
+      case 2:
+   x = 2;
+   break;
+
+      case 3:
+   x = 2;
+   break;
+
+      default:
+   x = 2;
+   break;
+      }
+  }
+ }
+}
+     ]]>
+    </code-fragment>
+    <test-code>
+        <description>Simple method</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The class 'Foo' has a Standard Cyclomatic Complexity of 2 (Highest = 1).</message>
+            <message>The method 'foo' has a Standard Cyclomatic Complexity of 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>Simple method</description>
+        <rule-property name="reportLevel">10</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>Complicated method</description>
+        <rule-property name="reportLevel">10</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The class 'Foo' has a Standard Cyclomatic Complexity of 12 (Highest = 11).</message>
+            <message>The method 'example' has a Standard Cyclomatic Complexity of 11.</message>
+        </expected-messages>
+        <code-ref id="basic-violation"/>
+    </test-code>
+    <test-code>
+        <description>Constructor</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The class 'Foo' has a Standard Cyclomatic Complexity of 2 (Highest = 1).</message>
+            <message>The constructor 'Foo' has a Standard Cyclomatic Complexity of 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+ public Foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>Testing new parameter showClassMethods</description>
+        <rule-property name="showClassesComplexity">false</rule-property>
+        <expected-problems>1</expected-problems>
+       <code-ref id="basic-violation"/>
+    </test-code>
+    <test-code>
+        <description>Testing new parameter showMethodsMethods</description>
+        <rule-property name="showMethodsComplexity">false</rule-property>
+        <expected-problems>1</expected-problems>
+       <code-ref id="basic-violation"/>
+    </test-code>
+  <test-code>
+        <description>Testing default value of showClassMethods and showClassesComplexity</description>
+        <expected-problems>2</expected-problems>
+       <code-ref id="basic-violation"/>
+    </test-code>
+    <code-fragment id="constructor-violation"><![CDATA[
+public class Test {
+  public Test() {
+    if (a == 1) {
+      if (b == 2) {
+        System.out.println("b");
+      } else if (b == 1) {
+      }
+    } else {
+    }
+  }
+}
+    ]]></code-fragment>
+    <test-code>
+        <description>#984 Cyclomatic complexity should treat constructors like methods: 1 - showMethodsComplexity=true</description>
+        <rule-property name="showClassesComplexity">false</rule-property>
+        <rule-property name="showMethodsComplexity">true</rule-property>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="constructor-violation"/>
+    </test-code>
+    <test-code>
+        <description>#984 Cyclomatic complexity should treat constructors like methods: 2 - showMethodsComplexity=false</description>
+        <rule-property name="showClassesComplexity">false</rule-property>
+        <rule-property name="showMethodsComplexity">false</rule-property>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="constructor-violation"/>
+    </test-code>
+    <test-code reinitializeRule="true">
+        <description>#985 Suppressed methods shouldn't affect avg CyclomaticComplexity</description>
+        <rule-property name="reportLevel">2</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+  @SuppressWarnings("PMD.StdCyclomaticComplexity")
+  public Test() {
+    if (a == 1) {
+      if (b == 2) {
+        System.out.println("b");
+      } else if (b == 1) {
+      }
+    } else {
+    }
+  }
+}
+        ]]></code>
+    </test-code>
+</test-data>

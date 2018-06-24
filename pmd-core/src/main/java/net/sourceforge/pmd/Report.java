@@ -5,6 +5,9 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,13 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.dfa.report.ReportTree;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.DateTimeUtil;
 import net.sourceforge.pmd.util.EmptyIterator;
 import net.sourceforge.pmd.util.NumericConstants;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A {@link Report} collects all informations during a PMD execution. This
@@ -42,7 +46,7 @@ public class Report implements Iterable<RuleViolation> {
     private final Set<Metric> metrics = new HashSet<>();
     private final List<ThreadSafeReportListener> listeners = new ArrayList<>();
     private List<ProcessingError> errors;
-    private List<RuleConfigurationError> configErrors;
+    private List<ConfigurationError> configErrors;
     private Map<Integer, String> linesToSuppress = new HashMap<>();
     private long start;
     private long end;
@@ -99,19 +103,19 @@ public class Report implements Iterable<RuleViolation> {
     /**
      * Represents a configuration error.
      */
-    public static class RuleConfigurationError {
+    public static class ConfigurationError {
         private final Rule rule;
         private final String issue;
 
         /**
-         * Creates a new configuration error.
+         * Creates a new configuration error for a specific rule.
          *
          * @param theRule
          *            the rule which is configured wrongly
          * @param theIssue
          *            the reason, why the configuration is wrong
          */
-        public RuleConfigurationError(Rule theRule, String theIssue) {
+        public ConfigurationError(Rule theRule, String theIssue) {
             rule = theRule;
             issue = theIssue;
         }
@@ -139,28 +143,43 @@ public class Report implements Iterable<RuleViolation> {
      * Represents a processing error, such as a parse error.
      */
     public static class ProcessingError {
-        private final String msg;
+        private final Throwable error;
         private final String file;
 
         /**
          * Creates a new processing error
          *
-         * @param msg
-         *            the error message
+         * @param error
+         *            the error
          * @param file
          *            the file during which the error occurred
          */
-        public ProcessingError(String msg, String file) {
-            this.msg = msg;
+        public ProcessingError(Throwable error, String file) {
+            this.error = error;
             this.file = file;
         }
 
         public String getMsg() {
-            return msg;
+            return error.getMessage();
+        }
+        
+        public String getDetail() {
+            try (StringWriter stringWriter = new StringWriter();
+                    PrintWriter writer = new PrintWriter(stringWriter)) {
+                error.printStackTrace(writer);
+                return stringWriter.toString();
+            } catch (IOException e) {
+                // IOException on close - should never happen when using StringWriter
+                throw new RuntimeException(e);
+            }
         }
 
         public String getFile() {
             return file;
+        }
+
+        public Throwable getError() {
+            return error;
         }
     }
 
@@ -233,7 +252,7 @@ public class Report implements Iterable<RuleViolation> {
 
     private static String keyFor(RuleViolation rv) {
 
-        return StringUtil.isNotEmpty(rv.getPackageName()) ? rv.getPackageName() + '.' + rv.getClassName() : "";
+        return StringUtils.isNotBlank(rv.getPackageName()) ? rv.getPackageName() + '.' + rv.getClassName() : "";
     }
 
     /**
@@ -272,18 +291,6 @@ public class Report implements Iterable<RuleViolation> {
             summary.put(name, count + 1);
         }
         return summary;
-    }
-
-    /**
-     * Registers a report listener
-     *
-     * @param listener
-     *            the listener
-     * @deprecated Use {@link #addListener(ThreadSafeReportListener)}
-     */
-    @Deprecated
-    public void addListener(ReportListener listener) {
-        listeners.add(new SynchronizedReportListener(listener));
     }
 
     /**
@@ -347,7 +354,7 @@ public class Report implements Iterable<RuleViolation> {
      * @param error
      *            the error to add
      */
-    public void addConfigError(RuleConfigurationError error) {
+    public void addConfigError(ConfigurationError error) {
         if (configErrors == null) {
             configErrors = new ArrayList<>();
         }
@@ -380,6 +387,10 @@ public class Report implements Iterable<RuleViolation> {
         Iterator<ProcessingError> i = r.errors();
         while (i.hasNext()) {
             addError(i.next());
+        }
+        Iterator<ConfigurationError> ce = r.configErrors();
+        while (ce.hasNext()) {
+            addConfigError(ce.next());
         }
         Iterator<Metric> m = r.metrics();
         while (m.hasNext()) {
@@ -479,8 +490,8 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @return the iterator
      */
-    public Iterator<RuleConfigurationError> configErrors() {
-        return configErrors == null ? EmptyIterator.<RuleConfigurationError>instance() : configErrors.iterator();
+    public Iterator<ConfigurationError> configErrors() {
+        return configErrors == null ? EmptyIterator.<ConfigurationError>instance() : configErrors.iterator();
     }
 
     /**

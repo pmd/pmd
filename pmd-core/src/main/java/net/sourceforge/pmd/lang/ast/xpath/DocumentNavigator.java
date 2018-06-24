@@ -48,7 +48,7 @@ public class DocumentNavigator extends DefaultNavigator {
 
     @Override
     public String getElementName(Object node) {
-        return node.toString();
+        return ((Node) node).getXPathNodeName();
     }
 
     @Override
@@ -135,11 +135,7 @@ public class DocumentNavigator extends DefaultNavigator {
 
     @Override
     public Iterator<Attribute> getAttributeAxisIterator(Object arg0) {
-        if (arg0 instanceof AttributeNode) {
-            return ((AttributeNode) arg0).getAttributeIterator();
-        } else {
-            return new AttributeAxisIterator((Node) arg0);
-        }
+        return ((Node) arg0).getXPathAttributesIterator();
     }
 
     /**

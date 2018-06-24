@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+	<test-code>
+		<description>Basic scenario</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:variable name="var" select="concat('abc',concat('cd','ef'))"/>
+</xsl:stylesheet>
+     ]]></code>
+		<source-type>xsl</source-type>
+	</test-code>
+	<test-code>
+		<description>Valid use of concat()</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:variable name="var" select="concat('abc','cd','ef')"/>
+</xsl:stylesheet>
+     ]]></code>
+		<source-type>xsl</source-type>
+	</test-code>
+</test-data>

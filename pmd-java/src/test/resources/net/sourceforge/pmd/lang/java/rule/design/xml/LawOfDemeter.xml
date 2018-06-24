@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Simple method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Mixed local and foreign method calls</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    private List instanceVariableA;
+    public void example(Bar b) {
+        localMethod();
+        this.localMethod();
+        int localVariableC;
+        b.doC().doIt();
+        int localVariableD;
+    }
+    private void localMethod() {
+    }
+    private int instanceVariableB;
+}
+]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>Simple Method calls without chaining</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example(Bar b) {
+        C c = b.getC();
+        c.doIt();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Simple Method calls with chaining</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example(Bar b) {
+        b.getC().doIt();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Simple Method calls with local created object</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example() {
+        C c = new C();
+        c.doIt();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Simple Method calls with local created object and other variable assignment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example() {
+        String something;
+        C c = new C();
+        c.doIt();
+        something = "no worries";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Simple Method calls with local created object and variables</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example() {
+        int data = 5;
+        C c = new C();
+        c.doIt(data);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Simple Method call on local created object within nesting local scopes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example(int c) {
+        List<Integer> result = new ArrayList<Integer>();
+        if (c > 0) {
+            for (int i = 0; i < c; i++) {
+                result.add(i);
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Example documentation</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    /**
+     * This example will result in two violation.
+     */
+    public void example(Bar b) {
+        // this method call is ok, as b is a parameter of "example"
+        C c = b.getC();
+
+        // this method call is a violation, as we are using c, which we got from B.
+        // We should ask b directly instead, e.g. "b.doItOnC();"
+        c.doIt();
+
+        // this is also a violation, just differently expressed as a method chain without temporary variables.
+        b.getC().doIt();
+
+        // that's a constructor call, not a method call.
+        D d = new D();
+        // this method call is ok, because we have create the new instance of D locally.
+        d.doSomethingElse();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static methods</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class B {
+    public static A a = new A();
+}
+
+public class A {
+    public static void doStatic() {
+    }
+}
+
+public class Foo {
+    public void example() {
+        A.doStatic(); // direct static - allowed
+        B.a.doStatic(); // static chain - violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Exclude iterator and list elements</description>
+        <expected-problems>0</expected-problems>
+        <code>
+public class Foo {
+    public void example() {
+        List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+        list.add("Tata");
+        Iterator&lt;String&gt; it = list.iterator();
+        while (it.hasNext()) {
+                String s = it.next();
+                System.out.println(s);
+        }
+        if (list != null &amp;&amp; !list.isEmpty()) {
+            for (String s : list) {
+                if (!s.isEmpty()) {
+                    System.out.println(s);
+                }
+            }
+        }
+
+        List&lt;String&gt; anotherList = calcList();
+        for (String s : anotherList) {
+            if (!s.isEmpty()) {
+                System.out.println(s);
+            }
+        }
+    }
+}
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>#999 false positives</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    //Thats no Violation in PMD:
+    public boolean compare1(final String aString) {
+        return aString.equals("S");
+    }
+
+    //Thats a Violation in PMD:
+    public boolean compare2(final String aString) {
+        return "A".equals(aString);              // < - - false positive
+    }
+
+    // no violation, because the object is not used
+    public Object create() {
+        Object o = myFactory.create();
+        return o;
+    }
+
+    // no violation, should be an exception, as the builder pattern is used here
+    public void toString() {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("string").append("string").append("string");
+        return buffer.toString();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#999 false negatives</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    // violation, because object is used
+    public Object create2() {
+        Object o = myObjectCreator.create();
+        o.setName("my name");                    // < - - !!!
+        return o;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1245 False Positive for Law of Demeter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void bar() {
+        // Create a Connection
+        final Connection connection = connectionFactory.createConnection();
+        connection.start();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1427 False Positive for Law of Demeter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void bar() {
+        // Builder pattern
+        final Builder builder = Builder.newBuilder();
+        builder.withFoo();
+        final FooBuilder fooBuilder = FooBuilder.newBuilder();
+        fooBuilder.withBar();
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

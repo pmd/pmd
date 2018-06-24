@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+bad, 012
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  int x = 012;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK, hex value
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  int x = 0xCAFE;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK, long value
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  long x = 0L;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK, double value
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  double d = 0.1;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK, double value
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  float f = 0f;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad, 012L
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  long x = 012L;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK, 06 if strict is not set
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  int x = 06;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+BAD, 06 if strict is set
+     ]]></description>
+        <rule-property name="strict">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  int x = 06;
+}
+     ]]></code>
+    </test-code>
+</test-data>

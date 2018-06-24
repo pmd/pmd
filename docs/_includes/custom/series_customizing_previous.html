@@ -1,0 +1,10 @@
+<p>{% assign series_pages = site.tags.series_customizing %}
+    {% for p in pages %}
+    {% if p.series == "Customizing PMD" %}
+    {% assign prevTopic = page.weight | minus: "1"  %}
+    {% if p.weight == prevTopic  %}
+    <a href="{{p.url | remove: "/"}}"><button type="button" class="btn btn-primary">Previous: {{p.weight}}  {{p.short_title}}</button></a>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+</p>

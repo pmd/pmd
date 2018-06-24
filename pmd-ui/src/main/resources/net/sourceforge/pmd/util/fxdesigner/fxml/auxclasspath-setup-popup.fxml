@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="300.0"
+            prefWidth="400.0"
+            xmlns="http://javafx.com/javafx/10.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="net.sourceforge.pmd.util.fxdesigner.popups.AuxclasspathSetupController">
+    <children>
+        <ToolBar layoutX="320.3999938964844"
+                 layoutY="10.399999618530273"
+                 maxWidth="40.0"
+                 minWidth="40.0"
+                 orientation="VERTICAL"
+                 prefWidth="40.0"
+                 AnchorPane.bottomAnchor="30.0"
+                 AnchorPane.rightAnchor="0.0"
+                 AnchorPane.topAnchor="0.0">
+            <items>
+                <Button fx:id="selectFilesButton"
+                        defaultButton="true"
+                        minWidth="-Infinity"
+                        mnemonicParsing="false"
+                        styleClass="icon-button"
+                        textAlignment="CENTER">
+                    <graphic>
+                        <FontIcon iconLiteral="fa-plus"/>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Add new jars"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="removeFileButton"
+                        minWidth="-Infinity"
+                        mnemonicParsing="false"
+                        styleClass="icon-button"
+                        textAlignment="CENTER">
+                    <graphic>
+                        <FontIcon iconLiteral="fa-minus"/>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Remove item"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="moveItemUpButton" minWidth="-Infinity" mnemonicParsing="false" styleClass="icon-button">
+                    <graphic>
+                        <FontIcon iconLiteral="fa-arrow-up"/>
+                    </graphic>
+                </Button>
+                <Button fx:id="moveItemDownButton" minWidth="-Infinity" mnemonicParsing="false" styleClass="icon-button">
+                    <graphic>
+                        <FontIcon iconLiteral="fa-arrow-down"/>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Move item down"/>
+                    </tooltip>
+                </Button>
+            </items>
+            <tooltip>
+                <Tooltip text="Move item up"/>
+            </tooltip>
+        </ToolBar>
+        <ListView fx:id="fileListView"
+                  layoutX="10.399999618530273"
+                  layoutY="10.399999618530273"
+                  AnchorPane.bottomAnchor="30.0"
+                  AnchorPane.leftAnchor="0.0"
+                  AnchorPane.rightAnchor="40.0"
+                  AnchorPane.topAnchor="0.0"/>
+        <HBox layoutX="14.399999618530273"
+              layoutY="248.60000610351562"
+              spacing="10.0"
+              AnchorPane.bottomAnchor="0.0"
+              AnchorPane.rightAnchor="0.0">
+            <children>
+
+                <Button fx:id="cancelButton"
+                        cancelButton="true"
+                        minWidth="-Infinity"
+                        mnemonicParsing="false"
+                        text="Cancel"
+                        textAlignment="CENTER"/>
+                <Button fx:id="setClassPathButton" minWidth="-Infinity" mnemonicParsing="false" text="OK" textAlignment="CENTER"/>
+            </children>
+        </HBox>
+    </children>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+    </padding>
+</AnchorPane>

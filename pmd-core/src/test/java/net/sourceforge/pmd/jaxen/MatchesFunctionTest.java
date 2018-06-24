@@ -38,6 +38,12 @@ public class MatchesFunctionTest {
         public String getClassName() {
             return className;
         }
+
+
+        @Override
+        public String getXPathNodeName() {
+            return "MyNode";
+        }
     }
 
     @Test

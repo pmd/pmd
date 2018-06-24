@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <code-fragment id="ok"><![CDATA[
+public class Foo {
+ // These are all okay
+ public void foo(boolean b) {
+  for (int i = 0; i < 10;) {
+   if (b) {
+    return true;
+   }
+  }
+  for (int i = 0; i < 10;) {
+   if (b) {
+    break;
+   }
+  }
+  for (int i = 0; i < 10;) {
+   if (b) {
+    continue;
+   }
+  }
+  while (true) {
+   if (b) {
+    return true;
+   }
+  }
+  while (true) {
+   if (b) {
+    break;
+   }
+  }
+  while (true)  {
+   if (b) {
+    continue;
+   }
+  }
+  do {
+   if (b) {
+    return true;
+   }
+  } while (true);
+  do {
+   if (b) {
+    break;
+   }
+  } while (true);
+  do {
+   if (b) {
+    continue;
+   }
+  } while (true);
+ }
+}
+]]></code-fragment>
+    <code-fragment id="violations"><![CDATA[
+public class Foo {
+ // These are all bad
+ public void bar() {
+  for (int i = 0; i < 10;) {
+   return true;
+  }
+  for (int i = 0; i < 10;) {
+   break;
+  }
+  for (int i = 0; i < 10;) {
+    continue;
+  }
+  while (true) {
+   return true;
+  }
+  while (true) {
+   break;
+  }
+  while (true)  {
+    continue;
+  }
+  do {
+    return true;
+  } while (true);
+  do {
+    break;
+  } while (true);
+  do {
+   continue;
+  } while (true);
+ } 
+}
+]]></code-fragment>
+    <test-code>
+        <description>ok: no violations</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="ok"/>
+    </test-code>
+    <test-code>
+        <description>violations: break:for/do/while, continue:for/do/while and return:for/do/while</description>
+        <expected-problems>9</expected-problems>
+        <code-ref id="violations"/>
+    </test-code>
+    <test-code>
+        <description>violations: break:for/do/while</description>
+		<rule-property name="checkBreakLoopTypes">for|do|while</rule-property>
+		<rule-property name="checkContinueLoopTypes"></rule-property>
+		<rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>3</expected-problems>
+        <code-ref id="violations"/>
+    </test-code>
+    <test-code>
+        <description>violations: continue:for/do/while</description>
+		<rule-property name="checkBreakLoopTypes"></rule-property>
+		<rule-property name="checkContinueLoopTypes">for|do|while</rule-property>
+		<rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>3</expected-problems>
+        <code-ref id="violations"/>
+    </test-code>
+    <test-code>
+        <description>violations: return:for/do/while</description>
+		<rule-property name="checkBreakLoopTypes"></rule-property>
+		<rule-property name="checkContinueLoopTypes"></rule-property>
+		<rule-property name="checkReturnLoopTypes">for|do|while</rule-property>
+        <expected-problems>3</expected-problems>
+        <code-ref id="violations"/>
+    </test-code>
+    <test-code>
+        <description>violations: break:for</description>
+		<rule-property name="checkBreakLoopTypes">for</rule-property>
+		<rule-property name="checkContinueLoopTypes"></rule-property>
+		<rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="violations"/>
+    </test-code>
+    <test-code>
+        <description>violations: break:do</description>
+		<rule-property name="checkBreakLoopTypes">do</rule-property>
+		<rule-property name="checkContinueLoopTypes"></rule-property>
+		<rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="violations"/>
+    </test-code>
+    <test-code>
+        <description>violations: break:while</description>
+		<rule-property name="checkBreakLoopTypes">while</rule-property>
+		<rule-property name="checkContinueLoopTypes"></rule-property>
+		<rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="violations"/>
+    </test-code>
+    <test-code>
+        <description>violations: continue:for</description>
+		<rule-property name="checkBreakLoopTypes"></rule-property>
+		<rule-property name="checkContinueLoopTypes">for</rule-property>
+		<rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="violations"/>
+    </test-code>
+    <test-code>
+        <description>violations: continue:do</description>
+		<rule-property name="checkBreakLoopTypes"></rule-property>
+		<rule-property name="checkContinueLoopTypes">do</rule-property>
+		<rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="violations"/>
+    </test-code>
+    <test-code>
+        <description>violations: continue:while</description>
+		<rule-property name="checkBreakLoopTypes"></rule-property>
+		<rule-property name="checkContinueLoopTypes">while</rule-property>
+		<rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="violations"/>
+    </test-code>
+    <test-code>
+        <description>violations: return:for</description>
+		<rule-property name="checkBreakLoopTypes"></rule-property>
+		<rule-property name="checkContinueLoopTypes"></rule-property>
+		<rule-property name="checkReturnLoopTypes">for</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="violations"/>
+    </test-code>
+    <test-code>
+        <description>violations: return:do</description>
+		<rule-property name="checkBreakLoopTypes"></rule-property>
+		<rule-property name="checkContinueLoopTypes"></rule-property>
+		<rule-property name="checkReturnLoopTypes">do</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="violations"/>
+    </test-code>
+    <test-code>
+        <description>violations: return:while</description>
+		<rule-property name="checkBreakLoopTypes"></rule-property>
+		<rule-property name="checkContinueLoopTypes"></rule-property>
+		<rule-property name="checkReturnLoopTypes">while</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="violations"/>
+    </test-code>
+
+    <test-code>
+        <description>#1170 false positive with switch in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  public void bar() {
+    for (int i=0; i<str.length(); i++)
+        switch(str.charAt(i)) {
+            case 'a':
+                do_a();
+                break;
+            case 'b':
+                do_b();
+                break;
+            case 'c':
+                do_c();
+                break;
+        }
+  }
+}
+        ]]></code>
+    </test-code>
+</test-data>

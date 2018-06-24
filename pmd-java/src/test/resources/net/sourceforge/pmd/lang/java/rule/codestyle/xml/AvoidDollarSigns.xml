@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+class Fo$o
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class F$oo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+variable fo$oo
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ int fo$o;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+method foo$oo
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void fo$o() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+interface fo$oo
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo$oo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {}
+ int buz;
+}
+public interface Baz {} 
+     ]]></code>
+    </test-code>
+</test-data>

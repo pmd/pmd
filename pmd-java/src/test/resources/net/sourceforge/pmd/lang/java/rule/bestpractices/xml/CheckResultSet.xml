@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>
+        	<![CDATA[
+				The result set is appropriately tested before using it, no violation.
+     		]]>
+     	</description>
+        <expected-problems>0</expected-problems>
+        <code>
+        	<![CDATA[
+				public class ResultSetTesting
+				{
+				    public String goodBehavior() throws SQLException
+				    {
+				        String firsString = "";
+				        Statement stat = (Statement) conn.createStatement();
+				        ResultSet rst = stat.executeQuery("SELECT name FROM person");
+
+				        if (rst.next())
+				        {
+				            firsString = rst.getString(1);
+				        }
+				        else
+				        {
+				            // deal properly with the problem..
+				        }
+				        return firsString;
+				    }
+				}
+     		]]>
+ 		</code>
+    </test-code>
+    <test-code>
+        <description>
+        	<![CDATA[
+				This most common violation case, not testing is done before a call to 'last()'.
+     		]]>
+     	</description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+				public class ResultSetTesting
+				{
+					public void executeSql(Statement statement, String query) throws SQLException
+				    {
+				        ResultSet rs = statement.executeQuery(query);
+				        String object = rs.getString(1);
+				        rs.last();
+				        object.hashCode();
+				    }
+				}
+     		]]>
+ 		</code>
+    </test-code>
+        <test-code>
+        <description>
+        	<![CDATA[
+				This most common violation case, not testing is done before a call to 'first()'.
+     		]]>
+     	</description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+				public class ResultSetTesting
+				{
+					public void executeSql(Statement statement, String query) throws SQLException
+				    {
+				        ResultSet rs = statement.executeQuery(query);
+				        String object = rs.getString(1);
+				        rs.first();
+				        object.hashCode();
+				    }
+				}
+     		]]>
+ 		</code>
+    </test-code>
+        <test-code>
+        <description>
+        	<![CDATA[
+				Using a 'while' instead of 'if' shouldn't result in a violation.
+     		]]>
+     	</description>
+        <expected-problems>0</expected-problems>
+        <code>
+        	<![CDATA[
+				public class ResultSetTesting
+				{
+					public void executeSql(Statement statement, String query) throws SQLException
+				    {
+				        ResultSet rst = stat.executeQuery("SELECT name FROM person");
+        // stupid while loop to have an unrelated while
+        while (_count > 0) {
+            _count--;
+        }
+				        while (rst.next())
+				        {
+				            firsString = rst.getString(1);
+				        }
+				    }
+				}
+     		]]>
+ 		</code>
+    </test-code>
+
+    <test-code>
+        <description>#942 CheckResultSet False Positive</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public int countReadOnlyForwardOnlyJDBC() throws SQLException, ClassNotFoundException {
+        int _count = 0;
+
+        if (conn == null) {
+            conn = getConnection();
+            if (conn == null) {
+                return null;
+            }
+        }
+
+        if (stmt == null) {
+            stmt = conn.createStatement(
+                ResultSet.TYPE_FORWARD_ONLY, 
+                ResultSet.CONCUR_READ_ONLY);
+        }
+
+        ResultSet _rs = stmt.executeQuery(QueryString);
+
+        while (_rs.next() != false) {
+            _count++;
+        }   
+
+        return _count;
+    }
+    
+
+    public int countReadOnlyForwardOnlyJDBC2() throws SQLException, ClassNotFoundException {
+        int _count = 0;
+
+        if (conn == null) {
+            conn = getConnection();
+            if (conn == null) {
+                return null;
+            }
+        }
+
+        if (stmt == null) {
+            stmt = conn.createStatement(
+                ResultSet.TYPE_FORWARD_ONLY, 
+                ResultSet.CONCUR_READ_ONLY);
+        }
+
+        ResultSet _rs = stmt.executeQuery(QueryString);
+        _rs.next();  // This line should throw a PMD violation.  < - - - violation here
+        while (_rs.next() != false) {
+            _count++;
+        }   
+
+        return _count;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1135 CheckResultSet ignores results set declared outside of try/catch (good case)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  public void bar() {
+    try {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ps = getCurrentSession().connection().prepareStatement(query);
+        ps.setInt(1, fiscalYear);
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            result = rs.getInt("value");
+        }
+    } catch (SQLException se) {
+        throw new DataAccessException(se);
+    }
+    return result;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1135 CheckResultSet ignores results set declared outside of try/catch</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.sql.ResultSet;
+
+public class Foo {
+  public void bar() {
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+        ps = getCurrentSession().connection().prepareStatement(query);
+        ps.setInt(1, fiscalYear);
+        rs = ps.executeQuery();
+        rs.next(); //this should be a PMD warning, but it is not
+        result = rs.getInt("value");
+    } catch (SQLException se) {
+        throw new DataAccessException(se);
+    } finally {
+        //call method to close the ResultSet and PreparedStatment
+    }
+    return result;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1135 CheckResultSet ignores results set declared outside of try/catch - prevent false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.special.ResultSet;
+
+public class Foo {
+  public void bar() {
+    ResultSet rs = doExecuteQuery();
+    rs.next(); // no warning here because it's not a java.sql.ResultSet
+    result = rs.getInt("baz");
+  }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1199 PMD CheckResultSet gives false positive in a do/while loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.ResultSet;
+public class Foo {
+    public void bar() {
+        ResultSet results = null;
+        String answer;
+        List<String> stringList =  new ArrayList<String>();
+
+        //check the result set.  Yes, this moves the cursor to the first position
+        if (results.first()) {
+            //do a little logic
+            do {
+                //this is handeling paging
+                if (results.getInt("RowNum") >= firstEntry && results.getInt("RowNum") <= lastEntry) {
+                    answer  = results.getString("answer");
+                    stringList.add(answer);
+                } else {
+                    results.last();
+                }
+            } while(results.next());  //advance the cursor to the next position
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1273 CheckResultSet false positive in try-with-resources nested in if</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
+import java.sql.Connection;
+
+public class Foo {
+    public boolean bar(Connection con) {
+        boolean result;
+        if (checkIsCached()) {
+            result = true;
+        } else {
+            try (PreparedStatement stmt = con.prepareStatement("select * from foo where a = ?1 and b = ?2")) {
+                stmt.setString(1, "a");
+                stmt.setLong(2, 1L);
+                try (ResultSet queryResults = stmt.executeQuery()) { // HERE -> Violation
+                    if (queryResults.next()) {
+                        result = true;
+                    } else {
+                        result = false;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1263 PMD reports CheckResultSet violation in completely unrelated source files.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.ResultSet;
+
+public class Foo {
+    public void firstMethod() {
+        ResultSet results = stmt.executeQuery();
+        if (results.next()) {
+            // do something
+        }
+    }
+
+    public void secondMethod() {
+        MyIterator results = getMyResultsIterator();
+        results.next();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Allow the result of ResultSet navigation methods to be returned</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.ResultSet;
+
+public class Foo {
+    public boolean bar() {
+        ResultSet results = stmt.executeQuery();
+        return results.next();
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

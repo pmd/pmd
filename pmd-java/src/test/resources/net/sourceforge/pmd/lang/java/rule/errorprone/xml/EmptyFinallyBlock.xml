@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+empty try/catch/finally
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class EmptyFinallyBlock1 {
+    public void foo() {
+       try {
+       } catch (Exception e) {} finally {}
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+try/finally, no catch
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class EmptyFinallyBlock2 {
+    public void foo() {
+       try {
+       } finally {}
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+finally block with contents
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class EmptyFinallyBlock3 {
+    public void foo() {
+       try {
+       } finally {int x =2;}
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+multiple catch blocks with finally
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class EmptyFinallyBlock4 {
+ public void foo() {
+  try {
+  } catch (IOException e ){
+  } catch (Exception e ) {
+  } catch (Throwable t ) {
+  } finally{
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

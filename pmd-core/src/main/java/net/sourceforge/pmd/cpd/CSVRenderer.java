@@ -4,16 +4,20 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 
-public class CSVRenderer implements Renderer {
+public class CSVRenderer implements Renderer, CPDRenderer {
 
-    private char separator;
-    private boolean lineCountPerFile;
+    private final char separator;
+    private final boolean lineCountPerFile;
 
     public static final char DEFAULT_SEPARATOR = ',';
     public static final boolean DEFAULT_LINECOUNTPERFILE = false;
@@ -37,34 +41,44 @@ public class CSVRenderer implements Renderer {
 
     @Override
     public String render(Iterator<Match> matches) {
-        StringBuilder csv = new StringBuilder(1000);
-
-        if (!lineCountPerFile) {
-            csv.append("lines").append(separator);
+        StringWriter writer = new StringWriter(1000);
+        try {
+            render(matches, writer);
+        } catch (IOException ignored) {
+            // Not really possible with a StringWriter
         }
-        csv.append("tokens").append(separator).append("occurrences").append(PMD.EOL);
+        return writer.toString();
+    }
+
+    @Override
+    public void render(Iterator<Match> matches, Writer writer) throws IOException {
+        if (!lineCountPerFile) {
+            writer.append("lines").append(separator);
+        }
+        writer.append("tokens").append(separator).append("occurrences").append(PMD.EOL);
 
         while (matches.hasNext()) {
             Match match = matches.next();
 
             if (!lineCountPerFile) {
-                csv.append(match.getLineCount()).append(separator);
+                writer.append(String.valueOf(match.getLineCount())).append(separator);
             }
-            csv.append(match.getTokenCount()).append(separator).append(match.getMarkCount()).append(separator);
+            writer.append(String.valueOf(match.getTokenCount())).append(separator)
+                .append(String.valueOf(match.getMarkCount())).append(separator);
             for (Iterator<Mark> marks = match.iterator(); marks.hasNext();) {
                 Mark mark = marks.next();
 
-                csv.append(mark.getBeginLine()).append(separator);
+                writer.append(String.valueOf(mark.getBeginLine())).append(separator);
                 if (lineCountPerFile) {
-                    csv.append(mark.getLineCount()).append(separator);
+                    writer.append(String.valueOf(mark.getLineCount())).append(separator);
                 }
-                csv.append(StringEscapeUtils.escapeCsv(mark.getFilename()));
+                writer.append(StringEscapeUtils.escapeCsv(mark.getFilename()));
                 if (marks.hasNext()) {
-                    csv.append(separator);
+                    writer.append(separator);
                 }
             }
-            csv.append(PMD.EOL);
+            writer.append(PMD.EOL);
         }
-        return csv.toString();
+        writer.flush();
     }
 }

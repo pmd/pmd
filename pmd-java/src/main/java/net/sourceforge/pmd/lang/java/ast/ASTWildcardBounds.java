@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTWildcardBounds extends AbstractJavaNode {
+public class ASTWildcardBounds extends AbstractJavaTypeNode {
     public ASTWildcardBounds(int id) {
         super(id);
     }
@@ -17,6 +17,7 @@ public class ASTWildcardBounds extends AbstractJavaNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

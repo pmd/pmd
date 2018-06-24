@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+test method should be public 
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
+   void testX(){}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+inner class should get checked
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
+   class Bar { void testX(){} } 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+test method in inner class not valid
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+   class BarTest { void testX(){} } 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+abstract classes are ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public abstract class FooTest extends TestCase {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ditto interfaces
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface FooTest {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ditto enum
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum FooTest {
+	ONE, TWO;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ditto annotation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public @interface FooTest {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case does not extend TestCase
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FooTest {
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1453 False positive when the test class extends an other.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.junit.Assert.*;
+import org.junit.Test;
+
+public class MyTest extends YourTest {
+
+    @Test
+    public void falseMethod() {
+        assertFalse(0 == 1);
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#428 [java] PMD requires public modifier on JUnit 5 test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class JUnit5Test {
+  @Test
+  void myTest() {
+  }
+}
+        ]]></code>
+    </test-code>
+</test-data>

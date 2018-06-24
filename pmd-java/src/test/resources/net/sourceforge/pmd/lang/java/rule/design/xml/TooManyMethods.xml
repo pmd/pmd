@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Less than 10 methods.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code>
+        	<![CDATA[
+public class Foo 
+{
+	 public void method1(){}
+	 public void method2(){}
+	 public void method3(){}
+	 public void method4(){}
+	 public void method5(){}
+	 public void method6(){}
+	 public void method7(){}
+	 public void method8(){}
+	 public void method9(){}
+}
+     	]]>
+		</code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+More than 10 methods.
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+public class Foo 
+{
+	 public void method1(){}
+	 public void method2(){}
+	 public void method3(){}
+	 public void method4(){}
+	 public void method5(){}
+	 public void method6(){}
+	 public void method7(){}
+	 public void method8(){}
+	 public void method9(){}
+	 public void method10(){}
+	 public void method11(){}
+	 public void method12(){}
+	 public void method13(){}
+	 public void method14(){}
+	 public void method15(){}
+	 public void method16(){}
+}
+     	]]>
+		</code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Less than 10 methods, with getter/setter...
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo 
+{
+     public void setMethod1(){}
+     public void setMethod2(){}
+     public void setMethod3(){}
+     public void setMethod4(){}
+     public void setMethod5(){}
+     
+     public void getMethod6(){}
+     public void getMethod7(){}
+     public void getMethod8(){}
+     public void getMethod9(){}
+     public void getMethod10(){}
+     
+     public boolean isMethod11(){}
+     public boolean isMethod12(){}
+     public boolean isMethod13(){}
+     public boolean isMethod14(){}
+     public boolean isMethod15(){}
+     public boolean isMethod16(){}
+     
+     public void method17(){}
+     public void method18(){}
+     public void method19(){}
+     public void method20(){}
+     public void method21(){}
+     public void method22(){}
+}
+]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>#1457 TooManyMethods counts inner class methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class OuterClass {
+    public void method1() {}
+    public void method2() {}
+    public void method3() {}
+    public void method4() {}
+    public void method5() {}
+    public void method6() {}
+    public void method7() {}
+
+    public static class InnerClass extends OuterClass {
+        @Override
+        public void method1() {}
+        @Override
+        public void method2() {}
+        @Override
+        public void method3() {}
+        @Override
+        public void method4() {}
+        @Override
+        public void method5() {}
+        @Override
+        public void method6() {}
+        @Override
+        public void method7() {}
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

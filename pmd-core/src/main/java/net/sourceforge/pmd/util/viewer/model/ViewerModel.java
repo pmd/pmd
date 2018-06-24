@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 
+@Deprecated // to be removed with PMD 7.0.0
 public class ViewerModel {
     private static final Logger LOGGER = Logger.getLogger(ViewerModel.class.getName());
 

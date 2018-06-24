@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+assignment of a variable (local or field) to itself
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() { 
+  x = x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment of one array element to another
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() { 
+  int[] x = {2,3};
+  x = x[1];
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+qualified names causing NPE troubleshooting
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  void bar() {this.x = foo;}
+  void buz() {foo = this.x;}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+check for method calls
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  void bar() {x = x();}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+compound assignments are OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  void bar() {x += x;}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1104 IdempotentOperation false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  void bar() {
+    SignDelayer.this.sign = SignDelayer.this.arg.sign();
+    MMultiplexer.this.lastEvent = MMultiplexer.this.firstEvent;
+  }
+}
+        ]]></code>
+    </test-code>
+</test-data>

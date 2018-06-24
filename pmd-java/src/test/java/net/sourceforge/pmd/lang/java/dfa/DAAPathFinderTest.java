@@ -4,16 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.dfa;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getOrderedNodes;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.dfa.pathfinder.CurrentPath;
 import net.sourceforge.pmd.lang.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.lang.dfa.pathfinder.Executable;
-import net.sourceforge.pmd.lang.java.ParserTst;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 
-public class DAAPathFinderTest extends ParserTst implements Executable {
+public class DAAPathFinderTest implements Executable {
 
     @Test
     public void testTwoUpdateDefs() {

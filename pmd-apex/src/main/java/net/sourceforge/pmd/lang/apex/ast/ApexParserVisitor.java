@@ -9,6 +9,8 @@ public interface ApexParserVisitor {
 
     Object visit(ASTAnnotation node, Object data);
 
+    Object visit(ASTAnnotationParameter node, Object data);
+
     Object visit(ASTAnonymousClass node, Object data);
 
     Object visit(ASTArrayLoadExpression node, Object data);
@@ -29,9 +31,13 @@ public interface ApexParserVisitor {
 
     Object visit(ASTBridgeMethodCreator node, Object data);
 
+    Object visit(ASTCastExpression node, Object data);
+
     Object visit(ASTCatchBlockStatement node, Object data);
 
     Object visit(ASTClassRefExpression node, Object data);
+
+    Object visit(ASTConstructorPreamble node, Object data);
 
     Object visit(ASTConstructorPreambleStatement node, Object data);
 
@@ -51,8 +57,6 @@ public interface ApexParserVisitor {
 
     Object visit(ASTDoLoopStatement node, Object data);
 
-    Object visit(ASTDottedExpression node, Object data);
-
     Object visit(ASTExpression node, Object data);
 
     Object visit(ASTExpressionStatement node, Object data);
@@ -71,6 +75,8 @@ public interface ApexParserVisitor {
 
     Object visit(ASTIfElseBlockStatement node, Object data);
 
+    Object visit(ASTIllegalStoreExpression node, Object data);
+
     Object visit(ASTInstanceOfExpression node, Object data);
 
     Object visit(ASTJavaMethodCallExpression node, Object data);
@@ -83,11 +89,23 @@ public interface ApexParserVisitor {
 
     Object visit(ASTMethod node, Object data);
 
+    Object visit(ASTMethodBlockStatement node, Object data);
+
     Object visit(ASTMethodCallExpression node, Object data);
+
+    Object visit(ASTModifier node, Object data);
 
     Object visit(ASTModifierNode node, Object data);
 
     Object visit(ASTModifierOrAnnotation node, Object data);
+
+    Object visit(ASTMultiStatement node, Object data);
+
+    Object visit(ASTNestedExpression node, Object data);
+
+    Object visit(ASTNestedStoreExpression node, Object data);
+
+    Object visit(ASTNewKeyValueObjectExpression node, Object data);
 
     Object visit(ASTNewListInitExpression node, Object data);
 
@@ -96,8 +114,6 @@ public interface ApexParserVisitor {
     Object visit(ASTNewMapInitExpression node, Object data);
 
     Object visit(ASTNewMapLiteralExpression node, Object data);
-
-    Object visit(ASTNewNameValueObjectExpression node, Object data);
 
     Object visit(ASTNewObjectExpression node, Object data);
 
@@ -129,13 +145,13 @@ public interface ApexParserVisitor {
 
     Object visit(ASTStatement node, Object data);
 
+    Object visit(ASTStatementExecuted node, Object data);
+
     Object visit(ASTSuperMethodCallExpression node, Object data);
 
     Object visit(ASTSuperVariableExpression node, Object data);
 
     Object visit(ASTTernaryExpression node, Object data);
-
-    Object visit(ASTTestNode node, Object data);
 
     Object visit(ASTThisMethodCallExpression node, Object data);
 

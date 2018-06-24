@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 	<test-code>
 		<description>URL parameter in return statement</description>
 		<expected-problems>1</expected-problems>
@@ -8,6 +11,47 @@
 public class Foo {
 	public String test1() {
 		return ApexPages.currentPage().getParameters().get('foo');
+	}		
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Safe cast to ID</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public ID test1() {
+		return ApexPages.currentPage().getParameters().get('foo');
+	}		
+}
+		]]></code>
+	</test-code>
+
+
+	<test-code>
+		<description>Safe ID concatenation
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public String test1() {
+		ID bas = ApexPages.currentPage().getParameters().get('foo');
+		return 'text' + bas;
+	}		
+}
+		]]></code>
+	</test-code>
+
+
+	<test-code>
+		<description>Safe ID
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		ID bas = yoyo(ApexPages.currentPage().getParameters().get('foo'));
 	}		
 }
 		]]></code>

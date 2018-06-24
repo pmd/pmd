@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+  <test-code>
+    <description>Basic scenario</description>
+    <expected-problems>3</expected-problems>
+    <code><![CDATA[
+<xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:variable select="descendant::book"/>
+<xsl:variable select="following::book"/>
+<xsl:variable select="preceeding::book"/>
+</xsl:stylesheet>
+     ]]></code>
+    <source-type>xsl</source-type>
+  </test-code>
+  <test-code>
+    <description>using an axis name as an node name</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+<xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<!-- a node called 'descendant', probably a bad idea but shouldn't be a problem -->
+  <xsl:variable name="var" select="//descendant"/>
+</xsl:stylesheet>
+     ]]></code>
+    <source-type>xsl</source-type>
+  </test-code>
+  <test-code>
+    <description>using an axis descendant::self abreviation with checkSelfDescendantAbreviation @true</description>
+    <rule-property name="checkSelfDescendantAbreviation">true</rule-property>
+    <expected-problems>1</expected-problems>
+    <code><![CDATA[
+<xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:variable name="var" select="//child"/>
+</xsl:stylesheet>
+     ]]></code>
+    <source-type>xsl</source-type>
+  </test-code>
+</test-data>

@@ -6,10 +6,10 @@ package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
 
-import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -28,7 +28,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * <p>
  * An implementation of the Renderer interface is expected to have a default
  * constructor. Properties should be defined using the
- * {@link #definePropertyDescriptor(net.sourceforge.pmd.PropertyDescriptor)}
+ * {@link #definePropertyDescriptor(PropertyDescriptor)}
  * method. After the instance is created, the property values are set. This
  * means, you won't have access to property values in your constructor.
  */
@@ -71,16 +71,6 @@ public interface Renderer extends PropertySource {
      *            The description of the Renderer.
      */
     void setDescription(String description);
-
-    /**
-     * Get the configuration property definitions for Renderer. The keys in the
-     * map are the configuration property names, with the corresponding value
-     * being a description.
-     *
-     * @return The configuration property definition map.
-     */
-    @Deprecated // use PropertySource.getPropertyDescriptors() instead
-    Map<String, String> getPropertyDefinitions();
 
     /**
      * Get the indicator for whether to show suppressed violations.

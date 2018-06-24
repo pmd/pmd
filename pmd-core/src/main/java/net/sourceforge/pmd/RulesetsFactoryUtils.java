@@ -7,8 +7,10 @@ package net.sourceforge.pmd;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.benchmark.Benchmark;
-import net.sourceforge.pmd.benchmark.Benchmarker;
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperation;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.util.ResourceLoader;
 
 public final class RulesetsFactoryUtils {
 
@@ -36,7 +38,7 @@ public final class RulesetsFactoryUtils {
             ruleSets = factory.createRuleSets(rulesets);
             printRuleNamesInDebug(ruleSets);
             if (ruleSets.ruleCount() == 0) {
-                String msg = "No rules found. Maybe you mispelled a rule name? (" + rulesets + ")";
+                String msg = "No rules found. Maybe you mispelled a rule name? (" + rulesets + ')';
                 LOG.log(Level.SEVERE, msg);
                 throw new IllegalArgumentException(msg);
             }
@@ -61,19 +63,14 @@ public final class RulesetsFactoryUtils {
      *             a ruleset couldn't be found.
      */
     public static RuleSets getRuleSetsWithBenchmark(String rulesets, RuleSetFactory factory) {
-        long loadRuleStart = System.nanoTime();
-        RuleSets ruleSets = null;
-        try {
-            ruleSets = getRuleSets(rulesets, factory);
-        } finally {
-            long endLoadRules = System.nanoTime();
-            Benchmarker.mark(Benchmark.LoadRules, endLoadRules - loadRuleStart, 0);
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
+            return getRuleSets(rulesets, factory);
         }
-        return ruleSets;
     }
 
-    public static RuleSetFactory getRulesetFactory(final PMDConfiguration configuration) {
-        return new RuleSetFactory(configuration.getClassLoader(), configuration.getMinimumPriority(), true,
+    public static RuleSetFactory getRulesetFactory(final PMDConfiguration configuration,
+            final ResourceLoader resourceLoader) {
+        return new RuleSetFactory(resourceLoader, configuration.getMinimumPriority(), true,
                 configuration.isRuleSetFactoryCompatibilityEnabled());
     }
 

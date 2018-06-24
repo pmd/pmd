@@ -35,19 +35,21 @@ public class PLSQLParser extends AbstractParser {
     protected net.sourceforge.pmd.lang.plsql.ast.PLSQLParser createPLSQLParser(Reader source) throws ParseException {
         Reader in = IOUtil.skipBOM(source);
         // Wrapped PLSQL AST Parser
-        net.sourceforge.pmd.lang.plsql.ast.PLSQLParser parser = new net.sourceforge.pmd.lang.plsql.ast.PLSQLParser(in);
-        return parser;
+        return new net.sourceforge.pmd.lang.plsql.ast.PLSQLParser(in);
     }
 
+    @Override
     public boolean canParse() {
         return true;
     }
 
+    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
         return createPLSQLParser(source).Input();
     }
 
+    @Override
     public Map<Integer, String> getSuppressMap() {
         return new HashMap<>(); // FIXME
     }

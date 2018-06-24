@@ -28,14 +28,17 @@ public class XmlParser extends AbstractParser {
         return null;
     }
 
+    @Override
     public boolean canParse() {
         return true;
     }
 
+    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         return new net.sourceforge.pmd.lang.xml.ast.XmlParser((XmlParserOptions) parserOptions).parse(source);
     }
 
+    @Override
     public Map<Integer, String> getSuppressMap() {
         return new HashMap<>(); // FIXME
     }

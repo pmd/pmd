@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package xxx;
+public class Foo {
+ public void bar() {
+  String x;
+  x = "foo";
+  x += "bar";
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+concat inside method call
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean bar(Fiddle x) {
+  return x.startsWith("abc");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+startsWith
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+    foo("abc" + def + "hij");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+compound append, should only report 1 failure
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  String x;
+  x = "foo";
+  x += "bar" + x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public Foo() {
+  String x;
+  x = "foo";
+  x += "bar";
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+static failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static {
+  String x;
+  x = "foo";
+  x += "bar";
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+reference self
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo{
+    private void bar(){
+        String result = "";
+        for (int i = 0; i < 10; i++){
+        result = result + i;
+        } }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+false positive bug #2002722
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  void bar() {
+    String dtdColumnNames[] = null;
+    String sortedDtdColumns[] = null;
+    final int loop = 0;
+    dtdColumnNames[loop] = dtdColumnNames[loop].trim ( );
+    sortedDtdColumns[loop] = sortedDtdColumns[loop].trim ( );
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+false positive bug #2002722, different bug in comment section
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  void bar2() {
+    String foo ="foo";
+    foo = mangleTheInput(foo);
+  }
+  String mangleTheInput(final String s) { return s;}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1340 UseStringBufferForStringAppends False Positive with ternary operator (used in condition) </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UseStringBuffer {
+    public void foo() {
+        String value = "";
+        value = (value != null) ? "1" : "0";
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1340 UseStringBufferForStringAppends False Positive with ternary operator (used both in condition and options)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UseStringBuffer {
+    public void foo() {
+        String country = "";
+        country = (country == null || "".equals(country))
+                ? ((String) getCountry())
+                : country;
+    }
+    public void foo2() {
+        String country = request.getParameter("country");
+        country = (country == null) ? "USA" : country;
+    }
+}
+        ]]></code>
+    </test-code>
+	<test-code>
+        <description>#222 False positive when inverting ternary expression arguments</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        String country = request.getParameter("country");
+        country = (country != null) ? country : "USA";
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

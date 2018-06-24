@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+if (true) {
+   x=2;
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+if (true)
+   x=2;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, nested
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+if (true) {
+   if (true)
+      bar();
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+</test-data>

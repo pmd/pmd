@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="full-example">
+        <![CDATA[
+        public class Complicated {
+          public void exception() {
+            try {
+              int k = 0;
+              k++;
+            } catch (IOException ioe) {
+              ioe.printStackTrace();
+              throw new Exception("surprise", ioe);
+            } catch (Exception e) {
+              // do nothing
+            }
+          }
+          public void example() {
+            int x = 0, y = 1, z = 2, t = 2;
+            boolean a = false, b = true, c = false, d = true;
+
+            for (String s : list) {
+              x++;
+            }
+
+            if (a && b || b && d) {
+              if (y == z) {
+                x = 2;
+              } else if (y == t && !d) {
+                x = a ? z : b ? y : x;
+              } else {
+                x = 2;
+              }
+            } else if (c && d) {
+              while (z < y) {
+                x = 2;
+              }
+            } else if (a && !b) {
+              for (int n = 0; n < t; n++) {
+                x = 2;
+              }
+            } else {
+              do {
+                x++;
+                y--;
+              } while (b);
+            }
+          }
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Complicated method - Standard</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'c__Complicated#exception()' has value 4.</message>
+            <message>'c__Complicated#example()' has value 18.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+
+    <test-code>
+        <description>Empty methods should count 1</description>
+        <rule-property name="reportClasses">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo()' has value 1.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              void foo() {}
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <code-fragment id="constructor-violation">
+        <![CDATA[
+        public class Test {
+          public Test() {
+            if (a == 1) {
+              if (b == 2) {
+                System.out.println("b");
+              } else if (b == 1) {
+              }
+            } else {
+            }
+          }
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>#984 Cyclomatic complexity should treat constructors like methods</description>
+        <rule-property name="reportClasses">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Test#Test()' has value 4.</message>
+        </expected-messages>
+        <code-ref id="constructor-violation"/>
+    </test-code>
+
+    <code-fragment id="manyBooleanOps">
+        <![CDATA[
+        class Foo {
+          void foo(){
+            int x=0, y=1;
+            boolean a, b;
+            if (x > 2 || y < 4) {
+              while (x++ < 10 && !(y++ < 0));
+            } else if (a && b || x < 4) {
+              return;
+            }
+          }
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Standard Cyclo should count boolean paths</description>
+        <rule-property name="reportClasses">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo()' has value 8.</message>
+        </expected-messages>
+        <code-ref id="manyBooleanOps"/>
+    </test-code>
+
+    <test-code>
+        <description>Ternary expression counts 1 + boolean complexity</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#bar()' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              void bar() {
+                boolean a, b;
+                boolean c = (a || b) ? a : b;
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+</test-data>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+simple failure
+     ]]></description>
+        <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Foo() {
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+only 'this(...)' is OK
+     ]]></description>
+        <rule-property name="ignoreExplicitConstructorInvocation">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Foo() {
+  this();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+only 'this(...)' is not OK, if ignoring explicit constructor calls
+     ]]></description>
+        <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Foo() {
+  this();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+only 'super(...)' is OK
+     ]]></description>
+        <rule-property name="ignoreExplicitConstructorInvocation">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Foo() {
+  super();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+single-line comment is OK
+     ]]></description>
+        <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Foo() {
+  // Comment
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+multiple-line comment is OK
+     ]]></description>
+        <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Foo() {
+  this();
+  /* Comment */
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Javadoc comment is OK
+     ]]></description>
+        <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Foo() {
+  super();
+  /** Comment */
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Foo() {
+  int bar;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+with 'this(...)' ok
+     ]]></description>
+        <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Foo() {
+  this();
+  bar();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+with 'super(...)' ok
+     ]]></description>
+        <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Foo() {
+  super();
+  bar++;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private is ok
+     ]]></description>
+        <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Foo() {
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>Empty constructor with documenting javadoc still triggers</description>
+        <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class WebAgent {
+  /**
+     <p>Instantiate a WebAgent.</p>
+     <p>Call {@link #configure configure()} before calling {@link #retrieve retrieve()}.</p>
+  */
+  public WebAgent() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#357 UncommentedEmptyConstructor consider annotations on Constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        import javax.inject.Inject;
+
+        public class MyClass {
+          @Inject MyClass() {
+
+          }
+        }
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>#357 UncommentedEmptyConstructor consider fully qualified annotations on Constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          @javax.inject.Inject MyClass() {
+
+          }
+        }
+        ]]>
+        </code>
+    </test-code>
+</test-data>

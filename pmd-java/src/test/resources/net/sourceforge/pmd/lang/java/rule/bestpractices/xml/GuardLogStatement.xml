@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>OK, guard is here - log4j</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  private static final Logger logger = Logger.getLogger(Foo.class);
+
+  private void foo() {
+    if ( logger.isDebugEnabled() )
+        logger.debug("Debug statement");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>ok, no error expected - apache commons logging</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private static final Log __log = LogFactory.getLog(Test.class);
+    public void test() {
+        // good:
+        if (__log.isDebugEnabled()) {
+        __log.debug("bla" + "",e );
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>Guarded call - OK - java util</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+ private void foo(Logger logger) { 
+    if ( logger.isLoggable(Level.FINE) ) {
+        logger.fine("debug message" + ""); 
+    } 
+ }  
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>KO, missing guard 1 - log4j</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  private static final Logger logger = Logger.getLogger(Foo.class);
+
+  private void foo() {
+        logger.debug("Debug statement" + "");
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>KO, missing guard 2 - log4j</description>
+        <rule-property name="logLevels">debug,trace</rule-property>
+        <rule-property name="guardsMethods">isDebugEnabled,isTraceEnabled</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  private static final Logger logger = Logger.getLogger(Foo.class);
+
+  private void foo() {
+        logger.debug("Debug statement" + "");
+  }
+
+  private void bar() {
+        logger.info("No guard, but'is OK with properties configuration" + "");
+  }
+
+}
+       ]]></code>
+    </test-code>
+    <test-code>
+        <description>Complex logging without guard - apache commons logging</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private static final Log __log = LogFactory.getLog(Test.class);
+    public void test() {
+
+        // bad:
+        __log.debug("log something" + " and " + "concat strings");
+
+        // bad:
+        __log.debug("log something" + " and " + "concat strings", e);
+
+        // good:
+        if (__log.isDebugEnabled()) {
+        __log.debug("bla" + "",e );
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>Complex logging with misplaced guard - apache commons logging</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private static final Log __log = LogFactory.getLog(Test.class);
+    public void test() {
+        if (true) {
+            // bad:
+            __log.debug("log something" + " and " + "concat strings");
+            // this is useless:
+            __log.isDebugEnabled();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unguarded call - KO - java util</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+ private void foo(Logger logger) { 
+    logger.fine("debug message" + ""); 
+ }  
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>ok #1189 GuardLogStatementRule and GuardDebugLoggingRule broken for log4j2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void test() {
+        final Marker m = MarkerManager.getMarker(mymarker);
+        if (logger.isDebugEnabled(m)) {
+          logger.debug(m, message + "");
+        }
+        if (logger.isTraceEnabled(m)) {
+          logger.trace(m, message + "");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>violation - wrong guard #1189 GuardLogStatementRule and GuardDebugLoggingRule broken for log4j2</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void test() {
+        final Marker m = MarkerManager.getMarker(mymarker);
+        if (logger.isTraceEnabled(m)) { // should have been isDebugEnabled
+          logger.debug(m, message + "");
+        }
+        if (logger.isDebugEnabled(m)) { // should have been isTraceEnabled
+          logger.trace(m, message + "");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>violation - no if #1189 GuardLogStatementRule and GuardDebugLoggingRule broken for log4j2</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void test() {
+        final Marker m = MarkerManager.getMarker(mymarker);
+        logger.isDebugEnabled(m); // must be within an if
+        logger.debug(m, message + "");
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1224 GuardDebugLogging broken in 5.1.1 - missing additive statement check in log statement - apache commons logging</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private static final Log __log = LogFactory.getLog(Test.class);
+    public void test() {
+        // okay:
+        __log.debug("log something");
+
+        // okay:
+        __log.debug("log something with exception", e);
+
+        // good:
+        if (__log.isDebugEnabled()) {
+        __log.debug("bla" + "",e );
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1341 pmd:GuardDebugLogging violates LOGGER.debug with format "{}" - slf4j</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class GuardDebugFalsePositive {
+    public void test() {
+        String tempSelector = "a";
+        LOGGER.debug("MessageSelector={}" , tempSelector);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1203 GuardLogStatementJavaUtil issues warning for severe level not being specified as property</description>
+        <rule-property name="logLevels">finest,finer,fine,info</rule-property>
+        <rule-property name="guardsMethods">isLoggable</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
+public class Foo {
+    Logger LOGGER;
+
+    public void foo() {
+        LOGGER.severe("This is a severe message" + " and concat");
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1227 GuardLogStatementJavaUtil doesn't catch log(Level.FINE, "msg" + " msg") calls</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
+public class Foo {
+    Logger LOGGER;
+
+    public void foo() {
+        LOGGER.log(Level.FINE, "This is a severe message" + " and concat"); // violation
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, "This is a severe message" + " and concat"); // no violation
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1347 False positive for GuardLogStatementJavaUtil with slf4j</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+
+public class GuardLogTest {
+    Logger LOG;
+    public void foo() {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("update: After spool map size: " + map.size());
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1398 False positive for GuardLogStatementJavaUtil with Log4j</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.log4j.Logger;
+
+public class GuardLogTest {
+    Logger LOG;
+    public void foo() {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("update: After spool map size: " + map.size());
+        }
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>#783 [java] GuardLogStatement regression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.log4j.Logger;
+
+public class GuardLogTest {
+    Logger LOG;
+    public void foo() {
+        if (!(exception instanceof IllegalArgumentException) && LOGGER.isErrorEnabled()) {
+            LOGGER.error("Some error " + someObject, exception);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Wrong guard method for java util logging</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
+public class Foo {
+    Logger LOGGER;
+
+    public void foo() {
+        if (LOGGER.isLoggable(Level.INFO)) { // should have been level FINE
+            LOGGER.log(Level.FINE, "This is a severe message" + " and concat");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#370 rule not considering lambdas</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Logger {
+    private static final Logger LOGGER = new Logger();
+    
+    public void bar() {
+        LOGGER.info(() -> "Bla " + " bla"); // The lambda is free to do whatever it likes
+    }
+
+    @Override
+    public void info(Supplier<String> message) {
+        if (logger.isInfoEnabled()) {
+            logger.info(message.get());
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#869 [java] GuardLogStatement false positive with Math.log</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class GuardLogStatement {
+    public void foo() {
+        double confidence = 0.5;
+        int depth = (int) Math.ceil(-Math.log(1 - confidence) / Math.log(2));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#869 [java] GuardLogStatement false positive with something.error on return</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class GuardLogStatement {
+    public String foo() {
+        return ThisIsNotALogger.error("message " + "");
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

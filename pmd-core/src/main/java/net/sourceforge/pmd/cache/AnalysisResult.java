@@ -38,15 +38,15 @@ public class AnalysisResult {
     private static long computeFileChecksum(final File sourceFile) {
         try (
             CheckedInputStream stream = new CheckedInputStream(
-               new BufferedInputStream(new FileInputStream(sourceFile)), new Adler32());
+                new BufferedInputStream(new FileInputStream(sourceFile)), new Adler32());
         ) {
             // Just read it, the CheckedInputStream will update the checksum on it's own
             IOUtils.skipFully(stream, sourceFile.length());
 
             return stream.getChecksum().getValue();
-        } catch (final IOException e) {
+        } catch (final IOException ignored) {
             // We don't really care, if it's unreadable
-            // the analysis will fail and report the error on it's own
+            // the analysis will fail and report the error on it's own since the checksum won't match
         }
 
         return 0;

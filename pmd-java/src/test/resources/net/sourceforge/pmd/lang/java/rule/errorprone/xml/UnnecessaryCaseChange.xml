@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+failure case with toUpperCase().equals()
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private boolean baz(String buz) {
+  return foo.toUpperCase().equals("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case with toLowerCase().equals()
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private boolean baz(String buz) {
+  return foo.toLowerCase().equals("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case with toUpperCase().equalsIgnoreCase()
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private boolean baz(String buz) {
+  return foo.toUpperCase().equalsIgnoreCase("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+don't flag toUpperCase() invocations with Locale args
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private boolean baz(String buz) {
+  return foo.toUpperCase(locale).equals("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case with toLowerCase().equals()
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Object visit(ASTFieldDeclaration node, Object data) {
+        ASTClassOrInterfaceDeclaration cl = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        if (cl != null && node.getVariableName().toLowerCase().equals(cl.getImage().toLowerCase())) {
+            addViolation(data, node);
+        }
+        return data;
+    }
+}
+     ]]></code>
+    </test-code>
+</test-data>

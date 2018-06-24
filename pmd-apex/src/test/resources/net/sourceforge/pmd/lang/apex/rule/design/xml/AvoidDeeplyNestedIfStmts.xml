@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Bad, very deep</description>
+        <rule-property name="problemDepth">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void bar() { 
+		Integer x=2; 
+		Integer y=3; 
+		Integer z=4; 
+		if (x>y) { 
+			if (y>z) { 
+				if (z==x) { 
+					// this is officially out of control now 
+				} 
+			} 
+		}
+	}
+}
+		]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>OK, not so deep</description>
+        <rule-property name="problemDepth">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void bar() { 
+		if (true) {
+		} else if (true) {
+		} else if (true) {
+		} else {
+			// this ain't good code, but it shouldn't trigger this rule
+		}
+	}
+}
+		]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Bad, many deep ifs</description>
+        <rule-property name="problemDepth">3</rule-property>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void bar() { 
+		if (true) {
+			if (true) {
+				if (true) {
+				}
+			}
+			if(true) {
+				if(true) {
+					if(true) {
+					}
+				}
+				if(true) {
+				}
+				if(true) {
+				}
+			}
+		}
+	}
+}
+		]]></code>
+    </test-code>
+    
+</test-data>

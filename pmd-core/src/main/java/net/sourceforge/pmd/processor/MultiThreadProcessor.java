@@ -4,57 +4,51 @@
 
 package net.sourceforge.pmd.processor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.renderers.Renderer;
 
+
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
- *
  */
 public class MultiThreadProcessor extends AbstractPMDProcessor {
+    private final ExecutorService executor;
+    private final CompletionService<Report> completionService;
 
-    private ThreadFactory factory;
-    private ExecutorService executor;
-    private CompletionService<Report> completionService;
-    private List<Future<Report>> tasks = new ArrayList<>();
+    private long submittedTasks = 0L;
 
     public MultiThreadProcessor(final PMDConfiguration configuration) {
         super(configuration);
 
-        factory = new PmdThreadFactory();
-        executor = Executors.newFixedThreadPool(configuration.getThreads(), factory);
+        executor = Executors.newFixedThreadPool(configuration.getThreads(), new PmdThreadFactory());
         completionService = new ExecutorCompletionService<>(executor);
     }
 
     @Override
     protected void runAnalysis(PmdRunnable runnable) {
-        // multi-threaded execution, dispatch analysis to worker threads
-        tasks.add(completionService.submit(runnable));
+        completionService.submit(runnable);
+        submittedTasks++;
     }
 
     @Override
     protected void collectReports(List<Renderer> renderers) {
-        // Collect result analysis, waiting for termination if needed
         try {
-            for (int i = 0; i < tasks.size(); i++) {
+            for (int i = 0; i < submittedTasks; i++) {
                 final Report report = completionService.take().get();
                 super.renderReports(renderers, report);
             }
-        } catch (InterruptedException ie) {
+        } catch (final InterruptedException ie) {
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ee) {
-            Throwable t = ee.getCause();
+        } catch (final ExecutionException ee) {
+            final Throwable t = ee.getCause();
             if (t instanceof RuntimeException) {
                 throw (RuntimeException) t;
             } else if (t instanceof Error) {

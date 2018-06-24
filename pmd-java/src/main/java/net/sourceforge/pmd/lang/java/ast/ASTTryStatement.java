@@ -5,6 +5,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.List;
+
+
+/**
+ * Try statement node.
+ * <pre>
+ * TryStatement ::= "try" ( ResourceSpecification )? Block ( CatchStatement )* [ FinallyStatement ]
+ * </pre>
+ */
 public class ASTTryStatement extends AbstractJavaNode {
 
     public ASTTryStatement(int id) {
@@ -15,30 +24,47 @@ public class ASTTryStatement extends AbstractJavaNode {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
+
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
-    public boolean hasFinally() {
-        for (int i = 0; i < this.jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTFinallyStatement) {
-                return true;
-            }
-        }
-        return false;
+
+    /**
+     * Returns true if this node is a try-with-resources, in which case it
+     * has a ResourceSpecification child node.
+     */
+    public boolean isTryWithResources() {
+        return getFirstChildOfType(ASTResourceSpecification.class) != null;
     }
 
+
+    /**
+     * Returns the catch statement nodes of this try statement.
+     * If there are none, returns an empty list.
+     */
+    public List<ASTCatchStatement> getCatchStatements() {
+        return findChildrenOfType(ASTCatchStatement.class);
+    }
+
+
+    /**
+     * Returns true if this try statement has a  {@code finally} statement,
+     * in which case {@link #getFinally()} won't return {@code null}.
+     */
+    public boolean hasFinally() {
+        return getFirstChildOfType(ASTFinallyStatement.class) != null;
+    }
+
+
+    /**
+     * Returns the {@code finally} statement of this try statement, if any.
+     *
+     * @return The finally statement, or null if there is none
+     */
     public ASTFinallyStatement getFinally() {
-        for (int i = 0; i < this.jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTFinallyStatement) {
-                return (ASTFinallyStatement) jjtGetChild(i);
-            }
-        }
-        throw new RuntimeException(
-                "ASTTryStatement.getFinally called but this try stmt doesn't contain a finally block");
+        return getFirstChildOfType(ASTFinallyStatement.class);
     }
 
 }

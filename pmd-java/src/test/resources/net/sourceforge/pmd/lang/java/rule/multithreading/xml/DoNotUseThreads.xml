@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Having thread in a type name is doubtfull but allowed
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code>
+			<![CDATA[
+            public class UsingThread  {
+
+            }
+            ]]>
+        </code>
+    </test-code>
+        <test-code>
+        <description><![CDATA[
+extending threads is not allowed
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+            // This is not allowed
+            public class UsingThread extends Thread {
+            }
+			]]>
+        </code>
+    </test-code>
+        <test-code>
+        <description><![CDATA[
+implementing runnabel is not allowed
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code>
+    	<![CDATA[
+			public class OtherThread implements Runnable {}
+			]]>
+        </code>
+    </test-code>
+        <test-code>
+        <description><![CDATA[
+Use of runnable is also not allowed
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code>
+    		<![CDATA[
+				public class Violation {
+					public void methode() {
+					Runnable thread = new Thread();
+					thread.run();
+					}
+				}
+			]]>
+        </code>
+    </test-code>
+
+</test-data>

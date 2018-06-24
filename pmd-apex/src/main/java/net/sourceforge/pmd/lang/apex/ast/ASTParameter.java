@@ -14,15 +14,17 @@ public class ASTParameter extends AbstractApexNode<Parameter> implements CanSupp
         super(parameter);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
     @Override
     public String getImage() {
-        return node.getName().value;
+        return node.getName().getValue();
     }
 
+    @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
         for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
             for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {

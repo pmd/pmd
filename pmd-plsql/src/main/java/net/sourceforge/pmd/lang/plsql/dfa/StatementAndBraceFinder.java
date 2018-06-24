@@ -767,6 +767,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
      * The method handles the special "for" loop. It creates always an
      * expression node even if the loop looks like for(;;).
      */
+    @SuppressWarnings("PMD.UnusedFormalParameter") // TODO: dfa implementation in plsql is incomplete
     private void addForExpressionNode(Node node, Structure dataFlow) {
         ASTForStatement parent = (ASTForStatement) node.jjtGetParent();
         boolean hasExpressionChild = false;

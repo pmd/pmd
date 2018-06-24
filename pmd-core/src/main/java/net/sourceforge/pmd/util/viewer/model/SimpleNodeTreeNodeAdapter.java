@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-
 import javax.swing.tree.TreeNode;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -19,7 +18,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
-
+@Deprecated // to be removed with PMD 7.0.0
 public class SimpleNodeTreeNodeAdapter implements TreeNode {
 
     private Node node;

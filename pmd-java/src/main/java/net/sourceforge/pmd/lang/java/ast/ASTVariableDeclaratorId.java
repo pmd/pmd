@@ -11,7 +11,30 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
+// @formatter:off
+/**
+ * Represents an identifier in the context of variable or parameter declarations (not their use in
+ * expressions). Such a node declares a name in the scope it's defined in, and can occur in the following
+ * contexts:
+ *
+ * <ul>
+ *    <li> Field declarations;
+ *    <li> Local variable declarations;
+ *    <li> Method, constructor and lambda parameter declarations;
+ *    <li> Method and constructor explicit receiver parameter declarations;
+ *    <li> Exception parameter declarations occurring in catch clauses;
+ *    <li> Resource declarations occurring in try-with-resources statements.
+ * </ul>
+ *
+ * <p>Since this node conventionally represents the declared variable in PMD, our symbol table
+ * populates it with a {@link VariableNameDeclaration}, and its usages can be accessed through
+ * the method {@link #getUsages()}.
+ *
+ * <p>Type resolution assigns the type of the variable to this node. See {@link #getType()}'s
+ * documentation for the contract of this method.
+ */
+// @formatter:on
+public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dimensionable {
 
     private int arrayDepth;
     private VariableNameDeclaration nameDeclaration;
@@ -45,52 +68,128 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
         return getScope().getDeclarations(VariableNameDeclaration.class).get(nameDeclaration);
     }
 
+    // TODO Dimensionable will be deprecated
+
     public void bumpArrayDepth() {
         arrayDepth++;
     }
 
+    @Override
     public int getArrayDepth() {
         return arrayDepth;
     }
 
+    @Override
     public boolean isArray() {
         return arrayDepth > 0;
     }
 
+
+    /**
+     * Returns true if this nodes declares an exception parameter in
+     * a {@code catch} statement.
+     */
     public boolean isExceptionBlockParameter() {
-        return jjtGetParent().jjtGetParent() instanceof ASTTryStatement;
+        return jjtGetParent().jjtGetParent() instanceof ASTCatchStatement;
+    }
+
+
+    /**
+     * Returns true if this node declares a formal parameter for a method
+     * declaration or a lambda expression. In particular, returns false
+     * if the node is a receiver parameter (see {@link #isExplicitReceiverParameter()}).
+     */
+    public boolean isFormalParameter() {
+        return jjtGetParent() instanceof ASTFormalParameter && !isExceptionBlockParameter() && !isResourceDeclaration()
+                || jjtGetParent() instanceof ASTLambdaExpression;
     }
 
     public void setExplicitReceiverParameter() {
         explicitReceiverParameter = true;
     }
 
+
+    /**
+     * Returns true if this node is a receiver parameter for a method or constructor
+     * declaration. The receiver parameter has the name {@code this}, and must be declared
+     * at the beginning of the parameter list. Its only purpose is to annotate
+     * the type of the object on which the method call is issued. It was introduced
+     * in Java 8.
+     */
     public boolean isExplicitReceiverParameter() {
+        // TODO this could be inferred from the image tbh
         return explicitReceiverParameter;
     }
 
-    public Node getTypeNameNode() {
-        if (jjtGetParent() instanceof ASTFormalParameter) {
-            return findTypeNameNode(jjtGetParent());
-        } else if (jjtGetParent() instanceof ASTLambdaExpression) {
-            // lambda expression with lax types. The type is inferred...
-            return null;
-        } else if (jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration
-                || jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
-            return findTypeNameNode(jjtGetParent().jjtGetParent());
+
+    /**
+     * Returns true if this declarator id declares a resource in a try-with-resources statement.
+     */
+    public boolean isResourceDeclaration() {
+        return jjtGetParent() instanceof ASTResource;
+    }
+
+
+    /**
+     * Returns true if the declared variable's type is inferred by
+     * the compiler. In Java 8, this can happen if it's in a formal
+     * parameter of a lambda with an inferred type (e.g. {@code (a, b) -> a + b}).
+     * Since Java 10, the type of local variables can be inferred
+     * too, e.g. {@code var i = 2;}.
+     *
+     * <p>This method returns true for declarator IDs in those contexts,
+     * in which case {@link #getTypeNode()} returns {@code null},
+     * since the type node is absent.
+     */
+    public boolean isTypeInferred() {
+        return isLambdaExpression() || isLocalVariableTypeInferred();
+    }
+
+    private boolean isLambdaExpression() {
+        return jjtGetParent() instanceof ASTLambdaExpression;
+    }
+
+    private boolean isLocalVariableTypeInferred() {
+        if (jjtGetParent() instanceof ASTResource) {
+            // covers "var" in try-with-resources
+            return jjtGetParent().getFirstChildOfType(ASTType.class) == null;
+        } else if (getNthParent(2) instanceof ASTLocalVariableDeclaration) {
+            // covers "var" as local variables and in for statements
+            return getNthParent(2).getFirstChildOfType(ASTType.class) == null;
         }
-        return null;
+
+        return false;
     }
 
     /**
-     * Determines the type node of this variable id.
-     * 
-     * @return the type node or <code>null</code> if there is no explicit type.
+     * Returns the first child of the node returned by {@link #getTypeNode()}.
+     * The image of that node can usually be interpreted as the image of the
+     * type.
+     */
+    // TODO unreliable, not typesafe and not useful, should be deprecated
+    public Node getTypeNameNode() {
+        ASTType type = getTypeNode();
+        return type == null ? null : getTypeNode().jjtGetChild(0);
+    }
+
+
+    /**
+     * Determines the type node of this variable id, that is, the type node
+     * belonging to the variable declaration of this node (either a
+     * FormalParameter, LocalVariableDeclaration or FieldDeclaration).
+     *
+     * <p>The type of the returned node is not necessarily the type of this
+     * node. See {@link #getType()} for an explanation.
+     *
+     * @return the type node, or {@code null} if there is no explicit type,
+     * e.g. if {@link #isTypeInferred()} returns true.
      */
     public ASTType getTypeNode() {
         if (jjtGetParent() instanceof ASTFormalParameter) {
+            // ASTResource is a subclass of ASTFormal parameter for now but this will change
+            // and this will need to be corrected here, see #998
             return ((ASTFormalParameter) jjtGetParent()).getTypeNode();
-        } else if (jjtGetParent() instanceof ASTLambdaExpression) {
+        } else if (isTypeInferred()) {
             // lambda expression with lax types. The type is inferred...
             return null;
         } else {
@@ -102,13 +201,33 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
         return null;
     }
 
-    private Node findTypeNameNode(Node node) {
-        int i = 0;
-        while (node.jjtGetChild(i) instanceof ASTAnnotation) {
-            // skip annotations
-            i++;
-        }
-        ASTType typeNode = (ASTType) node.jjtGetChild(i);
-        return typeNode.jjtGetChild(0);
+    // @formatter:off
+    /**
+     * Returns the type of the declared variable. The type of a declarator ID is
+     * <ul>
+     *   <li>1. not necessarily the same as the type written out at the
+     *          start of the declaration, e.g. {@code int a[];}
+     *   <li>2. not necessarily the same as the types of other variables
+     *          declared in the same statement, e.g. {@code int a[], b;}.
+     * </ul>
+     *
+     * <p>These are consequences of Java's allowing programmers to
+     * declare additional pairs of brackets on declarator ids. The type
+     * of the node returned by {@link #getTypeNode()} doesn't take into
+     * account those additional array dimensions, whereas this node's
+     * type takes into account the total number of dimensions, i.e.
+     * those declared on this node plus those declared on the type node.
+     *
+     * <p>The returned type also takes into account whether this variable
+     * is a varargs formal parameter.
+     *
+     * <p>The type of the declarator ID is thus always the real type of
+     * the variable.
+     */
+    // @formatter:on
+    @Override
+    @SuppressWarnings("PMD.UselessOverridingMethod")
+    public Class<?> getType() {
+        return super.getType();
     }
 }

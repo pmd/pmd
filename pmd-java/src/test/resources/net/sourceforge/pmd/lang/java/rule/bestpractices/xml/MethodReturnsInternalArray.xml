@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Clear violation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ String [] getArr() {return arr;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Clear violation with this.
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ String [] getArr() {return this.arr;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ String [] getArr() {String[] foo; return foo;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+tricky field hiding
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ String [] getArr() {String[] arr; return arr;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+really sick code
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ String [] getArr() {String[] arr; return this.arr;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+returning a local array is ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ int[] getArr() {
+  int[] x = new int[] {1,2,3};
+  return x;
+ } ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+returning a local array is ok part deux
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Object[] getArr() {
+  return new Object[] {foo,bar};
+ } ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+returning a cloned field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Object[] x;
+ Object[] getArr() {
+  return this.x.clone();
+ } ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+returning a new array
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Object x;
+ Object[] getArr() {
+  return new Object[] {x};
+ } ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Doesn't return array
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ String getArr() {return arr[0];} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Interface with array declaration
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public String[] getArr();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#962 MethodReturnsInternalArray: False positive using a ternary operator</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public byte[] getContent() {
+        return this.content == null ? null : content.clone();
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1299 MethodReturnsInternalArray false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class WebServiceResponseMessage {
+    private Object[] responseObjects;
+    public Object[] getResponseObjects() {
+        return responseObjects == null ? null : Arrays.copyOf(responseObjects, responseObjects.length);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1324 MethodReturnsInternalArray false positive with clone()</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private Hit[] hits;
+    public Hit[] getHits() {
+        return hits == null ? null : hits.clone();
+    }
+}
+]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>#1322 MethodReturnsInternalArray on private methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class A {
+    private Object[] content;
+    // This method should not be a violation of MethodReturnsInternalArray
+    private Object[] getContent() {
+        return content;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1475 False positive of MethodReturnsInternalArray</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MethodReturnsInternalArrayCase {
+    private static final byte[] DATA = {};
+
+    protected final byte[] getData()
+    {
+        return DATA;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1475 False positive of MethodReturnsInternalArray - ArrayAllocation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MethodReturnsInternalArrayCase {
+    private static final byte[] DATA = new byte[0];
+
+    protected final byte[] getData()
+    {
+        return DATA;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

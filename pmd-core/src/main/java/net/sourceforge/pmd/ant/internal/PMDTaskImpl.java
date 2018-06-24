@@ -12,10 +12,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Handler;
-import java.util.logging.Level;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -41,8 +40,9 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.log.AntLogHandler;
@@ -79,13 +79,14 @@ public class PMDTaskImpl {
         this.failuresPropertyName = task.getFailuresPropertyName();
         configuration.setMinimumPriority(RulePriority.valueOf(task.getMinimumPriority()));
         configuration.setAnalysisCacheLocation(task.getCacheLocation());
+        configuration.setIgnoreIncrementalAnalysis(task.isNoCache());
 
         SourceLanguage version = task.getSourceLanguage();
         if (version != null) {
             LanguageVersion languageVersion = LanguageRegistry
-                    .findLanguageVersionByTerseName(version.getName() + " " + version.getVersion());
+                    .findLanguageVersionByTerseName(version.getName() + ' ' + version.getVersion());
             if (languageVersion == null) {
-                throw new BuildException("The following language is not supported:" + version + ".");
+                throw new BuildException("The following language is not supported:" + version + '.');
             }
             configuration.setDefaultLanguageVersion(languageVersion);
         }
@@ -101,13 +102,15 @@ public class PMDTaskImpl {
 
     private void doTask() {
         setupClassLoader();
-
+        
         // Setup RuleSetFactory and validate RuleSets
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration);
+        final ResourceLoader rl = setupResourceLoader();
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, rl);
+
         try {
             // This is just used to validate and display rules. Each thread will create its own ruleset
             String ruleSets = configuration.getRuleSets();
-            if (StringUtil.isNotEmpty(ruleSets)) {
+            if (StringUtils.isNotBlank(ruleSets)) {
                 // Substitute env variables/properties
                 configuration.setRuleSets(project.replaceProperties(ruleSets));
             }
@@ -208,6 +211,27 @@ public class PMDTaskImpl {
         }
     }
 
+    private ResourceLoader setupResourceLoader() {
+        if (classpath == null) {
+            classpath = new Path(project);
+        }
+
+        /*
+         * 'basedir' is added to the path to make sure that relative paths such
+         * as "<ruleset>resources/custom_ruleset.xml</ruleset>" still work when
+         * ant is invoked from a different directory using "-f"
+         */
+        classpath.add(new Path(null, project.getBaseDir().toString()));
+
+        project.log("Using the AntClassLoader: " + classpath, Project.MSG_VERBOSE);
+        // must be true, otherwise you'll get ClassCastExceptions as classes
+        // are loaded twice
+        // and exist in multiple class loaders
+        final boolean parentFirst = true;
+        return new ResourceLoader(new AntClassLoader(Thread.currentThread().getContextClassLoader(),
+                project, classpath, parentFirst));
+    }
+
     private void handleError(RuleContext ctx, Report errorReport, RuntimeException pmde) {
 
         pmde.printStackTrace();
@@ -222,7 +246,7 @@ public class PMDTaskImpl {
             project.log(strWriter.toString(), Project.MSG_VERBOSE);
             IOUtils.closeQuietly(printWriter);
 
-            if (StringUtil.isNotEmpty(cause.getMessage())) {
+            if (StringUtils.isNotBlank(cause.getMessage())) {
                 project.log(cause.getMessage(), Project.MSG_VERBOSE);
             }
         }
@@ -230,28 +254,10 @@ public class PMDTaskImpl {
         if (failOnError) {
             throw new BuildException(pmde);
         }
-        errorReport.addError(new Report.ProcessingError(pmde.getMessage(), ctx.getSourceCodeFilename()));
+        errorReport.addError(new Report.ProcessingError(pmde, ctx.getSourceCodeFilename()));
     }
 
     private void setupClassLoader() {
-        if (classpath == null) {
-            classpath = new Path(project);
-        }
-        /*
-         * 'basedir' is added to the path to make sure that relative paths such
-         * as "<ruleset>resources/custom_ruleset.xml</ruleset>" still work when
-         * ant is invoked from a different directory using "-f"
-         */
-        classpath.add(new Path(null, project.getBaseDir().toString()));
-
-        project.log("Using the AntClassLoader: " + classpath, Project.MSG_VERBOSE);
-        // must be true, otherwise you'll get ClassCastExceptions as classes
-        // are loaded twice
-        // and exist in multiple class loaders
-        boolean parentFirst = true;
-        configuration.setClassLoader(
-                new AntClassLoader(Thread.currentThread().getContextClassLoader(), project, classpath, parentFirst));
-
         try {
             if (auxClasspath != null) {
                 project.log("Using auxclasspath: " + auxClasspath, Project.MSG_VERBOSE);
@@ -263,13 +269,17 @@ public class PMDTaskImpl {
     }
 
     public void execute() throws BuildException {
-        final Handler antLogHandler = new AntLogHandler(project);
-        final ScopedLogHandlersManager logManager = new ScopedLogHandlersManager(Level.FINEST, antLogHandler);
+        final AntLogHandler antLogHandler = new AntLogHandler(project);
+        final ScopedLogHandlersManager logManager = new ScopedLogHandlersManager(antLogHandler.getAntLogLevel(), antLogHandler);
         try {
             doTask();
         } finally {
             logManager.close();
-            IOUtil.tryCloseClassLoader(configuration.getClassLoader());
+            // only close the classloader, if it is ours. Otherwise we end up with class not found
+            // exceptions
+            if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
+                IOUtil.tryCloseClassLoader(configuration.getClassLoader());
+            }
         }
     }
 

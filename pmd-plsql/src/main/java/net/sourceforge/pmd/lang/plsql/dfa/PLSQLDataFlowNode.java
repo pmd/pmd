@@ -19,6 +19,7 @@ public class PLSQLDataFlowNode extends AbstractDataFlowNode {
         super(dataFlow, node);
     }
 
+    @Override
     public String toString() {
         String res = "PLSQLDataFlowNode: line " + this.getLine() + ", (Type BitField==" + type + ")";
         if (node instanceof ASTProgramUnit || node instanceof ASTTypeMethod

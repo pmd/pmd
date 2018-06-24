@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+	<test-code>
+		<description><![CDATA[
+basic failure case
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+  void bar() {
+   try {
+   } catch (SomeException se) {
+    throw new SomeException(se);
+   }
+  }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+do something else before throwing a new instance of the same exception, ok
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+  void bar() {
+   try {
+   } catch (SomeException se) {
+    System.out.println("something interesting");
+    throw new SomeException(se);
+   }
+  }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+repackage cause as an instance of the same exception, failure
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+  void bar() {
+   try {
+   } catch (SomeException se) {
+    throw new SomeException(se.getCause());
+   }
+  }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+throw new instance of the same exception with a different message, ok
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+  void bar() {
+   try {
+   } catch (SomeException se) {
+    throw new SomeException("new exception message", se);
+   }
+  }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+throw new instance of the same exception with the same message, failure
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+  void bar() {
+   try {
+   } catch (SomeException se) {
+    throw new SomeException(se.getMessage());
+   }
+  }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+throws a new instance of the same exception without any arguments, ok
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+  void bar() {
+   try {
+   } catch (SomeException se) {
+    throw new SomeException();
+   }
+  }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+throws a new instance of the same exception from a nested try/catch block, ok
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+  void bar() {
+    try {
+    } catch (SomeException se) {
+      try {
+      } catch (OtherException oe) {
+         throw new SomeException();
+      }
+    }
+  }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+wraps the exception in a new instance of the same exception from a nested try/catch block, ok
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+  void bar() {
+    try {
+    } catch (SomeException se) {
+      try {
+      } catch (OtherException oe) {
+         throw new SomeException(se);
+      }
+    }
+  }
+}
+     ]]></code>
+	</test-code>
+</test-data>
+

@@ -1,151 +1,16 @@
 <?xml version="1.0"?>
 
 <ruleset name="Braces"
-    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
-  <description>
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    <description>
 The Braces Ruleset contains a collection of braces rules.
-  </description>
+    </description>
 
-   <rule name="IfStmtsMustUseBraces"
-   		language="ecmascript"
-   		since="5.0"
-         message="Avoid using if statements without curly braces"
-         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/braces.html#IfStmtsMustUseBraces">
-     <description>
-Avoid using if statements without using curly braces.
-     </description>
-     <priority>3</priority>
-       <properties>
-           <property name="xpath">
-               <value>
-                   <![CDATA[
-//IfStatement[@Else = "false" and not(child::Scope)]
-                   ]]>
-               </value>
-           </property>
-       </properties>
-     <example>
- <![CDATA[
-// Ok
-if (foo) {
-   x++;
-}
-
-// Bad
-if (foo)
-   x++;
- ]]>
-     </example>
-     </rule>
-
-      <rule name="IfElseStmtsMustUseBraces"
-   		language="ecmascript"
-      	  since="5.0"
-           message="Avoid using 'if...else' statements without curly braces"
-           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/braces.html#IfElseStmtsMustUseBraces">
-       <description>
-Avoid using if..else statements without using curly braces.
-       </description>
-       <priority>3</priority>
-         <properties>
-             <property name="xpath">
-                 <value>
-<![CDATA[
-//ExpressionStatement[parent::IfStatement[@Else = "true"]]
-   [not(child::Scope)]
-   [not(child::IfStatement)]
- ]]>
-                 </value>
-             </property>
-         </properties>
-       <example>
-<![CDATA[
-// Ok
-if (foo) {
-   x++;
-} else {
-   y++;
-}
-
-// Bad
-if (foo)
-   x++;
-else
-   y++;
-]]>
-       </example>
-     </rule>
-
-    <rule name="WhileLoopsMustUseBraces"
-   		language="ecmascript"
-    		 since="5.0"
-          message="Avoid using 'while' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/braces.html#WhileLoopsMustUseBraces">
-      <description>
-Avoid using 'while' statements without using curly braces.
-      </description>
-      <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//WhileLoop[not(child::Scope)]
-]]>
-                </value>
-            </property>
-        </properties>
-      <example>
-<![CDATA[
-// Ok
-while (true) {
-   x++;
-}
-
-// Bad
-while (true)
-   x++;
-]]>
-      </example>
-    </rule>
-
-     <rule name="ForLoopsMustUseBraces"
-   		language="ecmascript"
-     		  since="5.0"
-           message="Avoid using 'for' statements without curly braces"
-           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/braces.html#ForLoopsMustUseBraces">
-       <description>
-Avoid using 'for' statements without using curly braces.
-       </description>
-       <priority>3</priority>
-         <properties>
-             <property name="xpath">
-                 <value>
-<![CDATA[
-	//ForLoop[not(child::Scope)]
-|
-	//ForInLoop[not(child::Scope)]
-]]>
-                 </value>
-             </property>
-         </properties>
-       <example>
-<![CDATA[
-// Ok
-for (var i = 0; i < 42; i++) {
-   foo();
-}
-
-// Bad
-for (var i = 0; i < 42; i++)
-   foo();
-]]>
-       </example>
-     </rule>
+    <rule ref="category/ecmascript/codestyle.xml/ForLoopsMustUseBraces" deprecated="true" />
+    <rule ref="category/ecmascript/codestyle.xml/IfElseStmtsMustUseBraces" deprecated="true" />
+    <rule ref="category/ecmascript/codestyle.xml/IfStmtsMustUseBraces" deprecated="true" />
+    <rule ref="category/ecmascript/codestyle.xml/WhileLoopsMustUseBraces" deprecated="true" />
 
 </ruleset>

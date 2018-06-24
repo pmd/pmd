@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Few public fields
+     ]]></description>
+        <rule-property name="minimum">50</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int foo;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Too many public fields
+     ]]></description>
+        <rule-property name="minimum">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int foo;
+ public int bif;
+ public int baz;
+ public int bof;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Static final
+     ]]></description>
+        <rule-property name="minimum">1</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static final int foo;
+ public static final int foo1;
+ public static final int foo2;
+ public static final int foo3;
+}
+     ]]></code>
+    </test-code>
+    <code-fragment id="id-3-public-methods"><![CDATA[
+public class Foo {
+ public int foo1() {return 1;}
+ public int foo2() {return 1;}
+ public int foo3() {return 1;}
+}
+     ]]></code-fragment>
+    <test-code>
+        <description><![CDATA[
+Some public methods
+     ]]></description>
+        <rule-property name="minimum">50</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="id-3-public-methods"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Reduced minimum
+     ]]></description>
+        <rule-property name="minimum">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="id-3-public-methods"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Private fields
+     ]]></description>
+        <rule-property name="minimum">50</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private static final int foo;
+ private static final int foo1;
+ private static final int foo2;
+ private static final int foo3;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Private methods
+     ]]></description>
+        <rule-property name="minimum">50</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int foo1() {return 1;}
+ private int foo2() {return 1;}
+ private int foo3() {return 1;}
+}
+     ]]></code>
+    </test-code>
+</test-data>

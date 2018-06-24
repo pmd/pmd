@@ -87,5 +87,25 @@ public interface LanguageVersionHandler {
      */
     VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse);
 
+
+    /**
+     * Gets the visitor that performs multifile data gathering.
+     *
+     * @return The visitor starter
+     */
+    VisitorStarter getMultifileFacade();
+
+
+    /**
+     * Gets the visitor that populates the qualified names of the
+     * nodes.
+     *
+     * @param classLoader The classloader to use to resolve the types of type qualified names
+     *
+     * @return The visitor starter
+     */
+    VisitorStarter getQualifiedNameResolutionFacade(ClassLoader classLoader);
+
+
     DFAGraphRule getDFAGraphRule();
 }

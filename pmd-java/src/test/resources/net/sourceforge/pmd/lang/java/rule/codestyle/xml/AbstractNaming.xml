@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+ok, abstract class AbstractFoo
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class AbstractFoo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad, abstract class named Foo
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, concrete class named AbstractFoo
+     ]]></description>
+        <rule-property name="strict">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AbstractFoo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, concrete class named Foo
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1344 AbstractNaming should check reverse</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class AbstractFoo {}
+        ]]></code>
+    </test-code>
+</test-data>

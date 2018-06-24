@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+bad, equals(Foo foo)
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean equals(Foo foo) {return true;}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, equals(Object foo)
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean equals(Object foo) {return true;}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad, equal(Object foo)
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean equal(Object foo) {return true;}
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1431 SuspiciousEqualsMethodName false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Demo implements org.hibernate.usertype.UserType {
+    @Override
+    public boolean equals(Object x, Object y) throws HibernateException {
+      return x == null ? y == null : x.equals(y);
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

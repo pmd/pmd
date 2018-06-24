@@ -7,12 +7,8 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>5.6.0-SNAPSHOT</version>
+        <version>6.5.0-SNAPSHOT</version>
     </parent>
-
-    <properties>
-        <config.basedir>${basedir}/../pmd-core</config.basedir>
-    </properties>
 
     <build>
         <testResources>
@@ -108,11 +104,6 @@
                     <suppressionsLocation>pmd-java-checkstyle-suppressions.xml</suppressionsLocation>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>net.sourceforge.pmd</groupId>
-                <artifactId>pmd-build</artifactId>
-            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -136,6 +127,14 @@
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>net.sourceforge.saxon</groupId>
@@ -155,8 +154,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.github.stefanbirkner</groupId>
             <artifactId>system-rules</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-testutil</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

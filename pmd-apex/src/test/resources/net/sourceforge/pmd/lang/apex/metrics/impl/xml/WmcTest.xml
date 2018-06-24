@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="full-example">
+        <![CDATA[
+        public class Complicated {
+          int x = 0, y = 1, z = 2, t = 2;
+          boolean a = false, b = true, c = false, d = true;
+
+          public void example1() {
+            if (a && b || b && d) {
+              if (y == z) {
+                x = 2;
+              } else if (y == t && !d) {
+                x = 2;
+              } else {
+                x = 2;
+              }
+            }
+          }
+
+          public void example2() {
+            if (c && d) {
+              while (z < y) {
+                x = 2;
+              }
+            }
+          }
+
+          public void example3() {
+            if (a && !b) {
+              for (int n = 0; n < t; n++) {
+                x = 2;
+              }
+            }
+          }
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Complicated class</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Complicated' has value 16.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Empty classes count 0</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo' has value 0.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Abstract classes and enums are supported</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo' has value 2.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            abstract class Foo {
+              void foo() {
+                if (true) {
+                  foo();
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Annotations and interfaces are not supported</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            interface Foo {
+              void foo();
+            }
+            ]]>
+        </code>
+    </test-code>
+
+</test-data>

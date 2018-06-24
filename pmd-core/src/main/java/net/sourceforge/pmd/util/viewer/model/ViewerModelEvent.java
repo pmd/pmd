@@ -11,6 +11,7 @@ package net.sourceforge.pmd.util.viewer.model;
  *
  * @author Boris Gruschko ( boris at gruschko.org )
  */
+@Deprecated // to be removed with PMD 7.0.0
 public class ViewerModelEvent {
     /**
      * reason in the case of code recompilation

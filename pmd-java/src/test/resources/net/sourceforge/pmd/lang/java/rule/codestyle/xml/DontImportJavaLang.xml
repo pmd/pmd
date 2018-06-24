@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+import java.lang.String
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.lang.String;
+public class Foo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+import java.lang.*
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.lang.*;
+public class Foo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+import java.lang.ref/reflect/annotation/instrument/management
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.ref.*;
+import java.lang.reflect.*;
+import java.lang.annotation.*;
+import java.lang.instrument.*;
+import java.lang.management.*;
+import java.lang.ProcessBuilder.*;
+public class Foo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Static Java imports are OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.lang.*;
+public class Foo {}
+     ]]></code>
+     <source-type>java 1.5</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Importing java.lang.Thread.UncaughtExceptionHandler
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.Thread.UncaughtExceptionHandler;
+public class Foo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>import java.lang.ProcessBuilder.Redirect: #1031 false DontImportJavaLang</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.ProcessBuilder.Redirect;
+
+public class Foo {}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>import java.lang.invoke.MethodHandles: #339 false DontImportJavaLang</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.invoke.MethodHandles;
+
+public class Foo {}
+        ]]></code>
+    </test-code>
+</test-data>

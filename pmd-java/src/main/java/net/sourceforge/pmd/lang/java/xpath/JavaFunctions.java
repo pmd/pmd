@@ -18,12 +18,27 @@ public final class JavaFunctions {
         // utility class
     }
 
-    public static boolean typeof(XPathContext context, String nodeTypeName, String fullTypeName) {
+    @Deprecated
+    public static boolean typeof(final XPathContext context, final String nodeTypeName, final String fullTypeName) {
         return typeof(context, nodeTypeName, fullTypeName, null);
     }
 
-    public static boolean typeof(XPathContext context, String nodeTypeName, String fullTypeName, String shortTypeName) {
+    @Deprecated
+    public static boolean typeof(final XPathContext context, final String nodeTypeName,
+            final String fullTypeName, final String shortTypeName) {
         return TypeOfFunction.typeof((Node) ((ElementNode) context.getContextItem()).getUnderlyingNode(), nodeTypeName,
                 fullTypeName, shortTypeName);
+    }
+
+    public static double metric(final XPathContext context, final String metricKeyName) {
+        return MetricFunction.getMetric((Node) ((ElementNode) context.getContextItem()).getUnderlyingNode(), metricKeyName);
+    }
+
+    public static boolean typeIs(final XPathContext context, final String fullTypeName) {
+        return TypeIsFunction.typeIs((Node) ((ElementNode) context.getContextItem()).getUnderlyingNode(), fullTypeName);
+    }
+
+    public static boolean typeIsExactly(final XPathContext context, final String fullTypeName) {
+        return TypeIsExactlyFunction.typeIsExactly((Node) ((ElementNode) context.getContextItem()).getUnderlyingNode(), fullTypeName);
     }
 }

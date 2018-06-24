@@ -8,20 +8,20 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class SecurityRulesTest extends SimpleAggregatorTst {
 
-    private static final String RULESET = "apex-security";
+    private static final String RULESET = "category/apex/security.xml";
 
     @Override
     public void setUp() {
         addRule(RULESET, "ApexBadCrypto");
+        addRule(RULESET, "ApexCRUDViolation");
+        addRule(RULESET, "ApexCSRF");
+        addRule(RULESET, "ApexDangerousMethods");
+        addRule(RULESET, "ApexInsecureEndpoint");
+        addRule(RULESET, "ApexOpenRedirect");
+        addRule(RULESET, "ApexSharingViolations");
+        addRule(RULESET, "ApexSOQLInjection");
+        addRule(RULESET, "ApexSuggestUsingNamedCred");
         addRule(RULESET, "ApexXSSFromEscapeFalse");
         addRule(RULESET, "ApexXSSFromURLParam");
-        addRule(RULESET, "ApexCSRF");
-        addRule(RULESET, "ApexOpenRedirect");
-        addRule(RULESET, "ApexSOQLInjection");
-        addRule(RULESET, "ApexSharingViolations");
-        addRule(RULESET, "ApexInsecureEndpoint");
-        addRule(RULESET, "ApexCRUDViolation");
-        addRule(RULESET, "ApexDangerousMethods");
-        addRule(RULESET, "ApexSuggestUsingNamedCred");
     }
 }

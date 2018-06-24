@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Simple violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+function foo() {
+    if (x) {
+        return y;
+    } else {
+        return z;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Simple fix</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+function foo() {
+    if (x) {
+        return y;
+    }
+    return z;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No return in if</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+function foo() {
+    if (x) {
+        x++;
+    } else {
+        return z;
+    }
+    return x;
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

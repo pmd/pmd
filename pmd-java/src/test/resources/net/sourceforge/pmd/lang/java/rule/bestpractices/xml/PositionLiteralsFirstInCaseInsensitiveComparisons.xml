@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+ok, literal comes first
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar(String x) {
+  return "2". equalsIgnoreCase(x);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad, literal comes last
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar(String x) {
+  return x.equalsIgnoreCase("2");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if((str == null) || (equalsIgnoreCase(""))) {
+   str = "snafu";
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Test case from bug [1472195] - PositionLiteralsFirstInComparisons give many false positives
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo
+{
+	public void bug()
+	{
+		if (equalsIgnoreCase(new BigDecimal("123"))) {}
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Test case from bug [1472195] - PositionLiteralsFirstInComparisons give many false positives
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo
+{
+	public void testMethod(String str)
+	{
+		if (equalsIgnoreCase(getAnotherString("abc"))){}
+  	}
+
+  	private String getAnotherString(String str)
+	{
+		return "xyz";
+	}
+}
+     ]]></code>
+    </test-code>
+
+</test-data>

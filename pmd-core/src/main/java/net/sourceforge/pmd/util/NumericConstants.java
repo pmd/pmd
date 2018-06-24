@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.util;
 
-public class NumericConstants {
+public final class NumericConstants {
 
     public static final Integer ZERO = 0;
 

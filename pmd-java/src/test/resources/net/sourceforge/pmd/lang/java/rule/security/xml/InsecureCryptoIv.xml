@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Hard coded inline IvSpec, bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.Cipher;
+
+public class Foo {
+
+    void outOfScope() {
+        byte[] ivBytes = new byte[16];
+    }
+    byte[] ivBytes = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, };  	
+
+    void encrypt() {
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec, new IvParameterSpec(ivBytes));
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Randomly generated IV, good</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.IvParameterSpec;
+
+public class Foo {
+
+    void encrypt(SecretKeySpec key) {
+        byte[] ivBytes = new byte[key.getEncoded().length];
+        Util.getSecureRandom().nextBytes(ivBytes);
+        IvParameterSpec iv = new IvParameterSpec(ivBytes);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Hard coded Iv from string, bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.IvParameterSpec;
+
+public class Foo {
+
+    void encrypt() {
+        byte[] staticIv = "ALL_ZEROS_HERE".getBytes();
+        IvParameterSpec iv = new IvParameterSpec(staticIv);
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>Hard coded Iv field, bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.IvParameterSpec;
+
+public class Foo {
+
+    byte[] ivBytes = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, };
+
+    void encrypt() {
+        IvParameterSpec iv = new IvParameterSpec(ivBytes);
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>Hard coded Iv local var, bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.IvParameterSpec;
+
+public class Foo {
+
+    void encrypt() {
+        byte[] ivBytes = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, };
+        IvParameterSpec iv = new IvParameterSpec(ivBytes);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Random IV, good</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.IvParameterSpec;
+import java.security.SecureRandom;
+
+public class Foo {
+    void encrypt() {
+        byte[] iv = new byte[16];
+        SecureRandom sprng = new SecureRandom();
+        sprng.nextBytes(iv);
+        IvParameterSpec ivs = new IvParameterSpec(ivBytes);
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>Inline IvSpec Random IV, good</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.IvParameterSpec;
+import java.security.SecureRandom;
+import javax.crypto.Cipher;
+
+public class Foo {
+    void encrypt() {
+        byte[] iv = new byte[16];
+        SecureRandom sprng = new SecureRandom();
+        sprng.nextBytes(iv);
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec, new IvParameterSpec(iv));
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE when byte array is not initialized directly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.IvParameterSpec;
+import java.security.SecureRandom;
+import javax.crypto.Cipher;
+
+public class Foo {
+    void encrypt() {
+        byte[] iv; // no direct initialization
+        iv = new byte[16];
+        SecureRandom sprng = new SecureRandom();
+        sprng.nextBytes(iv);
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec, new IvParameterSpec(iv));
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Basic test case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+public class GCCall
+{
+	public void doSomething()
+	{ 
+//		Explicit gc call ! 	
+		Runtime.getRuntime().gc();
+	}
+}
+		     ]]>
+		</code>
+    </test-code>
+        <test-code>
+        <description><![CDATA[
+Alernate Basic test case
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code>
+        	<![CDATA[
+public class GCCall
+{
+	public void explicitGCcall() 
+	{ 
+		// Explicit gc call ! 
+		System.gc(); 
+	}
+
+	public void doSomething() 
+	{ 
+		// Explicit gc call ! 
+		Runtime.getRuntime().gc(); 
+	} 
+}
+		     ]]>
+		</code>
+    </test-code>
+	<test-code>
+        <description><![CDATA[
+Call in a constructor
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+public class GCCall
+{
+	public GCCall()
+	{
+		// Explicit gc call !
+		System.gc();
+	}
+}
+		     ]]>
+		</code>
+    </test-code>
+</test-data>

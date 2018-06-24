@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Bad Session suffix
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface BadSuffixSession extends javax.ejb.EJBObject {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad EJB suffix
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface BadSuffixEJB extends javax.ejb.EJBObject {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad Bean suffix
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface BadSuffixBean extends javax.ejb.EJBObject {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Good suffix
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface GoodName extends javax.ejb.EJBObject {}
+     ]]></code>
+    </test-code>
+</test-data>

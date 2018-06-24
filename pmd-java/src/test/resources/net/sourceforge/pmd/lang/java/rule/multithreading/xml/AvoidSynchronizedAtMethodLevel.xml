@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+TEST1
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    synchronized void foo () {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+TEST2
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo () {
+        synchronized(mutex) {}
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#991 AvoidSynchronizedAtMethodLevel for static methods - bad case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static synchronized void foo() {
+        // complete method is synchronized on Test.class
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#991 AvoidSynchronizedAtMethodLevel for static methods - good case</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static void foo() {
+        synchronized(Test.class) {
+            // only a block is synchronized on Test.class
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

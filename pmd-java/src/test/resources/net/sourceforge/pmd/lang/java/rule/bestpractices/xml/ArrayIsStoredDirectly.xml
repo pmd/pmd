@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Clear violation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ void foo (String[] x) {arr = x;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Clear violation with this.
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ void foo (String[] arr) {this.arr = arr;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment to an internal array
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ void foo (String[] x) {this.arr = x;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment of param to local
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ void getArr(String[] arr) {String[] foo; foo = arr;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip interfaces
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ void getArr(String[] arr);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip abstract, native
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ abstract void getArr(String[] arr);
+ native void getArr2(String[] arr);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+equality expression, not assignment
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar(String[] buf) {
+   x = (buf[0] == 1);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment of array element
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar(String[] buf) {
+   x = buf[0];
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Constructor clear violation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ Foo (String[] x) {arr = x;}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Constructor no violation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ Foo (String[] x) {arr = x.clone();}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+No reassignment
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ void foo() {String[] bar = {""};arr = bar;}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Trigger on Varargs
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ void foo(String... arr) {this.arr = arr;}
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1063 False+: ArrayIsStoredDirectly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+
+public class TestClass {
+    private final Object[] obj;
+
+    public TestClass(Object[] obj) {
+        if (obj == null) {
+            this.obj = new Object[]{};
+        } else {
+            this.obj = Arrays.copyOf(obj, obj.length);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1476 False positive of ArrayIsStoredDirectly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NotificationPacket {
+    public NotificationPacket(byte id, byte[] rawTypeData)
+    {
+        super(id);
+        if (rawTypeData == null)
+        {
+            throw new IllegalArgumentException("No type data is specified");
+        }
+        if (rawTypeData.length == 0)
+        {
+            this.message = EMPTY_MESSAGE;
+        }
+        else
+        {
+            this.message = new String(rawTypeData, StandardCharsets.UTF_8);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#468 False positive when qualifying with this</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final int[] a;
+
+    public Foo(int[] b) {
+        this.a = new int[b.length];
+        for (int i = 0; i < b.length; i++) {
+            this.a[i] = b[i];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>
