@@ -109,5 +109,4 @@ trigger Accounts on Account (before insert, before update, before delete, after 
 ]]>
         </example>
     </rule>
-
 </ruleset>
