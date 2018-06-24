@@ -158,8 +158,7 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
-   <rule ref="rulesets/apex/style.xml/AvoidNonExistentAnnotations" message="Use of non existent annotations will lead to broken Apex code which will not compile in the future.">
-      <priority>3</priority>
+   <rule ref="category/apex/errorprone.xml/AvoidNonExistentAnnotations">
       <properties>
          <!-- relevant for Code Climate output only -->
          <property name="cc_categories" value="Style" />
