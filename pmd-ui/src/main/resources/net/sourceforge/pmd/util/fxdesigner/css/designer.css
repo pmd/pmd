@@ -1,3 +1,7 @@
+/* Useful links: */
+/* http://hg.openjdk.java.net/openjfx/jfx-dev/rt/file/762a57e4b74a/modules/javafx.controls/src/main/resources/com/sun/javafx/scene/control/skin/modena/modena.css */
+/* https://fontawesome.com/icons?d=gallery */
+/* TODO convert to Less */
 
 .list-view, .tree-view, .table-view {
     -fx-selection-bar: royalblue;
@@ -96,6 +100,7 @@
 .titled-pane.accent-header > .title,
 .tool-bar.accent-header,
 .tool-bar.info-title-bar,
+.tool-bar.editor-tools,
 .split-pane.accent-header > .split-pane-divider,
 #main-toolbar, #main-vertical-split-pane > .split-pane-divider {
     -fx-background-color: derive(-fx-base, -14%);
@@ -140,6 +145,8 @@
     -fx-border-width: 1;
 }
 
+
+/* This is the special button to reduce the lower split pane. */
 .toggle-button:selected.expand-toggle {
     -fx-shape: "M 0 0 h 7 l -3.5 4 z";
 }

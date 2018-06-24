@@ -1,37 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
-<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1200.0"
-            stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/9"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="net.sourceforge.pmd.util.fxdesigner.XPathPanelController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1200.0" stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.XPathPanelController">
     <children>
-        <SplitPane dividerPositions="0.2, 0.8" AnchorPane.bottomAnchor="0.0"
-                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                   AnchorPane.topAnchor="0.0">
+        <SplitPane dividerPositions="0.2, 0.8" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
                 <AnchorPane>
                     <children>
-                        <TitledPane animated="false" collapsible="false" styleClass="accent-header"
-                                    text="Properties" AnchorPane.bottomAnchor="0.0"
-                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                    AnchorPane.topAnchor="0.0">
+                        <TitledPane animated="false" collapsible="false" styleClass="accent-header" text="Properties" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <content>
                                 <AnchorPane>
-                                    <PropertyTableView fx:id="propertyTableView"
-                                                       AnchorPane.bottomAnchor="0.0"
-                                                       AnchorPane.leftAnchor="0.0"
-                                                       AnchorPane.rightAnchor="0.0"
-                                                       AnchorPane.topAnchor="0.0"/>
+                                    <PropertyTableView fx:id="propertyTableView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     <padding>
-                                        <Insets bottom="-0.5" left="-0.5" right="-0.5" top="-0.5"/>
+                                        <Insets bottom="-0.5" left="-0.5" right="-0.5" top="-0.5" />
                                     </padding>
                                 </AnchorPane>
                             </content>
@@ -40,14 +28,11 @@
                 </AnchorPane>
                 <AnchorPane>
                     <children>
-                        <TitledPane collapsible="false" styleClass="accent-header"
-                                    text="XPath Expression" AnchorPane.bottomAnchor="0.0"
-                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                    AnchorPane.topAnchor="0.0">
+                        <TitledPane collapsible="false" styleClass="accent-header" text="XPath Expression" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <content>
-                                <CustomCodeArea stylesheets="@../css/editor-theme.css"
-                                                fx:id="xpathExpressionArea">
-                                </CustomCodeArea>
+                                <SyntaxHighlightingCodeArea stylesheets="@../css/editor-theme.css"
+                                                            fx:id="xpathExpressionArea">
+                                </SyntaxHighlightingCodeArea>
                             </content>
                         </TitledPane>
                     </children>
@@ -60,19 +45,15 @@
                                     AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                     AnchorPane.topAnchor="0.0">
                             <content>
-                                <ListView fx:id="xpathResultListView">
-                                    <cellFactory>
-
-                                    </cellFactory>
-                                </ListView>
+                                <ListView fx:id="xpathResultListView" stylesheets="@../css/syntax-highlighting.css" />
                             </content>
                         </TitledPane>
                     </children>
                 </AnchorPane>
             </items>
             <styleClass>
-                <String fx:value="bottom-pane-split-pane"/>
-                <String fx:value="accent-header"/>
+                <String fx:value="bottom-pane-split-pane" />
+                <String fx:value="accent-header" />
             </styleClass>
         </SplitPane>
     </children>

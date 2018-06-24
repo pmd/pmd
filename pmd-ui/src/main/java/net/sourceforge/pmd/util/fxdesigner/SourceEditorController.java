@@ -4,18 +4,21 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,19 +30,22 @@ import org.reactfx.value.Var;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
 import net.sourceforge.pmd.util.fxdesigner.popups.AuxclasspathSetupController;
+import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlighter;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea.LayerId;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -55,29 +61,32 @@ import javafx.scene.control.TreeView;
  * @since 6.0.0
  */
 public class SourceEditorController implements Initializable, SettingsOwner {
-    private final MainDesignerController parent;
 
+    private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
     @FXML
     private Label astTitleLabel;
     @FXML
     private TreeView<Node> astTreeView;
     @FXML
-    private CustomCodeArea codeEditorArea;
+    private HighlightLayerCodeArea<StyleLayerIds> codeEditorArea;
 
     private ASTManager astManager;
     private TreeViewWrapper<Node> treeViewWrapper;
-    private ASTTreeItem selectedTreeItem;
-    private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
-    private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(Collections.emptyList());
+    private final MainDesignerController parent;
+
+    private Var<Node> currentFocusNode = Var.newSimpleVar(null);
+    private ASTTreeItem selectedTreeItem;
+
+    private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(emptyList());
     private final Val<ClassLoader> auxclasspathClassLoader = auxclasspathFiles.map(fileList -> {
         try {
             return new ClasspathClassLoader(fileList, SourceEditorController.class.getClassLoader());
         } catch (IOException e) {
             e.printStackTrace();
+            return SourceEditorController.class.getClassLoader();
         }
-        return SourceEditorController.class.getClassLoader();
     });
 
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
@@ -101,7 +110,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
                     .filterMap(Objects::nonNull, TreeItem::getValue)
                     .subscribe(parent::onNodeItemSelected);
 
-        codeEditorArea.richChanges()
+        codeEditorArea.plainTextChanges()
                       .filter(t -> !t.isIdentity())
                       .successionEnds(AST_REFRESH_DELAY)
                       // Refresh the AST anytime the text, classloader, or language version changes
@@ -113,33 +122,55 @@ public class SourceEditorController implements Initializable, SettingsOwner {
                           parent.refreshAST();
                       });
 
-        codeEditorArea.setParagraphGraphicFactory(LineNumberFactory.get(codeEditorArea));
+        codeEditorArea.setParagraphGraphicFactory(lineNumberFactory());
+    }
+
+
+    private IntFunction<javafx.scene.Node> lineNumberFactory() {
+        IntFunction<javafx.scene.Node> base = LineNumberFactory.get(codeEditorArea);
+        Val<Integer> activePar = Val.wrap(codeEditorArea.currentParagraphProperty());
+
+        return idx -> {
+
+            javafx.scene.Node label = base.apply(idx);
+
+            activePar.conditionOnShowing(label)
+                     .values()
+                     .subscribe(p -> label.pseudoClassStateChanged(PseudoClass.getPseudoClass("has-caret"), idx == p));
+
+            // adds a pseudo class if part of the focus node appears on this line
+            currentFocusNode.conditionOnShowing(label)
+                            .values()
+                            .subscribe(n -> label.pseudoClassStateChanged(PseudoClass.getPseudoClass("is-focus-node"),
+                                                                          n != null && idx + 1 <= n.getEndLine() && idx + 1 >= n.getBeginLine()));
+
+            return label;
+        };
     }
 
 
     /**
-     * Refreshes the AST.
+     * Refreshes the AST and returns the new compilation unit if the parse didn't fail.
      */
-    public void refreshAST() {
+    public Optional<Node> refreshAST() {
         String source = getText();
-        Node previous = getCompilationUnit();
-        Node current;
 
         if (StringUtils.isBlank(source)) {
             astTreeView.setRoot(null);
-            return;
+            return Optional.empty();
         }
 
+        Optional<Node> current;
+
         try {
-            current = astManager.updateCompilationUnit(source, auxclasspathClassLoader.getValue());
+            current = astManager.updateIfChanged(source, auxclasspathClassLoader.getValue());
         } catch (ParseAbortedException e) {
-            invalidateAST(true);
-            return;
+            astTitleLabel.setText("Abstract syntax tree (error)");
+            return Optional.empty();
         }
-        if (!Objects.equals(previous, current)) {
-            parent.invalidateAst();
-            setUpToDateCompilationUnit(current);
-        }
+
+        current.ifPresent(this::setUpToDateCompilationUnit);
+        return current;
     }
 
 
@@ -149,69 +180,98 @@ public class SourceEditorController implements Initializable, SettingsOwner {
                                                    auxclasspathFiles::setValue);
     }
 
-
-    @PersistentProperty
-    public String getAuxclasspathFiles() {
-        return auxclasspathFiles.getValue().stream().map(p -> p.getAbsolutePath()).collect(Collectors.joining(File.pathSeparator));
-    }
-
-
-    public void setAuxclasspathFiles(String files) {
-        List<File> newVal = Arrays.asList(files.split(File.pathSeparator)).stream().map(File::new).collect(Collectors.toList());
-        auxclasspathFiles.setValue(newVal);
-    }
-
-
     private void setUpToDateCompilationUnit(Node node) {
-        astTitleLabel.setText("Abstract Syntax Tree");
+        parent.invalidateAst();
+        astTitleLabel.setText("Abstract syntax tree");
         ASTTreeItem root = ASTTreeItem.getRoot(node);
         astTreeView.setRoot(root);
     }
 
 
-    public void shutdown() {
-        codeEditorArea.disableSyntaxHighlighting();
-    }
-
-
     private void updateSyntaxHighlighter(Language language) {
-        Optional<SyntaxHighlighter> highlighter = AvailableSyntaxHighlighters.getHighlighterForLanguage(language);
+        codeEditorArea.setSyntaxHighlighter(AvailableSyntaxHighlighters.getHighlighterForLanguage(language)
+                                                                       .orElse(null));
+    }
 
-        if (highlighter.isPresent()) {
-            codeEditorArea.setSyntaxHighlightingEnabled(highlighter.get());
-        } else {
-            codeEditorArea.disableSyntaxHighlighting();
+
+    /** Clears the name occurences. */
+    public void clearErrorNodes() {
+        codeEditorArea.clearStyleLayer(StyleLayerIds.ERROR);
+    }
+
+
+    /** Clears the name occurences. */
+    public void clearNameOccurences() {
+        codeEditorArea.clearStyleLayer(StyleLayerIds.ERROR);
+    }
+
+
+    /** Clears the highlighting of XPath results. */
+    public void clearXPathHighlight() {
+        codeEditorArea.clearStyleLayer(StyleLayerIds.XPATH_RESULT);
+    }
+
+
+    /**
+     * Highlights the given node (or nothing if null).
+     * Removes highlighting on the previously highlighted node.
+     */
+    public void setFocusNode(Node node) {
+        if (Objects.equals(node, currentFocusNode.getValue())) {
+            return;
+        }
+
+        codeEditorArea.styleNodes(node == null ? emptyList() : singleton(node), StyleLayerIds.FOCUS, true);
+
+        if (node != null) {
+            scrollEditorToNode(node);
+        }
+
+        currentFocusNode.setValue(node);
+    }
+
+
+    /** Highlights xpath results (xpath highlight). */
+    public void highlightXPathResults(Collection<? extends Node> nodes) {
+        codeEditorArea.styleNodes(nodes, StyleLayerIds.XPATH_RESULT, true);
+    }
+
+
+    /** Highlights name occurrences (secondary highlight). */
+    public void highlightNameOccurrences(Collection<? extends NameOccurrence> occs) {
+        codeEditorArea.styleNodes(occs.stream().map(NameOccurrence::getLocation).collect(Collectors.toList()), StyleLayerIds.NAME_OCCURENCE, true);
+    }
+
+
+    /** Highlights nodes that are in error (secondary highlight). */
+    public void highlightErrorNodes(Collection<? extends Node> nodes) {
+        codeEditorArea.styleNodes(nodes, StyleLayerIds.ERROR, true);
+        if (!nodes.isEmpty()) {
+            scrollEditorToNode(nodes.iterator().next());
         }
     }
 
 
-    public void clearNodeHighlight() {
-        codeEditorArea.clearPrimaryStyleLayer();
-    }
+    /** Scroll the editor to a node and makes it visible. */
+    private void scrollEditorToNode(Node node) {
 
+        codeEditorArea.moveTo(node.getBeginLine() - 1, 0);
 
-    public void highlightNodePrimary(Node node) {
-        highlightNodes(Collections.singleton(node), Collections.singleton("primary-highlight"));
-    }
+        int visibleLength = codeEditorArea.lastVisibleParToAllParIndex() - codeEditorArea.firstVisibleParToAllParIndex();
 
-
-    private void highlightNodes(Collection<? extends Node> nodes, Set<String> cssClasses) {
-        for (Node node : nodes) {
-            if (codeEditorArea.isInRange(node)) {
-                codeEditorArea.styleCss(node, cssClasses);
-                codeEditorArea.paintCss();
-                codeEditorArea.moveTo(node.getBeginLine() - 1, 0);
-                codeEditorArea.requestFollowCaret();
-            } else {
-                codeEditorArea.clearPrimaryStyleLayer();
-            }
+        if (node.getEndLine() - node.getBeginLine() > visibleLength
+                || node.getBeginLine() < codeEditorArea.firstVisibleParToAllParIndex()) {
+            codeEditorArea.showParagraphAtTop(Math.max(node.getBeginLine() - 2, 0));
+        } else if (node.getEndLine() > codeEditorArea.lastVisibleParToAllParIndex()) {
+            codeEditorArea.showParagraphAtBottom(Math.min(node.getEndLine(), codeEditorArea.getParagraphs().size()));
         }
     }
 
 
-    public void highlightNodesSecondary(Collection<? extends Node> nodes) {
-        highlightNodes(nodes, Collections.singleton("secondary-highlight"));
+    public void clearStyleLayers() {
+        codeEditorArea.clearStyleLayers();
     }
+
 
     public void focusNodeInTreeView(Node node) {
         SelectionModel<TreeItem<Node>> selectionModel = astTreeView.getSelectionModel();
@@ -232,14 +292,16 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         }
     }
 
-    private void invalidateAST(boolean error) {
-        astTitleLabel.setText("Abstract syntax tree (" + (error ? "error" : "outdated") + ")");
-    }
 
-
+    /** Moves the caret to a position and makes the view follow it. */
     public void moveCaret(int line, int column) {
         codeEditorArea.moveTo(line, column);
         codeEditorArea.requestFollowCaret();
+    }
+
+
+    public TextAwareNodeWrapper wrapNode(Node node) {
+        return codeEditorArea.wrapNode(node);
     }
 
     @PersistentProperty
@@ -258,13 +320,11 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    public Node getCompilationUnit() {
+    /**
+     * Returns the most up-to-date compilation unit, or empty if it can't be parsed.
+     */
+    public Optional<Node> getCompilationUnit() {
         return astManager.getCompilationUnit();
-    }
-
-
-    public Val<Node> compilationUnitProperty() {
-        return astManager.compilationUnitProperty();
     }
 
 
@@ -284,8 +344,44 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
 
-    public void clearStyleLayers() {
-        codeEditorArea.clearStyleLayers();
+    @PersistentProperty
+    public String getAuxclasspathFiles() {
+        return auxclasspathFiles.getValue().stream().map(File::getAbsolutePath).collect(Collectors.joining(File.pathSeparator));
+    }
+
+
+    public void setAuxclasspathFiles(String files) {
+        List<File> newVal = Arrays.stream(files.split(File.pathSeparator)).map(File::new).collect(Collectors.toList());
+        auxclasspathFiles.setValue(newVal);
+    }
+
+
+    /** Style layers for the code area. */
+    private enum StyleLayerIds implements LayerId {
+        // caution, the name of the constants are used as style classes
+
+        /** For the currently selected node. */
+        FOCUS,
+        /** For declaration usages. */
+        NAME_OCCURENCE,
+        /** For nodes in error. */
+        ERROR,
+        /** For xpath results. */
+        XPATH_RESULT;
+
+        private final String styleClass; // the id will be used as a style class
+
+
+        StyleLayerIds() {
+            this.styleClass = name().toLowerCase(Locale.ROOT).replace('_', '-') + "-highlight";
+        }
+
+
+        /** focus-highlight, xpath-highlight, error-highlight, name-occurrence-highlight */
+        @Override
+        public String getStyleClass() {
+            return styleClass;
+        }
     }
 
 }
