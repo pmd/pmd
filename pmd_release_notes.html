@@ -1311,6 +1311,11 @@ letting you know exactly which modifiers are redundant at each declaration.</li>
       <li><a href="https://github.com/pmd/pmd/issues/861">#861</a>: [ecmascript] InnaccurateNumericLiteral false positive with hex literals</li>
     </ul>
   </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1174">#1174</a>: [java] CommentUtil.multiLinesIn() could lead to StringIndexOutOfBoundsException</li>
+    </ul>
+  </li>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/651">#651</a>: [java] SwitchStmtsShouldHaveDefault should be aware of enum types</li>
@@ -1333,6 +1338,24 @@ letting you know exactly which modifiers are redundant at each declaration.</li>
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
+
+<ul>
+  <li>
+    <p>The utility class <code class="highlighter-rouge">net.sourceforge.pmd.lang.java.ast.CommentUtil</code> has been deprecated and will be removed
+with PMD 7.0.0. Its methods have been intended to parse javadoc tags. A more useful solution will be added
+around the AST node <code class="highlighter-rouge">FormalComment</code>, which contains as children <code class="highlighter-rouge">JavadocElement</code> nodes, which in
+turn provide access to the <code class="highlighter-rouge">JavadocTag</code>.</p>
+
+    <p>All comment AST nodes (<code class="highlighter-rouge">FormalComment</code>, <code class="highlighter-rouge">MultiLineComment</code>, <code class="highlighter-rouge">SingleLineComment</code>) have a new method
+<code class="highlighter-rouge">getFilteredComment()</code> which provide access to the comment text without the leading <code class="highlighter-rouge">/*</code> markers.</p>
+  </li>
+  <li>
+    <p>The method <code class="highlighter-rouge">AbstractCommentRule.tagsIndicesIn()</code> has been deprecated and will be removed with
+PMD 7.0.0. It is not very useful, since it doesn’t extract the information
+in a useful way. You would still need check, which tags have been found, and with which
+data they might be accompanied.</p>
+  </li>
+</ul>
 
 <h3 id="external-contributions">External Contributions</h3>
 
