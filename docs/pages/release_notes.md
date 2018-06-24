@@ -42,6 +42,8 @@ This is a minor release.
     *   [#1193](https://github.com/pmd/pmd/issues/1193): \[core] Designer doesn't start with run.sh
 *   ecmascript
     *   [#861](https://github.com/pmd/pmd/issues/861): \[ecmascript] InnaccurateNumericLiteral false positive with hex literals
+*   java
+    *   [#1174](https://github.com/pmd/pmd/issues/1174): \[java] CommentUtil.multiLinesIn() could lead to StringIndexOutOfBoundsException
 *   java-bestpractices
     *   [#651](https://github.com/pmd/pmd/issues/651): \[java] SwitchStmtsShouldHaveDefault should be aware of enum types
     *   [#869](https://github.com/pmd/pmd/issues/869): \[java] GuardLogStatement false positive on return statements and Math.log
@@ -54,6 +56,19 @@ This is a minor release.
     *   [#715](https://github.com/pmd/pmd/issues/715): \[xml] ProjectVersionAsDependencyVersion false positive
 
 ### API Changes
+
+*   The utility class `net.sourceforge.pmd.lang.java.ast.CommentUtil` has been deprecated and will be removed
+    with PMD 7.0.0. Its methods have been intended to parse javadoc tags. A more useful solution will be added
+    around the AST node `FormalComment`, which contains as children `JavadocElement` nodes, which in
+    turn provide access to the `JavadocTag`.
+    
+    All comment AST nodes (`FormalComment`, `MultiLineComment`, `SingleLineComment`) have a new method
+    `getFilteredComment()` which provide access to the comment text without the leading `/*` markers.
+
+*   The method `AbstractCommentRule.tagsIndicesIn()` has been deprecated and will be removed with
+    PMD 7.0.0. It is not very useful, since it doesn't extract the information
+    in a useful way. You would still need check, which tags have been found, and with which
+    data they might be accompanied.
 
 ### External Contributions
 
