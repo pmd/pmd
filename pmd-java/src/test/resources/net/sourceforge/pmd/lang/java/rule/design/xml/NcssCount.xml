@@ -124,6 +124,7 @@
     <test-code>
         <description>Full example - Standard version</description>
         <rule-property name="classReportLevel">60</rule-property>
+        <rule-property name="methodReportLevel">10</rule-property>
         <expected-problems>4</expected-problems>
         <expected-messages>
             <message>The class 'Foo' has a NCSS line count of 65 (Highest = 20).</message>
@@ -137,6 +138,7 @@
     <test-code>
         <description>Full example - JavaNcss version</description>
         <rule-property name="classReportLevel">60</rule-property>
+        <rule-property name="methodReportLevel">10</rule-property>
         <rule-property name="ncssOptions">countImports</rule-property>
         <expected-problems>4</expected-problems>
         <expected-messages>
