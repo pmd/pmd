@@ -108,6 +108,15 @@
         <dependency>
             <groupId>jaxen</groupId>
             <artifactId>jaxen</artifactId>
+            <!--
+                Jaxen is optionally, so that it doesn't get inherited by default.
+                Jaxen is shaded into pmd-core (without org.w3c.dom.UserDataHandler).
+                Adding Jaxen again as a dependency would reintroduce the duplicated
+                org.w3c.dom.UserDataHandler interface.
+                See https://github.com/pmd/pmd/issues/1074
+                and https://github.com/pmd/pmd/pull/1201
+            -->
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.java.dev.javacc</groupId>
