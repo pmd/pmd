@@ -141,11 +141,11 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         EventStreams.merge(keyCombo, changesEventStream).map(searchPoint -> {
             int indexOfSlash = xpathExpressionArea.getText().lastIndexOf("/", searchPoint - 1) + 1;
             String input = xpathExpressionArea.getText();
-            if(searchPoint > input.length()) {
-               input = input.substring(indexOfSlash, searchPoint-1);
-            }
-            else{
-                input = input.substring(indexOfSlash,searchPoint);
+            if (searchPoint > input.length()) {
+                searchPoint = input.length();
+                input = input.substring(indexOfSlash, searchPoint);
+            } else {
+                input = input.substring(indexOfSlash, searchPoint);
             }
 
             return Tuples.t(indexOfSlash, input);
