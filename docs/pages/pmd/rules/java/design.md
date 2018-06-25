@@ -1134,8 +1134,8 @@ class Foo {                         // +1, total Ncss = 12
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
 |ncssOptions||Choose options for the calculation of Ncss|yes. Delimiter is '\|'.|
-|methodReportLevel|12|Metric reporting threshold for methods|no|
-|classReportLevel|250|Metric reporting threshold for classes|no|
+|methodReportLevel|60|NCSS reporting threshold for methods|no|
+|classReportLevel|1500|NCSS reporting threshold for classes|no|
 
 **Use this rule by referencing it:**
 ``` xml
