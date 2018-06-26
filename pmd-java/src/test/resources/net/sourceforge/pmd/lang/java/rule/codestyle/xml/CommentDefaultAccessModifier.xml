@@ -209,4 +209,16 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1211 [java] CommentDefaultAccessModifier false positive with nested interface</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface A {
+    interface B {
+        default void b() {}
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -21,6 +21,9 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   java-codestyle
+    *   [#1211](https://github.com/pmd/pmd/issues/1211): \[java] CommentDefaultAccessModifier false positive with nested interfaces (regression from 6.4.0)
+
 ### API Changes
 
 ### External Contributions
