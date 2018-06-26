@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.5.0</li>
+    <li class="sidebarTitle">PMD 6.6.0</li>
     
     
     
@@ -1257,21 +1257,16 @@ $('#toc').on('click', 'a', function() {
 
     
 
-  <h2 id="---650-snapshot">????? - 6.5.0-SNAPSHOT</h2>
+  <h2 id="---660-snapshot">????? - 6.6.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.5.0.</p>
+<p>The PMD team is pleased to announce PMD 6.6.0.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="table-of-contents">Table Of Contents</h3>
 
 <ul>
-  <li><a href="#new-and-noteworthy">New and noteworthy</a>
-    <ul>
-      <li><a href="#new-rules">New Rules</a></li>
-      <li><a href="#modified-rules">Modified Rules</a></li>
-    </ul>
-  </li>
+  <li><a href="#new-and-noteworthy">New and noteworthy</a></li>
   <li><a href="#fixed-issues">Fixed Issues</a></li>
   <li><a href="#api-changes">API Changes</a></li>
   <li><a href="#external-contributions">External Contributions</a></li>
@@ -1279,99 +1274,12 @@ $('#toc').on('click', 'a', function() {
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="new-rules">New Rules</h4>
-
-<ul>
-  <li>The new Apex rule <a href="pmd_rules_apex_errorprone.html#avoidnonexistentannotations"><code class="highlighter-rouge">AvoidNonExistentAnnotations</code></a> (<code class="highlighter-rouge">apex-errorprone</code>)
-detects usages non-officially supported annotations. Apex supported non existent annotations for legacy reasons.
-In the future, use of such non-existent annotations could result in broken Apex code that will not compile.
-A full list of supported annotations can be found <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm">here</a></li>
-</ul>
-
-<h4 id="modified-rules">Modified Rules</h4>
-
-<ul>
-  <li>The Java rule <a href="pmd_rules_java_codestyle.html#unnecessarymodifier">UnnecessaryModifier</a> (<code class="highlighter-rouge">java-codestyle</code>)
-now detects enum constrcutors with explicit <code class="highlighter-rouge">private</code> modifier. The rule now produces better error messages
-letting you know exactly which modifiers are redundant at each declaration.</li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-<ul>
-  <li>all
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1119">#1119</a>: [doc] Make the landing page of the documentation website more useful</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1168">#1168</a>: [core] xml renderer schema definitions (#538) break included xslt files</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1173">#1173</a>: [core] Some characters in CPD are not shown correctly.</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1193">#1193</a>: [core] Designer doesn’t start with run.sh</li>
-    </ul>
-  </li>
-  <li>ecmascript
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/861">#861</a>: [ecmascript] InnaccurateNumericLiteral false positive with hex literals</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1074">#1074</a>: [java] MissingOverrideRule exception when analyzing PMD under Java 9</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1174">#1174</a>: [java] CommentUtil.multiLinesIn() could lead to StringIndexOutOfBoundsException</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/651">#651</a>: [java] SwitchStmtsShouldHaveDefault should be aware of enum types</li>
-      <li><a href="https://github.com/pmd/pmd/issues/869">#869</a>: [java] GuardLogStatement false positive on return statements and Math.log</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/667">#667</a>: [java] Make AtLeastOneConstructor Lombok-aware</li>
-      <li><a href="https://github.com/pmd/pmd/pull/1154">#1154</a>: [java] CommentDefaultAccessModifierRule FP with nested enums</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1158">#1158</a>: [java] Fix IdenticalCatchBranches false positive</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1186">#1186</a>: [java] UnnecessaryFullyQualifiedName doesn’t detect java.lang FQ names as violations</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1200">#1200</a>: [java] New default NcssCount method report level is drastically reduced from values of deprecated NcssMethodCount and NcssTypeCount</li>
-    </ul>
-  </li>
-  <li>xml
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/715">#715</a>: [xml] ProjectVersionAsDependencyVersion false positive</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
-<ul>
-  <li>
-    <p>The utility class <code class="highlighter-rouge">net.sourceforge.pmd.lang.java.ast.CommentUtil</code> has been deprecated and will be removed
-with PMD 7.0.0. Its methods have been intended to parse javadoc tags. A more useful solution will be added
-around the AST node <code class="highlighter-rouge">FormalComment</code>, which contains as children <code class="highlighter-rouge">JavadocElement</code> nodes, which in
-turn provide access to the <code class="highlighter-rouge">JavadocTag</code>.</p>
-
-    <p>All comment AST nodes (<code class="highlighter-rouge">FormalComment</code>, <code class="highlighter-rouge">MultiLineComment</code>, <code class="highlighter-rouge">SingleLineComment</code>) have a new method
-<code class="highlighter-rouge">getFilteredComment()</code> which provide access to the comment text without the leading <code class="highlighter-rouge">/*</code> markers.</p>
-  </li>
-  <li>
-    <p>The method <code class="highlighter-rouge">AbstractCommentRule.tagsIndicesIn()</code> has been deprecated and will be removed with
-PMD 7.0.0. It is not very useful, since it doesn’t extract the information
-in a useful way. You would still need check, which tags have been found, and with which
-data they might be accompanied.</p>
-  </li>
-</ul>
-
 <h3 id="external-contributions">External Contributions</h3>
 
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/836">#836</a>: [apex] Add a rule to prevent use of non-existent annotations - <a href="https://github.com/anand13s">anand13s</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1159">#1159</a>: [ui] Allow to setup the auxclasspath in the designer - <a href="https://github.com/akshatbahety">Akshat Bahety</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1169">#1169</a>: [core] Update stylesheets with a default namespace - <a href="https://github.com/mduggan">Matthew Duggan</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1183">#1183</a>: [java] fixed typos in rule remediation - <a href="https://github.com/jakehemmerle">Jake Hemmerle</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1206">#1206</a>: [java] Recommend StringBuilder next to StringBuffer - <a href="https://github.com/krichter722">krichter722</a></li>
-</ul>
 
 
     <div class="tags">
@@ -1388,7 +1296,7 @@ data they might be accompanied.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 25, 2018 <br />
+ Site last generated: Jun 26, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
