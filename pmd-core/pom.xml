@@ -184,4 +184,28 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+           <id>m2e</id>
+           <!-- This profile is only activated when building in Eclipse with m2e -->
+           <activation>
+             <property>
+               <name>m2e.version</name>
+             </property>
+           </activation>
+           <dependencies>
+                <!--
+                    the maven-shade-plugin runs during package phase,
+                    but inside eclipse, this phase is not executed during development.
+                    Therefore this profile adds back the jaxen dependency in eclipse.
+                 -->
+                <dependency>
+                    <groupId>jaxen</groupId>
+                    <artifactId>jaxen</artifactId>
+                    <optional>false</optional>
+                </dependency>
+           </dependencies>
+        </profile>
+    </profiles>
 </project>
