@@ -207,5 +207,22 @@
                 </dependency>
            </dependencies>
         </profile>
+        <profile>
+           <id>idea</id>
+           <!-- This profile is only activated when building in IntelliJ -->
+           <!-- It serves the same purpose as the above for eclipse-->
+           <activation>
+             <property>
+               <name>idea.maven.embedder.version</name>
+             </property>
+           </activation>
+           <dependencies>
+                <dependency>
+                    <groupId>jaxen</groupId>
+                    <artifactId>jaxen</artifactId>
+                    <optional>false</optional>
+                </dependency>
+           </dependencies>
+        </profile>
     </profiles>
 </project>
