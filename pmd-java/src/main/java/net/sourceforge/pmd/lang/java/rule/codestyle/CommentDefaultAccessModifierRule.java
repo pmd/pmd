@@ -99,7 +99,7 @@ public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
                 && decl instanceof ASTConstructorDeclaration;
 
         // ignore if it's an Interface / Annotation / Enum constructor
-        return (isConcreteClass || !isEnumConstructor)
+        return isConcreteClass && !isEnumConstructor
                 // check if the field/method/nested class has a default access
                 // modifier
                 && decl.isPackagePrivate()
