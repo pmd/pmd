@@ -91,6 +91,10 @@ module CustomFilters
     end
   end
 
+  def random_alphabetic(length)
+    ('a'..'z').to_a.shuffle[0, length].join
+  end
+
 
   private
 

@@ -1,198 +1,139 @@
 ---
-title:  Writing XPath rules
+title:  Writing XPath rules with the Designer
 tags: [extending, userdocs]
-summary: "Writing XPath rules for PMD"
-last_updated: July 3, 2016
+summary: "Writing XPath rules with the Designer"
+last_updated: July 2018 (6.6.0)
 permalink: pmd_userdocs_extending_writing_xpath_rules.html
 author: Miguel Griffa <mikkey@users.sourceforge.net>
 ---
 
-# XPath Rule tutorial
-
 {% include note.html content="For a translation to Georgian, see [webhostinggeeks.com/science/xpath-sourceforge-ka](http://webhostinggeeks.com/science/xpath-sourceforge-ka)" %}
 
 
-Writing PMD rules with XPath can be a bit easier than writing rules with Java code. Here’s an introduction on how to do that.
+Since the AST is a tree, conceptually similar to a DOM, it can be queried with an *XPath expression* that matches the nodes your rule is looking for. XPath rules are defined using a single XPath expression, specified directly in the ruleset XML. The next section walks you through the development of an XPath rule.
 
-## Introduction
+{% include note.html content="This page assumes you already know what XPath is and how to read basic XPath queries. W3C has a good tutorial [here](https://www.w3schools.com/xml/xpath_syntax.asp) if you don't." %}
 
-PMD provides a very handy method for writing rules by writing an XPath query. When the XPath query finds a match, a violation is added to the report. This document focuses on XPath rules. You can go [here](pmd_userdocs_extending_writing_pmd_rules.html) for more information about writing a rule.
 
-## What is the Abstract Syntax Tree (AST)?
 
-From [FOLDOC](http://foldoc.org/abstract+syntax+tree) an AST is
+## The Rule Designer
 
-> A data structure representing something which has been parsed, often used as a compiler or interpreter’s internal representation of a program while it is being optimised and from which code generation is performed.
 
-In our context, this means that we basically have a tree representation of the Java source file. This tree can viewed as a structured document - just like XML. And since it’s conceptually similar to XML, it can be queried with XPath to find a pattern.
+> See [Designer Reference](pmd_userdocs_extending_designer_reference.html) for a more detailed explanation on how to use the designer.
 
-## Using Designer
+The rule designer is a tool that packs a lot of features to help you develop XPath rules quickly and painlessly. Basically, it allows you to examine the AST of a code snippet and evaluate an XPath expression against it.
 
-PMD comes with a handy tool that you will love if you want to write an XPath rule. Designer, runnable from a script in `bin/`, is a very simple and useful utility for writing rules.
+As for PMD and CPD, you can launch it using `run.sh designer` on Linux/Unix and `designer.bat` on Windows. The interface looks like the following:
 
-The basic steps involved in writing XPath rules are these:
+{% include image.html file="userdocs/designer-overview-with-numbers.png" alt="Designer overview" %}
 
-1.  Write a simple Java example source snippet in Designer
-2.  See the AST for the class you wrote
-3.  Write an XPath expression that matches the violation you are searching
-4.  Modify the Java class and go back to previous step to refine the XPath expression
+The zone (1) is the **main editor**. If you write a code snippet in it, you'll see that the zone (2) will be updated automatically: it's the AST of the code. Note that the code snippet must be a syntactically valid compilation unit for the language you've chosen, e.g. for Java, a compilation unit necessarily has a top-level type declaration.
 
-See [Designer Reference](pmd_userdocs_extending_designer_reference.html) for a more detailed explanation on how to use the designer.
+If you select a node in the AST, its specific properties will also be displayed on the left (panel (3)): they're the XPath attributes of the node.
 
-## Simple XPath expressions
+The zone (4) is the **XPath editor**. If you enter an XPath query in that area, it will be evaluated on the current AST and the results will be added to the list in zone (5).
 
-This section provides hands-on examples of XPath queries over the AST. You will probably find this section more useful if you follow it with Designer and copy/paste the examples.
+In the center of the window, a toolbar lets you *select the language version* and *XPath version* you want to use.
 
-Copy the following Java source code to Designer:
+
+### Rule development process
+
+
+The basic development process is straightforward:
+
+1.  Write a code snippet in the main editor that features the offending code you're looking for
+2.  Examine the AST and determine what node the violation should be reported on
+3.  Write an XPath expression matching that node in the XPath editor
+4.  Refine the XPath expression iteratively using different code snippets, so that it matches violation cases, but no other node
+5.  Export your XPath expression to an XML rule element, and place it in your ruleset
+
+In the following sections, we walk through several examples to refine your rule.
+
+## A simple rule
+
+Let's say you want to prevent your coding team from naming variables of type `short` after your boss, whose name is Bill. You try the designer on the following offending code snippet:
 
 ```java
-public class a {
-    int fOne;
-    int fTwo;
 
-    private void run() {
-        int one;
-        int two;
+public class KeepingItSerious {
+
+    public void method() {
+        short bill; // LocalVariableDeclaration
     }
+
+}
+
+```
+
+Examining the AST, you find out that the LocalVariableDeclaration has a VariableDeclaratorId descendant, whose `Image` XPath attribute is exactly `bill`. You thus write your first attempt in the XPath editor:
+```xpath
+//VariableDeclaratorId[@Image = "bill"]
+```
+
+You can see the XPath result list is updated with the variable declarator.
+If you try the query against the following updated snippet though, you can
+see that the field declaration id is matched even though it's not of type `short`.
+
+```java
+public class KeepingItSerious {
+
+    Delegator bill; // FieldDeclaration
+
+    public void method() {
+        short bill; // LocalVariableDeclaration
+    }
+
 }
 ```
 
-Let’s assume you want to match something on class variable names. You see in the ASTVviewer that VariableDeclaratorId contains the variable name - in XML terms, the name is in the `@Image` attribute. So you try an XPath expression as follows:
 
-`//VariableDeclaratorId`
-
-If you try this expression you’ll see that variables declared in methods are also matched. A more precise expression for matching field declarations is, well, using the FieldDeclaration node. This expression matches only the two fields declared in the class:
-
-`//FieldDeclaration`
-
-In a similar way, you can match only local variables with this expression
-
-`//LocalVariableDeclaration`
-
-With local variables we need to be more careful. Consider the following class:
-
-```java
-public class a {
-    private void run() {
-        final int one;
-        int two;
-
-        {
-            int a;
-        }
-    }
-}
-```
-
-Local variable declarations will match ‘a’, since it is a perfectly legal Java local variable. Now, a more interesting expression is to match variables declared in a method, and not on an internal block, nor in the class. Maybe you’ll start with an expression like this:
-
-`//MethodDeclaration//LocalVariableDeclaration`
-
-You’ll quickly see that all three local variables are matched. A possible solution for this is to request that the parent of the local variable declaration is the MethodDeclaration node:
-
-`//LocalVariableDeclaration[name(../../..) = 'MethodDeclaration']`
-
-## Matching variables by name
-
-Let’s consider that we are writing rules for logger. Let’s assume we use the Java logging API and we want to find all classes that have more than one logger. The following expression returns all variable declarations whose type is ‘Logger’.
-
-`//VariableDeclarator[../Type/ReferenceType/ClassOrInterfaceType[@Image='Logger']]`
-
-Finding a class with more than one logger is quite easy now. This expression matches the classes we are looking for.
+You thus refine your XPath expression with an additional predicate,
+based on your examination of the Type node of the field and local variable
+declaration nodes.
 
 ```xpath
-TypeDeclaration[count(//VariableDeclarator[../Type/ReferenceType/ClassOrInterfaceType[@Image='Logger']])>1
+//VariableDeclaratorId[@Image = "bill" and ../../Type[@TypeImage = "short"]]
 ```
 
-But let’s refine this expression a little bit more. Consider the following class:
+### Exporting to XML
 
-```java
-public class a {
-    Logger log = null;
-    Logger log = null;
-    int b;
+You estimate that your rule is now production ready, and you'd like to use it in your ruleset.
+The `File > Export XPath to rule...` allows you to do that in a few clicks: just enter some
+additional metadata for your rule, and the popup will generate an XML element that you can
+copy-paste into your ruleset XML. The resulting element looks like so:
 
-    void myMethod() {
-        Logger log = null;
-        int a;
-    }
-    class c {
-        Logger a;
-        Logger a;
-    }
-}
-```
-
-With this class we will only be matching one violation, when we probably would have wanted to produce two violations (one for each class). The following refined expression matches classes that contain more than one logger.
-
-```xpath
-//ClassOrInterfaceBodyDeclaration[count(//VariableDeclarator[../Type/ReferenceType/ClassOrInterfaceType[@Image='Logger']])>1]
-```
-
-Let’s assume we have a Factory class, that could be always declared final. We’ll search an xpath expression that matches all declarations of Factory and reports a violation if it is not declared final. Consider the following class:
-
-```java
-public class a {
-    Factory f1;
-
-    void myMethod() {
-        Factory f2;
-        int a;
-    }
-}
-```
-
-The following expression does the magic we need:
-
-```xpath
-//VariableDeclarator
-    [../Type/ReferenceType/ClassOrInterfaceType
-        [@Image = 'Factory'] and ..[@Final='false']]
-```
-
-We recommend at this point that you experiment with Designer putting the final modifier to the Factory and verifying that the results produced are those expected.
-
-## Creating a new rule definition
-
-To actually use your new XPath rule, it needs to be in a ruleset. You can create a new custom ruleset which just
-contains your new XPath rule. You can use the following template. Just make sure, to replace the `xpath` property,
-the example code and give your rule a useful name and message.
-
-``` xml
-<?xml version="1.0"?>
-
-<ruleset name="Custom Rules"
-    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+```xml
+<rule name="DontCallBossShort"
+      language="java"
+      message="Meet me in my office at 5."
+      class="net.sourceforge.pmd.lang.rule.XPathRule" >
     <description>
-Custom rules
+TODO
     </description>
-
-    <rule name="My Rule"
-          language="java"
-          message="violation message"
-          class="net.sourceforge.pmd.lang.rule.XPathRule">
-        <description>
-Rule Description
-         </description>
-         <priority>3</priority>
-         <properties>
-             <property name="xpath">
-                 <value><![CDATA[
---- here comes your XPath expression
-]]></value>
-             </property>
-         </properties>
-         <example>
- <![CDATA[
-public class ExampleCode {
-    public void foo() {
-    }
-}
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//VariableDeclaratorId[../../Type[@TypeImage="short"] and @Image = "bill"]
 ]]>
-        </example>
-    </rule>
-</ruleset>
+            </value>
+        </property>
+    </properties>
+</rule>
 ```
 
+You can notice that your XPath expression ends up inside a [property](pmd_userdocs_configuring_rules.html#rule-properties) of a rule of type XPathRule, which is how XPath rules are implemented.
+
+### Defining rule properties
+
+Some time later, your boss' boss decides he doesn't want to be called short in Java too, and would like you to add him to the rule. There are several ways to do that, but you decide to use a rule property to make your rule extensible. Doing that directly in the XML is [explained on that page](pmd_userdocs_extending_defining_properties.html#for-xpath-rules), and we'll explain here how to do that in the designer.
+
+The zone (6) in the screenshot above is a list of properties defined for your rule. Right-clicking the table and selecting "Add property..", you may add a property of type `List[String]` to represent your boss names. You can then use it in your XPath query with a dollar prefix, i.e.
+
+```xpath
+//VariableDeclaratorId[@Image = $bossNames and ../../Type[@TypeImage = "short"]]
+```
+
+
+{% include note.html content="Using a property of type `List[String]` requires you to use XPath 2.0" %}
