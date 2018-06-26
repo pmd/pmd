@@ -4,7 +4,7 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## ????? - 6.5.0-SNAPSHOT
+## 26-June-2018 - 6.5.0
 
 The PMD team is pleased to announce PMD 6.5.0.
 
