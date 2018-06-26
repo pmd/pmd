@@ -179,7 +179,7 @@ EOF
 
 git commit -a -m "Prepare next development version"
 git push origin ${CURRENT_BRANCH}
-./mvwn -B release:clean
+./mvnw -B release:clean
 echo
 echo
 echo
