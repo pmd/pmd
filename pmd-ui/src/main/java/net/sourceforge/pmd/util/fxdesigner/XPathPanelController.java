@@ -144,7 +144,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                                                                      });
 
         EventStream<Integer> keyCombo = EventStreams.eventsOf(xpathExpressionArea, KeyEvent.KEY_PRESSED)
-            .filter(key -> (key.isControlDown() && key.getCode().equals(KeyCode.SPACE)))
+            .filter(key -> key.isControlDown() && key.getCode().equals(KeyCode.SPACE))
             .map(searchPoint -> xpathExpressionArea.getCaretPosition());
 
         EventStreams.merge(keyCombo, changesEventStream).map(searchPoint -> {
@@ -152,16 +152,13 @@ public class XPathPanelController implements Initializable, SettingsOwner {
             String input = xpathExpressionArea.getText();
             if (searchPoint > input.length()) {
                 searchPoint = input.length();
-                input = input.substring(indexOfSlash, searchPoint);
-            } else {
-                input = input.substring(indexOfSlash, searchPoint);
             }
+            input = input.substring(indexOfSlash, searchPoint);
 
             return Tuples.t(indexOfSlash, input);
         })
-                 .filter(t -> t._2.matches("[a-zA-Z]+"))
-                 .subscribe(s -> autoComplete(s._1, s._2));
-
+                    .filter(t -> StringUtils.isAlpha(t._2))
+                    .subscribe(s -> autoComplete(s._1, s._2));
 
         xpathExpressionArea.addEventHandler(KeyEvent.KEY_PRESSED, t -> {
             if (t.getCode() == KeyCode.ESCAPE) {
@@ -196,10 +193,9 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         }
         autoCompletePopup.getItems().setAll(resultToDisplay);
 
-        autoCompletePopup.show(xpathExpressionArea, xpathExpressionArea
-            .getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length()
-        ).get().getMaxX(), xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input
-            .length()).get().getMaxY());
+        if (autoCompletePopup.isAutoFix())
+        xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length())
+                           .ifPresent(bounds -> autoCompletePopup.show(xpathExpressionArea, bounds.getMinX(), bounds.getMaxY()));
     }
 
     private void initGenerateXPathFromStackTrace() {
