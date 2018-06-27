@@ -47,7 +47,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     private static final Map<Node, DocumentNode> CACHE = new LinkedHashMap<Node, DocumentNode>(MAX_CACHE_SIZE) {
         private static final long serialVersionUID = -7653916493967142443L;
 
-
+        @Override
         protected boolean removeEldestEntry(final Map.Entry<Node, DocumentNode> eldest) {
             return size() > MAX_CACHE_SIZE;
         }

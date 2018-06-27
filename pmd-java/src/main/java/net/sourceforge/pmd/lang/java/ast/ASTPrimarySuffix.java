@@ -38,7 +38,7 @@ public class ASTPrimarySuffix extends AbstractJavaTypeNode {
      * Get the number of arguments for this primary suffix. One should call
      * {@link #isArguments()} to see if there are arguments. If this method is
      * called when there are no arguments it returns <code>-1</code>.
-     * 
+     *
      * @return A non-negative argument number when there are arguments,
      *         <code>-1</code> otherwise.
      */

@@ -19,17 +19,17 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 /**
  * This class is responsible for handling the pluggable directives in VTL.
- * 
+ *
  * For example : #foreach()
- * 
+ *
  * Please look at the Parser.jjt file which is what controls the generation of
  * this class.
- * 
+ *
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @author <a href="mailto:kav@kav.dk">Kasper Nielsen</a>
@@ -62,7 +62,7 @@ public class ASTDirective extends AbstractVmNode {
      * Sets the directive name. Used by the parser. This keeps us from having to
      * dig it out of the token stream and gives the parse the change to
      * override.
-     * 
+     *
      * @param str
      */
     public void setDirectiveName(final String str) {
@@ -71,7 +71,7 @@ public class ASTDirective extends AbstractVmNode {
 
     /**
      * Gets the name of this directive.
-     * 
+     *
      * @return The name of this directive.
      */
     public String getDirectiveName() {

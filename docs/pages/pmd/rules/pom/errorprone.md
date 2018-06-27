@@ -20,7 +20,7 @@ the entry is just ignored, which might have the effect, that the wrong version o
 The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear, rar, par.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //dependencyManagement/dependency/type/text[not(@Image = $validTypes)]
 ```
 
@@ -64,7 +64,7 @@ Using that expression in dependency declarations seems like a shortcut, but it c
 By far the most common problem is the use of ${project.version} in a BOM or parent POM.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //dependencies/dependency
     [contains(version/text/@Image,'{project.version}')]
     [

@@ -5,6 +5,17 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents a pre-increment expression on a variable.
+ * This has the same precedence as {@linkplain ASTUnaryExpression UnaryExpression}
+ * and the like.
+ *
+ * <pre>
+ *
+ * PreIncrementExpression ::= "++" {@linkplain ASTPrimaryExpression PrimaryExpression}
+ *
+ * </pre>
+ */
 public class ASTPreIncrementExpression extends AbstractJavaTypeNode {
     public ASTPreIncrementExpression(int id) {
         super(id);
@@ -14,9 +25,7 @@ public class ASTPreIncrementExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

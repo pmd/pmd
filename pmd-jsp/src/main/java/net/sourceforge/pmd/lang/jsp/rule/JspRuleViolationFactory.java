@@ -25,6 +25,7 @@ public final class JspRuleViolationFactory extends AbstractRuleViolationFactory 
         return new ParametricRuleViolation<>(rule, ruleContext, (JspNode) node, message);
     }
 
+    @Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
             int beginLine, int endLine) {
         return null; // FIXME

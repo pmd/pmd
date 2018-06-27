@@ -21,6 +21,7 @@ public class OccurrenceFinder extends JavaParserVisitorAdapter {
 
     private final Set<NameDeclaration> additionalDeclarations = new HashSet<>();
 
+    @Override
     public Object visit(ASTPrimaryExpression node, Object data) {
         NameFinder nameFinder = new NameFinder(node);
 

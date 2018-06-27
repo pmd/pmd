@@ -1,8 +1,8 @@
 ---
-title: "Customizing PMD Pages"
-tagName: customizing
+title: "Rule references"
+tagName: rule_references
 search: exclude
-permalink: tag_customizing.html
+permalink: tag_rule_references.html
 sidebar: pmd_sidebar
 folder: tags
 ---

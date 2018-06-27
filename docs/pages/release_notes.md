@@ -4,9 +4,9 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## ????? - 6.5.0-SNAPSHOT
+## ????? - 6.6.0-SNAPSHOT
 
-The PMD team is pleased to announce PMD 6.5.0.
+The PMD team is pleased to announce PMD 6.6.0.
 
 This is a minor release.
 
@@ -21,13 +21,10 @@ This is a minor release.
 
 ### Fixed Issues
 
-*   ecmascript
-    *   [#861](https://github.com/pmd/pmd/issues/861): \[ecmascript] InnaccurateNumericLiteral false positive with hex literals
 *   java-codestyle
-    *   [#1158](https://github.com/pmd/pmd/issues/1158): \[java] Fix IdenticalCatchBranches false positive
-*   xml
-    *   [#715](https://github.com/pmd/pmd/issues/715): \[xml] ProjectVersionAsDependencyVersion false positive
+    *   [#1211](https://github.com/pmd/pmd/issues/1211): \[java] CommentDefaultAccessModifier false positive with nested interfaces (regression from 6.4.0)
 
 ### API Changes
 
 ### External Contributions
+

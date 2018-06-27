@@ -12,6 +12,7 @@ public class ASTMultiStatement extends AbstractApexNode<MultiStatement> {
         super(node);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

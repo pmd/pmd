@@ -384,4 +384,60 @@ final class Test {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: without import</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary use of fully qualified name 'java.lang.String' due to existing implicit import 'java.lang.*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class JavaLang {
+    public void convert(java.lang.String s) { // violation here
+    }
+    public void access(java.lang.reflect.Field f) { // no violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: with import</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary use of fully qualified name 'java.lang.String' due to existing import 'java.lang.String'</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.lang.String;
+public class JavaLang {
+    public void convert(java.lang.String s) { // violation here
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: with avoiding conflict import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.foo.String;
+public class JavaLang {
+    public void convert(java.lang.String s) { // no violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: static members of classes in java.lang</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class JavaLang {
+    public void foo() {
+        ProcessBuilder pb = new ProcessBuilder("echo");
+        pb.redirectError(java.lang.ProcessBuilder.Redirect.DISCARD); // violation
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

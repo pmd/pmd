@@ -5,19 +5,49 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents an annotation with no declared member, e.g. {@code @Override}.
+ *
+ * <pre>
+ *
+ * MarkerAnnotation ::= "@" {@linkplain ASTAnnotation Name}
+ *
+ * </pre>
+ *
+ * @see ASTSingleMemberAnnotation
+ * @see ASTNormalAnnotation
+ */
 public class ASTMarkerAnnotation extends AbstractJavaTypeNode {
+
     public ASTMarkerAnnotation(int id) {
         super(id);
     }
+
 
     public ASTMarkerAnnotation(JavaParser p, int id) {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
+
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+
+    /**
+     * Returns the name of the annotation as it is used,
+     * eg {@code java.lang.Override} or {@code Override}.
+     */
+    public String getAnnotationName() {
+        return jjtGetChild(0).getImage();
+    }
+
+
+    @Override
+    public ASTAnnotation jjtGetParent() {
+        return (ASTAnnotation) super.jjtGetParent();
+    }
+
+
 }

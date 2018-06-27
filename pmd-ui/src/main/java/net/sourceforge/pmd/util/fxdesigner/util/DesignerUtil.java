@@ -22,6 +22,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -30,6 +32,10 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 
 import javafx.beans.property.Property;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Tooltip;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 
@@ -82,6 +88,25 @@ public final class DesignerUtil {
      */
     public static File getSettingsFile() {
         return DESIGNER_SETTINGS_FILE;
+    }
+
+
+    public static <T> Callback<ListView<T>, ListCell<T>> simpleListCellFactory(Function<T, String> converter, Function<T, String> toolTipMaker) {
+        return collection -> new ListCell<T>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                    Tooltip.uninstall(this, getTooltip());
+                } else {
+                    setText(converter.apply(item));
+                    Tooltip.install(this, new Tooltip(toolTipMaker.apply(item)));
+                }
+            }
+        };
     }
 
 
@@ -191,4 +216,18 @@ public final class DesignerUtil {
         return lines.isEmpty() ? Optional.empty() : Optional.of("//" + String.join("/", lines));
     }
 
+
+    /**
+     * Works out an xpath query that matches the node
+     * which was being visited during the failure.
+     *
+     * @param e Exception
+     *
+     * @return A query, if possible.
+     *
+     * @see #stackTraceToXPath(String)
+     */
+    public static Optional<String> stackTraceToXPath(Throwable e) {
+        return stackTraceToXPath(ExceptionUtils.getStackTrace(e));
+    }
 }

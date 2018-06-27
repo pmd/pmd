@@ -17,6 +17,7 @@ public class ASTMethodDeclaration extends AbstractPLSQLNode implements Executabl
     }
 
     /** Accept the visitor. **/
+    @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

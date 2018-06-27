@@ -1,6 +1,6 @@
 ---
 title: How PMD Works
-tags: [customizing]
+tags: [devdocs]
 summary: Processing overview of the different steps taken by PMD.
 last_updated: September 2017
 permalink: pmd_devdocs_how_pmd_works.html

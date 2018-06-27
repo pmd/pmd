@@ -80,7 +80,7 @@ as the interface PrivilegedAction, allow for the runtime alteration of variable,
 method visibility, even if they are private. This violates the principle of encapsulation.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryExpression[
 (
 (PrimarySuffix[
@@ -151,7 +151,7 @@ public class Violation {
 Use of the term 'assert' will conflict with newer versions of Java since it is a reserved word.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //VariableDeclaratorId[@Image='assert']
 ```
 
@@ -250,7 +250,7 @@ Code should never throw NullPointerExceptions under normal circumstances.  A cat
 original error, causing other, more subtle problems later on.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //CatchStatement/FormalParameter/Type
  /ReferenceType/ClassOrInterfaceType[@Image='NullPointerException']
 ```
@@ -318,7 +318,7 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
 (String) constructor be used in preference to this one.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //AllocationExpression
 [ClassOrInterfaceType[@Image="BigDecimal"]]
 [Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix
@@ -402,7 +402,7 @@ private void buz(String x) {}
 Use of the term 'enum' will conflict with newer versions of Java since it is a reserved word.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //VariableDeclaratorId[@Image='enum']
 ```
 
@@ -482,7 +482,7 @@ public class Foo extends Bar {
 Each caught exception type should be handled in its own catch clause.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //CatchStatement/FormalParameter
  /following-sibling::Block//InstanceOfExpression/PrimaryExpression/PrimaryPrefix
   /Name[
@@ -525,7 +525,7 @@ or private members with descriptive names maintainability is enhanced. By defaul
 More exceptions can be defined with the property "ignoreMagicNumbers".
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //IfStatement/Expression/*/PrimaryExpression/PrimaryPrefix/Literal
 [not(NullLiteral)]
 [not(BooleanLiteral)]
@@ -576,7 +576,7 @@ Statements in a catch block that invoke accessors on the exception without using
 only add to code size.  Either remove the invocation, or use the return result.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //CatchStatement/Block/BlockStatement/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name
 [
    @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.getMessage')
@@ -686,7 +686,7 @@ Avoid equality comparisons with Double.NaN. Due to the implicit lack of represen
 precision when comparing floating point numbers these are likely to cause logic errors.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //EqualityExpression[@Image='==']
  /PrimaryExpression/PrimaryPrefix
  /Name[@Image='Double.NaN' or @Image='Float.NaN']
@@ -782,7 +782,7 @@ public String bar(String string) {
 Super should be called at the start of the method
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration[MethodDeclarator[
   @Image='onCreate' or
   @Image='onConfigurationChanged' or
@@ -827,7 +827,7 @@ public class DummyActivity extends Activity {
 Super should be called at the end of the method
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration[MethodDeclarator[
   @Image='finish' or
   @Image='onDestroy' or
@@ -908,7 +908,7 @@ the same class as the parameter of the toArray() method. Doing otherwise you wil
 in a ClassCastException.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //CastExpression[Type/ReferenceType/ClassOrInterfaceType[@Image !=
 "Object"]]/PrimaryExpression
 [
@@ -949,7 +949,7 @@ The java Manual says "By convention, classes that implement this interface shoul
 Object.clone (which is protected) with a public method."
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration[@Public='false']
   [MethodDeclarator/@Image = 'clone']
   [MethodDeclarator/FormalParameters/@ParameterCount = 0]
@@ -1023,7 +1023,7 @@ of the clone method doesn't need to cast the returned clone to the correct type.
 Note: This is only possible with Java 1.5 or higher.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration
 [
 MethodDeclarator/@Image = 'clone'
@@ -1062,7 +1062,7 @@ public class Foo implements Cloneable {
 The method clone() should throw a CloneNotSupportedException.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration
 [
 MethodDeclarator/@Image = 'clone'
@@ -1251,7 +1251,7 @@ Moreover, "modern" jvms do a very good job handling garbage collections. If memo
 leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Name[
 (starts-with(@Image, 'System.') and
 (starts-with(@Image, 'System.gc') or
@@ -1304,7 +1304,7 @@ Web applications should not call System.exit(), since only the web container or 
 application server should stop the JVM. This rule also checks for the equivalent call Runtime.getRuntime().exit().
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Name[
     starts-with(@Image,'System.exit')
     or
@@ -1337,7 +1337,7 @@ public void foo() {
 Extend Exception or RuntimeException instead of Throwable.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
   [@Image="Throwable" or @Image="java.lang.Throwable"]
 ```
@@ -1362,7 +1362,7 @@ public class Foo extends Throwable { }
 Use Environment.getExternalStorageDirectory() instead of "/sdcard"
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Literal[starts-with(@Image,'"/sdcard')]
 ```
 
@@ -1394,7 +1394,7 @@ or code defects.
 Note: This is a PMD implementation of the Lint4j rule "A throw in a finally block"
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //FinallyStatement[descendant::ThrowStatement]
 ```
 
@@ -1453,7 +1453,7 @@ unless you're certain that float provides enough precision and you have a compel
 performance need (space or time).
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ForStatement/ForInit/LocalVariableDeclaration
 /Type/PrimitiveType[@Image="float"]
 ```
@@ -1490,7 +1490,7 @@ In most circumstances, this swallows an exception which should either be acted o
 or reported.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //CatchStatement
  [count(Block/BlockStatement) = 0 and ($allowCommentedBlocks != 'true' or Block/@containsComment = 'false')]
  [FormalParameter/Type/ReferenceType
@@ -1532,7 +1532,7 @@ public void doSomething() {
 Empty finalize methods serve no purpose and should be removed. Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]
   /Block[count(*)=0]
 ```
@@ -1559,7 +1559,7 @@ public class Foo {
 Empty finally blocks serve no purpose and should be removed.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //FinallyStatement[count(Block/BlockStatement) = 0]
 ```
 
@@ -1591,7 +1591,7 @@ public class Foo {
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //IfStatement/Statement
  [EmptyStatement or Block[count(*) = 0]]
 ```
@@ -1622,7 +1622,7 @@ public class Foo {
 Empty initializers serve no purpose and should be removed.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Initializer/Block[count(*)=0]
 ```
 
@@ -1652,7 +1652,7 @@ public class Foo {
 Empty block statements serve no purpose and should be removed.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //BlockStatement/Statement/Block[count(*) = 0]
 ```
 
@@ -1687,7 +1687,7 @@ or 'while' loop is probably a bug.  It could also be a double semicolon, which h
 and should be removed.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //EmptyStatement
  [not(
        ../../../ForStatement
@@ -1725,7 +1725,7 @@ public void doit() {
 Empty switch statements serve no purpose and should be removed.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //SwitchStatement[count(*) = 1]
 ```
 
@@ -1755,7 +1755,7 @@ public void bar() {
 Empty synchronized blocks serve no purpose and should be removed.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //SynchronizedStatement/Block[1][count(*) = 0]
 ```
 
@@ -1785,7 +1785,7 @@ public class Foo {
 Avoid empty try blocks - what's the point?
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //TryStatement[not(ResourceSpecification)]/Block[1][count(*) = 0]
 ```
 
@@ -1818,7 +1818,7 @@ If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //WhileStatement/Statement[./Block[count(*) = 0]  or ./EmptyStatement]
 ```
 
@@ -1846,7 +1846,7 @@ void bar(int a, int b) {
 Tests for null should not use the equals() method. The '==' operator should be used instead.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryExpression
   [
     PrimaryPrefix[Name[ends-with(@Image, 'equals')]]
@@ -1890,7 +1890,7 @@ if (x == null) {        // preferred
 If the finalize() is implemented, its last action should be to call super.finalize. Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]
    /Block
       /BlockStatement[last()]
@@ -1930,7 +1930,7 @@ protected void finalize() {
 If the finalize() is implemented, it should do something besides just calling super.finalize(). Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration[MethodDeclarator[@Image="finalize"][not(FormalParameters/*)]]
    /Block[count(BlockStatement)=1]
      /BlockStatement[
@@ -1965,7 +1965,7 @@ overload Object.finalize(). It will not be called by the VM.
 Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration
  /MethodDeclarator[@Image='finalize'][FormalParameters[count(*)>0]]
 ```
@@ -1997,7 +1997,7 @@ other classes may invoke it at inappropriate times.
 Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration[@Protected="false"]
   /MethodDeclarator[@Image="finalize"]
   [not(FormalParameters/*)]
@@ -2077,7 +2077,7 @@ public class Bar{}
 Avoid instantiating an object just to call getClass() on it; use the .class public member instead.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimarySuffix
  [@Image='getClass']
  [parent::PrimaryExpression
@@ -2133,7 +2133,7 @@ LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The except
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ForStatement
   [
     ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
@@ -2170,7 +2170,7 @@ public class JumbledIncrementerRule1 {
 Some JUnit framework methods are easy to misspell.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclarator[(not(@Image = 'setUp')
  and translate(@Image, 'SETuP', 'setUp') = 'setUp')
  or (not(@Image = 'tearDown')
@@ -2204,7 +2204,7 @@ public class Foo extends TestCase {
 The suite() method in a JUnit test needs to be both public and static.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration[not(@Static='true') or not(@Public='true')]
 [MethodDeclarator/@Image='suite']
 [MethodDeclarator/FormalParameters/@ParameterCount=0]
@@ -2236,7 +2236,7 @@ public class Foo extends TestCase {
 In most cases, the Logger reference can be declared as static and final.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //VariableDeclarator
  [parent::FieldDeclaration]
  [../Type/ReferenceType
@@ -2296,7 +2296,7 @@ The null check here is misplaced. If the variable is null a NullPointerException
 Either the check is useless (the variable will never be "null") or it is incorrect.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Expression
     /*[self::ConditionalOrExpression or self::ConditionalAndExpression]
     /descendant::PrimaryExpression/PrimaryPrefix
@@ -2349,7 +2349,7 @@ Switch statements without break or return statements for each case option
 may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //SwitchStatement
 [(count(.//BreakStatement)
  + count(BlockStatement//Statement/ReturnStatement)
@@ -2397,7 +2397,7 @@ public void bar(int status) {
 Serializable classes should provide a serialVersionUID field.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration
  [
   count(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
@@ -2435,7 +2435,7 @@ public class Foo implements java.io.Serializable {
 A class that has private constructors and does not have any static methods or fields cannot be used.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[@Nested='false']
 [
   (
@@ -2516,7 +2516,7 @@ A non-case label (e.g. a named break/continue label) was present in a switch sta
 This legal, but confusing. It is easy to mix up the case labels and the non-case labels.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //SwitchStatement//BlockStatement/Statement/LabeledStatement
 ```
 
@@ -2554,7 +2554,7 @@ invoking the constructor).  While this is a valid language construct, it is rare
 confusing.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Initializer[@Static='false']
 ```
 
@@ -2653,7 +2653,7 @@ public class Foo {        // perfect, both methods provided
 Object clone() should be implemented with super.clone().
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclarator
 [@Image = 'clone']
 [count(FormalParameters/*) = 0]
@@ -2691,7 +2691,7 @@ Private final Log log; is also allowed for rare cases where loggers need to be p
 with the restriction that the logger needs to be passed into the constructor.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceBodyDeclaration[FieldDeclaration//ClassOrInterfaceType[@Image='Log']
  and
  not(FieldDeclaration[@Final='true'][@Static='true'][@Private='true'][.//VariableDeclaratorId[@Image=$staticLoggerName]]
@@ -2737,7 +2737,7 @@ null reference. This removes the need for null checking all results and avoids i
 NullPointerExceptions.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration
 [
 (./ResultType/Type[@Array='true'])
@@ -2778,7 +2778,7 @@ public class Example {
 Avoid returning from a finally block, this can discard exceptions.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //FinallyStatement//ReturnStatement
 ```
 
@@ -2813,7 +2813,7 @@ Be sure to specify a Locale when creating SimpleDateFormat instances to ensure t
 formatting is used.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //AllocationExpression
  [ClassOrInterfaceType[@Image='SimpleDateFormat']]
  [Arguments[@ArgumentCount=1]]
@@ -2911,7 +2911,7 @@ with write access. However, static read-only fields are allowed. This ensures pr
 behavior especially when instances are distributed by the container on several JREs.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[
     (
     (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'SessionBean')])
@@ -2973,7 +2973,7 @@ new StringBuilder("A")   //  1 + 16 = 17
 ```
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //AllocationExpression/ClassOrInterfaceType
 [@Image='StringBuffer' or @Image='StringBuilder']
 /../Arguments/ArgumentList/Expression/PrimaryExpression
@@ -3011,7 +3011,7 @@ The method name and parameter number are suspiciously close to equals(Object), w
 intention to override the equals(Object) method.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclarator[@Image = 'equals']
 [   
     (count(FormalParameters/*) = 1
@@ -3150,7 +3150,7 @@ public class CarTest {
 Do not use "if" statements whose conditionals are always true or always false.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //IfStatement/Expression
  [count(PrimaryExpression)=1]
  /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
@@ -3185,7 +3185,7 @@ statements like assertTrue(true) and assertFalse(false).  If you just want a tes
 an error, use the fail() method and provide an indication message of why it did.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //StatementExpression
 [
 PrimaryExpression/PrimaryPrefix/Name[@Image='assertTrue' or  @Image='assertFalse']
@@ -3272,7 +3272,7 @@ public String convert(int x) {
 After checking an object reference for null, you should invoke equals() on that object rather than passing it to another object's equals() method.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 (//PrimaryPrefix[ends-with(Name/@Image, '.equals') and Name/@Image != 'Arrays.equals'] | //PrimarySuffix[@Image='equals' and not(../PrimaryPrefix/Literal)])
  /following-sibling::PrimarySuffix/Arguments/ArgumentList/Expression
  /PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix
@@ -3336,7 +3336,7 @@ public class Test {
 To make sure the full stacktrace is printed out, use the logging statement with two arguments: a String and a Throwable.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //CatchStatement/Block/BlockStatement/Statement/StatementExpression
 /PrimaryExpression[PrimaryPrefix/Name[starts-with(@Image,
 concat(ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
@@ -3377,7 +3377,7 @@ Using '==' or '!=' to compare strings only works if intern version is used on bo
 Use the equals() method instead.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //EqualityExpression/PrimaryExpression
 [(PrimaryPrefix/Literal
    [starts-with(@Image, '"')]
@@ -3443,7 +3443,7 @@ When doing String.toLowerCase()/toUpperCase() conversions, use Locales to avoids
 have unusual conventions, i.e. Turkish.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryExpression
 [
 PrimaryPrefix
@@ -3493,7 +3493,7 @@ In J2EE, the getClassLoader() method might not work as expected. Use
 Thread.currentThread().getContextClassLoader() instead.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimarySuffix[@Image='getClassLoader']
 ```
 

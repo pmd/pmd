@@ -12,6 +12,7 @@ public class ASTDmlUpdateStatement extends AbstractApexNode<DmlUpdateStatement> 
         super(dmlUpdateStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

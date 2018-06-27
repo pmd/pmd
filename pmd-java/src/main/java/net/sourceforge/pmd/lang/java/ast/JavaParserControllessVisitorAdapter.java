@@ -17,5 +17,5 @@ public class JavaParserControllessVisitorAdapter extends JavaParserVisitorAdapte
     public Object visit(JavaNode node, Object data) {
         return data;
     }
-    
+
 }

@@ -58,6 +58,7 @@ public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
         return new XmlParserOptions(this);
     }
 
+    @Override
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
         visitAll(nodes, ctx);
     }

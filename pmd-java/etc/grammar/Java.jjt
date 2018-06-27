@@ -1523,6 +1523,7 @@ TOKEN :
 | < XOR: "^" >
 | < REM: "%" >
 | < LSHIFT: "<<" >
+// Notice the absence of >> or >>>, to not conflict with generics
 | < PLUSASSIGN: "+=" >
 | < MINUSASSIGN: "-=" >
 | < STARASSIGN: "*=" >
@@ -1895,6 +1896,8 @@ void Type():
 void ReferenceType():
 {}
 {
+  // The grammar here is mildly wrong, the annotations can be before each []
+  // This will wait for #997
    PrimitiveType() (TypeAnnotation())* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
   |
    ( ClassOrInterfaceType()) (TypeAnnotation())* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
@@ -1996,6 +1999,11 @@ void Expression() :
  * a primary expression.  Consider adding a semantic predicate to work
  * around this.
  */
+ // It also allows lambda expressions in many more contexts as allowed by the JLS.
+ // Lambda expressions are not a PrimaryExpression in the JLS, instead they're
+ // separated from the AssignmentExpression production. Their use is restricted
+ // to method and constructor argument, cast operand, and the RHS of assignments.
+ // https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.27
 {}
 {
   ConditionalExpression()
@@ -2021,6 +2029,8 @@ void AssignmentOperator() :
     | "|="    {jjtThis.setImage("|="); jjtThis.setCompound();}
 }
 
+// TODO Setting isTernary is unnecessary, since the node is only pushed on the stack if there is at least one child,
+// ie if it's a ternary
 void ConditionalExpression() #ConditionalExpression(>1) :
 {}
 {

@@ -5,7 +5,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTTypeArguments extends AbstractJavaNode {
+import java.util.Iterator;
+
+
+/**
+ * Represents a list of type arguments. This is different from {@linkplain ASTTypeParameters type parameters}!
+ *
+ * <pre>
+ *
+ *  TypeArguments ::= "<" {@linkplain ASTTypeArgument TypeArgument} ( "," {@linkplain ASTTypeArgument TypeArgument} )* ">"
+ *                  | "<" ">"
+ * </pre>
+ *
+ */
+public class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTTypeArgument> {
     public ASTTypeArguments(int id) {
         super(id);
     }
@@ -14,14 +27,23 @@ public class ASTTypeArguments extends AbstractJavaNode {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
+
+    /**
+     * Returns true if this is a diamond, that is, the
+     * actual type arguments are inferred.
+     */
     public boolean isDiamond() {
         return jjtGetNumChildren() == 0;
+    }
+
+
+    @Override
+    public Iterator<ASTTypeArgument> iterator() {
+        return new NodeChildrenIterator<>(this, ASTTypeArgument.class);
     }
 }

@@ -22,6 +22,7 @@ public class ExcessiveParameterListRule extends ExcessiveNodeCountRule {
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
+    @Override
     public Object visit(ASTParameter node, Object data) {
         return NumericConstants.ONE;
     }

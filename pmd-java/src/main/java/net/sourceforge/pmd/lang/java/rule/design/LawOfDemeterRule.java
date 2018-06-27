@@ -441,6 +441,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                     + forLoop;
         }
 
+        @Override
         public int compareTo(Assignment o) {
             return o.line - line;
         }

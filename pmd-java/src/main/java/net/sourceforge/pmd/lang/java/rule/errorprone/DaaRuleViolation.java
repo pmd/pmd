@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
 /**
  * The RuleViolation is extended by the VariableName. The VariableName is
  * required for showing what variable produces the UR DD or DU anomaly.
- * 
+ *
  * @author Sven Jacob
  * @author Brian Remedios
  */
@@ -30,6 +30,7 @@ public class DaaRuleViolation extends JavaRuleViolation {
         this.type = type;
     }
 
+    @Override
     public String getVariableName() {
         return variableName;
     }

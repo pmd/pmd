@@ -1,0 +1,128 @@
+/* Presets for the editor theme and syntax highlighting. */
+
+/* CSS reference of the code area:
+     https://github.com/FXMisc/RichTextFX/wiki/RichTextFX-CSS-Reference-Guide
+
+   Less reference (we use Less 1.7.0):
+     http://lesscss.org/features/
+
+*/
+
+@import "constants";
+
+@xpath-color-stack:
+        rgba(249, 248, 113, 0.25),
+        rgba(255, 199, 95, 0.4),
+        rgba(255, 150, 113, 0.5),
+        rgba(255, 111, 145, 0.6),
+        rgba(214, 93, 177, 0.7),
+        rgba(132, 94, 194, 0.8);
+
+@active-line-background-color: #fbf4e1;
+@area-background-color: whitesmoke;
+@code-color: #585858;
+
+/* Highlight classes */
+
+/* Add a border around highlighted nodes if they fit on one line */
+/* Otherwise, the background variation should be enough to spot them */
+.inline-highlight {
+    -rtfx-border-stroke-width: .75pt;
+    -rtfx-border-stroke-type: centered;
+}
+
+.xpath-result-highlight {
+
+    // mixin to iterate over xpath colors and create ruleset for each one
+    .make-depth-classes(@depth: length(@xpath-color-stack) - 1) when (@depth >= 0) {
+        .make-depth-classes(@depth - 1);
+
+        @background: extract(@xpath-color-stack, @depth + 1);
+        @border: darken(@background, 30%);
+
+        &.depth-@{depth} {
+            -rtfx-background-color: @background;
+            -rtfx-border-stroke-color: @border;
+        }
+    }
+
+    .make-depth-classes;
+}
+
+.error-highlight.depth-0 {
+    -rtfx-border-stroke-color: darkred;
+    -rtfx-background-color: lightcoral;
+}
+
+.name-occurence-highlight.depth-0 {
+    -rtfx-border-stroke-color: olivedrab;
+    -rtfx-background-color: palegreen;
+}
+
+/* With syntax highlighting, it's more readable to not change the fill color */
+.focus-highlight {
+    -fx-font-weight: bold;
+}
+
+
+/* Base */
+.styled-text-area {
+    -fx-background-color: @area-background-color;
+    -fx-border-color: -fx-outer-border, -fx-text-box-border;
+    -fx-border-insets: -4 -4 -6 -5, -2 -2 -5 -3;
+
+    .scroll-bar {
+        * {
+            -fx-background-color: @area-background-color;
+            -fx-border-color: @area-background-color;
+        }
+
+        .thumb {
+            -fx-background-color: derive(black, 90%);
+        }
+    }
+
+    .paragraph-box:has-caret {
+        -fx-background-color: @active-line-background-color;
+    }
+
+    .text {
+        -fx-fill: @code-color;
+        -fx-font-size: 10.5pt;
+    }
+
+}
+
+#xpathExpressionArea .text {
+    -fx-font-size: 11.5pt;
+}
+
+
+/* Line numbers */
+.lineno {
+
+    -fx-fill: #586E75;
+    -fx-font-size: 80%;
+    -fx-font-weight: normal;
+
+    @lineno-focus-base: average(@active-line-background-color, @darker-accent);
+
+    &:is-focus-node {
+        -fx-background-color: darken(@lineno-focus-base, 5%);
+
+        .text {
+            -fx-font-weight: bolder;
+        }
+    }
+
+    &:has-caret {
+        -fx-background-color: darken(@lineno-focus-base, 15%);
+
+        .text {
+            -fx-fill: white;
+            -fx-font-weight: bolder;
+        }
+    }
+}
+
+@import "syntax-highlighting";

@@ -1,8 +1,8 @@
 repository: pmd/pmd
 
 pmd:
-    version: 6.5.0
-    date: ?????
+    version: 6.6.0
+    date: 2018-??-??
 
 output: web
 # this property is useful for conditional filtering of content that is separate from the PDF.
@@ -103,5 +103,5 @@ description: "Intended as a documentation theme based on Jekyll for technical wr
 # the description is used in the feed.xml file
 
 # needed for sitemap.xml file only
-url: http://pmd.sourceforge.net
+url: https://pmd.github.io/pmd
 baseurl: ""

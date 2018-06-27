@@ -5,7 +5,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTMemberValueArrayInitializer extends AbstractJavaNode {
+
+import java.util.Iterator;
+
+
+/**
+ * Represents an array of member values in an annotation {@linkplain ASTMemberValue member value}.
+ *
+ * <pre>
+ *
+ * MemberValueArrayInitializer ::= "{" ( {@linkplain ASTMemberValue MemberValue} ( "," {@linkplain ASTMemberValue MemberValue} )*  ","? )? "}"
+ *
+ * </pre>
+ *
+ *
+ */
+public class ASTMemberValueArrayInitializer extends AbstractJavaNode implements Iterable<ASTMemberValue> {
     public ASTMemberValueArrayInitializer(int id) {
         super(id);
     }
@@ -14,10 +29,14 @@ public class ASTMemberValueArrayInitializer extends AbstractJavaNode {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+
+    @Override
+    public Iterator<ASTMemberValue> iterator() {
+        return new NodeChildrenIterator<>(this, ASTMemberValue.class);
     }
 }

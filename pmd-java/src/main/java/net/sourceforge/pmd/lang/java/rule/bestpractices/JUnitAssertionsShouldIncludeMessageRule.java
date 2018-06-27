@@ -74,6 +74,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJUnitRule {
         });
     }
 
+    @Override
     public Object visit(ASTArguments node, Object data) {
         for (AssertionCall call : checks) {
             call.check(data, node);

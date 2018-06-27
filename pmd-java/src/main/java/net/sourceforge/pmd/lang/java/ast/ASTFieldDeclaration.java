@@ -101,10 +101,12 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
         return n != null && n.isInterface();
     }
 
+    @Override
     public boolean isArray() {
         return checkType() + checkDecl() > 0;
     }
 
+    @Override
     public int getArrayDepth() {
         if (!isArray()) {
             return 0;

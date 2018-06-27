@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -23,8 +24,10 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
+import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
@@ -164,19 +167,11 @@ public class MainDesignerController implements Initializable, SettingsOwner {
             }
         });
 
-        setupAuxclasspathMenuItem.setOnAction(e -> {
-            try {
-                sourceEditorController.showAuxClassPathController(designerRoot);
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        });
+        setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup(designerRoot));
 
+        Platform.runLater(this::updateRecentFilesMenu);
+        Platform.runLater(this::refreshAST); // initial refreshing
 
-
-        sourceEditorController.refreshAST();
-        xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(),
-                                           getLanguageVersion());
         Platform.runLater(() -> sourceEditorController.moveCaret(0, 0));
         Platform.runLater(() -> { // fixes choicebox bad rendering on first opening
             languageChoiceBox.show();
@@ -229,20 +224,39 @@ public class MainDesignerController implements Initializable, SettingsOwner {
             // nevermind
             ioe.printStackTrace();
         }
-
-        sourceEditorController.shutdown(); // shutdown syntax highlighting
-        xpathPanelController.shutdown();
     }
 
 
+    /**
+     * Attempts to refresh the AST with the up-to-date source,
+     * also updating XPath results.
+     */
     public void refreshAST() {
-        sourceEditorController.refreshAST();
-        refreshXPathResults();
+        Optional<Node> root = sourceEditorController.refreshAST();
+
+        if (root.isPresent()) {
+            xpathPanelController.evaluateXPath(root.get(), getLanguageVersion());
+        } else {
+            xpathPanelController.invalidateResults(true);
+        }
     }
 
+
+    /**
+     * Refreshes the XPath results if the compilation unit is valid.
+     * Otherwise does nothing.
+     */
     public void refreshXPathResults() {
-        xpathPanelController.evaluateXPath(sourceEditorController.getCompilationUnit(),
-                getLanguageVersion());
+        sourceEditorController.getCompilationUnit().ifPresent(root -> xpathPanelController.evaluateXPath(root, getLanguageVersion()));
+    }
+
+
+    /**
+     * Returns a wrapper around the given node that gives access
+     * to its textual representation in the editor area.
+     */
+    public TextAwareNodeWrapper wrapNode(Node node) {
+        return sourceEditorController.wrapNode(node);
     }
 
 
@@ -251,26 +265,62 @@ public class MainDesignerController implements Initializable, SettingsOwner {
      */
     public void onNodeItemSelected(Node selectedValue) {
         nodeInfoPanelController.displayInfo(selectedValue);
-        // The following line causes problems, since it wipes out the name occurrence highlighting,
-        // but it's already fixed in a PR to come soon
-        sourceEditorController.clearNodeHighlight();
-        sourceEditorController.highlightNodePrimary(selectedValue);
+        sourceEditorController.setFocusNode(selectedValue);
         sourceEditorController.focusNodeInTreeView(selectedValue);
     }
 
 
     public void onNameDeclarationSelected(NameDeclaration declaration) {
-        Platform.runLater(() -> onNodeItemSelected(declaration.getNode()));
+        sourceEditorController.clearNameOccurences();
 
-        List<NameOccurrence> occ = declaration.getNode().getScope().getDeclarations().get(declaration);
-        if (occ != null) {
-            sourceEditorController.highlightNodesSecondary(occ.stream()
-                                                              .map(NameOccurrence::getLocation)
-                                                              .collect(Collectors.toList()));
+        List<NameOccurrence> occurrences = declaration.getNode().getScope().getDeclarations().get(declaration);
+
+        if (occurrences != null) {
+            sourceEditorController.highlightNameOccurrences(occurrences);
         }
 
+        Platform.runLater(() -> onNodeItemSelected(declaration.getNode()));
     }
 
+    /**
+     * Runs an XPath (2.0) query on the current AST.
+     * Performs no side effects.
+     *
+     * @param query the query
+     * @return the matched nodes
+     * @throws XPathEvaluationException if the query fails
+     */
+    public List<Node> runXPathQuery(String query) throws XPathEvaluationException {
+        return sourceEditorController.getCompilationUnit()
+                                     .map(n -> xpathPanelController.runXPathQuery(n, getLanguageVersion(), query))
+                                     .orElseGet(Collections::emptyList);
+    }
+
+
+    /**
+     * Handles nodes that potentially caused an error.
+     * This can for example highlight nodes on the
+     * editor. Effects can be reset with {@link #resetSelectedErrorNodes()}.
+     *
+     * @param n Node
+     */
+    public void handleSelectedNodeInError(List<Node> n) {
+        resetSelectedErrorNodes();
+        sourceEditorController.highlightErrorNodes(n);
+    }
+
+    public void resetSelectedErrorNodes() {
+        sourceEditorController.clearErrorNodes();
+    }
+
+    public void resetXPathResults() {
+        sourceEditorController.clearXPathHighlight();
+    }
+
+    /** Replaces previously highlighted XPath results with the given nodes. */
+    public void highlightXPathResults(List<Node> nodes) {
+        sourceEditorController.highlightXPathResults(nodes);
+    }
 
     private void showLicensePopup() {
         Alert licenseAlert = new Alert(AlertType.INFORMATION);
@@ -299,7 +349,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         chooser.setTitle("Load source from file");
         File file = chooser.showOpenDialog(designerRoot.getMainStage());
         loadSourceFromFile(file);
-        sourceEditorController.clearStyleLayers();
     }
 
     private void loadSourceFromFile(File file) {
@@ -361,7 +410,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     public void invalidateAst() {
         nodeInfoPanelController.invalidateInfo();
         xpathPanelController.invalidateResults(false);
-        sourceEditorController.clearNodeHighlight();
+        sourceEditorController.setFocusNode(null);
     }
 
 
@@ -401,21 +450,12 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
     @PersistentProperty
     public String getRecentFiles() {
-        StringBuilder sb = new StringBuilder();
-        for (File f : recentFiles) {
-            sb.append(',').append(f.getAbsolutePath());
-        }
-        return sb.length() > 0 ? sb.substring(1) : "";
+        return recentFiles.stream().map(File::getAbsolutePath).collect(Collectors.joining(File.pathSeparator));
     }
 
 
     public void setRecentFiles(String files) {
-        List<String> fileNames = Arrays.asList(files.split(","));
-        Collections.reverse(fileNames);
-        for (String fileName : fileNames) {
-            File f = new File(fileName);
-            recentFiles.push(f);
-        }
+        Arrays.stream(files.split(File.pathSeparator)).map(File::new).forEach(recentFiles::push);
     }
 
 

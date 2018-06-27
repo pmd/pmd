@@ -20,6 +20,7 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> implements AST
         super(userInterface);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

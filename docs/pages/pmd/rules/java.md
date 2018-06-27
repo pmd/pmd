@@ -1,5 +1,8 @@
 ---
 title: Java Rules
+tags: [rule_references, java]
+summary: Index of all built-in rules available for Java
+language_name: Java
 permalink: pmd_rules_java.html
 folder: pmd/rules
 ---
@@ -57,7 +60,7 @@ folder: pmd/rules
 {% include callout.html content="Rules which enforce a specific coding style." %}
 
 *   [AbstractNaming](pmd_rules_java_codestyle.html#abstractnaming): <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Abstract classes should be named 'AbstractXXX'.
-*   [AtLeastOneConstructor](pmd_rules_java_codestyle.html#atleastoneconstructor): Each class should declare at least one constructor.
+*   [AtLeastOneConstructor](pmd_rules_java_codestyle.html#atleastoneconstructor): Each non-static class should declare at least one constructor.Classes with solely static members ...
 *   [AvoidDollarSigns](pmd_rules_java_codestyle.html#avoiddollarsigns): Avoid using dollar signs in variable/method/class/interface names.
 *   [AvoidFinalLocalVariable](pmd_rules_java_codestyle.html#avoidfinallocalvariable): Avoid using final local variables, turn them into fields.
 *   [AvoidPrefixingMethodParameters](pmd_rules_java_codestyle.html#avoidprefixingmethodparameters): Prefixing parameters by 'in' or 'out' pollutes the name of the parameters and reduces code readab...

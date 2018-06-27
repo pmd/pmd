@@ -1,0 +1,97 @@
+/*
+  Rules for the syntax highlighters.
+  This file doesn't include highlight rules, so that highlight is not displayed
+  on controls that display node rich text if only this file is set as stylesheet.
+ */
+
+
+.code {
+
+  /* Common classes */
+
+  &.keyword {
+    -fx-fill: #B58900;
+    /* -fx-font-weight: bold; */
+  }
+
+  &.punctuation {
+
+  }
+
+  &.literal {
+    -fx-fill: #317ECC;
+  }
+
+  &.comment {
+    -fx-fill: #93A1A1;
+    -fx-font-style: italic; /* doesn't work... */
+  }
+
+  &.annotation {
+    -fx-fill: #d30102;
+  }
+
+  /* Java specific */
+
+  &.java {
+    &.class-identifier {
+      -fx-fill: #B05A65;
+    }
+  }
+
+  /* XPath specific */
+
+  &.xpath {
+
+    &.path {
+      -fx-font-weight: bold;
+    }
+
+    &.axis {
+      -fx-fill: #B05A65;
+    }
+
+    &.bracket {
+      -fx-font-weight: bolder;
+    }
+
+    &.attribute {
+      -fx-fill: #B05A65;
+    }
+
+    &.function {
+      -fx-fill: #cc971b;
+    }
+
+  }
+
+  /* XML specific */
+
+  &.xml {
+
+    &.xml-prolog {
+      -fx-font-weight: bolder;
+    }
+
+    &.tag-name {
+      -fx-fill: #B05A65;
+    }
+
+    &.lt-gt {
+      -fx-fill: #B05A65;
+    }
+
+    &.attribute-name {
+      -fx-fill: #B58900;
+    }
+
+    &.cdata-tag {
+      -fx-fill: #B58900;
+    }
+
+    &.cdata-content {
+      -fx-fill: #93A1A1;
+    }
+
+  }
+}

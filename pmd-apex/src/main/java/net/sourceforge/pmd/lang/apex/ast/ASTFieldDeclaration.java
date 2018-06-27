@@ -12,6 +12,7 @@ public class ASTFieldDeclaration extends AbstractApexNode<FieldDeclaration> {
         super(fieldDeclaration);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

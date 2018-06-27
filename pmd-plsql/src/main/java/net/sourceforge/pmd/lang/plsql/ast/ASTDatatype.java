@@ -17,6 +17,7 @@ public class ASTDatatype extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQ
     }
 
     /** Accept the visitor. **/
+    @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

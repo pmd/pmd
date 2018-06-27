@@ -22,6 +22,7 @@ public class UnnecessaryConversionTemporaryRule extends AbstractJavaRule {
     private static final Set<String> PRIMITIVE_WRAPPERS = CollectionUtil
             .asSet(new String[] { "Integer", "Boolean", "Double", "Long", "Short", "Byte", "Float" });
 
+    @Override
     public Object visit(ASTPrimaryExpression node, Object data) {
         if (node.jjtGetNumChildren() == 0 || (node.jjtGetChild(0)).jjtGetNumChildren() == 0
                 || !(node.jjtGetChild(0).jjtGetChild(0) instanceof ASTAllocationExpression)) {
@@ -37,6 +38,7 @@ public class UnnecessaryConversionTemporaryRule extends AbstractJavaRule {
         return data;
     }
 
+    @Override
     public Object visit(ASTAllocationExpression node, Object data) {
         if (!inPrimaryExpressionContext || !(node.jjtGetChild(0) instanceof ASTClassOrInterfaceType)) {
             return super.visit(node, data);
@@ -48,6 +50,7 @@ public class UnnecessaryConversionTemporaryRule extends AbstractJavaRule {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTPrimarySuffix node, Object data) {
         if (inPrimaryExpressionContext && usingPrimitiveWrapperAllocation) {
             if (node.hasImageEqualTo("toString")) {

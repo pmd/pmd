@@ -73,7 +73,7 @@ public class StartAndEndTagMismatchException extends SyntaxErrorException {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Throwable#getMessage()
      */
     @Override

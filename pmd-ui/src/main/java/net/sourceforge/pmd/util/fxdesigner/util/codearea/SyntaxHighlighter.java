@@ -26,10 +26,12 @@ public interface SyntaxHighlighter {
 
     /**
      * Computes the syntax highlighting on the given text.
+     * The returned spans are exactly the length of the given
+     * text.
      *
      * @param text The text
      *
-     * @return The bounds of the computed style spans
+     * @return The computed style spans
      */
     StyleSpans<Collection<String>> computeHighlighting(String text);
 

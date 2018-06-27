@@ -22,23 +22,24 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class AccessorMethodGenerationRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(final ASTCompilationUnit node, final Object data) {
         final SourceFileScope file = node.getScope().getEnclosingScope(SourceFileScope.class);
         analyzeScope(file, data);
-        
+
         return data; // Stop tree navigation
     }
 
     private void analyzeScope(final AbstractJavaScope file, final Object data) {
         for (final ClassNameDeclaration classDecl : file.getDeclarations(ClassNameDeclaration.class).keySet()) {
             final ClassScope classScope = (ClassScope) classDecl.getScope();
-            
+
             // Check fields
             for (final Map.Entry<VariableNameDeclaration, List<NameOccurrence>> varDecl : classScope.getVariableDeclarations().entrySet()) {
                 final ASTFieldDeclaration field = varDecl.getKey().getNode().getFirstParentOfType(ASTFieldDeclaration.class);
                 analyzeMember(field, varDecl.getValue(), classScope, data);
             }
-            
+
             // Check methods
             for (final Map.Entry<MethodNameDeclaration, List<NameOccurrence>> methodDecl : classScope.getMethodDeclarations().entrySet()) {
                 final ASTMethodDeclaration method = methodDecl.getKey().getNode().getFirstParentOfType(ASTMethodDeclaration.class);
@@ -49,7 +50,7 @@ public class AccessorMethodGenerationRule extends AbstractJavaRule {
             analyzeScope(classScope, data);
         }
     }
-    
+
     public void analyzeMember(final AbstractJavaAccessNode node, final List<NameOccurrence> occurrences,
             final ClassScope classScope, final Object data) {
         if (!node.isPrivate()) {

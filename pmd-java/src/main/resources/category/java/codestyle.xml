@@ -49,28 +49,15 @@ public abstract class Foo { // should be AbstractFoo
           language="java"
           since="1.04"
           message="Each class should declare at least one constructor"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.AtLeastOneConstructorRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#atleastoneconstructor">
         <description>
-Each class should declare at least one constructor.
+<![CDATA[
+Each non-static class should declare at least one constructor.
+Classes with solely static members are ignored, refer to [UseUtilityClassRule](pmd_rules_java_design.html#useutilityclass) to detect those.
+]]>
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration[
-  not(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)
-  and
-  (@Static = 'false')
-  and
-  (count(./descendant::MethodDeclaration[@Static = 'true']) < 1)
-]
-  [@Interface='false']
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public class Foo {
@@ -1634,7 +1621,7 @@ public class Foo {
     <rule name="UnnecessaryModifier"
           language="java"
           since="1.02"
-          message="Avoid modifiers which are implied by the context"
+          message="Unnecessary modifier{0} on {1} ''{2}''{3}"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryModifierRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarymodifier">
         <description>

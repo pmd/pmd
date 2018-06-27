@@ -20,11 +20,13 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
 
     private Set<MethodScope> checked = new HashSet<>();
 
+    @Override
     public Object visit(ASTCompilationUnit acu, Object ctx) {
         checked.clear();
         return super.visit(acu, ctx);
     }
 
+    @Override
     public Object visit(ASTName name, Object ctx) {
         if (name.getImage() == null || !name.getImage().endsWith("finalize")) {
             return ctx;
@@ -36,6 +38,7 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
         return ctx;
     }
 
+    @Override
     public Object visit(ASTPrimaryPrefix pp, Object ctx) {
         List<ASTPrimarySuffix> primarySuffixes = pp.jjtGetParent().findChildrenOfType(ASTPrimarySuffix.class);
         ASTPrimarySuffix firstSuffix = null;

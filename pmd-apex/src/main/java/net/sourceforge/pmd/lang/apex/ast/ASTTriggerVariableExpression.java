@@ -12,6 +12,7 @@ public class ASTTriggerVariableExpression extends AbstractApexNode<TriggerVariab
         super(triggerVariableExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

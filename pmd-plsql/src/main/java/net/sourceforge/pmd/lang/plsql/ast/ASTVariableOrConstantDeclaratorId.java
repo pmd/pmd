@@ -23,6 +23,7 @@ public class ASTVariableOrConstantDeclaratorId extends net.sourceforge.pmd.lang.
     }
 
     /** Accept the visitor. **/
+    @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

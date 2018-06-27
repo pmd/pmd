@@ -10,12 +10,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 
@@ -77,7 +79,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                 && name.lastIndexOf('.') == decl.getImportedName().length();
     }
 
-    private void checkImports(JavaNode node, Object data) {
+    private void checkImports(AbstractJavaTypeNode node, Object data) {
         String name = node.getImage();
         List<ASTImportDeclaration> matches = new ArrayList<>();
 
@@ -98,7 +100,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         }
 
         // If there is no direct match, consider if we match the tail end of a
-        // direct static import, but also a static method on a class import?
+        // direct static import, but also a static method on a class import.
         // For example:
         //
         // import java.util.Arrays;
@@ -107,11 +109,18 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         // List list1 = Arrays.asList("foo"); // Array class name not needed!
         // List list2 = asList("foo"); // Preferred, used static import
         // }
+        //
+        // Or: The usage of a FQN is correct, if there is another import with the same class.
+        // Example
+        // import foo.String;
+        // static {
+        // java.lang.String s = "a";
+        // }
         if (matches.isEmpty()) {
             for (ASTImportDeclaration importDeclaration : imports) {
+                String[] importParts = importDeclaration.getImportedName().split("\\.");
+                String[] nameParts = name.split("\\.");
                 if (importDeclaration.isStatic()) {
-                    String[] importParts = importDeclaration.getImportedName().split("\\.");
-                    String[] nameParts = name.split("\\.");
                     if (importDeclaration.isImportOnDemand()) {
                         // Name class part matches class part of static import?
                         if (nameParts[nameParts.length - 2].equals(importParts[importParts.length - 1])) {
@@ -124,8 +133,17 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                             matches.add(importDeclaration);
                         }
                     }
+                } else {
+                    // last part matches?
+                    if (nameParts[nameParts.length - 1].equals(importParts[importParts.length - 1])) {
+                        matches.add(importDeclaration);
+                    }
                 }
             }
+        }
+
+        if (matches.isEmpty() && isJavaLangImplicit(node)) {
+            addViolation(data, node, new Object[] { node.getImage(), "java.lang.*", "implicit "});
         }
 
         if (!matches.isEmpty()) {
@@ -141,7 +159,22 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         }
     }
 
-    private boolean isAvoidingConflict(final JavaNode node, final String name,
+    private boolean isJavaLangImplicit(AbstractJavaTypeNode node) {
+        String name = node.getImage();
+        boolean isJavaLang = name != null && name.startsWith("java.lang.");
+
+        if (isJavaLang && node.getType() != null) {
+            // valid would be ProcessBuilder.Redirect.PIPE but not java.lang.ProcessBuilder.Redirect.PIPE
+            String packageName = node.getType().getPackage().getName();
+            return "java.lang".equals(packageName);
+        } else if (isJavaLang) {
+            // only java.lang.* is implicitly imported, but not e.g. java.lang.reflection.*
+            return StringUtils.countMatches(name, '.') == 2;
+        }
+        return false;
+    }
+
+    private boolean isAvoidingConflict(final AbstractJavaTypeNode node, final String name,
             final ASTImportDeclaration firstMatch) {
         // is it a conflict between different imports?
         if (firstMatch.isImportOnDemand() && firstMatch.isStatic()) {
@@ -194,6 +227,16 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                         return true;
                     }
                 }
+            }
+        }
+
+        // There could be a conflict between an import of a class with the same name as the FQN
+        if (!firstMatch.isImportOnDemand() && !firstMatch.isStatic()) {
+            String importName = firstMatch.getImportedName();
+            String importUnqualified = importName.substring(importName.lastIndexOf('.') + 1);
+            // the package is different, but the unqualified name is same
+            if (!firstMatch.getImportedName().equals(name) && importUnqualified.equals(unqualifiedName)) {
+                return true;
             }
         }
 

@@ -20,8 +20,8 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
  * Flags dangerous method calls, e.g. FinancialForce
  * Configuration.disableTriggerCRUDSecurity() or System.debug with sensitive
  * input
- * 
- * 
+ *
+ *
  * @author sergey.gorbaty
  *
  */
@@ -46,6 +46,7 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
 
     }
 
+    @Override
     public Object visit(ASTUserClass node, Object data) {
         if (Helper.isTestMethodOrClass(node)) {
             return data;

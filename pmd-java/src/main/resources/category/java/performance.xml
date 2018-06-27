@@ -935,7 +935,7 @@ public String convert(int i) {
 
     <rule name="UseStringBufferForStringAppends"
           since="3.1"
-          message="Prefer StringBuffer over += for concatenating strings"
+          message="Prefer StringBuilder (non-synchronized) or StringBuffer (synchronized) over += for concatenating strings"
           class="net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferForStringAppendsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usestringbufferforstringappends">
         <description>
@@ -953,7 +953,7 @@ public class Foo {
         a += " bar";
         // better would be:
         // StringBuilder a = new StringBuilder("foo");
-        // a.append(" bar);
+        // a.append(" bar");
     }
 }
 ]]>

@@ -31,6 +31,7 @@ public class ExcessiveImportsRule extends ExcessiveNodeCountRule {
      * @param data
      * @return Object
      */
+    @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         return NumericConstants.ONE;
     }

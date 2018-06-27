@@ -12,6 +12,7 @@ public class ASTDmlInsertStatement extends AbstractApexNode<DmlInsertStatement> 
         super(dmlInsertStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.util.fxdesigner.model;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +32,8 @@ public class XPathEvaluator {
 
 
     /**
-     * Evaluates an XPath query on the compilation unit.
+     * Evaluates an XPath query on the compilation unit. Performs
+     * no side effects.
      *
      * @param compilationUnit AST root
      * @param languageVersion language version
@@ -47,7 +50,7 @@ public class XPathEvaluator {
                                     List<PropertyDescriptorSpec> properties) throws XPathEvaluationException {
 
         if (StringUtils.isBlank(xpathQuery)) {
-            return Collections.emptyList();
+            return emptyList();
         }
 
         try {
@@ -78,9 +81,7 @@ public class XPathEvaluator {
             ruleContext.setLanguageVersion(languageVersion);
             ruleContext.setIgnoreExceptions(false);
 
-            List<Node> nodes = new ArrayList<>();
-            nodes.add(compilationUnit);
-            ruleSets.apply(nodes, ruleContext, xpathRule.getLanguage());
+            ruleSets.apply(singletonList(compilationUnit), ruleContext, xpathRule.getLanguage());
 
             return results;
 

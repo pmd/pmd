@@ -20,9 +20,9 @@ import net.sourceforge.pmd.properties.BooleanProperty;
 /**
  * <code>if (x != y) { diff(); } else { same(); }</code> and<br>
  * <code>(!x ? diff() : same());</code>
- * 
+ *
  * <p>XPath can handle the easy cases, e.g.:</p>
- * 
+ *
  * <pre>
  *    //IfStatement[
  *      Statement[2]
@@ -30,18 +30,18 @@ import net.sourceforge.pmd.properties.BooleanProperty;
  *        EqualityExpression[@Image="!="] or
  *        UnaryExpressionNotPlusMinus[@Image="!"]]]
  * </pre>
- * 
+ *
  * <p>But "&amp;&amp;" and "||" are difficult, since we need a match for <i>all</i>
  * children instead of just one. This can be done by using a double-negative,
  * e.g.:</p>
- * 
+ *
  * <pre>
  *    not(*[not(<i>matchme</i>)])
  * </pre>
- * 
+ *
  * <p>Still, XPath is unable to handle arbitrarily nested cases, since it lacks
  * recursion, e.g.:</p>
- * 
+ *
  * <pre>
  * if (((x != !y)) || !(x)) {
  *     diff();
@@ -59,6 +59,7 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
         definePropertyDescriptor(ignoreElseIfProperty);
     }
 
+    @Override
     public Object visit(ASTIfStatement node, Object data) {
         // look for "if (match) ..; else .."
         if (node.jjtGetNumChildren() == 3) {
@@ -78,6 +79,7 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTConditionalExpression node, Object data) {
         // look for "match ? .. : .."
         if (node.jjtGetNumChildren() > 0) {

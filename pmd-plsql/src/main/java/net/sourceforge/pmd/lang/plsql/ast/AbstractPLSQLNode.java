@@ -23,6 +23,7 @@ public abstract class AbstractPLSQLNode extends net.sourceforge.pmd.lang.ast.Abs
         parser = p;
     }
 
+    @Override
     public void jjtOpen() {
         if (beginLine == -1 && parser.token.next != null) {
             beginLine = parser.token.next.beginLine;
@@ -30,6 +31,7 @@ public abstract class AbstractPLSQLNode extends net.sourceforge.pmd.lang.ast.Abs
         }
     }
 
+    @Override
     public void jjtClose() {
         if (beginLine == -1 && (children == null || children.length == 0)) {
             beginColumn = parser.token.beginColumn;
@@ -102,7 +104,7 @@ public abstract class AbstractPLSQLNode extends net.sourceforge.pmd.lang.ast.Abs
 
     /**
      * Return node image converted to the normal Oracle form.
-     * 
+     *
      * <p>
      * Normally this is uppercase, unless the names is quoted ("name").
      * </p>
@@ -114,12 +116,12 @@ public abstract class AbstractPLSQLNode extends net.sourceforge.pmd.lang.ast.Abs
     /**
      * Convert arbitrary String to normal Oracle format, under assumption that
      * the passed image is an Oracle name.
-     * 
+     *
      * <p>
      * This a helper method for PLSQL classes dependent on SimpleNode, that
      * would otherwise have to import PLSQParser.
      * </p>
-     * 
+     *
      * @param image
      * @return
      */

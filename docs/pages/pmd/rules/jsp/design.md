@@ -18,7 +18,7 @@ Avoid inlining HTML script content.  Consider externalizing the HTML script usin
 Externalized script could be reused between pages.  Browsers can also cache the script, reducing overall download bandwidth.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //HtmlScript[@Image != '']
 ```
 
@@ -58,7 +58,7 @@ tags, or attributes like "align='center'".
 Scripts should be part of Tag Libraries, rather than part of JSP pages.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //HtmlScript[(@EndLine - @BeginLine > 10)]
 ```
 
@@ -102,7 +102,7 @@ onload=calcDays;
 Scriptlets should be factored into Tag Libraries or JSP declarations, rather than being part of JSP pages.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //JspScriptlet
 |
 //Element[ upper-case(@Name)="JSP:SCRIPTLET" ]

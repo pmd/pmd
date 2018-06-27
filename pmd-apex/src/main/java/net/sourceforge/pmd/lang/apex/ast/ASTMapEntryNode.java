@@ -12,6 +12,7 @@ public class ASTMapEntryNode extends AbstractApexNode<MapEntryNode> {
         super(mapEntryNode);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

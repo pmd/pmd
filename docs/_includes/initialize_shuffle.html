@@ -30,21 +30,30 @@ var shuffleme = (function( $ ) {
 
   // Set up button clicks
   setupFilters = function() {
-    var $btns = $filterOptions.children();
+    var $btns = $filterOptions.children().add('.topical-filter');
     $btns.on('click', function() {
       var $this = $(this),
           isActive = $this.hasClass( 'active' ),
+          isMainTopicButton = $this.hasClass('topical-filter'),
           group = isActive ? 'all' : $this.data('group');
 
       // Hide current label, show current label in title
       if ( !isActive ) {
-        $('.filter-options .active').removeClass('active');
+        $('.filter-options .active').add('.topical-filter.active').removeClass('active');
       }
 
       $this.toggleClass('active');
 
       // Filter elements
       $grid.shuffle( 'shuffle', group );
+
+      // scroll to the grid
+      if ( isMainTopicButton && !isActive ) {
+          $('html, body').animate({
+              scrollTop: $("#grid-rule").offset().top
+          }, 500);
+      }
+
     });
 
     $btns = null;
@@ -98,9 +107,9 @@ $(document).ready(function() {
 
     </script>
 
-    <!-- new attempt-->
+<!-- new attempt-->
 
-    <script>
+<script>
     $(document).ready(function() {
      
     /* initialize shuffle plugin */

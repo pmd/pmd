@@ -17,7 +17,7 @@ package net.sourceforge.pmd.lang.vm.directive;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 /**
@@ -28,10 +28,10 @@ package net.sourceforge.pmd.lang.vm.directive;
  * as a "decorator". Body AST can contain any valid Velocity syntax.
  *
  * An example:
- * 
+ *
  * <pre>
  * #set($foobar = "yeah!")
- * 
+ *
  * #macro(strong $txt)
  * &lt;strong&gt;$bodyContent&lt;/strong&gt; $txt
  * #end
@@ -40,13 +40,13 @@ package net.sourceforge.pmd.lang.vm.directive;
  * &lt;u&gt;This text is underlined and bold&lt;/u&gt;
  * #end
  * </pre>
- * 
+ *
  * Will print:
- * 
+ *
  * <pre>
  * &lt;strong&gt;&lt;u&gt;This text is underlined and bold&lt;u&gt;&lt;/strong&gt; yeah!
  * </pre>
- * 
+ *
  * bodyContent reference name is configurable (see velocity.properties).
  *
  * @author <a href="mailto:wyla@removethis.sci.fi">Jarkko Viinamaki</a>
@@ -60,6 +60,7 @@ public class BlockMacro extends Block {
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return key;
     }
@@ -68,6 +69,7 @@ public class BlockMacro extends Block {
      * Override to use the macro name, since it is within an #@myMacro() ...
      * #end block that the scope in question would be used.
      */
+    @Override
     public String getScopeName() {
         return name;
     }

@@ -1017,6 +1017,7 @@ public class Foo {
           language="java"
           since="1.0"
           message="Switch statements should have a default label"
+          typeResolution="true"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">
         <description>
@@ -1024,8 +1025,11 @@ All switch statements should include a default option to catch any unspecified v
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
-                <value>//SwitchStatement[not(SwitchLabel[@Default='true'])]</value>
+                <value><![CDATA[
+                //SwitchStatement[@DefaultCase = false() and @ExhaustiveEnumSwitch = false()]
+            ]]></value>
             </property>
         </properties>
         <example>

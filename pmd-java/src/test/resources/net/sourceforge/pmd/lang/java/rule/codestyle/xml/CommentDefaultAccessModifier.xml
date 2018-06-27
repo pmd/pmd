@@ -183,4 +183,42 @@ public enum Bar {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>Nested Enum constructor with implicit private modifier should not trigger</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    enum Bar {
+        ONE, TWO;
+    
+        Bar() {}
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Nested annotation method with default access modifier should not trigger</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @interface Bar {
+        String baz();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1211 [java] CommentDefaultAccessModifier false positive with nested interface</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface A {
+    interface B {
+        default void b() {}
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

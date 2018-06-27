@@ -12,6 +12,7 @@ public class ASTCatchBlockStatement extends AbstractApexNode<CatchBlockStatement
         super(catchBlockStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

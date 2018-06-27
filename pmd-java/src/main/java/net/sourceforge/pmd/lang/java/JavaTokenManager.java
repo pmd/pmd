@@ -20,10 +20,12 @@ public class JavaTokenManager implements TokenManager {
         tokenManager = new JavaParserTokenManager(new JavaCharStream(source));
     }
 
+    @Override
     public Object getNextToken() {
         return tokenManager.getNextToken();
     }
 
+    @Override
     public void setFileName(String fileName) {
         tokenManager.setFileName(fileName);
     }

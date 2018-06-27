@@ -13,12 +13,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
 import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
+import org.reactfx.collection.LiveArrayList;
 import org.reactfx.util.Tuples;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
@@ -34,12 +36,15 @@ import net.sourceforge.pmd.util.fxdesigner.model.Style;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathSuggestions;
+import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
+import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.CustomCodeArea;
+import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.XpathViolationListCell;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -85,11 +90,12 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     @FXML
     private PropertyTableView propertyTableView;
     @FXML
-    private CustomCodeArea xpathExpressionArea;
+    private SyntaxHighlightingCodeArea xpathExpressionArea;
     @FXML
     private TitledPane violationsTitledPane;
     @FXML
-    private ListView<Node> xpathResultListView;
+    private ListView<TextAwareNodeWrapper> xpathResultListView;
+
     // Actually a child of the main view toolbar, but this controller is responsible for it
     @SuppressWarnings("PMD.SingularField")
     private ChoiceBox<String> xpathVersionChoiceBox;
@@ -106,13 +112,16 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        xpathExpressionArea.setSyntaxHighlightingEnabled(new XPathSyntaxHighlighter());
+        xpathExpressionArea.setSyntaxHighlighter(new XPathSyntaxHighlighter());
 
         initGenerateXPathFromStackTrace();
+
+        xpathResultListView.setCellFactory(v -> new XpathViolationListCell());
 
         EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
                     .conditionOn(xpathResultListView.focusedProperty())
                     .filter(Objects::nonNull)
+                    .map(TextAwareNodeWrapper::getNode)
                     .subscribe(parent::onNodeItemSelected);
 
         Platform.runLater(this::bindToParent);
@@ -263,7 +272,10 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
 
     /**
-     * Evaluate XPath on the given compilation unit.
+     * Evaluate the contents of the XPath expression area
+     * on the given compilation unit. This updates the xpath
+     * result panel, and can log XPath exceptions to the
+     * event log panel.
      *
      * @param compilationUnit The AST root
      * @param version         The language version
@@ -273,7 +285,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         try {
             String xpath = getXpathExpression();
             if (StringUtils.isBlank(xpath)) {
-                xpathResultListView.getItems().clear();
                 invalidateResults(false);
                 return;
             }
@@ -284,7 +295,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                                                                                      getXpathVersion(),
                                                                                      xpath,
                                                                                      ruleBuilder.getRuleProperties()));
-            xpathResultListView.setItems(results);
+            xpathResultListView.setItems(results.stream().map(parent::wrapNode).collect(Collectors.toCollection(LiveArrayList::new)));
+            parent.highlightXPathResults(results);
             violationsTitledPane.setText("Matched nodes\t(" + results.size() + ")");
         } catch (XPathEvaluationException e) {
             invalidateResults(true);
@@ -297,8 +309,14 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     }
 
 
+    public List<Node> runXPathQuery(Node compilationUnit, LanguageVersion version, String query) throws XPathEvaluationException {
+        return xpathEvaluator.evaluateQuery(compilationUnit, version, XPathRuleQuery.XPATH_2_0, query, ruleBuilder.getRuleProperties());
+    }
+
+
     public void invalidateResults(boolean error) {
         xpathResultListView.getItems().clear();
+        parent.resetXPathResults();
         violationsTitledPane.setText("Matched nodes" + (error ? "\t(error)" : ""));
     }
 
@@ -320,11 +338,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         //stage.setTitle("PMD Rule Designer (v " + PMD.VERSION + ')');
         dialog.setScene(scene);
         dialog.show();
-    }
-
-
-    public void shutdown() {
-        xpathExpressionArea.disableSyntaxHighlighting();
     }
 
 

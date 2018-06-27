@@ -17,15 +17,15 @@ package net.sourceforge.pmd.lang.vm.ast;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 /**
  * This class is responsible for handling the references in VTL ($foo).
- * 
+ *
  * Please look at the Parser.jjt file which is what controls the generation of
  * this class.
- * 
+ *
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @author <a href="mailto:Christoph.Reck@dlr.de">Christoph Reck</a>
@@ -73,7 +73,7 @@ public class ASTReference extends AbstractVmNode {
 
     /**
      * Returns the 'root string', the reference key
-     * 
+     *
      * @return the root string.
      */
     public String getRootString() {
@@ -85,9 +85,9 @@ public class ASTReference extends AbstractVmNode {
      * Used now in the VM system to override a reference in a VM tree with the
      * literal of the calling arg to make it work nicely when calling arg is
      * null. It seems a bit much, but does keep things consistant.
-     * 
+     *
      * Note, you can only set the literal once...
-     * 
+     *
      * @param literal
      *            String to render to when null
      */
@@ -104,7 +104,7 @@ public class ASTReference extends AbstractVmNode {
     /**
      * Override of the SimpleNode method literal() Returns the literal
      * representation of the node. Should be something like $&lt;token&gt;.
-     * 
+     *
      * @return A literal string.
      */
     @Override

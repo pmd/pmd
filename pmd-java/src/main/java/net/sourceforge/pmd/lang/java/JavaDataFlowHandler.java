@@ -13,10 +13,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.java.dfa.JavaDataFlowNode;
 
 public class JavaDataFlowHandler implements DataFlowHandler {
+    @Override
     public DataFlowNode createDataFlowNode(List<DataFlowNode> dataFlow, Node node) {
         return new JavaDataFlowNode(dataFlow, node);
     }
 
+    @Override
     public Class<ASTLabeledStatement> getLabelStatementNodeClass() {
         return ASTLabeledStatement.class;
     }

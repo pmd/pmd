@@ -23,6 +23,7 @@ public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiable
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -35,6 +36,7 @@ public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiable
      *
      * @see #isAnonymousClass()
      */
+    @Override
     public JavaTypeQualifiedName getQualifiedName() {
         return qualifiedName;
     }

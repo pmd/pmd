@@ -66,6 +66,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
         };
     }
 
+    @Override
     public RuleViolationFactory getRuleViolationFactory() {
         return JavaRuleViolationFactory.INSTANCE;
     }
@@ -73,6 +74,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
     @Override
     public VisitorStarter getDataFlowFacade() {
         return new VisitorStarter() {
+            @Override
             public void start(Node rootNode) {
                 new DataFlowFacade().initializeWith(getDataFlowHandler(), (ASTCompilationUnit) rootNode);
             }
@@ -82,6 +84,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
     @Override
     public VisitorStarter getSymbolFacade() {
         return new VisitorStarter() {
+            @Override
             public void start(Node rootNode) {
                 new SymbolFacade().initializeWith(null, (ASTCompilationUnit) rootNode);
             }
@@ -91,6 +94,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
     @Override
     public VisitorStarter getSymbolFacade(final ClassLoader classLoader) {
         return new VisitorStarter() {
+            @Override
             public void start(Node rootNode) {
                 new SymbolFacade().initializeWith(classLoader, (ASTCompilationUnit) rootNode);
             }
@@ -100,6 +104,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
     @Override
     public VisitorStarter getTypeResolutionFacade(final ClassLoader classLoader) {
         return new VisitorStarter() {
+            @Override
             public void start(Node rootNode) {
                 new TypeResolutionFacade().initializeWith(classLoader, (ASTCompilationUnit) rootNode);
             }
@@ -109,6 +114,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {
+            @Override
             public void start(Node rootNode) {
                 new DumpFacade().initializeWith(writer, prefix, recurse, (JavaNode) rootNode);
             }

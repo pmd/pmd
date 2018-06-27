@@ -17,16 +17,16 @@ package net.sourceforge.pmd.lang.vm.ast;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 /**
  * Helps handle math<br>
  * <br>
- * 
+ *
  * Please look at the Parser.jjt file which is what controls the generation of
  * this class.
- * 
+ *
  * @author <a href="mailto:wglass@forio.com">Will Glass-Husain</a>
  * @author <a href="mailto:pero@antaramusic.de">Peter Romianowski</a>
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>

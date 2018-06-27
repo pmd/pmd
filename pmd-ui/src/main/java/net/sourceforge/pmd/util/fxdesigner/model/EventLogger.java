@@ -6,8 +6,8 @@ package net.sourceforge.pmd.util.fxdesigner.model;
 
 import java.util.Objects;
 
+import org.reactfx.EventSource;
 import org.reactfx.EventStream;
-import org.reactfx.value.Var;
 
 /**
  * Logs events.
@@ -17,18 +17,17 @@ import org.reactfx.value.Var;
  */
 public class EventLogger {
 
-    private final Var<LogEntry> latestEvent = Var.newSimpleVar(null);
+    private final EventSource<LogEntry> latestEvent = new EventSource<>();
 
     public void logEvent(LogEntry event) {
-        latestEvent.setValue(event);
+        latestEvent.push(event);
     }
 
     /**
-     * Returns a stream that emits an event each time an exception is logged by the parser.
-     *
+     * Returns a stream that emits an event each time an exception is logged by some
+     * part of the application.
      */
-
     public EventStream<LogEntry> getLog() {
-        return latestEvent.values().filter(Objects::nonNull);
+        return latestEvent.filter(Objects::nonNull);
     }
 }

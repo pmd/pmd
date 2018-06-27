@@ -43,6 +43,7 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
         instance.setUp();
     }
 
+    @Override
     protected Description describeChild(TestDescriptor testCase) {
         Description description = testDescriptions.get(testCase);
         if (description == null) {

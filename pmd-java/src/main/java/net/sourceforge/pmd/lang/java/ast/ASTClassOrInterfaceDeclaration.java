@@ -19,7 +19,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  *
  * ClassOrInterfaceDeclaration ::=
  *          ( "class" | "interface" )
- *          &lt;IDENTIFIER>
+ *          &lt;IDENTIFIER&gt;
  *          [ TypeParameters ]
  *          [ ExtendsList ]
  *          [ ImplementsList ]

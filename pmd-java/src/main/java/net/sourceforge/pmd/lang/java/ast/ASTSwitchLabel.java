@@ -5,6 +5,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents either a {@code case} or {@code default} label inside
+ * a {@linkplain ASTSwitchStatement switch statement}.
+ *
+ * <pre>
+ * SwitchLabel ::=  "case" {@linkplain ASTExpression Expression} ":"
+ *                | "default" ":"
+ * </pre>
+ */
 public class ASTSwitchLabel extends AbstractJavaNode {
 
     private boolean isDefault;

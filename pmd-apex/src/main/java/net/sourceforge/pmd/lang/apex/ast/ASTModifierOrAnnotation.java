@@ -12,6 +12,7 @@ public class ASTModifierOrAnnotation extends AbstractApexNode<ModifierOrAnnotati
         super(modifierOrAnnotation);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

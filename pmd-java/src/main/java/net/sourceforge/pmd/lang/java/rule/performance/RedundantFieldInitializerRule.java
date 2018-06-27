@@ -30,6 +30,7 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
         addRuleChainVisit(ASTFieldDeclaration.class);
     }
 
+    @Override
     public Object visit(ASTFieldDeclaration fieldDeclaration, Object data) {
         // Finals can only be initialized once.
         if (fieldDeclaration.isFinal()) {
@@ -108,17 +109,17 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
     /**
      * Checks if a FieldDeclaration is a reference type (includes arrays). The
      * reference information is in the FieldDeclaration for this example:
-     * 
+     *
      * <pre>
      * int[] ia1
      * </pre>
-     * 
+     *
      * and in the VariableDeclarator for this example:
-     * 
+     *
      * <pre>
      * int ia2[];
      * </pre>
-     * 
+     *
      * .
      *
      * @param fieldDeclaration

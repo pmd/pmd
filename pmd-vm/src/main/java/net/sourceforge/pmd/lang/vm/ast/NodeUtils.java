@@ -19,12 +19,12 @@ import org.apache.commons.lang3.text.StrBuilder;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 /**
  * Utilities for dealing with the AST node structure.
- * 
+ *
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: NodeUtils.java 687386 2008-08-20 16:57:07Z nbubna $
@@ -37,7 +37,7 @@ public final class NodeUtils {
      * Special tokens do not participate in parsing but can still trigger
      * certain lexical actions. In some cases you may want to retrieve these
      * special tokens, this is simply a way to extract them.
-     * 
+     *
      * @param t
      *            the Token
      * @return StrBuilder with the special tokens.
@@ -63,7 +63,7 @@ public final class NodeUtils {
 
                 /*
                  * more dreaded MORE hack :)
-                 * 
+                 *
                  * looking for ("\\")*"$" sequences
                  */
 
@@ -109,7 +109,7 @@ public final class NodeUtils {
 
     /**
      * complete node literal
-     * 
+     *
      * @param t
      * @return A node literal.
      */

@@ -18,7 +18,7 @@ public class MatlabTokenManager implements TokenManager {
 
     /**
      * Creates a new Matlab Token Manager from the given source code.
-     * 
+     *
      * @param source
      *            the source code
      */
@@ -26,6 +26,7 @@ public class MatlabTokenManager implements TokenManager {
         tokenManager = new MatlabParserTokenManager(new SimpleCharStream(source));
     }
 
+    @Override
     public Object getNextToken() {
         return tokenManager.getNextToken();
     }

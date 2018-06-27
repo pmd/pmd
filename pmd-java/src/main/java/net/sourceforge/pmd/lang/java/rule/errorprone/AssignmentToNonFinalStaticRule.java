@@ -22,12 +22,13 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  */
 public class AssignmentToNonFinalStaticRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
                 .getDeclarations(VariableNameDeclaration.class);
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
             VariableNameDeclaration decl = entry.getKey();
-            AccessNode accessNodeParent = (AccessNode) decl.getAccessNodeParent();
+            AccessNode accessNodeParent = decl.getAccessNodeParent();
             if (!accessNodeParent.isStatic() || accessNodeParent.isFinal()) {
                 continue;
             }

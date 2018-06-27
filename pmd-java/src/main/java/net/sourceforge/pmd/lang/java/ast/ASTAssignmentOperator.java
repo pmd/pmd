@@ -5,6 +5,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents an assignment operator in an {@linkplain ASTExpression assignment expression}.
+ *
+ * <pre>
+ *
+ *  AssignmentOperator ::= "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|="
+ *
+ * </pre>
+ */
 public class ASTAssignmentOperator extends AbstractJavaNode {
     private boolean isCompound;
 
@@ -16,6 +25,7 @@ public class ASTAssignmentOperator extends AbstractJavaNode {
         super(p, id);
     }
 
+    // TODO this could be determined from the image of the operator, no need to set it in the parser...
     public void setCompound() {
         isCompound = true;
     }
@@ -24,9 +34,6 @@ public class ASTAssignmentOperator extends AbstractJavaNode {
         return this.isCompound;
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

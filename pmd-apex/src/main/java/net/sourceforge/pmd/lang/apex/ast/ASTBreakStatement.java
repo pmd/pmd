@@ -12,6 +12,7 @@ public class ASTBreakStatement extends AbstractApexNode<BreakStatement> {
         super(breakStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

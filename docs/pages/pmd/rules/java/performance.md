@@ -18,7 +18,7 @@ The conversion of literals to strings by concatenating them with empty strings i
 It is much better to use one of the type-specific toString() methods instead.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""']
 ```
 
@@ -68,7 +68,7 @@ sb.append('a');     // use this instead
 Instead of manually copying data between two arrays, use the efficient Arrays.copyOf or System.arraycopy method instead.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Statement[(ForStatement or WhileStatement) and
 count(*//AssignmentOperator[@Image = '='])=1
 and
@@ -130,7 +130,7 @@ The FileReader and FileWriter constructors instantiate FileInputStream and FileO
 * Use `Files.newBufferedWriter(Paths.get(fileName))` instead of `new FileWriter(fileName)`.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[
        typeIs('java.io.FileInputStream')
     or typeIs('java.io.FileOutputStream')
@@ -205,7 +205,7 @@ and convert the int back to a short. Thus any storage gains found through use of
 adverse impacts on performance.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //FieldDeclaration/Type/PrimitiveType[@Image = 'short']
 |
 //ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeIs('java.lang.Override')])]
@@ -297,7 +297,7 @@ It makes use of an internal cache that recycles earlier instances making it more
 Note that new Byte() is deprecated since JDK 9 for that reason.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //AllocationExpression
 [not (ArrayDimsAndInits)
 and ClassOrInterfaceType[typeIs('java.lang.Byte')]]
@@ -495,7 +495,7 @@ It makes use of an internal cache that recycles earlier instances making it more
 Note that new Integer() is deprecated since JDK 9 for that reason.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //AllocationExpression
   [not (ArrayDimsAndInits)
    and ClassOrInterfaceType[typeIs('java.lang.Integer')]]
@@ -525,7 +525,7 @@ It makes use of an internal cache that recycles earlier instances making it more
 Note that new Long() is deprecated since JDK 9 for that reason.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //AllocationExpression
 [not (ArrayDimsAndInits)
 and ClassOrInterfaceType[typeIs('java.lang.Long')]]
@@ -565,7 +565,7 @@ Note: If you don't need an array of the correct type, then the simple `toArray()
 is faster, but returns only an array of type `Object[]`.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryExpression
 [PrimaryPrefix/Name[ends-with(@Image, 'toArray')]]
 [
@@ -644,7 +644,7 @@ It makes use of an internal cache that recycles earlier instances making it more
 Note that new Short() is deprecated since JDK 9 for that reason.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //AllocationExpression
 [not (ArrayDimsAndInits)
 and ClassOrInterfaceType[typeIs('java.lang.Short')]]
@@ -673,7 +673,7 @@ Since it passes in a literal of length 1, calls to (string).startsWith can be re
 at the expense of some readability.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryExpression
  [PrimaryPrefix/Name
   [ends-with(@Image, '.startsWith')] or PrimarySuffix[@Image='startsWith']]
@@ -762,7 +762,7 @@ cases is ill-advised, since switches are not as easy to understand as if-then st
 if-then statement to increase code readability.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //SwitchStatement[
     (count(.//SwitchLabel) < $minimumNumberCaseForASwitch)
 ]
@@ -841,7 +841,7 @@ public int convert(String s) {
 ArrayList is a much better Collection implementation than Vector if thread-safe operation is not required.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //CompilationUnit[count(ImportDeclaration) = 0 or count(ImportDeclaration/Name[@Image='java.util.Vector']) > 0]
   //AllocationExpression/ClassOrInterfaceType
     [@Image='Vector' or @Image='java.util.Vector']
@@ -881,7 +881,7 @@ You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you
 	
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Statement[
     (ForStatement) and (ForStatement//VariableInitializer//Literal[@IntLiteral='true' and @Image='0']) and (count(.//IfStatement)=0)
    ]
@@ -1008,7 +1008,7 @@ public class Foo {
         a += " bar";
         // better would be:
         // StringBuilder a = new StringBuilder("foo");
-        // a.append(" bar);
+        // a.append(" bar");
     }
 }
 ```

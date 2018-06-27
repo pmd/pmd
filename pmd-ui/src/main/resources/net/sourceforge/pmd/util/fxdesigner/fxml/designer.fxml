@@ -38,16 +38,19 @@
                                         <MenuItem fx:id="exportXPathMenuItem" mnemonicParsing="false" text="Export XPath to rule" />
                                     </items>
                                 </Menu>
-                                <Menu mnemonicParsing="false" text="About">
-                                    <items>
-                                        <MenuItem mnemonicParsing="false" text="About" />
-                                        <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License" />
-                                    </items>
-                                </Menu>
-                                <Menu mnemonicParsing="false" text="PMD Configuration">
+
+                                <Menu mnemonicParsing="false" text="Configuration">
                                     <items>
                                         <MenuItem fx:id="setupAuxclasspathMenuItem" mnemonicParsing="false"
-                                                  text="Set up the auxclasspath"/>
+                                                  text="Set up the auxclasspath" >
+                                        </MenuItem>
+                                    </items>
+                                </Menu>
+
+                                <Menu mnemonicParsing="false" text="About">
+                                    <items>
+                                        <MenuItem mnemonicParsing="false" text="About"/>
+                                        <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License"/>
                                     </items>
                                 </Menu>
 

@@ -17,7 +17,7 @@ language: Java Server Pages
 Do not nest JSF component custom actions inside a custom action that iterates over its body.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Element[ @Name="c:forEach" ] // Element[ @NamespacePrefix="h" or @NamespacePrefix="f" ]
 ```
 
@@ -49,7 +49,7 @@ Do not nest JSF component custom actions inside a custom action that iterates ov
 Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Attribute[ upper-case(@Name)="CLASS" ]
 ```
 
@@ -77,7 +77,7 @@ between the application server to the client, and serve
 little other purpose. Consider switching to JSP comments.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //CommentTag
 ```
 
@@ -107,7 +107,7 @@ little other purpose. Consider switching to JSP comments.
 Do not do a forward from within a JSP file.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Element[ @Name="jsp:forward" ]
 ```
 
