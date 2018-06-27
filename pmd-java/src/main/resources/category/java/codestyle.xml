@@ -764,7 +764,25 @@ for (int i = 0; i < 42; i++)
         <priority>1</priority>
         <example>
             <![CDATA[
-            // TODO
+            class Foo {
+
+                abstract void bar(int myInt); // This is Camel case, so it's ok
+
+                void bar(int my_i) { // this will be reported
+
+                }
+
+                void lambdas() {
+
+                    // lambdas parameters can be configured separately
+                    Consumer<String> lambda1 = s_str -> { };
+
+                    // lambda parameters with an explicit type can be configured separately
+                    Consumer<String> lambda1 = (String str) -> { };
+
+                }
+
+            }
             ]]>
         </example>
     </rule>
@@ -1023,8 +1041,8 @@ public class Bar {
           class="net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#localvariablenamingconventions">
         <description>
-            Configurable naming conventions for local variable declarations. This rule reports
-            variable declarations which do not match the regex that applies to their
+            Configurable naming conventions for local variable declarations and other locally-scoped
+            variables. This rule reports variable declarations which do not match the regex that applies to their
             specific kind (e.g. final variable, or catch-clause parameter). Each regex can be configured through
             properties.
 
@@ -1033,7 +1051,21 @@ public class Bar {
         <priority>1</priority>
         <example>
             <![CDATA[
-            // TODO
+            class Foo {
+                void bar() {
+                    int localVariable = 1; // This is in camel case, so it's ok
+                    int local_variable = 1; // This will be reported unless you change the regex
+
+                    final int i_var = 1; // final local variables can be configured separately
+
+                    try {
+                        foo();
+                    } catch (IllegalArgumentException e_illegal) {
+                        // exception block parameters can be configured separately
+                    }
+
+                }
+            }
             ]]>
         </example>
     </rule>
