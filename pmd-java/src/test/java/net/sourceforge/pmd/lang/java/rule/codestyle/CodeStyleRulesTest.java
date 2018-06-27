@@ -45,6 +45,7 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "LocalHomeNamingConvention");
         addRule(RULESET, "LocalInterfaceSessionNamingConvention");
         addRule(RULESET, "LocalVariableCouldBeFinal");
+        addRule(RULESET, "LongVariable");
         addRule(RULESET, "LocalVariableNamingConventions");
         addRule(RULESET, "MDBAndSessionBeanNamingConvention");
         addRule(RULESET, "MethodArgumentCouldBeFinal");
