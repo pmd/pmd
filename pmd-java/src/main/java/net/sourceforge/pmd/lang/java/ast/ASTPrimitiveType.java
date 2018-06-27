@@ -5,6 +5,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents a primitive type.
+ *
+ * <pre>
+ *
+ * PrimitiveType ::= "boolean" | "char" | "byte" | "short" | "int" | "long" | "float" | "double"
+ *
+ * </pre>
+ */
 public class ASTPrimitiveType extends AbstractJavaTypeNode implements Dimensionable {
 
     private int arrayDepth;

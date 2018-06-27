@@ -5,6 +5,21 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents a conditional expression, aka ternary expression. This operation has
+ * a greater precedence as {@linkplain ASTExpression assignment expressions},
+ * and lower as {@link ASTConditionalOrExpression}.
+ *
+ * <p>Note that the children of this node are not necessarily {@link ASTConditionalOrExpression},
+ * rather, they are expressions with an operator precedence greater or equal to ConditionalOrExpression.
+ *
+ * <pre>
+ *
+ * ConditionalExpression ::= {@linkplain ASTConditionalOrExpression ConditionalOrExpression} "?"  {@linkplain ASTExpression Expression} ":" {@linkplain ASTConditionalExpression ConditionalExpression}
+ *
+ * </pre>
+ *
+ */
 public class ASTConditionalExpression extends AbstractJavaTypeNode {
 
     private boolean isTernary;
@@ -21,13 +36,11 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
         isTernary = true;
     }
 
+    // TODO this could be deprecated, there's no way this node is *not* a ternary
     public boolean isTernary() {
         return this.isTernary;
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
