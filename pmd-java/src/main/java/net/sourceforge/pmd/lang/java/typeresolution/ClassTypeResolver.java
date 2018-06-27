@@ -1086,7 +1086,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTTypeParameter node, Object data) {
-        if (node.hasTypeBound()) { // type parameter doesn't have declared upper bounds
+        if (!node.hasTypeBound()) { // type parameter doesn't have declared upper bounds
             node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, Object.class));
         } else {
             super.visit(node, data);
