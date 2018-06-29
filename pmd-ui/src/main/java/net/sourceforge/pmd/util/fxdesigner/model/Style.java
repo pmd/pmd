@@ -4,15 +4,22 @@
 
 package net.sourceforge.pmd.util.fxdesigner.model;
 
+import java.util.Locale;
+
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
-public class Style {
+public final class Style {
 
+    private Style() {
+
+    }
 
     public static TextFlow highlight(String text, String filter) {
-        int filterIndex = text.toLowerCase().indexOf(filter.toLowerCase());
+        //Gets Locale from user PC
+        int filterIndex = text.toLowerCase(Locale.getDefault()).indexOf(filter.toLowerCase(Locale.getDefault()));
+
         Text textBefore = new Text(text.substring(0, filterIndex));
         Text textAfter = new Text(text.substring(filterIndex + filter.length()));
         Text textFilter = new Text(text.substring(filterIndex, filterIndex + filter.length())); //instead of "filter" to keep all "case sensitive"

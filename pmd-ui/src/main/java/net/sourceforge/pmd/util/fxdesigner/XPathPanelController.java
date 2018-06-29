@@ -174,7 +174,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         List<String> suggestions = xPathSuggestions.getXPathSuggestions(input.trim());
 
         List<CustomMenuItem> resultToDisplay = new ArrayList<>();
-        if (suggestions.size() > 0) {
+        if (!suggestions.isEmpty()) {
 
             for (int i = 0; i < suggestions.size() && i < 5; i++) {
                 final String searchResult = suggestions.get(i);
@@ -193,9 +193,10 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         }
         autoCompletePopup.getItems().setAll(resultToDisplay);
 
-        if (autoCompletePopup.isAutoFix())
-        xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length())
-                           .ifPresent(bounds -> autoCompletePopup.show(xpathExpressionArea, bounds.getMinX(), bounds.getMaxY()));
+        if (autoCompletePopup.isAutoFix()) {
+            xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length())
+                               .ifPresent(bounds -> autoCompletePopup.show(xpathExpressionArea, bounds.getMinX(), bounds.getMaxY()));
+        }
     }
 
     private void initGenerateXPathFromStackTrace() {
