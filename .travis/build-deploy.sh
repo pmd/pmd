@@ -14,7 +14,11 @@ function push_docs() {
             git config user.name "Travis CI (pmd-bot)"
             git config user.email "andreas.dangel+pmd-bot@adangel.org"
             git add -A docs
-            git commit -m "Update documentation"
+            MSG="Update documentation
+
+TRAVIS_JOB_NUMBER=${TRAVIS_JOB_NUMBER}
+TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}"
+            git commit -m "$MSG"
             git push git@github.com:pmd/pmd.git HEAD:master
             log_success "Successfully pushed docs update"
         else

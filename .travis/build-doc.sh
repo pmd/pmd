@@ -78,7 +78,11 @@ if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]] && has_doc
         git config user.name "Travis CI (pmd-bot)"
         git config user.email "andreas.dangel+pmd-bot@adangel.org"
         git add -A
-        git commit -q -m "Update documentation"
+        MSG="Update documentation
+
+TRAVIS_JOB_NUMBER=${TRAVIS_JOB_NUMBER}
+TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}"
+        git commit -q -m "$MSG"
         git push git@github.com:pmd/pmd.git HEAD:gh-pages
         log_success "Successfully pushed site to https://pmd.github.io/pmd/"
     )
