@@ -1231,15 +1231,6 @@ $( document ).ready(function() {
 
 $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
 
-/* this offset helps account for the space taken up by the floating toolbar. */
-$('#toc').on('click', 'a', function() {
-  var target = $(this.getAttribute('href'))
-    , scroll_target = target.offset().top
-
-  $(window).scrollTop(scroll_target - 10);
-  return false
-})
-  
 });
 </script>
 
@@ -1277,6 +1268,11 @@ $('#toc').on('click', 'a', function() {
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>doc
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1215">#1215</a>: [doc] TOC links don’t work?</li>
+    </ul>
+  </li>
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1211">#1211</a>: [java] CommentDefaultAccessModifier false positive with nested interfaces (regression from 6.4.0)</li>
@@ -1304,7 +1300,7 @@ $('#toc').on('click', 'a', function() {
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 29, 2018 <br />
+ Site last generated: Jun 30, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
