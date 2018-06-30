@@ -63,11 +63,15 @@ elif travis_isPush; then
         if [ $? -ne 0 ]; then
             log_error "Error while uploading pmd-*-${VERSION}.zip to sourceforge!"
             log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd/"
+        else
+            log_success "Successfully uploaded pmd-*-${VERSION}.zip to sourceforge"
         fi
         rsync -avh docs/pages/release_notes.md ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/ReadMe.md
         if [ $? -ne 0 ]; then
             log_error "Error while uploading release_notes.md as ReadMe.md to sourceforge!"
             log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd/"
+        else
+            log_success "Successfully uploaded release_notes.md as ReadMe.md to sourceforge"
         fi
         true
     )

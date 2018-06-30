@@ -48,7 +48,7 @@ deploy:
   on:
     tags: true
     repo: pmd/pmd
-    condition: "${TRAVIS_SECURE_ENV_VARS} = true && ${BUILD} != sonar"
+    condition: "${TRAVIS_SECURE_ENV_VARS} = true && ${BUILD} != sonar && ${BUILD} != coveralls"
 after_deploy: bash .travis/release.sh
 
 notifications:

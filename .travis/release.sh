@@ -48,13 +48,14 @@ log_info "Updating release at https://api.github.com/repos/pmd/pmd/releases/${RE
 
 RESPONSE=$(curl -i -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/json" --data "@release-edit-request.json" -X PATCH https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID})
 if [[ "$RESPONSE" != *"HTTP/1.1 200"* ]]; then
+    log_error "Github Request failed!"
     echo "Request:"
     cat release-edit-request.json
     echo
     echo "Response:"
     echo "$RESPONSE"
 else
-    echo "Update OK"
+    log_success "Update OK"
 fi
 
 fi
@@ -76,7 +77,8 @@ mkdir pmd.github.io
     git remote add origin git@github.com:pmd/pmd.github.io.git
     echo "latest/" > .git/info/sparse-checkout
     git pull --depth=1 origin master
-    rsync -a ../docs/pmd-doc-${RELEASE_VERSION}/ pmd-${RELEASE_VERSION}/
+    log_info "Copying documentation from ../docs/pmd-doc-${RELEASE_VERSION}/ ..."
+    rsync -ah --stats ../docs/pmd-doc-${RELEASE_VERSION}/ pmd-${RELEASE_VERSION}/
     git add pmd-${RELEASE_VERSION}
     git commit -q -m "Added pmd-${RELEASE_VERSION}"
 
