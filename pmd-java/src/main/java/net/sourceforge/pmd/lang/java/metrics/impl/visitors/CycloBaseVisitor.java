@@ -55,10 +55,8 @@ public class CycloBaseVisitor extends JavaParserControllessVisitorAdapter {
 
     @Override
     public Object visit(ASTConditionalExpression node, Object data) {
-        if (node.isTernary()) {
-            ((MutableInt) data).increment();
-            super.visit(node, data);
-        }
+        ((MutableInt) data).increment();
+        super.visit(node, data);
         return data;
     }
 

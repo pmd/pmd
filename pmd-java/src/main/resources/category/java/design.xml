@@ -1152,9 +1152,9 @@ or
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConditionalExpression[@Ternary='true'][not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
+//ConditionalExpression[not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
 |
-//ConditionalExpression[@Ternary='true'][not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
+//ConditionalExpression[not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
 ]]>
                 </value>
             </property>

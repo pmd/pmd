@@ -92,10 +92,8 @@ public class CycloPathAwareDecorator extends JavaParserVisitorDecorator {
     public Object visit(ASTConditionalExpression node, Object data) {
         super.visit(node, data);
 
-        if (node.isTernary()) {
-            int boolCompTern = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-            ((MutableInt) data).add(1 + boolCompTern);
-        }
+        int boolCompTern = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        ((MutableInt) data).add(1 + boolCompTern);
         return data;
     }
 
