@@ -440,4 +440,22 @@ public class JavaLang {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1216 [java] UnnecessaryFullyQualifiedName false positive for the same name method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.awt.Component;
+            import java.awt.Container;
+            import java.util.Arrays;
+            import java.util.asList.*; // we don't use stream since we're on java 7
+
+
+            public final class Test {
+                public static List<String> stream(Container parent) {
+                    return Arrays.asList("", "");
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

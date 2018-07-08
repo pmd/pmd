@@ -133,7 +133,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                             matches.add(importDeclaration);
                         }
                     }
-                } else {
+                } else if (!importDeclaration.isImportOnDemand()) {
                     // last part matches?
                     if (nameParts[nameParts.length - 1].equals(importParts[importParts.length - 1])) {
                         matches.add(importDeclaration);
