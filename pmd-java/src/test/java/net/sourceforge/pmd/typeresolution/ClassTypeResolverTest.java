@@ -131,7 +131,7 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassAOther2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB2;
 
-// TODO split that class 
+// TODO split that class
 public class ClassTypeResolverTest {
 
     @Test
@@ -184,7 +184,7 @@ public class ClassTypeResolverTest {
                 .getFirstDescendantOfType(ASTClassOrInterfaceType.class).getType();
         assertEquals("net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass$2", inner.getName());
     }
-    
+
     /**
      * See bug #899 toString causes NPE
      */
@@ -769,20 +769,28 @@ public class ClassTypeResolverTest {
     }
 
     @Test
-    public void testArrayTypes() {
-        List<ASTVariableDeclarator> expressions = selectNodes(ArrayTypes.class, ASTVariableDeclarator.class);
+    public void testArrayTypes() throws JaxenException {
+        // We must not select the expression in the dimensions
+        List<ASTExpression> expressions = selectNodes(ArrayTypes.class, ASTExpression.class, "//VariableInitializer/Expression");
 
         int index = 0;
 
         // int[] a = new int[1];
-        testSubtreeNodeTypes(expressions.get(index++), int[].class);
+        //           ----------
+        assertEquals(int[].class, expressions.get(index++).getType());
 
         // Object[][] b = new Object[1][0];
-        testSubtreeNodeTypes(expressions.get(index++), Object[][].class);
+        //                ----------------
+        assertEquals(Object[][].class, expressions.get(index++).getType());
         
         // ArrayTypes[][][] c = new ArrayTypes[][][] { new ArrayTypes[1][2] };
-        testSubtreeNodeTypes(expressions.get(index++), ArrayTypes[][][].class);
-        
+        //                      ---------------------------------------------
+        assertEquals(ArrayTypes[][][].class, expressions.get(index++).getType());
+
+        // ArrayTypes[][][] c = new ArrayTypes[][][] { new ArrayTypes[1][2] };
+        //                                             --------------------
+        assertEquals(ArrayTypes[][].class, expressions.get(index++).getType());
+
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
     }
@@ -790,21 +798,25 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testReferenceType() {
-        List<ASTReferenceType> expressions = selectNodes(ArrayTypes.class, ASTReferenceType.class);
+        List<ASTReferenceType> referenceTypes = selectNodes(ArrayTypes.class, ASTReferenceType.class);
 
         int index = 0;
 
         // int[] a = new int[1];
-        testSubtreeNodeTypes(expressions.get(index++), int[].class);
+        // -----
+        assertEquals(int[].class, referenceTypes.get(index++).getType());
 
         // Object[][] b = new Object[1][0];
-        testSubtreeNodeTypes(expressions.get(index++), Object[][].class);
+        // ----------
+        assertEquals(Object[][].class, referenceTypes.get(index++).getType());
 
-        // ArrayTypes[][][] c = new ArrayTypes[][][] { new ArrayTypes[1][2] };
-        testSubtreeNodeTypes(expressions.get(index++), ArrayTypes[][][].class);
+        // ArrayTypes[][][] c = new ArrayTypes[][][] { ... };
+        // ----------------
+        assertEquals(ArrayTypes[][][].class, referenceTypes.get(index++).getType());
+
 
         // Make sure we got them all
-        assertEquals("All expressions not tested", index, expressions.size());
+        assertEquals("All expressions not tested", index, referenceTypes.size());
     }
 
 
@@ -875,14 +887,6 @@ public class ClassTypeResolverTest {
         assertEquals(String[][].class, dID.getType());
     }
 
-
-    private void testSubtreeNodeTypes(final AbstractJavaTypeNode node, final Class<?> expectedType) {
-        assertEquals(expectedType, node.getType());
-        // FIXME this doesn't test anything, since findDescendantsOfType considers only exact type match! -> other PR
-        for (AbstractJavaTypeNode n : node.findDescendantsOfType(AbstractJavaTypeNode.class)) {
-            assertEquals(expectedType, n.getType());
-        }
-    }
 
     @Test
     public void testFieldAccess() throws JaxenException {
