@@ -445,12 +445,12 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.4.0</version>
+                            <version>6.5.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.4.0</version>
+                            <version>6.5.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
