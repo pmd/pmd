@@ -9,9 +9,9 @@ import java.util.Set;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserDecoratedVisitor;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
@@ -66,7 +66,7 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
      *
      * @return The number of paths through the expression
      */
-    public static int booleanExpressionComplexity(ASTExpression expr) {
+    public static int booleanExpressionComplexity(Node expr) {
         if (expr == null) {
             return 0;
         }
@@ -75,6 +75,10 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
         List<ASTConditionalOrExpression> orNodes = expr.findDescendantsOfType(ASTConditionalOrExpression.class);
 
         int complexity = 0;
+
+        if (expr instanceof ASTConditionalOrExpression || expr instanceof ASTConditionalAndExpression) {
+            complexity++;
+        }
 
         for (ASTConditionalOrExpression element : orNodes) {
             complexity += element.jjtGetNumChildren() - 1;

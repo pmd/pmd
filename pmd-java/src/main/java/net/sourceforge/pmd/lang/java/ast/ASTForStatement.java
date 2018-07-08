@@ -5,6 +5,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents a {@code for}-loop, or a foreach loop.
+ *
+ * <pre>
+ *
+ * ForStatement ::= "for" "(" {@linkplain ASTLocalVariableDeclaration LocalVariableDeclaration} ":" {@linkplain ASTExpression Expression} ")" {@linkplain ASTStatement Statement}
+ *                | "for" "(" {@linkplain ASTForInit ForInit}? ";" {@linkplain ASTExpression Expression}? ";" {@linkplain ASTForUpdate ForUpdate}? ")" {@linkplain ASTStatement Statement}
+ *
+ * </pre>
+ *
+ */
+// TODO this should be split into two different nodes, otherwise
+// we can't enrich the API without returning null half the time
 public class ASTForStatement extends AbstractJavaNode {
     public ASTForStatement(int id) {
         super(id);
@@ -14,11 +27,26 @@ public class ASTForStatement extends AbstractJavaNode {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+
+    /**
+     * Returns true if this node represents a foreach loop.
+     */
+    public boolean isForeach() {
+        return jjtGetChild(0) instanceof ASTLocalVariableDeclaration;
+    }
+
+
+    /**
+     * Returns the statement that represents the body of this
+     * loop.
+     */
+    public ASTStatement getBody() {
+        return (ASTStatement) jjtGetChild(jjtGetNumChildren() - 1);
+    }
+
 }
