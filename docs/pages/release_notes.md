@@ -33,3 +33,4 @@ This is a minor release.
 
 ### External Contributions
 
+* [#1231](https://github.com/pmd/pmd/pull/1231): \[doc] Minor typo fix in installation.md - [Ashish Rana](https://github.com/ashishrana160796)
