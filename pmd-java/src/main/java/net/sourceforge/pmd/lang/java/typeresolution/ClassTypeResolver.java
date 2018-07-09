@@ -734,11 +734,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTConditionalExpression node, Object data) {
         super.visit(node, data);
-        if (node.isTernary()) {
-            // TODO Rules for Ternary are complex
-        } else {
-            rollupTypeUnary(node);
-        }
+
+        // TODO Rules for Ternary are complex
+
+        rollupTypeUnary(node);
+
         return data;
     }
 

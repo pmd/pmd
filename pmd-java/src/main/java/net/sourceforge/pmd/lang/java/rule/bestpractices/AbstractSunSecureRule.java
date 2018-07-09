@@ -88,8 +88,7 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
     }
 
     private boolean hasTernaryCondition(ASTReturnStatement ret) {
-        ASTConditionalExpression condition = ret.getFirstDescendantOfType(ASTConditionalExpression.class);
-        return condition != null && condition.isTernary();
+        return null != ret.getFirstDescendantOfType(ASTConditionalExpression.class);
     }
 
     /**

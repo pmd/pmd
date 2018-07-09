@@ -155,10 +155,8 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTConditionalExpression node, Object data) {
-        if (node.isTernary()) {
-            entryStack.peek().bumpDecisionPoints();
-            super.visit(node, data);
-        }
+        entryStack.peek().bumpDecisionPoints();
+        super.visit(node, data);
         return data;
     }
 

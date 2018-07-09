@@ -2034,7 +2034,7 @@ void AssignmentOperator() :
 void ConditionalExpression() #ConditionalExpression(>1) :
 {}
 {
-  ConditionalOrExpression() [ LOOKAHEAD(2) "?" {jjtThis.setTernary();} Expression() ":" ConditionalExpression() ]
+  ConditionalOrExpression() [ LOOKAHEAD(2) "?" Expression() ":" ConditionalExpression() ]
 }
 
 void ConditionalOrExpression() #ConditionalOrExpression(>1):

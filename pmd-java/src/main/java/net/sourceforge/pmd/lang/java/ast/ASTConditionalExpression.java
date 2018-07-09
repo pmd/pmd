@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 public class ASTConditionalExpression extends AbstractJavaTypeNode {
 
-    private boolean isTernary;
 
     public ASTConditionalExpression(int id) {
         super(id);
@@ -35,13 +34,24 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
+
+    /**
+     * @deprecated To be removed in 7.0.0
+     */
+    @Deprecated
     public void setTernary() {
-        isTernary = true;
+        // noop
     }
 
-    // TODO this could be deprecated, there's no way this node is *not* a ternary
+
+    /**
+     * This method always returns true.
+     *
+     * @deprecated To be removed in 7.0.0
+     */
+    @Deprecated
     public boolean isTernary() {
-        return this.isTernary;
+        return true;
     }
 
 
