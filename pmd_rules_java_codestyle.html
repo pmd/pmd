@@ -3271,7 +3271,7 @@ For historical reasons, modifiers which are implied by the context are accepted 
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Expression</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">parent::</span><span class="nt">PrimaryPrefix</span><span class="p">)]</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="o">&gt;</span><span class="m">1</span><span class="p">]</span><span class="w">
   </span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Expression</span><span class="w">
     </span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">CastExpression</span><span class="p">)]</span><span class="w">
-    </span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">ConditionalExpression</span><span class="p">[</span><span class="na">@Ternary</span><span class="err">=</span><span class="s1">'true'</span><span class="p">])]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">ConditionalExpression</span><span class="p">)]</span><span class="w">
     </span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">AdditiveExpression</span><span class="p">)]</span><span class="w">
 </span><span class="p">|</span><span class="w">
 </span><span class="o">//</span><span class="nt">Expression</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">parent::</span><span class="nt">PrimaryPrefix</span><span class="p">)]</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="p">]</span><span class="w">
@@ -3281,13 +3281,13 @@ For historical reasons, modifiers which are implied by the context are accepted 
     </span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="w"> </span><span class="ow">and</span><span class="w">
     </span><span class="nf">count</span><span class="p">(.</span><span class="o">/</span><span class="nt">CastExpression</span><span class="p">)</span><span class="err">=</span><span class="m">0</span><span class="w"> </span><span class="ow">and</span><span class="w">
     </span><span class="nf">count</span><span class="p">(.</span><span class="o">/</span><span class="nt">EqualityExpression</span><span class="o">/</span><span class="nt">MultiplicativeExpression</span><span class="p">)</span><span class="err">=</span><span class="m">0</span><span class="w"> </span><span class="ow">and</span><span class="w">
-    </span><span class="nf">count</span><span class="p">(.</span><span class="o">/</span><span class="nt">ConditionalExpression</span><span class="p">[</span><span class="na">@Ternary</span><span class="err">=</span><span class="s1">'true'</span><span class="p">])</span><span class="err">=</span><span class="m">0</span><span class="w"> </span><span class="ow">and</span><span class="w">
+    </span><span class="nf">count</span><span class="p">(.</span><span class="o">/</span><span class="nt">ConditionalExpression</span><span class="p">)</span><span class="err">=</span><span class="m">0</span><span class="w"> </span><span class="ow">and</span><span class="w">
     </span><span class="nf">count</span><span class="p">(.</span><span class="o">/</span><span class="nt">ConditionalOrExpression</span><span class="p">)</span><span class="err">=</span><span class="m">0</span><span class="p">]</span><span class="w">
 </span><span class="p">|</span><span class="w">
 </span><span class="o">//</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">ConditionalOrExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Expression</span><span class="p">[</span><span class="w">
     </span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="w"> </span><span class="ow">and</span><span class="w">
     </span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">CastExpression</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w">
-    </span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">ConditionalExpression</span><span class="p">[</span><span class="na">@Ternary</span><span class="err">=</span><span class="s1">'true'</span><span class="p">])</span><span class="w"> </span><span class="ow">and</span><span class="w">
+    </span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">ConditionalExpression</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w">
     </span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">EqualityExpression</span><span class="o">/</span><span class="nt">MultiplicativeExpression</span><span class="p">)]</span><span class="w">
 </span><span class="p">|</span><span class="w">
 </span><span class="o">//</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">ConditionalExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Expression</span><span class="p">[</span><span class="w">
@@ -3548,7 +3548,7 @@ controlled from the rest.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 8, 2018 <br />
+ Site last generated: Jul 9, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
