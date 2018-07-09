@@ -1833,7 +1833,7 @@ Useless parentheses should be removed.
 //Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)>1]
   /PrimaryPrefix/Expression
     [not(./CastExpression)]
-    [not(./ConditionalExpression[@Ternary='true'])]
+    [not(./ConditionalExpression)]
     [not(./AdditiveExpression)]
 |
 //Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)=1]
@@ -1843,13 +1843,13 @@ Useless parentheses should be removed.
     count(*)=1 and
     count(./CastExpression)=0 and
     count(./EqualityExpression/MultiplicativeExpression)=0 and
-    count(./ConditionalExpression[@Ternary='true'])=0 and
+    count(./ConditionalExpression)=0 and
     count(./ConditionalOrExpression)=0]
 |
 //Expression/ConditionalOrExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
     not(./CastExpression) and
-    not(./ConditionalExpression[@Ternary='true']) and
+    not(./ConditionalExpression) and
     not(./EqualityExpression/MultiplicativeExpression)]
 |
 //Expression/ConditionalExpression/PrimaryExpression/PrimaryPrefix/Expression[
