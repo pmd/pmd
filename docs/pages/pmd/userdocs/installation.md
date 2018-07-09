@@ -51,7 +51,7 @@ modifiers on Java sources with `-R category/java/codestyle.xml/UnnecessaryModifi
    but you're strongly encouraged to [create your own ruleset](pmd_userdocs_making_rulesets.html) from
    the start." %}
 
-Additionnally, the following options, are specified most of the time even though they're not required:
+Additionally, the following options, are specified most of the time even though they're not required:
 * `-f <format>`: report format. PMD supports many report formats out of the box. You may want to start with the basic
 `text` format (default) or `xml` format. The supported formats are [documented here](pmd_userdocs_cli_reference.html#available-report-formats).
 * `-auxclasspath <classpath>`: class path containing the compiled class files of the analysed Java sources, if any.
