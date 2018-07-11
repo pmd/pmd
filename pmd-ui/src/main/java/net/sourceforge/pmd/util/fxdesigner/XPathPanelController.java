@@ -156,7 +156,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         final ContextMenu autoCompletePopup = new ContextMenu();
         autoCompletePopup.setId("xpathAutocomplete");
         autoCompletePopup.setHideOnEscape(true);
-        autoCompletePopup.setAutoHide(false);
 
         EventStreams.merge(keyCombo, changesEventStream)
                     .map(searchPoint -> {
