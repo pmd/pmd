@@ -51,6 +51,20 @@
     -fx-background-color: transparent, white, transparent, white;
 }
 
+.context-menu.no-scroll-arrows {
+
+    .menu-item {
+        // OK this is weird but it does solve a padding bug on the context menu.
+        // Without it, items are offset to the bottom, and the last one is partially hidden
+        -fx-border-style: solid;
+        -fx-border-color: transparent;
+    }
+
+    .menu-up-arrow, .menu-down-arrow, .scroll-arrow {
+        -fx-padding: 0 0 0 0;
+    }
+
+}
 /**************/
 /* Split pane */
 /**************/
