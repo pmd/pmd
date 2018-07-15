@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces">
+<meta name="keywords" content=" Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces">
 <title>Code Style | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -2186,6 +2186,87 @@ from the rest.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/ForLoopsMustUseBraces"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="formalparameternamingconventions">FormalParameterNamingConventions</h2>
+
+<p><strong>Since:</strong> PMD 6.6.0</p>
+
+<p><strong>Priority:</strong> High (1)</p>
+
+<p>Configurable naming conventions for formal parameters of methods and lambdas.
+This rule reports formal parameters which do not match the regex that applies to their
+specific kind (e.g. lambda parameter, or final formal parameter). Each regex can be
+configured through properties.</p>
+
+<p>By default this rule uses the standard Java naming convention (Camel case).</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/FormalParameterNamingConventionsRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.FormalParameterNamingConventionsRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+
+                <span class="kd">abstract</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="kt">int</span> <span class="n">myInt</span><span class="o">);</span> <span class="c1">// This is Camel case, so it's ok</span>
+
+                <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="kt">int</span> <span class="n">my_i</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// this will be reported</span>
+
+                <span class="o">}</span>
+
+                <span class="kt">void</span> <span class="nf">lambdas</span><span class="o">()</span> <span class="o">{</span>
+
+                    <span class="c1">// lambdas parameters can be configured separately</span>
+                    <span class="n">Consumer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">lambda1</span> <span class="o">=</span> <span class="n">s_str</span> <span class="o">-&gt;</span> <span class="o">{</span> <span class="o">};</span>
+
+                    <span class="c1">// lambda parameters with an explicit type can be configured separately</span>
+                    <span class="n">Consumer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">lambda1</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span> <span class="o">};</span>
+
+                <span class="o">}</span>
+
+            <span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>methodParameterPattern</td>
+      <td>[a-z][a-zA-Z0-9]+</td>
+      <td>Regex which applies to formal parameter names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>finalMethodParameterPattern</td>
+      <td>[a-z][a-zA-Z0-9]+</td>
+      <td>Regex which applies to final formal parameter names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>lambdaParameterPattern</td>
+      <td>[a-z][a-zA-Z0-9]+</td>
+      <td>Regex which applies to inferred-type lambda parameter names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>explicitLambdaParameterPattern</td>
+      <td>[a-z][a-zA-Z0-9]+</td>
+      <td>Regex which applies to explicitly-typed lambda parameter names</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/FormalParameterNamingConventions"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="genericsnaming">GenericsNaming</h2>
 
 <p><strong>Since:</strong> PMD 4.2.6</p>
@@ -2413,6 +2494,77 @@ controlled from the rest.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/LocalVariableCouldBeFinal"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="localvariablenamingconventions">LocalVariableNamingConventions</h2>
+
+<p><strong>Since:</strong> PMD 6.6.0</p>
+
+<p><strong>Priority:</strong> High (1)</p>
+
+<p>Configurable naming conventions for local variable declarations and other locally-scoped
+variables. This rule reports variable declarations which do not match the regex that applies to their
+specific kind (e.g. final variable, or catch-clause parameter). Each regex can be configured through
+properties.</p>
+
+<p>By default this rule uses the standard Java naming convention (Camel case).</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/LocalVariableNamingConventionsRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableNamingConventionsRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+                <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+                    <span class="kt">int</span> <span class="n">localVariable</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="c1">// This is in camel case, so it's ok</span>
+                    <span class="kt">int</span> <span class="n">local_variable</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="c1">// This will be reported unless you change the regex</span>
+
+                    <span class="kd">final</span> <span class="kt">int</span> <span class="n">i_var</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="c1">// final local variables can be configured separately</span>
+
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="n">foo</span><span class="o">();</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalArgumentException</span> <span class="n">e_illegal</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="c1">// exception block parameters can be configured separately</span>
+                    <span class="o">}</span>
+
+                <span class="o">}</span>
+            <span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>localVarPattern</td>
+      <td>[a-z][a-zA-Z0-9]+</td>
+      <td>Regex which applies to non-final local variable names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>finalVarPattern</td>
+      <td>[a-z][a-zA-Z0-9]+</td>
+      <td>Regex which applies to final local variable names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>catchParameterPattern</td>
+      <td>[a-z][a-zA-Z0-9]+</td>
+      <td>Regex which applies to exception block parameter names</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/LocalVariableNamingConventions"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="longvariable">LongVariable</h2>

@@ -1219,6 +1219,15 @@
 ,
 
 {
+"title": "FormalParameterNamingConventions (Java, Code Style)",
+"tags": "",
+"keywords": "FormalParameterNamingConventions",
+"url": "pmd_rules_java_codestyle.html#formalparameternamingconventions",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
 "title": "GenericsNaming (Java, Code Style)",
 "tags": "",
 "keywords": "GenericsNaming",
@@ -1277,6 +1286,15 @@
 "tags": "",
 "keywords": "LocalVariableCouldBeFinal",
 "url": "pmd_rules_java_codestyle.html#localvariablecouldbefinal",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "LocalVariableNamingConventions (Java, Code Style)",
+"tags": "",
+"keywords": "LocalVariableNamingConventions",
+"url": "pmd_rules_java_codestyle.html#localvariablenamingconventions",
 "summary": "Rules which enforce a specific coding style."
 }
 ,
