@@ -31,5 +31,8 @@ This is a minor release.
 
 ### API Changes
 
+*   The `findDescendantsOfType` methods in `net.sourceforge.pmd.lang.ast.AbstractNode` no longer search for exact type matches, but will
+    match subclasses too. That means, it's now possible to look for abstract node types such as `AbstractJavaTypeNode` and not only for it's concrete subtypes.
+
 ### External Contributions
 
