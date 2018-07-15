@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Added more complete support for CREATE TABLE
+ *
+ * Andreas Dangel 07/2018
+ *====================================================================
  * Added ASTIsOfTypeCondition node, added support for USING IN|OUT|IN_OUT
  * See PMD Bug #1520
  *
@@ -2471,10 +2475,12 @@ ASTTable Table()  :
 { 
 }
 {
-  <CREATE> [<GLOBAL> <TEMPORARY>]
+  <CREATE> [ ( <GLOBAL> | <PRIVATE> ) <TEMPORARY> | <SHARDED> | <DUPLICATED> ]
   <TABLE> ObjectNameDeclaration()
-  "(" TableColumn() ("," TableColumn())* ")"
-  [LOOKAHEAD(2) <ON> <COMMIT> (<DELETE> | <PRESERVE>) <ROWS>]
+  [ <SHARING> "=" ( <METADATA> | <DATA> | <EXTENDED> <DATA> | <NONE> ) ]
+  [ "(" ( LOOKAHEAD(2) TableColumn() | OutOfLineConstraint() ) ("," ( LOOKAHEAD(2) TableColumn() | OutOfLineConstraint() ))* ")" ]
+  [LOOKAHEAD(4) <ON> <COMMIT> (<DROP> | <PRESERVE>) <DEFINITION>]
+  [LOOKAHEAD(4) <ON> <COMMIT> (<DELETE> | <PRESERVE>) <ROWS>]
   //### [physicalProperties()]
   //### [tableProperties()]
   [";"]
@@ -2490,7 +2496,26 @@ ASTTableColumn TableColumn()  :
       { return jjtThis ; }
 }
 
+ASTOutOfLineConstraint OutOfLineConstraint() :
+{}
+{
+    [ <CONSTRAINT> ID() ]
+    (   <UNIQUE> { jjtThis.setType(ConstraintType.UNIQUE); } "(" ID() ("," ID())* ")"
+      | <PRIMARY> { jjtThis.setType(ConstraintType.PRIMARY); } <KEY> "(" ID() ("," ID())* ")"
+      | <FOREIGN> { jjtThis.setType(ConstraintType.FOREIGN); } <KEY> "(" ID() ("," ID())* ")" ReferencesClause()
+      | <CHECK> { jjtThis.setType(ConstraintType.CHECK); } "(" Statement() ")"
+    )
+    { return jjtThis; }
+}
 
+ASTReferencesClause ReferencesClause() :
+{}
+{
+    <REFERENCES> ObjectNameDeclaration()
+    [ "(" ID() ( LOOKAHEAD(2) "," ID())* ]
+    [ <ON> <DELETE> ( <CASCADE> | <SET> <NULL> ) ]
+    { return jjtThis; }
+}
 
 ASTView View()  :
 { 
@@ -3342,6 +3367,7 @@ TOKEN [IGNORE_CASE]:
 <COMPRESS: "COMPRESS"> |
 <CONNECT: "CONNECT"> |
 <CONSTANT: "CONSTANT"> |
+<CONSTRAINT: "CONSTRAINT"> |
 <CONSTRUCTOR: "CONSTRUCTOR"> |
 <CONTINUE: "CONTINUE"> |
 <CONVERT: "CONVERT"> |
@@ -3355,6 +3381,7 @@ TOKEN [IGNORE_CASE]:
 <DECLARE: "DECLARE"> |
 <DECIMAL: "DECIMAL"> |
 <_DEFAULT: "DEFAULT"> |
+<DEFINITION: "DEFINITION"> |
 <DELETE: "DELETE"> |
 <DESC: "DESC"> |
 <DETERMINISTIC: "DETERMINISTIC"> |
@@ -3362,6 +3389,7 @@ TOKEN [IGNORE_CASE]:
 <DISTINCT: "DISTINCT"> |
 <DO: "DO"> |
 <DROP: "DROP"> |
+<DUPLICATED: "DUPLICATED"> |
 <EDITIONABLE: "EDITIONABLE"> |
 <ELEMENT: "ELEMENT"> |
 <ELSE: "ELSE"> |
@@ -3378,6 +3406,7 @@ TOKEN [IGNORE_CASE]:
 <EXIT: "EXIT"> |
 <EXTERNAL: "EXTERNAL"> |
 //<EXTERNAL_NAME: "EXTERNAL NAME"> |
+<EXTENDED: "EXTENDED"> |
 <EXTENDS: "EXTENDS"> |
 <EXTRACT: "EXTRACT"> |
 <FALSE: "FALSE"> |
@@ -3386,6 +3415,7 @@ TOKEN [IGNORE_CASE]:
 <FLOAT: "FLOAT"> |
 <FOR: "FOR"> |
 <FORALL: "FORALL"> |
+<FOREIGN: "FOREIGN"> |
 <FORCE: "FORCE"> |
 <FROM: "FROM"> |
 <FUNCTION: "FUNCTION"> |
@@ -3418,6 +3448,7 @@ TOKEN [IGNORE_CASE]:
 <IS: "IS"> |
 <ISOLATION: "ISOLATION"> |
 <JAVA: "JAVA"> |
+<KEY: "KEY"> |
 //<LANGUAGE: "LANGUAGE"> |
 <LEVEL: "LEVEL"> |
 <LIKE: "LIKE"> |
@@ -3430,6 +3461,7 @@ TOKEN [IGNORE_CASE]:
 <MAX: "MAX"> |
 <MEMBER: "MEMBER"> | 
 <MERGE: "MERGE"> | 
+<METADATA: "METADATA"> |
 <MIN: "MIN"> |
 <MINUS: "MINUS"> |
 <MINUTE: "MINUTE"> |
@@ -3446,6 +3478,7 @@ TOKEN [IGNORE_CASE]:
 <NO: "NO"> |
 <NOCOMPRESS: "NOCOMPRESS"> | //SRT 2011-04-17
 <NOCOPY: "NOCOPY"> |
+<NONE: "NONE"> |
 <NONEDITIONABLE: "NONEDITIONABLE"> |
 <NOT: "NOT"> |
 <NOWAIT: "NOWAIT"> |
@@ -3487,6 +3520,7 @@ TOKEN [IGNORE_CASE]:
 <PRESERVE: "PRESERVE"> |
 <PRIOR: "PRIOR"> |
 <PROMPT: "PROMPT"> |
+<PRIMARY: "PRIMARY"> |
 <PRIVATE: "PRIVATE"> |
 <PROCEDURE: "PROCEDURE"> |
 <PUBLIC: "PUBLIC"> |
@@ -3497,6 +3531,7 @@ TOKEN [IGNORE_CASE]:
 <REAL: "REAL"> |
 <RECORD: "RECORD"> |
 <REF: "REF"> |
+<REFERENCES: "REFERENCES"> |
 <RELEASE: "RELEASE"> |
 <RELIES_ON: "RELIES_ON"> | 
 <RENAME: "RENAME"> | //SRT 2011-04-17
@@ -3521,7 +3556,9 @@ TOKEN [IGNORE_CASE]:
 <SEPARATE: "SEPARATE"> |
 <SET: "SET"> |
 <SIZE: "SIZE"> | //SRT 2011-04-17
+<SHARDED: "SHARDED"> |
 <SHARE: "SHARE"> |
+<SHARING: "SHARING"> |
 <SMALLINT: "SMALLINT"> |
 <SPACE: "SPACE"> |
 <SQL: "SQL"> |
