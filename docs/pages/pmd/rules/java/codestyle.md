@@ -5,7 +5,7 @@ permalink: pmd_rules_java_codestyle.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/codestyle.xml
-keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
+keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
 language: Java
 ---
 ## AbstractNaming
@@ -817,6 +817,59 @@ for (int i = 0; i < 42; i++)
 <rule ref="category/java/codestyle.xml/ForLoopsMustUseBraces" />
 ```
 
+## FormalParameterNamingConventions
+
+**Since:** PMD 6.6.0
+
+**Priority:** High (1)
+
+Configurable naming conventions for formal parameters of methods and lambdas.
+This rule reports formal parameters which do not match the regex that applies to their
+specific kind (e.g. lambda parameter, or final formal parameter). Each regex can be
+configured through properties.
+
+By default this rule uses the standard Java naming convention (Camel case).
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.FormalParameterNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/FormalParameterNamingConventionsRule.java)
+
+**Example(s):**
+
+``` java
+class Foo {
+
+                abstract void bar(int myInt); // This is Camel case, so it's ok
+
+                void bar(int my_i) { // this will be reported
+
+                }
+
+                void lambdas() {
+
+                    // lambdas parameters can be configured separately
+                    Consumer<String> lambda1 = s_str -> { };
+
+                    // lambda parameters with an explicit type can be configured separately
+                    Consumer<String> lambda1 = (String str) -> { };
+
+                }
+
+            }
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|methodParameterPattern|[a-z][a-zA-Z0-9]+|Regex which applies to formal parameter names|no|
+|finalMethodParameterPattern|[a-z][a-zA-Z0-9]+|Regex which applies to final formal parameter names|no|
+|lambdaParameterPattern|[a-z][a-zA-Z0-9]+|Regex which applies to inferred-type lambda parameter names|no|
+|explicitLambdaParameterPattern|[a-z][a-zA-Z0-9]+|Regex which applies to explicitly-typed lambda parameter names|no|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/FormalParameterNamingConventions" />
+```
+
 ## GenericsNaming
 
 **Since:** PMD 4.2.6
@@ -1063,6 +1116,54 @@ public class Bar {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal" />
+```
+
+## LocalVariableNamingConventions
+
+**Since:** PMD 6.6.0
+
+**Priority:** High (1)
+
+Configurable naming conventions for local variable declarations and other locally-scoped
+variables. This rule reports variable declarations which do not match the regex that applies to their
+specific kind (e.g. final variable, or catch-clause parameter). Each regex can be configured through
+properties.
+
+By default this rule uses the standard Java naming convention (Camel case).
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/LocalVariableNamingConventionsRule.java)
+
+**Example(s):**
+
+``` java
+class Foo {
+                void bar() {
+                    int localVariable = 1; // This is in camel case, so it's ok
+                    int local_variable = 1; // This will be reported unless you change the regex
+
+                    final int i_var = 1; // final local variables can be configured separately
+
+                    try {
+                        foo();
+                    } catch (IllegalArgumentException e_illegal) {
+                        // exception block parameters can be configured separately
+                    }
+
+                }
+            }
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|localVarPattern|[a-z][a-zA-Z0-9]+|Regex which applies to non-final local variable names|no|
+|finalVarPattern|[a-z][a-zA-Z0-9]+|Regex which applies to final local variable names|no|
+|catchParameterPattern|[a-z][a-zA-Z0-9]+|Regex which applies to exception block parameter names|no|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/LocalVariableNamingConventions" />
 ```
 
 ## LongVariable
