@@ -278,7 +278,7 @@ public abstract class AbstractNode implements Node {
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node child = node.jjtGetChild(i);
-            if (child.getClass() == targetType) {
+            if (targetType.isAssignableFrom(child.getClass())) {
                 results.add(targetType.cast(child));
             }
 
