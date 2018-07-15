@@ -1288,11 +1288,22 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/980">#980</a>: [plsql] ParseException for CREATE TABLE</li>
       <li><a href="https://github.com/pmd/pmd/issues/981">#981</a>: [plsql] ParseException when parsing VIEW</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1047">#1047</a>: [plsql] ParseException when parsing EXECUTE IMMEDIATE</li>
+    </ul>
+  </li>
+  <li>ui
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1233">#1233</a>: [ui] XPath autocomplete arrows on first and last items</li>
     </ul>
   </li>
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
+
+<ul>
+  <li>The <code class="highlighter-rouge">findDescendantsOfType</code> methods in <code class="highlighter-rouge">net.sourceforge.pmd.lang.ast.AbstractNode</code> no longer search for exact type matches, but will
+match subclasses too. That means, it’s now possible to look for abstract node types such as <code class="highlighter-rouge">AbstractJavaTypeNode</code> and not only for it’s concrete subtypes.</li>
+</ul>
 
 <h3 id="external-contributions">External Contributions</h3>
 
