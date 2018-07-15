@@ -31,6 +31,8 @@ This is a minor release.
 *   plsql
     *   [#980](https://github.com/pmd/pmd/issues/980): \[plsql] ParseException for CREATE TABLE
     *   [#981](https://github.com/pmd/pmd/issues/981): \[plsql] ParseException when parsing VIEW
+*   ui
+    *   [#1233](https://github.com/pmd/pmd/issues/1233): \[ui] XPath autocomplete arrows on first and last items
 
 ### API Changes
 

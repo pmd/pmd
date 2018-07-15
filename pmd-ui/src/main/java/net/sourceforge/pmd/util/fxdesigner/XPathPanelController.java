@@ -43,6 +43,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.ContextMenuWithNoArrows;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.XpathViolationListCell;
 
@@ -153,7 +154,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                                                     .map(searchPoint -> xpathExpressionArea.getCaretPosition());
 
         // captured in the closure
-        final ContextMenu autoCompletePopup = new ContextMenu();
+        final ContextMenu autoCompletePopup = new ContextMenuWithNoArrows();
         autoCompletePopup.setId("xpathAutocomplete");
         autoCompletePopup.setHideOnEscape(true);
 
