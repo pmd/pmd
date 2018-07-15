@@ -1257,13 +1257,33 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h3 id="table-of-contents">Table Of Contents</h3>
 
 <ul>
-  <li><a href="#new-and-noteworthy">New and noteworthy</a></li>
+  <li><a href="#new-and-noteworthy">New and noteworthy</a>
+    <ul>
+      <li><a href="#new-rules">New Rules</a></li>
+    </ul>
+  </li>
   <li><a href="#fixed-issues">Fixed Issues</a></li>
   <li><a href="#api-changes">API Changes</a></li>
   <li><a href="#external-contributions">External Contributions</a></li>
 </ul>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
+
+<h4 id="new-rules">New Rules</h4>
+
+<ul>
+  <li>
+    <p>The new Java rule <a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="highlighter-rouge">LocalVariableNamingConventions</code></a> (<code class="highlighter-rouge">java-codestlye</code>)
+detects local variable names that don’t comply to a given convention. It defaults to standrd Java convention of using camelCase,
+but can be configured. Special cases can be configured for final variables and catched exceptions’ names.</p>
+  </li>
+  <li>
+    <p>The new Java rule <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="highlighter-rouge">FormalParameterNamingConventions</code></a> (<code class="highlighter-rouge">java-codestlye</code>)
+detects formal parameter names that don’t comply to a given convention. It defaults to standrd Java convention of using camelCase,
+but can be configured. Special cases can be configured for final parameters and lambda parameters (considering wether they are
+explicitly typed or not)</p>
+  </li>
+</ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
 
