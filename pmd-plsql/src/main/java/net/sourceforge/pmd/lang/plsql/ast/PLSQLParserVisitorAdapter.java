@@ -700,4 +700,14 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
     public Object visit(ASTIsOfTypeCondition node, Object data) {
         return visit((PLSQLNode) node, data);
     }
+
+    @Override
+    public Object visit(ASTOutOfLineConstraint node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTReferencesClause node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
 }
