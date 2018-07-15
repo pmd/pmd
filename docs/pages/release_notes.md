@@ -13,11 +13,23 @@ This is a minor release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
+    *   [New Rules](#new-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
 * [External Contributions](#external-contributions)
 
 ### New and noteworthy
+
+#### New Rules
+
+*   The new Java rule [`LocalVariableNamingConventions`](pmd_rules_java_codestyle.html#localvariablenamingconventions) (`java-codestlye`)
+    detects local variable names that don't comply to a given convention. It defaults to standrd Java convention of using camelCase,
+    but can be configured. Special cases can be configured for final variables and catched exceptions' names.
+
+*   The new Java rule [`FormalParameterNamingConventions`](pmd_rules_java_codestyle.html#formalparameternamingconventions) (`java-codestlye`)
+    detects formal parameter names that don't comply to a given convention. It defaults to standrd Java convention of using camelCase,
+    but can be configured. Special cases can be configured for final parameters and lambda parameters (considering wether they are
+    explicitly typed or not)
 
 ### Fixed Issues
 
