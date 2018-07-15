@@ -54,4 +54,11 @@ public class CursorForLoopTest extends AbstractPLSQLParserTst {
         ASTInput input = parsePLSQL(code);
         Assert.assertNotNull(input);
     }
+
+    @Test
+    public void parseCursorForLoop681() {
+        String code = loadTestResource("CursorForLoop681.pls");
+        ASTInput input = parsePLSQL(code);
+        Assert.assertNotNull(input);
+    }
 }
