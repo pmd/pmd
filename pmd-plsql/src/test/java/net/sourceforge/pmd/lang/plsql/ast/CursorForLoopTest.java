@@ -31,7 +31,7 @@ public class CursorForLoopTest extends AbstractPLSQLParserTst {
         ASTForIndex forindex = forloop.getFirstChildOfType(ASTForIndex.class);
         Assert.assertNotNull(forindex);
         Assert.assertEquals("c_cmp", forindex.getImage());
-        
+
         ASTCursorForLoopStatement forloop2 = forloop.getFirstDescendantOfType(ASTCursorForLoopStatement.class);
         ASTForIndex forindex2 = forloop2.getFirstChildOfType(ASTForIndex.class);
         Assert.assertEquals("c_con", forindex2.getImage());
@@ -41,4 +41,17 @@ public class CursorForLoopTest extends AbstractPLSQLParserTst {
         Assert.assertEquals("c_pa", forindex3.getImage());
     }
 
+    @Test
+    public void parseCursorForLoop1047a() {
+        String code = loadTestResource("CursorForLoop1047a.pls");
+        ASTInput input = parsePLSQL(code);
+        Assert.assertNotNull(input);
+    }
+
+    @Test
+    public void parseCursorForLoop1047b() {
+        String code = loadTestResource("CursorForLoop1047b.pls");
+        ASTInput input = parsePLSQL(code);
+        Assert.assertNotNull(input);
+    }
 }

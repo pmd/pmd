@@ -1285,7 +1285,7 @@ ASTCursorForLoopStatement CursorForLoopStatement() :
 ASTSelectStatement SelectStatement() :
 {}
 {
-    SqlStatement(null, ")")
+    SqlStatement("(", ")")
     { return jjtThis ; }
 }
 
