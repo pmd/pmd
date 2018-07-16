@@ -253,54 +253,58 @@
 /* Scroll bars */
 /***************/
 
-.scroll-bar * {
-    -fx-background-color: white;
-}
 
-scroll-bar .increment-button,
-scroll-bar .decrement-button {
-    -fx-background-radius: 0em;
-}
+.scroll-bar {
 
-scroll-bar:horizontal .increment-button,
-scroll-bar:horizontal .decrement-button {
-    -fx-padding: 0 0 10 0;
-}
+    * {
+        -fx-background-color: white;
+    }
 
-scroll-bar:vertical .increment-button,
-scroll-bar:vertical .decrement-button {
-    -fx-padding: 0 10 0 0;
-}
+    .track {
+        -fx-border-color: white;
+        -fx-background-radius: 0em;
+        -fx-border-radius: 2em;
+        -fx-padding: -2;
+    }
 
-.scroll-bar .decrement-arrow,
-.scroll-bar .increment-arrow {
-    -fx-shape: " ";
-    -fx-padding: 0;
-}
+    .thumb {
+        -fx-background-color: derive(black, 90%);
+        -fx-background-insets: 2, 0, 0;
+        -fx-background-radius: 2em;
+    }
 
-.scroll-bar .track {
-    -fx-border-color: white;
-    -fx-background-radius: 0em;
-    -fx-border-radius: 2em;
-    -fx-padding: -2;
-}
+    .increment-button, .decrement-button {
+        -fx-background-radius: 0em;
+    }
 
-.scroll-bar .thumb {
-    -fx-background-color: derive(black, 90%);
-    -fx-background-insets: 2, 0, 0;
-    -fx-background-radius: 2em;
-}
+    .increment-arrow, .decrement-arrow {
+        -fx-shape: " ";
+        -fx-padding: 0;
+    }
 
-.scroll-bar:vertical,
-.scroll-bar:vertical > * {
-    -fx-min-width: 15px;
-    -fx-pref-width: 15px;
-    -fx-max-width: 15px;
-}
+    &:horizontal {
 
-.scroll-bar:horizontal,
-.scroll-bar:horizontal > * {
-    -fx-min-height: 15px;
-    -fx-pref-height: 15px;
-    -fx-max-height: 15px;
+        &, & > * {
+            -fx-min-height: 15px;
+            -fx-pref-height: 15px;
+            -fx-max-height: 15px;
+        }
+
+        .increment-button, .decrement-button {
+            -fx-padding: 0 0 10 0;
+        }
+    }
+
+    &:vertical {
+
+        &, & > * {
+            -fx-min-width: 15px;
+            -fx-pref-width: 15px;
+            -fx-max-width: 15px;
+        }
+
+        .increment-button, .decrement-button {
+            -fx-padding: 0 10 0 0;
+        }
+    }
 }
