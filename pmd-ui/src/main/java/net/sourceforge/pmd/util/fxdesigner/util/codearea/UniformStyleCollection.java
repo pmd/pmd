@@ -25,7 +25,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.NodeStyleSpan.PositionS
 
 /**
  * Collection of nodes that share the same style. In case of overlap,
- * the nested ones gain css classes like depth-1, depth-2, etc. A
+ * the nested ones gain css classes like depth-0, depth-1, etc. A
  * collection can be overlaid into a single span in one pass using
  * {@link #toSpans()}.
  *

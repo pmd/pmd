@@ -1,15 +1,12 @@
-/* Presets for the editor theme and syntax highlighting. */
+/* Presets for the editor theme and syntax highlighting.
 
-/* CSS reference of the code area:
-     https://github.com/FXMisc/RichTextFX/wiki/RichTextFX-CSS-Reference-Guide
-
-   Less reference (we use Less 1.7.0):
-     http://lesscss.org/features/
-
+   * CSS reference of the code area:
+       https://github.com/FXMisc/RichTextFX/wiki/RichTextFX-CSS-Reference-Guide
 */
 
 @import "constants";
 
+// Each color in this stack corresponds to a depth level in XPath colors
 @xpath-color-stack:
         rgba(249, 248, 113, 0.25),
         rgba(255, 199, 95, 0.4),
@@ -37,6 +34,7 @@
     .make-depth-classes(@depth: length(@xpath-color-stack) - 1) when (@depth >= 0) {
         .make-depth-classes(@depth - 1);
 
+        // the first style class is depth-0, but CSS arrays indices start at 1
         @background: extract(@xpath-color-stack, @depth + 1);
         @border: darken(@background, 30%);
 
@@ -75,10 +73,6 @@
         * {
             -fx-background-color: @area-background-color;
             -fx-border-color: @area-background-color;
-        }
-
-        .thumb {
-            -fx-background-color: derive(black, 90%);
         }
     }
 
