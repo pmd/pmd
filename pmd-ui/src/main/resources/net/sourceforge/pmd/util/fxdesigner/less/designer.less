@@ -1,26 +1,28 @@
 /* Useful links: */
 /* http://hg.openjdk.java.net/openjfx/jfx-dev/rt/file/762a57e4b74a/modules/javafx.controls/src/main/resources/com/sun/javafx/scene/control/skin/modena/modena.css */
 /* https://fontawesome.com/icons?d=gallery */
-/* TODO convert to Less */
+
+@import "constants";
+
 
 .list-view, .tree-view, .table-view {
-    -fx-selection-bar: royalblue;
-    -fx-selection-bar-non-focused: derive(-fx-base, -20%);
+    -fx-selection-bar: @selection-focus-color;
+    -fx-selection-bar-non-focused: @darker-accent-border;
 }
 
 .table-view {
-    -fx-border-color: derive(-fx-base, -10%);
+    -fx-border-color: @darker-accent;
     -fx-padding: -1 0 0 0;
 
     .column-header {
-        -fx-background-color: derive(-fx-base, -10%);
-        -fx-border-color: derive(-fx-base, -20%);
+        -fx-background-color: @darker-accent;
+        -fx-border-color: @darker-accent-border;
         -fx-border-style: none solid solid solid;
         -fx-padding: -1 0 0 0;
 
         .label {
             -fx-font-weight: normal;
-            -fx-border-color: derive(-fx-base, -10%);
+            -fx-border-color: @darker-accent;
             -fx-font-size: 9pt;
             -fx-min-height: 19pt;
             -fx-max-height: 19pt;
@@ -28,8 +30,8 @@
     }
 
     .show-hide-columns-button {
-        -fx-background-color: derive(-fx-base, -10%);
-        -fx-border-color: derive(-fx-base, -20%);
+        -fx-background-color: @darker-accent;
+        -fx-border-color: @darker-accent-border;
         -fx-border-style: none solid solid solid;
         -fx-padding: -1 0 0 0;
     }
@@ -38,7 +40,7 @@
 .text-area {
     -fx-background-insets: 0;
     -fx-background-color: transparent, white, transparent, white;
-    -fx-background-radius: 0, 0, 0, 0;
+    -fx-background-radius: 0;
 
     -fx-box-border: none;
     -fx-focus-color: -fx-control-inner-background;
@@ -62,7 +64,7 @@
     }
 
     .scroll-arrow {
-        -fx-padding: 0 0 0 0;
+        -fx-padding: 0;
     }
 
 }
@@ -71,13 +73,17 @@
 /**************/
 
 #mainHorizontalSplitPane > .split-pane-divider {
-    -fx-background-color: derive(-fx-base, -20%);
+    -fx-background-color: @darker-accent-border;
+}
+
+.info-title-bar .label {
+    -fx-padding: 0 0 0 6;
 }
 
 .split-pane > .split-pane-divider {
     -fx-padding: 0;
     -fx-border-color: transparent;
-    -fx-background-color: derive(-fx-base, -10%);
+    -fx-background-color: @darker-accent;
 }
 
 .split-pane {
@@ -85,22 +91,8 @@
 }
 
 
-.secondary-panel {
-    -fx-border-style: none;
-}
-
 #nodeInfoPanel {
-    -fx-pref-width: 300px;
-    -fx-max-width: 300px;
-    -fx-min-width: 300px;
-}
-
-/************/
-/* Toolbars */
-/************/
-
-.info-title-bar .label {
-    -fx-padding: 0 0 0 6;
+    .fix-width(300);
 }
 
 .titled-pane > .title,
@@ -109,79 +101,58 @@
     -fx-pref-height: 24.0;
     -fx-border-radius: 0.0;
     -fx-background-radius: 0.0;
-    -fx-background-color: derive(-fx-base, -14%);
+    -fx-background-color: @app-darker-slate-color;
 }
 
-.titled-pane.accent-header > .title,
 .tool-bar.accent-header,
-.tool-bar.info-title-bar,
-.tool-bar.editor-tools,
 .split-pane.accent-header > .split-pane-divider,
 #main-toolbar, #main-vertical-split-pane > .split-pane-divider {
-    -fx-background-color: derive(-fx-base, -14%);
+    -fx-background-color: @app-darker-slate-color;
 }
 
-.accordion .titled-pane .tool-bar {
-    -fx-background-color: derive(-fx-base, -15%);
-}
-
-.accordion .titled-pane .tool-bar .button {
-    -fx-padding: 2 5 2 5;
-}
 
 .tool-bar {
-    -fx-pref-height: 30px;
-    -fx-max-height: 30px;
-    -fx-min-height: 30px;
+    .fix-height(30);
     -fx-border-color: transparent;
     -fx-border-width: .6;
+
+    .button, .choice-box {
+        -fx-background-color: @darker-accent;
+        -fx-border-color: @darker-accent-border;
+        -fx-border-radius: 3;
+    }
+
+    .button {
+        -fx-padding: -3 5 -3 5;
+    }
+
+    .choice-box {
+        -fx-border-radius: 3;
+    }
 }
 
-.tool-bar .button {
-    -fx-padding: -3 5 -3 5;
-    -fx-background-color: derive(-fx-base, 10%);
-    -fx-border-color: derive(-fx-base, -20%);
-    -fx-border-radius: 3;
-}
-
+// This is used for buttons that have just an icon and no text
 .button.icon-button {
     -fx-pref-width: 20;
     -fx-pref-height: 20;
 }
 
-.tool-bar .choice-box {
-    -fx-background-color: derive(-fx-base, 10%);
-    -fx-border-color: derive(-fx-base, -20%);
-    -fx-border-radius: 3;
-}
-
-.titled-pane.bar-sep > .title {
-    -fx-border-style: none none solid none;
-    -fx-border-width: 1;
-}
-
-
 /* This is the special button to reduce the lower split pane. */
-.toggle-button:selected.expand-toggle {
-    -fx-shape: "M 0 0 h 7 l -3.5 4 z";
-}
-
 .toggle-button.expand-toggle {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.25em 0.3125em 0.25em 0.3125em; /* 3 3.75 3 3.75 */
     -fx-shape: "M 0 0 h 7 l -3.5 -4 z";
-    -fx-min-height: 5;
-    -fx-max-height: 5;
-    -fx-pref-height: 5;
-    -fx-min-width: 10;
-    -fx-max-width: 10;
-    -fx-pref-width: 10;
+
+    .fix-height(5);
+    .fix-width(10);
+
+    &:selected {
+        // This changes the shape to point upward
+        -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+    }
 }
 
-/************/
-/* Tab pane */
-/************/
 
 .tab {
     -fx-background-insets: 0.0;
@@ -191,7 +162,7 @@
     -fx-background-color: transparent;
 
     &:selected {
-        -fx-background-color: derive(-fx-base, -23%);
+        -fx-background-color: @darker-accent-focus;
 
         .focus-indicator {
             -fx-focus-color: transparent;
@@ -199,12 +170,8 @@
         }
     }
 
-    &:focused {
+    &:focused, &:disabled {
         -fx-focus-color: transparent;
-    }
-
-    &:disabled {
-        -fx-background-color: transparent;
     }
 
     .tab-label {
@@ -219,27 +186,16 @@
     -fx-tab-min-height: 20px;
     -fx-tab-max-height: 20px;
 
-    &.bottom-pane-tab-pane .tab-header-area .tab:selected {
-        -fx-border-style: none none solid none;
-        -fx-border-insets: 0 0 1pt 0;
-        -fx-border-width: 0 0 1pt 0;
-        /*-fx-border-color: derive(-fx-base, -10%);*/
-    }
-
     .tab-header-area .tab-header-background {
         -fx-border-style: none none solid none;
         -fx-border-insets: 0 0 1pt 0;
         -fx-border-width: 0 0 1pt 0;
-        -fx-background-color: -fx-base, derive(-fx-base, -4%);
+        -fx-background-color: @fx-base, @app-base-color;
         -fx-border-color: transparent;
     }
 
-    .tab-header-background {
-        -fx-background-color: derive(-fx-base, -20%), derive(-fx-base, -10%);
-    }
-
     &:top .tab-header-area {
-        -fx-background-insets: 0, 0 0 1 0;
+        -fx-background-insets: 0 0 1 0;
         -fx-padding: 0;
     }
 
@@ -247,65 +203,28 @@
         -fx-background-insets: 0 1 0 0;
         -fx-padding: 0;
     }
-
 }
 
-/***************/
-/* Scroll bars */
-/***************/
-
-
+// Useful link: http://www.guigarage.com/2015/11/styling-a-javafx-scrollbar/
 .scroll-bar {
+
+    -fx-padding: 0;
 
     * {
         -fx-background-color: white;
     }
 
-    .track {
-        -fx-border-color: white;
-        -fx-background-radius: 0em;
-        -fx-border-radius: 2em;
-        -fx-padding: -2;
-    }
-
     .thumb {
         -fx-background-color: derive(black, 90%);
-        -fx-background-insets: 2, 0, 0;
         -fx-background-radius: 2em;
-    }
-
-    .increment-button, .decrement-button {
-        -fx-background-radius: 0em;
     }
 
     .increment-arrow, .decrement-arrow {
         -fx-shape: " ";
-        -fx-padding: 0;
     }
+}
 
-    &:horizontal {
-
-        &, & > * {
-            -fx-min-height: 15px;
-            -fx-pref-height: 15px;
-            -fx-max-height: 15px;
-        }
-
-        .increment-button, .decrement-button {
-            -fx-padding: 0 0 10 0;
-        }
-    }
-
-    &:vertical {
-
-        &, & > * {
-            -fx-min-width: 15px;
-            -fx-pref-width: 15px;
-            -fx-max-width: 15px;
-        }
-
-        .increment-button, .decrement-button {
-            -fx-padding: 0 10 0 0;
-        }
-    }
+// this is the corner when there is a horizontal and vertical scrollbar
+.corner {
+    -fx-background-color: white;
 }
