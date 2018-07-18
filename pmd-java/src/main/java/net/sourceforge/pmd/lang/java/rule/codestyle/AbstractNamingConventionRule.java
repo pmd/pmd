@@ -30,8 +30,8 @@ abstract class AbstractNamingConventionRule<T extends JavaNode> extends Abstract
     static final String PASCAL_CASE = "[A-Z][a-zA-Z0-9]+";
 
     /** The argument is interpreted as the display name, and is converted to camel case to get the property name. */
-    RegexPBuilder defaultProp(String name) {
-        return defaultProp(StringUtil.toCamelCase(name, true), name);
+    RegexPBuilder defaultProp(String displayName) {
+        return defaultProp(StringUtil.toCamelCase(displayName, true), displayName);
     }
 
     /** Returns a pre-filled builder with the given name and display name (for the description). */
