@@ -68,26 +68,15 @@
     }
 
 }
-/**************/
-/* Split pane */
-/**************/
-
-#mainHorizontalSplitPane > .split-pane-divider {
-    -fx-background-color: @darker-accent-border;
-}
-
-.info-title-bar .label {
-    -fx-padding: 0 0 0 6;
-}
-
-.split-pane > .split-pane-divider {
-    -fx-padding: 0;
-    -fx-border-color: transparent;
-    -fx-background-color: @darker-accent;
-}
 
 .split-pane {
     -fx-padding: 0;
+
+    .split-pane-divider {
+        -fx-padding: 0;
+        -fx-border-color: transparent;
+        -fx-background-color: @darker-accent;
+    }
 }
 
 
@@ -95,18 +84,30 @@
     .fix-width(300);
 }
 
-.titled-pane > .title,
+.titled-pane .title,
 .info-title-bar {
     -fx-font-size: 9pt;
     -fx-pref-height: 24.0;
     -fx-border-radius: 0.0;
     -fx-background-radius: 0.0;
     -fx-background-color: @app-darker-slate-color;
+
+    &.info-title-bar .label {
+        -fx-padding: 0 0 0 6;
+    }
+
 }
 
+#main-horizontal-split-pane .split-pane-divider {
+    -fx-background-color: @app-darker-slate-color;
+    // The main divider should normally have this darker color to make it visible.
+    // I can't figure out why it affects the dividers of the accent-header split panes though
+    //-fx-background-color: @darker-accent-focus;
+}
+
+#main-toolbar,
 .tool-bar.accent-header,
-.split-pane.accent-header > .split-pane-divider,
-#main-toolbar, #main-vertical-split-pane > .split-pane-divider {
+.split-pane.accent-header .split-pane-divider {
     -fx-background-color: @app-darker-slate-color;
 }
 
@@ -117,17 +118,13 @@
     -fx-border-width: .6;
 
     .button, .choice-box {
-        -fx-background-color: @darker-accent;
+        -fx-background-color: @app-base-color;
         -fx-border-color: @darker-accent-border;
         -fx-border-radius: 3;
     }
 
     .button {
         -fx-padding: -3 5 -3 5;
-    }
-
-    .choice-box {
-        -fx-border-radius: 3;
     }
 }
 
@@ -186,22 +183,25 @@
     -fx-tab-min-height: 20px;
     -fx-tab-max-height: 20px;
 
-    .tab-header-area .tab-header-background {
-        -fx-border-style: none none solid none;
-        -fx-border-insets: 0 0 1pt 0;
-        -fx-border-width: 0 0 1pt 0;
-        -fx-background-color: @fx-base, @app-base-color;
-        -fx-border-color: transparent;
+    .tab-header-area {
+        -fx-padding: 0;
+
+        .tab-header-background {
+            -fx-border-style: none none solid none;
+            -fx-border-insets: 0 0 1pt 0;
+            -fx-border-width: 0 0 1pt 0;
+            -fx-border-color: transparent;
+            -fx-background-color: @app-base-color;
+        }
+
     }
 
     &:top .tab-header-area {
         -fx-background-insets: 0 0 1 0;
-        -fx-padding: 0;
     }
 
     &:left .tab-header-area {
         -fx-background-insets: 0 1 0 0;
-        -fx-padding: 0;
     }
 }
 
