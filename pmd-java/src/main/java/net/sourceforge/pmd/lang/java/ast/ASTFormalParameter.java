@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  * production of {@link ASTMethodDeclarator} to represent a
  * method's formal parameter. Also used in the {@link ASTCatchStatement}
  * production to represent the declared exception variable.
+ * Also used in LambdaExpressions for the LambdaParameters.
  * <pre>
  *      ( "final" | Annotation )* Type ( "|" Type )* [ "..." ] VariableDeclaratorId
  * </pre>
@@ -93,7 +94,9 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
      */
     @Override
     public boolean isArray() {
-        return isVarargs() || getTypeNode().isArray() || getVariableDeclaratorId().isArray();
+        return isVarargs()
+                || getTypeNode() != null && getTypeNode().isArray()
+                || getVariableDeclaratorId().isArray();
     }
 
     @Override
