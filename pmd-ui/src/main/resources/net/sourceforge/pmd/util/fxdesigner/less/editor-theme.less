@@ -30,21 +30,9 @@
 
 .xpath-result-highlight {
 
-    // mixin to iterate over xpath colors and create ruleset for each one
-    .make-depth-classes(@depth: length(@xpath-color-stack) - 1) when (@depth >= 0) {
-        .make-depth-classes(@depth - 1);
+    @depth-rset: { -rtfx-background-color: @color; -rtfx-border-stroke-color: darken(@color, 30%); };
 
-        // the first style class is depth-0, but CSS arrays indices start at 1
-        @background: extract(@xpath-color-stack, @depth + 1);
-        @border: darken(@background, 30%);
-
-        &.depth-@{depth} {
-            -rtfx-background-color: @background;
-            -rtfx-border-stroke-color: @border;
-        }
-    }
-
-    .make-depth-classes;
+    .make-depth-classes(@xpath-color-stack, @depth-rset);
 }
 
 .error-highlight.depth-0 {

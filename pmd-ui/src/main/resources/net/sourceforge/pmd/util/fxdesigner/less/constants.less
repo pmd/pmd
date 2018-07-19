@@ -20,6 +20,12 @@
 // This is repeated to use it from Less
 // Prefer using it over -fx-base
 @fx-base: #ececec;
+@fx-text-fill: ladder(
+        -fx-color,
+        -fx-light-text-color 45%,
+        -fx-dark-text-color 46%,
+        -fx-dark-text-color 59%,
+        -fx-mid-text-color 60%);
 
 // Base colors for background slates
 @app-base-color: darken(@fx-base, 4%);
@@ -31,7 +37,7 @@
 // Not reserved to borders, I just ran out of names
 @darker-accent-border: darken(@fx-base, 20%);
 
-@selection-focus-color: fadeout(royalblue, 20%);
+@selection-focus-color: lighten(royalblue, 20%);
 
 // mixin to fix the width of a component
 .fix-width(@width) {
@@ -45,4 +51,21 @@
   -fx-pref-height: @height;
   -fx-min-height: @height;
   -fx-max-height: @height;
+}
+
+// Mixin to iterate over colors in a stack and create a ruleset for each one
+// * The selector in which the mixin is called is appended with a class depth-x,
+//   where x is the index of the color in the stack
+// * The ruleset can access the variables
+//     @color, which is the current color of the stack
+//     @depth, the current index of the depth class (offset by -1 compared to the color's stack index)
+.make-depth-classes(@stack, @ruleset, @depth: length(@stack) - 1) when (@depth >= 0) {
+  .make-depth-classes(@stack, @ruleset, @depth - 1);
+
+  // the first style class is depth-0, but CSS arrays indices start at 1
+  @color: extract(@stack, @depth + 1);
+
+  &.depth-@{depth} {
+    @ruleset();
+  }
 }

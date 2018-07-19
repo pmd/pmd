@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
+import org.reactfx.value.Val;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.MainDesignerController;
 
@@ -24,8 +26,20 @@ public class ASTTreeCell extends TreeCell<Node> {
 
 
     public ASTTreeCell(MainDesignerController controller) {
-
         this.controller = controller;
+
+        Val.wrap(treeItemProperty())
+           .map(ASTTreeItem.class::cast)
+           .changes()
+           .subscribe(change -> {
+               if (change.getOldValue() != null) { // TODO possible race condition here
+                   change.getOldValue().treeCellProperty().setValue(null);
+               }
+               if (change.getNewValue() != null) {
+                   change.getNewValue().treeCellProperty().setValue(this);
+               }
+           });
+
     }
 
     @Override

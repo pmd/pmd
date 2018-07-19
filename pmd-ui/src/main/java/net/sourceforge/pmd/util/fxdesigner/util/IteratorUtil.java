@@ -13,6 +13,8 @@ import java.util.function.Predicate;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
+import javafx.scene.control.TreeItem;
+
 
 /**
  * @author Clément Fournier
@@ -49,6 +51,14 @@ public final class IteratorUtil {
      */
     public static Iterator<Node> parentIterator(Node deepest, boolean includeDeepest) {
         return iteratorFrom(deepest, n -> n.jjtGetParent() != null, Node::jjtGetParent, includeDeepest);
+    }
+
+
+    /**
+     * Returns an iterator over the parents of the given node, in innermost to outermost order.
+     */
+    public static <T> Iterator<TreeItem<T>> parentIterator(TreeItem<T> deepest, boolean includeDeepest) {
+        return iteratorFrom(deepest, n -> n.getParent() != null, TreeItem::getParent, includeDeepest);
     }
 
 

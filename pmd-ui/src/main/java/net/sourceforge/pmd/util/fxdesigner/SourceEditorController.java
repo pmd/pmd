@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.BiConsumer;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
 import net.sourceforge.pmd.util.fxdesigner.popups.AuxclasspathSetupController;
+import net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
@@ -283,12 +285,39 @@ public class SourceEditorController implements Initializable, SettingsOwner {
             if (found != null) {
                 selectionModel.select(found);
             }
+
+            highlightFocusNodeParents(selectedTreeItem, found);
+
             selectedTreeItem = found;
 
             astTreeView.getFocusModel().focus(selectionModel.getSelectedIndex());
             if (!treeViewWrapper.isIndexVisible(selectionModel.getSelectedIndex())) {
                 astTreeView.scrollTo(selectionModel.getSelectedIndex());
             }
+        }
+    }
+
+
+    private void sideEffectParents(ASTTreeItem deepest, BiConsumer<ASTTreeItem, Integer> itemAndDepthConsumer) {
+        Iterable<TreeItem<Node>> parents = () -> IteratorUtil.parentIterator(deepest, true);
+
+        int depth = 0;
+        for (TreeItem<Node> item : parents) {
+            itemAndDepthConsumer.accept(((ASTTreeItem) item), depth++);
+        }
+
+    }
+
+
+    private void highlightFocusNodeParents(ASTTreeItem oldSelection, ASTTreeItem newSelection) {
+        if (oldSelection != null) {
+            // remove highlighting on the cells of the item
+            sideEffectParents(oldSelection, (item, depth) -> item.setStyleClasses());
+        }
+
+        if (newSelection != null) {
+            // 0 is the deepest node, "depth" goes up as we get up the parents
+            sideEffectParents(newSelection, (item, depth) -> item.setStyleClasses("ast-parent", "depth-" + depth));
         }
     }
 

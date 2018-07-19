@@ -7,8 +7,13 @@ package net.sourceforge.pmd.util.fxdesigner.util.controls;
 import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.parentIterator;
 import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.reverse;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
+
+import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -23,9 +28,35 @@ import javafx.scene.control.TreeItem;
 public final class ASTTreeItem extends TreeItem<Node> {
 
 
+    private Var<ASTTreeCell> treeCell = Var.newSimpleVar(null);
+
+    // the value is never null
+    private Var<List<String>> latentStyleClasses = Var.newSimpleVar(Collections.emptyList());
+
     private ASTTreeItem(Node n) {
         super(n);
         setExpanded(true);
+
+        treeCellProperty().changes().subscribe(change -> {
+
+            if (change.getOldValue() != null) {
+                change.getOldValue().getStyleClass().removeAll(latentStyleClasses.getValue());
+            }
+
+            if (change.getNewValue() != null) {
+                change.getNewValue().getStyleClass().addAll(latentStyleClasses.getValue());
+            }
+
+        });
+
+        latentStyleClasses.changes()
+                          // .conditionOn(treeCellProperty().map(Objects::nonNull))
+                          .subscribe(change -> {
+                              if (treeCellProperty().isPresent()) {
+                                  treeCellProperty().getValue().getStyleClass().removeAll(change.getOldValue());
+                                  treeCellProperty().getValue().getStyleClass().addAll(change.getNewValue());
+                              }
+                          });
     }
 
 
@@ -77,6 +108,22 @@ public final class ASTTreeItem extends TreeItem<Node> {
             }
         }
         return item;
+    }
+
+
+    public void setStyleClasses(List<String> classes) {
+        latentStyleClasses.setValue(classes == null ? Collections.emptyList() : classes);
+    }
+
+
+    public void setStyleClasses(String... classes) {
+        setStyleClasses(Arrays.asList(classes));
+    }
+
+
+    // Only for ASTTreeCell
+    Var<ASTTreeCell> treeCellProperty() {
+        return treeCell;
     }
 
 
