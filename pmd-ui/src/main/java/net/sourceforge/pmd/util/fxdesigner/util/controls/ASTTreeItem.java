@@ -4,9 +4,14 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
+import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.parentIterator;
+import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.reverse;
+
+import java.util.Iterator;
+import java.util.Objects;
+
 import net.sourceforge.pmd.lang.ast.Node;
 
-import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 
 /**
@@ -24,21 +29,42 @@ public final class ASTTreeItem extends TreeItem<Node> {
     }
 
 
+    /**
+     * Finds the tree item corresponding to the given node
+     * among the descendants of this item. This method assumes
+     * this item is the root node.
+     *
+     * @param node The node to find
+     *
+     * @return The found item, or null if this item doesn't wrap the
+     *         root of the tree to which the parameter belongs
+     */
     public ASTTreeItem findItem(Node node) {
-        if (this.getValue().equals(node)) {
-            return this;
+
+        Objects.requireNonNull(node, "Cannot find a null item");
+
+        Iterator<Node> pathToNode = reverse(parentIterator(node, true));
+
+        if (pathToNode.next() != getValue()) {
+            // this node is not the root of the tree
+            // to which the node we're looking for belongs
+            return null;
         }
 
-        ObservableList<TreeItem<Node>> children = this.getChildren();
-        ASTTreeItem found;
-        for (TreeItem<Node> child : children) {
-            found = ((ASTTreeItem) child).findItem(node);
-            if (found != null) {
-                return found;
-            }
+        ASTTreeItem current = this;
+
+        while (pathToNode.hasNext()) {
+            Node currentNode = pathToNode.next();
+
+            current = current.getChildren().stream()
+                             .filter(item -> item.getValue() == currentNode)
+                             .findAny()
+                             .map(ASTTreeItem.class::cast)
+                             .get(); // theoretically, this cannot fail, since we use reference identity
+
         }
 
-        return null;
+        return current;
     }
 
 
