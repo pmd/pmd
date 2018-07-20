@@ -67,20 +67,23 @@ In case you have nested loops please name the loop variables more meaningful.
                 <value>
 <![CDATA[
 //CursorForLoopStatement[
-     Statement//CursorForLoopStatement
-  or ancestor::CursorForLoopStatement
-]/ForIndex[not(starts-with(@Image, 'c_'))]
+    $allowSimpleLoops = 'false' or
+    (Statement//CursorForLoopStatement or ancestor::CursorForLoopStatement)
+]
+/ForIndex[not(matches(@Image, $pattern))]
 ]]>
                 </value>
             </property>
+            <property name="allowSimpleLoops" type="Boolean" description="Ignore simple loops, that are not nested" value="false" />
+            <property name="pattern" type="Regex" description="The pattern used for the loop variable" value="[a-zA-Z_0-9]{5,}" />
         </properties>
         <example>
 <![CDATA[
 -- good example
 BEGIN
-FOR c_cmp IN (SELECT * FROM companies) LOOP
-  FOR c_con IN (SELECT * FROM contacts) LOOP
-    FOR c_pa IN (SELECT * FROM parties) LOOP
+FOR company IN (SELECT * FROM companies) LOOP
+  FOR contact IN (SELECT * FROM contacts) LOOP
+    FOR party IN (SELECT * FROM parties) LOOP
       NULL;
     END LOOP;
   END LOOP;

@@ -3,8 +3,24 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description>Simple case</description>
+        <description>Simple case - no nesting</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+BEGIN
+FOR c IN (SELECT * FROM companies) LOOP
+  NULL;
+END LOOP;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Simple case - no nesting</description>
+        <rule-property name="allowSimpleLoops">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 BEGIN
@@ -18,7 +34,26 @@ END;
     </test-code>
 
     <test-code>
-        <description>Nested loops - good example</description>
+        <description>Nested loops - good example, default pattern</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+FOR company IN (SELECT * FROM companies) LOOP
+  FOR contact IN (SELECT * FROM contacts) LOOP
+    FOR party IN (SELECT * FROM parties) LOOP
+      NULL;
+    END LOOP;
+  END LOOP;
+END LOOP;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Nested loops - good example, special pattern</description>
+        <rule-property name="pattern">c_[a-z]+</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 BEGIN
@@ -36,7 +71,27 @@ END;
     </test-code>
 
     <test-code>
-        <description>Nested loops - bad example</description>
+        <description>Nested loops - bad example, default pattern</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,3,4</expected-linenumbers>
+        <code><![CDATA[
+BEGIN
+FOR cmp IN (SELECT * FROM companies) LOOP
+  FOR con IN (SELECT * FROM contacts) LOOP
+    FOR pa IN (SELECT * FROM parties) LOOP
+      NULL;
+    END LOOP;
+  END LOOP;
+END LOOP;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Nested loops - bad example, special pattern</description>
+        <rule-property name="pattern">c_[a-z]+</rule-property>
         <expected-problems>3</expected-problems>
         <expected-linenumbers>2,3,4</expected-linenumbers>
         <code><![CDATA[
