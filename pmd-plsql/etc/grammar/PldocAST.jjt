@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /**
  * Added more complete support for CREATE TABLE
+ * Added ASTCursorForLoop and ASTSelectStatement
  *
  * Andreas Dangel 07/2018
  *====================================================================
@@ -1176,6 +1177,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 	| LOOKAHEAD(3)  ContinueStatement()  ";" // CONTINUE keyword was added in 11G, so Oracle compilation supports CONTINUE as a variable name
 	| CaseStatement()  ";"
 	| IfStatement()  ";"
+	| LOOKAHEAD(<FOR> ID() <IN> "(" <SELECT>) CursorForLoopStatement() ";"
 	| ForStatement()  ";"
 	| ForAllStatement()  ";"
 	| LoopStatement()  ";"
@@ -1271,6 +1273,20 @@ ASTLoopStatement LoopStatement()  :
 {
        <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>] 
       { return jjtThis ; }
+}
+
+ASTCursorForLoopStatement CursorForLoopStatement() :
+{}
+{
+    <FOR> ForIndex() <IN> "(" SelectStatement() ")" <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>]
+    { return jjtThis ; }
+}
+
+ASTSelectStatement SelectStatement() :
+{}
+{
+    SqlStatement(null, ")")
+    { return jjtThis ; }
 }
 
 /** Scope rule: the loop index only exists within the Loop */
@@ -3732,7 +3748,7 @@ TOKEN [IGNORE_CASE]:
  */
 TOKEN :
 {
-< #GERMAN_SPECIAL_CHARACTERS: "Ä" | "Ö" | "Ü" | "ä" | "ü" | "ö" | "ß" >
+< #GERMAN_SPECIAL_CHARACTERS: "Ã„" | "Ã–" | "Ãœ" | "Ã¤" | "Ã¼" | "Ã¶" | "ÃŸ" >
 |
 < #LETTER: ["A"-"Z"] | ["a"-"z"] | <GERMAN_SPECIAL_CHARACTERS> >
 |
@@ -3745,7 +3761,7 @@ TOKEN :
  | "$" | "&" | "_" | "|" | "{" | "}" | "?" | "[" | "]"
  | " " | "\t" >
 |
-< #SPECIAL_CHARACTERS: "á" | "Ž" | "™" | "š" | "„" | "”" | "ý" | "²" | "€" | "³" | "µ">
+< #SPECIAL_CHARACTERS: "Ã¡" | "ÂŽ" | "Â™" | "Âš" | "Â„" | "Â”" | "Ã½" | "Â²" | "Â€" | "Â³" | "Âµ">
 |
 < #DELIMITER: "+" | "%" | "'" | "\"" | "." | "/" | "(" | ")" | ":" | "," | "*" | "=" | "<" | ">" | "@" | ";" | "-">
 |
