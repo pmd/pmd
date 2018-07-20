@@ -29,8 +29,11 @@ before_install:
   - wget https://github.com/sormuras/bach/raw/master/install-jdk.sh
   - bash .travis/setup-secrets.sh
   - bash .travis/configure-maven.sh
+  - rvm install 2.4.1
 # Install OracleJDK 10 - see https://sormuras.github.io/blog/2018-03-20-jdk-matrix.html
-install: . ./install-jdk.sh -F 10 -L BCL
+install:
+  - . ./install-jdk.sh -F 10 -L BCL
+  - gem install pmdtester --pre
 before_script: true
 script: source .travis/build-$BUILD.sh
 after_success: true
