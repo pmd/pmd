@@ -23,13 +23,17 @@ This is a minor release.
 #### New Rules
 
 *   The new Java rule [`LocalVariableNamingConventions`](pmd_rules_java_codestyle.html#localvariablenamingconventions) (`java-codestlye`)
-    detects local variable names that don't comply to a given convention. It defaults to standrd Java convention of using camelCase,
-    but can be configured. Special cases can be configured for final variables and catched exceptions' names.
+    detects local variable names that don't comply to a given convention. It defaults to standard Java convention of using camelCase,
+    but can be configured. Special cases can be configured for final variables and caught exceptions' names.
 
 *   The new Java rule [`FormalParameterNamingConventions`](pmd_rules_java_codestyle.html#formalparameternamingconventions) (`java-codestlye`)
-    detects formal parameter names that don't comply to a given convention. It defaults to standrd Java convention of using camelCase,
-    but can be configured. Special cases can be configured for final parameters and lambda parameters (considering wether they are
+    detects formal parameter names that don't comply to a given convention. It defaults to standard Java convention of using camelCase,
+    but can be configured. Special cases can be configured for final parameters and lambda parameters (considering whether they are
     explicitly typed or not)
+
+*   The new PL/SQL rule [`ForLoopNaming`](pmd_rules_plsql_codestyle.html#forloopnaming) (`plsql-codestyle`)
+    enforces a naming convention for "for loops". Both "cursor for loops" and "index for loops" are covered.
+    The rule can be customized via patterns. By default, short variable names are reported.
 
 ### Fixed Issues
 
