@@ -98,16 +98,13 @@
 
 }
 
-#main-horizontal-split-pane .split-pane-divider {
-    -fx-background-color: @app-darker-slate-color;
-    // The main divider should normally have this darker color to make it visible.
-    // I can't figure out why it affects the dividers of the accent-header split panes though
-    //-fx-background-color: @darker-accent-focus;
+#main-horizontal-split-pane > .split-pane-divider {
+    -fx-background-color: @darker-accent-focus;
 }
 
 #main-toolbar,
 .tool-bar.accent-header,
-.split-pane.accent-header .split-pane-divider {
+.split-pane.accent-header > .split-pane-divider {
     -fx-background-color: @app-darker-slate-color;
 }
 
