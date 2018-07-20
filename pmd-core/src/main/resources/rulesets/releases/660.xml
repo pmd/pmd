@@ -11,6 +11,6 @@ This ruleset contains links to rules that are new in PMD v6.6.0
     <rule ref="category/java/codestyle.xml/FormalParameterNamingConventions"/>
     <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions"/>
 
-    <rule ref="category/plsql/codestyle.xml/CursorForLoopNaming"/>
+    <rule ref="category/plsql/codestyle.xml/ForLoopNaming"/>
 </ruleset>
 
