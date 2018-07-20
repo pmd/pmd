@@ -52,4 +52,54 @@ end inline_pragma_error;
         </example>
     </rule>
 
+    <rule name="CursorForLoopNaming"
+          language="plsql"
+          since="6.6.0"
+          message="Use meaniningful names for loop variables"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codestyle.html#cursorforloopnaming">
+        <description>
+In case you have nested loops please name the loop variables more meaningful.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//CursorForLoopStatement[
+     Statement//CursorForLoopStatement
+  or ancestor::CursorForLoopStatement
+]/ForIndex[not(starts-with(@Image, 'c_'))]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+-- good example
+BEGIN
+FOR c_cmp IN (SELECT * FROM companies) LOOP
+  FOR c_con IN (SELECT * FROM contacts) LOOP
+    FOR c_pa IN (SELECT * FROM parties) LOOP
+      NULL;
+    END LOOP;
+  END LOOP;
+END LOOP;
+END;
+/
+
+-- bad example
+BEGIN
+FOR c1 IN (SELECT * FROM companies) LOOP
+  FOR c2 IN (SELECT * FROM contacts) LOOP
+    FOR c3 IN (SELECT * FROM parties) LOOP
+      NULL;
+    END LOOP;
+  END LOOP;
+END LOOP;
+END;
+/
+]]>
+        </example>
+    </rule>
 </ruleset>

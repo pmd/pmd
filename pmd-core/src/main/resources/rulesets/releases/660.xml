@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="650"
+<ruleset name="660"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
@@ -10,5 +10,7 @@ This ruleset contains links to rules that are new in PMD v6.6.0
 
     <rule ref="category/java/codestyle.xml/FormalParameterNamingConventions"/>
     <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions"/>
+
+    <rule ref="category/plsql/codestyle.xml/CursorForLoopNaming"/>
 </ruleset>
 
