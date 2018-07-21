@@ -29,7 +29,7 @@ TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}"
 
 function upload_baseline() {
     cd ..
-    pmdtester -r ./pmd -p ${TRAVIS_BRANCH} -pc ./pmd/.travis/all-java.xml -l ./pmd/.travis/project-list.xml -f
+    pmdtester -m single -r ./pmd -p ${TRAVIS_BRANCH} -pc ./pmd/.travis/all-java.xml -l ./pmd/.travis/project-list.xml -f
     cd target/reports
     zip -q -r ${TRAVIS_BRANCH}-baseline.zip ${TRAVIS_BRANCH}/
     rsync -avh ${TRAVIS_BRANCH}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/
@@ -90,10 +90,11 @@ elif travis_isPush; then
         else
             log_success "Successfully uploaded release_notes.md as ReadMe.md to sourceforge"
         fi
+
+        upload_baseline
+
         true
     )
-
-    upload_baseline
 
 else
     log_info "This is neither a pull request nor a push. Not executing any build."
