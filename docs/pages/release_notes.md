@@ -22,6 +22,11 @@ This is a minor release.
 
 #### New Rules
 
+*   The new Java rule [`LinguisticNaming`](pmd_rules_java_codestyle.html#linguisticnaming) (`java-codestyle`)
+    detects cases, when a method name indicates it returns a boolean (such as `isSmall()`) but it doesn't.
+    Besides method names, the rule also checks field and variable names. It also checks, that getters return
+    something but setters won't. The rule has several properties with which it can be customized.
+
 *   The new Java rule [`LocalVariableNamingConventions`](pmd_rules_java_codestyle.html#localvariablenamingconventions) (`java-codestlye`)
     detects local variable names that don't comply to a given convention. It defaults to standrd Java convention of using camelCase,
     but can be configured. Special cases can be configured for final variables and catched exceptions' names.
@@ -54,5 +59,6 @@ This is a minor release.
 
 ### External Contributions
 
+* [#109](https://github.com/pmd/pmd/pull/109): \[java] Add two linguistics rules under naming - [Arda Aslan](https://github.com/ardaasln)
 * [#1182](https://github.com/pmd/pmd/pull/1182): \[ui] XPath AutoComplete - [Akshat Bahety](https://github.com/akshatbahety)
 * [#1231](https://github.com/pmd/pmd/pull/1231): \[doc] Minor typo fix in installation.md - [Ashish Rana](https://github.com/ashishrana160796)
