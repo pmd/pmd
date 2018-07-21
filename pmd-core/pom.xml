@@ -96,7 +96,10 @@
             <artifactId>ant</artifactId>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+        </dependency>
         <dependency>
           <groupId>com.beust</groupId>
           <artifactId>jcommander</artifactId>
