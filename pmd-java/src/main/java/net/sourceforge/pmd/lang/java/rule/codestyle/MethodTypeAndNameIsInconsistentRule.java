@@ -4,30 +4,21 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.properties.StringMultiProperty;
 
 public class MethodTypeAndNameIsInconsistentRule extends AbstractJavaRule {
-    private static final Set<String> BOOLEAN_PREFIXES;
-
-    static {
-        final Set<String> prefixCollection = new HashSet<String>();
-        prefixCollection.add("is");
-        prefixCollection.add("has");
-        prefixCollection.add("can");
-        prefixCollection.add("have");
-        prefixCollection.add("will");
-        prefixCollection.add("should");
-        BOOLEAN_PREFIXES = Collections.unmodifiableSet(prefixCollection);
-    }
+    private static final StringMultiProperty BOOLEAN_PREFIXES_PROPERTY = StringMultiProperty.named("booleanPrefixes")
+            .defaultValues("is", "has", "can", "have", "will", "should")
+            .desc("the prefixes of methods that return boolean")
+            .uiOrder(1.0f)
+            .build();
 
     public MethodTypeAndNameIsInconsistentRule() {
+        definePropertyDescriptor(BOOLEAN_PREFIXES_PROPERTY);
         addRuleChainVisit(ASTMethodDeclaration.class);
     }
 
@@ -75,7 +66,7 @@ public class MethodTypeAndNameIsInconsistentRule extends AbstractJavaRule {
         ASTResultType resultType = node.getResultType();
         ASTType t = node.getResultType().getFirstChildOfType(ASTType.class);
         if (!resultType.isVoid() && t != null) {
-            for (String prefix : BOOLEAN_PREFIXES) {
+            for (String prefix : getProperty(BOOLEAN_PREFIXES_PROPERTY)) {
                 if (hasPrefix(nameOfMethod, prefix) && !"boolean".equals(t.getType().getName())) {
                     addViolation(data, node);
                 }

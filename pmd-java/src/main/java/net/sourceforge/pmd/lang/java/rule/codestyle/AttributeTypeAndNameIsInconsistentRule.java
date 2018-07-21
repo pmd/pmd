@@ -4,31 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.properties.StringMultiProperty;
 
 public class AttributeTypeAndNameIsInconsistentRule extends AbstractJavaRule {
-    private static final Set<String> PREFIXES;
-
-    static {
-        final Set<String> prefixCollection = new HashSet<String>();
-        prefixCollection.add("is");
-        prefixCollection.add("has");
-        prefixCollection.add("can");
-        prefixCollection.add("have");
-        prefixCollection.add("will");
-        prefixCollection.add("should");
-        PREFIXES = Collections.unmodifiableSet(prefixCollection);
-    }
+    private static final StringMultiProperty BOOLEAN_PREFIXES_PROPERTY = StringMultiProperty.named("booleanPrefixes")
+            .defaultValues("is", "has", "can", "have", "will", "should")
+            .desc("the prefixes of fields that return boolean")
+            .uiOrder(1.0f)
+            .build();
 
     public AttributeTypeAndNameIsInconsistentRule() {
+        definePropertyDescriptor(BOOLEAN_PREFIXES_PROPERTY);
         addRuleChainVisit(ASTFieldDeclaration.class);
         addRuleChainVisit(ASTLocalVariableDeclaration.class);
     }
@@ -36,7 +27,7 @@ public class AttributeTypeAndNameIsInconsistentRule extends AbstractJavaRule {
     private void checkField(String nameOfField, Node node, Object data) {
         ASTType type = node.getFirstChildOfType(ASTType.class);
         if (type != null) {
-            for (String prefix : PREFIXES) {
+            for (String prefix : getProperty(BOOLEAN_PREFIXES_PROPERTY)) {
                 if (nameOfField.startsWith(prefix) && nameOfField.length() > prefix.length()
                         && Character.isUpperCase(nameOfField.charAt(prefix.length()))) {
                     if (!"boolean".equals(type.getType().getName())) {
