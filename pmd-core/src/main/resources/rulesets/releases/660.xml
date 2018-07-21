@@ -9,6 +9,7 @@ This ruleset contains links to rules that are new in PMD v6.6.0
   </description>
 
     <rule ref="category/java/codestyle.xml/FormalParameterNamingConventions"/>
+    <rule ref="category/java/codestyle.xml/LinguisticNaming"/>
     <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions"/>
 </ruleset>
 

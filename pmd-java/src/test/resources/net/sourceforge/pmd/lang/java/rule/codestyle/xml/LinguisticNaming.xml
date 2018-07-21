@@ -6,7 +6,7 @@
 
 
     <test-code>
-        <description>Prefix is</description>
+        <description>Method Prefix is</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
@@ -27,7 +27,7 @@ public class MethodTypeAndNameIsInconsistentWithPrefixIs {
     </test-code>
 
     <test-code>
-        <description>public class MethodTypeAndNameIsInconsistentWithPrefixHas</description>
+        <description>Method Prefix Has</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
@@ -48,7 +48,7 @@ public class MethodTypeAndNameIsInconsistentWithPrefixHas {
     </test-code>
 
     <test-code>
-        <description>Prefix Have</description>
+        <description>Method Prefix Have</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
@@ -69,7 +69,7 @@ public class MethodTypeAndNameIsInconsistentWithPrefixHave {
     </test-code>
 
     <test-code>
-        <description>Prefix can</description>
+        <description>Method Prefix can</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
@@ -90,7 +90,7 @@ public class MethodTypeAndNameIsInconsistentWithPrefixCan {
     </test-code>
 
     <test-code>
-        <description>Prefix will</description>
+        <description>Method Prefix will</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
@@ -111,7 +111,7 @@ public class MethodTypeAndNameIsInconsistentWithPrefixWill {
     </test-code>
 
     <test-code>
-        <description>Prefix should</description>
+        <description>Method Prefix should</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
@@ -132,7 +132,7 @@ public class MethodTypeAndNameIsInconsistentWithPrefixShould {
     </test-code>
 
     <test-code>
-        <description>Setters</description>
+        <description>Method Setters</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
@@ -153,7 +153,7 @@ public class MethodTypeAndNameIsInconsistentWithSetters {
     </test-code>
 
     <test-code>
-        <description>Getters</description>
+        <description>Method Getters</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
@@ -174,7 +174,7 @@ public class MethodTypeAndNameIsInconsistentWithGetters {
     </test-code>
 
     <test-code>
-        <description>Prefix to and contains To</description>
+        <description>Method Prefix to</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
@@ -195,7 +195,7 @@ public class MethodTypeAndNameIsInconsistentWithPrefixTo {
     </test-code>
 
     <test-code>
-        <description>Contains To</description>
+        <description>Method Contains To</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
@@ -206,6 +206,120 @@ public class MethodTypeAndNameIsInconsistentWithPrefixTo {
 
     int hopsToBeer() {
         return 1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field/Variable Prefix is</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <code><![CDATA[
+public class AttributeTypeAndNameIsInconsistentWithPrefixIs {
+    int isotherm;
+    int isValid; // violation
+    boolean isTrue;
+
+    void myMethod() {
+        int isothermLocal;
+        int isValidLocal; // violation
+        boolean isTrueLocal;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field/Variable Prefix has</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <code><![CDATA[
+public class AttributeTypeAndNameIsInconsistentWithPrefixHas {
+    int haskell;
+    int hasMoney; // violation
+    boolean hasSalary;
+
+    void myMethod() {
+        int haskellLocal;
+        int hasMoneyLocal; // violation
+        boolean hasSalaryLocal;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field/Variable Prefix can</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <code><![CDATA[
+public class AttributeTypeAndNameIsInconsistentWithPrefixCan {
+    int cannibal;
+    int canFly; // violation
+    boolean canWalk;
+
+    void myMethod() {
+        int cannibalLocal;
+        int canFlyLocal; // violation
+        boolean canWalkLocal;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field/Variable Prefix will</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <code><![CDATA[
+public class AttributeTypeAndNameIsInconsistentWithPrefixWill {
+    int william;
+    int willMove; // violation
+    boolean willRun;
+
+    void myMethod() {
+        int williamLocal;
+        int willMoveLocal; // violation
+        boolean willRunLocal;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field/Variable Prefix have</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <code><![CDATA[
+public class AttributeTypeAndNameIsInconsistentWithPrefixHave {
+    int havexxx;
+    int haveLegs; // violation
+    boolean haveHorns;
+
+    void myMethod() {
+        int havexxxLocal;
+        int haveLegsLocal; // violation
+        boolean haveHornsLocal;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field/Variable Prefix should</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <code><![CDATA[
+public class AttributeTypeAndNameIsInconsistentWithPrefixShould {
+    int shoulder;
+    int shouldClimb; // violation
+    boolean shouldEat;
+
+    void myMethod() {
+        int shoulderLocal;
+        int shouldClimbLocal; // violation
+        boolean shouldEatLocal;
     }
 }
         ]]></code>
