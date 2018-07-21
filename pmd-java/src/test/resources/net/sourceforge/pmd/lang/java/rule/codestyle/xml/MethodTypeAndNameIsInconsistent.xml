@@ -4,178 +4,210 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
+
     <test-code>
-        <description>First and third method in every group shouldnt raise error but second should Groups are separated by comments</description>
-        <expected-problems>10</expected-problems>
+        <description>Prefix is</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
-public class MethodTypeAndNameIsInconsistentTest 
-{
-	
-	//First and third method in every group shouldnt raise error but second should
-	//Groups are seperated by comments
-	
-	int isotherm()
-	{
-		return 1;
-	}
-	
-	int isValid()
-	{
-		return 1;
-	}
-	
-	boolean isSmall()
-	{
-		return true;
-	}
-	
-	//////////////////////////
-	
-	int haskell()
-	{
-		return 1;
-	}
-	
-	int hasChild()
-	{
-		return 1;
-	}
-	
-	boolean hasHorn()
-	{
-		return true;
-	}
-	
-	//////////////////////////
-	
-	int havelock()
-	{
-		return 1;
-	}
-	
-	int haveChild()
-	{
-		return 1;
-	}
-	
-	boolean haveHorn()
-	{
-		return true;
-	}
-	
-	/////////////////////////
-	
-	int cannibal()
-	{
-		return 1;
-	}
-	
-	int canFly()
-	{
-		return 1;
-	}
-	
-	boolean canWalk()
-	{
-		return true;
-	}
-	
-	/////////////////////////
-	
-	int william()
-	{
-		return 1;
-	}
-	
-	int willFly()
-	{
-		return 1;
-	}
-	
-	boolean willWalk()
-	{
-		return true;
-	}
-	
-	/////////////////////////
-	
-	int shoulder()
-	{
-		return 1;
-	}
-	
-	int shouldFly()
-	{
-		return 1;
-	}
-	
-	boolean shouldWalk()
-	{
-		return true;
-	}
-	
-	/////////////////////////
+public class MethodTypeAndNameIsInconsistentWithPrefixIs {
+    int isotherm() {
+        return 1;
+    }
 
-	int settlement()
-	{
-		return 1;
-	}
-	
-	int setName()
-	{
-		return 1;
-	}
-	
-	void setFlag()
-	{
-		
-	}
-	
-	/////////////////////////
+    int isValid() { // violation
+        return 1;
+    }
 
-	void getaways()
-	{
-		
-	}
-	
-	void getName()
-	{
-		
-	}
-	
-	int getCount()
-	{
-		return 1;
-	}
-	
-	/////////////////////////
-
-	void tokenize()
-	{
-		
-	}
-	
-	void toDataType()
-	{
-		
-	}
-	
-	int toMyInteger()
-	{
-		return 1;
-	}
-	
-	void grapeToWine()
-	{
-		
-	}
-	
-	int hopsToBeer()
-	{
-		return 1;
-	}
-	
+    boolean isSmall() {
+        return true;
+    }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>public class MethodTypeAndNameIsInconsistentWithPrefixHas</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixHas {
+    int haskell() {
+        return 1;
+    }
+
+    int hasChild() { // violation
+        return 1;
+    }
+
+    boolean hasHorn() {
+        return true;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Prefix Have</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixHave {
+    int havelock() {
+        return 1;
+    }
+
+    int haveChild() { // violation
+        return 1;
+    }
+
+    boolean haveHorn() {
+        return true;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Prefix can</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixCan {
+    int cannibal() {
+        return 1;
+    }
+
+    int canFly() { // violation
+        return 1;
+    }
+
+    boolean canWalk() {
+        return true;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Prefix will</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixWill {
+    int william() {
+        return 1;
+    }
+
+    int willFly() { // violation
+        return 1;
+    }
+
+    boolean willWalk() {
+        return true;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Prefix should</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixShould {
+    int shoulder() {
+        return 1;
+    }
+
+    int shouldFly() { // violation
+        return 1;
+    }
+
+    boolean shouldWalk() {
+        return true;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Setters</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithSetters {
+    int settlement() {
+        return 1;
+    }
+
+    int setName() { // violation
+        return 1;
+    }
+
+    void setFlag() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Getters</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithGetters {
+    void getaways() {
+        // do something
+    }
+
+    void getName() { // violation
+        // do something
+    }
+
+    int getCount() {
+        return 1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Prefix to and contains To</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixTo {
+    void tokenize() {
+        // do something
+    }
+
+    void toDataType() { // violation
+        // do something
+    }
+
+    int toMyInteger() {
+        return 1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Contains To</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixTo {
+    void grapeToWine() { // violation
+        // do something
+    }
+
+    int hopsToBeer() {
+        return 1;
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

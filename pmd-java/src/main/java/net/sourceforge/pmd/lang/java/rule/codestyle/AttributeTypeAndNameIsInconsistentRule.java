@@ -4,83 +4,60 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class AttributeTypeAndNameIsInconsistentRule extends AbstractJavaRule {
+    private static final Set<String> PREFIXES;
+
+    static {
+        final Set<String> prefixCollection = new HashSet<String>();
+        prefixCollection.add("is");
+        prefixCollection.add("has");
+        prefixCollection.add("can");
+        prefixCollection.add("have");
+        prefixCollection.add("will");
+        prefixCollection.add("should");
+        PREFIXES = Collections.unmodifiableSet(prefixCollection);
+    }
+
+    public AttributeTypeAndNameIsInconsistentRule() {
+        addRuleChainVisit(ASTFieldDeclaration.class);
+        addRuleChainVisit(ASTLocalVariableDeclaration.class);
+    }
+
+    private void checkField(String nameOfField, Node node, Object data) {
+        ASTType type = node.getFirstChildOfType(ASTType.class);
+        if (type != null) {
+            for (String prefix : PREFIXES) {
+                if (nameOfField.startsWith(prefix) && nameOfField.length() > prefix.length()
+                        && Character.isUpperCase(nameOfField.charAt(prefix.length()))) {
+                    if (!"boolean".equals(type.getType().getName())) {
+                        addViolation(data, node);
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
         String nameOfField = node.getVariableName();
-        ASTType t = node.getFirstChildOfType(ASTType.class);
-
-        /**************** Type Should Be Boolean As Name Suggests *********************/
-
-        if (nameOfField.startsWith("is") && nameOfField.length() > 2 && nameOfField.charAt(2) > 64
-                && nameOfField.charAt(2) < 91) {
-            // after is a capital letter expected to not addViolation to a field
-            // called isotherm or so
-            if (t != null & !(t.getType().getName().equals("boolean"))) {
-                addViolation(data, node);
-            }
-        } else if ((nameOfField.startsWith("has") || nameOfField.startsWith("can")) && nameOfField.length() > 3
-                && nameOfField.charAt(3) > 64 && nameOfField.charAt(3) < 91) {
-            if (t != null & !(t.getType().getName().equals("boolean"))) {
-                addViolation(data, node);
-            }
-        } else if ((nameOfField.startsWith("have") || nameOfField.startsWith("will")) && nameOfField.length() > 4
-                && nameOfField.charAt(4) > 64 && nameOfField.charAt(4) < 91) {
-            if (t != null & !(t.getType().getName().equals("boolean"))) {
-                addViolation(data, node);
-            }
-        } else if (nameOfField.startsWith("should") && nameOfField.length() > 6 && nameOfField.charAt(6) > 64
-                && nameOfField.charAt(6) < 91) {
-            if (t != null & !(t.getType().getName().equals("boolean"))) {
-                addViolation(data, node);
-            }
-        }
-
-        /***************************************************************************/
-
-        return super.visit(node, data);
+        checkField(nameOfField, node, data);
+        return data;
     }
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         String nameOfField = node.getVariableName();
-        ASTType t = node.getFirstChildOfType(ASTType.class);
-
-        /**************** Type Should Be Boolean As Name Suggests *********************/
-
-        if (nameOfField.startsWith("is") && nameOfField.length() > 2 && nameOfField.charAt(2) > 64
-                && nameOfField.charAt(2) < 91) {
-            // after is a capital letter expected to not addViolation to a local
-            // variable called isotherm or so
-
-            if (t != null & !(t.getType().getName().equals("boolean"))) {
-                addViolation(data, node);
-            }
-        } else if ((nameOfField.startsWith("has") || nameOfField.startsWith("can")) && nameOfField.length() > 3
-                && nameOfField.charAt(3) > 64 && nameOfField.charAt(3) < 91) {
-            if (t != null & !(t.getType().getName().equals("boolean"))) {
-                addViolation(data, node);
-            }
-        } else if ((nameOfField.startsWith("have") || nameOfField.startsWith("will")) && nameOfField.length() > 4
-                && nameOfField.charAt(4) > 64 && nameOfField.charAt(4) < 91) {
-            if (t != null & !(t.getType().getName().equals("boolean"))) {
-                addViolation(data, node);
-            }
-        } else if (nameOfField.startsWith("should") && nameOfField.length() > 6 && nameOfField.charAt(6) > 64
-                && nameOfField.charAt(6) < 91) {
-            if (t != null & !(t.getType().getName().equals("boolean"))) {
-                addViolation(data, node);
-            }
-        }
-
-        /***************************************************************************/
-
-        return super.visit(node, data);
+        checkField(nameOfField, node, data);
+        return data;
     }
-
 }
