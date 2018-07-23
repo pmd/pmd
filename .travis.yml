@@ -34,7 +34,7 @@ before_install:
 # Install OracleJDK 10 - see https://sormuras.github.io/blog/2018-03-20-jdk-matrix.html
 install:
   - . ./install-jdk.sh -F 10 -L BCL
-  - gem install pmdtester --pre
+  - bundle install
 before_script: true
 script: source .travis/build-$BUILD.sh
 after_success: true
@@ -82,7 +82,6 @@ cache:
 #
 # PMD_SF_USER - the sourceforge user, which is used to upload created binaries to sf files section. Note: an ssh key is
 #               required. See "before_install".
-#
 #
 # Secure Keys, that need to be set for releases:
 #
