@@ -118,5 +118,19 @@
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>One character for loop variables should be ok by default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class LocalVarNamingConvention {
+            public void bar() {
+                for (int i = 0; i < 10; i++) { }
+
+                List<String> data = Arrays.asList("a", "b");
+                for (String s : data) { }
+            }
+        }
+        ]]></code>
+    </test-code>
 
 </test-data>
