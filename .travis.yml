@@ -30,6 +30,7 @@ before_install:
   - bash .travis/setup-secrets.sh
   - bash .travis/configure-maven.sh
   - rvm install 2.4.1
+  - rvm use 2.4.1
 # Install OracleJDK 10 - see https://sormuras.github.io/blog/2018-03-20-jdk-matrix.html
 install:
   - . ./install-jdk.sh -F 10 -L BCL
