@@ -37,7 +37,7 @@
             <children>
                 <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <center>
-                        <TreeView fx:id="astTreeView" prefHeight="200.0" prefWidth="200.0" styleClass="secondary-panel" BorderPane.alignment="CENTER"/>
+                        <TreeView fx:id="astTreeView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
                     </center>
                     <top>
                         <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="accent-header" BorderPane.alignment="CENTER">

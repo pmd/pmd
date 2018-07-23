@@ -34,7 +34,7 @@
                                 </ToolBar>
                             </top>
                             <center>
-                                <ListView styleClass="secondary-panel" BorderPane.alignment="CENTER" fx:id="xpathAttributesListView" />
+                                <ListView BorderPane.alignment="CENTER" fx:id="xpathAttributesListView" />
                             </center>
                         </BorderPane>
                     </children>
@@ -47,7 +47,7 @@
                     <children>
                         <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <center>
-                                <ListView fx:id="metricResultsListView" styleClass="secondary-panel" BorderPane.alignment="CENTER">
+                                <ListView fx:id="metricResultsListView" BorderPane.alignment="CENTER">
                                     <cellFactory>
                                         <MetricResultListCell fx:factory="callback" />
                                     </cellFactory>
@@ -71,7 +71,7 @@
                     <children>
                         <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <center>
-                                <TreeView fx:id="scopeHierarchyTreeView" styleClass="secondary-panel"
+                                <TreeView fx:id="scopeHierarchyTreeView"
                                           BorderPane.alignment="CENTER"/>
                             </center>
                             <top>
