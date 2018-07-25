@@ -459,7 +459,7 @@ JUnit 4 skips the tearDown method and executes all methods annotated with @After
 <![CDATA[
 //CompilationUnit[not(ImportDeclaration/Name[starts-with(@Image, "org.testng")])]
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='tearDown']]
-[count(Annotation//Name[@Image='After'])=0]
+[count(Annotation//Name[@Image='After' or @Image='AfterEach' or @Image='AfterAll'])=0]
 ]]>
                 </value>
             </property>
@@ -497,7 +497,7 @@ JUnit 4 skips the setUp method and executes all methods annotated with @Before b
 <![CDATA[
 //CompilationUnit[not(ImportDeclaration/Name[starts-with(@Image, "org.testng")])]
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='setUp']]
-[count(Annotation//Name[@Image='Before'])=0]
+[count(Annotation//Name[@Image='Before' or @Image='BeforeEach' or @Image='BeforeAll'])=0]
 ]]>
                 </value>
             </property>
