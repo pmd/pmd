@@ -64,6 +64,16 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
         return getVariableDeclaratorId().isExplicitReceiverParameter();
     }
 
+    /**
+     * If true, this formal parameter represents one without explit types.
+     * This can appear as part of a lambda expression with java11 using "var".
+     *
+     * @see ASTVariableDeclaratorId#isTypeInferred()
+     */
+    public boolean isTypeInferred() {
+        return getTypeNode() == null;
+    }
+
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

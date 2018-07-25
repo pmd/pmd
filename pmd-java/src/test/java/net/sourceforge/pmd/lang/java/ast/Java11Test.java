@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -84,6 +83,7 @@ public class Java11Test {
         // (var x) -> String.valueOf(x);
         List<ASTFormalParameter> formalParameters = lambdas.get(0).findDescendantsOfType(ASTFormalParameter.class);
         Assert.assertEquals(1, formalParameters.size());
-        assertNull(formalParameters.get(0).getTypeNode());
+        Assert.assertNull(formalParameters.get(0).getTypeNode());
+        Assert.assertTrue(formalParameters.get(0).isTypeInferred());
     }
 }
