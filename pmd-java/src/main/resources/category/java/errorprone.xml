@@ -2291,9 +2291,7 @@ Serializable classes should provide a serialVersionUID field.
   count(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
    /FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Image='serialVersionUID']) = 0
 and
-  count(ImplementsList
-   [ClassOrInterfaceType/@Image='Serializable'
-   or ClassOrInterfaceType/@Image='java.io.Serializable']) =1
+  //ClassOrInterfaceType[typeof(@Image, 'java.io.Serializable','Serializable')]
 and
    @Abstract = 'false'
 ]
