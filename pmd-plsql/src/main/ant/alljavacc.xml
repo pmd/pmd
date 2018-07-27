@@ -57,6 +57,7 @@
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTPrimaryPrefix.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTPrimarySuffix.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTProgramUnit.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSelectIntoStatement.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTTriggerTimingPointSection.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTTriggerUnit.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTTypeMethod.java" />
