@@ -40,6 +40,7 @@ This is a minor release.
     *   [#1216](https://github.com/pmd/pmd/issues/1216): \[java] UnnecessaryFullyQualifiedName false positive for the same name method
 *   java-design
     *   [#1217](https://github.com/pmd/pmd/issues/1217): \[java] CyclomaticComplexityRule counts ?-operator twice
+    *   [#1226](https://github.com/pmd/pmd/issues/1226): \[java] NPath complexity false negative due to overflow
 *   plsql
     *   [#980](https://github.com/pmd/pmd/issues/980): \[plsql] ParseException for CREATE TABLE
     *   [#981](https://github.com/pmd/pmd/issues/981): \[plsql] ParseException when parsing VIEW

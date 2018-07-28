@@ -459,4 +459,51 @@ class Bar {
         }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1226 [java] NPath complexity false negative</description>
+        <rule-property name="reportLevel">0</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'NPathComplexityOverflow#complexMethod()' has value 2147483647.</message>
+        </expected-messages>
+        <code><![CDATA[
+        public class NPathComplexityOverflow {
+            public void complexMethod() {
+                boolean b = true;
+                if (b); // 2
+                if (b); // 4
+                if (b); // 8
+                if (b); // 16
+                if (b); // 32
+                if (b); // 64
+                if (b); // 128
+                if (b); // 256
+                if (b); // 512
+                if (b); // 1024
+                if (b); // 2048
+                if (b); // 4096
+                if (b); // 8192
+                if (b); // 16384
+                if (b); // 32768
+                if (b); // 65536
+                if (b); // 131072
+                if (b); // 262144
+                if (b); // 524288
+                if (b); // 1048576
+                if (b); // 2097152
+                if (b); // 4194304
+                if (b); // 8388608
+                if (b); // 16777216
+                if (b); // 33554432
+                if (b); // 67108864
+                if (b); // 134217728
+                if (b); // 268435456
+                if (b); // 536870912
+                if (b); // 1073741824
+                if (b); // 2147483648 // overflow is happening here...
+            }
+        }
+        ]]></code>
+    </test-code>
 </test-data>
