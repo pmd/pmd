@@ -35,7 +35,7 @@ public class AntLogHandler extends Handler {
     public AntLogHandler(Project project) {
         this.project = project;
     }
-    
+
     public Level getAntLogLevel() {
         for (final BuildListener l : project.getBuildListeners()) {
             Field declaredField = null;
@@ -50,10 +50,10 @@ public class AntLogHandler extends Handler {
                     try {
                         declaredField = l.getClass().getDeclaredField("logLevel");
                     } catch (final NoSuchFieldException e) {
-                        project.log("Unsupported build listener: " + l.getClass(), Project.MSG_WARN);
+                        project.log("Unsupported build listener: " + l.getClass(), Project.MSG_DEBUG);
                     }
                 }
-                
+
                 if (declaredField != null) {
                     declaredField.setAccessible(true);
                     return LOG_LEVELS[declaredField.getInt(l)];
@@ -62,7 +62,10 @@ public class AntLogHandler extends Handler {
                 // Just ignore it
             }
         }
-        
+
+        project.log("Could not determine ant log level, no supported build listeners found. "
+                + "Log level is set to FINEST", Project.MSG_WARN);
+
         return Level.FINEST;
     }
 
