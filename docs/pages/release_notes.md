@@ -50,6 +50,8 @@ extended for lambda parameters with Java 11 via
 
 ### Fixed Issues
 
+*   core
+    *   [#1225](https://github.com/pmd/pmd/issues/1225): \[core] Error in sed expression on line 82 of run.sh while detecting installed version of Java
 *   doc
     *   [#1215](https://github.com/pmd/pmd/issues/1215): \[doc] TOC links don't work?
 *   java-codestyle
