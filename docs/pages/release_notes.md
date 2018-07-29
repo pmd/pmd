@@ -22,14 +22,15 @@ This is a minor release.
 
 #### New Rules
 
-*   The new Java rule [`LocalVariableNamingConventions`](pmd_rules_java_codestyle.html#localvariablenamingconventions) (`java-codestlye`)
-    detects local variable names that don't comply to a given convention. It defaults to standrd Java convention of using camelCase,
-    but can be configured. Special cases can be configured for final variables and catched exceptions' names.
+*   The new Java rule [`LocalVariableNamingConventions`](pmd_rules_java_codestyle.html#localvariablenamingconventions)
+    (`java-codestyle`) detects local variable names that don't comply to a given convention. It defaults to standard
+    Java convention of using camelCase, but can be configured. Special cases can be configured for final variables
+    and caught exceptions' names.
 
-*   The new Java rule [`FormalParameterNamingConventions`](pmd_rules_java_codestyle.html#formalparameternamingconventions) (`java-codestlye`)
-    detects formal parameter names that don't comply to a given convention. It defaults to standrd Java convention of using camelCase,
-    but can be configured. Special cases can be configured for final parameters and lambda parameters (considering wether they are
-    explicitly typed or not)
+*   The new Java rule [`FormalParameterNamingConventions`](pmd_rules_java_codestyle.html#formalparameternamingconventions)
+    (`java-codestyle`) detects formal parameter names that don't comply to a given convention. It defaults to
+    standard Java convention of using camelCase, but can be configured. Special cases can be configured for final
+    parameters and lambda parameters (considering whether they are explicitly typed or not).
 
 ### Fixed Issues
 
@@ -49,8 +50,9 @@ This is a minor release.
 
 ### API Changes
 
-*   The `findDescendantsOfType` methods in `net.sourceforge.pmd.lang.ast.AbstractNode` no longer search for exact type matches, but will
-    match subclasses too. That means, it's now possible to look for abstract node types such as `AbstractJavaTypeNode` and not only for it's concrete subtypes.
+*   The `findDescendantsOfType` methods in `net.sourceforge.pmd.lang.ast.AbstractNode` no longer search for
+    exact type matches, but will match subclasses, too. That means, it's now possible to look for abstract node
+    types such as `AbstractJavaTypeNode` and not only for it's concrete subtypes.
 
 ### External Contributions
 
