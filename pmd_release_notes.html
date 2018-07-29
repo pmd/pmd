@@ -1273,15 +1273,16 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <ul>
   <li>
-    <p>The new Java rule <a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="highlighter-rouge">LocalVariableNamingConventions</code></a> (<code class="highlighter-rouge">java-codestlye</code>)
-detects local variable names that don’t comply to a given convention. It defaults to standrd Java convention of using camelCase,
-but can be configured. Special cases can be configured for final variables and catched exceptions’ names.</p>
+    <p>The new Java rule <a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="highlighter-rouge">LocalVariableNamingConventions</code></a>
+(<code class="highlighter-rouge">java-codestyle</code>) detects local variable names that don’t comply to a given convention. It defaults to standard
+Java convention of using camelCase, but can be configured. Special cases can be configured for final variables
+and caught exceptions’ names.</p>
   </li>
   <li>
-    <p>The new Java rule <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="highlighter-rouge">FormalParameterNamingConventions</code></a> (<code class="highlighter-rouge">java-codestlye</code>)
-detects formal parameter names that don’t comply to a given convention. It defaults to standrd Java convention of using camelCase,
-but can be configured. Special cases can be configured for final parameters and lambda parameters (considering wether they are
-explicitly typed or not)</p>
+    <p>The new Java rule <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="highlighter-rouge">FormalParameterNamingConventions</code></a>
+(<code class="highlighter-rouge">java-codestyle</code>) detects formal parameter names that don’t comply to a given convention. It defaults to
+standard Java convention of using camelCase, but can be configured. Special cases can be configured for final
+parameters and lambda parameters (considering whether they are explicitly typed or not).</p>
   </li>
 </ul>
 
@@ -1321,8 +1322,9 @@ explicitly typed or not)</p>
 <h3 id="api-changes">API Changes</h3>
 
 <ul>
-  <li>The <code class="highlighter-rouge">findDescendantsOfType</code> methods in <code class="highlighter-rouge">net.sourceforge.pmd.lang.ast.AbstractNode</code> no longer search for exact type matches, but will
-match subclasses too. That means, it’s now possible to look for abstract node types such as <code class="highlighter-rouge">AbstractJavaTypeNode</code> and not only for it’s concrete subtypes.</li>
+  <li>The <code class="highlighter-rouge">findDescendantsOfType</code> methods in <code class="highlighter-rouge">net.sourceforge.pmd.lang.ast.AbstractNode</code> no longer search for
+exact type matches, but will match subclasses, too. That means, it’s now possible to look for abstract node
+types such as <code class="highlighter-rouge">AbstractJavaTypeNode</code> and not only for it’s concrete subtypes.</li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
@@ -1348,7 +1350,7 @@ match subclasses too. That means, it’s now possible to look for abstract node 
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 27, 2018 <br />
+ Site last generated: Jul 29, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
