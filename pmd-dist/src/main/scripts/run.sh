@@ -75,6 +75,7 @@ check_lib_dir() {
 }
 
 jre_specific_vm_options() {
+  full_ver=$(java -version 2>&1)
   # java_ver is eg "18" for java 1.8, "90" for java 9.0, "100" for java 10.0.x
   java_ver=$(echo $full_ver | sed -n '{
       # replace early access versions, e.g. 11-ea with 11.0.0
