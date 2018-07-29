@@ -1259,7 +1259,9 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <ul>
   <li><a href="#new-and-noteworthy">New and noteworthy</a>
     <ul>
+      <li><a href="#java-11-support">Java 11 Support</a></li>
       <li><a href="#new-rules">New Rules</a></li>
+      <li><a href="#modified-rules">Modified Rules</a></li>
     </ul>
   </li>
   <li><a href="#fixed-issues">Fixed Issues</a></li>
@@ -1268,6 +1270,12 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 </ul>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
+
+<h4 id="java-11-support">Java 11 Support</h4>
+
+<p>PMD is now able to parse the local-variable declaration syntax <code class="highlighter-rouge">var xxx</code>, that has been
+extended for lambda parameters with Java 11 via
+<a href="http://openjdk.java.net/jeps/323">JEP 323: Local-Variable Syntax for Lambda Parameters</a>.</p>
 
 <h4 id="new-rules">New Rules</h4>
 
@@ -1286,9 +1294,25 @@ parameters and lambda parameters (considering whether they are explicitly typed 
   </li>
 </ul>
 
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>The Java rules [<code class="highlighter-rouge">AccessorClassGeneration'](pmd_rules_java_bestpracices.html#accessorclassgeneration) and
+[</code>AccessorMethodGeneration<code class="highlighter-rouge">](pmd_rules_java_bestpracices.html#accessormethodgeneration) (both in category
+</code>java-bestpractices`) have been modified to be only valid up until Java 10. Java 11 adds support for
+<a href="http://openjdk.java.net/jeps/181">JEP 181: Nest-Based Access Control</a> which avoids the generation of
+accessor classes / methods altogether.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>core
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1178">#1178</a>: [core] “Unsupported build listener” in gradle build</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1225">#1225</a>: [core] Error in sed expression on line 82 of run.sh while detecting installed version of Java</li>
+    </ul>
+  </li>
   <li>doc
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1215">#1215</a>: [doc] TOC links don’t work?</li>
@@ -1303,6 +1327,7 @@ parameters and lambda parameters (considering whether they are explicitly typed 
   <li>java-design
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1217">#1217</a>: [java] CyclomaticComplexityRule counts ?-operator twice</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1226">#1226</a>: [java] NPath complexity false negative due to overflow</li>
     </ul>
   </li>
   <li>plsql
