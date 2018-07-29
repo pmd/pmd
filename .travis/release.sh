@@ -79,6 +79,7 @@ mkdir pmd.github.io
     git pull --depth=1 origin master
     log_info "Copying documentation from ../docs/pmd-doc-${RELEASE_VERSION}/ ..."
     rsync -ah --stats ../docs/pmd-doc-${RELEASE_VERSION}/ pmd-${RELEASE_VERSION}/
+    git status
     git add pmd-${RELEASE_VERSION}
     git commit -q -m "Added pmd-${RELEASE_VERSION}"
 
@@ -87,6 +88,7 @@ mkdir pmd.github.io
     git add latest
     git commit -q -m "Copying pmd-${RELEASE_VERSION} to latest"
 
+    log_info "Generating sitemap.xml"
     ../.travis/sitemap_generator.sh > sitemap.xml
     git add sitemap.xml
     git commit -q -m "Generated sitemap.xml"
@@ -103,7 +105,7 @@ mkdir pmd.github.io
 
     log_info "Uploading the new release to pmd.sourceforge.net which serves as an archive..."
 
-    travis_wait rsync -ah --stats pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${RELEASE_VERSION}/
+    travis_wait rsync -ah --stats docs/pmd-doc-${RELEASE_VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${RELEASE_VERSION}/
 
     if [ $? -ne 0 ]; then
         log_error "Uploading documentation to pmd.sourceforge.net failed..."

@@ -28,16 +28,18 @@ TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}"
 }
 
 function upload_baseline() {
+    log_info "Generating and uploading baseline for pmdtester..."
     cd ..
     pmdtester -m single -r ./pmd -p ${TRAVIS_BRANCH} -pc ./pmd/.travis/all-java.xml -l ./pmd/.travis/project-list.xml -f
     cd target/reports
-    zip -q -r ${TRAVIS_BRANCH}-baseline.zip ${TRAVIS_BRANCH}/
-    rsync -avh ${TRAVIS_BRANCH}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/
+    BRANCH_FILENAME="${TRAVIS_BRANCH/\//_}"
+    zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
+    rsync -avh ${BRANCH_FILENAME}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/
     if [ $? -ne 0 ]; then
-        log_error "Error while uploading ${TRAVIS_BRANCH}-baseline.zip to sourceforge!"
+        log_error "Error while uploading ${BRANCH_FILENAME}-baseline.zip to sourceforge!"
         log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd-regression-tester/"
     else
-        log_success "Successfully uploaded ${TRAVIS_BRANCH}-baseline.zip to sourceforge"
+        log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to sourceforge"
     fi
 }
 
