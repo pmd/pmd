@@ -33,6 +33,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   core
+    *   [#1178](https://github.com/pmd/pmd/issues/1178): \[core] "Unsupported build listener" in gradle build
 *   doc
     *   [#1215](https://github.com/pmd/pmd/issues/1215): \[doc] TOC links don't work?
 *   java-codestyle
