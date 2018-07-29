@@ -48,7 +48,12 @@ log_info "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
 MVN_BUILD_FLAGS="-B -V"
 
-if travis_isPullRequest; then
+if travis_isOSX; then
+
+    log_info "The build is running on OSX"
+    ./mvnw verify $MVN_BUILD_FLAGS
+
+elif travis_isPullRequest; then
 
     log_info "This is a pull-request build"
     ./mvnw verify $MVN_BUILD_FLAGS
