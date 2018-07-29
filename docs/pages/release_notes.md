@@ -13,12 +13,20 @@ This is a minor release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
+    *   [Java 11 Support](#java-11-support)
     *   [New Rules](#new-rules)
+    *   [Modified Rules](#modified-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
 * [External Contributions](#external-contributions)
 
 ### New and noteworthy
+
+#### Java 11 Support
+
+PMD is now able to parse the local-variable declaration syntax `var xxx`, that has been
+extended for lambda parameters with Java 11 via
+[JEP 323: Local-Variable Syntax for Lambda Parameters](http://openjdk.java.net/jeps/323).
 
 #### New Rules
 
@@ -30,6 +38,14 @@ This is a minor release.
     detects formal parameter names that don't comply to a given convention. It defaults to standrd Java convention of using camelCase,
     but can be configured. Special cases can be configured for final parameters and lambda parameters (considering wether they are
     explicitly typed or not)
+
+#### Modified Rules
+
+*   The Java rules [`AccessorClassGeneration'](pmd_rules_java_bestpracices.html#accessorclassgeneration) and
+    [`AccessorMethodGeneration`](pmd_rules_java_bestpracices.html#accessormethodgeneration) (both in category
+    `java-bestpractices`) have been modified to be only valid up until Java 10. Java 11 adds support for
+    [JEP 181: Nest-Based Access Control](http://openjdk.java.net/jeps/181) which avoids the generation of
+    accessor classes / methods altogether.
 
 ### Fixed Issues
 
