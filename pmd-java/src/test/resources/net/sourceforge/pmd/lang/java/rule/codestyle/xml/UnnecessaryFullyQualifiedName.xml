@@ -458,4 +458,18 @@ public class JavaLang {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1255 [java] UnnecessaryFullyQualifiedName false positive: static method on shadowed implicitly imported class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import x.y.Thread;
+
+public class ThreadStuff {
+    public Thread stuff() {
+        return new Thread(java.lang.Thread.currentThread());
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
