@@ -52,6 +52,11 @@ if travis_isPullRequest; then
 
     log_info "This is a pull-request build"
     ./mvnw verify $MVN_BUILD_FLAGS
+	(
+	    set +e
+	    log_info "Running danger"
+	    bundle exec danger --verbose
+	)
 
 elif travis_isPush; then
 
