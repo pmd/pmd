@@ -21,7 +21,11 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   java-errorprone
+    *   [#1078](https://github.com/pmd/pmd/issues/1078): \[java] MissingSerialVersionUID rule does not seem to catch inherited classes
+
 ### API Changes
 
 ### External Contributions
 
+* [#1258](https://github.com/pmd/pmd/pull/1258): \[java] Use typeof in MissingSerialVersionUID - [krichter722](https://github.com/krichter722)
