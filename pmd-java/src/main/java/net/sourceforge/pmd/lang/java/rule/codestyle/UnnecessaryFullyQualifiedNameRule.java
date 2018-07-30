@@ -204,9 +204,10 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         String name = node.getImage();
         boolean isJavaLang = name != null && name.startsWith("java.lang.");
 
-        if (isJavaLang && node.getType() != null) {
+        if (isJavaLang && node.getType() != null && node.getType().getPackage() != null) {
             // valid would be ProcessBuilder.Redirect.PIPE but not java.lang.ProcessBuilder.Redirect.PIPE
-            String packageName = node.getType().getPackage().getName();
+            String packageName = node.getType().getPackage() // package might be null, if type is an array type...
+                    .getName();
             return "java.lang".equals(packageName);
         } else if (isJavaLang) {
             // only java.lang.* is implicitly imported, but not e.g. java.lang.reflection.*
