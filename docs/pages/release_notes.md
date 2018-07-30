@@ -13,16 +13,25 @@ This is a minor release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
+    *   [New Rules](#new-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
 * [External Contributions](#external-contributions)
 
 ### New and noteworthy
 
+#### New Rules
+
+*   The new PL/SQL rule [`ForLoopNaming`](pmd_rules_plsql_codestyle.html#forloopnaming) (`plsql-codestyle`)
+    enforces a naming convention for "for loops". Both "cursor for loops" and "index for loops" are covered.
+    The rule can be customized via patterns. By default, short variable names are reported.
+
 ### Fixed Issues
 
 *   java-errorprone
     *   [#1078](https://github.com/pmd/pmd/issues/1078): \[java] MissingSerialVersionUID rule does not seem to catch inherited classes
+*   plsql
+    *   [#681](https://github.com/pmd/pmd/issues/681): \[plsql] Parse error with Cursor For Loop
 
 ### API Changes
 

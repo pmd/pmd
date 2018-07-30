@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>CursorForLoop Simple case - no nesting</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+BEGIN
+FOR c IN (SELECT * FROM companies) LOOP
+  NULL;
+END LOOP;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>CursorForLoop Simple case - no nesting - allowSimpleLoops</description>
+        <rule-property name="allowSimpleLoops">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+FOR c IN (SELECT * FROM companies) LOOP
+  NULL;
+END LOOP;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>CursorForLoop Nested loops - good example, default pattern</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+FOR company IN (SELECT * FROM companies) LOOP
+  FOR contact IN (SELECT * FROM contacts) LOOP
+    FOR party IN (SELECT * FROM parties) LOOP
+      NULL;
+    END LOOP;
+  END LOOP;
+END LOOP;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>CursorForLoop Nested loops - good example, custom pattern</description>
+        <rule-property name="cursorPattern">c_[a-z]+</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+FOR c_cmp IN (SELECT * FROM companies) LOOP
+  FOR c_con IN (SELECT * FROM contacts) LOOP
+    FOR c_pa IN (SELECT * FROM parties) LOOP
+      NULL;
+    END LOOP;
+  END LOOP;
+END LOOP;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>CursorForLoop Nested loops - bad example, default pattern</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,3,4</expected-linenumbers>
+        <code><![CDATA[
+BEGIN
+FOR cmp IN (SELECT * FROM companies) LOOP
+  FOR con IN (SELECT * FROM contacts) LOOP
+    FOR pa IN (SELECT * FROM parties) LOOP
+      NULL;
+    END LOOP;
+  END LOOP;
+END LOOP;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>CursorForLoop Nested loops - bad example, custom pattern</description>
+        <rule-property name="cursorPattern">c_[a-z]+</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,3,4</expected-linenumbers>
+        <code><![CDATA[
+BEGIN
+FOR c1 IN (SELECT * FROM companies) LOOP
+  FOR c2 IN (SELECT * FROM contacts) LOOP
+    FOR c3 IN (SELECT * FROM parties) LOOP
+      NULL;
+    END LOOP;
+  END LOOP;
+END LOOP;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>ForLoop Simple case - no nesting</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+BEGIN
+FOR i IN 1..v_companies.COUNT LOOP
+    NULL;
+END LOOP;
+END;
+/
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ForLoop Simple case - no nesting - allowSimpleLoops</description>
+        <rule-property name="allowSimpleLoops">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+FOR i IN 1..v_companies.COUNT LOOP
+    NULL;
+END LOOP;
+END;
+/
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ForLoop Nested loops - good example, default pattern</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+FOR company IN 1..v_companies.COUNT LOOP
+    FOR contact IN 1..v_contacts.COUNT LOOP
+        FOR party IN 1..v_parties.COUNT LOOP
+            NULL;
+        END LOOP;
+    END LOOP;
+END LOOP;
+END;
+/
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ForLoop Nested loops - good example, custom pattern</description>
+        <rule-property name="indexPattern">i_[a-z]+</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+FOR i_cmp IN 1..v_companies.COUNT LOOP
+    FOR i_con IN 1..v_contacts.COUNT LOOP
+        FOR i_pa IN 1..v_parties.COUNT LOOP
+            NULL;
+        END LOOP;
+    END LOOP;
+END LOOP;
+END;
+/
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ForLoop Nested Loops - bad example, default pattern</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,3,4</expected-linenumbers>
+        <code><![CDATA[
+BEGIN
+FOR i IN 1..v_companies.COUNT LOOP
+    FOR j IN 1..v_contacts.COUNT LOOP
+        FOR k IN 1..v_parties.COUNT LOOP
+            NULL;
+        END LOOP;
+    END LOOP;
+END LOOP;
+END;
+/
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ForLoop Nested Loops - bad example, custom pattern</description>
+        <rule-property name="indexPattern">i_[a-z]+</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,3,4</expected-linenumbers>
+        <code><![CDATA[
+BEGIN
+FOR i IN 1..v_companies.COUNT LOOP
+    FOR j IN 1..v_contacts.COUNT LOOP
+        FOR k IN 1..v_parties.COUNT LOOP
+            NULL;
+        END LOOP;
+    END LOOP;
+END LOOP;
+END;
+/
+        ]]></code>
+    </test-code>
+</test-data>
