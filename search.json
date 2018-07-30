@@ -1589,6 +1589,15 @@
 "url": "pmd_rules_plsql_codestyle.html#misplacedpragma",
 "summary": "Rules which enforce a specific coding style."
 }
+,
+
+{
+"title": "ForLoopNaming (PLSQL, Code Style)",
+"tags": "",
+"keywords": "ForLoopNaming",
+"url": "pmd_rules_plsql_codestyle.html#forloopnaming",
+"summary": "Rules which enforce a specific coding style."
+}
 
 
 

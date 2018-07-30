@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, MisplacedPragma">
+<meta name="keywords" content=" Code Style, MisplacedPragma, ForLoopNaming">
 <title>Code Style | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -1250,7 +1250,93 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="misplacedpragma">MisplacedPragma</h2>
+  <h2 id="forloopnaming">ForLoopNaming</h2>
+
+<p><strong>Since:</strong> PMD 6.7.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>In case you have loops please name the loop variables more meaningful.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">CursorForLoopStatement</span><span class="p">[</span><span class="w">
+    </span><span class="nv">$allowSimpleLoops</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'false'</span><span class="w"> </span><span class="ow">or</span><span class="w">
+    </span><span class="p">(</span><span class="nt">Statement</span><span class="o">//</span><span class="nt">CursorForLoopStatement</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">CursorForLoopStatement</span><span class="p">)</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span><span class="o">/</span><span class="nt">ForIndex</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nf">matches</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nv">$cursorPattern</span><span class="p">))]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">ForStatement</span><span class="p">[</span><span class="w">
+    </span><span class="nv">$allowSimpleLoops</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'false'</span><span class="w"> </span><span class="ow">or</span><span class="w">
+    </span><span class="p">(</span><span class="nt">Statement</span><span class="o">//</span><span class="nt">ForStatement</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">ForStatement</span><span class="p">)</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span><span class="o">/</span><span class="nt">ForIndex</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nf">matches</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nv">$indexPattern</span><span class="p">))]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- good example</span>
+<span class="k">BEGIN</span>
+<span class="k">FOR</span> <span class="n">company</span> <span class="k">IN</span> <span class="p">(</span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">companies</span><span class="p">)</span> <span class="n">LOOP</span>
+  <span class="k">FOR</span> <span class="n">contact</span> <span class="k">IN</span> <span class="p">(</span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">contacts</span><span class="p">)</span> <span class="n">LOOP</span>
+    <span class="k">FOR</span> <span class="n">party</span> <span class="k">IN</span> <span class="p">(</span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">parties</span><span class="p">)</span> <span class="n">LOOP</span>
+      <span class="k">NULL</span><span class="p">;</span>
+    <span class="k">END</span> <span class="n">LOOP</span><span class="p">;</span>
+  <span class="k">END</span> <span class="n">LOOP</span><span class="p">;</span>
+<span class="k">END</span> <span class="n">LOOP</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+
+<span class="c1">-- bad example</span>
+<span class="k">BEGIN</span>
+<span class="k">FOR</span> <span class="n">c1</span> <span class="k">IN</span> <span class="p">(</span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">companies</span><span class="p">)</span> <span class="n">LOOP</span>
+  <span class="k">FOR</span> <span class="n">c2</span> <span class="k">IN</span> <span class="p">(</span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">contacts</span><span class="p">)</span> <span class="n">LOOP</span>
+    <span class="k">FOR</span> <span class="n">c3</span> <span class="k">IN</span> <span class="p">(</span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">parties</span><span class="p">)</span> <span class="n">LOOP</span>
+      <span class="k">NULL</span><span class="p">;</span>
+    <span class="k">END</span> <span class="n">LOOP</span><span class="p">;</span>
+  <span class="k">END</span> <span class="n">LOOP</span><span class="p">;</span>
+<span class="k">END</span> <span class="n">LOOP</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>allowSimpleLoops</td>
+      <td>false</td>
+      <td>Ignore simple loops, that are not nested</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>cursorPattern</td>
+      <td>[a-zA-Z_0-9]{5,}</td>
+      <td>The pattern used for the curosr loop variable</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>indexPattern</td>
+      <td>[a-zA-Z_0-9]{5,}</td>
+      <td>The pattern used for the index loop variable</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/plsql/codestyle.xml/ForLoopNaming"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="misplacedpragma">MisplacedPragma</h2>
 
 <p><strong>Since:</strong> PMD 5.5.2</p>
 
