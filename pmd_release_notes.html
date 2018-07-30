@@ -1257,7 +1257,11 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h3 id="table-of-contents">Table Of Contents</h3>
 
 <ul>
-  <li><a href="#new-and-noteworthy">New and noteworthy</a></li>
+  <li><a href="#new-and-noteworthy">New and noteworthy</a>
+    <ul>
+      <li><a href="#new-rules">New Rules</a></li>
+    </ul>
+  </li>
   <li><a href="#fixed-issues">Fixed Issues</a></li>
   <li><a href="#api-changes">API Changes</a></li>
   <li><a href="#external-contributions">External Contributions</a></li>
@@ -1265,12 +1269,25 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="new-rules">New Rules</h4>
+
+<ul>
+  <li>The new PL/SQL rule <a href="pmd_rules_plsql_codestyle.html#forloopnaming"><code class="highlighter-rouge">ForLoopNaming</code></a> (<code class="highlighter-rouge">plsql-codestyle</code>)
+enforces a naming convention for “for loops”. Both “cursor for loops” and “index for loops” are covered.
+The rule can be customized via patterns. By default, short variable names are reported.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
   <li>java-errorprone
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1078">#1078</a>: [java] MissingSerialVersionUID rule does not seem to catch inherited classes</li>
+    </ul>
+  </li>
+  <li>plsql
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/681">#681</a>: [plsql] Parse error with Cursor For Loop</li>
     </ul>
   </li>
 </ul>
