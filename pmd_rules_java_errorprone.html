@@ -3668,16 +3668,10 @@ may indicate problematic behaviour. Empty cases are ignored as these indicate an
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="w">
- </span><span class="p">[</span><span class="w">
-  </span><span class="nf">count</span><span class="p">(</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="w">
-   </span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'serialVersionUID'</span><span class="p">])</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="w">
-</span><span class="ow">and</span><span class="w">
-  </span><span class="nf">count</span><span class="p">(</span><span class="nt">ImplementsList</span><span class="w">
-   </span><span class="p">[</span><span class="nt">ClassOrInterfaceType</span><span class="err">/</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'Serializable'</span><span class="w">
-   </span><span class="ow">or</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="err">/</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'java.io.Serializable'</span><span class="p">])</span><span class="w"> </span><span class="err">=</span><span class="m">1</span><span class="w">
-</span><span class="ow">and</span><span class="w">
-   </span><span class="na">@Abstract</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'false'</span><span class="w">
-</span><span class="p">]</span><span class="w">
+    </span><span class="p">[</span><span class="na">@Abstract</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'false'</span><span class="p">]</span><span class="w">
+    </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="w">
+        </span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'serialVersionUID'</span><span class="p">])</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w">
+    </span><span class="p">[(</span><span class="nt">ImplementsList</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nt">ExtendsList</span><span class="p">)</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.io.Serializable'</span><span class="p">)]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
