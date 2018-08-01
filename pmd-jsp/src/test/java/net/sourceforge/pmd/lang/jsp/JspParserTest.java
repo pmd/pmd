@@ -4,12 +4,16 @@
 
 package net.sourceforge.pmd.lang.jsp;
 
+import java.io.File;
 import java.io.StringReader;
+import java.nio.file.Paths;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -38,6 +42,28 @@ public class JspParserTest {
         Node node = parse(
                 "<label><input type='checkbox' checked name=cheese disabled=''> Cheese</label>");
         Assert.assertNotNull(node);
+    }
+
+    @Test
+    public void testParseJsp() {
+        testInternalJspFile(Paths.get("sample.jsp").toFile());
+    }
+
+    @Test
+    public void testParseTag() {
+        testInternalJspFile(Paths.get("sample.tag").toFile());
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testParseWrong() {
+        testInternalJspFile(Paths.get("sample.xxx").toFile());
+    }
+
+    private void testInternalJspFile(File jspFile) {
+        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
+        LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(jspFile);
+        Assert.assertEquals("LanguageVersion must be JSP!",
+                LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion(), languageVersion);
     }
 
     private Node parse(String code) {
