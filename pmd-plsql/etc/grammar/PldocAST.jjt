@@ -27,6 +27,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Added support for OrderBy and RowLimiting clauses for SELECT statements
+ * Removed FROM from the RelationalExpression
+ *
+ * Andreas Dangel 08/2018
+ *====================================================================
  * Added more complete support for CREATE TABLE
  * Added support for SELECT INTO statement
  * Avoiding deep AST for *Expression nodes
@@ -1113,6 +1118,8 @@ ASTSelectIntoStatement SelectIntoStatement() :
     ( IntoClause() | BulkCollectIntoClause() )
     <FROM>
     RestOfStatement()
+    [ OrderByClause() ]
+    [ RowLimitingClause() ]
 
     { return jjtThis; }
 }
@@ -1131,7 +1138,41 @@ void Subquery() #void :
     QueryBlock() (LOOKAHEAD(2) ( <UNION> [ <ALL> ] | <INTERSECT> | <MINUS> ) Subquery() )*
     | "(" Subquery() ")"
   )
-  // [ OrderByClause() ] [ RowLimitingClause() ]
+  [ LOOKAHEAD(2) OrderByClause() ]
+  [ LOOKAHEAD(2) RowLimitingClause() ]
+}
+
+/**
+ * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/order_by_clause.html
+ */
+ASTOrderByClause OrderByClause() :
+{}
+{
+    <ORDER> [ <SIBLINGS> ] <BY>
+    OrderByEntry() ( "," OrderByEntry() )*
+    { return jjtThis; }
+}
+
+void OrderByEntry() #void :
+{}
+{
+    ( LOOKAHEAD(2) ColumnAlias() | LOOKAHEAD(2) SqlExpression() )
+    [ <ASC> | <DESC> ]
+    [ LOOKAHEAD(2) <NULLS> <FIRST> | LOOKAHEAD(2) <NULLS> <LAST> ]
+}
+
+/**
+ * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/row_limiting_clause.html
+ */
+ASTRowLimitingClause RowLimitingClause() :
+{}
+{
+  (
+    <OFFSET> NumericLiteral() ( <ROW> | <ROWS> )
+  |
+    <FETCH> ( <FIRST> | <NEXT> ) [ NumericLiteral() [ <PERCENT> ] ] ( <ROW> | <ROWS> ) ( <ONLY> | <WITH> <TIES> )
+  )
+    { return jjtThis; }
 }
 
 ASTQueryBlock QueryBlock() :
@@ -1168,13 +1209,18 @@ ASTCondition Condition() :
     { return jjtThis; }
 }
 
+// Separate production to resolve left recursion Condition -> CompoundCondition -> Condition
 void Condition2() #void :
 {}
 {
-      LOOKAHEAD(4) ComparisonCondition()
+ (
+    LOOKAHEAD(4) ComparisonCondition()
+ |
     // FloatingPointCondition
-    | LOOKAHEAD(4) (SqlExpression() <IS> [<NOT>] (<NAN>|<INFINITE>))
-    | LOOKAHEAD(4) InCondition()
+    LOOKAHEAD(4) (SqlExpression() <IS> [<NOT>] (<NAN>|<INFINITE>))
+ |
+    LOOKAHEAD(4) InCondition()
+ )
 }
 
 
@@ -1278,11 +1324,17 @@ void FromClause() #void :
      "(" JoinClause() ")"
 }
 
+/**
+ * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/select_list.html
+ */
 ASTSelectList SelectList() :
 {}
 {
+  (
       "*"
-      | SelectListEntry() ("," SelectListEntry() )*
+  |
+      SelectListEntry() ("," SelectListEntry() )*
+  )
 
     { return jjtThis; }
 }
@@ -1290,8 +1342,11 @@ ASTSelectList SelectList() :
 void SelectListEntry() #void : 
 {}
 {
-      LOOKAHEAD(3) TableAlias() "." "*"
-    | (LOOKAHEAD(3, { !getToken(2).image.equals("(") }) SqlExpression() | LOOKAHEAD(3) Expression()) [ [<AS>] ColumnAlias() ]
+  (
+    LOOKAHEAD(3) TableAlias() "." "*"
+  |
+    LOOKAHEAD(3) Expression() [ [<AS>] ColumnAlias() ]
+  )
 }
 
 ASTColumnAlias ColumnAlias() :
@@ -2176,14 +2231,11 @@ ASTEqualityExpression EqualityExpression() #EqualityExpression(>1) :
  }
 }
 
-/**
- * 2006-05-23 - Matthias Hendler - added FROM
- */
 ASTRelationalExpression RelationalExpression() #RelationalExpression(>1) :
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
  (
-  //AdditiveExpression() ( ( "<" | ">" | "<=" | ">=" | [<NOT>] (<IN> | <BETWEEN> | <LIKE> | <FROM>) ) AdditiveExpression() )*
+  //AdditiveExpression() ( ( "<" | ">" | "<=" | ">=" | [<NOT>] (<IN> | <BETWEEN> | <LIKE>) ) AdditiveExpression() )*
   (simpleNode = AdditiveExpression() ) { sb.append(simpleNode.getImage()); }
   ( 
    ( 
@@ -2202,7 +2254,6 @@ ASTRelationalExpression RelationalExpression() #RelationalExpression(>1) :
      ((<IN>) { sb.append(" IN "); } 
      | (<BETWEEN> ) { sb.append(" BETWEEN "); }
      | (<LIKE> ) { sb.append(" LIKE "); }
-     | (<FROM>) { sb.append(" FROM "); }
      | (
 	 (
 	   (<MEMBER>) { sb.append(" MEMBER "); }
@@ -3740,6 +3791,7 @@ TOKEN [IGNORE_CASE]:
 <FALSE: "FALSE"> |
 <FETCH: "FETCH"> |
 <FINAL: "FINAL"> |
+<FIRST: "FIRST"> |
 <FLOAT: "FLOAT"> |
 <FOR: "FOR"> |
 <FORALL: "FORALL"> |
@@ -3782,6 +3834,7 @@ TOKEN [IGNORE_CASE]:
 <JOIN: "JOIN"> |
 <KEY: "KEY"> |
 //<LANGUAGE: "LANGUAGE"> |
+<LAST: "LAST"> |
 <LEVEL: "LEVEL"> |
 <LIKE: "LIKE"> |
 <LIMIT: "LIMIT"> | 
@@ -3807,6 +3860,7 @@ TOKEN [IGNORE_CASE]:
 <NATURALN: "NATURALN"> |
 <NEW: "NEW"> |
 <NEW_DOT: "NEW."> |
+<NEXT: "NEXT"> |
 <NEXTVAL: "NEXTVAL"> |
 <NO: "NO"> |
 <NOCOMPRESS: "NOCOMPRESS"> | //SRT 2011-04-17
@@ -3817,6 +3871,7 @@ TOKEN [IGNORE_CASE]:
 <NOWAIT: "NOWAIT"> |
 <NULL: "NULL"> |
 <NULLIF: "NULLIF"> |
+<NULLS: "NULLS"> |
 <NUMBER: "NUMBER"> |
 <BFILE_BASE: "BFILE_BASE"> |
 <BLOB_BASE: "BLOB_BASE"> |
@@ -3827,6 +3882,7 @@ TOKEN [IGNORE_CASE]:
 <OBJECT: "OBJECT"> |
 <OCIROWID: "OCIROWID"> |
 <OF: "OF"> |
+<OFFSET: "OFFSET"> |
 <OID: "OID"> |
 <ON: "ON"> |
 <ONLY: "ONLY"> |
@@ -3845,6 +3901,7 @@ TOKEN [IGNORE_CASE]:
 <PARALLEL_ENABLE: "PARALLEL_ENABLE"> |
 <PARTITION: "PARTITION"> |
 <PCTFREE: "PCTFREE"> |
+<PERCENT: "PERCENT"> |
 <PIPE: "PIPE"> |
 <PIPELINED: "PIPELINED"> |
 <PLS_INTEGER: "PLS_INTEGER"> |
@@ -3889,6 +3946,7 @@ TOKEN [IGNORE_CASE]:
 <SELF: "SELF"> |
 <SEPARATE: "SEPARATE"> |
 <SET: "SET"> |
+<SIBLINGS: "SIBLINGS"> |
 <SIZE: "SIZE"> | //SRT 2011-04-17
 <SHARDED: "SHARDED"> |
 <SHARE: "SHARE"> |
@@ -3912,6 +3970,7 @@ TOKEN [IGNORE_CASE]:
 <TABLE: "TABLE"> |
 <TEMPORARY: "TEMPORARY"> |
 <THEN: "THEN"> |
+<TIES: "TIES"> |
 <TIME: "TIME"> |
 <TIMESTAMP: "TIMESTAMP"> |
 <TIMEZONE_REGION: "TIMEZONE_REGION"> |
@@ -4523,7 +4582,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <FINAL>
 //| <FINE>
 //| <FINISH>
-//| <FIRST>
+| <FIRST>
 //| <FIRST_ROWS>
 //| <FLAGGER>
 //| <FLASHBACK>
@@ -4644,7 +4703,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <KEYSIZE>
 //| <KILL>
 | <LANGUAGE>
-//| <LAST>
+| <LAST>
 //| <LATERAL>
 //| <LAYER>
 //| <LDAP_REG_SYNC_INTERVAL>
@@ -4761,7 +4820,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <NETWORK>
 //| <NEVER>
 | <NEW>
-//| <NEXT>
+| <NEXT>
 //| <NL_AJ>
 //| <NL_SJ>
 //| <NLS_CALENDAR>
@@ -4864,7 +4923,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <NOTHING>
 //| <NOTIFICATION>
 //| <NOVALIDATE>
-//| <NULLS>
+| <NULLS>
 //| <NUM_INDEX_KEYS>
 | <NUMERIC>
 | <NVARCHAR2>
@@ -4873,6 +4932,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <OBJNO_REUSE>
 //| <OFF>
 //| <OFFLINE>
+| <OFFSET>
 | <OID>
 //| <OIDINDEX>
 | <OLD>
@@ -4935,7 +4995,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <PCTTHRESHOLD>
 //| <PCTUSED>
 //| <PCTVERSION>
-//| <PERCENT>
+| <PERCENT>
 //| <PERFORMANCE>
 //| <PERMANENT>
 //| <PFILE>
@@ -5111,7 +5171,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <SHARED_POOL>
 //| <SHRINK>
 | <SHUTDOWN>
-//| <SIBLINGS>
+| <SIBLINGS>
 //| <SID>
 //| <SIMPLE>
 //| <SINGLE>
@@ -5197,6 +5257,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <THE>
 //| <THREAD>
 //| <THROUGH>
+| <TIES>
 | <TIME>
 //| <TIME_ZONE>
 //| <TIMEOUT>
