@@ -51,6 +51,7 @@
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTMethodDeclaration.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTMethodDeclarator.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTName.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTOuterJoinType.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTOutOfLineConstraint.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTPackageBody.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTPackageSpecification.java" />
@@ -58,6 +59,7 @@
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTPrimarySuffix.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTProgramUnit.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSelectIntoStatement.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSubqueryOperation.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTTriggerTimingPointSection.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTTriggerUnit.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTTypeMethod.java" />

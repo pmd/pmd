@@ -1135,11 +1135,24 @@ void Subquery() #void :
 {}
 {
   (
-    QueryBlock() (LOOKAHEAD(2) ( <UNION> [ <ALL> ] | <INTERSECT> | <MINUS> ) Subquery() )*
+    QueryBlock() (LOOKAHEAD(2) ( SubqueryOperation() ) Subquery() )*
     | "(" Subquery() ")"
   )
   [ LOOKAHEAD(2) OrderByClause() ]
   [ LOOKAHEAD(2) RowLimitingClause() ]
+}
+
+ASTSubqueryOperation SubqueryOperation() :
+{}
+{
+  (
+    <UNION> { jjtThis.setImage(token.image); jjtThis.setUnion(true); } [ <ALL> { jjtThis.setImage(jjtThis.getImage() + " " + token.image); jjtThis.setAll(true); } ]
+  |
+    <INTERSECT> { jjtThis.setImage(token.image); jjtThis.setIntersect(true); }
+  |
+    <MINUS> { jjtThis.setImage(token.image); jjtThis.setMinus(true); }
+  )
+    { return jjtThis; }
 }
 
 /**
@@ -1314,14 +1327,17 @@ ASTColumn Column() :
     { return jjtThis; }
 }
 
-void FromClause() #void :
+ASTFromClause FromClause() :
 {}
 {
+ (
      LOOKAHEAD(JoinClause()) JoinClause()
  |
      LOOKAHEAD(2) TableReference()
  |
      "(" JoinClause() ")"
+ )
+    { return jjtThis; }
 }
 
 /**
@@ -1370,7 +1386,15 @@ ASTTableAlias TableAlias() :
 ASTIntoClause IntoClause() :
 {}
 {
-    <INTO> ID() ("," ID())*
+    <INTO>
+    VariableName() ("," VariableName())*
+    { return jjtThis; }
+}
+
+ASTVariableName VariableName() :
+{}
+{
+    <IDENTIFIER> { jjtThis.setImage(token.image); }
     { return jjtThis; }
 }
 
@@ -1388,16 +1412,16 @@ void BulkCollectIntoClauseEntry() #void :
 }
 
 ASTCollectionName CollectionName() :
-{ Token t; }
+{}
 {
-    t = <IDENTIFIER> { jjtThis.setImage(t.image); }
+    <IDENTIFIER> { jjtThis.setImage(token.image); }
     { return jjtThis; }
 }
 
 ASTHostArrayName HostArrayName() :
-{ Token t; }
+{}
 {
-    t = <IDENTIFIER> { jjtThis.setImage(t.image); }
+    <IDENTIFIER> { jjtThis.setImage(token.image); }
     { return jjtThis; }
 }
 
@@ -1417,16 +1441,16 @@ ASTTableReference TableReference() :
 }
 
 ASTSchemaName SchemaName() :
-{ Token t; }
+{}
 {
-    t = <IDENTIFIER> { jjtThis.setImage(t.image); }
+    <IDENTIFIER> { jjtThis.setImage(token.image); }
     { return jjtThis; }
 }
 
 ASTTableName TableName() :
-{ Token t; }
+{}
 {
-    t = <IDENTIFIER> { jjtThis.setImage(t.image); }
+    <IDENTIFIER> { jjtThis.setImage(token.image); }
     { return jjtThis; }
 }
 
@@ -1467,7 +1491,14 @@ ASTOuterJoinClause OuterJoinClause() :
 ASTOuterJoinType OuterJoinType() :
 {}
 {
-    ( <FULL> | <LEFT> | <RIGHT> ) [ <OUTER> ]
+ (
+    <FULL> {jjtThis.setType(ASTOuterJoinType.Type.FULL); }
+ |
+    <LEFT> {jjtThis.setType(ASTOuterJoinType.Type.LEFT); }
+ |
+    <RIGHT> {jjtThis.setType(ASTOuterJoinType.Type.RIGHT); }
+ )
+    [ <OUTER> ]
     { return jjtThis; }
 }
 
