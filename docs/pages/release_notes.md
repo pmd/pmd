@@ -28,6 +28,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   core
+    *   [#1191](https://github.com/pmd/pmd/issues/1191): \[core] Test Framework: Sort violations by line/column
 *   java-errorprone
     *   [#1078](https://github.com/pmd/pmd/issues/1078): \[java] MissingSerialVersionUID rule does not seem to catch inherited classes
 *   plsql
