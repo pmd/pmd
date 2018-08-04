@@ -554,17 +554,6 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#907 UnusedPrivateField false-positive with @FXML - 2</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-        public class Foo {
-            @Deprecated
-            private String bar;
-        }
-        ]]></code>
-    </test-code>
-
-    <test-code>
         <description>#907 UnusedPrivateField false-positive with @FXML - 3</description>
         <rule-property name="ignoredAnnotations">javafx.fxml.FXML</rule-property>
         <expected-problems>1</expected-problems>
