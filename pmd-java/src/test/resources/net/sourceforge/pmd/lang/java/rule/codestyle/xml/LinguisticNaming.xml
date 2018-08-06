@@ -9,6 +9,9 @@
         <description>Method Prefix is</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The method 'isValid' indicates linguistically it returns a boolean, but it returns 'int'</message>
+        </expected-messages>
         <code><![CDATA[
 public class MethodTypeAndNameIsInconsistentWithPrefixIs {
     int isotherm() {
@@ -30,6 +33,9 @@ public class MethodTypeAndNameIsInconsistentWithPrefixIs {
         <description>Method Prefix Has</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The method 'hasChild' indicates linguistically it returns a boolean, but it returns 'int'</message>
+        </expected-messages>
         <code><![CDATA[
 public class MethodTypeAndNameIsInconsistentWithPrefixHas {
     int haskell() {
@@ -51,6 +57,9 @@ public class MethodTypeAndNameIsInconsistentWithPrefixHas {
         <description>Method Prefix Have</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The method 'haveChild' indicates linguistically it returns a boolean, but it returns 'int'</message>
+        </expected-messages>
         <code><![CDATA[
 public class MethodTypeAndNameIsInconsistentWithPrefixHave {
     int havelock() {
@@ -72,6 +81,9 @@ public class MethodTypeAndNameIsInconsistentWithPrefixHave {
         <description>Method Prefix can</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The method 'canFly' indicates linguistically it returns a boolean, but it returns 'int'</message>
+        </expected-messages>
         <code><![CDATA[
 public class MethodTypeAndNameIsInconsistentWithPrefixCan {
     int cannibal() {
@@ -93,6 +105,9 @@ public class MethodTypeAndNameIsInconsistentWithPrefixCan {
         <description>Method Prefix will</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The method 'willFly' indicates linguistically it returns a boolean, but it returns 'int'</message>
+        </expected-messages>
         <code><![CDATA[
 public class MethodTypeAndNameIsInconsistentWithPrefixWill {
     int william() {
@@ -114,14 +129,17 @@ public class MethodTypeAndNameIsInconsistentWithPrefixWill {
         <description>Method Prefix should</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The method 'shouldFly' indicates linguistically it returns a boolean, but it returns 'long'</message>
+        </expected-messages>
         <code><![CDATA[
 public class MethodTypeAndNameIsInconsistentWithPrefixShould {
     int shoulder() {
         return 1;
     }
 
-    int shouldFly() { // violation
-        return 1;
+    long shouldFly() { // violation
+        return 1L;
     }
 
     boolean shouldWalk() {
@@ -135,6 +153,9 @@ public class MethodTypeAndNameIsInconsistentWithPrefixShould {
         <description>Method Setters</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The setter 'setName' should not return any type except void linguistically</message>
+        </expected-messages>
         <code><![CDATA[
 public class MethodTypeAndNameIsInconsistentWithSetters {
     int settlement() {
@@ -156,6 +177,9 @@ public class MethodTypeAndNameIsInconsistentWithSetters {
         <description>Method Getters</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The getter 'getName' should not return void linguistically</message>
+        </expected-messages>
         <code><![CDATA[
 public class MethodTypeAndNameIsInconsistentWithGetters {
     void getaways() {
@@ -174,9 +198,12 @@ public class MethodTypeAndNameIsInconsistentWithGetters {
     </test-code>
 
     <test-code>
-        <description>Method Prefix to</description>
+        <description>Method Prefix to: Transform Method</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The transform method 'toDataType' should not return void linguistically</message>
+        </expected-messages>
         <code><![CDATA[
 public class MethodTypeAndNameIsInconsistentWithPrefixTo {
     void tokenize() {
@@ -195,9 +222,12 @@ public class MethodTypeAndNameIsInconsistentWithPrefixTo {
     </test-code>
 
     <test-code>
-        <description>Method Contains To</description>
+        <description>Method Contains To: Transformation methods</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The transform method 'grapeToWine' should not return void linguistically</message>
+        </expected-messages>
         <code><![CDATA[
 public class MethodTypeAndNameIsInconsistentWithPrefixTo {
     void grapeToWine() { // violation
@@ -207,6 +237,9 @@ public class MethodTypeAndNameIsInconsistentWithPrefixTo {
     int hopsToBeer() {
         return 1;
     }
+
+    void doneTooMuch() { // shouldn't report a violation, since "To" is not followed by uppercase letter
+    }
 }
         ]]></code>
     </test-code>
@@ -215,6 +248,10 @@ public class MethodTypeAndNameIsInconsistentWithPrefixTo {
         <description>Field/Variable Prefix is</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The field 'isValid' indicates linguistically it is a boolean, but it is 'int'</message>
+            <message>Linguistics Antipattern - The variable 'isValidLocal' indicates linguistically it is a boolean, but it is 'int'</message>
+        </expected-messages>
         <code><![CDATA[
 public class AttributeTypeAndNameIsInconsistentWithPrefixIs {
     int isotherm;
@@ -234,6 +271,10 @@ public class AttributeTypeAndNameIsInconsistentWithPrefixIs {
         <description>Field/Variable Prefix has</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The field 'hasMoney' indicates linguistically it is a boolean, but it is 'int'</message>
+            <message>Linguistics Antipattern - The variable 'hasMoneyLocal' indicates linguistically it is a boolean, but it is 'int'</message>
+        </expected-messages>
         <code><![CDATA[
 public class AttributeTypeAndNameIsInconsistentWithPrefixHas {
     int haskell;
@@ -253,6 +294,10 @@ public class AttributeTypeAndNameIsInconsistentWithPrefixHas {
         <description>Field/Variable Prefix can</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The field 'canFly' indicates linguistically it is a boolean, but it is 'int'</message>
+            <message>Linguistics Antipattern - The variable 'canFlyLocal' indicates linguistically it is a boolean, but it is 'int'</message>
+        </expected-messages>
         <code><![CDATA[
 public class AttributeTypeAndNameIsInconsistentWithPrefixCan {
     int cannibal;
@@ -272,6 +317,10 @@ public class AttributeTypeAndNameIsInconsistentWithPrefixCan {
         <description>Field/Variable Prefix will</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The field 'willMove' indicates linguistically it is a boolean, but it is 'int'</message>
+            <message>Linguistics Antipattern - The variable 'willMoveLocal' indicates linguistically it is a boolean, but it is 'int'</message>
+        </expected-messages>
         <code><![CDATA[
 public class AttributeTypeAndNameIsInconsistentWithPrefixWill {
     int william;
@@ -291,6 +340,10 @@ public class AttributeTypeAndNameIsInconsistentWithPrefixWill {
         <description>Field/Variable Prefix have</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The field 'haveLegs' indicates linguistically it is a boolean, but it is 'int'</message>
+            <message>Linguistics Antipattern - The variable 'haveLegsLocal' indicates linguistically it is a boolean, but it is 'int'</message>
+        </expected-messages>
         <code><![CDATA[
 public class AttributeTypeAndNameIsInconsistentWithPrefixHave {
     int havexxx;
@@ -310,6 +363,10 @@ public class AttributeTypeAndNameIsInconsistentWithPrefixHave {
         <description>Field/Variable Prefix should</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The field 'shouldClimb' indicates linguistically it is a boolean, but it is 'int'</message>
+            <message>Linguistics Antipattern - The variable 'shouldClimbLocal' indicates linguistically it is a boolean, but it is 'int'</message>
+        </expected-messages>
         <code><![CDATA[
 public class AttributeTypeAndNameIsInconsistentWithPrefixShould {
     int shoulder;
@@ -320,6 +377,20 @@ public class AttributeTypeAndNameIsInconsistentWithPrefixShould {
         int shoulderLocal;
         int shouldClimbLocal; // violation
         boolean shouldEatLocal;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple fields/local variables</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>2,2,4,4</expected-linenumbers>
+        <code><![CDATA[
+public class MultipleLocalVariables {
+    int hasMoney, willMove;
+    void myMethod() {
+        int canFly, shouldClimb;
     }
 }
         ]]></code>

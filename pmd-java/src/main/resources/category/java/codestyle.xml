@@ -947,8 +947,10 @@ if (foo) {  // preferred approach
         <description>
             This rule finds Linguistic Naming Antipatterns. It checks for fields, that are named, as if they should
             be boolean but have a different type. It also checks for methods, that according to their name, should
-            return a boolean, but don't. Further, it checks, that getters and transform methods return something,
-            but setters won't.
+            return a boolean, but don't. Further, it checks, that getters return something and setters won't.
+            Finally, it checks that methods, that contain "To" in their name - so called transform methods -
+            return something, since according to their name, they should convert or transform one object into
+            another.
 
             For more information, see [Linguistic Antipatterns - What They Are and How
 Developers Perceive Them](https://doi.org/10.1007/s10664-014-9350-8).
@@ -957,12 +959,12 @@ Developers Perceive Them](https://doi.org/10.1007/s10664-014-9350-8).
         <example>
 <![CDATA[
 public class LinguisticNaming {
-    int isValid; // the field name indicates a boolean, but it is an int.
+    int isValid;    // the field name indicates a boolean, but it is an int.
     boolean isTrue; // correct type of the field
-    
+
     void myMethod() {
-        int hasMoneyLocal; // the local variable name indicates a boolean, but it is an int.
-        boolean hasSalaryLocal; correct naming and type
+        int hasMoneyLocal;      // the local variable name indicates a boolean, but it is an int.
+        boolean hasSalaryLocal; // correct naming and type
     }
 
     // the name of the method indicates, it is a boolean, but the method returns an int.

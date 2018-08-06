@@ -21,4 +21,9 @@ public class ASTVariableDeclarator extends AbstractJavaTypeNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public String getName() {
+        // first child will be VariableDeclaratorId
+        return jjtGetChild(0).getImage();
+    }
 }
