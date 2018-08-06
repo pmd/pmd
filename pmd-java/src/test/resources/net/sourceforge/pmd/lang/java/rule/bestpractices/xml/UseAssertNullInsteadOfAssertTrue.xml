@@ -89,20 +89,4 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code>
-        <description><![CDATA[
-JUnit 5 - assertTrue with null - @RepeatedTest
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-import org.junit.jupiter.api.RepeatedTest;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-public class Foo {
- @RepeatedTest(2)
- public void test1() {
-  assertTrue(a==null);
- }
-}
-     ]]></code>
-    </test-code>
 </test-data>
