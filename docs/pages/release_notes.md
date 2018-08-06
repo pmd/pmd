@@ -21,6 +21,9 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   java-bestpractices
+    *   [#1267](https://github.com/pmd/pmd/pull/1267): \[java] MissingOverrideRule: Avoid NoClassDefFoundError with incomplete classpath
+
 ### API Changes
 
 ### External Contributions
