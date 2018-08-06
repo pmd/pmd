@@ -16,7 +16,12 @@ public class CPPLanguage extends AbstractLanguage {
      * for c/c++ files.
      */
     public CPPLanguage() {
+        this(System.getProperties());
+    }
+
+    public CPPLanguage(Properties properties) {
         super("C++", "cpp", new CPPTokenizer(), ".h", ".hpp", ".hxx", ".c", ".cpp", ".cxx", ".cc", ".C");
+        setProperties(properties);
     }
 
     /*

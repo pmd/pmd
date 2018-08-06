@@ -6,6 +6,6 @@ package net.sourceforge.pmd.cpd;
 
 public class JSPLanguage extends AbstractLanguage {
     public JSPLanguage() {
-        super("JSP", "jsp", new JSPTokenizer(), ".jsp", ".jspx");
+        super("JSP", "jsp", new JSPTokenizer(), ".jsp", ".jspx", ".jspf", ".tag");
     }
 }

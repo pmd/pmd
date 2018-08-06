@@ -88,4 +88,15 @@ public class Foo implements Serializable {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1078 [java] MissingSerialVersionUID rule does not seem to catch inherited classes</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone;
+public class MissingSerialVersionUIDTest extends MissingSerialVersionUIDBase {
+    // ... no serialVersionUID value defined ...
+}
+        ]]></code>
+    </test-code>
 </test-data>

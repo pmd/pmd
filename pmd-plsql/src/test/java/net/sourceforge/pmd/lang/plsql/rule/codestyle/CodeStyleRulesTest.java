@@ -13,5 +13,6 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
     @Override
     public void setUp() {
         addRule(RULESET, "MisplacedPragma");
+        addRule(RULESET, "ForLoopNaming");
     }
 }
