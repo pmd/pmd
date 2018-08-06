@@ -33,7 +33,21 @@ public class JspParserTest {
                 "<span class=\"CostUnit\">$</span><span class=\"CostMain\">129</span><span class=\"CostFrac\">.00</span>");
         Assert.assertNotNull(node);
     }
-    
+
+    @Test
+    public void testParseELAttribute() {
+        Node node = parse(
+                "<div ${something ? 'class=\"red\"' : ''}> Div content here.</div>");
+        Assert.assertNotNull(node);
+    }
+
+    @Test
+    public void testParseELAttributeValue() {
+        Node node = parse(
+                "<div class=\"${something == 0 ? 'zero_something' : something == 1 ? 'one_something' : 'other_something'}\">Div content here.</div>");
+        Assert.assertNotNull(node);
+    }
+
     /**
      * Verifies bug #311 Jsp parser fails on boolean attribute
      */
