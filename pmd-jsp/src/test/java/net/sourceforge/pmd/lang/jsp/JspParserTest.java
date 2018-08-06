@@ -61,6 +61,7 @@ public class JspParserTest {
     @Test
     public void testParseJsp() {
         testInternalJspFile(Paths.get("sample.jsp").toFile());
+        testInternalJspFile(Paths.get("sample.jspx").toFile());
     }
 
     @Test
