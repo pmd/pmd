@@ -118,4 +118,36 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+JUnit 5 - failure case - @Test
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+public class Foo {
+ @Test
+ void bar() {
+  assertTrue(true); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+JUnit 5 - failure case - @RepeatedTest
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.RepeatedTest;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+public class Foo {
+ @RepeatedTest(2)
+ void bar() {
+  assertTrue(true); 
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>
