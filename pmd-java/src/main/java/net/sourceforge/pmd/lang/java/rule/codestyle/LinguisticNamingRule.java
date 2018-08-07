@@ -23,8 +23,11 @@ public class LinguisticNamingRule extends AbstractJavaRule {
             .desc("Check return type of getters").uiOrder(2.0f).build();
     private static final BooleanProperty CHECK_SETTERS = BooleanProperty.named("checkSetters").defaultValue(true)
             .desc("Check return type of setters").uiOrder(3.0f).build();
+    private static final BooleanProperty CHECK_PREFIXED_TRANSFORM_METHODS = BooleanProperty
+            .named("checkPrefixedTransformMethods")
+            .defaultValue(true).desc("Check return type of methods whose names start with 'to'").uiOrder(4.0f).build();
     private static final BooleanProperty CHECK_TRANSFORM_METHODS = BooleanProperty.named("checkTransformMethods")
-            .defaultValue(true).desc("Check return type of transform methods").uiOrder(4.0f).build();
+            .defaultValue(false).desc("Check return type of methods which contain 'To' in their name").uiOrder(4.0f).build();
     private static final StringMultiProperty BOOLEAN_METHOD_PREFIXES_PROPERTY = StringMultiProperty
             .named("booleanMethodPrefixes").defaultValues("is", "has", "can", "have", "will", "should")
             .desc("the prefixes of methods that return boolean").uiOrder(5.0f).build();
@@ -41,6 +44,7 @@ public class LinguisticNamingRule extends AbstractJavaRule {
         definePropertyDescriptor(CHECK_BOOLEAN_METHODS);
         definePropertyDescriptor(CHECK_GETTERS);
         definePropertyDescriptor(CHECK_SETTERS);
+        definePropertyDescriptor(CHECK_PREFIXED_TRANSFORM_METHODS);
         definePropertyDescriptor(CHECK_TRANSFORM_METHODS);
         definePropertyDescriptor(BOOLEAN_METHOD_PREFIXES_PROPERTY);
         definePropertyDescriptor(CHECK_FIELDS);
@@ -67,6 +71,10 @@ public class LinguisticNamingRule extends AbstractJavaRule {
             checkGetters(node, data, nameOfMethod);
         }
 
+        if (getProperty(CHECK_PREFIXED_TRANSFORM_METHODS)) {
+            checkPrefixedTransformMethods(node, data, nameOfMethod);
+        }
+
         if (getProperty(CHECK_TRANSFORM_METHODS)) {
             checkTransformMethods(node, data, nameOfMethod);
         }
@@ -74,10 +82,19 @@ public class LinguisticNamingRule extends AbstractJavaRule {
         return data;
     }
 
+    private void checkPrefixedTransformMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {
+        ASTResultType resultType = node.getResultType();
+        if (resultType.isVoid() && hasPrefix(nameOfMethod, "to")) {
+            // To as prefix
+            addViolationWithMessage(data, node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
+                    new Object[] { nameOfMethod });
+        }
+    }
+
     private void checkTransformMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {
         ASTResultType resultType = node.getResultType();
-        if (resultType.isVoid() && (containsWord(nameOfMethod, "To") || hasPrefix(nameOfMethod, "to"))) {
-            // To in the middle somewhere or as prefix
+        if (resultType.isVoid() && containsWord(nameOfMethod, "To")) {
+            // To in the middle somewhere
             addViolationWithMessage(data, node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
                     new Object[] { nameOfMethod });
         }

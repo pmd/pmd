@@ -948,9 +948,11 @@ if (foo) {  // preferred approach
             This rule finds Linguistic Naming Antipatterns. It checks for fields, that are named, as if they should
             be boolean but have a different type. It also checks for methods, that according to their name, should
             return a boolean, but don't. Further, it checks, that getters return something and setters won't.
-            Finally, it checks that methods, that contain "To" in their name - so called transform methods -
-            return something, since according to their name, they should convert or transform one object into
-            another.
+            Finally, it checks that methods, that start with "to" - so called transform methods - actually return
+            something, since according to their name, they should convert or transform one object into another.
+            There is additionally an option, to check for methods that contain "To" in their name - which are
+            also transform methods. However, this is disabled by default, since this detection is prone to
+            false positives.
 
             For more information, see [Linguistic Antipatterns - What They Are and How
 Developers Perceive Them](https://doi.org/10.1007/s10664-014-9350-8).

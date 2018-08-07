@@ -223,6 +223,7 @@ public class MethodTypeAndNameIsInconsistentWithPrefixTo {
 
     <test-code>
         <description>Method Contains To: Transformation methods</description>
+        <rule-property name="checkTransformMethods">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
         <expected-messages>
