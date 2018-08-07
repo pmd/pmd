@@ -395,4 +395,22 @@ public class MultipleLocalVariables {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Boolean fields/methods false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class BooleanFieldsMethodFP {
+    Boolean canFly;
+
+    public Boolean isFull() {
+        return true;
+    }
+
+    public void myMethod() {
+        Boolean hasLegs;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

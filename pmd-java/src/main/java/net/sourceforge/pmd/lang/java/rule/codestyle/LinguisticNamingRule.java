@@ -104,7 +104,7 @@ public class LinguisticNamingRule extends AbstractJavaRule {
         ASTType t = node.getResultType().getFirstChildOfType(ASTType.class);
         if (!resultType.isVoid() && t != null) {
             for (String prefix : getProperty(BOOLEAN_METHOD_PREFIXES_PROPERTY)) {
-                if (hasPrefix(nameOfMethod, prefix) && !"boolean".equals(t.getTypeImage())) {
+                if (hasPrefix(nameOfMethod, prefix) && !"boolean".equalsIgnoreCase(t.getTypeImage())) {
                     addViolationWithMessage(data, node, "Linguistics Antipattern - The method ''{0}'' indicates linguistically it returns a boolean, but it returns ''{1}''",
                             new Object[] { nameOfMethod, t.getTypeImage() });
                 }
@@ -114,7 +114,7 @@ public class LinguisticNamingRule extends AbstractJavaRule {
 
     private void checkField(String typeImage, ASTVariableDeclarator node, Object data) {
         for (String prefix : getProperty(BOOLEAN_FIELD_PREFIXES_PROPERTY)) {
-            if (hasPrefix(node.getName(), prefix) && !"boolean".equals(typeImage)) {
+            if (hasPrefix(node.getName(), prefix) && !"boolean".equalsIgnoreCase(typeImage)) {
                 addViolationWithMessage(data, node, "Linguistics Antipattern - The field ''{0}'' indicates linguistically it is a boolean, but it is ''{1}''",
                         new Object[] { node.getName(), typeImage });
             }
@@ -123,7 +123,7 @@ public class LinguisticNamingRule extends AbstractJavaRule {
 
     private void checkVariable(String typeImage, ASTVariableDeclarator node, Object data) {
         for (String prefix : getProperty(BOOLEAN_FIELD_PREFIXES_PROPERTY)) {
-            if (hasPrefix(node.getName(), prefix) && !"boolean".equals(typeImage)) {
+            if (hasPrefix(node.getName(), prefix) && !"boolean".equalsIgnoreCase(typeImage)) {
                 addViolationWithMessage(data, node, "Linguistics Antipattern - The variable ''{0}'' indicates linguistically it is a boolean, but it is ''{1}''",
                         new Object[] { node.getName(), typeImage });
             }
