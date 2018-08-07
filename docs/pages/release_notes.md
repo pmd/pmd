@@ -27,15 +27,6 @@ This is a minor release.
     Besides method names, the rule also checks field and variable names. It also checks, that getters return
     something but setters won't. The rule has several properties with which it can be customized.
 
-*   The new Java rule [`LocalVariableNamingConventions`](pmd_rules_java_codestyle.html#localvariablenamingconventions) (`java-codestlye`)
-    detects local variable names that don't comply to a given convention. It defaults to standrd Java convention of using camelCase,
-    but can be configured. Special cases can be configured for final variables and catched exceptions' names.
-
-*   The new Java rule [`FormalParameterNamingConventions`](pmd_rules_java_codestyle.html#formalparameternamingconventions) (`java-codestlye`)
-    detects formal parameter names that don't comply to a given convention. It defaults to standrd Java convention of using camelCase,
-    but can be configured. Special cases can be configured for final parameters and lambda parameters (considering wether they are
-    explicitly typed or not)
-
 *   The new PL/SQL rule [`ForLoopNaming`](pmd_rules_plsql_codestyle.html#forloopnaming) (`plsql-codestyle`)
     enforces a naming convention for "for loops". Both "cursor for loops" and "index for loops" are covered.
     The rule can be customized via patterns. By default, short variable names are reported.
