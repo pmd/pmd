@@ -5,8 +5,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
-<meta name="keywords" content=" ">
-<title>Extending PMD | PMD Source Code Analyzer</title>
+<meta name="keywords" content="devdocs,  ">
+<title>Pmdtester | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
 
@@ -140,7 +140,7 @@
                                 searchInput: document.getElementById('search-input'),
                                 resultsContainer: document.getElementById('results-container'),
                                 dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Extending PMD">{title}</a></li>',
+                                searchResultTemplate: '<li><a href="{url}" title="Pmdtester">{title}</a></li>',
                     noResultsText: 'No results found.',
                             limit: 10,
                             fuzzy: true,
@@ -1026,7 +1026,7 @@
             
 
                 
-                <li><a href="pmd_devdocs_pmdtester.html">Pmdtester</a></li>
+                <li class="active"><a href="pmd_devdocs_pmdtester.html">Pmdtester</a></li>
                 
 
             
@@ -1225,7 +1225,7 @@
         <!-- Content Column -->
         <div class="col-md-9" id="tg-sb-content">
             <div class="post-header">
-   <h1 class="post-title-main">Extending PMD</h1>
+   <h1 class="post-title-main">Pmdtester</h1>
 </div>
 
 
@@ -1256,451 +1256,38 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
         
         
 
-    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/tags/tag_extending.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/devdocs/pmdtester.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
 
     
 
-  <p>The following pages and posts are tagged with <button type="button" style="cursor: default" class="btn btn-default navbar-btn">extending</button></p>
-<table><thead><tr><th>Title</th><th>Type</th><th>Excerpt</th></tr></thead>
-    <tbody>
-    
-  
-    
-   
-    
-        
-     
-        
+  <h2 id="introduction">Introduction</h2>
+<p>Pmdtester is a regression testing tool that ensures no new problems and unexpected behaviors will be introduced to PMD after fixing an issue. 
+It can also be used to verify, that new rules work as expected.It has been integrated into travis CI and is actually used automatically for PRs.
+Regression difference reports are commented back to the PR for the reviewer’s information e.g. https://github.com/pmd/pmd/pull/1265#issuecomment-408945709</p>
 
-        <tr><td><a href="pmd_devdocs_major_adding_new_cpd_language.html">How to add a new CPD language</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> How to add a new CPD language </td>
-        </tr>
-        
-     
-   
-    
-        
-     
-        
+<h2 id="run-pmdtester-locally">Run pmdtester locally</h2>
+<p><strong>Install pmdtester</strong></p>
 
-        <tr><td><a href="pmd_devdocs_major_adding_new_language.html">Adding PMD support for a new language</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> How to add a new language to PMD. </td>
-        </tr>
-        
-     
-   
-    
-        
-     
-        
+<p><code class="highlighter-rouge">gem install pmdtester --pre</code></p>
 
-        <tr><td><a href="pmd_devdocs_major_adding_new_metrics_framework.html">Adding support for metrics to a language</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> PMD's Java module has an extensive framework for the calculation of metrics, which allows rule developers to implement and use new code metrics very simply. ... </td>
-        </tr>
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
+<p><strong>Verifying your local changes and generate a diff-report locally</strong></p>
 
-        <tr><td><a href="pmd_apex_metrics_index.html">Index of Apex code metrics</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> Index of the code metrics available out of the box to Apex rule developers. </td>
-        </tr>
-        
-     
-        
-     
-   
-    
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-        
+<p><code class="highlighter-rouge">pmdtester -r YOUR_LOCAL_PMD_GIT_REPO_ROOT_DIR -b master -p YOUR_DEVELOPMENT_BRANCH</code></p>
 
-        <tr><td><a href="pmd_userdocs_extending_defining_properties.html">Defining rule properties</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> Learn how to define your own properties both for Java and XPath rules. </td>
-        </tr>
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-   
-    
-        
-     
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
+<p>The regression difference report is placed in the <code class="highlighter-rouge">YOUR_WORKING_DIR/target/reports/diff</code> directory.</p>
 
-        <tr><td><a href="pmd_java_metrics_index.html">Index of Java code metrics</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> Index of the code metrics available out of the box to Java rule developers. </td>
-        </tr>
-        
-     
-        
-     
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-        
-
-        <tr><td><a href="pmd_userdocs_extending_metrics_howto.html">Using and defining code metrics for custom rules</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> Since version 6.0.0, PMD is enhanced with the ability to compute code metrics on Java and Apex source (the so-called Metrics Framework). This framework provi... </td>
-        </tr>
-        
-     
-        
-     
-        
-     
-   
-    
-   
-    
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-   
-    
-        
-
-        <tr><td><a href="pmd_userdocs_extending_rule_guidelines.html">Rule guidelines</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> Rule Guidelines </td>
-        </tr>
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-
-        <tr><td><a href="pmd_userdocs_extending_testing.html">Testing your rules</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> Learn how to use PMD's simple test framework for unit testing rules. </td>
-        </tr>
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-   
-    
-        
-
-        <tr><td><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a custom rule</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> Learn how to write a custom rule for PMD </td>
-        </tr>
-        
-     
-        
-     
-   
-    
-        
-
-        <tr><td><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> Writing XPath rules for PMD </td>
-        </tr>
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-
-        
-        
-
-   </tbody>
-</table>
-
+<p>For more documentation on pmdtester, see <a href="https://github.com/pmd/pmd-regression-tester/blob/master/README.rdoc">README.rdoc</a></p>
 
 
     <div class="tags">
+        
+        <b>Tags: </b>
+        
+        
+        
+        <a href="tag_devdocs.html" class="btn btn-default navbar-btn cursorNorm" role="button">devdocs</a>
+        
+        
         
     </div>
 
