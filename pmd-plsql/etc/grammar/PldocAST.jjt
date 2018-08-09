@@ -1470,27 +1470,49 @@ ASTJoinClause JoinClause() :
 ASTInnerCrossJoinClause InnerCrossJoinClause() :
 {}
 {
-  ( [ <INNER> ] <JOIN> TableReference()
-        ( <ON> ConditionalOrExpression()
-          | <USING> "(" ID() /*column*/ ("," ID() /*column*/ )* ")"
-        )
-    | ( <CROSS>
-      | <NATURAL> [ <INNER> ]
-      )
-    <JOIN> TableReference()
+  (
+    [ <INNER> ] <JOIN> TableReference()
+    (
+        <ON> ConditionalOrExpression()
+    |
+        <USING> "(" Column() ("," Column() )* ")"
     )
-    { return jjtThis; }
+  |
+    (
+        <CROSS> { jjtThis.setCross(true); }
+    |
+        <NATURAL> { jjtThis.setNatural(true); } [ <INNER> ]
+    )
+    <JOIN> TableReference()
+  )
+  { return jjtThis; }
 }
 
 ASTOuterJoinClause OuterJoinClause() :
 {}
 {
-    /*[ query_partition_clause ] [ NATURAL ]*/
+    [ QueryPartitionClause() ]
+    [ <NATURAL> { jjtThis.setNatural(true); } ]
     OuterJoinType() <JOIN> TableReference()
-    /*  [ query_partition_clause ]*/
+    [ LOOKAHEAD(2) QueryPartitionClause() ]
       [ <ON> ConditionalOrExpression()
-      | <USING> ( ID() /*column*/ (LOOKAHEAD(2) "," ID() /*column*/ )*)
+      | <USING> "(" Column() ("," Column() )* ")"
       ]
+    { return jjtThis; }
+}
+
+/**
+ * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/query_partition_clause.html
+ */
+ASTQueryPartitionClause QueryPartitionClause() :
+{}
+{
+    <PARTITION> <BY>
+    (
+        LOOKAHEAD(3) Expression() (LOOKAHEAD(2) "," Expression() )*
+    |
+        LOOKAHEAD(3) "(" Expression() ("," Expression() )* ")"
+    )
     { return jjtThis; }
 }
 
