@@ -1118,8 +1118,6 @@ ASTSelectIntoStatement SelectIntoStatement() :
     ( IntoClause() | BulkCollectIntoClause() )
     <FROM>
     RestOfStatement()
-    [ OrderByClause() ]
-    [ RowLimitingClause() ]
 
     { return jjtThis; }
 }
@@ -1129,6 +1127,8 @@ void RestOfStatement() #void :
 {
     FromClause() ("," FromClause() )*
     [ WhereClause() ]
+    [ OrderByClause() ]
+    [ RowLimitingClause() ]
 }
 
 void Subquery() #void :
@@ -1321,9 +1321,9 @@ ASTSqlExpression SqlExpression() :
 }
 
 ASTColumn Column() :
-{ Token t; }
+{}
 {
-    t = <IDENTIFIER> { jjtThis.setImage(t.image); }
+    <IDENTIFIER> { jjtThis.setImage(token.image); }
     { return jjtThis; }
 }
 
@@ -1366,20 +1366,16 @@ void SelectListEntry() #void :
 }
 
 ASTColumnAlias ColumnAlias() :
+{}
 {
-    Token t;
-}
-{
-    t = <IDENTIFIER> { jjtThis.setImage(t.image); }
+    <IDENTIFIER> { jjtThis.setImage(token.image); }
     { return jjtThis; }
 }
 
 ASTTableAlias TableAlias() :
+{}
 {
-    Token t;
-}
-{
-    t = <IDENTIFIER> { jjtThis.setImage(t.image); }
+    <IDENTIFIER> { jjtThis.setImage(token.image); }
     { return jjtThis; }
 }
 
@@ -1454,10 +1450,20 @@ ASTTableName TableName() :
     { return jjtThis; }
 }
 
+/**
+ * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/SELECT.html#GUID-CFA006CA-6FF1-4972-821E-6996142A51C6__CHDIJFDJ
+ */
 ASTJoinClause JoinClause() :
 {}
 {
-    TableReference() ( LOOKAHEAD(2) InnerCrossJoinClause() | LOOKAHEAD(2) OuterJoinClause() | LOOKAHEAD(2) CrossOuterApplyClause() )+
+    TableReference()
+    (
+        LOOKAHEAD(2) InnerCrossJoinClause()
+    |
+        LOOKAHEAD(2) OuterJoinClause()
+    |
+        LOOKAHEAD(2) CrossOuterApplyClause()
+    )+
     { return jjtThis; }
 }
 
