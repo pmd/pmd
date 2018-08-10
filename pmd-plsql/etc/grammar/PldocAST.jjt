@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  * Added support for OrderBy and RowLimiting clauses for SELECT statements
  * Removed FROM from the RelationalExpression
+ * Support QueryPartitionClause
  *
  * Andreas Dangel 08/2018
  *====================================================================
