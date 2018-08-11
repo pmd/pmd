@@ -6,7 +6,7 @@ require 'logger'
 
 def run_pmdtester
   Dir.chdir('..') do
-    argv = ['-r', './pmd', '-b', "#{ENV['TRAVIS_BRANCH']}", '-p', 'FETCH_HEAD', '-m', 'online', '-a']
+    argv = ['-r', './pmd', '-b', "#{ENV['TRAVIS_BRANCH']}", '-p', 'FETCH_HEAD', '-m', 'online']
     Process.fork do
 	  begin
         runner = PmdTester::Runner.new(argv)
