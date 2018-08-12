@@ -9,5 +9,7 @@ This ruleset contains links to rules that are new in PMD v6.7.0
   </description>
 
     <rule ref="category/plsql/codestyle.xml/ForLoopNaming"/>
+    <rule ref="category/java/codestyle.xml/LinguisticNaming"/>
+
 </ruleset>
 

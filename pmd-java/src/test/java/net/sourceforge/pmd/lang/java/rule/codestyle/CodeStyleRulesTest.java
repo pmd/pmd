@@ -42,6 +42,7 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "IdenticalCatchBranches");
         addRule(RULESET, "IfElseStmtsMustUseBraces");
         addRule(RULESET, "IfStmtsMustUseBraces");
+        addRule(RULESET, "LinguisticNaming");
         addRule(RULESET, "LocalHomeNamingConvention");
         addRule(RULESET, "LocalInterfaceSessionNamingConvention");
         addRule(RULESET, "LocalVariableCouldBeFinal");
