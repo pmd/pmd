@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces">
+<meta name="keywords" content=" Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces">
 <title>Code Style | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -2416,6 +2416,140 @@ controlled from the rest.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/IfStmtsMustUseBraces"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="linguisticnaming">LinguisticNaming</h2>
+
+<p><strong>Since:</strong> PMD 6.7.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>This rule finds Linguistic Naming Antipatterns. It checks for fields, that are named, as if they should
+be boolean but have a different type. It also checks for methods, that according to their name, should
+return a boolean, but don’t. Further, it checks, that getters return something and setters won’t.
+Finally, it checks that methods, that start with “to” - so called transform methods - actually return
+something, since according to their name, they should convert or transform one object into another.
+There is additionally an option, to check for methods that contain “To” in their name - which are
+also transform methods. However, this is disabled by default, since this detection is prone to
+false positives.</p>
+
+<p>For more information, see <a href="https://doi.org/10.1007/s10664-014-9350-8">Linguistic Antipatterns - What They Are and How
+Developers Perceive Them</a>.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/LinguisticNamingRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.LinguisticNamingRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LinguisticNaming</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">isValid</span><span class="o">;</span>    <span class="c1">// the field name indicates a boolean, but it is an int.</span>
+    <span class="kt">boolean</span> <span class="n">isTrue</span><span class="o">;</span> <span class="c1">// correct type of the field</span>
+
+    <span class="kt">void</span> <span class="nf">myMethod</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">hasMoneyLocal</span><span class="o">;</span>      <span class="c1">// the local variable name indicates a boolean, but it is an int.</span>
+        <span class="kt">boolean</span> <span class="n">hasSalaryLocal</span><span class="o">;</span> <span class="c1">// correct naming and type</span>
+    <span class="o">}</span>
+
+    <span class="c1">// the name of the method indicates, it is a boolean, but the method returns an int.</span>
+    <span class="kt">int</span> <span class="nf">isValid</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="mi">1</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">// correct naming and return type</span>
+    <span class="kt">boolean</span> <span class="nf">isSmall</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">// the name indicates, this is a setter, but it returns something</span>
+    <span class="kt">int</span> <span class="nf">setName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="mi">1</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">// the name indicates, this is a getter, but it doesn't return anything</span>
+    <span class="kt">void</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// nothing to return?</span>
+    <span class="o">}</span>
+
+    <span class="c1">// the name indicates, it transforms an object and should return the result</span>
+    <span class="kt">void</span> <span class="nf">toDataType</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// nothing to return?</span>
+    <span class="o">}</span>
+    <span class="c1">// the name indicates, it transforms an object and should return the result</span>
+    <span class="kt">void</span> <span class="nf">grapeToWine</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// nothing to return?</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>booleanFieldPrefixes</td>
+      <td>is | has | can | have | will | should</td>
+      <td>the prefixes of fields and variables that indicate boolean</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
+    <tr>
+      <td>checkVariables</td>
+      <td>true</td>
+      <td>Check local variable names and types for inconsistent naming</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>checkFields</td>
+      <td>true</td>
+      <td>Check field names and types for inconsistent naming</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>booleanMethodPrefixes</td>
+      <td>is | has | can | have | will | should</td>
+      <td>the prefixes of methods that return boolean</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
+    <tr>
+      <td>checkPrefixedTransformMethods</td>
+      <td>true</td>
+      <td>Check return type of methods whose names start with ‘to’</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>checkTransformMethods</td>
+      <td>false</td>
+      <td>Check return type of methods which contain ‘To’ in their name</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>checkSetters</td>
+      <td>true</td>
+      <td>Check return type of setters</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>checkGetters</td>
+      <td>true</td>
+      <td>Check return type of getters</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>checkBooleanMethod</td>
+      <td>true</td>
+      <td>Check method names and types for inconsistent naming</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/LinguisticNaming"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="localhomenamingconvention">LocalHomeNamingConvention</h2>

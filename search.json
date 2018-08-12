@@ -1264,6 +1264,15 @@
 ,
 
 {
+"title": "LinguisticNaming (Java, Code Style)",
+"tags": "",
+"keywords": "LinguisticNaming",
+"url": "pmd_rules_java_codestyle.html#linguisticnaming",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
 "title": "LocalHomeNamingConvention (Java, Code Style)",
 "tags": "",
 "keywords": "LocalHomeNamingConvention",
