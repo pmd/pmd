@@ -1284,9 +1284,17 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h4 id="new-rules">New Rules</h4>
 
 <ul>
-  <li>The new PL/SQL rule <a href="pmd_rules_plsql_codestyle.html#forloopnaming"><code class="highlighter-rouge">ForLoopNaming</code></a> (<code class="highlighter-rouge">plsql-codestyle</code>)
+  <li>
+    <p>The new Java rule <a href="pmd_rules_java_codestyle.html#linguisticnaming"><code class="highlighter-rouge">LinguisticNaming</code></a> (<code class="highlighter-rouge">java-codestyle</code>)
+detects cases, when a method name indicates it returns a boolean (such as <code class="highlighter-rouge">isSmall()</code>) but it doesn’t.
+Besides method names, the rule also checks field and variable names. It also checks, that getters return
+something but setters won’t. The rule has several properties with which it can be customized.</p>
+  </li>
+  <li>
+    <p>The new PL/SQL rule <a href="pmd_rules_plsql_codestyle.html#forloopnaming"><code class="highlighter-rouge">ForLoopNaming</code></a> (<code class="highlighter-rouge">plsql-codestyle</code>)
 enforces a naming convention for “for loops”. Both “cursor for loops” and “index for loops” are covered.
-The rule can be customized via patterns. By default, short variable names are reported.</li>
+The rule can be customized via patterns. By default, short variable names are reported.</p>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1332,6 +1340,7 @@ The rule can be customized via patterns. By default, short variable names are re
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/109">#109</a>: [java] Add two linguistics rules under naming - <a href="https://github.com/ardaasln">Arda Aslan</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1254">#1254</a>: [ci] [GSoC] Integrating the danger and pmdtester to travis CI - <a href="https://github.com/djydewang">BBG</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1258">#1258</a>: [java] Use typeof in MissingSerialVersionUID - <a href="https://github.com/krichter722">krichter722</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1264">#1264</a>: [cpp] Fix NullPointerException in CPPTokenizer:99 - <a href="https://github.com/mrfyda">Rafael Cortês</a></li>
