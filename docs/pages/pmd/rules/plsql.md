@@ -16,6 +16,7 @@ folder: pmd/rules
 
 {% include callout.html content="Rules which enforce a specific coding style." %}
 
+*   [ForLoopNaming](pmd_rules_plsql_codestyle.html#forloopnaming): In case you have loops please name the loop variables more meaningful.
 *   [MisplacedPragma](pmd_rules_plsql_codestyle.html#misplacedpragma): Oracle states that the PRAQMA AUTONOMOUS_TRANSACTION must be in the declaration block,but the cod...
 
 ## Design

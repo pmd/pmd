@@ -2399,16 +2399,10 @@ Serializable classes should provide a serialVersionUID field.
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //ClassOrInterfaceDeclaration
- [
-  count(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-   /FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Image='serialVersionUID']) = 0
-and
-  count(ImplementsList
-   [ClassOrInterfaceType/@Image='Serializable'
-   or ClassOrInterfaceType/@Image='java.io.Serializable']) =1
-and
-   @Abstract = 'false'
-]
+    [@Abstract = 'false']
+    [count(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+        /FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Image='serialVersionUID']) = 0]
+    [(ImplementsList | ExtendsList)/ClassOrInterfaceType[typeIs('java.io.Serializable')]]
 ```
 
 **Example(s):**

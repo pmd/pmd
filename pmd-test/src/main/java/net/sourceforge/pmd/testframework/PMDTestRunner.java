@@ -23,13 +23,13 @@ import org.junit.runners.model.InitializationError;
  * A JUnit Runner, that combines the default {@link JUnit4}
  * and our custom {@link RuleTestRunner}.
  * It allows to selectively execute single test cases (it is {@link Filterable}).
- * 
+ *
  * <p>Note: Since we actually run two runners one after another, the static {@code BeforeClass}
  * and {@Code AfterClass} methods will be executed twice and the test class will be instantiated twice, too.</p>
  *
  * <p>In order to use it, you'll need to subclass {@link SimpleAggregatorTst} and
  * annotate your test class with RunWith:</p>
- * 
+ *
  * <pre>
  * &#64;RunWith(PMDTestRunner.class)
  * public class MyRuleSetTest extends SimpleAggregatorTst {
@@ -78,7 +78,9 @@ public class PMDTestRunner extends Runner implements Filterable, Sortable {
     public Description getDescription() {
         Description description = Description.createSuiteDescription(klass);
         description.addChild(createChildrenDescriptions(ruleTests, "Rule Tests"));
-        description.addChild(createChildrenDescriptions(unitTests, "Unit Tests"));
+        if (ruleTests.hasUnitTests()) {
+            description.addChild(createChildrenDescriptions(unitTests, "Unit Tests"));
+        }
         return description;
     }
 

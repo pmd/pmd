@@ -486,4 +486,20 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] False positive "UselessParentheses" for parentheses that contain assignment #1285</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void test() {
+        Pattern p;
+        Matcher m;
+        if ((m = p.matcher("hello world")).matches()) {
+            System.out.println("Hello world");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

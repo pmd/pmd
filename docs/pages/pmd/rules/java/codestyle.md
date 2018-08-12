@@ -1936,6 +1936,7 @@ Useless parentheses should be removed.
     [not(./CastExpression)]
     [not(./ConditionalExpression)]
     [not(./AdditiveExpression)]
+    [not(./AssignmentOperator)]
 |
 //Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)=1]
   /PrimaryPrefix/Expression
