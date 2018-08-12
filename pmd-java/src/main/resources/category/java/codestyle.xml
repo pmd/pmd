@@ -940,7 +940,7 @@ if (foo) {  // preferred approach
 
     <rule name="LinguisticNaming"
           language="java"
-          since="6.6.0"
+          since="6.7.0"
           message="Linguistics Antipattern - Method name and return type is inconsistent linguistically"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.LinguisticNamingRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#linguisticnaming">
