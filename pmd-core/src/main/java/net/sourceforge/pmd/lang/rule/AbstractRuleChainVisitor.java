@@ -12,7 +12,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
@@ -27,6 +30,8 @@ import net.sourceforge.pmd.lang.ast.Node;
  * expressed interest in.
  */
 public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
+    private static final Logger LOG = Logger.getLogger(AbstractRuleChainVisitor.class.getName());
+
     /**
      * These are all the rules participating in the RuleChain, grouped by
      * RuleSet.
@@ -93,6 +98,17 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
                             visits += ns.size();
                         }
                         rcto.close(visits);
+                    } catch (RuntimeException e) {
+                        if (ctx.isIgnoreExceptions()) {
+                            ctx.getReport().addError(new Report.ProcessingError(e, ctx.getSourceCodeFilename()));
+
+                            if (LOG.isLoggable(Level.WARNING)) {
+                                LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
+                                        + ctx.getSourceCodeFilename() + ", continuing with next rule", e);
+                            }
+                        } else {
+                            throw e;
+                        }
                     }
                 }
             }
