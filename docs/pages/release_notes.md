@@ -51,6 +51,17 @@ This is a minor release.
 
 ### API Changes
 
+#### Deprecated rules
+
+*   The Java rules [`VariableNamingConventions`](pmd_rules_java_codestyle.html#variablenamingconventions),
+    [`MIsLeadingVariableName`](pmd_rules_java_codestyle.html#misleadingvariablename),
+    [`SuspiciousConstantFieldName`](pmd_rules_java_codestyle.html#suspiciousconstantfieldname),
+    and [`AvoidPrefixingMethodParameters`](pmd_rules_java_codestyle.html#avoidprefixingmethodparameters) are now deprecated,
+    and will be removed with version 7.0.0. They are replaced by the more general
+    [`FieldNamingConventions`](pmd_rules_java_codestyle.html#fieldnamingconventions),
+    [`FormalParameterNamingConventions`](pmd_rules_java_codestyle.html#formalparameternamingconventions), and
+    [`LocalVariableNamingConventions`](pmd_rules_java_codestyle.html#localvariablenamingconventions).
+
 ### External Contributions
 
 *   [#109](https://github.com/pmd/pmd/pull/109): \[java] Add two linguistics rules under naming - [Arda Aslan](https://github.com/ardaasln)
