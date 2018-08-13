@@ -13,12 +13,70 @@ This is a minor release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
+    *   [Drawing a line between private and public API](#drawing-a-line-between-private-and-public-api)
     *   [New Rules](#new-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
 * [External Contributions](#external-contributions)
 
 ### New and noteworthy
+
+#### Drawing a line between private and public API
+
+Until now, all released public members and types were implicitly considered part
+of PMD's public API, including inheritance-specific members (protected members, abstract methods).
+We have maintained those APIs with the goal to preserve full binary compatibility between minor releases,
+only breaking those APIs infrequently, for major releases.
+
+
+In order to allow PMD to move forward at a faster pace, this implicit contract will
+be invalidated with PMD 7.0.0. We now introduce more fine-grained distinctions between
+the type of compatibility support we guarantee for our libraries, and ways to make
+them explicit to clients of PMD.
+
+##### `.internal` packages and `@InternalApi` annotation
+
+*Internal API* is meant for use *only* by the main PMD codebase. Internal types and methods
+may be modified in any way, or even removed, at any time.
+
+Any API in a package that contains an `.internal` segment is considered internal.
+The `@InternalApi` annotation will be used for APIs that have to live outside of
+these packages, e.g. methods of a public type that shouldn't be used outside of PMD (again,
+these can be removed anytime).
+
+##### `@ReservedSubclassing`
+
+Types marked with the `@ReservedSubclassing` annotation are only meant to be subclassed
+by classes within PMD. As such, we may add new abstract methods, or remove protected methods,
+at any time. All published public members remain supported. The annotation is *not* inherited, which
+means a reserved interface doesn't prevent its implementors to be subclassed.
+
+##### `@Beta`
+
+APIs marked with the `@Beta` annotation at the class or method level are subject to change.
+They can be modified in any way, or even removed, at any time. If your code is a library
+itself (i.e. it is used on the CLASSPATH of users outside your own control), you should not
+use beta APIs, unless you repackage them (e.g. using ProGuard, shading, etc).
+
+##### `@Experimental`
+
+
+APIs marked with the `@Experimental` annotation at the class or method level will almost certainly
+change. They can be modified in any way, or even removed, at any time. You should not use or rely
+ on them in any production code. They are purely to allow broad testing and feedback.
+
+##### `@Deprecated`
+
+APIs marked with the `@Deprecated` annotation at the class or method level will remain supported
+until the next major release but it is recommended to stop using them.
+
+
+##### The transition
+
+*All currently supported APIs will remain so until 7.0.0*. All APIs that are to be moved to
+`.internal` packages or hidden will be tagged `@InternalApi` before that major release, and
+the breaking API changes will be performed in 7.0.0.
+
 
 #### New Rules
 
