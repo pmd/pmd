@@ -63,9 +63,9 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
 
         if (!getProperty(enumConstantRegex).matcher(node.getImage()).matches()) {
             addViolation(data, node, new Object[]{
-                    "enum constant",
-                    node.getImage(),
-                    getProperty(enumConstantRegex).toString(),
+                "enum constant",
+                node.getImage(),
+                getProperty(enumConstantRegex).toString(),
             });
         }
 
