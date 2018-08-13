@@ -42,18 +42,22 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
                 .unmodifiableSet(new HashSet<String>(Arrays.asList("trace", "debug", "info", "warn", "error")));
     }
 
+    public InvalidSlf4jMessageFormatRule() {
+        addRuleChainVisit(ASTName.class);
+    }
+
     @Override
     public Object visit(final ASTName node, final Object data) {
         final NameDeclaration nameDeclaration = node.getNameDeclaration();
         // ignore imports or methods
         if (!(nameDeclaration instanceof VariableNameDeclaration)) {
-            return super.visit(node, data);
+            return data;
         }
 
         // ignore non slf4j logger
         Class<?> type = ((VariableNameDeclaration) nameDeclaration).getType();
         if (type == null || !type.getName().equals(LOGGER_CLASS)) {
-            return super.visit(node, data);
+            return data;
         }
 
         // get the node that contains the logger
@@ -65,7 +69,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
 
         // ignore if not a log level
         if (!LOGGER_LEVELS.contains(method)) {
-            return super.visit(node, data);
+            return data;
         }
 
         // find the arguments
@@ -73,13 +77,13 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
                 .getFirstDescendantOfType(ASTArgumentList.class).findChildrenOfType(ASTExpression.class);
 
         // remove the message parameter
-        final ASTPrimaryExpression messageParam = argumentList.remove(0).getFirstDescendantOfType(ASTPrimaryExpression.class);
+        final ASTExpression messageParam = argumentList.remove(0);
         final int expectedArguments = expectedArguments(messageParam);
 
         if (expectedArguments == 0) {
             // ignore if we are not expecting arguments to format the message
             // or if we couldn't analyze the message parameter
-            return super.visit(node, data);
+            return data;
         }
 
         // Remove throwable param, since it is shown separately.
@@ -89,12 +93,14 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         }
 
         if (argumentList.size() < expectedArguments) {
-            addViolationWithMessage(data, node, "Missing arguments," + getExpectedMessage(argumentList, expectedArguments));
+            addViolationWithMessage(data, node,
+                    "Missing arguments," + getExpectedMessage(argumentList, expectedArguments));
         } else if (argumentList.size() > expectedArguments) {
-            addViolationWithMessage(data, node, "Too many arguments," + getExpectedMessage(argumentList, expectedArguments));
+            addViolationWithMessage(data, node,
+                    "Too many arguments," + getExpectedMessage(argumentList, expectedArguments));
         }
 
-        return super.visit(node, data);
+        return data;
     }
 
     private boolean isNewThrowable(ASTPrimaryExpression last) {
@@ -145,7 +151,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
                 + params.size();
     }
 
-    private int expectedArguments(final ASTPrimaryExpression node) {
+    private int expectedArguments(final ASTExpression node) {
         int count = 0;
         // look if the logger have a literal message
         if (node.getFirstDescendantOfType(ASTLiteral.class) != null) {
@@ -153,7 +159,8 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         } else if (node.getFirstDescendantOfType(ASTName.class) != null) {
             final String variableName = node.getFirstDescendantOfType(ASTName.class).getImage();
             // look if the message is defined locally
-            final List<ASTVariableDeclarator> localVariables = node.getFirstParentOfType(ASTMethodOrConstructorDeclaration.class)
+            final List<ASTVariableDeclarator> localVariables = node
+                    .getFirstParentOfType(ASTMethodOrConstructorDeclaration.class)
                     .findDescendantsOfType(ASTVariableDeclarator.class);
             count = getAmountOfExpectedArguments(variableName, localVariables);
 
@@ -183,10 +190,13 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
     }
 
     private int countPlaceholders(final AbstractJavaTypeNode node) {
-        int result = 0; // zero means, no placeholders, or we could not analyze the message parameter
-        ASTLiteral stringLiteral = node.getFirstDescendantOfType(ASTLiteral.class);
-        if (stringLiteral != null) {
-            result = StringUtils.countMatches(stringLiteral.getImage(), "{}");
+        // zero means, no placeholders, or we could not analyze the message parameter
+        int result = 0;
+        List<ASTLiteral> literals = node.findDescendantsOfType(ASTLiteral.class);
+        // if there are multiple literals, we just assume, they are concatenated
+        // together...
+        for (ASTLiteral stringLiteral : literals) {
+            result += StringUtils.countMatches(stringLiteral.getImage(), "{}");
         }
         return result;
     }
