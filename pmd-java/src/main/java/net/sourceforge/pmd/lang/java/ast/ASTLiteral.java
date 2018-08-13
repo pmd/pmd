@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.math.BigInteger;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -146,11 +147,14 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     }
 
     public int getValueAsInt() {
-        return (int) getValueAsLong(); // the downcast allows to parse 0x80000000+ numbers as negative instead of a NumberFormatException
+        // the downcast allows to parse 0x80000000+ numbers as negative instead of a NumberFormatException
+        return (int) getValueAsLong();
     }
 
     public long getValueAsLong() {
-        return Long.parseLong(stripIntValue(), getIntBase());
+        // Using BigInteger to allow parsing 0x8000000000000000+ numbers as negative instead of a NumberFormatException
+        BigInteger bigInt = new BigInteger(stripIntValue(), getIntBase());
+        return bigInt.longValue();
     }
 
     public float getValueAsFloat() {
