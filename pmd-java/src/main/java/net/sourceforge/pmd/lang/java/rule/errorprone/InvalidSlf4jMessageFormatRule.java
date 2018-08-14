@@ -10,9 +10,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jaxen.JaxenException;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -26,13 +30,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
+    private static final Logger LOG = Logger.getLogger(InvalidSlf4jMessageFormatRule.class.getName());
 
     private static final Set<String> LOGGER_LEVELS;
     private static final String LOGGER_CLASS = "org.slf4j.Logger";
@@ -183,20 +188,36 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         for (final ASTVariableDeclarator astVariableDeclarator : variables) {
             if (astVariableDeclarator.getFirstChildOfType(ASTVariableDeclaratorId.class).getImage()
                     .equals(variableName)) {
-                return countPlaceholders(astVariableDeclarator);
+                ASTVariableInitializer variableInitializer = astVariableDeclarator
+                        .getFirstDescendantOfType(ASTVariableInitializer.class);
+                ASTExpression expression = null;
+                if (variableInitializer != null) {
+                    expression = variableInitializer.getFirstChildOfType(ASTExpression.class);
+                }
+                if (expression != null) {
+                    return countPlaceholders(expression);
+                }
             }
         }
         return 0;
     }
 
-    private int countPlaceholders(final AbstractJavaTypeNode node) {
+    private int countPlaceholders(final ASTExpression node) {
         // zero means, no placeholders, or we could not analyze the message parameter
         int result = 0;
-        List<ASTLiteral> literals = node.findDescendantsOfType(ASTLiteral.class);
-        // if there are multiple literals, we just assume, they are concatenated
-        // together...
-        for (ASTLiteral stringLiteral : literals) {
-            result += StringUtils.countMatches(stringLiteral.getImage(), "{}");
+
+        try {
+            List<Node> literals = node
+                    .findChildNodesWithXPath(
+                            "AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true']"
+                                    + "|PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true']");
+            // if there are multiple literals, we just assume, they are concatenated
+            // together...
+            for (Node stringLiteral : literals) {
+                result += StringUtils.countMatches(stringLiteral.getImage(), "{}");
+            }
+        } catch (JaxenException e) {
+            LOG.log(Level.FINE, "Could not determine literals", e);
         }
         return result;
     }
