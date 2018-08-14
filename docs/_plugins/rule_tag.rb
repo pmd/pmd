@@ -1,11 +1,13 @@
 
 
 # Tag to reference a rule
+#
 # Usage:
 # {% rule "java/codestyle/LinguisticNaming" %} works from anywhere
 # If inside the doc page of a ruleset/category, the language and
 # category segment can be dropped, they're taken to be the same.
-# That means rule descriptions can reference rules e.g. by simply
+#
+# That means rule descriptions can also reference rules e.g. by simply
 # saying {% rule AvoidFinalLocalVars %} if they're in the same category
 # This could allow deprecated rule notices to link to the replacement rule
 
