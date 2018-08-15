@@ -140,6 +140,7 @@ the following template:
 *   Move version/release info from **docs/pages/release_notes.md** to **docs/pages/release_notes_old.md**.
 *   Update version/release info in **docs/pages/release_notes.md**. Use the following template:
 
+{%raw%}
 ```
 ---
 title: PMD Release Notes
@@ -147,11 +148,11 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## ????? - ${DEVELOPMENT_VERSION}
+## {{ site.pmd.date }} - {{ site.pmd.version }}
 
-The PMD team is pleased to announce PMD ${DEVELOPMENT_VERSION%-SNAPSHOT}.
+The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
-This is a bug fixing release.
+This is a {{ site.pmd.release_type }} release.
 
 ### Table Of Contents
 
@@ -169,6 +170,8 @@ This is a bug fixing release.
 ### External Contributions
 
 ```
+{%endraw%}
+
 
 Commit and push
 

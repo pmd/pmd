@@ -6,7 +6,7 @@
 # Doesn't trim the header, which is done in shell
 
 # Args:
-# $1 : location of the file to render
+# ARGV[0] : location of the file to render
 
 require "liquid"
 require "yaml"
