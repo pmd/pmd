@@ -20,7 +20,8 @@ import net.sourceforge.pmd.properties.RegexProperty;
  * @since 6.7.0
  */
 public class FieldNamingConventionsRule extends AbstractNamingConventionRule<ASTVariableDeclaratorId> {
-    private final RegexProperty constantFieldRegex = defaultProp("constant").defaultValue("[A-Z][A-Z_0-9]*").build();
+    private final RegexProperty publicConstantFieldRegex = defaultProp("public constant").defaultValue("[A-Z][A-Z_0-9]*").build();
+    private final RegexProperty constantFieldRegex = defaultProp("constant").desc("Regex which applies to non-public static final field names").defaultValue("[A-Z][A-Z_0-9]*").build();
     private final RegexProperty enumConstantRegex = defaultProp("enum constant").defaultValue("[A-Z][A-Z_0-9]*").build();
     private final RegexProperty finalFieldRegex = defaultProp("final field").build();
     private final RegexProperty staticFieldRegex = defaultProp("static field").build();
@@ -28,6 +29,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
 
 
     public FieldNamingConventionsRule() {
+        definePropertyDescriptor(publicConstantFieldRegex);
         definePropertyDescriptor(constantFieldRegex);
         definePropertyDescriptor(enumConstantRegex);
         definePropertyDescriptor(finalFieldRegex);
@@ -44,7 +46,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
 
         for (ASTVariableDeclaratorId id : node) {
             if (node.isFinal() && node.isStatic()) {
-                checkMatches(id, constantFieldRegex, data);
+                checkMatches(id, node.isPublic() ? publicConstantFieldRegex : constantFieldRegex, data);
             } else if (node.isFinal()) {
                 checkMatches(id, finalFieldRegex, data);
             } else if (node.isStatic()) {
@@ -83,8 +85,10 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
     String kindDisplayName(ASTVariableDeclaratorId node, PropertyDescriptor<Pattern> descriptor) {
         ASTFieldDeclaration field = (ASTFieldDeclaration) node.getNthParent(2);
 
-        if (field.isFinal()) {
-            return field.isStatic() ? "constant" : "final field";
+        if (field.isFinal() && field.isStatic()) {
+            return field.isPublic() ? "public constant" : "constant";
+        } else if (field.isFinal()) {
+            return "final field";
         } else if (field.isStatic()) {
             return "static field";
         } else {
