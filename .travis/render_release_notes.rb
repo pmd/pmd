@@ -15,38 +15,11 @@ require "yaml"
 require_relative "../docs/_plugins/rule_tag"
 require_relative "../docs/_plugins/custom_filters"
 
-
-# this could be somewhere else
-module Logger
-
-  def Logger.log_error(should_exit = true, message)
-    log_col(COL_RED, :error, message)
-    if should_exit
-      exit 1
-    end
-  end
-
-  private
-
-  def Logger.log_col(col, tag, message)
-    puts "#{col}[#{tag.to_s.upcase}] In #{$0}: #{message}#{COL_RESET}"
-  end
-
-  COL_GREEN = "\e[32m"
-  COL_YELLOW = "\e[33;1m"
-  COL_RED = "\e[31m"
-  COL_RESET = "\e[0m"
-
-end
-
 # START OF THE SCRIPT
 
-unless ARGV.length == 1
-  Logger::log_error "No file name provided"
-end
-
-unless File.exists?(ARGV[0])
-  Logger::log_error("The provided file must exist")
+unless ARGV.length == 1 && File.exists?(ARGV[0])
+  print "\e[31m[ERROR] In #{$0}: The first arg must be a valid file name\e[0m"
+  exit 1
 end
 
 release_notes_file = ARGV[0]
