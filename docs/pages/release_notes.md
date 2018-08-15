@@ -35,6 +35,7 @@ This is a minor release.
 
 *   core
     *   [#1191](https://github.com/pmd/pmd/issues/1191): \[core] Test Framework: Sort violations by line/column
+    *   [#1283](https://github.com/pmd/pmd/issues/1283): \[core] Deprecate ReportTree
     *   [#1288](https://github.com/pmd/pmd/issues/1288): \[core] No supported build listeners found with Gradle
     *   [#1300](https://github.com/pmd/pmd/issues/1300): \[core] PMD stops processing file completely, if one rule in a rule chain fails
 *   java-bestpractices
@@ -53,6 +54,11 @@ This is a minor release.
     *   [#681](https://github.com/pmd/pmd/issues/681): \[plsql] Parse error with Cursor For Loop
 
 ### API Changes
+
+*   All classes in the package `net.sourceforge.pmd.lang.dfa.report` have been deprecated and will be removed
+    with PMD 7.0.0. This includes the class `net.sourceforge.pmd.lang.dfa.report.ReportTree`. The reason is,
+    that this class is very specific to Java and not suitable for other languages. It has only been used for
+    `YAHTMLRenderer`, which has been rewritten to work without these classes.
 
 ### External Contributions
 

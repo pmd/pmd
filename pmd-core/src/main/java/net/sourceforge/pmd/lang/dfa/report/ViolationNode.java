@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.dfa.report;
 
 import net.sourceforge.pmd.RuleViolation;
 
+@Deprecated // will be removed with PMD 7.0.0 without replacement. See net.sourceforge.pmd.lang.dfa.report.ReportTree for details.
 public class ViolationNode extends AbstractReportNode {
 
     private RuleViolation ruleViolation;
