@@ -68,13 +68,10 @@ export CURRENT_BRANCH
 
 RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml"
 
-echo "*   Update version/release info in **docs/pages/release_notes.md**."
-echo
-echo "    ## $(date -u +%d-%B-%Y) - ${RELEASE_VERSION}"
-echo
 echo "*   Update date info in **docs/_config.yml**."
+echo "    date: $(date -u +%d-%B-%Y)"
 echo
-echo "*   Ensure all the new rules are listed in a the proper file:"
+echo "*   Ensure all the new rules are listed in the proper file:"
 echo "    ${RELEASE_RULESET}"
 echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
@@ -140,7 +137,7 @@ read
 
 # update release_notes_old
 OLD_RELEASE_NOTES=$(tail -n +8 docs/pages/release_notes_old.md)
-NEW_RELEASE_NOTES=$(tail -n +6 docs/pages/release_notes.md)
+NEW_RELEASE_NOTES=$(.travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
 echo "$(head -n 7 docs/pages/release_notes_old.md)" > docs/pages/release_notes_old.md
 echo "$NEW_RELEASE_NOTES" >> docs/pages/release_notes_old.md
 echo >> docs/pages/release_notes_old.md
@@ -154,11 +151,11 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## ????? - ${DEVELOPMENT_VERSION}
+## {{ site.pmd.date }} - {{ site.pmd.version | append_unless: is_release_version, "-SNAPSHOT" }}
 
-The PMD team is pleased to announce PMD ${DEVELOPMENT_VERSION%-SNAPSHOT}.
+The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
-This is a minor release.
+This is a {{ site.pmd.release_type }} release.
 
 ### Table Of Contents
 
@@ -193,7 +190,7 @@ echo
 echo "    *   Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${RELEASE_VERSION}"
 echo "    *   Documentation: https://pmd.github.io/pmd-${RELEASE_VERSION}/"
 echo
-echo "    And Copy-Paste the release notes"
+echo "$NEW_RELEASE_NOTES"
 echo
 echo
 echo
@@ -201,6 +198,5 @@ echo "------------------------------------------"
 echo "Done."
 echo "------------------------------------------"
 echo
-
 
 
