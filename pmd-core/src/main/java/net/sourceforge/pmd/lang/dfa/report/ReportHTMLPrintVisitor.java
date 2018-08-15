@@ -25,6 +25,7 @@ import net.sourceforge.pmd.RuleViolation;
  *
  * @author raik
  */
+@Deprecated // will be removed with PMD 7.0.0 without replacement. See net.sourceforge.pmd.lang.dfa.report.ReportTree for details.
 public class ReportHTMLPrintVisitor extends ReportVisitor {
 
     @SuppressWarnings("PMD.AvoidStringBufferField")
