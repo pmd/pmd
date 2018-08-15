@@ -519,7 +519,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>[9,)</version>
+                                    <version>[10,)</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
