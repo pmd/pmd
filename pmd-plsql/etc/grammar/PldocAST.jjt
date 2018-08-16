@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Added support for OrderBy and RowLimiting clauses for SELECT statements
  * Removed FROM from the RelationalExpression
  * Support QueryPartitionClause
+ * Support GroupByClause
  *
  * Andreas Dangel 08/2018
  *====================================================================
@@ -1117,7 +1118,6 @@ ASTSelectIntoStatement SelectIntoStatement() :
 
     SelectList()
     ( IntoClause() | BulkCollectIntoClause() )
-    <FROM>
     RestOfStatement()
 
     { return jjtThis; }
@@ -1126,8 +1126,9 @@ ASTSelectIntoStatement SelectIntoStatement() :
 void RestOfStatement() #void :
 {}
 {
-    FromClause() ("," FromClause() )*
+    FromClause()
     [ WhereClause() ]
+    [ GroupByClause() ]
     [ OrderByClause() ]
     [ RowLimitingClause() ]
 }
@@ -1194,11 +1195,62 @@ ASTQueryBlock QueryBlock() :
 {
     // [ WithClause() ]
     <SELECT> [ <DISTINCT> | <UNIQUE> | <ALL> ] SelectList()
-    <FROM> FromClause() ("," FromClause() )*
+    FromClause()
     [ WhereClause() ]
     // [ HierarchicalQueryClause() ]
-    // [ GroupByClause() ]
+    [ GroupByClause() ]
     // [ ModelClause() ]
+    { return jjtThis; }
+}
+
+/**
+ * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/group_by_clause.html
+ */
+ASTGroupByClause GroupByClause() :
+{}
+{
+    <GROUP> <BY>
+    ( LOOKAHEAD(2) [","]
+        (
+            LOOKAHEAD(3) RollupCubeClause()
+        |
+            LOOKAHEAD(3) GroupingSetsClause()
+        |
+            LOOKAHEAD(3) Expression()
+        )
+    )+
+    [ <HAVING> Condition() ]
+    { return jjtThis; }
+}
+
+ASTRollupCubeClause RollupCubeClause() :
+{}
+{
+    ( <ROLLUP> | <CUBE> ) { jjtThis.setImage(token.image); }
+    "(" GroupingExpressionList() ")"
+    { return jjtThis; }
+}
+
+ASTGroupingSetsClause GroupingSetsClause() :
+{}
+{
+    <GROUPING> <SETS>
+    "("
+        ( [","]
+            (
+                LOOKAHEAD(3) RollupCubeClause()
+            |
+                LOOKAHEAD(3) GroupingExpressionList()
+            )
+        )+
+    ")"
+    { return jjtThis; }
+}
+
+ASTGroupingExpressionList GroupingExpressionList() :
+{}
+{
+    ExpressionList() (LOOKAHEAD(2)  "," ExpressionList() )*
     { return jjtThis; }
 }
 
@@ -1331,6 +1383,13 @@ ASTColumn Column() :
 ASTFromClause FromClause() :
 {}
 {
+    <FROM> FromClauseEntry() ("," FromClauseEntry() )*
+    { return jjtThis; }
+}
+
+void FromClauseEntry() #void :
+{}
+{
  (
      LOOKAHEAD(JoinClause()) JoinClause()
  |
@@ -1338,7 +1397,6 @@ ASTFromClause FromClause() :
  |
      "(" JoinClause() ")"
  )
-    { return jjtThis; }
 }
 
 /**
@@ -3811,6 +3869,7 @@ TOKEN [IGNORE_CASE]:
 <CONVERT: "CONVERT"> |
 <CREATE: "CREATE"> |
 <CROSS: "CROSS"> |
+<CUBE: "CUBE"> |
 <CURRENT: "CURRENT"> |
 <CURRVAL: "CURRVAL"> |
 <CURSOR: "CURSOR"> |
@@ -3863,6 +3922,7 @@ TOKEN [IGNORE_CASE]:
 <GLOBAL: "GLOBAL"> |
 <GOTO: "GOTO"> |
 <GROUP: "GROUP"> |
+<GROUPING: "GROUPING"> |
 <GRANT: "GRANT"> | //SRT 2011-04-17
 <HASH: "HASH"> |
 <HAVING: "HAVING"> |
@@ -3994,6 +4054,7 @@ TOKEN [IGNORE_CASE]:
 <REVERSE: "REVERSE"> |
 <REVOKE: "REVOKE"> | //SRT 2011-04-17
 <ROLLBACK: "ROLLBACK"> |
+<ROLLUP: "ROLLUP"> |
 <ROW: "ROW"> |
 <ROWS: "ROWS"> |
 <ROWID: "ROWID"> |
@@ -4006,6 +4067,7 @@ TOKEN [IGNORE_CASE]:
 <SELF: "SELF"> |
 <SEPARATE: "SEPARATE"> |
 <SET: "SET"> |
+<SETS: "SETS"> |
 <SIBLINGS: "SIBLINGS"> |
 <SIZE: "SIZE"> | //SRT 2011-04-17
 <SHARDED: "SHARDED"> |
@@ -4511,7 +4573,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <CPU_PER_SESSION>
 //| <CREATE_STORED_OUTLINES>
 | <CROSS>
-//| <CUBE>
+| <CUBE>
 //| <CUBE_GB>
 | <CURRENT>
 //| <CURRENT_DATE>
@@ -4669,7 +4731,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <GLOBAL_TOPIC_ENABLED>
 //| <GLOBALLY>
 //| <GROUP_BY>
-//| <GROUPING>
+| <GROUPING>
 //| <GROUPS>
 //| <GUARANTEE>
 //| <GUARANTEED>
@@ -5173,7 +5235,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <ROLES>
 | <ROLLBACK>
 //| <ROLLING>
-//| <ROLLUP>
+| <ROLLUP>
 | <ROW>
 //| <ROW_LENGTH>
 //| <ROWDEPENDENCIES>
@@ -5222,7 +5284,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <SESSIONTZNAME>
 | <SET> //SET is defined as a reserved word but is used in "SYS"."DBMS_RESULT_CACHE_API" as a function name and as a Pragma parameter
 //| <SET_TO_JOIN>
-//| <SETS>
+| <SETS>
 //| <SETTINGS>
 //| <SEVERE>
 | <SHARDED>
