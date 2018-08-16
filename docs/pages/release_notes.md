@@ -53,14 +53,11 @@ This is a minor release.
 
 #### Deprecated rules
 
-*   The Java rules [`VariableNamingConventions`](pmd_rules_java_codestyle.html#variablenamingconventions),
-    [`MIsLeadingVariableName`](pmd_rules_java_codestyle.html#misleadingvariablename),
-    [`SuspiciousConstantFieldName`](pmd_rules_java_codestyle.html#suspiciousconstantfieldname),
-    and [`AvoidPrefixingMethodParameters`](pmd_rules_java_codestyle.html#avoidprefixingmethodparameters) are now deprecated,
-    and will be removed with version 7.0.0. They are replaced by the more general
-    [`FieldNamingConventions`](pmd_rules_java_codestyle.html#fieldnamingconventions),
-    [`FormalParameterNamingConventions`](pmd_rules_java_codestyle.html#formalparameternamingconventions), and
-    [`LocalVariableNamingConventions`](pmd_rules_java_codestyle.html#localvariablenamingconventions).
+*   The Java rules {% rule java/codestyle/VariableNamingConventions %}, {% rule java/codestyle/MIsLeadingVariableName %},
+    {% rule java/codestyle/SuspiciousConstantFieldName %}, and {% rule java/codestyle/AvoidPrefixingMethodParameters %} are 
+    now deprecated, and will be removed with version 7.0.0. They are replaced by the more general
+    {% rule java/codestyle/FieldNamingConventions %}, {% rule java/codestyle/FormalParameterNamingConventions %}, and
+    {% rule java/codestyle/LocalVariableNamingConventions %}.
 
 ### External Contributions
 
