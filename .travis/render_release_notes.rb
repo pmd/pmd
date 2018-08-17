@@ -15,6 +15,9 @@ require "safe_yaml"
 require_relative "../docs/_plugins/rule_tag"
 require_relative "../docs/_plugins/custom_filters"
 
+# explicitly setting safe mode to get rid of the warning
+SafeYAML::OPTIONS[:default_mode] = :safe
+
 # START OF THE SCRIPT
 
 unless ARGV.length == 1 && File.exists?(ARGV[0])

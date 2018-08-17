@@ -62,6 +62,10 @@ echo "Press enter to continue..."
 read
 
 
+# install bundles needed for rendering release notes
+bundle install with=release_notes_preprocessing --path vendor/bundle
+
+
 export RELEASE_VERSION
 export DEVELOPMENT_VERSION
 export CURRENT_BRANCH
@@ -137,7 +141,7 @@ read
 
 # update release_notes_old
 OLD_RELEASE_NOTES=$(tail -n +8 docs/pages/release_notes_old.md)
-NEW_RELEASE_NOTES=$(.travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
+NEW_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
 echo "$(head -n 7 docs/pages/release_notes_old.md)" > docs/pages/release_notes_old.md
 echo "$NEW_RELEASE_NOTES" >> docs/pages/release_notes_old.md
 echo >> docs/pages/release_notes_old.md

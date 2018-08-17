@@ -28,8 +28,11 @@ if [ "${BUILD}" = "deploy" ]; then
     true
 )
 
+# install the gems required for rendering the release notes
+bundle install --with=release_notes_preprocessing
+
 # renders, and skips the first 6 lines - the Jekyll front-matter
-RENDERED_RELEASE_NOTES=$(.travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
+RENDERED_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
 
 # Assumes, the release has already been created by travis github releases provider
 RELEASE_ID=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" https://api.github.com/repos/pmd/pmd/releases/tags/pmd_releases/${RELEASE_VERSION}|jq ".id")
