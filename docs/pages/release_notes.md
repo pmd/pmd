@@ -4,11 +4,11 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## ????? - 6.7.0-SNAPSHOT
+## {{ site.pmd.date }} - {{ site.pmd.version | append_unless: is_release_version, "-SNAPSHOT" }}
 
-The PMD team is pleased to announce PMD 6.7.0.
+The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
-This is a minor release.
+This is a {{ site.pmd.release_type }} release.
 
 ### Table Of Contents
 
@@ -22,12 +22,12 @@ This is a minor release.
 
 #### New Rules
 
-*   The new Java rule [`LinguisticNaming`](pmd_rules_java_codestyle.html#linguisticnaming) (`java-codestyle`)
+*   The new Java rule {% rule java/codestyle/LinguisticNaming %} (`java-codestyle`)
     detects cases, when a method name indicates it returns a boolean (such as `isSmall()`) but it doesn't.
     Besides method names, the rule also checks field and variable names. It also checks, that getters return
     something but setters won't. The rule has several properties with which it can be customized.
 
-*   The new PL/SQL rule [`ForLoopNaming`](pmd_rules_plsql_codestyle.html#forloopnaming) (`plsql-codestyle`)
+*   The new PL/SQL rule {% rule plsql/codestyle/ForLoopNaming %} (`plsql-codestyle`)
     enforces a naming convention for "for loops". Both "cursor for loops" and "index for loops" are covered.
     The rule can be customized via patterns. By default, short variable names are reported.
 
