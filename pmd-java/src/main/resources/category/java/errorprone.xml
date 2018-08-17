@@ -2086,6 +2086,7 @@ public class Foo extends TestCase {
           since="1.0"
           message="You have a suite() method that is not both public and static, so JUnit won't call it to get your TestSuite.  Is that what you wanted to do?"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junitstaticsuite">
         <description>
 The suite() method in a JUnit test needs to be both public and static.
@@ -3044,6 +3045,7 @@ public class Foo {
           since="3.0"
           message="assertTrue(true) or similar statements are unnecessary"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unnecessarybooleanassertion">
         <description>
 A JUnit test assertion with a boolean literal is unnecessary since it always will evaluate to the same thing.
