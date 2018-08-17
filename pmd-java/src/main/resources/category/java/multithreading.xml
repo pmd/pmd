@@ -169,8 +169,8 @@ Explicitly calling Thread.run() method will execute in the caller's thread of co
     [
         ./Name[ends-with(@Image, '.run') or @Image = 'run']
         and substring-before(Name/@Image, '.') =//VariableDeclarator/VariableDeclaratorId/@Image
-            [../../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.Thread')]]
-        or (./AllocationExpression/ClassOrInterfaceType[typeIs('java.lang.Thread')]
+            [../../../Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]]
+        or (./AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]
         and ../PrimarySuffix[@Image = 'run'])
     ]
 ]
