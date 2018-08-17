@@ -447,12 +447,13 @@ public class GoodTest {
     <rule name="JUnit4TestShouldUseAfterAnnotation"
           language="java"
           since="4.0"
-          message="JUnit 4 tests that clean up tests should use the @After annotation"
+          message="JUnit 4 tests that clean up tests should use the @After annotation, JUnit5 tests should use @AfterEach or @AfterAll"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshoulduseafterannotation">
         <description>
 In JUnit 3, the tearDown method was used to clean up all data entities required in running tests. 
-JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test
+JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test.
+JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after each test or after all tests in the class, respectively.
         </description>
         <priority>3</priority>
         <properties>
@@ -461,7 +462,7 @@ JUnit 4 skips the tearDown method and executes all methods annotated with @After
 <![CDATA[
 //CompilationUnit[not(ImportDeclaration/Name[starts-with(@Image, "org.testng")])]
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='tearDown']]
-[count(Annotation//Name[@Image='After'])=0]
+[count(Annotation//Name[@Image='After' or @Image='AfterEach' or @Image='AfterAll'])=0]
 ]]>
                 </value>
             </property>
@@ -485,12 +486,13 @@ public class MyTest2 {
     <rule name="JUnit4TestShouldUseBeforeAnnotation"
           language="java"
           since="4.0"
-          message="JUnit 4 tests that set up tests should use the @Before annotation"
+          message="JUnit 4 tests that set up tests should use the @Before annotation, JUnit5 tests should use @BeforeEach or @BeforeAll"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusebeforeannotation">
         <description>
 In JUnit 3, the setUp method was used to set up all data entities required in running tests. 
-JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests
+JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests.
+JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods before each test or before all tests in the class, respectively.
         </description>
         <priority>3</priority>
         <properties>
@@ -499,7 +501,7 @@ JUnit 4 skips the setUp method and executes all methods annotated with @Before b
 <![CDATA[
 //CompilationUnit[not(ImportDeclaration/Name[starts-with(@Image, "org.testng")])]
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='setUp']]
-[count(Annotation//Name[@Image='Before'])=0]
+[count(Annotation//Name[@Image='Before' or @Image='BeforeEach' or @Image='BeforeAll'])=0]
 ]]>
                 </value>
             </property>
@@ -523,13 +525,14 @@ public class MyTest2 {
     <rule name="JUnit4TestShouldUseTestAnnotation"
           language="java"
           since="4.0"
-          message="JUnit 4 tests that execute tests should use the @Test annotation"
+          message="JUnit 4 tests that execute tests should use the @Test annotation, JUnit 5 tests should use @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation">
         <description>
 In JUnit 3, the framework executed all methods which started with the word test as a unit test. 
 In JUnit 4, only methods annotated with the @Test annotation are executed.
+In JUnit 5, one of the following annotations should be used for tests: @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest.
         </description>
         <priority>3</priority>
         <properties>
@@ -541,7 +544,12 @@ In JUnit 4, only methods annotated with the @Test annotation are executed.
         or ExtendsList/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]]
 
     /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true()]/MethodDeclarator[starts-with(@Image, 'test')]]
-    [not(Annotation//Name[pmd-java:typeIs('org.junit.Test')])]
+    [not(Annotation//Name[
+        pmd-java:typeIs('org.junit.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    ])]
 ]]>
                 </value>
             </property>
@@ -1213,8 +1221,14 @@ This rule detects JUnit assertions in object equality. These assertions should b
     PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
     [ends-with(@Image, '.equals')]
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
-]]>
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
+    or //MarkerAnnotation/Name[
+        pmd-java:typeIs('org.junit.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    ]
+]]]]>
                 </value>
             </property>
         </properties>
@@ -1253,8 +1267,14 @@ more specific methods, like assertNull, assertNotNull.
   Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
  ]
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
-]]>
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
+    or //MarkerAnnotation/Name[
+        pmd-java:typeIs('org.junit.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    ]
+]]]]>
                 </value>
             </property>
         </properties>
@@ -1295,8 +1315,14 @@ by more specific methods, like assertSame, assertNotSame.
 [PrimarySuffix/Arguments
  /ArgumentList/Expression
  /EqualityExpression[count(.//NullLiteral) = 0]]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
-]]>
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
+    or //MarkerAnnotation/Name[
+        pmd-java:typeIs('org.junit.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    ]
+]]]]>
                 </value>
             </property>
         </properties>

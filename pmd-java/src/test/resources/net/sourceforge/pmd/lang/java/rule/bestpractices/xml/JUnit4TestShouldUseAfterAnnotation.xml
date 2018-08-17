@@ -64,4 +64,32 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#940 False positive with JUnit4TestShouldUseAfterAnnotation when JUnit5's 'AfterEach' is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.AfterEach;
+
+public class Foo {
+    @AfterEach
+    public void tearDown() {
+      //...
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#940 False positive with JUnit4TestShouldUseAfterAnnotation when JUnit5's 'AfterAll' is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.AfterAll;
+
+public class Foo {
+    @AfterAll
+    public void tearDown() {
+      //...
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
