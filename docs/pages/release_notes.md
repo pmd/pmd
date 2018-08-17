@@ -4,11 +4,11 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## ????? - 6.7.0-SNAPSHOT
+## {{ site.pmd.date }} - {{ site.pmd.version | append_unless: is_release_version, "-SNAPSHOT" }}
 
-The PMD team is pleased to announce PMD 6.7.0.
+The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
-This is a minor release.
+This is a {{ site.pmd.release_type }} release.
 
 ### Table Of Contents
 
@@ -22,12 +22,12 @@ This is a minor release.
 
 #### New Rules
 
-*   The new Java rule [`LinguisticNaming`](pmd_rules_java_codestyle.html#linguisticnaming) (`java-codestyle`)
+*   The new Java rule {% rule java/codestyle/LinguisticNaming %} (`java-codestyle`)
     detects cases, when a method name indicates it returns a boolean (such as `isSmall()`) but it doesn't.
     Besides method names, the rule also checks field and variable names. It also checks, that getters return
     something but setters won't. The rule has several properties with which it can be customized.
 
-*   The new PL/SQL rule [`ForLoopNaming`](pmd_rules_plsql_codestyle.html#forloopnaming) (`plsql-codestyle`)
+*   The new PL/SQL rule {% rule plsql/codestyle/ForLoopNaming %} (`plsql-codestyle`)
     enforces a naming convention for "for loops". Both "cursor for loops" and "index for loops" are covered.
     The rule can be customized via patterns. By default, short variable names are reported.
 
@@ -39,7 +39,9 @@ This is a minor release.
 
 *   core
     *   [#1191](https://github.com/pmd/pmd/issues/1191): \[core] Test Framework: Sort violations by line/column
+    *   [#1283](https://github.com/pmd/pmd/issues/1283): \[core] Deprecate ReportTree
     *   [#1288](https://github.com/pmd/pmd/issues/1288): \[core] No supported build listeners found with Gradle
+    *   [#1300](https://github.com/pmd/pmd/issues/1300): \[core] PMD stops processing file completely, if one rule in a rule chain fails
 *   java-bestpractices
     *   [#1267](https://github.com/pmd/pmd/pull/1267): \[java] MissingOverrideRule: Avoid NoClassDefFoundError with incomplete classpath
 *   java-codestyle
@@ -47,6 +49,8 @@ This is a minor release.
     *   [#1258](https://github.com/pmd/pmd/issues/1285): \[java] False positive "UselessParentheses" for parentheses that contain assignment
 *   java-errorprone
     *   [#1078](https://github.com/pmd/pmd/issues/1078): \[java] MissingSerialVersionUID rule does not seem to catch inherited classes
+*   java-performance
+    *   [#1298](https://github.com/pmd/pmd/issues/1298): \[java] RedundantFieldInitializer - NumberFormatException with Long
 *   jsp
     *   [#1274](https://github.com/pmd/pmd/issues/1274): \[jsp] Support EL in tag attributes
     *   [#1276](https://github.com/pmd/pmd/issues/1276): \[jsp] add support for jspf and tag extensions
@@ -54,6 +58,11 @@ This is a minor release.
     *   [#681](https://github.com/pmd/pmd/issues/681): \[plsql] Parse error with Cursor For Loop
 
 ### API Changes
+
+*   All classes in the package `net.sourceforge.pmd.lang.dfa.report` have been deprecated and will be removed
+    with PMD 7.0.0. This includes the class `net.sourceforge.pmd.lang.dfa.report.ReportTree`. The reason is,
+    that this class is very specific to Java and not suitable for other languages. It has only been used for
+    `YAHTMLRenderer`, which has been rewritten to work without these classes.
 
 ### External Contributions
 

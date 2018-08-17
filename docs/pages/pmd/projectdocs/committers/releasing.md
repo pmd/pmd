@@ -25,12 +25,9 @@ Make sure code is up to date and everything is committed and pushed with git:
 
 ### The Release Notes and docs
 
-At a very minimum, the current date must be noted in the release notes and the download section. Also, the version
-must be adjusted. E.g. by removing "-SNAPSHOT".
-
 You can find the release notes here: `docs/pages/release_notes.md`.
 
-The date for the download section is to be entered in `docs/_config.yml`, e.g.
+The date and the version must be updated in `docs/_config.yml`,  e.g.
 
 ```
 pmd:
@@ -140,6 +137,7 @@ the following template:
 *   Move version/release info from **docs/pages/release_notes.md** to **docs/pages/release_notes_old.md**.
 *   Update version/release info in **docs/pages/release_notes.md**. Use the following template:
 
+{%raw%}
 ```
 ---
 title: PMD Release Notes
@@ -147,11 +145,11 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## ????? - ${DEVELOPMENT_VERSION}
+## {{ site.pmd.date }} - {{ site.pmd.version | append_unless: is_release_version, "-SNAPSHOT" }}
 
-The PMD team is pleased to announce PMD ${DEVELOPMENT_VERSION%-SNAPSHOT}.
+The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
-This is a bug fixing release.
+This is a {{ site.pmd.release_type }} release.
 
 ### Table Of Contents
 
@@ -169,6 +167,8 @@ This is a bug fixing release.
 ### External Contributions
 
 ```
+{%endraw%}
+
 
 Commit and push
 

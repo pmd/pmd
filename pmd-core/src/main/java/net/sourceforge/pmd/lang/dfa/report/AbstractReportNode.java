@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.dfa.report;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated // will be removed with PMD 7.0.0 without replacement. See net.sourceforge.pmd.lang.dfa.report.ReportTree for details.
 public abstract class AbstractReportNode {
     private List<AbstractReportNode> childNodes = new ArrayList<>();
     private AbstractReportNode parentNode = null;

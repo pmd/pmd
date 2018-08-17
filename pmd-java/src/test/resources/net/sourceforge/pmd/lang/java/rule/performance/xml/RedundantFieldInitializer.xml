@@ -1408,4 +1408,15 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1298 [java] RedundantFieldInitializer - NumberFormatException with Long</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class RedundantFieldInitializerTest {
+    private long hexLongMinusOne = 0xffffffffffffffffL;
+    private int hexIntMinusOne = 0xffffffff;
+}
+        ]]></code>
+    </test-code>
 </test-data>
