@@ -8,6 +8,14 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.RuleViolation;
 
+/**
+ *
+ * @deprecated This class will be removed with PMD 7.0.0 without replacement.
+ * It is very specific for Java as it tries to recreate the package hierarchy
+ * of the analyzed classes and put the found violations in there.
+ * So it is of limited use for any other language.
+ */
+@Deprecated // will be removed with PMD 7.0.0 without replacement
 public class ReportTree implements Iterable<RuleViolation> {
 
     private PackageNode rootNode = new PackageNode("");
