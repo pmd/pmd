@@ -110,18 +110,6 @@ echo
 echo "Tag has been pushed.... now check travis build: <https://travis-ci.org/pmd/pmd>"
 echo
 echo
-echo "Submit news to SF on <https://sourceforge.net/p/pmd/news/> page. You can use"
-echo "the following template:"
-echo
-cat <<EOF
-PMD ${RELEASE_VERSION} released
-
-* Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${RELEASE_VERSION}
-* Documentation: https://pmd.github.io/pmd-${RELEASE_VERSION}/
-
-And Copy-Paste the release notes
-EOF
-echo
 echo "Press enter to continue..."
 read
 
@@ -186,8 +174,9 @@ echo
 echo
 echo "Verify the new release on github: <https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION}>"
 echo
+echo "*   Submit news to SF on <https://sourceforge.net/p/pmd/news/> page. Use same text as in the email below."
+echo "*   Send out an announcement mail to the mailing list:"
 echo
-echo "Send out an announcement mail to the mailing list:"
 echo "To: PMD Developers List <pmd-devel@lists.sourceforge.net>"
 echo "Subject: [ANNOUNCE] PMD ${RELEASE_VERSION} Released"
 echo
