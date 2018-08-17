@@ -132,10 +132,10 @@ The FileReader and FileWriter constructors instantiate FileInputStream and FileO
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[
-       typeIs('java.io.FileInputStream')
-    or typeIs('java.io.FileOutputStream')
-    or typeIs('java.io.FileReader')
-    or typeIs('java.io.FileWriter')
+       pmd-java:typeIs('java.io.FileInputStream')
+    or pmd-java:typeIs('java.io.FileOutputStream')
+    or pmd-java:typeIs('java.io.FileReader')
+    or pmd-java:typeIs('java.io.FileWriter')
   ]
 ```
 
@@ -208,10 +208,10 @@ adverse impacts on performance.
 ``` xpath
 //FieldDeclaration/Type/PrimitiveType[@Image = 'short']
 |
-//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeIs('java.lang.Override')])]
+//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[pmd-java:typeIs('java.lang.Override')])]
     /MethodDeclaration/ResultType/Type/PrimitiveType[@Image = 'short']
 |
-//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeIs('java.lang.Override')])]
+//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[pmd-java:typeIs('java.lang.Override')])]
     /MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/Type/PrimitiveType[@Image = 'short']
 |
 //LocalVariableDeclaration/Type/PrimitiveType[@Image = 'short']
@@ -300,7 +300,7 @@ Note that new Byte() is deprecated since JDK 9 for that reason.
 ``` xpath
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeIs('java.lang.Byte')]]
+and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')]]
 ```
 
 **Example(s):**
@@ -498,7 +498,7 @@ Note that new Integer() is deprecated since JDK 9 for that reason.
 ``` xpath
 //AllocationExpression
   [not (ArrayDimsAndInits)
-   and ClassOrInterfaceType[typeIs('java.lang.Integer')]]
+   and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Integer')]]
 ```
 
 **Example(s):**
@@ -528,7 +528,7 @@ Note that new Long() is deprecated since JDK 9 for that reason.
 ``` xpath
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeIs('java.lang.Long')]]
+and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Long')]]
 ```
 
 **Example(s):**
@@ -647,7 +647,7 @@ Note that new Short() is deprecated since JDK 9 for that reason.
 ``` xpath
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeIs('java.lang.Short')]]
+and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Short')]]
 ```
 
 **Example(s):**
