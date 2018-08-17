@@ -31,6 +31,10 @@ This is a {{ site.pmd.release_type }} release.
     enforces a naming convention for "for loops". Both "cursor for loops" and "index for loops" are covered.
     The rule can be customized via patterns. By default, short variable names are reported.
 
+*   The new Java rule {% rule java/codestyle/FieldNamingConventions %} (`java-codestyle`)
+    detects field names that don't comply to a given convention. It defaults to standard Java convention of using camelCase,
+    but can be configured with ease for e.g. constants or static fields.
+
 ### Fixed Issues
 
 *   core
