@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
 
@@ -187,31 +186,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
      */
     @Override
     public Iterator<ASTVariableDeclaratorId> iterator() {
-        return iterateIds(this);
+        return ASTVariableDeclarator.iterateIds(this);
     }
 
-
-    /* only for LocalVarDeclaration */ static Iterator<ASTVariableDeclaratorId> iterateIds(Node parent) {
-        // TODO this can be made clearer with iterator mapping (Java 8)
-        final Iterator<ASTVariableDeclarator> declarators = new NodeChildrenIterator<>(parent, ASTVariableDeclarator.class);
-
-        return new Iterator<ASTVariableDeclaratorId>() {
-            @Override
-            public boolean hasNext() {
-                return declarators.hasNext();
-            }
-
-
-            @Override
-            public ASTVariableDeclaratorId next() {
-                return declarators.next().getVariableId();
-            }
-
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
-    }
 }

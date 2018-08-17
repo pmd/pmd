@@ -127,6 +127,6 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
      */
     @Override
     public Iterator<ASTVariableDeclaratorId> iterator() {
-        return ASTFieldDeclaration.iterateIds(this);
+        return ASTVariableDeclarator.iterateIds(this);
     }
 }

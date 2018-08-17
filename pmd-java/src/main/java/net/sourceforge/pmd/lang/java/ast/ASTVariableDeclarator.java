@@ -5,6 +5,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Iterator;
+
+import net.sourceforge.pmd.lang.ast.Node;
+
+
 /**
  * Groups a variable ID and its initializer if it exists.
  * May be found as a child of {@linkplain ASTFieldDeclaration field declarations} and
@@ -66,5 +71,30 @@ public class ASTVariableDeclarator extends AbstractJavaTypeNode {
         return hasInitializer() ? (ASTVariableInitializer) jjtGetChild(1) : null;
     }
 
+
+    /* only for LocalVarDeclaration and FieldDeclaration */
+    static Iterator<ASTVariableDeclaratorId> iterateIds(Node parent) {
+        // TODO this can be made clearer with iterator mapping (Java 8)
+        final Iterator<ASTVariableDeclarator> declarators = new NodeChildrenIterator<>(parent, ASTVariableDeclarator.class);
+
+        return new Iterator<ASTVariableDeclaratorId>() {
+            @Override
+            public boolean hasNext() {
+                return declarators.hasNext();
+            }
+
+
+            @Override
+            public ASTVariableDeclaratorId next() {
+                return declarators.next().getVariableId();
+            }
+
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
 
 }
