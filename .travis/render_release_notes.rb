@@ -13,6 +13,7 @@ require "safe_yaml"
 
 # include some custom liquid extensions
 require_relative "../docs/_plugins/rule_tag"
+require_relative "../docs/_plugins/tocmaker_block"
 require_relative "../docs/_plugins/custom_filters"
 
 # explicitly setting safe mode to get rid of the warning
