@@ -13,7 +13,7 @@ class TocMakerBlock < Liquid::Block
     condition, depth = arg.split
 
     @max_depth = depth.to_s.empty? ? 100 : depth.to_i
-    @condition_var = condition.strip
+    @condition_var = condition.strip unless condition.to_s.empty?
 
     @body = tokens
   end
