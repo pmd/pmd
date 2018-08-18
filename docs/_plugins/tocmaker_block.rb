@@ -5,7 +5,6 @@
 # * An integer, describing the maximum depth at which headers are added to the toc
 
 class TocMakerBlock < Liquid::Block
-  # include Enumerable
 
   def initialize(tag_name, arg, tokens)
     super
