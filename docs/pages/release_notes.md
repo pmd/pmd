@@ -10,7 +10,7 @@ The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
 This is a {{ site.pmd.release_type }} release.
 
-{% tocmaker %}
+{% tocmaker is_release_notes_processor %}
 
 ### New and noteworthy
 

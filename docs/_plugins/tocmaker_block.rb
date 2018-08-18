@@ -1,14 +1,20 @@
 # Generates a table of contents based on markdown headers in the body
 #
-# The block's arg may be an int describing the maximum depth at which
-# headers are added to the toc
+# The block has 2 optional args:
+# * A variable name. If provided, the toc will only be generated if the var is true
+# * An integer, describing the maximum depth at which headers are added to the toc
 
 class TocMakerBlock < Liquid::Block
   # include Enumerable
 
   def initialize(tag_name, arg, tokens)
     super
-    @max_depth = arg.to_s.empty? ? 100 : arg.to_i
+
+    condition, depth = arg.split
+
+    @max_depth = depth.to_s.empty? ? 100 : depth.to_i
+    @condition_var = condition.strip
+
     @body = tokens
   end
 
@@ -22,6 +28,10 @@ class TocMakerBlock < Liquid::Block
 
     contents = @body.render(context)
 
+    if @condition_var && !context[@condition_var]
+      # If the condition is false, the toc is not generated
+      return contents
+    end
 
     headers = contents.lines.map {|l|
       if /^(#+)\s+(\S.*)$/ =~ l
@@ -29,7 +39,7 @@ class TocMakerBlock < Liquid::Block
       end
     }.compact
 
-    min_indent = headers.min_by {|t| t[0]}[0]
+    min_indent = headers.map {|t| t[0]}.min
 
     headers = headers.map {|t|
       actual_depth = t[0] - min_indent
