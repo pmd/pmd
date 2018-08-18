@@ -27,8 +27,23 @@ TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}"
     fi
 }
 
+function upload_baseline() {
+    log_info "Generating and uploading baseline for pmdtester..."
+    cd ..
+    pmdtester -m single -r ./pmd -p ${TRAVIS_BRANCH} -pc ./pmd/.travis/all-java.xml -l ./pmd/.travis/project-list.xml -f
+    cd target/reports
+    BRANCH_FILENAME="${TRAVIS_BRANCH/\//_}"
+    zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
+    rsync -avh ${BRANCH_FILENAME}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/
+    if [ $? -ne 0 ]; then
+        log_error "Error while uploading ${BRANCH_FILENAME}-baseline.zip to sourceforge!"
+        log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd-regression-tester/"
+    else
+        log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to sourceforge"
+    fi
+}
 
-VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
+VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
 log_info "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
 MVN_BUILD_FLAGS="-B -V"
@@ -37,6 +52,11 @@ if travis_isPullRequest; then
 
     log_info "This is a pull-request build"
     ./mvnw verify $MVN_BUILD_FLAGS
+	(
+	    set +e
+	    log_info "Running danger"
+	    bundle exec danger --verbose
+	)
 
 elif travis_isPush; then
 
@@ -77,6 +97,9 @@ elif travis_isPush; then
         else
             log_success "Successfully uploaded release_notes.md as ReadMe.md to sourceforge"
         fi
+
+        upload_baseline
+
         true
     )
 

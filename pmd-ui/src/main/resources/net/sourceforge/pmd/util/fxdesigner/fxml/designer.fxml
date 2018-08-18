@@ -60,7 +60,7 @@
                 </AnchorPane>
             </top>
             <center>
-                <SplitPane id="main-vertical-split-pane" fx:id="mainHorizontalSplitPane" dividerPositions="0.8" orientation="VERTICAL" BorderPane.alignment="BOTTOM_CENTER">
+                <SplitPane id="main-horizontal-split-pane" fx:id="mainHorizontalSplitPane" dividerPositions="0.8" orientation="VERTICAL" BorderPane.alignment="BOTTOM_CENTER">
                     <items>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                             <left>

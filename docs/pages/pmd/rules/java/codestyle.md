@@ -5,7 +5,7 @@ permalink: pmd_rules_java_codestyle.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/codestyle.xml
-keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
+keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
 language: Java
 ---
 ## AbstractNaming
@@ -405,11 +405,11 @@ public class Éléphant {}
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|classPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to concrete class names|no|
-|abstractClassPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to abstract class names|no|
-|interfacePattern|[A-Z][a-zA-Z0-9]+|Regex which applies to interface names|no|
-|enumPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to enum names|no|
-|annotationPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to annotation names|no|
+|classPattern|[A-Z][a-zA-Z0-9]*|Regex which applies to concrete class names|no|
+|abstractClassPattern|[A-Z][a-zA-Z0-9]*|Regex which applies to abstract class names|no|
+|interfacePattern|[A-Z][a-zA-Z0-9]*|Regex which applies to interface names|no|
+|enumPattern|[A-Z][a-zA-Z0-9]*|Regex which applies to enum names|no|
+|annotationPattern|[A-Z][a-zA-Z0-9]*|Regex which applies to annotation names|no|
 |utilityClassPattern|[A-Z][a-zA-Z0-9]+(Utils?\|Helper)|Regex which applies to utility class names|no|
 
 **Use this rule by referencing it:**
@@ -756,6 +756,58 @@ public class HelloWorldBean {
 <rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass" />
 ```
 
+## FieldNamingConventions
+
+**Since:** PMD 6.7.0
+
+**Priority:** High (1)
+
+Configurable naming conventions for field declarations. This rule reports variable declarations
+which do not match the regex that applies to their specific kind ---e.g. constants (static final),
+enum constant, final field. Each regex can be configured through properties.
+
+By default this rule uses the standard Java naming convention (Camel case), and uses the ALL_UPPER
+convention for constants and enum constants.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.FieldNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/FieldNamingConventionsRule.java)
+
+**Example(s):**
+
+``` java
+class Foo {
+                int myField = 1; // This is in camel case, so it's ok
+                int my_Field = 1; // This contains an underscore, it's not ok by default
+                                  // but you may allow it, or even require the "my_" prefix
+
+                final int FinalField = 1; // you may configure a different convention for final fields,
+                                          // e.g. here PascalCase: [A-Z][a-zA-Z0-9]*
+
+                interface Interface {
+                    double PI = 3.14; // interface "fields" use the constantPattern property
+                }
+
+                enum AnEnum {
+                    ORG, NET, COM; // These use a separate property but are set to ALL_UPPER by default
+                }
+            }
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|publicConstantPattern|[A-Z][A-Z_0-9]*|Regex which applies to public constant names|no|
+|constantPattern|[A-Z][A-Z_0-9]*|Regex which applies to non-public static final field names|no|
+|enumConstantPattern|[A-Z][A-Z_0-9]*|Regex which applies to enum constant names|no|
+|finalFieldPattern|[a-z][a-zA-Z0-9]*|Regex which applies to final field names|no|
+|staticFieldPattern|[a-z][a-zA-Z0-9]*|Regex which applies to static field names|no|
+|defaultFieldPattern|[a-z][a-zA-Z0-9]*|Regex which applies to field names|no|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/FieldNamingConventions" />
+```
+
 ## ForLoopShouldBeWhileLoop
 
 **Since:** PMD 1.02
@@ -860,10 +912,10 @@ class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|methodParameterPattern|[a-z][a-zA-Z0-9]+|Regex which applies to formal parameter names|no|
-|finalMethodParameterPattern|[a-z][a-zA-Z0-9]+|Regex which applies to final formal parameter names|no|
-|lambdaParameterPattern|[a-z][a-zA-Z0-9]+|Regex which applies to inferred-type lambda parameter names|no|
-|explicitLambdaParameterPattern|[a-z][a-zA-Z0-9]+|Regex which applies to explicitly-typed lambda parameter names|no|
+|methodParameterPattern|[a-z][a-zA-Z0-9]*|Regex which applies to formal parameter names|no|
+|finalMethodParameterPattern|[a-z][a-zA-Z0-9]*|Regex which applies to final formal parameter names|no|
+|lambdaParameterPattern|[a-z][a-zA-Z0-9]*|Regex which applies to inferred-type lambda parameter names|no|
+|explicitLambdaParameterPattern|[a-z][a-zA-Z0-9]*|Regex which applies to explicitly-typed lambda parameter names|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1020,6 +1072,87 @@ if (foo) {  // preferred approach
 <rule ref="category/java/codestyle.xml/IfStmtsMustUseBraces" />
 ```
 
+## LinguisticNaming
+
+**Since:** PMD 6.7.0
+
+**Priority:** Medium (3)
+
+This rule finds Linguistic Naming Antipatterns. It checks for fields, that are named, as if they should
+be boolean but have a different type. It also checks for methods, that according to their name, should
+return a boolean, but don't. Further, it checks, that getters return something and setters won't.
+Finally, it checks that methods, that start with "to" - so called transform methods - actually return
+something, since according to their name, they should convert or transform one object into another.
+There is additionally an option, to check for methods that contain "To" in their name - which are
+also transform methods. However, this is disabled by default, since this detection is prone to
+false positives.
+
+For more information, see [Linguistic Antipatterns - What They Are and How
+Developers Perceive Them](https://doi.org/10.1007/s10664-014-9350-8).
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.LinguisticNamingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/LinguisticNamingRule.java)
+
+**Example(s):**
+
+``` java
+public class LinguisticNaming {
+    int isValid;    // the field name indicates a boolean, but it is an int.
+    boolean isTrue; // correct type of the field
+
+    void myMethod() {
+        int hasMoneyLocal;      // the local variable name indicates a boolean, but it is an int.
+        boolean hasSalaryLocal; // correct naming and type
+    }
+
+    // the name of the method indicates, it is a boolean, but the method returns an int.
+    int isValid() {
+        return 1;
+    }
+    // correct naming and return type
+    boolean isSmall() {
+        return true;
+    }
+
+    // the name indicates, this is a setter, but it returns something
+    int setName() {
+        return 1;
+    }
+
+    // the name indicates, this is a getter, but it doesn't return anything
+    void getName() {
+        // nothing to return?
+    }
+
+    // the name indicates, it transforms an object and should return the result
+    void toDataType() {
+        // nothing to return?
+    }
+    // the name indicates, it transforms an object and should return the result
+    void grapeToWine() {
+        // nothing to return?
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|booleanFieldPrefixes|is \| has \| can \| have \| will \| should|the prefixes of fields and variables that indicate boolean|yes. Delimiter is '\|'.|
+|checkVariables|true|Check local variable names and types for inconsistent naming|no|
+|checkFields|true|Check field names and types for inconsistent naming|no|
+|booleanMethodPrefixes|is \| has \| can \| have \| will \| should|the prefixes of methods that return boolean|yes. Delimiter is '\|'.|
+|checkPrefixedTransformMethods|true|Check return type of methods whose names start with 'to'|no|
+|checkTransformMethods|false|Check return type of methods which contain 'To' in their name|no|
+|checkSetters|true|Check return type of setters|no|
+|checkGetters|true|Check return type of getters|no|
+|checkBooleanMethod|true|Check method names and types for inconsistent naming|no|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/LinguisticNaming" />
+```
+
 ## LocalHomeNamingConvention
 
 **Since:** PMD 4.0
@@ -1157,9 +1290,9 @@ class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|localVarPattern|[a-z][a-zA-Z0-9]+|Regex which applies to non-final local variable names|no|
-|finalVarPattern|[a-z][a-zA-Z0-9]+|Regex which applies to final local variable names|no|
-|catchParameterPattern|[a-z][a-zA-Z0-9]+|Regex which applies to exception block parameter names|no|
+|localVarPattern|[a-z][a-zA-Z0-9]*|Regex which applies to non-final local variable names|no|
+|finalVarPattern|[a-z][a-zA-Z0-9]*|Regex which applies to final local variable names|no|
+|catchParameterPattern|[a-z][a-zA-Z0-9]*|Regex which applies to exception block parameter names|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1298,11 +1431,11 @@ public class Foo {
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
 |checkNativeMethods|true|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Check native methods|no|
-|methodPattern|[a-z][a-zA-Z0-9]+|Regex which applies to instance method names|no|
-|staticPattern|[a-z][a-zA-Z0-9]+|Regex which applies to static method names|no|
-|nativePattern|[a-z][a-zA-Z0-9]+|Regex which applies to native method names|no|
+|methodPattern|[a-z][a-zA-Z0-9]*|Regex which applies to instance method names|no|
+|staticPattern|[a-z][a-zA-Z0-9]*|Regex which applies to static method names|no|
+|nativePattern|[a-z][a-zA-Z0-9]*|Regex which applies to native method names|no|
 |junit3TestPattern|test[A-Z0-9][a-zA-Z0-9]*|Regex which applies to JUnit 3 test method names|no|
-|junit4TestPattern|[a-z][a-zA-Z0-9]+|Regex which applies to JUnit 4 test method names|no|
+|junit4TestPattern|[a-z][a-zA-Z0-9]*|Regex which applies to JUnit 4 test method names|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1936,6 +2069,7 @@ Useless parentheses should be removed.
     [not(./CastExpression)]
     [not(./ConditionalExpression)]
     [not(./AdditiveExpression)]
+    [not(./AssignmentOperator)]
 |
 //Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)=1]
   /PrimaryPrefix/Expression

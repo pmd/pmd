@@ -76,4 +76,32 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#940 False positive with JUnit4TestShouldUseBeforeAnnotation when JUnit5's 'BeforeEach' is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.BeforeEach;
+
+public class Foo {
+    @BeforeEach
+    public void setUp() {
+      //...
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#940 False positive with JUnit4TestShouldUseBeforeAnnotation when JUnit5's 'BeforeAll' is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.BeforeAll;
+
+public class Foo {
+    @BeforeAll
+    public void setUp() {
+      //...
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

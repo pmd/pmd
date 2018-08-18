@@ -88,14 +88,15 @@ public class ReportTest implements ThreadSafeReportListener {
     public void testSortedReportLine() throws IOException {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("foo1");
-        Node s = getNode(10, 5);
-        Rule rule1 = new MockRule("rule2", "rule2", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, s, rule1.getMessage()));
-        ctx.setSourceCodeFilename("foo2");
-        Node s1 = getNode(20, 5);
-        Rule rule2 = new MockRule("rule1", "rule1", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule2, ctx, s1, rule2.getMessage()));
+        ctx.setSourceCodeFilename("foo1"); // same file!!
+        Node node1 = getNode(20, 5); // line 20: after rule2 violation
+        Rule rule1 = new MockRule("rule1", "rule1", "msg", "rulesetname");
+        r.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, node1, rule1.getMessage()));
+
+        ctx.setSourceCodeFilename("foo1"); // same file!!
+        Node node2 = getNode(10, 5); // line 10: before rule1 violation
+        Rule rule2 = new MockRule("rule2", "rule2", "msg", "rulesetname");
+        r.addRuleViolation(new ParametricRuleViolation<>(rule2, ctx, node2, rule2.getMessage()));
         Renderer rend = new XMLRenderer();
         String result = render(rend, r);
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
@@ -172,8 +173,8 @@ public class ReportTest implements ThreadSafeReportListener {
         parent.testingOnlySetBeginLine(line);
         parent.testingOnlySetBeginColumn(column);
         s.jjtSetParent(parent);
-        s.testingOnlySetBeginLine(10);
-        s.testingOnlySetBeginColumn(5);
+        s.testingOnlySetBeginLine(line);
+        s.testingOnlySetBeginColumn(column);
         return s;
     }
 

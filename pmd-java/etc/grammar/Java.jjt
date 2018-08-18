@@ -2206,8 +2206,36 @@ void LambdaExpression() :
 { checkForBadLambdaUsage(); }
 {
   VariableDeclaratorId() "->" ( Expression() | Block() )
-| LOOKAHEAD(3) FormalParameters() "->" ( Expression() | Block() )
+| LOOKAHEAD(3) LambdaParameters() "->" ( Expression() | Block() )
 | LOOKAHEAD(3) "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->" ( Expression() | Block() )
+}
+
+void LambdaParameters() #FormalParameters :
+{}
+{
+    "(" [ LambdaParameterList() ] ")"
+}
+
+void LambdaParameterList() #void :
+{}
+{
+    LambdaParameter() ( "," LambdaParameter() )*
+}
+
+void LambdaParameter() #FormalParameter :
+{}
+{
+    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
+    LambdaParameterType()
+    [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+    VariableDeclaratorId()
+}
+
+void LambdaParameterType() #void :
+{}
+{
+    LOOKAHEAD( { jdkVersion >= 11 && isKeyword("var") } ) <IDENTIFIER>
+    | Type()
 }
 
 void PrimarySuffix() :

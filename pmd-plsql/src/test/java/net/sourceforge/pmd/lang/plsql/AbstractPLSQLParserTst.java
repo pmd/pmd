@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +15,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -126,5 +129,13 @@ public abstract class AbstractPLSQLParserTst {
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
         return languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null,
                 new StringReader(code));
+    }
+
+    public String loadTestResource(String name) {
+        try {
+            return IOUtils.toString(this.getClass().getResourceAsStream(name));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

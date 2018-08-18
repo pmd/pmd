@@ -4,9 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description><![CDATA[
-inner class has private constructor
-     ]]></description>
+        <description>inner class has private constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo1 {
@@ -19,11 +17,11 @@ public class Foo1 {
  }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-inner class has public constructor
-     ]]></description>
+        <description>inner class has public constructor</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo2 {
@@ -36,11 +34,11 @@ public class Foo2 {
  }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-outer class has public constructor
-     ]]></description>
+        <description>outer class has public constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo3 {
@@ -53,11 +51,11 @@ public class Foo3 {
     }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-final inner class
-     ]]></description>
+        <description>final inner class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -67,11 +65,11 @@ public class Foo {
  }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
+ 
     <test-code>
-        <description><![CDATA[
-interface inner class has private constructor
-     ]]></description>
+        <description>interface inner class has private constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
  package foo;
@@ -85,11 +83,11 @@ public interface Foo1 {
  }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-there's a check for int declaration - not sure right now why
-     ]]></description>
+        <description>there's a check for int declaration - not sure right now why</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo1 {
@@ -102,18 +100,20 @@ public class Foo1 {
  }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
         <description>#1452 ArrayIndexOutOfBoundsException with Annotations for AccessorClassGenerationRule</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public @interface Something { public interface SomthingElse{}; }
         ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-#291 - Private constructor called from anonymous class
-     ]]></description>
+        <description>#291 - Private constructor called from anonymous class</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Example extends View {
@@ -133,11 +133,11 @@ public class Example extends View {
   }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Array initializer is not a class body
-     ]]></description>
+        <description>Array initializer is not a class body</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -153,5 +153,6 @@ public class Foo {
     }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
 </test-data>
