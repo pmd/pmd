@@ -286,7 +286,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <version>${antlr.version}</version>
                     <configuration>
                         <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-                        <visitor>true</visitor>
                     </configuration>
                     <executions>
                         <execution>
