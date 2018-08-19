@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
  */
 public abstract class AntlrTokenizer implements Tokenizer {
 
-    protected abstract Lexer getLexerForSource(final CharStream charStream);
+    protected abstract Lexer getLexerForSource(CharStream charStream);
 
     @Override
     public void tokenize(final SourceCode sourceCode, final Tokens tokenEntries) {
