@@ -14,6 +14,9 @@ import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
+/**
+ * Generic implementation of a {@link Tokenizer} useful to any Antlr grammar.
+ */
 public abstract class AntlrTokenizer implements Tokenizer {
 
     private final Lexer lexer;
@@ -23,7 +26,7 @@ public abstract class AntlrTokenizer implements Tokenizer {
      *
      * @param lexer lexer.
      */
-    public AntlrTokenizer(Lexer lexer) {
+    public AntlrTokenizer(final Lexer lexer) {
         this.lexer = lexer;
     }
 
@@ -32,7 +35,7 @@ public abstract class AntlrTokenizer implements Tokenizer {
         StringBuilder buffer = sourceCode.getCodeBuffer();
 
         try {
-            CharStream charStream = CharStreams.fromString(buffer.toString());
+            final CharStream charStream = CharStreams.fromString(buffer.toString());
             lexer.reset();
             lexer.setInputStream(charStream);
 
@@ -42,13 +45,14 @@ public abstract class AntlrTokenizer implements Tokenizer {
 
             while (token.getType() != Token.EOF) {
                 if (token.getChannel() != Lexer.HIDDEN) {
-                    TokenEntry tokenEntry = new TokenEntry(token.getText(), sourceCode.getFileName(), token.getLine());
+                    final TokenEntry tokenEntry =
+                            new TokenEntry(token.getText(), sourceCode.getFileName(), token.getLine());
 
                     tokenEntries.add(tokenEntry);
                 }
                 token = lexer.nextToken();
             }
-        } catch (ANTLRSyntaxError err) {
+        } catch (final ANTLRSyntaxError err) {
             // Wrap exceptions of the ANTLR tokenizer in a TokenMgrError, so
             // they are correctly handled
             // when CPD is executed with the '--skipLexicalErrors' command line
@@ -62,9 +66,10 @@ public abstract class AntlrTokenizer implements Tokenizer {
     }
 
     private static class ErrorHandler extends BaseErrorListener {
+
         @Override
-        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
-                                String msg, RecognitionException ex) {
+        public void syntaxError(final Recognizer<?, ?> recognizer, final Object offendingSymbol, final int line,
+                                final int charPositionInLine, final String msg, final RecognitionException ex) {
             throw new ANTLRSyntaxError(msg, line, charPositionInLine, ex);
         }
     }
@@ -74,7 +79,8 @@ public abstract class AntlrTokenizer implements Tokenizer {
         private final int line;
         private final int column;
 
-        ANTLRSyntaxError(String msg, int line, int column, RecognitionException cause) {
+        /* default */ ANTLRSyntaxError(final String msg, final int line, final int column,
+                                       final RecognitionException cause) {
             super(msg, cause);
             this.line = line;
             this.column = column;
