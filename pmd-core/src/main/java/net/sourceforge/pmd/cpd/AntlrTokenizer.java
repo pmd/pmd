@@ -19,16 +19,7 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
  */
 public abstract class AntlrTokenizer implements Tokenizer {
 
-    private final Lexer lexer;
-
-    /**
-     * Constructor.
-     *
-     * @param lexer lexer.
-     */
-    public AntlrTokenizer(final Lexer lexer) {
-        this.lexer = lexer;
-    }
+    protected abstract Lexer getLexerForSource(final CharStream charStream);
 
     @Override
     public void tokenize(final SourceCode sourceCode, final Tokens tokenEntries) {
@@ -36,11 +27,12 @@ public abstract class AntlrTokenizer implements Tokenizer {
 
         try {
             final CharStream charStream = CharStreams.fromString(buffer.toString());
-            lexer.reset();
-            lexer.setInputStream(charStream);
+
+            Lexer lexer = getLexerForSource(charStream);
 
             lexer.removeErrorListeners();
             lexer.addErrorListener(new ErrorHandler());
+
             Token token = lexer.nextToken();
 
             while (token.getType() != Token.EOF) {
