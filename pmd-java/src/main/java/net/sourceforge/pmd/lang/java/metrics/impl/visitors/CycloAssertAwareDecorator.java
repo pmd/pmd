@@ -12,7 +12,12 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorDecorator;
 /**
  * @author Clément Fournier
  * @since 6.0.0
+ *
+ * @deprecated Visitor decorators are deprecated because they lead to fragile code.
+ *  Customise {@link CycloVisitor} instead.
+ *
  */
+@Deprecated
 public class CycloAssertAwareDecorator extends JavaParserVisitorDecorator {
 
     @Override

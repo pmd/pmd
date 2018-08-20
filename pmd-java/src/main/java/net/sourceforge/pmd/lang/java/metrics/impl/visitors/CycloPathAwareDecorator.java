@@ -22,9 +22,13 @@ import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
 /**
  * Decorator which counts the complexity of boolean expressions for Cyclo.
  *
+ * @deprecated Visitor decorators are deprecated because they lead to fragile code.
+ * Customise {@link CycloVisitor} instead.
+ *
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric
  */
+@Deprecated
 public class CycloPathAwareDecorator extends JavaParserVisitorDecorator {
 
 

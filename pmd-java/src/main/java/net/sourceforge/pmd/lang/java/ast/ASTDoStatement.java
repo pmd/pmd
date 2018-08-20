@@ -5,18 +5,48 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents a {@code do ... while} statement.
+ *
+ *
+ * <pre>
+ *
+ * DoStatement ::= "do" {@linkplain ASTStatement Statement} "while" "(" {@linkplain ASTExpression Expression} ")" ";"
+ *
+ * </pre>
+ */
 public class ASTDoStatement extends AbstractJavaNode {
+
+    // @PrivateApi @Deprecated
     public ASTDoStatement(int id) {
         super(id);
     }
 
+
+    // @PrivateApi @Deprecated
     public ASTDoStatement(JavaParser p, int id) {
         super(p, id);
     }
 
+
     /**
-     * Accept the visitor. *
+     * Returns the node that represents the guard of this loop.
+     * This may be any expression of type boolean.
      */
+    public JavaNode getGuardExpressionNode() {
+        return (JavaNode) jjtGetChild(1);
+    }
+
+
+    /**
+     * Returns the statement that will be run while the guard
+     * evaluates to true.
+     */
+    public ASTStatement getBody() {
+        return (ASTStatement) jjtGetChild(0);
+    }
+
+
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

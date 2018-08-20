@@ -22,9 +22,13 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserControllessVisitorAdapter;
 /**
  * Visitor calculating cyclo without counting boolean operators.
  *
+ * @deprecated Visitor decorators are deprecated because they lead to fragile code.
+ * Customise {@link CycloVisitor} instead.
+ *
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric
  */
+@Deprecated
 public class CycloBaseVisitor extends JavaParserControllessVisitorAdapter {
 
     /** Instance. */

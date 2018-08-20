@@ -5,29 +5,76 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents an {@code if} statement, possibly with an {@code else} statement.
+ *
+ * <p>The guard is not necessarily an {@linkplain ASTExpression Expression}, it
+ * may be any expression.
+ *
+ * <pre>
+ *
+ * IfStatement ::= "if" "(" {@linkplain ASTExpression Expression} ")" {@linkplain ASTStatement Statement}
+ *                 ( "else" {@linkplain ASTStatement Statement} )?
+ *
+ * </pre>
+ */
 public class ASTIfStatement extends AbstractJavaNode {
 
     private boolean hasElse;
 
+
+    // @PrivateApi @Deprecated
     public ASTIfStatement(int id) {
         super(id);
     }
 
+
+    // @PrivateApi @Deprecated
     public ASTIfStatement(JavaParser p, int id) {
         super(p, id);
     }
 
+
+    // @PrivateApi @Deprecated
     public void setHasElse() {
         this.hasElse = true;
     }
 
+
+    /**
+     * Returns true if this statement has an {@code else} clause.
+     */
     public boolean hasElse() {
         return this.hasElse;
     }
 
+
     /**
-     * Accept the visitor. *
+     * Returns the node that represents the guard of this conditional.
+     * This may be any expression of type boolean.
      */
+    public JavaNode getGuardExpressionNode() {
+        return (JavaNode) jjtGetChild(0);
+    }
+
+
+    /**
+     * Returns the statement that will be run if the guard evaluates
+     * to true.
+     */
+    public ASTStatement getTrueAlternative() {
+        return (ASTStatement) jjtGetChild(1);
+    }
+
+
+    /**
+     * Returns the statement of the {@code else} clause, if any.
+     */
+    public ASTStatement getFalseAlternative() {
+        return hasElse() ? (ASTStatement) jjtGetChild(2) : null;
+    }
+
+
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

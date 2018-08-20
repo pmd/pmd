@@ -10,22 +10,27 @@ package net.sourceforge.pmd.lang.java.ast;
  * a {@linkplain ASTSwitchStatement switch statement}.
  *
  * <pre>
+ *
  * SwitchLabel ::=  "case" {@linkplain ASTExpression Expression} ":"
  *                | "default" ":"
+ *
  * </pre>
  */
 public class ASTSwitchLabel extends AbstractJavaNode {
 
     private boolean isDefault;
 
+    // @PrivateApi @Deprecated
     public ASTSwitchLabel(int id) {
         super(id);
     }
 
+    // @PrivateApi @Deprecated
     public ASTSwitchLabel(JavaParser p, int id) {
         super(p, id);
     }
 
+    // @PrivateApi @Deprecated
     public void setDefault() {
         isDefault = true;
     }
@@ -34,9 +39,6 @@ public class ASTSwitchLabel extends AbstractJavaNode {
         return isDefault;
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
