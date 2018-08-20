@@ -33,8 +33,8 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 public class CycloVisitor extends JavaParserVisitorAdapter {
 
 
-    private final boolean considerBooleanPaths;
-    private final boolean considerAssert;
+    protected final boolean considerBooleanPaths;
+    protected final boolean considerAssert;
     private final JavaNode topNode;
 
 
@@ -46,7 +46,7 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(JavaNode localNode, Object data) {
+    public final Object visit(JavaNode localNode, Object data) {
         return localNode.isFindBoundary() && !localNode.equals(topNode) ? data : super.visit(localNode, data);
     }
 

@@ -19,7 +19,11 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorDecorator;
  *
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric
+ *
+ * @deprecated Visitor decorators are deprecated because they lead to fragile code.
+ * Customise {@link NcssVisitor} instead.
  */
+@Deprecated
 public class NcssCountImportsDecorator extends JavaParserVisitorDecorator {
 
 
