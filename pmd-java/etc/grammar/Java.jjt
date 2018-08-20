@@ -2097,8 +2097,8 @@ void ShiftExpression() #ShiftExpression(>1):
   AdditiveExpression() 
    ( LOOKAHEAD(2)
     ( "<<" { jjtThis.setImage("<<");}
-     | RSIGNEDSHIFT()
-     | RUNSIGNEDSHIFT()
+     | RSIGNEDSHIFT() { jjtThis.setImage(">>"); }
+     | RUNSIGNEDSHIFT() { jjtThis.setImage(">>>"); }
     ) AdditiveExpression() )*
 }
 
@@ -2585,7 +2585,7 @@ void AssertStatement() :
  * type declaration syntax with generics clean
  */
 
-void RUNSIGNEDSHIFT():
+void RUNSIGNEDSHIFT(): // TODO 7.0.0 make #void
 {}
 {
   ( LOOKAHEAD({ getToken(1).kind == GT &&
@@ -2594,7 +2594,7 @@ void RUNSIGNEDSHIFT():
   )
 }
 
-void RSIGNEDSHIFT():
+void RSIGNEDSHIFT(): // TODO 7.0.0 make #void
 {}
 {
   ( LOOKAHEAD({ getToken(1).kind == GT &&
