@@ -8,4 +8,23 @@
     <description>
 Rules that are related to code documentation.
     </description>
+
+    <rule name="ApexDoc"
+          since="9.9.9"
+          message="ApexDoc comment is missing or incorrect"
+          class="net.sourceforge.pmd.lang.apex.rule.documentation.ApexDocRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_documentation.html#apexdoc">
+        <description>
+Identifies missing or incorrect ApexDoc comments.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+/**
+ * @description Hello World
+ */
+]]>
+        </example>
+    </rule>
+
 </ruleset>

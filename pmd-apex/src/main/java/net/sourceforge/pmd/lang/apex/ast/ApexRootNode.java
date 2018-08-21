@@ -10,6 +10,8 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import apex.jorje.semantic.ast.AstNode;
 
 public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T> implements RootNode {
+    private String source;
+
     public ApexRootNode(T node) {
         super(node);
     }
@@ -20,5 +22,14 @@ public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T
         super.calculateLineNumbers(positioner);
         this.endLine = positioner.getLastLine();
         this.endColumn = positioner.getLastLineColumn();
+    }
+
+    @Override
+    protected void handleSourceCode(String source) {
+        this.source = source;
+    }
+
+    public String getSource() {
+        return source;
     }
 }
