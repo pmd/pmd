@@ -10,7 +10,7 @@ Rules that are related to code documentation.
     </description>
 
     <rule name="ApexDoc"
-          since="9.9.9"
+          since="6.7.0"
           message="ApexDoc comment is missing or incorrect"
           class="net.sourceforge.pmd.lang.apex.rule.documentation.ApexDocRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_documentation.html#apexdoc">
