@@ -38,5 +38,68 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.kotlintest</groupId>
+            <artifactId>kotlintest-runner-junit5</artifactId>
+            <version>3.1.8</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Use pmd-java for tests -->
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-java</artifactId>
+            <version>6.6.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- The kotlin plugin has to run before the java plugin-->
+            <plugin>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>kotlin-compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                                <sourceDir>${project.basedir}/src/main/java</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
