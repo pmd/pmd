@@ -154,7 +154,10 @@ public class Foo {
           message="Use one line for each declaration, it enhances code readability."
           class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#onedeclarationperstatement">
-        <description>Foo</description>
+        <description>
+Apex allows the use of several variables declaration of the same type on one line. However, it
+can lead to quite messy code. This rule looks for several declarations on the same line.
+        </description>
         <priority>1</priority>
         <properties>
             <property name="xpath">
