@@ -149,6 +149,32 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="OneDeclarationPerStatement"
+          since="6.7.0"
+          message="Use one line for each declaration, it enhances code readability."
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#onedeclarationperstatement">
+        <description>Foo</description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//VariableDeclarationStatements[VariableDeclaration[2]]|//FieldDeclarationStatements[FieldDeclaration[2]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+Integer a, b;   // not recommended
+
+Integer a;      // preferred approach
+Integer b;
+]]>
+        </example>
+    </rule>
+
     <rule name="VariableNamingConventions"
           since="5.5.0"
           message="{0} variable {1} should begin with {2}"
