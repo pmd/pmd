@@ -182,8 +182,12 @@ class NWrapper<N : Node> private constructor(val it: N, private val childMatcher
  *        }
  *    }
  */
-inline fun <reified N : Node> matchNode(ignoreChildren: Boolean = false, noinline nodeSpec: NWrapper<N>.() -> Unit) = object : Matcher<Node> {
-    override fun test(value: Node): Result {
+inline fun <reified N : Node> matchNode(ignoreChildren: Boolean = false, noinline nodeSpec: NWrapper<N>.() -> Unit) = object : Matcher<Node?> {
+    override fun test(value: Node?): Result {
+        if (value == null) {
+            return Result(false, "Expecting the node not to be null", "")
+        }
+
         val matchRes = disjunctionTry {
             NWrapper.executeWrapper(N::class.java, value, ignoreChildren, nodeSpec)
         }
