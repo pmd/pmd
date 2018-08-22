@@ -138,10 +138,20 @@ class NWrapper<N : Node> private constructor(val it: N,
                 childType.isInstance(toWrap)
             }
 
-            @Suppress("UNCHECKED_CAST")
-            val wrapper = NWrapper(toWrap as M, matcherPath + childType, ignoreChildrenMatchers)
+            val childPath = matcherPath + childType
 
-            wrapper.spec()
+            @Suppress("UNCHECKED_CAST")
+            val wrapper = NWrapper(toWrap as M, childPath, ignoreChildrenMatchers)
+
+            try {
+                wrapper.spec()
+            } catch (e: AssertionError) {
+                if (e.message?.matches("At (/.*?|<root>):.*".toRegex()) == false) {
+                    // the exception has no path, let's add one
+                    throw AssertionError(formatErrorMessage(childPath, e.message ?: "No explanation provided"), e)
+                }
+                throw e
+            }
 
             assertFalse(formatErrorMessage(matcherPath + childType, "Wrong number of children, expected ${wrapper.nextChildMatcherIdx}, actual ${wrapper.it.numChildren}")) {
                 !ignoreChildrenMatchers && wrapper.nextChildMatcherIdx != wrapper.it.numChildren

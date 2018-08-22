@@ -90,6 +90,37 @@ class DslTest : FunSpec({
         }
     }
 
+    failureTest("All assertions should have a node path",
+            messageContains = setOf("At /LocalVariableDeclaration/Type:", "expected: \"bratwurst\"")) {
+
+        parseStatement("int[] i = 0;") should matchNode<ASTLocalVariableDeclaration> {
+
+            child<ASTType> {
+
+                // this fails
+                it.typeImage shouldBe "bratwurst"
+
+            }
+
+            unspecifiedChild()
+        }
+    }
+
+    failureTest("Child assertions should have a node path",
+            messageContains = setOf("At /LocalVariableDeclaration/Type:", "expected", "type", "LambdaExpression")) {
+
+        parseStatement("int[] i = 0;") should matchNode<ASTLocalVariableDeclaration> {
+
+            child<ASTType> {
+
+                // this fails
+                child<ASTLambdaExpression> { }
+            }
+
+            unspecifiedChild()
+        }
+    }
+
     failureTest("Leaf nodes should assert that they have no children",
             messageContains = setOf("number", "children", "expected 0")) {
 
