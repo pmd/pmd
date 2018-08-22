@@ -69,19 +69,25 @@ class NWrapper<N : Node> private constructor(val it: N,
      * calls to this method at the same tree level will test the next
      * children.
      *
-     * @param ignoreChildren If true, calls to [child] in the [nodeSpec] are ignored.
-     *                       The number of children of the child is not asserted either.
+     * @param ignoreChildren If true, the number of children of the child is not asserted.
+     *                       Calls to [child] in the [nodeSpec] throw an exception.
      * @param nodeSpec Sequence of assertions to carry out on the child node
      *
      * @param M Expected type of the child
+     *
+     * @throws AssertionError If the child is not of type [M], or fails the assertions of the [nodeSpec]
+     * @return The child, if it passes all assertions, otherwise throws an exception
      */
-    inline fun <reified M : Node> child(ignoreChildren: Boolean = false, noinline nodeSpec: NWrapper<M>.() -> Unit) =
+    inline fun <reified M : Node> child(ignoreChildren: Boolean = false, noinline nodeSpec: NWrapper<M>.() -> Unit): M =
             childImpl(ignoreChildren, M::class.java, nodeSpec)
 
 
     @PublishedApi
-    internal fun <M : Node> childImpl(ignoreChildren: Boolean, childType: Class<M>, nodeSpec: NWrapper<M>.() -> Unit) {
-        if (!childMatchersAreIgnored) executeWrapper(childType, shiftChild(), matcherPath, ignoreChildren, nodeSpec)
+    internal fun <M : Node> childImpl(ignoreChildren: Boolean, childType: Class<M>, nodeSpec: NWrapper<M>.() -> Unit): M {
+        if (!childMatchersAreIgnored)
+            return executeWrapper(childType, shiftChild(), matcherPath, ignoreChildren, nodeSpec)
+        else
+            throw IllegalStateException(formatErrorMessage(matcherPath, "Calling child when ignoreChildren=true is forbidden"))
     }
 
 
@@ -121,13 +127,14 @@ class NWrapper<N : Node> private constructor(val it: N,
          * @param spec Assertions to carry out on [toWrap]
          *
          * @throws AssertionError If some assertions fail
+         * @return [toWrap], if it passes all assertions, otherwise throws an exception
          */
         @PublishedApi
         internal fun <M : Node> executeWrapper(childType: Class<M>,
                                                toWrap: Node,
                                                matcherPath: List<Class<out Node>>,
                                                ignoreChildrenMatchers: Boolean,
-                                               spec: NWrapper<M>.() -> Unit) {
+                                               spec: NWrapper<M>.() -> Unit): M {
 
             val nodeNameForMsg = when {
                 matcherPath.isEmpty() -> "node"
@@ -139,9 +146,10 @@ class NWrapper<N : Node> private constructor(val it: N,
             }
 
             val childPath = matcherPath + childType
-
             @Suppress("UNCHECKED_CAST")
-            val wrapper = NWrapper(toWrap as M, childPath, ignoreChildrenMatchers)
+            val m = toWrap as M
+
+            val wrapper = NWrapper(m, childPath, ignoreChildrenMatchers)
 
             try {
                 wrapper.spec()
@@ -156,6 +164,7 @@ class NWrapper<N : Node> private constructor(val it: N,
             assertFalse(formatErrorMessage(matcherPath + childType, "Wrong number of children, expected ${wrapper.nextChildMatcherIdx}, actual ${wrapper.it.numChildren}")) {
                 !ignoreChildrenMatchers && wrapper.nextChildMatcherIdx != wrapper.it.numChildren
             }
+            return m
         }
     }
 }

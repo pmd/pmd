@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 class Java11Test : FunSpec({
 
 
-    parserTest("Test lambda parameter with var keyword", javaVersionRange = J1_8..J10) {
+    parserTest("Test lambda parameter with var keyword", javaVersions = J1_8..J10) {
 
         "(var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
             child<ASTFormalParameters> {
@@ -75,7 +75,7 @@ class Java11Test : FunSpec({
         }
     }
 
-    parserTest("Test lambda parameter with var keyword", javaVersionRange = J11..Latest) {
+    parserTest("Test lambda parameter with var keyword", javaVersions = J11..Latest) {
 
         "(var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
             child<ASTFormalParameters> {
