@@ -151,7 +151,7 @@ public class Foo {
 
     <rule name="OneDeclarationPerStatement"
           since="6.7.0"
-          message="Use one line for each declaration, it enhances code readability."
+          message="Use one statement for each declaration, it enhances code readability."
           class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#onedeclarationperstatement">
         <description>
@@ -163,7 +163,8 @@ can lead to quite messy code. This rule looks for several declarations on the sa
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclarationStatements[VariableDeclaration[2]]|//FieldDeclarationStatements[FieldDeclaration[2]]
+//VariableDeclarationStatements[count(VariableDeclaration) > 1] |
+//FieldDeclarationStatements[count(FieldDeclaration) > 1]
 ]]>
                 </value>
             </property>
