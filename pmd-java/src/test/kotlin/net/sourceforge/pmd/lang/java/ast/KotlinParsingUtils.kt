@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ParserTstUtil
 enum class JavaVersion : Comparable<JavaVersion> {
     J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11;
 
+    /** Name suitable for use with e.g. [ParserTstUtil.parseAndTypeResolveJava] */
     val pmdName: String = name.removePrefix("J").replace('_', '.')
 
     /**
@@ -41,23 +42,29 @@ enum class JavaVersion : Comparable<JavaVersion> {
  * @param name Name of the test. Will be postfixed by the specific
  *             java version used to run it
  * @param javaVersions Language versions for which to generate tests
+ * @param focusOn Sets the java version of the test to isolate.
  * @param assertions Assertions and further configuration
  *                   to perform with the parsing context
  */
 
 fun AbstractFunSpec.parserTest(name: String,
                                javaVersions: List<JavaVersion>,
+                               focusOn: JavaVersion? = null,
                                assertions: ParsingCtx.() -> Unit) {
 
     javaVersions.forEach {
-        test("$name (Java ${it.pmdName})") {
+
+        val focus = if (focusOn != null && focusOn == it) "f:" else ""
+
+        test("$focus$name (Java ${it.pmdName})") {
             ParsingCtx(it).assertions()
         }
     }
 }
 
 /**
- * Specify a new test for a single java version.
+ * Specify a new test for a single java version. To execute the test in isolation,
+ * prefix the name with `"f:"`.
  *
  * @param name Name of the test. Will be postfixed by the [javaVersion]
  * @param javaVersion Language version to use when parsing
@@ -67,7 +74,7 @@ fun AbstractFunSpec.parserTest(name: String,
 fun AbstractFunSpec.parserTest(name: String,
                                javaVersion: JavaVersion = JavaVersion.Latest,
                                assertions: ParsingCtx.() -> Unit) {
-    parserTest(name, listOf(javaVersion), assertions)
+    parserTest(name, listOf(javaVersion), null, assertions)
 }
 
 
