@@ -1,17 +1,17 @@
 
-
 import io.kotlintest.should
 import io.kotlintest.shouldBe
+import io.kotlintest.specs.FunSpec
 import net.sourceforge.pmd.lang.java.ast.*
-import org.junit.Test
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J10
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J11
 
-class Java11Test {
+class Java11Test : FunSpec({
 
 
-    @Test
-    fun testLocalVariableSyntaxForLambdaParametersWithJava10() {
+    parserTest("Test lambda parameter with var keyword on java 10", javaVersion = J10) {
 
-        "(var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression>(javaVersion = "10") {
+        "(var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
             child<ASTFormalParameters> {
                 child<ASTFormalParameter> {
                     child<ASTType> {
@@ -31,7 +31,7 @@ class Java11Test {
             unspecifiedChild()
         }
 
-        "(var x, var y) -> x + y" should matchExpr<ASTLambdaExpression>(javaVersion = "10") {
+        "(var x, var y) -> x + y" should matchExpr<ASTLambdaExpression> {
             child<ASTFormalParameters> {
                 child<ASTFormalParameter> {
                     child<ASTType> {
@@ -64,7 +64,7 @@ class Java11Test {
             unspecifiedChild()
         }
 
-        "(@Nonnull var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression>(javaVersion = "10") {
+        "(@Nonnull var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
             child<ASTFormalParameters> {
                 child<ASTFormalParameter> {
                     child<ASTAnnotation>(ignoreChildren = true) {}
@@ -75,10 +75,9 @@ class Java11Test {
         }
     }
 
-    @Test
-    fun testLocalVariableSyntaxForLambdaParametersWithJava11() {
+    parserTest("Test lambda parameter with var keyword on java 11", javaVersion = J11) {
 
-        "(var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression>(javaVersion = "11") {
+        "(var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
             child<ASTFormalParameters> {
                 child<ASTFormalParameter> {
                     it.isTypeInferred shouldBe true
@@ -89,4 +88,5 @@ class Java11Test {
             unspecifiedChild()
         }
     }
-}
+
+})
