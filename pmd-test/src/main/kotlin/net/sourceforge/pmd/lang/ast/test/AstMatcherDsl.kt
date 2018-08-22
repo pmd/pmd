@@ -12,10 +12,15 @@ import kotlin.test.assertTrue
  * Wraps a node, providing easy access to [it]. Additional matching
  * methods are provided to match children.
  *
+ * @param matcherPath List of types of the parents of this node, used to reconstruct a path for error messages
+ * @param childMatchersAreIgnored Ignore calls to [child]
+ *
  * @property it Wrapped node
  * @param <N> Type of the node
  */
-class NWrapper<N : Node> private constructor(val it: N, private val childMatchersAreIgnored: Boolean) {
+class NWrapper<N : Node> private constructor(val it: N,
+                                             private val matcherPath: List<Class<out Node>>,
+                                             private val childMatchersAreIgnored: Boolean) {
 
     /** Index to which the next child matcher will apply. */
     private var nextChildMatcherIdx = 0
@@ -32,7 +37,7 @@ class NWrapper<N : Node> private constructor(val it: N, private val childMatcher
 
 
     private fun checkChildExists(childIdx: Int) =
-            assertTrue("Node has fewer children than expected, child #$childIdx doesn't exist") {
+            assertTrue(formatErrorMessage(matcherPath, "Node has fewer children than expected, child #$childIdx doesn't exist")) {
                 childIdx < it.numChildren
             }
 
@@ -76,7 +81,7 @@ class NWrapper<N : Node> private constructor(val it: N, private val childMatcher
 
     @PublishedApi
     internal fun <M : Node> childImpl(ignoreChildren: Boolean, childType: Class<M>, nodeSpec: NWrapper<M>.() -> Unit) {
-        if (!childMatchersAreIgnored) executeWrapper(childType, shiftChild(), ignoreChildren, nodeSpec)
+        if (!childMatchersAreIgnored) executeWrapper(childType, shiftChild(), matcherPath, ignoreChildren, nodeSpec)
     }
 
 
@@ -97,29 +102,48 @@ class NWrapper<N : Node> private constructor(val it: N, private val childMatcher
                     simpleName.substring("AST".length)
                 else simpleName
 
+        private fun formatPath(matcherPath: List<Class<out Node>>) =
+                when {
+                    matcherPath.isEmpty() -> "<root>"
+                    else -> matcherPath.joinToString(separator = "/", prefix = "/") { it.nodeName }
+                }
+
+        private fun formatErrorMessage(matcherPath: List<Class<out Node>>, message: String) =
+                "At ${formatPath(matcherPath)}: $message"
+
         /**
          * Execute wrapper assertions on a node.
          *
          * @param childType Expected type of [toWrap]
          * @param toWrap Node on which to execute the assertions
+         * @param matcherPath List of types of the parents of this node, used to reconstruct a path for error messages
          * @param ignoreChildrenMatchers Ignore the children matchers in [spec]
          * @param spec Assertions to carry out on [toWrap]
          *
          * @throws AssertionError If some assertions fail
          */
         @PublishedApi
-        internal fun <M : Node> executeWrapper(childType: Class<M>, toWrap: Node, ignoreChildrenMatchers: Boolean, spec: NWrapper<M>.() -> Unit) {
+        internal fun <M : Node> executeWrapper(childType: Class<M>,
+                                               toWrap: Node,
+                                               matcherPath: List<Class<out Node>>,
+                                               ignoreChildrenMatchers: Boolean,
+                                               spec: NWrapper<M>.() -> Unit) {
 
-            assertTrue("Expected node to have type ${childType.nodeName}, actual ${toWrap.javaClass.nodeName}") {
+            val nodeNameForMsg = when {
+                matcherPath.isEmpty() -> "node"
+                else -> "child #${toWrap.jjtGetChildIndex()}"
+            }
+
+            assertTrue(formatErrorMessage(matcherPath, "Expected $nodeNameForMsg to have type ${childType.nodeName}, actual ${toWrap.javaClass.nodeName}")) {
                 childType.isInstance(toWrap)
             }
 
             @Suppress("UNCHECKED_CAST")
-            val wrapper = NWrapper(toWrap as M, ignoreChildrenMatchers)
+            val wrapper = NWrapper(toWrap as M, matcherPath + childType, ignoreChildrenMatchers)
 
             wrapper.spec()
 
-            assertFalse("<${childType.nodeName}>: Wrong number of children, expected ${wrapper.nextChildMatcherIdx}, actual ${wrapper.it.numChildren}") {
+            assertFalse(formatErrorMessage(matcherPath + childType, "Wrong number of children, expected ${wrapper.nextChildMatcherIdx}, actual ${wrapper.it.numChildren}")) {
                 !ignoreChildrenMatchers && wrapper.nextChildMatcherIdx != wrapper.it.numChildren
             }
         }
@@ -189,7 +213,7 @@ inline fun <reified N : Node> matchNode(ignoreChildren: Boolean = false, noinlin
         }
 
         val matchRes = disjunctionTry {
-            NWrapper.executeWrapper(N::class.java, value, ignoreChildren, nodeSpec)
+            NWrapper.executeWrapper(N::class.java, value, emptyList(), ignoreChildren, nodeSpec)
         }
 
         val didMatch = matchRes.isRight()
