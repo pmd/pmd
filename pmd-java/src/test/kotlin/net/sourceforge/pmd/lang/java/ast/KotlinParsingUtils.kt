@@ -9,8 +9,6 @@ import net.sourceforge.pmd.lang.ast.test.matchNode
 import net.sourceforge.pmd.lang.java.ParserTstUtil
 
 
-val defaultJavaVersion = JavaVersion.J11
-
 /**
  * Finds the first descendant of type [N] of [this] node which is
  * accessible in a straight line. The descendant must be accessible
@@ -46,7 +44,7 @@ fun <N : Node> Node.findFirstNodeOnStraightLine(klass: Class<N>): N? {
  * @throws NoSuchElementException If no node of type [N] is found by [findFirstNodeOnStraightLine]
  * @throws ParseException If the expression is no valid expression for the given language version
  */
-inline fun <reified N : Node> parseExpression(expr: String, javaVersion: JavaVersion = defaultJavaVersion): N =
+inline fun <reified N : Node> parseExpression(expr: String, javaVersion: JavaVersion = JavaVersion.Latest): N =
         parseAstExpression(expr, javaVersion).findFirstNodeOnStraightLine(N::class.java)
         ?: throw NoSuchElementException("No node of type ${N::class.java.simpleName} in the given expression:\n\t$expr")
 
@@ -64,7 +62,7 @@ inline fun <reified N : Node> parseExpression(expr: String, javaVersion: JavaVer
  *
  * @throws ParseException If the argument is no valid expression for the given language version
  */
-fun parseAstExpression(expr: String, javaVersion: JavaVersion = defaultJavaVersion): ASTExpression {
+fun parseAstExpression(expr: String, javaVersion: JavaVersion = JavaVersion.Latest): ASTExpression {
 
     val source = """
         class Foo {
@@ -96,7 +94,7 @@ fun parseAstExpression(expr: String, javaVersion: JavaVersion = defaultJavaVersi
  * @throws ParseException If the argument is no valid statement for the given language version.
  *                        Don't forget the semicolon!
  */
-inline fun <reified N : Node> parseStatement(stmt: String, javaVersion: JavaVersion = defaultJavaVersion): N =
+inline fun <reified N : Node> parseStatement(stmt: String, javaVersion: JavaVersion = JavaVersion.Latest): N =
         parseAstStatement(stmt, javaVersion).findFirstNodeOnStraightLine(N::class.java)
         ?: throw NoSuchElementException("No node of type ${N::class.java.simpleName} in the given statement:\n\t$stmt")
 
@@ -113,7 +111,7 @@ inline fun <reified N : Node> parseStatement(stmt: String, javaVersion: JavaVers
  * @throws ParseException If the argument is no valid statement for the given language version.
  *                        Don't forget the semicolon!
  */
-fun parseAstStatement(statement: String, javaVersion: JavaVersion = defaultJavaVersion): ASTBlockStatement {
+fun parseAstStatement(statement: String, javaVersion: JavaVersion = JavaVersion.Latest): ASTBlockStatement {
 
     // place the param in a statement parsing context
     val source = """
@@ -131,7 +129,7 @@ fun parseAstStatement(statement: String, javaVersion: JavaVersion = defaultJavaV
 
 
 inline fun <reified N : Node> matchExpr(ignoreChildren: Boolean = false,
-                                        javaVersion: JavaVersion = defaultJavaVersion,
+                                        javaVersion: JavaVersion = JavaVersion.Latest,
                                         noinline nodeSpec: NWrapper<N>.() -> Unit): Matcher<String> = object : Matcher<String> {
 
     override fun test(value: String): Result =
@@ -140,7 +138,7 @@ inline fun <reified N : Node> matchExpr(ignoreChildren: Boolean = false,
 }
 
 inline fun <reified N : Node> matchStmt(ignoreChildren: Boolean = false,
-                                        javaVersion: JavaVersion = defaultJavaVersion,
+                                        javaVersion: JavaVersion = JavaVersion.Latest,
                                         noinline nodeSpec: NWrapper<N>.() -> Unit): Matcher<String> = object : Matcher<String> {
 
     override fun test(value: String): Result =
@@ -149,25 +147,44 @@ inline fun <reified N : Node> matchStmt(ignoreChildren: Boolean = false,
 }
 
 
-enum class JavaVersion {
+enum class JavaVersion : Comparable<JavaVersion> {
     J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11;
 
     val pmdName: String = name.removePrefix("J").replace('_', '.')
+
+    operator fun rangeTo(last: JavaVersion): List<JavaVersion> =
+            when {
+                last == this -> listOf(this)
+                last.ordinal > this.ordinal -> values().filter { ver -> ver >= this && ver <= last }
+                else -> values().filter { ver -> ver <= this && ver >= last }
+            }
+
+    companion object {
+        val Latest = values().last()
+    }
 }
 
 
 
 
 
+
+
 fun AbstractFunSpec.parserTest(name: String,
-                               javaVersion: JavaVersion = defaultJavaVersion,
+                               javaVersionRange: List<JavaVersion> = listOf(JavaVersion.Latest),
                                assertions: ParsingCtx.() -> Unit) {
-    test(name) {
 
-        val ctx = ParsingCtx(javaVersion)
+    javaVersionRange.forEach {
 
-        ctx.assertions()
+        test("$name (Java ${it.pmdName})") {
+
+            val ctx = ParsingCtx(it)
+
+            ctx.assertions()
+        }
+
     }
+
 }
 
 
