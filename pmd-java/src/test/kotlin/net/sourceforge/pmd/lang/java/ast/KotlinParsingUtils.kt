@@ -147,7 +147,7 @@ data class ParsingTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
         val acu = ParserTstUtil.parseAndTypeResolveJava(javaVersion.pmdName, source)
 
-        return acu.getFirstDescendantOfType(ASTVariableInitializer::class.java).jjtGetChild(0) as ASTExpression
+        return acu.getFirstDescendantOfType(ASTVariableInitializer::class.java).getChild(0) as ASTExpression
     }
 
 
@@ -235,7 +235,7 @@ data class ParsingTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                 val n = this as N
                 n
             }
-            this.jjtGetNumChildren() == 1 -> jjtGetChild(0).findFirstNodeOnStraightLine(klass)
+            this.numChildren == 1 -> getChild(0).findFirstNodeOnStraightLine(klass)
             else -> null
         }
     }
