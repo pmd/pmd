@@ -4,6 +4,8 @@ import net.sourceforge.pmd.lang.ast.Node
 
 /** Extension methods to make the Node API more Kotlin-like */
 
+// kotlin converts getters of java types into property accessors
+// but it doesn't recognise jjtGet* methods as getters
 
 val Node.numChildren: Int
     get() = this.jjtGetNumChildren()

@@ -14,7 +14,7 @@ class ASTCatchStatementTest : FunSpec({
 
     parserTest("Test crash on multicatch", javaVersions = Earliest..J1_6) {
 
-        expectParseException("Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode!") {
+        expectParseException("Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode") {
             parseAstStatement("try { } catch (IOException | AssertionError e) { }")
         }
 
