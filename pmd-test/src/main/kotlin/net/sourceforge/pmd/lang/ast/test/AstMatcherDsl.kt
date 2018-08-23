@@ -186,7 +186,7 @@ class NWrapper<N : Node> private constructor(val it: N,
                 throw e
             }
 
-            assertFalse(formatErrorMessage(matcherPath + childType, "Wrong number of children, expected ${wrapper.nextChildMatcherIdx}, actual ${wrapper.it.numChildren}")) {
+            assertFalse(formatErrorMessage(childPath, "Wrong number of children, expected ${wrapper.nextChildMatcherIdx}, actual ${wrapper.it.numChildren}")) {
                 !ignoreChildrenMatchers && wrapper.nextChildMatcherIdx != wrapper.it.numChildren
             }
             return ret
@@ -199,7 +199,7 @@ class NWrapper<N : Node> private constructor(val it: N,
  * Matcher for a node, using [NWrapper] to specify a subtree against which
  * the tested node will be tested.
  *
- * Use it with [io.kotlintest.should], e.g. `nodeshould matchNode<ASTExpression> {}`.
+ * Use it with [io.kotlintest.should], e.g. `node should matchNode<ASTExpression> {}`.
  *
  * @param N Expected type of the node
  *
@@ -207,7 +207,7 @@ class NWrapper<N : Node> private constructor(val it: N,
  *                       The number of children of the child is not asserted either.
  *
  * @param nodeSpec Sequence of assertions to carry out on the node, which can be referred to by [NWrapper.it].
- *                 Assertions may onsist of [NWrapper.child] calls, which perform the same type of node
+ *                 Assertions may consist of [NWrapper.child] calls, which perform the same type of node
  *                 matching on a child of the tested node.
  *
  * @return A matcher for AST nodes, suitable for use by [io.kotlintest.should].
@@ -284,11 +284,3 @@ inline fun <reified N : Node> matchNode(ignoreChildren: Boolean = false, noinlin
         return Result(didMatch, failureMessage, negatedMessage)
     }
 }
-
-// This one preserves the stack trace
-// It's still hard to read because of the inlines, and possibly only IntelliJ knows how to do that
-// I'll try to get kotlintest to preserve the original stack trace
-
-//inline fun <reified M : Node> Node.shouldMatchNode(ignoreChildren: Boolean = false, noinline nodeSpec: NWrapper<M>.() -> Unit) {
-//    NWrapper.executeWrapper(M::class.java, this, ignoreChildren, nodeSpec)
-//}

@@ -2,6 +2,8 @@ package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.matchers.string.shouldContain
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.AbstractFunSpec
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.NWrapper
@@ -20,7 +22,7 @@ enum class JavaVersion : Comparable<JavaVersion> {
 
     /**
      * Overloads the range operator, e.g. (`J9..J11`).
-     * If both operands are the same, a singleton is returned.
+     * If both operands are the same, a singleton list is returned.
      */
     operator fun rangeTo(last: JavaVersion): List<JavaVersion> =
             when {
@@ -31,6 +33,7 @@ enum class JavaVersion : Comparable<JavaVersion> {
 
     companion object {
         val Latest = values().last()
+        val Earliest = values().first()
     }
 }
 
@@ -50,14 +53,14 @@ enum class JavaVersion : Comparable<JavaVersion> {
 fun AbstractFunSpec.parserTest(name: String,
                                javaVersions: List<JavaVersion>,
                                focusOn: JavaVersion? = null,
-                               assertions: ParsingCtx.() -> Unit) {
+                               assertions: ParsingTestCtx.() -> Unit) {
 
     javaVersions.forEach {
 
         val focus = if (focusOn != null && focusOn == it) "f:" else ""
 
         test("$focus$name (Java ${it.pmdName})") {
-            ParsingCtx(it).assertions()
+            ParsingTestCtx(it).assertions()
         }
     }
 }
@@ -73,14 +76,14 @@ fun AbstractFunSpec.parserTest(name: String,
  */
 fun AbstractFunSpec.parserTest(name: String,
                                javaVersion: JavaVersion = JavaVersion.Latest,
-                               assertions: ParsingCtx.() -> Unit) {
+                               assertions: ParsingTestCtx.() -> Unit) {
     parserTest(name, listOf(javaVersion), null, assertions)
 }
 
 
-data class ParsingCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
-                      val importedTypes: MutableList<Class<*>> = mutableListOf(),
-                      val otherImports: MutableList<String> = mutableListOf()) {
+data class ParsingTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
+                          val importedTypes: MutableList<Class<*>> = mutableListOf(),
+                          val otherImports: MutableList<String> = mutableListOf()) {
 
     private val imports: List<String>
         get() {
@@ -104,6 +107,19 @@ data class ParsingCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                         matchNode(ignoreChildren, nodeSpec).test(parseStatement<N>(value))
 
             }
+
+
+    /**
+     * Expect a parse exception to be thrown by [block].
+     * The message is asserted to contain [messageContains].
+     */
+    fun expectParseException(messageContains: String, block: () -> Unit) {
+
+        val thrown = shouldThrow<ParseException>(block)
+
+        thrown.message.shouldContain(messageContains)
+
+    }
 
 
     /**
@@ -215,11 +231,12 @@ data class ParsingCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
     fun <N : Node> Node.findFirstNodeOnStraightLine(klass: Class<N>): N? {
         return when {
             klass.isInstance(this) -> {
-                @SuppressWarnings("UNCHECKED_CAST")
+                @Suppress("UNCHECKED_CAST")
                 val n = this as N
                 n
             }
-            else -> if (this.jjtGetNumChildren() == 1) jjtGetChild(0).findFirstNodeOnStraightLine(klass) else null
+            this.jjtGetNumChildren() == 1 -> jjtGetChild(0).findFirstNodeOnStraightLine(klass)
+            else -> null
         }
     }
 }
