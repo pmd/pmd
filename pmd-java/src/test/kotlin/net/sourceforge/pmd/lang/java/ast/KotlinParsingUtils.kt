@@ -38,15 +38,15 @@ enum class JavaVersion : Comparable<JavaVersion> {
 /**
  * Specify several tests at once for different java versions.
  * One test will be generated per version in [javaVersions].
+ * Use [focusOn] to execute one test in isolation.
  *
  * @param name Name of the test. Will be postfixed by the specific
  *             java version used to run it
  * @param javaVersions Language versions for which to generate tests
- * @param focusOn Sets the java version of the test to isolate.
+ * @param focusOn Sets the java version of the test to isolate
  * @param assertions Assertions and further configuration
  *                   to perform with the parsing context
  */
-
 fun AbstractFunSpec.parserTest(name: String,
                                javaVersions: List<JavaVersion>,
                                focusOn: JavaVersion? = null,

@@ -79,11 +79,33 @@ class NWrapper<N : Node> private constructor(val it: N,
      * @return The child, if it passes all assertions, otherwise throws an exception
      */
     inline fun <reified M : Node> child(ignoreChildren: Boolean = false, noinline nodeSpec: NWrapper<M>.() -> Unit): M =
+            childImpl(ignoreChildren, M::class.java) { nodeSpec(); it }
+
+    /**
+     * Specify that the next child will be tested against the assertions
+     * defined by the lambda, and returns the return value of the lambda.
+     *
+     * This method asserts that the child exists, and that it is of the
+     * required type [M]. The lambda is then executed on it. Subsequent
+     * calls to this method at the same tree level will test the next
+     * children.
+     *
+     * @param ignoreChildren If true, the number of children of the child is not asserted.
+     *                       Calls to [child] in the [nodeSpec] throw an exception.
+     * @param nodeSpec Sequence of assertions to carry out on the child node
+     *
+     * @param M Expected type of the child
+     * @param R Return type of the call
+     *
+     * @throws AssertionError If the child is not of type [M], or fails the assertions of the [nodeSpec]
+     * @return The return value of the lambda
+     */
+    inline fun <reified M : Node, R> childRet(ignoreChildren: Boolean = false, noinline nodeSpec: NWrapper<M>.() -> R): R =
             childImpl(ignoreChildren, M::class.java, nodeSpec)
 
 
     @PublishedApi
-    internal fun <M : Node> childImpl(ignoreChildren: Boolean, childType: Class<M>, nodeSpec: NWrapper<M>.() -> Unit): M {
+    internal fun <M : Node, R> childImpl(ignoreChildren: Boolean, childType: Class<M>, nodeSpec: NWrapper<M>.() -> R): R {
         if (!childMatchersAreIgnored)
             return executeWrapper(childType, shiftChild(), matcherPath, ignoreChildren, nodeSpec)
         else
@@ -126,15 +148,18 @@ class NWrapper<N : Node> private constructor(val it: N,
          * @param ignoreChildrenMatchers Ignore the children matchers in [spec]
          * @param spec Assertions to carry out on [toWrap]
          *
+         * @param M Expected type of [toWrap]
+         * @param R Return type
+         *
          * @throws AssertionError If some assertions fail
          * @return [toWrap], if it passes all assertions, otherwise throws an exception
          */
         @PublishedApi
-        internal fun <M : Node> executeWrapper(childType: Class<M>,
-                                               toWrap: Node,
-                                               matcherPath: List<Class<out Node>>,
-                                               ignoreChildrenMatchers: Boolean,
-                                               spec: NWrapper<M>.() -> Unit): M {
+        internal fun <M : Node, R> executeWrapper(childType: Class<M>,
+                                                  toWrap: Node,
+                                                  matcherPath: List<Class<out Node>>,
+                                                  ignoreChildrenMatchers: Boolean,
+                                                  spec: NWrapper<M>.() -> R): R {
 
             val nodeNameForMsg = when {
                 matcherPath.isEmpty() -> "node"
@@ -151,7 +176,7 @@ class NWrapper<N : Node> private constructor(val it: N,
 
             val wrapper = NWrapper(m, childPath, ignoreChildrenMatchers)
 
-            try {
+            val ret: R = try {
                 wrapper.spec()
             } catch (e: AssertionError) {
                 if (e.message?.matches("At (/.*?|<root>):.*".toRegex()) == false) {
@@ -164,7 +189,7 @@ class NWrapper<N : Node> private constructor(val it: N,
             assertFalse(formatErrorMessage(matcherPath + childType, "Wrong number of children, expected ${wrapper.nextChildMatcherIdx}, actual ${wrapper.it.numChildren}")) {
                 !ignoreChildrenMatchers && wrapper.nextChildMatcherIdx != wrapper.it.numChildren
             }
-            return m
+            return ret
         }
     }
 }
