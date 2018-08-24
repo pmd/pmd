@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.lang.ast.test
 
-import arrow.legacy.disjunctionTry
+import arrow.core.Either
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import net.sourceforge.pmd.lang.ast.Node
@@ -256,8 +256,10 @@ inline fun <reified N : Node> matchNode(ignoreChildren: Boolean = false, noinlin
             return Result(false, "Expecting the node not to be null", "")
         }
 
-        val matchRes = disjunctionTry {
-            NWrapper.executeWrapper(N::class.java, value, emptyList(), ignoreChildren, nodeSpec)
+        val matchRes = try {
+            Either.Right(NWrapper.executeWrapper(N::class.java, value, emptyList(), ignoreChildren, nodeSpec))
+        } catch (e: AssertionError) {
+            Either.Left(e)
         }
 
         val didMatch = matchRes.isRight()

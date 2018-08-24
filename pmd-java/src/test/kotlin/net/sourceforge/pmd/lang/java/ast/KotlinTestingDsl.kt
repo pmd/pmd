@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.Matcher
@@ -9,6 +10,28 @@ import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.NWrapper
 import net.sourceforge.pmd.lang.ast.test.matchNode
 import net.sourceforge.pmd.lang.java.ParserTstUtil
+
+/** Extension methods to make the Node API more Kotlin-like */
+
+// kotlin converts getters of java types into property accessors
+// but it doesn't recognise jjtGet* methods as getters
+
+val Node.numChildren: Int
+    get() = this.jjtGetNumChildren()
+
+val Node.childIndex: Int
+    get() = this.jjtGetChildIndex()
+
+val Node.parent: Node?
+    get() = this.jjtGetParent()
+
+
+fun Node.getChild(i: Int) = jjtGetChild(i)
+
+fun Node.safeGetChild(i: Int): Node? = when {
+    i < numChildren -> jjtGetChild(i)
+    else -> null
+}
 
 
 /**
@@ -79,6 +102,10 @@ fun AbstractFunSpec.parserTest(name: String,
                                assertions: ParserTestCtx.() -> Unit) {
     parserTest(name, listOf(javaVersion), null, assertions)
 }
+
+
+fun junitParserTest(javaVersion: JavaVersion = JavaVersion.Latest,
+                    assertions: ParserTestCtx.() -> Unit) = ParserTestCtx(javaVersion).assertions()
 
 
 /**
@@ -301,13 +328,11 @@ data class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                 """
                 ${imports.joinToString(separator = "\n")}
                 class Foo {
-                    $construct foo() { return null; }
+                    $construct foo;
                 }
                 """.trimIndent()
 
-        override fun retrieveNode(acu: ASTCompilationUnit): ASTType =
-                acu.getFirstDescendantOfType(ASTResultType::class.java).safeGetChild(0) as? ASTType
-                ?: throw IllegalStateException("Using void here is probably not intended")
+        override fun retrieveNode(acu: ASTCompilationUnit): ASTType = acu.getFirstDescendantOfType(ASTType::class.java)
     }
 
 

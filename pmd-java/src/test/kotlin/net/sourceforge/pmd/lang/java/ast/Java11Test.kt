@@ -68,7 +68,8 @@ class Java11Test : FunSpec({
             child<ASTFormalParameters> {
                 child<ASTFormalParameter> {
                     child<ASTAnnotation>(ignoreChildren = true) {}
-                    unspecifiedChildren(2)
+                    child<ASTType>(ignoreChildren = true) {}
+                    child<ASTVariableDeclaratorId> {}
                 }
             }
             unspecifiedChild()
