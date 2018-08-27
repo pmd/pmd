@@ -4,19 +4,13 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## {{ site.pmd.date }} - {{ site.pmd.version }}
+# {{ site.pmd.date }} - {{ site.pmd.version }}
 
 The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
 This is a {{ site.pmd.release_type }} release.
 
-### Table Of Contents
-
-* [New and noteworthy](#new-and-noteworthy)
-    *   [New Rules](#new-rules)
-* [Fixed Issues](#fixed-issues)
-* [API Changes](#api-changes)
-* [External Contributions](#external-contributions)
+{% tocmaker is_release_notes_processor %}
 
 ### New and noteworthy
 
@@ -82,3 +76,5 @@ This is a {{ site.pmd.release_type }} release.
 *   [#1289](https://github.com/pmd/pmd/pull/1289): \[java] UselessParentheses: Fix false positive with assignments - [cobratbq](https://github.com/cobratbq)
 *   [#1290](https://github.com/pmd/pmd/pull/1290): \[docs] \[GSoC] Create the documentation about pmdtester - [BBG](https://github.com/djydewang)
 *   [#1256](https://github.com/pmd/pmd/pull/1256): \[java] #940 Avoid JUnit 4 false positives for JUnit 5 tests - [Alex Shesterov](https://github.com/vovkss)
+
+{% endtocmaker %}
