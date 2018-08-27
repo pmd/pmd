@@ -419,4 +419,15 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+
+   <!-- STYLE -->
+   <rule ref="category/apex/codestyle.xml/OneDeclarationPerLine">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
 </ruleset>

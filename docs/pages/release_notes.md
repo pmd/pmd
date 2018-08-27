@@ -29,6 +29,10 @@ This is a {{ site.pmd.release_type }} release.
     detects field names that don't comply to a given convention. It defaults to standard Java convention of using camelCase,
     but can be configured with ease for e.g. constants or static fields.
 
+*   The new Apex rule {% rule apex/codestyle/OneDeclarationPerLine %} (`apex-codestyle`) enforces declaring a
+    single field / variable per line; or per statement if the `strictMode` property is set.
+    It's an Apex equivalent of the already existing Java rule of the same name.
+
 ### Fixed Issues
 
 *   core
@@ -76,5 +80,6 @@ This is a {{ site.pmd.release_type }} release.
 *   [#1289](https://github.com/pmd/pmd/pull/1289): \[java] UselessParentheses: Fix false positive with assignments - [cobratbq](https://github.com/cobratbq)
 *   [#1290](https://github.com/pmd/pmd/pull/1290): \[docs] \[GSoC] Create the documentation about pmdtester - [BBG](https://github.com/djydewang)
 *   [#1256](https://github.com/pmd/pmd/pull/1256): \[java] #940 Avoid JUnit 4 false positives for JUnit 5 tests - [Alex Shesterov](https://github.com/vovkss)
+*   [#1315](https://github.com/pmd/pmd/pull/1315): \[apex] Add OneDeclarationPerStatement rule - [Jeff Hube](https://github.com/jeffhube) 
 
 {% endtocmaker %}
