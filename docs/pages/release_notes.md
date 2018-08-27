@@ -49,6 +49,7 @@ This is a {{ site.pmd.release_type }} release.
 *   java-errorprone
     *   [#1078](https://github.com/pmd/pmd/issues/1078): \[java] MissingSerialVersionUID rule does not seem to catch inherited classes
 *   java-performance
+    *   [#1291](https://github.com/pmd/pmd/issues/1291): \[java] InvalidSlf4jMessageFormat false positive: too many arguments with string concatenation operator
     *   [#1298](https://github.com/pmd/pmd/issues/1298): \[java] RedundantFieldInitializer - NumberFormatException with Long
 *   jsp
     *   [#1274](https://github.com/pmd/pmd/issues/1274): \[jsp] Support EL in tag attributes
