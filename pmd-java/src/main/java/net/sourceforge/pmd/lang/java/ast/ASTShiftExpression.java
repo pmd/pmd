@@ -39,12 +39,7 @@ public class ASTShiftExpression extends AbstractJavaTypeNode {
      * Returns the image of the operator, i.e. "<<", ">>", or ">>>".
      */
     public String getOperator() {
-        if (getImage() != null) {
-            return getImage(); // <<
-        }
-
-        ASTRSIGNEDSHIFT rsshift = (ASTRSIGNEDSHIFT) jjtGetChild(1);
-        return rsshift != null ? ">>" : ">>>";
+        return getImage();
     }
 
 }

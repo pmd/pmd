@@ -11,3 +11,5 @@ bin/
 *.patch
 */src/site/site.xml
 pmd-core/dependency-reduced-pom.xml
+.bundle
+vendor
