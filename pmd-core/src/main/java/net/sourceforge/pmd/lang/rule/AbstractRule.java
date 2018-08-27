@@ -66,7 +66,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         otherRule.examples = copyExamples();
         otherRule.externalInfoUrl = externalInfoUrl;
         otherRule.priority = priority;
-        otherRule.propertyDescriptors = copyPropertyDescriptors();
+        otherRule.propertyDescriptors = new ArrayList<>(getPropertyDescriptors());
         otherRule.propertyValuesByDescriptor = copyPropertyValues();
         otherRule.usesDFA = usesDFA;
         otherRule.usesTypeResolution = usesTypeResolution;
@@ -459,6 +459,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         }
         rule.setPriority(getPriority());
         for (final PropertyDescriptor<?> prop : getPropertyDescriptors()) {
+            // define the descriptor only if it doesn't yet exist
             if (rule.getPropertyDescriptor(prop.name()) == null) {
                 rule.definePropertyDescriptor(prop); // Property descriptors are immutable, and can be freely shared
             }
