@@ -90,13 +90,33 @@ elif travis_isPush; then
         else
             log_success "Successfully uploaded pmd-*-${VERSION}.zip to sourceforge"
         fi
-        rsync -avh docs/pages/release_notes.md ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/ReadMe.md
-        if [ $? -ne 0 ]; then
+
+    )
+
+    (   # UPLOAD RELEASE NOTES TO SOURCEFORGE
+
+        # This handler is called if any command fails
+        function release_notes_fail() {
             log_error "Error while uploading release_notes.md as ReadMe.md to sourceforge!"
             log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd/"
-        else
-            log_success "Successfully uploaded release_notes.md as ReadMe.md to sourceforge"
-        fi
+        }
+
+        # exit subshell after trap
+        set -e
+        trap release_notes_fail ERR
+
+        RELEASE_NOTES_TMP=$(mktemp -t)
+
+        .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6 > "$RELEASE_NOTES_TMP"
+
+        rsync -avh "$RELEASE_NOTES_TMP" ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/ReadMe.md
+
+        log_success "Successfully uploaded release_notes.md as ReadMe.md to sourceforge"
+
+    )
+
+
+    (
 
         upload_baseline
 

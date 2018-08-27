@@ -4,7 +4,7 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## {{ site.pmd.date }} - {{ site.pmd.version | append_unless: is_release_version, "-SNAPSHOT" }}
+## {{ site.pmd.date }} - {{ site.pmd.version }}
 
 The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
@@ -58,6 +58,11 @@ This is a {{ site.pmd.release_type }} release.
     with PMD 7.0.0. This includes the class `net.sourceforge.pmd.lang.dfa.report.ReportTree`. The reason is,
     that this class is very specific to Java and not suitable for other languages. It has only been used for
     `YAHTMLRenderer`, which has been rewritten to work without these classes.
+
+*   The nodes RUNSIGNEDSHIFT and RSIGNEDSHIFT are deprecated and will be removed from the AST with PMD 7.0.0.
+    These represented the operator of ShiftExpression in two cases out of three, but they're not needed and
+    make ShiftExpression inconsistent. The operator of a ShiftExpression is now accessible through
+    ShiftExpression#getOperator.
 
 ### External Contributions
 
