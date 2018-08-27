@@ -143,18 +143,13 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## {{ site.pmd.date }} - {{ site.pmd.version | append_unless: is_release_version, "-SNAPSHOT" }}
+## {{ site.pmd.date }} - {{ site.pmd.version }}
 
 The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
 This is a {{ site.pmd.release_type }} release.
 
-### Table Of Contents
-
-* [New and noteworthy](#new-and-noteworthy)
-* [Fixed Issues](#fixed-issues)
-* [API Changes](#api-changes)
-* [External Contributions](#external-contributions)
+{% tocmaker %}
 
 ### New and noteworthy
 
@@ -163,6 +158,8 @@ This is a {{ site.pmd.release_type }} release.
 ### API Changes
 
 ### External Contributions
+
+{% endtocmaker %}
 
 EOF
 
