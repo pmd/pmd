@@ -141,6 +141,8 @@ public class MyClass {
 
 ## AvoidPrefixingMethodParameters
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 5.0
 
 **Priority:** Medium Low (4)
@@ -1444,6 +1446,8 @@ public class Foo {
 
 ## MIsLeadingVariableName
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 3.4
 
 **Priority:** Medium (3)
@@ -1780,6 +1784,8 @@ public class Something {
 ```
 
 ## SuspiciousConstantFieldName
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 2.0
 
@@ -2193,6 +2199,8 @@ public class Foo {
 ```
 
 ## VariableNamingConventions
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 1.2
 
