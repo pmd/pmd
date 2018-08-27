@@ -63,11 +63,19 @@ This is a {{ site.pmd.release_type }} release.
     with PMD 7.0.0. This includes the class `net.sourceforge.pmd.lang.dfa.report.ReportTree`. The reason is,
     that this class is very specific to Java and not suitable for other languages. It has only been used for
     `YAHTMLRenderer`, which has been rewritten to work without these classes.
-
+    
 *   The nodes RUNSIGNEDSHIFT and RSIGNEDSHIFT are deprecated and will be removed from the AST with PMD 7.0.0.
     These represented the operator of ShiftExpression in two cases out of three, but they're not needed and
     make ShiftExpression inconsistent. The operator of a ShiftExpression is now accessible through
     ShiftExpression#getOperator.
+
+#### Deprecated rules
+
+*   The Java rules {% rule java/codestyle/VariableNamingConventions %}, {% rule java/codestyle/MIsLeadingVariableName %},
+    {% rule java/codestyle/SuspiciousConstantFieldName %}, and {% rule java/codestyle/AvoidPrefixingMethodParameters %} are 
+    now deprecated, and will be removed with version 7.0.0. They are replaced by the more general
+    {% rule java/codestyle/FieldNamingConventions %}, {% rule java/codestyle/FormalParameterNamingConventions %}, and
+    {% rule java/codestyle/LocalVariableNamingConventions %}.
 
 ### External Contributions
 

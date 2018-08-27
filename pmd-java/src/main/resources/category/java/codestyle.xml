@@ -126,6 +126,7 @@ public class MyClass {
     <rule name="AvoidPrefixingMethodParameters"
           language="java"
           since="5.0"
+          deprecated="true"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           message="Avoid prefixing parameters by in, out or inOut. Uses Javadoc to document this behavior."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidprefixingmethodparameters">
@@ -1294,6 +1295,7 @@ public class Foo {
     <rule name="MIsLeadingVariableName"
           language="java"
           since="3.4"
+          deprecated="true"
           message="Avoid naming non-fields with the prefix 'm_'"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#misleadingvariablename">
@@ -1616,6 +1618,7 @@ public class Something {
     <rule name="SuspiciousConstantFieldName"
           language="java"
           since="2.0"
+          deprecated="true"
           message="The field name indicates a constant but its modifiers do not"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#suspiciousconstantfieldname">
@@ -1992,6 +1995,7 @@ public class Foo {
 
     <rule name="VariableNamingConventions"
           since="1.2"
+          deprecated="true"
           message="{0} variable {1} should begin with {2}"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.VariableNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#variablenamingconventions">
