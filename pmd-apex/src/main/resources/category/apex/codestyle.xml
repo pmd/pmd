@@ -149,11 +149,11 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="OneDeclarationPerStatement"
+    <rule name="OneDeclarationPerLine"
           since="6.7.0"
-          message="Use one statement for each declaration, it enhances code readability."
+          message="Use one statement for each line, it enhances code readability."
           class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#onedeclarationperstatement">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#onedeclarationperline">
         <description>
 Apex allows the use of several variables declaration of the same type on one line. However, it
 can lead to quite messy code. This rule looks for several declarations on the same line.
@@ -163,15 +163,26 @@ can lead to quite messy code. This rule looks for several declarations on the sa
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclarationStatements[count(VariableDeclaration) > 1] |
-//FieldDeclarationStatements[count(FieldDeclaration) > 1]
+//VariableDeclarationStatements
+  [count(VariableDeclaration) > 1]
+  [$strictMode or count(distinct-values(VariableDeclaration/@BeginLine)) != count(VariableDeclaration)]
+|
+//FieldDeclarationStatements
+  [count(FieldDeclaration) > 1]
+  [$strictMode or count(distinct-values(FieldDeclaration/VariableExpression/@BeginLine)) != count(FieldDeclaration/VariableExpression)]
 ]]>
                 </value>
             </property>
+            <property name="version" value="2.0"/>
+            <property name="strictMode" type="Boolean" value="false"
+                      description="If true, mark combined declaration even if the declarations are on separate lines."/>
         </properties>
         <example>
 <![CDATA[
 Integer a, b;   // not recommended
+
+Integer a,
+        b;      // ok by default, can be flagged setting the strictMode property
 
 Integer a;      // preferred approach
 Integer b;
