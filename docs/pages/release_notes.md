@@ -4,32 +4,34 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## ????? - 6.7.0-SNAPSHOT
+# {{ site.pmd.date }} - {{ site.pmd.version }}
 
-The PMD team is pleased to announce PMD 6.7.0.
+The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
-This is a minor release.
+This is a {{ site.pmd.release_type }} release.
 
-### Table Of Contents
-
-* [New and noteworthy](#new-and-noteworthy)
-    *   [New Rules](#new-rules)
-* [Fixed Issues](#fixed-issues)
-* [API Changes](#api-changes)
-* [External Contributions](#external-contributions)
+{% tocmaker is_release_notes_processor %}
 
 ### New and noteworthy
 
 #### New Rules
 
-*   The new Java rule [`LinguisticNaming`](pmd_rules_java_codestyle.html#linguisticnaming) (`java-codestyle`)
+*   The new Java rule {% rule java/codestyle/LinguisticNaming %} (`java-codestyle`)
     detects cases, when a method name indicates it returns a boolean (such as `isSmall()`) but it doesn't.
     Besides method names, the rule also checks field and variable names. It also checks, that getters return
     something but setters won't. The rule has several properties with which it can be customized.
 
-*   The new PL/SQL rule [`ForLoopNaming`](pmd_rules_plsql_codestyle.html#forloopnaming) (`plsql-codestyle`)
+*   The new PL/SQL rule {% rule plsql/codestyle/ForLoopNaming %} (`plsql-codestyle`)
     enforces a naming convention for "for loops". Both "cursor for loops" and "index for loops" are covered.
     The rule can be customized via patterns. By default, short variable names are reported.
+
+*   The new Java rule {% rule java/codestyle/FieldNamingConventions %} (`java-codestyle`)
+    detects field names that don't comply to a given convention. It defaults to standard Java convention of using camelCase,
+    but can be configured with ease for e.g. constants or static fields.
+
+*   The new Apex rule {% rule apex/codestyle/OneDeclarationPerLine %} (`apex-codestyle`) enforces declaring a
+    single field / variable per line; or per statement if the `strictMode` property is set.
+    It's an Apex equivalent of the already existing Java rule of the same name.
 
 ### Fixed Issues
 
@@ -39,6 +41,7 @@ This is a minor release.
     *   [#1288](https://github.com/pmd/pmd/issues/1288): \[core] No supported build listeners found with Gradle
     *   [#1300](https://github.com/pmd/pmd/issues/1300): \[core] PMD stops processing file completely, if one rule in a rule chain fails
 *   java-bestpractices
+    *   [#940](https://github.com/pmd/pmd/issues/940): \[java] JUnit 4 false positives for JUnit 5 tests
     *   [#1267](https://github.com/pmd/pmd/pull/1267): \[java] MissingOverrideRule: Avoid NoClassDefFoundError with incomplete classpath
 *   java-codestyle
     *   [#1255](https://github.com/pmd/pmd/issues/1255): \[java] UnnecessaryFullyQualifiedName false positive: static method on shadowed implicitly imported class
@@ -46,6 +49,7 @@ This is a minor release.
 *   java-errorprone
     *   [#1078](https://github.com/pmd/pmd/issues/1078): \[java] MissingSerialVersionUID rule does not seem to catch inherited classes
 *   java-performance
+    *   [#1291](https://github.com/pmd/pmd/issues/1291): \[java] InvalidSlf4jMessageFormat false positive: too many arguments with string concatenation operator
     *   [#1298](https://github.com/pmd/pmd/issues/1298): \[java] RedundantFieldInitializer - NumberFormatException with Long
 *   jsp
     *   [#1274](https://github.com/pmd/pmd/issues/1274): \[jsp] Support EL in tag attributes
@@ -59,6 +63,19 @@ This is a minor release.
     with PMD 7.0.0. This includes the class `net.sourceforge.pmd.lang.dfa.report.ReportTree`. The reason is,
     that this class is very specific to Java and not suitable for other languages. It has only been used for
     `YAHTMLRenderer`, which has been rewritten to work without these classes.
+    
+*   The nodes RUNSIGNEDSHIFT and RSIGNEDSHIFT are deprecated and will be removed from the AST with PMD 7.0.0.
+    These represented the operator of ShiftExpression in two cases out of three, but they're not needed and
+    make ShiftExpression inconsistent. The operator of a ShiftExpression is now accessible through
+    ShiftExpression#getOperator.
+
+#### Deprecated rules
+
+*   The Java rules {% rule java/codestyle/VariableNamingConventions %}, {% rule java/codestyle/MIsLeadingVariableName %},
+    {% rule java/codestyle/SuspiciousConstantFieldName %}, and {% rule java/codestyle/AvoidPrefixingMethodParameters %} are 
+    now deprecated, and will be removed with version 7.0.0. They are replaced by the more general
+    {% rule java/codestyle/FieldNamingConventions %}, {% rule java/codestyle/FormalParameterNamingConventions %}, and
+    {% rule java/codestyle/LocalVariableNamingConventions %}.
 
 ### External Contributions
 
@@ -71,3 +88,7 @@ This is a minor release.
 *   [#1278](https://github.com/pmd/pmd/pull/1278): \[ci] \[GSoC] Use pmdtester 1.0.0.pre.beta3 - [BBG](https://github.com/djydewang)
 *   [#1289](https://github.com/pmd/pmd/pull/1289): \[java] UselessParentheses: Fix false positive with assignments - [cobratbq](https://github.com/cobratbq)
 *   [#1290](https://github.com/pmd/pmd/pull/1290): \[docs] \[GSoC] Create the documentation about pmdtester - [BBG](https://github.com/djydewang)
+*   [#1256](https://github.com/pmd/pmd/pull/1256): \[java] #940 Avoid JUnit 4 false positives for JUnit 5 tests - [Alex Shesterov](https://github.com/vovkss)
+*   [#1315](https://github.com/pmd/pmd/pull/1315): \[apex] Add OneDeclarationPerStatement rule - [Jeff Hube](https://github.com/jeffhube) 
+
+{% endtocmaker %}

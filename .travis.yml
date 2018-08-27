@@ -34,7 +34,7 @@ before_install:
 # Install OracleJDK 10 - see https://sormuras.github.io/blog/2018-03-20-jdk-matrix.html
 install:
   - . ./install-jdk.sh -F 10 -L BCL
-  - bundle install
+  - bundle install --without=release_notes_preprocessing
 before_script: true
 script: source .travis/build-$BUILD.sh
 after_success: true
@@ -71,6 +71,7 @@ notifications:
 cache:
   directories:
   - "$HOME/.m2"
+  - vendor/bundle
 
 
 # Secure Keys, that need to be set for snapshot builds

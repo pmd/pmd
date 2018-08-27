@@ -68,6 +68,19 @@ module CustomFilters
     end
   end
 
+  # Append the suffix only if the condition argument is truthy
+  def append_if(str, condition, suffix)
+    if condition
+      str + suffix
+    else
+      str
+    end
+  end
+
+  def append_unless(str, condition, suffix)
+    append_if(str, !condition, suffix)
+  end
+
   def render_markdown(input)
     if input
       res = input
