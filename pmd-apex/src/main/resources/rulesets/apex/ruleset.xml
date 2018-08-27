@@ -421,7 +421,7 @@
    </rule>
 
    <!-- STYLE -->
-   <rule ref="category/apex/codestyle.xml/OneDeclarationPerStatement" message="Use one statement for each declaration">
+   <rule ref="category/apex/codestyle.xml/OneDeclarationPerLine">
       <priority>3</priority>
       <properties>
          <!-- relevant for Code Climate output only -->
