@@ -83,6 +83,63 @@ public class Foo { }
     </test-code>
 
     <test-code>
+        <description>public interface should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>global interface should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+global interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>private interface does not need comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+private interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>interface comment should have description</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ */
+public interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct interface comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct interface comment with annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+@Deprecated
+public interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>public method should have comment</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -253,6 +310,23 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>correct method comment with annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     */
+    @Deprecated
+    public void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
     <description>public property should have comment</description>
     <expected-problems>1</expected-problems>
     <code><![CDATA[
@@ -302,6 +376,23 @@ public class Foo {
     /**
      * @description Bar
      */
+    public Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct property comment with annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     */
+    @Deprecated
     public Object Bar { get; set; }
 }
         ]]></code>
