@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 public abstract class AbstractApexNodeBase extends AbstractNode {
 
@@ -15,6 +16,21 @@ public abstract class AbstractApexNodeBase extends AbstractNode {
 
     public AbstractApexNodeBase(Class<?> klass) {
         super(klass.hashCode());
+    }
+
+    public void calculateLineNumbers(SourceCodePositioner positioner, int startOffset, int endOffset) {
+        // end column will be interpreted as inclusive, while endOffset/endIndex
+        // is exclusive
+        endOffset -= 1;
+
+        this.beginLine = positioner.lineNumberFromOffset(startOffset);
+        this.beginColumn = positioner.columnFromOffset(this.beginLine, startOffset);
+        this.endLine = positioner.lineNumberFromOffset(endOffset);
+        this.endColumn = positioner.columnFromOffset(this.endLine, endOffset);
+
+        if (this.endColumn < 0) {
+            this.endColumn = 0;
+        }
     }
 
     /**

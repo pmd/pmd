@@ -282,10 +282,12 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private void buildFormalComment(AstNode node) {
         if (parents.peek() == node) {
             ApexNode<?> parent = (ApexNode<?>) nodes.peek();
-            String token = getApexDocToken(getApexDocIndex(parent));
-            if (token != null) {
-                ASTFormalComment comment = new ASTFormalComment(token);
-                parent.jjtAddChild(comment, parent.jjtGetNumChildren());
+            TokenLocation tokenLocation = getApexDocTokenLocation(getApexDocIndex(parent));
+            if (tokenLocation != null) {
+                ASTFormalComment comment = new ASTFormalComment(tokenLocation.token);
+                comment.calculateLineNumbers(sourceCodePositioner, tokenLocation.index,
+                        tokenLocation.index + tokenLocation.token.length());
+                parent.jjtAddChild(comment, 0);
                 comment.jjtSetParent(parent);
             }
         }
@@ -298,12 +300,12 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         return sourceCode.lastIndexOf('\n', index);
     }
 
-    private String getApexDocToken(int index) {
+    private TokenLocation getApexDocTokenLocation(int index) {
         TokenLocation last = null;
         for (TokenLocation location : tokenLocations) {
             if (location.index >= index) {
                 if (last != null && last.token.startsWith("/**")) {
-                    return last.token;
+                    return last;
                 }
                 return null;
             }

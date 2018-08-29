@@ -26,20 +26,7 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
         }
 
         Location loc = node.getLoc();
-        int startOffset = loc.getStartIndex();
-        int endOffset = loc.getEndIndex();
-        // end column will be interpreted as inclusive, while endOffset/endIndex
-        // is exclusive
-        endOffset -= 1;
-
-        this.beginLine = positioner.lineNumberFromOffset(startOffset);
-        this.beginColumn = positioner.columnFromOffset(this.beginLine, startOffset);
-        this.endLine = positioner.lineNumberFromOffset(endOffset);
-        this.endColumn = positioner.columnFromOffset(this.endLine, endOffset);
-
-        if (this.endColumn < 0) {
-            this.endColumn = 0;
-        }
+        calculateLineNumbers(positioner, loc.getStartIndex(), loc.getEndIndex());
     }
 
     protected void handleSourceCode(String source) {
