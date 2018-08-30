@@ -117,6 +117,8 @@ elif travis_isPush; then
 
 
     (
+        # disable fast fail, exit immediately, in this subshell
+        set +e
 
         upload_baseline
 
