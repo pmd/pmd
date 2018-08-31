@@ -5,6 +5,9 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
@@ -18,27 +21,33 @@ import net.sourceforge.pmd.properties.StringMultiProperty;
 
 public class LinguisticNamingRule extends AbstractJavaRule {
     private static final BooleanProperty CHECK_BOOLEAN_METHODS = BooleanProperty.named("checkBooleanMethod")
-            .defaultValue(true).desc("Check method names and types for inconsistent naming").uiOrder(1.0f).build();
+            .defaultValue(true).desc("Check method names and types for inconsistent naming.").uiOrder(1.0f).build();
     private static final BooleanProperty CHECK_GETTERS = BooleanProperty.named("checkGetters").defaultValue(true)
-            .desc("Check return type of getters").uiOrder(2.0f).build();
+            .desc("Check return type of getters.").uiOrder(2.0f).build();
     private static final BooleanProperty CHECK_SETTERS = BooleanProperty.named("checkSetters").defaultValue(true)
-            .desc("Check return type of setters").uiOrder(3.0f).build();
+            .desc("Check return type of setters.").uiOrder(3.0f).build();
     private static final BooleanProperty CHECK_PREFIXED_TRANSFORM_METHODS = BooleanProperty
-            .named("checkPrefixedTransformMethods")
-            .defaultValue(true).desc("Check return type of methods whose names start with 'to'").uiOrder(4.0f).build();
+            .named("checkPrefixedTransformMethods").defaultValue(true)
+            .desc("Check return type of methods whose names start with the configured prefix (see transformMethodNames property).")
+            .uiOrder(4.0f).build();
     private static final BooleanProperty CHECK_TRANSFORM_METHODS = BooleanProperty.named("checkTransformMethods")
-            .defaultValue(false).desc("Check return type of methods which contain 'To' in their name").uiOrder(4.0f).build();
+            .defaultValue(false)
+            .desc("Check return type of methods which contain the configured infix in their name (see transformMethodNames property).")
+            .uiOrder(4.0f).build();
     private static final StringMultiProperty BOOLEAN_METHOD_PREFIXES_PROPERTY = StringMultiProperty
             .named("booleanMethodPrefixes").defaultValues("is", "has", "can", "have", "will", "should")
-            .desc("the prefixes of methods that return boolean").uiOrder(5.0f).build();
+            .desc("The prefixes of methods that return boolean.").uiOrder(5.0f).build();
+    private static final StringMultiProperty TRANSFORM_METHOD_NAMES_PROPERTY = StringMultiProperty
+            .named("transformMethodNames").defaultValues("to")
+            .desc("The prefixes and infixes that indicate a transform method.").uiOrder(6.0f).build();
 
     private static final BooleanProperty CHECK_FIELDS = BooleanProperty.named("checkFields").defaultValue(true)
-            .desc("Check field names and types for inconsistent naming").uiOrder(6.0f).build();
+            .desc("Check field names and types for inconsistent naming.").uiOrder(7.0f).build();
     private static final BooleanProperty CHECK_VARIABLES = BooleanProperty.named("checkVariables").defaultValue(true)
-            .desc("Check local variable names and types for inconsistent naming").uiOrder(7.0f).build();
+            .desc("Check local variable names and types for inconsistent naming.").uiOrder(8.0f).build();
     private static final StringMultiProperty BOOLEAN_FIELD_PREFIXES_PROPERTY = StringMultiProperty
             .named("booleanFieldPrefixes").defaultValues("is", "has", "can", "have", "will", "should")
-            .desc("the prefixes of fields and variables that indicate boolean").uiOrder(8.0f).build();
+            .desc("The prefixes of fields and variables that indicate boolean.").uiOrder(9.0f).build();
 
     public LinguisticNamingRule() {
         definePropertyDescriptor(CHECK_BOOLEAN_METHODS);
@@ -47,6 +56,7 @@ public class LinguisticNamingRule extends AbstractJavaRule {
         definePropertyDescriptor(CHECK_PREFIXED_TRANSFORM_METHODS);
         definePropertyDescriptor(CHECK_TRANSFORM_METHODS);
         definePropertyDescriptor(BOOLEAN_METHOD_PREFIXES_PROPERTY);
+        definePropertyDescriptor(TRANSFORM_METHOD_NAMES_PROPERTY);
         definePropertyDescriptor(CHECK_FIELDS);
         definePropertyDescriptor(CHECK_VARIABLES);
         definePropertyDescriptor(BOOLEAN_FIELD_PREFIXES_PROPERTY);
@@ -84,8 +94,11 @@ public class LinguisticNamingRule extends AbstractJavaRule {
 
     private void checkPrefixedTransformMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {
         ASTResultType resultType = node.getResultType();
-        if (resultType.isVoid() && hasPrefix(nameOfMethod, "to")) {
-            // To as prefix
+        List<String> prefixes = getProperty(TRANSFORM_METHOD_NAMES_PROPERTY);
+        String[] splitMethodName = StringUtils.splitByCharacterTypeCamelCase(nameOfMethod);
+        if (resultType.isVoid() && splitMethodName.length > 0
+                && prefixes.contains(splitMethodName[0].toLowerCase(Locale.ROOT))) {
+            // "To" or any other configured prefix found
             addViolationWithMessage(data, node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
                     new Object[] { nameOfMethod });
         }
@@ -93,10 +106,15 @@ public class LinguisticNamingRule extends AbstractJavaRule {
 
     private void checkTransformMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {
         ASTResultType resultType = node.getResultType();
-        if (resultType.isVoid() && containsWord(nameOfMethod, "To")) {
-            // To in the middle somewhere
-            addViolationWithMessage(data, node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
-                    new Object[] { nameOfMethod });
+        List<String> infixes = getProperty(TRANSFORM_METHOD_NAMES_PROPERTY);
+        for (String infix : infixes) {
+            if (resultType.isVoid() && containsWord(nameOfMethod, StringUtils.capitalize(infix))) {
+                // "To" or any other configured infix in the middle somewhere
+                addViolationWithMessage(data, node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
+                        new Object[] { nameOfMethod });
+                // the first violation is sufficient - it is still the same method we are analyzing here
+                break;
+            }
         }
     }
 

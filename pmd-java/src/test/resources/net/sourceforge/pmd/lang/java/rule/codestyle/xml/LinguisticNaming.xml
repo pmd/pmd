@@ -222,6 +222,31 @@ public class MethodTypeAndNameIsInconsistentWithPrefixTo {
     </test-code>
 
     <test-code>
+        <description>Method Prefix as: Transform Method with property configuration</description>
+        <rule-property name="transformMethodNames">as</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The transform method 'asDataType' should not return void linguistically</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixAs {
+    void aspect() {
+        // do something
+    }
+
+    void asDataType() { // violation
+        // do something
+    }
+
+    int asNumber() {
+        return 1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Method Contains To: Transformation methods</description>
         <rule-property name="checkTransformMethods">true</rule-property>
         <expected-problems>1</expected-problems>
@@ -240,6 +265,31 @@ public class MethodTypeAndNameIsInconsistentWithPrefixTo {
     }
 
     void doneTooMuch() { // shouldn't report a violation, since "To" is not followed by uppercase letter
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method Contains As: Transformation methods with configured infix</description>
+        <rule-property name="checkTransformMethods">true</rule-property>
+        <rule-property name="transformMethodNames">as</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The transform method 'grapeAsWine' should not return void linguistically</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixTo {
+    void grapeAsWine() { // violation
+        // do something
+    }
+
+    int hopsAsBeer() {
+        return 1;
+    }
+
+    void defaultAspectConfig() { // shouldn't report a violation, since "As" is not followed by uppercase letter
     }
 }
         ]]></code>
