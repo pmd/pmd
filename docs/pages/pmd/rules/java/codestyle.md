@@ -1140,15 +1140,16 @@ public class LinguisticNaming {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|booleanFieldPrefixes|is \| has \| can \| have \| will \| should|the prefixes of fields and variables that indicate boolean|yes. Delimiter is '\|'.|
-|checkVariables|true|Check local variable names and types for inconsistent naming|no|
-|checkFields|true|Check field names and types for inconsistent naming|no|
-|booleanMethodPrefixes|is \| has \| can \| have \| will \| should|the prefixes of methods that return boolean|yes. Delimiter is '\|'.|
-|checkPrefixedTransformMethods|true|Check return type of methods whose names start with 'to'|no|
-|checkTransformMethods|false|Check return type of methods which contain 'To' in their name|no|
-|checkSetters|true|Check return type of setters|no|
-|checkGetters|true|Check return type of getters|no|
-|checkBooleanMethod|true|Check method names and types for inconsistent naming|no|
+|booleanFieldPrefixes|is \| has \| can \| have \| will \| should|The prefixes of fields and variables that indicate boolean.|yes. Delimiter is '\|'.|
+|checkVariables|true|Check local variable names and types for inconsistent naming.|no|
+|checkFields|true|Check field names and types for inconsistent naming.|no|
+|transformMethodNames|to \| as|The prefixes and infixes that indicate a transform method.|yes. Delimiter is '\|'.|
+|booleanMethodPrefixes|is \| has \| can \| have \| will \| should|The prefixes of methods that return boolean.|yes. Delimiter is '\|'.|
+|checkPrefixedTransformMethods|true|Check return type of methods whose names start with the configured prefix (see transformMethodNames property).|no|
+|checkTransformMethods|false|Check return type of methods which contain the configured infix in their name (see transformMethodNames property).|no|
+|checkSetters|true|Check return type of setters.|no|
+|checkGetters|true|Check return type of getters.|no|
+|checkBooleanMethod|true|Check method names and types for inconsistent naming.|no|
 
 **Use this rule by referencing it:**
 ``` xml
