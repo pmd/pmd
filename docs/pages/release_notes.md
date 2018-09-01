@@ -14,6 +14,11 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Modified Rules
+
+*   The Java rule {% rule java/bestpractices/OneDeclarationPerLine %} (`java-bestpractices`) has been revamped to
+    consider not only local variable declarations, but field declarations too.
+
 #### New Rules
 
 *   The new Java rule {% rule java/codestyle/LinguisticNaming %} (`java-codestyle`)

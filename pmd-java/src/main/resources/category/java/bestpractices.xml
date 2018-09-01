@@ -814,6 +814,10 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 //LocalVariableDeclaration
    [count(VariableDeclarator) > 1]
    [$strictMode or count(distinct-values(VariableDeclarator/@BeginLine)) != count(VariableDeclarator)]
+|
+//FieldDeclaration
+   [count(VariableDeclarator) > 1]
+   [$strictMode or count(distinct-values(VariableDeclarator/@BeginLine)) != count(VariableDeclarator)]
 ]]>
                 </value>
             </property>
