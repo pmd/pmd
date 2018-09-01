@@ -226,9 +226,6 @@ Application with hard-coded IP addresses can become impossible to deploy in some
 Externalizing IP adresses is preferable.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="pattern" type="String" description="Regular Expression" value='^"[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"$'/>
-        </properties>
         <example>
 <![CDATA[
 public class Foo {
