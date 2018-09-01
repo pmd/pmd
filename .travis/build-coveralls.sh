@@ -22,7 +22,7 @@ echo "MAVEN_OPTS='-Xms1g -Xmx1g --add-modules java.se'" > ${HOME}/.mavenrc
     set +e
 
     ./mvnw clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-    ./mvnw test jacoco:report coveralls:report -Pcoveralls -B -V
+    ./mvnw package jacoco:report coveralls:report -Pcoveralls -B -V
 
     if [ $? -ne 0 ]; then
         log_error "Error creating coveralls report"
