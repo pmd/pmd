@@ -1,7 +1,8 @@
 # How to build PMD
 
-PMD uses [Maven](https://maven.apache.org/) and requires [Java 9](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-for building.
+PMD uses [Maven](https://maven.apache.org/) and requires at least Java 10 for building.
+You can get Java 10 from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+or from the [OpenJDK Project](http://jdk.java.net).
 
 PMD uses the [maven wrapper](https://github.com/takari/maven-wrapper), so you can simply build PMD as following:
 

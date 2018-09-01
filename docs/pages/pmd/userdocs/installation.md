@@ -17,6 +17,9 @@ sidebar: pmd_sidebar
     * For Windows: [Winzip](http://winzip.com) or the free [7-zip](http://www.7-zip.org/)
     * For Linux / Unix: [InfoZip](http://www.info-zip.org/pub/infozip/)
 
+{% include note.html content="For executing the Designer (./run.sh designer) using [OpenJDK](http://jdk.java.net) or Java 11, you need additionally [OpenJFX](http://jdk.java.net). Download it, extract it and set the environment variable JAVAFX_HOME." %}
+
+
 ### Installation
 
 PMD is distributed as a zip archive, which includes both [PMD](#running-pmd-via-command-line) and [CPD](/pmd_userdocs_cpd.html). 
