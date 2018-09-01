@@ -138,7 +138,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
         // 1) At least 3 characters
         // 2) 1st must be a Hex number or a : (colon)
         // 3) Must contain at least 2 colons (:)
-        if (s.length() < 3 || !(isHexCharacter(firstChar) || firstChar == ':') || s.indexOf(':') < 0
+        if (s.length() < 3 || !(isHexCharacter(firstChar) || firstChar == ':')
                 || StringUtils.countMatches(s, ':') < 2) {
             return false;
         }
