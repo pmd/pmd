@@ -38,7 +38,7 @@ public class LinguisticNamingRule extends AbstractJavaRule {
             .named("booleanMethodPrefixes").defaultValues("is", "has", "can", "have", "will", "should")
             .desc("The prefixes of methods that return boolean.").uiOrder(5.0f).build();
     private static final StringMultiProperty TRANSFORM_METHOD_NAMES_PROPERTY = StringMultiProperty
-            .named("transformMethodNames").defaultValues("to")
+            .named("transformMethodNames").defaultValues("to", "as")
             .desc("The prefixes and infixes that indicate a transform method.").uiOrder(6.0f).build();
 
     private static final BooleanProperty CHECK_FIELDS = BooleanProperty.named("checkFields").defaultValue(true)
