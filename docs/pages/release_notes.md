@@ -44,18 +44,11 @@ by classes within PMD. As such, we may add new abstract methods, or remove prote
 at any time. All published public members remain supported. The annotation is *not* inherited, which
 means a reserved interface doesn't prevent its implementors to be subclassed.
 
-##### `@Beta`
-
-APIs marked with the `@Beta` annotation at the class or method level are subject to change.
-They can be modified in any way, or even removed, at any time. If your code is a library
-itself (i.e. it is used on the CLASSPATH of users outside your own control), you should not
-use beta APIs, unless you repackage them (e.g. using ProGuard, shading, etc).
-
 ##### `@Experimental`
 
 
-APIs marked with the `@Experimental` annotation at the class or method level will almost certainly
-change. They can be modified in any way, or even removed, at any time. You should not use or rely
+APIs marked with the `@Experimental` annotation at the class or method level are subject to change.
+They can be modified in any way, or even removed, at any time. You should not use or rely
  on them in any production code. They are purely to allow broad testing and feedback.
 
 ##### `@Deprecated`
