@@ -12,17 +12,15 @@ if ! travis_isPush; then
     exit 0
 fi
 
-#
-# for java9: enable all modules.
-# sonar plugin seems to need java.xml.bind module
-echo "MAVEN_OPTS='-Xms1g -Xmx1g --add-modules java.se'" > ${HOME}/.mavenrc
+# for sonar, we need to use java10, until sonarjava 5.8.0 is released (Sept. 2018)
+source ./install-jdk.sh -F 10 -L GPL -W $HOME/jdk
 
 (
     # disable fast fail, exit immediately, in this subshell
     set +e
 
     # Run the build
-    ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SONAR_TOKEN} -B -V
+    ./mvnw clean package sonar:sonar -Dsonar.login=${SONAR_TOKEN} -Psonar -B -V
 
     if [ $? -ne 0 ]; then
         log_error "Error updating sonar..."

@@ -980,6 +980,38 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>sonar</id>
+            <properties>
+                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.sonarsource.scanner.maven</groupId>
+                            <artifactId>sonar-maven-plugin</artifactId>
+                            <version>3.4.1.1168</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+                    <plugin>
+                      <groupId>org.jacoco</groupId>
+                      <artifactId>jacoco-maven-plugin</artifactId>
+                      <executions>
+                          <execution>
+                              <id>default-prepare-agent</id>
+                              <goals>
+                                  <goal>prepare-agent</goal>
+                              </goals>
+                          </execution>
+                      </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <modules>
