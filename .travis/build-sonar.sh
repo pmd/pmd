@@ -12,10 +12,12 @@ if ! travis_isPush; then
     exit 0
 fi
 
-# for sonar, we need to use java10, until sonarjava 5.8.0 is released (Sept. 2018)
-source ./install-jdk.sh -F 10 -L GPL -W $HOME/jdk
-
 (
+    # for sonar, we need to use java10, until sonarjava 5.8.0 is released (Sept. 2018)
+    JAVA_HOME=$(bash ./install-jdk.sh -F 10 -L GPL -W $HOME/jdk --emit-java-home  | tail --lines 1)
+    export JAVA_HOME
+    export PATH=${JAVA_HOME}/bin:$PATH
+
     # disable fast fail, exit immediately, in this subshell
     set +e
 
