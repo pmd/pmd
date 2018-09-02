@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.7.0</li>
+    <li class="sidebarTitle">PMD 6.8.0</li>
     
     
     
@@ -1379,10 +1379,10 @@ It is much better to use one of the type-specific toString() methods instead.</p
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="w">
-       </span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.io.FileInputStream'</span><span class="p">)</span><span class="w">
-    </span><span class="ow">or</span><span class="w"> </span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.io.FileOutputStream'</span><span class="p">)</span><span class="w">
-    </span><span class="ow">or</span><span class="w"> </span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.io.FileReader'</span><span class="p">)</span><span class="w">
-    </span><span class="ow">or</span><span class="w"> </span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.io.FileWriter'</span><span class="p">)</span><span class="w">
+       </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.io.FileInputStream'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.io.FileOutputStream'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.io.FileReader'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.io.FileWriter'</span><span class="p">)</span><span class="w">
   </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -1450,10 +1450,10 @@ adverse impacts on performance.</p>
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'short'</span><span class="p">]</span><span class="w">
 </span><span class="p">|</span><span class="w">
-</span><span class="o">//</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Annotation</span><span class="o">/</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Override'</span><span class="p">)])]</span><span class="w">
+</span><span class="o">//</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Annotation</span><span class="o">/</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Override'</span><span class="p">)])]</span><span class="w">
     </span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="o">/</span><span class="nt">ResultType</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'short'</span><span class="p">]</span><span class="w">
 </span><span class="p">|</span><span class="w">
-</span><span class="o">//</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Annotation</span><span class="o">/</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Override'</span><span class="p">)])]</span><span class="w">
+</span><span class="o">//</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Annotation</span><span class="o">/</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Override'</span><span class="p">)])]</span><span class="w">
     </span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="o">/</span><span class="nt">MethodDeclarator</span><span class="o">/</span><span class="nt">FormalParameters</span><span class="o">/</span><span class="nt">FormalParameter</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'short'</span><span class="p">]</span><span class="w">
 </span><span class="p">|</span><span class="w">
 </span><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'short'</span><span class="p">]</span><span class="w">
@@ -1535,7 +1535,7 @@ Note that new Byte() is deprecated since JDK 9 for that reason.</p>
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="w">
 </span><span class="p">[</span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="nt">ArrayDimsAndInits</span><span class="p">)</span><span class="w">
-</span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Byte'</span><span class="p">)]]</span><span class="w">
+</span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Byte'</span><span class="p">)]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1734,7 +1734,7 @@ Note that new Integer() is deprecated since JDK 9 for that reason.</p>
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="w">
   </span><span class="p">[</span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="nt">ArrayDimsAndInits</span><span class="p">)</span><span class="w">
-   </span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Integer'</span><span class="p">)]]</span><span class="w">
+   </span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Integer'</span><span class="p">)]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1761,7 +1761,7 @@ Note that new Long() is deprecated since JDK 9 for that reason.</p>
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="w">
 </span><span class="p">[</span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="nt">ArrayDimsAndInits</span><span class="p">)</span><span class="w">
-</span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Long'</span><span class="p">)]]</span><span class="w">
+</span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Long'</span><span class="p">)]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1872,7 +1872,7 @@ Note that new Short() is deprecated since JDK 9 for that reason.</p>
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="w">
 </span><span class="p">[</span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="nt">ArrayDimsAndInits</span><span class="p">)</span><span class="w">
-</span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Short'</span><span class="p">)]]</span><span class="w">
+</span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Short'</span><span class="p">)]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2269,7 +2269,7 @@ or StringBuffer.toString().length() == …</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 12, 2018 <br />
+ Site last generated: Sep 2, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

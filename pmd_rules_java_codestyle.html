@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces">
+<meta name="keywords" content=" Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces">
 <title>Code Style | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.7.0</li>
+    <li class="sidebarTitle">PMD 6.8.0</li>
     
     
     
@@ -1415,6 +1415,8 @@ Classes with solely static members are ignored, refer to <a href="pmd_rules_java
 
 <h2 id="avoidprefixingmethodparameters">AvoidPrefixingMethodParameters</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 5.0</p>
 
 <p><strong>Priority:</strong> Medium Low (4)</p>
@@ -2143,6 +2145,96 @@ usage by developers who should be implementing their own versions in the concret
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="fieldnamingconventions">FieldNamingConventions</h2>
+
+<p><strong>Since:</strong> PMD 6.7.0</p>
+
+<p><strong>Priority:</strong> High (1)</p>
+
+<p>Configurable naming conventions for field declarations. This rule reports variable declarations
+which do not match the regex that applies to their specific kind —e.g. constants (static final),
+enum constant, final field. Each regex can be configured through properties.</p>
+
+<p>By default this rule uses the standard Java naming convention (Camel case), and uses the ALL_UPPER
+convention for constants and enum constants.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/FieldNamingConventionsRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.FieldNamingConventionsRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+                <span class="kt">int</span> <span class="n">myField</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="c1">// This is in camel case, so it's ok</span>
+                <span class="kt">int</span> <span class="n">my_Field</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="c1">// This contains an underscore, it's not ok by default</span>
+                                  <span class="c1">// but you may allow it, or even require the "my_" prefix</span>
+
+                <span class="kd">final</span> <span class="kt">int</span> <span class="n">FinalField</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="c1">// you may configure a different convention for final fields,</span>
+                                          <span class="c1">// e.g. here PascalCase: [A-Z][a-zA-Z0-9]*</span>
+
+                <span class="kd">interface</span> <span class="nc">Interface</span> <span class="o">{</span>
+                    <span class="kt">double</span> <span class="n">PI</span> <span class="o">=</span> <span class="mf">3.14</span><span class="o">;</span> <span class="c1">// interface "fields" use the constantPattern property</span>
+                <span class="o">}</span>
+
+                <span class="kd">enum</span> <span class="n">AnEnum</span> <span class="o">{</span>
+                    <span class="n">ORG</span><span class="o">,</span> <span class="n">NET</span><span class="o">,</span> <span class="n">COM</span><span class="o">;</span> <span class="c1">// These use a separate property but are set to ALL_UPPER by default</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>publicConstantPattern</td>
+      <td>[A-Z][A-Z_0-9]*</td>
+      <td>Regex which applies to public constant names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>constantPattern</td>
+      <td>[A-Z][A-Z_0-9]*</td>
+      <td>Regex which applies to non-public static final field names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>enumConstantPattern</td>
+      <td>[A-Z][A-Z_0-9]*</td>
+      <td>Regex which applies to enum constant names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>finalFieldPattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to final field names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>staticFieldPattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to static field names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>defaultFieldPattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to field names</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/FieldNamingConventions"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="forloopshouldbewhileloop">ForLoopShouldBeWhileLoop</h2>
 
 <p><strong>Since:</strong> PMD 1.02</p>
@@ -2494,55 +2586,61 @@ Developers Perceive Them</a>.</p>
     <tr>
       <td>booleanFieldPrefixes</td>
       <td>is | has | can | have | will | should</td>
-      <td>the prefixes of fields and variables that indicate boolean</td>
+      <td>The prefixes of fields and variables that indicate boolean.</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>checkVariables</td>
       <td>true</td>
-      <td>Check local variable names and types for inconsistent naming</td>
+      <td>Check local variable names and types for inconsistent naming.</td>
       <td>no</td>
     </tr>
     <tr>
       <td>checkFields</td>
       <td>true</td>
-      <td>Check field names and types for inconsistent naming</td>
+      <td>Check field names and types for inconsistent naming.</td>
       <td>no</td>
+    </tr>
+    <tr>
+      <td>transformMethodNames</td>
+      <td>to | as</td>
+      <td>The prefixes and infixes that indicate a transform method.</td>
+      <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>booleanMethodPrefixes</td>
       <td>is | has | can | have | will | should</td>
-      <td>the prefixes of methods that return boolean</td>
+      <td>The prefixes of methods that return boolean.</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>checkPrefixedTransformMethods</td>
       <td>true</td>
-      <td>Check return type of methods whose names start with ‘to’</td>
+      <td>Check return type of methods whose names start with the configured prefix (see transformMethodNames property).</td>
       <td>no</td>
     </tr>
     <tr>
       <td>checkTransformMethods</td>
       <td>false</td>
-      <td>Check return type of methods which contain ‘To’ in their name</td>
+      <td>Check return type of methods which contain the configured infix in their name (see transformMethodNames property).</td>
       <td>no</td>
     </tr>
     <tr>
       <td>checkSetters</td>
       <td>true</td>
-      <td>Check return type of setters</td>
+      <td>Check return type of setters.</td>
       <td>no</td>
     </tr>
     <tr>
       <td>checkGetters</td>
       <td>true</td>
-      <td>Check return type of getters</td>
+      <td>Check return type of getters.</td>
       <td>no</td>
     </tr>
     <tr>
       <td>checkBooleanMethod</td>
       <td>true</td>
-      <td>Check method names and types for inconsistent naming</td>
+      <td>Check method names and types for inconsistent naming.</td>
       <td>no</td>
     </tr>
   </tbody>
@@ -2903,6 +3001,8 @@ configured through properties.</p>
 
 <h2 id="misleadingvariablename">MIsLeadingVariableName</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 3.4</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
@@ -3256,6 +3356,8 @@ configured through properties.</p>
 </code></pre></div></div>
 
 <h2 id="suspiciousconstantfieldname">SuspiciousConstantFieldName</h2>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
 
 <p><strong>Since:</strong> PMD 2.0</p>
 
@@ -3691,6 +3793,8 @@ For historical reasons, modifiers which are implied by the context are accepted 
 
 <h2 id="variablenamingconventions">VariableNamingConventions</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 1.2</p>
 
 <p><strong>Priority:</strong> High (1)</p>
@@ -3847,7 +3951,7 @@ controlled from the rest.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 12, 2018 <br />
+ Site last generated: Sep 2, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

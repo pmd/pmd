@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, ClassNamingConventions, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, ForLoopsMustUseBraces, MethodNamingConventions, VariableNamingConventions, WhileLoopsMustUseBraces">
+<meta name="keywords" content=" Code Style, ClassNamingConventions, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, ForLoopsMustUseBraces, MethodNamingConventions, OneDeclarationPerLine, VariableNamingConventions, WhileLoopsMustUseBraces">
 <title>Code Style | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.7.0</li>
+    <li class="sidebarTitle">PMD 6.8.0</li>
     
     
     
@@ -1558,6 +1558,79 @@ controlled from the rest.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/MethodNamingConventions"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="onedeclarationperline">OneDeclarationPerLine</h2>
+
+<p><strong>Since:</strong> PMD 6.7.0</p>
+
+<p><strong>Priority:</strong> High (1)</p>
+
+<p>Apex allows the use of several variables declaration of the same type on one line. However, it
+can lead to quite messy code. This rule looks for several declarations on the same line.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclarationStatements</span><span class="w">
+  </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">VariableDeclaration</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">
+  </span><span class="p">[</span><span class="nv">$strictMode</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nf">distinct-values</span><span class="p">(</span><span class="nt">VariableDeclaration</span><span class="err">/</span><span class="na">@BeginLine</span><span class="p">))</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">VariableDeclaration</span><span class="p">)]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">FieldDeclarationStatements</span><span class="w">
+  </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">FieldDeclaration</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">
+  </span><span class="p">[</span><span class="nv">$strictMode</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nf">distinct-values</span><span class="p">(</span><span class="nt">FieldDeclaration</span><span class="o">/</span><span class="nt">VariableExpression</span><span class="err">/</span><span class="na">@BeginLine</span><span class="p">))</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">FieldDeclaration</span><span class="o">/</span><span class="nt">VariableExpression</span><span class="p">)]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Integer</span> <span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">;</span>   <span class="c1">// not recommended</span>
+
+<span class="n">Integer</span> <span class="n">a</span><span class="o">,</span>
+        <span class="n">b</span><span class="o">;</span>      <span class="c1">// ok by default, can be flagged setting the strictMode property</span>
+
+<span class="n">Integer</span> <span class="n">a</span><span class="o">;</span>      <span class="c1">// preferred approach</span>
+<span class="n">Integer</span> <span class="n">b</span><span class="o">;</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>cc_categories</td>
+      <td>Style</td>
+      <td>Code Climate Categories</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
+    <tr>
+      <td>cc_remediation_points_multiplier</td>
+      <td>1</td>
+      <td>Code Climate Remediation Points multiplier</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>cc_block_highlighting</td>
+      <td>false</td>
+      <td>Code Climate Block Highlighting</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>strictMode</td>
+      <td>false</td>
+      <td>If true, mark combined declaration even if the declarations are on separate lines.</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/OneDeclarationPerLine"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="variablenamingconventions">VariableNamingConventions</h2>
 
 <p><strong>Since:</strong> PMD 5.5.0</p>
@@ -1759,7 +1832,7 @@ controlled from the rest.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 12, 2018 <br />
+ Site last generated: Sep 2, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

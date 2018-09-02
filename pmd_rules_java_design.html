@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.7.0</li>
+    <li class="sidebarTitle">PMD 6.8.0</li>
     
     
     
@@ -1276,7 +1276,7 @@ protected constructor in order to prevent instantiation than make the class misl
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="w">
     </span><span class="p">[</span><span class="na">@Abstract</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'true'</span><span class="p">]</span><span class="w">
     </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="o">//</span><span class="nt">ConstructorDeclaration</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w">
-    </span><span class="p">[</span><span class="ow">not</span><span class="p">(..</span><span class="o">/</span><span class="nt">Annotation</span><span class="o">/</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'com.google.auto.value.AutoValue'</span><span class="p">)])]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(..</span><span class="o">/</span><span class="nt">Annotation</span><span class="o">/</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'com.google.auto.value.AutoValue'</span><span class="p">)])]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1511,13 +1511,13 @@ Exception, or Error, use a subclassed exception or error instead.</p>
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ThrowStatement</span><span class="o">//</span><span class="nt">AllocationExpression</span><span class="w">
  </span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="w">
- </span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.Throwable'</span><span class="p">)</span><span class="w">
+ </span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.Throwable'</span><span class="p">)</span><span class="w">
 </span><span class="ow">or</span><span class="w">
- </span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.Exception'</span><span class="p">)</span><span class="w">
+ </span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.Exception'</span><span class="p">)</span><span class="w">
 </span><span class="ow">or</span><span class="w">
- </span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.Error'</span><span class="p">)</span><span class="w">
+ </span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.Error'</span><span class="p">)</span><span class="w">
 </span><span class="ow">or</span><span class="w">
- </span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.RuntimeException'</span><span class="p">)</span><span class="w">
+ </span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.RuntimeException'</span><span class="p">)</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -1800,7 +1800,7 @@ into the former client classes.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="o">/</span><span class="nt">ExtendsList</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="w">
-  </span><span class="p">[</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Error'</span><span class="p">)]</span><span class="w">
+  </span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Error'</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2967,7 +2967,14 @@ or
  </span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">UnaryExpressionNotPlusMinus</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'!'</span><span class="p">]</span><span class="w">
 </span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span><span class="p">[</span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.TestCase'</span><span class="p">)]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="o">//</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)]]]</span><span class="w">
+</span><span class="p">[</span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.TestCase'</span><span class="p">)]</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="o">//</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="w">
+        </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.RepeatedTest'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestFactory'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestTemplate'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.params.ParameterizedTest'</span><span class="p">)</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -3545,7 +3552,7 @@ remember to add a private constructor to prevent instantiation.
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 12, 2018 <br />
+ Site last generated: Sep 2, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

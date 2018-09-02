@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.7.0</li>
+    <li class="sidebarTitle">PMD 6.8.0</li>
     
     
     
@@ -1279,12 +1279,9 @@ $ git status
 
 <h3 id="the-release-notes-and-docs">The Release Notes and docs</h3>
 
-<p>At a very minimum, the current date must be noted in the release notes and the download section. Also, the version
-must be adjusted. E.g. by removing “-SNAPSHOT”.</p>
-
 <p>You can find the release notes here: <code class="highlighter-rouge">docs/pages/release_notes.md</code>.</p>
 
-<p>The date for the download section is to be entered in <code class="highlighter-rouge">docs/_config.yml</code>, e.g.</p>
+<p>The date and the version must be updated in <code class="highlighter-rouge">docs/_config.yml</code>,  e.g.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd:
     version: 6.0.0
@@ -1400,18 +1397,13 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## ????? - ${DEVELOPMENT_VERSION}
+## {{ site.pmd.date }} - {{ site.pmd.version }}
 
-The PMD team is pleased to announce PMD ${DEVELOPMENT_VERSION%-SNAPSHOT}.
+The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
-This is a bug fixing release.
+This is a {{ site.pmd.release_type }} release.
 
-### Table Of Contents
-
-* [New and noteworthy](#new-and-noteworthy)
-* [Fixed Issues](#fixed-issues)
-* [API Changes](#api-changes)
-* [External Contributions](#external-contributions)
+{% tocmaker %}
 
 ### New and noteworthy
 
@@ -1420,6 +1412,8 @@ This is a bug fixing release.
 ### API Changes
 
 ### External Contributions
+
+{% endtocmaker %}
 
 </code></pre></div></div>
 
@@ -1478,7 +1472,7 @@ and <code class="highlighter-rouge">mvn versions:set -DnewVersion=5.7.0-SNAPSHOT
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 12, 2018 <br />
+ Site last generated: Sep 2, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.7.0</li>
+    <li class="sidebarTitle">PMD 6.8.0</li>
     
     
     
@@ -1285,7 +1285,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_bestpractices.html#junit4testshouldusebeforeannotation">JUnit4TestShouldUseBeforeAnnotation</a>: In JUnit 3, the setUp method was used to set up all data entities required in running tests. JUni…</li>
   <li><a href="pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation">JUnit4TestShouldUseTestAnnotation</a>: In JUnit 3, the framework executed all methods which started with the word test as a unit test. I…</li>
   <li><a href="pmd_rules_java_bestpractices.html#junitassertionsshouldincludemessage">JUnitAssertionsShouldIncludeMessage</a>: JUnit assertions should include an informative message - i.e., use the three-argument version of …</li>
-  <li><a href="pmd_rules_java_bestpractices.html#junittestcontainstoomanyasserts">JUnitTestContainsTooManyAsserts</a>: JUnit tests should not contain too many asserts.  Many asserts are indicative of a complex test, …</li>
+  <li><a href="pmd_rules_java_bestpractices.html#junittestcontainstoomanyasserts">JUnitTestContainsTooManyAsserts</a>: Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, fo…</li>
   <li><a href="pmd_rules_java_bestpractices.html#junittestsshouldincludeassert">JUnitTestsShouldIncludeAssert</a>: JUnit tests should include at least one assertion.  This makes the tests more robust, and using a…</li>
   <li><a href="pmd_rules_java_bestpractices.html#junituseexpected">JUnitUseExpected</a>: In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions.</li>
   <li><a href="pmd_rules_java_bestpractices.html#loosecoupling">LooseCoupling</a>: The use of implementation types (i.e., HashSet) as object references limits your ability to use a…</li>
@@ -1322,7 +1322,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_codestyle.html#atleastoneconstructor">AtLeastOneConstructor</a>: Each non-static class should declare at least one constructor.Classes with solely static members …</li>
   <li><a href="pmd_rules_java_codestyle.html#avoiddollarsigns">AvoidDollarSigns</a>: Avoid using dollar signs in variable/method/class/interface names.</li>
   <li><a href="pmd_rules_java_codestyle.html#avoidfinallocalvariable">AvoidFinalLocalVariable</a>: Avoid using final local variables, turn them into fields.</li>
-  <li><a href="pmd_rules_java_codestyle.html#avoidprefixingmethodparameters">AvoidPrefixingMethodParameters</a>: Prefixing parameters by ‘in’ or ‘out’ pollutes the name of the parameters and reduces code readab…</li>
+  <li><a href="pmd_rules_java_codestyle.html#avoidprefixingmethodparameters">AvoidPrefixingMethodParameters</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Prefixing parameters by ‘in’ or ‘out’ pollutes the name of the parameters and reduces code readab…</li>
   <li><a href="pmd_rules_java_codestyle.html#avoidprotectedfieldinfinalclass">AvoidProtectedFieldInFinalClass</a>: Do not use protected fields in final classes since they cannot be subclassed.Clarify your intent …</li>
   <li><a href="pmd_rules_java_codestyle.html#avoidprotectedmethodinfinalclassnotextending">AvoidProtectedMethodInFinalClassNotExtending</a>: Do not use protected methods in most final classes since they cannot be subclassed. This shouldon…</li>
   <li><a href="pmd_rules_java_codestyle.html#avoidusingnativecode">AvoidUsingNativeCode</a>: Unnecessary reliance on Java Native Interface (JNI) calls directly reduces application portabilit…</li>
@@ -1338,6 +1338,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_codestyle.html#emptymethodinabstractclassshouldbeabstract">EmptyMethodInAbstractClassShouldBeAbstract</a>: Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to …</li>
   <li><a href="pmd_rules_java_codestyle.html#extendsobject">ExtendsObject</a>: No need to explicitly extend Object.</li>
   <li><a href="pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass">FieldDeclarationsShouldBeAtStartOfClass</a>: Fields should be declared at the top of the class, before any method declarations, constructors, …</li>
+  <li><a href="pmd_rules_java_codestyle.html#fieldnamingconventions">FieldNamingConventions</a>: Configurable naming conventions for field declarations. This rule reports variable declarations  …</li>
   <li><a href="pmd_rules_java_codestyle.html#forloopshouldbewhileloop">ForLoopShouldBeWhileLoop</a>: Some for loops can be simplified to while loops, this makes them more concise.</li>
   <li><a href="pmd_rules_java_codestyle.html#forloopsmustusebraces">ForLoopsMustUseBraces</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid using ‘for’ statements without using curly braces. If the code formatting or indentation is…</li>
   <li><a href="pmd_rules_java_codestyle.html#formalparameternamingconventions">FormalParameterNamingConventions</a>: Configurable naming conventions for formal parameters of methods and lambdas.            This rul…</li>
@@ -1354,7 +1355,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_codestyle.html#mdbandsessionbeannamingconvention">MDBAndSessionBeanNamingConvention</a>: The EJB Specification states that any MessageDrivenBean or SessionBean should be suffixed by ‘Bean’.</li>
   <li><a href="pmd_rules_java_codestyle.html#methodargumentcouldbefinal">MethodArgumentCouldBeFinal</a>: A method argument that is never re-assigned within the method can be declared final.</li>
   <li><a href="pmd_rules_java_codestyle.html#methodnamingconventions">MethodNamingConventions</a>: Configurable naming conventions for method declarations. This rule reports            method decl…</li>
-  <li><a href="pmd_rules_java_codestyle.html#misleadingvariablename">MIsLeadingVariableName</a>: Detects when a non-field has a name starting with ‘m_’.  This usually denotes a field and could b…</li>
+  <li><a href="pmd_rules_java_codestyle.html#misleadingvariablename">MIsLeadingVariableName</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Detects when a non-field has a name starting with ‘m_’.  This usually denotes a field and could b…</li>
   <li><a href="pmd_rules_java_codestyle.html#nopackage">NoPackage</a>: Detects when a class or interface does not have a package definition.</li>
   <li><a href="pmd_rules_java_codestyle.html#onlyonereturn">OnlyOneReturn</a>: A method should have only one exit point, and that should be the last statement in the method.</li>
   <li><a href="pmd_rules_java_codestyle.html#packagecase">PackageCase</a>: Detects when a package definition contains uppercase characters.</li>
@@ -1364,7 +1365,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_codestyle.html#shortclassname">ShortClassName</a>: Short Classnames with fewer than e.g. five characters are not recommended.</li>
   <li><a href="pmd_rules_java_codestyle.html#shortmethodname">ShortMethodName</a>: Method names that are very short are not helpful to the reader.</li>
   <li><a href="pmd_rules_java_codestyle.html#shortvariable">ShortVariable</a>: Fields, local variables, or parameter names that are very short are not helpful to the reader.</li>
-  <li><a href="pmd_rules_java_codestyle.html#suspiciousconstantfieldname">SuspiciousConstantFieldName</a>: Field names using all uppercase characters - Sun’s Java naming conventions indicating constants -…</li>
+  <li><a href="pmd_rules_java_codestyle.html#suspiciousconstantfieldname">SuspiciousConstantFieldName</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Field names using all uppercase characters - Sun’s Java naming conventions indicating constants -…</li>
   <li><a href="pmd_rules_java_codestyle.html#toomanystaticimports">TooManyStaticImports</a>: If you overuse the static import feature, it can make your program unreadable and unmaintainable,…</li>
   <li><a href="pmd_rules_java_codestyle.html#unnecessaryannotationvalueelement">UnnecessaryAnnotationValueElement</a>: Avoid the use of value in annotations when it’s the only element.</li>
   <li><a href="pmd_rules_java_codestyle.html#unnecessaryconstructor">UnnecessaryConstructor</a>: This rule detects when a constructor is not necessary; i.e., when there is only one constructor a…</li>
@@ -1374,7 +1375,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_codestyle.html#unnecessaryreturn">UnnecessaryReturn</a>: Avoid the use of unnecessary return statements.</li>
   <li><a href="pmd_rules_java_codestyle.html#uselessparentheses">UselessParentheses</a>: Useless parentheses should be removed.</li>
   <li><a href="pmd_rules_java_codestyle.html#uselessqualifiedthis">UselessQualifiedThis</a>: Look for qualified this usages in the same class.</li>
-  <li><a href="pmd_rules_java_codestyle.html#variablenamingconventions">VariableNamingConventions</a>: A variable naming conventions rule - customize this to your liking.  Currently, itchecks for fina…</li>
+  <li><a href="pmd_rules_java_codestyle.html#variablenamingconventions">VariableNamingConventions</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> A variable naming conventions rule - customize this to your liking.  Currently, itchecks for fina…</li>
   <li><a href="pmd_rules_java_codestyle.html#whileloopsmustusebraces">WhileLoopsMustUseBraces</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid using ‘while’ statements without using braces to surround the code block. If the code forma…</li>
 </ul>
 
@@ -1901,7 +1902,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 12, 2018 <br />
+ Site last generated: Sep 2, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

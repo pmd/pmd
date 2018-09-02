@@ -882,6 +882,15 @@
 ,
 
 {
+"title": "OneDeclarationPerLine (Apex, Code Style)",
+"tags": "",
+"keywords": "OneDeclarationPerLine",
+"url": "pmd_rules_apex_codestyle.html#onedeclarationperline",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
 "title": "VariableNamingConventions (Apex, Code Style)",
 "tags": "",
 "keywords": "VariableNamingConventions",
@@ -1196,6 +1205,15 @@
 "tags": "",
 "keywords": "FieldDeclarationsShouldBeAtStartOfClass",
 "url": "pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "FieldNamingConventions (Java, Code Style)",
+"tags": "",
+"keywords": "FieldNamingConventions",
+"url": "pmd_rules_java_codestyle.html#fieldnamingconventions",
 "summary": "Rules which enforce a specific coding style."
 }
 ,

@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.7.0</li>
+    <li class="sidebarTitle">PMD 6.8.0</li>
     
     
     
@@ -1266,32 +1266,31 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h1 id="compiling-pmd">Compiling PMD</h1>
 
 <ul>
-  <li>JDK 9 or higher</li>
-  <li><a href="http://maven.apache.org">Apache Maven</a> 3 or later.</li>
+  <li>JDK 10 or higher</li>
 </ul>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> While Java 9 is required for building, running PMD only requires Java 7 (or Java 8 for Apex).</div>
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> While Java 10 is required for building, running PMD only requires Java 7 (or Java 8 for Apex and the Designer).</div>
 
 <p>You’ll need to either check out the source code or download the latest source release. Assuming you’ve got the latest source release, unzip it to a directory:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal building]$ ls -l
 total 5716
--rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-6.7.0.zip
-[tom@hal building]$ unzip -q pmd-src-6.7.0.zip
+-rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-6.8.0.zip
+[tom@hal building]$ unzip -q pmd-src-6.8.0.zip
 [tom@hal building]$
 </code></pre></div></div>
 
 <p>Now cd down into the <code class="highlighter-rouge">pmd</code> directory:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal building]$ cd pmd-src-6.7.0
-[tom@hal pmd-src-6.7.0]$ ls -l | grep pom.xml
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal building]$ cd pmd-src-6.8.0
+[tom@hal pmd-src-6.8.0]$ ls -l | grep pom.xml
 -rw-rw-r--    1 tom      tom          36482 14\. Nov 17:36 pom.xml
-[tom@hal pmd-src-6.7.0]$
+[tom@hal pmd-src-6.8.0]$
 </code></pre></div></div>
 
 <p>That’s the project configuration for maven… let’s compile!</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal pmd-src-6.7.0]$ ./mvnw clean verify
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal pmd-src-6.8.0]$ ./mvnw clean verify
 [INFO] Scanning for projects...
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Build Order:
@@ -1331,7 +1330,7 @@ total 5716
 [INFO] Finished at: 2015-11-14T17:46:06+01:00
 [INFO] Final Memory: 63M/765M
 [INFO] ------------------------------------------------------------------------
-[tom@hal pmd-src-6.7.0]$
+[tom@hal pmd-src-6.8.0]$
 </code></pre></div></div>
 
 <p>Now the source and binary distribution zip files can be found in the folder <code class="highlighter-rouge">pmd-dist/target</code>.</p>
@@ -1370,7 +1369,7 @@ please post <a href="http://sourceforge.net/p/pmd/discussion/188192">here</a> an
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 12, 2018 <br />
+ Site last generated: Sep 2, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
