@@ -6,6 +6,8 @@ permalink: pmd_release_notes_old.html
 Previous versions of PMD can be downloaded here:
 http://sourceforge.net/projects/pmd/files/pmd/
 
+
+
 ## 29-July-2018 - 6.6.0
 
 The PMD team is pleased to announce PMD 6.6.0.
