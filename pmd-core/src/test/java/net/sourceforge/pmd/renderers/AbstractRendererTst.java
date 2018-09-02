@@ -37,7 +37,7 @@ public abstract class AbstractRendererTst {
     public String getExpectedError(ProcessingError error) {
         return "";
     }
-    
+
     public String getExpectedError(ConfigurationError error) {
         return "";
     }
@@ -68,7 +68,7 @@ public abstract class AbstractRendererTst {
         return report;
     }
 
-    private RuleViolation newRuleViolation(int endColumn) {
+    protected RuleViolation newRuleViolation(int endColumn) {
         DummyNode node = createNode(endColumn);
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename(getSourceCodeFilename());
@@ -127,7 +127,7 @@ public abstract class AbstractRendererTst {
         String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(filter(getExpectedError(err)), filter(actual));
     }
-    
+
     @Test
     public void testConfigError() throws Exception {
         Report rep = new Report();

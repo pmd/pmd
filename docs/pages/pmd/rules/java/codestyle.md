@@ -5,7 +5,7 @@ permalink: pmd_rules_java_codestyle.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/codestyle.xml
-keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
+keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
 language: Java
 ---
 ## AbstractNaming
@@ -140,6 +140,8 @@ public class MyClass {
 ```
 
 ## AvoidPrefixingMethodParameters
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 5.0
 
@@ -756,6 +758,58 @@ public class HelloWorldBean {
 <rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass" />
 ```
 
+## FieldNamingConventions
+
+**Since:** PMD 6.7.0
+
+**Priority:** High (1)
+
+Configurable naming conventions for field declarations. This rule reports variable declarations
+which do not match the regex that applies to their specific kind ---e.g. constants (static final),
+enum constant, final field. Each regex can be configured through properties.
+
+By default this rule uses the standard Java naming convention (Camel case), and uses the ALL_UPPER
+convention for constants and enum constants.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.FieldNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/FieldNamingConventionsRule.java)
+
+**Example(s):**
+
+``` java
+class Foo {
+                int myField = 1; // This is in camel case, so it's ok
+                int my_Field = 1; // This contains an underscore, it's not ok by default
+                                  // but you may allow it, or even require the "my_" prefix
+
+                final int FinalField = 1; // you may configure a different convention for final fields,
+                                          // e.g. here PascalCase: [A-Z][a-zA-Z0-9]*
+
+                interface Interface {
+                    double PI = 3.14; // interface "fields" use the constantPattern property
+                }
+
+                enum AnEnum {
+                    ORG, NET, COM; // These use a separate property but are set to ALL_UPPER by default
+                }
+            }
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|publicConstantPattern|[A-Z][A-Z_0-9]*|Regex which applies to public constant names|no|
+|constantPattern|[A-Z][A-Z_0-9]*|Regex which applies to non-public static final field names|no|
+|enumConstantPattern|[A-Z][A-Z_0-9]*|Regex which applies to enum constant names|no|
+|finalFieldPattern|[a-z][a-zA-Z0-9]*|Regex which applies to final field names|no|
+|staticFieldPattern|[a-z][a-zA-Z0-9]*|Regex which applies to static field names|no|
+|defaultFieldPattern|[a-z][a-zA-Z0-9]*|Regex which applies to field names|no|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/FieldNamingConventions" />
+```
+
 ## ForLoopShouldBeWhileLoop
 
 **Since:** PMD 1.02
@@ -1086,15 +1140,16 @@ public class LinguisticNaming {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|booleanFieldPrefixes|is \| has \| can \| have \| will \| should|the prefixes of fields and variables that indicate boolean|yes. Delimiter is '\|'.|
-|checkVariables|true|Check local variable names and types for inconsistent naming|no|
-|checkFields|true|Check field names and types for inconsistent naming|no|
-|booleanMethodPrefixes|is \| has \| can \| have \| will \| should|the prefixes of methods that return boolean|yes. Delimiter is '\|'.|
-|checkPrefixedTransformMethods|true|Check return type of methods whose names start with 'to'|no|
-|checkTransformMethods|false|Check return type of methods which contain 'To' in their name|no|
-|checkSetters|true|Check return type of setters|no|
-|checkGetters|true|Check return type of getters|no|
-|checkBooleanMethod|true|Check method names and types for inconsistent naming|no|
+|booleanFieldPrefixes|is \| has \| can \| have \| will \| should|The prefixes of fields and variables that indicate boolean.|yes. Delimiter is '\|'.|
+|checkVariables|true|Check local variable names and types for inconsistent naming.|no|
+|checkFields|true|Check field names and types for inconsistent naming.|no|
+|transformMethodNames|to \| as|The prefixes and infixes that indicate a transform method.|yes. Delimiter is '\|'.|
+|booleanMethodPrefixes|is \| has \| can \| have \| will \| should|The prefixes of methods that return boolean.|yes. Delimiter is '\|'.|
+|checkPrefixedTransformMethods|true|Check return type of methods whose names start with the configured prefix (see transformMethodNames property).|no|
+|checkTransformMethods|false|Check return type of methods which contain the configured infix in their name (see transformMethodNames property).|no|
+|checkSetters|true|Check return type of setters.|no|
+|checkGetters|true|Check return type of getters.|no|
+|checkBooleanMethod|true|Check method names and types for inconsistent naming.|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1391,6 +1446,8 @@ public class Foo {
 ```
 
 ## MIsLeadingVariableName
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 3.4
 
@@ -1728,6 +1785,8 @@ public class Something {
 ```
 
 ## SuspiciousConstantFieldName
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 2.0
 
@@ -2141,6 +2200,8 @@ public class Foo {
 ```
 
 ## VariableNamingConventions
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 1.2
 
