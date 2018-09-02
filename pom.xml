@@ -965,6 +965,17 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <groupId>org.eluder.coveralls</groupId>
                         <artifactId>coveralls-maven-plugin</artifactId>
                         <version>4.3.0</version>
+                        <dependencies>
+                            <!--
+                                coveralls maven plugin needs javax.xml.bind api
+                                See also https://github.com/trautonen/coveralls-maven-plugin/issues/112
+                            -->
+                            <dependency>
+                                <groupId>javax.xml.bind</groupId>
+                                <artifactId>jaxb-api</artifactId>
+                                <version>2.3.0</version>
+                            </dependency>
+                        </dependencies>
                     </plugin>
                 </plugins>
             </build>
