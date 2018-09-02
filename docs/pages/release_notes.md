@@ -38,6 +38,14 @@ This is a {{ site.pmd.release_type }} release.
     single field / variable per line; or per statement if the `strictMode` property is set.
     It's an Apex equivalent of the already existing Java rule of the same name.
 
+#### Deprecated Rules
+
+*   The Java rules {% rule java/codestyle/VariableNamingConventions %}, {% rule java/codestyle/MIsLeadingVariableName %},
+    {% rule java/codestyle/SuspiciousConstantFieldName %}, and {% rule java/codestyle/AvoidPrefixingMethodParameters %} are 
+    now deprecated, and will be removed with version 7.0.0. They are replaced by the more general
+    {% rule java/codestyle/FieldNamingConventions %}, {% rule java/codestyle/FormalParameterNamingConventions %}, and
+    {% rule java/codestyle/LocalVariableNamingConventions %}.
+
 ### Fixed Issues
 
 *   core
@@ -76,14 +84,6 @@ This is a {{ site.pmd.release_type }} release.
     These represented the operator of ShiftExpression in two cases out of three, but they're not needed and
     make ShiftExpression inconsistent. The operator of a ShiftExpression is now accessible through
     ShiftExpression#getOperator.
-
-#### Deprecated rules
-
-*   The Java rules {% rule java/codestyle/VariableNamingConventions %}, {% rule java/codestyle/MIsLeadingVariableName %},
-    {% rule java/codestyle/SuspiciousConstantFieldName %}, and {% rule java/codestyle/AvoidPrefixingMethodParameters %} are 
-    now deprecated, and will be removed with version 7.0.0. They are replaced by the more general
-    {% rule java/codestyle/FieldNamingConventions %}, {% rule java/codestyle/FormalParameterNamingConventions %}, and
-    {% rule java/codestyle/LocalVariableNamingConventions %}.
 
 ### External Contributions
 
