@@ -28,9 +28,6 @@ if [ "${BUILD}" = "deploy" ]; then
     true
 )
 
-# install the gems required for rendering the release notes
-bundle install --with=release_notes_preprocessing
-
 # renders, and skips the first 6 lines - the Jekyll front-matter
 RENDERED_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
 
