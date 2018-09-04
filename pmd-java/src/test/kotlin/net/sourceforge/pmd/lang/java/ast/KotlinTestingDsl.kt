@@ -79,7 +79,7 @@ fun AbstractFunSpec.parserTest(name: String,
     parserTest(name, listOf(javaVersion), null, assertions)
 }
 
-
+@Deprecated("Only a prototype")
 fun junitParserTest(javaVersion: JavaVersion = JavaVersion.Latest,
                     assertions: ParserTestCtx.() -> Unit) = ParserTestCtx(javaVersion).assertions()
 
