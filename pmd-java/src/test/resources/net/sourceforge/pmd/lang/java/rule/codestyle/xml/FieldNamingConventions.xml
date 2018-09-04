@@ -128,10 +128,13 @@
     <test-code>
         <description>Test public constant property</description>
         <rule-property name="publicConstantPattern">cons_[A-Z][A-Z0-9]+</rule-property>
-        <expected-problems>2</expected-problems>
+        <expected-problems>5</expected-problems>
         <expected-messages>
+            <message>The field name 'Foo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The final field name 'Hoo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The static field name 'Bar' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The constant name 'cons_BOLG_FIELD' doesn't match '[A-Z][A-Z_0-9]*'</message>
             <message>The public constant name 'DDD' doesn't match 'cons_[A-Z][A-Z0-9]+'</message>
-            <message>The constant name 'cons_BOLG_FIELD' doesn't match '[A-Z][A-Z0-9]+'</message>
         </expected-messages>
         <code><![CDATA[
             public class Bar {
@@ -148,12 +151,12 @@
 
 
     <test-code>
-        <description>Interface fields should be treated like constants</description>
+        <description>Interface fields should be treated like public constants</description>
         <expected-problems>3</expected-problems>
         <expected-messages>
-            <message>The constant name 'Foo' doesn't match '[A-Z][A-Z_0-9]*'</message>
-            <message>The constant name 'Hoo' doesn't match '[A-Z][A-Z_0-9]*'</message>
-            <message>The constant name 'Bar' doesn't match '[A-Z][A-Z_0-9]*'</message>
+            <message>The public constant name 'Foo' doesn't match '[A-Z][A-Z_0-9]*'</message>
+            <message>The public constant name 'Hoo' doesn't match '[A-Z][A-Z_0-9]*'</message>
+            <message>The public constant name 'Bar' doesn't match '[A-Z][A-Z_0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
             public interface Bar {
@@ -185,6 +188,19 @@
                 public MyException(String message) {
                     super(message);
                 }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>More exclusions can be configured</description>
+        <rule-property name="exclusions">m$mangled</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class MyException {
+
+                private static final long m$mangled = -8134636876462178354L;
 
             }
             ]]></code>
