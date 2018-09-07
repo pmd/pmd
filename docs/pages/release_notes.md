@@ -18,6 +18,7 @@ This is a {{ site.pmd.release_type }} release.
 
 *   java-codestyle
     *   [#1329](https://github.com/pmd/pmd/issues/1329): \[java] FieldNamingConventions: false positive in serializable class with serialVersionUID
+    *   [#1334](https://github.com/pmd/pmd/issues/1334): \[java] LinguisticNaming should support AtomicBooleans
 
 ### API Changes
 
