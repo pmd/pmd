@@ -1347,4 +1347,27 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1325 [java] False positive in ConsecutiveLiteralAppends</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ConsecutiveLiteralAppendsFP {
+    public String test() {
+        StringBuilder builder = new StringBuilder("[");
+        nodes.forEach((k, v) -> builder
+                .append(k)
+                .append(" = ")
+                .append(valueToStringFunction.apply(v))
+                .append(", "));
+        int length = builder.length();
+        if (length > 1) {
+            builder.delete(length - 2, length);
+        }
+        builder.append(']');
+        return builder.toString();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   java-codestyle
     *   [#1329](https://github.com/pmd/pmd/issues/1329): \[java] FieldNamingConventions: false positive in serializable class with serialVersionUID
+*   java-performance
+    *   [#1325](https://github.com/pmd/pmd/issues/1325): \[java] False positive in ConsecutiveLiteralAppends
 
 ### API Changes
 
