@@ -144,16 +144,16 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
                     } else {
                         concurrentCount++;
                     }
+                    lastBlock = currentBlock;
                 }
+            } else if (n.getImage().endsWith(".toString") || n.getImage().endsWith(".length")) {
+                // ignore toString and length, they do not change affect the content of the sb
             } else {
-                if (!jno.isPartOfQualifiedName()) {
-                    // usage of the stringbuilder variable e.g. as an argument
-                    checkForViolation(rootNode, data, concurrentCount);
-                    concurrentCount = 0;
-                }
+                // usage of the stringbuilder variable for any other purpose, including
+                // calling e.g. delete
+                checkForViolation(rootNode, data, concurrentCount);
+                concurrentCount = 0;
             }
-            // always update the last block, so that we consider scope changes
-            lastBlock = currentBlock;
         }
         checkForViolation(rootNode, data, concurrentCount);
         return data;
