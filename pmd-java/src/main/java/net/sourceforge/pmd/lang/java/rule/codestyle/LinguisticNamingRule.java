@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.StringMultiProperty;
 
@@ -134,8 +135,8 @@ public class LinguisticNamingRule extends AbstractJavaRule {
         }
     }
 
-    private boolean isBooleanType(String typeImage) {
-        return "boolean".equalsIgnoreCase(typeImage) || "AtomicBoolean".equals(typeImage);
+    private boolean isBooleanType(ASTType node) {
+        return "boolean".equalsIgnoreCase(node.getTypeImage()) || TypeHelper.isA(node, "java.util.concurrent.atomic.AtomicBoolean");
     }
 
     private void checkBooleanMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {
@@ -143,7 +144,7 @@ public class LinguisticNamingRule extends AbstractJavaRule {
         ASTType t = node.getResultType().getFirstChildOfType(ASTType.class);
         if (!resultType.isVoid() && t != null) {
             for (String prefix : getProperty(BOOLEAN_METHOD_PREFIXES_PROPERTY)) {
-                if (hasPrefix(nameOfMethod, prefix) && !isBooleanType(t.getTypeImage())) {
+                if (hasPrefix(nameOfMethod, prefix) && !isBooleanType(t)) {
                     addViolationWithMessage(data, node, "Linguistics Antipattern - The method ''{0}'' indicates linguistically it returns a boolean, but it returns ''{1}''",
                             new Object[] { nameOfMethod, t.getTypeImage() });
                 }
@@ -151,20 +152,20 @@ public class LinguisticNamingRule extends AbstractJavaRule {
         }
     }
 
-    private void checkField(String typeImage, ASTVariableDeclarator node, Object data) {
+    private void checkField(ASTType typeNode, ASTVariableDeclarator node, Object data) {
         for (String prefix : getProperty(BOOLEAN_FIELD_PREFIXES_PROPERTY)) {
-            if (hasPrefix(node.getName(), prefix) && !isBooleanType(typeImage)) {
+            if (hasPrefix(node.getName(), prefix) && !isBooleanType(typeNode)) {
                 addViolationWithMessage(data, node, "Linguistics Antipattern - The field ''{0}'' indicates linguistically it is a boolean, but it is ''{1}''",
-                        new Object[] { node.getName(), typeImage });
+                        new Object[] { node.getName(), typeNode.getTypeImage() });
             }
         }
     }
 
-    private void checkVariable(String typeImage, ASTVariableDeclarator node, Object data) {
+    private void checkVariable(ASTType typeNode, ASTVariableDeclarator node, Object data) {
         for (String prefix : getProperty(BOOLEAN_FIELD_PREFIXES_PROPERTY)) {
-            if (hasPrefix(node.getName(), prefix) && !isBooleanType(typeImage)) {
+            if (hasPrefix(node.getName(), prefix) && !isBooleanType(typeNode)) {
                 addViolationWithMessage(data, node, "Linguistics Antipattern - The variable ''{0}'' indicates linguistically it is a boolean, but it is ''{1}''",
-                        new Object[] { node.getName(), typeImage });
+                        new Object[] { node.getName(), typeNode.getTypeImage() });
             }
         }
     }
@@ -175,7 +176,7 @@ public class LinguisticNamingRule extends AbstractJavaRule {
         if (type != null && getProperty(CHECK_FIELDS)) {
             List<ASTVariableDeclarator> fields = node.findChildrenOfType(ASTVariableDeclarator.class);
             for (ASTVariableDeclarator field : fields) {
-                checkField(type.getTypeImage(), field, data);
+                checkField(type, field, data);
             }
         }
         return data;
@@ -187,7 +188,7 @@ public class LinguisticNamingRule extends AbstractJavaRule {
         if (type != null && getProperty(CHECK_VARIABLES)) {
             List<ASTVariableDeclarator> variables = node.findChildrenOfType(ASTVariableDeclarator.class);
             for (ASTVariableDeclarator variable : variables) {
-                checkVariable(type.getTypeImage(), variable, data);
+                checkVariable(type, variable, data);
             }
         }
         return data;
