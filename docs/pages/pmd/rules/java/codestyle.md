@@ -141,6 +141,8 @@ public class MyClass {
 
 ## AvoidPrefixingMethodParameters
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 5.0
 
 **Priority:** Medium Low (4)
@@ -802,6 +804,7 @@ class Foo {
 |finalFieldPattern|[a-z][a-zA-Z0-9]*|Regex which applies to final field names|no|
 |staticFieldPattern|[a-z][a-zA-Z0-9]*|Regex which applies to static field names|no|
 |defaultFieldPattern|[a-z][a-zA-Z0-9]*|Regex which applies to field names|no|
+|exclusions|serialVersionUID|Names of fields to whitelist.|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1138,15 +1141,16 @@ public class LinguisticNaming {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|booleanFieldPrefixes|is \| has \| can \| have \| will \| should|the prefixes of fields and variables that indicate boolean|yes. Delimiter is '\|'.|
-|checkVariables|true|Check local variable names and types for inconsistent naming|no|
-|checkFields|true|Check field names and types for inconsistent naming|no|
-|booleanMethodPrefixes|is \| has \| can \| have \| will \| should|the prefixes of methods that return boolean|yes. Delimiter is '\|'.|
-|checkPrefixedTransformMethods|true|Check return type of methods whose names start with 'to'|no|
-|checkTransformMethods|false|Check return type of methods which contain 'To' in their name|no|
-|checkSetters|true|Check return type of setters|no|
-|checkGetters|true|Check return type of getters|no|
-|checkBooleanMethod|true|Check method names and types for inconsistent naming|no|
+|booleanFieldPrefixes|is \| has \| can \| have \| will \| should|The prefixes of fields and variables that indicate boolean.|yes. Delimiter is '\|'.|
+|checkVariables|true|Check local variable names and types for inconsistent naming.|no|
+|checkFields|true|Check field names and types for inconsistent naming.|no|
+|transformMethodNames|to \| as|The prefixes and infixes that indicate a transform method.|yes. Delimiter is '\|'.|
+|booleanMethodPrefixes|is \| has \| can \| have \| will \| should|The prefixes of methods that return boolean.|yes. Delimiter is '\|'.|
+|checkPrefixedTransformMethods|true|Check return type of methods whose names start with the configured prefix (see transformMethodNames property).|no|
+|checkTransformMethods|false|Check return type of methods which contain the configured infix in their name (see transformMethodNames property).|no|
+|checkSetters|true|Check return type of setters.|no|
+|checkGetters|true|Check return type of getters.|no|
+|checkBooleanMethod|true|Check method names and types for inconsistent naming.|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1443,6 +1447,8 @@ public class Foo {
 ```
 
 ## MIsLeadingVariableName
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 3.4
 
@@ -1780,6 +1786,8 @@ public class Something {
 ```
 
 ## SuspiciousConstantFieldName
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 2.0
 
@@ -2193,6 +2201,8 @@ public class Foo {
 ```
 
 ## VariableNamingConventions
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 1.2
 

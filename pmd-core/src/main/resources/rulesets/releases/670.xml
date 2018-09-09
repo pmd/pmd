@@ -11,6 +11,7 @@ This ruleset contains links to rules that are new in PMD v6.7.0
     <rule ref="category/plsql/codestyle.xml/ForLoopNaming"/>
     <rule ref="category/java/codestyle.xml/LinguisticNaming"/>
     <rule ref="category/java/codestyle.xml/FieldNamingConventions"/>
+    <rule ref="category/apex/codestyle.xml/OneDeclarationPerLine"/>
 
 </ruleset>
 

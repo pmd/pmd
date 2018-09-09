@@ -17,6 +17,7 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "IfElseStmtsMustUseBraces");
         addRule(RULESET, "IfStmtsMustUseBraces");
         addRule(RULESET, "MethodNamingConventions");
+        addRule(RULESET, "OneDeclarationPerLine");
         addRule(RULESET, "VariableNamingConventions");
         addRule(RULESET, "WhileLoopsMustUseBraces");
     }

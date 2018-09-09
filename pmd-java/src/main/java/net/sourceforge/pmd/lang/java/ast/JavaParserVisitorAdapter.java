@@ -156,12 +156,22 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return visit((JavaNode) node, data);
     }
 
+
+    /**
+     * @deprecated Will be removed in 7.0.0. Use {@link ASTShiftExpression#getOperator()}
+     */
     @Override
+    @Deprecated
     public Object visit(ASTRUNSIGNEDSHIFT node, Object data) {
         return visit((JavaNode) node, data);
     }
 
+
+    /**
+     * @deprecated Will be removed in 7.0.0. Use {@link ASTShiftExpression#getOperator()}
+     */
     @Override
+    @Deprecated
     public Object visit(ASTRSIGNEDSHIFT node, Object data) {
         return visit((JavaNode) node, data);
     }

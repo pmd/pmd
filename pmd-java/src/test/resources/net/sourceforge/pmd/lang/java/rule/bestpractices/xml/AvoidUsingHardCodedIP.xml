@@ -23,6 +23,7 @@ public class Foo {
   "0",
   "0000000000000",
   "2001:0db8:0000:0000:0000:0000:1428:57ab:0000",
+  ":bee",
   
   // IPv4
   "0.0.0.0",
@@ -43,7 +44,8 @@ public class Foo {
   "::ffff:0c22:384e",
   "0:0:0:0:0:ffff:0c22:384e",
   "ff00::",
-  
+  "::bee",
+
   // IPv4 mapped IPv6
   "2001:0db8:0000:0000:0000:0000:12.34.56.78",
   "::ffff:12.34.56.78",
@@ -120,7 +122,7 @@ public class Foo {
         <description><![CDATA[
 Comprehensive, check IPv4, IPv6, and IPv4 mapped IPv6
      ]]></description>
-        <expected-problems>20</expected-problems>
+        <expected-problems>21</expected-problems>
         <code-ref id="addresses"/>
     </test-code>
     <test-code>
@@ -144,7 +146,7 @@ Comprehensive, check for IPv4
 Comprehensive, check for IPv6
      ]]></description>
         <rule-property name="checkAddressTypes">IPv6</rule-property>
-        <expected-problems>10</expected-problems>
+        <expected-problems>11</expected-problems>
         <code-ref id="addresses"/>
     </test-code>
     <test-code>
@@ -160,7 +162,7 @@ Comprehensive, check for IPv4 mapped IPv6
 Comprehensive, check for IPv6 and IPv4 mapped IPv6
      ]]></description>
         <rule-property name="checkAddressTypes">IPv6|IPv4 mapped IPv6</rule-property>
-        <expected-problems>14</expected-problems>
+        <expected-problems>15</expected-problems>
         <code-ref id="addresses"/>
     </test-code>
 </test-data>
