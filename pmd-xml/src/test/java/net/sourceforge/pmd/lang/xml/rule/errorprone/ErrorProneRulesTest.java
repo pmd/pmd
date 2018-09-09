@@ -6,12 +6,12 @@ package net.sourceforge.pmd.lang.xml.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class ErrorProneRulesTest extends SimpleAggregatorTst {
+public abstract class ErrorProneRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "category/xml/errorprone.xml";
 
     @Override
     public void setUp() {
-        addRule(RULESET, "MistypedCDATASection");
+        addRule(RULESET, getClass().getSimpleName().replaceFirst("Test$", ""));
     }
 }

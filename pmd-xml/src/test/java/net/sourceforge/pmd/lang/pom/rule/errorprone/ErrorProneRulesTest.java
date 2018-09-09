@@ -6,13 +6,12 @@ package net.sourceforge.pmd.lang.pom.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class ErrorProneRulesTest extends SimpleAggregatorTst {
+public abstract class ErrorProneRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "category/pom/errorprone.xml";
 
     @Override
     public void setUp() {
-        addRule(RULESET, "InvalidDependencyTypes");
-        addRule(RULESET, "ProjectVersionAsDependencyVersion");
+        addRule(RULESET, getClass().getSimpleName().replaceFirst("Test$", ""));
     }
 }

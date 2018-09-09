@@ -6,12 +6,12 @@ package net.sourceforge.pmd.lang.xsl.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class CodeStyleRulesTest extends SimpleAggregatorTst {
+public abstract class CodeStyleRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "category/xsl/codestyle.xml";
 
     @Override
     public void setUp() {
-        addRule(RULESET, "UseConcatOnce");
+        addRule(RULESET, getClass().getSimpleName().replaceFirst("Test$", ""));
     }
 }
