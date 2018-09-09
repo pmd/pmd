@@ -1269,13 +1269,71 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h3 id="table-of-contents">Table Of Contents</h3>
 
 <ul>
-  <li><a href="#new-and-noteworthy">New and noteworthy</a></li>
+  <li><a href="#new-and-noteworthy">New and noteworthy</a>
+    <ul>
+      <li><a href="#drawing-a-line-between-private-and-public-api">Drawing a line between private and public API</a>
+        <ul>
+          <li><a href="#`.internal`-packages-and-`@internalapi`-annotation"><code class="highlighter-rouge">.internal</code> packages and <code class="highlighter-rouge">@InternalApi</code> annotation</a></li>
+          <li><a href="#`@reservedsubclassing`"><code class="highlighter-rouge">@ReservedSubclassing</code></a></li>
+          <li><a href="#`@experimental`"><code class="highlighter-rouge">@Experimental</code></a></li>
+          <li><a href="#`@deprecated`"><code class="highlighter-rouge">@Deprecated</code></a></li>
+          <li><a href="#the-transition">The transition</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
   <li><a href="#fixed-issues">Fixed Issues</a></li>
   <li><a href="#api-changes">API Changes</a></li>
   <li><a href="#external-contributions">External Contributions</a></li>
 </ul>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
+
+<h4 id="drawing-a-line-between-private-and-public-api">Drawing a line between private and public API</h4>
+
+<p>Until now, all released public members and types were implicitly considered part
+of PMD’s public API, including inheritance-specific members (protected members, abstract methods).
+We have maintained those APIs with the goal to preserve full binary compatibility between minor releases,
+only breaking those APIs infrequently, for major releases.</p>
+
+<p>In order to allow PMD to move forward at a faster pace, this implicit contract will
+be invalidated with PMD 7.0.0. We now introduce more fine-grained distinctions between
+the type of compatibility support we guarantee for our libraries, and ways to make
+them explicit to clients of PMD.</p>
+
+<h5 id="internal-packages-and-internalapi-annotation"><code class="highlighter-rouge">.internal</code> packages and <code class="highlighter-rouge">@InternalApi</code> annotation</h5>
+
+<p><em>Internal API</em> is meant for use <em>only</em> by the main PMD codebase. Internal types and methods
+may be modified in any way, or even removed, at any time.</p>
+
+<p>Any API in a package that contains an <code class="highlighter-rouge">.internal</code> segment is considered internal.
+The <code class="highlighter-rouge">@InternalApi</code> annotation will be used for APIs that have to live outside of
+these packages, e.g. methods of a public type that shouldn’t be used outside of PMD (again,
+these can be removed anytime).</p>
+
+<h5 id="reservedsubclassing"><code class="highlighter-rouge">@ReservedSubclassing</code></h5>
+
+<p>Types marked with the <code class="highlighter-rouge">@ReservedSubclassing</code> annotation are only meant to be subclassed
+by classes within PMD. As such, we may add new abstract methods, or remove protected methods,
+at any time. All published public members remain supported. The annotation is <em>not</em> inherited, which
+means a reserved interface doesn’t prevent its implementors to be subclassed.</p>
+
+<h5 id="experimental"><code class="highlighter-rouge">@Experimental</code></h5>
+
+<p>APIs marked with the <code class="highlighter-rouge">@Experimental</code> annotation at the class or method level are subject to change.
+They can be modified in any way, or even removed, at any time. You should not use or rely
+ on them in any production code. They are purely to allow broad testing and feedback.</p>
+
+<h5 id="deprecated"><code class="highlighter-rouge">@Deprecated</code></h5>
+
+<p>APIs marked with the <code class="highlighter-rouge">@Deprecated</code> annotation at the class or method level will remain supported
+until the next major release but it is recommended to stop using them.</p>
+
+<h5 id="the-transition">The transition</h5>
+
+<p><em>All currently supported APIs will remain so until 7.0.0</em>. All APIs that are to be moved to
+<code class="highlighter-rouge">.internal</code> packages or hidden will be tagged <code class="highlighter-rouge">@InternalApi</code> before that major release, and
+the breaking API changes will be performed in 7.0.0.</p>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
 
