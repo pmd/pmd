@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.ast.Node;
 
-public class StdCyclomaticComplexityRuleTest {
+public class StdCyclomaticComplexityTest extends DesignRulesTest {
     /**
      * Make sure the entry stack is empty, if show classes complexity is
      * disabled.

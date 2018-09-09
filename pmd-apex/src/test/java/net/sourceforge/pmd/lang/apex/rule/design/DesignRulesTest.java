@@ -8,7 +8,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.apex.metrics.ApexMetricsHook;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class DesignRulesTest extends SimpleAggregatorTst {
+public abstract class DesignRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "category/apex/design.xml";
 
@@ -20,15 +20,6 @@ public class DesignRulesTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
-        addRule(RULESET, "AvoidDeeplyNestedIfStmts");
-        addRule(RULESET, "CyclomaticComplexity");
-        addRule(RULESET, "ExcessiveClassLength");
-        addRule(RULESET, "ExcessiveParameterList");
-        addRule(RULESET, "ExcessivePublicCount");
-        addRule(RULESET, "NcssConstructorCount");
-        addRule(RULESET, "NcssMethodCount");
-        addRule(RULESET, "NcssTypeCount");
-        addRule(RULESET, "StdCyclomaticComplexity");
-        addRule(RULESET, "TooManyFields");
+        addRule(RULESET, getClass().getSimpleName().replaceFirst("Test$", ""));
     }
 }

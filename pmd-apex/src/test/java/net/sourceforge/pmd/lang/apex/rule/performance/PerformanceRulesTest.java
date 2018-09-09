@@ -6,14 +6,12 @@ package net.sourceforge.pmd.lang.apex.rule.performance;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class PerformanceRulesTest extends SimpleAggregatorTst {
+public abstract class PerformanceRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "category/apex/performance.xml";
 
     @Override
     public void setUp() {
-        addRule(RULESET, "AvoidSoqlInLoops");
-        addRule(RULESET, "AvoidSoslInLoops");
-        addRule(RULESET, "AvoidDmlStatementsInLoops");
+        addRule(RULESET, getClass().getSimpleName().replaceFirst("Test$", ""));
     }
 }

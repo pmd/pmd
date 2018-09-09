@@ -6,19 +6,12 @@ package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class CodeStyleRulesTest extends SimpleAggregatorTst {
+public abstract class CodeStyleRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "category/apex/codestyle.xml";
 
     @Override
     public void setUp() {
-        addRule(RULESET, "ClassNamingConventions");
-        addRule(RULESET, "ForLoopsMustUseBraces");
-        addRule(RULESET, "IfElseStmtsMustUseBraces");
-        addRule(RULESET, "IfStmtsMustUseBraces");
-        addRule(RULESET, "MethodNamingConventions");
-        addRule(RULESET, "OneDeclarationPerLine");
-        addRule(RULESET, "VariableNamingConventions");
-        addRule(RULESET, "WhileLoopsMustUseBraces");
+        addRule(RULESET, getClass().getSimpleName().replaceFirst("Test$", ""));
     }
 }
