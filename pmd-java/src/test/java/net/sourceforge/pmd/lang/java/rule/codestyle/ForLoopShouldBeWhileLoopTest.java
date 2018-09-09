@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-public class ForLoopShouldBeWhileLoopTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class ForLoopShouldBeWhileLoopTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

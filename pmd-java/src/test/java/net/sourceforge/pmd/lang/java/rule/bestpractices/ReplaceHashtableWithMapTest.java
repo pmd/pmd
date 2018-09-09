@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-public class ReplaceHashtableWithMapTest extends BestPracticesRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class ReplaceHashtableWithMapTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

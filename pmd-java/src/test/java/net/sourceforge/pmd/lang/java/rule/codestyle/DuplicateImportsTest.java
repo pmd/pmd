@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-public class DuplicateImportsTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class DuplicateImportsTest extends SimpleAggregatorTst {
     /**
      * This is just for testing DuplicateImports for static imports and
      * disambiguation.

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-public class UnconditionalIfStatementTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class UnconditionalIfStatementTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

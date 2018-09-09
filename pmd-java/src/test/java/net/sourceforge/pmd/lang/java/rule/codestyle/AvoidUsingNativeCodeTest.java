@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-public class AvoidUsingNativeCodeTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidUsingNativeCodeTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

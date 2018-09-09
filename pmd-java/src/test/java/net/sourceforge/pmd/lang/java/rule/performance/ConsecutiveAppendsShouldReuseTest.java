@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-public class ConsecutiveAppendsShouldReuseTest extends PerformanceRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class ConsecutiveAppendsShouldReuseTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

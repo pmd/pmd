@@ -14,8 +14,9 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class CommentRequiredTest extends DocumentationRulesTest {
+public class CommentRequiredTest extends SimpleAggregatorTst {
     @Test
     public void allCommentTypesIgnored() {
         CommentRequiredRule rule = new CommentRequiredRule();

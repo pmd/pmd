@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-public class SimpleDateFormatNeedsLocaleTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class SimpleDateFormatNeedsLocaleTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-public class BeanMembersShouldSerializeTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class BeanMembersShouldSerializeTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

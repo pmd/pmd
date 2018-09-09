@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-public class UseObjectForClearerAPITest extends DesignRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class UseObjectForClearerAPITest extends SimpleAggregatorTst {
     // no additional unit tests
 }

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-public class SingleMethodSingletonTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class SingleMethodSingletonTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

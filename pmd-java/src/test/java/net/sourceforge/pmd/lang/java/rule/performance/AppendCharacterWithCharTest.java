@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-public class AppendCharacterWithCharTest extends PerformanceRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AppendCharacterWithCharTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

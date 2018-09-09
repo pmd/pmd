@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-public class UnnecessaryConstructorTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class UnnecessaryConstructorTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

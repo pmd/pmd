@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-public class CommentDefaultAccessModifierTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class CommentDefaultAccessModifierTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

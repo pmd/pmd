@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.multithreading;
 
-public class AvoidUsingVolatileTest extends MultithreadingRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidUsingVolatileTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

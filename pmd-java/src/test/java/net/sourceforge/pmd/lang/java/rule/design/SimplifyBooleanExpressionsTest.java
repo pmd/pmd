@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-public class SimplifyBooleanExpressionsTest extends DesignRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class SimplifyBooleanExpressionsTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

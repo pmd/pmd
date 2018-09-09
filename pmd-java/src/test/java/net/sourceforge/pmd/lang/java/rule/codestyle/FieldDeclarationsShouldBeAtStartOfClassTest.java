@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-public class FieldDeclarationsShouldBeAtStartOfClassTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class FieldDeclarationsShouldBeAtStartOfClassTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

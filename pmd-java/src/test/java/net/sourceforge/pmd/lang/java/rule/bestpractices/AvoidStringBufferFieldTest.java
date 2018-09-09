@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-public class AvoidStringBufferFieldTest extends BestPracticesRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidStringBufferFieldTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
-public class CommentContentTest extends DocumentationRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class CommentContentTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

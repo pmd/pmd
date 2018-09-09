@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-public class UnnecessaryFullyQualifiedNameTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class UnnecessaryFullyQualifiedNameTest extends SimpleAggregatorTst {
     // Do not delete these two enums - it is needed for a test case
     // see:
     // /pmd-java/src/test/resources/net/sourceforge/pmd/lang/java/rule/codestyle/xml/UnnecessaryFullyQualifiedName.xml

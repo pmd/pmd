@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.multithreading;
 
-public class DoubleCheckedLockingTest extends MultithreadingRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class DoubleCheckedLockingTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

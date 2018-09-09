@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.multithreading;
 
-public class DontCallThreadRunTest extends MultithreadingRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class DontCallThreadRunTest extends SimpleAggregatorTst {
     // Used by DontCallThreadRun test cases
     public static class TestThread extends Thread {
         @Override

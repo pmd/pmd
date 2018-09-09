@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.security;
 
-public class InsecureCryptoIvTest extends SecurityRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class InsecureCryptoIvTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

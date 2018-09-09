@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-public class UselessStringValueOfTest extends PerformanceRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class UselessStringValueOfTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

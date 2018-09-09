@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-public class FinalFieldCouldBeStaticTest extends DesignRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class FinalFieldCouldBeStaticTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

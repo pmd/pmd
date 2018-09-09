@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-public class AvoidPrintStackTraceTest extends BestPracticesRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidPrintStackTraceTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-public class UseArrayListInsteadOfVectorTest extends PerformanceRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class UseArrayListInsteadOfVectorTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

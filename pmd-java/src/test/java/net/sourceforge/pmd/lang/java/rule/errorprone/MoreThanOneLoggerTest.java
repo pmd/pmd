@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-public class MoreThanOneLoggerTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class MoreThanOneLoggerTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

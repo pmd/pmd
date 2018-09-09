@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-public class MethodReturnsInternalArrayTest extends BestPracticesRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class MethodReturnsInternalArrayTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-public class AvoidLosingExceptionInformationTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidLosingExceptionInformationTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

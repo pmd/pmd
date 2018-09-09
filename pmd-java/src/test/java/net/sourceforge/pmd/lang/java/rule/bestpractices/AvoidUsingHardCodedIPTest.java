@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-public class AvoidUsingHardCodedIPTest extends BestPracticesRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidUsingHardCodedIPTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

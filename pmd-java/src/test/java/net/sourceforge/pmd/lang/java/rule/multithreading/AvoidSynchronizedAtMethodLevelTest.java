@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.multithreading;
 
-public class AvoidSynchronizedAtMethodLevelTest extends MultithreadingRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidSynchronizedAtMethodLevelTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

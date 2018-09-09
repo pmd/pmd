@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
-public class UncommentedEmptyMethodBodyTest extends DocumentationRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class UncommentedEmptyMethodBodyTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-public class SuspiciousOctalEscapeTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class SuspiciousOctalEscapeTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

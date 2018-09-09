@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-public class ReplaceEnumerationWithIteratorTest extends BestPracticesRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class ReplaceEnumerationWithIteratorTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

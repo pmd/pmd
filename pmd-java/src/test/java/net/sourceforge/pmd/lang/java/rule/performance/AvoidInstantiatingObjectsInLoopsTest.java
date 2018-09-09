@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-public class AvoidInstantiatingObjectsInLoopsTest extends PerformanceRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidInstantiatingObjectsInLoopsTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

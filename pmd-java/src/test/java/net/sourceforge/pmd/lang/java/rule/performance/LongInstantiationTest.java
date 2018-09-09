@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-public class LongInstantiationTest extends PerformanceRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class LongInstantiationTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

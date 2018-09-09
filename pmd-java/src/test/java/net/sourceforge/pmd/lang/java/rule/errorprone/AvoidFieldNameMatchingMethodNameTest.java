@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-public class AvoidFieldNameMatchingMethodNameTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidFieldNameMatchingMethodNameTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

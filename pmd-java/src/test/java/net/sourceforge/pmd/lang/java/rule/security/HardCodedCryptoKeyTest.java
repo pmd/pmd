@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.security;
 
-public class HardCodedCryptoKeyTest extends SecurityRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class HardCodedCryptoKeyTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

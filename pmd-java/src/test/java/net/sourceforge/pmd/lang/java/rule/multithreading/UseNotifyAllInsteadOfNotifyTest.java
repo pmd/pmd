@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.multithreading;
 
-public class UseNotifyAllInsteadOfNotifyTest extends MultithreadingRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class UseNotifyAllInsteadOfNotifyTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

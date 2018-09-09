@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-public class UnnecessaryAnnotationValueElementTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class UnnecessaryAnnotationValueElementTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

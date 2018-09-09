@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-public class SwitchDensityTest extends DesignRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class SwitchDensityTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

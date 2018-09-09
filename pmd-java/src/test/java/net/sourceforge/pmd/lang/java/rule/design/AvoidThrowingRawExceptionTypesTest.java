@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-public class AvoidThrowingRawExceptionTypesTest extends DesignRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidThrowingRawExceptionTypesTest extends SimpleAggregatorTst {
     public static class Throwable extends java.lang.Throwable {
         private static final long serialVersionUID = 1798165250043760600L;
     }

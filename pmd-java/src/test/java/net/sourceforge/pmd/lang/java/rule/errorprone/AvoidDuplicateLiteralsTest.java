@@ -4,6 +4,50 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-public class AvoidDuplicateLiteralsTest extends ErrorProneRulesTest {
-    // no additional unit tests
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Set;
+
+import org.junit.Test;
+
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidDuplicateLiteralsTest extends SimpleAggregatorTst {
+    @Test
+    public void testStringParserEmptyString() {
+        AvoidDuplicateLiteralsRule.ExceptionParser p = new AvoidDuplicateLiteralsRule.ExceptionParser(',');
+        Set<String> res = p.parse("");
+        assertTrue(res.isEmpty());
+    }
+
+    @Test
+    public void testStringParserSimple() {
+        AvoidDuplicateLiteralsRule.ExceptionParser p = new AvoidDuplicateLiteralsRule.ExceptionParser(',');
+        Set<String> res = p.parse("a,b,c");
+        assertEquals(3, res.size());
+        assertTrue(res.contains("a"));
+        assertTrue(res.contains("b"));
+        assertTrue(res.contains("c"));
+    }
+
+    @Test
+    public void testStringParserEscapedChar() {
+        AvoidDuplicateLiteralsRule.ExceptionParser p = new AvoidDuplicateLiteralsRule.ExceptionParser(',');
+        Set<String> res = p.parse("a,b,\\,");
+        assertEquals(3, res.size());
+        assertTrue(res.contains("a"));
+        assertTrue(res.contains("b"));
+        assertTrue(res.contains(","));
+    }
+
+    @Test
+    public void testStringParserEscapedEscapedChar() {
+        AvoidDuplicateLiteralsRule.ExceptionParser p = new AvoidDuplicateLiteralsRule.ExceptionParser(',');
+        Set<String> res = p.parse("a,b,\\\\");
+        assertEquals(3, res.size());
+        assertTrue(res.contains("a"));
+        assertTrue(res.contains("b"));
+        assertTrue(res.contains("\\"));
+    }
 }
