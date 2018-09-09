@@ -250,7 +250,6 @@ public class Foo {
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
 |checkAddressTypes|IPv4 \| IPv6 \| IPv4 mapped IPv6|Check for IP address types.|yes. Delimiter is '\|'.|
-|pattern|^"[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"$|Regular Expression|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -872,6 +871,10 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //LocalVariableDeclaration
+   [count(VariableDeclarator) > 1]
+   [$strictMode or count(distinct-values(VariableDeclarator/@BeginLine)) != count(VariableDeclarator)]
+|
+//FieldDeclaration
    [count(VariableDeclarator) > 1]
    [$strictMode or count(distinct-values(VariableDeclarator/@BeginLine)) != count(VariableDeclarator)]
 ```

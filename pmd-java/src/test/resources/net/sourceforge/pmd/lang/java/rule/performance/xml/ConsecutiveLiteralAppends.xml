@@ -1347,4 +1347,75 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1325 [java] False positive in ConsecutiveLiteralAppends</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ConsecutiveLiteralAppendsFP {
+    public String test() {
+        StringBuilder builder = new StringBuilder("[");
+        nodes.forEach((k, v) -> builder
+                .append(k)
+                .append(" = ")
+                .append(valueToStringFunction.apply(v))
+                .append(", "));
+        int length = builder.length();
+        if (length > 1) {
+            builder.delete(length - 2, length);
+        }
+        builder.append(']');
+        return builder.toString();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN append inside if statement</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>12,13</expected-linenumbers>
+        <code><![CDATA[
+public class ConsecutiveLiteralAppendsFN {
+    public void test() {
+        String resourceDescription = "Foo";
+        StringBuilder result = new StringBuilder(resourceDescription.length() + 16);
+        StringBuilder result2 = new StringBuilder();
+        for (int i = 0; i < resourceDescription.length(); i++) {
+            char character = resourceDescription.charAt(i);
+            if (character == '\\') {
+                result.append('/');
+            }
+            else if (character == '"') {
+                result.append("\\").append('"'); // violation: 2 literals (String + Char) can be combined
+                result2.append(',').append(' '); // violation: 2 literals (Char + Char) can be combined
+            }
+            else {
+                result.append(character);
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FP with constructor, append in while</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ConsecutiveLiteralAppendsFP {
+    public void test() {
+        StringBuilder sb = new StringBuilder(
+                "foo\n" +
+                "bar\n" +
+                "baz\n");
+
+        while (sb.length() < 100) {
+            sb.append(" ");
+        }
+        System.out.println(sb.toString());
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

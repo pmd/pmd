@@ -23,6 +23,7 @@ import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.StringMultiProperty;
 
+@Deprecated
 public class VariableNamingConventionsRule extends AbstractJavaRule {
 
     private boolean checkMembers;
