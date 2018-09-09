@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
-public class ApexUnitTestShouldNotUseSeeAllDataTrueTest extends BestPracticesRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class ApexUnitTestShouldNotUseSeeAllDataTrueTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

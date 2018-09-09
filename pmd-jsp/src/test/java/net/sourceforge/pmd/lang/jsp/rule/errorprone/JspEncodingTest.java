@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.jsp.rule.errorprone;
 
-public class JspEncodingTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class JspEncodingTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

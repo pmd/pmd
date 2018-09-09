@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
-public class OneDeclarationPerLineTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class OneDeclarationPerLineTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

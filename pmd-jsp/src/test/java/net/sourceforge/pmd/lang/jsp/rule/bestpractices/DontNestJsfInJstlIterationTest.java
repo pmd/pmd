@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.jsp.rule.bestpractices;
 
-public class DontNestJsfInJstlIterationTest extends BestPracticesRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class DontNestJsfInJstlIterationTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

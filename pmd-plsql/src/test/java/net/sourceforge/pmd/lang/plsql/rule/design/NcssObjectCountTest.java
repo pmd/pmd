@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
-public class NcssObjectCountTest extends DesignRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class NcssObjectCountTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

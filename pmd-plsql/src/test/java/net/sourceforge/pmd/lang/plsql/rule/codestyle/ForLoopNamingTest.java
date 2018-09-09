@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.codestyle;
 
-public class ForLoopNamingTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class ForLoopNamingTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

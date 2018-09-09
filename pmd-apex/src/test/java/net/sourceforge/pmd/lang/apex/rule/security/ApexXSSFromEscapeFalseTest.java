@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-public class ApexXSSFromEscapeFalseTest extends SecurityRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class ApexXSSFromEscapeFalseTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

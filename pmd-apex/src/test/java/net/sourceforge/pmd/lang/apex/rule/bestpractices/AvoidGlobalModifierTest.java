@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
-public class AvoidGlobalModifierTest extends BestPracticesRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidGlobalModifierTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

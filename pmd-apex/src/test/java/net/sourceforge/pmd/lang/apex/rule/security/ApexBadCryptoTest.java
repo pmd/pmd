@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-public class ApexBadCryptoTest extends SecurityRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class ApexBadCryptoTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

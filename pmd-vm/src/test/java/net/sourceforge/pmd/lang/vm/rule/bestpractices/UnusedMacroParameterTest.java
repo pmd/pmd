@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.vm.rule.bestpractices;
 
-public class UnusedMacroParameterTest extends BestPracticesRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class UnusedMacroParameterTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

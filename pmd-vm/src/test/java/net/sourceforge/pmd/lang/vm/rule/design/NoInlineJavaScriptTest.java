@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.vm.rule.design;
 
-public class NoInlineJavaScriptTest extends DesignRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class NoInlineJavaScriptTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

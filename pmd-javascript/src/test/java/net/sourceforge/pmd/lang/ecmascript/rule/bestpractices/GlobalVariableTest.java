@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ecmascript.rule.bestpractices;
 
-public class GlobalVariableTest extends BestPracticesRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class GlobalVariableTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

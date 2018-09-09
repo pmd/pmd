@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ecmascript.rule.codestyle;
 
-public class IfStmtsMustUseBracesTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class IfStmtsMustUseBracesTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.pom.rule.errorprone;
 
-public class InvalidDependencyTypesTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class InvalidDependencyTypesTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

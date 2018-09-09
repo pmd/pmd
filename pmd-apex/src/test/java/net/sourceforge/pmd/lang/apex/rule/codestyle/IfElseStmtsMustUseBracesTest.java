@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
-public class IfElseStmtsMustUseBracesTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class IfElseStmtsMustUseBracesTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

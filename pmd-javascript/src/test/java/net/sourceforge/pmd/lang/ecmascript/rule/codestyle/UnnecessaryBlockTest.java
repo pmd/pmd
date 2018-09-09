@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ecmascript.rule.codestyle;
 
-public class UnnecessaryBlockTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class UnnecessaryBlockTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.vm.rule.design;
 
-public class AvoidDeeplyNestedIfStmtsTest extends DesignRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidDeeplyNestedIfStmtsTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

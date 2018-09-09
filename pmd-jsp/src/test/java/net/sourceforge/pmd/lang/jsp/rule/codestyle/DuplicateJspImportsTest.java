@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.jsp.rule.codestyle;
 
-public class DuplicateJspImportsTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class DuplicateJspImportsTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

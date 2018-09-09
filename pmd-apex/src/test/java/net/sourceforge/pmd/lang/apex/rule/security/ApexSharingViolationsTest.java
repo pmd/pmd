@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-public class ApexSharingViolationsTest extends SecurityRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class ApexSharingViolationsTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

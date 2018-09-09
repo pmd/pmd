@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-public class ApexInsecureEndpointTest extends SecurityRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class ApexInsecureEndpointTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

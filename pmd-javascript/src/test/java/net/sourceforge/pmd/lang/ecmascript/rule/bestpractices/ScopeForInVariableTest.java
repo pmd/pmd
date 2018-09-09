@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ecmascript.rule.bestpractices;
 
-public class ScopeForInVariableTest extends BestPracticesRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class ScopeForInVariableTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

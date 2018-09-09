@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.codestyle;
 
-public class MisplacedPragmaTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class MisplacedPragmaTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

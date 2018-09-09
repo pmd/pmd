@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
-public class ApexUnitTestClassShouldHaveAssertsTest extends BestPracticesRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class ApexUnitTestClassShouldHaveAssertsTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

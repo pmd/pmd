@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
-public class ExcessivePackageBodyLengthTest extends DesignRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class ExcessivePackageBodyLengthTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.jsp.rule.security;
 
-public class IframeMissingSrcAttributeTest extends SecurityRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class IframeMissingSrcAttributeTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

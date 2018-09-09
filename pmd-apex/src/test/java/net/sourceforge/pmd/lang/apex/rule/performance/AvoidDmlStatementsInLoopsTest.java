@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.performance;
 
-public class AvoidDmlStatementsInLoopsTest extends PerformanceRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidDmlStatementsInLoopsTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

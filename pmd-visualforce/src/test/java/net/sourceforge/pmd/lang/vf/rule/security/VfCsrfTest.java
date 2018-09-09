@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.vf.rule.security;
 
-public class VfCsrfTest extends SecurityRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class VfCsrfTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

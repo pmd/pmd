@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
-public class NcssMethodCountTest extends DesignRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class NcssMethodCountTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

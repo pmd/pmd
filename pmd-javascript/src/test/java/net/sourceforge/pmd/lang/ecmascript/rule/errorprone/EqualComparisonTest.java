@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ecmascript.rule.errorprone;
 
-public class EqualComparisonTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class EqualComparisonTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

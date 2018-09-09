@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ecmascript.rule.codestyle;
 
-public class UnnecessaryParenthesesTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class UnnecessaryParenthesesTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

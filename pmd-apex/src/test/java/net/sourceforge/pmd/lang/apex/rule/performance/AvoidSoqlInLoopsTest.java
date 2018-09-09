@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.performance;
 
-public class AvoidSoqlInLoopsTest extends PerformanceRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidSoqlInLoopsTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

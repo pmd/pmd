@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.xsl.rule.performance;
 
-public class AvoidAxisNavigationTest extends PerformanceRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidAxisNavigationTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

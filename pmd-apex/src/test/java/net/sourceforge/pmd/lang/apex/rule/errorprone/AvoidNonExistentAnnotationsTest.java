@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
-public class AvoidNonExistentAnnotationsTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidNonExistentAnnotationsTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

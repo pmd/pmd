@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ecmascript.rule.codestyle;
 
-public class NoElseReturnTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class NoElseReturnTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

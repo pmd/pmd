@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.jsp.rule.bestpractices;
 
-public class NoJspForwardTest extends BestPracticesRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class NoJspForwardTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.jsp.rule.design;
 
-public class NoLongScriptsTest extends DesignRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class NoLongScriptsTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

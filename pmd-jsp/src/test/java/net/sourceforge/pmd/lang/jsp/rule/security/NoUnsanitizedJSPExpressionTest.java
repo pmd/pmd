@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.jsp.rule.security;
 
-public class NoUnsanitizedJSPExpressionTest extends SecurityRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class NoUnsanitizedJSPExpressionTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

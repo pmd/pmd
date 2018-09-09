@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
-public class EmptyIfStmtTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class EmptyIfStmtTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

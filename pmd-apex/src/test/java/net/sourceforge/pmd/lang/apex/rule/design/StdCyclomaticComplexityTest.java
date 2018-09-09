@@ -17,8 +17,9 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class StdCyclomaticComplexityTest extends DesignRulesTest {
+public class StdCyclomaticComplexityTest extends SimpleAggregatorTst {
     /**
      * Make sure the entry stack is empty, if show classes complexity is
      * disabled.

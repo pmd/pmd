@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
-public class MethodNamingConventionsTest extends CodeStyleRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class MethodNamingConventionsTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

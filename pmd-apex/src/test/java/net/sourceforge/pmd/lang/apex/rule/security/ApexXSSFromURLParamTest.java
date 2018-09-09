@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-public class ApexXSSFromURLParamTest extends SecurityRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class ApexXSSFromURLParamTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
-public class TooManyFieldsTest extends DesignRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class TooManyFieldsTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

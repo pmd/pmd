@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.vm.rule.errorprone;
 
-public class EmptyForeachStmtTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class EmptyForeachStmtTest extends SimpleAggregatorTst {
     // no additional unit tests
 }

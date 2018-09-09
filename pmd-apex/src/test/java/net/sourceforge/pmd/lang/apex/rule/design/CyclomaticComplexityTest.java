@@ -4,6 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.rule.design;
 
-public class CyclomaticComplexityTest extends DesignRulesTest {
-    // no additional unit tests
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.apex.metrics.ApexMetricsHook;
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class CyclomaticComplexityTest extends SimpleAggregatorTst {
+    @Override
+    protected Rule reinitializeRule(Rule rule) {
+        ApexMetricsHook.reset();
+        return super.reinitializeRule(rule);
+    }
 }

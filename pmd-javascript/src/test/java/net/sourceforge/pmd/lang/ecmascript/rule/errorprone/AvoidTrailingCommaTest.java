@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ecmascript.rule.errorprone;
 
-public class AvoidTrailingCommaTest extends ErrorProneRulesTest {
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class AvoidTrailingCommaTest extends SimpleAggregatorTst {
     // no additional unit tests
 }
