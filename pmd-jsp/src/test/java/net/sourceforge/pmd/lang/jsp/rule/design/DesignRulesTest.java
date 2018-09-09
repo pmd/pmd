@@ -6,15 +6,12 @@ package net.sourceforge.pmd.lang.jsp.rule.design;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class DesignRulesTest extends SimpleAggregatorTst {
+public abstract class DesignRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "category/jsp/design.xml";
 
     @Override
     public void setUp() {
-        addRule(RULESET, "NoInlineScript");
-        addRule(RULESET, "NoInlineStyleInformation");
-        addRule(RULESET, "NoLongScripts");
-        addRule(RULESET, "NoScriptlets");
+        addRule(RULESET, getClass().getSimpleName().replaceFirst("Test$", ""));
     }
 }

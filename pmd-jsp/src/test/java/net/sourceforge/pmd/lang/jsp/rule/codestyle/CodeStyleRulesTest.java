@@ -6,12 +6,12 @@ package net.sourceforge.pmd.lang.jsp.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class CodeStyleRulesTest extends SimpleAggregatorTst {
+public abstract class CodeStyleRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "category/jsp/codestyle.xml";
 
     @Override
     public void setUp() {
-        addRule(RULESET, "DuplicateJspImports");
+        addRule(RULESET, getClass().getSimpleName().replaceFirst("Test$", ""));
     }
 }

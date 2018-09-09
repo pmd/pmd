@@ -6,12 +6,12 @@ package net.sourceforge.pmd.lang.jsp.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class ErrorProneRulesTest extends SimpleAggregatorTst {
+public abstract class ErrorProneRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "category/jsp/errorprone.xml";
 
     @Override
     public void setUp() {
-        addRule(RULESET, "JspEncoding");
+        addRule(RULESET, getClass().getSimpleName().replaceFirst("Test$", ""));
     }
 }
