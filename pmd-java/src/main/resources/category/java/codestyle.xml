@@ -981,7 +981,8 @@ if (foo) {  // preferred approach
           since="6.7.0"
           message="Linguistics Antipattern - Method name and return type is inconsistent linguistically"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.LinguisticNamingRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#linguisticnaming">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#linguisticnaming"
+          typeResolution="true">
         <description>
             This rule finds Linguistic Naming Antipatterns. It checks for fields, that are named, as if they should
             be boolean but have a different type. It also checks for methods, that according to their name, should
