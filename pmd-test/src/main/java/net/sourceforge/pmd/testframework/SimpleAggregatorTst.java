@@ -20,13 +20,20 @@ public abstract class SimpleAggregatorTst extends RuleTst {
     private List<Rule> rules = new ArrayList<>();
 
     /**
-     * Configure the rule tests to be executed. Implement this method in
-     * subclasses by calling adRule.
+     * Configure the rule tests to be executed. Override this method in
+     * subclasses by calling addRule.
+     * <p>The default implementation will use the package name and test class name,
+     * to determine the ruleset and rule under test.
      *
      * @see #addRule(String, String)
      */
     protected void setUp() {
-        // empty, to be overridden
+        String[] packages = getClass().getPackage().getName().split("\\.");
+        String categoryName = packages[packages.length - 1];
+        String language = packages[packages.length - 3];
+        String rulesetXml = "category/" + language + "/" + categoryName + ".xml";
+
+        addRule(rulesetXml, getClass().getSimpleName().replaceFirst("Test$", ""));
     }
 
     /**
