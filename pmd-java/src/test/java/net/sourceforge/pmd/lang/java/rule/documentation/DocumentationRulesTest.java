@@ -9,17 +9,12 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 /**
  * Rule tests for the documentation category
  */
-public class DocumentationRulesTest extends SimpleAggregatorTst {
+public abstract class DocumentationRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "category/java/documentation.xml";
 
     @Override
     public void setUp() {
-        addRule(RULESET, "CommentContent");
-        addRule(RULESET, "CommentRequired");
-        addRule(RULESET, "CommentSize");
-        addRule(RULESET, "UncommentedEmptyConstructor");
-        addRule(RULESET, "UncommentedEmptyMethodBody");
+        addRule(RULESET, getClass().getSimpleName().replaceFirst("Test$", ""));
     }
-
 }

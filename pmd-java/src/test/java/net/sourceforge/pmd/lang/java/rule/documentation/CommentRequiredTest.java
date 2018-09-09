@@ -15,8 +15,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-public class CommentRequiredRuleTest {
-
+public class CommentRequiredTest extends DocumentationRulesTest {
     @Test
     public void allCommentTypesIgnored() {
         CommentRequiredRule rule = new CommentRequiredRule();
