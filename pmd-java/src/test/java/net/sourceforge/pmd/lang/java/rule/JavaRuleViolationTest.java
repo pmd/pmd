@@ -64,6 +64,20 @@ public class JavaRuleViolationTest {
     }
 
     /**
+     * Tests that the enum name is taken correctly from the given node.
+     *
+     * @see <a href="https://sourceforge.net/p/pmd/bugs/1250/">#1250</a>
+     */
+    @Test
+    public void testEnumName() {
+        ASTCompilationUnit ast = parse("enum Foo {FOO; void bar(int x) {} }");
+        ASTMethodDeclaration md = ast.getFirstDescendantOfType(ASTMethodDeclaration.class);
+        final RuleContext context = new RuleContext();
+        final JavaRuleViolation violation = new JavaRuleViolation(null, context, md, null);
+        assertEquals("Foo", violation.getClassName());
+    }
+
+    /**
      * Tests that the class name is taken correctly, even if the node is outside
      * of a class scope, e.g. a import declaration.
      * 
