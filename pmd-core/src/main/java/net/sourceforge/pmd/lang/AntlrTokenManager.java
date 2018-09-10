@@ -8,6 +8,10 @@ import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.Token;
+
+import com.beust.jcommander.internal.Nullable;
+import net.sourceforge.pmd.cpd.token.GenericAntlrToken;
 
 /**
  * Generic token manager implementation for all Antlr lexers.
@@ -15,21 +19,30 @@ import org.antlr.v4.runtime.Recognizer;
 public class AntlrTokenManager implements TokenManager {
     private final Lexer lexer;
     private String fileName;
+    private final String commentToken;
+    private GenericAntlrToken previousComment;
 
     /**
      * Constructor
      *
      * @param lexer The lexer
      * @param fileName The file name
+     * @param commentToken The list of all comment tokens on the grammar
      */
-    public AntlrTokenManager(final Lexer lexer, final String fileName) {
+    public AntlrTokenManager(final Lexer lexer, final String fileName, @Nullable final String commentToken) {
         this.lexer = lexer;
         this.fileName = fileName;
+        this.commentToken = commentToken;
     }
 
     @Override
     public Object getNextToken() {
-        return lexer.nextToken();
+        final Token token = lexer.nextToken();
+        if (isCommentToken(token.getText())) {
+            previousComment = new GenericAntlrToken(token);
+        }
+
+        return new GenericAntlrToken(token, previousComment);
     }
 
     @Override
@@ -46,6 +59,10 @@ public class AntlrTokenManager implements TokenManager {
         lexer.addErrorListener(new ErrorHandler());
     }
 
+    private boolean isCommentToken(final String text) {
+        return commentToken != null && text != null && text.startsWith(commentToken);
+
+    }
 
     private static class ErrorHandler extends BaseErrorListener {
 

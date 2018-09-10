@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.cpd.token;
 
+import com.beust.jcommander.internal.Nullable;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import org.antlr.v4.runtime.Token;
 
@@ -15,13 +16,21 @@ public class GenericAntlrToken implements GenericToken {
      * Constructor
      *
      * @param token The antlr token implementation
+     */
+    public GenericAntlrToken(final Token token) {
+        this(token, null);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param token The antlr token implementation
      * @param previousComment The previous comment
      */
-    public GenericAntlrToken(final Token token, final GenericAntlrToken previousComment) {
+    public GenericAntlrToken(final Token token, @Nullable final GenericAntlrToken previousComment) {
         this.token = token;
         this.previousComment = previousComment;
     }
-
 
     @Override
     public GenericToken getNext() {
@@ -57,5 +66,13 @@ public class GenericAntlrToken implements GenericToken {
     @Override
     public int getEndColumn() {
         return token.getCharPositionInLine() + token.getStopIndex() - token.getStartIndex();
+    }
+
+    public int getType() {
+        return token.getType();
+    }
+
+    public int getChannel() {
+        return token.getChannel();
     }
 }

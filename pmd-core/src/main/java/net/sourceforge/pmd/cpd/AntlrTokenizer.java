@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
 
+import net.sourceforge.pmd.cpd.token.GenericAntlrToken;
 import net.sourceforge.pmd.lang.AntlrTokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
@@ -26,16 +27,16 @@ public abstract class AntlrTokenizer implements Tokenizer {
         tokenManager.resetListeners();
 
         try {
-            Token token = (Token) tokenManager.getNextToken();
+            GenericAntlrToken token = (GenericAntlrToken) tokenManager.getNextToken();
 
             while (token.getType() != Token.EOF) {
                 if (token.getChannel() != Lexer.HIDDEN) {
                     final TokenEntry tokenEntry =
-                            new TokenEntry(token.getText(), tokenManager.getFileName(), token.getLine());
+                            new TokenEntry(token.getImage(), tokenManager.getFileName(), token.getBeginLine());
 
                     tokenEntries.add(tokenEntry);
                 }
-                token = (Token) tokenManager.getNextToken();
+                token = (GenericAntlrToken) tokenManager.getNextToken();
             }
         } catch (final AntlrTokenManager.ANTLRSyntaxError err) {
             // Wrap exceptions of the ANTLR tokenizer in a TokenMgrError, so they are correctly handled

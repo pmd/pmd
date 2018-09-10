@@ -9,14 +9,19 @@ import org.antlr.v4.runtime.CharStream;
 import net.sourceforge.pmd.lang.AntlrTokenManager;
 import net.sourceforge.pmd.lang.swift.antlr4.SwiftLexer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * SwiftTokenizer
  */
 public class SwiftTokenizer extends AntlrTokenizer {
 
+    private static final String COMMENT_TOKEN = "//";
+
     @Override
     protected AntlrTokenManager getLexerForSource(final SourceCode sourceCode) {
         CharStream charStream = AntlrTokenizer.getCharStreamFromSourceCode(sourceCode);
-        return new AntlrTokenManager(new SwiftLexer(charStream), sourceCode.getFileName());
+        return new AntlrTokenManager(new SwiftLexer(charStream), sourceCode.getFileName(), COMMENT_TOKEN);
     }
 }
