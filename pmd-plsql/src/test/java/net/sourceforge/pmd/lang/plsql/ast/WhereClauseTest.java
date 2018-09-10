@@ -30,4 +30,16 @@ public class WhereClauseTest extends AbstractPLSQLParserTst {
         String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseIsNull.pls"));
         ASTInput input = parsePLSQL(code);
     }
+
+    @Test
+    public void testBetweenCondition() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseBetween.pls"));
+        ASTInput input = parsePLSQL(code);
+    }
+
+    @Test
+    public void testInCondition() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseIn.pls"));
+        ASTInput input = parsePLSQL(code);
+    }
 }

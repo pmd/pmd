@@ -1290,8 +1290,17 @@ void Condition2() #void :
  |
     LOOKAHEAD(4) NullCondition()
  |
+    LOOKAHEAD(4) BetweenCondition()
+ |
     LOOKAHEAD(4) InCondition()
  )
+}
+
+ASTBetweenCondition BetweenCondition() :
+{}
+{
+    SqlExpression() [<NOT>] <BETWEEN> SqlExpression() <AND> SqlExpression()
+    { return jjtThis; }
 }
 
 ASTNullCondition NullCondition() :
