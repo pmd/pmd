@@ -1286,10 +1286,18 @@ void Condition2() #void :
     // FloatingPointCondition
     LOOKAHEAD(4) (SqlExpression() <IS> [<NOT>] (<NAN>|<INFINITE>))
  |
+    LOOKAHEAD(4) LikeCondition()
+ |
     LOOKAHEAD(4) InCondition()
  )
 }
 
+ASTLikeCondition LikeCondition() :
+{}
+{
+    SqlExpression() [ <NOT> ] (<LIKE>|<LIKEC>|<LIKE2>|<LIKE4>) SqlExpression() [ <ESCAPE> SqlExpression() ]
+    { return jjtThis; }
+}
 
 ASTCompoundCondition CompoundCondition() :
 {}
@@ -3973,6 +3981,9 @@ TOKEN [IGNORE_CASE]:
 <LAST: "LAST"> |
 <LEVEL: "LEVEL"> |
 <LIKE: "LIKE"> |
+<LIKEC: "LIKEC"> |
+<LIKE2: "LIKE2"> |
+<LIKE4: "LIKE4"> |
 <LIMIT: "LIMIT"> | 
 <LIMITED: "LIMITED"> |
 <LOCK: "LOCK"> |
@@ -4382,6 +4393,9 @@ ASTKEYWORD_RESERVED KEYWORD_RESERVED (): {}
 | <INTO>
 | <IS>
 | <LIKE>
+| <LIKEC>
+| <LIKE2>
+| <LIKE4>
 | <LOCK>
 | <LONG>
 | <MINUS>
