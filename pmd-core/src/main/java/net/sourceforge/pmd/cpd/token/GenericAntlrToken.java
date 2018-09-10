@@ -1,8 +1,14 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.cpd.token;
 
-import com.beust.jcommander.internal.Nullable;
-import net.sourceforge.pmd.lang.ast.GenericToken;
 import org.antlr.v4.runtime.Token;
+
+import net.sourceforge.pmd.lang.ast.GenericToken;
+
+import com.beust.jcommander.internal.Nullable;
 
 /**
  * Generic Antlr representation of a token.
@@ -55,7 +61,7 @@ public class GenericAntlrToken implements GenericToken {
 
     @Override
     public int getEndLine() {
-        return token.getLine(); // TODO: review this
+        return token.getLine();
     }
 
     @Override

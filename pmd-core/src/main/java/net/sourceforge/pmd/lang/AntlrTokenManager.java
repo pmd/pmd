@@ -10,8 +10,9 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 
-import com.beust.jcommander.internal.Nullable;
 import net.sourceforge.pmd.cpd.token.GenericAntlrToken;
+
+import com.beust.jcommander.internal.Nullable;
 
 /**
  * Generic token manager implementation for all Antlr lexers.
@@ -61,7 +62,6 @@ public class AntlrTokenManager implements TokenManager {
 
     private boolean isCommentToken(final String text) {
         return commentToken != null && text != null && text.startsWith(commentToken);
-
     }
 
     private static class ErrorHandler extends BaseErrorListener {

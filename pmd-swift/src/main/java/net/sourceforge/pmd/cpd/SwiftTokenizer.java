@@ -9,9 +9,6 @@ import org.antlr.v4.runtime.CharStream;
 import net.sourceforge.pmd.lang.AntlrTokenManager;
 import net.sourceforge.pmd.lang.swift.antlr4.SwiftLexer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * SwiftTokenizer
  */
