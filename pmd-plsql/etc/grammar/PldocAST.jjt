@@ -1293,6 +1293,8 @@ void Condition2() #void :
     LOOKAHEAD(4) BetweenCondition()
  |
     LOOKAHEAD(4) InCondition()
+ |
+    LOOKAHEAD(4) IsOfTypeCondition()
  )
 }
 
@@ -2561,6 +2563,11 @@ ASTIsOfTypeCondition IsOfTypeCondition() #IsOfTypeCondition(>1) :
     LOOKAHEAD(<IDENTIFIER> <IS>)
     ((name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <OF> {sb.append(" OF");} [<TYPE>]
       "(" [<ONLY>] Name() ("," [<ONLY>] Name() )* ")")
+  |
+    LOOKAHEAD(PrimaryExpression() <IS>)
+    (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
+    <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <OF> {sb.append(" OF");} [<TYPE>]
+      "(" [<ONLY>] Name() ("," [<ONLY>] Name() )* ")"
   |
     (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
   )
