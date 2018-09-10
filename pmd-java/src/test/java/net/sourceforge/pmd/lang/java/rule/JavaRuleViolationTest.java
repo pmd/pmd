@@ -65,8 +65,6 @@ public class JavaRuleViolationTest {
 
     /**
      * Tests that the enum name is taken correctly from the given node.
-     *
-     * @see <a href="https://sourceforge.net/p/pmd/bugs/1250/">#1250</a>
      */
     @Test
     public void testEnumName() {
