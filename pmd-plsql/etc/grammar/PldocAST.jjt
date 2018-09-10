@@ -1286,13 +1286,13 @@ void Condition2() #void :
     // FloatingPointCondition
     LOOKAHEAD(4) (SqlExpression() <IS> [<NOT>] (<NAN>|<INFINITE>))
  |
+    LOOKAHEAD(4) InCondition()
+ |
     LOOKAHEAD(4) LikeCondition()
  |
     LOOKAHEAD(4) NullCondition()
  |
     LOOKAHEAD(4) BetweenCondition()
- |
-    LOOKAHEAD(4) InCondition()
  |
     LOOKAHEAD(4) IsOfTypeCondition()
  )
@@ -4418,9 +4418,6 @@ ASTKEYWORD_RESERVED KEYWORD_RESERVED (): {}
 | <INTO>
 | <IS>
 | <LIKE>
-| <LIKEC>
-| <LIKE2>
-| <LIKE4>
 | <LOCK>
 | <LONG>
 | <MINUS>
@@ -4894,9 +4891,9 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <LEVELS>
 | <LIBRARY>
 //| <LIKE_EXPAND>
-//| <LIKE2>
-//| <LIKE4>
-//| <LIKEC>
+| <LIKE2>
+| <LIKE4>
+| <LIKEC>
 | <LIMIT>
 | <LINK>
 //| <LIST>
