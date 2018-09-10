@@ -1288,8 +1288,17 @@ void Condition2() #void :
  |
     LOOKAHEAD(4) LikeCondition()
  |
+    LOOKAHEAD(4) NullCondition()
+ |
     LOOKAHEAD(4) InCondition()
  )
+}
+
+ASTNullCondition NullCondition() :
+{}
+{
+    SqlExpression() <IS> [<NOT>] <NULL>
+    { return jjtThis; }
 }
 
 ASTLikeCondition LikeCondition() :
