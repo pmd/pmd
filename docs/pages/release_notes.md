@@ -75,5 +75,7 @@ the breaking API changes will be performed in 7.0.0.
 
 ### External Contributions
 
+*   [#1340](https://github.com/pmd/pmd/pull/1340): \[java] Derive correct classname for non-public non-classes - [kris-scheibe](https://github.com/kris-scheibe)
+
 {% endtocmaker %}
 
