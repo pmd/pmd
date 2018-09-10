@@ -40,7 +40,7 @@ public class AntlrTokenManager implements TokenManager {
     public Object getNextToken() {
         final Token token = lexer.nextToken();
         if (isCommentToken(token.getText())) {
-            previousComment = new GenericAntlrToken(token);
+            previousComment = new GenericAntlrToken(token, previousComment);
         }
 
         return new GenericAntlrToken(token, previousComment);

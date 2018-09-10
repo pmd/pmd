@@ -22,15 +22,6 @@ public class GenericAntlrToken implements GenericToken {
      * Constructor
      *
      * @param token The antlr token implementation
-     */
-    public GenericAntlrToken(final Token token) {
-        this(token, null);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param token The antlr token implementation
      * @param previousComment The previous comment
      */
     public GenericAntlrToken(final Token token, @Nullable final GenericAntlrToken previousComment) {
