@@ -60,7 +60,7 @@ elif travis_isPullRequest; then
 	(
 	    set +e
 	    log_info "Running danger"
-	    danger --verbose
+	    bundle exec danger --verbose
 	)
 
 elif travis_isPush; then

@@ -1,6 +1,6 @@
 source 'https://rubygems.org/'
 
-gem 'pmdtester', '~> 1.0.0.pre.beta3'
+gem 'pmdtester', :git => 'git://github.com/pmd/pmd-regression-tester.git'
 gem 'danger', '~> 5.6', '>= 5.6'
 
 # This group is only needed for rendering release notes
