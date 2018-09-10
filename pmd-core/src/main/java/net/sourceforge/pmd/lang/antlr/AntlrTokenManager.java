@@ -2,12 +2,14 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang;
+package net.sourceforge.pmd.lang.antlr;
 
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+
+import net.sourceforge.pmd.lang.TokenManager;
 
 /**
  * Generic token manager implementation for all Antlr lexers.
@@ -25,6 +27,7 @@ public class AntlrTokenManager implements TokenManager {
     public AntlrTokenManager(final Lexer lexer, final String fileName) {
         this.lexer = lexer;
         this.fileName = fileName;
+        resetListeners();
     }
 
     @Override
@@ -41,7 +44,7 @@ public class AntlrTokenManager implements TokenManager {
         return fileName;
     }
 
-    public void resetListeners() {
+    private void resetListeners() {
         lexer.removeErrorListeners();
         lexer.addErrorListener(new ErrorHandler());
     }
