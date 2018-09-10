@@ -10,8 +10,7 @@ def run_pmdtester
     Process.fork do
 	  begin
         runner = PmdTester::Runner.new(argv)
-        introduce_new_pmd_errors = runner.run
-        warn("The PR may introduce new PMD errors!") if introduce_new_pmd_errors
+        @new_errors, @removed_errors, @new_violations, @removed_violations = runner.run
 	  rescue StandardError => e
 	    warn("Running pmdtester failed, this message is mainly used to remind the maintainers of PMD.")
 	    @logger.error "Running pmdtester failed: #{e.inspect}"
@@ -38,12 +37,25 @@ def upload_report
 	  @logger.info "Successfully uploaded #{tar_filename} to chunk.io"
 
       # set value of sticky to true and the message is kept after new commits are submited to the PR
-	  message("Please check the [regression diff report](#{report_url.chomp}/diff/index.html) to make sure that everything is expected", sticky: true)
+	  message(build_diff_summary_msg(report_url), sticky: true)
 	else
       @logger.error "Error while uploading #{tar_filename} to chunk.io: #{report_url}"
       warn("Uploading the diff report failed, this message is mainly used to remind the maintainers of PMD.")
     end
   end
+end
+
+def build_diff_summary_msg(report_url)
+  diff_summary_msg = <<-MSG
+    The regression report summary:
+
+    |   | Introduced size | Removed size |
+    | - | - | - |
+    | Violations | #{@new_violations} | #{@removed_violations} |
+    | Errors | #{@new_errors} | #{@removed_errors} |
+
+    [Full report](#{report_url.chomp}/diff/index.html)
+  MSG
 end
 
 # Perform regression testing
