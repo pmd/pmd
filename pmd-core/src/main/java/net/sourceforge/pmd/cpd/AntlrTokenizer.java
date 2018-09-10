@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.cpd.token.GenericAntlrToken;
-import net.sourceforge.pmd.lang.AntlrTokenManager;
+import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 /**
@@ -24,7 +24,6 @@ public abstract class AntlrTokenizer implements Tokenizer {
     public void tokenize(final SourceCode sourceCode, final Tokens tokenEntries) {
 
         AntlrTokenManager tokenManager = getLexerForSource(sourceCode);
-        tokenManager.resetListeners();
 
         try {
             GenericAntlrToken token = (GenericAntlrToken) tokenManager.getNextToken();
