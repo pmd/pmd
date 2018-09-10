@@ -7,19 +7,17 @@ require 'logger'
 def run_pmdtester
   Dir.chdir('..') do
     argv = ['-r', './pmd', '-b', "#{ENV['TRAVIS_BRANCH']}", '-p', 'FETCH_HEAD', '-m', 'online', '-a']
-    Process.fork do
+    thread = Thread.fork do
 	  begin
         runner = PmdTester::Runner.new(argv)
         @new_errors, @removed_errors, @new_violations, @removed_violations = runner.run
+        upload_report
 	  rescue StandardError => e
 	    warn("Running pmdtester failed, this message is mainly used to remind the maintainers of PMD.")
 	    @logger.error "Running pmdtester failed: #{e.inspect}"
-	    exit 1
 	  end
 	end
-	Process.wait
-
-    upload_report if $?.success?
+	thread.join
   end
 end
 
