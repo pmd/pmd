@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Added more complete support for CREATE TABLE
  * Added support for SELECT INTO statement
  * Avoiding deep AST for *Expression nodes
+ * Added ASTCursorForLoop and ASTSelectStatement
  *
  * Andreas Dangel 07/2018
  *====================================================================
@@ -1676,6 +1677,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 	| LOOKAHEAD(3)  ContinueStatement()  ";" // CONTINUE keyword was added in 11G, so Oracle compilation supports CONTINUE as a variable name
 	| CaseStatement()  ";"
 	| IfStatement()  ";"
+	| LOOKAHEAD(<FOR> ID() <IN> "(" <SELECT>) CursorForLoopStatement() ";"
 	| ForStatement()  ";"
 	| ForAllStatement()  ";"
 	| LoopStatement()  ";"
@@ -1771,6 +1773,20 @@ ASTLoopStatement LoopStatement()  :
 {
        <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>] 
       { return jjtThis ; }
+}
+
+ASTCursorForLoopStatement CursorForLoopStatement() :
+{}
+{
+    <FOR> ForIndex() <IN> "(" SelectStatement() ")" <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>]
+    { return jjtThis ; }
+}
+
+ASTSelectStatement SelectStatement() :
+{}
+{
+    SqlStatement("(", ")")
+    { return jjtThis ; }
 }
 
 /** Scope rule: the loop index only exists within the Loop */
@@ -4261,7 +4277,7 @@ TOKEN :
  | "$" | "&" | "_" | "|" | "{" | "}" | "?" | "[" | "]"
  | " " | "\t" >
 |
-< #SPECIAL_CHARACTERS: "á" | "" | "" | "" | "" | "" | "ý" | "²" | "" | "³" | "µ">
+< #SPECIAL_CHARACTERS: "á" | "Ž" | "™" | "š" | "„" | "”" | "ý" | "²" | "€" | "³" | "µ">
 |
 < #DELIMITER: "+" | "%" | "'" | "\"" | "." | "/" | "(" | ")" | ":" | "," | "*" | "=" | "<" | ">" | "@" | ";" | "-">
 |

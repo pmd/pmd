@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Make sure, everything is English...
-export LANG=C.UTF8
+export LANG=C.UTF-8
 
 # verify the current directory
 if [ ! -f pom.xml -o ! -d ../pmd.github.io ]; then
@@ -66,20 +66,23 @@ export RELEASE_VERSION
 export DEVELOPMENT_VERSION
 export CURRENT_BRANCH
 
-RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml"
 
-echo "*   Update version/release info in **docs/pages/release_notes.md**."
-echo
-echo "    ## $(date -u +%d-%B-%Y) - ${RELEASE_VERSION}"
-echo
+# install bundles needed for rendering release notes
+bundle install --with=release_notes_preprocessing --path vendor/bundle
+
+RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml"
+export RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
+echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
+NEW_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
+echo "${NEW_RELEASE_NOTES}" > ../pmd.github.io/${RELEASE_NOTES_POST}
+
 echo "*   Update date info in **docs/_config.yml**."
+echo "    date: $(date -u +%d-%B-%Y)"
 echo
-echo "*   Ensure all the new rules are listed in a the proper file:"
+echo "*   Ensure all the new rules are listed in the proper file:"
 echo "    ${RELEASE_RULESET}"
 echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
-echo
-echo "*   Add **../pmd.github.io/_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
 echo
 echo "Press enter to continue..."
 read
@@ -94,7 +97,7 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 (
     echo "Committing current changes (pmd.github.io)"
     cd ../pmd.github.io
-    git add _posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md
+    git add ${RELEASE_NOTES_POST}
     git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     git push
 )
@@ -109,18 +112,6 @@ echo
 echo "Tag has been pushed.... now check travis build: <https://travis-ci.org/pmd/pmd>"
 echo
 echo
-echo "Submit news to SF on <https://sourceforge.net/p/pmd/news/> page. You can use"
-echo "the following template:"
-echo
-cat <<EOF
-PMD ${RELEASE_VERSION} released
-
-* Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${RELEASE_VERSION}
-* Documentation: https://pmd.github.io/pmd-${RELEASE_VERSION}/
-
-And Copy-Paste the release notes
-EOF
-echo
 echo "Press enter to continue..."
 read
 
@@ -128,7 +119,6 @@ echo
 echo "Check the milestone on github:"
 echo "<https://github.com/pmd/pmd/milestones>"
 echo " --> move any open issues to the next milestone, close the current milestone"
-echo " --> Maybe there are some milestones on sourceforge, too: <https://sourceforge.net/p/pmd/bugs/milestones>."
 echo
 echo
 echo "Prepare Next development version:"
@@ -140,7 +130,6 @@ read
 
 # update release_notes_old
 OLD_RELEASE_NOTES=$(tail -n +8 docs/pages/release_notes_old.md)
-NEW_RELEASE_NOTES=$(tail -n +6 docs/pages/release_notes.md)
 echo "$(head -n 7 docs/pages/release_notes_old.md)" > docs/pages/release_notes_old.md
 echo "$NEW_RELEASE_NOTES" >> docs/pages/release_notes_old.md
 echo >> docs/pages/release_notes_old.md
@@ -154,18 +143,13 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## ????? - ${DEVELOPMENT_VERSION}
+## {{ site.pmd.date }} - {{ site.pmd.version }}
 
-The PMD team is pleased to announce PMD ${DEVELOPMENT_VERSION%-SNAPSHOT}.
+The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
-This is a minor release.
+This is a {{ site.pmd.release_type }} release.
 
-### Table Of Contents
-
-* [New and noteworthy](#new-and-noteworthy)
-* [Fixed Issues](#fixed-issues)
-* [API Changes](#api-changes)
-* [External Contributions](#external-contributions)
+{% tocmaker is_release_notes_processor %}
 
 ### New and noteworthy
 
@@ -174,6 +158,8 @@ This is a minor release.
 ### API Changes
 
 ### External Contributions
+
+{% endtocmaker %}
 
 EOF
 
@@ -185,15 +171,16 @@ echo
 echo
 echo "Verify the new release on github: <https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION}>"
 echo
+echo "*   Submit news to SF on <https://sourceforge.net/p/pmd/news/> page. Use same text as in the email below."
+echo "*   Send out an announcement mail to the mailing list:"
 echo
-echo "Send out an announcement mail to the mailing list:"
 echo "To: PMD Developers List <pmd-devel@lists.sourceforge.net>"
 echo "Subject: [ANNOUNCE] PMD ${RELEASE_VERSION} Released"
 echo
 echo "    *   Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${RELEASE_VERSION}"
 echo "    *   Documentation: https://pmd.github.io/pmd-${RELEASE_VERSION}/"
 echo
-echo "    And Copy-Paste the release notes"
+echo "$NEW_RELEASE_NOTES"
 echo
 echo
 echo
@@ -201,6 +188,5 @@ echo "------------------------------------------"
 echo "Done."
 echo "------------------------------------------"
 echo
-
 
 

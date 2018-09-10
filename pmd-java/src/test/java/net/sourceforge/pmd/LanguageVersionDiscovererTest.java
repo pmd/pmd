@@ -26,8 +26,8 @@ public class LanguageVersionDiscovererTest {
         File javaFile = new File("/path/to/MyClass.java");
 
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(javaFile);
-        assertEquals("LanguageVersion must be Java 10 !",
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("10"), languageVersion);
+        assertEquals("LanguageVersion must be Java 11 !",
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("11"), languageVersion);
     }
 
     /**
@@ -48,7 +48,7 @@ public class LanguageVersionDiscovererTest {
     public void testLanguageVersionDiscoverer() {
         PMDConfiguration configuration = new PMDConfiguration();
         LanguageVersionDiscoverer languageVersionDiscoverer = configuration.getLanguageVersionDiscoverer();
-        assertEquals("Default Java version", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("10"),
+        assertEquals("Default Java version", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("11"),
                 languageVersionDiscoverer
                         .getDefaultLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)));
         configuration

@@ -23,7 +23,7 @@ protected constructor in order to prevent instantiation than make the class misl
 //ClassOrInterfaceDeclaration
     [@Abstract = 'true']
     [count(//MethodDeclaration) + count(//ConstructorDeclaration) = 0]
-    [not(../Annotation/MarkerAnnotation/Name[typeIs('com.google.auto.value.AutoValue')])]
+    [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('com.google.auto.value.AutoValue')])]
 ```
 
 **Example(s):**
@@ -259,13 +259,13 @@ Exception, or Error, use a subclassed exception or error instead.
 ``` xpath
 //ThrowStatement//AllocationExpression
  /ClassOrInterfaceType[
- typeIsExactly('java.lang.Throwable')
+ pmd-java:typeIsExactly('java.lang.Throwable')
 or
- typeIsExactly('java.lang.Exception')
+ pmd-java:typeIsExactly('java.lang.Exception')
 or
- typeIsExactly('java.lang.Error')
+ pmd-java:typeIsExactly('java.lang.Error')
 or
- typeIsExactly('java.lang.RuntimeException')
+ pmd-java:typeIsExactly('java.lang.RuntimeException')
 ]
 ```
 
@@ -518,7 +518,7 @@ Errors are system exceptions. Do not extend them.
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
-  [typeIs('java.lang.Error')]
+  [pmd-java:typeIs('java.lang.Error')]
 ```
 
 **Example(s):**
@@ -1406,7 +1406,14 @@ PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
  /Expression/UnaryExpressionNotPlusMinus[@Image='!']
 /PrimaryExpression/PrimaryPrefix
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
+    or //MarkerAnnotation/Name[
+        pmd-java:typeIs('org.junit.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    ]
+]]
 ```
 
 **Example(s):**

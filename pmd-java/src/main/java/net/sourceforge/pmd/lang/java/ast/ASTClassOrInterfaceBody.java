@@ -5,6 +5,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents the body of a {@linkplain ASTClassOrInterfaceDeclaration class or interface declaration}.
+ * This includes anonymous classes, including those defined within an {@linkplain ASTEnumConstant enum constant}.
+ *
+ * <pre>
+ *
+ * ClassOrInterfaceBody ::=  "{"  {@linkplain ASTClassOrInterfaceBodyDeclaration ClassOrInterfaceBodyDeclaration}* "}"
+ *
+ * </pre>
+ */
 public class ASTClassOrInterfaceBody extends AbstractJavaNode {
     public ASTClassOrInterfaceBody(int id) {
         super(id);

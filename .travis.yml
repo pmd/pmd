@@ -1,5 +1,3 @@
-dist: trusty
-sudo: false
 addons:
   ssh_known_hosts:
     - web.sourceforge.net
@@ -10,20 +8,39 @@ env:
   global:
   - secure: KBEuB6U1p5RQXSYe157AwydFr/zpXQPA0IChVCgZV+X1mMyy9ZtrjH1J1AXuviseDDXDbaT25sRnsvpl82rfRw2xOkMGXHy4N95/ylTSr8DjHxTao71BhXsvFycNobFva5y2EGNWqDvpS8I2oSZo7Qk4la3yep3rcJQvcy6RDbbhpDTbL1QMFyadunIBm0WtqbunrMqtjSqaoPsXz8TiQuxHvX4vEXzVbaxV1QQt79Vi+daa6wAV3mRQAugnx+UffsC8JqMxgm06usWeJgCJzxgm8E7clZCLmf53B2TL8dK6bIYbqyvOY3uFxitsTG0d8Z0GOJwXBgZNgbniTRO8ZJSty5eZP8LBybbjVLSL25DNTWtCjADUL/uySnXIEidlMt2N/3QmH7zrGAfAk/tIwKpdRca2GLLydeXf6PSkiahnPEkIY/QupcsOLELhdifpdOjb8QW1OenA+vUbNM9dccLwKnX6Fj9cu4VQG601AcYDr2eyhq8WYkr3wYdw/6KdUa3hmplowTBs+qguppP+eOSgGuEsy38KLtqnvm6WlHy6tcLmcVYKG3DmR1b7TWXsOXC6/VMH8BHBkvsF1QdRg9+Cgx07vX3Hw7roPiYzmaO9Ajs20ATsUfRskMuWCTeTSK5pN8X27veRCZlhFjeKQMDdmfVwzpAfRgKsl3TEn1I=
   - secure: U1DfAv6acUUWe+dao/ZSDUX64JRadNJY16rITsdrM4ZNAJSuXpEY3p/LWcYjN7D49YmyutbXH9+L3KKQUQGrGXj9QTarfYvd8ZsKt4FK8yv7AFy+RQNIbAjNEHBzHx15p+srMheTaetl7aLwY0qhF+D/RtGapxHKyY4dBHrb0lp8VGyiCiL7Aop8GGskosi1mtirPBp/BStPZ2bEyxG0QzU5SsVWkJWwV9aWLPVAR/n7Xgx/6Gjl6Fed2c/WSrWi4vchm3Ny8pfTweOax3PGYYjBVxIfuX0mqmwuJsY7gNfXCfN3dPiPKGJPFy1pC+LGyGkklO5ReKFLd4O1ME6fU0dlIGfD6n+Q4H6/w9FHXegcKTfWIJm/MFa6vA/tJM5R6zJQuiTQJboHm/UmS/iQj76z0p6sK15Xp5vFId+/dHKqa8xY+Bt6HiXy6z401HOc8QcYBAf7TqhqUt/ZE7HN4be46uR90KmzIrWz6wEoDW7HfwQ9ZMbs55zoOXrvekyE9/gXskypO0p2JT3Y0vlvO27KQvIrSwI480kOVOrlyrYA+LZqlcKaayOuCuZh4lITQUYinUoZZict5joYthH+Cyh2zovoBpxsntDJdMnaZNLtSC7hlhpbMBYaT2y1O6vZH5Yix0mxuDvs/x6ogP5CNBeUYlXhaL+g4GnwKyr0ZA0=
-  - secure: "ElWjttpoMwqezP2zyHkx7CiPON/mRLUW7SsSlEqdlTUYRIaSaL7sShUORJUzj58U/Nnfi/eY4Rweo0CtVu20sG16s9B4adnmPS44LAitztybPR/co93gN9qb8jiIl41nVcOJq+Rut2Z4nr8AGRhVCG9Drg4+DreCqQ4DE5ZD6J99GN0IFGrREt59HQUlBlT9jD0AndK/1GQ6kWAenuSREE2P5ih59rf6FrrfddQO5iqyFFoaHek3JiOmpaLK+z7i4EvMKsAJEooFNuGhHVuyaJJRRZHAncGiQ+uW/yL7G5rY51G6YSNJczzEtfrRg+YrIUbokUPmifSIbnXO/AIZRAq1dMhA8exRc5n+75RB1X164qm4a+yggdybFBh0L59xu606PJQJAuWy+x10nled7FAVXiotxbB0r2bhlVmWFEN+FWPqXg2rVkHvw6+5PM67rG5g1LCgjKzb9I6JWPiVI+EMn8Pw8gryL2Sdqtl08Da0Ypbl2ZK/afU4CEPEKnrDc9ecXKjacehTYwGS48V213XvArcmoEpsyZDRSMTrvK3/e29GEaxoK/ZzWJylpeOtsICEEFYEBEiDsiIW4C50MIUPT2xHV6MaPQzhkuwrbQ6QFYzHzihBaiQuMmXUQ4DMb3fOPkNZAQHQo8CgJ78IcbCABAoGv9mu/fo2KoLo11U="
+  - secure: "gxI7W4V4fUPQLMCvecXXdet1/mCh6m0RIQMtErVVOnwxEEjeDmko/3rHSl+wk6IeFaaQKcmHJJSJEj+e5TgWRH1uuzCnbFHZhuH28ce/H0EqLJ3GTXeDEgFLzhh//T3ySOZChZELgJ67cKxZJNFMhBVOR2/QIGjZjdzvl36ugsu80Ak3XJb8HCm8D2P8Vuezz/OlCkSOGXaiqZXfflV/cuaLWuueGfQGW9x/UyDTNsuBdB7YnEcxOWt8RgB4JrcPGV7/etxLHXTw9IMEeUhQ/RsxLZHKNYt9cx/QOZkpXemhdT9L2pAIi77eO98x+yAfB1qV6T6IeDd/OiABUzfb7asNBwE+bYRuVkCiWLo3x3hs8FcgsPe4L10guxfRMJPxax9E7uYb9TFxtvc42dDWNyp1BVCtEtmjErO4CJeW97ukhgkUkPhzUZgQ2Gj5Tn4VRjQOQyzh/S/YsHyfxoAQrscc/3bq5PBmtdowyGQd5dsvShdpE6glf+HnBZ8TCw5BaxQuTjapQWjsGuJVCVsrNDtwOFy5UTfxK9OeTUsjwfO5JjkoIeqGyLHPnTMWyZ6EYa//nWPOU1KgVE6Hrzfr3zxEzL1nN/TYahzhKOxXE701W9YhTmhCVljMlSYioTUfTaXHgGLpojvSWlhsTbc3r0gj4NglqakIy7MKgQLgES8="
   - secure: "otZkFNhApMofp2Jl2baZdpNEPcTa79Xc9wyOw1gl1+ubCLtOGr32FDUSr0HQWKrGXcYZR4bc0A80hx0/ykZ/twJaRAabcNYtjwRMDKKrp3plvp8RTZlB1QW85nsdmk3qmHACzc94wKnmcaDohM5FPxnWspZG5Y4ejYX4HEK6r1fwL4FjMPSLd5QW8yCaAc7dpBSm2UyIXuuDjkekXblJFe8ydbf9aF97WKJMCwqIs9Zo5oJa2pnWCw47ixwjVdkaH5x5727I+YmFqn5rjdEideUFEAlggqMaxuOtfYhuG/8k5W3Q/+WX+G7rEPTcemjmaosbbpoOUE0YUHV3Wi3R5D66NuWIpQwX6kw4rTwL0YIh//0aNb8jv4Z8KwkiTMrYuj0we5tXzARp3yYn56P0JBAm6BihNhfEBv06655Tg5LUsWqUTZCl3KJhwtO1N+OuOkE5qoZm59knq6DeZOsYWAVb3MpzklP06kXGYTjb44PVMUc6ynuuZjgPJDv/0906feA3REHBJVxd3PvJp1c8VvQSeW3ndghEz0akJHY/jxV1rJZAZC1ZeshYUpBNmh0sFDty/UE43IvIB4EInypQHyTtQvMc6LuLjTeu2E5ZMsA3udj66EMrYm4Y2eheJycSfttDqzhsKXIVJ4LmA/xtDR01cp1jsqbbZBhVI67rA40="
   - secure: "mmHRnK/8CHfgtwaTN3MgjFD1R8EVQhIb/a0Aag3gPaHWW52Ex6xWG7GsF4kRcdzHdIdrQxHZTiDa2oVMWbnQ16CAu4dZJadwTxhBW4JmE1tsi2C6i+uwMBPvnKBXHwt+QOAqNB0L/ByYwWLkucSLoyRs6qU0i7sJ3ZC/EPCuLI8VfBlFUVegSbp2WmclmFnxOi5MKr15Zwd8BGgyWUsvd1OHxhvO3Xr/ZPO4R+1kIgyojloTMu6oGM/shYgsrUXgmI/WvZRTq+25SRCjUmATJtuDXXgVeJtYabi/+Zju5Z7K06oaKvFYM+BgZWPmGQkVCxKVjSlug0rx6+qgRKIf/B/cPxmQDS0ZZVDmDcbxeibBL9JhRqIDwDb0XS9t1qBXvIJ5E4ZmdX/XuvLCnC4xJptu/vHyKl1wbRM3dcXEBk8J0knJc4JvY2yupF3LS32sfEHftLwzr63U3/0dOQvsCSJRBy5zgI8ieABUZAeZmmaQ6RCGOTEYrGO2G4CCF2uVq4YdrCOsfmrb0DzH8llNMkXKzXlITRvmkuBlTRRKxGnPzS3vf0iicdAkmTiU5u7lArFFc7IKcW4ypO+RKDTUpq74K+UZBI9eBjV7Po368EO8epJ5aIx32a2kyS/hYWkS/dZh7I0fNZa2qBUceZO/KZGRjH4dQFW9t0J9Q7LLXJY="
   - secure: "geOU/7VR83KYTOCR5XkgFqnHJEnXeB6hNDE7UFcN4ZsL9uVLhxlDVWV3ujJ87nyBzggG1KfSnUx11UwOQrbBl0K6sEXo/B2q5ytOsWoSLi7+0qm/uhhw/DTBOq57p8TIDKFM7rDhO7uajSn7Y86LeZkh9wIs5265Fh1yhCkiPbczDUMsX4P0GGg2qgkIKSBw4DZf6sPDc4xjJq/4/cLnjXo/K0ZYAIoSLqDfe1gmkzMtQlad+1t8Lwv/gOJ4BNRF4a5aEvGF6kbFovFoeFWCQTKlkn6VJtY+BETGKW2RH9efGeMs7JbBbNm+nnpoNsbJ0gdmGlhSbWT8enIm72/P0ThTBJWVcLJ30tUd0UeYD9C49wbJ3RHSxsoUKP9YhHJ+XKNx+8irkJ8LPCkNMQEFE153gEVvU7tCgah9Uq6laYZv9cQE0dWzNt3//Ymls8BzY38Ha4PbrIIJqEuWwnAX6ZgTgzVtXx1AJjkDFG9KFKPhN7NfNMbh7rn5C84a1h5zrIydm+6RcIBC+xTLDEiN7djiquf3PcNtyGLcO8dNN4Uv8iU0Jw8ch3+w0PJO53v5py+IS1V8pwwYaYF2iVPOoziS0tP8MsgYVGwpTZhvz3v8x0ge8r6KJE4zdvoPtCRNr2Oo3sJGYqkt86Hu6agKFiljP5AgJNx7iQD5GQn6J3w="
   - secure: "gqyPF3d75JuwZptnQQQKO6rGUILXGO09y9dZhShdX8qq5Mexa2ISk77Y/b0yyAdhJMgEglls5cWlbHkwCAB0i4yL25RE5CtQUe4er+CIKwBIs0M56ghbcOwWAFB/cXeyyWmXDHBVnVUeKm7IJ34txsEclnMzQSR/DInSzsCFMUQok8HEaWZNssMjyRgo6goKGdG5vNWGfLLY7mKGMe/6PpYJD0G8k+Na08aX06ZWph38He8O3imUAngoQrxiSp0UYmnHDkigbV7S2LdZOsj7kMxkiyigzK/P1eygHVbFAhohLroaqS9B4CBK7QeOyup2vxVKqJVzFwOCylD0786CImvaG2ZYMtvJkapvaEE0mdMlyYpHgdIkmHZu28aMW7hXEhxHyBAxKuPcj5eGCGziO+ztCvfYIA9CGs1uA4KLrED7SahvB0oXnt3KTFdRc857cWcpp2NmRKihLzVdgHlmT8zcYaec3zP1VdMoa2bmLHoaZtAwvMTcAG56FcET1p7f9v+uiU88ZeptEjTJfpAWlq34tpwZXNyIQi5IROocSHM+PKTgLAsAMP5klGascr8E0sEzREl7tg8hqEwXKym/sVKyT+HMptA3UZcrZZhm07/cmQ0pUVvbV9QDb0MzU3O2wF7vT3U7R7Fb1u0LxMjblPyEazTp8ldabVRJREwlsDc="
-  - secure: "JIhuqaI0i+zvuqqXiQBHpuKr7AQ8jfk6Gbr8Qgiq4yJtdEWXZGxnAT9BmlbjkgT7ABXvLgxf2CIdUOMo1yYfBlxQL/y5+e89jaVpYF3tvNAzYQ1e12VzQRsd/jDb7qvm7tw3rDHEn3dSEot7Q6KbPcL6WzWJINVMCCmOgvq9gKHgE6Y5q5EgZ5rxiXyuO27ndzcbxaor4PIaiSzHO9+AJQ7p2zDLP+kG4nKVTBX0l9VoKiYFhIpIhpbigi3jyLDMDRiWpwTWZC6P8/RXfZg/lc5ADOuM2DM8oXPpZuqOa/g31LWQOSCuEnQ1G16vbLgipSPpgAc7jYWD5cywhG9dLkiKaZDh5x0meLM2RoAgz6eAnQfTTqJ68OM9o9yXjubEedsNpNRAr9/DXMd+fbh10W2vbvL5HCNB3lic3anehhR9le7PLuEKxg654wXt3KM2PZGVWbotIyBK0CvGzqGkppvwT23QdDDqSdkWuGQIhGQ0xBOdYkwebycxP5wwPUmObG+mymQ1Be2BXvmghttsiJdKlt4CVSYOJUMus6kU32G95hdTgKblsX4J1Of2i1nYsjyMKh3k945tqXwQrIsxOOQug0oIkz24zlLaOaQcorWtJ6Y1HPaZKpVIFUEF0y8Uq/O4oB2bOYC6WDUQfpj7nRG6xbi+BeBS84m1ttCEk4g="
-  matrix:
-  - BUILD=deploy
-  - BUILD=doc
-  - BUILD=sonar
-  - BUILD=coveralls
+  - secure: "VezxV+VdmbmtrQYT8AZIyg41WBROxuxpumerkcubADF7V4wV6lwx9Rd2G6yAr0VuHCNUUhS4m+gPFIsuiQbAhyupiEkwhzUYqk1tF+LITlLLPegLypjiLmhJMwGUNuDSSsih1Icmg9FzrP4VyzgGn9pBjoG9QYj1civBZeGwg++e/XDYlHMXrpd/UEfMKVB71JwB0tle4fKJZSvblIqP62yvbBaKHx6A4+ZWzJV5Vps0DoIeNtKCNmNNloKZVHfjbsvqSjnMYUJzkOzyPkM822q41N/D+3IAufO16+jH/W0vAZeN0e4GXiN5W+CVkr2Gbh0FwkVQcI3bekaOIn45XLUMLKdf+JsWDPKz9RraHelR9YxL5GoJ7ntwvmucxw0p8EVyJ/xLk/pBCP8iHq0Jb8//js25XHgxzzAWI37MErPAAGgTKZAVdAN0mGXbe63tWmwaBlEbK8h2A8di6abW5x6YHTkTo2BRlHUSTU8dE3VqTnpSkne5n1SlEa4g1Bci3J45M0/pLmHV6yCxCM5BrVXS5ByaB61py/umSbpmdIBFV6TM1MaKK3lAucQrR+8To/vCbm8XqPyujJdOR+ENIuuDgEU/Yh5Hv5SAODekUYaCp4pjfGzFADHQWVNDxIOXrwBN4OfSiAvRc1x6HXndOmNI4QtOxheuCRFFthq8VZI="
 
 matrix:
   fast_finish: true
+  include:
+    - name: "linux - mvn deploy"
+      os: linux
+      dist: trusty
+      sudo: false
+      env: BUILD=deploy
+    - name: "linux - build documentation"
+      os: linux
+      dist: trusty
+      sudo: false
+      env: BUILD=doc
+    - name: "linux - run sonar"
+      os: linux
+      dist: trusty
+      sudo: false
+      env: BUILD=sonar
+    - name: "linux - run coveralls"
+      os: linux
+      dist: trusty
+      sudo: false
+      env: BUILD=coveralls
+    - name: "macosx - mvn verify"
+      os: osx
+      env: BUILD=deploy
 
 before_install:
   - wget https://github.com/sormuras/bach/raw/master/install-jdk.sh
@@ -31,10 +48,11 @@ before_install:
   - bash .travis/configure-maven.sh
   - rvm install 2.4.1
   - rvm use 2.4.1
-# Install OracleJDK 10 - see https://sormuras.github.io/blog/2018-03-20-jdk-matrix.html
+# Install OpenJDK 11 - see https://sormuras.github.io/blog/2018-03-20-jdk-matrix.html
 install:
-  - . ./install-jdk.sh -F 10 -L BCL
-  - gem install pmdtester --pre
+  - . ./install-jdk.sh -F 11 -L GPL -W $HOME/jdk
+  - gem install bundler
+  - bundle install --with=release_notes_preprocessing
 before_script: true
 script: source .travis/build-$BUILD.sh
 after_success: true
@@ -71,7 +89,9 @@ notifications:
 cache:
   directories:
   - "$HOME/.m2"
-
+  - vendor/bundle
+  - "$HOME/jdk"
+  - "$HOME/.rvm/"
 
 # Secure Keys, that need to be set for snapshot builds
 #
@@ -82,7 +102,6 @@ cache:
 #
 # PMD_SF_USER - the sourceforge user, which is used to upload created binaries to sf files section. Note: an ssh key is
 #               required. See "before_install".
-#
 #
 # Secure Keys, that need to be set for releases:
 #

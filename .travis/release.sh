@@ -28,11 +28,13 @@ if [ "${BUILD}" = "deploy" ]; then
     true
 )
 
+# renders, and skips the first 6 lines - the Jekyll front-matter
+RENDERED_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
 
 # Assumes, the release has already been created by travis github releases provider
 RELEASE_ID=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" https://api.github.com/repos/pmd/pmd/releases/tags/pmd_releases/${RELEASE_VERSION}|jq ".id")
 RELEASE_NAME="PMD ${RELEASE_VERSION} ($(date -u +%d-%B-%Y))"
-RELEASE_BODY=$(tail -n +6 docs/pages/release_notes.md) # skips the first 6 lines - the heading 'PMD Release Notes'
+RELEASE_BODY="$RENDERED_RELEASE_NOTES"
 RELEASE_BODY="${RELEASE_BODY//'\'/\\\\}"
 RELEASE_BODY="${RELEASE_BODY//$'\r'/}"
 RELEASE_BODY="${RELEASE_BODY//$'\n'/\\r\\n}"
@@ -79,6 +81,7 @@ mkdir pmd.github.io
     git pull --depth=1 origin master
     log_info "Copying documentation from ../docs/pmd-doc-${RELEASE_VERSION}/ ..."
     rsync -ah --stats ../docs/pmd-doc-${RELEASE_VERSION}/ pmd-${RELEASE_VERSION}/
+    git status
     git add pmd-${RELEASE_VERSION}
     git commit -q -m "Added pmd-${RELEASE_VERSION}"
 
@@ -87,6 +90,7 @@ mkdir pmd.github.io
     git add latest
     git commit -q -m "Copying pmd-${RELEASE_VERSION} to latest"
 
+    log_info "Generating sitemap.xml"
     ../.travis/sitemap_generator.sh > sitemap.xml
     git add sitemap.xml
     git commit -q -m "Generated sitemap.xml"
@@ -103,7 +107,7 @@ mkdir pmd.github.io
 
     log_info "Uploading the new release to pmd.sourceforge.net which serves as an archive..."
 
-    travis_wait rsync -ah --stats pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${RELEASE_VERSION}/
+    travis_wait rsync -ah --stats docs/pmd-doc-${RELEASE_VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${RELEASE_VERSION}/
 
     if [ $? -ne 0 ]; then
         log_error "Uploading documentation to pmd.sourceforge.net failed..."

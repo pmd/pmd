@@ -134,6 +134,14 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
 
 
     /**
+     * Returns the name of the variable.
+     */
+    public String getVariableName() {
+        return getImage();
+    }
+
+
+    /**
      * Returns true if the variable declared by this node is declared final.
      * Doesn't account for the "effectively-final" nuance. Resource
      * declarations are implicitly final.
@@ -205,8 +213,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * since the type node is absent.
      */
     public boolean isTypeInferred() {
-        // TODO think about supporting var for lambda parameters
-        return isLambdaParamWithNoType() || isLocalVariableTypeInferred();
+        return isLambdaParamWithNoType() || isLocalVariableTypeInferred() || isLambdaTypeInferred();
     }
 
 
@@ -220,6 +227,11 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         }
 
         return false;
+    }
+
+    private boolean isLambdaTypeInferred() {
+        return getNthParent(3) instanceof ASTLambdaExpression
+                && jjtGetParent().getFirstChildOfType(ASTType.class) == null;
     }
 
     /**

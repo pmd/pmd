@@ -816,6 +816,11 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
     }
 
     @Override
+    public Object visit(ASTCursorForLoopStatement node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
     public Object visit(ASTInnerCrossJoinClause node, Object data) {
         return visit((PLSQLNode) node, data);
     }
@@ -987,6 +992,11 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
     @Override
     public Object visit(ASTRollupCubeClause node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTSelectStatement node, Object data) {
         return visit((PLSQLNode) node, data);
     }
 

@@ -35,6 +35,7 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "EmptyMethodInAbstractClassShouldBeAbstract");
         addRule(RULESET, "ExtendsObject");
         addRule(RULESET, "FieldDeclarationsShouldBeAtStartOfClass");
+        addRule(RULESET, "FieldNamingConventions");
         addRule(RULESET, "ForLoopsMustUseBraces");
         addRule(RULESET, "ForLoopShouldBeWhileLoop");
         addRule(RULESET, "FormalParameterNamingConventions");
@@ -42,6 +43,7 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "IdenticalCatchBranches");
         addRule(RULESET, "IfElseStmtsMustUseBraces");
         addRule(RULESET, "IfStmtsMustUseBraces");
+        addRule(RULESET, "LinguisticNaming");
         addRule(RULESET, "LocalHomeNamingConvention");
         addRule(RULESET, "LocalInterfaceSessionNamingConvention");
         addRule(RULESET, "LocalVariableCouldBeFinal");

@@ -18,11 +18,11 @@ import net.sourceforge.pmd.Rule;
  * <p>This statement may define several variables, possibly of different types (see {@link ASTVariableDeclaratorId#getType()}).
  * The nodes corresponding to the declared variables are accessible through {@link #iterator()}.
  *
- * <p>
+ * <pre>
  *
- * LocalVariableDeclaration ::=  ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )*
+ * LocalVariableDeclaration ::= ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )*
  *
- * </p>
+ * </pre>
  */
 public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implements Dimensionable, CanSuppressWarnings, Iterable<ASTVariableDeclaratorId> {
 
@@ -127,6 +127,6 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
      */
     @Override
     public Iterator<ASTVariableDeclaratorId> iterator() {
-        return new NodeChildrenIterator<>(this, ASTVariableDeclaratorId.class);
+        return ASTVariableDeclarator.iterateIds(this);
     }
 }

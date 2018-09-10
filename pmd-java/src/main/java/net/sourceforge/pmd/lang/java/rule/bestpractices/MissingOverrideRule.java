@@ -109,25 +109,30 @@ public class MissingOverrideRule extends AbstractJavaRule {
             return null;
         }
 
-        Set<Method> overridden = overriddenMethods(exploredType);
-        Map<String, Map<Integer, List<Method>>> result = new HashMap<>();
-
-        for (Method m : exploredType.getDeclaredMethods()) {
-            if (!result.containsKey(m.getName())) {
-                result.put(m.getName(), new HashMap<Integer, List<Method>>());
+        try {
+            Set<Method> overridden = overriddenMethods(exploredType);
+            Map<String, Map<Integer, List<Method>>> result = new HashMap<>();
+    
+            for (Method m : exploredType.getDeclaredMethods()) {
+                if (!result.containsKey(m.getName())) {
+                    result.put(m.getName(), new HashMap<Integer, List<Method>>());
+                }
+    
+                Map<Integer, List<Method>> pCountToOverloads = result.get(m.getName());
+    
+                int paramCount = m.getParameterTypes().length;
+                if (!pCountToOverloads.containsKey(paramCount)) {
+                    pCountToOverloads.put(paramCount, new ArrayList<Method>());
+                }
+    
+                pCountToOverloads.get(paramCount).add(m);
             }
-
-            Map<Integer, List<Method>> pCountToOverloads = result.get(m.getName());
-
-            int paramCount = m.getParameterTypes().length;
-            if (!pCountToOverloads.containsKey(paramCount)) {
-                pCountToOverloads.put(paramCount, new ArrayList<Method>());
-            }
-
-            pCountToOverloads.get(paramCount).add(m);
+            
+            return new MethodLookup(result, overridden);
+        } catch (final LinkageError e) {
+            // we may have an incomplete auxclasspath
+            return null;
         }
-
-        return new MethodLookup(result, overridden);
     }
 
 

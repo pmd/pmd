@@ -248,7 +248,7 @@ PARSER_END(JspParser)
 
 <InTagState> TOKEN :
 {
-  <ATTR_NAME: <IDENTIFIER> >
+  <ATTR_NAME: (<IDENTIFIER> | "${" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}") >
 | <TAG_END: ">"            >            : AfterTagState
 | <DECL_END: ("?>" | "!>") >            : AfterTagState
 | <TAG_SLASHEND: "/>" >                 : AfterTagState
