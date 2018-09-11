@@ -1281,6 +1281,8 @@ void Condition2() #void :
 {}
 {
  (
+    LOOKAHEAD(FunctionCall() <IS> <OF>) IsOfTypeCondition()
+ |
     LOOKAHEAD(4) ComparisonCondition()
  |
     LOOKAHEAD(4) FloatingPointCondition()
@@ -1322,7 +1324,7 @@ ASTCompoundCondition CompoundCondition() :
 {}
 {
  (
-    LOOKAHEAD(3) "(" Condition() ")"
+    LOOKAHEAD(3) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) Condition() )*
  |
     LOOKAHEAD(3) <NOT> Condition()
  |
@@ -1385,6 +1387,8 @@ ASTSqlExpression SqlExpression() :
 {
  // SimpleExpression
  (
+    LOOKAHEAD(FunctionCall()) FunctionCall()
+ |
     LOOKAHEAD(5) SchemaName() "." TableName() "." Column()
  |
     LOOKAHEAD(3) TableName() "." Column()
@@ -1398,6 +1402,13 @@ ASTSqlExpression SqlExpression() :
     // Anything else, including function calls
     LOOKAHEAD(3) Expression()
  )
+    { return jjtThis; }
+}
+
+ASTFunctionCall FunctionCall() :
+{}
+{
+    <IDENTIFIER> { jjtThis.setImage(token.image); } "(" QualifiedName() ("," QualifiedName())* ")"
     { return jjtThis; }
 }
 
