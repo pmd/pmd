@@ -56,7 +56,7 @@ if travis_isOSX; then
 elif travis_isPullRequest; then
 
     log_info "This is a pull-request build"
-    ./mvnw verify $MVN_BUILD_FLAGS
+    # ./mvnw verify $MVN_BUILD_FLAGS
 	(
 	    set +e
 	    log_info "Running danger"
