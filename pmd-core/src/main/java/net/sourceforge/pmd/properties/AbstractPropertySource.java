@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 
@@ -103,10 +102,7 @@ public abstract class AbstractPropertySource implements PropertySource {
     }
 
 
-    private String getPropertySourceType() {
-        return this instanceof Rule ? "rule" : "renderer";
-    }
-
+    protected abstract String getPropertySourceType();
 
     @Override
     public PropertyDescriptor<?> getPropertyDescriptor(String name) {

@@ -329,6 +329,13 @@ public class RuleReference extends AbstractDelegateRule {
                 || super.hasDescriptor(descriptor);
     }
 
+    /**
+     * @deprecated Use {@link #isPropertyOverridden(PropertyDescriptor)} instead
+     */
+    @Deprecated
+    public boolean hasOverriddenProperty(PropertyDescriptor<?> descriptor) {
+        return isPropertyOverridden(descriptor);
+    }
 
     @Override
     public boolean isPropertyOverridden(PropertyDescriptor<?> descriptor) {

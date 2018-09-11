@@ -48,6 +48,11 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         definePropertyDescriptor(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
     }
 
+    @Override
+    protected String getPropertySourceType() {
+        return "rule";
+    }
+
     /**
      * @deprecated Use {@link #deepCopy()} to create verbatim copies of rules.
      */
