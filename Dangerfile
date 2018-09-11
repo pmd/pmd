@@ -45,14 +45,8 @@ end
 
 def build_diff_summary_msg(report_url)
   diff_summary_msg = <<-MSG
-    The regression report summary:
-
-    |   | Introduced size | Removed size |
-    | - | - | - |
-    | Violations | #{@new_violations} | #{@removed_violations} |
-    | Errors | #{@new_errors} | #{@removed_errors} |
-
-    [Full report](#{report_url.chomp}/diff/index.html)
+      This changeset introduce #{@new_violations} new violations and #{@new_errors} new errors,
+      removes #{@removed_violations} violations and #{@removed_errors} errors. [Full report](#{report_url.chomp}/diff/index.html)
   MSG
 end
 
