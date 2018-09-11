@@ -1353,6 +1353,30 @@ the breaking API changes will be performed in 7.0.0.</p>
 
 <h3 id="api-changes">API Changes</h3>
 
+<ul>
+  <li>
+    <p>A couple of methods and fields in <code class="highlighter-rouge">net.sourceforge.pmd.properties.AbstractPropertySource</code> have been
+deprecated, as they are replaced by already existing functionality or expose internal implementation
+details: <code class="highlighter-rouge">propertyDescriptors</code>, <code class="highlighter-rouge">propertyValuesByDescriptor</code>,
+<code class="highlighter-rouge">copyPropertyDescriptors()</code>, <code class="highlighter-rouge">copyPropertyValues()</code>, <code class="highlighter-rouge">ignoredProperties()</code>, <code class="highlighter-rouge">usesDefaultValues()</code>,
+<code class="highlighter-rouge">useDefaultValueFor()</code>.</p>
+  </li>
+  <li>
+    <p>Some methods in <code class="highlighter-rouge">net.sourceforge.pmd.properties.PropertySource</code> have been deprecated as well:
+<code class="highlighter-rouge">usesDefaultValues()</code>, <code class="highlighter-rouge">useDefaultValueFor()</code>, <code class="highlighter-rouge">ignoredProperties()</code>.</p>
+  </li>
+  <li>
+    <p>The class <code class="highlighter-rouge">net.sourceforge.pmd.lang.rule.AbstractDelegateRule</code> has been deprecated and will
+be removed with PMD 7.0.0. It is internally only in use by RuleReference.</p>
+  </li>
+  <li>
+    <p>The default constructor of <code class="highlighter-rouge">net.sourceforge.pmd.lang.rule.RuleReference</code> has been deprecated
+and will be removed with PMD 7.0.0. RuleReferences should only be created by providing a Rule and
+a RuleSetReference. Furthermore the following methods are deprecated: <code class="highlighter-rouge">setRuleReference()</code>,
+<code class="highlighter-rouge">hasOverriddenProperty()</code>, <code class="highlighter-rouge">usesDefaultValues()</code>, <code class="highlighter-rouge">useDefaultValueFor()</code>.</p>
+  </li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
@@ -1375,7 +1399,7 @@ the breaking API changes will be performed in 7.0.0.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Sep 10, 2018 <br />
+ Site last generated: Sep 11, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
