@@ -916,4 +916,9 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
     public Object visit(ASTBetweenCondition node, Object data) {
         return visit((PLSQLNode) node, data);
     }
+
+    @Override
+    public Object visit(ASTFloatingPointCondition node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
 }

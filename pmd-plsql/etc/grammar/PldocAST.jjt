@@ -1283,8 +1283,7 @@ void Condition2() #void :
  (
     LOOKAHEAD(4) ComparisonCondition()
  |
-    // FloatingPointCondition
-    LOOKAHEAD(4) (SqlExpression() <IS> [<NOT>] (<NAN>|<INFINITE>))
+    LOOKAHEAD(4) FloatingPointCondition()
  |
     LOOKAHEAD(4) InCondition()
  |
@@ -1296,6 +1295,13 @@ void Condition2() #void :
  |
     LOOKAHEAD(4) IsOfTypeCondition()
  )
+}
+
+ASTFloatingPointCondition FloatingPointCondition() :
+{}
+{
+    SqlExpression() <IS> [<NOT>] (<NAN>|<INFINITE>)
+    { return jjtThis; }
 }
 
 ASTBetweenCondition BetweenCondition() :
