@@ -1290,9 +1290,9 @@ void Condition2() #void :
  |
     LOOKAHEAD(4) LikeCondition()
  |
-    LOOKAHEAD(4) NullCondition()
- |
     LOOKAHEAD(4) BetweenCondition()
+ |
+    LOOKAHEAD(4) IsNullCondition()
  |
     LOOKAHEAD(4) IsOfTypeCondition()
  )
@@ -1302,13 +1302,6 @@ ASTBetweenCondition BetweenCondition() :
 {}
 {
     SqlExpression() [<NOT>] <BETWEEN> SqlExpression() <AND> SqlExpression()
-    { return jjtThis; }
-}
-
-ASTNullCondition NullCondition() :
-{}
-{
-    SqlExpression() <IS> [<NOT>] <NULL>
     { return jjtThis; }
 }
 
@@ -2538,11 +2531,11 @@ ASTIsNullCondition IsNullCondition() #IsNullCondition(>1) :  //yanzin
 { PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
 {
   (
-    LOOKAHEAD(<IDENTIFIER> <IS> (<NOT> <NULL>|<NULL>))
+    LOOKAHEAD(<IDENTIFIER> <IS> [<NOT>] <NULL>)
     (
 		(name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");} 
 	)
-	|
+    |
 	(
 		simpleNode = IsOfTypeCondition() 
 	) 

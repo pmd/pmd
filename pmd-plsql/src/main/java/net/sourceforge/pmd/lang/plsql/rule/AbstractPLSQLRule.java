@@ -1006,11 +1006,6 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
     }
 
     @Override
-    public Object visit(ASTNullCondition node, Object data) {
-        return visit((PLSQLNode) node, data);
-    }
-
-    @Override
     public Object visit(ASTBetweenCondition node, Object data) {
         return visit((PLSQLNode) node, data);
     }
