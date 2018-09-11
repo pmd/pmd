@@ -12,7 +12,7 @@ import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
 
 
 /**
- * Property which has a regex pattern as a value.This property has no multi-valued
+ * Property which has a regex pattern as a value. This property has no multi-valued
  * variant, since it would be ambiguous whether the delimiters are part of the regex
  * or not.
  *

@@ -112,6 +112,7 @@ public interface Rule extends PropertySource {
      *
      * @return the name
      */
+    @Override
     String getName();
 
     /**
