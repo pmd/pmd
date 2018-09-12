@@ -60,7 +60,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //
 options {
-	DEBUG_PARSER = false ;
+	DEBUG_PARSER = false;
 	DEBUG_TOKEN_MANAGER = false;
 	DEBUG_LOOKAHEAD = false;
 	IGNORE_CASE = true;
@@ -1408,7 +1408,7 @@ ASTSqlExpression SqlExpression() :
 ASTFunctionCall FunctionCall() :
 {}
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); } "(" QualifiedName() ("," QualifiedName())* ")"
+    ID() "(" QualifiedName() ("," QualifiedName())* ")"
     { return jjtThis; }
 }
 
@@ -1459,6 +1459,8 @@ void SelectListEntry() #void :
   (
     LOOKAHEAD(3) TableAlias() "." "*"
   |
+    LOOKAHEAD(FunctionCall()) FunctionCall() [ [<AS>] ColumnAlias() ]
+  |
     LOOKAHEAD(3) Expression() [ [<AS>] ColumnAlias() ]
   )
 }
@@ -1488,7 +1490,7 @@ ASTIntoClause IntoClause() :
 ASTVariableName VariableName() :
 {}
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    ID()
     { return jjtThis; }
 }
 

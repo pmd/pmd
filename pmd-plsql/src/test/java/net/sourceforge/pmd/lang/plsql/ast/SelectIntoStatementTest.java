@@ -46,4 +46,10 @@ public class SelectIntoStatementTest extends AbstractPLSQLParserTst {
         String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectIntoStatementExample5.pls"));
         ASTInput input = parsePLSQL(code);
     }
+
+    @Test
+    public void testParsingWithFunctionCall() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectIntoStatementFunctionCall.pls"));
+        ASTInput input = parsePLSQL(code);
+    }
 }
