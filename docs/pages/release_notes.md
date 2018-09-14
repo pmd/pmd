@@ -75,5 +75,7 @@ the breaking API changes will be performed in 7.0.0.
 
 ### External Contributions
 
+*   [#1339](https://github.com/pmd/pmd/pull/1339): \[ci] Improve danger message - [BBG](https://github.com/djydewang)
+
 {% endtocmaker %}
 

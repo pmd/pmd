@@ -32,7 +32,7 @@ def upload_report
 	  @logger.info "Successfully uploaded #{tar_filename} to chunk.io"
 
       # set value of sticky to true and the message is kept after new commits are submited to the PR
-	  message("This changeset introduce #{@new_violations} new violations and #{@new_errors} new errors,\n" +
+	  message("This changeset introduces #{@new_violations} new violations and #{@new_errors} new errors,\n" +
 	          "removes #{@removed_violations} violations and #{@removed_errors} errors. [Full report](#{report_url.chomp}/diff/index.html)", sticky: true)
 	else
       @logger.error "Error while uploading #{tar_filename} to chunk.io: #{report_url}"
