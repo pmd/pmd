@@ -68,6 +68,8 @@ the breaking API changes will be performed in 7.0.0.
 *   java-codestyle
     *   [#1329](https://github.com/pmd/pmd/issues/1329): \[java] FieldNamingConventions: false positive in serializable class with serialVersionUID
     *   [#1334](https://github.com/pmd/pmd/issues/1334): \[java] LinguisticNaming should support AtomicBooleans
+*   java-errorprone
+    *   [#1350](https://github.com/pmd/pmd/issues/1350): \[java] MissingSerialVersionUID false-positive on interfaces
 *   java-performance
     *   [#1325](https://github.com/pmd/pmd/issues/1325): \[java] False positive in ConsecutiveLiteralAppends
 
