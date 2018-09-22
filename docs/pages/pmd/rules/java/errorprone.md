@@ -2414,6 +2414,7 @@ Serializable classes should provide a serialVersionUID field.
 ``` xpath
 //ClassOrInterfaceDeclaration
     [@Abstract = 'false']
+    [@Interface = 'false']
     [count(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
         /FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Image='serialVersionUID']) = 0]
     [(ImplementsList | ExtendsList)/ClassOrInterfaceType[pmd-java:typeIs('java.io.Serializable')]]
