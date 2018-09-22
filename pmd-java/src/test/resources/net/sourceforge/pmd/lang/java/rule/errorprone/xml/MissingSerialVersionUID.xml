@@ -107,4 +107,13 @@ public class MissingSerialVersionUIDTest extends MissingSerialVersionUIDBase {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1350 [java] MissingSerialVersionUID false-positive on interfaces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface IDomainObject<ID extends Serializable & Comparable<? super ID>> extends MutablePrimaryIdentifier<ID>, Serializable {
+}
+        ]]></code>
+    </test-code>
 </test-data>
