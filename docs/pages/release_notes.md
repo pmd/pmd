@@ -66,7 +66,7 @@ the breaking API changes will be performed in 7.0.0.
 #### Modified Rules
 
 *   The rule {% rule java/errorprone/MissingSerialVersionUID %} (`java-errorprone`) has been modified
-    in order to recognize also missing serialVersionUID fields in abstract classes, if they are serializable.
+    in order to recognize also missing `serialVersionUID` fields in abstract classes, if they are serializable.
     Each individual class in the inheritance chain needs an own serialVersionUID field. See also [Should an abstract class have a serialVersionUID](https://stackoverflow.com/questions/893259/should-an-abstract-class-have-a-serialversionuid).
     This change might lead to additional violations in existing code bases.
 
