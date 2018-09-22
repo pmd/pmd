@@ -1280,6 +1280,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
           <li><a href="#the-transition">The transition</a></li>
         </ul>
       </li>
+      <li><a href="#modified-rules">Modified Rules</a></li>
     </ul>
   </li>
   <li><a href="#fixed-issues">Fixed Issues</a></li>
@@ -1335,6 +1336,15 @@ until the next major release but it is recommended to stop using them.</p>
 <code class="highlighter-rouge">.internal</code> packages or hidden will be tagged <code class="highlighter-rouge">@InternalApi</code> before that major release, and
 the breaking API changes will be performed in 7.0.0.</p>
 
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>The rule <a href="pmd_rules_java_errorprone.html#missingserialversionuid"><code class="highlighter-rouge">MissingSerialVersionUID</code></a> (<code class="highlighter-rouge">java-errorprone</code>) has been modified
+in order to recognize also missing <code class="highlighter-rouge">serialVersionUID</code> fields in abstract classes, if they are serializable.
+Each individual class in the inheritance chain needs an own serialVersionUID field. See also <a href="https://stackoverflow.com/questions/893259/should-an-abstract-class-have-a-serialversionuid">Should an abstract class have a serialVersionUID</a>.
+This change might lead to additional violations in existing code bases.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1352,6 +1362,7 @@ the breaking API changes will be performed in 7.0.0.</p>
   <li>java-errorprone
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1350">#1350</a>: [java] MissingSerialVersionUID false-positive on interfaces</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1352">#1352</a>: [java] MissingSerialVersionUID false-negative with abstract classes</li>
     </ul>
   </li>
   <li>java-performance
