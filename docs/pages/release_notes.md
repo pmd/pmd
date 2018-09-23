@@ -69,11 +69,23 @@ the breaking API changes will be performed in 7.0.0.
     sanity rules for such docs (no missing parameters, parameters' order, and return value). By default,
     method overrides and test classes are allowed to not include ApexDoc.
 
+#### Modified Rules
+
+*   The rule {% rule java/errorprone/MissingSerialVersionUID %} (`java-errorprone`) has been modified
+    in order to recognize also missing `serialVersionUID` fields in abstract classes, if they are serializable.
+    Each individual class in the inheritance chain needs an own serialVersionUID field. See also [Should an abstract class have a serialVersionUID](https://stackoverflow.com/questions/893259/should-an-abstract-class-have-a-serialversionuid).
+    This change might lead to additional violations in existing code bases.
+
 ### Fixed Issues
 
+*   apex-bestpractices
+    *   [#1348](https://github.com/pmd/pmd/issues/1348): \[apex] AvoidGlobalModifierRule gives warning even when its a webservice - false positive
 *   java-codestyle
     *   [#1329](https://github.com/pmd/pmd/issues/1329): \[java] FieldNamingConventions: false positive in serializable class with serialVersionUID
     *   [#1334](https://github.com/pmd/pmd/issues/1334): \[java] LinguisticNaming should support AtomicBooleans
+*   java-errorprone
+    *   [#1350](https://github.com/pmd/pmd/issues/1350): \[java] MissingSerialVersionUID false-positive on interfaces
+    *   [#1352](https://github.com/pmd/pmd/issues/1352): \[java] MissingSerialVersionUID false-negative with abstract classes
 *   java-performance
     *   [#1325](https://github.com/pmd/pmd/issues/1325): \[java] False positive in ConsecutiveLiteralAppends
 
