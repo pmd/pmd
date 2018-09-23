@@ -16,6 +16,11 @@ This is a {{ site.pmd.release_type }} release.
 
 #### New Rules
 
+*   The new Apex rule {% rule apex/documentation/ApexDoc %} (`apex-documentation`)
+    enforces the inclusion of ApexDoc on classes, interfaces, properties and methods; as well as some
+    sanity rules for such docs (no missing parameters, parameters' order, and return value). By default,
+    method overrides and test classes are allowed to not include ApexDoc.
+
 *   The new Java rule {% rule java/codestyle/LinguisticNaming %} (`java-codestyle`)
     detects cases, when a method name indicates it returns a boolean (such as `isSmall()`) but it doesn't.
     Besides method names, the rule also checks field and variable names. It also checks, that getters return
@@ -89,6 +94,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#1289](https://github.com/pmd/pmd/pull/1289): \[java] UselessParentheses: Fix false positive with assignments - [cobratbq](https://github.com/cobratbq)
 *   [#1290](https://github.com/pmd/pmd/pull/1290): \[docs] \[GSoC] Create the documentation about pmdtester - [BBG](https://github.com/djydewang)
 *   [#1256](https://github.com/pmd/pmd/pull/1256): \[java] #940 Avoid JUnit 4 false positives for JUnit 5 tests - [Alex Shesterov](https://github.com/vovkss)
+*   [#1314](https://github.com/pmd/pmd/pull/1314): \[apex] Add validation of ApexDoc comments - [Jeff Hube](https://github.com/jeffhube)
 *   [#1315](https://github.com/pmd/pmd/pull/1315): \[apex] Add OneDeclarationPerStatement rule - [Jeff Hube](https://github.com/jeffhube) 
 
 {% endtocmaker %}
