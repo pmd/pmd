@@ -1272,14 +1272,11 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="#new-and-noteworthy">New and noteworthy</a>
     <ul>
       <li><a href="#drawing-a-line-between-private-and-public-api">Drawing a line between private and public API</a>
-        <ul>
-          <li><a href="#`.internal`-packages-and-`@internalapi`-annotation"><code class="highlighter-rouge">.internal</code> packages and <code class="highlighter-rouge">@InternalApi</code> annotation</a></li>
-          <li><a href="#`@reservedsubclassing`"><code class="highlighter-rouge">@ReservedSubclassing</code></a></li>
-          <li><a href="#`@experimental`"><code class="highlighter-rouge">@Experimental</code></a></li>
-          <li><a href="#`@deprecated`"><code class="highlighter-rouge">@Deprecated</code></a></li>
-          <li><a href="#the-transition">The transition</a></li>
-        </ul>
-      </li>
+      * <a href="#`.internal`-packages-and-`@internalapi`-annotation"><code class="highlighter-rouge">.internal</code> packages and <code class="highlighter-rouge">@InternalApi</code> annotation</a>
+      * <a href="#`@reservedsubclassing`"><code class="highlighter-rouge">@ReservedSubclassing</code></a>
+      * <a href="#`@experimental`"><code class="highlighter-rouge">@Experimental</code></a>
+      * <a href="#`@deprecated`"><code class="highlighter-rouge">@Deprecated</code></a>
+      * <a href="#the-transition">The transition</a></li>
       <li><a href="#modified-rules">Modified Rules</a></li>
     </ul>
   </li>
@@ -1302,7 +1299,7 @@ be invalidated with PMD 7.0.0. We now introduce more fine-grained distinctions b
 the type of compatibility support we guarantee for our libraries, and ways to make
 them explicit to clients of PMD.</p>
 
-<h5 id="internal-packages-and-internalapi-annotation"><code class="highlighter-rouge">.internal</code> packages and <code class="highlighter-rouge">@InternalApi</code> annotation</h5>
+<h6 id="internal-packages-and-internalapi-annotation"><code class="highlighter-rouge">.internal</code> packages and <code class="highlighter-rouge">@InternalApi</code> annotation</h6>
 
 <p><em>Internal API</em> is meant for use <em>only</em> by the main PMD codebase. Internal types and methods
 may be modified in any way, or even removed, at any time.</p>
@@ -1312,29 +1309,38 @@ The <code class="highlighter-rouge">@InternalApi</code> annotation will be used 
 these packages, e.g. methods of a public type that shouldn’t be used outside of PMD (again,
 these can be removed anytime).</p>
 
-<h5 id="reservedsubclassing"><code class="highlighter-rouge">@ReservedSubclassing</code></h5>
+<h6 id="reservedsubclassing"><code class="highlighter-rouge">@ReservedSubclassing</code></h6>
 
 <p>Types marked with the <code class="highlighter-rouge">@ReservedSubclassing</code> annotation are only meant to be subclassed
 by classes within PMD. As such, we may add new abstract methods, or remove protected methods,
 at any time. All published public members remain supported. The annotation is <em>not</em> inherited, which
 means a reserved interface doesn’t prevent its implementors to be subclassed.</p>
 
-<h5 id="experimental"><code class="highlighter-rouge">@Experimental</code></h5>
+<h6 id="experimental"><code class="highlighter-rouge">@Experimental</code></h6>
 
 <p>APIs marked with the <code class="highlighter-rouge">@Experimental</code> annotation at the class or method level are subject to change.
 They can be modified in any way, or even removed, at any time. You should not use or rely
  on them in any production code. They are purely to allow broad testing and feedback.</p>
 
-<h5 id="deprecated"><code class="highlighter-rouge">@Deprecated</code></h5>
+<h6 id="deprecated"><code class="highlighter-rouge">@Deprecated</code></h6>
 
 <p>APIs marked with the <code class="highlighter-rouge">@Deprecated</code> annotation at the class or method level will remain supported
 until the next major release but it is recommended to stop using them.</p>
 
-<h5 id="the-transition">The transition</h5>
+<h6 id="the-transition">The transition</h6>
 
 <p><em>All currently supported APIs will remain so until 7.0.0</em>. All APIs that are to be moved to
 <code class="highlighter-rouge">.internal</code> packages or hidden will be tagged <code class="highlighter-rouge">@InternalApi</code> before that major release, and
 the breaking API changes will be performed in 7.0.0.</p>
+
+<p>#### New Rules</p>
+
+<ul>
+  <li>The new Apex rule <a href="pmd_rules_apex_documentation.html#apexdoc"><code class="highlighter-rouge">ApexDoc</code></a> (<code class="highlighter-rouge">apex-documentation</code>)
+enforces the inclusion of ApexDoc on classes, interfaces, properties and methods; as well as some
+sanity rules for such docs (no missing parameters, parameters’ order, and return value). By default,
+method overrides and test classes are allowed to not include ApexDoc.</li>
+</ul>
 
 <h4 id="modified-rules">Modified Rules</h4>
 
@@ -1402,6 +1408,7 @@ a RuleSetReference. Furthermore the following methods are deprecated: <code clas
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/1309">#1309</a>: [core] [CPD] Decouple Antlr Tokenizer implementation from any CPD language supported with Antlr - <a href="https://github.com/matifraga">Matías Fraga</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1314">#1314</a>: [apex] Add validation of ApexDoc comments - <a href="https://github.com/jeffhube">Jeff Hube</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1339">#1339</a>: [ci] Improve danger message - <a href="https://github.com/djydewang">BBG</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1340">#1340</a>: [java] Derive correct classname for non-public non-classes - <a href="https://github.com/kris-scheibe">kris-scheibe</a></li>
 </ul>
@@ -1422,7 +1429,7 @@ a RuleSetReference. Furthermore the following methods are deprecated: <code clas
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Sep 22, 2018 <br />
+ Site last generated: Sep 23, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
