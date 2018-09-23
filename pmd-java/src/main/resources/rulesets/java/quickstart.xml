@@ -46,7 +46,7 @@
     <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/>
 
     <rule ref="category/java/bestpractices.xml/UnusedImports"/>
-    <!-- <rule ref="category/java/errorprone.xml/ImportFromSamePackage" />-->
+    <rule ref="category/java/errorprone.xml/ImportFromSamePackage"/>
 
     <rule ref="category/java/bestpractices.xml/UnusedLocalVariable"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
@@ -61,7 +61,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/UseVarargs" /> -->
 
     <!-- <rule ref="category/java/codestyle.xml/AtLeastOneConstructor" /> -->
-    <!-- <rule ref="category/java/codestyle.xml/AvoidDollarSigns" /> -->
+    <rule ref="category/java/codestyle.xml/AvoidDollarSigns"/>
     <!-- <rule ref="category/java/codestyle.xml/AvoidFinalLocalVariable" /> -->
 
     <rule ref="category/java/codestyle.xml/AvoidProtectedFieldInFinalClass"/>
@@ -218,7 +218,8 @@
     <!-- <rule ref="category/java/errorprone.xml/DoNotCallSystemExit" /> -->
 
     <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangThrowable"/>
-
+    <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangError"/>
+         
     <!-- <rule ref="category/java/errorprone.xml/DoNotHardCodeSDCard" /> -->
     <!-- <rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally" /> -->
 
@@ -227,16 +228,18 @@
     <rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices"/>
     <rule ref="category/java/errorprone.xml/EmptyCatchBlock"/>
 
-    <!-- <rule ref="category/java/errorprone.xml/EmptyFinalizer" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyFinallyBlock" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyIfStmt" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyInitializer" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyStatementBlock" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyStatementNotInLoop" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptySwitchStatements" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptySynchronizedBlock" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyTryBlock" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyWhileStmt" /> -->
+    <!-- Empty rules -->
+         
+    <rule ref="category/java/errorprone.xml/EmptyFinalizer"/>
+    <rule ref="category/java/errorprone.xml/EmptyFinallyBlock"/>
+    <rule ref="category/java/errorprone.xml/EmptyIfStmt"/>
+    <rule ref="category/java/errorprone.xml/EmptyInitializer"/>
+    <rule ref="category/java/errorprone.xml/EmptyStatementBlock"/>
+    <rule ref="category/java/errorprone.xml/EmptyStatementNotInLoop"/>
+    <rule ref="category/java/errorprone.xml/EmptySwitchStatements"/>
+    <rule ref="category/java/errorprone.xml/EmptySynchronizedBlock"/>
+    <rule ref="category/java/errorprone.xml/EmptyTryBlock"/> 
+    <rule ref="category/java/errorprone.xml/EmptyWhileStmt"/>
 
     <rule ref="category/java/errorprone.xml/EqualsNull"/>
 
@@ -270,8 +273,8 @@
     <rule ref="category/java/errorprone.xml/SingletonClassReturningNewInstance"/>
     <!-- <rule ref="category/java/errorprone.xml/StaticEJBFieldShouldBeFinal" /> -->
     <!-- <rule ref="category/java/errorprone.xml/StringBufferInstantiationWithChar" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/SuspiciousEqualsMethodName" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/SuspiciousHashcodeMethodName" /> -->
+    <rule ref="category/java/errorprone.xml/SuspiciousEqualsMethodName"/>
+    <rule ref="category/java/errorprone.xml/SuspiciousHashcodeMethodName"/>
     <rule ref="category/java/errorprone.xml/SuspiciousOctalEscape"/>
     <!-- <rule ref="category/java/errorprone.xml/TestClassWithoutTestCases" /> -->
     <rule ref="category/java/errorprone.xml/UnconditionalIfStatement"/>
@@ -280,7 +283,7 @@
     <rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary"/>
     <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals"/>
     <!-- <rule ref="category/java/errorprone.xml/UseCorrectExceptionLogging" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings" /> -->
+    <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings"/>
     <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable"/>
     <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions"/>
     <!-- <rule ref="category/java/errorprone.xml/UseProperClassLoader" /> -->
@@ -301,7 +304,7 @@
     <!-- <rule ref="category/java/performance.xml/AvoidArrayLoops" /> -->
     <!-- <rule ref="category/java/performance.xml/AvoidFileStream" /> -->
     <!-- <rule ref="category/java/performance.xml/AvoidInstantiatingObjectsInLoops" /> -->
-    <rule ref="category/java/performance.xml/AvoidUsingShortType"/>
+    <!-- <rule ref="category/java/performance.xml/AvoidUsingShortType"/> -->
     <rule ref="category/java/performance.xml/BigIntegerInstantiation"/>
     <rule ref="category/java/performance.xml/BooleanInstantiation"/>
     <!-- <rule ref="category/java/performance.xml/ByteInstantiation" /> -->
