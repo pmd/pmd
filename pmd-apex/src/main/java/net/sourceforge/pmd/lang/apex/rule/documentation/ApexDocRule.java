@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.apex.ast.ASTFormalComment;
@@ -23,7 +24,6 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 import apex.jorje.data.Locations;
-import apex.jorje.semantic.ast.member.Parameter;
 import apex.jorje.semantic.ast.modifier.ModifierGroup;
 
 public class ApexDocRule extends AbstractApexRule {
@@ -37,32 +37,32 @@ public class ApexDocRule extends AbstractApexRule {
     private static final String UNEXPECTED_RETURN_MESSAGE = "Unexpected ApexDoc @return";
     private static final String MISMATCHED_PARAM_MESSAGE = "Missing or mismatched ApexDoc @param";
 
-    private boolean inTestClass;
-
+    public ApexDocRule() {
+        addRuleChainVisit(ASTUserClass.class);
+        addRuleChainVisit(ASTUserInterface.class);
+        addRuleChainVisit(ASTMethod.class);
+        addRuleChainVisit(ASTProperty.class);
+    }
+    
     @Override
     public Object visit(ASTUserClass node, Object data) {
-        super.visit(node, data);
         handleClassOrInterface(node, data);
         return data;
     }
 
     @Override
     public Object visit(ASTUserInterface node, Object data) {
-        super.visit(node, data);
         handleClassOrInterface(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTAnnotation node, Object data) {
-        if (node.getImage().equals("IsTest")) {
-            inTestClass = true;
-        }
-        return data;
-    }
-
-    @Override
     public Object visit(ASTMethod node, Object data) {
+        if (node.jjtGetParent() instanceof ASTProperty) {
+            // Skip property methods, doc is required on the property itself
+            return data;
+        }
+
         ApexDocComment comment = getApexDocComment(node);
         if (comment == null) {
             if (shouldHaveApexDocs(node)) {
@@ -83,11 +83,9 @@ public class ApexDocRule extends AbstractApexRule {
                 }
             }
 
-            ArrayList<String> params = new ArrayList<>();
-            for (Parameter x : node.getNode().getMethodInfo().getParameters()) {
-                String value = x.getName().getValue();
-                params.add(value);
-            }
+            // Collect parameter names in order
+            final List<String> params = node.getNode().getMethodInfo().getParameters()
+                    .stream().map(p -> p.getName().getValue()).collect(Collectors.toList());
 
             if (!comment.params.equals(params)) {
                 addViolationWithMessage(data, node, MISMATCHED_PARAM_MESSAGE);
@@ -127,9 +125,17 @@ public class ApexDocRule extends AbstractApexRule {
     }
 
     private boolean shouldHaveApexDocs(ApexNode<?> node) {
-        if (inTestClass || node.getNode().getLoc() == Locations.NONE) {
+        if (node.getNode().getLoc() == Locations.NONE) {
             return false;
         }
+
+        // is this a test?
+        for (final ASTAnnotation annotation : node.findDescendantsOfType(ASTAnnotation.class)) {
+            if (annotation.getImage().equals("IsTest")) {
+                return false;
+            }
+        }
+
         ASTModifierNode modifier = node.getFirstChildOfType(ASTModifierNode.class);
         if (modifier != null) {
             boolean isPublic = modifier.isPublic();
@@ -160,7 +166,7 @@ public class ApexDocRule extends AbstractApexRule {
         return null;
     }
 
-    private class ApexDocComment {
+    private static class ApexDocComment {
         boolean hasDescription;
         boolean hasReturn;
         List<String> params;
