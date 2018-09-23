@@ -21,13 +21,12 @@ of PMD's public API, including inheritance-specific members (protected members, 
 We have maintained those APIs with the goal to preserve full binary compatibility between minor releases,
 only breaking those APIs infrequently, for major releases.
 
-
 In order to allow PMD to move forward at a faster pace, this implicit contract will
 be invalidated with PMD 7.0.0. We now introduce more fine-grained distinctions between
 the type of compatibility support we guarantee for our libraries, and ways to make
 them explicit to clients of PMD.
 
-##### `.internal` packages and `@InternalApi` annotation
+###### `.internal` packages and `@InternalApi` annotation
 
 *Internal API* is meant for use *only* by the main PMD codebase. Internal types and methods
 may be modified in any way, or even removed, at any time.
@@ -37,31 +36,38 @@ The `@InternalApi` annotation will be used for APIs that have to live outside of
 these packages, e.g. methods of a public type that shouldn't be used outside of PMD (again,
 these can be removed anytime).
 
-##### `@ReservedSubclassing`
+###### `@ReservedSubclassing`
 
 Types marked with the `@ReservedSubclassing` annotation are only meant to be subclassed
 by classes within PMD. As such, we may add new abstract methods, or remove protected methods,
 at any time. All published public members remain supported. The annotation is *not* inherited, which
 means a reserved interface doesn't prevent its implementors to be subclassed.
 
-##### `@Experimental`
+###### `@Experimental`
 
 
 APIs marked with the `@Experimental` annotation at the class or method level are subject to change.
 They can be modified in any way, or even removed, at any time. You should not use or rely
  on them in any production code. They are purely to allow broad testing and feedback.
 
-##### `@Deprecated`
+###### `@Deprecated`
 
 APIs marked with the `@Deprecated` annotation at the class or method level will remain supported
 until the next major release but it is recommended to stop using them.
 
 
-##### The transition
+###### The transition
 
 *All currently supported APIs will remain so until 7.0.0*. All APIs that are to be moved to
 `.internal` packages or hidden will be tagged `@InternalApi` before that major release, and
 the breaking API changes will be performed in 7.0.0.
+
+#### New Rules
+
+*   The new Apex rule {% rule apex/documentation/ApexDoc %} (`apex-documentation`)
+    enforces the inclusion of ApexDoc on classes, interfaces, properties and methods; as well as some
+    sanity rules for such docs (no missing parameters, parameters' order, and return value). By default,
+    method overrides and test classes are allowed to not include ApexDoc.
 
 ### Fixed Issues
 
@@ -93,6 +99,7 @@ the breaking API changes will be performed in 7.0.0.
 ### External Contributions
 
 *   [#1309](https://github.com/pmd/pmd/pull/1309): \[core] \[CPD] Decouple Antlr Tokenizer implementation from any CPD language supported with Antlr - [Matías Fraga](https://github.com/matifraga)
+*   [#1314](https://github.com/pmd/pmd/pull/1314): \[apex] Add validation of ApexDoc comments - [Jeff Hube](https://github.com/jeffhube)
 *   [#1339](https://github.com/pmd/pmd/pull/1339): \[ci] Improve danger message - [BBG](https://github.com/djydewang)
 *   [#1340](https://github.com/pmd/pmd/pull/1340): \[java] Derive correct classname for non-public non-classes - [kris-scheibe](https://github.com/kris-scheibe)
 
