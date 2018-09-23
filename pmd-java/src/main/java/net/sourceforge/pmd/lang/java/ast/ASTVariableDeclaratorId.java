@@ -134,6 +134,14 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
 
 
     /**
+     * Returns the name of the variable.
+     */
+    public String getVariableName() {
+        return getImage();
+    }
+
+
+    /**
      * Returns true if the variable declared by this node is declared final.
      * Doesn't account for the "effectively-final" nuance. Resource
      * declarations are implicitly final.

@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
-import net.sourceforge.pmd.properties.PropertySource;
 
 public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 
@@ -217,9 +216,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
         return getProperty(CHECK_ADDRESS_TYPES_DESCRIPTOR).size() > 0;
     }
 
-    /**
-     * @see PropertySource#dysfunctionReason()
-     */
+
     @Override
     public String dysfunctionReason() {
         return hasChosenAddressTypes() ? null : "No address types specified";

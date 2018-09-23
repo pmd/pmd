@@ -28,6 +28,11 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     }
 
     @Override
+    protected String getPropertySourceType() {
+        return "renderer";
+    }
+
+    @Override
     public String getName() {
         return name;
     }

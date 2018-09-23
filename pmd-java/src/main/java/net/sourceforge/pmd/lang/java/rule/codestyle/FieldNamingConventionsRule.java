@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.RegexProperty;
+import net.sourceforge.pmd.properties.StringMultiProperty;
 
 
 /**
@@ -20,6 +21,14 @@ import net.sourceforge.pmd.properties.RegexProperty;
  * @since 6.7.0
  */
 public class FieldNamingConventionsRule extends AbstractNamingConventionRule<ASTVariableDeclaratorId> {
+    // TODO we need a more powerful scheme to match some fields, e.g. include modifiers/type
+    // We could define a new property, but specifying property values as a single string doesn't scale
+    private static final StringMultiProperty EXCLUDED_NAMES = StringMultiProperty.named("exclusions")
+                                                                                 .desc("Names of fields to whitelist.")
+                                                                                 .defaultValues("serialVersionUID")
+                                                                                 .build();
+
+
     private final RegexProperty publicConstantFieldRegex = defaultProp("public constant").defaultValue("[A-Z][A-Z_0-9]*").build();
     private final RegexProperty constantFieldRegex = defaultProp("constant").desc("Regex which applies to non-public static final field names").defaultValue("[A-Z][A-Z_0-9]*").build();
     private final RegexProperty enumConstantRegex = defaultProp("enum constant").defaultValue("[A-Z][A-Z_0-9]*").build();
@@ -35,6 +44,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
         definePropertyDescriptor(finalFieldRegex);
         definePropertyDescriptor(staticFieldRegex);
         definePropertyDescriptor(defaultFieldRegex);
+        definePropertyDescriptor(EXCLUDED_NAMES);
 
         addRuleChainVisit(ASTFieldDeclaration.class);
         addRuleChainVisit(ASTEnumConstant.class);
@@ -43,8 +53,11 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-
         for (ASTVariableDeclaratorId id : node) {
+            if (getProperty(EXCLUDED_NAMES).contains(id.getVariableName())) {
+                continue;
+            }
+
             if (node.isFinal() && node.isStatic()) {
                 checkMatches(id, node.isPublic() ? publicConstantFieldRegex : constantFieldRegex, data);
             } else if (node.isFinal()) {
