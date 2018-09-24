@@ -6,10 +6,16 @@ permalink: pmd_userdocs_tools.html
 author: David Dixon-Peugh <dpeugh@users.sourceforge.net>
 ---
 
-* IDE plugins
+* <a href="#automated-code-review">Automated Code Review</a>
+* <a href="#ide-integrations">IDE plugins</a>
 * GUIs
 
+## Automated Code Review
 
+### Codacy
+
+Although it is not an IDE, with [Codacy](https://www.codacy.com/) you have PMDJava analysis out-of-the-box,
+and it is free for open source projects.
 
 ## IDE Integrations
 
@@ -164,12 +170,6 @@ being used by a getResourceAsStream() call to load it out of the PMD jar files.
 [BlueJ](http://bluej.org/) is a teaching IDE. To install the PMD extension for BlueJ, download
 the [PMDExtension jar file](http://sourceforge.net/projects/pmd/files/pmd-bluej/pmd-bluej-1.0/)
 and place it in your `bluej/lib/extensions/` directory.
-
-
-### Codacy
-
-Although it is not an IDE, with [Codacy](https://www.codacy.com/) you have PMDJava analysis out-of-the-box,
-and it is free for open source projects.
 
 
 ### Code Guide
