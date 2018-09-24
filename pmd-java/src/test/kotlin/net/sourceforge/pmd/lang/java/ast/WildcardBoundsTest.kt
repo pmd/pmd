@@ -2,14 +2,14 @@ package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.should
 import io.kotlintest.shouldBe
-import org.junit.Test
+import io.kotlintest.specs.FunSpec
 
 // prototype using a junit syntax
 
-class WildcardBoundsTest {
+class WildcardBoundsTest : FunSpec({
 
-    @Test
-    fun testTypeBounds() = junitParserTest {
+    parserTest("Simple grammar test") {
+
         "SomeClass<? extends Another>" should matchType<ASTWildcardBounds> {
 
             val ref = child<ASTReferenceType> {
@@ -21,7 +21,8 @@ class WildcardBoundsTest {
             it.typeBoundNode shouldBe ref
         }
     }
-}
+
+})
 
 
 
