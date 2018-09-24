@@ -111,7 +111,7 @@ public class ASTTreeCell extends TreeCell<Node> {
 
                     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
                         Node child = node.jjtGetChild(i);
-                        if (value == child) {
+                        if (value.equals(child)) {
                             // The array contains name of corresponding properties
                             childrenProps[i] = prop.getName();
                             break;

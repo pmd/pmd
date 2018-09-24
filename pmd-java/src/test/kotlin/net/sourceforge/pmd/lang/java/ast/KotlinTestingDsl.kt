@@ -1,4 +1,3 @@
-
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.Matcher
@@ -146,7 +145,7 @@ data class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      */
     inline fun <reified N : Node> matchExpr(ignoreChildren: Boolean = false,
                                             noinline nodeSpec: NWrapper<N>.() -> Unit): Matcher<String> =
-            makeMatcher(ExpressionParsingCtx(), ignoreChildren, nodeSpec)
+            makeMatcher(ExpressionParsingCtx(this), ignoreChildren, nodeSpec)
 
     /**
      * Returns a String matcher that parses the node using [parseStatement] with
@@ -154,7 +153,7 @@ data class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      */
     inline fun <reified N : Node> matchStmt(ignoreChildren: Boolean = false,
                                             noinline nodeSpec: NWrapper<N>.() -> Unit) =
-            makeMatcher(StatementParsingCtx(), ignoreChildren, nodeSpec)
+            makeMatcher(StatementParsingCtx(this), ignoreChildren, nodeSpec)
 
 
     /**
@@ -163,8 +162,7 @@ data class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      */
     inline fun <reified N : Node> matchType(ignoreChildren: Boolean = false,
                                             noinline nodeSpec: NWrapper<N>.() -> Unit) =
-            makeMatcher(TypeParsingCtx(), ignoreChildren, nodeSpec)
-
+            makeMatcher(TypeParsingCtx(this), ignoreChildren, nodeSpec)
 
 
     /**
@@ -180,98 +178,100 @@ data class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
     }
 
 
-    fun parseAstExpression(expr: String): ASTExpression = ExpressionParsingCtx().parseNode(expr)
+    fun parseAstExpression(expr: String): ASTExpression = ExpressionParsingCtx(this).parseNode(expr)
 
 
-    fun parseAstStatement(statement: String): ASTBlockStatement = StatementParsingCtx().parseNode(statement)
+    fun parseAstStatement(statement: String): ASTBlockStatement = StatementParsingCtx(this).parseNode(statement)
 
-    fun parseAstType(type: String): ASTType = TypeParsingCtx().parseNode(type)
+    fun parseAstType(type: String): ASTType = TypeParsingCtx(this).parseNode(type)
 
 
-    inline fun <reified N : Node> parseExpression(expr: String): N = ExpressionParsingCtx().parseAndFind(expr)
+    inline fun <reified N : Node> parseExpression(expr: String): N = ExpressionParsingCtx(this).parseAndFind(expr)
 
     // don't forget the semicolon
-    inline fun <reified N : Node> parseStatement(stmt: String): N = StatementParsingCtx().parseAndFind(stmt)
+    inline fun <reified N : Node> parseStatement(stmt: String): N = StatementParsingCtx(this).parseAndFind(stmt)
 
-    inline fun <reified N : Node> parseType(type: String): N = TypeParsingCtx().parseAndFind(type)
+    inline fun <reified N : Node> parseType(type: String): N = TypeParsingCtx(this).parseAndFind(type)
 
 
+    companion object {
 
-    /**
-     * Finds the first descendant of type [N] of [this] node which is
-     * accessible in a straight line. The descendant must be accessible
-     * from the [this] on a path where each node has a single child.
-     *
-     * If one node has another child, the search is aborted and the method
-     * returns null.
-     */
-    fun <N : Node> Node.findFirstNodeOnStraightLine(klass: Class<N>): N? {
-        return when {
-            klass.isInstance(this) -> {
-                @Suppress("UNCHECKED_CAST")
-                val n = this as N
-                n
+
+        /**
+         * Finds the first descendant of type [N] of [this] node which is
+         * accessible in a straight line. The descendant must be accessible
+         * from the [this] on a path where each node has a single child.
+         *
+         * If one node has another child, the search is aborted and the method
+         * returns null.
+         */
+        fun <N : Node> Node.findFirstNodeOnStraightLine(klass: Class<N>): N? {
+            return when {
+                klass.isInstance(this) -> {
+                    @Suppress("UNCHECKED_CAST")
+                    val n = this as N
+                    n
+                }
+                this.numChildren == 1 -> getChild(0).findFirstNodeOnStraightLine(klass)
+                else -> null
             }
-            this.numChildren == 1 -> getChild(0).findFirstNodeOnStraightLine(klass)
-            else -> null
-        }
-    }
-
-
-    /**
-     * Describes a kind of node that can be found commonly in the same contexts.
-     * This type defines some machinery to parse a string to this kind of node
-     * without much ado by placing it in a specific parsing context.
-     */
-    abstract inner class NodeParsingCtx<T : Node>(val constructName: String) {
-
-        abstract fun getTemplate(construct: String): String
-
-        abstract fun retrieveNode(acu: ASTCompilationUnit): T
-
-        /**
-         * Parse the string in the context described by this object. The parsed node is usually
-         * the child of the returned [T] node. Note that [parseAndFind] can save you some keystrokes
-         * because it finds a descendant of the wanted type.
-         *
-         * @param construct The construct to parse
-         *
-         * @return A [T] whose child is the given statement
-         *
-         * @throws ParseException If the argument is no valid construct of this kind (mind the language version)
-         */
-        fun parseNode(construct: String): T {
-            val root = ParserTstUtil.parseAndTypeResolveJava(javaVersion.pmdName, getTemplate(construct))
-
-            return retrieveNode(root)
         }
 
         /**
-         * Parse the string the context described by this object, and finds the first descendant of type [N].
-         * The descendant is searched for by [findFirstNodeOnStraightLine], to prevent accidental
-         * mis-selection of a node. In such a case, a [NoSuchElementException] is thrown, and you
-         * should fix your test case.
-         *
-         * @param construct The construct to parse
-         * @param N The type of node to find
-         *
-         * @return The first descendant of type [N] found in the parsed expression
-         *
-         * @throws NoSuchElementException If no node of type [N] is found by [findFirstNodeOnStraightLine]
-         * @throws ParseException If the argument is no valid construct of this kind
-         *
+         * Describes a kind of node that can be found commonly in the same contexts.
+         * This type defines some machinery to parse a string to this kind of node
+         * without much ado by placing it in a specific parsing context.
          */
-        inline fun <reified N : Node> parseAndFind(construct: String): N =
-                parseNode(construct).findFirstNodeOnStraightLine(N::class.java)
-                ?: throw NoSuchElementException("No node of type ${N::class.java.simpleName} in the given $constructName:\n\t$construct")
+        abstract class NodeParsingCtx<T : Node>(val constructName: String, protected val ctx: ParserTestCtx) {
 
-    }
+            abstract fun getTemplate(construct: String): String
 
-    inner class ExpressionParsingCtx : NodeParsingCtx<ASTExpression>("expression") {
+            abstract fun retrieveNode(acu: ASTCompilationUnit): T
 
-        override fun getTemplate(construct: String): String =
+            /**
+             * Parse the string in the context described by this object. The parsed node is usually
+             * the child of the returned [T] node. Note that [parseAndFind] can save you some keystrokes
+             * because it finds a descendant of the wanted type.
+             *
+             * @param construct The construct to parse
+             *
+             * @return A [T] whose child is the given statement
+             *
+             * @throws ParseException If the argument is no valid construct of this kind (mind the language version)
+             */
+            fun parseNode(construct: String): T {
+                val root = ParserTstUtil.parseAndTypeResolveJava(ctx.javaVersion.pmdName, getTemplate(construct))
+
+                return retrieveNode(root)
+            }
+
+            /**
+             * Parse the string the context described by this object, and finds the first descendant of type [N].
+             * The descendant is searched for by [findFirstNodeOnStraightLine], to prevent accidental
+             * mis-selection of a node. In such a case, a [NoSuchElementException] is thrown, and you
+             * should fix your test case.
+             *
+             * @param construct The construct to parse
+             * @param N The type of node to find
+             *
+             * @return The first descendant of type [N] found in the parsed expression
+             *
+             * @throws NoSuchElementException If no node of type [N] is found by [findFirstNodeOnStraightLine]
+             * @throws ParseException If the argument is no valid construct of this kind
+             *
+             */
+            inline fun <reified N : Node> parseAndFind(construct: String): N =
+                    parseNode(construct).findFirstNodeOnStraightLine(N::class.java)
+                    ?: throw NoSuchElementException("No node of type ${N::class.java.simpleName} in the given $constructName:\n\t$construct")
+
+        }
+
+
+        class ExpressionParsingCtx(ctx: ParserTestCtx) : NodeParsingCtx<ASTExpression>("expression", ctx) {
+
+            override fun getTemplate(construct: String): String =
                 """
-                ${imports.joinToString(separator = "\n")}
+                ${ctx.imports.joinToString(separator = "\n")}
                 class Foo {
                     {
                         Object o = $construct;
@@ -280,14 +280,14 @@ data class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                 """.trimIndent()
 
 
-        override fun retrieveNode(acu: ASTCompilationUnit): ASTExpression = acu.getFirstDescendantOfType(ASTVariableInitializer::class.java).getChild(0) as ASTExpression
-    }
+            override fun retrieveNode(acu: ASTCompilationUnit): ASTExpression = acu.getFirstDescendantOfType(ASTVariableInitializer::class.java).getChild(0) as ASTExpression
+        }
 
-    inner class StatementParsingCtx : NodeParsingCtx<ASTBlockStatement>("statement") {
+        class StatementParsingCtx(ctx: ParserTestCtx) : NodeParsingCtx<ASTBlockStatement>("statement", ctx) {
 
-        override fun getTemplate(construct: String): String =
+            override fun getTemplate(construct: String): String =
                 """
-                ${imports.joinToString(separator = "\n")}
+                ${ctx.imports.joinToString(separator = "\n")}
                 class Foo {
                     {
                         $construct
@@ -296,21 +296,21 @@ data class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                 """.trimIndent()
 
 
-        override fun retrieveNode(acu: ASTCompilationUnit): ASTBlockStatement = acu.getFirstDescendantOfType(ASTBlockStatement::class.java)
-    }
+            override fun retrieveNode(acu: ASTCompilationUnit): ASTBlockStatement = acu.getFirstDescendantOfType(ASTBlockStatement::class.java)
+        }
 
-    inner class TypeParsingCtx : NodeParsingCtx<ASTType>("type") {
-        override fun getTemplate(construct: String): String =
+        class TypeParsingCtx(ctx: ParserTestCtx) : NodeParsingCtx<ASTType>("type", ctx) {
+            override fun getTemplate(construct: String): String =
                 """
-                ${imports.joinToString(separator = "\n")}
+                ${ctx.imports.joinToString(separator = "\n")}
                 class Foo {
                     $construct foo;
                 }
                 """.trimIndent()
 
-        override fun retrieveNode(acu: ASTCompilationUnit): ASTType = acu.getFirstDescendantOfType(ASTType::class.java)
+            override fun retrieveNode(acu: ASTCompilationUnit): ASTType = acu.getFirstDescendantOfType(ASTType::class.java)
+        }
+
     }
-
-
 }
 

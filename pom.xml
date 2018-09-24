@@ -939,6 +939,14 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
             <!-- TEST DEPENDENCIES -->
 
+
+            <dependency>
+                <groupId>net.sourceforge.pmd</groupId>
+                <artifactId>pmd-lang-test</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+
             <!-- Kotlin -->
 
             <dependency>
@@ -1161,5 +1169,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <module>pmd-java8</module>
         <module>pmd-ui</module>
         <module>pmd-doc</module>
+        <module>pmd-lang-test</module>
     </modules>
 </project>
