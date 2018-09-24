@@ -14,8 +14,11 @@ author: David Dixon-Peugh <dpeugh@users.sourceforge.net>
 
 ### Codacy
 
-Although it is not an IDE, with [Codacy](https://www.codacy.com/) you have PMDJava analysis out-of-the-box,
-and it is free for open source projects.
+[Codacy](https://www.codacy.com/) automates code reviews and monitors code quality on every commit and pull request.
+It gives visibility into the technical debt and it can track code style and security issues, code coverage, code duplication, cyclomatic complexity and enforce best practices.
+Codacy is static analysis without the hassle.
+
+With Codacy you have PMDJava analysis out-of-the-box, and it is free for open source projects.
 
 ## IDE Integrations
 
@@ -38,7 +41,7 @@ and it is free for open source projects.
 
     <tr>
         <td><a href="#codacy">Codacy</a></td>
-        <td></td>
+        <td><a href="https://www.codacy.com/">https://www.codacy.com</a></td>
         <td><a class="externalLink" href="https://github.com/codacy/codacy-pmdjava">github: codacy/codacy-pmdjava</a></td>
         <td>Codacy</td>
     </tr>
