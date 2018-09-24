@@ -7,7 +7,6 @@ author: David Dixon-Peugh <dpeugh@users.sourceforge.net>
 ---
 
 * IDE plugins
-* [Continuous Integrations plugins](/pmd_userdocs_ci.html)
 * GUIs
 
 
