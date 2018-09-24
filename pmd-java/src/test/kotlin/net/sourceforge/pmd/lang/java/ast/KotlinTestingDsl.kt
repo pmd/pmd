@@ -8,6 +8,8 @@ import io.kotlintest.specs.AbstractFunSpec
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.java.ParserTstUtil
+import io.kotlintest.should as kotlintestShould
+
 
 /**
  * Represents the different Java language versions.
@@ -80,6 +82,62 @@ fun AbstractFunSpec.parserTest(name: String,
 
 
 /**
+ * Defines a group of tests that should be named similarly,
+ * executed on several java versions. Calls to "should" in
+ * the block are intercepted to create a new test, with the
+ * given [name] as a common prefix.
+ *
+ * This is useful to make a batch of grammar specs for grammar
+ * regression tests without bothering to find a name.
+ *
+ * @param name Common prefix for the test names
+ * @param javaVersions Language versions for which to generate tests
+ * @param spec Assertions. Each call to [io.kotlintest.should] on a string
+ *             receiver is replaced by a [GroupTestCtx.should], which creates a
+ *             new parser test.
+ */
+fun AbstractFunSpec.testGroup(name: String,
+                              javaVersions: List<JavaVersion>,
+                              spec: GroupTestCtx.() -> Unit) {
+    javaVersions.forEach {
+        testGroup(name, it, spec)
+    }
+}
+
+
+/**
+ * Defines a group of tests that should be named similarly.
+ * Calls to "should" in the block are intercepted to create
+ * a new test, with the given [name] as a common prefix.
+ *
+ * This is useful to make a batch of grammar specs for grammar
+ * regression tests without bothering to find a name.
+ *
+ * @param name Common prefix for the test names
+ * @param javaVersion Language versions to use when parsing
+ * @param spec Assertions. Each call to [io.kotlintest.should] on a string
+ *             receiver is replaced by a [GroupTestCtx.should], which creates a
+ *             new parser test.
+ *
+ */
+fun AbstractFunSpec.testGroup(name: String,
+                              javaVersion: JavaVersion = JavaVersion.Latest,
+                              spec: GroupTestCtx.() -> Unit) {
+    GroupTestCtx(this, name, javaVersion).spec()
+}
+
+class GroupTestCtx(private val funspec: AbstractFunSpec, private val groupName: String, javaVersion: JavaVersion) : ParserTestCtx(javaVersion) {
+
+    infix fun String.should(matcher: Matcher<String>) {
+        funspec.parserTest("$groupName: '$this'") {
+            this@should kotlintestShould matcher
+        }
+    }
+
+}
+
+
+/**
  * Extensible environment to describe parse/match testing workflows in a concise way.
  * Can be used inside of a [io.kotlintest.specs.FunSpec] with [parserTest].
  *
@@ -116,7 +174,7 @@ fun AbstractFunSpec.parserTest(name: String,
  * @property importedTypes Types to import at the beginning of parsing contexts
  * @property otherImports Other imports, without the `import` and semicolon
  */
-data class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
+open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                          val importedTypes: MutableList<Class<*>> = mutableListOf(),
                          val otherImports: MutableList<String> = mutableListOf()) {
 
