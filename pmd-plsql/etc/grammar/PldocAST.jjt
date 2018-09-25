@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Added support for DELETE Statements
+ *
+ * Andreas Dangel 09/2018
+ *====================================================================
  * Added support for OrderBy and RowLimiting clauses for SELECT statements
  * Removed FROM from the RelationalExpression
  * Support QueryPartitionClause
@@ -215,6 +219,7 @@ ASTInput Input() : {}
          | LOOKAHEAD(6) DDLCommand() //Ignore any other DDL Event 
 	 | LOOKAHEAD(2) SqlPlusCommand()
 	 | LOOKAHEAD(2) UpdateStatement() 
+	 | LOOKAHEAD(2) DeleteStatement()
 	 |(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) //Ignore SQL statements in scripts
 	 )	
 	 ("/")*
@@ -1715,6 +1720,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
        (
        SelectIntoStatement() ";" |
        UpdateStatement() ";" |
+       DeleteStatement() ";" |
 	LOOKAHEAD(["("] <SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>) SqlStatement(null,";") [";"] 
 	| LOOKAHEAD(3)  ContinueStatement()  ";" // CONTINUE keyword was added in 11G, so Oracle compilation supports CONTINUE as a variable name
 	| CaseStatement()  ";"
@@ -1849,6 +1855,15 @@ ASTUpdateSetClause UpdateSetClause() :
     |
         Column() "=" ( Expression() | <_DEFAULT> )
     )
+    { return jjtThis; }
+}
+
+ASTDeleteStatement DeleteStatement() :
+{}
+{
+    <DELETE> [ <FROM> ]
+    ( TableReference() | <ONLY> "(" TableReference() ")" )
+    [ WhereClause() ]
     { return jjtThis; }
 }
 
