@@ -16,6 +16,10 @@ Codacy is static analysis without the hassle.
 
 With Codacy you have PMDJava analysis out-of-the-box, and it is free for open source projects.
 
+* Homepage: [https://www.codacy.com/](https://www.codacy.com/)
+* Source code: [https://github.com/codacy/codacy-pmdjava](https://github.com/codacy/codacy-pmdjava)
+* Maintainer: Codacy
+
 ## IDE Integrations
 
 ### Summary
@@ -33,13 +37,6 @@ With Codacy you have PMDJava analysis out-of-the-box, and it is free for open so
         <td></td>
         <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-bluej/">pmd-bluej</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
-    </tr>
-
-    <tr>
-        <td><a href="#codacy">Codacy</a></td>
-        <td><a href="https://www.codacy.com/">https://www.codacy.com</a></td>
-        <td><a class="externalLink" href="https://github.com/codacy/codacy-pmdjava">github: codacy/codacy-pmdjava</a></td>
-        <td>Codacy</td>
     </tr>
 
     <tr>
