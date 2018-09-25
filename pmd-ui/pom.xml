@@ -16,7 +16,7 @@
         <maven.compiler.source>1.${java.version}</maven.compiler.source>
         <maven.compiler.target>1.${java.version}</maven.compiler.target>
 
-        <openjfx.version>11-ea+19</openjfx.version>
+        <openjfx.version>11</openjfx.version>
     </properties>
 
     <build>
