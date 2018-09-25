@@ -213,7 +213,8 @@ ASTInput Input() : {}
 	 | LOOKAHEAD(6) DatabaseLink()   
 	 | LOOKAHEAD(6) Global()  
          | LOOKAHEAD(6) DDLCommand() //Ignore any other DDL Event 
-	 | LOOKAHEAD(2) SqlPlusCommand() 
+	 | LOOKAHEAD(2) SqlPlusCommand()
+	 | LOOKAHEAD(2) UpdateStatement() 
 	 |(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) //Ignore SQL statements in scripts
 	 )	
 	 ("/")*
@@ -1711,6 +1712,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 {
        (
        SelectIntoStatement() ";" |
+       UpdateStatement() ";" |
 	LOOKAHEAD(["("] <SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>) SqlStatement(null,";") [";"] 
 	| LOOKAHEAD(3)  ContinueStatement()  ";" // CONTINUE keyword was added in 11G, so Oracle compilation supports CONTINUE as a variable name
 	| CaseStatement()  ";"
@@ -1825,6 +1827,27 @@ ASTSelectStatement SelectStatement() :
 {
     SqlStatement("(", ")")
     { return jjtThis ; }
+}
+
+ASTUpdateStatement UpdateStatement() :
+{}
+{
+    <UPDATE> SqlExpression()
+    UpdateSetClause()
+    [ WhereClause() ]
+    { return jjtThis; }
+}
+
+ASTUpdateSetClause UpdateSetClause() :
+{}
+{
+    <SET>
+    (
+        <ROW> "=" ID()
+    |
+        Column() "=" ( Expression() | <_DEFAULT> )
+    )
+    { return jjtThis; }
 }
 
 /** Scope rule: the loop index only exists within the Loop */
