@@ -30,6 +30,33 @@ See how to add it [here](/pmd_devdocs_adding_new_cpd_language.html).
 
 CPD is included with PMD, which you can download [here](http://sourceforge.net/projects/pmd/files/pmd/).
 
+### Why should you care?
+
+It's certainly important to know where to get CPD, and how to call it, but it's worth stepping back for a moment and asking yourself why you should care about this, being the occurrence of duplicate code blocks.
+
+#### If nothing ever changes, the impact is minimal
+
+If you're analyzing code that never changes, it's reasonable to assume that you don't need to care too much about this.  Risk comes in when you're working with complex code that can change over time.
+
+#### Refactoring known duplications can be messy
+
+The first level of significant risk from duplicated blocks comes when it’s time to make changes to the duplicated logic. In this situation, you know that logic is duplicated in two or more places, and you hopefully understand the refactoring or change that has to happen, but you still have to make sure that you’ve found all the duplicated blocks and made the exact same change in each one, not just so they are logically correct, but so that they are still duplicate blocks.
+Note the last condition.  By allowing duplicate blocks to exist, you must ensure that as long as they exist as separate blocks of code, you have to ensure that they are still recognized as duplicate blocks, so you have to make the exact identical change in each block.
+
+#### Mistakes in refactoring duplicates can make them not duplicates anymore
+
+The implications described in the previous risk point out the next serious risk. If you are not careful when refactoring one or more of the code blocks, you could accidentally leave them so they are no longer recognized as duplicates by the scanning technology, but they are still functionally identical.
+The result of that is that now the next time these duplicate blocks need to be refactored, some of those duplicate blocks will not be recognized as duplicates, making it possible that the person doing the refactoring simply won’t know about that code that needs to change. After that refactoring, you now have two blocks of code that were supposed to do the same thing, but now they are not.  Chaos ensues.
+
+#### Logic changes made to a block without similar changes to dups results in similar chaos
+
+The previous risk leads to the final risk described here.  If someone makes logic changes to a block of code that has exact or logical duplicates somewhere else, while not considering those duplicates in any way, leads to the same situation at the end of the previous risk, being blocks that should have been doing the same thing, but now are not, and it will be very difficult for anyone to know that.
+In fact, despite this being the last risk described here, I think it is likely that this is the most likely scenario in a development team that doesn’t pay close attention to duplicate blocks.
+
+#### Main risk from duplicate blocks is from mutations, making them no longer duplicates
+
+All of these risks have a common factor. The presence of duplicate blocks in a static code base is not a big deal. Problems start to happen when code is mutated, even with a disciplined approach. After duplicate blocks are mutated, they may no longer be recognized as duplicate blocks, which is quite a bit worse.
+
 ### CLI options
 
 <table>
