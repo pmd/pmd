@@ -1260,10 +1260,20 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <ul>
-  <li>IDE plugins</li>
-  <li><a href="/pmd_userdocs_ci.html">Continuous Integrations plugins</a></li>
-  <li>GUIs</li>
+  <h2 id="automated-code-review">Automated Code Review</h2>
+
+<h3 id="codacy">Codacy</h3>
+
+<p><a href="https://www.codacy.com/">Codacy</a> automates code reviews and monitors code quality on every commit and pull request.
+It gives visibility into the technical debt and it can track code style and security issues, code coverage, code duplication, cyclomatic complexity and enforce best practices.
+Codacy is static analysis without the hassle.</p>
+
+<p>With Codacy you have PMDJava analysis out-of-the-box, and it is free for open source projects.</p>
+
+<ul>
+  <li>Homepage: <a href="https://www.codacy.com/">https://www.codacy.com/</a></li>
+  <li>Source code: <a href="https://github.com/codacy/codacy-pmdjava">https://github.com/codacy/codacy-pmdjava</a></li>
+  <li>Maintainer: Codacy</li>
 </ul>
 
 <h2 id="ide-integrations">IDE Integrations</h2>
@@ -1283,13 +1293,6 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
         <td></td>
         <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-bluej/">pmd-bluej</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
-    </tr>
-
-    <tr>
-        <td><a href="#codacy">Codacy</a></td>
-        <td></td>
-        <td><a class="externalLink" href="https://github.com/codacy/codacy-pmdjava">github: codacy/codacy-pmdjava</a></td>
-        <td>Codacy</td>
     </tr>
 
     <tr>
@@ -1417,11 +1420,6 @@ being used by a getResourceAsStream() call to load it out of the PMD jar files.<
 <p><a href="http://bluej.org/">BlueJ</a> is a teaching IDE. To install the PMD extension for BlueJ, download
 the <a href="http://sourceforge.net/projects/pmd/files/pmd-bluej/pmd-bluej-1.0/">PMDExtension jar file</a>
 and place it in your <code class="highlighter-rouge">bluej/lib/extensions/</code> directory.</p>
-
-<h3 id="codacy">Codacy</h3>
-
-<p>Although it is not an IDE, with <a href="https://www.codacy.com/">Codacy</a> you have PMDJava analysis out-of-the-box,
-and it is free for open source projects.</p>
 
 <h3 id="code-guide">Code Guide</h3>
 
@@ -1769,7 +1767,7 @@ the (blank Command Results) document, and then confirming that, “yes, I do rea
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Sep 23, 2018 <br />
+ Site last generated: Sep 25, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
