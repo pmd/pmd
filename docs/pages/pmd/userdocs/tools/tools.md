@@ -6,10 +6,6 @@ permalink: pmd_userdocs_tools.html
 author: David Dixon-Peugh <dpeugh@users.sourceforge.net>
 ---
 
-* <a href="#automated-code-review">Automated Code Review</a>
-* <a href="#ide-integrations">IDE plugins</a>
-* GUIs
-
 ## Automated Code Review
 
 ### Codacy
