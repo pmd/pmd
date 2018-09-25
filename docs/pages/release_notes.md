@@ -88,6 +88,8 @@ the breaking API changes will be performed in 7.0.0.
     *   [#1352](https://github.com/pmd/pmd/issues/1352): \[java] MissingSerialVersionUID false-negative with abstract classes
 *   java-performance
     *   [#1325](https://github.com/pmd/pmd/issues/1325): \[java] False positive in ConsecutiveLiteralAppends
+*   plsql
+    *   [#1279](https://github.com/pmd/pmd/pull/1279): \[plsql] Support for SELECT INTO
 
 ### API Changes
 
