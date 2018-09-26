@@ -1491,7 +1491,7 @@ ASTColumnAlias ColumnAlias() :
 ASTTableAlias TableAlias() :
 {}
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    ID()
     { return jjtThis; }
 }
 
@@ -5667,7 +5667,7 @@ ASTID ID(): {}
 		| <BODY> //SYNTAX 
 		| <BOOLEAN> 
 		//201020430 | <BULK> 
-		| <BY> //RESERVED WORD 
+		//| <BY> //RESERVED WORD 
 		//201020430 | <BYTE> 
 		| <CASE> //SYNTAX 
 		| <CHAR>  //RESERVED WPRDS 
@@ -5709,7 +5709,7 @@ ASTID ID(): {}
 		
 		// <COMMIT> | <FUNCTION> |	// this causes bug 643043 Procedure w/o params appears as variable
 		| <GOTO> //SYNTAX 
-		| <GROUP>  //RESERVED WORD 
+		//| <GROUP>  //RESERVED WORD 
 		| <HAVING>  //RESERVED WORD 
 		//20120501 | <HEAP> 
 		| <IF> //SYNTAX 
