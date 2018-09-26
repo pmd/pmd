@@ -1297,11 +1297,12 @@ void Condition2() #void :
 {}
 {
  (
+    // a IS OF Type condition that starts with a function...
     LOOKAHEAD(FunctionCall() <IS> <OF>) IsOfTypeCondition()
  |
-    LOOKAHEAD(4) ComparisonCondition()
+    LOOKAHEAD(9) ComparisonCondition()
  |
-    LOOKAHEAD(4) FloatingPointCondition()
+    LOOKAHEAD(9) FloatingPointCondition()
  |
     LOOKAHEAD(4) InCondition()
  |
@@ -1414,9 +1415,6 @@ ASTSqlExpression SqlExpression() :
     LOOKAHEAD(2) <ROWNUM>
  |
     LOOKAHEAD(2) Literal()
- |
-    // Anything else, including function calls
-    LOOKAHEAD(3) Expression()
  )
     { return jjtThis; }
 }
@@ -1424,14 +1422,14 @@ ASTSqlExpression SqlExpression() :
 ASTFunctionCall FunctionCall() :
 {}
 {
-    ID() "(" QualifiedName() ("," QualifiedName())* ")"
+    ID() Arguments()
     { return jjtThis; }
 }
 
 ASTColumn Column() :
 {}
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    ID()
     { return jjtThis; }
 }
 
@@ -1526,14 +1524,14 @@ void BulkCollectIntoClauseEntry() #void :
 ASTCollectionName CollectionName() :
 {}
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    ID()
     { return jjtThis; }
 }
 
 ASTHostArrayName HostArrayName() :
 {}
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    ID()
     { return jjtThis; }
 }
 
@@ -1555,14 +1553,14 @@ ASTTableReference TableReference() :
 ASTSchemaName SchemaName() :
 {}
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    ID()
     { return jjtThis; }
 }
 
 ASTTableName TableName() :
 {}
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    ID()
     { return jjtThis; }
 }
 
