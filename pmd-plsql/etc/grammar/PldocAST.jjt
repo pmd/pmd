@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /**
  * Added support for DELETE Statements
+ * Added support for UPDATE Statements
+ * Fully parse the select statement in CursorForLoops.
  *
  * Andreas Dangel 09/2018
  *====================================================================
@@ -1112,6 +1114,16 @@ ASTSqlStatement SqlStatement(String initiator, String terminator)  :
 	}
 }
 
+void AbstractSelectStatement(AbstractSelectStatement node) #void :
+{}
+{
+    <SELECT>
+    [    <DISTINCT> { node.setDistinct(true); }
+       | <UNIQUE> { node.setUnique(true); }
+       | <ALL> { node.setAll(true); }
+    ] 
+}
+
 /**
  * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/SELECT-INTO-statement.html
  * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/img_text/select_into_statement.html
@@ -1119,10 +1131,7 @@ ASTSqlStatement SqlStatement(String initiator, String terminator)  :
 ASTSelectIntoStatement SelectIntoStatement() :
 {}
 {
-    <SELECT> [ <DISTINCT> { jjtThis.setDistinct(true); }
-               | <UNIQUE> { jjtThis.setUnique(true); }
-               | <ALL> { jjtThis.setAll(true); } ] 
-
+    AbstractSelectStatement(jjtThis)
     SelectList()
     ( IntoClause() | BulkCollectIntoClause() )
     RestOfStatement()
@@ -1201,7 +1210,8 @@ ASTQueryBlock QueryBlock() :
 {}
 {
     // [ WithClause() ]
-    <SELECT> [ <DISTINCT> | <UNIQUE> | <ALL> ] SelectList()
+    AbstractSelectStatement(jjtThis)
+    SelectList()
     FromClause()
     [ WhereClause() ]
     // [ HierarchicalQueryClause() ]
@@ -1833,8 +1843,19 @@ ASTCursorForLoopStatement CursorForLoopStatement() :
 ASTSelectStatement SelectStatement() :
 {}
 {
-    SqlStatement("(", ")")
-    { return jjtThis ; }
+    AbstractSelectStatement(jjtThis)
+
+    SelectList()
+
+    // note: the into clause is here to allow parsing of wrong cursor for loop statements.
+    // while it will be parsed, the into clause is ignored by the database.
+    // see https://github.com/pmd/pmd/issues/1047#issuecomment-424757382
+    // see http://www.dba-oracle.com/t_adv_plsql_implicit_cursor_FOR_loop.htm
+    [ IntoClause() | BulkCollectIntoClause() ]
+
+    RestOfStatement()
+
+    { return jjtThis; }
 }
 
 ASTUpdateStatement UpdateStatement() :
@@ -5631,7 +5652,7 @@ ASTID ID(): {}
 		//20120501 | <DEFINER> 
 		| <SERIALLY_REUSABLE> | <RESTRICT_REFERENCES> 
 		| <EXCEPTION_INIT> | <AUTONOMOUS_TRANSACTION> // | <LANGUAGE>
-		| <ALL>  //RESERVED WORD 
+		//| <ALL>  //RESERVED WORD 
 		| <ALTER>  //SYNTAX  //RESERVED WORD 
 		| <AND>  //SYNTAX  //RESERVED WORD 
 		| <ANY>  //RESERVED WORD 
@@ -5667,7 +5688,7 @@ ASTID ID(): {}
 		| <_DEFAULT> //RESERVED WORD 
 		| <DELETE>  //RESERVED WORD 
 		| <DESC>  //RESERVED WORD 
-		| <DISTINCT>  //RESERVED WORD 
+		//| <DISTINCT>  //RESERVED WORD 
 		| <DO> 
 		| <DROP>  //RESERVED WORD 
 		| <ELSE> //SYNTAX //RESERVED WORD 
