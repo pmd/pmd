@@ -5,6 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
+
 /**
  * Represents either a {@code case} or {@code default} label inside
  * a {@linkplain ASTSwitchStatement switch statement}.
@@ -20,17 +23,23 @@ public class ASTSwitchLabel extends AbstractJavaNode {
 
     private boolean isDefault;
 
-    // @PrivateApi @Deprecated
+
+    @InternalApi
+    @Deprecated
     public ASTSwitchLabel(int id) {
         super(id);
     }
 
-    // @PrivateApi @Deprecated
+
+    @InternalApi
+    @Deprecated
     public ASTSwitchLabel(JavaParser p, int id) {
         super(p, id);
     }
 
-    // @PrivateApi @Deprecated
+
+    @InternalApi
+    @Deprecated
     public void setDefault() {
         isDefault = true;
     }
