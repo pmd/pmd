@@ -1420,16 +1420,16 @@ ASTSqlExpression SqlExpression() :
 }
 
 ASTFunctionCall FunctionCall() :
-{}
+{ ASTID id; }
 {
-    ID() Arguments()
+    id = ID() { jjtThis.setImage(id.getImage()); } Arguments()
     { return jjtThis; }
 }
 
 ASTColumn Column() :
-{}
+{ ASTID id; }
 {
-    ID()
+    id = ID() { jjtThis.setImage(id.getImage()); }
     { return jjtThis; }
 }
 
@@ -1446,7 +1446,11 @@ void FromClauseEntry() #void :
  (
      LOOKAHEAD(JoinClause()) JoinClause()
  |
-     LOOKAHEAD(2) TableReference()
+     // using lookahead to avoid misinterpreting the token after the identifier
+     // as a table alias rather than as a keyword
+     LOOKAHEAD(<IDENTIFIER> (<PARTITION>|<NATURAL>|<OUTER>|<JOIN>|<RIGHT>|<CROSS>)) JoinClause()
+ |
+     LOOKAHEAD(3) TableReference()
  |
      "(" JoinClause() ")"
  )
@@ -1487,9 +1491,9 @@ ASTColumnAlias ColumnAlias() :
 }
 
 ASTTableAlias TableAlias() :
-{}
+{ ASTID id; }
 {
-    ID()
+    id = ID() {jjtThis.setImage(id.getImage());}
     { return jjtThis; }
 }
 
@@ -1502,9 +1506,9 @@ ASTIntoClause IntoClause() :
 }
 
 ASTVariableName VariableName() :
-{}
+{ ASTID id; }
 {
-    ID()
+    id = ID() {jjtThis.setImage(id.getImage());}
     { return jjtThis; }
 }
 
@@ -1522,16 +1526,16 @@ void BulkCollectIntoClauseEntry() #void :
 }
 
 ASTCollectionName CollectionName() :
-{}
+{ ASTID id; }
 {
-    ID()
+    id = ID() {jjtThis.setImage(id.getImage());}
     { return jjtThis; }
 }
 
 ASTHostArrayName HostArrayName() :
-{}
+{ ASTID id; }
 {
-    ID()
+    id = ID() {jjtThis.setImage(id.getImage());}
     { return jjtThis; }
 }
 
@@ -1550,17 +1554,45 @@ ASTTableReference TableReference() :
     { return jjtThis; }
 }
 
-ASTSchemaName SchemaName() :
+/**
+ * Special production, used in joins. The table reference might have
+ * a table alias, but this should not match any following NATURAL, CROSS, etc.
+ * keywords, although these are allowed as alias names since these are
+ * not reserved words.
+ */
+ASTTableReference TableReferenceInJoin() #TableReference :
 {}
 {
-    ID()
+    // QueryTableExpression
+    (
+        [ LOOKAHEAD(2) SchemaName() "." ] TableName()
+    |
+        "(" Subquery() ")"
+    )
+
+    [ LOOKAHEAD(1, ID(), {getToken(1).kind != NATURAL
+        && getToken(1).kind != CROSS
+        && getToken(1).kind != ON
+        && getToken(1).kind != PARTITION
+        && getToken(1).kind != RIGHT})
+
+        TableAlias() ]
+
+    { return jjtThis; }
+}
+
+
+ASTSchemaName SchemaName() :
+{ ASTID id; }
+{
+    id = ID() {jjtThis.setImage(id.getImage());}
     { return jjtThis; }
 }
 
 ASTTableName TableName() :
-{}
+{ ASTID id; }
 {
-    ID()
+    id = ID() {jjtThis.setImage(id.getImage());}
     { return jjtThis; }
 }
 
@@ -1570,7 +1602,7 @@ ASTTableName TableName() :
 ASTJoinClause JoinClause() :
 {}
 {
-    TableReference()
+    TableReferenceInJoin()
     (
         LOOKAHEAD(2) InnerCrossJoinClause()
     |
@@ -1585,7 +1617,7 @@ ASTInnerCrossJoinClause InnerCrossJoinClause() :
 {}
 {
   (
-    [ <INNER> ] <JOIN> TableReference()
+    [ <INNER> ] <JOIN> TableReferenceInJoin()
     (
         <ON> ConditionalOrExpression()
     |
@@ -1597,7 +1629,7 @@ ASTInnerCrossJoinClause InnerCrossJoinClause() :
     |
         <NATURAL> { jjtThis.setNatural(true); } [ <INNER> ]
     )
-    <JOIN> TableReference()
+    <JOIN> TableReferenceInJoin()
   )
   { return jjtThis; }
 }
@@ -1607,7 +1639,7 @@ ASTOuterJoinClause OuterJoinClause() :
 {
     [ QueryPartitionClause() ]
     [ <NATURAL> { jjtThis.setNatural(true); } ]
-    OuterJoinType() <JOIN> TableReference()
+    OuterJoinType() <JOIN> TableReferenceInJoin()
     [ LOOKAHEAD(2) QueryPartitionClause() ]
       [ <ON> ConditionalOrExpression()
       | <USING> "(" Column() ("," Column() )* ")"
@@ -1647,7 +1679,7 @@ ASTOuterJoinType OuterJoinType() :
 ASTCrossOuterApplyClause CrossOuterApplyClause() :
 {}
 {
-    ( <CROSS> | <OUTER> ) <APPLY> ( LOOKAHEAD(2) TableReference() | LOOKAHEAD(2) ID() /*collection_expression*/ )
+    ( <CROSS> | <OUTER> ) <APPLY> ( LOOKAHEAD(2) TableReferenceInJoin() | LOOKAHEAD(2) ID() /*collection_expression*/ )
     { return jjtThis; }
 }
 
@@ -5743,7 +5775,7 @@ ASTID ID(): {}
 		| <NUMBER_BASE> 
 		| <OCIROWID> 
 		| <OF>  //RESERVED WORD  
-		| <ON>  //RESERVED WORD  
+		//| <ON>  //RESERVED WORD  
 		//20120501 | <OPAQUE> 
 		| <BFILE_BASE> 
 		| <BLOB_BASE> |
