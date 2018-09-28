@@ -218,7 +218,7 @@
     <!-- <rule ref="category/java/errorprone.xml/DoNotCallSystemExit" /> -->
 
     <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangThrowable"/>
-    <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangError"/>
+    <rule ref="category/java/design.xml/DoNotExtendJavaLangError"/>
          
     <!-- <rule ref="category/java/errorprone.xml/DoNotHardCodeSDCard" /> -->
     <!-- <rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally" /> -->
