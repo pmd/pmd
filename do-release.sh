@@ -67,15 +67,6 @@ export DEVELOPMENT_VERSION
 export CURRENT_BRANCH
 
 
-# install bundles needed for rendering release notes
-bundle install --with=release_notes_preprocessing --path vendor/bundle
-
-RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml"
-export RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
-echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
-NEW_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
-echo "${NEW_RELEASE_NOTES}" > ../pmd.github.io/${RELEASE_NOTES_POST}
-
 echo "*   Update date info in **docs/_config.yml**."
 echo "    date: $(date -u +%d-%B-%Y)"
 echo
@@ -86,6 +77,16 @@ echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
 echo "Press enter to continue..."
 read
+
+# install bundles needed for rendering release notes
+bundle install --with=release_notes_preprocessing --path vendor/bundle
+
+RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml"
+export RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
+echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
+NEW_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
+echo "${NEW_RELEASE_NOTES}" > ../pmd.github.io/${RELEASE_NOTES_POST}
+
 echo "Committing current changes (pmd)"
 
 if [[ -e ${RELEASE_RULESET} ]]
