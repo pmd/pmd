@@ -79,21 +79,30 @@ mkdir pmd.github.io
     git remote add origin git@github.com:pmd/pmd.github.io.git
     echo "latest/" > .git/info/sparse-checkout
     git pull --depth=1 origin master
-    log_info "Copying documentation from ../docs/pmd-doc-${RELEASE_VERSION}/ ..."
+    log_info "Copying documentation from ../docs/pmd-doc-${RELEASE_VERSION}/ to pmd-${RELEASE_VERSION}/ ..."
     rsync -ah --stats ../docs/pmd-doc-${RELEASE_VERSION}/ pmd-${RELEASE_VERSION}/
     git status
+    echo "Executing: git add pmd-${RELEASE_VERSION}"
     git add pmd-${RELEASE_VERSION}
+    echo "Executing: git commit..."
     git commit -q -m "Added pmd-${RELEASE_VERSION}"
 
+    log_info "Copying pmd-${RELEASE_VERSION} to latest ..."
     git rm -qr latest
     cp -a pmd-${RELEASE_VERSION} latest
+    echo "Executing: git add latest"
     git add latest
+    echo "Executing: git commit..."
     git commit -q -m "Copying pmd-${RELEASE_VERSION} to latest"
 
     log_info "Generating sitemap.xml"
     ../.travis/sitemap_generator.sh > sitemap.xml
+    echo "Executing: git add sitemap.xml"
     git add sitemap.xml
+    echo "Executing: git commit..."
     git commit -q -m "Generated sitemap.xml"
+
+    echo "Executing: git push origin master"
     git push origin master
 )
 
