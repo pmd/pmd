@@ -45,7 +45,6 @@ means a reserved interface doesn't prevent its implementors to be subclassed.
 
 ###### `@Experimental`
 
-
 APIs marked with the `@Experimental` annotation at the class or method level are subject to change.
 They can be modified in any way, or even removed, at any time. You should not use or rely
  on them in any production code. They are purely to allow broad testing and feedback.
@@ -55,19 +54,33 @@ They can be modified in any way, or even removed, at any time. You should not us
 APIs marked with the `@Deprecated` annotation at the class or method level will remain supported
 until the next major release but it is recommended to stop using them.
 
-
 ###### The transition
 
 *All currently supported APIs will remain so until 7.0.0*. All APIs that are to be moved to
 `.internal` packages or hidden will be tagged `@InternalApi` before that major release, and
 the breaking API changes will be performed in 7.0.0.
 
-#### New Rules
+
+#### Quickstart Ruleset
+
+PMD 6.8.0 provides a first quickstart ruleset for Java, which you can use as a base ruleset to get your
+custom ruleset started. You can reference it with `rulesets/java/quickstart.xml`.
+You are strongly encouraged to [create your own ruleset](https://pmd.github.io/pmd-6.7.0/pmd_userdocs_making_rulesets.html)
+though.
+
+The quickstart ruleset has the intention, to be useful out-of-the-box for many projects. Therefore it
+references only rules, that are most likely to apply everywhere.
+
+Any feedback would be greatly appreciated.
+
+
+#### New Rules
 
 *   The new Apex rule {% rule apex/documentation/ApexDoc %} (`apex-documentation`)
     enforces the inclusion of ApexDoc on classes, interfaces, properties and methods; as well as some
     sanity rules for such docs (no missing parameters, parameters' order, and return value). By default,
     method overrides and test classes are allowed to not include ApexDoc.
+
 
 #### Modified Rules
 
@@ -75,6 +88,7 @@ the breaking API changes will be performed in 7.0.0.
     in order to recognize also missing `serialVersionUID` fields in abstract classes, if they are serializable.
     Each individual class in the inheritance chain needs an own serialVersionUID field. See also [Should an abstract class have a serialVersionUID](https://stackoverflow.com/questions/893259/should-an-abstract-class-have-a-serialversionuid).
     This change might lead to additional violations in existing code bases.
+
 
 ### Fixed Issues
 
@@ -90,6 +104,7 @@ the breaking API changes will be performed in 7.0.0.
     *   [#1325](https://github.com/pmd/pmd/issues/1325): \[java] False positive in ConsecutiveLiteralAppends
 *   plsql
     *   [#1279](https://github.com/pmd/pmd/pull/1279): \[plsql] Support for SELECT INTO
+
 
 ### API Changes
 
@@ -109,6 +124,7 @@ the breaking API changes will be performed in 7.0.0.
     and will be removed with PMD 7.0.0. RuleReferences should only be created by providing a Rule and
     a RuleSetReference. Furthermore the following methods are deprecated: `setRuleReference()`,
     `hasOverriddenProperty()`, `usesDefaultValues()`, `useDefaultValueFor()`.
+
 
 ### External Contributions
 
