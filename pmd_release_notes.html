@@ -1277,7 +1277,10 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
       * <a href="#`@experimental`"><code class="highlighter-rouge">@Experimental</code></a>
       * <a href="#`@deprecated`"><code class="highlighter-rouge">@Deprecated</code></a>
       * <a href="#the-transition">The transition</a></li>
+      <li><a href="#quickstart-ruleset">Quickstart Ruleset</a></li>
+      <li><a href="#new-rules">New Rules</a></li>
       <li><a href="#modified-rules">Modified Rules</a></li>
+      <li><a href="#plsql">PLSQL</a></li>
     </ul>
   </li>
   <li><a href="#fixed-issues">Fixed Issues</a></li>
@@ -1333,7 +1336,19 @@ until the next major release but it is recommended to stop using them.</p>
 <code class="highlighter-rouge">.internal</code> packages or hidden will be tagged <code class="highlighter-rouge">@InternalApi</code> before that major release, and
 the breaking API changes will be performed in 7.0.0.</p>
 
-<p>#### New Rules</p>
+<h4 id="quickstart-ruleset">Quickstart Ruleset</h4>
+
+<p>PMD 6.8.0 provides a first quickstart ruleset for Java, which you can use as a base ruleset to get your
+custom ruleset started. You can reference it with <code class="highlighter-rouge">rulesets/java/quickstart.xml</code>.
+You are strongly encouraged to <a href="https://pmd.github.io/pmd-6.7.0/pmd_userdocs_making_rulesets.html">create your own ruleset</a>
+though.</p>
+
+<p>The quickstart ruleset has the intention, to be useful out-of-the-box for many projects. Therefore it
+references only rules, that are most likely to apply everywhere.</p>
+
+<p>Any feedback would be greatly appreciated.</p>
+
+<h4 id="new-rules">New Rules</h4>
 
 <ul>
   <li>The new Apex rule <a href="pmd_rules_apex_documentation.html#apexdoc"><code class="highlighter-rouge">ApexDoc</code></a> (<code class="highlighter-rouge">apex-documentation</code>)
@@ -1350,6 +1365,13 @@ in order to recognize also missing <code class="highlighter-rouge">serialVersion
 Each individual class in the inheritance chain needs an own serialVersionUID field. See also <a href="https://stackoverflow.com/questions/893259/should-an-abstract-class-have-a-serialversionuid">Should an abstract class have a serialVersionUID</a>.
 This change might lead to additional violations in existing code bases.</li>
 </ul>
+
+<h4 id="plsql">PLSQL</h4>
+
+<p>The grammar for PLSQL has been revamped in order to fully parse <code class="highlighter-rouge">SELECT INTO</code>, <code class="highlighter-rouge">UPDATE</code>, and <code class="highlighter-rouge">DELETE</code>
+statements. Previously such statements have been simply skipped ahead, now PMD is parsing them, giving access
+to the individual parts of a SELECT-statement, such as the Where-Clause. This might produce new parsing errors
+where PMD previously could successfully parse PLSQL code. If this happens, please report a new <a href="https://github.com/pmd/pmd/issues/new">issue</a> to get this problem fixed.</p>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
 
@@ -1435,7 +1457,7 @@ a RuleSetReference. Furthermore the following methods are deprecated: <code clas
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Sep 25, 2018 <br />
+ Site last generated: Sep 30, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
