@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.8.0</li>
+    <li class="sidebarTitle">PMD 6.9.0</li>
     
     
     
@@ -1260,186 +1260,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="--2018---680">??-??-2018 - 6.8.0</h2>
+  <h2 id="--2018---690">??-????-2018 - 6.9.0</h2>
 
-<p>The PMD team is pleased to announce PMD 6.8.0.</p>
+<p>The PMD team is pleased to announce PMD 6.9.0.</p>
 
 <p>This is a minor release.</p>
 
-<h3 id="table-of-contents">Table Of Contents</h3>
-
-<ul>
-  <li><a href="#new-and-noteworthy">New and noteworthy</a>
-    <ul>
-      <li><a href="#drawing-a-line-between-private-and-public-api">Drawing a line between private and public API</a>
-      * <a href="#`.internal`-packages-and-`@internalapi`-annotation"><code class="highlighter-rouge">.internal</code> packages and <code class="highlighter-rouge">@InternalApi</code> annotation</a>
-      * <a href="#`@reservedsubclassing`"><code class="highlighter-rouge">@ReservedSubclassing</code></a>
-      * <a href="#`@experimental`"><code class="highlighter-rouge">@Experimental</code></a>
-      * <a href="#`@deprecated`"><code class="highlighter-rouge">@Deprecated</code></a>
-      * <a href="#the-transition">The transition</a></li>
-      <li><a href="#quickstart-ruleset">Quickstart Ruleset</a></li>
-      <li><a href="#new-rules">New Rules</a></li>
-      <li><a href="#modified-rules">Modified Rules</a></li>
-      <li><a href="#plsql">PLSQL</a></li>
-    </ul>
-  </li>
-  <li><a href="#fixed-issues">Fixed Issues</a></li>
-  <li><a href="#api-changes">API Changes</a></li>
-  <li><a href="#external-contributions">External Contributions</a></li>
-</ul>
-
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
-
-<h4 id="drawing-a-line-between-private-and-public-api">Drawing a line between private and public API</h4>
-
-<p>Until now, all released public members and types were implicitly considered part
-of PMD’s public API, including inheritance-specific members (protected members, abstract methods).
-We have maintained those APIs with the goal to preserve full binary compatibility between minor releases,
-only breaking those APIs infrequently, for major releases.</p>
-
-<p>In order to allow PMD to move forward at a faster pace, this implicit contract will
-be invalidated with PMD 7.0.0. We now introduce more fine-grained distinctions between
-the type of compatibility support we guarantee for our libraries, and ways to make
-them explicit to clients of PMD.</p>
-
-<h6 id="internal-packages-and-internalapi-annotation"><code class="highlighter-rouge">.internal</code> packages and <code class="highlighter-rouge">@InternalApi</code> annotation</h6>
-
-<p><em>Internal API</em> is meant for use <em>only</em> by the main PMD codebase. Internal types and methods
-may be modified in any way, or even removed, at any time.</p>
-
-<p>Any API in a package that contains an <code class="highlighter-rouge">.internal</code> segment is considered internal.
-The <code class="highlighter-rouge">@InternalApi</code> annotation will be used for APIs that have to live outside of
-these packages, e.g. methods of a public type that shouldn’t be used outside of PMD (again,
-these can be removed anytime).</p>
-
-<h6 id="reservedsubclassing"><code class="highlighter-rouge">@ReservedSubclassing</code></h6>
-
-<p>Types marked with the <code class="highlighter-rouge">@ReservedSubclassing</code> annotation are only meant to be subclassed
-by classes within PMD. As such, we may add new abstract methods, or remove protected methods,
-at any time. All published public members remain supported. The annotation is <em>not</em> inherited, which
-means a reserved interface doesn’t prevent its implementors to be subclassed.</p>
-
-<h6 id="experimental"><code class="highlighter-rouge">@Experimental</code></h6>
-
-<p>APIs marked with the <code class="highlighter-rouge">@Experimental</code> annotation at the class or method level are subject to change.
-They can be modified in any way, or even removed, at any time. You should not use or rely
- on them in any production code. They are purely to allow broad testing and feedback.</p>
-
-<h6 id="deprecated"><code class="highlighter-rouge">@Deprecated</code></h6>
-
-<p>APIs marked with the <code class="highlighter-rouge">@Deprecated</code> annotation at the class or method level will remain supported
-until the next major release but it is recommended to stop using them.</p>
-
-<h6 id="the-transition">The transition</h6>
-
-<p><em>All currently supported APIs will remain so until 7.0.0</em>. All APIs that are to be moved to
-<code class="highlighter-rouge">.internal</code> packages or hidden will be tagged <code class="highlighter-rouge">@InternalApi</code> before that major release, and
-the breaking API changes will be performed in 7.0.0.</p>
-
-<h4 id="quickstart-ruleset">Quickstart Ruleset</h4>
-
-<p>PMD 6.8.0 provides a first quickstart ruleset for Java, which you can use as a base ruleset to get your
-custom ruleset started. You can reference it with <code class="highlighter-rouge">rulesets/java/quickstart.xml</code>.
-You are strongly encouraged to <a href="https://pmd.github.io/pmd-6.7.0/pmd_userdocs_making_rulesets.html">create your own ruleset</a>
-though.</p>
-
-<p>The quickstart ruleset has the intention, to be useful out-of-the-box for many projects. Therefore it
-references only rules, that are most likely to apply everywhere.</p>
-
-<p>Any feedback would be greatly appreciated.</p>
-
-<h4 id="new-rules">New Rules</h4>
-
-<ul>
-  <li>The new Apex rule <a href="pmd_rules_apex_documentation.html#apexdoc"><code class="highlighter-rouge">ApexDoc</code></a> (<code class="highlighter-rouge">apex-documentation</code>)
-enforces the inclusion of ApexDoc on classes, interfaces, properties and methods; as well as some
-sanity rules for such docs (no missing parameters, parameters’ order, and return value). By default,
-method overrides and test classes are allowed to not include ApexDoc.</li>
-</ul>
-
-<h4 id="modified-rules">Modified Rules</h4>
-
-<ul>
-  <li>The rule <a href="pmd_rules_java_errorprone.html#missingserialversionuid"><code class="highlighter-rouge">MissingSerialVersionUID</code></a> (<code class="highlighter-rouge">java-errorprone</code>) has been modified
-in order to recognize also missing <code class="highlighter-rouge">serialVersionUID</code> fields in abstract classes, if they are serializable.
-Each individual class in the inheritance chain needs an own serialVersionUID field. See also <a href="https://stackoverflow.com/questions/893259/should-an-abstract-class-have-a-serialversionuid">Should an abstract class have a serialVersionUID</a>.
-This change might lead to additional violations in existing code bases.</li>
-</ul>
-
-<h4 id="plsql">PLSQL</h4>
-
-<p>The grammar for PLSQL has been revamped in order to fully parse <code class="highlighter-rouge">SELECT INTO</code>, <code class="highlighter-rouge">UPDATE</code>, and <code class="highlighter-rouge">DELETE</code>
-statements. Previously such statements have been simply skipped ahead, now PMD is parsing them, giving access
-to the individual parts of a SELECT-statement, such as the Where-Clause. This might produce new parsing errors
-where PMD previously could successfully parse PLSQL code. If this happens, please report a new <a href="https://github.com/pmd/pmd/issues/new">issue</a> to get this problem fixed.</p>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
 
-<ul>
-  <li>apex-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1348">#1348</a>: [apex] AvoidGlobalModifierRule gives warning even when its a webservice - false positive</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1329">#1329</a>: [java] FieldNamingConventions: false positive in serializable class with serialVersionUID</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1334">#1334</a>: [java] LinguisticNaming should support AtomicBooleans</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1350">#1350</a>: [java] MissingSerialVersionUID false-positive on interfaces</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1352">#1352</a>: [java] MissingSerialVersionUID false-negative with abstract classes</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1325">#1325</a>: [java] False positive in ConsecutiveLiteralAppends</li>
-    </ul>
-  </li>
-  <li>plsql
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/1279">#1279</a>: [plsql] Support for SELECT INTO</li>
-    </ul>
-  </li>
-</ul>
-
 <h3 id="api-changes">API Changes</h3>
 
-<ul>
-  <li>
-    <p>A couple of methods and fields in <code class="highlighter-rouge">net.sourceforge.pmd.properties.AbstractPropertySource</code> have been
-deprecated, as they are replaced by already existing functionality or expose internal implementation
-details: <code class="highlighter-rouge">propertyDescriptors</code>, <code class="highlighter-rouge">propertyValuesByDescriptor</code>,
-<code class="highlighter-rouge">copyPropertyDescriptors()</code>, <code class="highlighter-rouge">copyPropertyValues()</code>, <code class="highlighter-rouge">ignoredProperties()</code>, <code class="highlighter-rouge">usesDefaultValues()</code>,
-<code class="highlighter-rouge">useDefaultValueFor()</code>.</p>
-  </li>
-  <li>
-    <p>Some methods in <code class="highlighter-rouge">net.sourceforge.pmd.properties.PropertySource</code> have been deprecated as well:
-<code class="highlighter-rouge">usesDefaultValues()</code>, <code class="highlighter-rouge">useDefaultValueFor()</code>, <code class="highlighter-rouge">ignoredProperties()</code>.</p>
-  </li>
-  <li>
-    <p>The class <code class="highlighter-rouge">net.sourceforge.pmd.lang.rule.AbstractDelegateRule</code> has been deprecated and will
-be removed with PMD 7.0.0. It is internally only in use by RuleReference.</p>
-  </li>
-  <li>
-    <p>The default constructor of <code class="highlighter-rouge">net.sourceforge.pmd.lang.rule.RuleReference</code> has been deprecated
-and will be removed with PMD 7.0.0. RuleReferences should only be created by providing a Rule and
-a RuleSetReference. Furthermore the following methods are deprecated: <code class="highlighter-rouge">setRuleReference()</code>,
-<code class="highlighter-rouge">hasOverriddenProperty()</code>, <code class="highlighter-rouge">usesDefaultValues()</code>, <code class="highlighter-rouge">useDefaultValueFor()</code>.</p>
-  </li>
-</ul>
-
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/1309">#1309</a>: [core] [CPD] Decouple Antlr Tokenizer implementation from any CPD language supported with Antlr - <a href="https://github.com/matifraga">Matías Fraga</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1314">#1314</a>: [apex] Add validation of ApexDoc comments - <a href="https://github.com/jeffhube">Jeff Hube</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1339">#1339</a>: [ci] Improve danger message - <a href="https://github.com/djydewang">BBG</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1340">#1340</a>: [java] Derive correct classname for non-public non-classes - <a href="https://github.com/kris-scheibe">kris-scheibe</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1357">#1357</a>: [doc] Improve Codacy description - <a href="https://github.com/DReigada">Daniel Reigada</a></li>
-</ul>
 
 
 
