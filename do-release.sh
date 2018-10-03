@@ -85,7 +85,13 @@ RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION
 export RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
 echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
 NEW_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
-echo "${NEW_RELEASE_NOTES}" > ../pmd.github.io/${RELEASE_NOTES_POST}
+cat > ../pmd.github.io/${RELEASE_NOTES_POST} <<EOF
+---
+layout: post
+title: PMD ${RELEASE_VERSION} released
+---
+${NEW_RELEASE_NOTES}
+EOF
 
 echo "Committing current changes (pmd)"
 
