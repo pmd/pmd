@@ -5,9 +5,9 @@
         <description>Intended as a documentation theme based on Jekyll for technical writers documenting software and other technical products, this theme has all the elements you would need to handle multiple products with both multi-level sidebar navigation, tags, and other documentation features.</description>
         <link>https://pmd.github.io/pmd/</link>
         <atom:link href="https://pmd.github.io/pmd/feed.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sun, 30 Sep 2018 09:28:49 +0000</pubDate>
-        <lastBuildDate>Sun, 30 Sep 2018 09:28:49 +0000</lastBuildDate>
-        <generator>Jekyll v3.7.3</generator>
+        <pubDate>Wed, 03 Oct 2018 08:37:53 +0000</pubDate>
+        <lastBuildDate>Wed, 03 Oct 2018 08:37:53 +0000</lastBuildDate>
+        <generator>Jekyll v3.7.4</generator>
         
     </channel>
 </rss>
