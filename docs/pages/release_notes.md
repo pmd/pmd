@@ -16,9 +16,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java-codestyle
+    *   [#1356](https://github.com/pmd/pmd/issues/1356): \[java] UnnecessaryModifier wrong message public->static
+
 ### API Changes
 
 ### External Contributions
+
+*   [#1366](https://github.com/pmd/pmd/pull/1366): \[Java] Static Modifier on Internal Interface pmd #1356 - [avishvat](https://github.com/vishva007)
 
 {% endtocmaker %}
 
