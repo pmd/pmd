@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class InsufficientStringBufferDeclarationTest extends SimpleAggregatorTst {
+public class InsufficientStringBufferDeclarationTest extends PmdRuleTst {
     // no additional unit tests
 }

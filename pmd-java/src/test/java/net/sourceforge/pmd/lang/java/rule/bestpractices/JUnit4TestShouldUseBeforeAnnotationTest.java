@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class JUnit4TestShouldUseBeforeAnnotationTest extends SimpleAggregatorTst {
+public class JUnit4TestShouldUseBeforeAnnotationTest extends PmdRuleTst {
     // no additional unit tests
 }

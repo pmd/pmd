@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class GuardLogStatementTest extends SimpleAggregatorTst {
+public class GuardLogStatementTest extends PmdRuleTst {
     // no additional unit tests
 }

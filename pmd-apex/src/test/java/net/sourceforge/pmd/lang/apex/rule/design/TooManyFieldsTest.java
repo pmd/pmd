@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.design;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class TooManyFieldsTest extends SimpleAggregatorTst {
+public class TooManyFieldsTest extends PmdRuleTst {
     // no additional unit tests
 }

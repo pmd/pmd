@@ -17,9 +17,9 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class StdCyclomaticComplexityTest extends SimpleAggregatorTst {
+public class StdCyclomaticComplexityTest extends PmdRuleTst {
     /**
      * Make sure the entry stack is empty, if show classes complexity is
      * disabled.

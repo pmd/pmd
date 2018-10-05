@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ReplaceVectorWithListTest extends SimpleAggregatorTst {
+public class ReplaceVectorWithListTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -11,9 +11,9 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidDuplicateLiteralsTest extends SimpleAggregatorTst {
+public class AvoidDuplicateLiteralsTest extends PmdRuleTst {
     @Test
     public void testStringParserEmptyString() {
         AvoidDuplicateLiteralsRule.ExceptionParser p = new AvoidDuplicateLiteralsRule.ExceptionParser(',');

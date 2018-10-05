@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class RemoteSessionInterfaceNamingConventionTest extends SimpleAggregatorTst {
+public class RemoteSessionInterfaceNamingConventionTest extends PmdRuleTst {
     // no additional unit tests
 }

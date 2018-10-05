@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidDirectAccessTriggerMapTest extends SimpleAggregatorTst {
+public class AvoidDirectAccessTriggerMapTest extends PmdRuleTst {
     // no additional unit tests
 }

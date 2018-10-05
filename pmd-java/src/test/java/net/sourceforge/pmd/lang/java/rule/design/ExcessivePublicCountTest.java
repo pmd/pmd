@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ExcessivePublicCountTest extends SimpleAggregatorTst {
+public class ExcessivePublicCountTest extends PmdRuleTst {
     // no additional unit tests
 }

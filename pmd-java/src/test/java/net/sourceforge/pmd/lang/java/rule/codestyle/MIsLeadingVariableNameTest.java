@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class MIsLeadingVariableNameTest extends SimpleAggregatorTst {
+public class MIsLeadingVariableNameTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class LoggerIsNotStaticFinalTest extends SimpleAggregatorTst {
+public class LoggerIsNotStaticFinalTest extends PmdRuleTst {
     // no additional unit tests
 }

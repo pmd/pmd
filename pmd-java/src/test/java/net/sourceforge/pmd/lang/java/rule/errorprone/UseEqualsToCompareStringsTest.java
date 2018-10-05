@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UseEqualsToCompareStringsTest extends SimpleAggregatorTst {
+public class UseEqualsToCompareStringsTest extends PmdRuleTst {
     // no additional unit tests
 }

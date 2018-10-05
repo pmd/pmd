@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UseArraysAsListTest extends SimpleAggregatorTst {
+public class UseArraysAsListTest extends PmdRuleTst {
     // no additional unit tests
 }

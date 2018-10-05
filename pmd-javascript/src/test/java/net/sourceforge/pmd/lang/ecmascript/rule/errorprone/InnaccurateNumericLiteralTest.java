@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.ecmascript.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class InnaccurateNumericLiteralTest extends SimpleAggregatorTst {
+public class InnaccurateNumericLiteralTest extends PmdRuleTst {
     // no additional unit tests
 }

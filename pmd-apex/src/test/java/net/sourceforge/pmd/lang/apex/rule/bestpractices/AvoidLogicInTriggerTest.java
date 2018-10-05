@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidLogicInTriggerTest extends SimpleAggregatorTst {
+public class AvoidLogicInTriggerTest extends PmdRuleTst {
     // no additional unit tests
 }

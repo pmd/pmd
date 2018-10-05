@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.xsl.rule.codestyle;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UseConcatOnceTest extends SimpleAggregatorTst {
+public class UseConcatOnceTest extends PmdRuleTst {
     // no additional unit tests
 }

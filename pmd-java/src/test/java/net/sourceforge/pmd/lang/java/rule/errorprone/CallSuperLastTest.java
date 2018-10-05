@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class CallSuperLastTest extends SimpleAggregatorTst {
+public class CallSuperLastTest extends PmdRuleTst {
     // no additional unit tests
 }

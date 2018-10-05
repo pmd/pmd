@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class TooFewBranchesForASwitchStatementTest extends SimpleAggregatorTst {
+public class TooFewBranchesForASwitchStatementTest extends PmdRuleTst {
     // no additional unit tests
 }

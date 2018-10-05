@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class LawOfDemeterTest extends SimpleAggregatorTst {
+public class LawOfDemeterTest extends PmdRuleTst {
     // no additional unit tests
 }

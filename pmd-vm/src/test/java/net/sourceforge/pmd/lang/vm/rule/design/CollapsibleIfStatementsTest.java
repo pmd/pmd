@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.vm.rule.design;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class CollapsibleIfStatementsTest extends SimpleAggregatorTst {
+public class CollapsibleIfStatementsTest extends PmdRuleTst {
     // no additional unit tests
 }

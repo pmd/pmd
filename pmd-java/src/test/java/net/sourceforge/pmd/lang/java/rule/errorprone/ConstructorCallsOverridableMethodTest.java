@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ConstructorCallsOverridableMethodTest extends SimpleAggregatorTst {
+public class ConstructorCallsOverridableMethodTest extends PmdRuleTst {
     // no additional unit tests
 }

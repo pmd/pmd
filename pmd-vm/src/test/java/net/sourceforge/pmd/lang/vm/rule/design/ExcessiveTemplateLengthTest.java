@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.vm.rule.design;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ExcessiveTemplateLengthTest extends SimpleAggregatorTst {
+public class ExcessiveTemplateLengthTest extends PmdRuleTst {
     // no additional unit tests
 }

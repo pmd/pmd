@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ForLoopCanBeForeachTest extends SimpleAggregatorTst {
+public class ForLoopCanBeForeachTest extends PmdRuleTst {
     // no additional unit tests
 }

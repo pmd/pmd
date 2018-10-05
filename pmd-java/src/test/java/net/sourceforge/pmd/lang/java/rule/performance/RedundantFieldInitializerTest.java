@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class RedundantFieldInitializerTest extends SimpleAggregatorTst {
+public class RedundantFieldInitializerTest extends PmdRuleTst {
     // no additional unit tests
 }

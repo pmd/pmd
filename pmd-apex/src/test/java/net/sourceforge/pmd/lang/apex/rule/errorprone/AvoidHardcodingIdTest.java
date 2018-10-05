@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidHardcodingIdTest extends SimpleAggregatorTst {
+public class AvoidHardcodingIdTest extends PmdRuleTst {
     // no additional unit tests
 }

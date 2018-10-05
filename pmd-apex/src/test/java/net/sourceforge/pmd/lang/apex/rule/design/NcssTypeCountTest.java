@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.design;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class NcssTypeCountTest extends SimpleAggregatorTst {
+public class NcssTypeCountTest extends PmdRuleTst {
     // no additional unit tests
 }

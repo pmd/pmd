@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidCatchingGenericExceptionTest extends SimpleAggregatorTst {
+public class AvoidCatchingGenericExceptionTest extends PmdRuleTst {
     // no additional unit tests
 }

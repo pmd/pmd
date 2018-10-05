@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.multithreading;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidThreadGroupTest extends SimpleAggregatorTst {
+public class AvoidThreadGroupTest extends PmdRuleTst {
     // Used by AvoidThreadGroup test cases
     public static class ThreadGroup {
 

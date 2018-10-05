@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.xml.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class MistypedCDATASectionTest extends SimpleAggregatorTst {
+public class MistypedCDATASectionTest extends PmdRuleTst {
     // no additional unit tests
 }

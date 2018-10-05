@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class JUnitUseExpectedTest extends SimpleAggregatorTst {
+public class JUnitUseExpectedTest extends PmdRuleTst {
     // no additional unit tests
 }

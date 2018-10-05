@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ClassWithOnlyPrivateConstructorsShouldBeFinalTest extends SimpleAggregatorTst {
+public class ClassWithOnlyPrivateConstructorsShouldBeFinalTest extends PmdRuleTst {
     // no additional unit tests
 }

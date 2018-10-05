@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class EmptyTryOrFinallyBlockTest extends SimpleAggregatorTst {
+public class EmptyTryOrFinallyBlockTest extends PmdRuleTst {
     // no additional unit tests
 }

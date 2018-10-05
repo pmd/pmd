@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.jsp.rule.design;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class NoScriptletsTest extends SimpleAggregatorTst {
+public class NoScriptletsTest extends PmdRuleTst {
     // no additional unit tests
 }

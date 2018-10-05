@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class MethodWithSameNameAsEnclosingClassTest extends SimpleAggregatorTst {
+public class MethodWithSameNameAsEnclosingClassTest extends PmdRuleTst {
     // no additional unit tests
 }

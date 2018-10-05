@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidInstanceofChecksInCatchClauseTest extends SimpleAggregatorTst {
+public class AvoidInstanceofChecksInCatchClauseTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class BooleanInstantiationTest extends SimpleAggregatorTst {
+public class BooleanInstantiationTest extends PmdRuleTst {
     // no additional unit tests
 }

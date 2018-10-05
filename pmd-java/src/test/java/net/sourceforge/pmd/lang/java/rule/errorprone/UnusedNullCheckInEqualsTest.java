@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UnusedNullCheckInEqualsTest extends SimpleAggregatorTst {
+public class UnusedNullCheckInEqualsTest extends PmdRuleTst {
     // no additional unit tests
 }
