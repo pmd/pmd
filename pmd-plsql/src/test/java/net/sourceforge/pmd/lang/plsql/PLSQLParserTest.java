@@ -62,4 +62,9 @@ public class PLSQLParserTest extends AbstractPLSQLParserTst {
     public void testIsNull() throws Exception {
         parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/IsNull.pls")));
     }
+
+    @Test
+    public void testCodingStyleExample() throws Exception {
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/CodingStyleExample.pls")));
+    }
 }

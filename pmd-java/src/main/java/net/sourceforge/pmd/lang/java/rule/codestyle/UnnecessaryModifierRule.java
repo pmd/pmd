@@ -169,7 +169,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
 
         if ((node.isInterface() || isParentInterfaceOrAnnotation) && node.isStatic()) {
             // a static interface or class nested within an interface
-            reportUnnecessaryModifiers(data, node, Modifier.PUBLIC, "types nested within an interface type are implicitly static");
+            reportUnnecessaryModifiers(data, node, Modifier.STATIC, "types nested within an interface type are implicitly static");
         }
 
         return data;

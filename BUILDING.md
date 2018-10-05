@@ -16,7 +16,7 @@ This will create the zip files in the directory `pmd-dist/target`:
 
 That's all !
 
-**Note:** While Java 9 is required for building, running PMD only requires Java 7 (or Java 8 for Apex).
+**Note:** While Java 10 is required for building, running PMD only requires Java 7 (or Java 8 for Apex and the Designer).
 
 ## How to build the documentation?
 

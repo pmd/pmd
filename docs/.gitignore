@@ -3,3 +3,5 @@ _site/
 .jekyll-metadata
 _pdf
 .idea/
+vendor/
+.bundle/

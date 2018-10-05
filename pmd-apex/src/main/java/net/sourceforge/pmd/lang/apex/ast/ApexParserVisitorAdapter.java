@@ -6,6 +6,11 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 public class ApexParserVisitorAdapter implements ApexParserVisitor {
     @Override
+    public Object visit(AbstractApexNodeBase node, Object data) {
+        return node.childrenAccept(this, data);
+    }
+
+    @Override
     public Object visit(ApexNode<?> node, Object data) {
         return node.childrenAccept(this, data);
     }
@@ -448,5 +453,10 @@ public class ApexParserVisitorAdapter implements ApexParserVisitor {
     @Override
     public Object visit(ASTStatementExecuted node, Object data) {
         return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTFormalComment node, Object data) {
+        return visit((AbstractApexNodeBase) node, data);
     }
 }

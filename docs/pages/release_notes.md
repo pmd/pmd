@@ -10,21 +10,21 @@ The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
 This is a {{ site.pmd.release_type }} release.
 
-{% tocmaker %}
+{% tocmaker is_release_notes_processor %}
 
 ### New and noteworthy
 
 ### Fixed Issues
 
 *   java-codestyle
-    *   [#1329](https://github.com/pmd/pmd/issues/1329): \[java] FieldNamingConventions: false positive in serializable class with serialVersionUID
-    *   [#1334](https://github.com/pmd/pmd/issues/1334): \[java] LinguisticNaming should support AtomicBooleans
-*   java-performance
-    *   [#1325](https://github.com/pmd/pmd/issues/1325): \[java] False positive in ConsecutiveLiteralAppends
+    *   [#1356](https://github.com/pmd/pmd/issues/1356): \[java] UnnecessaryModifier wrong message public->static
 
 ### API Changes
 
 ### External Contributions
+
+*   [#1366](https://github.com/pmd/pmd/pull/1366): \[Java] Static Modifier on Internal Interface pmd #1356 - [avishvat](https://github.com/vishva007)
+*   [#1368](https://github.com/pmd/pmd/pull/1368): \[doc] Updated outdated note in the building documentation. - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
