@@ -75,7 +75,7 @@ public class DocumentNavigatorTest extends RuleTst {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         try {
             rule = new TestRule();
             runTestFromString(TEST, rule, new Report(),
