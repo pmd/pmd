@@ -45,6 +45,7 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.processor.PmdThreadContextHolder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
 
@@ -271,7 +272,9 @@ public abstract class RuleTst {
             ctx.setLanguageVersion(languageVersion);
             ctx.setIgnoreExceptions(false);
             RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
+            PmdThreadContextHolder.init(new RuleSets(rules), ctx);
             p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
+            PmdThreadContextHolder.reset();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

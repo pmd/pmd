@@ -6,8 +6,10 @@ package net.sourceforge.pmd.lang.java.typeresolution;
 
 import org.apache.commons.lang3.ClassUtils;
 
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
+import net.sourceforge.pmd.processor.PmdThreadContextHolder;
 
 public final class TypeHelper {
 
@@ -33,7 +35,7 @@ public final class TypeHelper {
 
         return clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage());
     }
-    
+
     /**
      * Checks whether the resolved type of the given {@link TypeNode} n is exactly of the type
      * given by the clazzName.
@@ -51,7 +53,7 @@ public final class TypeHelper {
 
         return clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage());
     }
-    
+
     private static Class<?> loadClassWithNodeClassloader(final TypeNode n, final String clazzName) {
         if (n.getType() != null) {
             try {
@@ -60,7 +62,7 @@ public final class TypeHelper {
                     // Using the system classloader then
                     classLoader = ClassLoader.getSystemClassLoader();
                 }
-    
+
                 // If the requested type is in the classpath, using the same classloader should work
                 return ClassUtils.getClass(classLoader, clazzName);
             } catch (final ClassNotFoundException ignored) {
@@ -70,9 +72,12 @@ public final class TypeHelper {
             } catch (final LinkageError expected) {
                 // We found the class but it's invalid / incomplete. This may be an incomplete auxclasspath
                 // if it was a NoClassDefFoundError. TODO : Report it?
+                PmdThreadContextHolder.getRuleContext().getReport()
+                    .addError(new ProcessingError(expected, PmdThreadContextHolder.getRuleContext().getSourceCodeFilename()));
+
             }
         }
-        
+
         return null;
     }
 
@@ -93,14 +98,14 @@ public final class TypeHelper {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     public static boolean isExactlyNone(TypedNameDeclaration vnd, Class<?>... clazzes) {
         return !isExactlyAny(vnd, clazzes);
     }
-    
+
     /**
      * @deprecated use {@link #isExactlyAny(TypedNameDeclaration, Class...)}
      */

@@ -10,7 +10,9 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
+import net.sourceforge.pmd.processor.PmdThreadContextHolder;
 
 
 /**
@@ -173,8 +175,10 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
                 typeLoaded = true;
                 try {
                     representedType = loadType();
-                } catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException | LinkageError e) {
                     representedType = null;
+                    PmdThreadContextHolder.getRuleContext().getReport()
+                        .addError(new ProcessingError(e, PmdThreadContextHolder.getRuleContext().getSourceCodeFilename()));
                 }
             }
             return representedType;

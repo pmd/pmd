@@ -18,16 +18,18 @@ import net.sourceforge.pmd.testframework.RuleTst;
 
 public class ReportTest extends RuleTst {
 
+    public static class TestRule extends AbstractEcmascriptRule {
+        @Override
+        public Object visit(ASTFunctionNode node, Object data) {
+            EcmascriptRuleViolationFactory.INSTANCE.addViolation((RuleContext) data, this, node, "Test", null);
+            return super.visit(node, data);
+        }
+    }
+
     @Test
     public void testExclusionsInReportWithNOPMDEcmascript() throws Exception {
         Report rpt = new Report();
-        Rule rule = new AbstractEcmascriptRule() {
-            @Override
-            public Object visit(ASTFunctionNode node, Object data) {
-                EcmascriptRuleViolationFactory.INSTANCE.addViolation((RuleContext) data, this, node, "Test", null);
-                return super.visit(node, data);
-            }
-        };
+        Rule rule = new TestRule();
         String code = "function(x) // NOPMD test suppress\n" + "{ x = 1; }";
         runTestFromString(code, rule, rpt,
                 LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME).getDefaultVersion());
