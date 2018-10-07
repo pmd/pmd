@@ -30,7 +30,7 @@ TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}"
 function upload_baseline() {
     log_info "Generating and uploading baseline for pmdtester..."
     cd ..
-    bundle config --local path pmd/vendor/bundle
+    bundle config --local gemfile pmd/Gemfile
     bundle exec pmdtester -m single -r ./pmd -p ${TRAVIS_BRANCH} -pc ./pmd/.travis/all-java.xml -l ./pmd/.travis/project-list.xml -f
     cd target/reports
     BRANCH_FILENAME="${TRAVIS_BRANCH/\//_}"
