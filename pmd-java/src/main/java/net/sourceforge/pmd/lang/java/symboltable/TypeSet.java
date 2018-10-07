@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
+import net.sourceforge.pmd.processor.PmdThreadContextHolder;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 
 /**
@@ -472,7 +474,10 @@ public class TypeSet {
             final Class<?> c = resolveMaybeInner(name, name);
 
             if (c == null) {
-                throw new ClassNotFoundException("Type " + name + " not found");
+                ClassNotFoundException e = new ClassNotFoundException("Type " + name + " not found");
+                PmdThreadContextHolder.getRuleContext().getReport()
+                    .addError(new ProcessingError(e, PmdThreadContextHolder.getRuleContext().getSourceCodeFilename()));
+                throw e;
             }
 
             return c;
@@ -540,6 +545,8 @@ public class TypeSet {
                     // ignored, maybe another resolver will find the class
                 } catch (LinkageError le) {
                     // we found the class, but there is a problem with it (see https://github.com/pmd/pmd/issues/328)
+                    PmdThreadContextHolder.getRuleContext().getReport()
+                        .addError(new ProcessingError(le, PmdThreadContextHolder.getRuleContext().getSourceCodeFilename()));
                     return null;
                 }
             }

@@ -43,12 +43,13 @@ public class RuleTstTest {
         Report report = new Report();
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
+        when(rule.deepCopy()).thenReturn(rule);
 
         ruleTester.runTestFromString("the code", rule, report, dummyLanguage, false);
 
         verify(rule).start(any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
-        verify(rule, times(5)).getLanguage();
+        verify(rule, times(7)).getLanguage();
         verify(rule).isDfa();
         verify(rule).isTypeResolution();
         verify(rule).isMultifile();
@@ -58,6 +59,7 @@ public class RuleTstTest {
         verify(rule).apply(anyList(), any(RuleContext.class));
         verify(rule, times(4)).getName();
         verify(rule).getPropertiesByPropertyDescriptor();
+        verify(rule).deepCopy();
         verifyNoMoreInteractions(rule);
     }
 
@@ -65,6 +67,7 @@ public class RuleTstTest {
     public void shouldAssertLinenumbersSorted() {
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
+        when(rule.deepCopy()).thenReturn(rule);
         Mockito.doAnswer(new Answer<Void>() {
             private RuleViolation createViolation(RuleContext context, int beginLine, String message) {
                 DummyNode node = new DummyNode(1);

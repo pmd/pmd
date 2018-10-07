@@ -36,8 +36,7 @@ public class DocumentNavigatorTest extends RuleTst {
 
     private TestRule rule;
 
-    private class TestRule extends AbstractJavaRule {
-
+    public static class TestRule extends AbstractJavaRule {
         private Node compilationUnit;
         private Node importDeclaration;
         private Node statement;
@@ -48,26 +47,31 @@ public class DocumentNavigatorTest extends RuleTst {
          * @see net.sourceforge.pmd.lang.java.ast.JavaParserVisitor#visit(ASTCompilationUnit,
          *      Object)
          */
+        @Override
         public Object visit(ASTCompilationUnit node, Object data) {
             this.compilationUnit = node;
             return super.visit(node, data);
         }
 
+        @Override
         public Object visit(ASTImportDeclaration node, Object data) {
             this.importDeclaration = node;
             return super.visit(node, data);
         }
 
+        @Override
         public Object visit(ASTStatement node, Object data) {
             this.statement = node;
             return super.visit(node, data);
         }
 
+        @Override
         public Object visit(ASTPrimaryPrefix node, Object data) {
             this.primaryPrefix = node;
             return super.visit(node, data);
         }
 
+        @Override
         public Object visit(ASTPrimaryExpression node, Object data) {
             this.primaryExpression = node;
             return super.visit(node, data);

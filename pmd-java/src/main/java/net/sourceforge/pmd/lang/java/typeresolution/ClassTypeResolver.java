@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
@@ -94,6 +95,7 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.processor.PmdThreadContextHolder;
 
 
 //
@@ -203,10 +205,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "Could not find class " + className + ", due to: " + e);
             }
+            PmdThreadContextHolder.getRuleContext().getReport()
+                .addError(new ProcessingError(e, PmdThreadContextHolder.getRuleContext().getSourceCodeFilename()));
         } catch (LinkageError e) {
             if (LOG.isLoggable(Level.WARNING)) {
                 LOG.log(Level.WARNING, "Could not find class " + className + ", due to: " + e);
             }
+            PmdThreadContextHolder.getRuleContext().getReport()
+                .addError(new ProcessingError(e, PmdThreadContextHolder.getRuleContext().getSourceCodeFilename()));
         } finally {
             populateImports(node);
         }
@@ -1312,6 +1318,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                      */
                     myType = pmdClassLoader.loadClass(qualifiedName);
                 } catch (ClassNotFoundException e) {
+                    PmdThreadContextHolder.getRuleContext().getReport()
+                        .addError(new ProcessingError(e, PmdThreadContextHolder.getRuleContext().getSourceCodeFilename()));
+
                     myType = processOnDemand(qualifiedName);
                 } catch (LinkageError e) {
                     // we found the class, but there is a problem with it (see https://github.com/pmd/pmd/issues/1131)
@@ -1319,6 +1328,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         LOG.log(Level.FINE, "Tried to load class " + qualifiedName + " from on demand import, "
                                 + "with an incomplete classpath.", e);
                     }
+                    PmdThreadContextHolder.getRuleContext().getReport()
+                        .addError(new ProcessingError(e, PmdThreadContextHolder.getRuleContext().getSourceCodeFilename()));
                     return;
                 }
             }
@@ -1337,6 +1348,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     LOG.log(Level.FINE, "Tried to load class " + qualifiedNameInner + " from on demand import, "
                             + "with an incomplete classpath.", e);
                 }
+                PmdThreadContextHolder.getRuleContext().getReport()
+                    .addError(new ProcessingError(e, PmdThreadContextHolder.getRuleContext().getSourceCodeFilename()));
                 return;
             }
         }
@@ -1398,6 +1411,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             return false;
         } catch (LinkageError e2) {
             // Class exists, but may be invalid (see https://github.com/pmd/pmd/issues/1131)
+            PmdThreadContextHolder.getRuleContext().getReport()
+                .addError(new ProcessingError(e2, PmdThreadContextHolder.getRuleContext().getSourceCodeFilename()));
             return true;
         }
     }
@@ -1412,6 +1427,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 LOG.log(Level.FINE, "Tried to load class " + fullyQualifiedClassName + " from on demand import, "
                         + "with an incomplete classpath.", e2);
             }
+            PmdThreadContextHolder.getRuleContext().getReport()
+                .addError(new ProcessingError(e2, PmdThreadContextHolder.getRuleContext().getSourceCodeFilename()));
             return null;
         }
     }
@@ -1428,6 +1445,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     LOG.log(Level.FINE, "Tried to load class " + fullClassName + " from on demand import, "
                             + "with an incomplete classpath.", e);
                 }
+                PmdThreadContextHolder.getRuleContext().getReport()
+                    .addError(new ProcessingError(e, PmdThreadContextHolder.getRuleContext().getSourceCodeFilename()));
             }
         }
         return null;
