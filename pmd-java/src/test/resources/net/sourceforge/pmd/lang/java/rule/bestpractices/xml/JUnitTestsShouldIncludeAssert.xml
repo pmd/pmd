@@ -417,4 +417,31 @@ public class FooTest {
 
 }]]></code>
     </test-code>
+    <test-code>
+        <description>#1365 detect test classes marked with fully qualified annotation.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+class Style {
+  // This used to trigger the JUnitTestsShouldIncludeWarning rule
+  @org.junit.Test(expected = IllegalArgumentException.class)
+  public void moveOutOfBoundsFrom() {
+    doSomething();
+  }
+}]]></code>
+    </test-code>
+    <test-code>
+        <description>#1365 detect test classes marked with fully qualified annotation, base case.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+class Style {
+  @Test(expected = IllegalArgumentException.class)
+  public void moveOutOfBoundsFrom() {
+    doSomething();
+  }
+}]]></code>
+    </test-code>
 </test-data>
