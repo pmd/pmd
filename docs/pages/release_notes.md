@@ -25,6 +25,7 @@ This is a {{ site.pmd.release_type }} release.
 
 *   [#1366](https://github.com/pmd/pmd/pull/1366): \[Java] Static Modifier on Internal Interface pmd #1356 - [avishvat](https://github.com/vishva007)
 *   [#1368](https://github.com/pmd/pmd/pull/1368): \[doc] Updated outdated note in the building documentation. - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1375](https://github.com/pmd/pmd/pull/1375): \[java] Add missing null check AbstractJavaAnnotatableNode - [Will Winder](https://github.com/winder)
 
 {% endtocmaker %}
 
