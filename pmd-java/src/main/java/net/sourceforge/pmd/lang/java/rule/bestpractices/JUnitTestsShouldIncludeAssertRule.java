@@ -106,8 +106,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         List<ASTNormalAnnotation> annotations = methodParent.findDescendantsOfType(ASTNormalAnnotation.class);
         for (ASTNormalAnnotation annotation : annotations) {
             ASTName name = annotation.getFirstChildOfType(ASTName.class);
-            if (name != null && ("Test".equals(name.getImage())
-                    || name.getType() != null && TypeHelper.isA(name, JUNIT4_CLASS_NAME))) {
+            if (name != null && TypeHelper.isA(name, JUNIT4_CLASS_NAME)) {
                 List<ASTMemberValuePair> memberValues = annotation.findDescendantsOfType(ASTMemberValuePair.class);
                 for (ASTMemberValuePair pair : memberValues) {
                     if ("expected".equals(pair.getImage())) {
