@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>SQL Queries</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+  SELECT cmer_id
+        ,version
+        ,cmp_id
+    BULK COLLECT INTO v_cmer_ids
+        ,v_versions
+        ,v_cmp_ids
+    FROM cmer;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>SQL Queries</description>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>2,2,3,3,3,4</expected-linenumbers>
+        <expected-messages>
+            <message>cmp_id should be on line 4</message>
+            <message>version should be on line 3</message>
+            <message>BULK COLLECT INTO should begin at column 5</message>
+            <message>v_cmp_ids should be on line 5</message>
+            <message>v_versions should be on line 4</message>
+            <message>FROM should begin at column 5</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+  SELECT cmer_id, version, cmp_id
+  BULK COLLECT INTO v_cmer_ids, v_versions, v_cmp_ids
+  FROM cmer;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+</test-data>

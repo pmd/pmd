@@ -9,6 +9,18 @@
 Rules which enforce a specific coding style.
     </description>
 
+    <rule name="CodeFormat"
+          language="plsql"
+          since="6.9.0"
+          message="Please check the formatting/indentation"
+          class="net.sourceforge.pmd.lang.plsql.rule.codestyle.CodeFormatRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codestyle.html#codeformat">
+        <description>
+Code Formatting
+        </description>
+        <priority>3</priority>
+    </rule>
+
     <rule name="MisplacedPragma"
           language="plsql"
           since="5.5.2"
