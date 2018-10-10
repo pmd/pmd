@@ -174,4 +174,38 @@ END;
 /        ]]></code>
         <source-type>plsql</source-type>
     </test-code>
+
+    <test-code>
+        <description>Parameters - ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+-- comment is necessary in order to not trim the whitespace at the beginning
+  PROCEDURE create_prospect(
+    company_info_in      IN    prospects.company_info%TYPE -- Organization
+   ,firstname_in         IN    persons.firstname%TYPE      -- FirstName
+   ,lastname_in          IN    persons.lastname%TYPE       -- LastName
+  );
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Parameters - not aligned</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,3,4,4</expected-linenumbers>
+        <expected-messages>
+            <message>Type persons.firstname%TYPE should begin at column 32</message>
+            <message>firstname_in should be on line 4</message>
+            <message>Type persons.lastname%TYPE should begin at column 32</message>
+            <message>lastname_in should be on line 5</message>
+        </expected-messages>
+        <code><![CDATA[
+-- comment is necessary in order to not trim the whitespace at the beginning
+  PROCEDURE create_prospect(
+    company_info_in      IN    prospects.company_info%TYPE  ,firstname_in         IN    persons.firstname%TYPE      -- FirstName
+        ,lastname_in          IN    persons.lastname%TYPE       -- LastName
+  );
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
 </test-data>

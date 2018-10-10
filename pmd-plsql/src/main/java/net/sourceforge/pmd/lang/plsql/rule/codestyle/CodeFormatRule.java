@@ -8,7 +8,10 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTBulkCollectIntoClause;
+import net.sourceforge.pmd.lang.plsql.ast.ASTDatatype;
 import net.sourceforge.pmd.lang.plsql.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFromClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTJoinClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTSelectList;
@@ -83,10 +86,7 @@ public class CodeFormatRule extends AbstractPLSQLRule {
         int thisIndex = node.jjtGetChildIndex();
         Node prevSibling = node.jjtGetParent().jjtGetChild(thisIndex - 1);
 
-        if (node.getBeginColumn() != prevSibling.getBeginColumn()) {
-            addViolationWithMessage(data, node,
-                    node.getImage() + " should begin at column " + prevSibling.getBeginColumn());
-        }
+        checkIndentation(data, node, prevSibling.getBeginColumn(), node.getImage());
 
         // it should also be on the next line
         if (node.getBeginLine() != prevSibling.getEndLine() + 1) {
@@ -116,5 +116,24 @@ public class CodeFormatRule extends AbstractPLSQLRule {
         if (node.getBeginColumn() != indentation) {
             addViolationWithMessage(data, node, name + " should begin at column " + indentation);
         }
+    }
+
+    @Override
+    public Object visit(ASTFormalParameters node, Object data) {
+        int indentation = node.jjtGetParent().getBeginColumn() + DEFAULT_INDENT;
+        checkEachChildOnNextLine(data, node, node.getBeginLine() + 1, indentation);
+
+        // check the data type alignment
+        List<ASTFormalParameter> parameters = node.findChildrenOfType(ASTFormalParameter.class);
+        if (parameters.size() > 1) {
+            ASTDatatype first = parameters.get(0).getFirstChildOfType(ASTDatatype.class);
+            for (int i = 1; first != null && i < parameters.size(); i++) {
+                ASTDatatype nextType = parameters.get(i).getFirstChildOfType(ASTDatatype.class);
+                if (nextType != null) {
+                    checkIndentation(data, nextType, first.getBeginColumn(), "Type " + nextType.getImage());
+                }
+            }
+        }
+        return super.visit(node, data);
     }
 }
