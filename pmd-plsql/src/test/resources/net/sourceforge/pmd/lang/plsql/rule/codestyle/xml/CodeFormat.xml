@@ -45,4 +45,133 @@ END;
         <source-type>plsql</source-type>
     </test-code>
 
+    <test-code>
+        <description>SQL Queries: each join on separate lines, union aligned - ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+  SELECT cmer_id
+        ,version
+        ,cmp_id
+    BULK COLLECT INTO v_cmer_ids
+        ,v_versions
+        ,v_cmp_ids
+    FROM (SELECT cmer.cmer_id
+                ,cmer.version
+                ,cmer.cmp_id
+            FROM webcrm.comp_mprc_emp_role cmer
+                 JOIN webcrm.jcomp_mprc_emp_role insert_entry
+                   ON (insert_entry.cmer_id = cmer.cmer_id
+                   AND insert_entry.operation = 'I')
+                 LEFT JOIN webcrm.v_company_address caddr ON (caddr.cmp_id = cmer.cmp_id)
+          UNION
+          SELECT jcmer.cmer_id
+                ,jcmer.version
+                ,jcmer.cmp_id
+            FROM webcrm.jcomp_mprc_emp_role jcmer);
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>SQL Queries: each join on separate lines - violation</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>12,12,12,12</expected-linenumbers>
+        <expected-messages>
+            <message>Join condition "caddr.cmp_id = cmer.cmp_id" should be on line 15</message>
+            <message>Join condition "insert_entry.cmer_id = cmer.cmer_id" should be on line 13</message>
+            <message>Join condition "insert_entry.operation = I" should be on line 14</message>
+            <message>OuterJoinClause should be on line 15</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+  SELECT cmer_id
+        ,version
+        ,cmp_id
+    BULK COLLECT INTO v_cmer_ids
+        ,v_versions
+        ,v_cmp_ids
+    FROM (SELECT cmer.cmer_id
+                ,cmer.version
+                ,cmer.cmp_id
+            FROM webcrm.comp_mprc_emp_role cmer
+                 JOIN webcrm.jcomp_mprc_emp_role insert_entry ON (insert_entry.cmer_id = cmer.cmer_id AND insert_entry.operation = 'I') LEFT JOIN webcrm.v_company_address caddr ON (caddr.cmp_id = cmer.cmp_id)
+          UNION
+          SELECT jcmer.cmer_id
+                ,jcmer.version
+                ,jcmer.cmp_id
+            FROM webcrm.jcomp_mprc_emp_role jcmer);
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>SQL Queries: union not aligned - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>16</expected-linenumbers>
+        <expected-messages>
+            <message>UNION should begin at column 11</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+  SELECT cmer_id
+        ,version
+        ,cmp_id
+    BULK COLLECT INTO v_cmer_ids
+        ,v_versions
+        ,v_cmp_ids
+    FROM (SELECT cmer.cmer_id
+                ,cmer.version
+                ,cmer.cmp_id
+            FROM webcrm.comp_mprc_emp_role cmer
+                 JOIN webcrm.jcomp_mprc_emp_role insert_entry
+                   ON (insert_entry.cmer_id = cmer.cmer_id
+                   AND insert_entry.operation = 'I')
+                 LEFT JOIN webcrm.v_company_address caddr ON (caddr.cmp_id = cmer.cmp_id)
+                    UNION
+          SELECT jcmer.cmer_id
+                ,jcmer.version
+                ,jcmer.cmp_id
+            FROM webcrm.jcomp_mprc_emp_role jcmer);
+END;
+/        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>SQL Queries: union not aligned on wrong line - violation</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>15,15</expected-linenumbers>
+        <expected-messages>
+            <message>UNION should be on line 16</message>
+            <message>UNION should begin at column 11</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+  SELECT cmer_id
+        ,version
+        ,cmp_id
+    BULK COLLECT INTO v_cmer_ids
+        ,v_versions
+        ,v_cmp_ids
+    FROM (SELECT cmer.cmer_id
+                ,cmer.version
+                ,cmer.cmp_id
+            FROM webcrm.comp_mprc_emp_role cmer
+                 JOIN webcrm.jcomp_mprc_emp_role insert_entry
+                   ON (insert_entry.cmer_id = cmer.cmer_id
+                   AND insert_entry.operation = 'I')
+                 LEFT JOIN webcrm.v_company_address caddr ON (caddr.cmp_id = cmer.cmp_id) UNION
+          SELECT jcmer.cmer_id
+                ,jcmer.version
+                ,jcmer.cmp_id
+            FROM webcrm.jcomp_mprc_emp_role jcmer);
+END;
+/        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
 </test-data>
