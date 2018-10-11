@@ -9,6 +9,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTBulkCollectIntoClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTDatatype;
+import net.sourceforge.pmd.lang.plsql.ast.ASTDeclarativeSection;
 import net.sourceforge.pmd.lang.plsql.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameters;
@@ -16,6 +17,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTFromClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTJoinClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTSelectList;
 import net.sourceforge.pmd.lang.plsql.ast.ASTSubqueryOperation;
+import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclarator;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 
 public class CodeFormatRule extends AbstractPLSQLRule {
@@ -112,6 +114,14 @@ public class CodeFormatRule extends AbstractPLSQLRule {
         return currentLine;
     }
 
+    private void checkLineAndIndentation(Object data, Node node, int line, int indentation, String name) {
+        if (node.getBeginLine() != line) {
+            addViolationWithMessage(data, node, name + " should be on line " + line);
+        } else if (node.getBeginColumn() != indentation) {
+            addViolationWithMessage(data, node, name + " should begin at column " + indentation);
+        }
+    }
+
     private void checkIndentation(Object data, Node node, int indentation, String name) {
         if (node.getBeginColumn() != indentation) {
             addViolationWithMessage(data, node, name + " should begin at column " + indentation);
@@ -134,6 +144,36 @@ public class CodeFormatRule extends AbstractPLSQLRule {
                 }
             }
         }
+        return super.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTDeclarativeSection node, Object data) {
+        int indentation = node.getNthParent(2).getBeginColumn() + 2 * DEFAULT_INDENT;
+        int line = node.getBeginLine();
+
+        List<ASTVariableOrConstantDeclarator> variables = node
+                .findDescendantsOfType(ASTVariableOrConstantDeclarator.class);
+
+        int datatypeIndentation = indentation;
+        if (!variables.isEmpty()) {
+            ASTDatatype datatype = variables.get(0).getFirstChildOfType(ASTDatatype.class);
+            if (datatype != null) {
+                datatypeIndentation = datatype.getBeginColumn();
+            }
+        }
+
+        for (ASTVariableOrConstantDeclarator variable : variables) {
+            checkLineAndIndentation(data, variable, line, indentation, variable.getImage());
+
+            ASTDatatype datatype = variable.getFirstChildOfType(ASTDatatype.class);
+            if (datatype != null) {
+                checkIndentation(data, datatype, datatypeIndentation, "Type " + datatype.getImage());
+            }
+
+            line++;
+        }
+
         return super.visit(node, data);
     }
 }

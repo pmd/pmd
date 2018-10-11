@@ -208,4 +208,69 @@ END;
         ]]></code>
         <source-type>plsql</source-type>
     </test-code>
+
+    <test-code>
+        <description>Variables - ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+PROCEDURE create_prospect()
+  IS
+    v_adt_id        academic_titles.adt_id%TYPE := 1;
+    v_region_id     addresses.rgn_id%TYPE;
+    v_prospect_id   prospects.prosp_id%TYPE;
+    v_address_id    addresses.adr_id%TYPE := 1;
+    v_message_rec   snapaddy_messages%ROWTYPE;
+  BEGIN
+  END;
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Variables - same line, not ok</description>
+        <expected-problems>8</expected-problems>
+        <expected-linenumbers>3,3,3,3,3,3,3,3</expected-linenumbers>
+        <expected-messages>
+            <message>Type addresses.adr_id%TYPE should begin at column 21</message>
+            <message>Type addresses.rgn_id%TYPE should begin at column 21</message>
+            <message>Type prospects.prosp_id%TYPE should begin at column 21</message>
+            <message>Type snapaddy_messages%ROWTYPE should begin at column 21</message>
+            <message>v_address_id addresses.adr_id%TYPE := 1 should be on line 6</message>
+            <message>v_message_rec snapaddy_messages%ROWTYPE should be on line 7</message>
+            <message>v_prospect_id prospects.prosp_id%TYPE should be on line 5</message>
+            <message>v_region_id addresses.rgn_id%TYPE should be on line 4</message>
+        </expected-messages>
+        <code><![CDATA[
+PROCEDURE create_prospect()
+  IS
+    v_adt_id        academic_titles.adt_id%TYPE := 1; v_region_id     addresses.rgn_id%TYPE; v_prospect_id   prospects.prosp_id%TYPE; v_address_id    addresses.adr_id%TYPE := 1; v_message_rec   snapaddy_messages%ROWTYPE;
+  BEGIN
+  END;
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Variables - types not aligned</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,5,6,7</expected-linenumbers>
+        <expected-messages>
+            <message>Type addresses.rgn_id%TYPE should begin at column 21</message>
+            <message>Type prospects.prosp_id%TYPE should begin at column 21</message>
+            <message>Type addresses.adr_id%TYPE should begin at column 21</message>
+            <message>Type snapaddy_messages%ROWTYPE should begin at column 21</message>
+        </expected-messages>
+        <code><![CDATA[
+PROCEDURE create_prospect()
+  IS
+    v_adt_id        academic_titles.adt_id%TYPE := 1;
+    v_region_id addresses.rgn_id%TYPE;
+    v_prospect_id prospects.prosp_id%TYPE;
+    v_address_id addresses.adr_id%TYPE := 1;
+    v_message_rec snapaddy_messages%ROWTYPE;
+  BEGIN
+  END;
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
 </test-data>
