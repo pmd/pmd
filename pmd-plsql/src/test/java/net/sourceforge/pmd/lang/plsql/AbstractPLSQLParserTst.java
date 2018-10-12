@@ -10,6 +10,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -133,7 +134,7 @@ public abstract class AbstractPLSQLParserTst {
 
     public String loadTestResource(String name) {
         try {
-            return IOUtils.toString(this.getClass().getResourceAsStream(name));
+            return IOUtils.toString(this.getClass().getResourceAsStream(name), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

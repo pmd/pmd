@@ -8,6 +8,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -39,7 +40,8 @@ public class ApexMultifileVisitorTest extends ApexParserTest {
     @Test
     public void testOperationsAreThere() throws IOException {
         ApexNode<Compilation> acu = parseAndVisitForString(
-            IOUtils.toString(ApexMultifileVisitorTest.class.getResourceAsStream("MetadataDeployController.cls")));
+            IOUtils.toString(ApexMultifileVisitorTest.class.getResourceAsStream("MetadataDeployController.cls"),
+                    StandardCharsets.UTF_8));
 
         final ApexSignatureMatcher toplevel = ApexProjectMirror.INSTANCE;
 

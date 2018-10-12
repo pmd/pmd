@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -29,7 +30,7 @@ public class UnicodeObjectiveCTokenizerTest extends AbstractTokenizerTest {
 
     @Override
     public String getSampleCode() throws IOException {
-        return IOUtils.toString(ObjectiveCTokenizer.class.getResourceAsStream(FILENAME), "UTF-8");
+        return IOUtils.toString(ObjectiveCTokenizer.class.getResourceAsStream(FILENAME), StandardCharsets.UTF_8);
     }
 
     @Test

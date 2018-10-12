@@ -14,6 +14,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -128,7 +129,8 @@ public class ParserCornersTest {
 
     @Test
     public void testLambdaBug1470() throws Exception {
-        String code = IOUtils.toString(ParserCornersTest.class.getResourceAsStream("LambdaBug1470.java"), "UTF-8");
+        String code = IOUtils.toString(ParserCornersTest.class.getResourceAsStream("LambdaBug1470.java"),
+                StandardCharsets.UTF_8);
         parseJava18(code);
     }
 
@@ -163,19 +165,20 @@ public class ParserCornersTest {
 
     @Test
     public void testBug1429ParseError() throws Exception {
-        String c = IOUtils.toString(this.getClass().getResourceAsStream("Bug1429.java"));
+        String c = IOUtils.toString(this.getClass().getResourceAsStream("Bug1429.java"), StandardCharsets.UTF_8);
         parseJava18(c);
     }
 
     @Test
     public void testBug1530ParseError() throws Exception {
-        String c = IOUtils.toString(this.getClass().getResourceAsStream("Bug1530.java"));
+        String c = IOUtils.toString(this.getClass().getResourceAsStream("Bug1530.java"), StandardCharsets.UTF_8);
         parseJava18(c);
     }
     
     @Test
     public void testGitHubBug207() throws Exception {
-        String c = IOUtils.toString(this.getClass().getResourceAsStream("GitHubBug207.java"));
+        String c = IOUtils.toString(this.getClass().getResourceAsStream("GitHubBug207.java"),
+                StandardCharsets.UTF_8);
         parseJava18(c);
     }
 
@@ -190,7 +193,8 @@ public class ParserCornersTest {
 
     @Test
     public void testGitHubBug208ParseError() throws Exception {
-        String c = IOUtils.toString(this.getClass().getResourceAsStream("GitHubBug208.java"));
+        String c = IOUtils.toString(this.getClass().getResourceAsStream("GitHubBug208.java"),
+                StandardCharsets.UTF_8);
         parseJava15(c);
     }
     
@@ -276,7 +280,7 @@ public class ParserCornersTest {
     private String readAsString(String resource) {
         InputStream in = ParserCornersTest.class.getResourceAsStream(resource);
         try {
-            return IOUtils.toString(in);
+            return IOUtils.toString(in, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {

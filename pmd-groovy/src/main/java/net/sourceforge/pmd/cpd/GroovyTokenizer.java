@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.nio.charset.StandardCharsets;
+
 import org.apache.commons.io.IOUtils;
 import org.codehaus.groovy.antlr.parser.GroovyLexer;
 
@@ -22,7 +24,7 @@ public class GroovyTokenizer implements Tokenizer {
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
 
-        GroovyLexer lexer = new GroovyLexer(IOUtils.toInputStream(buffer.toString()));
+        GroovyLexer lexer = new GroovyLexer(IOUtils.toInputStream(buffer.toString(), StandardCharsets.UTF_8));
         TokenStream tokenStream = lexer.plumb();
 
         try {

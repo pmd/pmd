@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -329,7 +330,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
         ScrollPane scroll = new ScrollPane();
         try {
-            scroll.setContent(new TextArea(IOUtils.toString(getClass().getResourceAsStream("LICENSE"))));
+            scroll.setContent(new TextArea(IOUtils.toString(getClass().getResourceAsStream("LICENSE"),
+                    StandardCharsets.UTF_8)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -354,7 +356,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     private void loadSourceFromFile(File file) {
         if (file != null) {
             try {
-                String source = IOUtils.toString(new FileInputStream(file));
+                String source = IOUtils.toString(new FileInputStream(file), StandardCharsets.UTF_8);
                 sourceEditorController.setText(source);
                 LanguageVersion guess = DesignerUtil.getLanguageVersionFromExtension(file.getName());
                 if (guess != null) { // guess the language from the extension

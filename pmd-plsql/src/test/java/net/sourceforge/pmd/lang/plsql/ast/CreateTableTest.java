@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import java.nio.charset.StandardCharsets;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,7 +16,8 @@ public class CreateTableTest extends AbstractPLSQLParserTst {
 
     @Test
     public void parseCreateTable() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("CreateTable.pls"));
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("CreateTable.pls"),
+                StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
         Assert.assertNotNull(input);
     }
