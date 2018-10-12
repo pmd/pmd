@@ -273,4 +273,129 @@ PROCEDURE create_prospect()
         ]]></code>
         <source-type>plsql</source-type>
     </test-code>
+
+    <test-code>
+        <description>Calling a procedure / function - ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+-- more than three parameters, each parameter on a separate line
+webcrm_marketing.prospect_ins(
+  cmp_id_in            => NULL
+ ,company_info_in      => company_info_in
+ ,firstname_in         => firstname_in
+ ,lastname_in          => lastname_in
+ ,slt_code_in          => NULL
+);
+
+-- three or less parameters, but line too long
+webcrm_utils.breakup_string(
+  string_in       => 'test 123, test test, abadfhao , dhfj, wiezrohadf , '
+ ,row_length_in   => 3
+ ,separator_in    => ','
+);
+
+-- three or less parameters, line does not exceed 120 characters
+webcrm_utils.breakup_string(string_in => 'test 123, test test, ab', row_length_in => 3, separator_in => ',');
+
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Calling a procedure / function - same line</description>
+        <expected-problems>8</expected-problems>
+        <expected-linenumbers>4,4,5,5,5,5,6,6</expected-linenumbers>
+        <expected-messages>
+            <message>NULL should begin at column 57</message>
+            <message>Parameter company_info_in should be on line 5</message>
+            <message>Parameter firstname_in should be on line 6</message>
+            <message>Parameter lastname_in should be on line 7</message>
+            <message>firstname_in should begin at column 57</message>
+            <message>lastname_in should begin at column 57</message>
+            <message>NULL should begin at column 57</message>
+            <message>Parameter slt_code_in should be on line 8</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+-- more than three parameters, each parameter should be on a separate line
+webcrm_marketing.prospect_ins(
+  cmp_id_in            => NULL ,company_info_in      => company_info_in
+ ,firstname_in         => firstname_in, lastname_in          => lastname_in
+ ,slt_code_in          => NULL
+);
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Calling a procedure / function - line too long</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Line is too long, please split parameters on separate lines</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+-- three or less parameters, but line too long
+webcrm_utils.breakup_string(string_in       => 'test 123, test test, abadfhao , dhfj, wiezrohadf , ',row_length_in   => 3,separator_in    => ',');
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Calling a procedure / function - bad alignment</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>4,5,6,7,8</expected-linenumbers>
+        <expected-messages>
+            <message>NULL should begin at column 23</message>
+            <message>company_info_in should begin at column 23</message>
+            <message>firstname_in should begin at column 23</message>
+            <message>lastname_in should begin at column 23</message>
+            <message>NULL should begin at column 23</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+-- more than three parameters, each parameter on a separate line
+webcrm_marketing.prospect_ins(
+  cmp_id_in => NULL
+ ,company_info_in => company_info_in
+ ,firstname_in  => firstname_in
+ ,lastname_in => lastname_in
+ ,slt_code_in => NULL
+);
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Calling a procedure / function - closing paranthesis should be on a new line</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Closing paranthesis should be on a new line.</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+-- more than three parameters, each parameter on a separate line
+webcrm_marketing.prospect_ins(
+  cmp_id_in            => NULL
+ ,company_info_in      => company_info_in
+ ,firstname_in         => firstname_in
+ ,lastname_in          => lastname_in
+ ,slt_code_in          => NULL);
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
 </test-data>

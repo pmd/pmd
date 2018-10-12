@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.plsql.rule.codestyle;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.plsql.ast.ASTArgument;
+import net.sourceforge.pmd.lang.plsql.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.plsql.ast.ASTBulkCollectIntoClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTDatatype;
 import net.sourceforge.pmd.lang.plsql.ast.ASTDeclarativeSection;
@@ -17,6 +19,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTFromClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTJoinClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTSelectList;
 import net.sourceforge.pmd.lang.plsql.ast.ASTSubqueryOperation;
+import net.sourceforge.pmd.lang.plsql.ast.ASTUnqualifiedID;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclarator;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 
@@ -172,6 +175,55 @@ public class CodeFormatRule extends AbstractPLSQLRule {
             }
 
             line++;
+        }
+
+        return super.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTArgumentList node, Object data) {
+        List<ASTArgument> arguments = node.findChildrenOfType(ASTArgument.class);
+
+        if (node.getEndColumn() > 120) {
+            addViolationWithMessage(data, node, "Line is too long, please split parameters on separate lines");
+            return super.visit(node, data);
+        }
+
+        if (arguments.size() > 3) {
+            // more than three parameters -> each parameter on a separate line
+            int line = node.getBeginLine();
+            int indentation = node.getBeginColumn();
+            int longestParameterEndColumn = 0;
+            for (ASTArgument argument : arguments) {
+                checkLineAndIndentation(data, argument, line, indentation, "Parameter " + argument.getImage());
+                line++;
+
+                if (argument.jjtGetChild(0) instanceof ASTUnqualifiedID) {
+                    if (argument.jjtGetChild(0).getEndColumn() > longestParameterEndColumn) {
+                        longestParameterEndColumn = argument.jjtGetChild(0).getEndColumn();
+                    }
+                }
+            }
+
+            // now check for the indentation of the expressions
+            int expectedBeginColumn = longestParameterEndColumn + 3 + "=> ".length();
+            // take the indentation from the first one, if it is greater
+            if (!arguments.isEmpty() && arguments.get(0).jjtGetNumChildren() == 2
+                    && arguments.get(0).jjtGetChild(1).getBeginColumn() > expectedBeginColumn) {
+                expectedBeginColumn = arguments.get(0).jjtGetChild(1).getBeginColumn();
+            }
+            for (ASTArgument argument : arguments) {
+                if (argument.jjtGetNumChildren() == 2 && argument.jjtGetChild(0) instanceof ASTUnqualifiedID) {
+                    Node expr = argument.jjtGetChild(1);
+                    checkIndentation(data, expr, expectedBeginColumn, expr.getImage());
+                }
+            }
+
+            // closing paranthesis should be on a new line
+            Node primaryExpression = node.getNthParent(3);
+            if (primaryExpression.getEndLine() != node.getEndLine() + 1) {
+                addViolationWithMessage(data, primaryExpression, "Closing paranthesis should be on a new line.");
+            }
         }
 
         return super.visit(node, data);
