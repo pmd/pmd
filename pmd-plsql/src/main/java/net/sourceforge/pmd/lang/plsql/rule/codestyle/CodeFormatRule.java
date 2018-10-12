@@ -16,16 +16,31 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFromClause;
+import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.ast.ASTJoinClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTSelectList;
 import net.sourceforge.pmd.lang.plsql.ast.ASTSubqueryOperation;
 import net.sourceforge.pmd.lang.plsql.ast.ASTUnqualifiedID;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclarator;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
+import net.sourceforge.pmd.properties.IntegerProperty;
 
 public class CodeFormatRule extends AbstractPLSQLRule {
 
-    private static final int DEFAULT_INDENT = 2;
+    private static final IntegerProperty INDENTATION_PROPERTY = IntegerProperty.named("indentation")
+            .desc("Indentation to be used for blocks").defaultValue(2).range(0, 20).build();
+
+    private int indentation = INDENTATION_PROPERTY.defaultValue();
+
+    public CodeFormatRule() {
+        definePropertyDescriptor(INDENTATION_PROPERTY);
+    }
+
+    @Override
+    public Object visit(ASTInput node, Object data) {
+        indentation = getProperty(INDENTATION_PROPERTY);
+        return super.visit(node, data);
+    }
 
     @Override
     public Object visit(ASTSelectList node, Object data) {
@@ -37,14 +52,14 @@ public class CodeFormatRule extends AbstractPLSQLRule {
     @Override
     public Object visit(ASTBulkCollectIntoClause node, Object data) {
         Node parent = node.jjtGetParent();
-        checkIndentation(data, node, parent.getBeginColumn() + DEFAULT_INDENT, "BULK COLLECT INTO");
+        checkIndentation(data, node, parent.getBeginColumn() + indentation, "BULK COLLECT INTO");
         checkEachChildOnNextLine(data, node, node.getBeginLine(), parent.getBeginColumn() + 7);
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTFromClause node, Object data) {
-        checkIndentation(data, node, node.jjtGetParent().getBeginColumn() + DEFAULT_INDENT, "FROM");
+        checkIndentation(data, node, node.jjtGetParent().getBeginColumn() + indentation, "FROM");
         return super.visit(node, data);
     }
 
@@ -133,8 +148,8 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
     @Override
     public Object visit(ASTFormalParameters node, Object data) {
-        int indentation = node.jjtGetParent().getBeginColumn() + DEFAULT_INDENT;
-        checkEachChildOnNextLine(data, node, node.getBeginLine() + 1, indentation);
+        int parameterIndentation = node.jjtGetParent().getBeginColumn() + indentation;
+        checkEachChildOnNextLine(data, node, node.getBeginLine() + 1, parameterIndentation);
 
         // check the data type alignment
         List<ASTFormalParameter> parameters = node.findChildrenOfType(ASTFormalParameter.class);
@@ -152,13 +167,13 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
     @Override
     public Object visit(ASTDeclarativeSection node, Object data) {
-        int indentation = node.getNthParent(2).getBeginColumn() + 2 * DEFAULT_INDENT;
+        int variableIndentation = node.getNthParent(2).getBeginColumn() + 2 * indentation;
         int line = node.getBeginLine();
 
         List<ASTVariableOrConstantDeclarator> variables = node
                 .findDescendantsOfType(ASTVariableOrConstantDeclarator.class);
 
-        int datatypeIndentation = indentation;
+        int datatypeIndentation = variableIndentation;
         if (!variables.isEmpty()) {
             ASTDatatype datatype = variables.get(0).getFirstChildOfType(ASTDatatype.class);
             if (datatype != null) {
@@ -167,7 +182,7 @@ public class CodeFormatRule extends AbstractPLSQLRule {
         }
 
         for (ASTVariableOrConstantDeclarator variable : variables) {
-            checkLineAndIndentation(data, variable, line, indentation, variable.getImage());
+            checkLineAndIndentation(data, variable, line, variableIndentation, variable.getImage());
 
             ASTDatatype datatype = variable.getFirstChildOfType(ASTDatatype.class);
             if (datatype != null) {
