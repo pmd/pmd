@@ -985,6 +985,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <module>pmd-java</module>
         <module>pmd-javascript</module>
         <module>pmd-jsp</module>
+        <module>pmd-kotlin</module>
         <module>pmd-matlab</module>
         <module>pmd-objectivec</module>
         <module>pmd-perl</module>
