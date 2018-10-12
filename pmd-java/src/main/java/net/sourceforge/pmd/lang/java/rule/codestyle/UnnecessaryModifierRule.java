@@ -167,9 +167,14 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
             reportUnnecessaryModifiers(data, node, Modifier.PUBLIC, "members of " + getPrintableNodeKind(node.getEnclosingTypeDeclaration()) + " types are implicitly public");
         }
 
-        if ((node.isInterface() || isParentInterfaceOrAnnotation) && node.isStatic()) {
-            // a static interface or class nested within an interface
-            reportUnnecessaryModifiers(data, node, Modifier.STATIC, "types nested within an interface type are implicitly static");
+        if (node.isStatic()) {
+            if (node.isInterface()) {
+                // a static interface
+                reportUnnecessaryModifiers(data, node, Modifier.STATIC, "member interfaces are implicitly static");
+            } else if (isParentInterfaceOrAnnotation) {
+                // a type nested within an interface
+                reportUnnecessaryModifiers(data, node, Modifier.STATIC, "types nested within an interface type are implicitly static");
+            }
         }
 
         return data;
