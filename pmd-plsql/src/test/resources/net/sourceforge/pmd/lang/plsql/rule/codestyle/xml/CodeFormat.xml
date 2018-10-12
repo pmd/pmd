@@ -398,4 +398,42 @@ END;
         <source-type>plsql</source-type>
     </test-code>
 
+    <test-code>
+        <description>Calling a procedure / function without named parameters - ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+-- one parameter only, everything is on one line
+webcrm_utils.boolean_to_string(TRUE);
+
+-- three parameters that fit on one line
+webcrm_utils.breakup_string('test 123, test test, ', 3, ',');
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Calling a procedure / function without named parameters - not ok</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Procedure call with more than three parameters should use named parameters.</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+-- procedure call with more than three parameters, should not appear (procedure should be called using the named notation)
+webcrm_marketing.prospect_ins(
+  NULL
+ ,company_info_in
+ ,firstname_in
+ ,lastname_in
+ ,NULL
+);
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
 </test-data>

@@ -190,6 +190,12 @@ public class CodeFormatRule extends AbstractPLSQLRule {
         }
 
         if (arguments.size() > 3) {
+            // procedure calls with more than 3 parameters should use named parameters
+            if (usesSimpleParameters(arguments)) {
+                addViolationWithMessage(data, node,
+                        "Procedure call with more than three parameters should use named parameters.");
+            }
+
             // more than three parameters -> each parameter on a separate line
             int line = node.getBeginLine();
             int indentation = node.getBeginColumn();
@@ -227,5 +233,14 @@ public class CodeFormatRule extends AbstractPLSQLRule {
         }
 
         return super.visit(node, data);
+    }
+
+    private boolean usesSimpleParameters(List<ASTArgument> arguments) {
+        for (ASTArgument argument : arguments) {
+            if (argument.jjtGetNumChildren() == 1) {
+                return true;
+            }
+        }
+        return false;
     }
 }
