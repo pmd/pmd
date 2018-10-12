@@ -14,6 +14,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New Rules
+
+*   The new PLSQL rule {% rule "plsql/codestyle/CodeFormat" %} (`plsql-codestyle`) verifies that
+    PLSQL code is properly formatted. It checks e.g. for correct indentation in select statements and verifies
+    that each parameter is defined on a separate line.
+
 ### Fixed Issues
 
 *   java
