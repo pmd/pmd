@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+ok, numeric literal with correct '_' usage
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int num = 1_000_000;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad, numeric literal without '_'
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Integer num = 2000000;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad, numeric literal used as a method parameter without '_'
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private callBar() {
+        bar(1000);
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, float value with less than 3 numbers.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    float number = 3.14f;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad, double value without '_'
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    double number = 314159265.359;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, numeric literal used as a method parameter with '_'
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private callBar() {
+        bar(314_159_265.359);
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

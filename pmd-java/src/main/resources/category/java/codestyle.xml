@@ -1351,6 +1351,38 @@ public class ClassInDefaultPackage {
         </example>
     </rule>
 
+    <rule name="NumericLiteralConvention"
+          language="java"
+          since="6.9"
+          message="Numeric literals with more than 3 digits must use '_' as a separator"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#numericliteralconvention">
+        <description>
+            Numeric literals with more than 3 digits must use '_' as a separator.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//Literal[@IntLiteral = true() or
+ @LongLiteral = true() or
+ @DoubleLiteral = true() or
+ @FloatLiteral = true()]
+ [not(matches(@Image, "^[0-9]{1,3}(_[0-9]{3})*(l|L)?(\.[0-9]+)?(d|D|f|F)?$"))]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class Foo {
+    private int num = 1000000; // should be 1_000_000
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="OnlyOneReturn"
           since="1.0"
           message="A method should have only one exit point, and that should be the last statement in the method"

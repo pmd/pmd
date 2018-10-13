@@ -54,6 +54,7 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "MethodNamingConventions");
         addRule(RULESET, "MIsLeadingVariableName");
         addRule(RULESET, "NoPackage");
+        addRule(RULESET, "NumericLiteralConvention");
         addRule(RULESET, "OnlyOneReturn");
         addRule(RULESET, "PackageCase");
         addRule(RULESET, "PrematureDeclaration");
