@@ -1274,13 +1274,19 @@ with an additional test case, so that the bug is not accidentally reintroduced l
 
 <h2 id="how-it-works">How it works</h2>
 
-<p>PMD’s built-in rules are organized in rulesets, such as “java-basic”. Each ruleset has a single test class,
-which executes all the test cases for all rules in this ruleset. The actual test cases are stored in separate
-XML files, for each rule a separate file is used.</p>
+<p>PMD’s built-in rules are organized in rulesets, where all rules belonging to the same category are placed
+in a single ruleset, such as “category/java/bestpractices.xml”.
+Each category-ruleset has a single abstract base test class, from which the individual test classes inherit.
+We have one test class per rule, which executes all test cases for a single rule. The actual test cases are
+stored in separate XML files, for each rule a separate file is used.</p>
 
-<p>The test class subclasses <code class="highlighter-rouge">net.sourceforge.pmd.testframework.SimpleAggregatorTst</code>, which provides the seamless
-integration with JUnit. You basically tell the framework, which rules should be tested and it searches
-the test code on its own.</p>
+<p>All the test classes inherit from <code class="highlighter-rouge">net.sourceforge.pmd.testframework.SimpleAggregatorTst</code>,
+which provides the seamless integration with JUnit. This base class determines the language, the category name
+and the rule name from the concrete test class. It then searches the test code on its own.
+E.g. the individual rule test class
+<code class="highlighter-rouge">net.sourceforge.pmd.lang.java.rule.bestpractices.AbstractClassWithoutAbstractMethodTest</code> tests the
+rule with the name “AbstractClassWithoutAbstractMethod”, which is in the category “bestpractices” for the
+language “java”.</p>
 
 <p>The test code (see below <a href="#test-xml-reference">Test XML Reference</a>) describes the test case completely with
 the expected behavior like number of expected rule violations, where the violations are expected, and so on.</p>
@@ -1297,50 +1303,41 @@ The XML file is a test resource, so it is searched in the tree under <code class
 <p>The sub package <code class="highlighter-rouge">xml</code> of the test class’s package should contain a file with the same name as the rule’s name
 which is under test.</p>
 
-<p>For example, to test the “Java Error Prone Category”, the fully qualified test class is:</p>
+<p>For example, to test the rule “AbstractClassWithoutAbstractMethod”, the fully qualified test class is:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>net.sourceforge.pmd.lang.java.rule.errorprone.ErrorProneRulesTest
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>net.sourceforge.pmd.lang.java.rule.bestpractices.AbstractClassWithoutAbstractMethodTest
 </code></pre></div></div>
 
-<p>The test code for the rule “AvoidBranchingStatementAsLastInLoop” can be found in the file:</p>
+<p>The test code for the rule can be found in the file:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>src/test/resources/net/sourceforge/pmd/lang/java/rule/errorprone/xml/AvoidBranchingStatementAsLastInLoop.xml
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>src/test/resources/net/sourceforge/pmd/lang/java/rule/bestpractices/xml/AbstractClassWithoutAbstractMethod.xml
 </code></pre></div></div>
 
 <p>In general, the class name and file name pattern for the test class and data is this:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>net.sourceforge.pmd.lang.&lt;Language Terse Name&gt;.rule.&lt;Category Name&gt;.&lt;Category Name&gt;RulesTest
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>net.sourceforge.pmd.lang.&lt;Language Terse Name&gt;.rule.&lt;Category Name&gt;.&lt;Rule Name&gt;Test
 src/test/resources/net/sourceforge/pmd/lang/&lt;Language Terse Name&gt;/rule/&lt;Category Name&gt;/xml/&lt;Rule Name&gt;.xml
 </code></pre></div></div>
 
 <div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> This convention allows you to quickly find the test cases for a given rule:
-Just search in the project for a file <code class="highlighter-rouge">&lt;RuleName&gt;.xml</code>. Looking at the path of the file, you can figure
-out the category. Searching for a class <code class="highlighter-rouge">&lt;Category Name&gt;RulesTest</code> gives you the test class.</div>
+Just search in the project for a file <code class="highlighter-rouge">&lt;RuleName&gt;.xml</code>. Search for a class <code class="highlighter-rouge">&lt;Rule Name&gt;Test</code> to find the
+unit test class for the given rule.</div>
 
 <h2 id="simple-example">Simple example</h2>
 
-<h3 id="test-class-errorpronerulestest">Test Class: ErrorProneRulesTest</h3>
+<h3 id="test-class-abstractclasswithoutabstractmethodtest">Test Class: AbstractClassWithoutAbstractMethodTest</h3>
 
-<p>This is a stripped down example for the Java Error Prone Category:</p>
+<p>This class inherits from <code class="highlighter-rouge">SimpleAggregatorTst</code> and is located in the package “bestpractices”, since the rule
+belongs to the category “Best Practices”:</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">sourceforge</span><span class="o">.</span><span class="na">pmd</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">rule</span><span class="o">.</span><span class="na">errorprone</span><span class="o">;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">sourceforge</span><span class="o">.</span><span class="na">pmd</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">rule</span><span class="o">.</span><span class="na">bestpractices</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.testframework.SimpleAggregatorTst</span><span class="o">;</span>
 
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ErrorProneRulesTest</span> <span class="kd">extends</span> <span class="n">SimpleAggregatorTst</span> <span class="o">{</span>
-
-    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">RULESET</span> <span class="o">=</span> <span class="s">"category/java/errorprone.xml"</span><span class="o">;</span>
-
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUp</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">addRule</span><span class="o">(</span><span class="n">RULESET</span><span class="o">,</span> <span class="s">"AvoidBranchingStatementAsLastInLoop"</span><span class="o">);</span>
-        <span class="n">addRule</span><span class="o">(</span><span class="n">RULESET</span><span class="o">,</span> <span class="s">"AvoidDecimalLiteralsInBigDecimalConstructor"</span><span class="o">);</span>
-    <span class="o">}</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AbstractClassWithoutAbstractMethodTest</span> <span class="kd">extends</span> <span class="n">SimpleAggregatorTst</span> <span class="o">{</span>
+    <span class="c1">// no additional unit tests</span>
 <span class="o">}</span>
 </code></pre></div></div>
-
-<p>This test class overrides the method <code class="highlighter-rouge">setUp</code> in order to register test cases for the two rules. If there
-are more rules, just add additional <code class="highlighter-rouge">addRule(...)</code> calls.</p>
 
 <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> You can also add additionally standard JUnit test methods annotated with <code class="highlighter-rouge">@Test</code> to
 this test class.</div>
@@ -1355,34 +1352,19 @@ this test class.</div>
     <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;test-code&gt;</span>
-        <span class="nt">&lt;description&gt;</span>ok: no violations<span class="nt">&lt;/description&gt;</span>
+        <span class="nt">&lt;description&gt;</span>concrete class<span class="nt">&lt;/description&gt;</span>
         <span class="nt">&lt;expected-problems&gt;</span>0<span class="nt">&lt;/expected-problems&gt;</span>
         <span class="nt">&lt;code&gt;</span><span class="cp">&lt;![CDATA[
-public class Good {
-    public void foo(boolean b) {
-        for (int i = 0; i &lt; 10;) {
-            if (b) {
-                return true;
-            }
-        }
-    }
-}
-            ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
+public class Foo {}
+     ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
     <span class="nt">&lt;/test-code&gt;</span>
-
     <span class="nt">&lt;test-code&gt;</span>
-        <span class="nt">&lt;description&gt;</span>violations: return:for<span class="nt">&lt;/description&gt;</span>
+        <span class="nt">&lt;description&gt;</span>failure case<span class="nt">&lt;/description&gt;</span>
         <span class="nt">&lt;expected-problems&gt;</span>1<span class="nt">&lt;/expected-problems&gt;</span>
-        <span class="nt">&lt;expected-linenumbers&gt;</span>4<span class="nt">&lt;/expected-linenumbers&gt;</span>
+        <span class="nt">&lt;expected-linenumbers&gt;</span>1<span class="nt">&lt;/expected-linenumbers&gt;</span>
         <span class="nt">&lt;code&gt;</span><span class="cp">&lt;![CDATA[
-public class Bad {
-    public void bar() {
-        for (int i = 0; i &lt; 10;) {
-            return true;
-        }
-    }
-}
-            ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
+public abstract class Foo {}
+     ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
     <span class="nt">&lt;/test-code&gt;</span>
 <span class="nt">&lt;/test-data&gt;</span>
 </code></pre></div></div>
@@ -1517,6 +1499,27 @@ Therefore you just need to reference the dependency <code class="highlighter-rou
 
 <p>Then proceed as described earlier: create your test class, create your test cases and run the unit test.</p>
 
+<p>There is one difference however: Since your package structure is probably different, you’ll need to register
+the rule test manually, as SimpleAggregatorTst will fail to determine it correctly from the package and class names:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">pmd</span><span class="o">.</span><span class="na">rules</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.testframework.SimpleAggregatorTst</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomRuleTest</span> <span class="kd">extends</span> <span class="n">SimpleAggregatorTst</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUp</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">addRule</span><span class="o">(</span><span class="s">"com/example/pmd/ruleset.xml"</span><span class="o">,</span> <span class="s">"CustomRule"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>This will then search for a rule named “CustomRule” in the ruleset, that is located in “src/main/resources” under
+the path “com/example/pmd/ruleset.xml”.</p>
+
+<p>The test data should be placed in an xml file located in “src/test/resources” under the path
+“com/example/pmd/rules/xml/CustomRule.xml”.</p>
+
 <h2 id="how-the-test-framework-is-implemented">How the test framework is implemented</h2>
 
 <p>The framework uses a custom JUnit test runner under the hood, among a couple of utility classes:</p>
@@ -1571,7 +1574,7 @@ will be executed twice.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> September 2017<br/> Site last generated: Oct 13, 2018 <br />
+<span>Page last updated:</span> September 2017<br/> Site last generated: Oct 14, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
