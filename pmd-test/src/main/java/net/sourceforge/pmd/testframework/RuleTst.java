@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,14 @@ public abstract class RuleTst {
         } catch (SAXException | ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected void setUp() {
+        // This method is intended to be overridden by subclasses.
+    }
+
+    protected List<Rule> getRules() {
+        return Collections.emptyList();
     }
 
     /**
@@ -338,6 +347,33 @@ public abstract class RuleTst {
         }
 
         return parseTests(rule, doc);
+    }
+
+    /**
+     * Run a set of tests defined in an XML test-data file for a rule. The file
+     * should be ./xml/RuleName.xml relative to the test-class. The format is
+     * defined in test-data.xsd.
+     */
+    public void runTests(Rule rule) {
+        runTests(extractTestsFromXml(rule));
+    }
+
+    /**
+     * Run a set of tests defined in a XML test-data file. The file should be
+     * ./xml/[testsFileName].xml relative to the test-class. The format is
+     * defined in test-data.xsd.
+     */
+    public void runTests(Rule rule, String testsFileName) {
+        runTests(extractTestsFromXml(rule, testsFileName));
+    }
+
+    /**
+     * Run a set of tests of a certain sourceType.
+     */
+    public void runTests(TestDescriptor[] tests) {
+        for (int i = 0; i < tests.length; i++) {
+            runTest(tests[i]);
+        }
     }
 
     private TestDescriptor[] parseTests(Rule rule, Document doc) {

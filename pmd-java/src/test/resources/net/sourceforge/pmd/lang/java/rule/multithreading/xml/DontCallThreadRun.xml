@@ -36,7 +36,7 @@ public class Foo {
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.multithreading.MultithreadingRulesTest.TestThread;
+import net.sourceforge.pmd.lang.java.rule.multithreading.DontCallThreadRunTest.TestThread;
 
 public class Foo {
   public void bar() {
