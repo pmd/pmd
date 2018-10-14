@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 public interface ApexParserVisitor {
+    Object visit(AbstractApexNodeBase node, Object data);
+
     Object visit(ApexNode<?> node, Object data);
 
     Object visit(ASTAnnotation node, Object data);
@@ -66,6 +68,8 @@ public interface ApexParserVisitor {
     Object visit(ASTFieldDeclaration node, Object data);
 
     Object visit(ASTFieldDeclarationStatements node, Object data);
+
+    Object visit(ASTFormalComment node, Object data);
 
     Object visit(ASTForEachStatement node, Object data);
 

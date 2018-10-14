@@ -43,6 +43,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTFormalComment;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIllegalStoreExpression;
@@ -99,6 +100,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
+import net.sourceforge.pmd.lang.apex.ast.AbstractApexNodeBase;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitor;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -136,6 +138,12 @@ public abstract class AbstractApexRule extends AbstractRule
                 visit((ASTUserTrigger) element, ctx);
             }
         }
+    }
+
+    @Override
+    public Object visit(AbstractApexNodeBase node, Object data) {
+        node.childrenAccept(this, data);
+        return null;
     }
 
     @Override
@@ -582,5 +590,10 @@ public abstract class AbstractApexRule extends AbstractRule
     @Override
     public Object visit(ASTStatementExecuted node, Object data) {
         return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTFormalComment node, Object data) {
+        return visit((AbstractApexNodeBase) node, data);
     }
 }

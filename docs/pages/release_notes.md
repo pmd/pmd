@@ -10,70 +10,31 @@ The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
 This is a {{ site.pmd.release_type }} release.
 
-{% tocmaker %}
+{% tocmaker is_release_notes_processor %}
 
 ### New and noteworthy
 
-#### Drawing a line between private and public API
-
-Until now, all released public members and types were implicitly considered part
-of PMD's public API, including inheritance-specific members (protected members, abstract methods).
-We have maintained those APIs with the goal to preserve full binary compatibility between minor releases,
-only breaking those APIs infrequently, for major releases.
-
-
-In order to allow PMD to move forward at a faster pace, this implicit contract will
-be invalidated with PMD 7.0.0. We now introduce more fine-grained distinctions between
-the type of compatibility support we guarantee for our libraries, and ways to make
-them explicit to clients of PMD.
-
-##### `.internal` packages and `@InternalApi` annotation
-
-*Internal API* is meant for use *only* by the main PMD codebase. Internal types and methods
-may be modified in any way, or even removed, at any time.
-
-Any API in a package that contains an `.internal` segment is considered internal.
-The `@InternalApi` annotation will be used for APIs that have to live outside of
-these packages, e.g. methods of a public type that shouldn't be used outside of PMD (again,
-these can be removed anytime).
-
-##### `@ReservedSubclassing`
-
-Types marked with the `@ReservedSubclassing` annotation are only meant to be subclassed
-by classes within PMD. As such, we may add new abstract methods, or remove protected methods,
-at any time. All published public members remain supported. The annotation is *not* inherited, which
-means a reserved interface doesn't prevent its implementors to be subclassed.
-
-##### `@Experimental`
-
-
-APIs marked with the `@Experimental` annotation at the class or method level are subject to change.
-They can be modified in any way, or even removed, at any time. You should not use or rely
- on them in any production code. They are purely to allow broad testing and feedback.
-
-##### `@Deprecated`
-
-APIs marked with the `@Deprecated` annotation at the class or method level will remain supported
-until the next major release but it is recommended to stop using them.
-
-
-##### The transition
-
-*All currently supported APIs will remain so until 7.0.0*. All APIs that are to be moved to
-`.internal` packages or hidden will be tagged `@InternalApi` before that major release, and
-the breaking API changes will be performed in 7.0.0.
-
 ### Fixed Issues
 
+*   java
+    *   [#1330](https://github.com/pmd/pmd/issues/1330): \[java] PMD crashes with java.lang.ClassFormatError: Absent Code attribute in method that is not native or abstract in class file javax/xml/ws/Service
+*   java-bestpractices
+    *   [#1202](https://github.com/pmd/pmd/issues/1202): \[java] GuardLogStatement: "There is log block not surrounded by if" doesn't sound right
+    *   [#1365](https://github.com/pmd/pmd/issues/1365): \[java] JUnitTestsShouldIncludeAssert false positive
 *   java-codestyle
-    *   [#1329](https://github.com/pmd/pmd/issues/1329): \[java] FieldNamingConventions: false positive in serializable class with serialVersionUID
-    *   [#1334](https://github.com/pmd/pmd/issues/1334): \[java] LinguisticNaming should support AtomicBooleans
-*   java-performance
-    *   [#1325](https://github.com/pmd/pmd/issues/1325): \[java] False positive in ConsecutiveLiteralAppends
+    *   [#1356](https://github.com/pmd/pmd/issues/1356): \[java] UnnecessaryModifier wrong message public-\>static
 
 ### API Changes
 
 ### External Contributions
+
+*   [#1366](https://github.com/pmd/pmd/pull/1366): \[java] Static Modifier on Internal Interface pmd #1356 - [avishvat](https://github.com/vishva007)
+*   [#1368](https://github.com/pmd/pmd/pull/1368): \[doc] Updated outdated note in the building documentation. - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1374](https://github.com/pmd/pmd/pull/1374): \[java] Simplify check for 'Test' annotation in JUnitTestsShouldIncludeAssertRule. - [Will Winder](https://github.com/winder)
+*   [#1375](https://github.com/pmd/pmd/pull/1375): \[java] Add missing null check AbstractJavaAnnotatableNode - [Will Winder](https://github.com/winder)
+*   [#1376](https://github.com/pmd/pmd/pull/1376): \[core] Upgrading Apache Commons IO from 2.4 to 2.6 - [Thunderforge](https://github.com/Thunderforge)
+*   [#1378](https://github.com/pmd/pmd/pull/1378): \[core] Upgrading Apache Commons Lang 3 from 3.7 to 3.8.1 - [Thunderforge](https://github.com/Thunderforge)
+*   [#1383](https://github.com/pmd/pmd/pull/1383): \[java] Improved message for GuardLogStatement rule - [Felix Lampe](https://github.com/fblampe)
 
 {% endtocmaker %}
 

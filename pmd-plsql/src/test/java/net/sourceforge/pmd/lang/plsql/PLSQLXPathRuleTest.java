@@ -66,7 +66,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
     }
 
     private XPathRule createRule(String version) {
-        XPathRule rule = new XPathRule("//PrimaryExpression");
+        XPathRule rule = new XPathRule("//PrimaryPrefix");
         rule.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
         rule.setVersion(version);
         rule.setMessage("Test Violation");
