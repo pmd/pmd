@@ -14,11 +14,9 @@ import net.sourceforge.pmd.lang.swift.antlr4.SwiftLexer;
  */
 public class SwiftTokenizer extends AntlrTokenizer {
 
-    private static final String COMMENT_TOKEN = "//";
-
     @Override
     protected AntlrTokenManager getLexerForSource(final SourceCode sourceCode) {
         CharStream charStream = AntlrTokenizer.getCharStreamFromSourceCode(sourceCode);
-        return new AntlrTokenManager(new SwiftLexer(charStream), sourceCode.getFileName(), COMMENT_TOKEN);
+        return new AntlrTokenManager(new SwiftLexer(charStream), sourceCode.getFileName());
     }
 }

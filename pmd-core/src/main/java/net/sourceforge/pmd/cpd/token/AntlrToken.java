@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cpd.token;
 
+import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
@@ -13,10 +14,10 @@ import com.beust.jcommander.internal.Nullable;
 /**
  * Generic Antlr representation of a token.
  */
-public class GenericAntlrToken implements GenericToken {
+public class AntlrToken implements GenericToken {
 
     private final Token token;
-    private final GenericAntlrToken previousComment;
+    private final AntlrToken previousComment;
 
     /**
      * Constructor
@@ -24,7 +25,7 @@ public class GenericAntlrToken implements GenericToken {
      * @param token The antlr token implementation
      * @param previousComment The previous comment
      */
-    public GenericAntlrToken(final Token token, @Nullable final GenericAntlrToken previousComment) {
+    public AntlrToken(final Token token, @Nullable final AntlrToken previousComment) {
         this.token = token;
         this.previousComment = previousComment;
     }
@@ -69,7 +70,7 @@ public class GenericAntlrToken implements GenericToken {
         return token.getType();
     }
 
-    public int getChannel() {
-        return token.getChannel();
+    public boolean isHidden() {
+        return token.getChannel() == Lexer.HIDDEN;
     }
 }

@@ -8,12 +8,8 @@ import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.Token;
 
-import net.sourceforge.pmd.cpd.token.GenericAntlrToken;
-
-import com.beust.jcommander.internal.Nullable;
-
+import net.sourceforge.pmd.cpd.token.AntlrToken;
 import net.sourceforge.pmd.lang.TokenManager;
 
 /**
@@ -22,31 +18,27 @@ import net.sourceforge.pmd.lang.TokenManager;
 public class AntlrTokenManager implements TokenManager {
     private final Lexer lexer;
     private String fileName;
-    private final String commentToken;
-    private GenericAntlrToken previousComment;
+    private AntlrToken previousToken;
 
     /**
      * Constructor
      *
      * @param lexer The lexer
      * @param fileName The file name
-     * @param commentToken The list of all comment tokens on the grammar
      */
-    public AntlrTokenManager(final Lexer lexer, final String fileName, @Nullable final String commentToken) {
+    public AntlrTokenManager(final Lexer lexer, final String fileName) {
         this.lexer = lexer;
         this.fileName = fileName;
-        this.commentToken = commentToken;
         resetListeners();
     }
 
     @Override
     public Object getNextToken() {
-        final Token token = lexer.nextToken();
-        if (isCommentToken(token.getText())) {
-            previousComment = new GenericAntlrToken(token, previousComment);
-        }
+        final AntlrToken previousComment = previousToken != null && previousToken.isHidden() ? previousToken : null;
+        final AntlrToken currentToken = new AntlrToken(lexer.nextToken(), previousComment);
+        previousToken = currentToken;
 
-        return new GenericAntlrToken(token, previousComment);
+        return currentToken;
     }
 
     @Override
@@ -61,10 +53,6 @@ public class AntlrTokenManager implements TokenManager {
     private void resetListeners() {
         lexer.removeErrorListeners();
         lexer.addErrorListener(new ErrorHandler());
-    }
-
-    private boolean isCommentToken(final String text) {
-        return commentToken != null && text != null && text.startsWith(commentToken);
     }
 
     private static class ErrorHandler extends BaseErrorListener {
