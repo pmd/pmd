@@ -73,4 +73,76 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Long value with 'l' used as a method parameter with '_'
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private callBar() {
+        bar(314_159_265l);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad, numeric literal with incorrect '_' usage
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Integer number = 1_11_21_1211;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Double value with 'D' used as a method parameter with '_'
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private callBar() {
+        bar(314_159_265.359D);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Float value with 'F' with less than 3 numbers
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Float number = 36.39F;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Double value with 'd' with correct '_' usage
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Double number = 35_007.93d;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Long value with 'L' used as a method parameter with '_'
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private callBar() {
+        bar(314_159_265L);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

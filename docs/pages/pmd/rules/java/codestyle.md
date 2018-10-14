@@ -1507,9 +1507,11 @@ public class ClassInDefaultPackage {
 
 ## NumericLiteralConvention
 
-**Since:** PMD 6.9
+**Since:** PMD 6.9.0
 
 **Priority:** Medium (3)
+
+**Minimum Language Version:** Java 1.7
 
 Numeric literals with more than 3 digits must use '_' as a separator.
 
@@ -1519,7 +1521,7 @@ Numeric literals with more than 3 digits must use '_' as a separator.
  @LongLiteral = true() or
  @DoubleLiteral = true() or
  @FloatLiteral = true()]
- [not(matches(@Image, "^[0-9]{1,3}(_[0-9]{3})*(l|L)?(\.[0-9]+)?(d|D|f|F)?$"))]
+ [not(matches(@Image, "^[0-9]{1,3}(_[0-9]{3})*(l|L|\.[0-9]+)?(d|D|f|F)?$"))]
 ```
 
 **Example(s):**
