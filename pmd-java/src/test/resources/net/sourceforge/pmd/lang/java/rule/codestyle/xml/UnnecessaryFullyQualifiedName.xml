@@ -488,4 +488,18 @@ public class TestArrayType {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#1199 false negative for same package FQCN</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+package org.foo;
+
+public class SamePackage {
+    public void convert(org.foo.Bar s) { // violation
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
