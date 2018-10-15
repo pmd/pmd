@@ -9,8 +9,6 @@ import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
 
-import com.beust.jcommander.internal.Nullable;
-
 /**
  * Generic Antlr representation of a token.
  */
@@ -25,7 +23,7 @@ public class AntlrToken implements GenericToken {
      * @param token The antlr token implementation
      * @param previousComment The previous comment
      */
-    public AntlrToken(final Token token, @Nullable final AntlrToken previousComment) {
+    public AntlrToken(final Token token, final AntlrToken previousComment) {
         this.token = token;
         this.previousComment = previousComment;
     }
