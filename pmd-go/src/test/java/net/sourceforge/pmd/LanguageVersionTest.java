@@ -21,7 +21,7 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { GoLanguageModule.NAME, GoLanguageModule.TERSE_NAME, "",
+        return Arrays.asList(new Object[][] { { GoLanguageModule.NAME, GoLanguageModule.TERSE_NAME, "1",
             LanguageRegistry.getLanguage(GoLanguageModule.NAME).getDefaultVersion(), }, });
     }
 }
