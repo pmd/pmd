@@ -17,10 +17,10 @@ public class GoLanguageModule extends BaseLanguageModule {
     public static final String TERSE_NAME = "go";
 
     /**
-     * Create a new instance of Swift Language Module.
+     * Create a new instance of Golang Language Module.
      */
     public GoLanguageModule() {
         super(NAME, null, TERSE_NAME, null, "go");
-        addVersion("", null, true);
+        addVersion("1", null, true);
     }
 }
