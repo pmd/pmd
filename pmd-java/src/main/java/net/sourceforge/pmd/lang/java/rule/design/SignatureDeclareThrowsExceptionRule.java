@@ -77,7 +77,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
             }
         }
         if (node.jjtGetNumChildren() != 0 && node.jjtGetChild(0) instanceof ASTExtendsList) {
-            ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.jjtGetChild(0).jjtGetChild(0);
+            ASTClassOrInterfaceType type = node.jjtGetChild(0).getFirstChildOfType(ASTClassOrInterfaceType.class);
             if (isJUnitTest(type)) {
                 junitImported = true;
                 return super.visit(node, data);
