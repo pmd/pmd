@@ -13,8 +13,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.go.GoLanguageModule;
 
-
-
 public class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     public LanguageVersionTest(String name, String terseName, String version, LanguageVersion expected) {
