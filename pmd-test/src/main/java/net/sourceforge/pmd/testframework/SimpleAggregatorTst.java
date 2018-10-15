@@ -12,7 +12,12 @@ import org.junit.runner.RunWith;
 import net.sourceforge.pmd.Rule;
 
 /**
- * Standard methods for (simple) testcases.
+ * Simple setup for a rule unit test,
+ * capable of testing multiple rules.
+ *
+ * <p>Override {@link #setUp()} to register the
+ * rules, that should be tested via calls to
+ * {@link #addRule(String, String)}.
  */
 @RunWith(PMDTestRunner.class)
 public abstract class SimpleAggregatorTst extends RuleTst {
@@ -20,40 +25,16 @@ public abstract class SimpleAggregatorTst extends RuleTst {
     private List<Rule> rules = new ArrayList<>();
 
     /**
-     * Configure the rule tests to be executed. Implement this method in
-     * subclasses by calling adRule.
+     * Configure the rule tests to be executed. Override this method in
+     * subclasses by calling addRule, e.g.
+     *
+     * <pre>addRule("path/myruleset.xml", "CustomRule");</pre>
      *
      * @see #addRule(String, String)
      */
+    @Override
     protected void setUp() {
-        // empty, to be overridden
-    }
-
-    /**
-     * Run a set of tests defined in an XML test-data file for a rule. The file
-     * should be ./xml/RuleName.xml relative to the test-class. The format is
-     * defined in test-data.xsd.
-     */
-    public void runTests(Rule rule) {
-        runTests(extractTestsFromXml(rule));
-    }
-
-    /**
-     * Run a set of tests defined in a XML test-data file. The file should be
-     * ./xml/[testsFileName].xml relative to the test-class. The format is
-     * defined in test-data.xsd.
-     */
-    public void runTests(Rule rule, String testsFileName) {
-        runTests(extractTestsFromXml(rule, testsFileName));
-    }
-
-    /**
-     * Run a set of tests of a certain sourceType.
-     */
-    public void runTests(TestDescriptor[] tests) {
-        for (int i = 0; i < tests.length; i++) {
-            runTest(tests[i]);
-        }
+        // empty, to be overridden.
     }
 
     /**
@@ -69,6 +50,7 @@ public abstract class SimpleAggregatorTst extends RuleTst {
      *
      * @return all configured rules.
      */
+    @Override
     protected List<Rule> getRules() {
         return rules;
     }

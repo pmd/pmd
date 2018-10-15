@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /**
  * Added support for DELETE Statements
+ * Added support for UPDATE Statements
+ * Fully parse the select statement in CursorForLoops.
  *
  * Andreas Dangel 09/2018
  *====================================================================
@@ -1112,6 +1114,16 @@ ASTSqlStatement SqlStatement(String initiator, String terminator)  :
 	}
 }
 
+void AbstractSelectStatement(AbstractSelectStatement node) #void :
+{}
+{
+    <SELECT>
+    [    <DISTINCT> { node.setDistinct(true); }
+       | <UNIQUE> { node.setUnique(true); }
+       | <ALL> { node.setAll(true); }
+    ] 
+}
+
 /**
  * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/SELECT-INTO-statement.html
  * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/img_text/select_into_statement.html
@@ -1119,10 +1131,7 @@ ASTSqlStatement SqlStatement(String initiator, String terminator)  :
 ASTSelectIntoStatement SelectIntoStatement() :
 {}
 {
-    <SELECT> [ <DISTINCT> { jjtThis.setDistinct(true); }
-               | <UNIQUE> { jjtThis.setUnique(true); }
-               | <ALL> { jjtThis.setAll(true); } ] 
-
+    AbstractSelectStatement(jjtThis)
     SelectList()
     ( IntoClause() | BulkCollectIntoClause() )
     RestOfStatement()
@@ -1201,7 +1210,8 @@ ASTQueryBlock QueryBlock() :
 {}
 {
     // [ WithClause() ]
-    <SELECT> [ <DISTINCT> | <UNIQUE> | <ALL> ] SelectList()
+    AbstractSelectStatement(jjtThis)
+    SelectList()
     FromClause()
     [ WhereClause() ]
     // [ HierarchicalQueryClause() ]
@@ -1287,11 +1297,12 @@ void Condition2() #void :
 {}
 {
  (
+    // a IS OF Type condition that starts with a function...
     LOOKAHEAD(FunctionCall() <IS> <OF>) IsOfTypeCondition()
  |
-    LOOKAHEAD(4) ComparisonCondition()
+    LOOKAHEAD(9) ComparisonCondition()
  |
-    LOOKAHEAD(4) FloatingPointCondition()
+    LOOKAHEAD(9) FloatingPointCondition()
  |
     LOOKAHEAD(4) InCondition()
  |
@@ -1404,24 +1415,21 @@ ASTSqlExpression SqlExpression() :
     LOOKAHEAD(2) <ROWNUM>
  |
     LOOKAHEAD(2) Literal()
- |
-    // Anything else, including function calls
-    LOOKAHEAD(3) Expression()
  )
     { return jjtThis; }
 }
 
 ASTFunctionCall FunctionCall() :
-{}
+{ ASTID id; }
 {
-    ID() "(" QualifiedName() ("," QualifiedName())* ")"
+    id = ID() { jjtThis.setImage(id.getImage()); } Arguments()
     { return jjtThis; }
 }
 
 ASTColumn Column() :
-{}
+{ ASTID id; }
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    id = ID() { jjtThis.setImage(id.getImage()); }
     { return jjtThis; }
 }
 
@@ -1438,7 +1446,11 @@ void FromClauseEntry() #void :
  (
      LOOKAHEAD(JoinClause()) JoinClause()
  |
-     LOOKAHEAD(2) TableReference()
+     // using lookahead to avoid misinterpreting the token after the identifier
+     // as a table alias rather than as a keyword
+     LOOKAHEAD(<IDENTIFIER> (<PARTITION>|<NATURAL>|<OUTER>|<JOIN>|<RIGHT>|<CROSS>)) JoinClause()
+ |
+     LOOKAHEAD(3) TableReference()
  |
      "(" JoinClause() ")"
  )
@@ -1479,9 +1491,9 @@ ASTColumnAlias ColumnAlias() :
 }
 
 ASTTableAlias TableAlias() :
-{}
+{ ASTID id; }
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    id = ID() {jjtThis.setImage(id.getImage());}
     { return jjtThis; }
 }
 
@@ -1494,9 +1506,9 @@ ASTIntoClause IntoClause() :
 }
 
 ASTVariableName VariableName() :
-{}
+{ ASTID id; }
 {
-    ID()
+    id = ID() {jjtThis.setImage(id.getImage());}
     { return jjtThis; }
 }
 
@@ -1514,16 +1526,16 @@ void BulkCollectIntoClauseEntry() #void :
 }
 
 ASTCollectionName CollectionName() :
-{}
+{ ASTID id; }
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    id = ID() {jjtThis.setImage(id.getImage());}
     { return jjtThis; }
 }
 
 ASTHostArrayName HostArrayName() :
-{}
+{ ASTID id; }
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    id = ID() {jjtThis.setImage(id.getImage());}
     { return jjtThis; }
 }
 
@@ -1542,17 +1554,45 @@ ASTTableReference TableReference() :
     { return jjtThis; }
 }
 
-ASTSchemaName SchemaName() :
+/**
+ * Special production, used in joins. The table reference might have
+ * a table alias, but this should not match any following NATURAL, CROSS, etc.
+ * keywords, although these are allowed as alias names since these are
+ * not reserved words.
+ */
+ASTTableReference TableReferenceInJoin() #TableReference :
 {}
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    // QueryTableExpression
+    (
+        [ LOOKAHEAD(2) SchemaName() "." ] TableName()
+    |
+        "(" Subquery() ")"
+    )
+
+    [ LOOKAHEAD(1, ID(), {getToken(1).kind != NATURAL
+        && getToken(1).kind != CROSS
+        && getToken(1).kind != ON
+        && getToken(1).kind != PARTITION
+        && getToken(1).kind != RIGHT})
+
+        TableAlias() ]
+
+    { return jjtThis; }
+}
+
+
+ASTSchemaName SchemaName() :
+{ ASTID id; }
+{
+    id = ID() {jjtThis.setImage(id.getImage());}
     { return jjtThis; }
 }
 
 ASTTableName TableName() :
-{}
+{ ASTID id; }
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    id = ID() {jjtThis.setImage(id.getImage());}
     { return jjtThis; }
 }
 
@@ -1562,7 +1602,7 @@ ASTTableName TableName() :
 ASTJoinClause JoinClause() :
 {}
 {
-    TableReference()
+    TableReferenceInJoin()
     (
         LOOKAHEAD(2) InnerCrossJoinClause()
     |
@@ -1577,7 +1617,7 @@ ASTInnerCrossJoinClause InnerCrossJoinClause() :
 {}
 {
   (
-    [ <INNER> ] <JOIN> TableReference()
+    [ <INNER> ] <JOIN> TableReferenceInJoin()
     (
         <ON> ConditionalOrExpression()
     |
@@ -1589,7 +1629,7 @@ ASTInnerCrossJoinClause InnerCrossJoinClause() :
     |
         <NATURAL> { jjtThis.setNatural(true); } [ <INNER> ]
     )
-    <JOIN> TableReference()
+    <JOIN> TableReferenceInJoin()
   )
   { return jjtThis; }
 }
@@ -1599,7 +1639,7 @@ ASTOuterJoinClause OuterJoinClause() :
 {
     [ QueryPartitionClause() ]
     [ <NATURAL> { jjtThis.setNatural(true); } ]
-    OuterJoinType() <JOIN> TableReference()
+    OuterJoinType() <JOIN> TableReferenceInJoin()
     [ LOOKAHEAD(2) QueryPartitionClause() ]
       [ <ON> ConditionalOrExpression()
       | <USING> "(" Column() ("," Column() )* ")"
@@ -1639,7 +1679,7 @@ ASTOuterJoinType OuterJoinType() :
 ASTCrossOuterApplyClause CrossOuterApplyClause() :
 {}
 {
-    ( <CROSS> | <OUTER> ) <APPLY> ( LOOKAHEAD(2) TableReference() | LOOKAHEAD(2) ID() /*collection_expression*/ )
+    ( <CROSS> | <OUTER> ) <APPLY> ( LOOKAHEAD(2) TableReferenceInJoin() | LOOKAHEAD(2) ID() /*collection_expression*/ )
     { return jjtThis; }
 }
 
@@ -1833,8 +1873,19 @@ ASTCursorForLoopStatement CursorForLoopStatement() :
 ASTSelectStatement SelectStatement() :
 {}
 {
-    SqlStatement("(", ")")
-    { return jjtThis ; }
+    AbstractSelectStatement(jjtThis)
+
+    SelectList()
+
+    // note: the into clause is here to allow parsing of wrong cursor for loop statements.
+    // while it will be parsed, the into clause is ignored by the database.
+    // see https://github.com/pmd/pmd/issues/1047#issuecomment-424757382
+    // see http://www.dba-oracle.com/t_adv_plsql_implicit_cursor_FOR_loop.htm
+    [ IntoClause() | BulkCollectIntoClause() ]
+
+    RestOfStatement()
+
+    { return jjtThis; }
 }
 
 ASTUpdateStatement UpdateStatement() :
@@ -5631,7 +5682,7 @@ ASTID ID(): {}
 		//20120501 | <DEFINER> 
 		| <SERIALLY_REUSABLE> | <RESTRICT_REFERENCES> 
 		| <EXCEPTION_INIT> | <AUTONOMOUS_TRANSACTION> // | <LANGUAGE>
-		| <ALL>  //RESERVED WORD 
+		//| <ALL>  //RESERVED WORD 
 		| <ALTER>  //SYNTAX  //RESERVED WORD 
 		| <AND>  //SYNTAX  //RESERVED WORD 
 		| <ANY>  //RESERVED WORD 
@@ -5646,7 +5697,7 @@ ASTID ID(): {}
 		| <BODY> //SYNTAX 
 		| <BOOLEAN> 
 		//201020430 | <BULK> 
-		| <BY> //RESERVED WORD 
+		//| <BY> //RESERVED WORD 
 		//201020430 | <BYTE> 
 		| <CASE> //SYNTAX 
 		| <CHAR>  //RESERVED WPRDS 
@@ -5667,7 +5718,7 @@ ASTID ID(): {}
 		| <_DEFAULT> //RESERVED WORD 
 		| <DELETE>  //RESERVED WORD 
 		| <DESC>  //RESERVED WORD 
-		| <DISTINCT>  //RESERVED WORD 
+		//| <DISTINCT>  //RESERVED WORD 
 		| <DO> 
 		| <DROP>  //RESERVED WORD 
 		| <ELSE> //SYNTAX //RESERVED WORD 
@@ -5688,7 +5739,7 @@ ASTID ID(): {}
 		
 		// <COMMIT> | <FUNCTION> |	// this causes bug 643043 Procedure w/o params appears as variable
 		| <GOTO> //SYNTAX 
-		| <GROUP>  //RESERVED WORD 
+		//| <GROUP>  //RESERVED WORD 
 		| <HAVING>  //RESERVED WORD 
 		//20120501 | <HEAP> 
 		| <IF> //SYNTAX 
@@ -5724,7 +5775,7 @@ ASTID ID(): {}
 		| <NUMBER_BASE> 
 		| <OCIROWID> 
 		| <OF>  //RESERVED WORD  
-		| <ON>  //RESERVED WORD  
+		//| <ON>  //RESERVED WORD  
 		//20120501 | <OPAQUE> 
 		| <BFILE_BASE> 
 		| <BLOB_BASE> |
@@ -5734,7 +5785,7 @@ ASTID ID(): {}
 		//20120501 | <OPEN> 
 		| <OPERATOR> | <OPTION> 
 		| <OR> //SYNTAX  //RESERVED WORD  
-		| <ORDER>  //RESERVED WORD  
+		//| <ORDER>  //RESERVED WORD  
 		//20120501 | <ORGANIZATION> //| <OTHERS> 
 		| <OUT> 
 		//20120501 | <PACKAGE> //SYNTAX 

@@ -303,9 +303,9 @@ public class InitialPageComponent extends BaseExecutionCourseComponent {
         <description>#1436 UnnecessaryFullyQualifiedName false positive on clashing static imports with enums</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.codestyle.CodeStyleRulesTest.ENUM2;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.CodeStyleRulesTest.ENUM1.*;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.CodeStyleRulesTest.ENUM2.*;
+import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.ENUM2;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.ENUM1.*;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.ENUM2.*;
 
 public class UnnecessaryFullyQualifiedName {
     public static void main(String[] args) {
@@ -321,9 +321,9 @@ public class UnnecessaryFullyQualifiedName {
         <description>#1546 part 1 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyMockito;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyMockito.*;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyPowerMockito.*;
+import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito.*;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyPowerMockito.*;
 
 public class Foo {
   private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) is ambiguous (compile error)
@@ -335,9 +335,9 @@ public class Foo {
         <description>#1546 part 2 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyMockito;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyMockito.*;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyPowerMockito.mock;
+import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito.*;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyPowerMockito.mock;
 
 public class Foo {
   private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) would use a differen method than intended

@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
+import net.sourceforge.pmd.cpd.token.AntlrToken;
 import net.sourceforge.pmd.lang.TokenManager;
 
 /**
@@ -17,6 +18,7 @@ import net.sourceforge.pmd.lang.TokenManager;
 public class AntlrTokenManager implements TokenManager {
     private final Lexer lexer;
     private String fileName;
+    private AntlrToken previousToken;
 
     /**
      * Constructor
@@ -32,7 +34,11 @@ public class AntlrTokenManager implements TokenManager {
 
     @Override
     public Object getNextToken() {
-        return lexer.nextToken();
+        final AntlrToken previousComment = previousToken != null && previousToken.isHidden() ? previousToken : null;
+        final AntlrToken currentToken = new AntlrToken(lexer.nextToken(), previousComment);
+        previousToken = currentToken;
+
+        return currentToken;
     }
 
     @Override
@@ -48,7 +54,6 @@ public class AntlrTokenManager implements TokenManager {
         lexer.removeErrorListeners();
         lexer.addErrorListener(new ErrorHandler());
     }
-
 
     private static class ErrorHandler extends BaseErrorListener {
 

@@ -19,13 +19,19 @@ with an additional test case, so that the bug is not accidentally reintroduced l
 
 ## How it works
 
-PMD's built-in rules are organized in rulesets, such as "java-basic". Each ruleset has a single test class,
-which executes all the test cases for all rules in this ruleset. The actual test cases are stored in separate
-XML files, for each rule a separate file is used.
+PMD's built-in rules are organized in rulesets, where all rules belonging to the same category are placed
+in a single ruleset, such as "category/java/bestpractices.xml".
+Each category-ruleset has a single abstract base test class, from which the individual test classes inherit.
+We have one test class per rule, which executes all test cases for a single rule. The actual test cases are
+stored in separate XML files, for each rule a separate file is used.
 
-The test class subclasses `net.sourceforge.pmd.testframework.SimpleAggregatorTst`, which provides the seamless
-integration with JUnit. You basically tell the framework, which rules should be tested and it searches
-the test code on its own.
+All the test classes inherit from `net.sourceforge.pmd.testframework.SimpleAggregatorTst`,
+which provides the seamless integration with JUnit. This base class determines the language, the category name
+and the rule name from the concrete test class. It then searches the test code on its own.
+E.g. the individual rule test class
+`net.sourceforge.pmd.lang.java.rule.bestpractices.AbstractClassWithoutAbstractMethodTest` tests the
+rule with the name "AbstractClassWithoutAbstractMethod", which is in the category "bestpractices" for the
+language "java".
 
 The test code (see below [Test XML Reference](#test-xml-reference)) describes the test case completely with
 the expected behavior like number of expected rule violations, where the violations are expected, and so on.
@@ -42,48 +48,39 @@ The XML file is a test resource, so it is searched in the tree under `src/test/r
 The sub package `xml` of the test class's package should contain a file with the same name as the rule's name
 which is under test.
 
-For example, to test the "Java Error Prone Category", the fully qualified test class is:
+For example, to test the rule "AbstractClassWithoutAbstractMethod", the fully qualified test class is:
 
-    net.sourceforge.pmd.lang.java.rule.errorprone.ErrorProneRulesTest
+    net.sourceforge.pmd.lang.java.rule.bestpractices.AbstractClassWithoutAbstractMethodTest
 
-The test code for the rule "AvoidBranchingStatementAsLastInLoop" can be found in the file:
+The test code for the rule can be found in the file:
 
-    src/test/resources/net/sourceforge/pmd/lang/java/rule/errorprone/xml/AvoidBranchingStatementAsLastInLoop.xml
+    src/test/resources/net/sourceforge/pmd/lang/java/rule/bestpractices/xml/AbstractClassWithoutAbstractMethod.xml
 
 In general, the class name and file name pattern for the test class and data is this:
 
-    net.sourceforge.pmd.lang.<Language Terse Name>.rule.<Category Name>.<Category Name>RulesTest
+    net.sourceforge.pmd.lang.<Language Terse Name>.rule.<Category Name>.<Rule Name>Test
     src/test/resources/net/sourceforge/pmd/lang/<Language Terse Name>/rule/<Category Name>/xml/<Rule Name>.xml
 
 {%include tip.html content="This convention allows you to quickly find the test cases for a given rule:
-Just search in the project for a file `<RuleName>.xml`. Looking at the path of the file, you can figure
-out the category. Searching for a class `<Category Name>RulesTest` gives you the test class." %}
+Just search in the project for a file `<RuleName>.xml`. Search for a class `<Rule Name>Test` to find the
+unit test class for the given rule." %}
 
 ## Simple example
 
-### Test Class: ErrorProneRulesTest
+### Test Class: AbstractClassWithoutAbstractMethodTest
 
-This is a stripped down example for the Java Error Prone Category:
+This class inherits from `SimpleAggregatorTst` and is located in the package "bestpractices", since the rule
+belongs to the category "Best Practices":
 
 ``` java
-package net.sourceforge.pmd.lang.java.rule.errorprone;
+package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class ErrorProneRulesTest extends SimpleAggregatorTst {
-
-    private static final String RULESET = "category/java/errorprone.xml";
-
-    @Override
-    public void setUp() {
-        addRule(RULESET, "AvoidBranchingStatementAsLastInLoop");
-        addRule(RULESET, "AvoidDecimalLiteralsInBigDecimalConstructor");
-    }
+public class AbstractClassWithoutAbstractMethodTest extends SimpleAggregatorTst {
+    // no additional unit tests
 }
 ```
-
-This test class overrides the method `setUp` in order to register test cases for the two rules. If there
-are more rules, just add additional `addRule(...)` calls.
 
 {%include note.html content="You can also add additionally standard JUnit test methods annotated with `@Test` to
 this test class." %}
@@ -99,34 +96,19 @@ This is a stripped down example which just contains two test cases.
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description>ok: no violations</description>
+        <description>concrete class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Good {
-    public void foo(boolean b) {
-        for (int i = 0; i < 10;) {
-            if (b) {
-                return true;
-            }
-        }
-    }
-}
-            ]]></code>
+public class Foo {}
+     ]]></code>
     </test-code>
-
     <test-code>
-        <description>violations: return:for</description>
+        <description>failure case</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
-public class Bad {
-    public void bar() {
-        for (int i = 0; i < 10;) {
-            return true;
-        }
-    }
-}
-            ]]></code>
+public abstract class Foo {}
+     ]]></code>
     </test-code>
 </test-data>
 ```
@@ -243,6 +225,28 @@ For maven, you can use this snippet:
     </dependency>
 
 Then proceed as described earlier: create your test class, create your test cases and run the unit test.
+
+There is one difference however: Since your package structure is probably different, you'll need to register
+the rule test manually, as SimpleAggregatorTst will fail to determine it correctly from the package and class names:
+
+``` java
+package com.example.pmd.rules;
+
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class CustomRuleTest extends SimpleAggregatorTst {
+    @Override
+    public void setUp() {
+        addRule("com/example/pmd/ruleset.xml", "CustomRule");
+    }
+}
+```
+
+This will then search for a rule named "CustomRule" in the ruleset, that is located in "src/main/resources" under
+the path "com/example/pmd/ruleset.xml".
+
+The test data should be placed in an xml file located in "src/test/resources" under the path
+"com/example/pmd/rules/xml/CustomRule.xml".
 
 ## How the test framework is implemented
 

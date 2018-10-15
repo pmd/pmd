@@ -17,6 +17,11 @@ public class RegexpAcceptanceTest extends SimpleAggregatorTst {
 
     private static final String XPATH = "//ClassOrInterfaceDeclaration[matches(@Image, 'F?o')]";
 
+    @Override
+    protected void setUp() {
+        // not registering any rule
+    }
+
     @Test
     public void testSimple() {
         Rule r = new XPathRule(XPATH);
