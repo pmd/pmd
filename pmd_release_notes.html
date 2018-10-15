@@ -1268,6 +1268,13 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<p>#### Improved Golang CPD Support</p>
+
+<p>Thanks to the work of <a href="https://www.itba.edu.ar/">ITBA</a> students <a href="https://github.com/matifraga">Matías Fraga</a>,
+<a href="https://github.com/tomidelucca">Tomi De Lucca</a> and <a href="https://github.com/lsoncini">Lucas Soncini</a>,
+Golang is now backed by a proper Antlr Grammar. This means CPD is now better at detecting duplicates,
+as comments are recognized as such and ignored.</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1294,6 +1301,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/1338">#1338</a>: [core] [cpd] Generalize ANTLR tokens preparing support for ANTLR token filter - <a href="https://github.com/matifraga">Matías Fraga</a> and <a href="https://github.com/tomidelucca">Tomi De Lucca</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1366">#1366</a>: [java] Static Modifier on Internal Interface pmd #1356 - <a href="https://github.com/vishva007">avishvat</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1368">#1368</a>: [doc] Updated outdated note in the building documentation. - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1374">#1374</a>: [java] Simplify check for ‘Test’ annotation in JUnitTestsShouldIncludeAssertRule. - <a href="https://github.com/winder">Will Winder</a></li>
@@ -1319,7 +1327,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Oct 14, 2018 <br />
+ Site last generated: Oct 15, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
