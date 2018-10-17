@@ -680,7 +680,7 @@ enum Foo {
         <description>Static Modifier on interface</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary modifier 'static' on interface 'Bar': types nested within an interface type are implicitly static</message>
+            <message>Unnecessary modifier 'static' on interface 'Bar': member interfaces are implicitly static</message>
         </expected-messages>
         <code><![CDATA[
 class Foo{
@@ -689,5 +689,20 @@ class Foo{
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Static Modifier on interface</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'static' on class 'Foo': types nested within an interface type are implicitly static</message>
+        </expected-messages>
+        <code><![CDATA[
+public interface Bar {
+    void method() {
+    }
+    static class Foo {}
+
+}
+            ]]></code>
     </test-code>
 </test-data>
