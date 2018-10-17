@@ -61,7 +61,13 @@ java_heapsize_settings() {
 
 set_lib_dir() {
   if [ -z ${LIB_DIR} ]; then
-    local script_dir=$(dirname "${0}")
+    # Allow for symlinks to this script
+    if [ -L $0 ]; then
+      local script_real_loc=$(readlink "$0")
+    else
+      local script_real_loc=$0
+    fi
+    local script_dir=$(dirname "${script_real_loc}")
     local cwd="${PWD}"
 
     cd "${script_dir}/../lib"
