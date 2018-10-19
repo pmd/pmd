@@ -4,10 +4,9 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-
-import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
@@ -25,11 +24,9 @@ public class ObjectiveCTokenizer implements Tokenizer {
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
-        Reader reader = null;
-        try {
+        try (Reader reader = new StringReader(buffer.toString())) {
             LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(ObjectiveCLanguageModule.NAME)
                     .getDefaultVersion().getLanguageVersionHandler();
-            reader = new StringReader(buffer.toString());
             final TokenFilter tokenFilter = new JavaCCTokenFilter(languageVersionHandler
                     .getParser(languageVersionHandler.getDefaultParserOptions())
                     .getTokenManager(sourceCode.getFileName(), reader));
@@ -44,8 +41,8 @@ public class ObjectiveCTokenizer implements Tokenizer {
             err.printStackTrace();
             System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
             tokenEntries.add(TokenEntry.getEOF());
-        } finally {
-            IOUtils.closeQuietly(reader);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

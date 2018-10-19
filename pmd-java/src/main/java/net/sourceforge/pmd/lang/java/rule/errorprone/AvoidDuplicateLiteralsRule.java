@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
@@ -116,17 +115,13 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             exceptions = p.parse(getProperty(EXCEPTION_LIST_DESCRIPTOR));
         } else if (getProperty(EXCEPTION_FILE_DESCRIPTOR) != null) {
             exceptions = new HashSet<>();
-            LineNumberReader reader = null;
-            try {
-                reader = getLineReader();
+            try (LineNumberReader reader = getLineReader()) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     exceptions.add(line);
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();
-            } finally {
-                IOUtils.closeQuietly(reader);
             }
         }
 

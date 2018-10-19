@@ -12,8 +12,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 
 /**
@@ -40,18 +38,9 @@ public class FileReporter {
 
     public void report(String content) throws ReportException {
         try {
-            Writer writer = null;
-            try {
-                OutputStream outputStream;
-                if (reportFile == null) {
-                    outputStream = System.out;
-                } else {
-                    outputStream = new FileOutputStream(reportFile);
-                }
-                writer = new BufferedWriter(new OutputStreamWriter(outputStream, encoding));
+            try (OutputStream outputStream = reportFile == null ? System.out : new FileOutputStream(reportFile);
+                 Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream, encoding))) {
                 writer.write(content);
-            } finally {
-                IOUtils.closeQuietly(writer);
             }
         } catch (IOException ioe) {
             throw new ReportException(ioe);
