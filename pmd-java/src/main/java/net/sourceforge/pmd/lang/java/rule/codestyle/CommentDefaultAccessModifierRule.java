@@ -22,16 +22,17 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.rule.documentation.AbstractCommentRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.properties.RegexProperty;
 
 /**
  * Check for Methods, Fields and Nested Classes that have a default access
  * modifier
+ * This class ignores all nodes annotated with @VisibleForTesting
  *
  * @author Damián Techeira
  */
-public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
+public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationRule {
 
     private static final RegexProperty REGEX_DESCRIPTOR = RegexProperty.named("regex")
             .desc("Regular expression").defaultValue("\\/\\*\\s+(default|package)\\s+\\*\\/").uiOrder(1.0f).build();
