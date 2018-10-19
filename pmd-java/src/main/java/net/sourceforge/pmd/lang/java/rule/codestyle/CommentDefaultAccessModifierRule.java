@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -28,7 +26,8 @@ import net.sourceforge.pmd.properties.RegexProperty;
 /**
  * Check for Methods, Fields and Nested Classes that have a default access
  * modifier
- * This class ignores all nodes annotated with @VisibleForTesting
+ * This rule ignores all nodes annotated with @VisibleForTesting by default.
+ * Use the ignoredAnnotationsDescriptor property to customize the ignored rules.
  *
  * @author Damián Techeira
  */
@@ -42,6 +41,14 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
 
     public CommentDefaultAccessModifierRule() {
         definePropertyDescriptor(REGEX_DESCRIPTOR);
+        defaultSuppressionAnnotations();
+    }
+
+    @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        Collection<String> ignoredStrings = new ArrayList<>();
+        ignoredStrings.add("VisibleForTesting");
+        return ignoredStrings;
     }
 
     @Override
@@ -113,16 +120,8 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
 
     private boolean hasNoVisibleForTestingAnnotation(AbstractJavaAccessNode decl) {
         boolean result = true;
-        ASTClassOrInterfaceBodyDeclaration parent = decl.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
-        if (parent != null) {
-            List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
-            for (ASTAnnotation annotation : annotations) {
-                final ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
-                if (name.hasImageEqualTo("VisibleForTesting")) {
-                    result = false;
-                    break;
-                }
-            }
+        if(hasIgnoredAnnotation(decl)){
+            result = false;
         }
         return result;
     }
