@@ -14,6 +14,7 @@ import net.sourceforge.pmd.util.NumericConstants;
  *
  * @author Jason Bennett
  */
+@Deprecated
 public class NcssConstructorCountRule extends AbstractNcssCountRule {
 
     /**
