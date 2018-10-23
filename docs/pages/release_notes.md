@@ -14,7 +14,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-#### Improved Golang CPD Support
+#### Improved Golang CPD Support
 
 Thanks to the work of [ITBA](https://www.itba.edu.ar/) students [Matías Fraga](https://github.com/matifraga),
 [Tomi De Lucca](https://github.com/tomidelucca) and [Lucas Soncini](https://github.com/lsoncini),
