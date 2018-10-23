@@ -405,6 +405,23 @@ public class PMD {
             }
 
         }
+
+        if (null != configuration.getIgnoreFilePath()){
+            String ignoreFilePath = configuration.getIgnoreFilePath();
+            File file = new File(ignoreFilePath);
+            try{
+                if (!file.exists()){
+                    LOG.log(Level.SEVERE, "Problem with Ignore File Path", ignoreFilePath);
+                    throw new RuntimeException("Problem with Ignore File Path: " + ignoreFilePath);
+                } else {
+                    String filePaths = FileUtil.readFilelist(new File(ignoreFilePath));
+                    files.removeAll(FileUtil.collectFiles(filePaths, fileSelector));
+                }
+            } catch (IOException ex){
+                LOG.log(Level.SEVERE, "Problem with Ignore File", ex);
+                throw new RuntimeException("Problem with Ignore File Path: " + ignoreFilePath, ex);
+            }
+        }
         return files;
     }
 
