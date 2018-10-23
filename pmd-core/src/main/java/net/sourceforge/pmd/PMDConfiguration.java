@@ -316,6 +316,10 @@ public class PMDConfiguration extends AbstractConfiguration {
         return inputFilePath;
     }
 
+    public String getIgnoreFilePath() {
+        return ignoreFilePath;
+    }
+
     /**
      * The input file path points to a single file, which contains a
      * comma-separated list of source file names to process.
