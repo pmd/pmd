@@ -1406,7 +1406,10 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="cache"><code>-cache&nbsp;&lt;path&gt;</code></a></td>
-    <td>Specifies a location for the analysis cache file to use.
+    <td>Specify the location of the cache file for incremental analysis.
+                            This should be the full path to the file, including the desired file name (not just the parent directory).
+                            If the file doesn't exist, it will be created on the first run. The file will be overwritten on each run
+                            with the most up-to-date rule violations.
                             This can greatly improve analysis performance and is <b>highly recommended</b>.</td>
     <td><code></code></td>
     <td></td>
@@ -1972,7 +1975,7 @@ which can be specified with the <code class="highlighter-rouge">-property</code>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Oct 17, 2018 <br />
+ Site last generated: Oct 23, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
