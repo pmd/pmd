@@ -148,8 +148,7 @@ public abstract class AbstractApexRule extends AbstractRule
 
     @Override
     public Object visit(ApexNode<?> node, Object data) {
-        node.childrenAccept(this, data);
-        return null;
+        return visit((AbstractApexNodeBase) node, data);
     }
 
     @Override
