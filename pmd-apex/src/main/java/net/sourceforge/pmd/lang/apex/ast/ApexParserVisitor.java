@@ -7,6 +7,11 @@ package net.sourceforge.pmd.lang.apex.ast;
 public interface ApexParserVisitor {
     Object visit(AbstractApexNodeBase node, Object data);
 
+    /**
+     * @deprecated This visit method will be removed with PMD 7.0.0. Use {@link #visit(AbstractApexNodeBase, Object)}
+     *             instead. This method would not visit all nodes, e.g. ASTFormalComment would not be covered.
+     */
+    @Deprecated // will be removed with PMD 7.0.0
     Object visit(ApexNode<?> node, Object data);
 
     Object visit(ASTAnnotation node, Object data);
