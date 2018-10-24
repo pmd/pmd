@@ -51,7 +51,10 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     %}
     {% include custom/cli_option_row.html options="-cache"
                option_arg="path"
-               description="Specifies a location for the analysis cache file to use.
+               description="Specify the location of the cache file for incremental analysis.
+                            This should be the full path to the file, including the desired file name (not just the parent directory).
+                            If the file doesn't exist, it will be created on the first run. The file will be overwritten on each run
+                            with the most up-to-date rule violations.
                             This can greatly improve analysis performance and is **highly recommended**."
     %}
     {% include custom/cli_option_row.html options="-debug,-verbose,-D,-V"
