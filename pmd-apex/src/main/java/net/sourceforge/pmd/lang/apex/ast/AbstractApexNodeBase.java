@@ -32,7 +32,7 @@ public abstract class AbstractApexNodeBase extends AbstractNode {
     /**
      * Accept the visitor. *
      */
-    abstract Object jjtAccept(ApexParserVisitor visitor, Object data);
+    public abstract Object jjtAccept(ApexParserVisitor visitor, Object data);
 
     /**
      * Accept the visitor. *
