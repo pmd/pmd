@@ -121,7 +121,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
                     exceptions.add(line);
                 }
             } catch (IOException ioe) {
-                ioe.printStackTrace();
+                throw new RuntimeException(ioe);
             }
         }
 
