@@ -79,6 +79,11 @@ The tool comes with a rather extensive help text, simply running with `-help`!
                description="Path to file containing a comma delimited list of files to analyze.
                             If this is given, then you don't need to provide `-dir`."
     %}
+    {% include custom/cli_option_row.html options="-ignorefilelist"
+               option_arg="files"
+               description="Path to file containing a comma delimited list of files to ignore.
+                            This list will override any files in the filelist."
+    %}
     {% include custom/cli_option_row.html options="-help,-h,-H"
                description="Display help on usage."
                default="false"
