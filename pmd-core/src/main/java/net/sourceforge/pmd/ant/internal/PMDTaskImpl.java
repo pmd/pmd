@@ -244,7 +244,7 @@ public class PMDTaskImpl {
                 cause.printStackTrace(printWriter);
                 project.log(strWriter.toString(), Project.MSG_VERBOSE);
             } catch (IOException e) {
-                e.printStackTrace();
+                project.log("Error while closing stream", e, Project.MSG_ERR);
             }
             if (StringUtils.isNotBlank(cause.getMessage())) {
                 project.log(cause.getMessage(), Project.MSG_VERBOSE);
