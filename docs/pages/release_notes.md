@@ -37,6 +37,8 @@ as comments are recognized as such and ignored.
     *   [#1356](https://github.com/pmd/pmd/issues/1356): \[java] UnnecessaryModifier wrong message public-\>static
 *   java-design
     *   [#1369](https://github.com/pmd/pmd/issues/1369): \[java] Processing error (ClassCastException) if a TYPE\_USE annotation is used on a base class in the "extends" clause
+*   jsp
+    *   [#1402](https://github.com/pmd/pmd/issues/1402): \[jsp] JspTokenManager has a problem about jsp scriptlet
 
 ### API Changes
 
@@ -53,6 +55,7 @@ as comments are recognized as such and ignored.
 *   [#1383](https://github.com/pmd/pmd/pull/1383): \[java] Improved message for GuardLogStatement rule - [Felix Lampe](https://github.com/fblampe)
 *   [#1386](https://github.com/pmd/pmd/pull/1386): \[go] [cpd] Add CPD support for Antlr based grammar on Golang - [Matías Fraga](https://github.com/matifraga)
 *   [#1398](https://github.com/pmd/pmd/pull/1398): \[all] Upgrading SLF4J from 1.7.12 to 1.7.25 - [Thunderforge](https://github.com/Thunderforge)
+*   [#1406](https://github.com/pmd/pmd/pull/1406): \[jsp] Fix issue 1402: JspTokenManager has a problem about jsp scriptlet - [JustPRV](https://github.com/JustPRV)
 
 {% endtocmaker %}
 
