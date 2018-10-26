@@ -40,6 +40,12 @@ as comments are recognized as such and ignored.
 
 ### API Changes
 
+*   PMD has a new CLI option `-ignorelist`. With that, you can provide a file containing a comma-delimit list of files,
+    that should be excluded during analysis. The ignorelist is applied after the files have been selected
+    via `-dir` or `-filelist`, which means, if the file is in both lists, then it will be ignored.
+    Note: there is no corresponding option for the Ant task, since the feature is already available via
+    Ant's FileSet include/exclude filters.
+
 ### External Contributions
 
 *   [#1338](https://github.com/pmd/pmd/pull/1338): \[core] [cpd] Generalize ANTLR tokens preparing support for ANTLR token filter - [Matías Fraga](https://github.com/matifraga) and [Tomi De Lucca](https://github.com/tomidelucca)
