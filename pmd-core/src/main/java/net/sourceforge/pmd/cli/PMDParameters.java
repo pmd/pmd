@@ -35,6 +35,9 @@ public class PMDParameters {
     @Parameter(names = "-filelist", description = "Path to a file containing a list of files to analyze.")
     private String fileListPath;
 
+    @Parameter(names = "-ignorelist", description = "Path to a file containing a list of files to ignore.")
+    private String ignoreListPath;
+
     @Parameter(names = { "-format", "-f" }, description = "Report format type.")
     private String format = "text"; // Enhance to support other usage
 
@@ -177,6 +180,7 @@ public class PMDParameters {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setInputPaths(this.getSourceDir());
         configuration.setInputFilePath(this.getFileListPath());
+        configuration.setIgnoreFilePath(this.getIgnoreListPath());
         configuration.setInputUri(this.getUri());
         configuration.setReportFormat(this.getFormat());
         configuration.setBenchmark(this.isBenchmark());
@@ -301,6 +305,10 @@ public class PMDParameters {
 
     public String getFileListPath() {
         return fileListPath;
+    }
+
+    public String getIgnoreListPath() {
+        return ignoreListPath;
     }
 
     public String getFormat() {

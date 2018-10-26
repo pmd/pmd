@@ -50,7 +50,7 @@ The tool comes with a rather extensive help text, simply running with `-help`!
                default="false"
     %}
     {% include custom/cli_option_row.html options="-cache"
-               option_arg="path"
+               option_arg="filepath"
                description="Specify the location of the cache file for incremental analysis.
                             This should be the full path to the file, including the desired file name (not just the parent directory).
                             If the file doesn't exist, it will be created on the first run. The file will be overwritten on each run
@@ -75,9 +75,15 @@ The tool comes with a rather extensive help text, simply running with `-help`!
                default="true"
     %}
     {% include custom/cli_option_row.html options="-filelist"
-               option_arg="files"
+               option_arg="filepath"
                description="Path to file containing a comma delimited list of files to analyze.
                             If this is given, then you don't need to provide `-dir`."
+    %}
+    {% include custom/cli_option_row.html options="-ignorelist"
+               option_arg="filepath"
+               description="Path to file containing a comma delimited list of files to ignore.
+                            This option can be combined with `-dir` and `-filelist`.
+                            This ignore list takes precedence over any files in the filelist."
     %}
     {% include custom/cli_option_row.html options="-help,-h,-H"
                description="Display help on usage."
