@@ -27,6 +27,7 @@ as comments are recognized as such and ignored.
     *   [#1272](https://github.com/pmd/pmd/issues/1272): \[core] Could not find or load main class when using symlinked run.sh
     *   [#1377](https://github.com/pmd/pmd/issues/1377): \[core] LanguageRegistry uses default class loader when invoking ServiceLocator
     *   [#1394](https://github.com/pmd/pmd/issues/1394): \[doc] How to configure "-cache <path>"
+    *   [#1412](https://github.com/pmd/pmd/issues/1412): \[doc] Broken link to adding new cpd language documentation
 *   java
     *   [#1330](https://github.com/pmd/pmd/issues/1330): \[java] PMD crashes with java.lang.ClassFormatError: Absent Code attribute in method that is not native or abstract in class file javax/xml/ws/Service
 *   java-bestpractices
@@ -57,6 +58,7 @@ as comments are recognized as such and ignored.
 *   [#1398](https://github.com/pmd/pmd/pull/1398): \[all] Upgrading SLF4J from 1.7.12 to 1.7.25 - [Thunderforge](https://github.com/Thunderforge)
 *   [#1401](https://github.com/pmd/pmd/pull/1401): \[all] Replacing IOUtils.closeQuietly(foo) with try-with-resources statements - [Thunderforge](https://github.com/Thunderforge)
 *   [#1406](https://github.com/pmd/pmd/pull/1406): \[jsp] Fix issue 1402: JspTokenManager has a problem about jsp scriptlet - [JustPRV](https://github.com/JustPRV)
+*   [#1414](https://github.com/pmd/pmd/pull/1414): \[doc] Fix broken link. Fixes #1412 - [Johan Hammar](https://github.com/johanhammar)
 
 {% endtocmaker %}
 

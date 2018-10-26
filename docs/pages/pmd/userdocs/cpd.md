@@ -26,7 +26,7 @@ Each rewrite made it much faster, and now it can process the JDK 1.4 java.* pack
 
 Note that CPD works with Java, JSP, C, C++, C#, Fortran and PHP code and some more languages. For the
 full list, see below [Supported Languages](#supported-languages). Your own language is missing?
-See how to add it [here](/pmd_devdocs_adding_new_cpd_language.html).
+See how to add it [here](/pmd_devdocs_major_adding_new_cpd_language.html).
 
 CPD is included with PMD, which you can download [here](http://sourceforge.net/projects/pmd/files/pmd/).
 
