@@ -1405,7 +1405,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="cache"><code>-cache&nbsp;&lt;path&gt;</code></a></td>
+    <td><a style="pointer-events: none; cursor: default;" name="cache"><code>-cache&nbsp;&lt;filepath&gt;</code></a></td>
     <td>Specify the location of the cache file for incremental analysis.
                             This should be the full path to the file, including the desired file name (not just the parent directory).
                             If the file doesn't exist, it will be created on the first run. The file will be overwritten on each run
@@ -1500,9 +1500,33 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="filelist"><code>-filelist&nbsp;&lt;files&gt;</code></a></td>
+    <td><a style="pointer-events: none; cursor: default;" name="filelist"><code>-filelist&nbsp;&lt;filepath&gt;</code></a></td>
     <td>Path to file containing a comma delimited list of files to analyze.
                             If this is given, then you don't need to provide <code>-dir</code>.</td>
+    <td><code></code></td>
+    <td></td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
+    <td><a style="pointer-events: none; cursor: default;" name="ignorelist"><code>-ignorelist&nbsp;&lt;filepath&gt;</code></a></td>
+    <td>Path to file containing a comma delimited list of files to ignore.
+                            This option can be combined with <code>-dir</code> and <code>-filelist</code>.
+                            This ignore list takes precedence over any files in the filelist.</td>
     <td><code></code></td>
     <td></td>
 </tr>
