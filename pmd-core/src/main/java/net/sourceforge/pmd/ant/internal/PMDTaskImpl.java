@@ -13,7 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
@@ -240,12 +239,13 @@ public class PMDTaskImpl {
         Throwable cause = pmde.getCause();
 
         if (cause != null) {
-            StringWriter strWriter = new StringWriter();
-            PrintWriter printWriter = new PrintWriter(strWriter);
-            cause.printStackTrace(printWriter);
-            project.log(strWriter.toString(), Project.MSG_VERBOSE);
-            IOUtils.closeQuietly(printWriter);
-
+            try (StringWriter strWriter = new StringWriter();
+                 PrintWriter printWriter = new PrintWriter(strWriter)) {
+                cause.printStackTrace(printWriter);
+                project.log(strWriter.toString(), Project.MSG_VERBOSE);
+            } catch (IOException e) {
+                project.log("Error while closing stream", e, Project.MSG_ERR);
+            }
             if (StringUtils.isNotBlank(cause.getMessage())) {
                 project.log(cause.getMessage(), Project.MSG_VERBOSE);
             }
