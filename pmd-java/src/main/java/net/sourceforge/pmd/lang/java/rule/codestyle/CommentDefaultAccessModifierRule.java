@@ -6,16 +6,13 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.*;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
@@ -41,13 +38,13 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
 
     public CommentDefaultAccessModifierRule() {
         definePropertyDescriptor(REGEX_DESCRIPTOR);
-        defaultSuppressionAnnotations();
     }
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
         Collection<String> ignoredStrings = new ArrayList<>();
-        ignoredStrings.add("VisibleForTesting");
+        ignoredStrings.add("com.google.common.annotations.VisibleForTesting");
+        ignoredStrings.add("android.support.annotation.VisibleForTesting");
         return ignoredStrings;
     }
 
