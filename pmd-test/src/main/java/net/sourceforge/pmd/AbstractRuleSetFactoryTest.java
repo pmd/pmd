@@ -496,7 +496,7 @@ public abstract class AbstractRuleSetFactoryTest {
 
         ValidateDefaultHandler() {
             schemaMapping = new HashMap<>();
-            schemaMapping.put("http://pmd.sourceforge.net/ruleset_2_0_0.xsd", "ruleset_2_0_0.xsd");
+            schemaMapping.put("https://pmd.sourceforge.io/ruleset_2_0_0.xsd", "ruleset_2_0_0.xsd");
             schemaMapping.put("http://pmd.sourceforge.net/ruleset_2_0_0.dtd", "ruleset_2_0_0.dtd");
         }
 
