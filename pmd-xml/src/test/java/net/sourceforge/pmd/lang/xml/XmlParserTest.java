@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -371,7 +372,8 @@ public class XmlParserTest {
 
     @Test
     public void testBug1518() throws Exception {
-        String xml = IOUtils.toString(XmlParserTest.class.getResourceAsStream("parsertests/bug1518.xml"));
+        String xml = IOUtils.toString(XmlParserTest.class.getResourceAsStream("parsertests/bug1518.xml"),
+                StandardCharsets.UTF_8);
         Node document = parseXml(xml);
         assertNotNull(document);
     }

@@ -28,9 +28,11 @@ import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     private List<ASTImportDeclaration> imports = new ArrayList<>();
+    private String currentPackage;
 
     public UnnecessaryFullyQualifiedNameRule() {
         super.addRuleChainVisit(ASTCompilationUnit.class);
+        super.addRuleChainVisit(ASTPackageDeclaration.class);
         super.addRuleChainVisit(ASTImportDeclaration.class);
         super.addRuleChainVisit(ASTClassOrInterfaceType.class);
         super.addRuleChainVisit(ASTName.class);
@@ -39,9 +41,16 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         imports.clear();
+        currentPackage = null;
         return data;
     }
 
+    @Override
+    public Object visit(ASTPackageDeclaration node, Object data) {
+        currentPackage = node.getPackageNameImage();
+        return data;
+    }
+    
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         imports.add(node);
@@ -160,11 +169,13 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             }
         }
 
-        if (matches.isEmpty() && isJavaLangImplicit(node)) {
-            addViolation(data, node, new Object[] { node.getImage(), "java.lang.*", "implicit "});
-        }
-
-        if (!matches.isEmpty()) {
+        if (matches.isEmpty()) {
+            if (isJavaLangImplicit(node)) {
+                addViolation(data, node, new Object[] { node.getImage(), "java.lang.*", "implicit "});
+            } else if (isSamePackage(node)) {
+                addViolation(data, node, new Object[] { node.getImage(), currentPackage + ".*", "same package "});
+            }
+        } else {
             ASTImportDeclaration firstMatch = findFirstMatch(matches);
 
             // Could this done to avoid a conflict?
@@ -200,6 +211,11 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         return result;
     }
 
+    private boolean isSamePackage(AbstractJavaTypeNode node) {
+        String name = node.getImage();
+        return name.substring(0, name.lastIndexOf('.')).equals(currentPackage);
+    }
+    
     private boolean isJavaLangImplicit(AbstractJavaTypeNode node) {
         String name = node.getImage();
         boolean isJavaLang = name != null && name.startsWith("java.lang.");

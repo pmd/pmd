@@ -29,7 +29,7 @@ abstract class AbstractJavaAnnotatableNode extends AbstractJavaNode implements A
         List<ASTAnnotation> annotations = getDeclaredAnnotations();
         for (ASTAnnotation annotation : annotations) {
             ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
-            if (TypeHelper.isA(name, annotQualifiedName)) {
+            if (name != null && TypeHelper.isA(name, annotQualifiedName)) {
                 return annotation;
             }
         }

@@ -7,11 +7,15 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.8.0-SNAPSHOT</version>
+        <version>6.9.0-SNAPSHOT</version>
     </parent>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <configuration>
@@ -24,6 +28,10 @@
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+        </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>

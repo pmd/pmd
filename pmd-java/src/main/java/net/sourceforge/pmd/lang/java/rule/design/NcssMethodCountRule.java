@@ -12,6 +12,7 @@ import net.sourceforge.pmd.stat.DataPoint;
  * 
  * @author Jason Bennett
  */
+@Deprecated
 public class NcssMethodCountRule extends AbstractNcssCountRule {
 
     /**
