@@ -3,7 +3,7 @@
 <ruleset name="Code Style"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
         Rules which enforce a specific coding style.
@@ -399,6 +399,8 @@ public class Éléphant {}
 To avoid mistakes if we want that a Method, Constructor, Field or Nested class have a default access modifier
 we must add a comment at the beginning of it's declaration.
 By default the comment must be /* default */ or /* package */, if you want another, you have to provide a regular expression.
+This rule ignores by default all cases that have a @VisibleForTesting annotation. Use the
+property "ignoredAnnotations" to customize the recognized annotations.
         </description>
         <priority>3</priority>
         <example>

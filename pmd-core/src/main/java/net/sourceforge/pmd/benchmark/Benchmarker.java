@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
@@ -145,11 +144,8 @@ public final class Benchmarker {
         long start = System.currentTimeMillis();
 
         for (DataSource dataSource : dataSources) {
-            InputStreamReader reader = new InputStreamReader(dataSource.getInputStream());
-            try {
+            try (InputStreamReader reader = new InputStreamReader(dataSource.getInputStream())) {
                 parser.parse(dataSource.getNiceFileName(false, null), reader);
-            } finally {
-                IOUtils.closeQuietly(reader);
             }
         }
 

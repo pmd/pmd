@@ -35,6 +35,9 @@ public class PMDParameters {
     @Parameter(names = "-filelist", description = "Path to a file containing a list of files to analyze.")
     private String fileListPath;
 
+    @Parameter(names = "-ignorelist", description = "Path to a file containing a list of files to ignore.")
+    private String ignoreListPath;
+
     @Parameter(names = { "-format", "-f" }, description = "Report format type.")
     private String format = "text"; // Enhance to support other usage
 
@@ -66,7 +69,7 @@ public class PMDParameters {
     private boolean showsuppressed = false;
 
     @Parameter(names = "-suppressmarker",
-            description = "Specifies the string that marks the a line which PMD should ignore; default is NOPMD.")
+            description = "Specifies the string that marks a line which PMD should ignore; default is NOPMD.")
     private String suppressmarker = "NOPMD";
 
     @Parameter(names = { "-minimumpriority", "-min" },
@@ -99,8 +102,12 @@ public class PMDParameters {
     @Parameter(names = "-norulesetcompatibility",
             description = "Disable the ruleset compatibility filter. The filter is active by default and tries automatically 'fix' old ruleset files with old rule names")
     private boolean noRuleSetCompatibility = false;
-    
-    @Parameter(names = "-cache", description = "Specify the location of the cache file for incremental analysis.")
+
+    @Parameter(names = "-cache", arity = 1,
+            description = "Specify the location of the cache file for incremental analysis. "
+                    + "This should be the full path to the file, including the desired file name (not just the parent directory). "
+                    + "If the file doesn't exist, it will be created on the first run. The file will be overwritten on each run "
+                    + "with the most up-to-date rule violations.")
     private String cacheLocation = null;
 
     @Parameter(names = "-no-cache", description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
@@ -173,6 +180,7 @@ public class PMDParameters {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setInputPaths(this.getSourceDir());
         configuration.setInputFilePath(this.getFileListPath());
+        configuration.setIgnoreFilePath(this.getIgnoreListPath());
         configuration.setInputUri(this.getUri());
         configuration.setReportFormat(this.getFormat());
         configuration.setBenchmark(this.isBenchmark());
@@ -297,6 +305,10 @@ public class PMDParameters {
 
     public String getFileListPath() {
         return fileListPath;
+    }
+
+    public String getIgnoreListPath() {
+        return ignoreListPath;
     }
 
     public String getFormat() {

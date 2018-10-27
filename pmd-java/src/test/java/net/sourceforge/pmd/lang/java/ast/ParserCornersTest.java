@@ -275,13 +275,10 @@ public class ParserCornersTest {
     }
 
     private String readAsString(String resource) {
-        InputStream in = ParserCornersTest.class.getResourceAsStream(resource);
-        try {
+        try (InputStream in = ParserCornersTest.class.getResourceAsStream(resource)) {
             return IOUtils.toString(in, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            IOUtils.closeQuietly(in);
         }
     }
 

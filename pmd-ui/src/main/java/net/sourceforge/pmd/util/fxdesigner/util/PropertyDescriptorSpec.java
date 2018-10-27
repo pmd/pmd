@@ -173,6 +173,8 @@ public class PropertyDescriptorSpec implements SettingsOwner {
         values.put(PropertyDescriptorField.NAME, getName());
         values.put(PropertyDescriptorField.DEFAULT_VALUE, getValue());
         values.put(PropertyDescriptorField.DESCRIPTION, getDescription());
+        values.put(PropertyDescriptorField.MIN, "-2000000");
+        values.put(PropertyDescriptorField.MAX, "+2000000");
 
         return externalBuilder.build(values);
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Default ruleset used by the CodeClimate Engine for Salesforce.com Apex" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Default ruleset used by the CodeClimate Engine for Salesforce.com Apex" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
    <description>Default ruleset used by the Code Climate Engine for Salesforce.com Apex</description>
 
    <!-- COMPLEXITY -->
