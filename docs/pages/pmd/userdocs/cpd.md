@@ -9,55 +9,47 @@ author: Tom Copeland <tom@infoether.com>
 ## Overview
 
 Duplicate code can be hard to find, especially in a large project.
-But PMD's Copy/Paste Detector (CPD) can find it for you!
-CPD has been through three major incarnations:
+But PMD's **Copy/Paste Detector (CPD)** can find it for you!
 
-*   First we wrote it using a variant of Michael Wise's Greedy String Tiling algorithm (our variant is described
-    [here](http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html)).
+CPD works with Java, JSP, C, C++, C#, Fortran and PHP code and [some more languages](#supported-languages).
+It can be used via [command-line](#cli-usage), or via an [Ant task](#ant-task).
+It can also be run with Maven by using the `cpd-check` goal on the [Maven PMD Plugin](pmd_userdocs_tools_maven.html).
 
-*   Then it was completely rewritten by Brian Ewins using the
-    [Burrows-Wheeler transform](http://dogma.net/markn/articles/bwt/bwt.htm).
 
-*   Finally, it was rewritten by Steve Hawkins to use the
-    [Karp-Rabin](http://www.nist.gov/dads/HTML/karpRabin.html) string matching algorithm.
-
-Each rewrite made it much faster, and now it can process the JDK 1.4 java.* packages in about 4 seconds
-(on my workstation, at least).
-
-Note that CPD works with Java, JSP, C, C++, C#, Fortran and PHP code and some more languages. For the
-full list, see below [Supported Languages](#supported-languages). Your own language is missing?
+Your own language is missing?
 See how to add it [here](/pmd_devdocs_adding_new_cpd_language.html).
 
-CPD is included with PMD, which you can download [here](http://sourceforge.net/projects/pmd/files/pmd/).
 
-### Why should you care?
+### Why should you care about duplicates?
 
 It's certainly important to know where to get CPD, and how to call it, but it's worth stepping back for a moment and asking yourself why you should care about this, being the occurrence of duplicate code blocks.
 
-#### If nothing ever changes, the impact is minimal
+Assuming duplicated blocks of code are supposed to do the same thing, any refactoring, even simple, must be duplicated too -- which is unrewarding grunt work, and puts pressure on the developer to find every place in which to perform the refactoring. Automated tools like CPD can help with that to some extent.
 
-If you're analyzing code that never changes, it's reasonable to assume that you don't need to care too much about this.  Risk comes in when you're working with complex code that can change over time.
+However, failure to keep the code in sync may mean automated tools will no longer recognise these blocks as duplicates. This means the task of finding duplicates to keep them in sync when doing subsequent refactorings can no longer be entrusted to an automated tool -- adding more burden on the maintainer. Segments of code initially supposed to do the same thing may grow apart undetected upon further refactoring.
 
-#### Refactoring known duplications can be messy
+Now, if the code may never change in the future, then this is not a problem.
 
-The first level of significant risk from duplicated blocks comes when it’s time to make changes to the duplicated logic. In this situation, you know that logic is duplicated in two or more places, and you hopefully understand the refactoring or change that has to happen, but you still have to make sure that you’ve found all the duplicated blocks and made the exact same change in each one, not just so they are logically correct, but so that they are still duplicate blocks.
-Note the last condition.  By allowing duplicate blocks to exist, you must ensure that as long as they exist as separate blocks of code, you have to ensure that they are still recognized as duplicate blocks, so you have to make the exact identical change in each block.
+Otherwise, the most viable solution is to not duplicate. If the duplicates are already there, then they should be refactored out. We thus advise developers to use CPD to **help remove duplicates**, not to help keep duplicates in sync.
 
-#### Mistakes in refactoring duplicates can make them not duplicates anymore
+### Refactoring duplicates
 
-The implications described in the previous risk point out the next serious risk. If you are not careful when refactoring one or more of the code blocks, you could accidentally leave them so they are no longer recognized as duplicates by the scanning technology, but they are still functionally identical.
-The result of that is that now the next time these duplicate blocks need to be refactored, some of those duplicate blocks will not be recognized as duplicates, making it possible that the person doing the refactoring simply won’t know about that code that needs to change. After that refactoring, you now have two blocks of code that were supposed to do the same thing, but now they are not.  Chaos ensues.
+Once you have located some duplicates, several refactoring strategies may apply depending of the scope and extent of the duplication. Here's a quick summary:
 
-#### Logic changes made to a block without similar changes to dups results in similar chaos
+* If the duplication is local to a method or single class:
+    * Extract a local variable if the duplicated logic is not prohibitively long
+    * Extract the duplicated logic into a private method
+* If the duplication occurs in siblings within a class hierarchy:
+    * Extract a method and pull it up in the class hierarchy, along with common fields
+    * Use the [Template Method](https://sourcemaking.com/design_patterns/template_method) design pattern
+* If the duplication occurs consistently in unrelated hierarchies:
+    * Introduce a common ancestor to those class hierarchies
 
-The previous risk leads to the final risk described here.  If someone makes logic changes to a block of code that has exact or logical duplicates somewhere else, while not considering those duplicates in any way, leads to the same situation at the end of the previous risk, being blocks that should have been doing the same thing, but now are not, and it will be very difficult for anyone to know that.
-In fact, despite this being the last risk described here, I think it is likely that this is the most likely scenario in a development team that doesn’t pay close attention to duplicate blocks.
+Novice as much as advanced readers may want to [read on on Refactoring Guru](https://refactoring.guru/smells/duplicate-code) for more in-depth strategies, use cases and explanations.
 
-#### Main risk from duplicate blocks is from mutations, making them no longer duplicates
+## CLI Usage
 
-All of these risks have a common factor. The presence of duplicate blocks in a static code base is not a big deal. Problems start to happen when code is mutated, even with a disciplined approach. After duplicate blocks are mutated, they may no longer be recognized as duplicate blocks, which is quite a bit worse.
-
-### CLI options
+### CLI options reference
 
 <table>
     <tr>
@@ -209,7 +201,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 </table>
 
 
-### Supported Languages
+## Supported Languages
 
 * Apex
 * C#
@@ -232,7 +224,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 * Visualforce
 
 
-### Available report formats
+## Available report formats
 
 * text : Default format
 * xml
@@ -411,3 +403,15 @@ It's legacy and the new comment's based approch should be favored.
 
 Other languages currently have no support to suppress CPD reports. In the future,
 the comment based approach will be extended to those of them that can support it.
+
+## Credits
+CPD has been through three major incarnations:
+
+*   First we wrote it using a variant of Michael Wise's Greedy String Tiling algorithm (our variant is described
+    [here](http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html)).
+
+*   Then it was completely rewritten by Brian Ewins using the
+    [Burrows-Wheeler transform](http://dogma.net/markn/articles/bwt/bwt.htm).
+
+*   Finally, it was rewritten by Steve Hawkins to use the
+    [Karp-Rabin](http://www.nist.gov/dads/HTML/karpRabin.html) string matching algorithm.
