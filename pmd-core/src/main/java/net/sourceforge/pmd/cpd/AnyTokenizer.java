@@ -9,8 +9,6 @@ import java.io.CharArrayReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import org.apache.commons.io.IOUtils;
-
 /**
  * This class does a best-guess try-anything tokenization.
  *
@@ -22,8 +20,7 @@ public class AnyTokenizer implements Tokenizer {
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder sb = sourceCode.getCodeBuffer();
-        BufferedReader reader = new BufferedReader(new CharArrayReader(sb.toString().toCharArray()));
-        try {
+        try (BufferedReader reader = new BufferedReader(new CharArrayReader(sb.toString().toCharArray()))) {
             int lineNumber = 1;
             String line = reader.readLine();
             while (line != null) {
@@ -41,7 +38,6 @@ public class AnyTokenizer implements Tokenizer {
         } catch (IOException ignored) {
             ignored.printStackTrace();
         } finally {
-            IOUtils.closeQuietly(reader);
             tokenEntries.add(TokenEntry.getEOF());
         }
     }

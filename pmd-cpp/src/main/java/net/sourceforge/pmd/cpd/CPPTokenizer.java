@@ -10,8 +10,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
@@ -56,12 +54,9 @@ public class CPPTokenizer implements Tokenizer {
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
-        Reader reader = null;
-        try {
+        try (Reader reader = IOUtil.skipBOM(new StringReader(maybeSkipBlocks(buffer.toString())))) {
             LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(CppLanguageModule.NAME)
                     .getDefaultVersion().getLanguageVersionHandler();
-            reader = new StringReader(maybeSkipBlocks(buffer.toString()));
-            reader = IOUtil.skipBOM(reader);
             final TokenFilter tokenFilter = new JavaCCTokenFilter(
                 languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions())
                     .getTokenManager(sourceCode.getFileName(), reader));
@@ -73,16 +68,10 @@ public class CPPTokenizer implements Tokenizer {
             }
             tokenEntries.add(TokenEntry.getEOF());
             System.err.println("Added " + sourceCode.getFileName());
-        } catch (TokenMgrError err) {
+        } catch (TokenMgrError | IOException err) {
             err.printStackTrace();
             System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
             tokenEntries.add(TokenEntry.getEOF());
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
-            tokenEntries.add(TokenEntry.getEOF());
-        } finally {
-            IOUtils.closeQuietly(reader);
         }
     }
 

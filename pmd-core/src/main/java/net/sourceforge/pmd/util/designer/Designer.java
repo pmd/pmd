@@ -92,7 +92,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -992,12 +991,10 @@ public class Designer implements ClipboardOwner {
     }
 
     private void loadSettings() {
-        InputStream stream = null;
-        try {
-            File file = new File(SETTINGS_FILE_NAME);
-            if (file.exists()) {
+        File file = new File(SETTINGS_FILE_NAME);
+        if (file.exists()) {
+            try (InputStream stream = new FileInputStream(file)) {
                 DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-                stream = new FileInputStream(file);
                 Document document = builder.parse(stream);
                 Element settingsElement = document.getDocumentElement();
                 Element codeElement = (Element) settingsElement.getElementsByTagName("code").item(0);
@@ -1018,15 +1015,13 @@ public class Designer implements ClipboardOwner {
                         break;
                     }
                 }
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SAXException e) {
+                e.printStackTrace();
             }
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(stream);
         }
     }
 

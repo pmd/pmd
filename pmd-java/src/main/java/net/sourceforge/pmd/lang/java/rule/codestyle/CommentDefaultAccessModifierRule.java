@@ -4,34 +4,35 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.rule.documentation.AbstractCommentRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.properties.RegexProperty;
 
 /**
  * Check for Methods, Fields and Nested Classes that have a default access
  * modifier
+ * This rule ignores all nodes annotated with @VisibleForTesting by default.
+ * Use the ignoredAnnotationsDescriptor property to customize the ignored rules.
  *
  * @author Damián Techeira
  */
-public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
+public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationRule {
 
     private static final RegexProperty REGEX_DESCRIPTOR = RegexProperty.named("regex")
             .desc("Regular expression").defaultValue("\\/\\*\\s+(default|package)\\s+\\*\\/").uiOrder(1.0f).build();
@@ -41,6 +42,14 @@ public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
 
     public CommentDefaultAccessModifierRule() {
         definePropertyDescriptor(REGEX_DESCRIPTOR);
+    }
+
+    @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        Collection<String> ignoredStrings = new ArrayList<>();
+        ignoredStrings.add("com.google.common.annotations.VisibleForTesting");
+        ignoredStrings.add("android.support.annotation.VisibleForTesting");
+        return ignoredStrings;
     }
 
     @Override
@@ -106,23 +115,7 @@ public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
                 // if is a default access modifier check if there is a comment
                 // in this line
                 && !interestingLineNumberComments.contains(decl.getBeginLine())
-                // that it is not annotated with @VisibleForTesting
-                && hasNoVisibleForTestingAnnotation(decl);
-    }
-
-    private boolean hasNoVisibleForTestingAnnotation(AbstractJavaAccessNode decl) {
-        boolean result = true;
-        ASTClassOrInterfaceBodyDeclaration parent = decl.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
-        if (parent != null) {
-            List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
-            for (ASTAnnotation annotation : annotations) {
-                final ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
-                if (name.hasImageEqualTo("VisibleForTesting")) {
-                    result = false;
-                    break;
-                }
-            }
-        }
-        return result;
+                // that it is not annotated with e.g. @VisibleForTesting
+                && !hasIgnoredAnnotation(decl);
     }
 }

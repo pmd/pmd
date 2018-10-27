@@ -13,16 +13,22 @@ import net.sourceforge.pmd.ThreadSafeReportListener;
 
 /**
  * An analysis cache for incremental analysis.
+ * Simultaneously manages the old version of the cache,
+ * and the new, most up-to-date violation cache.
  */
 public interface AnalysisCache extends ThreadSafeReportListener {
 
     /**
-     * Persist the analysis results on whatever means is used by the cache
+     * Persists the updated analysis results on whatever medium is used by the cache.
      */
     void persist();
 
     /**
-     * Check if a given file is up to date in the cache and can be skipped from analysis
+     * Checks if a given file is up to date in the cache and can be skipped from analysis.
+     * Regardless of the return value of this method, each call adds the parameter to the
+     * updated cache, which allows {@link #ruleViolationAdded(RuleViolation)} to add a rule
+     * violation to the file. TODO is this really best behaviour? This side-effects seems counter-intuitive.
+     *
      * @param sourceFile The file to check in the cache
      * @return True if the cache is a hit, false otherwise
      */
@@ -36,13 +42,17 @@ public interface AnalysisCache extends ThreadSafeReportListener {
     List<RuleViolation> getCachedViolations(File sourceFile);
 
     /**
-     * Notifies the cache that analysis of the given file has failed and should not be cached
+     * Notifies the cache that analysis of the given file has failed and should not be cached.
      * @param sourceFile The file whose analysis failed
      */
     void analysisFailed(File sourceFile);
     
     /**
      * Checks if the cache is valid for the configured rulesets and class loader.
+     * If the provided rulesets and classpath don't match those of the cache, the
+     * cache is invalidated. This needs to be called before analysis, as it
+     * conditions the good behaviour of {@link #isUpToDate(File)}.
+     *
      * @param ruleSets The rulesets configured for this analysis.
      * @param auxclassPathClassLoader The class loader for auxclasspath configured for this analysis.
      */

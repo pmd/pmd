@@ -13,8 +13,6 @@ import java.io.Reader;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
@@ -191,17 +189,13 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
      */
     private String getLine(String sourceFile, int line) {
         String code = null;
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(getReader(sourceFile));
+        try (BufferedReader br = new BufferedReader(getReader(sourceFile))) {
             for (int i = 0; line > i; i++) {
                 String txt = br.readLine();
                 code = txt == null ? "" : txt.trim();
             }
         } catch (IOException ioErr) {
             ioErr.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(br);
         }
         return code;
     }

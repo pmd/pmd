@@ -25,7 +25,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -328,13 +327,12 @@ public abstract class RuleTst {
      */
     public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName, String baseDirectory) {
         String testXmlFileName = baseDirectory + testsFileName + ".xml";
-        InputStream inputStream = getClass().getResourceAsStream(testXmlFileName);
-        if (inputStream == null) {
-            throw new RuntimeException("Couldn't find " + testXmlFileName);
-        }
 
         Document doc;
-        try {
+        try (InputStream inputStream = getClass().getResourceAsStream(testXmlFileName)) {
+            if (inputStream == null) {
+                throw new RuntimeException("Couldn't find " + testXmlFileName);
+            }
             doc = documentBuilder.parse(inputStream);
         } catch (FactoryConfigurationError fce) {
             throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + fce, fce);
@@ -342,8 +340,6 @@ public abstract class RuleTst {
             throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + ioe, ioe);
         } catch (SAXException se) {
             throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + se, se);
-        } finally {
-            IOUtils.closeQuietly(inputStream);
         }
 
         return parseTests(rule, doc);
