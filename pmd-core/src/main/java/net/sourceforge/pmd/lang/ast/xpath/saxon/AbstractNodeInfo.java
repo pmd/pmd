@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.saxon;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 import net.sf.saxon.Configuration;
 import net.sf.saxon.event.Receiver;
 import net.sf.saxon.om.Axis;
@@ -27,6 +29,8 @@ import net.sf.saxon.value.Value;
  * useful implementations, such as {@link #iterateAxis(byte, NodeTest)} and
  * {@link #isSameNodeInfo(NodeInfo)}.
  */
+@Deprecated
+@InternalApi
 public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     @Override
     public String getSystemId() {
