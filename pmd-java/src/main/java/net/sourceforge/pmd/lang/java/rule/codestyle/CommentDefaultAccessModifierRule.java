@@ -4,7 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -117,7 +121,7 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
 
     private boolean hasNoVisibleForTestingAnnotation(AbstractJavaAccessNode decl) {
         boolean result = true;
-        if(hasIgnoredAnnotation(decl)){
+        if (hasIgnoredAnnotation(decl)) {
             result = false;
         }
         return result;
