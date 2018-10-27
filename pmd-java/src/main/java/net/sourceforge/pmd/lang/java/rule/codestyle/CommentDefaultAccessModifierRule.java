@@ -115,15 +115,7 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
                 // if is a default access modifier check if there is a comment
                 // in this line
                 && !interestingLineNumberComments.contains(decl.getBeginLine())
-                // that it is not annotated with @VisibleForTesting
-                && hasNoVisibleForTestingAnnotation(decl);
-    }
-
-    private boolean hasNoVisibleForTestingAnnotation(AbstractJavaAccessNode decl) {
-        boolean result = true;
-        if (hasIgnoredAnnotation(decl)) {
-            result = false;
-        }
-        return result;
+                // that it is not annotated with e.g. @VisibleForTesting
+                && !hasIgnoredAnnotation(decl);
     }
 }
