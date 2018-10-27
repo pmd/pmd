@@ -1265,34 +1265,56 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <h2 id="overview">Overview</h2>
 
 <p>Duplicate code can be hard to find, especially in a large project.
-But PMD’s Copy/Paste Detector (CPD) can find it for you!
-CPD has been through three major incarnations:</p>
+But PMD’s <strong>Copy/Paste Detector (CPD)</strong> can find it for you!</p>
+
+<p>CPD works with Java, JSP, C, C++, C#, Fortran and PHP code and <a href="#supported-languages">some more languages</a>.
+It can be used via <a href="#cli-usage">command-line</a>, or via an <a href="#ant-task">Ant task</a>.
+It can also be run with Maven by using the <code class="highlighter-rouge">cpd-check</code> goal on the <a href="pmd_userdocs_tools_maven.html">Maven PMD Plugin</a>.</p>
+
+<p>Your own language is missing?
+See how to add it <a href="/pmd_devdocs_adding_new_cpd_language.html">here</a>.</p>
+
+<h3 id="why-should-you-care-about-duplicates">Why should you care about duplicates?</h3>
+
+<p>It’s certainly important to know where to get CPD, and how to call it, but it’s worth stepping back for a moment and asking yourself why you should care about this, being the occurrence of duplicate code blocks.</p>
+
+<p>Assuming duplicated blocks of code are supposed to do the same thing, any refactoring, even simple, must be duplicated too – which is unrewarding grunt work, and puts pressure on the developer to find every place in which to perform the refactoring. Automated tools like CPD can help with that to some extent.</p>
+
+<p>However, failure to keep the code in sync may mean automated tools will no longer recognise these blocks as duplicates. This means the task of finding duplicates to keep them in sync when doing subsequent refactorings can no longer be entrusted to an automated tool – adding more burden on the maintainer. Segments of code initially supposed to do the same thing may grow apart undetected upon further refactoring.</p>
+
+<p>Now, if the code may never change in the future, then this is not a problem.</p>
+
+<p>Otherwise, the most viable solution is to not duplicate. If the duplicates are already there, then they should be refactored out. We thus advise developers to use CPD to <strong>help remove duplicates</strong>, not to help keep duplicates in sync.</p>
+
+<h3 id="refactoring-duplicates">Refactoring duplicates</h3>
+
+<p>Once you have located some duplicates, several refactoring strategies may apply depending of the scope and extent of the duplication. Here’s a quick summary:</p>
 
 <ul>
-  <li>
-    <p>First we wrote it using a variant of Michael Wise’s Greedy String Tiling algorithm (our variant is described
-<a href="http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html">here</a>).</p>
+  <li>If the duplication is local to a method or single class:
+    <ul>
+      <li>Extract a local variable if the duplicated logic is not prohibitively long</li>
+      <li>Extract the duplicated logic into a private method</li>
+    </ul>
   </li>
-  <li>
-    <p>Then it was completely rewritten by Brian Ewins using the
-<a href="http://dogma.net/markn/articles/bwt/bwt.htm">Burrows-Wheeler transform</a>.</p>
+  <li>If the duplication occurs in siblings within a class hierarchy:
+    <ul>
+      <li>Extract a method and pull it up in the class hierarchy, along with common fields</li>
+      <li>Use the <a href="https://sourcemaking.com/design_patterns/template_method">Template Method</a> design pattern</li>
+    </ul>
   </li>
-  <li>
-    <p>Finally, it was rewritten by Steve Hawkins to use the
-<a href="http://www.nist.gov/dads/HTML/karpRabin.html">Karp-Rabin</a> string matching algorithm.</p>
+  <li>If the duplication occurs consistently in unrelated hierarchies:
+    <ul>
+      <li>Introduce a common ancestor to those class hierarchies</li>
+    </ul>
   </li>
 </ul>
 
-<p>Each rewrite made it much faster, and now it can process the JDK 1.4 java.* packages in about 4 seconds
-(on my workstation, at least).</p>
+<p>Novice as much as advanced readers may want to <a href="https://refactoring.guru/smells/duplicate-code">read on on Refactoring Guru</a> for more in-depth strategies, use cases and explanations.</p>
 
-<p>Note that CPD works with Java, JSP, C, C++, C#, Fortran and PHP code and some more languages. For the
-full list, see below <a href="#supported-languages">Supported Languages</a>. Your own language is missing?
-See how to add it <a href="/pmd_devdocs_major_adding_new_cpd_language.html">here</a>.</p>
+<h2 id="cli-usage">CLI Usage</h2>
 
-<p>CPD is included with PMD, which you can download <a href="http://sourceforge.net/projects/pmd/files/pmd/">here</a>.</p>
-
-<h3 id="cli-options">CLI options</h3>
+<h3 id="cli-options-reference">CLI options reference</h3>
 
 <table>
     <tr>
@@ -1787,7 +1809,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 <tr><td>4</td><td>At least one code duplication has been detected unless '--failOnViolation false' is used.</td></tr>
 </table>
 
-<h3 id="supported-languages">Supported Languages</h3>
+<h2 id="supported-languages">Supported Languages</h2>
 
 <ul>
   <li>Apex</li>
@@ -1811,7 +1833,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
   <li>Visualforce</li>
 </ul>
 
-<h3 id="available-report-formats">Available report formats</h3>
+<h2 id="available-report-formats">Available report formats</h2>
 
 <ul>
   <li>text : Default format</li>
@@ -2219,6 +2241,24 @@ It’s legacy and the new comment’s based approch should be favored.</p>
 
 <p>Other languages currently have no support to suppress CPD reports. In the future,
 the comment based approach will be extended to those of them that can support it.</p>
+
+<h2 id="credits">Credits</h2>
+<p>CPD has been through three major incarnations:</p>
+
+<ul>
+  <li>
+    <p>First we wrote it using a variant of Michael Wise’s Greedy String Tiling algorithm (our variant is described
+<a href="http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html">here</a>).</p>
+  </li>
+  <li>
+    <p>Then it was completely rewritten by Brian Ewins using the
+<a href="http://dogma.net/markn/articles/bwt/bwt.htm">Burrows-Wheeler transform</a>.</p>
+  </li>
+  <li>
+    <p>Finally, it was rewritten by Steve Hawkins to use the
+<a href="http://www.nist.gov/dads/HTML/karpRabin.html">Karp-Rabin</a> string matching algorithm.</p>
+  </li>
+</ul>
 
 
     <div class="tags">
