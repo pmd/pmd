@@ -82,7 +82,7 @@ public class RuleSetSchemaTest {
                 + "<ruleset " + PMD.EOL
                 + "    xmlns=\"http://pmd.sourceforge.net/ruleset/" + version + "\"" + PMD.EOL
                 + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + PMD.EOL
-                + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/" + version + " http://pmd.sourceforge.net/ruleset_" + versionUnderscore + ".xsd\""
+                + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/" + version + " https://pmd.sourceforge.io/ruleset_" + versionUnderscore + ".xsd\""
                 + "    name=\"Custom ruleset\" >" + PMD.EOL
                 + "  <description>" + PMD.EOL
                 + "  This ruleset checks my code for bad stuff" + PMD.EOL
