@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>SQL Queries - ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+  SELECT cmer_id
+        ,version
+        ,cmp_id
+    BULK COLLECT INTO v_cmer_ids
+        ,v_versions
+        ,v_cmp_ids
+    FROM cmer;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>SQL Queries - bad</description>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>2,2,3,3,3,4</expected-linenumbers>
+        <expected-messages>
+            <message>cmp_id should be on line 4</message>
+            <message>version should be on line 3</message>
+            <message>BULK COLLECT INTO should begin at column 5</message>
+            <message>v_cmp_ids should be on line 5</message>
+            <message>v_versions should be on line 4</message>
+            <message>FROM should begin at column 5</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+  SELECT cmer_id, version, cmp_id
+  BULK COLLECT INTO v_cmer_ids, v_versions, v_cmp_ids
+  FROM cmer;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>SQL Queries: each join on separate lines, union aligned - ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+  SELECT cmer_id
+        ,version
+        ,cmp_id
+    BULK COLLECT INTO v_cmer_ids
+        ,v_versions
+        ,v_cmp_ids
+    FROM (SELECT cmer.cmer_id
+                ,cmer.version
+                ,cmer.cmp_id
+            FROM webcrm.comp_mprc_emp_role cmer
+                 JOIN webcrm.jcomp_mprc_emp_role insert_entry
+                   ON (insert_entry.cmer_id = cmer.cmer_id
+                   AND insert_entry.operation = 'I')
+                 LEFT JOIN webcrm.v_company_address caddr ON (caddr.cmp_id = cmer.cmp_id)
+          UNION
+          SELECT jcmer.cmer_id
+                ,jcmer.version
+                ,jcmer.cmp_id
+            FROM webcrm.jcomp_mprc_emp_role jcmer);
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>SQL Queries: each join on separate lines - violation</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>12,12,12,12</expected-linenumbers>
+        <expected-messages>
+            <message>Join condition "caddr.cmp_id = cmer.cmp_id" should be on line 15</message>
+            <message>Join condition "insert_entry.cmer_id = cmer.cmer_id" should be on line 13</message>
+            <message>Join condition "insert_entry.operation = I" should be on line 14</message>
+            <message>OuterJoinClause should be on line 15</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+  SELECT cmer_id
+        ,version
+        ,cmp_id
+    BULK COLLECT INTO v_cmer_ids
+        ,v_versions
+        ,v_cmp_ids
+    FROM (SELECT cmer.cmer_id
+                ,cmer.version
+                ,cmer.cmp_id
+            FROM webcrm.comp_mprc_emp_role cmer
+                 JOIN webcrm.jcomp_mprc_emp_role insert_entry ON (insert_entry.cmer_id = cmer.cmer_id AND insert_entry.operation = 'I') LEFT JOIN webcrm.v_company_address caddr ON (caddr.cmp_id = cmer.cmp_id)
+          UNION
+          SELECT jcmer.cmer_id
+                ,jcmer.version
+                ,jcmer.cmp_id
+            FROM webcrm.jcomp_mprc_emp_role jcmer);
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>SQL Queries: union not aligned - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>16</expected-linenumbers>
+        <expected-messages>
+            <message>UNION should begin at column 11</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+  SELECT cmer_id
+        ,version
+        ,cmp_id
+    BULK COLLECT INTO v_cmer_ids
+        ,v_versions
+        ,v_cmp_ids
+    FROM (SELECT cmer.cmer_id
+                ,cmer.version
+                ,cmer.cmp_id
+            FROM webcrm.comp_mprc_emp_role cmer
+                 JOIN webcrm.jcomp_mprc_emp_role insert_entry
+                   ON (insert_entry.cmer_id = cmer.cmer_id
+                   AND insert_entry.operation = 'I')
+                 LEFT JOIN webcrm.v_company_address caddr ON (caddr.cmp_id = cmer.cmp_id)
+                    UNION
+          SELECT jcmer.cmer_id
+                ,jcmer.version
+                ,jcmer.cmp_id
+            FROM webcrm.jcomp_mprc_emp_role jcmer);
+END;
+/        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>SQL Queries: union not aligned on wrong line - violation</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>15,15</expected-linenumbers>
+        <expected-messages>
+            <message>UNION should be on line 16</message>
+            <message>UNION should begin at column 11</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+  SELECT cmer_id
+        ,version
+        ,cmp_id
+    BULK COLLECT INTO v_cmer_ids
+        ,v_versions
+        ,v_cmp_ids
+    FROM (SELECT cmer.cmer_id
+                ,cmer.version
+                ,cmer.cmp_id
+            FROM webcrm.comp_mprc_emp_role cmer
+                 JOIN webcrm.jcomp_mprc_emp_role insert_entry
+                   ON (insert_entry.cmer_id = cmer.cmer_id
+                   AND insert_entry.operation = 'I')
+                 LEFT JOIN webcrm.v_company_address caddr ON (caddr.cmp_id = cmer.cmp_id) UNION
+          SELECT jcmer.cmer_id
+                ,jcmer.version
+                ,jcmer.cmp_id
+            FROM webcrm.jcomp_mprc_emp_role jcmer);
+END;
+/        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Parameters - ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+-- comment is necessary in order to not trim the whitespace at the beginning
+  PROCEDURE create_prospect(
+    company_info_in      IN    prospects.company_info%TYPE -- Organization
+   ,firstname_in         IN    persons.firstname%TYPE      -- FirstName
+   ,lastname_in          IN    persons.lastname%TYPE       -- LastName
+  );
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Parameters - not aligned</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,3,4,4</expected-linenumbers>
+        <expected-messages>
+            <message>Type persons.firstname%TYPE should begin at column 32</message>
+            <message>firstname_in should be on line 4</message>
+            <message>Type persons.lastname%TYPE should begin at column 32</message>
+            <message>lastname_in should be on line 5</message>
+        </expected-messages>
+        <code><![CDATA[
+-- comment is necessary in order to not trim the whitespace at the beginning
+  PROCEDURE create_prospect(
+    company_info_in      IN    prospects.company_info%TYPE  ,firstname_in         IN    persons.firstname%TYPE      -- FirstName
+        ,lastname_in          IN    persons.lastname%TYPE       -- LastName
+  );
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Variables - ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+PROCEDURE create_prospect()
+  IS
+    v_adt_id        academic_titles.adt_id%TYPE := 1;
+    v_region_id     addresses.rgn_id%TYPE;
+    v_prospect_id   prospects.prosp_id%TYPE;
+    v_address_id    addresses.adr_id%TYPE := 1;
+    v_message_rec   snapaddy_messages%ROWTYPE;
+  BEGIN
+  END;
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Variables - same line, not ok</description>
+        <expected-problems>8</expected-problems>
+        <expected-linenumbers>3,3,3,3,3,3,3,3</expected-linenumbers>
+        <expected-messages>
+            <message>Type addresses.adr_id%TYPE should begin at column 21</message>
+            <message>Type addresses.rgn_id%TYPE should begin at column 21</message>
+            <message>Type prospects.prosp_id%TYPE should begin at column 21</message>
+            <message>Type snapaddy_messages%ROWTYPE should begin at column 21</message>
+            <message>v_address_id addresses.adr_id%TYPE := 1 should be on line 6</message>
+            <message>v_message_rec snapaddy_messages%ROWTYPE should be on line 7</message>
+            <message>v_prospect_id prospects.prosp_id%TYPE should be on line 5</message>
+            <message>v_region_id addresses.rgn_id%TYPE should be on line 4</message>
+        </expected-messages>
+        <code><![CDATA[
+PROCEDURE create_prospect()
+  IS
+    v_adt_id        academic_titles.adt_id%TYPE := 1; v_region_id     addresses.rgn_id%TYPE; v_prospect_id   prospects.prosp_id%TYPE; v_address_id    addresses.adr_id%TYPE := 1; v_message_rec   snapaddy_messages%ROWTYPE;
+  BEGIN
+  END;
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Variables - types not aligned</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,5,6,7</expected-linenumbers>
+        <expected-messages>
+            <message>Type addresses.rgn_id%TYPE should begin at column 21</message>
+            <message>Type prospects.prosp_id%TYPE should begin at column 21</message>
+            <message>Type addresses.adr_id%TYPE should begin at column 21</message>
+            <message>Type snapaddy_messages%ROWTYPE should begin at column 21</message>
+        </expected-messages>
+        <code><![CDATA[
+PROCEDURE create_prospect()
+  IS
+    v_adt_id        academic_titles.adt_id%TYPE := 1;
+    v_region_id addresses.rgn_id%TYPE;
+    v_prospect_id prospects.prosp_id%TYPE;
+    v_address_id addresses.adr_id%TYPE := 1;
+    v_message_rec snapaddy_messages%ROWTYPE;
+  BEGIN
+  END;
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Calling a procedure / function - ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+-- more than three parameters, each parameter on a separate line
+webcrm_marketing.prospect_ins(
+  cmp_id_in            => NULL
+ ,company_info_in      => company_info_in
+ ,firstname_in         => firstname_in
+ ,lastname_in          => lastname_in
+ ,slt_code_in          => NULL
+);
+
+-- three or less parameters, but line too long
+webcrm_utils.breakup_string(
+  string_in       => 'test 123, test test, abadfhao , dhfj, wiezrohadf , '
+ ,row_length_in   => 3
+ ,separator_in    => ','
+);
+
+-- three or less parameters, line does not exceed 120 characters
+webcrm_utils.breakup_string(string_in => 'test 123, test test, ab', row_length_in => 3, separator_in => ',');
+
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Calling a procedure / function - same line</description>
+        <expected-problems>8</expected-problems>
+        <expected-linenumbers>4,4,5,5,5,5,6,6</expected-linenumbers>
+        <expected-messages>
+            <message>NULL should begin at column 57</message>
+            <message>Parameter company_info_in should be on line 5</message>
+            <message>Parameter firstname_in should be on line 6</message>
+            <message>Parameter lastname_in should be on line 7</message>
+            <message>firstname_in should begin at column 57</message>
+            <message>lastname_in should begin at column 57</message>
+            <message>NULL should begin at column 57</message>
+            <message>Parameter slt_code_in should be on line 8</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+-- more than three parameters, each parameter should be on a separate line
+webcrm_marketing.prospect_ins(
+  cmp_id_in            => NULL ,company_info_in      => company_info_in
+ ,firstname_in         => firstname_in, lastname_in          => lastname_in
+ ,slt_code_in          => NULL
+);
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Calling a procedure / function - line too long</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Line is too long, please split parameters on separate lines</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+-- three or less parameters, but line too long
+webcrm_utils.breakup_string(string_in       => 'test 123, test test, abadfhao , dhfj, wiezrohadf , ',row_length_in   => 3,separator_in    => ',');
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Calling a procedure / function - bad alignment</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>4,5,6,7,8</expected-linenumbers>
+        <expected-messages>
+            <message>NULL should begin at column 23</message>
+            <message>company_info_in should begin at column 23</message>
+            <message>firstname_in should begin at column 23</message>
+            <message>lastname_in should begin at column 23</message>
+            <message>NULL should begin at column 23</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+-- more than three parameters, each parameter on a separate line
+webcrm_marketing.prospect_ins(
+  cmp_id_in => NULL
+ ,company_info_in => company_info_in
+ ,firstname_in  => firstname_in
+ ,lastname_in => lastname_in
+ ,slt_code_in => NULL
+);
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Calling a procedure / function - closing paranthesis should be on a new line</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Closing paranthesis should be on a new line.</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+-- more than three parameters, each parameter on a separate line
+webcrm_marketing.prospect_ins(
+  cmp_id_in            => NULL
+ ,company_info_in      => company_info_in
+ ,firstname_in         => firstname_in
+ ,lastname_in          => lastname_in
+ ,slt_code_in          => NULL);
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Calling a procedure / function without named parameters - ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+-- one parameter only, everything is on one line
+webcrm_utils.boolean_to_string(TRUE);
+
+-- three parameters that fit on one line
+webcrm_utils.breakup_string('test 123, test test, ', 3, ',');
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Calling a procedure / function without named parameters - not ok</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Procedure call with more than three parameters should use named parameters.</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+-- procedure call with more than three parameters, should not appear (procedure should be called using the named notation)
+webcrm_marketing.prospect_ins(
+  NULL
+ ,company_info_in
+ ,firstname_in
+ ,lastname_in
+ ,NULL
+);
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Complete Coding Style example</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+PROCEDURE create_prospect(
+  company_info_in       IN            prospects.company_info%TYPE             -- Organization
+ ,firstname_in          IN            persons.firstname%TYPE                  -- FirstName
+ ,lastname_in           IN            persons.lastname%TYPE                   -- LastName
+ ,message_in            IN OUT NOCOPY CLOB                                    -- the whole message
+  )
+  IS
+    v_adt_id        academic_titles.adt_id%TYPE := 1;
+    v_region_id     addresses.rgn_id%TYPE;
+    v_prospect_id   prospects.prosp_id%TYPE;
+    v_address_id    addresses.adr_id%TYPE := 1;
+    v_message_rec   snapaddy_messages%ROWTYPE;
+  BEGIN
+    /* I AM A FORBIDDEN COMMENT SINCE I AM A BLOCK COMMENT */
+
+    -- try to find a matching academic title.
+    -- this comment is on a separate line, so it is left aligned
+    BEGIN                                                                       -- this comment is on the same line as an PL/SQL statement, it is right aligned
+      SELECT adt.adt_id
+        INTO v_adt_id
+        FROM academic_titles adt
+       WHERE UPPER(adt.short_description) = UPPER(title_in);
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        v_adt_id := NULL;
+      WHEN TOO_MANY_ROWS THEN
+        v_adt_id := NULL;
+    END;
+
+
+    -- try to find a matching region
+    --      1. a case insensitive lookup on the name (restricted to the given country)
+    BEGIN
+      SELECT rgn.rgn_id
+        INTO v_region_id
+        FROM regions rgn
+       WHERE (street_cny_code_in IS NULL
+           OR rgn.cny_code = street_cny_code_in)
+         AND UPPER(rgn.name) = UPPER(street_rgn_in);
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        v_region_id     := NULL;
+      WHEN TOO_MANY_ROWS THEN
+        v_region_id     := NULL;
+    END;
+
+    --      2. a case insensitive lookup on the SAP_CODE (restricted to the given country)
+    IF v_region_id IS NULL THEN
+      BEGIN
+        SELECT rgn.rgn_id
+          INTO v_region_id
+          FROM regions rgn
+         WHERE (street_cny_code_in IS NULL
+             OR rgn.cny_code = street_cny_code_in)
+           AND UPPER(rgn.sap_code) = UPPER(street_rgn_in);
+      EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+          v_region_id := NULL;
+        WHEN TOO_MANY_ROWS THEN
+          v_region_id := NULL;
+      END;
+    END IF;
+
+    -- all preparations are done - create the prospect with the available data
+    webcrm_marketing.prospect_ins(
+      cmp_id_in         => NULL
+     ,company_info_in   => company_info_in
+     ,firstname_in      => firstname_in
+     ,lastname_in       => lastname_in
+     ,prosp_id_out      => v_prospect_id
+    );
+
+    -- create the address with the available data
+    webcrm_marketing.address_ins(
+      pa_id_in              => v_prospect_id
+     ,street_city_in        => street_city_in
+     ,street_tmz_id_in      => NULL
+     ,street_cny_code_in    => street_cny_code_in
+     ,street_rgn_id_in      => v_region_id
+     ,street_postalcode_in  => street_postalcode_in
+     ,street_addrline_1_in  => street_addrline_1_in
+     ,street_addrline_2_in  => NULL
+     ,street_addrline_3_in  => NULL
+     ,street_addr_id_out    => v_address_id
+    );
+
+    -- store the obtained message
+    v_message_rec.snap_msg_id       := seq_snap_msg.NEXTVAL;
+    v_message_rec.MESSAGE           := message_in;
+    v_message_rec.endpoint          := 'prospect/creation';
+    v_message_rec.processing_time   := SYSDATE;
+    dml_snap_msg.ins(v_message_rec);
+END create_prospect;
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+</test-data>

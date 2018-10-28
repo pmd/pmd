@@ -21,6 +21,12 @@ Thanks to the work of [ITBA](https://www.itba.edu.ar/) students [Matías Fraga](
 Golang is now backed by a proper Antlr Grammar. This means CPD is now better at detecting duplicates,
 as comments are recognized as such and ignored.
 
+#### New Rules
+
+*   The new PLSQL rule {% rule "plsql/codestyle/CodeFormat" %} (`plsql-codestyle`) verifies that
+    PLSQL code is properly formatted. It checks e.g. for correct indentation in select statements and verifies
+    that each parameter is defined on a separate line.
+
 ### Fixed Issues
 
 *   all
