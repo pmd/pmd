@@ -1275,6 +1275,14 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 Golang is now backed by a proper Antlr Grammar. This means CPD is now better at detecting duplicates,
 as comments are recognized as such and ignored.</p>
 
+<h4 id="new-rules">New Rules</h4>
+
+<ul>
+  <li>The new PLSQL rule <a href="pmd_rules_plsql_codestyle.html#codeformat"><code class="highlighter-rouge">CodeFormat</code></a> (<code class="highlighter-rouge">plsql-codestyle</code>) verifies that
+PLSQL code is properly formatted. It checks e.g. for correct indentation in select statements and verifies
+that each parameter is defined on a separate line.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
