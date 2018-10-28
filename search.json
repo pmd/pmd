@@ -1610,6 +1610,15 @@
 ,
 
 {
+"title": "CodeFormat (PLSQL, Code Style)",
+"tags": "",
+"keywords": "CodeFormat",
+"url": "pmd_rules_plsql_codestyle.html#codeformat",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
 "title": "MisplacedPragma (PLSQL, Code Style)",
 "tags": "",
 "keywords": "MisplacedPragma",

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, MisplacedPragma, ForLoopNaming">
+<meta name="keywords" content=" Code Style, CodeFormat, MisplacedPragma, ForLoopNaming">
 <title>Code Style | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -1262,7 +1262,108 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="forloopnaming">ForLoopNaming</h2>
+  <h2 id="codeformat">CodeFormat</h2>
+
+<p><strong>Since:</strong> PMD 6.9.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>This rule verifies that the PLSQL code is properly formatted. The following checks are executed:</p>
+
+<p>SQL Queries:</p>
+
+<ul>
+  <li>The selected columns must be each on a new line</li>
+  <li>The keywords (BULK COLLECT INTO, FROM) start on a new line and are indented by one level</li>
+  <li>UNION should be on the same indentation level as SELECT</li>
+  <li>Each JOIN is on a new line. If there are more than one JOIN conditions, then each condition should be
+on a separate line.</li>
+</ul>
+
+<p>Parameter definitions for procedures:</p>
+
+<ul>
+  <li>Each parameter should be on a new line</li>
+  <li>Variable names as well as their types should be aligned</li>
+</ul>
+
+<p>Variable declarations:</p>
+
+<ul>
+  <li>Each variable should be on a new line</li>
+  <li>Variable names as well as their types should be aligned</li>
+</ul>
+
+<p>Calling a procedure:</p>
+
+<ul>
+  <li>If there are more than 3 parameters
+    <ul>
+      <li>then named parameters should be used</li>
+      <li>and each parameter should be on a new line</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/codestyle/CodeFormatRule.java">net.sourceforge.pmd.lang.plsql.rule.codestyle.CodeFormatRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+  <span class="c1">-- select columns each on a separate line</span>
+  <span class="k">SELECT</span> <span class="n">cmer_id</span>
+        <span class="p">,</span><span class="k">version</span>
+        <span class="p">,</span><span class="n">cmp_id</span>
+    <span class="n">BULK</span> <span class="n">COLLECT</span> <span class="k">INTO</span> <span class="n">v_cmer_ids</span>
+        <span class="p">,</span><span class="n">v_versions</span>
+        <span class="p">,</span><span class="n">v_cmp_ids</span>
+    <span class="k">FROM</span> <span class="n">cmer</span><span class="p">;</span>
+
+  <span class="c1">-- each parameter on a new line</span>
+  <span class="k">PROCEDURE</span> <span class="n">create_prospect</span><span class="p">(</span>
+    <span class="n">company_info_in</span>      <span class="k">IN</span>    <span class="n">prospects</span><span class="p">.</span><span class="n">company_info</span><span class="o">%</span><span class="k">TYPE</span> <span class="c1">-- Organization</span>
+   <span class="p">,</span><span class="n">firstname_in</span>         <span class="k">IN</span>    <span class="n">persons</span><span class="p">.</span><span class="n">firstname</span><span class="o">%</span><span class="k">TYPE</span>      <span class="c1">-- FirstName</span>
+   <span class="p">,</span><span class="n">lastname_in</span>          <span class="k">IN</span>    <span class="n">persons</span><span class="p">.</span><span class="n">lastname</span><span class="o">%</span><span class="k">TYPE</span>       <span class="c1">-- LastName</span>
+  <span class="p">);</span>
+
+  <span class="c1">-- more than three parameters, each parameter on a separate line</span>
+  <span class="n">webcrm_marketing</span><span class="p">.</span><span class="n">prospect_ins</span><span class="p">(</span>
+    <span class="n">cmp_id_in</span>            <span class="o">=&gt;</span> <span class="k">NULL</span>
+   <span class="p">,</span><span class="n">company_info_in</span>      <span class="o">=&gt;</span> <span class="n">company_info_in</span>
+   <span class="p">,</span><span class="n">firstname_in</span>         <span class="o">=&gt;</span> <span class="n">firstname_in</span>
+   <span class="p">,</span><span class="n">lastname_in</span>          <span class="o">=&gt;</span> <span class="n">lastname_in</span>
+   <span class="p">,</span><span class="n">slt_code_in</span>          <span class="o">=&gt;</span> <span class="k">NULL</span>
+  <span class="p">);</span>
+
+<span class="k">END</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>indentation</td>
+      <td>2</td>
+      <td>Indentation to be used for blocks</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/plsql/codestyle.xml/CodeFormat"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="forloopnaming">ForLoopNaming</h2>
 
 <p><strong>Since:</strong> PMD 6.7.0</p>
 
