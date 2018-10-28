@@ -428,6 +428,8 @@ public class Éléphant {}
 To avoid mistakes if we want that a Method, Constructor, Field or Nested class have a default access modifier
 we must add a comment at the beginning of it's declaration.
 By default the comment must be /* default */ or /* package */, if you want another, you have to provide a regular expression.
+This rule ignores by default all cases that have a @VisibleForTesting annotation. Use the
+property "ignoredAnnotations" to customize the recognized annotations.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.CommentDefaultAccessModifierRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/CommentDefaultAccessModifierRule.java)
 
@@ -461,6 +463,7 @@ public class Foo {
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
 |regex|\/\*\s+(default\|package)\s+\*\/|Regular expression|no|
+|ignoredAnnotations|com.google.common.annotations.VisibleForTesting \| android.support.annotation.VisibleForTesting|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
