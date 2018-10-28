@@ -2,7 +2,7 @@ repository: pmd/pmd
 
 pmd:
     version: 6.9.0
-    date: ??-????-2018
+    date: 28-October-2018
     release_type: minor
 
 output: web
