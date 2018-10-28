@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Make sure, everything is English...
 export LANG=C.UTF-8
@@ -66,6 +67,7 @@ export RELEASE_VERSION
 export DEVELOPMENT_VERSION
 export CURRENT_BRANCH
 
+RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml"
 
 echo "*   Update date info in **docs/_config.yml**."
 echo "    date: $(date -u +%d-%B-%Y)"
@@ -81,7 +83,6 @@ read
 # install bundles needed for rendering release notes
 bundle install --with=release_notes_preprocessing --path vendor/bundle
 
-RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml"
 export RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
 echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
 NEW_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
@@ -184,8 +185,8 @@ echo
 echo "To: PMD Developers List <pmd-devel@lists.sourceforge.net>"
 echo "Subject: [ANNOUNCE] PMD ${RELEASE_VERSION} Released"
 echo
-echo "    *   Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${RELEASE_VERSION}"
-echo "    *   Documentation: https://pmd.github.io/pmd-${RELEASE_VERSION}/"
+echo "*   Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${RELEASE_VERSION}"
+echo "*   Documentation: https://pmd.github.io/pmd-${RELEASE_VERSION}/"
 echo
 echo "$NEW_RELEASE_NOTES"
 echo
