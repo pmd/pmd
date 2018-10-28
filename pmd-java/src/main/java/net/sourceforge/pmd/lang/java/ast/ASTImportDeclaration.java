@@ -9,10 +9,21 @@ package net.sourceforge.pmd.lang.java.ast;
  * Represents an import declaration in a Java file.
  *
  * <pre>
- *   ImportDeclaration ::= "import" [ "static" ] Name [ "." "*" ] ";"
+ *
+ * ImportDeclaration ::= "import" "static"? {@linkplain ASTName Name} ( "." "*" )? ";"
+ *
  * </pre>
  *
+ * @see <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-7.html#jls-7.5">JLS 7.5</a>
+ *
  */
+// TODO should this really be a type node?
+// E.g. for on-demand imports, what's the type of this node? There's no type name, just a package name
+// for on-demand static imports?
+// for static imports of a field? the type of the field or the type of the enclosing type?
+// for static imports of a method?
+// I don't think we can work out a spec without surprising corner cases, and #1207 will abstract
+// things away anyway, so I think we should make it a regular node
 public class ASTImportDeclaration extends AbstractJavaTypeNode {
 
     private boolean isImportOnDemand;
@@ -27,18 +38,47 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         super(p, id);
     }
 
+
+    /**
+     * @deprecated Will be made private with 7.0.0
+     */
+    @Deprecated
     public void setImportOnDemand() {
         isImportOnDemand = true;
     }
 
+
+    // @formatter:off
+    /**
+     * Returns true if this is an import-on-demand declaration,
+     * aka "wildcard import".
+     *
+     * <ul>
+     *     <li>If this is a static import, then the imported names are those
+     *     of the accessible static members of the named type;
+     *     <li>Otherwise, the imported names are the names of the accessible types
+     *     of the named type or named package.
+     * </ul>
+     */
+    // @formatter:on
     public boolean isImportOnDemand() {
         return isImportOnDemand;
     }
 
+
+    /**
+     * @deprecated Will be made private with 7.0.0
+     */
+    @Deprecated
     public void setStatic() {
         isStatic = true;
     }
 
+
+    /**
+     * Returns true if this is a static import. If this import is not on-demand,
+     * {@link #getImportedSimpleName()} returns the name of the imported member.
+     */
     public boolean isStatic() {
         return isStatic;
     }
@@ -52,7 +92,7 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
 
     /**
      * Returns the full name of the import. For on-demand imports, this is the name without
-     * the final asterisk.
+     * the final dot and asterisk.
      */
     public String getImportedName() {
         return jjtGetChild(0).getImage();
@@ -106,6 +146,8 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
      * auxclasspath is not correctly set, as this method depends on correct
      * type resolution.
      */
+    // TODO deprecate? This is only used in a test. I don't think it's really
+    // useful and it gives work to ClassTypeResolver.
     public Package getPackage() {
         return this.pkg;
     }

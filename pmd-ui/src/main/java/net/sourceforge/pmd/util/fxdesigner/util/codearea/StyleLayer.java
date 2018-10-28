@@ -5,107 +5,50 @@
 package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.fxmisc.richtext.model.Paragraph;
-import org.fxmisc.richtext.model.StyleSpans;
-import org.fxmisc.richtext.model.StyleSpansBuilder;
 
 
 /**
- * Represents a layer of styling in the text. Several layers are aggregated into a {@link StyleContext}, and can evolve
- * independently. Layers are bound to the code area they style.
+ * Represents a layer of styling in the text. Several layers are
+ * aggregated into a {@link StyleContext}, and can evolve
+ * independently.
  */
 class StyleLayer {
 
-    private static final Pattern TAB_INDENT = Pattern.compile("^(\t*).*$");
-    private final String id;
-    private Stack<StyleSpans<Collection<String>>> spans = new Stack<>();
-    private CustomCodeArea codeArea;
+
+    private final Map<Set<String>, UniformStyleCollection> styleToCollection = new HashMap<>();
 
 
-    StyleLayer(String id, CustomCodeArea parent) {
-        Objects.requireNonNull(id, "The id of a style layer cannot be null");
-        this.id = id;
-        codeArea = parent;
+    /** Reset this layer to its empty state, clearing all the styles. */
+    public void clearStyles() {
+        styleToCollection.clear();
     }
 
 
-    /**
-     * Returns the stack of all spans contained in this one.
-     *
-     * @return The stack of all spans
-     */
-    public Stack<StyleSpans<Collection<String>>> getSpans() {
-        return spans;
+    public Collection<UniformStyleCollection> getCollections() {
+        return styleToCollection.values();
     }
 
 
-    /**
-     * Resets the spans to the specified value.
-     *
-     * @param replacement The new spans
-     */
-    public void reset(StyleSpans<Collection<String>> replacement) {
-        spans.clear();
-        spans.push(replacement);
+    public void styleNodes(UniformStyleCollection updates) {
+        styleNodes(false, updates);
     }
 
 
-    /**
-     * Adds CSS styling to a piece of text using line and column coordinates.
-     *
-     * @param beginLine   Begin line
-     * @param beginColumn Begin column
-     * @param endLine     End line
-     * @param endColumn   End column
-     * @param cssClasses  CSS classes with which to style the text
-     *
-     * @throws IllegalArgumentException if the region identified is out of bounds
-     */
-    public void style(int beginLine, int beginColumn,
-                      int endLine, int endColumn,
-                      Set<String> cssClasses) {
-
-        if (endLine > codeArea.getParagraphs().size()
-            || endLine == codeArea.getParagraphs().size() && endColumn > codeArea.getParagraph(endLine - 1).length()) {
-            throw new IllegalArgumentException("Cannot style, the region is out of bounds");
+    public void styleNodes(boolean reset, UniformStyleCollection updates) {
+        if (reset) {
+            clearStyles();
         }
 
-        int offset = getAbsolutePosition(beginLine, beginColumn - 1);
-        int spanLength = getAbsolutePosition(endLine, endColumn) - offset;
+        UniformStyleCollection newValue = Optional.ofNullable(styleToCollection.get(updates.getStyle()))
+                                                  .map(updates::merge)
+                                                  .orElse(updates);
 
-
-        StyleSpansBuilder<Collection<String>> builder = new StyleSpansBuilder<>();
-
-        builder.add(Collections.emptySet(), offset);
-        builder.add(cssClasses, spanLength);
-        builder.add(Collections.emptySet(), codeArea.getLength() - (offset + spanLength));
-
-
-        spans.push(builder.create());
-    }
-
-
-    private int getAbsolutePosition(int line, int column) {
-        return codeArea.getAbsolutePosition(line - 1, column) - indentationOffset(line - 1);
-    }
-
-
-    // CodeArea counts a tab as 1 column width but displays it as 8 columns width. 
-    // PMD counts it correctly as 8 columns, so we must offset the position
-    private int indentationOffset(int paragraph) {
-        Paragraph<Collection<String>, String, Collection<String>> p = codeArea.getParagraph(paragraph);
-        Matcher m = TAB_INDENT.matcher(p.getText());
-        if (m.matches()) {
-            return m.group(1).length() * 7;
-        }
-        return 0;
+        styleToCollection.put(updates.getStyle(), newValue);
     }
 
 
@@ -117,29 +60,14 @@ class StyleLayer {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         StyleLayer that = (StyleLayer) o;
-
-        return id.equals(that.id);
+        return Objects.equals(styleToCollection, that.styleToCollection);
     }
 
 
     @Override
     public int hashCode() {
-        return id.hashCode();
-    }
 
-
-    public void clearStyles() {
-        spans.clear();
-    }
-
-
-    @Override
-    public String toString() {
-        return "StyleLayer{"
-               + "id='" + id + '\''
-               + ", spans=\"" + spans.size() + " spans\""
-               + '}';
+        return Objects.hash(styleToCollection);
     }
 }

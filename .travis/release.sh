@@ -28,11 +28,13 @@ if [ "${BUILD}" = "deploy" ]; then
     true
 )
 
+# renders, and skips the first 6 lines - the Jekyll front-matter
+RENDERED_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
 
 # Assumes, the release has already been created by travis github releases provider
 RELEASE_ID=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" https://api.github.com/repos/pmd/pmd/releases/tags/pmd_releases/${RELEASE_VERSION}|jq ".id")
 RELEASE_NAME="PMD ${RELEASE_VERSION} ($(date -u +%d-%B-%Y))"
-RELEASE_BODY=$(tail -n +6 docs/pages/release_notes.md) # skips the first 6 lines - the heading 'PMD Release Notes'
+RELEASE_BODY="$RENDERED_RELEASE_NOTES"
 RELEASE_BODY="${RELEASE_BODY//'\'/\\\\}"
 RELEASE_BODY="${RELEASE_BODY//$'\r'/}"
 RELEASE_BODY="${RELEASE_BODY//$'\n'/\\r\\n}"
@@ -48,13 +50,14 @@ log_info "Updating release at https://api.github.com/repos/pmd/pmd/releases/${RE
 
 RESPONSE=$(curl -i -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/json" --data "@release-edit-request.json" -X PATCH https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID})
 if [[ "$RESPONSE" != *"HTTP/1.1 200"* ]]; then
+    log_error "Github Request failed!"
     echo "Request:"
     cat release-edit-request.json
     echo
     echo "Response:"
     echo "$RESPONSE"
 else
-    echo "Update OK"
+    log_success "Update OK"
 fi
 
 fi
@@ -76,18 +79,30 @@ mkdir pmd.github.io
     git remote add origin git@github.com:pmd/pmd.github.io.git
     echo "latest/" > .git/info/sparse-checkout
     git pull --depth=1 origin master
-    rsync -a ../docs/pmd-doc-${RELEASE_VERSION}/ pmd-${RELEASE_VERSION}/
+    log_info "Copying documentation from ../docs/pmd-doc-${RELEASE_VERSION}/ to pmd-${RELEASE_VERSION}/ ..."
+    rsync -ah --stats ../docs/pmd-doc-${RELEASE_VERSION}/ pmd-${RELEASE_VERSION}/
+    git status
+    echo "Executing: git add pmd-${RELEASE_VERSION}"
     git add pmd-${RELEASE_VERSION}
+    echo "Executing: git commit..."
     git commit -q -m "Added pmd-${RELEASE_VERSION}"
 
+    log_info "Copying pmd-${RELEASE_VERSION} to latest ..."
     git rm -qr latest
     cp -a pmd-${RELEASE_VERSION} latest
+    echo "Executing: git add latest"
     git add latest
+    echo "Executing: git commit..."
     git commit -q -m "Copying pmd-${RELEASE_VERSION} to latest"
 
+    log_info "Generating sitemap.xml"
     ../.travis/sitemap_generator.sh > sitemap.xml
+    echo "Executing: git add sitemap.xml"
     git add sitemap.xml
+    echo "Executing: git commit..."
     git commit -q -m "Generated sitemap.xml"
+
+    echo "Executing: git push origin master"
     git push origin master
 )
 
@@ -101,7 +116,7 @@ mkdir pmd.github.io
 
     log_info "Uploading the new release to pmd.sourceforge.net which serves as an archive..."
 
-    travis_wait rsync -ah --stats pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${RELEASE_VERSION}/
+    travis_wait rsync -ah --stats docs/pmd-doc-${RELEASE_VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${RELEASE_VERSION}/
 
     if [ $? -ne 0 ]; then
         log_error "Uploading documentation to pmd.sourceforge.net failed..."

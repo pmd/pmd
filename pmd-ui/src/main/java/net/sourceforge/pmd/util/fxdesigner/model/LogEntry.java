@@ -29,6 +29,10 @@ public class LogEntry {
     }
 
 
+    public Throwable getThrown() {
+        return throwable;
+    }
+
     public String getMessage() {
         return throwable.getMessage();
     }

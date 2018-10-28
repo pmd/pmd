@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -81,17 +82,17 @@ public class RuleDocGeneratorTest {
         assertEquals(3, writer.getData().size());
         FileEntry languageIndex = writer.getData().get(0);
         assertTrue(FilenameUtils.normalize(languageIndex.getFilename(), true).endsWith("docs/pages/pmd/rules/java.md"));
-        assertEquals(IOUtils.toString(RuleDocGeneratorTest.class.getResourceAsStream("/expected/java.md")),
+        assertEquals(IOUtils.toString(RuleDocGeneratorTest.class.getResourceAsStream("/expected/java.md"), StandardCharsets.UTF_8),
                 languageIndex.getContent());
 
         FileEntry ruleSetIndex = writer.getData().get(1);
         assertTrue(FilenameUtils.normalize(ruleSetIndex.getFilename(), true).endsWith("docs/pages/pmd/rules/java/sample.md"));
-        assertEquals(IOUtils.toString(RuleDocGeneratorTest.class.getResourceAsStream("/expected/sample.md")),
+        assertEquals(IOUtils.toString(RuleDocGeneratorTest.class.getResourceAsStream("/expected/sample.md"), StandardCharsets.UTF_8),
                 ruleSetIndex.getContent());
 
         FileEntry sidebar = writer.getData().get(2);
         assertTrue(FilenameUtils.normalize(sidebar.getFilename(), true).endsWith("docs/_data/sidebars/pmd_sidebar.yml"));
-        assertEquals(IOUtils.toString(RuleDocGeneratorTest.class.getResourceAsStream("/expected/pmd_sidebar.yml")),
+        assertEquals(IOUtils.toString(RuleDocGeneratorTest.class.getResourceAsStream("/expected/pmd_sidebar.yml"), StandardCharsets.UTF_8),
                 sidebar.getContent());
     }
 }

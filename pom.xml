@@ -261,11 +261,11 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <maven.compiler.target>1.${java.version}</maven.compiler.target>
 
         <javacc.version>5.0</javacc.version>
-        <surefire.version>2.21.0</surefire.version>
+        <surefire.version>2.22.0</surefire.version>
         <checkstyle.version>3.0.0</checkstyle.version>
-        <pmd.plugin.version>3.10.0</pmd.plugin.version>
+        <pmd.plugin.version>3.11.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
-        <javadoc.plugin.version>3.0.0-M1</javadoc.plugin.version>
+        <javadoc.plugin.version>3.0.1</javadoc.plugin.version>
         <antlr.version>4.7</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -274,17 +274,10 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>1.1.1-SNAPSHOT</pmd.build-tools.version>
+        <pmd.build-tools.version>1.2</pmd.build-tools.version>
     </properties>
 
     <build>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ssh</artifactId>
-                <version>2.10</version>
-            </extension>
-        </extensions>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -316,7 +309,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.0.2</version>
+                    <version>3.1.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -334,7 +327,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -357,17 +350,17 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.0.2</version>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.0.2</version>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.1.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -395,6 +388,9 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <configuration>
                         <quiet>true</quiet>
                         <doclint>none</doclint>
+                        <additionalJOptions>
+                            <additionalJOption>-html5</additionalJOption>
+                        </additionalJOptions>
                         <additionalDependencies>
                             <!-- TODO: this is only needed to make javadoc happy -->
                             <additionalDependency>
@@ -413,7 +409,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.0.0-M1</version>
+                    <version>3.0.0-M2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -449,12 +445,12 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.4.0</version>
+                            <version>6.9.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.4.0</version>
+                            <version>6.9.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -467,7 +463,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>2.5</version>
                 </plugin>
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
@@ -477,7 +473,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <plugin>
                       <groupId>org.jacoco</groupId>
                       <artifactId>jacoco-maven-plugin</artifactId>
-                      <version>0.8.1</version>
+                      <version>0.8.2</version>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
@@ -523,7 +519,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>[9,)</version>
+                                    <version>[10,)</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
@@ -768,7 +764,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>6.1.1</version>
+                <version>6.2.1</version>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.pmd</groupId>
@@ -819,7 +815,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.4</version>
+                <version>2.6</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
@@ -829,12 +825,12 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.7</version>
+                <version>3.8.1</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.12</version>
+                <version>1.7.25</version>
             </dependency>
             <dependency>
                 <groupId>com.github.tomakehurst</groupId>
@@ -969,6 +965,49 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <groupId>org.eluder.coveralls</groupId>
                         <artifactId>coveralls-maven-plugin</artifactId>
                         <version>4.3.0</version>
+                        <dependencies>
+                            <!--
+                                coveralls maven plugin needs javax.xml.bind api
+                                See also https://github.com/trautonen/coveralls-maven-plugin/issues/112
+                            -->
+                            <dependency>
+                                <groupId>javax.xml.bind</groupId>
+                                <artifactId>jaxb-api</artifactId>
+                                <version>2.3.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>sonar</id>
+            <properties>
+                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.sonarsource.scanner.maven</groupId>
+                            <artifactId>sonar-maven-plugin</artifactId>
+                            <version>3.4.1.1168</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+                    <plugin>
+                      <groupId>org.jacoco</groupId>
+                      <artifactId>jacoco-maven-plugin</artifactId>
+                      <executions>
+                          <execution>
+                              <id>default-prepare-agent</id>
+                              <goals>
+                                  <goal>prepare-agent</goal>
+                              </goals>
+                          </execution>
+                      </executions>
                     </plugin>
                 </plugins>
             </build>

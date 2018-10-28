@@ -133,4 +133,74 @@
 			}
      ]]></code>
     </test-code>
+
+   <test-code>
+        <description>JUnit 5 Test contains more than one assert</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>10,17,24,31,39</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+public class MyTestCase {
+    @Test
+    public void testRegular() {
+        boolean myVar = false;
+        assertFalse("myVar should be false",myVar);
+        assertEquals("should equals false", false, myVar);
+    }
+
+    @RepeatedTest(2)
+    public void testRepeated() {
+        boolean myVar = false;
+        assertFalse("myVar should be false",myVar);
+        assertEquals("should equals false", false, myVar);
+    }
+
+    @TestFactory
+    public void testFactory() {
+        boolean myVar = false;
+        assertFalse("myVar should be false",myVar);
+        assertEquals("should equals false", false, myVar);
+    }
+
+    @TestTemplate
+    public void testTemplate() {
+        boolean myVar = false;
+        assertFalse("myVar should be false",myVar);
+        assertEquals("should equals false", false, myVar);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Hello", "World"})
+    public void testParameterized(String value) {
+        boolean myVar = false;
+        assertFalse("myVar should be false",myVar);
+        assertEquals("should equals false", false, myVar);
+    }
+}
+     ]]></code>
+    </test-code>
+
+   <test-code>
+        <description>TestNG Test contains more than one assert</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import org.testng.annotations.Test;
+
+public class MyTestCase {
+    @Test
+    public void testRegular() {
+        boolean myVar = false;
+        assertFalse("myVar should be false",myVar);
+        assertEquals("should equals false", false, myVar);
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>

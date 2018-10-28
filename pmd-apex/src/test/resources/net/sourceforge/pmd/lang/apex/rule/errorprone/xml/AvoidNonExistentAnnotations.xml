@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Class with nonexistent annotation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@NonExistentStupidity public class Foo {
+
+}
+		]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Interface with nonexistent annotation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@NonExistentStupidity public interface Foo {
+
+}
+		]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method with non existent annotation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	@NonExistentStupidity public Integer bar() {
+	}
+}
+		]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Property with non existent annotation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	@NonExistentStupidity public Integer myProp {get; set;}
+}
+		]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field with non existent annotation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	@NonExistentStupidity public Integer myField;
+}
+		]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Valid annotations are not flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest
+public class Foo {
+	@Future
+	@Deprecated
+	public Integer bar() {
+	}
+}
+		]]></code>
+    </test-code>
+</test-data>

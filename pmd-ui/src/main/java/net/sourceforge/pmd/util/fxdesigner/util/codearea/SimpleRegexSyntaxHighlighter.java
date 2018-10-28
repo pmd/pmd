@@ -45,6 +45,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
         this.grammar = grammar;
         this.languageName = languageName;
 
+        grammar.addCommonClass("code");
         grammar.addCommonClass(languageName);
     }
 
@@ -69,9 +70,8 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
             // matcher.find overflowed, might happen when coloring ginormous files with incorrect language
         }
 
-        if (lastKwEnd == 0) { // no spans found/ no text
-            builder.add(onlyLang, text.length());
-        }
+        // add the remainder
+        builder.add(onlyLang, text.length() - lastKwEnd);
 
         return builder.create();
     }
@@ -123,7 +123,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
     /**
      * Builds a highlight grammar in a concise way.
      */
-    protected static class RegexHighlightGrammarBuilder {
+    protected static final class RegexHighlightGrammarBuilder {
 
         private Map<String, String> groupNameToRegex = new LinkedHashMap<>();
         private Map<String, Set<String>> groupNameToCssClasses = new LinkedHashMap<>();
@@ -224,9 +224,7 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
          * @param css The css class to add
          */
         void addCommonClass(String css) {
-            for (String key : namesToCssClass.keySet()) {
-                namesToCssClass.get(key).add(css);
-            }
+            namesToCssClass.values().forEach(e -> e.add(css));
         }
 
 

@@ -11,11 +11,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
-import net.sourceforge.pmd.properties.PropertySource;
 
 public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 
@@ -135,8 +136,9 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
         // Quick check before using Regular Expression
         // 1) At least 3 characters
         // 2) 1st must be a Hex number or a : (colon)
-        // 3) Must contain at least 1 : (colon)
-        if (s.length() < 3 || !(isHexCharacter(firstChar) || firstChar == ':') || s.indexOf(':') < 0) {
+        // 3) Must contain at least 2 colons (:)
+        if (s.length() < 3 || !(isHexCharacter(firstChar) || firstChar == ':')
+                || StringUtils.countMatches(s, ':') < 2) {
             return false;
         }
 
@@ -214,9 +216,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
         return getProperty(CHECK_ADDRESS_TYPES_DESCRIPTOR).size() > 0;
     }
 
-    /**
-     * @see PropertySource#dysfunctionReason()
-     */
+
     @Override
     public String dysfunctionReason() {
         return hasChosenAddressTypes() ? null : "No address types specified";

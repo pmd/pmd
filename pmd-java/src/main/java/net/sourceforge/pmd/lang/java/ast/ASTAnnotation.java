@@ -11,6 +11,19 @@ import java.util.List;
 import net.sourceforge.pmd.Rule;
 
 
+/**
+ * Represents an annotation. This node has three possible children,
+ * that correspond to specific syntactic variants.
+ *
+ * <pre>
+ *
+ * Annotation ::= {@linkplain ASTNormalAnnotation NormalAnnotation}
+ *              | {@linkplain ASTSingleMemberAnnotation SingleMemberAnnotation}
+ *              | {@linkplain ASTMarkerAnnotation MarkerAnnotation}
+ *
+ * </pre>
+ *
+ */
 public class ASTAnnotation extends AbstractJavaTypeNode {
 
     private static final List<String> UNUSED_RULES
@@ -86,9 +99,6 @@ public class ASTAnnotation extends AbstractJavaTypeNode {
         return "SuppressWarnings".equals(getAnnotationName()) || "java.lang.SuppressWarnings".equals(getAnnotationName());
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

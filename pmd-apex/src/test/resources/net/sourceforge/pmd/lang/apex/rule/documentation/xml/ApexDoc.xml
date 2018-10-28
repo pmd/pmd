@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>comment should start with two asterisks</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/*
+ * @description Foo
+ */
+public class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>public test class does not need comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest
+public class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>public class should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>global class should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+global class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>private class does not need comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+private class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>class comment should have description</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ */
+public class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct class comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct class comment with annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+@Deprecated
+public class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>public interface should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>global interface should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+global interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>private interface does not need comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+private interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>interface comment should have description</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ */
+public interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct interface comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct interface comment with annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+@Deprecated
+public interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>public method should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    public void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>global method should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    global void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>public override method does not need comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    public override void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method comment should have description</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     */
+    public void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>non-void method comment should have return</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     */
+    public Object bar() { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>constructor comment does not need return</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Foo
+     */
+    public Foo() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method with param comment should have param</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     */
+    public void bar(String foo) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>params should match method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     * @param foo1 Foo
+     */
+    public void bar(String foo) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct void method comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     */
+    public void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct non-void method comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     * @return Bar
+     */
+    public Object bar() { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct method with params comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     * @param foo1 Foo1
+     * @param foo2 Foo2
+     */
+    public void bar(String foo1, String foo2) { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct method comment with annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     */
+    @Deprecated
+    public void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+    <description>public property should have comment</description>
+    <expected-problems>1</expected-problems>
+    <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    public Object Bar { get; set; }
+}
+        ]]></code>
+</test-code>
+
+    <test-code>
+        <description>global property should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    global Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>property comment should have description</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    public Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct property comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     */
+    public Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct property comment with annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     */
+    @Deprecated
+    public Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

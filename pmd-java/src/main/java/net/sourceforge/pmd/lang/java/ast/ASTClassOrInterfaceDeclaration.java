@@ -13,17 +13,17 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**
- * Represents class and interface declarations.
+ * Represents class and interface declarations. This is a {@linkplain Node#isFindBoundary() find boundary}
+ * for tree traversal methods.
  *
  * <pre>
  *
- * ClassOrInterfaceDeclaration ::=
- *          ( "class" | "interface" )
- *          &lt;IDENTIFIER>
- *          [ TypeParameters ]
- *          [ ExtendsList ]
- *          [ ImplementsList ]
- *          ClassOrInterfaceBody
+ * ClassOrInterfaceDeclaration ::= ( "class" | "interface" )
+ *                                 &lt;IDENTIFIER&gt;
+ *                                 {@linkplain ASTTypeParameters TypeParameters}?
+ *                                 {@linkplain ASTExtendsList ExtendsList}?
+ *                                 {@linkplain ASTImplementsList ImplementsList}?
+ *                                 {@linkplain ASTClassOrInterfaceBody ClassOrInterfaceBody}
  * </pre>
  *
  */

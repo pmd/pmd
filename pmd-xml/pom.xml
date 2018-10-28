@@ -66,10 +66,6 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>jaxen</groupId>
-            <artifactId>jaxen</artifactId>
-        </dependency>
-        <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
         </dependency>

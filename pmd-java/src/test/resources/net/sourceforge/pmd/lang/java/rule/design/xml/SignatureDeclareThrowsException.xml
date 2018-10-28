@@ -116,7 +116,7 @@ skip junit setUp method where the superclass is TestCase
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo extends net.sourceforge.pmd.lang.java.rule.design.MyTestCase {
+public class Foo extends net.sourceforge.pmd.lang.java.rule.design.signaturedeclarethrowsexception.MyTestCase {
  void setUp() throws Exception {}
 }
      ]]></code>
@@ -127,7 +127,7 @@ skip junit setUp method where the superclass is TestCase, imported explicitly
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.design.MyTestCase;
+import net.sourceforge.pmd.lang.java.rule.design.signaturedeclarethrowsexception.MyTestCase;
 public class Foo extends MyTestCase {
  void setUp() throws Exception {}
 }
@@ -139,7 +139,7 @@ skip junit setUp method where the superclass is TestCase, but is imported implic
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.design.*;
+import net.sourceforge.pmd.lang.java.rule.design.signaturedeclarethrowsexception.*;
 public class Foo extends MyTestCase {
  void setUp() throws Exception {}
 }
@@ -151,7 +151,7 @@ skip junit setUp method where the superclass is TestCase  and is in the same pac
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-package net.sourceforge.pmd.lang.java.rule.design;
+package net.sourceforge.pmd.lang.java.rule.design.signaturedeclarethrowsexception;
 
 public class Foo extends MyTestCase {
  void setUp() throws Exception {}
@@ -227,6 +227,26 @@ import junit.framework.*;
 public class JUnitAnnotationTest extends TestCase {
     public JUnitAnnotationTest() throws Exception {
     }
+}
+]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#1369 ClassCastException in annotated extends</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+
+public final class Namespace {
+
+    @Target(ElementType.TYPE_USE)
+    public @interface Weird {
+    }
+
+    public class WeirdException extends @Weird Exception {
+    }
+
 }
 ]]></code>
     </test-code>

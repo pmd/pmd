@@ -15,18 +15,43 @@
         <!-- Workaround for https://youtrack.jetbrains.com/issue/IDEA-188690 -->
         <maven.compiler.source>1.${java.version}</maven.compiler.source>
         <maven.compiler.target>1.${java.version}</maven.compiler.target>
+
+        <openjfx.version>11</openjfx.version>
     </properties>
 
     <build>
+
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources/</directory>
+                <excludes>
+                    <exclude>**/*.less</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
         <plugins>
+            <!-- Compiles Less files into CSS files. Currently compatible with Less 1.7.0 -->
+            <!-- If need be, we can probably update the Less version by using the lessJs
+                 configuration property and having a custom less.js file around. -->
+            <!-- See https://github.com/marceloverdijk/lesscss-maven-plugin -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration combine.self="override">
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                <groupId>org.lesscss</groupId>
+                <artifactId>lesscss-maven-plugin</artifactId>
+                <version>1.7.0.1.1</version>
+                <configuration>
+                    <sourceDirectory>${project.basedir}/src/main/resources/net/sourceforge/pmd/util/fxdesigner/less</sourceDirectory>
+                    <outputDirectory>${project.build.outputDirectory}/net/sourceforge/pmd/util/fxdesigner/css</outputDirectory>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
@@ -44,17 +69,55 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-java</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <!-- OpenJFX dependencies are provided. OpenJFX needs to be installed separately. -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${openjfx.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${openjfx.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${openjfx.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${openjfx.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>${openjfx.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${openjfx.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.fxmisc.richtext</groupId>
             <artifactId>richtextfx</artifactId>
-            <version>0.8.1</version>
+            <version>0.9.0</version>
         </dependency>
         <dependency>
             <groupId>org.controlsfx</groupId>

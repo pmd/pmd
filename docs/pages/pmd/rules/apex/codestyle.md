@@ -5,7 +5,7 @@ permalink: pmd_rules_apex_codestyle.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/category/apex/codestyle.xml
-keywords: Code Style, ClassNamingConventions, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, ForLoopsMustUseBraces, MethodNamingConventions, VariableNamingConventions, WhileLoopsMustUseBraces
+keywords: Code Style, ClassNamingConventions, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, ForLoopsMustUseBraces, MethodNamingConventions, OneDeclarationPerLine, VariableNamingConventions, WhileLoopsMustUseBraces
 language: Apex
 ---
 ## ClassNamingConventions
@@ -190,6 +190,52 @@ public class Foo {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/codestyle.xml/MethodNamingConventions" />
+```
+
+## OneDeclarationPerLine
+
+**Since:** PMD 6.7.0
+
+**Priority:** High (1)
+
+Apex allows the use of several variables declaration of the same type on one line. However, it
+can lead to quite messy code. This rule looks for several declarations on the same line.
+
+**This rule is defined by the following XPath expression:**
+``` xpath
+//VariableDeclarationStatements
+  [count(VariableDeclaration) > 1]
+  [$strictMode or count(distinct-values(VariableDeclaration/@BeginLine)) != count(VariableDeclaration)]
+|
+//FieldDeclarationStatements
+  [count(FieldDeclaration) > 1]
+  [$strictMode or count(distinct-values(FieldDeclaration/VariableExpression/@BeginLine)) != count(FieldDeclaration/VariableExpression)]
+```
+
+**Example(s):**
+
+``` java
+Integer a, b;   // not recommended
+
+Integer a,
+        b;      // ok by default, can be flagged setting the strictMode property
+
+Integer a;      // preferred approach
+Integer b;
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+|strictMode|false|If true, mark combined declaration even if the declarations are on separate lines.|no|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/apex/codestyle.xml/OneDeclarationPerLine" />
 ```
 
 ## VariableNamingConventions

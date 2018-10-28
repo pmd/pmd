@@ -67,15 +67,23 @@ public interface Foo implements Bar{
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-abstract case
-     ]]></description>
-        <expected-problems>0</expected-problems>
+        <description>abstract case, see #1352</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.io.Serializable;
 public abstract class Foo implements Serializable {
 }
      ]]></code>
+    </test-code>
+    <test-code>
+        <description>inherited abstract case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone;
+public abstract class AbstractMissingSerialVersionUIDTest extends MissingSerialVersionUIDBase {
+    // no serial version UID
+}
+        ]]></code>
     </test-code>
     <test-code>
         <description><![CDATA[
@@ -87,5 +95,25 @@ public abstract class Foo implements Serializable {
 public class Foo implements Serializable {
 }
      ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1078 [java] MissingSerialVersionUID rule does not seem to catch inherited classes</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone;
+public class MissingSerialVersionUIDTest extends MissingSerialVersionUIDBase {
+    // ... no serialVersionUID value defined ...
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1350 [java] MissingSerialVersionUID false-positive on interfaces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface IDomainObject<ID extends Serializable & Comparable<? super ID>> extends MutablePrimaryIdentifier<ID>, Serializable {
+}
+        ]]></code>
     </test-code>
 </test-data>

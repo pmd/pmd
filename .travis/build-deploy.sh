@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-source .travis/common-functions.sh
 source .travis/logger.sh
+source .travis/common-functions.sh
 
 function push_docs() {
     if git diff --quiet docs; then
@@ -14,7 +14,11 @@ function push_docs() {
             git config user.name "Travis CI (pmd-bot)"
             git config user.email "andreas.dangel+pmd-bot@adangel.org"
             git add -A docs
-            git commit -m "Update documentation"
+            MSG="Update documentation
+
+TRAVIS_JOB_NUMBER=${TRAVIS_JOB_NUMBER}
+TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}"
+            git commit -m "$MSG"
             git push git@github.com:pmd/pmd.git HEAD:master
             log_success "Successfully pushed docs update"
         else
@@ -23,16 +27,42 @@ function push_docs() {
     fi
 }
 
+function upload_baseline() {
+    log_info "Generating and uploading baseline for pmdtester..."
+    cd ..
+    bundle config --local gemfile pmd/Gemfile
+    bundle exec pmdtester -m single -r ./pmd -p ${TRAVIS_BRANCH} -pc ./pmd/.travis/all-java.xml -l ./pmd/.travis/project-list.xml -f
+    cd target/reports
+    BRANCH_FILENAME="${TRAVIS_BRANCH/\//_}"
+    zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
+    rsync -avh ${BRANCH_FILENAME}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/
+    if [ $? -ne 0 ]; then
+        log_error "Error while uploading ${BRANCH_FILENAME}-baseline.zip to sourceforge!"
+        log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd-regression-tester/"
+    else
+        log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to sourceforge"
+    fi
+}
 
-VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
+VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
 log_info "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
 MVN_BUILD_FLAGS="-B -V"
 
-if travis_isPullRequest; then
+if travis_isOSX; then
+
+    log_info "The build is running on OSX"
+    ./mvnw verify $MVN_BUILD_FLAGS
+
+elif travis_isPullRequest; then
 
     log_info "This is a pull-request build"
     ./mvnw verify $MVN_BUILD_FLAGS
+	(
+	    set +e
+	    log_info "Running danger"
+	    bundle exec danger --verbose
+	)
 
 elif travis_isPush; then
 
@@ -63,12 +93,41 @@ elif travis_isPush; then
         if [ $? -ne 0 ]; then
             log_error "Error while uploading pmd-*-${VERSION}.zip to sourceforge!"
             log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd/"
+        else
+            log_success "Successfully uploaded pmd-*-${VERSION}.zip to sourceforge"
         fi
-        rsync -avh docs/pages/release_notes.md ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/ReadMe.md
-        if [ $? -ne 0 ]; then
+
+    )
+
+    (   # UPLOAD RELEASE NOTES TO SOURCEFORGE
+
+        # This handler is called if any command fails
+        function release_notes_fail() {
             log_error "Error while uploading release_notes.md as ReadMe.md to sourceforge!"
             log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd/"
-        fi
+        }
+
+        # exit subshell after trap
+        set -e
+        trap release_notes_fail ERR
+
+        RELEASE_NOTES_TMP=$(mktemp -t)
+
+        .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6 > "$RELEASE_NOTES_TMP"
+
+        rsync -avh "$RELEASE_NOTES_TMP" ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/ReadMe.md
+
+        log_success "Successfully uploaded release_notes.md as ReadMe.md to sourceforge"
+
+    )
+
+
+    (
+        # disable fast fail, exit immediately, in this subshell
+        set +e
+
+        upload_baseline
+
         true
     )
 

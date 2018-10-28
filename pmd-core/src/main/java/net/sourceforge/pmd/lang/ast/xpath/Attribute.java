@@ -67,7 +67,8 @@ public class Attribute {
 
         if (method.isAnnotationPresent(Deprecated.class) && LOG.isLoggable(Level.WARNING)
                 && DETECTED_DEPRECATED_ATTRIBUTES.putIfAbsent(getLoggableAttributeName(), Boolean.TRUE) == null) {
-            LOG.warning("Use of deprecated attribute '" + getLoggableAttributeName() + "' in xpath query");
+            // this message needs to be kept in sync with PMDCoverageTest
+            LOG.warning("Use of deprecated attribute '" + getLoggableAttributeName() + "' in XPath query");
         }
 
         // this lazy loading reduces calls to Method.invoke() by about 90%

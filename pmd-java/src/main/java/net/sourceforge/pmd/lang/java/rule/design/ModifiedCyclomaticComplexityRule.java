@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
  * 
  * @since June 18, 2014
  */
+@Deprecated
 public class ModifiedCyclomaticComplexityRule extends StdCyclomaticComplexityRule {
 
     @Override

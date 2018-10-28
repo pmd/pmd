@@ -1,0 +1,20 @@
+--
+-- Where Clause Conditions
+--
+
+BEGIN
+
+  SELECT adt.adt_id
+    INTO v_adt_id
+    FROM academic_titles adt
+   WHERE UPPER(adt.short_description) = UPPER(title_in);
+
+  SELECT rgn.rgn_id
+    INTO v_region_id
+    FROM regions rgn
+    WHERE (street_cny_code_in IS NULL
+       OR rgn.cny_code = street_cny_code_in)
+       AND UPPER(rgn.name) = UPPER(street_rgn_in);
+
+END;
+/

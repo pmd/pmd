@@ -6,7 +6,9 @@
   <interactiveMode/>
   <usePluginRegistry/>
   <offline/>
-  <pluginGroups/>
+  <pluginGroups>
+    <pluginGroup>org.sonarsource.scanner.maven</pluginGroup>
+  </pluginGroups>
   <servers>
     <server>
       <id>ossrh</id>

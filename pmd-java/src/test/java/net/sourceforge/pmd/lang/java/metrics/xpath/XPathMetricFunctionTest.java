@@ -53,6 +53,7 @@ public class XPathMetricFunctionTest {
         Report report = new Report();
         ctx.setReport(report);
         ctx.setSourceCodeFilename("n/a");
+        ctx.setIgnoreExceptions(false); // for test, we want immediate exceptions thrown and not collect them
         RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
         p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
         return report.iterator();

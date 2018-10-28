@@ -45,6 +45,24 @@ public class AbstractCommentRuleTest {
     }
 
     @Test
+    public void testTagsIndicesIn() {
+        String comment = "    /**\n"
+                + "     * Checks if the metric can be computed on the node.\n"
+                + "     *\n"
+                + "     * @param node The node to check\n"
+                + "     *\n"
+                + "     * @return True if the metric can be computed\n"
+                + "     */\n"
+                + "    boolean supports(N node);\n"
+                + "";
+
+        List<Integer> indices = testSubject.tagsIndicesIn(comment);
+        Assert.assertEquals(2, indices.size());
+        Assert.assertEquals(79, indices.get(0).intValue());
+        Assert.assertEquals(123, indices.get(1).intValue());
+    }
+
+    @Test
     public void testCommentAssignments() {
         LanguageVersionHandler handler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.8")
                 .getLanguageVersionHandler();

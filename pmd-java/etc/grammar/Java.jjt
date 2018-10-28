@@ -1523,6 +1523,7 @@ TOKEN :
 | < XOR: "^" >
 | < REM: "%" >
 | < LSHIFT: "<<" >
+// Notice the absence of >> or >>>, to not conflict with generics
 | < PLUSASSIGN: "+=" >
 | < MINUSASSIGN: "-=" >
 | < STARASSIGN: "*=" >
@@ -1895,6 +1896,8 @@ void Type():
 void ReferenceType():
 {}
 {
+  // The grammar here is mildly wrong, the annotations can be before each []
+  // This will wait for #997
    PrimitiveType() (TypeAnnotation())* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
   |
    ( ClassOrInterfaceType()) (TypeAnnotation())* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
@@ -1996,6 +1999,11 @@ void Expression() :
  * a primary expression.  Consider adding a semantic predicate to work
  * around this.
  */
+ // It also allows lambda expressions in many more contexts as allowed by the JLS.
+ // Lambda expressions are not a PrimaryExpression in the JLS, instead they're
+ // separated from the AssignmentExpression production. Their use is restricted
+ // to method and constructor argument, cast operand, and the RHS of assignments.
+ // https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.27
 {}
 {
   ConditionalExpression()
@@ -2021,10 +2029,12 @@ void AssignmentOperator() :
     | "|="    {jjtThis.setImage("|="); jjtThis.setCompound();}
 }
 
+// TODO Setting isTernary is unnecessary, since the node is only pushed on the stack if there is at least one child,
+// ie if it's a ternary
 void ConditionalExpression() #ConditionalExpression(>1) :
 {}
 {
-  ConditionalOrExpression() [ LOOKAHEAD(2) "?" {jjtThis.setTernary();} Expression() ":" ConditionalExpression() ]
+  ConditionalOrExpression() [ LOOKAHEAD(2) "?" Expression() ":" ConditionalExpression() ]
 }
 
 void ConditionalOrExpression() #ConditionalOrExpression(>1):
@@ -2087,8 +2097,8 @@ void ShiftExpression() #ShiftExpression(>1):
   AdditiveExpression() 
    ( LOOKAHEAD(2)
     ( "<<" { jjtThis.setImage("<<");}
-     | RSIGNEDSHIFT()
-     | RUNSIGNEDSHIFT()
+     | RSIGNEDSHIFT() { jjtThis.setImage(">>"); }
+     | RUNSIGNEDSHIFT() { jjtThis.setImage(">>>"); }
     ) AdditiveExpression() )*
 }
 
@@ -2196,8 +2206,36 @@ void LambdaExpression() :
 { checkForBadLambdaUsage(); }
 {
   VariableDeclaratorId() "->" ( Expression() | Block() )
-| LOOKAHEAD(3) FormalParameters() "->" ( Expression() | Block() )
+| LOOKAHEAD(3) LambdaParameters() "->" ( Expression() | Block() )
 | LOOKAHEAD(3) "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->" ( Expression() | Block() )
+}
+
+void LambdaParameters() #FormalParameters :
+{}
+{
+    "(" [ LambdaParameterList() ] ")"
+}
+
+void LambdaParameterList() #void :
+{}
+{
+    LambdaParameter() ( "," LambdaParameter() )*
+}
+
+void LambdaParameter() #FormalParameter :
+{}
+{
+    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
+    LambdaParameterType()
+    [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+    VariableDeclaratorId()
+}
+
+void LambdaParameterType() #void :
+{}
+{
+    LOOKAHEAD( { jdkVersion >= 11 && isKeyword("var") } ) <IDENTIFIER>
+    | Type()
 }
 
 void PrimarySuffix() :
@@ -2547,7 +2585,7 @@ void AssertStatement() :
  * type declaration syntax with generics clean
  */
 
-void RUNSIGNEDSHIFT():
+void RUNSIGNEDSHIFT(): // TODO 7.0.0 make #void
 {}
 {
   ( LOOKAHEAD({ getToken(1).kind == GT &&
@@ -2556,7 +2594,7 @@ void RUNSIGNEDSHIFT():
   )
 }
 
-void RSIGNEDSHIFT():
+void RSIGNEDSHIFT(): // TODO 7.0.0 make #void
 {}
 {
   ( LOOKAHEAD({ getToken(1).kind == GT &&

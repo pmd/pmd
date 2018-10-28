@@ -37,6 +37,7 @@ import net.sourceforge.pmd.properties.IntegerProperty;
  * 
  * @since June 18, 2014
  */
+@Deprecated
 public class StdCyclomaticComplexityRule extends AbstractJavaRule {
 
     public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR 
@@ -155,10 +156,8 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTConditionalExpression node, Object data) {
-        if (node.isTernary()) {
-            entryStack.peek().bumpDecisionPoints();
-            super.visit(node, data);
-        }
+        entryStack.peek().bumpDecisionPoints();
+        super.visit(node, data);
         return data;
     }
 

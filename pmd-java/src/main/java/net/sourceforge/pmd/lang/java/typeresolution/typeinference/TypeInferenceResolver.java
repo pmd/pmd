@@ -39,7 +39,7 @@ public final class TypeInferenceResolver {
         List<Bound> newBounds = new ArrayList<>();
         while (!constraints.isEmpty()) {
             List<BoundOrConstraint> reduceResult = constraints.remove(constraints.size() - 1).reduce();
-            
+
             // If null, the types are incompatible
             if (reduceResult == null) {
                 return null;
@@ -384,7 +384,7 @@ public final class TypeInferenceResolver {
 
 
     /**
-     * @return A map of variable -> proper type produced by searching for α = T or T = α bounds
+     * @return A map of variable -&gt; proper type produced by searching for α = T or T = α bounds
      */
     public static Map<Variable, JavaTypeDefinition> getInstantiations(List<Bound> bounds) {
         Map<Variable, JavaTypeDefinition> result = new HashMap<>();

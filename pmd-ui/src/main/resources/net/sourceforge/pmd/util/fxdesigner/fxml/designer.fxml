@@ -38,17 +38,19 @@
                                         <MenuItem fx:id="exportXPathMenuItem" mnemonicParsing="false" text="Export XPath to rule" />
                                     </items>
                                 </Menu>
-                                <Menu mnemonicParsing="false" text="About">
-                                    <items>
-                                        <MenuItem mnemonicParsing="false" text="About" />
-                                        <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License" />
-                                    </items>
-                                </Menu>
+
                                 <Menu mnemonicParsing="false" text="Configuration">
                                     <items>
                                         <MenuItem fx:id="setupAuxclasspathMenuItem" mnemonicParsing="false"
                                                   text="Set up the auxclasspath" >
                                         </MenuItem>
+                                    </items>
+                                </Menu>
+
+                                <Menu mnemonicParsing="false" text="About">
+                                    <items>
+                                        <MenuItem mnemonicParsing="false" text="About"/>
+                                        <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License"/>
                                     </items>
                                 </Menu>
 
@@ -58,7 +60,7 @@
                 </AnchorPane>
             </top>
             <center>
-                <SplitPane id="main-vertical-split-pane" fx:id="mainHorizontalSplitPane" dividerPositions="0.8" orientation="VERTICAL" BorderPane.alignment="BOTTOM_CENTER">
+                <SplitPane id="main-horizontal-split-pane" fx:id="mainHorizontalSplitPane" dividerPositions="0.8" orientation="VERTICAL" BorderPane.alignment="BOTTOM_CENTER">
                     <items>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                             <left>

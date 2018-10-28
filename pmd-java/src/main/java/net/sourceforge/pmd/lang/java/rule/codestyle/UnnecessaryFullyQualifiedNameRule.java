@@ -10,11 +10,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
@@ -22,9 +28,11 @@ import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     private List<ASTImportDeclaration> imports = new ArrayList<>();
+    private String currentPackage;
 
     public UnnecessaryFullyQualifiedNameRule() {
         super.addRuleChainVisit(ASTCompilationUnit.class);
+        super.addRuleChainVisit(ASTPackageDeclaration.class);
         super.addRuleChainVisit(ASTImportDeclaration.class);
         super.addRuleChainVisit(ASTClassOrInterfaceType.class);
         super.addRuleChainVisit(ASTName.class);
@@ -33,9 +41,16 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         imports.clear();
+        currentPackage = null;
         return data;
     }
 
+    @Override
+    public Object visit(ASTPackageDeclaration node, Object data) {
+        currentPackage = node.getPackageNameImage();
+        return data;
+    }
+    
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         imports.add(node);
@@ -77,7 +92,17 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                 && name.lastIndexOf('.') == decl.getImportedName().length();
     }
 
-    private void checkImports(JavaNode node, Object data) {
+    private boolean couldBeMethodCall(JavaNode node) {
+        if (node.getNthParent(2) instanceof ASTPrimaryExpression && node.getNthParent(1) instanceof ASTPrimaryPrefix) {
+            int nextSibling = node.jjtGetParent().jjtGetChildIndex() + 1;
+            if (node.getNthParent(2).jjtGetNumChildren() > nextSibling) {
+                return node.getNthParent(2).jjtGetChild(nextSibling) instanceof ASTPrimarySuffix;
+            }
+        }
+        return false;
+    }
+
+    private void checkImports(AbstractJavaTypeNode node, Object data) {
         String name = node.getImage();
         List<ASTImportDeclaration> matches = new ArrayList<>();
 
@@ -98,7 +123,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         }
 
         // If there is no direct match, consider if we match the tail end of a
-        // direct static import, but also a static method on a class import?
+        // direct static import, but also a static method on a class import.
         // For example:
         //
         // import java.util.Arrays;
@@ -107,29 +132,51 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         // List list1 = Arrays.asList("foo"); // Array class name not needed!
         // List list2 = asList("foo"); // Preferred, used static import
         // }
+        //
+        // Or: The usage of a FQN is correct, if there is another import with the same class.
+        // Example
+        // import foo.String;
+        // static {
+        // java.lang.String s = "a";
+        // }
         if (matches.isEmpty()) {
             for (ASTImportDeclaration importDeclaration : imports) {
+                String[] importParts = importDeclaration.getImportedName().split("\\.");
+                String[] nameParts = name.split("\\.");
                 if (importDeclaration.isStatic()) {
-                    String[] importParts = importDeclaration.getImportedName().split("\\.");
-                    String[] nameParts = name.split("\\.");
                     if (importDeclaration.isImportOnDemand()) {
                         // Name class part matches class part of static import?
                         if (nameParts[nameParts.length - 2].equals(importParts[importParts.length - 1])) {
                             matches.add(importDeclaration);
                         }
                     } else {
-                        // Last 2 parts match?
+                        // Last 2 parts match? Class + Method name
                         if (nameParts[nameParts.length - 1].equals(importParts[importParts.length - 1])
                                 && nameParts[nameParts.length - 2].equals(importParts[importParts.length - 2])) {
                             matches.add(importDeclaration);
                         }
                     }
+                } else if (!importDeclaration.isImportOnDemand()) {
+                    // last part matches?
+                    if (nameParts[nameParts.length - 1].equals(importParts[importParts.length - 1])) {
+                        matches.add(importDeclaration);
+                    } else if (couldBeMethodCall(node)
+                            && nameParts.length > 1 && nameParts[nameParts.length - 2].equals(importParts[importParts.length - 1])) {
+                        // maybe the Name is part of a method call, then the second two last part needs to match
+                        matches.add(importDeclaration);
+                    }
                 }
             }
         }
 
-        if (!matches.isEmpty()) {
-            ASTImportDeclaration firstMatch = matches.get(0);
+        if (matches.isEmpty()) {
+            if (isJavaLangImplicit(node)) {
+                addViolation(data, node, new Object[] { node.getImage(), "java.lang.*", "implicit "});
+            } else if (isSamePackage(node)) {
+                addViolation(data, node, new Object[] { node.getImage(), currentPackage + ".*", "same package "});
+            }
+        } else {
+            ASTImportDeclaration firstMatch = findFirstMatch(matches);
 
             // Could this done to avoid a conflict?
             if (!isAvoidingConflict(node, name, firstMatch)) {
@@ -141,7 +188,51 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         }
     }
 
-    private boolean isAvoidingConflict(final JavaNode node, final String name,
+    private ASTImportDeclaration findFirstMatch(List<ASTImportDeclaration> imports) {
+        // first search only static imports
+        ASTImportDeclaration result = null;
+        for (ASTImportDeclaration importDeclaration : imports) {
+            if (importDeclaration.isStatic()) {
+                result = importDeclaration;
+                break;
+            }
+        }
+
+        // then search all non-static, if needed
+        if (result == null) {
+            for (ASTImportDeclaration importDeclaration : imports) {
+                if (!importDeclaration.isStatic()) {
+                    result = importDeclaration;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private boolean isSamePackage(AbstractJavaTypeNode node) {
+        String name = node.getImage();
+        return name.substring(0, name.lastIndexOf('.')).equals(currentPackage);
+    }
+    
+    private boolean isJavaLangImplicit(AbstractJavaTypeNode node) {
+        String name = node.getImage();
+        boolean isJavaLang = name != null && name.startsWith("java.lang.");
+
+        if (isJavaLang && node.getType() != null && node.getType().getPackage() != null) {
+            // valid would be ProcessBuilder.Redirect.PIPE but not java.lang.ProcessBuilder.Redirect.PIPE
+            String packageName = node.getType().getPackage() // package might be null, if type is an array type...
+                    .getName();
+            return "java.lang".equals(packageName);
+        } else if (isJavaLang) {
+            // only java.lang.* is implicitly imported, but not e.g. java.lang.reflection.*
+            return StringUtils.countMatches(name, '.') == 2;
+        }
+        return false;
+    }
+
+    private boolean isAvoidingConflict(final AbstractJavaTypeNode node, final String name,
             final ASTImportDeclaration firstMatch) {
         // is it a conflict between different imports?
         if (firstMatch.isImportOnDemand() && firstMatch.isStatic()) {
@@ -194,6 +285,30 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                         return true;
                     }
                 }
+            }
+        }
+
+        // There could be a conflict between an import of a class with the same name as the FQN
+        String importName = firstMatch.getImportedName();
+        String importUnqualified = importName.substring(importName.lastIndexOf('.') + 1);
+        if (!firstMatch.isImportOnDemand() && !firstMatch.isStatic()) {
+            // the package is different, but the unqualified name is same
+            if (!firstMatch.getImportedName().equals(name) && importUnqualified.equals(unqualifiedName)) {
+                return true;
+            }
+        }
+
+        // There could be a conflict between an import of a class with the same name as the FQN, which
+        // could be a method call:
+        // import x.y.Thread;
+        // valid qualification (node): java.util.Thread.currentThread()
+        if (couldBeMethodCall(node)) {
+            String[] nameParts = name.split("\\.");
+            String fqnName = name.substring(0, name.lastIndexOf('.'));
+            // seems to be a static method call on a different FQN
+            if (!fqnName.equals(importName) && !firstMatch.isStatic() && !firstMatch.isImportOnDemand()
+                    && nameParts.length > 1 && nameParts[nameParts.length - 2].equals(importUnqualified)) {
+                return true;
             }
         }
 

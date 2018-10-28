@@ -112,10 +112,6 @@
             <groupId>net.sourceforge.saxon</groupId>
             <artifactId>saxon</artifactId>
         </dependency>
-        <dependency>
-            <groupId>jaxen</groupId>
-            <artifactId>jaxen</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

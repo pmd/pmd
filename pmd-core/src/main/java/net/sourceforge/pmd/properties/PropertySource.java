@@ -10,20 +10,39 @@ import java.util.Set;
 
 
 /**
- * Any entity that manages a list of properties is a {@link PropertySource}. These are e.g. Rules and Renderers.
+ * Entity that manages a list of properties. Properties are described by
+ * {@linkplain PropertyDescriptor property descriptors}. A property source
+ * maintains a mapping of property descriptors to property values. The value
+ * of a property can be set by {@link #setProperty(PropertyDescriptor, Object)}.
+ * If the property wasn't set with this method, then the property is assumed
+ * to take a default value, which is specified by {@linkplain PropertyDescriptor#defaultValue() the property descriptor}.
+ *
+ * <p>Bad configuration of the properties may be reported by {@link #dysfunctionReason()}.
+ *
+ * <p>Notable instances of this interface are {@linkplain net.sourceforge.pmd.Rule rules} and
+ * {@linkplain net.sourceforge.pmd.renderers.Renderer renderers}.
  *
  * @author Brian Remedios
  */
 public interface PropertySource {
 
     /**
-     * Define a new property via a PropertyDescriptor.
+     * Defines a new property. Properties must be defined before they can be set a value.
      *
      * @param propertyDescriptor The property descriptor.
      *
      * @throws IllegalArgumentException If there is already a property defined the same name.
      */
     void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) throws IllegalArgumentException;
+
+
+    /**
+     * Gets the name of this property source. This is e.g. the name
+     * of the rule or renderer.
+     *
+     * @return The name
+     */
+    String getName();
 
 
     /**
@@ -37,7 +56,8 @@ public interface PropertySource {
 
 
     /**
-     * Get the PropertyDescriptors for all defined properties. The properties are returned sorted by UI order.
+     * Get the descriptors of all defined properties.
+     * The properties are returned sorted by UI order.
      *
      * @return The PropertyDescriptors in UI order.
      */
@@ -45,7 +65,16 @@ public interface PropertySource {
 
 
     /**
-     * Get the typed value for the given property. Multi valued properties return immutable lists.
+     * Returns a modifiable list of the property descriptors
+     * that don't use default values.
+     *
+     * @return The descriptors that don't use default values
+     */
+    List<PropertyDescriptor<?>> getOverriddenPropertyDescriptors();
+
+    /**
+     * Get the typed value for the given property.
+     * Multi valued properties return immutable lists.
      *
      * @param <T>                The underlying type of the property descriptor.
      * @param propertyDescriptor The property descriptor.
@@ -56,7 +85,18 @@ public interface PropertySource {
 
 
     /**
-     * Set the property value specified (will be type-checked)
+     * Returns true if the given property has been set to a value
+     * somewhere in the XML.
+     *
+     * @param propertyDescriptor The descriptor
+     *
+     * @return True if the property has been set
+     */
+    boolean isPropertyOverridden(PropertyDescriptor<?> propertyDescriptor);
+
+    /**
+     * Set the property value specified. This is also referred to as "overriding"
+     * the (default) value of a property.
      *
      * @param <T>                The underlying type of the property descriptor.
      * @param propertyDescriptor The property descriptor.
@@ -67,6 +107,7 @@ public interface PropertySource {
 
     /**
      * Sets the value of a multi value property descriptor with a variable number of arguments.
+     * This is also referred to as "overriding" the (default) value of a property.
      *
      * @param propertyDescriptor The property descriptor for which to add a value
      * @param values             Values
@@ -76,19 +117,36 @@ public interface PropertySource {
 
 
     /**
-     * Returns all the current property values for the receiver or an immutable empty map if none are specified.
+     * Returns an unmodifiable map of descriptors to property values
+     * for the current receiver. The returned map has an entry for
+     * every defined descriptor ({@link #getPropertyDescriptors()}),
+     * if they were not specified explicitly, then default values are
+     * used.
      *
-     * @return all current property values or a empty map.
+     * @return An unmodifiable map of descriptors to property values
      */
     Map<PropertyDescriptor<?>, Object> getPropertiesByPropertyDescriptor();
 
 
     /**
-     * Returns whether this Rule has the specified PropertyDescriptor.
+     * Returns a modifiable map of the property descriptors
+     * that don't use default values, to their overridden value.
+     * Modifications on the returned map don't affect this property
+     * source.
      *
-     * @param descriptor The PropertyDescriptor for which to check.
+     * @return The descriptors that don't use default values
+     */
+    Map<PropertyDescriptor<?>, Object> getOverriddenPropertiesByPropertyDescriptor();
+
+
+    /**
+     * Returns whether the specified property is defined on this property source,
+     * in which case it can be set or retrieved with {@link #getProperty(PropertyDescriptor)}
+     * and {@link #setProperty(PropertyDescriptor, Object)}.
      *
-     * @return boolean <code>true</code> if the descriptor is present, <code>false</code> otherwise.
+     * @param descriptor The descriptor to look for
+     *
+     * @return {@code true} if the descriptor is defined, {@code false} otherwise.
      */
     boolean hasDescriptor(PropertyDescriptor<?> descriptor);
 
@@ -97,7 +155,10 @@ public interface PropertySource {
      * Returns whether this Rule uses default values for properties.
      *
      * @return boolean <code>true</code> if the properties all have default values, <code>false</code> otherwise.
+     *
+     * @deprecated Has no real utility, will be removed by 7.0.0
      */
+    @Deprecated
     boolean usesDefaultValues();
 
 
@@ -105,7 +166,10 @@ public interface PropertySource {
      * Clears out any user-specified value for the property allowing it to use the default value in the descriptor.
      *
      * @param desc the property to clear out
+     *
+     * @deprecated Has no real utility, and the name is confusing, will be removed by 7.0.0
      */
+    @Deprecated
     void useDefaultValueFor(PropertyDescriptor<?> desc);
 
 
@@ -114,13 +178,16 @@ public interface PropertySource {
      * properties. This can be used to disable corresponding widgets in a UI.
      *
      * @return the properties that are ignored
+     * @deprecated Has no real utility, will be removed by 7.0.0
      */
+    @Deprecated
     Set<PropertyDescriptor<?>> ignoredProperties();
 
 
     /**
-     * Returns a description of why the receiver may be dysfunctional. Usually due to missing property values or some
-     * kind of conflict between values. Returns null if the receiver is ok.
+     * Returns a description of why the receiver may be dysfunctional.
+     * Usually due to missing property values or some kind of conflict
+     * between values. Returns null if the receiver is ok.
      *
      * @return String
      */

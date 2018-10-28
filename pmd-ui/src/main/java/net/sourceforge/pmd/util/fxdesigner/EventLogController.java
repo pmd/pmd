@@ -8,14 +8,20 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
+import org.reactfx.value.Var;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
+import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
@@ -41,6 +47,7 @@ public class EventLogController implements Initializable {
     private static final Duration PARSE_EXCEPTION_DELAY = Duration.ofMillis(3000);
 
     private final DesignerRoot designerRoot;
+    private final MainDesignerController mediator;
 
     @FXML
     private TableView<LogEntry> eventLogTableView;
@@ -53,9 +60,12 @@ public class EventLogController implements Initializable {
     @FXML
     private TextArea logDetailsTextArea;
 
+    private Var<List<Node>> selectedErrorNodes = Var.newSimpleVar(Collections.emptyList());
 
-    public EventLogController(DesignerRoot owner) {
+
+    public EventLogController(DesignerRoot owner, MainDesignerController mediator) {
         this.designerRoot = owner;
+        this.mediator = mediator;
     }
 
 
@@ -64,8 +74,7 @@ public class EventLogController implements Initializable {
         logCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         logMessageColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
         final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-        logDateColumn.setCellValueFactory(
-            entry -> new SimpleObjectProperty<>(entry.getValue().getTimestamp()));
+        logDateColumn.setCellValueFactory(entry -> new SimpleObjectProperty<>(entry.getValue().getTimestamp()));
         logDateColumn.setCellFactory(column -> new TableCell<LogEntry, Date>() {
             @Override
             protected void updateItem(Date item, boolean empty) {
@@ -96,11 +105,24 @@ public class EventLogController implements Initializable {
 
         eventLogTableView.getSelectionModel()
                          .selectedItemProperty()
-                         .addListener((obs, oldVal, newVal) -> logDetailsTextArea.setText(
-                                 newVal == null ? "" : newVal.getStackTrace()));
+                         .addListener((obs, oldVal, newVal) -> onExceptionSelectionChanges(oldVal, newVal));
+
+        EventStreams.combine(EventStreams.changesOf(eventLogTableView.focusedProperty()),
+                             EventStreams.changesOf(selectedErrorNodes));
+
+        EventStreams.valuesOf(eventLogTableView.focusedProperty())
+                    .successionEnds(Duration.ofMillis(100))
+                    .subscribe(b -> {
+                        if (b) {
+                            mediator.handleSelectedNodeInError(selectedErrorNodes.getValue());
+                        } else {
+                            mediator.resetSelectedErrorNodes();
+                        }
+                    });
+
+        selectedErrorNodes.values().subscribe(mediator::handleSelectedNodeInError);
 
         eventLogTableView.resizeColumn(logMessageColumn, -1);
-
 
         logMessageColumn.prefWidthProperty()
                         .bind(eventLogTableView.widthProperty()
@@ -109,5 +131,35 @@ public class EventLogController implements Initializable {
                                                .subtract(2)); // makes it work
         logDateColumn.setSortType(SortType.DESCENDING);
 
+    }
+
+
+    private void handleSelectedEntry(LogEntry entry) {
+        if (entry == null) {
+            selectedErrorNodes.setValue(Collections.emptyList());
+            return;
+        }
+        switch (entry.getCategory()) {
+        case OTHER:
+            break;
+        case PARSE_EXCEPTION:
+            // TODO
+            break;
+        case TYPERESOLUTION_EXCEPTION:
+        case SYMBOL_FACADE_EXCEPTION:
+            DesignerUtil.stackTraceToXPath(entry.getThrown()).map(mediator::runXPathQuery).ifPresent(selectedErrorNodes::setValue);
+            break;
+        default:
+            break;
+        }
+    }
+
+
+    private void onExceptionSelectionChanges(LogEntry oldVal, LogEntry newVal) {
+        logDetailsTextArea.setText(newVal == null ? "" : newVal.getStackTrace());
+
+        if (!Objects.equals(newVal, oldVal)) {
+            handleSelectedEntry(newVal);
+        }
     }
 }

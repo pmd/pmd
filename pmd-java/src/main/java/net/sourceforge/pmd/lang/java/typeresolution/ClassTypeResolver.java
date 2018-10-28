@@ -734,11 +734,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTConditionalExpression node, Object data) {
         super.visit(node, data);
-        if (node.isTernary()) {
-            // TODO Rules for Ternary are complex
-        } else {
-            rollupTypeUnary(node);
-        }
+
+        // TODO Rules for Ternary are complex
+
+        rollupTypeUnary(node);
+
         return data;
     }
 
@@ -1054,11 +1054,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTWildcardBounds node, Object data) {
         super.visit(node, data);
 
-        JavaTypeDefinition childType = ((TypeNode) node.jjtGetChild(0)).getTypeDefinition();
+        JavaTypeDefinition childType = node.getTypeBoundNode().getTypeDefinition();
 
-        if (node.jjtGetFirstToken().toString().equals("super")) {
+        if (node.isLowerBound()) {
             node.setTypeDefinition(JavaTypeDefinition.forClass(LOWER_WILDCARD, childType));
-        } else { // equals "extends"
+        } else { // upper bound
             node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_WILDCARD, childType));
         }
 
@@ -1073,8 +1073,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             TypeNode parent = (TypeNode) node.jjtGetParent();
 
             final JavaTypeDefinition[] boundGenerics = new JavaTypeDefinition[node.jjtGetNumChildren()];
-            for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
-                boundGenerics[i] = ((TypeNode) node.jjtGetChild(i)).getTypeDefinition();
+            int i = 0;
+            for (ASTTypeParameter arg : node) {
+                boundGenerics[i++] = arg.getTypeDefinition();
             }
 
             parent.setTypeDefinition(JavaTypeDefinition.forClass(parent.getType(), boundGenerics));
@@ -1085,7 +1086,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTTypeParameter node, Object data) {
-        if (node.jjtGetNumChildren() == 0) { // type parameter doesn't have declared upper bounds
+        if (!node.hasTypeBound()) { // type parameter doesn't have declared upper bounds
             node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, Object.class));
         } else {
             super.visit(node, data);
@@ -1099,13 +1100,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTTypeBound node, Object data) {
         super.visit(node, data);
 
-        // selecting only the type nodes, since the types can be preceded by annotations
-        List<TypeNode> typeNodes = node.findChildrenOfType(TypeNode.class);
+        List<ASTClassOrInterfaceType> typeNodes = node.getBoundTypeNodes();
 
         // TypeBound will have at least one child, but maybe more
         JavaTypeDefinition[] bounds = new JavaTypeDefinition[typeNodes.size()];
-        for (int index = 0; index < typeNodes.size(); index++) {
-            bounds[index] = typeNodes.get(index).getTypeDefinition();
+        int i = 0;
+        for (ASTClassOrInterfaceType bound : typeNodes) {
+            bounds[i++] = bound.getTypeDefinition();
         }
 
         node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, bounds));

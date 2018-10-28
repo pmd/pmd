@@ -22,6 +22,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -214,4 +216,18 @@ public final class DesignerUtil {
         return lines.isEmpty() ? Optional.empty() : Optional.of("//" + String.join("/", lines));
     }
 
+
+    /**
+     * Works out an xpath query that matches the node
+     * which was being visited during the failure.
+     *
+     * @param e Exception
+     *
+     * @return A query, if possible.
+     *
+     * @see #stackTraceToXPath(String)
+     */
+    public static Optional<String> stackTraceToXPath(Throwable e) {
+        return stackTraceToXPath(ExceptionUtils.getStackTrace(e));
+    }
 }

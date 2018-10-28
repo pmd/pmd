@@ -1,8 +1,9 @@
 repository: pmd/pmd
 
 pmd:
-    version: 6.5.0
-    date: ?????
+    version: 6.10.0
+    date: ??-????-2018
+    release_type: minor
 
 output: web
 # this property is useful for conditional filtering of content that is separate from the PDF.
@@ -28,10 +29,16 @@ host: 127.0.0.1
 port: 4005
 # the port where the preview is rendered. You can leave this as is unless you have other Jekyll builds using this same port that might cause conflicts. in that case, use another port such as 4006.
 
+# these are the files and directories that jekyll will exclude from the build
 exclude:
   - .idea/
   - .gitignore
-# these are the files and directories that jekyll will exclude from the build
+  - vendor/
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - Dockerfile
+  - build-docs.sh
 
 feedback_subject_line: PMD Source Code Analyzer
 

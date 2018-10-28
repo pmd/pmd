@@ -3,7 +3,7 @@
 <ruleset name="Code Style"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
 Rules which enforce a specific coding style.
@@ -145,6 +145,47 @@ public class Foo {
     public void fooStuff() {
     }
 }
+]]>
+        </example>
+    </rule>
+
+    <rule name="OneDeclarationPerLine"
+          since="6.7.0"
+          message="Use one statement for each line, it enhances code readability."
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#onedeclarationperline">
+        <description>
+Apex allows the use of several variables declaration of the same type on one line. However, it
+can lead to quite messy code. This rule looks for several declarations on the same line.
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//VariableDeclarationStatements
+  [count(VariableDeclaration) > 1]
+  [$strictMode or count(distinct-values(VariableDeclaration/@BeginLine)) != count(VariableDeclaration)]
+|
+//FieldDeclarationStatements
+  [count(FieldDeclaration) > 1]
+  [$strictMode or count(distinct-values(FieldDeclaration/VariableExpression/@BeginLine)) != count(FieldDeclaration/VariableExpression)]
+]]>
+                </value>
+            </property>
+            <property name="version" value="2.0"/>
+            <property name="strictMode" type="Boolean" value="false"
+                      description="If true, mark combined declaration even if the declarations are on separate lines."/>
+        </properties>
+        <example>
+<![CDATA[
+Integer a, b;   // not recommended
+
+Integer a,
+        b;      // ok by default, can be flagged setting the strictMode property
+
+Integer a;      // preferred approach
+Integer b;
 ]]>
         </example>
     </rule>

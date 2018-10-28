@@ -3,7 +3,7 @@
 <ruleset name="Performance"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
 Rules that flag suboptimal code.
@@ -135,10 +135,10 @@ The FileReader and FileWriter constructors instantiate FileInputStream and FileO
                 <value>
 <![CDATA[
 //PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[
-       typeIs('java.io.FileInputStream')
-    or typeIs('java.io.FileOutputStream')
-    or typeIs('java.io.FileReader')
-    or typeIs('java.io.FileWriter')
+       pmd-java:typeIs('java.io.FileInputStream')
+    or pmd-java:typeIs('java.io.FileOutputStream')
+    or pmd-java:typeIs('java.io.FileReader')
+    or pmd-java:typeIs('java.io.FileWriter')
   ]
 ]]>
                 </value>
@@ -209,10 +209,10 @@ adverse impacts on performance.
 <![CDATA[
 //FieldDeclaration/Type/PrimitiveType[@Image = 'short']
 |
-//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeIs('java.lang.Override')])]
+//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[pmd-java:typeIs('java.lang.Override')])]
     /MethodDeclaration/ResultType/Type/PrimitiveType[@Image = 'short']
 |
-//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeIs('java.lang.Override')])]
+//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[pmd-java:typeIs('java.lang.Override')])]
     /MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/Type/PrimitiveType[@Image = 'short']
 |
 //LocalVariableDeclaration/Type/PrimitiveType[@Image = 'short']
@@ -294,7 +294,7 @@ Note that new Byte() is deprecated since JDK 9 for that reason.
 <![CDATA[
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeIs('java.lang.Byte')]]
+and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')]]
 ]]>
                 </value>
             </property>
@@ -467,7 +467,7 @@ Note that new Integer() is deprecated since JDK 9 for that reason.
 <![CDATA[
 //AllocationExpression
   [not (ArrayDimsAndInits)
-   and ClassOrInterfaceType[typeIs('java.lang.Integer')]]
+   and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Integer')]]
 ]]>
                 </value>
             </property>
@@ -500,7 +500,7 @@ Note that new Long() is deprecated since JDK 9 for that reason.
 <![CDATA[
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeIs('java.lang.Long')]]
+and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Long')]]
 ]]>
                 </value>
             </property>
@@ -664,7 +664,7 @@ Note that new Short() is deprecated since JDK 9 for that reason.
 <![CDATA[
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeIs('java.lang.Short')]]
+and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Short')]]
 ]]>
                 </value>
             </property>
@@ -935,7 +935,7 @@ public String convert(int i) {
 
     <rule name="UseStringBufferForStringAppends"
           since="3.1"
-          message="Prefer StringBuffer over += for concatenating strings"
+          message="Prefer StringBuilder (non-synchronized) or StringBuffer (synchronized) over += for concatenating strings"
           class="net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferForStringAppendsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usestringbufferforstringappends">
         <description>
