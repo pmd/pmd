@@ -26,7 +26,6 @@ as comments are recognized as such and ignored.
 *   all
     *   [#1272](https://github.com/pmd/pmd/issues/1272): \[core] Could not find or load main class when using symlinked run.sh
     *   [#1377](https://github.com/pmd/pmd/issues/1377): \[core] LanguageRegistry uses default class loader when invoking ServiceLocator 
-    *   [#1377](https://github.com/pmd/pmd/issues/1377): \[core] LanguageRegistry uses default class loader when invoking ServiceLocator
     *   [#1394](https://github.com/pmd/pmd/issues/1394): \[doc] How to configure "-cache <path>"
 *   apex
     *   [#1396](https://github.com/pmd/pmd/issues/1396): \[apex] ClassCastException caused by Javadoc
