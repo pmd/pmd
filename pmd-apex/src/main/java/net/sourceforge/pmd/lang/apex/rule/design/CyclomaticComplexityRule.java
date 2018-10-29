@@ -16,6 +16,8 @@ import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.newframework.PropertyDescriptor;
+import net.sourceforge.pmd.properties.newframework.PropertyFactory;
 
 
 /**
@@ -25,8 +27,8 @@ import net.sourceforge.pmd.properties.IntegerProperty;
  */
 public class CyclomaticComplexityRule extends AbstractApexRule {
 
-    private static final IntegerProperty CLASS_LEVEL_DESCRIPTOR
-        = IntegerProperty.named("classReportLevel")
+    private static final PropertyDescriptor<Integer> CLASS_LEVEL_DESCRIPTOR
+        = PropertyFactory.intProperty("classReportLevel")
                          .desc("Total class complexity reporting threshold")
                          .range(1, 200)
                          .defaultValue(40)

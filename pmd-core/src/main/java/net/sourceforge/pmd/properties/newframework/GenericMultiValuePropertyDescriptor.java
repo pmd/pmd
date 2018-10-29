@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.properties.newframework;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -15,22 +16,20 @@ import java.util.stream.Collectors;
  * @author Clément Fournier
  * @since 6.7.0
  */
-final class MultiValuePropertyDescriptor<V> extends AbstractPropertyDescriptor<List<V>> {
+final class GenericMultiValuePropertyDescriptor<V> extends AbstractGenericPropertyDescriptor<List<V>> {
 
 
-    private final List<V> defaultValue;
     private final Set<PropertyValidator<V>> componentValidators;
     private final Function<String, V> parser;
 
 
-    MultiValuePropertyDescriptor(String name, String description, float uiOrder,
-                                 List<V> defaultValue,
-                                 Set<PropertyValidator<List<V>>> listValidators,
-                                 Set<PropertyValidator<V>> componentValidators,
-                                 Function<String, V> parser,
-                                 Class<V> type) {
-        super(name, description, uiOrder, listValidators, type);
-        this.defaultValue = defaultValue;
+    GenericMultiValuePropertyDescriptor(String name, String description, float uiOrder,
+                                        List<V> defaultValue,
+                                        Set<PropertyValidator<List<V>>> listValidators,
+                                        Set<PropertyValidator<V>> componentValidators,
+                                        Function<String, V> parser,
+                                        Class<V> type) {
+        super(name, description, uiOrder, defaultValue, listValidators, type);
         this.componentValidators = componentValidators;
         this.parser = parser;
     }
@@ -44,7 +43,7 @@ final class MultiValuePropertyDescriptor<V> extends AbstractPropertyDescriptor<L
 
     @Override
     public List<V> getDefaultValue() {
-        return defaultValue;
+        return Collections.unmodifiableList(defaultValue);
     }
 
 

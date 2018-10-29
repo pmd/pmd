@@ -5,22 +5,42 @@
 package net.sourceforge.pmd.properties.newframework;
 
 import java.util.Optional;
-import java.util.function.Predicate;
 
 
 /**
+ * Validates the value of a property.
+ *
+ * @param <T> Type of value to handle
+ *
  * @author Clément Fournier
  * @since 6.7.0
  */
-@FunctionalInterface
 public interface PropertyValidator<T> {
 
+    /**
+     * Returns a diagnostic message if the value
+     * has a problem. Otherwise returns an empty
+     * optional.
+     *
+     * @param value The value to validate
+     *
+     * @return An optional diagnostic message
+     */
     Optional<String> validate(T value);
 
 
-    static <U> PropertyValidator<U> fromPredicate(Predicate<U> pred, String failureMessage) {
-        return u -> pred.test(u) ? Optional.empty() : Optional.of(failureMessage);
-    }
+    /**
+     * Returns a description of the constraint
+     * imposed by this validator on the values.
+     * E.g. "The value should be positive", or
+     * "The value should be one of A | B | C."
+     *
+     * @return A description of the constraint
+     */
+    String getConstraintDescription();
+
+
+    // TODO Java 8 move PropertyFactory#fromPredicate here
 
 
 }

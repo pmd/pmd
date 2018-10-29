@@ -14,8 +14,9 @@ import java.util.stream.Collectors;
  * @author Clément Fournier
  * @since 6.7.0
  */
-public abstract class AbstractPropertyDescriptor<T> implements PropertyDescriptor<T> {
+abstract class AbstractGenericPropertyDescriptor<T> implements PropertyDescriptor<T> {
 
+    protected final T defaultValue;
     private final String name;
     private final String description;
     private final float uiOrder;
@@ -23,13 +24,16 @@ public abstract class AbstractPropertyDescriptor<T> implements PropertyDescripto
     private final Class<?> type;
 
 
-    protected AbstractPropertyDescriptor(String name,
-                                         String description,
-                                         float uiOrder,
-                                         Set<PropertyValidator<T>> validators, Class<?> type) {
+    protected AbstractGenericPropertyDescriptor(String name,
+                                                String description,
+                                                float uiOrder,
+                                                T defaultValue,
+                                                Set<PropertyValidator<T>> validators,
+                                                Class<?> type) {
         this.name = name;
         this.description = description;
         this.uiOrder = uiOrder;
+        this.defaultValue = defaultValue;
         this.validators = validators;
         this.type = type;
     }
@@ -50,6 +54,12 @@ public abstract class AbstractPropertyDescriptor<T> implements PropertyDescripto
     @Override
     public final Class<?> getType() {
         return type;
+    }
+
+
+    @Override
+    public T getDefaultValue() {
+        return defaultValue;
     }
 
 
