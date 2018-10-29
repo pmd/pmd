@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.IntegerProperty;
-import net.sourceforge.pmd.properties.newframework.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
 

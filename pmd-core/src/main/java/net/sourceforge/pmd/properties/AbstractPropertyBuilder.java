@@ -152,14 +152,12 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
 
         private final ValueParser<T> parser;
         private final Class<T> type;
-        private final boolean isDefinedExternally;
 
 
-        GenericPropertyBuilder(String name, ValueParser<T> parser, Class<T> type, boolean isDefinedExternally) {
+        GenericPropertyBuilder(String name, ValueParser<T> parser, Class<T> type) {
             super(name);
             this.parser = parser;
             this.type = type;
-            this.isDefinedExternally = isDefinedExternally;
         }
 
 
@@ -172,8 +170,7 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
                     getDefaultValue(),
                     getValidators(),
                     parser,
-                    type,
-                    isDefinedExternally
+                    type
             );
         }
 
@@ -197,14 +194,12 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
         private final Set<PropertyValidator<V>> componentValidators = new LinkedHashSet<>();
         private final ValueParser<V> parser;
         private final Class<V> type;
-        private final boolean isDefinedExternally;
 
 
-        AbstractGenericMultiPropertyBuilder(String name, ValueParser<V> parser, Class<V> type, boolean isDefinedExternally) {
+        AbstractGenericMultiPropertyBuilder(String name, ValueParser<V> parser, Class<V> type) {
             super(name);
             this.parser = parser;
             this.type = type;
-            this.isDefinedExternally = isDefinedExternally;
         }
 
 
@@ -246,8 +241,7 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
                     getValidators(),
                     componentValidators,
                     parser,
-                    type,
-                    isDefinedExternally
+                    type
             );
         }
     }

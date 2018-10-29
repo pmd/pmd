@@ -26,10 +26,9 @@ final class GenericMultiValuePropertyDescriptor<V> extends AbstractMultiValuePro
                                         Set<PropertyValidator<List<V>>> listValidators,
                                         Set<PropertyValidator<V>> componentValidators,
                                         ValueParser<V> parser,
-                                        Class<V> type,
-                                        boolean isDefinedExternally) {
+                                        Class<V> type) {
 
-        super(name, description, defaultValue, uiOrder, isDefinedExternally);
+        super(name, description, defaultValue, uiOrder, false);
         this.listValidators = listValidators;
         this.componentValidators = componentValidators;
         this.parser = parser;

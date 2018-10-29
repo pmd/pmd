@@ -22,12 +22,12 @@ public final class PropertyFactory {
     }
 
 
-    private static <T extends Enum<T>> T enumConstantFromEnum(Class<T> enumClass, String name) {
-        return EnumUtils.getEnumList(enumClass).stream()
-                        .filter(e -> e.name().equalsIgnoreCase(name))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("The name '" + name + "' doesn't correspond to any constant in the enum '" + enumClass.getName() + "'"));
-    }
+//    private static <T extends Enum<T>> T enumConstantFromEnum(Class<T> enumClass, String name) {
+//        return EnumUtils.getEnumList(enumClass).stream()
+//                        .filter(e -> e.name().equalsIgnoreCase(name))
+//                        .findFirst()
+//                        .orElseThrow(() -> new IllegalArgumentException("The name '" + name + "' doesn't correspond to any constant in the enum '" + enumClass.getName() + "'"));
+//    }
 
 
     public static NumericPropertyBuilder<Integer> intProperty(String name) {
@@ -40,9 +40,9 @@ public final class PropertyFactory {
     }
 
 
-    public static <T extends Enum<T>> GenericPBuilder<T> enumProperty(String name, Class<T> enumClass) {
-        return new GenericPBuilder<>(name, s -> enumConstantFromEnum(enumClass, s), enumClass);
-    }
+//    public static <T extends Enum<T>> GenericPBuilder<T> enumProperty(String name, Class<T> enumClass) {
+//        return new GenericPBuilder<>(name, s -> enumConstantFromEnum(enumClass, s), enumClass);
+//    }
 
 
     // removes the other type parameter
@@ -68,7 +68,7 @@ public final class PropertyFactory {
     }
 
     public static class MultiNumericPropertyBuilder<N extends Number> extends AbstractPropertyBuilder.AbstractGenericMultiPropertyBuilder<MultiNumericPropertyBuilder<N>, N> {
-        MultiNumericPropertyBuilder(String name, Function<String, N> parser, Class<N> type) {
+        MultiNumericPropertyBuilder(String name, ValueParser<N> parser, Class<N> type) {
             super(name, parser, type);
         }
     }

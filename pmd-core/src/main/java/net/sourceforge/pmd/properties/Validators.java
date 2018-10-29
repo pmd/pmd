@@ -17,7 +17,7 @@ final class Validators {
     }
 
 
-    public static <T extends Number> PropertyValidator<T> rangeValidator(T min, T max) {
+    public static <T extends Number> PropertyValidator<T> rangeValidator(final T min, final T max) {
         return fromPredicate(new Predicate<T>() {
                                  @Override
                                  public boolean test(T t) {
@@ -44,7 +44,7 @@ final class Validators {
      *
      * @return A new validator
      */
-    private static <U> PropertyValidator<U> fromPredicate(Predicate<U> pred, String constraintDescription) {
+    private static <U> PropertyValidator<U> fromPredicate(final Predicate<U> pred, final String constraintDescription) {
         return new PropertyValidator<U>() {
             @Override
             public String validate(U value) {

@@ -24,9 +24,8 @@ final class GenericPropertyDescriptor<T> extends AbstractSingleValueProperty<T> 
                               T defaultValue,
                               Set<PropertyValidator<T>> validators,
                               ValueParser<T> parser,
-                              Class<T> type,
-                              boolean isDefinedExternally) {
-        super(name, description, defaultValue, uiOrder, isDefinedExternally);
+                              Class<T> type) {
+        super(name, description, defaultValue, uiOrder, false);
         this.parser = parser;
         this.type = type;
     }
