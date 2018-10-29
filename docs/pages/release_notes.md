@@ -22,3 +22,5 @@ This is a {{ site.pmd.release_type }} release.
 
 {% endtocmaker %}
 
+{% include note.html content="The release notes of previous versions are available [here](pmd_release_notes_old.html)" %}
+
