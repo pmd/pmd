@@ -2,10 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.newframework;
-
-import java.util.Optional;
-
+package net.sourceforge.pmd.properties;
 
 /**
  * Transitional class to make up for the absence of lambdas until we move to Java 8.
@@ -50,8 +47,8 @@ final class Validators {
     private static <U> PropertyValidator<U> fromPredicate(Predicate<U> pred, String constraintDescription) {
         return new PropertyValidator<U>() {
             @Override
-            public Optional<String> validate(U value) {
-                return pred.test(value) ? Optional.empty() : Optional.of("Constraint violated on value '" + value + "' (" + constraintDescription + ")");
+            public String validate(U value) {
+                return pred.test(value) ? null : "Constraint violated on value '" + value + "' (" + constraintDescription + ")";
             }
 
 

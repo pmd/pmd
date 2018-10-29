@@ -2,12 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.newframework;
+package net.sourceforge.pmd.properties;
+
+import java.util.function.Function;
 
 import org.apache.commons.lang3.EnumUtils;
 
-import net.sourceforge.pmd.properties.ValueParser;
-import net.sourceforge.pmd.properties.newframework.AbstractPropertyBuilder.GenericPropertyBuilder;
+import net.sourceforge.pmd.properties.AbstractPropertyBuilder.GenericPropertyBuilder;
 
 
 /**
@@ -30,7 +31,12 @@ public final class PropertyFactory {
 
 
     public static NumericPropertyBuilder<Integer> intProperty(String name) {
-        return new NumericPropertyBuilder<>(name, Integer::valueOf, Integer.class);
+        return new NumericPropertyBuilder<>(name, ValueParserConstants.INTEGER_PARSER, Integer.class);
+    }
+
+
+    public static NumericPropertyBuilder<Double> doubleProperty(String name) {
+        return new NumericPropertyBuilder<>(name, ValueParserConstants.DOUBLE_PARSER, Double.class);
     }
 
 
@@ -47,6 +53,7 @@ public final class PropertyFactory {
         }
     }
 
+
     public static class NumericPropertyBuilder<N extends Number> extends GenericPropertyBuilder<NumericPropertyBuilder<N>, N> {
 
         NumericPropertyBuilder(String name, ValueParser<N> parser, Class<N> type) {
@@ -60,5 +67,10 @@ public final class PropertyFactory {
         }
     }
 
+    public static class MultiNumericPropertyBuilder<N extends Number> extends AbstractPropertyBuilder.AbstractGenericMultiPropertyBuilder<MultiNumericPropertyBuilder<N>, N> {
+        MultiNumericPropertyBuilder(String name, Function<String, N> parser, Class<N> type) {
+            super(name, parser, type);
+        }
+    }
 
 }

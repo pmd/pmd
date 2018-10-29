@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.newframework;
+package net.sourceforge.pmd.properties;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,12 +10,9 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-
-import net.sourceforge.pmd.properties.ValueParser;
 
 
 /**
@@ -155,12 +152,14 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
 
         private final ValueParser<T> parser;
         private final Class<T> type;
+        private final boolean isDefinedExternally;
 
 
-        GenericPropertyBuilder(String name, ValueParser<T> parser, Class<T> type) {
+        GenericPropertyBuilder(String name, ValueParser<T> parser, Class<T> type, boolean isDefinedExternally) {
             super(name);
             this.parser = parser;
             this.type = type;
+            this.isDefinedExternally = isDefinedExternally;
         }
 
 
@@ -173,7 +172,8 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
                     getDefaultValue(),
                     getValidators(),
                     parser,
-                    type
+                    type,
+                    isDefinedExternally
             );
         }
 
@@ -195,14 +195,16 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
      */
     public abstract static class AbstractGenericMultiPropertyBuilder<B extends AbstractPropertyBuilder<B, List<V>>, V> extends AbstractPropertyBuilder<B, List<V>> {
         private final Set<PropertyValidator<V>> componentValidators = new LinkedHashSet<>();
-        private final Function<String, V> parser;
+        private final ValueParser<V> parser;
         private final Class<V> type;
+        private final boolean isDefinedExternally;
 
 
-        AbstractGenericMultiPropertyBuilder(String name, Function<String, V> parser, Class<V> type) {
+        AbstractGenericMultiPropertyBuilder(String name, ValueParser<V> parser, Class<V> type, boolean isDefinedExternally) {
             super(name);
             this.parser = parser;
             this.type = type;
+            this.isDefinedExternally = isDefinedExternally;
         }
 
 
@@ -236,7 +238,7 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
 
         @Override
         public PropertyDescriptor<List<V>> build() {
-            return new GenericMultiValuePropertyDescriptor<>(
+            return new GenericMultiValuePropertyDescriptor<V>(
                     getName(),
                     getDescription(),
                     getUiOrder(),
@@ -244,7 +246,8 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
                     getValidators(),
                     componentValidators,
                     parser,
-                    type
+                    type,
+                    isDefinedExternally
             );
         }
     }

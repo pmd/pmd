@@ -2,10 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.newframework;
-
-import java.util.Optional;
-
+package net.sourceforge.pmd.properties;
 
 /**
  * Validates the value of a property.
@@ -15,7 +12,7 @@ import java.util.Optional;
  * @author Clément Fournier
  * @since 6.7.0
  */
-public interface PropertyValidator<T> {
+interface PropertyValidator<T> {
 
     /**
      * Returns a diagnostic message if the value
@@ -26,7 +23,8 @@ public interface PropertyValidator<T> {
      *
      * @return An optional diagnostic message
      */
-    Optional<String> validate(T value);
+    // TODO Java 8 use Optional
+    String validate(T value);
 
 
     /**
