@@ -136,8 +136,10 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * If the datatype is a String then return the preferred number of rows to allocate in the text widget, returns a
      * value of one for all other types. Useful for multi-line XPATH editors.
      *
+     * @deprecated Was never implemented, and is none of the descriptor's concern
      * @return int
      */
+    @Deprecated
     int preferredRowCount();
 
 
