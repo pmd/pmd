@@ -24,6 +24,7 @@ import net.sourceforge.pmd.properties.modules.MethodPropertyModule;
  * @deprecated Not useful, will be remove by 7.0.0
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
+ * @deprecated Will be removed with 7.0.0 with no scheduled replacement
  */
 @Deprecated
 public final class MethodProperty extends AbstractPackagedProperty<Method> {

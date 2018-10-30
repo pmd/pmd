@@ -22,6 +22,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * <p>Several interfaces further specialize the behaviour of descriptors to accommodate specific types of descriptors,
  * see {@link NumericPropertyDescriptor} and {@link EnumeratedPropertyDescriptor}.
  *
+ * <h1>Upcoming API changes to the properties framework: see https://github.com/pmd/pmd/issues/1415</h1>
+ *
  * @param <T> type of the property's value. This is a list type for multi-valued properties.
  *
  * @author Brian Remedios
