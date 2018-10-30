@@ -16,6 +16,7 @@ import java.util.Map;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@Deprecated
 public interface EnumeratedPropertyDescriptor<E, T> extends PropertyDescriptor<T> {
 
     /**

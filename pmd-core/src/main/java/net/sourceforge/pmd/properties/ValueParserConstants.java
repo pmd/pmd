@@ -18,13 +18,17 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.ClassUtil;
 
 
 /**
+ * @deprecated Was internal API
  * @author Clément Fournier
  * @since 6.0.0
  */
+@Deprecated
+@InternalApi
 public final class ValueParserConstants {
 
 

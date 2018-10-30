@@ -12,6 +12,7 @@ package net.sourceforge.pmd.properties;
  * @author Brian Remedios
  * @author Clément Fournier
  */
+@Deprecated
 public interface NumericPropertyDescriptor<T> extends PropertyDescriptor<T> {
 
     /**

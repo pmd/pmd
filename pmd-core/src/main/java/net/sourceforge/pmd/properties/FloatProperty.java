@@ -12,9 +12,10 @@ import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
 
 /**
  * Defines a property type that supports single float property values within an upper and lower boundary.
- *
+ * @deprecated Use {@link DoubleProperty}
  * @author Brian Remedios
  */
+@Deprecated
 public final class FloatProperty extends AbstractNumericProperty<Float> {
 
 

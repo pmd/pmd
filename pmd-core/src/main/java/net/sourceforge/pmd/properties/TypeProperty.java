@@ -17,7 +17,9 @@ import net.sourceforge.pmd.properties.modules.TypePropertyModule;
  * TODO - untested for array types
  *
  * @author Brian Remedios
+ * @deprecated Not useful, will be removed by 7.0.0
  */
+@Deprecated
 public final class TypeProperty extends AbstractPackagedProperty<Class> {
 
     /**

@@ -29,6 +29,7 @@ import net.sourceforge.pmd.properties.ValueParserConstants;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@Deprecated
 public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends PropertyDescriptorBuilder<E, T>>
     implements PropertyDescriptorExternalBuilder<E> {
 

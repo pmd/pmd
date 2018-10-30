@@ -37,14 +37,17 @@ public enum PropertyTypeId {
     INTEGER_LIST("List[Integer]", IntegerMultiProperty.extractor(), ValueParserConstants.INTEGER_PARSER),
     LONG("Long", LongProperty.extractor(), ValueParserConstants.LONG_PARSER),
     LONG_LIST("List[Long]", LongMultiProperty.extractor(), ValueParserConstants.LONG_PARSER),
+    @Deprecated
     FLOAT("Float", FloatProperty.extractor(), ValueParserConstants.FLOAT_PARSER),
+    @Deprecated
     FLOAT_LIST("List[Float]", FloatMultiProperty.extractor(), ValueParserConstants.FLOAT_PARSER),
     DOUBLE("Double", DoubleProperty.extractor(), ValueParserConstants.DOUBLE_PARSER),
     DOUBLE_LIST("List[Double]", DoubleMultiProperty.extractor(), ValueParserConstants.DOUBLE_PARSER),
     //    ENUM("Enum", EnumeratedProperty.FACTORY),                     // TODO:cf we need new syntax in the xml to support that
     //    ENUM_LIST("List[Enum]", EnumeratedMultiProperty.FACTORY),
-
+    @Deprecated
     CLASS("Class", TypeProperty.extractor(), ValueParserConstants.CLASS_PARSER),
+    @Deprecated
     CLASS_LIST("List[Class]", TypeMultiProperty.extractor(), ValueParserConstants.CLASS_PARSER);
 
 
@@ -85,6 +88,7 @@ public enum PropertyTypeId {
      *
      * @return The factory
      */
+    @Deprecated
     public PropertyDescriptorExternalBuilder<?> getFactory() {
         return factory;
     }
@@ -96,6 +100,7 @@ public enum PropertyTypeId {
      *
      * @return whether the property is numeric
      */
+    @Deprecated
     public boolean isPropertyNumeric() {
         return factory instanceof PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric
                || factory instanceof PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric;
@@ -108,6 +113,7 @@ public enum PropertyTypeId {
      *
      * @return whether the property is packaged
      */
+    @Deprecated
     public boolean isPropertyPackaged() {
         return factory instanceof PropertyDescriptorBuilderConversionWrapper.SingleValue.Packaged
                || factory instanceof PropertyDescriptorBuilderConversionWrapper.MultiValue.Packaged;

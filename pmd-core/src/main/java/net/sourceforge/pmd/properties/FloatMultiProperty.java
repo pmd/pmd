@@ -16,7 +16,9 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversi
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
+ * @deprecated Use {@link DoubleMultiProperty}
  */
+@Deprecated
 public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float> {
 
 

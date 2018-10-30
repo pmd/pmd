@@ -18,6 +18,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptorField;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@Deprecated
 public interface PropertyDescriptorExternalBuilder<E> {
 
 

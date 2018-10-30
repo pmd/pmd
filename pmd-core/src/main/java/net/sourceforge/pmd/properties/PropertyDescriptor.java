@@ -8,6 +8,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetWriter;
+import net.sourceforge.pmd.annotation.InternalApi;
 
 
 /**
@@ -146,8 +147,10 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
     /**
      * Returns a map representing all the property attributes of the receiver in string form.
      *
+     * @deprecated Will be removed with 7.0.0
      * @return map
      */
+    @Deprecated
     Map<PropertyDescriptorField, String> attributeValuesById();
 
 
@@ -160,6 +163,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * @return True if the descriptor was defined in xml
      */
     @Deprecated
+    @InternalApi
     boolean isDefinedExternally();
 
 }

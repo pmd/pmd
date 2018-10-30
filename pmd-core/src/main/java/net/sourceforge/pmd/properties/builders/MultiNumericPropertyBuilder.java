@@ -13,6 +13,7 @@ import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
  * @param <V> Element type of the list
  * @param <T> Concrete type of the underlying builder
  */
+@Deprecated
 public abstract class MultiNumericPropertyBuilder<V, T extends MultiNumericPropertyBuilder<V, T>>
     extends MultiValuePropertyBuilder<V, T> {
 

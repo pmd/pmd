@@ -12,6 +12,7 @@ import java.util.Collection;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@Deprecated
 public abstract class SinglePackagedPropertyBuilder<V, T extends SinglePackagedPropertyBuilder<V, T>>
     extends SingleValuePropertyBuilder<V, T> {
 

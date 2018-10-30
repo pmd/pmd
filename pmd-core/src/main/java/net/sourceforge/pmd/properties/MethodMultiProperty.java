@@ -24,6 +24,7 @@ import net.sourceforge.pmd.properties.modules.MethodPropertyModule;
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
+@Deprecated
 public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
 
 
