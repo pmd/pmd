@@ -248,7 +248,7 @@ public class RuleSetWriter {
             Element priorityElement = createPriorityElement(priority);
             ruleElement.appendChild(priorityElement);
         }
-        Element propertiesElement = createPropertiesElement(propertyDescriptors, propertiesByPropertyDescriptor, XPathRule.class.getName().equals(clazz));
+        Element propertiesElement = createPropertiesElement(propertyDescriptors, propertiesByPropertyDescriptor);
         if (propertiesElement != null) {
             ruleElement.appendChild(propertiesElement);
         }
@@ -271,18 +271,9 @@ public class RuleSetWriter {
         return ruleSetReferenceElement;
     }
 
-    // We consider that any descriptor defined on something else than an XPath rule
-    // declaration is an error and don't care if it's output or not
-    private static boolean isExternallyDefined(boolean isXPathRule, PropertyDescriptor<?> descriptor) {
-        return isXPathRule && !(descriptor.equals(XPathRule.XPATH_DESCRIPTOR)
-                || descriptor.equals(XPathRule.VERSION_DESCRIPTOR)
-                || descriptor.equals(XPathRule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR)
-                || descriptor.equals(XPathRule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR));
-    }
-
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
     private Element createPropertiesElement(List<PropertyDescriptor<?>> propertyDescriptors,
-                                            Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor, boolean isXPathRule) {
+            Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor) {
 
         Element propertiesElement = null;
         if (propertyDescriptors != null) {
@@ -290,7 +281,7 @@ public class RuleSetWriter {
             for (PropertyDescriptor<?> propertyDescriptor : propertyDescriptors) {
                 // For each provided PropertyDescriptor
 
-                if (isExternallyDefined(isXPathRule, propertyDescriptor)) {
+                if (propertyDescriptor.isDefinedExternally()) {
                     // Any externally defined property needs to go out as a definition.
                     if (propertiesElement == null) {
                         propertiesElement = createPropertiesElement();

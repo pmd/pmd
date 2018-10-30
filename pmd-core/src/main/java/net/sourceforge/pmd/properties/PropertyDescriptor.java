@@ -136,7 +136,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * If the datatype is a String then return the preferred number of rows to allocate in the text widget, returns a
      * value of one for all other types. Useful for multi-line XPATH editors.
      *
-     * @deprecated Was never implemented, and is none of the descriptor's concern
+     * @deprecated Was never implemented, and is none of the descriptor's concern. Will be removed with 7.0.0
      * @return int
      */
     @Deprecated
@@ -156,11 +156,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * to write out the property correctly: if it was defined externally, then its definition must be written out,
      * otherwise only its value.
      *
-     * @deprecated Not supported anymore. Behaviour may be wrong.
-     *             Property descriptors should only be defined in the XML when defining an XPath rule.
-     *             Other uses are unspecified, but should cause an error. That means, PropertyDescriptors
-     *             don't need to carry this value around, and since this has proven to add very much
-     *             boilerplate, we're removing it.
+     * @deprecated May be removed with 7.0.0
      * @return True if the descriptor was defined in xml
      */
     @Deprecated
