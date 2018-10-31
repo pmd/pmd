@@ -7,6 +7,8 @@ package net.sourceforge.pmd.properties;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.properties.validators.PropertyValidator;
+
 
 /**
  * @author Clément Fournier
@@ -15,22 +17,20 @@ import java.util.Set;
 final class GenericMultiValuePropertyDescriptor<V> extends AbstractMultiValueProperty<V> {
 
 
-    private final Set<PropertyValidator<List<V>>> listValidators;
-    private final Set<PropertyValidator<V>> componentValidators;
+    private final Set<PropertyValidator<? super List<V>>> listValidators;
     private final ValueParser<V> parser;
     private final Class<V> type;
 
 
     GenericMultiValuePropertyDescriptor(String name, String description, float uiOrder,
                                         List<V> defaultValue,
-                                        Set<PropertyValidator<List<V>>> listValidators,
-                                        Set<PropertyValidator<V>> componentValidators,
+                                        Set<PropertyValidator<? super List<V>>> listValidators,
                                         ValueParser<V> parser,
+                                        char delim,
                                         Class<V> type) {
 
-        super(name, description, defaultValue, uiOrder, false);
+        super(name, description, defaultValue, uiOrder, delim, false);
         this.listValidators = listValidators;
-        this.componentValidators = componentValidators;
         this.parser = parser;
         this.type = type;
     }
@@ -38,19 +38,10 @@ final class GenericMultiValuePropertyDescriptor<V> extends AbstractMultiValuePro
 
     @Override
     public String errorFor(List<V> values) {
-        for (PropertyValidator<List<V>> lv : listValidators) {
+        for (PropertyValidator<? super List<V>> lv : listValidators) {
             String error = lv.validate(values);
             if (error != null) {
                 return error;
-            }
-        }
-
-        for (PropertyValidator<V> cv : componentValidators) {
-            for (V v : values) {
-                String error = cv.validate(v);
-                if (error != null) {
-                    return error;
-                }
             }
         }
         return null;

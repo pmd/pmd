@@ -2,7 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties;
+package net.sourceforge.pmd.properties.validators;
+
+import net.sourceforge.pmd.annotation.Experimental;
+
 
 /**
  * Validates the value of a property.
@@ -12,7 +15,13 @@ package net.sourceforge.pmd.properties;
  * @author Clément Fournier
  * @since 6.7.0
  */
-interface PropertyValidator<T> {
+@Experimental
+public interface PropertyValidator<T> {
+    // TODO Java 8 extend Predicate<T>
+
+
+    boolean test(T value);
+
 
     /**
      * Returns a diagnostic message if the value
@@ -24,19 +33,21 @@ interface PropertyValidator<T> {
      * @return An optional diagnostic message
      */
     // TODO Java 8 use Optional
-    String validate(T value);
+    String validate(T value); // Future make default
 
 
     /**
      * Returns a description of the constraint
      * imposed by this validator on the values.
-     * E.g. "The value should be positive", or
-     * "The value should be one of A | B | C."
+     * E.g. "Should be positive", or
+     * "Should be one of A | B | C."
      *
      * @return A description of the constraint
      */
     String getConstraintDescription();
 
+
+    PropertyValidator<Iterable<? extends T>> toMulti();
 
     // TODO Java 8 move PropertyFactory#fromPredicate here
 

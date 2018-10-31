@@ -4,11 +4,13 @@
 
 package net.sourceforge.pmd.properties;
 
-import java.util.function.Function;
+import java.util.Map;
 
-import org.apache.commons.lang3.EnumUtils;
-
-import net.sourceforge.pmd.properties.AbstractPropertyBuilder.GenericPropertyBuilder;
+import net.sourceforge.pmd.properties.PropertyBuilder.AbstractGenericMultiPropertyBuilder;
+import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
+import net.sourceforge.pmd.properties.validators.PropertyValidator;
+import net.sourceforge.pmd.properties.validators.ValidatorFactory;
+import net.sourceforge.pmd.properties.validators.ValidatorFactory.Predicate;
 
 
 /**
@@ -22,53 +24,63 @@ public final class PropertyFactory {
     }
 
 
-//    private static <T extends Enum<T>> T enumConstantFromEnum(Class<T> enumClass, String name) {
-//        return EnumUtils.getEnumList(enumClass).stream()
-//                        .filter(e -> e.name().equalsIgnoreCase(name))
-//                        .findFirst()
-//                        .orElseThrow(() -> new IllegalArgumentException("The name '" + name + "' doesn't correspond to any constant in the enum '" + enumClass.getName() + "'"));
-//    }
-
-
-    public static NumericPropertyBuilder<Integer> intProperty(String name) {
-        return new NumericPropertyBuilder<>(name, ValueParserConstants.INTEGER_PARSER, Integer.class);
+    public static GenericPBuilder<Integer> intProperty(String name) {
+        return new GenericPBuilder<>(name, ValueParserConstants.INTEGER_PARSER, Integer.class);
     }
 
 
-    public static NumericPropertyBuilder<Double> doubleProperty(String name) {
-        return new NumericPropertyBuilder<>(name, ValueParserConstants.DOUBLE_PARSER, Double.class);
+    public static GenericMultiPBuilder<Integer> intListProperty(String name) {
+        return new GenericMultiPBuilder<>(name, ValueParserConstants.INTEGER_PARSER, Integer.class);
     }
 
 
-//    public static <T extends Enum<T>> GenericPBuilder<T> enumProperty(String name, Class<T> enumClass) {
-//        return new GenericPBuilder<>(name, s -> enumConstantFromEnum(enumClass, s), enumClass);
-//    }
+    public static GenericPBuilder<Double> doubleProperty(String name) {
+        return new GenericPBuilder<>(name, ValueParserConstants.DOUBLE_PARSER, Double.class);
+    }
 
 
-    // removes the other type parameter
+    public static GenericMultiPBuilder<Double> doubleListProperty(String name) {
+        return new GenericMultiPBuilder<>(name, ValueParserConstants.DOUBLE_PARSER, Double.class);
+    }
+
+
+    public static <T> GenericPBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
+        return new GenericPBuilder<>(name, ValueParserConstants.enumerationParser(nameToValue))
+                .addValidator(documentConstraint("Should be in the set " + nameToValue.keySet()));
+    }
+
+
+    // FIXME this is a workaround to document a constraint that occurs while parsing
+    // With java 8 we could devise a better scheme
+    private static <T> PropertyValidator<T> documentConstraint(String description) {
+        return ValidatorFactory.fromPredicate(new Predicate<T>() {
+            @Override
+            public boolean test(T t) {
+                return true;
+            }
+        }, description);
+    }
+
+    // removes the other setType parameter
     public static class GenericPBuilder<T> extends GenericPropertyBuilder<GenericPBuilder<T>, T> {
+
+        @SuppressWarnings("unchecked")
+        GenericPBuilder(String name, ValueParser<T> parser) {
+            this(name, parser, (Class<T>) Object.class);
+        }
+
 
         GenericPBuilder(String name, ValueParser<T> parser, Class<T> type) {
             super(name, parser, type);
         }
+
+
     }
 
+    // removes the other setType parameter
+    public static class GenericMultiPBuilder<T> extends AbstractGenericMultiPropertyBuilder<GenericMultiPBuilder<T>, T> {
 
-    public static class NumericPropertyBuilder<N extends Number> extends GenericPropertyBuilder<NumericPropertyBuilder<N>, N> {
-
-        NumericPropertyBuilder(String name, ValueParser<N> parser, Class<N> type) {
-            super(name, parser, type);
-        }
-
-
-        // TODO rename
-        public NumericPropertyBuilder<N> range(N min, N max) {
-            return addValidator(Validators.rangeValidator(min, max));
-        }
-    }
-
-    public static class MultiNumericPropertyBuilder<N extends Number> extends AbstractPropertyBuilder.AbstractGenericMultiPropertyBuilder<MultiNumericPropertyBuilder<N>, N> {
-        MultiNumericPropertyBuilder(String name, ValueParser<N> parser, Class<N> type) {
+        GenericMultiPBuilder(String name, ValueParser<T> parser, Class<T> type) {
             super(name, parser, type);
         }
     }

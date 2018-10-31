@@ -14,6 +14,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,9 +24,9 @@ import net.sourceforge.pmd.util.ClassUtil;
 
 
 /**
- * @deprecated Was internal API
  * @author Clément Fournier
  * @since 6.0.0
+ * @deprecated Was internal API
  */
 @Deprecated
 @InternalApi
@@ -232,6 +233,19 @@ public final class ValueParserConstants {
 
     private ValueParserConstants() {
 
+    }
+
+
+    static <T> ValueParser<T> enumerationParser(final Map<String, T> mappings) {
+        return new ValueParser<T>() {
+            @Override
+            public T valueOf(String value) throws IllegalArgumentException {
+                if (!mappings.containsKey(value)) {
+                    throw new IllegalArgumentException("Value was not in the set " + mappings.keySet());
+                }
+                return mappings.get(value);
+            }
+        };
     }
 
 

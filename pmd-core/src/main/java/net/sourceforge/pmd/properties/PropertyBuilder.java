@@ -14,6 +14,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.properties.PropertyFactory.GenericMultiPBuilder;
+import net.sourceforge.pmd.properties.validators.PropertyValidator;
+
 
 /**
  * Base class for generic property builders.
@@ -24,16 +28,18 @@ import org.apache.commons.lang3.StringUtils;
  * @author Clément Fournier
  * @since 6.7.0
  */
-public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<B, T>, T> {
+@Experimental
+public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     private static final Pattern NAME_PATTERN = Pattern.compile("[a-zA-Z][\\w-]*");
-    private final Set<PropertyValidator<T>> validators = new LinkedHashSet<>();
+    private final Set<PropertyValidator<? super T>> validators = new LinkedHashSet<>();
+    protected boolean isDefinedExternally;
     private String name;
     private String description;
     private float uiOrder = 0f;
     private T defaultValue;
 
 
-    AbstractPropertyBuilder(String name) {
+    PropertyBuilder(String name) {
 
         if (StringUtils.isBlank(name)) {
             throw new IllegalArgumentException("Name must be provided");
@@ -44,7 +50,13 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
     }
 
 
-    Set<PropertyValidator<T>> getValidators() {
+    @Deprecated
+    void setDefinedExternally(boolean bool) {
+        this.isDefinedExternally = bool;
+    }
+
+
+    Set<PropertyValidator<? super T>> getValidators() {
         return validators;
     }
 
@@ -96,7 +108,7 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
 
 
     @SuppressWarnings("unchecked")
-    B addValidator(PropertyValidator<T> validator) {
+    protected B addValidator(PropertyValidator<? super T> validator) {
         validators.add(validator);
         return (B) this;
     }
@@ -137,27 +149,69 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
     /**
      * Builder for a generic single-value property.
      *
-     * <p>This class is abstract because the B type parameter
-     * prevents it to be instantiated anyway. That type parameter
+     * <p>This class is abstract because the B setType parameter
+     * prevents it to be instantiated anyway. That setType parameter
      * is of use to more refined concrete subclasses.
      *
-     * @param <B> Concrete type of this builder instance
+     * @param <B> Concrete setType of this builder instance
      * @param <T> Type of values the property handles
      *
      * @author Clément Fournier
      * @since 6.7.0
      */
-    public abstract static class GenericPropertyBuilder<B extends GenericPropertyBuilder<B, T>, T> extends AbstractPropertyBuilder<B, T> {
+    @Experimental
+    public static class GenericPropertyBuilder<T> extends PropertyBuilder<GenericPropertyBuilder<T>, T> {
 
 
-        private final ValueParser<T> parser;
-        private final Class<T> type;
+        private ValueParser<T> parser;
+        private Class<T> type;
 
 
         GenericPropertyBuilder(String name, ValueParser<T> parser, Class<T> type) {
             super(name);
             this.parser = parser;
             this.type = type;
+        }
+
+
+        GenericPropertyBuilder(String name) {
+            super(name);
+        }
+
+
+        protected void setParser(ValueParser<T> parser) {
+            this.parser = parser;
+        }
+
+
+        protected ValueParser<T> getParser() {
+            return parser;
+        }
+
+
+        protected Class<T> getType() {
+            return type;
+        }
+
+        @SuppressWarnings("unchecked")
+        protected B setType(Class<T> type) {
+            this.type = type;
+            return (B) this;
+        }
+
+
+        public GenericMultiPBuilder<T> toList() {
+            if (getDefaultValue() != null) {
+                throw new IllegalStateException("The default value is already set!");
+            }
+
+            GenericMultiPBuilder<T> result = new GenericMultiPBuilder<>(getName(), getParser(), getType());
+
+            for (PropertyValidator<? super T> validator : getValidators()) {
+                result.addValidator(validator.());
+            }
+
+            return result;
         }
 
 
@@ -170,6 +224,7 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
                     getDefaultValue(),
                     getValidators(),
                     parser,
+                    isDefinedExternally,
                     type
             );
         }
@@ -180,26 +235,37 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
     /**
      * Builder for a generic multi-value property.
      *
-     * <p>This class is abstract because the B type parameter
-     * prevents it to be instantiated anyway. That type parameter
+     * <p>This class is abstract because the B setType parameter
+     * prevents it to be instantiated anyway. That setType parameter
      * is of use to more refined concrete subclasses.
      *
-     * @param <B> Concrete type of this builder instance
-     * @param <V> Type of values the property handles. This is the component type of the list
+     * @param <B> Concrete setType of this builder instance
+     * @param <V> Type of values the property handles. This is the component setType of the list
      *
      * @author Clément Fournier
      * @since 6.7.0
      */
-    public abstract static class AbstractGenericMultiPropertyBuilder<B extends AbstractPropertyBuilder<B, List<V>>, V> extends AbstractPropertyBuilder<B, List<V>> {
-        private final Set<PropertyValidator<V>> componentValidators = new LinkedHashSet<>();
+    @Experimental
+    public abstract static class AbstractGenericMultiPropertyBuilder<B extends PropertyBuilder<B, List<V>>, V> extends PropertyBuilder<B, List<V>> {
         private final ValueParser<V> parser;
         private final Class<V> type;
+        protected char multiValueDelimiter;
 
 
         AbstractGenericMultiPropertyBuilder(String name, ValueParser<V> parser, Class<V> type) {
             super(name);
             this.parser = parser;
             this.type = type;
+        }
+
+
+        protected ValueParser<V> getParser() {
+            return parser;
+        }
+
+
+        protected Class<V> getType() {
+            return type;
         }
 
 
@@ -231,6 +297,21 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
         }
 
 
+        /**
+         * Specify a delimiter character. By default it's {@link MultiValuePropertyDescriptor#DEFAULT_DELIMITER}, or {@link
+         * MultiValuePropertyDescriptor#DEFAULT_NUMERIC_DELIMITER} for numeric properties.
+         *
+         * @param delim Delimiter
+         *
+         * @return The same builder
+         */
+        @SuppressWarnings("unchecked")
+        public B delim(char delim) {
+            this.multiValueDelimiter = delim;
+            return (B) this;
+        }
+
+
         @Override
         public PropertyDescriptor<List<V>> build() {
             return new GenericMultiValuePropertyDescriptor<V>(
@@ -239,8 +320,8 @@ public abstract class AbstractPropertyBuilder<B extends AbstractPropertyBuilder<
                     getUiOrder(),
                     getDefaultValue(),
                     getValidators(),
-                    componentValidators,
                     parser,
+                    multiValueDelimiter,
                     type
             );
         }
