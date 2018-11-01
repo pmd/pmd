@@ -24,6 +24,9 @@ import net.sourceforge.pmd.util.ClassUtil;
 
 
 /**
+ * This class will be completely scrapped with 7.0.0. It only hid away the syntactic
+ * overhead caused by the lack of lambdas in Java 7.
+ *
  * @author Clément Fournier
  * @since 6.0.0
  * @deprecated Was internal API

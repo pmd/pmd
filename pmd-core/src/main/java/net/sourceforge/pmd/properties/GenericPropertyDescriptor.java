@@ -6,32 +6,34 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.properties.validators.PropertyValidator;
+import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 
 
 /**
+ * Bound to be the single implementation for PropertyDescriptor in 7.0.0.
+ *
  * @author Clément Fournier
- * @since 6.7.0
+ * @since 6.10.0
  */
 final class GenericPropertyDescriptor<T> extends AbstractSingleValueProperty<T> {
 
 
     private final ValueParser<T> parser;
     private final Class<T> type;
-    private final Set<PropertyValidator<? super T>> validators;
+    private final Set<PropertyConstraint<? super T>> constraints;
 
 
     GenericPropertyDescriptor(String name,
                               String description,
                               float uiOrder,
                               T defaultValue,
-                              Set<PropertyValidator<? super T>> validators,
+                              Set<PropertyConstraint<? super T>> constraints,
                               ValueParser<T> parser,
                               boolean isDefinedExternally,
                               Class<T> type) {
 
         super(name, description, defaultValue, uiOrder, isDefinedExternally);
-        this.validators = validators;
+        this.constraints = constraints;
         this.parser = parser;
         this.type = type;
     }
@@ -39,7 +41,7 @@ final class GenericPropertyDescriptor<T> extends AbstractSingleValueProperty<T> 
 
     @Override
     public String errorFor(T value) {
-        for (PropertyValidator<? super T> validator : validators) {
+        for (PropertyConstraint<? super T> validator : constraints) {
             String error = validator.validate(value);
             if (error != null) {
                 return error;

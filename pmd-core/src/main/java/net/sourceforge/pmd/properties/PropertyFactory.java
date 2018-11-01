@@ -6,16 +6,17 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.properties.PropertyBuilder.AbstractGenericMultiPropertyBuilder;
+import net.sourceforge.pmd.properties.PropertyBuilder.GenericListPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
-import net.sourceforge.pmd.properties.validators.PropertyValidator;
-import net.sourceforge.pmd.properties.validators.ValidatorFactory;
-import net.sourceforge.pmd.properties.validators.ValidatorFactory.Predicate;
 
 
 /**
+ * Provides factory methods for common property types.
+ * Note: from 7.0.0 on, this will be the only way to
+ * build property descriptors.
+ *
  * @author Clément Fournier
- * @since 6.7.0
+ * @since 6.10.0
  */
 public final class PropertyFactory {
 
@@ -24,65 +25,38 @@ public final class PropertyFactory {
     }
 
 
-    public static GenericPBuilder<Integer> intProperty(String name) {
-        return new GenericPBuilder<>(name, ValueParserConstants.INTEGER_PARSER, Integer.class);
+    public static GenericPropertyBuilder<Integer> intProperty(String name) {
+        return new GenericPropertyBuilder<>(name, ValueParserConstants.INTEGER_PARSER, Integer.class);
     }
 
 
-    public static GenericMultiPBuilder<Integer> intListProperty(String name) {
-        return new GenericMultiPBuilder<>(name, ValueParserConstants.INTEGER_PARSER, Integer.class);
+    public static GenericListPropertyBuilder<Integer> intListProperty(String name) {
+        return intProperty(name).toList();
     }
 
 
-    public static GenericPBuilder<Double> doubleProperty(String name) {
-        return new GenericPBuilder<>(name, ValueParserConstants.DOUBLE_PARSER, Double.class);
+    public static GenericPropertyBuilder<Double> doubleProperty(String name) {
+        return new GenericPropertyBuilder<>(name, ValueParserConstants.DOUBLE_PARSER, Double.class);
     }
 
 
-    public static GenericMultiPBuilder<Double> doubleListProperty(String name) {
-        return new GenericMultiPBuilder<>(name, ValueParserConstants.DOUBLE_PARSER, Double.class);
+    public static GenericListPropertyBuilder<Double> doubleListProperty(String name) {
+        return doubleProperty(name).toList();
     }
 
 
-    public static <T> GenericPBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
-        return new GenericPBuilder<>(name, ValueParserConstants.enumerationParser(nameToValue))
-                .addValidator(documentConstraint("Should be in the set " + nameToValue.keySet()));
+    public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
+        // TODO find solution to document the set of possible values
+        // At best, map that requirement to a constraint (eg make parser return null if not found, and
+        // add a non-null constraint with the right description. But if we disallow null values everywhere,
+        // this will get caught early on.)
+        return new GenericPropertyBuilder<>(name, ValueParserConstants.enumerationParser(nameToValue), (Class<T>) Object.class);
     }
 
 
-    // FIXME this is a workaround to document a constraint that occurs while parsing
-    // With java 8 we could devise a better scheme
-    private static <T> PropertyValidator<T> documentConstraint(String description) {
-        return ValidatorFactory.fromPredicate(new Predicate<T>() {
-            @Override
-            public boolean test(T t) {
-                return true;
-            }
-        }, description);
+    public static <T> GenericListPropertyBuilder<T> enumListProperty(String name, Map<String, T> nameToValue) {
+        return enumProperty(name, nameToValue).toList();
     }
 
-    // removes the other setType parameter
-    public static class GenericPBuilder<T> extends GenericPropertyBuilder<GenericPBuilder<T>, T> {
-
-        @SuppressWarnings("unchecked")
-        GenericPBuilder(String name, ValueParser<T> parser) {
-            this(name, parser, (Class<T>) Object.class);
-        }
-
-
-        GenericPBuilder(String name, ValueParser<T> parser, Class<T> type) {
-            super(name, parser, type);
-        }
-
-
-    }
-
-    // removes the other setType parameter
-    public static class GenericMultiPBuilder<T> extends AbstractGenericMultiPropertyBuilder<GenericMultiPBuilder<T>, T> {
-
-        GenericMultiPBuilder(String name, ValueParser<T> parser, Class<T> type) {
-            super(name, parser, type);
-        }
-    }
 
 }

@@ -7,24 +7,28 @@ package net.sourceforge.pmd.properties;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.properties.validators.PropertyValidator;
+import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 
 
 /**
+ * If we implement schema changes to properties, delimiter logic will probably be scrapped,
+ * and hence the divide between multi-value and single-value property descriptors. We can then
+ * use a single class for all property descriptors.
+ *
  * @author Clément Fournier
- * @since 6.7.0
+ * @since 6.10.0
  */
 final class GenericMultiValuePropertyDescriptor<V> extends AbstractMultiValueProperty<V> {
 
 
-    private final Set<PropertyValidator<? super List<V>>> listValidators;
+    private final Set<PropertyConstraint<? super List<V>>> listValidators;
     private final ValueParser<V> parser;
     private final Class<V> type;
 
 
     GenericMultiValuePropertyDescriptor(String name, String description, float uiOrder,
                                         List<V> defaultValue,
-                                        Set<PropertyValidator<? super List<V>>> listValidators,
+                                        Set<PropertyConstraint<? super List<V>>> listValidators,
                                         ValueParser<V> parser,
                                         char delim,
                                         Class<V> type) {
@@ -38,7 +42,7 @@ final class GenericMultiValuePropertyDescriptor<V> extends AbstractMultiValuePro
 
     @Override
     public String errorFor(List<V> values) {
-        for (PropertyValidator<? super List<V>> lv : listValidators) {
+        for (PropertyConstraint<? super List<V>> lv : listValidators) {
             String error = lv.validate(values);
             if (error != null) {
                 return error;

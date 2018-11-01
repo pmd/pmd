@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.validators;
+package net.sourceforge.pmd.properties.constraints;
 
 import net.sourceforge.pmd.annotation.Experimental;
 
@@ -10,13 +10,18 @@ import net.sourceforge.pmd.annotation.Experimental;
 /**
  * Validates the value of a property.
  *
+ * <p>This interface will change a lot with PMD 7.0.0,
+ * because of the introduction of Java 8. Please use
+ * only the ready-made validators in {@link NumericConstraints}
+ * for now.
+ *
  * @param <T> Type of value to handle
  *
  * @author Clément Fournier
- * @since 6.7.0
+ * @since 6.10.0
  */
 @Experimental
-public interface PropertyValidator<T> {
+public interface PropertyConstraint<T> {
     // TODO Java 8 extend Predicate<T>
 
 
@@ -39,17 +44,24 @@ public interface PropertyValidator<T> {
     /**
      * Returns a description of the constraint
      * imposed by this validator on the values.
-     * E.g. "Should be positive", or
-     * "Should be one of A | B | C."
+     * E.g. "Should be positive", or "Should be one of A | B | C."
+     *
+     * <p>This is used to generate documentation.
      *
      * @return A description of the constraint
      */
     String getConstraintDescription();
 
 
-    PropertyValidator<Iterable<? extends T>> toMulti();
+    /**
+     * Returns a constraint that validates a collection of Ts
+     * by checking each component conforms to this conforms.
+     *
+     * @return A collection validator
+     */
+    PropertyConstraint<Iterable<? extends T>> toMulti();
 
-    // TODO Java 8 move PropertyFactory#fromPredicate here
+    // TODO Java 8 move ConstraintFactory#fromPredicate here
 
 
 }

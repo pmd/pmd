@@ -6,7 +6,9 @@ package net.sourceforge.pmd.properties.builders;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 
 /**
@@ -16,11 +18,12 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @param <T> Concrete type of this builder instance. Removes code duplication at the expense of a few unchecked casts.
  *            Everything goes well if this parameter's value is correctly set.
  *
+ * @deprecated From 7.0.0 on, the only supported way to build properties will be through {@link PropertyFactory}.
+ *             This class hierarchy is replaced by the newer {@link PropertyBuilder}.
  * @author Clément Fournier
  * @since 6.0.0
  */
-// @Deprecated // will be rewritten in the next PR and placed in the properties package,
-// since there will be no need for a separate package
+@Deprecated
 public abstract class PropertyDescriptorBuilder<E, T extends PropertyDescriptorBuilder<E, T>> {
 
     protected String name;
