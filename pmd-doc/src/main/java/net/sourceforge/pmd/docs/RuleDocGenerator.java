@@ -452,6 +452,14 @@ public class RuleDocGenerator {
                                 }
                             }
 
+                            defaultValue = defaultValue.replace("\\", "\\\\")
+                                    .replace("*", "\\*")
+                                    .replace("_", "\\_")
+                                    .replace("~", "\\~")
+                                    .replace("[", "\\[")
+                                    .replace("]", "\\]")
+                                    .replace("|", "\\|");
+
                             String multiValued = "no";
                             if (propertyDescriptor.isMultiValue()) {
                                 MultiValuePropertyDescriptor<?> multiValuePropertyDescriptor =
@@ -461,7 +469,7 @@ public class RuleDocGenerator {
                             }
 
                             lines.add("|" + propertyDescriptor.name()
-                                + "|" + defaultValue.replace("|", "\\|")
+                                + "|" + defaultValue
                                 + "|" + description
                                 + "|" + multiValued.replace("|", "\\|")
                                 + "|");
