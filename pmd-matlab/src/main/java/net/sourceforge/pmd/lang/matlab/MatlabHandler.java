@@ -4,20 +4,21 @@
 
 package net.sourceforge.pmd.lang.matlab;
 
-import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
+import net.sourceforge.pmd.lang.AbstractCpdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+
 
 /**
  * Implementation of LanguageVersionHandler for the Matlab Language.
  */
-public class MatlabHandler extends AbstractLanguageVersionHandler {
+public class MatlabHandler extends AbstractCpdLanguageVersionHandler {
 
     @Override
-    public RuleViolationFactory getRuleViolationFactory() {
-        throw new UnsupportedOperationException("getRuleViolationFactory() is not supported for Matlab");
+    protected String getLanguageName() {
+        return "Matlab";
     }
+
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {

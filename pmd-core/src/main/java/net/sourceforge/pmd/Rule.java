@@ -266,6 +266,7 @@ public interface Rule extends PropertySource {
     /**
      * Sets whether this Rule uses Data Flow Analysis.
      */
+    @Deprecated
     void setDfa(boolean isDfa);
 
     /**
@@ -282,6 +283,7 @@ public interface Rule extends PropertySource {
      *
      * @return <code>true</code> if Data Flow Analysis is used.
      */
+    @Deprecated
     boolean isDfa();
 
     /**
@@ -294,6 +296,7 @@ public interface Rule extends PropertySource {
     /**
      * Sets whether this Rule uses Type Resolution.
      */
+    @Deprecated
     void setTypeResolution(boolean usingTypeResolution);
 
     /**
@@ -311,6 +314,7 @@ public interface Rule extends PropertySource {
      *
      * @return <code>true</code> if Type Resolution is used.
      */
+    @Deprecated
     boolean isTypeResolution();
 
     /**
@@ -323,6 +327,7 @@ public interface Rule extends PropertySource {
     /**
      * Sets whether this Rule uses multi-file analysis.
      */
+    @Deprecated
     void setMultifile(boolean multifile);
 
     /**
@@ -340,6 +345,7 @@ public interface Rule extends PropertySource {
      *
      * @return <code>true</code> if the multi file analysis is used.
      */
+    @Deprecated
     boolean isMultifile();
 
     /**
