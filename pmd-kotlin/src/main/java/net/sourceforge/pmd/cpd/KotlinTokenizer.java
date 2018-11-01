@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.lang.kotlin.antlr4.Kotlin;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.Lexer;
@@ -14,33 +13,37 @@ import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 //import net.sourceforge.pmd.lang.kotlin.antlr4.KotlinLexer;
+import net.sourceforge.pmd.lang.kotlin.antlr4.Kotlin;
 
 /**
  * The Kotlin Tokenizer
  */
 public class KotlinTokenizer implements Tokenizer {
 
+    private boolean discardingPackageAndImport = false;
+
     @Override
-    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-        StringBuilder buffer = sourceCode.getCodeBuffer();
+    public void tokenize(final SourceCode sourceCode, final Tokens tokenEntries) {
+        final StringBuilder buffer = sourceCode.getCodeBuffer();
 
         try {
-            ANTLRInputStream ais = new ANTLRInputStream(buffer.toString());
-            Kotlin lexer = new Kotlin(ais);
+            final ANTLRInputStream ais = new ANTLRInputStream(buffer.toString());
+            final Kotlin lexer = new Kotlin(ais);
 
             lexer.removeErrorListeners();
             lexer.addErrorListener(new ErrorHandler());
             Token token = lexer.nextToken();
 
             while (token.getType() != Token.EOF) {
-                if (token.getChannel() != Lexer.HIDDEN) {
-                    TokenEntry tokenEntry = new TokenEntry(token.getText(), sourceCode.getFileName(), token.getLine());
-
+                analyzeTokenStart(token);
+                if (token.getChannel() != Lexer.HIDDEN && token.getType() != Kotlin.NL && !isDiscarding()) {
+                    final TokenEntry tokenEntry = new TokenEntry(token.getText(), sourceCode.getFileName(), token.getLine());
                     tokenEntries.add(tokenEntry);
                 }
+                analyzeTokenEnd(token);
                 token = lexer.nextToken();
             }
-        } catch (ANTLRSyntaxError err) {
+        } catch (final ANTLRSyntaxError err) {
             // Wrap exceptions of the Kotlin tokenizer in a TokenMgrError, so
             // they are correctly handled
             // when CPD is executed with the '--skipLexicalErrors' command line
@@ -53,10 +56,29 @@ public class KotlinTokenizer implements Tokenizer {
         }
     }
 
+    private boolean isDiscarding() {
+        return discardingPackageAndImport;
+    }
+
+    private void analyzeTokenStart(final Token currentToken) {
+        final int type = currentToken.getType();
+        if (type == Kotlin.PACKAGE || type == Kotlin.IMPORT) {
+            discardingPackageAndImport = true;
+        }
+    }
+
+    private void analyzeTokenEnd(final Token currentToken) {
+        final int type = currentToken.getType();
+        if (discardingPackageAndImport && (type == Kotlin.SEMICOLON || type == Kotlin.NL)) {
+            discardingPackageAndImport = false;
+        }
+    }
+
+
     private static class ErrorHandler extends BaseErrorListener {
         @Override
-        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
-                String msg, RecognitionException ex) {
+        public void syntaxError(final Recognizer<?, ?> recognizer, final Object offendingSymbol, final int line, final int charPositionInLine,
+                final String msg, final RecognitionException ex) {
             throw new ANTLRSyntaxError(msg, line, charPositionInLine, ex);
         }
     }
@@ -66,7 +88,7 @@ public class KotlinTokenizer implements Tokenizer {
         private final int line;
         private final int column;
 
-        ANTLRSyntaxError(String msg, int line, int column, RecognitionException cause) {
+        ANTLRSyntaxError(final String msg, final int line, final int column, final RecognitionException cause) {
             super(msg, cause);
             this.line = line;
             this.column = column;
