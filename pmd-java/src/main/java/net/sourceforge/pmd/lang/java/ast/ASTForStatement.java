@@ -5,9 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
-
 /**
  * Represents a {@code for}-loop, or a foreach loop.
  *
@@ -17,7 +14,6 @@ import net.sourceforge.pmd.lang.ast.Node;
  *                | "for" "(" {@linkplain ASTForInit ForInit}? ";" {@linkplain ASTExpression Expression}? ";" {@linkplain ASTForUpdate ForUpdate}? ")" {@linkplain ASTStatement Statement}
  *
  * </pre>
- *
  */
 // TODO this should be split into two different nodes, otherwise
 // we can't enrich the API without returning null half the time
@@ -25,10 +21,12 @@ public class ASTForStatement extends AbstractJavaNode {
     public ASTForStatement(int id) {
         super(id);
     }
+    
 
     public ASTForStatement(JavaParser p, int id) {
         super(p, id);
     }
+
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
@@ -43,27 +41,11 @@ public class ASTForStatement extends AbstractJavaNode {
      * <p>If this node represents a foreach loop, or if there is
      * no specified guard, then returns null.
      */
-    public JavaNode getGuardExpressionNode() {
+    public ASTExpression getGuardExpressionNode() {
         if (isForeach()) {
             return null;
         }
-
-        Node fstChild = jjtGetChild(0);
-        Node sndChild = jjtGetChild(1);
-
-        if (fstChild instanceof ASTForInit) {
-            if (sndChild instanceof ASTForUpdate || sndChild instanceof ASTStatement) {
-                return null;
-            } else {
-                return (JavaNode) sndChild;
-            }
-        } else {
-            if (fstChild instanceof ASTForUpdate || fstChild instanceof ASTStatement) {
-                return null;
-            } else {
-                return (JavaNode) fstChild;
-            }
-        }
+        return getFirstChildOfType(ASTExpression.class);
     }
 
 
@@ -73,27 +55,12 @@ public class ASTForStatement extends AbstractJavaNode {
      * <p>If this node represents a foreach loop, or if there is
      * no specified update clause, then returns null.
      */
-    public JavaNode getUpdateClause() {
+    public ASTForUpdate getUpdateClause() {
         if (isForeach()) {
             return null;
         }
 
-        JavaNode guard = getGuardExpressionNode();
-        if (guard != null) {
-            // there's a guard, so the update must be right after
-            Node afterGuard = jjtGetChild(guard.jjtGetChildIndex() + 1);
-            return afterGuard instanceof ASTForUpdate ? (JavaNode) afterGuard : null;
-        } else {
-            // no guard, the update must be after the init if it exists
-            ASTForInit init = getInitClause();
-            if (init != null) {
-                Node afterInit = jjtGetChild(init.jjtGetChildIndex() + 1);
-                return afterInit instanceof ASTForUpdate ? (JavaNode) afterInit : null;
-            } else {
-                Node fstChild = jjtGetChild(0);
-                return fstChild instanceof ASTForUpdate ? (JavaNode) fstChild : null;
-            }
-        }
+        return getFirstChildOfType(ASTForUpdate.class);
     }
 
 
