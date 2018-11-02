@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.jsp;
 
 import java.io.Writer;
 
-import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;

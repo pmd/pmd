@@ -9,14 +9,14 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.ast.AstAnalysisConfiguration;
+import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
-import net.sourceforge.pmd.lang.ast.AstAnalysisConfiguration;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 
 
 /**

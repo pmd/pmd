@@ -9,12 +9,12 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.ast.AstAnalysisConfiguration;
+import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
-import net.sourceforge.pmd.lang.ast.AstAnalysisConfiguration;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 
 
 /**
