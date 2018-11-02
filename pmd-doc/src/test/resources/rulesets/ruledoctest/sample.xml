@@ -79,6 +79,13 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
          <property name="sampleAdditionalProperty" type="String" description="This is a additional property for tests" value="the value" />
          <property name="sampleMultiStringProperty" type="List[String]" description="Test property with multiple strings" value="Value1|Value2" />
          <property name="sampleDeprecatedProperty" type="String" description="Deprecated! This is a sample deprecated property for tests" value="test" />
+         <property name="sampleRegexProperty1" type="Regex" description="The property is of type regex" value="\/\*\s+(default|package)\s+\*\/" />
+         <property name="sampleRegexProperty2" type="Regex" description="The property is of type regex" value="[a-z]*" />
+         <property name="sampleRegexProperty3" type="Regex" description="The property is of type regex" value="\s+" />
+         <property name="sampleRegexProperty4" type="Regex" description="The property is of type regex" value="_dd_" />
+         <property name="sampleRegexProperty5" type="Regex" description="The property is of type regex" value="[0-9]{1,3}" />
+         <property name="sampleRegexProperty6" type="Regex" description="The property is of type regex" value="\b" />
+         <property name="sampleRegexProperty7" type="Regex" description="The property is of type regex" value="\n" />
      </properties>
      <example>
  <![CDATA[

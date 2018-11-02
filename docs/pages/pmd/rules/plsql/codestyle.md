@@ -141,8 +141,8 @@ END;
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
 |allowSimpleLoops|false|Ignore simple loops, that are not nested|no|
-|cursorPattern|[a-zA-Z_0-9]{5,}|The pattern used for the curosr loop variable|no|
-|indexPattern|[a-zA-Z_0-9]{5,}|The pattern used for the index loop variable|no|
+|cursorPattern|\[a-zA-Z\_0-9\]{5,}|The pattern used for the curosr loop variable|no|
+|indexPattern|\[a-zA-Z\_0-9\]{5,}|The pattern used for the index loop variable|no|
 
 **Use this rule by referencing it:**
 ``` xml
