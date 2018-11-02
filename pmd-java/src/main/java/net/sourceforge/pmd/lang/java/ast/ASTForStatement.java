@@ -21,7 +21,7 @@ public class ASTForStatement extends AbstractJavaNode {
     public ASTForStatement(int id) {
         super(id);
     }
-    
+
 
     public ASTForStatement(JavaParser p, int id) {
         super(p, id);

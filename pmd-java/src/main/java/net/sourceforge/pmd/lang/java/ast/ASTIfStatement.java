@@ -11,9 +11,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
 /**
  * Represents an {@code if} statement, possibly with an {@code else} statement.
  *
- * <p>The guard is not necessarily an {@linkplain ASTExpression Expression}, it
- * may be any expression.
- *
  * <pre>
  *
  * IfStatement ::= "if" "(" {@linkplain ASTExpression Expression} ")" {@linkplain ASTStatement Statement}
@@ -59,8 +56,8 @@ public class ASTIfStatement extends AbstractJavaNode {
      * Returns the node that represents the guard of this conditional.
      * This may be any expression of type boolean.
      */
-    public JavaNode getGuardExpressionNode() {
-        return (JavaNode) jjtGetChild(0);
+    public ASTExpression getGuardExpressionNode() {
+        return (ASTExpression) jjtGetChild(0);
     }
 
 

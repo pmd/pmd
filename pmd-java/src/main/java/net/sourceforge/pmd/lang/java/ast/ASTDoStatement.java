@@ -38,8 +38,8 @@ public class ASTDoStatement extends AbstractJavaNode {
      * Returns the node that represents the guard of this loop.
      * This may be any expression of type boolean.
      */
-    public JavaNode getGuardExpressionNode() {
-        return (JavaNode) jjtGetChild(1);
+    public ASTExpression getGuardExpressionNode() {
+        return (ASTExpression) jjtGetChild(1);
     }
 
 
