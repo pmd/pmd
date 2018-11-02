@@ -152,4 +152,27 @@ public class ApiExceptionCtrlAdvice {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positive for UselessQualifiedThis #1372</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            public class Board {
+                private int[] Board;
+
+
+                public Board(int[] b) {
+                    for (int i = 0; i < b.length; i++)
+                        Board[i] = b[i];
+                }
+
+
+                public int size() {
+                    return Board.length;
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
 </test-data>

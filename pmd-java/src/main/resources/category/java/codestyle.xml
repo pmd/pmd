@@ -1950,7 +1950,9 @@ public class Foo {
           message="Useless qualified this usage in the same class."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#uselessqualifiedthis">
-        <description>Look for qualified this usages in the same class.</description>
+        <description>
+            Reports qualified this usages in the same class.
+        </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
@@ -1958,7 +1960,7 @@ public class Foo {
 <![CDATA[
 //PrimaryExpression
 [PrimaryPrefix/Name[@Image]]
-[PrimarySuffix[@Arguments='false']]
+[PrimarySuffix[@Arguments='false' and @ArrayDereference = 'false']]
 [not(PrimarySuffix/MemberSelector)]
 [ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass='false']]
 /PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image]
