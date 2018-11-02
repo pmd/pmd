@@ -12,10 +12,14 @@ import org.jaxen.FunctionCallException;
 import org.jaxen.SimpleFunctionContext;
 import org.jaxen.XPathFunctionContext;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
+
+@InternalApi
+@Deprecated
 public class TypeIsFunction implements Function {
 
     public static void registerSelfInSimpleContext() {
