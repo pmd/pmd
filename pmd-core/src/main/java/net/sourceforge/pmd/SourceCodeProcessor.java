@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.xpath.Initializer;
 
 public class SourceCodeProcessor {
 
@@ -79,9 +78,6 @@ public class SourceCodeProcessor {
      */
     public void processSourceCode(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) throws PMDException {
         determineLanguage(ctx);
-
-        // make sure custom XPath functions are initialized
-        Initializer.initialize();
 
         // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
         if (ruleSets.applies(ctx.getSourceCodeFile())) {

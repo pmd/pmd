@@ -645,15 +645,9 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>net.sourceforge.saxon</groupId>
-                <artifactId>saxon</artifactId>
-                <version>9.1.0.8</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sourceforge.saxon</groupId>
-                <artifactId>saxon</artifactId>
-                <version>9.1.0.8</version>
-                <classifier>dom</classifier>
+                <groupId>net.sf.saxon</groupId>
+                <artifactId>Saxon-HE</artifactId>
+                <version>9.8.0-7</version>
             </dependency>
             <dependency>
                 <groupId>org.mozilla</groupId>

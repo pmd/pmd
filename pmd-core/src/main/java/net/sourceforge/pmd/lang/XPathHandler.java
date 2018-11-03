@@ -4,40 +4,33 @@
 
 package net.sourceforge.pmd.lang;
 
-import org.jaxen.Navigator;
+import java.util.Collections;
+import java.util.Set;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.xpath.Initializer;
+import net.sourceforge.pmd.util.CollectionUtil;
 
-import net.sf.saxon.sxpath.IndependentContext;
+import net.sf.saxon.lib.ExtensionFunctionDefinition;
+
 
 /**
  * Interface for performing Language specific XPath handling, such as
  * initialization and navigation.
  */
-@InternalApi
-@Deprecated
 public interface XPathHandler {
 
-    /**
-     * Initialize. This is intended to be called by {@link Initializer} to
-     * perform Language specific initialization.
-     */
-    void initialize();
+    Set<ExtensionFunctionDefinition> getRegisteredExtensionFunctions();
+
+
+    static XPathHandler noFunctionDefinitions() {
+        return Collections::emptySet;
+    }
+
 
     /**
-     * Initialize. This is intended to be called by {@link Initializer} to
-     * perform Language specific initialization for Saxon.
+     * Returns a default XPath handler.
      */
-    void initialize(IndependentContext context);
-
-    /**
-     * Get a Jaxen Navigator for this Language. May return <code>null</code> if
-     * there is no Jaxen Navigation for this language.
-     *
-     * @deprecated Support for Jaxen will be removed come 7.0.0. This isn't used
-     *             anymore
-     */
-    @Deprecated
-    Navigator getNavigator();
+    static XPathHandler getHandlerForFunctionDefs(ExtensionFunctionDefinition first, ExtensionFunctionDefinition... defs) {
+        Set<ExtensionFunctionDefinition> set = CollectionUtil.setOf(first, defs);
+        return () -> set;
+    }
 }

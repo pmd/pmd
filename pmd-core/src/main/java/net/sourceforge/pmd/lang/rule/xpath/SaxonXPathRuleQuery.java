@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.rule.xpath;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,25 +15,25 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
-import net.sourceforge.pmd.lang.ast.xpath.saxon.DocumentNode;
-import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
+import net.sourceforge.pmd.lang.ast.xpath.internal.AstDocument;
+import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeWrapper;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DomainConversion;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.internal.RuleChainAnalyzer;
-import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
+import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamePool;
-import net.sf.saxon.om.NamespaceConstant;
+import net.sf.saxon.om.Sequence;
 import net.sf.saxon.om.SequenceIterator;
-import net.sf.saxon.om.ValueRepresentation;
-import net.sf.saxon.sxpath.AbstractStaticContext;
-import net.sf.saxon.sxpath.IndependentContext;
 import net.sf.saxon.sxpath.XPathDynamicContext;
 import net.sf.saxon.sxpath.XPathEvaluator;
 import net.sf.saxon.sxpath.XPathExpression;
@@ -51,7 +50,7 @@ import net.sf.saxon.value.Int64Value;
 import net.sf.saxon.value.SequenceExtent;
 import net.sf.saxon.value.StringValue;
 import net.sf.saxon.value.UntypedAtomicValue;
-import net.sf.saxon.value.Value;
+
 
 /**
  * This is a Saxon based XPathRule query.
@@ -60,8 +59,7 @@ import net.sf.saxon.value.Value;
  */
 @Deprecated
 @InternalApi
-public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
-
+public class SaxonXPathRuleQuery  {
     /**
      * Special nodeName that references the root expression.
      */
@@ -74,59 +72,77 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     /** Cache key for the wrapped tree for saxon. */
     private static final SimpleDataKey<DocumentNode> SAXON_TREE_CACHE_KEY = DataMap.simpleDataKey("saxon.tree");
 
+    private final String xpathExpr;
+    private final XPathVersion version;
+    private final Map<PropertyDescriptor<?>, Object> properties;
+    private final XPathHandler xPathHandler;
+    private final List<String> rulechainQueries = new ArrayList<>();
+    private Configuration configuration;
+
     /**
      * Contains for each nodeName a sub expression, used for implementing rule chain.
      */
     Map<String, List<Expression>> nodeNameToXPaths = new HashMap<>();
 
     /**
-     * Representation of an XPath query, created at {@link #initializeXPathExpression()} using {@link #xpath}.
+     * Representation of an XPath query, created at {@link #initializeXPathExpression()} using {@link #xpathExpr}.
      */
     XPathExpression xpathExpression;
 
     /**
      * Holds the static context later used to match the variables in the dynamic context in
-     * {@link #createDynamicContext(ElementNode)}. Created at {@link #initializeXPathExpression()}
+     * {@link #createDynamicContext(AstNodeWrapper)}. Created at {@link #initializeXPathExpression()}
      * using the properties descriptors in {@link #properties}.
      */
     private List<XPathVariable> xpathVariables;
 
     private final DeprecatedAttrLogger attrCtx;
 
-    @Deprecated
-    public SaxonXPathRuleQuery() {
-        this(DeprecatedAttrLogger.noop());
+
+    public SaxonXPathRuleQuery(String xpathExpr,
+                               XPathVersion version,
+                               Map<PropertyDescriptor<?>, Object> properties,
+                               XPathHandler xPathHandler,
+                               DeprecatedAttrLogger logger) {
+        this.xpathExpr = xpathExpr;
+        this.version = version;
+        this.properties = properties;
+        this.xPathHandler = xPathHandler;
+        this.attrCtx = logger;
     }
 
-    public SaxonXPathRuleQuery(DeprecatedAttrLogger attrCtx) {
-        this.attrCtx = attrCtx;
+
+    public String getXpathExpression() {
+        return xpathExpr;
     }
 
-    @Override
-    public boolean isSupportedVersion(String version) {
-        return XPATH_1_0_COMPATIBILITY.equals(version) || XPATH_2_0.equals(version);
+
+    public List<String> getRuleChainVisits() {
+        initializeXPathExpression();
+        return rulechainQueries;
     }
 
-    @Override
+
+    @SuppressWarnings("unchecked")
     public List<Node> evaluate(final Node node, final RuleContext data) {
         initializeXPathExpression();
 
         try {
-            final DocumentNode documentNode = getDocumentNodeForRootNode(node);
+            final AstDocument documentNode = getDocumentNodeForRootNode(node);
             documentNode.setAttrCtx(attrCtx); //
 
             // Map AST Node -> Saxon Node
-            final ElementNode rootElementNode = documentNode.nodeToElementNode.get(node);
+            final AstNodeWrapper rootElementNode = documentNode.getRootNode();
             assert rootElementNode != null : "Cannot find " + node;
             final XPathDynamicContext xpathDynamicContext = createDynamicContext(rootElementNode);
 
-            final List<ElementNode> nodes = new LinkedList<>();
+            final List<AstNodeWrapper> nodes = new ArrayList<>();
             List<Expression> expressions = getXPathExpressionForNodeOrDefault(node.getXPathNodeName());
             for (Expression expression : expressions) {
                 SequenceIterator iterator = expression.iterate(xpathDynamicContext.getXPathContextObject());
                 Item current = iterator.next();
-                while (current != null) {
-                    nodes.add((ElementNode) current);
+                while (current instanceof AstNodeWrapper) {
+                    nodes.add((AstNodeWrapper) current);
                     current = iterator.next();
                 }
             }
@@ -136,13 +152,13 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
              (i.e. violation found)
               */
             final List<Node> results = new ArrayList<>(nodes.size());
-            for (final ElementNode elementNode : nodes) {
-                results.add((Node) elementNode.getUnderlyingNode());
+            for (final AstNodeWrapper elementNode : nodes) {
+                results.add(elementNode.getUnderlyingNode());
             }
-            Collections.sort(results, RuleChainAnalyzer.documentOrderComparator());
+            results.sort(RuleChainAnalyzer.documentOrderComparator());
             return results;
         } catch (final XPathException e) {
-            throw new RuntimeException(super.xpath + " had problem: " + e.getMessage(), e);
+            throw new RuntimeException(xpathExpr + " had problem: " + e.getMessage(), e);
         }
     }
 
@@ -158,20 +174,22 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
      *
      * @param elementNode the node on which to create the context; generally this node is the root node of the Saxon
      *                    Tree
+     *
      * @return the dynamic context on which to run the query
+     *
      * @throws XPathException if the supplied value does not conform to the required type of the
-     * variable, when setting up the dynamic context; or if the supplied value contains a node that does not belong to
-     * this Configuration (or another Configuration that shares the same namePool)
+     *                        variable, when setting up the dynamic context; or if the supplied value contains a node that does not belong to
+     *                        this Configuration (or another Configuration that shares the same namePool)
      */
-    private XPathDynamicContext createDynamicContext(final ElementNode elementNode) throws XPathException {
+    private XPathDynamicContext createDynamicContext(final AstNodeWrapper elementNode) throws XPathException {
         final XPathDynamicContext dynamicContext = xpathExpression.createDynamicContext(elementNode);
 
         // Set variable values on the dynamic context
         for (final XPathVariable xpathVariable : xpathVariables) {
-            final String variableName = xpathVariable.getVariableQName().getLocalName();
-            for (final Map.Entry<PropertyDescriptor<?>, Object> entry : super.properties.entrySet()) {
+            final String variableName = xpathVariable.getVariableQName().getLocalPart();
+            for (final Map.Entry<PropertyDescriptor<?>, Object> entry : properties.entrySet()) {
                 if (variableName.equals(entry.getKey().name())) {
-                    final ValueRepresentation valueRepresentation = getRepresentation(entry.getKey(), entry.getValue());
+                    final Sequence valueRepresentation = getRepresentation(entry.getKey(), entry.getValue());
                     dynamicContext.setVariable(xpathVariable, valueRepresentation);
                 }
             }
@@ -180,13 +198,14 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     }
 
 
-    private ValueRepresentation getRepresentation(final PropertyDescriptor<?> descriptor, final Object value) {
+    private Sequence getRepresentation(final PropertyDescriptor<?> descriptor, final Object value) {
         if (descriptor.isMultiValue()) {
             return getSequenceRepresentation((List<?>) value);
         } else {
-            return getAtomicRepresentation(value);
+            return DomainConversion.getAtomicRepresentation(value);
         }
     }
+
 
     /**
      * Gets the DocumentNode representation for the whole AST in which the node is, that is, if the node is not the root
@@ -194,24 +213,27 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
      * cached because this method was previously called, then a new DocumentNode will not be instanced.
      *
      * @param node the node from which the root node will be looked for.
+     *
      * @return the DocumentNode representing the whole AST
      */
-    private DocumentNode getDocumentNodeForRootNode(final Node node) {
+    private AstDocument getDocumentNodeForRootNode(final Node node) {
         final Node root = getRootNode(node);
 
         DataMap<DataKey<?, ?>> userMap = root.getUserMap();
-        DocumentNode docNode = userMap.get(SAXON_TREE_CACHE_KEY);
+        AstDocument docNode = userMap.get(SAXON_TREE_CACHE_KEY);
         if (docNode == null) {
-            docNode = new DocumentNode(root, getNamePool());
+            docNode = new AstDocument(root, configuration);
             userMap.set(SAXON_TREE_CACHE_KEY, docNode);
         }
         return docNode;
     }
 
+
     /**
      * Traverse the AST until the root node is found.
      *
      * @param node the node from where to start traversing the tree
+     *
      * @return the root node
      */
     private Node getRootNode(final Node node) {
@@ -241,15 +263,13 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             final XPathStaticContext xpathStaticContext = xpathEvaluator.getStaticContext();
             xpathStaticContext.getConfiguration().setNamePool(getNamePool());
 
-            // Enable XPath 1.0 compatibility
-            if (XPATH_1_0_COMPATIBILITY.equals(version)) {
-                ((AbstractStaticContext) xpathStaticContext).setBackwardsCompatibilityMode(true);
-            }
+            this.configuration = xpathStaticContext.getConfiguration();
 
-            ((IndependentContext) xpathStaticContext).declareNamespace("fn", NamespaceConstant.FN);
 
-            // Register PMD functions
-            Initializer.initialize((IndependentContext) xpathStaticContext);
+            // TODO ((IndependentContext) xpathStaticContext).declareNamespace();
+
+            xPathHandler.getRegisteredExtensionFunctions().forEach(configuration::registerExtensionFunction);
+
 
             /*
             Create XPathVariables for later use. It is a Saxon quirk that XPathVariables must be defined on the
@@ -257,21 +277,21 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             createDynamicContext(ElementNode).
             */
             xpathVariables = new ArrayList<>();
-            for (final PropertyDescriptor<?> propertyDescriptor : super.properties.keySet()) {
+            for (final PropertyDescriptor<?> propertyDescriptor : properties.keySet()) {
                 final String name = propertyDescriptor.name();
-                if (!"xpath".equals(name)) {
+                if (!"xpath".equals(name) && !XPathRule.VERSION_DESCRIPTOR.name().equals(name)) {
                     final XPathVariable xpathVariable = xpathStaticContext.declareVariable(null, name);
                     xpathVariables.add(xpathVariable);
                 }
             }
 
-            xpathExpression = xpathEvaluator.createExpression(super.xpath);
+            xpathExpression = xpathEvaluator.createExpression(xpathExpr);
             analyzeXPathForRuleChain(xpathEvaluator);
         } catch (final XPathException e) {
             throw new RuntimeException(e);
         }
     }
-    
+
     private void analyzeXPathForRuleChain(final XPathEvaluator xpathEvaluator) {
         final Expression expr = xpathExpression.getInternalExpression();
 
@@ -296,11 +316,11 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         }
 
         if (useRuleChain) {
-            super.ruleChainVisits.addAll(nodeNameToXPaths.keySet());
+            rulechainQueries.addAll(nodeNameToXPaths.keySet());
         } else {
             nodeNameToXPaths.clear();
             if (LOG.isLoggable(Level.FINE)) {
-                LOG.log(Level.FINE, "Unable to use RuleChain for XPath: " + xpath);
+                LOG.log(Level.FINE, "Unable to use RuleChain for XPath: " + xpathExpr);
             }
         }
 
@@ -349,7 +369,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         }
     }
 
-    public static Value getSequenceRepresentation(List<?> list) {
+    public static Sequence getSequenceRepresentation(List<?> list) {
         if (list == null || list.isEmpty()) {
             return EmptySequence.getInstance();
         }
@@ -358,12 +378,6 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             converted[i] = getAtomicRepresentation(list.get(i));
         }
         return new SequenceExtent(converted);
-    }
-
-    @Override
-    public List<String> getRuleChainVisits() {
-        initializeXPathExpression();
-        return super.getRuleChainVisits();
     }
 
     public static NamePool getNamePool() {

@@ -542,10 +542,7 @@ Errors are system exceptions. Do not extend them.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
-  [pmd-java:typeIs('java.lang.Error')]
-
-
+//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Error')]
 ]]>
                 </value>
             </property>

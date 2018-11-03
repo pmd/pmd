@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -49,6 +50,18 @@ public class Attribute {
         this.stringValue = value;
     }
 
+
+
+    /**
+     * Gets the generic type of the value of this attribute.
+     */
+    public Type getType() {
+        return method == null ? String.class : method.getGenericReturnType();
+    }
+
+    public Class<?> getErasedType() {
+        return method == null ? String.class : method.getReturnType();
+    }
 
     public String getName() {
         return name;

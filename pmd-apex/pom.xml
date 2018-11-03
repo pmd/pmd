@@ -54,13 +54,6 @@
       <artifactId>commons-io</artifactId>
     </dependency>
 
-
-    <dependency>
-      <groupId>net.sourceforge.saxon</groupId>
-      <artifactId>saxon</artifactId>
-    </dependency>
-
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

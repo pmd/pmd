@@ -180,7 +180,7 @@ public class DocumentNavigator extends DefaultNavigator {
             while (baseIterator.hasNext() && result == null) {
                 Attribute candidate = baseIterator.next();
                 // Calling getValue() here would break laziness
-                if (!List.class.isAssignableFrom(candidate.getType())) {
+                if (!List.class.isAssignableFrom(candidate.getErasedType())) {
                     result = candidate;
                 }
             }

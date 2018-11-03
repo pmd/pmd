@@ -8,8 +8,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.xpath.internal.AstDocument;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.DocumentNode;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
+
+import net.sf.saxon.sxpath.XPathEvaluator;
+import net.sf.saxon.sxpath.XPathStaticContext;
 
 public class ElementNodeTest {
 
@@ -23,7 +27,9 @@ public class ElementNodeTest {
         node.jjtAddChild(foo1, 0);
         node.jjtAddChild(foo2, 1);
 
-        DocumentNode document = new DocumentNode(node);
+        final XPathEvaluator xpathEvaluator = new XPathEvaluator();
+        AstDocument document = new AstDocument(node, xpathEvaluator.getConfiguration());
+
         ElementNode elementFoo1 = document.nodeToElementNode.get(foo1);
         ElementNode elementFoo2 = document.nodeToElementNode.get(foo2);
 

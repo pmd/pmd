@@ -126,8 +126,8 @@
             <artifactId>javacc</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.sourceforge.saxon</groupId>
-            <artifactId>saxon</artifactId>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -147,14 +147,6 @@
             <groupId>org.checkerframework</groupId>
             <artifactId>checker-qual</artifactId>
             <version>2.5.2</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>net.sourceforge.saxon</groupId>
-            <artifactId>saxon</artifactId>
-            <classifier>dom</classifier>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>

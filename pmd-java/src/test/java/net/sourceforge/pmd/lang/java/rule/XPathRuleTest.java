@@ -30,9 +30,7 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
-import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -132,28 +130,9 @@ public class XPathRuleTest extends RuleTst {
 
         String xpath = "//PrimarySuffix[@Image='list']";
 
-        // XPATH version 1.0
-        XPathRuleQuery xpathRuleQuery = new JaxenXPathRuleQuery();
-        xpathRuleQuery.setXPath(xpath);
-        xpathRuleQuery.setProperties(new HashMap<PropertyDescriptor<?>, Object>());
-        xpathRuleQuery.setVersion(XPathRuleQuery.XPATH_1_0);
-        List<Node> nodes = xpathRuleQuery.evaluate(cu, ruleContext);
-        assertEquals(1, nodes.size());
-
-        // XPATH version 1.0 Compatibility
-        xpathRuleQuery = new SaxonXPathRuleQuery();
-        xpathRuleQuery.setXPath(xpath);
-        xpathRuleQuery.setProperties(new HashMap<PropertyDescriptor<?>, Object>());
-        xpathRuleQuery.setVersion(XPathRuleQuery.XPATH_1_0_COMPATIBILITY);
-        nodes = xpathRuleQuery.evaluate(cu, ruleContext);
-        assertEquals(1, nodes.size());
-
         // XPATH version 2.0
-        xpathRuleQuery = new SaxonXPathRuleQuery();
-        xpathRuleQuery.setXPath(xpath);
-        xpathRuleQuery.setProperties(new HashMap<PropertyDescriptor<?>, Object>());
-        xpathRuleQuery.setVersion(XPathRuleQuery.XPATH_2_0);
-        nodes = xpathRuleQuery.evaluate(cu, ruleContext);
+        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath, XPathVersion.XPATH_2_0, new HashMap<>(), language.getLanguageVersionHandler().getXPathHandler());
+        List<Node> nodes = xpathRuleQuery.evaluate(cu, ruleContext);
         assertEquals(1, nodes.size());
     }
 
@@ -174,22 +153,9 @@ public class XPathRuleTest extends RuleTst {
 
         String xpath = "//Block/BlockStatement/following-sibling::BlockStatement";
 
-        // XPATH version 1.0
-        XPathRuleQuery xpathRuleQuery = new JaxenXPathRuleQuery();
-        xpathRuleQuery.setXPath(xpath);
-        xpathRuleQuery.setProperties(new HashMap<PropertyDescriptor<?>, Object>());
-        xpathRuleQuery.setVersion(XPathRuleQuery.XPATH_1_0);
-        List<Node> nodes = xpathRuleQuery.evaluate(cu, ruleContext);
-        assertEquals(2, nodes.size());
-        assertEquals(4, nodes.get(0).getBeginLine());
-        assertEquals(5, nodes.get(1).getBeginLine());
-
         // XPATH version 2.0
-        xpathRuleQuery = new SaxonXPathRuleQuery();
-        xpathRuleQuery.setXPath(xpath);
-        xpathRuleQuery.setProperties(new HashMap<PropertyDescriptor<?>, Object>());
-        xpathRuleQuery.setVersion(XPathRuleQuery.XPATH_2_0);
-        nodes = xpathRuleQuery.evaluate(cu, ruleContext);
+        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath, XPathVersion.XPATH_2_0, new HashMap<>(), language.getLanguageVersionHandler().getXPathHandler());
+        List<Node> nodes = xpathRuleQuery.evaluate(cu, ruleContext);
         assertEquals(2, nodes.size());
         assertEquals(4, nodes.get(0).getBeginLine());
         assertEquals(5, nodes.get(1).getBeginLine());

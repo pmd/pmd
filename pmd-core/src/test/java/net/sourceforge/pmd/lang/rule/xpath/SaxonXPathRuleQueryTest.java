@@ -13,7 +13,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.XPathRule.XPathVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -158,22 +160,6 @@ public class SaxonXPathRuleQueryTest {
                    .replaceAll("\\$zz:zz-?\\d+", "\\$zz:zz000");
     }
 
-    @Test
-    public void ruleChainVisitsCompatibilityMode() {
-        SaxonXPathRuleQuery query = createQuery("//dummyNode[@Image='baz']/foo | //bar[@Public = 'true'] | //dummyNode[@Public = 'false']");
-        query.setVersion(XPathRuleQuery.XPATH_1_0_COMPATIBILITY);
-        List<String> ruleChainVisits = query.getRuleChainVisits();
-        Assert.assertEquals(2, ruleChainVisits.size());
-        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
-        Assert.assertTrue(ruleChainVisits.contains("bar"));
-
-        Assert.assertEquals(3, query.nodeNameToXPaths.size());
-        assertExpression("((self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Image, xs:anyAtomicType)), ($qq:qq6519275 singleton eq \"baz\"))])/child::element(foo, xs:anyType))", query.nodeNameToXPaths.get("dummyNode").get(0));
-        assertExpression("(self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq1529060733 singleton eq \"false\"))])", query.nodeNameToXPaths.get("dummyNode").get(1));
-        assertExpression("(self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq1484171695 singleton eq \"true\"))])", query.nodeNameToXPaths.get("bar").get(0));
-        assertExpression("((DocumentSorter(((((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Image, xs:anyAtomicType)), ($qq:qq692331943 singleton eq \"baz\"))])/child::element(foo, xs:anyType))) | (((/)/descendant::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq2127036371 singleton eq \"true\"))])) | (((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq1529060733 singleton eq \"false\"))]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
-    }
-
     private static void assertQuery(int resultSize, String xpath, Node node) {
         SaxonXPathRuleQuery query = createQuery(xpath);
         List<Node> result = query.evaluate(node, new RuleContext());
@@ -181,18 +167,18 @@ public class SaxonXPathRuleQueryTest {
     }
 
     private static SaxonXPathRuleQuery createQuery(String xpath, PropertyDescriptor<?> ...descriptors) {
-        SaxonXPathRuleQuery query = new SaxonXPathRuleQuery();
-        query.setVersion(XPathRuleQuery.XPATH_2_0);
+        Map<PropertyDescriptor<?>, Object> props = new HashMap<>();
         if (descriptors != null) {
-            Map<PropertyDescriptor<?>, Object> props = new HashMap<PropertyDescriptor<?>, Object>();
             for (PropertyDescriptor<?> prop : descriptors) {
                 props.put(prop, prop.defaultValue());
             }
-            query.setProperties(props);
-        } else {
-            query.setProperties(Collections.<PropertyDescriptor<?>, Object>emptyMap());
         }
-        query.setXPath(xpath);
-        return query;
+
+        return new SaxonXPathRuleQuery(
+            xpath,
+            XPathVersion.XPATH_2_0,
+            props,
+            XPathHandler.getHandlerForFunctionDefs()
+        );
     }
 }

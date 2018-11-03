@@ -4,55 +4,64 @@
 
 package net.sourceforge.pmd.lang.java.xpath;
 
-import java.util.List;
-
-import org.jaxen.Context;
-import org.jaxen.Function;
-import org.jaxen.FunctionCallException;
-import org.jaxen.SimpleFunctionContext;
-import org.jaxen.XPathFunctionContext;
-
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeWrapper;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
+import net.sf.saxon.expr.XPathContext;
+import net.sf.saxon.lib.ExtensionFunctionCall;
+import net.sf.saxon.om.Sequence;
+import net.sf.saxon.trans.XPathException;
+import net.sf.saxon.value.BooleanValue;
+import net.sf.saxon.value.SequenceType;
 
-@InternalApi
-@Deprecated
-public class TypeIsFunction implements Function {
 
-    public static void registerSelfInSimpleContext() {
-        ((SimpleFunctionContext) XPathFunctionContext.getInstance()).registerFunction(null, "typeIs",
-                new TypeIsFunction());
+/**
+ * XPath function {@code pmd-java:typeIs(typeName as xs:string) as xs:boolean}.
+ *
+ * <p>Example XPath 2.0: {@code //ClassOrInterfaceType[pmd-java:typeIs('java.lang.String')]}
+ *
+ * <p>Returns true if the type of the node matches, false otherwise.
+ */
+public class TypeIsFunction extends BaseJavaXPathFunction {
+
+
+    protected TypeIsFunction() {
+        super("typeIs");
     }
 
     @Override
-    public Object call(final Context context, final List args) throws FunctionCallException {
-        if (args.size() != 1) {
-            throw new IllegalArgumentException(
-                    "typeIs function takes a single String argument with the fully qualified type name to check against.");
-        }
-        final String fullTypeName = (String) args.get(0);
-        final Node n = (Node) context.getNodeSet().get(0);
-
-        return typeIs(n, fullTypeName);
+    public SequenceType[] getArgumentTypes() {
+        return new SequenceType[]{SequenceType.SINGLE_STRING};
     }
 
-    /**
-     * Example XPath 1.0: {@code //ClassOrInterfaceType[typeIs('java.lang.String')]}
-     * <p>
-     * Example XPath 2.0: {@code //ClassOrInterfaceType[pmd-java:typeIs('java.lang.String')]}
-     *
-     * @param n The node on which to check for types
-     * @param fullTypeName The fully qualified name of the class or any supertype
-     * @return True if the type of the node matches, false otherwise.
-     */
-    public static boolean typeIs(final Node n, final String fullTypeName) {
-        if (n instanceof TypeNode) {
-            return TypeHelper.isA((TypeNode) n, fullTypeName);
-        } else {
-            throw new IllegalArgumentException("typeIs function may only be called on a TypeNode.");
-        }
+
+    @Override
+    public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
+        return SequenceType.SINGLE_BOOLEAN;
+    }
+
+
+    @Override
+    public boolean dependsOnFocus() {
+        return true;
+    }
+
+    @Override
+    public ExtensionFunctionCall makeCallExpression() {
+        return new ExtensionFunctionCall() {
+            @Override
+            public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
+                Node contextNode = ((AstNodeWrapper) context.getContextItem()).getUnderlyingNode();
+                String fullTypeName = arguments[0].head().getStringValue();
+
+                if (contextNode instanceof TypeNode) {
+                    return BooleanValue.get(TypeHelper.isA((TypeNode) contextNode, fullTypeName));
+                } else {
+                    throw new IllegalArgumentException("typeIs function may only be called on a TypeNode.");
+                }
+            }
+        };
     }
 }
