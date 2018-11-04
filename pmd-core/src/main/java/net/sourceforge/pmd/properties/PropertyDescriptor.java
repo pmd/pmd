@@ -22,7 +22,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * <p>Several interfaces further specialize the behaviour of descriptors to accommodate specific types of descriptors,
  * see {@link NumericPropertyDescriptor} and {@link EnumeratedPropertyDescriptor}.
  *
- * <h1>Upcoming API changes to the properties framework: see https://github.com/pmd/pmd/issues/1415</h1>
+ * <h1>Upcoming API changes to the properties framework: see <a href="https://github.com/pmd/pmd/wiki/Property-framework-7-0-0">wiki</a></h1>
  *
  * @param <T> type of the property's value. This is a list type for multi-valued properties.
  *
@@ -53,7 +53,11 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * class.
      *
      * @return Class literal of the value type
+     *
+     * @deprecated This method is mainly used for documentation, but will not prove general enough
+     * to support PMD 7.0.0's improved property types.
      */
+    @Deprecated
     Class<?> type();
 
 
@@ -65,7 +69,10 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * must be used.</p>
      *
      * @return boolean
+     *
+     * @deprecated The hard divide between multi- and single-value properties will be removed with 7.0.0
      */
+    @Deprecated
     boolean isMultiValue();
 
 
@@ -85,7 +92,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      *
      * @return A diagnostic message.
      */
-    String errorFor(T value);
+    String errorFor(T value); // TODO Java 1.8 make optional
 
 
     /**
@@ -93,12 +100,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * edit property values. If the value returned has a non-zero fractional part then this is can be used to place
      * adjacent fields on the same row.
      *
-     * <p>Example:<br> name -&gt; 0.0 description 1.0 minValue -&gt; 2.0 maxValue -&gt; 2.1 </p> ..would have their
-     * fields placed like:<br>
-     *
-     * <code>name: [ ] description: [ ] minimum: [ ] maximum: [ ]</code>
-     *
-     * @return float
+     * @return The relative order compared to other properties of the same rule
      */
     float uiOrder();
 
@@ -109,8 +111,12 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * @param propertyString The string to parse
      *
      * @return The value represented by the string
+     *
      * @throws IllegalArgumentException if the given string cannot be parsed
+     * @deprecated PMD 7.0.0 will use a more powerful scheme to represent values than
+     * simple strings, this method won't be general enough
      */
+    @Deprecated
     T valueFrom(String propertyString) throws IllegalArgumentException;
 
 
@@ -120,7 +126,11 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * @param value Object
      *
      * @return String
+     *
+     * @deprecated PMD 7.0.0 will use a more powerful scheme to represent values than
+     * simple strings, this method won't be general enough
      */
+    @Deprecated
     String asDelimitedString(T value);
 
 
@@ -131,7 +141,11 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * @param rule Rule
      *
      * @return String
+     *
+     * @deprecated Used nowhere, and fails if the rule doesn't define the property descriptor
+     *             A better solution will be added on property source
      */
+    @Deprecated
     String propertyErrorFor(Rule rule);
 
 
@@ -139,8 +153,9 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * If the datatype is a String then return the preferred number of rows to allocate in the text widget, returns a
      * value of one for all other types. Useful for multi-line XPATH editors.
      *
-     * @deprecated Was never implemented, and is none of the descriptor's concern. Will be removed with 7.0.0
      * @return int
+     *
+     * @deprecated Was never implemented, and is none of the descriptor's concern. Will be removed with 7.0.0
      */
     @Deprecated
     int preferredRowCount();
@@ -149,8 +164,9 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
     /**
      * Returns a map representing all the property attributes of the receiver in string form.
      *
-     * @deprecated Will be removed with 7.0.0
      * @return map
+     *
+     * @deprecated Will be removed with 7.0.0
      */
     @Deprecated
     Map<PropertyDescriptorField, String> attributeValuesById();
@@ -161,8 +177,9 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * to write out the property correctly: if it was defined externally, then its definition must be written out,
      * otherwise only its value.
      *
-     * @deprecated May be removed with 7.0.0
      * @return True if the descriptor was defined in xml
+     *
+     * @deprecated May be removed with 7.0.0
      */
     @Deprecated
     @InternalApi

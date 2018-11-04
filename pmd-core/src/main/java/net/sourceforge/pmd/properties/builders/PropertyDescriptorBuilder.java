@@ -19,6 +19,8 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @author Clément Fournier
  * @since 6.0.0
  */
+// @Deprecated // will be rewritten in the next PR and placed in the properties package,
+// since there will be no need for a separate package
 public abstract class PropertyDescriptorBuilder<E, T extends PropertyDescriptorBuilder<E, T>> {
 
     protected String name;

@@ -17,7 +17,10 @@ import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
  *
  * @param <V> Element type of the list
  * @param <T> Concrete type of the underlying builder
+ *
  */
+// @Deprecated // will be rewritten in the next PR and placed in the properties package,
+// since there will be no need for a separate package
 public abstract class MultiValuePropertyBuilder<V, T extends MultiValuePropertyBuilder<V, T>>
     extends PropertyDescriptorBuilder<List<V>, T> {
 
