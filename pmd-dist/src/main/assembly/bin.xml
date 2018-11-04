@@ -12,7 +12,6 @@
     <fileSets>
         <fileSet>
             <includes>
-                <include>bgastviewer.bat</include>
                 <include>cpd.bat</include>
                 <include>cpdgui.bat</include>
                 <include>designer.bat</include>

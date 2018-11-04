@@ -22,6 +22,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+* The old GUI applications accessible through `run.sh designerold` and `run.sh bgastviewer` (and corresponding Batch scripts)
+  have been removed from the PMD distribution. Please use the newer rule designer with `run.sh designer`.
+  The corresponding classes in packages `java.net.sourceforge.pmd.util.viewer` and `java.net.sourceforge.pmd.util.designer` have
+  all been removed.
+
+
 ### External Contributions
 
 *   [#1424](https://github.com/pmd/pmd/pull/1424): \[doc] #1341 Updating Regex Values in default Value Property - [avishvat](https://github.com/vishva007)
