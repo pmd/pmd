@@ -1911,6 +1911,34 @@ void Initializer() :
 }
 
 
+
+
+/* JLS: https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.3
+
+ReferenceType:
+    ClassOrInterfaceType
+    TypeVariable
+    ArrayType
+ClassOrInterfaceType:
+    ClassType
+    InterfaceType
+ClassType:
+    {Annotation} Identifier [TypeArguments]
+    ClassOrInterfaceType . {Annotation} Identifier [TypeArguments]
+InterfaceType:
+    ClassType
+TypeVariable:
+    {Annotation} Identifier
+ArrayType:
+    PrimitiveType Dims
+    ClassOrInterfaceType Dims
+    TypeVariable Dims
+Dims:
+    {Annotation} [ ] {{Annotation} [ ]}
+
+*/
+
+
 /*
  * Type, name and expression syntax follows.
  * Type is the same as "UnannType" in JLS
@@ -1922,18 +1950,48 @@ void Type():
     Token t;
 }
 {
- LOOKAHEAD(2) ReferenceType()
+ LOOKAHEAD(PrimitiveType() Dims()) ReferenceType()
  | PrimitiveType()
+}
+
+void Dims() #ArrayTypeDims:
+{}
+{
+
+/* @A [] @B []
+ node<ASTDims> {
+   it.dimSize shouldBe 2
+
+   child<ASTDim> {
+     child<ASTAnnotation>(ignoreChildren=true) {
+       it.nameImage shouldBe "A"
+     }
+   }
+
+   child<ASTDim> {
+     child<ASTAnnotation>(ignoreChildren=true) {
+       it.nameImage shouldBe "B"
+     }
+   }
+ }
+*/
+
+
+  ( // LOOKAHEAD((TypeAnnotation())* "[" "]")
+    ((TypeAnnotation())* "[" "]") #ArrayTypeDim
+  )+
 }
 
 void ReferenceType():
 {}
 {
-  // The grammar here is mildly wrong, the annotations can be before each []
-  // This will wait for #997
-   PrimitiveType() (TypeAnnotation())* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
-  |
-   ( ClassOrInterfaceType()) (TypeAnnotation())* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
+
+  // TypeVariable is ambiguous with ClassOrInterfaceType
+  // Unless! we add a small symbol table to the parser,
+  // keeping track of the in-scope type variables (they're all
+  // necessarily lexically accessible)
+    ( PrimitiveType() Dims() )              #ArrayType
+  | ( ClassOrInterfaceType() [ LOOKAHEAD(2) Dims() ] )   #ArrayType(>1)
 }
 
 void ClassOrInterfaceType():
