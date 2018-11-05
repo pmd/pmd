@@ -19,6 +19,8 @@ This is a {{ site.pmd.release_type }} release.
 *   all
     *   [#1318](https://github.com/pmd/pmd/issues/1318): \[test] Kotlin DSL to ease test writing
     *   [#1341](https://github.com/pmd/pmd/issues/1341): \[doc] Documentation Error with Regex Properties
+*   java-codestyle
+    *   [#1372](https://github.com/pmd/pmd/issues/1372): \[java] false positive for UselessQualifiedThis
 
 ### API Changes
 
