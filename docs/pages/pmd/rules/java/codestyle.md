@@ -2157,13 +2157,13 @@ public class Foo {
 
 **Priority:** Medium (3)
 
-Look for qualified this usages in the same class.
+Reports qualified this usages in the same class.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //PrimaryExpression
 [PrimaryPrefix/Name[@Image]]
-[PrimarySuffix[@Arguments='false']]
+[PrimarySuffix[@Arguments='false' and @ArrayDereference = 'false']]
 [not(PrimarySuffix/MemberSelector)]
 [ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass='false']]
 /PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image]
