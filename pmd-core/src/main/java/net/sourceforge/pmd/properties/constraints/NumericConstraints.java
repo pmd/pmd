@@ -15,13 +15,13 @@ import net.sourceforge.pmd.properties.constraints.ConstraintFactory.Predicate;
  * @see PropertyConstraint
  * @since 6.10.0
  */
-public class NumericConstraints {
+public final class NumericConstraints {
 
     private NumericConstraints() {
 
     }
 
-    // Methods are named as adjectives to mix well with the "require" syntax.
+    // Methods are named to mix well with the "require" syntax.
 
 
     /**
@@ -34,13 +34,14 @@ public class NumericConstraints {
      * @return A range constraint
      */
     public static <N extends Number> PropertyConstraint<N> inRange(final N minInclusive, final N maxInclusive) {
-        return ConstraintFactory.fromPredicate(new Predicate<N>() {
-                                                   @Override
-                                                   public boolean test(N t) {
-                                                       return minInclusive.intValue() <= t.intValue() && maxInclusive.intValue() >= t.intValue();
-                                                   }
-                                               },
-                                               "Should be between " + minInclusive + " and " + maxInclusive
+        return ConstraintFactory.fromPredicate(
+                new Predicate<N>() {
+                    @Override
+                    public boolean test(N t) {
+                        return minInclusive.intValue() <= t.intValue() && maxInclusive.intValue() >= t.intValue();
+                    }
+                },
+                "Should be between " + minInclusive + " and " + maxInclusive
         );
 
     }
@@ -54,13 +55,14 @@ public class NumericConstraints {
      * @return A positivity constraint
      */
     public static <N extends Number> PropertyConstraint<N> positive() {
-        return ConstraintFactory.fromPredicate(new Predicate<N>() {
-                                                   @Override
-                                                   public boolean test(N t) {
-                                                       return t.intValue() > 0;
-                                                   }
-                                               },
-                                               "Should be positive"
+        return ConstraintFactory.fromPredicate(
+                new Predicate<N>() {
+                    @Override
+                    public boolean test(N t) {
+                        return t.intValue() > 0;
+                    }
+                },
+                "Should be positive"
         );
 
     }

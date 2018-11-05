@@ -11,7 +11,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * Validates the value of a property.
  *
  * <p>This interface will change a lot with PMD 7.0.0,
- * because of the introduction of Java 8. Please use
+ * because of the switch to Java 8. Please use
  * only the ready-made validators in {@link NumericConstraints}
  * for now.
  *

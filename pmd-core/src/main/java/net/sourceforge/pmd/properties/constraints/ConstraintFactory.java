@@ -62,18 +62,19 @@ final class ConstraintFactory {
             @Override
             public PropertyConstraint<Iterable<? extends U>> toMulti() {
                 final PropertyConstraint<U> thisValidator = this;
-                return fromPredicate(new Predicate<Iterable<? extends U>>() {
-                                         @Override
-                                         public boolean test(Iterable<? extends U> us) {
-                                             for (U u : us) {
-                                                 if (!thisValidator.test(u)) {
-                                                     return false;
-                                                 }
-                                             }
-                                             return true;
-                                         }
-                                     },
-                                     "Components " + StringUtils.uncapitalize(thisValidator.getConstraintDescription())
+                return fromPredicate(
+                        new Predicate<Iterable<? extends U>>() {
+                            @Override
+                            public boolean test(Iterable<? extends U> us) {
+                                for (U u : us) {
+                                    if (!thisValidator.test(u)) {
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            }
+                        },
+                        "Components " + StringUtils.uncapitalize(thisValidator.getConstraintDescription())
                 );
             }
         };
