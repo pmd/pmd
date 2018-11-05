@@ -1945,7 +1945,8 @@ Dims:
  *
  * See https://docs.oracle.com/javase/specs/jls/se10/html/jls-8.html#jls-UnannType
  */
-void Type():
+// TODO make void
+void Type() #void:
 {
     Token t;
 }
@@ -1971,7 +1972,8 @@ void ArrayTypeDim():
   (TypeAnnotation())* "[" "]"
 }
 
-void ReferenceType():
+// TODO make void
+void ReferenceType() #void:
 {}
 {
 
@@ -2017,6 +2019,22 @@ void WildcardBounds():
 {
    ("extends" | "super") (TypeAnnotation())* ReferenceType()
 }
+
+/* JLS https://docs.oracle.com/javase/specs/jls/se10/html/jls-4.html#jls-PrimitiveType
+
+PrimitiveType:
+    {Annotation} NumericType
+    {Annotation} boolean
+NumericType:
+    IntegralType
+    FloatingPointType
+IntegralType:
+    (one of)
+    byte short int long char
+FloatingPointType:
+    (one of)
+    float double
+*/
 
 void PrimitiveType() :
 {}
