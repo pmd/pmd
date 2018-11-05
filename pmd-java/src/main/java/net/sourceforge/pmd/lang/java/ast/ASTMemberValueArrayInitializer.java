@@ -36,6 +36,12 @@ public class ASTMemberValueArrayInitializer extends AbstractJavaNode implements 
 
 
     @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
+    @Override
     public Iterator<ASTMemberValue> iterator() {
         return new NodeChildrenIterator<>(this, ASTMemberValue.class);
     }

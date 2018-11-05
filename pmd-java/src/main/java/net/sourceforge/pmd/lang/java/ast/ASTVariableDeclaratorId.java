@@ -53,6 +53,13 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return visitor.visit(this, data);
     }
 
+
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     public VariableNameDeclaration getNameDeclaration() {
         return nameDeclaration;
     }

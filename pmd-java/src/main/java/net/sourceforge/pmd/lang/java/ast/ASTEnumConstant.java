@@ -40,6 +40,12 @@ public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiable
     }
 
 
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Gets the qualified name of the anonymous class
      * declared by this node, or null if this node

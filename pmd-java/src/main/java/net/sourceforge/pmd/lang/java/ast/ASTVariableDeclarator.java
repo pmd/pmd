@@ -38,6 +38,12 @@ public class ASTVariableDeclarator extends AbstractJavaTypeNode {
     }
 
 
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns the name of the declared variable.
      */

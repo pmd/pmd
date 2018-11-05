@@ -35,6 +35,12 @@ public class ASTMemberValuePairs extends AbstractJavaNode implements Iterable<AS
 
 
     @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
+    @Override
     public ASTMemberValuePair jjtGetChild(int index) {
         return (ASTMemberValuePair) super.jjtGetChild(index);
     }

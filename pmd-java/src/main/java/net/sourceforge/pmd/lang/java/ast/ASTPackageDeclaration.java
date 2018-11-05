@@ -22,6 +22,13 @@ public class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
         return visitor.visit(this, data);
     }
 
+
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     public String getPackageNameImage() {
         return ((ASTName) jjtGetChild(this.jjtGetNumChildren() - 1)).getImage();
     }

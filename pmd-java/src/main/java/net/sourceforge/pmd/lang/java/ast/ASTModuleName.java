@@ -21,6 +21,12 @@ public class ASTModuleName extends AbstractJavaNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
 }
 /*
  * JavaCC - OriginalChecksum=7be9235079394543d4574d840ebb5235 (do not edit this

@@ -33,6 +33,13 @@ public class ASTType extends AbstractJavaTypeNode {
         return visitor.visit(this, data);
     }
 
+
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     public String getTypeImage() {
         ASTClassOrInterfaceType refType = getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         if (refType != null) {

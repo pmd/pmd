@@ -35,6 +35,12 @@ public class ASTMarkerAnnotation extends AbstractJavaTypeNode {
     }
 
 
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns the name of the annotation as it is used,
      * eg {@code java.lang.Override} or {@code Override}.

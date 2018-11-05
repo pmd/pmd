@@ -25,6 +25,12 @@ public class ASTEnumDeclaration extends AbstractAnyTypeDeclaration {
 
 
     @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
+    @Override
     public TypeKind getTypeKind() {
         return TypeKind.ENUM;
     }

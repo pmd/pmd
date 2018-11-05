@@ -80,6 +80,12 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
     }
 
 
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns the declarator ID of this formal parameter.
      */

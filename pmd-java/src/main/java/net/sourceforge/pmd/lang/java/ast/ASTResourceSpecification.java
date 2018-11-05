@@ -20,6 +20,12 @@ public class ASTResourceSpecification extends AbstractJavaNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
 }
 /*
  * JavaCC - OriginalChecksum=d495bcf34ff0f86f77e48f66b9c52e4d (do not edit this

@@ -34,6 +34,12 @@ public class ASTAdditiveExpression extends AbstractJavaTypeNode {
     }
 
 
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns the image of the operator, i.e. "+" or "-".
      */

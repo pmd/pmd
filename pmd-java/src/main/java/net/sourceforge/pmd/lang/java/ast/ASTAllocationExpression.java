@@ -28,6 +28,13 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode implements Jav
         return visitor.visit(this, data);
     }
 
+
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns true if this expression defines a body,
      * which is compiled to an anonymous class. If this

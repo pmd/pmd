@@ -56,6 +56,12 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
     }
 
 
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns true if the class is declared inside a block other
      * than the body of another class, or the top level.

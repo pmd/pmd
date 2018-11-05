@@ -30,6 +30,12 @@ public class ASTCatchStatement extends AbstractJavaNode {
     }
 
 
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns true if this node is a multi-catch statement,
      * that is, it catches several unrelated exception types

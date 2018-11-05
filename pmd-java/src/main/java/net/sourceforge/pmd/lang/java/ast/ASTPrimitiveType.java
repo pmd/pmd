@@ -38,6 +38,13 @@ public class ASTPrimitiveType extends AbstractJavaTypeNode implements Dimensiona
         return visitor.visit(this, data);
     }
 
+
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     public void bumpArrayDepth() {
         arrayDepth++;
     }

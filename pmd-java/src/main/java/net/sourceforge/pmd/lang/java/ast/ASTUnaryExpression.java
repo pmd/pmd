@@ -40,6 +40,12 @@ public class ASTUnaryExpression extends AbstractJavaTypeNode {
     }
 
 
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns the image of this unary operator, i.e. "+" or "-".
      */

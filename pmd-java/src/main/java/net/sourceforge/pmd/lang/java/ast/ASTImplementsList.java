@@ -35,6 +35,12 @@ public class ASTImplementsList extends AbstractJavaNode implements Iterable<ASTC
 
 
     @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
+    @Override
     public Iterator<ASTClassOrInterfaceType> iterator() {
         return new NodeChildrenIterator<>(this, ASTClassOrInterfaceType.class);
     }

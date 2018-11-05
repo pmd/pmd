@@ -33,6 +33,12 @@ public class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTTy
     }
 
 
+    @Override
+    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns true if this is a diamond, that is, the
      * actual type arguments are inferred.
