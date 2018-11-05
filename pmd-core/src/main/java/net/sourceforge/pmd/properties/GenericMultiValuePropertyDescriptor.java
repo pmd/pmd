@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.properties;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -18,32 +19,41 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
  * @author Clément Fournier
  * @since 6.10.0
  */
-final class GenericMultiValuePropertyDescriptor<V> extends AbstractMultiValueProperty<V> {
+final class GenericMultiValuePropertyDescriptor<V, C extends Collection<V>> extends AbstractMultiValueProperty<V> {
 
 
-    private final Set<PropertyConstraint<? super List<V>>> listValidators;
+    private final Set<PropertyConstraint<? super C>> listValidators;
     private final ValueParser<V> parser;
     private final Class<V> type;
 
 
     GenericMultiValuePropertyDescriptor(String name, String description, float uiOrder,
-                                        List<V> defaultValue,
-                                        Set<PropertyConstraint<? super List<V>>> listValidators,
+                                        Collection<V> defaultValue,
+                                        Set<PropertyConstraint<? super C>> listValidators,
                                         ValueParser<V> parser,
                                         char delim,
                                         Class<V> type) {
 
-        super(name, description, defaultValue, uiOrder, delim, false);
+        super(name, description, (List<V>) defaultValue, uiOrder, delim, false);
         this.listValidators = listValidators;
         this.parser = parser;
         this.type = type;
     }
 
 
+    @SuppressWarnings("unchecked")
     @Override
     public String errorFor(List<V> values) {
-        for (PropertyConstraint<? super List<V>> lv : listValidators) {
-            String error = lv.validate(values);
+        for (PropertyConstraint<? super C> lv : listValidators) {
+            // Note: the unchecked cast is safe because pre-7.0.0,
+            // we only allow building property descriptors for lists.
+            // C is thus always List<V>, and the cast doesn't fail
+
+            // Post-7.0.0, the multi-value property classes will be removed
+            // and C will be the actual type parameter of the returned property
+            // descriptor
+
+            String error = lv.validate((C) values);
             if (error != null) {
                 return error;
             }

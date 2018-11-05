@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder.Supplier;
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 
@@ -32,10 +33,10 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
  */
 @Experimental
 public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
-    private static final Pattern NAME_PATTERN = Pattern.compile("[a-zA-Z][\\w-]*");
 
-    boolean isDefinedExternally;
+    private static final Pattern NAME_PATTERN = Pattern.compile("[a-zA-Z][\\w-]*");
     private final Set<PropertyConstraint<? super T>> validators = new LinkedHashSet<>();
+    protected boolean isDefinedExternally;
     private String name;
     private String description;
     private float uiOrder = 0f;
@@ -166,7 +167,9 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      * @author Clément Fournier
      * @since 6.7.0
      */
-    @Experimental
+    // Note: we may keep some specialized property builders around to allow for some sugar,
+    // e.g. specifying the default value of a regex property as a string, or like the collection one,
+    // with varargs for collection types
     public static final class GenericPropertyBuilder<T> extends PropertyBuilder<GenericPropertyBuilder<T>, T> {
 
 
@@ -198,19 +201,38 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * previously been set.
          *
          * @return A new list property builder
+         *
+         * @throws IllegalStateException if the default value has already been set
          */
-        public GenericListPropertyBuilder<T> toList() {
+        /* package private */ GenericCollectionPropertyBuilder<T, List<T>> toList() {
+
+            Supplier<List<T>> listSupplier = new Supplier<List<T>>() {
+                @Override
+                public List<T> get() {
+                    return new ArrayList<>();
+                }
+            };
+
+            return toCollection(listSupplier);
+        }
+
+
+        private <C extends Collection<T>> GenericCollectionPropertyBuilder<T, C> toCollection(Supplier<C> emptyCollSupplier) {
             if (getDefaultValue() != null) {
                 throw new IllegalStateException("The default value is already set!");
             }
 
-            GenericListPropertyBuilder<T> result = new GenericListPropertyBuilder<>(getName(), getParser(), getType());
+            GenericCollectionPropertyBuilder<T, C> result = new GenericCollectionPropertyBuilder<>(getName(),
+                                                                                                   getParser(),
+                                                                                                   emptyCollSupplier,
+                                                                                                   getType());
 
             for (PropertyConstraint<? super T> validator : getConstraints()) {
                 result.require(validator.toMulti());
             }
 
             return result;
+
         }
 
 
@@ -232,34 +254,45 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     }
 
     /**
-     * Generic builder for a multi-value property.
+     * Generic builder for a collection-valued property.
+     * This builder allows some nice syntax to define
+     * the {@linkplain #defaultValues(Object[]) default value}.
      *
-     * @param <V> Component type of the list
+     * <p>Note: this is meant to support arbitrary collections.
+     * Pre-7.0.0, the only collections available from the {@link PropertyFactory}
+     * are list types though.
+     *
+     * @param <V> Component type of the collection
+     * @param <C> Collection type for the property being built
      *
      * @author Clément Fournier
      * @since 6.7.0
      */
-    @Experimental
-    public static final class GenericListPropertyBuilder<V> extends PropertyBuilder<GenericListPropertyBuilder<V>, List<V>> {
+    public static final class GenericCollectionPropertyBuilder<V, C extends Collection<V>> extends PropertyBuilder<GenericCollectionPropertyBuilder<V, C>, C> {
         private final ValueParser<V> parser;
+        private final Supplier<C> emptyCollSupplier;
         private final Class<V> type;
         private char multiValueDelimiter;
 
 
-        GenericListPropertyBuilder(String name, ValueParser<V> parser, Class<V> type) {
+        /**
+         * Builds a new builder for a collection type. Package-private.
+         */
+        GenericCollectionPropertyBuilder(String name,
+                                         ValueParser<V> parser,
+                                         Supplier<C> emptyCollSupplier,
+                                         Class<V> type) {
             super(name);
             this.parser = parser;
+            this.emptyCollSupplier = emptyCollSupplier;
             this.type = type;
         }
 
 
-        protected ValueParser<V> getParser() {
-            return parser;
-        }
-
-
-        protected Class<V> getType() {
-            return type;
+        private C getDefaultValue(Collection<? extends V> list) {
+            C coll = emptyCollSupplier.get();
+            coll.addAll(list);
+            return coll;
         }
 
 
@@ -271,8 +304,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * @return The same builder
          */
         @SuppressWarnings("unchecked")
-        public GenericListPropertyBuilder<V> defaultValues(Collection<? extends V> val) {
-            super.defaultValue(new ArrayList<>(val));
+        public GenericCollectionPropertyBuilder<V, C> defaultValue(Collection<? extends V> val) {
+            super.defaultValue(getDefaultValue(val));
             return this;
         }
 
@@ -285,8 +318,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * @return The same builder
          */
         @SuppressWarnings("unchecked")
-        public GenericListPropertyBuilder<V> defaultValues(V... val) {
-            super.defaultValue(Arrays.asList(val));
+        public GenericCollectionPropertyBuilder<V, C> defaultValues(V... val) {
+            super.defaultValue(getDefaultValue(Arrays.asList(val)));
             return this;
         }
 
@@ -298,17 +331,35 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * @param delim Delimiter
          *
          * @return The same builder
+         *
+         * @deprecated PMD 7.0.0 will introduce a new XML syntax for multi-valued properties which will not rely on delimiters.
+         *             This method is kept until this is implemented for compatibility reasons with the pre-7.0.0 framework, but
+         *             it will be scrapped come 7.0.0.
          */
-        @SuppressWarnings("unchecked")
-        public GenericListPropertyBuilder<V> delim(char delim) {
+        @Deprecated
+        public GenericCollectionPropertyBuilder<V, C> delim(char delim) {
             this.multiValueDelimiter = delim;
             return this;
         }
 
 
+        /**
+         * Builds a new property descriptor with the configuration held in this builder.
+         *
+         * @return A new property
+         */
+        @SuppressWarnings("unchecked")
         @Override
-        public PropertyDescriptor<List<V>> build() {
-            return new GenericMultiValuePropertyDescriptor<V>(
+        public PropertyDescriptor<C> build() {
+            // Note: the unchecked cast is safe because pre-7.0.0,
+            // we only allow building property descriptors for lists.
+            // C is thus always List<V>, and the cast doesn't fail
+
+            // Post-7.0.0, the multi-value property classes will be removed
+            // and C will be the actual type parameter of the returned property
+            // descriptor
+
+            return (PropertyDescriptor<C>) new GenericMultiValuePropertyDescriptor<>(
                     getName(),
                     getDescription(),
                     getUiOrder(),
@@ -318,6 +369,13 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
                     multiValueDelimiter,
                     type
             );
+        }
+
+
+        // Until we have Java 8
+        @Deprecated
+        interface Supplier<T> {
+            T get();
         }
     }
 }

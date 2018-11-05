@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.properties;
 
+import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.properties.PropertyBuilder.GenericListPropertyBuilder;
+import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 
 
@@ -30,7 +31,7 @@ public final class PropertyFactory {
     }
 
 
-    public static GenericListPropertyBuilder<Integer> intListProperty(String name) {
+    public static GenericCollectionPropertyBuilder<Integer, List<Integer>> intListProperty(String name) {
         return intProperty(name).toList();
     }
 
@@ -40,8 +41,18 @@ public final class PropertyFactory {
     }
 
 
-    public static GenericListPropertyBuilder<Double> doubleListProperty(String name) {
+    public static GenericCollectionPropertyBuilder<Double, List<Double>> doubleListProperty(String name) {
         return doubleProperty(name).toList();
+    }
+
+
+    public static GenericPropertyBuilder<String> stringProperty(String name) {
+        return new GenericPropertyBuilder<>(name, ValueParserConstants.STRING_PARSER, String.class);
+    }
+
+
+    public static GenericCollectionPropertyBuilder<String, List<String>> stringListProperty(String name) {
+        return stringProperty(name).toList();
     }
 
 
@@ -54,7 +65,7 @@ public final class PropertyFactory {
     }
 
 
-    public static <T> GenericListPropertyBuilder<T> enumListProperty(String name, Map<String, T> nameToValue) {
+    public static <T> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Map<String, T> nameToValue) {
         return enumProperty(name, nameToValue).toList();
     }
 
