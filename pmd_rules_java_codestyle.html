@@ -3762,12 +3762,12 @@ For historical reasons, modifiers which are implied by the context are accepted 
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Look for qualified this usages in the same class.</p>
+<p>Reports qualified this usages in the same class.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="w">
 </span><span class="p">[</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="p">]]</span><span class="w">
-</span><span class="p">[</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="na">@Arguments</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]]</span><span class="w">
+</span><span class="p">[</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="na">@Arguments</span><span class="err">=</span><span class="s1">'false'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@ArrayDereference</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'false'</span><span class="p">]]</span><span class="w">
 </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">MemberSelector</span><span class="p">)]</span><span class="w">
 </span><span class="p">[</span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="p">[</span><span class="m">1</span><span class="p">][</span><span class="na">@AnonymousInnerClass</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]]</span><span class="w">
 </span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="err">/</span><span class="na">@Image</span><span class="p">]</span><span class="w">
