@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
@@ -27,12 +27,12 @@ public abstract class HierarchyWithSeveralBridges<T extends Node> {
     }
 
 
-    public static class Concrete extends SubclassTwo<ASTType> {
+    public static class Concrete extends SubclassTwo<ASTPrimitiveType> {
 
         // bridges: foo(AbstractJavaTypeNode), foo(JavaNode), foo(Node)
 
         @Override
-        void foo(ASTType node) {
+        void foo(ASTPrimitiveType node) {
 
         }
     }

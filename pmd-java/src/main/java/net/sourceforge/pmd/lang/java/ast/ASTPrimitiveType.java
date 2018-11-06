@@ -5,6 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Arrays;
+import java.util.Optional;
+
+
 /**
  * Represents a primitive type.
  *
@@ -14,21 +18,28 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTPrimitiveType extends AbstractJavaTypeNode implements Dimensionable {
+public class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
 
-    private int arrayDepth;
+    public ASTPrimitiveType(PrimitiveType type) {
+        super(JavaParserTreeConstants.JJTPRIMITIVETYPE);
+        setImage(type.getToken());
+    }
 
-    public ASTPrimitiveType(int id) {
+
+    ASTPrimitiveType(int id) {
         super(id);
     }
 
-    public ASTPrimitiveType(JavaParser p, int id) {
+
+    ASTPrimitiveType(JavaParser p, int id) {
         super(p, id);
     }
+
 
     public boolean isBoolean() {
         return "boolean".equals(getImage());
     }
+
 
     /**
      * Accept the visitor. *
@@ -45,21 +56,39 @@ public class ASTPrimitiveType extends AbstractJavaTypeNode implements Dimensiona
     }
 
 
-    @Deprecated
-    public void bumpArrayDepth() {
-        arrayDepth++;
-    }
 
-    @Override
-    @Deprecated
-    public int getArrayDepth() {
-        return arrayDepth;
-    }
+    public enum PrimitiveType {
+        BOOLEAN,
+        CHAR,
+        INT,
+        BYTE,
+        SHORT,
+        LONG,
+        DOUBLE,
+        FLOAT;
 
-    @Override
-    @Deprecated
-    public boolean isArray() {
-        return arrayDepth > 0;
+
+        /**
+         * Returns the token used to represent the type in source,
+         * e.g. "int" or "double".
+         */
+        public String getToken() {
+            return name().toLowerCase();
+        }
+
+
+        /**
+         * Gets an enum constant from the token used to represent it in source,
+         * e.g. "int" or "double".
+         *
+         * @param token String token
+         *
+         * @return A constant, or the empty optional if the token doesn't correspond to a constant
+         */
+        public static Optional<PrimitiveType> fromToken(String token) {
+            return Arrays.stream(values()).filter(v -> v.getToken().equals(token)).findFirst();
+        }
+
     }
 
 }

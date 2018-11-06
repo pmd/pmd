@@ -15,7 +15,7 @@ public class ASTResultType extends AbstractJavaNode {
     }
 
     public boolean returnsArray() {
-        return !isVoid() && ((ASTType) jjtGetChild(0)).isArray();
+        return !isVoid() && ((ASTType) jjtGetChild(0)).isArrayType();
     }
 
     public boolean isVoid() {

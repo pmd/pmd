@@ -112,7 +112,7 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
     @Deprecated
     public boolean isArray() {
         return isVarargs()
-                || getTypeNode() != null && getTypeNode().isArray()
+                || getTypeNode() != null && getTypeNode().isArrayType()
                 || getVariableDeclaratorId().isArray();
     }
 

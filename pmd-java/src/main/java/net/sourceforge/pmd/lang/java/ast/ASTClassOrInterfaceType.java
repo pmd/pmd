@@ -5,9 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
-
 /**
  * Represents a class or interface type, possibly parameterised with type arguments.
  *
@@ -16,16 +13,23 @@ import net.sourceforge.pmd.lang.ast.Node;
  * ClassOrInterfaceType ::= &lt;IDENTIFIER&gt; {@linkplain ASTTypeArguments TypeArguments}? ( "." &lt;IDENTIFIER&gt;  {@linkplain ASTTypeArguments TypeArguments}? )*
  *
  * </pre>
- *
  */
-public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
-    public ASTClassOrInterfaceType(int id) {
+public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements ASTReferenceType {
+    public ASTClassOrInterfaceType(String identifier) {
+        super(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
+        setImage(identifier);
+    }
+
+
+    ASTClassOrInterfaceType(int id) {
         super(id);
     }
 
-    public ASTClassOrInterfaceType(JavaParser p, int id) {
+
+    ASTClassOrInterfaceType(JavaParser p, int id) {
         super(p, id);
     }
+
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
@@ -45,7 +49,7 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
      * to check this, if {@link #getType()} is null.
      *
      * @return <code>true</code> if this node referencing a type in the same
-     *         compilation unit, <code>false</code> otherwise.
+     * compilation unit, <code>false</code> otherwise.
      */
     public boolean isReferenceToClassSameCompilationUnit() {
         ASTCompilationUnit root = getFirstParentOfType(ASTCompilationUnit.class);
@@ -62,23 +66,9 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
         return false;
     }
 
+
     public boolean isAnonymousClass() {
         return jjtGetParent().getFirstChildOfType(ASTClassOrInterfaceBody.class) != null;
     }
 
-    public boolean isArray() {
-        Node p = jjtGetParent();
-        if (p instanceof ASTReferenceType) {
-            return ((ASTReferenceType) p).isArray();
-        }
-        return false;
-    }
-
-    public int getArrayDepth() {
-        Node p = jjtGetParent();
-        if (p instanceof ASTReferenceType) {
-            return ((ASTReferenceType) p).getArrayDepth();
-        }
-        return 0;
-    }
 }

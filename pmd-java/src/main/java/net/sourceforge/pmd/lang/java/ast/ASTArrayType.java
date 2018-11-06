@@ -9,12 +9,12 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre>
  *
- * ArrayType ::= {@link ASTPrimitiveType PrimitiveType} {@link ASTArrayTypeDims ArrayTypeDims}
- *             | {@link ASTClassOrInterfaceType ClassOrInterfaceType} {@link ASTArrayTypeDims ArrayTypeDims}
+ * ArrayType ::= {@linkplain ASTPrimitiveType PrimitiveType} {@linkplain ASTArrayTypeDims ArrayTypeDims}
+ *             | {@linkplain ASTClassOrInterfaceType ClassOrInterfaceType} {@linkplain ASTArrayTypeDims}
  *
  * </pre>
  */
-public final class ASTArrayType extends AbstractJavaTypeNode {
+public final class ASTArrayType extends AbstractJavaTypeNode implements ASTReferenceType {
     ASTArrayType(int id) {
         super(id);
     }

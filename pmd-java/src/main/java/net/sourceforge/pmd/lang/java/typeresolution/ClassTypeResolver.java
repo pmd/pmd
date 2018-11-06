@@ -265,7 +265,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
 
         // FIXME, we should discard the array depth on this node, it should only be known to ASTReferenceType (#910)
-        populateType(node, typeName, node.getArrayDepth());
+        populateType(node, typeName, 0);
 
         ASTTypeArguments typeArguments = node.getFirstChildOfType(ASTTypeArguments.class);
 
@@ -645,12 +645,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    @Override
-    public Object visit(ASTType node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-        return data;
-    }
 
     private void populateVariableDeclaratorFromType(ASTLocalVariableDeclaration node, JavaTypeDefinition typeDefinition) {
         // assign this type to VariableDeclarator and VariableDeclaratorId
@@ -723,21 +717,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
             if (node.getVariableDeclaratorId() != null) {
                 node.getVariableDeclaratorId().setTypeDefinition(initializer.getTypeDefinition());
-            }
-        }
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTReferenceType node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-
-        JavaTypeDefinition elementTypeDef = node.getTypeDefinition();
-        if (elementTypeDef != null) {
-            // FIXME when ClassOrInterfaceType resolves type without dimensions, remove the test here
-            if (!elementTypeDef.isArrayType()) {
-                node.setTypeDefinition(elementTypeDef.withDimensions(node.getArrayDepth()));
             }
         }
         return data;

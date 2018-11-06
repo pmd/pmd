@@ -17,6 +17,36 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * Note: it is not exactly the same the "UnnanType" defined in JLS.
  */
-public interface ASTType extends JavaNode {
-    String getTypeImage();
+public interface ASTType extends TypeNode {
+
+    default String getTypeImage() {
+        return "";
+    }
+
+
+    default int getArrayDepth() {
+        return 0;
+    }
+
+
+    default boolean isArrayType() {
+        return this instanceof ASTArrayType;
+    }
+
+
+    default boolean isPrimitiveType() {
+        return this instanceof ASTPrimitiveType;
+    }
+
+
+    default boolean isReferenceType() {
+        return this instanceof ASTReferenceType;
+    }
+
+
+    default boolean isClassOrInterfaceType() {
+        return this instanceof ASTClassOrInterfaceType;
+    }
+
+
 }

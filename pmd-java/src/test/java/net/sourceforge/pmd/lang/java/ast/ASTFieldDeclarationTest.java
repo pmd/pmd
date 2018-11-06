@@ -74,21 +74,6 @@ public class ASTFieldDeclarationTest {
 
     private static final String TEST5 = "public @interface Foo {" + PMD.EOL + " int BAR = 6;" + PMD.EOL + "}";
 
-    @Test
-    public void testGetVariableName() {
-        int id = 0;
-        ASTFieldDeclaration n = new ASTFieldDeclaration(id++);
-        ASTType t = new ASTType(id++);
-        ASTVariableDeclarator decl = new ASTVariableDeclarator(id++);
-        ASTVariableDeclaratorId declid = new ASTVariableDeclaratorId(id++);
-        n.jjtAddChild(t, 0);
-        t.jjtAddChild(decl, 0);
-        decl.jjtAddChild(declid, 0);
-        declid.setImage("foo");
-
-        assertEquals("foo", n.getVariableName());
-
-    }
 
     @Test
     public void testPrivateFieldInNestedClassInsideInterface() {
