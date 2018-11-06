@@ -50,32 +50,6 @@ public class ASTForStatement extends AbstractJavaNode {
 
 
     /**
-     * Returns the update clause.
-     *
-     * <p>If this node represents a foreach loop, or if there is
-     * no specified update clause, then returns null.
-     */
-    public ASTForUpdate getUpdateClause() {
-        if (isForeach()) {
-            return null;
-        }
-
-        return getFirstChildOfType(ASTForUpdate.class);
-    }
-
-
-    /**
-     * Returns the initialisation clause.
-     *
-     * <p>If this node represents a foreach loop, or if there is
-     * no specified init clause, then returns null.
-     */
-    public ASTForInit getInitClause() {
-        return jjtGetChild(0) instanceof ASTForInit ? (ASTForInit) jjtGetChild(0) : null;
-    }
-
-
-    /**
      * Returns true if this node represents a foreach loop.
      */
     public boolean isForeach() {
