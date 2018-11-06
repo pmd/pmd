@@ -16,7 +16,6 @@ import java.util.Iterator;
  *  TypeArguments ::= "<" {@linkplain ASTTypeArgument TypeArgument} ( "," {@linkplain ASTTypeArgument TypeArgument} )* ">"
  *                  | "<" ">"
  * </pre>
- *
  */
 public class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTTypeArgument> {
     public ASTTypeArguments(int id) {

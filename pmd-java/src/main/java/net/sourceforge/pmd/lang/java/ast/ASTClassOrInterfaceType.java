@@ -5,7 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.List;
 import java.util.Optional;
+
+import net.sourceforge.pmd.annotation.Experimental;
 
 // @formatter:off
 /**
@@ -23,7 +26,8 @@ import java.util.Optional;
  * qualified type name (e.g. {@code java.util.List}, where the full sequence refers to a unique
  * type, but individual segments don't).
  *
- * <p>We could remove that with a later AST visit, like type resolution though!
+ * <p>TODO We could uniformise those with an AST visit provided we have a classloader
+ * Could be preliminary to type resolution
  *
  * <pre>
  *
@@ -51,13 +55,29 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
 
 
     /**
-     * Gets the left-hand side type of this type. This is a type we know for sure
+     * Gets the left-hand side type of this segment. This is a type we know for sure
      * that this type is a member of.
      *
-     * @return A type, or null if this is a base type
+     * @return A type, or an empty optional if this is a base type
      */
     public Optional<ASTClassOrInterfaceType> getLeftHandSide() {
         return Optional.ofNullable(getFirstChildOfType(ASTClassOrInterfaceType.class));
+    }
+
+
+    /**
+     * Returns the type arguments of this segment if some are specified.
+     */
+    public Optional<ASTTypeArguments> getTypeArguments() {
+        return Optional.ofNullable(getFirstChildOfType(ASTTypeArguments.class));
+    }
+
+
+    /**
+     * Gets the annotations defined on this segment.
+     */
+    public List<ASTAnnotation> getAnnotations() {
+        return findChildrenOfType(ASTAnnotation.class);
     }
 
 
@@ -70,6 +90,17 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
+    }
+
+
+    /**
+     * For now this returns the name of the type with all the segments,
+     * without annotations or type parameters.
+     */
+    @Override
+    @Experimental
+    public String getTypeImage() {
+        return getLeftHandSide().map(t -> t.getTypeImage() + ".").orElse("") + getImage();
     }
 
 

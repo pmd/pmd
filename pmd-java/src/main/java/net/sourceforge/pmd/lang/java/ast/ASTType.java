@@ -5,6 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
+
 /**
  * Represents a type reference.
  *
@@ -19,8 +22,9 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public interface ASTType extends TypeNode {
 
+    @Experimental
     default String getTypeImage() {
-        return "";
+        return getImage();
     }
 
 
