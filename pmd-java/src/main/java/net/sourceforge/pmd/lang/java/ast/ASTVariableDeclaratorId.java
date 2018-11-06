@@ -65,18 +65,19 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return getScope().getDeclarations(VariableNameDeclaration.class).get(nameDeclaration);
     }
 
-    // TODO Dimensionable will be deprecated
-
+    @Deprecated
     public void bumpArrayDepth() {
         arrayDepth++;
     }
 
     @Override
+    @Deprecated
     public int getArrayDepth() {
         return arrayDepth;
     }
 
     @Override
+    @Deprecated
     public boolean isArray() {
         return arrayDepth > 0;
     }
