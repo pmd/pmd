@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.file.Files;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -77,7 +79,7 @@ public class XSLTRenderer extends XMLRenderer {
         InputStream xslt = null;
         File file = new File(this.xsltFilename);
         if (file.exists() && file.canRead()) {
-            xslt = new FileInputStream(file);
+            xslt = Files.newInputStream(file.toPath());
         } else {
             xslt = this.getClass().getResourceAsStream(this.xsltFilename);
         }
