@@ -76,10 +76,23 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return arrayDepth;
     }
 
+
+    /**
+     * Returns true if the declared variable has an array type.
+     * @deprecated Use {@link #hasArrayType()}
+     */
     @Override
     @Deprecated
     public boolean isArray() {
         return arrayDepth > 0;
+    }
+
+
+    /**
+     * Returns true if the declared variable has an array type.
+     */
+    public boolean hasArrayType() {
+        return arrayDepth > 0 || !isTypeInferred() && getTypeNode().isArrayType();
     }
 
 
