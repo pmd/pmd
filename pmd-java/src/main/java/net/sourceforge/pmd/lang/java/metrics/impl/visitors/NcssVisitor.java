@@ -105,7 +105,8 @@ public class NcssVisitor extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
         ((MutableInt) data).increment();
-        return data;
+        // May use a lambda
+        return super.visit(node, data);
     }
 
 
@@ -130,7 +131,8 @@ public class NcssVisitor extends JavaParserVisitorAdapter {
         if (!(node.jjtGetParent() instanceof ASTForInit)) {
             ((MutableInt) data).increment();
         }
-        return data;
+        // May declare a lambda
+        return super.visit(node, data);
     }
 
 
