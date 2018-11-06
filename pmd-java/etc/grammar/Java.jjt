@@ -1950,7 +1950,7 @@ void Type():
     Token t;
 }
 {
- LOOKAHEAD(PrimitiveType() Dims()) ReferenceType()
+ LOOKAHEAD(PrimitiveType() Dims() | <IDENTIFIER>) ReferenceType()
  | PrimitiveType()
 }
 
@@ -1990,7 +1990,7 @@ void ReferenceType():
   // Unless! we add a small symbol table to the parser,
   // keeping track of the in-scope type variables (they're all
   // necessarily lexically accessible)
-    ( PrimitiveType() Dims() )              #ArrayType
+    ( PrimitiveType() Dims() )                           #ArrayType
   | ( ClassOrInterfaceType() [ LOOKAHEAD(2) Dims() ] )   #ArrayType(>1)
 }
 
