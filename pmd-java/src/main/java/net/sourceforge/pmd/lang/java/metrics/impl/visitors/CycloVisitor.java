@@ -38,10 +38,10 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
     private final JavaNode topNode;
 
 
-    public CycloVisitor(MetricOptions options, JavaNode node) {
+    public CycloVisitor(MetricOptions options, JavaNode topNode) {
         considerBooleanPaths = !options.getOptions().contains(CycloOption.IGNORE_BOOLEAN_PATHS);
         considerAssert = options.getOptions().contains(CycloOption.CONSIDER_ASSERT);
-        this.topNode = node;
+        this.topNode = topNode;
     }
 
 

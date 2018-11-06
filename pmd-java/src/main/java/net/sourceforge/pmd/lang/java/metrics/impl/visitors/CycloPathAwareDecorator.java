@@ -50,7 +50,7 @@ public class CycloPathAwareDecorator extends JavaParserVisitorDecorator {
             return data;
         }
 
-        int boolCompFor = CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
+        int boolCompFor = CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode());
         ((MutableInt) data).add(boolCompFor);
         return data;
     }
