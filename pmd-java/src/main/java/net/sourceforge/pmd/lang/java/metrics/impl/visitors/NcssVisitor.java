@@ -55,6 +55,7 @@ public class NcssVisitor extends JavaParserVisitorAdapter {
     protected final boolean countImports;
 
 
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     public NcssVisitor(MetricOptions options, JavaNode topNode) {
         countImports = options.contains(NcssOption.COUNT_IMPORTS);
         // topNode is unused, but we'll need it if we want to discount lambdas
