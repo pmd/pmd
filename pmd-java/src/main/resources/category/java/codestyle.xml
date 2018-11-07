@@ -1351,13 +1351,13 @@ public class ClassInDefaultPackage {
         </example>
     </rule>
 
-    <rule name="NumericLiteralConvention"
+    <rule name="UseUnderscoresInNumericLiterals"
           language="java"
-          since="6.9.0"
+          since="6.10.0"
           minimumLanguageVersion="1.7"
           message="Numeric literals with more than 3 digits must use '_' as a separator"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#numericliteralconvention">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#useunderscoresinnumericliterals">
         <description>
             Numeric literals with more than 3 digits must use '_' as a separator.
         </description>
