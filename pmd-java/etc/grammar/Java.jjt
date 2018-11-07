@@ -1982,13 +1982,19 @@ void ReferenceType() #void:
   // TODO TypeVariable is ambiguous with ClassOrInterfaceType
   // but I think it would be good to have a node for it nevertheless
   // to help typeres, since TypeVariables have special types (intersection types)
-  // This could be handled in a rewrite phase, which is necessary for
-  // disambiguation. Since type parameters shadow anything, their disambiguation
-  // is stable regardless of classpath config.
+  // The implementation could use a small symbol table local to the parser,
+  // plus some rewrite phase (type parameters may forward-reference others, eg.
+  // class Foo<A extends Collection<C>, C>)
     ( PrimitiveType() Dims() )                           #ArrayType
   | ( ClassOrInterfaceType() [ LOOKAHEAD(2) Dims() ] )   #ArrayType(>1)
 }
 
+
+/**
+ * Parses a ClassOrInterfaceType.
+ * TODO have a different node for ParameterizedType? Zero size overhead in the grammar,
+ * would allow us to specialize our API better.
+ */
 void ClassOrInterfaceType() #void:
 {
   StringBuilder s = new StringBuilder();
@@ -1998,9 +2004,13 @@ void ClassOrInterfaceType() #void:
   (
     (
       t=<IDENTIFIER> { s.append(t.getImage()); }
-      // We gobble up all identifiers until we find
+      // FIXME We gobble up all identifiers until we find
       // either type arguments or annotations, because
-      // it may be a FQCN
+      // it may be a FQCN, e.g. java.util.List is a single node
+      // But java.util.Map.Entry should be two nodes ((java.util.Map).Entry)
+      // I would have said this doesn't matter but the other fixme comment just
+      // below shows we need a rewrite phase anyway
+
       ( LOOKAHEAD("." <IDENTIFIER>)
         "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); }
       )*
@@ -2012,6 +2022,14 @@ void ClassOrInterfaceType() #void:
     jjtree.peekNode().setImage(s.toString());
   }
 
+  // Now if there are other segments, either the previous type specified formal parameters,
+  // or the next has an annotation.
+  // We parse the rest of the type recursively, to preserve the position of type params
+  // and annotations.
+
+  // FIXME this doesn't account for annotated AND qualified types
+  // e.g. java.util.@Annot List, in which java.util should not be a ClassOrInterfaceType
+  // We can only fix that through rewrite, later on, with knowledge of the classpath.
 
   ( LOOKAHEAD(2)
       (
