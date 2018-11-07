@@ -167,4 +167,114 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Numeric Literal in binary
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = 0b100111;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Numeric Literal in octal
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = 047474747;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Numeric Literal in hexadecimal
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = 0xabcdef;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Numeric Literal in negative binary
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = -0b100111;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Numeric Literal in negative octal
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = -047474747;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Numeric Literal in negative hexadecimal
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = -0xabcdef;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Numeric Literal with exponent
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = 39e1234;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Numeric Literal with negative exponent
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = 36e-11234;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Numeric Literal with positive exponent
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = 100e+10;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, Lengthy numeric literal with variable name as serialVersionUID
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int serialVersionUID = -2518308549741147689L;
+}
+        ]]></code>
+    </test-code>
 </test-data>
