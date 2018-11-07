@@ -1986,10 +1986,12 @@ void ReferenceType():
 {}
 {
 
-  // TypeVariable is ambiguous with ClassOrInterfaceType
-  // Unless! we add a small symbol table to the parser,
-  // keeping track of the in-scope type variables (they're all
-  // necessarily lexically accessible)
+  // TODO TypeVariable is ambiguous with ClassOrInterfaceType
+  // but I think it would be good to have a node for it nevertheless
+  // to help typeres, since TypeVariables have special types (intersection types)
+  // The implementation could use a small symbol table local to the parser,
+  // plus some rewrite phase (type parameters may forward-reference others, eg.
+  // class Foo<A extends Collection<C>, C>)
     ( PrimitiveType() Dims() )                           #ArrayType
   | ( ClassOrInterfaceType() [ LOOKAHEAD(2) Dims() ] )   #ArrayType(>1)
 }
