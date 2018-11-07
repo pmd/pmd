@@ -12,7 +12,6 @@ import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-//import net.sourceforge.pmd.lang.kotlin.antlr4.KotlinLexer;
 import net.sourceforge.pmd.lang.kotlin.antlr4.Kotlin;
 
 /**
