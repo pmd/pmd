@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
+import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.*;
+import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.PARSE_EXCEPTION;
+import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.PARSE_OK;
+
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -89,16 +93,22 @@ public class EventLogController implements Initializable {
         });
 
         EventStream<LogEntry> onlyParseException = designerRoot.getLogger().getLog()
-                                                               .filter(x -> x.getCategory() == Category.PARSE_EXCEPTION)
-                                                               .successionEnds(PARSE_EXCEPTION_DELAY);
+                                                               .filter(x -> x.getCategory() == PARSE_EXCEPTION || x.getCategory() == PARSE_OK)
+                                                               .successionEnds(PARSE_EXCEPTION_DELAY)
+                                                               // don't output anything when the last state recorded was OK
+                                                               .filter(x -> x.getCategory() == PARSE_EXCEPTION);
 
         EventStream<LogEntry> onlyXPathException = designerRoot.getLogger().getLog()
-                                                               .filter(x -> x.getCategory() == Category.XPATH_EVALUATION_EXCEPTION)
-                                                               .successionEnds(PARSE_EXCEPTION_DELAY);
+                                                               .filter(x -> x.getCategory() == XPATH_EVALUATION_EXCEPTION || x.getCategory() == XPATH_OK)
+                                                               .successionEnds(PARSE_EXCEPTION_DELAY)
+                                                               .filter(x -> x.getCategory() == XPATH_EVALUATION_EXCEPTION);
+
 
         EventStream<LogEntry> otherExceptions = designerRoot.getLogger().getLog()
-                                                            .filter(x -> x.getCategory() != Category.PARSE_EXCEPTION)
-                                                            .filter(y -> y.getCategory() != Category.XPATH_EVALUATION_EXCEPTION);
+                                                            .filter(x -> x.getCategory() != PARSE_EXCEPTION)
+                                                            .filter(y -> y.getCategory() != XPATH_EVALUATION_EXCEPTION)
+                                                            .filter(y -> y.getCategory() != PARSE_OK)
+                                                            .filter(y -> y.getCategory() != XPATH_OK);
 
         EventStreams.merge(onlyParseException, otherExceptions, onlyXPathException)
                     .subscribe(t -> eventLogTableView.getItems().add(t));

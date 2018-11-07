@@ -104,7 +104,7 @@ public class ASTManager {
         try {
             languageVersionHandler.getQualifiedNameResolutionFacade(classLoader).start(node);
         } catch (Exception e) {
-            designerRoot.getLogger().logEvent(new LogEntry(e, Category.QUALIFIED_NAME_RESOLUTION_EXCEPTION));
+            designerRoot.getLogger().logEvent(new LogEntry(e, Category.QNAME_RESOLUTION_EXCEPTION));
         }
 
         try {
@@ -116,6 +116,10 @@ public class ASTManager {
         compilationUnit.setValue(node);
         lastValidSource = source;
         lastLanguageVersion = getLanguageVersion();
+
+        // Notify that the parse went OK so we can avoid logging very recent exceptions
+        designerRoot.getLogger().logEvent(new LogEntry(null, Category.PARSE_OK));
+
         return getCompilationUnit();
     }
 

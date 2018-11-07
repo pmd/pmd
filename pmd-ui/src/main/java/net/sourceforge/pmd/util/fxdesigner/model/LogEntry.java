@@ -44,7 +44,7 @@ public class LogEntry {
 
 
     public String getStackTrace() {
-        return ExceptionUtils.getStackTrace(throwable);
+        return throwable == null ? "" : ExceptionUtils.getStackTrace(throwable);
     }
 
 
@@ -56,10 +56,15 @@ public class LogEntry {
     public enum Category {
         PARSE_EXCEPTION("Parse exception"),
         TYPERESOLUTION_EXCEPTION("Type resolution exception"),
-        QUALIFIED_NAME_RESOLUTION_EXCEPTION("Qualified name resolution exception"),
+        QNAME_RESOLUTION_EXCEPTION("Qualified name resolution exception"),
         SYMBOL_FACADE_EXCEPTION("Symbol façade exception"),
         XPATH_EVALUATION_EXCEPTION("XPath evaluation exception"),
-        OTHER("Other");
+        OTHER("Other"),
+
+        // These are "flag" categories that signal that previous exceptions
+        // thrown during code or XPath edition may be discarded as uninteresting
+        PARSE_OK("Parsing success"),
+        XPATH_OK("XPath evaluation success");
 
         public final String name;
 
