@@ -4,9 +4,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description>
-            ok, numeric literal with correct '_' usage
-        </description>
+        <description><![CDATA[
+ok, numeric literal with correct '_' usage
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -15,9 +15,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description>
-            bad, numeric literal without '_'
-        </description>
+        <description><![CDATA[
+bad, numeric literal without '_'
+     ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -26,9 +26,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description>
-            bad, numeric literal used as a method parameter without '_'
-        </description>
+        <description><![CDATA[
+bad, numeric literal used as a method parameter without '_'
+     ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -39,9 +39,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, float value with less than 3 numbers.
-        </description>
+        <description><![CDATA[
+ok, float value with less than 3 numbers.
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -50,9 +50,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description>
-            bad, double value without '_'
-        </description>
+        <description><![CDATA[
+bad, double value without '_'
+     ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -61,9 +61,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, numeric literal used as a method parameter with '_'
-        </description>
+        <description><![CDATA[
+ok, numeric literal used as a method parameter with '_'
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -74,9 +74,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, Long value with 'l' used as a method parameter with '_'
-        </description>
+        <description><![CDATA[
+ok, Long value with 'l' used as a method parameter with '_'
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -87,9 +87,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            bad, numeric literal with incorrect '_' usage
-        </description>
+        <description><![CDATA[
+bad, numeric literal with incorrect '_' usage
+     ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -98,9 +98,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, Double value with 'D' used as a method parameter with '_'
-        </description>
+        <description><![CDATA[
+ok, Double value with 'D' used as a method parameter with '_'
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -111,9 +111,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, Float value with 'F' with less than 3 numbers
-        </description>
+        <description><![CDATA[
+ok, Float value with 'F' with less than 3 numbers
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -122,9 +122,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, Double value with 'd' with correct '_' usage
-        </description>
+        <description><![CDATA[
+ok, Double value with 'd' with correct '_' usage
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -133,9 +133,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, Long value with 'L' used as a method parameter with '_'
-        </description>
+        <description><![CDATA[
+ok, Long value with 'L' used as a method parameter with '_'
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -146,9 +146,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, String value with '_'
-        </description>
+        <description><![CDATA[
+ok, String value with '_'
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -157,9 +157,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, String value without '_'
-        </description>
+        <description><![CDATA[
+ok, String value without '_'
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -168,9 +168,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, Numeric Literal in binary
-        </description>
+        <description><![CDATA[
+ok, Numeric Literal in binary
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -179,9 +179,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, Numeric Literal in octal
-        </description>
+        <description><![CDATA[
+ok, Numeric Literal in octal
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -190,9 +190,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, Numeric Literal in hexadecimal
-        </description>
+        <description><![CDATA[
+ok, Numeric Literal in hexadecimal
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -201,9 +201,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, Numeric Literal in negative binary
-        </description>
+        <description><![CDATA[
+ok, Numeric Literal in negative binary
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -212,9 +212,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, Numeric Literal in negative octal
-        </description>
+        <description><![CDATA[
+ok, Numeric Literal in negative octal
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -223,9 +223,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, Numeric Literal in negative hexadecimal
-        </description>
+        <description><![CDATA[
+ok, Numeric Literal in negative hexadecimal
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -234,21 +234,21 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, Numeric Literal with exponent
-        </description>
+        <description><![CDATA[
+ok, Numeric Literal with exponent
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    int binary = 39e123;
+    int binary = 39e1234;
 }
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            bad, Negative exponent without '_'
-        </description>
-        <expected-problems>1</expected-problems>
+        <description><![CDATA[
+ok, Numeric Literal with negative exponent
+     ]]></description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     int binary = 36e-11234;
@@ -256,9 +256,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, Numeric Literal with positive exponent
-        </description>
+        <description><![CDATA[
+ok, Numeric Literal with positive exponent
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -267,9 +267,9 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>
-            ok, Lengthy numeric literal with variable name as serialVersionUID
-        </description>
+        <description><![CDATA[
+ok, Lengthy numeric literal with variable name as serialVersionUID
+     ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
