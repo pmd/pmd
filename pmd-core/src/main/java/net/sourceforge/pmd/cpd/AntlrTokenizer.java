@@ -6,9 +6,9 @@ package net.sourceforge.pmd.cpd;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
 
+import net.sourceforge.pmd.cpd.token.AntlrToken;
 import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
@@ -25,16 +25,16 @@ public abstract class AntlrTokenizer implements Tokenizer {
         AntlrTokenManager tokenManager = getLexerForSource(sourceCode);
 
         try {
-            Token token = (Token) tokenManager.getNextToken();
+            AntlrToken token = (AntlrToken) tokenManager.getNextToken();
 
             while (token.getType() != Token.EOF) {
-                if (token.getChannel() != Lexer.HIDDEN) {
+                if (!token.isHidden()) {
                     final TokenEntry tokenEntry =
-                            new TokenEntry(token.getText(), tokenManager.getFileName(), token.getLine());
+                            new TokenEntry(token.getImage(), tokenManager.getFileName(), token.getBeginLine());
 
                     tokenEntries.add(tokenEntry);
                 }
-                token = (Token) tokenManager.getNextToken();
+                token = (AntlrToken) tokenManager.getNextToken();
             }
         } catch (final AntlrTokenManager.ANTLRSyntaxError err) {
             // Wrap exceptions of the ANTLR tokenizer in a TokenMgrError, so they are correctly handled

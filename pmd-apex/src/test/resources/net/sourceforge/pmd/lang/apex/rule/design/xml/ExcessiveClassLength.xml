@@ -70,5 +70,26 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-    
+
+    <test-code>
+       <description>#1396 Public method with javadoc</description>
+       <expected-problems>0</expected-problems>
+       <code><![CDATA[
+/**
+ * Class comment
+ */
+public class SomeClass {
+
+    /**
+     * Comment
+     */
+    public void doSomething() {
+        System.debug("hello world");
+    }
+
+    /** Field comment */
+    private String field;
+}
+       ]]></code>
+    </test-code>
 </test-data>

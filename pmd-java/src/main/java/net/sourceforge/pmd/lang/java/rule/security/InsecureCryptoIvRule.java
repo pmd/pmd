@@ -56,7 +56,7 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
                 validateProperIv(data, prefix);
             }
         }
-        return super.visit(node, data);
+        return data;
     }
 
     private void validateProperIv(Object data, ASTPrimaryPrefix firstArgumentExpression) {

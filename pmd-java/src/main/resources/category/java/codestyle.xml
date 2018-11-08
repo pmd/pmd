@@ -3,7 +3,7 @@
 <ruleset name="Code Style"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
         Rules which enforce a specific coding style.
@@ -399,6 +399,8 @@ public class Éléphant {}
 To avoid mistakes if we want that a Method, Constructor, Field or Nested class have a default access modifier
 we must add a comment at the beginning of it's declaration.
 By default the comment must be /* default */ or /* package */, if you want another, you have to provide a regular expression.
+This rule ignores by default all cases that have a @VisibleForTesting annotation. Use the
+property "ignoredAnnotations" to customize the recognized annotations.
         </description>
         <priority>3</priority>
         <example>
@@ -1984,7 +1986,9 @@ public class Foo {
           message="Useless qualified this usage in the same class."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#uselessqualifiedthis">
-        <description>Look for qualified this usages in the same class.</description>
+        <description>
+            Reports qualified this usages in the same class.
+        </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
@@ -1992,7 +1996,7 @@ public class Foo {
 <![CDATA[
 //PrimaryExpression
 [PrimaryPrefix/Name[@Image]]
-[PrimarySuffix[@Arguments='false']]
+[PrimarySuffix[@Arguments='false' and @ArrayDereference = 'false']]
 [not(PrimarySuffix/MemberSelector)]
 [ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass='false']]
 /PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image]

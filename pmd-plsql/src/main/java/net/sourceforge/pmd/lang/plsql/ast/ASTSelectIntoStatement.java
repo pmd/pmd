@@ -7,41 +7,13 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-public class ASTSelectIntoStatement extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
-    private boolean distinct;
-    private boolean unique;
-    private boolean all;
-
+public class ASTSelectIntoStatement extends AbstractSelectStatement {
     public ASTSelectIntoStatement(int id) {
         super(id);
     }
 
     public ASTSelectIntoStatement(PLSQLParser p, int id) {
         super(p, id);
-    }
-
-    void setDistinct(boolean distinct) {
-        this.distinct = true;
-    }
-
-    public boolean isDistinct() {
-        return distinct;
-    }
-
-    void setUnique(boolean unique) {
-        this.unique = unique;
-    }
-
-    public boolean isUnique() {
-        return unique;
-    }
-
-    void setAll(boolean all) {
-        this.all = all;
-    }
-
-    public boolean isAll() {
-        return all;
     }
 
     @Override

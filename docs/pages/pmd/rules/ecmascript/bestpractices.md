@@ -70,7 +70,7 @@ function bar() {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|rhinoLanguageVersion|VERSION_DEFAULT|Specifies the Rhino Language Version to use for parsing.  Defaults to Rhino default.|no|
+|rhinoLanguageVersion|VERSION\_DEFAULT|Specifies the Rhino Language Version to use for parsing.  Defaults to Rhino default.|no|
 |recordingLocalJsDocComments|true|Specifies that JsDoc comments are produced in the AST.|no|
 |recordingComments|true|Specifies that comments are produced in the AST.|no|
 

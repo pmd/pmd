@@ -6,6 +6,8 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -18,7 +20,7 @@ import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
 
 public class ScalaTokenizerTest extends AbstractTokenizerTest {
 
-    private static final String ENCODING = "UTF-8";
+    private static final Charset ENCODING = StandardCharsets.UTF_8;
 
     private static final String FILENAME = "sample-LiftActor.scala";
 

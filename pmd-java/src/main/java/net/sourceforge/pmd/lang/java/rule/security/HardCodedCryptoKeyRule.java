@@ -49,7 +49,7 @@ public class HardCodedCryptoKeyRule extends AbstractJavaRule {
                 validateProperKeyArgument(data, prefix);
             }
         }
-        return super.visit(node, data);
+        return data;
     }
 
     /**

@@ -92,6 +92,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private String inputPaths;
     private String inputUri;
     private String inputFilePath;
+    private String ignoreFilePath;
     private boolean ruleSetFactoryCompatibilityEnabled = true;
 
     // Reporting options
@@ -315,6 +316,10 @@ public class PMDConfiguration extends AbstractConfiguration {
         return inputFilePath;
     }
 
+    public String getIgnoreFilePath() {
+        return ignoreFilePath;
+    }
+
     /**
      * The input file path points to a single file, which contains a
      * comma-separated list of source file names to process.
@@ -324,6 +329,17 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setInputFilePath(String inputFilePath) {
         this.inputFilePath = inputFilePath;
+    }
+
+    /**
+     * The input file path points to a single file, which contains a
+     * comma-separated list of source file names to ignore.
+     *
+     * @param ignoreFilePath
+     *            path to the file
+     */
+    public void setIgnoreFilePath(String ignoreFilePath) {
+        this.ignoreFilePath = ignoreFilePath;
     }
 
     /**

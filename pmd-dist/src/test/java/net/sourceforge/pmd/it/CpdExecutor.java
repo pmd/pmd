@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.it;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Arrays;
 
@@ -30,7 +31,7 @@ public class CpdExecutor {
         pb.command().addAll(Arrays.asList(arguments));
         pb.redirectErrorStream(true);
         Process process = pb.start();
-        String output = IOUtils.toString(process.getInputStream());
+        String output = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
 
         int result = process.waitFor();
         return new ExecutionResult(result, output);
@@ -42,7 +43,7 @@ public class CpdExecutor {
         pb.command().addAll(Arrays.asList(arguments));
         pb.redirectErrorStream(true);
         Process process = pb.start();
-        String output = IOUtils.toString(process.getInputStream());
+        String output = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
 
         int result = process.waitFor();
         return new ExecutionResult(result, output);

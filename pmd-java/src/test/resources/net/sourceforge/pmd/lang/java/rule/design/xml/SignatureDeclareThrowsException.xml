@@ -230,4 +230,24 @@ public class JUnitAnnotationTest extends TestCase {
 }
 ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#1369 ClassCastException in annotated extends</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+
+public final class Namespace {
+
+    @Target(ElementType.TYPE_USE)
+    public @interface Weird {
+    }
+
+    public class WeirdException extends @Weird Exception {
+    }
+
+}
+]]></code>
+    </test-code>
 </test-data>

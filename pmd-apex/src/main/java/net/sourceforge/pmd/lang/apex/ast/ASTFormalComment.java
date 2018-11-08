@@ -13,7 +13,7 @@ public class ASTFormalComment extends AbstractApexNodeBase {
     }
 
     @Override
-    Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
