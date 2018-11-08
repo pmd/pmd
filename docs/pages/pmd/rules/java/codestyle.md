@@ -5,7 +5,7 @@ permalink: pmd_rules_java_codestyle.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/codestyle.xml
-keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, NumericLiteralConvention, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
+keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, UseUnderscoresInNumericLiterals, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
 language: Java
 ---
 ## AbstractNaming
@@ -1508,38 +1508,6 @@ public class ClassInDefaultPackage {
 <rule ref="category/java/codestyle.xml/NoPackage" />
 ```
 
-## NumericLiteralConvention
-
-**Since:** PMD 6.9.0
-
-**Priority:** Medium (3)
-
-**Minimum Language Version:** Java 1.7
-
-Numeric literals with more than 3 digits must use '_' as a separator.
-
-**This rule is defined by the following XPath expression:**
-``` xpath
-//Literal[@IntLiteral = true() or
- @LongLiteral = true() or
- @DoubleLiteral = true() or
- @FloatLiteral = true()]
- [not(matches(@Image, "^[0-9]{1,3}(_[0-9]{3})*(l|L|\.[0-9]+)?(d|D|f|F)?$"))]
-```
-
-**Example(s):**
-
-``` java
-public class Foo {
-    private int num = 1000000; // should be 1_000_000
-}
-```
-
-**Use this rule by referencing it:**
-``` xml
-<rule ref="category/java/codestyle.xml/NumericLiteralConvention" />
-```
-
 ## OnlyOneReturn
 
 **Since:** PMD 1.0
@@ -2233,6 +2201,40 @@ public class Foo {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/UselessQualifiedThis" />
+```
+
+## UseUnderscoresInNumericLiterals
+
+**Since:** PMD 6.10.0
+
+**Priority:** Medium (3)
+
+**Minimum Language Version:** Java 1.7
+
+Numeric literals with more than 3 digits must use '_' as a separator.
+
+**This rule is defined by the following XPath expression:**
+``` xpath
+//Literal[@IntLiteral = true() or
+ @LongLiteral = true() or
+ @DoubleLiteral = true() or
+ @FloatLiteral = true()]
+ [not (matches(@Image, "^(0([xb]?[0-9a-fA-F]+)?|[1-9][0-9]{0,2}(_[0-9]{3})*)(l|L|\.[0-9_]+)?([eE][\+-]?[0-9]+)?[dDfF]?$"))]
+ [ancestor::VariableDeclarator[not (@Name = 'serialVersionUID')] or
+ not (ancestor::VariableDeclarator)]
+```
+
+**Example(s):**
+
+``` java
+public class Foo {
+    private int num = 1000000; // should be 1_000_000
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/UseUnderscoresInNumericLiterals" />
 ```
 
 ## VariableNamingConventions
