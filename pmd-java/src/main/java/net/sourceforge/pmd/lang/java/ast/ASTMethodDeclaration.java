@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
  * <pre>
  * MethodDeclaration := [ TypeParameters() ] (TypeAnnotation())* ResultType() MethodDeclarator() [ "throws" NameList() ] ( Block() | ";" )
  * </pre>
- *
  */
 public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration implements DFAGraphMethod {
 
@@ -24,14 +23,17 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
         super(id);
     }
 
+
     public ASTMethodDeclaration(JavaParser p, int id) {
         super(p, id);
     }
+
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
 
     /**
      * Returns the simple name of the method.
@@ -142,9 +144,16 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
         return MethodLikeKind.METHOD;
     }
 
+
     //@Override // enable this with PMD 7.0.0 - see interface ASTMethodOrConstructorDeclaration
     public ASTFormalParameters getFormalParameters() {
         return getFirstChildOfType(ASTMethodDeclarator.class).getFirstChildOfType(ASTFormalParameters.class);
+    }
+
+
+    public boolean isVarargs() {
+        ASTFormalParameters parameters = getFormalParameters();
+        return parameters.getParameterCount() > 0 && parameters.getLastChild().isVarargs();
     }
 
 

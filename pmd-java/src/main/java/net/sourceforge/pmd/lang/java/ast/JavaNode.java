@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
+
 
 public interface JavaNode extends ScopedNode {
 
@@ -14,13 +16,27 @@ public interface JavaNode extends ScopedNode {
      */
     Object jjtAccept(JavaParserVisitor visitor, Object data);
 
+
     /**
      * Accept the visitor. *
      */
     Object childrenAccept(JavaParserVisitor visitor, Object data);
 
+
     @Override
     Scope getScope();
 
+
     void setScope(Scope scope);
+
+
+    default Node getLastChild() {
+        return jjtGetChild(jjtGetNumChildren() - 1);
+    }
+
+
+    default Node getFirstChild() {
+        return jjtGetChild(0);
+    }
+
 }
