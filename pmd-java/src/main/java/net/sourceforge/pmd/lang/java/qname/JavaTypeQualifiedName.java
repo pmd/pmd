@@ -37,11 +37,18 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
      * <p>If a class is not local, its local index is {@link #NOTLOCAL_PLACEHOLDER}.
      */
     private final ImmutableList<Integer> localIndices;
-
+    private final ClassLoader classLoader;
     private Class<?> representedType;
     private boolean typeLoaded;
 
-    private final ClassLoader classLoader;
+
+    JavaTypeQualifiedName(ImmutableList<String> packages, ImmutableList<String> classes, ImmutableList<Integer> localIndices, Class<?> resolvedClass) {
+        this(packages, classes, localIndices, resolvedClass.getClassLoader());
+
+        this.representedType = resolvedClass;
+        this.typeLoaded = true;
+    }
+
 
     JavaTypeQualifiedName(ImmutableList<String> packages, ImmutableList<String> classes, ImmutableList<Integer> localIndices, ClassLoader classLoader) {
         Objects.requireNonNull(packages);
@@ -166,7 +173,7 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
      * Gets the Class instance identified by this qualified name.
      *
      * @return A class instance, or null if the classloader threw a {@link ClassNotFoundException}
-     *     or {@link LinkageError} while trying to load the class.
+     * or {@link LinkageError} while trying to load the class.
      */
     public Class<?> getType() {
         synchronized (this) {
