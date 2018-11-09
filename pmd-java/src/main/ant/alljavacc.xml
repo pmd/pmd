@@ -23,6 +23,7 @@
     <target name="checkUpToDate">
         <uptodate property="javaccBuildNotRequired" targetfile="${target}/last-generated-timestamp">
             <srcfiles dir="etc/grammar" includes="*.jj*"/>
+            <srcfiles file="src/main/ant/alljavacc.xml"/>
         </uptodate>
         <echo message="up to date check: javaccBuildNotRequired=${javaccBuildNotRequired}"/>
     </target>
