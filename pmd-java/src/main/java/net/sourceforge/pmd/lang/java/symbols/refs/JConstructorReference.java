@@ -11,10 +11,13 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
+ * Reference to a constructor.
+ *
  * @author Clément Fournier
  * @since 7.0.0
  */
 public class JConstructorReference extends JAccessibleReference<ASTConstructorDeclaration> {
+
     JConstructorReference(JScope declaringScope, Constructor<?> constructor) {
         super(declaringScope, constructor.getModifiers(), constructor.getDeclaringClass().getSimpleName());
     }
