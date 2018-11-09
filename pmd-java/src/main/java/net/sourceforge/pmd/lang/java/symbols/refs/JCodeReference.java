@@ -8,12 +8,13 @@ import java.util.Optional;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
-import net.sourceforge.pmd.lang.java.symbols.scopes.internal.JSourceFileScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.internal.ImportOnDemandScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SingleImportScope;
 
 
 /**
  * Represents a declaration. Abstracts over whether the declaration is in
- * the analysed file or not using reflection.
+ * the analysed file or not, using reflection when it's not.
  *
  * @author Clément Fournier
  * @since 7.0.0
@@ -23,8 +24,9 @@ public interface JCodeReference<N extends Node> {
 
     /**
      * Gets the scope in which this declaration was brought into scope.
-     * Eg. for a reference to an imported type, this will be a {@link JSourceFileScope},
-     * for a reference to a local variable, this will be the scope in which it was declared.
+     * Eg. for a reference to an imported type, this will be an {@link ImportOnDemandScope},
+     * or a {@link SingleImportScope}. For a reference to a local variable,
+     * this will be the scope in which it was declared.
      *
      * @return the declaration scope
      */

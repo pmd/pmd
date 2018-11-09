@@ -7,16 +7,19 @@ package net.sourceforge.pmd.lang.java.symbols.scopes.internal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
+import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
 import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
- * Implicit imports from {@literal java.lang}, top-level scope for all source files.
+ * Implicit imports from {@literal java.lang}, top-level scope for all scope trees.
  *
  * @author Clément Fournier
  * @since 7.0.0
@@ -154,6 +157,18 @@ public class JavaLangScope implements JScope {
         if (javaLang.containsKey(name)) {
             return Optional.of(javaLang.get(name));
         }
+        return Optional.empty();
+    }
+
+
+    @Override
+    public Iterator<JMethodReference> resolveMethodName(String simpleName) {
+        return AbstractJScope.emptyIterator();
+    }
+
+
+    @Override
+    public Optional<JVarReference> resolveValueName(String simpleName) {
         return Optional.empty();
     }
 

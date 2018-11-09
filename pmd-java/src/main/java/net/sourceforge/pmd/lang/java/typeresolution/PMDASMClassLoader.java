@@ -99,6 +99,10 @@ public final class PMDASMClassLoader extends ClassLoader {
         return !dontBother.containsKey(name);
     }
 
+
+    /**
+     * FIXME what does this do?
+     */
     public synchronized Map<String, String> getImportedClasses(String name) throws ClassNotFoundException {
         if (dontBother.containsKey(name)) {
             throw new ClassNotFoundException(name);

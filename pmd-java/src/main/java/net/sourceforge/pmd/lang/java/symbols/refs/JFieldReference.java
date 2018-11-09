@@ -27,7 +27,7 @@ public class JFieldReference extends JAccessibleReference<ASTVariableDeclaratorI
      * @param declaringScope Scope of the declaration
      * @param field          Field for which to create a reference
      */
-    JFieldReference(JScope declaringScope, Field field) {
+    public JFieldReference(JScope declaringScope, Field field) {
         super(declaringScope, field.getModifiers(), field.getName());
     }
 
