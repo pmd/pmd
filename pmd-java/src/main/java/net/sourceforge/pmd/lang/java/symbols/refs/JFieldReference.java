@@ -15,6 +15,8 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
+ * Reference to a field.
+ *
  * @author Clément Fournier
  * @since 7.0.0
  */

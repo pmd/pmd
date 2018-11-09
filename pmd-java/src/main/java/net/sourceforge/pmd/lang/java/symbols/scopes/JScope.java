@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.internal.JavaLangScope;
  * <p>Scopes are linked to their parent scope, and are only responsible for
  * the declarations occurring in their extent. When a scope can't find a
  * declaration, it delegates to its parent. This encodes shadowing and
- * overriding mechanisms transparently.
+ * hiding mechanisms transparently.
  *
  * <p>A class scope contains the field and method declarations of the class, and
  * is linked to an inherited scope that represents methods, types and values that
@@ -52,8 +52,9 @@ public interface JScope {
 
 
     /**
-     * Resolves a method name, returning an iterator with the found
-     * matching method references.
+     * Finds all accessible methods that can be called with the given simple name
+     * on an implicit receiver in this scope. Several methods may be found, because
+     * they can have different arity and parameter types.
      *
      * @param simpleName Name
      *
@@ -64,8 +65,7 @@ public interface JScope {
 
 
     /**
-     * Finds the variable or field that corresponds to the given simple name
-     * in this scope.
+     * Finds the variable or field to which the given simple name refers in this scope.
      *
      * @param simpleName simple
      *

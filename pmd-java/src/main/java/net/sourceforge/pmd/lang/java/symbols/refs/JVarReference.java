@@ -8,6 +8,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 
 
 /**
+ * Reference to a value, ie {@linkplain JLocalVarReference local variable} or {@linkplain JFieldReference field}.
+ *
  * @author Clément Fournier
  * @since 7.0.0
  */

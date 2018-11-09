@@ -20,13 +20,12 @@ import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
 
 
 /**
- * Scope for single imports. Has higher precedence than {@link ImportOnDemandScope}
- * so is placed just below in the tree.
+ * Scope for single imports. Has highest precedence for an import, and
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class SingleImportScope extends AbstractImportScope {
+public final class SingleImportScope extends AbstractImportScope {
 
     private static final Logger LOG = Logger.getLogger(SingleImportScope.class.getName());
 
@@ -38,7 +37,7 @@ public class SingleImportScope extends AbstractImportScope {
      * @param parent        Parent scope
      * @param singleImports Import declarations, must not be on-demand!
      */
-    SingleImportScope(ImportOnDemandScope parent, List<ASTImportDeclaration> singleImports) {
+    SingleImportScope(SamePackageScope parent, List<ASTImportDeclaration> singleImports) {
         super(parent);
 
         for (ASTImportDeclaration anImport : singleImports) {

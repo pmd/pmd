@@ -26,18 +26,20 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  * <p>The simplest way to implement that is to layer the imports into several scopes.
  * Here are the highest-level scopes of a compilation unit:
  * <ul>
- * <li> {@link JavaLangScope}: actually is defined as
- * <li> {@link ImportOnDemandScope}: never shadow anything
- * <li> PackageTypesScope:
- * <li> {@link SingleImportScope}
+ * <li> {@link JavaLangScope}
+ * <li> {@link ImportOnDemandScope}: never shadow anything, is shadowed by everything (see javadoc for why it's not the root)
+ * <li> {@link SamePackageScope}: shadow imports-on-demands, is shadowed by single imports and lower
+ * <li> {@link SingleImportScope}: shadows all of the above, is shadowed by type definitions of this compilation unit
  * </ul>
+ *
+ * These all have scope
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
 abstract class AbstractImportScope extends AbstractExternalScope {
 
-    // Accessibility is not handled! But:
+    // Accessibility of imports is not checked, but:
     // * inaccessible single type imports or imports of static members from an inaccessible type
     //   may not occur, since compilation would have failed
     // * imports of inaccessible members may occur (eg static protected members), but their *use*
@@ -49,7 +51,12 @@ abstract class AbstractImportScope extends AbstractExternalScope {
     final Map<String, JFieldReference> importedStaticFields = new HashMap<>();
 
 
-    AbstractImportScope(JScope parent) {
+    AbstractImportScope(JScope parent, ClassLoader classLoader) {
+        super(parent, classLoader);
+    }
+
+
+    AbstractImportScope(AbstractExternalScope parent) {
         super(parent);
     }
 
