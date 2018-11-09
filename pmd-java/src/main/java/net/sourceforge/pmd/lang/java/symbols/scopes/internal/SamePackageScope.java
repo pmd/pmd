@@ -4,13 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.symbols.scopes.internal;
 
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 
 /**
@@ -24,12 +26,16 @@ public final class SamePackageScope extends AbstractExternalScope {
 
     private static final Logger LOG = Logger.getLogger(SamePackageScope.class.getName());
 
-    private final String packageName;
 
-
-    SamePackageScope(ImportOnDemandScope parent, String packageName) {
-        super(parent);
-        this.packageName = packageName;
+    /**
+     * Builds a new SamePackageScope.
+     *
+     * @param parent      Parent scope
+     * @param loader      ClassLoader used to resolve types from this package
+     * @param thisPackage Package name of the current compilation unit, used to check for accessibility
+     */
+    SamePackageScope(JScope parent, PMDASMClassLoader loader, String thisPackage) {
+        super(parent, loader, thisPackage);
     }
 
 
@@ -42,8 +48,12 @@ public final class SamePackageScope extends AbstractExternalScope {
     @Override
     protected Optional<JSymbolicClassReference> resolveTypeNameImpl(String simpleName) {
 
-        String fqcn = packageName.isEmpty() ? simpleName : (packageName + "." + simpleName);
+        // account for unnamed package
+        String fqcn = thisPackage.isEmpty() ? simpleName : (thisPackage + "." + simpleName);
+
         try {
+            // We know it's accessible, since top-level classes are either public or package private,
+            // and we're in the package
             return Optional.ofNullable(classLoader.loadClass(fqcn))
                            .map(t -> new JSymbolicClassReference(this, t));
         } catch (ClassNotFoundException | LinkageError e2) {
@@ -55,8 +65,8 @@ public final class SamePackageScope extends AbstractExternalScope {
 
 
     @Override
-    protected Iterator<JMethodReference> resolveMethodNameImpl(String simpleName) {
-        return emptyIterator();
+    protected Stream<JMethodReference> resolveMethodNameImpl(String simpleName) {
+        return Stream.empty();
     }
 
 

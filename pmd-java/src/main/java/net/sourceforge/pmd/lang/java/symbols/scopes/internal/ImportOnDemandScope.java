@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.refs.JFieldReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
+import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 
 /**
@@ -40,14 +41,14 @@ public final class ImportOnDemandScope extends AbstractImportScope {
 
 
     /**
-     * Creates a new import-on-demand scope. The ClassLoader will be used by all children scopes
-     * that need it.
+     * Creates a new import-on-demand scope. Automatically linked to the {@link JavaLangScope}.
      *
      * @param classLoader     Analysis classloader
      * @param importsOnDemand List of import-on-demand statements, mustn't be single imports!
+     * @param thisPackage     Package name of the current compilation unit, used to check for accessibility
      */
-    ImportOnDemandScope(ClassLoader classLoader, List<ASTImportDeclaration> importsOnDemand) {
-        super(JavaLangScope.getInstance(), classLoader);
+    ImportOnDemandScope(PMDASMClassLoader classLoader, List<ASTImportDeclaration> importsOnDemand, String thisPackage) {
+        super(JavaLangScope.getInstance(), classLoader, thisPackage);
 
         for (ASTImportDeclaration anImport : importsOnDemand) {
 
@@ -62,6 +63,7 @@ public final class ImportOnDemandScope extends AbstractImportScope {
 
                     Map<String, List<JMethodReference>> methods = Arrays.stream(containerClass.getDeclaredMethods())
                                                                         .filter(m -> Modifier.isStatic(m.getModifiers()))
+                                                                        .filter(this::isAccessible)
                                                                         .map(m -> new JMethodReference(this, m))
                                                                         .collect(Collectors.groupingBy(JMethodReference::getSimpleName));
 
@@ -69,11 +71,13 @@ public final class ImportOnDemandScope extends AbstractImportScope {
 
                     Arrays.stream(containerClass.getDeclaredFields())
                           .filter(f -> Modifier.isStatic(f.getModifiers()))
+                          .filter(this::isAccessible)
                           .map(f -> new JFieldReference(this, f))
                           .forEach(f -> importedStaticFields.put(f.getSimpleName(), f));
 
                     Arrays.stream(containerClass.getDeclaredClasses())
                           .filter(t -> Modifier.isStatic(t.getModifiers()))
+                          .filter(this::isAccessible)
                           .map(t -> new JSymbolicClassReference(this, t))
                           .forEach(t -> importedTypes.put(t.getSimpleName(), t));
                 }
@@ -102,9 +106,9 @@ public final class ImportOnDemandScope extends AbstractImportScope {
             return javaLangName;
         }
 
+        // Check for static import-on-demand
         Optional<JSymbolicClassReference> typename = super.resolveTypeNameImpl(simpleName);
         if (typename.isPresent()) {
-            // Here the name comes from a static import-on-demand, so the type is a static nested type
             return typename;
         }
 
@@ -124,6 +128,7 @@ public final class ImportOnDemandScope extends AbstractImportScope {
                                            }
                                        })
                                        .filter(Objects::nonNull)
+                                       .filter(this::isAccessible) // TODO needed?
                                        .map(c -> new JSymbolicClassReference(this, c))
                                        .findAny();
     }
