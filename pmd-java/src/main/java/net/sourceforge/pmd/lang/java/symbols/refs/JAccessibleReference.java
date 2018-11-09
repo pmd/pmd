@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 /**
  * Reference having access modifiers common to {@link JFieldReference},
- * {@link JClassReference}, {@link JMethodReference}.
+ * {@link JClassReference}, {@link JMethodReference}, and {@link JConstructorReference}.
  *
  * @author Clément Fournier
  * @since 7.0.0

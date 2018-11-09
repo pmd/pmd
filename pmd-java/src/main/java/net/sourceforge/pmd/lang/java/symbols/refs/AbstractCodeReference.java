@@ -13,6 +13,8 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
+ * Base class for code references.
+ *
  * @author Clément Fournier
  * @since 7.0.0
  */
@@ -55,14 +57,14 @@ abstract class AbstractCodeReference<N extends Node> implements JCodeReference<N
     }
 
 
-    protected static int accessNodeToModifiers(AccessNode accessNode) {
+    static int accessNodeToModifiers(AccessNode accessNode) {
 
         /*
         AccessNode:                     java.lang.reflect.Modifier
 
         int PUBLIC = 0x0001;            0x00000001;
         int PROTECTED = 0x0002;         0x00000004;
-        int PRIVATE = 0x0004;           0x00000002
+        int PRIVATE = 0x0004;           0x00000002;
         int ABSTRACT = 0x0008;          0x00000400;
         int STATIC = 0x0010;            0x00000008;
         int FINAL = 0x0020;             0x00000010;
@@ -71,7 +73,7 @@ abstract class AbstractCodeReference<N extends Node> implements JCodeReference<N
         int TRANSIENT = 0x0100;         0x00000080;
         int VOLATILE = 0x0200;          0x00000040;
         int STRICTFP = 0x1000;          0x00000800;
-        int DEFAULT = 0x2000;
+        int DEFAULT = 0x2000;           -----------
 
         */
 

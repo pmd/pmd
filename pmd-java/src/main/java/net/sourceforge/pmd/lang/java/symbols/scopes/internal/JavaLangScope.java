@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class JavaLangScope implements JScope {
+public final class JavaLangScope implements JScope {
 
     private static final JavaLangScope SINGLETON = new JavaLangScope();
     private final Map<String, JSymbolicClassReference> javaLang;
@@ -34,6 +34,8 @@ public class JavaLangScope implements JScope {
 
         List<Class<?>> classes = Arrays.asList(
                 // from a jdk8
+                // these may differ from a jdk version to another.
+                // Ideally we'd should have each LanguageVersionHandler store these I think
                 java.lang.AbstractMethodError.class,
                 java.lang.Appendable.class,
                 java.lang.ArithmeticException.class,

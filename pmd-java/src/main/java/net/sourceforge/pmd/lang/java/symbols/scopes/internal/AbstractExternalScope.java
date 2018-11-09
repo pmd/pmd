@@ -38,9 +38,14 @@ public abstract class AbstractExternalScope extends AbstractJScope {
     }
 
 
-    AbstractExternalScope(JScope parent) {
+    /**
+     * Constructor using the classloader of the parent.
+     *
+     * @param parent Parent scope
+     */
+    AbstractExternalScope(AbstractExternalScope parent) {
         super(parent);
-        this.classLoader = ((AbstractExternalScope) parent).classLoader;
+        this.classLoader = parent.classLoader;
     }
 
 

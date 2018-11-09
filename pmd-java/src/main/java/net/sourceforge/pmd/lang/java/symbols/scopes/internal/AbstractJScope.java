@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  */
 abstract class AbstractJScope implements JScope {
 
-    protected static final Iterator<?> EMPTY_ITERATOR = new Iterator<Object>() {
+    private static final Iterator<?> EMPTY_ITERATOR = new Iterator<Object>() {
         @Override
         public boolean hasNext() {
             return false;
@@ -47,10 +47,6 @@ abstract class AbstractJScope implements JScope {
         this.parent = parent;
     }
 
-    @SuppressWarnings("unchecked")
-    protected static <T> Iterator<T> emptyIterator() {
-        return (Iterator<T>) EMPTY_ITERATOR;
-    }
 
     @Override
     public JScope getParent() {
@@ -68,7 +64,7 @@ abstract class AbstractJScope implements JScope {
 
 
     @Override
-    public final Optional<JSymbolicClassReference> resolveTypeName(String simpleName) {
+    public Optional<JSymbolicClassReference> resolveTypeName(String simpleName) {
         Optional<JSymbolicClassReference> result = resolveTypeNameImpl(simpleName);
         return result.isPresent() ? result : parent.resolveTypeName(simpleName);
     }
@@ -84,6 +80,12 @@ abstract class AbstractJScope implements JScope {
     @Override
     public final Iterator<JMethodReference> resolveMethodName(String simpleName) {
         return chain(resolveMethodNameImpl(simpleName), () -> parent.resolveMethodName(simpleName));
+    }
+
+
+    @SuppressWarnings("unchecked")
+    protected static <T> Iterator<T> emptyIterator() {
+        return (Iterator<T>) EMPTY_ITERATOR;
     }
 
 
