@@ -20,7 +20,9 @@ public class ASTLiteralTest {
     @Test
     public void testIsStringLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST1);
-        assertTrue((literals.iterator().next()).isStringLiteral());
+        ASTLiteral literal = literals.iterator().next();
+        assertTrue(literal.isStringLiteral());
+        assertEquals("java.lang.String", literal.getType().getName());
     }
 
     @Test
@@ -32,31 +34,41 @@ public class ASTLiteralTest {
     @Test
     public void testIsIntIntLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST3);
-        assertTrue((literals.iterator().next()).isIntLiteral());
+        ASTLiteral literal = literals.iterator().next();
+        assertTrue(literal.isIntLiteral());
+        assertEquals("int", literal.getType().getName());
     }
 
     @Test
     public void testIsIntLongLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST4);
-        assertTrue((literals.iterator().next()).isLongLiteral());
+        ASTLiteral literal = literals.iterator().next();
+        assertTrue(literal.isLongLiteral());
+        assertEquals("long", literal.getType().getName());
     }
 
     @Test
     public void testIsFloatFloatLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST5);
-        assertTrue((literals.iterator().next()).isFloatLiteral());
+        ASTLiteral literal = literals.iterator().next();
+        assertTrue(literal.isFloatLiteral());
+        assertEquals("float", literal.getType().getName());
     }
 
     @Test
     public void testIsFloatDoubleLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST6);
-        assertTrue((literals.iterator().next()).isDoubleLiteral());
+        ASTLiteral literal = literals.iterator().next();
+        assertTrue(literal.isDoubleLiteral());
+        assertEquals("double", literal.getType().getName());
     }
 
     @Test
     public void testIsCharLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST7);
-        assertTrue((literals.iterator().next()).isCharLiteral());
+        ASTLiteral literal = literals.iterator().next();
+        assertTrue(literal.isCharLiteral());
+        assertEquals("char", literal.getType().getName());
     }
 
     @Test
