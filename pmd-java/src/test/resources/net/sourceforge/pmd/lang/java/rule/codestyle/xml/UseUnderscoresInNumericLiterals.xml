@@ -273,15 +273,15 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    int serialVersionUID = -2518308549741147689L;
+    static final long serialVersionUID = -2518308549741147689L;
 }
         ]]></code>
     </test-code>
     <test-code>
-        <rule-property name="acceptableDecimalLength">3</rule-property>
         <description>
             bad, testing acceptableDecimalLength
         </description>
+        <rule-property name="acceptableDecimalLength">3</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -292,14 +292,26 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <rule-property name="acceptableDecimalLength">5</rule-property>
         <description>
             ok, testing acceptableDecimalLength
         </description>
+        <rule-property name="acceptableDecimalLength">5</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     int value = 10000;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            bad, testing acceptableDecimalLength
+        </description>
+        <rule-property name="acceptableDecimalLength">10</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int value = -32_3639_6_9;
 }
      ]]></code>
     </test-code>

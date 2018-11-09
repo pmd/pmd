@@ -1357,7 +1357,7 @@ public class ClassInDefaultPackage {
           language="java"
           since="6.10.0"
           minimumLanguageVersion="1.7"
-          message="Numeric literals with more than 3 digits must use '_' as a separator"
+          message="Number {0} should separate every third digit with an underscore"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#useunderscoresinnumericliterals">
         <description>
@@ -1366,7 +1366,7 @@ public class ClassInDefaultPackage {
         <priority>3</priority>
         <properties>
             <property name="version" value="2.0"/>
-            <property name="acceptableDecimalLength" type="Integer" value="4" min="3" max="6"
+            <property name="acceptableDecimalLength" type="Integer" value="4" min="3" max="1000"
                       description="Maximum acceptable length within which the rule is not applicable"/>
             <property name="xpath">
                 <value>
@@ -1382,7 +1382,6 @@ public class ClassInDefaultPackage {
                  string-length($num) <= $acceptableDecimalLength
                    and (
                          not(contains($num,"_"))
-                         or matches($num, "^[0-9]{1,3}(_[0-9]{3})*$")
                        )
 		 or matches($num, "^[0-9]{1,3}(_[0-9]{3})*$")
                )
