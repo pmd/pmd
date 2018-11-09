@@ -5,9 +5,12 @@
 package net.sourceforge.pmd.lang.java.symbols.scopes.internal;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -15,12 +18,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.refs.JFieldReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
- * Scope for imports on demand. Precedence is lower than for other imports so they're put
- * in a higher-level scope.
+ * Scope for imports on demand. Precedence is the lowest of all imports so they're put
+ * in the highest-level scope.
  *
  * @author Clément Fournier
  * @since 7.0.0
@@ -30,10 +32,11 @@ public final class ImportOnDemandScope extends AbstractImportScope {
 
     private static final Logger LOG = Logger.getLogger(ImportOnDemandScope.class.getName());
 
+    private final List<String> importedPackagesAndTypes = new ArrayList<>();
 
-    // TODO PackageScope
-    ImportOnDemandScope(JScope parent, List<ASTImportDeclaration> importsOnDemand) {
-        super(parent);
+
+    ImportOnDemandScope(List<ASTImportDeclaration> importsOnDemand) {
+        super(JavaLangScope.getInstance());
 
         for (ASTImportDeclaration anImport : importsOnDemand) {
 
@@ -69,11 +72,38 @@ public final class ImportOnDemandScope extends AbstractImportScope {
                 // Type-Import-on-Demand Declaration
                 // This is of the kind <packageName>.*;
 
-                // TODO explore the resource directories? use Reflections library?
-                // https://stackoverflow.com/questions/520328/can-you-find-all-classes-in-a-package-using-reflection
-
+                importedPackagesAndTypes.add(anImport.getPackageName());
             }
         }
+    }
+
+
+    @Override
+    protected Optional<JSymbolicClassReference> resolveTypeNameImpl(String simpleName) {
+        Optional<JSymbolicClassReference> typename = super.resolveTypeNameImpl(simpleName);
+        if (typename.isPresent()) {
+            // Here the name comes from a static import-on-demand, so the type is a static nested type
+            return typename;
+        }
+
+        // This comes from a Type-Import-on-Demand Declaration
+        // We'll try to brute force it:
+        return importedPackagesAndTypes.stream()
+                                       // here 'pack' may be a package or a type name
+                                       .map(pack -> pack + "." + simpleName)
+                                       .map(fqcn -> {
+                                           try {
+                                               // the classloader remembers the types it has failed to load so that we need not care
+                                               return classLoader.loadClass(fqcn);
+                                           } catch (ClassNotFoundException | LinkageError e2) {
+                                               // ignore the exception. We don't know if the classpath is badly configured
+                                               // or if the type was never in this package in the first place
+                                               return null;
+                                           }
+                                       })
+                                       .filter(Objects::nonNull)
+                                       .map(c -> new JSymbolicClassReference(this, c))
+                                       .findAny();
     }
 
 

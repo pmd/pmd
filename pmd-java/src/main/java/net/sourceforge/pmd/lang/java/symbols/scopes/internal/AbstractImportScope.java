@@ -21,6 +21,17 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 /**
  * Base class for import scopes.
  *
+ * <p>Rules for shadowing of imports: bottom of https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.4.1
+ *
+ * <p>The simplest way to implement that is to layer the imports into several scopes.
+ * Here are the highest-level scopes of a compilation unit:
+ * <ul>
+ * <li> {@link JavaLangScope}: actually is defined as
+ * <li> {@link ImportOnDemandScope}: never shadow anything
+ * <li> PackageTypesScope:
+ * <li> {@link SingleImportScope}
+ * </ul>
+ *
  * @author Clément Fournier
  * @since 7.0.0
  */
