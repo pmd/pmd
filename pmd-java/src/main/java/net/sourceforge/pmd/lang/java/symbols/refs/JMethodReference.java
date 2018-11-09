@@ -15,17 +15,29 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class JMethodReference extends JAccessibleReference<ASTMethodDeclaration> {
+public final class JMethodReference extends JAccessibleReference<ASTMethodDeclaration> {
 
     private final boolean isDefault;
 
 
+    /**
+     * Constructor for methods found through reflection.
+     *
+     * @param declaringScope Scope of the declaration
+     * @param method         Method for which to create a reference
+     */
     public JMethodReference(JScope declaringScope, Method method) {
         super(declaringScope, method.getModifiers(), method.getName());
         this.isDefault = method.isDefault();
     }
 
 
+    /**
+     * Constructor using the AST node.
+     *
+     * @param declaringScope Scope of the declaration
+     * @param node           Node representing the method declaration
+     */
     public JMethodReference(JScope declaringScope, ASTMethodDeclaration node) {
         super(declaringScope, node, getModifiers(node), node.getMethodName());
         this.isDefault = node.isDefault();
@@ -57,12 +69,12 @@ public class JMethodReference extends JAccessibleReference<ASTMethodDeclaration>
     }
 
 
-    public final boolean isStatic() {
+    public boolean isStatic() {
         return Modifier.isStatic(modifiers);
     }
 
 
-    public final boolean isFinal() {
+    public boolean isFinal() {
         return Modifier.isFinal(modifiers);
     }
 

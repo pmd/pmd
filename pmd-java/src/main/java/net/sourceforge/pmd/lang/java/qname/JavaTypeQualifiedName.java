@@ -42,14 +42,6 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
     private boolean typeLoaded;
 
 
-    JavaTypeQualifiedName(ImmutableList<String> packages, ImmutableList<String> classes, ImmutableList<Integer> localIndices, Class<?> resolvedClass) {
-        this(packages, classes, localIndices, resolvedClass.getClassLoader());
-
-        this.representedType = resolvedClass;
-        this.typeLoaded = true;
-    }
-
-
     JavaTypeQualifiedName(ImmutableList<String> packages, ImmutableList<String> classes, ImmutableList<Integer> localIndices, ClassLoader classLoader) {
         Objects.requireNonNull(packages);
         Objects.requireNonNull(classes);
