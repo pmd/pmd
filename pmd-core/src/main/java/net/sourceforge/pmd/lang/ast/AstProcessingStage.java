@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.List;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -50,7 +49,7 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
  *
  *
  * @author Clément Fournier
- * @since 6.10.0
+ * @since 7.0.0
  */
 // @formatter:on
 @Experimental
@@ -85,26 +84,5 @@ public interface AstProcessingStage<T extends AstProcessingStage<T>> extends Com
      */
     void processAST(RootNode rootNode, AstAnalysisConfiguration configuration);
 
-
-    /**
-     * Returns true if the given rule depends on this stage,
-     * in which case, any ruleset containing that rule depends
-     * on this stage too.
-     *
-     * @param rule Rule to test
-     *
-     * @return true if the given rule depends on this stage.
-     */
-    // This can be customized for each step.
-    // For now we use the Rule.isDfa() / Rule.isTypeRes()
-    // In the future we can check an annotation.
-    // If the rule is an XPath rule, then additional work
-    // performed by the XPath analyser will be taken into account.
-
-    // This separation based on the type of rule means that the
-    // method for dependency determination should probably be on the
-    // Rule interface, but I don't know for now.
-    @Experimental
-    boolean ruleDependsOnThisStage(Rule rule);
 
 }
