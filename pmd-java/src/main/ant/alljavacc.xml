@@ -73,7 +73,7 @@
             <replacefilter token="public Object" value="default Object"/>
             <replacefilter token=");" value=") { return visit((JavaNode) node, data); }"/>
             <replacefilter token="default Object visit(JavaNode node, Object data) { return visit((JavaNode) node, data); }"
-                           value="default Object visit(JavaNode node, Object data) { return visitChildren(node, data); } default Object visitChildren(JavaNode node, Object data){ node.childrenAccept(this, data); return data;}"/>
+                           value="default Object visit(JavaNode node, Object data) { return node.childrenAccept(this, data); }"/>
         </replace>
 
 
