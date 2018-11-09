@@ -10,7 +10,7 @@
     <property name="base-visitor-interface-name" value="JavaParserVisitor" />
     <property name="base-visitor-interface-file" value="${target-package-dir}/${base-visitor-interface-name}.java" />
 
-    <property name="generic-sideeffect-visitor-interface-name" value="JavaGenericSideEffectingVisitor" />
+    <property name="generic-sideeffect-visitor-interface-name" value="SideEffectingVisitor" />
     <property name="generic-sideeffect-visitor-interface-file"
               value="${target-package-dir}/${generic-sideeffect-visitor-interface-name}.java" />
 

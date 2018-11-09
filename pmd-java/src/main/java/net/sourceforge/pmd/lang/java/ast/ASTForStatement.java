@@ -34,7 +34,7 @@ public class ASTForStatement extends AbstractJavaNode {
 
 
     @Override
-    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
     }
 

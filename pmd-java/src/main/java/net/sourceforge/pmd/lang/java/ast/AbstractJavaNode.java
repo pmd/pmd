@@ -52,7 +52,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
 
 
     @Override
-    public <T> void jjtAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
     }
 
@@ -72,7 +72,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
 
 
     @Override
-    public <T> void childrenAccept(JavaGenericSideEffectingVisitor<T> visitor, T data) {
+    public <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data) {
         if (children != null) {
             for (int i = 0, childrenLength = children.length; i < childrenLength; i++) {
                 ((JavaNode) children[i]).jjtAccept(visitor, data);

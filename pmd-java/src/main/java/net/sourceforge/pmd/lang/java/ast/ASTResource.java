@@ -20,6 +20,12 @@ public class ASTResource extends ASTFormalParameter {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
 }
 /*
  * JavaCC - OriginalChecksum=92734fc70bba91fd9422150dbf87d5c4 (do not edit this
