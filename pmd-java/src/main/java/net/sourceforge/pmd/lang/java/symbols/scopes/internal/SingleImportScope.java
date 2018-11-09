@@ -17,10 +17,11 @@ import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 import net.sourceforge.pmd.lang.java.symbols.refs.JFieldReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
+import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 
 /**
- * Scope for single imports. Has highest precedence for an import, and
+ * Scope for single imports. Has the highest precedence among imports.
  *
  * @author Clément Fournier
  * @since 7.0.0
@@ -35,10 +36,12 @@ public final class SingleImportScope extends AbstractImportScope {
      * import on demand declarations.
      *
      * @param parent        Parent scope
+     * @param loader        ClassLoader used to resolve static imports
      * @param singleImports Import declarations, must not be on-demand!
+     * @param thisPackage   Package name of the current compilation unit, used to check for accessibility
      */
-    SingleImportScope(SamePackageScope parent, List<ASTImportDeclaration> singleImports) {
-        super(parent);
+    SingleImportScope(SamePackageScope parent, PMDASMClassLoader loader, List<ASTImportDeclaration> singleImports, String thisPackage) {
+        super(parent, loader, thisPackage);
 
         for (ASTImportDeclaration anImport : singleImports) {
             // imports a single name
@@ -58,6 +61,8 @@ public final class SingleImportScope extends AbstractImportScope {
                     List<JMethodReference> methods = Arrays.stream(containerClass.getDeclaredMethods())
                                                            .filter(m -> m.getName().equals(simpleName))
                                                            .filter(m -> Modifier.isStatic(m.getModifiers()))
+                                                           // accessibility check
+                                                           .filter(m -> !Modifier.isPrivate(m.getModifiers()))
                                                            .map(m -> new JMethodReference(this, m))
                                                            .collect(Collectors.toList());
 
@@ -72,20 +77,14 @@ public final class SingleImportScope extends AbstractImportScope {
                     }
                 }
 
-                // else these imports cannot be found
+                // containerClass==null, the imports cannot be found
 
             } else {
                 // Single-Type-Import Declaration
 
-                Class<?> loadedClass = loadClass(name);
-                if (loadedClass == null) {
-                    // use true symbolic reference
-                    importedTypes.put(simpleName, new JSymbolicClassReference(this,
-                                                                              // FIXME the qualifiedname resolver should resolve this itself
-                                                                              (JavaTypeQualifiedName) QualifiedNameFactory.ofString(name)));
-                } else {
-                    importedTypes.put(simpleName, new JSymbolicClassReference(this, loadedClass));
-                }
+                importedTypes.put(simpleName, new JSymbolicClassReference(this,
+                                                                          // FIXME the qualifiedname resolver should resolve this itself
+                                                                          (JavaTypeQualifiedName) QualifiedNameFactory.ofString(name)));
             }
         }
     }

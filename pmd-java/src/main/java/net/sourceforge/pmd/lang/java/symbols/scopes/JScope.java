@@ -4,13 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.symbols.scopes;
 
-import java.util.Iterator;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
+import net.sourceforge.pmd.lang.java.symbols.scopes.internal.ImportOnDemandScope;
 import net.sourceforge.pmd.lang.java.symbols.scopes.internal.JavaLangScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SamePackageScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SingleImportScope;
 
 
 /**
@@ -26,6 +29,21 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.internal.JavaLangScope;
  * <p>A class scope contains the field and method declarations of the class, and
  * is linked to an inherited scope that represents methods, types and values that
  * are inherited from its supertypes. It doesn't contain them directly.
+ *
+ *
+ * <p>The following describes the most general form of the scope tree of a compilation unit.
+ * Higher in the list means higher in the tree, i.e., lower precedence. Note that {@link ImportOnDemandScope}
+ * has
+ *
+ * <ul>
+ * <li> {@link JavaLangScope}
+ * <li> {@link ImportOnDemandScope}: never shadow anything, is shadowed by everything (see javadoc for why it's not the root)
+ * <li> {@link SamePackageScope}: shadow imports-on-demands, is shadowed by single imports and lower
+ * <li> {@link SingleImportScope}: shadows all of the above, is shadowed by type definitions of this compilation unit
+ * </ul>*
+ *
+ *
+ *
  *
  * @author Clément Fournier
  * @since 7.0.0
@@ -61,7 +79,7 @@ public interface JScope {
      * @return An iterator enumerating methods with that name accessible
      * from the implicit receiver in this scope.
      */
-    Iterator<JMethodReference> resolveMethodName(String simpleName);
+    Stream<JMethodReference> resolveMethodName(String simpleName);
 
 
     /**

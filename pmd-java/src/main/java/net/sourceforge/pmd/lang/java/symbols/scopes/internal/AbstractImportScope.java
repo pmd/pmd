@@ -6,16 +6,17 @@ package net.sourceforge.pmd.lang.java.symbols.scopes.internal;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.java.symbols.refs.JFieldReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
 import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 
 /**
@@ -42,22 +43,26 @@ abstract class AbstractImportScope extends AbstractExternalScope {
     // Accessibility of imports is not checked, but:
     // * inaccessible single type imports or imports of static members from an inaccessible type
     //   may not occur, since compilation would have failed
-    // * imports of inaccessible members may occur (eg static protected members), but their *use*
+    // * single imports of inaccessible members may occur (eg static protected members), but their *use*
     //   will have been prohibited by the compiler so normally we should not be querying for them
     //   later-on
+    // Imports-on-demand will check the package tree.
 
     final Map<String, JSymbolicClassReference> importedTypes = new HashMap<>();
     final Map<String, List<JMethodReference>> importedStaticMethods = new HashMap<>();
     final Map<String, JFieldReference> importedStaticFields = new HashMap<>();
 
 
-    AbstractImportScope(JScope parent, ClassLoader classLoader) {
-        super(parent, classLoader);
-    }
-
-
-    AbstractImportScope(AbstractExternalScope parent) {
-        super(parent);
+    /**
+     * Constructor with the parent scope and the auxclasspath classloader.
+     * Used to build the top-level scope.
+     *
+     * @param parent      Parent scope
+     * @param classLoader ClassLoader used to resolve e.g. import-on-demand
+     * @param thisPackage Package name of the current compilation unit, used to check for accessibility
+     */
+    AbstractImportScope(JScope parent, PMDASMClassLoader classLoader, String thisPackage) {
+        super(parent, classLoader, thisPackage);
     }
 
 
@@ -68,8 +73,8 @@ abstract class AbstractImportScope extends AbstractExternalScope {
 
 
     @Override
-    protected Iterator<JMethodReference> resolveMethodNameImpl(String simpleName) {
-        return importedStaticMethods.getOrDefault(simpleName, Collections.emptyList()).iterator();
+    protected Stream<JMethodReference> resolveMethodNameImpl(String simpleName) {
+        return importedStaticMethods.getOrDefault(simpleName, Collections.emptyList()).stream();
     }
 
 

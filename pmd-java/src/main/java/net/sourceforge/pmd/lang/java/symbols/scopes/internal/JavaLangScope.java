@@ -7,10 +7,10 @@ package net.sourceforge.pmd.lang.java.symbols.scopes.internal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
@@ -164,8 +164,8 @@ public final class JavaLangScope implements JScope {
 
 
     @Override
-    public Iterator<JMethodReference> resolveMethodName(String simpleName) {
-        return AbstractJScope.emptyIterator();
+    public Stream<JMethodReference> resolveMethodName(String simpleName) {
+        return Stream.empty();
     }
 
 

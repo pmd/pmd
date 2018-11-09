@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.scopes.internal;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
@@ -23,18 +21,6 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  */
 abstract class AbstractJScope implements JScope {
 
-    private static final Iterator<?> EMPTY_ITERATOR = new Iterator<Object>() {
-        @Override
-        public boolean hasNext() {
-            return false;
-        }
-
-
-        @Override
-        public Object next() {
-            throw new NoSuchElementException("Empty iterator!");
-        }
-    };
     private final JScope parent;
 
 
@@ -57,7 +43,7 @@ abstract class AbstractJScope implements JScope {
     protected abstract Optional<JSymbolicClassReference> resolveTypeNameImpl(String simpleName);
 
 
-    protected abstract Iterator<JMethodReference> resolveMethodNameImpl(String simpleName);
+    protected abstract Stream<JMethodReference> resolveMethodNameImpl(String simpleName);
 
 
     protected abstract Optional<JVarReference> resolveValueNameImpl(String simpleName);
@@ -78,50 +64,9 @@ abstract class AbstractJScope implements JScope {
 
 
     @Override
-    public final Iterator<JMethodReference> resolveMethodName(String simpleName) {
-        return chain(resolveMethodNameImpl(simpleName), () -> parent.resolveMethodName(simpleName));
+    public final Stream<JMethodReference> resolveMethodName(String simpleName) {
+        return Stream.concat(resolveMethodNameImpl(simpleName), parent.resolveMethodName(simpleName));
     }
 
 
-    @SuppressWarnings("unchecked")
-    protected static <T> Iterator<T> emptyIterator() {
-        return (Iterator<T>) EMPTY_ITERATOR;
-    }
-
-
-    private static <T> Iterator<T> chain(Iterator<? extends T> fst, Supplier<Iterator<? extends T>> sndSupplier) {
-        return new Iterator<T>() {
-
-            Iterator<? extends T> snd;
-
-
-            @Override
-            public boolean hasNext() {
-                if (fst.hasNext()) {
-                    return true;
-                } else if (snd != null) {
-                    return snd.hasNext();
-                } else if (snd == null) {
-                    snd = sndSupplier.get();
-                    return snd.hasNext();
-                } else {
-                    return false;
-                }
-            }
-
-
-            @Override
-            public T next() {
-                if (fst.hasNext()) {
-                    return fst.next();
-                } else if (snd == null) {
-                    throw new IllegalStateException("You should have called hasNext");
-                } else if (snd.hasNext()) {
-                    return snd.next();
-                } else {
-                    throw new NoSuchElementException("Empty iterator!");
-                }
-            }
-        };
-    }
 }
