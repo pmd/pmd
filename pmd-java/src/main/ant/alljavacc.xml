@@ -3,7 +3,10 @@
     <property name="javacc-home.path" value="target/lib"/>
     <property name="target-package-dir" value="${target}/net/sourceforge/pmd/lang/java/ast"/>
 
+    <!-- Matches the names of deprecated node types to add a @Deprecated annotation -->
+    <property name="deprecated-nodes-pattern" value="ASTR(UN)?SIGNEDSHIFT" />
 
+    <!-- Visitor names -->
     <property name="base-visitor-interface-name" value="JavaParserVisitor"/>
     <property name="base-visitor-interface-file" value="${target-package-dir}/${base-visitor-interface-name}.java"/>
 
@@ -11,6 +14,7 @@
     <property name="generic-sideeffect-visitor-interface-file"
               value="${target-package-dir}/${generic-sideeffect-visitor-interface-name}.java"/>
 
+    <!-- TARGETS -->
 
     <target name="alljavacc"
             description="Generates all JavaCC aspects within PMD"
@@ -66,6 +70,8 @@
 
 
         <!-- Base visitor with Object everywhere -->
+        <!-- We perform most changes like adding default methods, etc on this one -->
+        <!-- Changes are then copied on other visitors -->
         <replace file="${base-visitor-interface-file}">
             <replacefilter token="JavaParserVisitor" value="${base-visitor-interface-name}"/>
             <replacefilter token="SimpleNode" value="JavaNode"/>
@@ -76,9 +82,11 @@
                            value="default Object visit(JavaNode node, Object data) { return node.childrenAccept(this, data); }"/>
         </replace>
 
-
-        <!-- Generic visitor with Object everywhere -->
-
+        <!-- Deprecated nodes -->
+        <replaceregexp file="${base-visitor-interface-file}"
+                       match="default Object visit\((${deprecated-nodes-pattern})"
+                       byline="true"
+                       replace="@Deprecated \0"/>
 
         <!-- Side effecting visitor, no return type, one generic parameter -->
         <copy file="${base-visitor-interface-file}" tofile="${generic-sideeffect-visitor-interface-file}"/>
