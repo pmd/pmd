@@ -63,7 +63,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     @Override
     public Object childrenAccept(JavaParserVisitor visitor, Object data) {
         if (children != null) {
-            for (int i = 0, childrenLength = children.length; i < childrenLength; ++i) {
+            for (int i = 0; i < children.length; ++i) {
                 ((JavaNode) children[i]).jjtAccept(visitor, data);
             }
         }
@@ -74,7 +74,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     @Override
     public <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data) {
         if (children != null) {
-            for (int i = 0, childrenLength = children.length; i < childrenLength; i++) {
+            for (int i = 0; i < children.length; i++) {
                 ((JavaNode) children[i]).jjtAccept(visitor, data);
             }
         }
