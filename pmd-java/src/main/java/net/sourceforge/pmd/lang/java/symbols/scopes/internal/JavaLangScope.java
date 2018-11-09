@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import net.sourceforge.pmd.lang.java.symbols.refs.JClassReference;
+import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
@@ -20,14 +21,13 @@ import net.sourceforge.pmd.lang.java.symbols.refs.JClassReference;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class JavaLangScope extends AbstractJScope {
+public class JavaLangScope implements JScope {
 
     private static final JavaLangScope SINGLETON = new JavaLangScope();
-    private final Map<String, JClassReference> javaLang;
+    private final Map<String, JSymbolicClassReference> javaLang;
 
 
     private JavaLangScope() {
-        super(null);
 
         List<Class<?>> classes = Arrays.asList(
                 // from a jdk8
@@ -130,10 +130,11 @@ public class JavaLangScope extends AbstractJScope {
                 java.lang.Void.class
         );
 
-        Map<String, JClassReference> theJavaLang = new HashMap<>();
+        Map<String, JSymbolicClassReference> theJavaLang = new HashMap<>();
 
         for (Class<?> aClass : classes) {
-            JClassReference reference = new JClassReference(this, aClass);
+
+            JSymbolicClassReference reference = new JSymbolicClassReference(this, aClass);
 
             theJavaLang.put(aClass.getSimpleName(), reference);
             theJavaLang.put(aClass.getCanonicalName(), reference);
@@ -143,7 +144,13 @@ public class JavaLangScope extends AbstractJScope {
 
 
     @Override
-    public Optional<JClassReference> resolveTypeName(String name) {
+    public JScope getParent() {
+        return null;
+    }
+
+
+    @Override
+    public Optional<JSymbolicClassReference> resolveTypeName(String name) {
         if (javaLang.containsKey(name)) {
             return Optional.of(javaLang.get(name));
         }

@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.java.symbols.scopes;
 import java.util.Iterator;
 import java.util.Optional;
 
-import net.sourceforge.pmd.lang.java.symbols.refs.JClassReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
+import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
 import net.sourceforge.pmd.lang.java.symbols.scopes.internal.JavaLangScope;
 
 
@@ -56,7 +56,7 @@ public interface JScope {
      *
      * @return The class reference if it can be found, otherwise an empty optional
      */
-    Optional<JClassReference> resolveTypeName(String simpleName);
+    Optional<JSymbolicClassReference> resolveTypeName(String simpleName);
 
 
     /**

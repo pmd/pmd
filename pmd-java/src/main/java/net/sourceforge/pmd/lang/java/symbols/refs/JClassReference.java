@@ -7,7 +7,11 @@ package net.sourceforge.pmd.lang.java.symbols.refs;
 import java.lang.reflect.Modifier;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.internal.JavaLangScope;
 
 
 /**
@@ -17,25 +21,51 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class JClassReference extends JAccessibleReference<ASTAnyTypeDeclaration> {
+public final class JClassReference extends JAccessibleReference<ASTAnyTypeDeclaration> {
 
-    private final Class<?> theClass;
+    private final JavaTypeQualifiedName fqcn;
 
 
-    public JClassReference(JScope declaringScope, Class<?> clazz) {
-        super(declaringScope, clazz.getModifiers(), clazz.getSimpleName());
-        theClass = clazz;
+    /**
+     * Constructor using a FQCN, used to create a full class reference from
+     * a symbolic reference. The type must have been loaded correctly!
+     *
+     * @param declaringScope Scope of the declaration
+     * @param fqcn           FQCN with resolved type
+     */
+    JClassReference(JScope declaringScope, JavaTypeQualifiedName fqcn) {
+        super(declaringScope, fqcn.getType().getModifiers(), fqcn.getClassSimpleName());
+        this.fqcn = fqcn;
     }
 
 
-    public JClassReference(JScope declaringScope, ASTAnyTypeDeclaration node, int modifiers) {
-        super(declaringScope, node, modifiers, node.getImage());
-        theClass = node.getType();
+    /**
+     * Constructor using a class, used to create a reference for a class
+     * found by reflection, or a class known at compile-time (eg in {@link JavaLangScope}).
+     *
+     * @param declaringScope Scope of the declaration
+     * @param clazz          Class represented by this reference
+     */
+    public JClassReference(JScope declaringScope, Class<?> clazz) {
+        super(declaringScope, clazz.getModifiers(), clazz.getSimpleName());
+        this.fqcn = QualifiedNameFactory.ofClass(clazz);
+    }
+
+
+    /**
+     * Constructor using an AST node, probably to be used during scope resolution AST visit.
+     *
+     * @param declaringScope Declaring scope
+     * @param node           Node of the declaration
+     */
+    public JClassReference(JScope declaringScope, ASTAnyTypeDeclaration node) {
+        super(declaringScope, node, getModifiers(node), node.getImage());
+        this.fqcn = node.getQualifiedName();
     }
 
 
     public Class<?> getClassObject() {
-        return theClass;
+        return fqcn.getType();
     }
 
 
@@ -49,13 +79,28 @@ public class JClassReference extends JAccessibleReference<ASTAnyTypeDeclaration>
     }
 
 
-    public final boolean isStatic() {
+    public boolean isStatic() {
         return Modifier.isStatic(modifiers);
     }
 
 
-    public final boolean isFinal() {
+    public boolean isFinal() {
         return Modifier.isFinal(modifiers);
+    }
+
+
+    public boolean isInterface() {
+        return Modifier.isInterface(modifiers);
+    }
+
+
+    private static int getModifiers(ASTAnyTypeDeclaration declaration) {
+        int i = accessNodeToModifiers(declaration);
+
+        if (declaration.getTypeKind().equals(TypeKind.INTERFACE)) {
+            i |= Modifier.INTERFACE;
+        }
+        return i;
     }
 
 }
