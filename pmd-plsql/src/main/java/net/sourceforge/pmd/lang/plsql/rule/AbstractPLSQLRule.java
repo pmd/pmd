@@ -95,7 +95,7 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
     @Override
     public final boolean dependsOn(AstProcessingStage<?> stage) {
         if (!(stage instanceof PlsqlProcessingStage)) {
-            throw new IllegalArgumentException("Processing stage wasn't a Java one: " + stage);
+            throw new IllegalArgumentException("Processing stage wasn't a " + PLSQLLanguageModule.NAME + " one: " + stage);
         }
         return ((PlsqlProcessingStage) stage).ruleDependsOnThisStage(this);
     }
