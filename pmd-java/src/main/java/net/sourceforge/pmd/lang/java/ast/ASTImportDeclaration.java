@@ -135,6 +135,11 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         return visitor.visit(this, data);
     }
 
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
     public void setPackage(Package packge) {
         this.pkg = packge;
     }

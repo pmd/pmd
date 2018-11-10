@@ -39,6 +39,13 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
         return visitor.visit(this, data);
     }
 
+
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
         for (int i = 0; i < jjtGetNumChildren(); i++) {

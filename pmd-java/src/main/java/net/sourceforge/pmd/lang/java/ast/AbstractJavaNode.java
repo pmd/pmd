@@ -50,6 +50,13 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         return visitor.visit(this, data);
     }
 
+
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Accept the visitor. *
      */
@@ -62,6 +69,17 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         }
         return data;
     }
+
+
+    @Override
+    public <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data) {
+        if (children != null) {
+            for (int i = 0; i < children.length; i++) {
+                ((JavaNode) children[i]).jjtAccept(visitor, data);
+            }
+        }
+    }
+
 
     @Override
     public Scope getScope() {

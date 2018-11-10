@@ -36,6 +36,12 @@ public class ASTInstanceOfExpression extends AbstractJavaTypeNode {
     }
 
 
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Gets the type against which the expression is tested.
      */

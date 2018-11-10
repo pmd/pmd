@@ -25,6 +25,13 @@ public class ASTExplicitConstructorInvocation extends AbstractJavaNode {
         return visitor.visit(this, data);
     }
 
+
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     public int getArgumentCount() {
         if (this.jjtGetNumChildren() == 1) {
             return ((ASTArguments) this.jjtGetChild(0)).getArgumentCount();

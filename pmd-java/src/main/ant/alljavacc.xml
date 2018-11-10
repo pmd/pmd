@@ -1,6 +1,20 @@
 <project name="pmd" default="alljavacc" basedir="../../">
 
     <property name="javacc-home.path" value="target/lib" />
+    <property name="target-package-dir" value="${target}/net/sourceforge/pmd/lang/java/ast" />
+
+    <!-- Matches the names of deprecated node types to add a @Deprecated annotation -->
+    <property name="deprecated-nodes-pattern" value="ASTR(UN)?SIGNEDSHIFT" />
+
+    <!-- Visitor names -->
+    <property name="base-visitor-interface-name" value="JavaParserVisitor" />
+    <property name="base-visitor-interface-file" value="${target-package-dir}/${base-visitor-interface-name}.java" />
+
+    <property name="generic-sideeffect-visitor-interface-name" value="SideEffectingVisitor" />
+    <property name="generic-sideeffect-visitor-interface-file"
+              value="${target-package-dir}/${generic-sideeffect-visitor-interface-name}.java" />
+
+    <!-- TARGETS -->
 
     <target name="alljavacc"
             description="Generates all JavaCC aspects within PMD"
@@ -9,6 +23,7 @@
     <target name="checkUpToDate">
         <uptodate property="javaccBuildNotRequired" targetfile="${target}/last-generated-timestamp">
             <srcfiles dir="etc/grammar" includes="*.jj*"/>
+            <srcfiles file="src/main/ant/alljavacc.xml" />
         </uptodate>
         <echo message="up to date check: javaccBuildNotRequired=${javaccBuildNotRequired}"/>
     </target>
@@ -26,42 +41,73 @@
     </target>
 
     <target name="javajjtree" description="Generates the Java parser and AST source files" unless="javaccBuildNotRequired">
-        <delete dir="${target}/net/sourceforge/pmd/lang/java/ast" />
-        <mkdir dir="${target}/net/sourceforge/pmd/lang/java/ast" />
+        <delete dir="${target-package-dir}" />
+        <mkdir dir="${target-package-dir}" />
         <jjtree target="etc/grammar/Java.jjt"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/java/ast"
+                outputdirectory="${target-package-dir}"
                 javacchome="${javacc-home.path}" />
         <!-- Ensure generated using CharStream interface -->
         <javacc static="false"
                 usercharstream="true"
-                target="${target}/net/sourceforge/pmd/lang/java/ast/Java.jj"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/java/ast"
+                target="${target-package-dir}/Java.jj"
+                outputdirectory="${target-package-dir}"
                 javacchome="${javacc-home.path}" />
-        <delete file="${target}/net/sourceforge/pmd/lang/java/ast/Node.java" />
-        <delete file="${target}/net/sourceforge/pmd/lang/java/ast/SimpleNode.java" />
-        <delete file="${target}/net/sourceforge/pmd/lang/java/ast/CharStream.java" />
-        <delete file="${target}/net/sourceforge/pmd/lang/java/ast/TokenMgrError.java" />
+        <delete file="${target-package-dir}/Node.java" />
+        <delete file="${target-package-dir}/SimpleNode.java" />
+        <delete file="${target-package-dir}/CharStream.java" />
+        <delete file="${target-package-dir}/TokenMgrError.java" />
 
-        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/JavaParserTokenManager.java"
+        <replace file="${target-package-dir}/JavaParserTokenManager.java"
                  token="class JavaParserTokenManager"
                  value="class JavaParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
-        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/JavaParser.java"
+        <replace file="${target-package-dir}/JavaParser.java"
                  token="throw new Error"
                  value="throw new RuntimeException" />
-        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/ParseException.java"
+        <replace file="${target-package-dir}/ParseException.java"
                  token="extends Exception"
                  value="extends net.sourceforge.pmd.lang.ast.ParseException" />
-        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/JavaParserVisitor.java"
-                 token="SimpleNode"
-                 value="JavaNode" />
-        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/JJTJavaParserState.java">
+
+        <!-- VISITORS -->
+
+
+        <!-- Base visitor with Object everywhere -->
+        <!-- We perform most changes like adding default methods, etc on this one -->
+        <!-- Changes are then copied on other visitors -->
+        <replace file="${base-visitor-interface-file}">
+            <replacefilter token="JavaParserVisitor" value="${base-visitor-interface-name}" />
+            <replacefilter token="SimpleNode" value="JavaNode" />
+            <!-- Default methods -->
+            <replacefilter token="public Object" value="default Object" />
+            <replacefilter token=");" value=") { return visit((JavaNode) node, data); }" />
+            <replacefilter token="default Object visit(JavaNode node, Object data) { return visit((JavaNode) node, data); }"
+                           value="default Object visit(JavaNode node, Object data) { return node.childrenAccept(this, data); }" />
+        </replace>
+
+        <!-- Deprecated nodes -->
+        <replaceregexp file="${base-visitor-interface-file}"
+                       match="default Object visit\((${deprecated-nodes-pattern})"
+                       byline="true"
+                       replace="@Deprecated \0" />
+
+        <!-- Side effecting visitor, no return type, one generic parameter -->
+        <copy file="${base-visitor-interface-file}" tofile="${generic-sideeffect-visitor-interface-file}" />
+        <replace file="${generic-sideeffect-visitor-interface-file}">
+            <replacefilter token="${base-visitor-interface-name}" value="${generic-sideeffect-visitor-interface-name}&lt;T>" />
+
+            <replacefilter token="Object" value="T" />
+            <replacefilter token="T visit" value="void visit" />
+            <replacefilter token="return data;" value="" />
+            <replacefilter token="return " value="" />
+        </replace>
+
+        <replace file="${target-package-dir}/JJTJavaParserState.java">
             <replacetoken>public class</replacetoken>
             <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.Node;
 
 public class]]></replacevalue>
         </replace>
 
-        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/Token.java">
+        <replace file="${target-package-dir}/Token.java">
             <replacetoken><![CDATA[      default : return new Token(ofKind, image);
     }
   }
@@ -83,7 +129,7 @@ public class]]></replacevalue>
 ]]></replacevalue>
         </replace>
 
-        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/Token.java">
+        <replace file="${target-package-dir}/Token.java">
             <replacetoken>public class Token implements java.io.Serializable</replacetoken>
             <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.GenericToken;
 
@@ -91,7 +137,7 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
         </replace>
 
         <!--Add implementation methods of GenericToken-->
-        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/Token.java">
+        <replace file="${target-package-dir}/Token.java">
             <replacetoken>public Token specialToken;</replacetoken>
             <replacevalue><![CDATA[public Token specialToken;
 
@@ -134,7 +180,7 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
         </replace>
 
         <delete>
-            <fileset dir="${target}/net/sourceforge/pmd/lang/java/ast">
+            <fileset dir="${target-package-dir}">
                 <include name="AST*.java" />
             </fileset>
         </delete>

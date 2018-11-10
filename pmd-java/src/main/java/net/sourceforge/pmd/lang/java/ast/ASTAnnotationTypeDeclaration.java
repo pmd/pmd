@@ -28,6 +28,12 @@ public class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration {
 
 
     @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
+    @Override
     public TypeKind getTypeKind() {
         return TypeKind.ANNOTATION;
     }

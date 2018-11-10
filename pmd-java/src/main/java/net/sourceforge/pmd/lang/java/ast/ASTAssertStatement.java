@@ -29,6 +29,12 @@ public class ASTAssertStatement extends AbstractJavaNode {
     }
 
 
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns the expression tested by this assert statement.
      */
