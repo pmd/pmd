@@ -59,19 +59,21 @@ public final class SingleImportScope extends AbstractImportScope {
                 if (containerClass != null) {
 
                     List<JMethodReference> methods = Arrays.stream(containerClass.getDeclaredMethods())
-                                                           .filter(m -> m.getName().equals(simpleName))
                                                            .filter(m -> Modifier.isStatic(m.getModifiers()))
-                                                           // accessibility check
-                                                           .filter(m -> !Modifier.isPrivate(m.getModifiers()))
+                                                           .filter(this::isAccessible)
+                                                           .filter(m -> m.getName().equals(simpleName))
                                                            .map(m -> new JMethodReference(this, m))
                                                            .collect(Collectors.toList());
 
                     importedStaticMethods.put(simpleName, methods);
 
+                    // check for fields
+
                     try {
                         Field field = containerClass.getDeclaredField(simpleName);
-                        // it must be static, was already checked by compiler
-                        importedStaticFields.put(simpleName, new JFieldReference(this, field));
+                        if (field != null && Modifier.isStatic(field.getModifiers())) {
+                            importedStaticFields.put(simpleName, new JFieldReference(this, field));
+                        }
                     } catch (NoSuchFieldException e) {
                         // ignore eh
                     }

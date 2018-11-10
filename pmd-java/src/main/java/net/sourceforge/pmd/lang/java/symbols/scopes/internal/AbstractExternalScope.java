@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public abstract class AbstractExternalScope extends AbstractJScope {
+abstract class AbstractExternalScope extends AbstractJScope {
 
     /** Classloader with analysis classpath. */
     protected final PMDASMClassLoader classLoader;
@@ -65,14 +65,14 @@ public abstract class AbstractExternalScope extends AbstractJScope {
      * but won't cause problems in practice.
      */
     private boolean isAccessible(int modifiers, String memberPackageName) {
-        if (Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) {
-            // We consider protected members accessible here, which is an approximation.
+        if (Modifier.isPublic(modifiers)) {
+            return true;
+        } else if (Modifier.isPrivate(modifiers) || Modifier.isProtected(modifiers)) {
+            // We consider protected members inaccessible here, which is an first approximation.
             // In the ACU, the name is accessible only inside classes that inherit from the declaring class.
             // But inheriting from a class makes its static members accessible via simple name too.
             // So this will actually be picked up by InheritedScope when in the subclass.
             // If not in the subclass, the compilation would have failed.
-            return true;
-        } else if (Modifier.isPrivate(modifiers)) {
             return false;
         } else {
             // then it's package private
