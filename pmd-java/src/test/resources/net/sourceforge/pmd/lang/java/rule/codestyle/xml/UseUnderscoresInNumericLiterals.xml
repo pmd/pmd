@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>
+            ok, numeric literal with correct '_' usage
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int num = 1_000_000;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            bad, numeric literal without '_'
+        </description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Integer num = 2000000;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            bad, numeric literal used as a method parameter without '_'
+        </description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private callBar() {
+        bar(10000);
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, float value with less than 3 numbers.
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    float number = 3.14f;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            bad, double value without '_'
+        </description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    double number = 314159265.359;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, numeric literal used as a method parameter with '_'
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private callBar() {
+        bar(314_159_265.359);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Long value with 'l' used as a method parameter with '_'
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private callBar() {
+        bar(314_159_265l);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            bad, numeric literal with incorrect '_' usage
+        </description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Integer number = 1_11_21_1211;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Double value with 'D' used as a method parameter with '_'
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private callBar() {
+        bar(314_159_265.359D);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Float value with 'F' with less than 3 numbers
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Float number = 36.39F;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Double value with 'd' with correct '_' usage
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Double number = 35_007.93d;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Long value with 'L' used as a method parameter with '_'
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private callBar() {
+        bar(314_159_265L);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, String value with '_'
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    String pi = "zcx_xvc_cbv_vnb_bmn";
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, String value without '_'
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    String pi = "3639";
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Numeric Literal in binary
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = 0b100111;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Numeric Literal in octal
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = 047474747;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Numeric Literal in hexadecimal
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = 0xabcdef;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Numeric Literal in negative binary
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = -0b100111;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Numeric Literal in negative octal
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = -047474747;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Numeric Literal in negative hexadecimal
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = -0xabcdef;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Numeric Literal with exponent
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = 39e1234;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            bad, Negative exponent without '_'
+        </description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = 36e-11234;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Numeric Literal with positive exponent
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int binary = 100e+10;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Lengthy numeric literal with variable name as serialVersionUID
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static final long serialVersionUID = -2518308549741147689L;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            bad, testing acceptableDecimalLength
+        </description>
+        <rule-property name="acceptableDecimalLength">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private callBar() {
+        bar(1000);
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, testing acceptableDecimalLength
+        </description>
+        <rule-property name="acceptableDecimalLength">5</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int value = 10000;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            bad, testing acceptableDecimalLength
+        </description>
+        <rule-property name="acceptableDecimalLength">15</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int value = -32_3639_6_9;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Decimal number test
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int value = 0.3936;
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -116,6 +116,7 @@ folder: pmd/rules
 *   [UnnecessaryReturn](pmd_rules_java_codestyle.html#unnecessaryreturn): Avoid the use of unnecessary return statements.
 *   [UselessParentheses](pmd_rules_java_codestyle.html#uselessparentheses): Useless parentheses should be removed.
 *   [UselessQualifiedThis](pmd_rules_java_codestyle.html#uselessqualifiedthis): Reports qualified this usages in the same class.
+*   [UseUnderscoresInNumericLiterals](pmd_rules_java_codestyle.html#useunderscoresinnumericliterals): Numeric literals with more than 3 digits must use '_' as a separator.
 *   [VariableNamingConventions](pmd_rules_java_codestyle.html#variablenamingconventions): <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> A variable naming conventions rule - customize this to your liking.  Currently, itchecks for fina...
 *   [WhileLoopsMustUseBraces](pmd_rules_java_codestyle.html#whileloopsmustusebraces): <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid using 'while' statements without using braces to surround the code block. If the code forma...
 
