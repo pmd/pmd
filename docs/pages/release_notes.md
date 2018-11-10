@@ -16,9 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 #### New Rules
 
-*   The new Java rule [`UseUnderscoresInNumericLiterals`](https://pmd.github.io/pmd-6.10.0/pmd_rules_java_codestyle.html#useunderscoresinnumericliterals)
-    (`java-codestyle`) verifies that numeric literals over a given length (4 chars by default, but configurable) are using underscores every 3 digits for readability.
-    The rule only applies to Java 7+ codebases.
+*   The new Java rule {% rule "java/codestyle/UseUnderscoresInNumericLiterals" %} (`java-codestyle`)
+    verifies that numeric literals over a given length (4 chars by default, but configurable) are using
+    underscores every 3 digits for readability. The rule only applies to Java 7+ codebases.
 
 ### Fixed Issues
 
