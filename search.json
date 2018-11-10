@@ -1381,6 +1381,15 @@
 ,
 
 {
+"title": "UseUnderscoresInNumericLiterals (Java, Code Style)",
+"tags": "",
+"keywords": "UseUnderscoresInNumericLiterals",
+"url": "pmd_rules_java_codestyle.html#useunderscoresinnumericliterals",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
 "title": "OnlyOneReturn (Java, Code Style)",
 "tags": "",
 "keywords": "OnlyOneReturn",

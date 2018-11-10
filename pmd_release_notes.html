@@ -1268,6 +1268,14 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="new-rules">New Rules</h4>
+
+<ul>
+  <li>The new Java rule <a href="https://pmd.github.io/pmd-6.10.0/pmd_rules_java_codestyle.html#useunderscoresinnumericliterals"><code class="highlighter-rouge">UseUnderscoresInNumericLiterals</code></a>
+(<code class="highlighter-rouge">java-codestyle</code>) verifies that numeric literals over a given length (4 chars by default, but configurable) are using underscores every 3 digits for readability.
+The rule only applies to Java 7+ codebases.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1279,6 +1287,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   </li>
   <li>java-codestyle
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1232">#1232</a>: [java] Detector for large numbers not separated by _</li>
       <li><a href="https://github.com/pmd/pmd/issues/1372">#1372</a>: [java] false positive for UselessQualifiedThis</li>
     </ul>
   </li>
@@ -1289,6 +1298,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/1384">#1384</a>: [java] New Rule - UseUnderscoresInNumericLiterals - <a href="https://github.com/rajeshggwp">RajeshR</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1424">#1424</a>: [doc] #1341 Updating Regex Values in default Value Property - <a href="https://github.com/vishva007">avishvat</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1428">#1428</a>: [core] Upgrading JCommander from 1.48 to 1.72 - <a href="https://github.com/Thunderforge">Thunderforge</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1430">#1430</a>: [doc] Who really knows regex? - <a href="https://github.com/dpilafian">Dem Pilafian</a></li>
@@ -1310,7 +1320,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Nov 9, 2018 <br />
+ Site last generated: Nov 10, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
