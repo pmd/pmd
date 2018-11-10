@@ -307,11 +307,22 @@ public class Foo {
         <description>
             bad, testing acceptableDecimalLength
         </description>
-        <rule-property name="acceptableDecimalLength">10</rule-property>
+        <rule-property name="acceptableDecimalLength">15</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     int value = -32_3639_6_9;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            ok, Decimal number test
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int value = 0.3936;
 }
      ]]></code>
     </test-code>

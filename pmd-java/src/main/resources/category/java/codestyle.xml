@@ -1375,9 +1375,9 @@ public class ClassInDefaultPackage {
  @LongLiteral = true() or
  @DoubleLiteral = true() or
  @FloatLiteral = true()]
- [ not (matches(@Image, "^0([xb]?[0-9a-fA-F]+)?$"))]
+ [ not (matches(@Image, "^0[^.]"))]
  [
-  some $num in tokenize(@Image, "[.dDfFlL]|[eE][\+-]?")
+  some $num in tokenize(@Image, "[.dDfFlLeE\-\+]")
   satisfies not(
                  string-length($num) <= $acceptableDecimalLength
                    and (

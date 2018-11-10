@@ -2219,14 +2219,13 @@ Numeric literals with more than 3 digits must use '_' as a separator.
  @LongLiteral = true() or
  @DoubleLiteral = true() or
  @FloatLiteral = true()]
- [ not (matches(@Image, "^0([xb]?[0-9a-fA-F]+)?$"))]
+ [ not (matches(@Image, "^0[^.]"))]
  [
-  some $num in tokenize(@Image, "[.dDfFlL]|[eE][\+-]?")
+  some $num in tokenize(@Image, "[.dDfFlLeE\-\+]")
   satisfies not(
                  string-length($num) <= $acceptableDecimalLength
                    and (
                          not(contains($num,"_"))
-                         or matches($num, "^[0-9]{1,3}(_[0-9]{3})*$")
                        )
 		 or matches($num, "^[0-9]{1,3}(_[0-9]{3})*$")
                )
