@@ -19,15 +19,18 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
+
 
 public class ParserTstUtil {
 
@@ -229,6 +232,43 @@ public class ParserTstUtil {
         languageVersionHandler.getSymbolFacade().start(rootNode);
         return rootNode;
     }
+
+
+    public static <T> List<T> selectNodes(String source, Class<T> resultType, String xpath) throws JaxenException {
+        return selectNodes(source, "1.5", resultType, xpath);
+    }
+
+
+    // This is the master overload, others just default the parameters
+    public static <T> List<T> selectNodes(String source, String version, Class<T> resultType, String xpath) throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveJava(version, source);
+        return convertList(acu.findChildNodesWithXPath(xpath), resultType);
+    }
+
+
+    public static <T> List<T> selectNodes(Class<?> source, Class<T> resultType) {
+        return parseAndTypeResolveJava("1.5", getSourceFromClass(source)).findDescendantsOfType(resultType);
+    }
+
+
+    public static <T> List<T> selectNodes(Class<?> source, Class<T> resultType, String xpath) throws JaxenException {
+        return selectNodes(source, "1.5", resultType, xpath);
+    }
+
+
+    public static <T> List<T> selectNodes(Class<?> source, String version, Class<T> resultType, String xpath) throws JaxenException {
+        return selectNodes(ParserTstUtil.getSourceFromClass(source), version, resultType, xpath);
+    }
+
+
+    private static <T> List<T> convertList(List<Node> nodes, Class<T> target) {
+        List<T> converted = new ArrayList<>();
+        for (Node n : nodes) {
+            converted.add(target.cast(n));
+        }
+        return converted;
+    }
+
 
     public static String getSourceFromClass(Class<?> clazz) {
         String sourceFile = clazz.getName().replace('.', '/') + ".java";
