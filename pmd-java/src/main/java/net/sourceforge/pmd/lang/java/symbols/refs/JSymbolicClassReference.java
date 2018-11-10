@@ -4,12 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.symbols.refs;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
@@ -33,7 +34,7 @@ public class JSymbolicClassReference extends AbstractCodeReference<ASTAnyTypeDec
      * @param declaringScope Scope to which the class belongs
      * @param fqcn           Fully-qualified class name
      */
-    public JSymbolicClassReference(JSymbolTable declaringScope, JavaTypeQualifiedName fqcn) {
+    public JSymbolicClassReference(JScope declaringScope, JavaTypeQualifiedName fqcn) {
         super(declaringScope, fqcn.getClassSimpleName());
         this.qualifiedName = fqcn;
     }
@@ -45,9 +46,9 @@ public class JSymbolicClassReference extends AbstractCodeReference<ASTAnyTypeDec
      * @param declaringScope  Scope to which the class belongs
      * @param alreadyResolved Already resolved type
      */
-    public JSymbolicClassReference(JSymbolTable declaringScope, Class<?> alreadyResolved) {
+    public JSymbolicClassReference(JScope declaringScope, Class<?> alreadyResolved) {
         super(declaringScope, alreadyResolved.getSimpleName());
-        this.qualifiedName = QualifiedNameFactory.ofClass(alreadyResolved);
+        this.qualifiedName = QualifiedNameFactory.ofClass(Objects.requireNonNull(alreadyResolved));
     }
 
 

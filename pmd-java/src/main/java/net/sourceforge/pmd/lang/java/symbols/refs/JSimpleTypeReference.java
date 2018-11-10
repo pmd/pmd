@@ -18,4 +18,22 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @since 7.0.0
  */
 public interface JSimpleTypeReference<N extends Node> extends JCodeReference<N> {
+
+
+    /**
+     * Returns true if this is a class reference, in
+     * which case it can be safely downcast to {@link JSymbolicClassReference}.
+     */
+    default boolean isSymbolicClass() {
+        return this instanceof JSymbolicClassReference;
+    }
+
+
+    /**
+     * Returns true if this is a reference to a type variable, in
+     * which case it can be safely downcast to {@link JTypeVariableReference}.
+     */
+    default boolean isTypeVariable() {
+        return this instanceof JTypeVariableReference;
+    }
 }

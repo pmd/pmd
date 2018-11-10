@@ -9,8 +9,9 @@ import java.lang.reflect.Modifier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
-import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
+import org.javacc.parser.JavaCCParser.ModifierSet;
+
+import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
@@ -22,7 +23,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
  * @author Clément Fournier
  * @since 7.0.0
  */
-abstract class AbstractExternalSymbolTable extends AbstractJSymbolTable {
+abstract class AbstractExternalScope extends AbstractJScope {
 
     /** Classloader with analysis classpath. */
     protected final ClassLoader classLoader;
@@ -37,7 +38,7 @@ abstract class AbstractExternalSymbolTable extends AbstractJSymbolTable {
      * @param classLoader ClassLoader used to resolve e.g. import-on-demand
      * @param thisPackage Package name of the current compilation unit, used to check for accessibility
      */
-    AbstractExternalSymbolTable(JSymbolTable parent, ClassLoader classLoader, String thisPackage) {
+    AbstractExternalScope(JScope parent, ClassLoader classLoader, String thisPackage) {
         super(parent);
         this.classLoader = classLoader;
         this.thisPackage = thisPackage;
@@ -60,21 +61,21 @@ abstract class AbstractExternalSymbolTable extends AbstractJSymbolTable {
 
     /**
      * Returns true if a member is accessible from the current ACU.
-     * Returns true for protected members, wherever we are, which is an approximation
-     * but won't cause problems in practice.
+     *
+     * <p>We consider protected members inaccessible outside of the package they were declared in,
+     * which is an approximation but won't cause problems in practice.
+     * In an ACU in another package, the name is accessible only inside classes that inherit
+     * from the declaring class. But inheriting from a class makes its static members
+     * accessible via simple name too. So this will actually be picked up by InheritedScope
+     * when in the subclass. Usages outside of the subclass would have made the compilation failed.
      */
     private boolean isAccessible(int modifiers, String memberPackageName) {
         if (Modifier.isPublic(modifiers)) {
             return true;
-        } else if (Modifier.isPrivate(modifiers) || Modifier.isProtected(modifiers)) {
-            // We consider protected members inaccessible here, which is an first approximation.
-            // In the ACU, the name is accessible only inside classes that inherit from the declaring class.
-            // But inheriting from a class makes its static members accessible via simple name too.
-            // So this will actually be picked up by InheritedScope when in the subclass.
-            // If not in the subclass, the compilation would have failed.
+        } else if (Modifier.isPrivate(modifiers)) {
             return false;
         } else {
-            // then it's package private
+            // then it's package private, or protected
             return thisPackage.equals(memberPackageName);
         }
     }

@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.refs;
 import java.util.Optional;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
@@ -18,25 +18,25 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
  */
 abstract class AbstractCodeReference<N extends Node> implements JCodeReference<N> {
 
-    private final JSymbolTable declaringScope;
+    private final JScope declaringScope;
     private final String simpleName;
     private N boundNode;
 
 
-    AbstractCodeReference(JSymbolTable declaringScope, String simpleName) {
+    AbstractCodeReference(JScope declaringScope, String simpleName) {
         this.declaringScope = declaringScope;
         this.simpleName = simpleName;
     }
 
 
-    AbstractCodeReference(JSymbolTable declaringScope, N node, String simpleName) {
+    AbstractCodeReference(JScope declaringScope, N node, String simpleName) {
         this(declaringScope, simpleName);
         this.boundNode = node;
     }
 
 
     @Override
-    public final JSymbolTable getDeclaringScope() {
+    public final JScope getDeclaringScope() {
         return declaringScope;
     }
 
@@ -52,4 +52,9 @@ abstract class AbstractCodeReference<N extends Node> implements JCodeReference<N
         return simpleName;
     }
 
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + getSimpleName() + ")";
+    }
 }

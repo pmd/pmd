@@ -9,14 +9,14 @@ import org.apache.commons.lang3.ArrayUtils;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
     protected JavaParser parser;
     private Scope scope;
-    private JSymbolTable symbolTable;
+    private JScope symbolTable;
     private Comment comment;
     private ASTCompilationUnit root;
 
@@ -97,13 +97,13 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     }
 
 
-    void setSymbolTable(JSymbolTable table) {
+    void setSymbolTable(JScope table) {
         this.symbolTable = table;
     }
 
 
     @Override
-    public JSymbolTable getSymbolTable() {
+    public JScope getSymbolTable() {
         return symbolTable == null ? jjtGetParent().getSymbolTable() : symbolTable;
     }
 

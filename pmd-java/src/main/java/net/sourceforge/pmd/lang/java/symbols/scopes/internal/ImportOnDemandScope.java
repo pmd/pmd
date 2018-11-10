@@ -23,32 +23,36 @@ import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
 /**
  * Scope for imports on demand. Imports-on-demand never shadow anything, including types imported
  * implicitly from java.lang. This is however placed as a child scope of JavaLangScope, since we
- * want {@link JavaLangSymbolTable#getInstance()} to be shared across all compilation units by being the
- * root of all scope trees. To respect the shadowing spec, we cheat a little and let {@link JavaLangSymbolTable}
+ * want {@link JavaLangScope#getInstance()} to be shared across all compilation units by being the
+ * root of all scope trees. To respect the shadowing spec, we cheat a little and let {@link JavaLangScope}
  * try first.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
+public final class ImportOnDemandScope extends AbstractImportScope {
 
-    private static final Logger LOG = Logger.getLogger(ImportOnDemandSymbolTable.class.getName());
+    private static final Logger LOG = Logger.getLogger(ImportOnDemandScope.class.getName());
 
     /** Stores the names of packages and types for which all their types are imported. */
     private final List<String> importedPackagesAndTypes = new ArrayList<>();
 
 
     /**
-     * Creates a new import-on-demand scope. Automatically linked to the {@link JavaLangSymbolTable}.
+     * Creates a new import-on-demand scope. Automatically linked to the {@link JavaLangScope}.
      *
+     * @param parent          Parent scope
      * @param classLoader     Analysis classloader
      * @param importsOnDemand List of import-on-demand statements, mustn't be single imports!
      * @param thisPackage     Package name of the current compilation unit, used to check for accessibility
      */
-    public ImportOnDemandSymbolTable(ClassLoader classLoader, List<ASTImportDeclaration> importsOnDemand, String thisPackage) {
-        super(JavaLangSymbolTable.getInstance(), classLoader, thisPackage);
+    public ImportOnDemandScope(JavaLangScope parent, ClassLoader classLoader, List<ASTImportDeclaration> importsOnDemand, String thisPackage) {
+        super(parent, classLoader, thisPackage);
 
         for (ASTImportDeclaration anImport : importsOnDemand) {
+            if (!anImport.isImportOnDemand()) {
+                throw new IllegalArgumentException();
+            }
 
             if (anImport.isStatic()) {
                 // Static-Import-on-Demand Declaration
@@ -93,8 +97,8 @@ public final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
 
 
     @Override
-    public JavaLangSymbolTable getParent() {
-        return (JavaLangSymbolTable) super.getParent();
+    public JavaLangScope getParent() {
+        return (JavaLangScope) super.getParent();
     }
 
 
@@ -132,7 +136,7 @@ public final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
                                            }
                                        })
                                        .filter(Objects::nonNull)
-                                       .filter(this::isAccessible) // TODO needed?
+                                       .filter(this::isAccessible)
                                        .map(c -> new JSymbolicClassReference(this, c))
                                        .findAny();
     }

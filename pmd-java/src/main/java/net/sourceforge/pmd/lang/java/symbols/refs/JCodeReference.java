@@ -8,9 +8,9 @@ import java.util.Optional;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
-import net.sourceforge.pmd.lang.java.symbols.scopes.internal.ImportOnDemandSymbolTable;
-import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SingleImportSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.internal.ImportOnDemandScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SingleImportScope;
 
 
 /**
@@ -35,14 +35,16 @@ public interface JCodeReference<N extends Node> {
 
     /**
      * Gets the scope in which this declaration was brought into scope.
-     * Eg. for a reference to an imported type, this will be an {@link ImportOnDemandSymbolTable},
-     * or a {@link SingleImportSymbolTable}. For a reference to a local variable,
+     * Eg. for a reference to an imported type, this will be an {@link ImportOnDemandScope},
+     * or a {@link SingleImportScope}. For a reference to a local variable,
      * this will be the scope in which it was declared.
      *
      * @return the declaration scope
      */
-    JSymbolTable getDeclaringScope();
-
+    // TODO prove usefulness of that or remove
+    // it may be useful eg to discriminate method parameters from other local variables,
+    // but that could also be achieved by setting a boolean constructor parameter
+    JScope getDeclaringScope();
 
     /**
      * Returns the node corresponding to this declaration, if it exists.
@@ -62,5 +64,6 @@ public interface JCodeReference<N extends Node> {
      */
     String getSimpleName();
 
+    // TODO add type information when a new JTypeDefinition API is formed
 
 }

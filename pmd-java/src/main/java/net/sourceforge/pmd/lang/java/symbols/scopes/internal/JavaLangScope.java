@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
@@ -24,13 +24,13 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class JavaLangSymbolTable implements JSymbolTable {
+public final class JavaLangScope implements JScope {
 
-    private static final JavaLangSymbolTable SINGLETON = new JavaLangSymbolTable();
+    private static final JavaLangScope SINGLETON = new JavaLangScope();
     private final Map<String, JSymbolicClassReference> javaLang;
 
 
-    private JavaLangSymbolTable() {
+    private JavaLangScope() {
 
         List<Class<?>> classes = Arrays.asList(
                 // from a jdk8
@@ -149,7 +149,7 @@ public final class JavaLangSymbolTable implements JSymbolTable {
 
 
     @Override
-    public JSymbolTable getParent() {
+    public JScope getParent() {
         return null;
     }
 
@@ -178,7 +178,7 @@ public final class JavaLangSymbolTable implements JSymbolTable {
     /**
      * Returns the shared instance.
      */
-    public static JavaLangSymbolTable getInstance() {
+    public static JavaLangScope getInstance() {
         return SINGLETON;
     }
 }

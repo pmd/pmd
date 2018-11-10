@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
@@ -19,9 +19,9 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
  * @author Clément Fournier
  * @since 7.0.0
  */
-abstract class AbstractJSymbolTable implements JSymbolTable {
+abstract class AbstractJScope implements JScope {
 
-    private final JSymbolTable parent;
+    private final JScope parent;
 
 
     /**
@@ -29,13 +29,13 @@ abstract class AbstractJSymbolTable implements JSymbolTable {
      *
      * @param parent Parent scope
      */
-    AbstractJSymbolTable(JSymbolTable parent) {
+    AbstractJScope(JScope parent) {
         this.parent = parent;
     }
 
 
     @Override
-    public JSymbolTable getParent() {
+    public JScope getParent() {
         return parent;
     }
 
@@ -65,6 +65,7 @@ abstract class AbstractJSymbolTable implements JSymbolTable {
 
     @Override
     public final Stream<JMethodReference> resolveMethodName(String simpleName) {
+        // TODO prevents methods with override-equivalent signatures to occur more than once in the stream
         return Stream.concat(resolveMethodNameImpl(simpleName), parent.resolveMethodName(simpleName));
     }
 
