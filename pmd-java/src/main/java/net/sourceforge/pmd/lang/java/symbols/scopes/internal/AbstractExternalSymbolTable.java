@@ -9,7 +9,7 @@ import java.lang.reflect.Modifier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 
@@ -22,10 +22,10 @@ import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
  * @author Clément Fournier
  * @since 7.0.0
  */
-abstract class AbstractExternalScope extends AbstractJScope {
+abstract class AbstractExternalSymbolTable extends AbstractJSymbolTable {
 
     /** Classloader with analysis classpath. */
-    protected final PMDASMClassLoader classLoader;
+    protected final ClassLoader classLoader;
     /** Package name of the current compilation unit, used to check for accessibility. */
     protected final String thisPackage;
 
@@ -33,12 +33,11 @@ abstract class AbstractExternalScope extends AbstractJScope {
     /**
      * Constructor with the parent scope and the auxclasspath classloader.
      * Used to build the top-level scope.
-     *
-     * @param parent      Parent scope
+     *  @param parent      Parent scope
      * @param classLoader ClassLoader used to resolve e.g. import-on-demand
      * @param thisPackage Package name of the current compilation unit, used to check for accessibility
      */
-    AbstractExternalScope(JScope parent, PMDASMClassLoader classLoader, String thisPackage) {
+    AbstractExternalSymbolTable(JSymbolTable parent, ClassLoader classLoader, String thisPackage) {
         super(parent);
         this.classLoader = classLoader;
         this.thisPackage = thisPackage;

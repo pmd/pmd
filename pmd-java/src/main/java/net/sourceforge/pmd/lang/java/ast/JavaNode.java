@@ -8,6 +8,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 
@@ -62,11 +64,17 @@ public interface JavaNode extends ScopedNode {
     <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data);
 
 
-    /** Returns the first child of this node, or null if this node has no children. */
-    @Nullable
-    default JavaNode getFirstChild() {
-        return jjtGetNumChildren() > 0 ? jjtGetChild(0) : null;
-    }
+    /**
+     * Gets the symbol table keeping track of the names at the program point
+     * this node is at.
+     *
+     * @return A symbol table
+     */
+    JSymbolTable getSymbolTable();
+
+
+
+    void setScope(Scope scope);
 
 
     /** Returns the last child of this node, or null if this node has no children. */

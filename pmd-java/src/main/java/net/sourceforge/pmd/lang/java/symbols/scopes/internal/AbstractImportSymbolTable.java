@@ -15,8 +15,7 @@ import net.sourceforge.pmd.lang.java.symbols.refs.JFieldReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
-import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
 
 
 /**
@@ -27,10 +26,10 @@ import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
  * <p>The simplest way to implement that is to layer the imports into several scopes.
  * Here are the highest-level scopes of a compilation unit:
  * <ul>
- * <li> {@link JavaLangScope}
- * <li> {@link ImportOnDemandScope}: never shadow anything, is shadowed by everything (see javadoc for why it's not the root)
- * <li> {@link SamePackageScope}: shadow imports-on-demands, is shadowed by single imports and lower
- * <li> {@link SingleImportScope}: shadows all of the above, is shadowed by type definitions of this compilation unit
+ * <li> {@link JavaLangSymbolTable}
+ * <li> {@link ImportOnDemandSymbolTable}: never shadow anything, is shadowed by everything (see javadoc for why it's not the root)
+ * <li> {@link SamePackageSymbolTable}: shadow imports-on-demands, is shadowed by single imports and lower
+ * <li> {@link SingleImportSymbolTable}: shadows all of the above, is shadowed by type definitions of this compilation unit
  * </ul>
  *
  * These all have scope
@@ -38,7 +37,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
  * @author Clément Fournier
  * @since 7.0.0
  */
-abstract class AbstractImportScope extends AbstractExternalScope {
+abstract class AbstractImportSymbolTable extends AbstractExternalSymbolTable {
 
     // Accessibility of imports is not checked, but:
     // * inaccessible single type imports or imports of static members from an inaccessible type
@@ -61,7 +60,7 @@ abstract class AbstractImportScope extends AbstractExternalScope {
      * @param classLoader ClassLoader used to resolve e.g. import-on-demand
      * @param thisPackage Package name of the current compilation unit, used to check for accessibility
      */
-    AbstractImportScope(JScope parent, PMDASMClassLoader classLoader, String thisPackage) {
+    AbstractImportSymbolTable(JSymbolTable parent, ClassLoader classLoader, String thisPackage) {
         super(parent, classLoader, thisPackage);
     }
 

@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 import net.sourceforge.pmd.lang.java.symbols.refs.JFieldReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 
@@ -26,9 +27,9 @@ import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class SingleImportScope extends AbstractImportScope {
+public final class SingleImportSymbolTable extends AbstractImportSymbolTable {
 
-    private static final Logger LOG = Logger.getLogger(SingleImportScope.class.getName());
+    private static final Logger LOG = Logger.getLogger(SingleImportSymbolTable.class.getName());
 
 
     /**
@@ -40,7 +41,7 @@ public final class SingleImportScope extends AbstractImportScope {
      * @param singleImports Import declarations, must not be on-demand!
      * @param thisPackage   Package name of the current compilation unit, used to check for accessibility
      */
-    SingleImportScope(SamePackageScope parent, PMDASMClassLoader loader, List<ASTImportDeclaration> singleImports, String thisPackage) {
+    public SingleImportSymbolTable(JSymbolTable parent, PMDASMClassLoader loader, List<ASTImportDeclaration> singleImports, String thisPackage) {
         super(parent, loader, thisPackage);
 
         for (ASTImportDeclaration anImport : singleImports) {

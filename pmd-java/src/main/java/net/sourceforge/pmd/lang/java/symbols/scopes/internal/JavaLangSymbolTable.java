@@ -13,25 +13,24 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
 
 
 /**
- * Implicit imports from {@literal java.lang}, top-level scope for all scope trees.
+ * Implicit imports from {@literal java.lang}, top-level symbol table for all symbol table trees.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class JavaLangScope implements JScope {
+public final class JavaLangSymbolTable implements JSymbolTable {
 
-    private static final JavaLangScope SINGLETON = new JavaLangScope();
+    private static final JavaLangSymbolTable SINGLETON = new JavaLangSymbolTable();
     private final Map<String, JSymbolicClassReference> javaLang;
 
 
-    private JavaLangScope() {
+    private JavaLangSymbolTable() {
 
         List<Class<?>> classes = Arrays.asList(
                 // from a jdk8
@@ -150,7 +149,7 @@ public final class JavaLangScope implements JScope {
 
 
     @Override
-    public JScope getParent() {
+    public JSymbolTable getParent() {
         return null;
     }
 
@@ -179,7 +178,7 @@ public final class JavaLangScope implements JScope {
     /**
      * Returns the shared instance.
      */
-    public static JavaLangScope getInstance() {
+    public static JavaLangSymbolTable getInstance() {
         return SINGLETON;
     }
 }

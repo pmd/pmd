@@ -8,7 +8,7 @@ import java.lang.reflect.Modifier;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
 
 
 /**
@@ -22,13 +22,13 @@ public abstract class JAccessibleReference<N extends Node> extends AbstractCodeR
     protected final int modifiers;
 
 
-    JAccessibleReference(JScope declaringScope, int modifiers, String simpleName) {
+    JAccessibleReference(JSymbolTable declaringScope, int modifiers, String simpleName) {
         super(declaringScope, simpleName);
         this.modifiers = modifiers;
     }
 
 
-    JAccessibleReference(JScope declaringScope, N node, int modifiers, String simpleName) {
+    JAccessibleReference(JSymbolTable declaringScope, N node, int modifiers, String simpleName) {
         super(declaringScope, node, simpleName);
         this.modifiers = modifiers;
     }
