@@ -10,8 +10,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
-import net.sourceforge.pmd.lang.java.symbols.scopes.internal.JavaLangSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.internal.JavaLangScope;
 
 
 /**
@@ -33,7 +33,7 @@ public final class JClassReference extends JAccessibleReference<ASTAnyTypeDeclar
      * @param declaringScope Scope of the declaration
      * @param fqcn           FQCN with resolved type
      */
-    JClassReference(JSymbolTable declaringScope, JavaTypeQualifiedName fqcn) {
+    JClassReference(JScope declaringScope, JavaTypeQualifiedName fqcn) {
         super(declaringScope, fqcn.getType().getModifiers(), fqcn.getClassSimpleName());
         this.fqcn = fqcn;
     }
@@ -41,12 +41,12 @@ public final class JClassReference extends JAccessibleReference<ASTAnyTypeDeclar
 
     /**
      * Constructor using a class, used to create a reference for a class
-     * found by reflection, or a class known at compile-time (eg in {@link JavaLangSymbolTable}).
+     * found by reflection, or a class known at compile-time (eg in {@link JavaLangScope}).
      *
      * @param declaringScope Scope of the declaration
      * @param clazz          Class represented by this reference
      */
-    public JClassReference(JSymbolTable declaringScope, Class<?> clazz) {
+    public JClassReference(JScope declaringScope, Class<?> clazz) {
         super(declaringScope, clazz.getModifiers(), clazz.getSimpleName());
         this.fqcn = QualifiedNameFactory.ofClass(clazz);
     }
@@ -58,7 +58,7 @@ public final class JClassReference extends JAccessibleReference<ASTAnyTypeDeclar
      * @param declaringScope Declaring scope
      * @param node           Node of the declaration
      */
-    public JClassReference(JSymbolTable declaringScope, ASTAnyTypeDeclaration node) {
+    public JClassReference(JScope declaringScope, ASTAnyTypeDeclaration node) {
         super(declaringScope, node, getModifiers(node), node.getImage());
         this.fqcn = node.getQualifiedName();
     }

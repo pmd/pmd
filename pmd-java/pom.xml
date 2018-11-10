@@ -18,7 +18,13 @@
             <testResource>
                 <directory>${basedir}/src/test/java</directory>
                 <includes>
-                    <include>**/testdata/*.java</include>
+                    <include>**/testdata/**/*.java</include>
+                </includes>
+            </testResource>
+            <testResource>
+                <directory>${basedir}/src/test/kotlin</directory>
+                <includes>
+                    <include>**/testdata/**/*.java</include>
                 </includes>
             </testResource>
         </testResources>

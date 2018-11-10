@@ -110,10 +110,8 @@ public final class QualifiedNameFactory {
             name = '.' + name; // unnamed package, marked by a full stop. See ofString's format below
         }
 
-        // Note: this assumes, that clazz has been loaded through the correct classloader,
-        // specifically through the auxclasspath classloader.
-        // But this method should only be used in tests anyway
-        return (JavaTypeQualifiedName) ofStringWithClassLoader(name, clazz.getClassLoader());
+        // We preserve the known type until within JTypeQualifiedName. It won't call a ClassLoader
+        return (JavaTypeQualifiedName) ofString(name, clazz, null);
     }
 
 
@@ -145,10 +143,26 @@ public final class QualifiedNameFactory {
      * @return A qualified name instance corresponding to the parsed string.
      */
     public static JavaQualifiedName ofString(String name) {
-        return ofStringWithClassLoader(name, null);
+        return ofString(name, null, JavaTypeQualifiedName.class.getClassLoader());
     }
 
-    private static JavaQualifiedName ofStringWithClassLoader(String name, ClassLoader classLoader) {
+
+    /**
+     * Parses a qualified name, and creates it with the given classloader to resolve its type
+     * later if needed.
+     *
+     * @param name        Name of the type.
+     * @param classLoader Class loader to use to {@linkplain JavaTypeQualifiedName#getType() resolve the class} later-on
+     *
+     * @return A qualified name instance corresponding to the parsed string.
+     */
+    public static JavaQualifiedName ofString(String name, ClassLoader classLoader) {
+        return ofString(name, null, classLoader);
+    }
+
+
+    /** clazz or classloader may be null, prefer clazz over classloader. */
+    private static JavaQualifiedName ofString(String name, Class<?> knownType, ClassLoader classLoader) {
         Matcher matcher = FORMAT.matcher(name);
 
         if (!matcher.matches()) {
@@ -178,7 +192,12 @@ public final class QualifiedNameFactory {
             }
         }
 
-        JavaTypeQualifiedName parent = new JavaTypeQualifiedName(packages, classes, localIndices, classLoader);
+        JavaTypeQualifiedName parent = knownType != null
+                                       // already resolved
+                                       ? new JavaTypeQualifiedName(packages, classes, localIndices, knownType)
+                                       // unresolved, pass along the ClassLoader
+                                       : new JavaTypeQualifiedName(packages, classes, localIndices, classLoader);
+
         return operation == null ? parent : new JavaOperationQualifiedName(parent, operation, isLambda);
     }
 }

@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.refs;
 import java.lang.reflect.Constructor;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
@@ -18,12 +18,12 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
  */
 public class JConstructorReference extends JAccessibleReference<ASTConstructorDeclaration> {
 
-    JConstructorReference(JSymbolTable declaringScope, Constructor<?> constructor) {
+    JConstructorReference(JScope declaringScope, Constructor<?> constructor) {
         super(declaringScope, constructor.getModifiers(), constructor.getDeclaringClass().getSimpleName());
     }
 
 
-    JConstructorReference(JSymbolTable declaringScope, ASTConstructorDeclaration node) {
+    JConstructorReference(JScope declaringScope, ASTConstructorDeclaration node) {
         super(declaringScope, node, accessNodeToModifiers(node), node.getImage());
     }
 }

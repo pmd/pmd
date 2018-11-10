@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 import net.sourceforge.pmd.lang.java.symbols.refs.JFieldReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 
@@ -27,9 +27,9 @@ import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class SingleImportSymbolTable extends AbstractImportSymbolTable {
+public final class SingleImportScope extends AbstractImportScope {
 
-    private static final Logger LOG = Logger.getLogger(SingleImportSymbolTable.class.getName());
+    private static final Logger LOG = Logger.getLogger(SingleImportScope.class.getName());
 
 
     /**
@@ -41,11 +41,13 @@ public final class SingleImportSymbolTable extends AbstractImportSymbolTable {
      * @param singleImports Import declarations, must not be on-demand!
      * @param thisPackage   Package name of the current compilation unit, used to check for accessibility
      */
-    public SingleImportSymbolTable(JSymbolTable parent, PMDASMClassLoader loader, List<ASTImportDeclaration> singleImports, String thisPackage) {
+    public SingleImportScope(JScope parent, PMDASMClassLoader loader, List<ASTImportDeclaration> singleImports, String thisPackage) {
         super(parent, loader, thisPackage);
 
         for (ASTImportDeclaration anImport : singleImports) {
-            // imports a single name
+            if (anImport.isImportOnDemand()) {
+                throw new IllegalArgumentException();
+            }
 
             String simpleName = anImport.getImportedSimpleName();
             String name = anImport.getImportedName();
@@ -87,7 +89,7 @@ public final class SingleImportSymbolTable extends AbstractImportSymbolTable {
 
                 importedTypes.put(simpleName, new JSymbolicClassReference(this,
                                                                           // FIXME the qualifiedname resolver should resolve this itself
-                                                                          (JavaTypeQualifiedName) QualifiedNameFactory.ofString(name)));
+                                                                          (JavaTypeQualifiedName) QualifiedNameFactory.ofString(name, classLoader)));
             }
         }
     }

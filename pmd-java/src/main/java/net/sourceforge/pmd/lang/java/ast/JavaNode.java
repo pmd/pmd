@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
@@ -67,7 +67,7 @@ public interface JavaNode extends ScopedNode {
      *
      * @return A symbol table
      */
-    JSymbolTable getSymbolTable();
+    JScope getSymbolTable();
 
 
     @Override

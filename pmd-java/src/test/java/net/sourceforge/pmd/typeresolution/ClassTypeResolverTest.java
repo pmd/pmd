@@ -922,7 +922,7 @@ public class ClassTypeResolverTest {
         assertEquals(SuperClassA.class, expressions.get(index).getType());
         assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 0));
 
-        // net.sourceforge.pmd.typeresolution.testdata.FieldAccessNested.Nested.this.a = new SuperClassA();
+        // net.sourceforge.pmd.typeresolution.javasymbols.testdata.FieldAccessNested.Nested.this.a = new SuperClassA();
         assertEquals(SuperClassA.class, expressions.get(index).getType());
         assertEquals(FieldAccessNested.Nested.class, getChildType(expressions.get(index), 0));
         assertEquals(FieldAccessNested.Nested.class, getChildType(expressions.get(index), 1));
@@ -999,7 +999,7 @@ public class ClassTypeResolverTest {
         assertEquals(SuperClassA.class, getChildType(expressions.get(index), 0));
         assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 1));
 
-        // net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper.this.s = new SuperClassA();
+        // net.sourceforge.pmd.typeresolution.javasymbols.testdata.FieldAccessSuper.this.s = new SuperClassA();
         assertEquals(SuperClassA.class, expressions.get(index).getType());
         assertEquals(FieldAccessSuper.class, getChildType(expressions.get(index), 0));
         assertEquals(FieldAccessSuper.class, getChildType(expressions.get(index), 1));
@@ -1316,11 +1316,11 @@ public class ClassTypeResolverTest {
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
 
-        // net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers.staticPrimitive = 10;
+        // net.sourceforge.pmd.typeresolution.javasymbols.testdata.dummytypes.StaticMembers.staticPrimitive = 10;
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
 
-        // net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers
+        // net.sourceforge.pmd.typeresolution.javasymbols.testdata.dummytypes.StaticMembers
         //       .staticGeneric.generic.second = new Long(10);
         assertEquals(Long.class, expressions.get(index).getType());
         assertEquals(Long.class, getChildType(expressions.get(index++), 0));
