@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
 
 
 /**
@@ -19,9 +19,9 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  * @author Clément Fournier
  * @since 7.0.0
  */
-abstract class AbstractJScope implements JScope {
+abstract class AbstractJSymbolTable implements JSymbolTable {
 
-    private final JScope parent;
+    private final JSymbolTable parent;
 
 
     /**
@@ -29,13 +29,13 @@ abstract class AbstractJScope implements JScope {
      *
      * @param parent Parent scope
      */
-    AbstractJScope(JScope parent) {
+    AbstractJSymbolTable(JSymbolTable parent) {
         this.parent = parent;
     }
 
 
     @Override
-    public JScope getParent() {
+    public JSymbolTable getParent() {
         return parent;
     }
 

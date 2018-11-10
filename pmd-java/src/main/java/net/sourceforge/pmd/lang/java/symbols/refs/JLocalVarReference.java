@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.refs;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
 
 
 /**
@@ -25,7 +25,7 @@ public class JLocalVarReference extends AbstractCodeReference<ASTVariableDeclara
      * @param declaringScope Scope of the declaration
      * @param node           Node representing the id of the field, must be from an ASTLocalVariableDeclaration
      */
-    public JLocalVarReference(JScope declaringScope, ASTVariableDeclaratorId node) {
+    public JLocalVarReference(JSymbolTable declaringScope, ASTVariableDeclaratorId node) {
         super(declaringScope, node, node.getVariableName());
         this.isFinal = node.isFinal();
     }

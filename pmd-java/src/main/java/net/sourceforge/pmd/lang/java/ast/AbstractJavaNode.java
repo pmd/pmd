@@ -5,12 +5,14 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
     protected JavaParser parser;
     private Scope scope;
+    private JSymbolTable symbolTable;
     private Comment comment;
 
     public AbstractJavaNode(int id) {
@@ -78,6 +80,22 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
                 ((JavaNode) children[i]).jjtAccept(visitor, data);
             }
         }
+    }
+
+
+    void setSymbolTable(JSymbolTable table) {
+        this.symbolTable = table;
+    }
+
+    @Override
+    public JavaNode jjtGetParent() {
+        return (JavaNode) super.jjtGetParent();
+    }
+
+
+    @Override
+    public JSymbolTable getSymbolTable() {
+        return symbolTable == null ? jjtGetParent().getSymbolTable() : symbolTable;
     }
 
 

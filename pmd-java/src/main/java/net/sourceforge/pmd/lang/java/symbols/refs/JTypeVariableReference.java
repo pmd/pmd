@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.refs;
 
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
 
 
 /**
@@ -19,12 +19,12 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 public class JTypeVariableReference extends AbstractCodeReference<ASTTypeParameter> implements JSimpleTypeReference<ASTTypeParameter> {
 
 
-    JTypeVariableReference(JScope declaringScope, String simpleName) {
+    JTypeVariableReference(JSymbolTable declaringScope, String simpleName) {
         super(declaringScope, simpleName);
     }
 
 
-    JTypeVariableReference(JScope declaringScope, ASTTypeParameter node, String simpleName) {
+    JTypeVariableReference(JSymbolTable declaringScope, ASTTypeParameter node, String simpleName) {
         super(declaringScope, node, simpleName);
     }
 }

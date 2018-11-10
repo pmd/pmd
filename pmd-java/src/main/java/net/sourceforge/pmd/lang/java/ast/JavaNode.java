@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
@@ -58,6 +59,20 @@ public interface JavaNode extends ScopedNode {
      * @param <T>     Type of data
      */
     <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data);
+
+
+    /**
+     * Gets the symbol table keeping track of the names at the program point
+     * this node is at.
+     *
+     * @return A symbol table
+     */
+    JSymbolTable getSymbolTable();
+
+
+    @Override
+    JavaNode jjtGetParent();
+
 
 
     void setScope(Scope scope);

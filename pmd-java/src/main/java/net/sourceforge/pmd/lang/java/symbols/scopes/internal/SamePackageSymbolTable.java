@@ -11,8 +11,7 @@ import java.util.stream.Stream;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
-import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JSymbolTable;
 
 
 /**
@@ -22,9 +21,9 @@ import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class SamePackageScope extends AbstractExternalScope {
+public final class SamePackageSymbolTable extends AbstractExternalSymbolTable {
 
-    private static final Logger LOG = Logger.getLogger(SamePackageScope.class.getName());
+    private static final Logger LOG = Logger.getLogger(SamePackageSymbolTable.class.getName());
 
 
     /**
@@ -34,7 +33,7 @@ public final class SamePackageScope extends AbstractExternalScope {
      * @param loader      ClassLoader used to resolve types from this package
      * @param thisPackage Package name of the current compilation unit, used to check for accessibility
      */
-    SamePackageScope(JScope parent, PMDASMClassLoader loader, String thisPackage) {
+    public SamePackageSymbolTable(JSymbolTable parent, ClassLoader loader, String thisPackage) {
         super(parent, loader, thisPackage);
     }
 
