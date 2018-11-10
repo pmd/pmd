@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
+import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
 import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
@@ -40,7 +40,7 @@ abstract class AbstractJScope implements JScope {
     }
 
 
-    protected abstract Optional<JSymbolicClassReference> resolveTypeNameImpl(String simpleName);
+    protected abstract Optional<? extends JSimpleTypeReference<?>> resolveTypeNameImpl(String simpleName);
 
 
     protected abstract Stream<JMethodReference> resolveMethodNameImpl(String simpleName);
@@ -50,8 +50,8 @@ abstract class AbstractJScope implements JScope {
 
 
     @Override
-    public Optional<JSymbolicClassReference> resolveTypeName(String simpleName) {
-        Optional<JSymbolicClassReference> result = resolveTypeNameImpl(simpleName);
+    public Optional<? extends JSimpleTypeReference<?>> resolveTypeName(String simpleName) {
+        Optional<? extends JSimpleTypeReference<?>> result = resolveTypeNameImpl(simpleName);
         return result.isPresent() ? result : parent.resolveTypeName(simpleName);
     }
 

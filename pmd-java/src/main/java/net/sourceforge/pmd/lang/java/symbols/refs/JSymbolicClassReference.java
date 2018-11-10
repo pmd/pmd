@@ -22,19 +22,31 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class JSymbolicClassReference extends AbstractCodeReference<ASTAnyTypeDeclaration> {
+public class JSymbolicClassReference extends AbstractCodeReference<ASTAnyTypeDeclaration> implements JSimpleTypeReference<ASTAnyTypeDeclaration> {
 
     private final JavaTypeQualifiedName qualifiedName;
 
 
+    /**
+     * Builds a symbolic reference to a type using its qualified name.
+     *
+     * @param declaringScope Scope to which the class belongs
+     * @param fqcn           Fully-qualified class name
+     */
     public JSymbolicClassReference(JScope declaringScope, JavaTypeQualifiedName fqcn) {
-        super(declaringScope, 0, fqcn.getClassSimpleName());
+        super(declaringScope, fqcn.getClassSimpleName());
         this.qualifiedName = fqcn;
     }
 
 
+    /**
+     * Builds a symbolic reference to a type that has already been resolved.
+     *
+     * @param declaringScope  Scope to which the class belongs
+     * @param alreadyResolved Already resolved type
+     */
     public JSymbolicClassReference(JScope declaringScope, Class<?> alreadyResolved) {
-        super(declaringScope, 0, alreadyResolved.getSimpleName());
+        super(declaringScope, alreadyResolved.getSimpleName());
         this.qualifiedName = QualifiedNameFactory.ofClass(alreadyResolved);
     }
 

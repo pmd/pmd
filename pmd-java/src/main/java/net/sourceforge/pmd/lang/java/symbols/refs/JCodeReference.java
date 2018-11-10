@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.refs;
 
 import java.util.Optional;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 import net.sourceforge.pmd.lang.java.symbols.scopes.internal.ImportOnDemandScope;
@@ -16,9 +17,19 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SingleImportScope;
  * Represents a declaration. Abstracts over whether the declaration is in
  * the analysed file or not, using reflection when it's not.
  *
+ * <p>This type hierarchy is probably not directly relevant to users writing
+ * rules. It's mostly intended to unify the representation of type resolution
+ * and symbol analysis. At least for now it's internal.
+ *
+ * <p>Instances are not shared across compilation units during PMD's analysis,
+ * because would prevent the garbage collection of scopes and nodes.
+ *
+ * @param <N> Type of AST node that can represent this type of declaration
+ *
  * @author Clément Fournier
  * @since 7.0.0
  */
+@Experimental
 public interface JCodeReference<N extends Node> {
 
 

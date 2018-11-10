@@ -33,7 +33,6 @@ import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
  */
 public final class ImportOnDemandScope extends AbstractImportScope {
 
-
     private static final Logger LOG = Logger.getLogger(ImportOnDemandScope.class.getName());
 
     /** Stores the names of packages and types for which all their types are imported. */
@@ -91,6 +90,12 @@ public final class ImportOnDemandScope extends AbstractImportScope {
                 importedPackagesAndTypes.add(anImport.getPackageName());
             }
         }
+    }
+
+
+    @Override
+    public JavaLangScope getParent() {
+        return (JavaLangScope) super.getParent();
     }
 
 
