@@ -1361,33 +1361,39 @@ public class ClassInDefaultPackage {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#useunderscoresinnumericliterals">
         <description>
-            Numeric literals with more than 3 digits must use '_' as a separator.
+            Since Java 1.7, numeric literals can use underscores to separate digits. This rule enforces that
+            numeric literals above a certain length use these underscores to increase readability.
+
+            The rule only supports decimal (base 10) literals for now. The acceptable length under which literals
+            are not required to have underscores is configurable via a property. Even under that length, underscores
+            that are misplaced (not making groups of 3 digits) are reported.
         </description>
         <priority>3</priority>
         <properties>
             <property name="version" value="2.0"/>
             <property name="acceptableDecimalLength" type="Integer" value="4" min="3" max="1000"
-                      description="Maximum acceptable length within which the rule is not applicable"/>
+                      description="Length under which literals in base 10 are not required to have underscores"/>
             <property name="xpath">
                 <value>
                     <![CDATA[
-//Literal[@IntLiteral = true() or
- @LongLiteral = true() or
- @DoubleLiteral = true() or
- @FloatLiteral = true()]
- [ not (matches(@Image, "^0[^.]"))]
+//Literal[
+     @IntLiteral = true()
+  or @LongLiteral = true()
+  or @DoubleLiteral = true()
+  or @FloatLiteral = true()
+]
+ (: Filter out literals in base other than 10 :)
+ [not(matches(@Image, "^0[^.]"))]
+ (: Filter out ignored field name :)
+ [not(ancestor::VariableDeclarator[1][@Name = 'serialVersionUID'])]
  [
-  some $num in tokenize(@Image, "[.dDfFlLeE\-\+]")
-  satisfies not(
-                 string-length($num) <= $acceptableDecimalLength
-                   and (
-                         not(contains($num,"_"))
-                       )
-		 or matches($num, "^[0-9]{1,3}(_[0-9]{3})*$")
-               )
+   some $num in tokenize(@Image, "[.dDfFlLeE+\-]")
+   satisfies not(
+                  string-length($num) <= $acceptableDecimalLength
+                    and not(contains($num,"_"))
+                  or matches($num, "^[0-9]{1,3}(_[0-9]{3})*$")
+                )
  ]
- [ancestor::VariableDeclarator[not (@Name = 'serialVersionUID')] or
- not (ancestor::VariableDeclarator)]
 ]]>
                 </value>
             </property>
