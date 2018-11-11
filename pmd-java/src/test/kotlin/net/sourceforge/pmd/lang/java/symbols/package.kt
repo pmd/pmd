@@ -15,10 +15,7 @@ import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
-/**
- * @author Clément Fournier
- * @since 7.0.0
- */
+/** Testing utilities */
 
 object DefaultAnalysisConfiguration : AstAnalysisConfiguration {
     override fun getTypeResolutionClassLoader(): ClassLoader = ParserTstUtil::class.java.classLoader

@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
  * Scope for imports on demand. Imports-on-demand never shadow anything, including types imported
  * implicitly from java.lang. This is however placed as a child scope of JavaLangScope, since we
  * want {@link JavaLangScope#getInstance()} to be shared across all compilation units by being the
- * root of all scope trees. To respect the shadowing spec, we cheat a little and let {@link JavaLangScope}
+ * root of all scope stacks. To respect the shadowing spec, we cheat a little and let {@link JavaLangScope}
  * try first.
  *
  * @author Clément Fournier

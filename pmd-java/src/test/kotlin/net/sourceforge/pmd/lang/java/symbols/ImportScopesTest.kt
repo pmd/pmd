@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SingleImportScope
 
 
 /**
- * Tests the higher levels of the scope tree.
+ * Tests the imports scopes and their relative precedence of the scope tree.
  *
  * @author Clément Fournier
  * @since 7.0.0

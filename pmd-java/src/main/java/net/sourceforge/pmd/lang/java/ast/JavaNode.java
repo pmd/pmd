@@ -8,6 +8,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
@@ -66,10 +68,11 @@ public interface JavaNode extends ScopedNode {
 
     /**
      * Gets the symbol table keeping track of the names at the program point
-     * this node is at.
+     * this node represents.
      *
      * @return A symbol table
      */
+    @Experimental
     JScope getSymbolTable();
 
 
