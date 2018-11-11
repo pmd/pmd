@@ -431,4 +431,19 @@ class Style {
   }
 }]]></code>
     </test-code>
+    <test-code>
+        <description>#647 JUnitTestsShouldIncludeAssertRule should support `this.exception` as well as just `exception`</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class DigitalAssetManagerTest {
+  @Rule
+  public final ExpectedException exception = ExpectedException.none();
+  @Test
+  public void throwsIllegalArgumentExceptionIfIconIsNull() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectMessage("Icon is null, not a file, or doesn't exist.");
+    new DigitalAssetManager(null, null);
+  }
+}]]></code>
+    </test-code>	
 </test-data>
