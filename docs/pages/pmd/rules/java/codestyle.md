@@ -2211,27 +2211,33 @@ public class Foo {
 
 **Minimum Language Version:** Java 1.7
 
-Numeric literals with more than 3 digits must use '_' as a separator.
+Since Java 1.7, numeric literals can use underscores to separate digits. This rule enforces that
+numeric literals above a certain length use these underscores to increase readability.
+
+The rule only supports decimal (base 10) literals for now. The acceptable length under which literals
+are not required to have underscores is configurable via a property. Even under that length, underscores
+that are misplaced (not making groups of 3 digits) are reported.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//Literal[@IntLiteral = true() or
- @LongLiteral = true() or
- @DoubleLiteral = true() or
- @FloatLiteral = true()]
- [ not (matches(@Image, "^0[^.]"))]
+//Literal[
+     @IntLiteral = true()
+  or @LongLiteral = true()
+  or @DoubleLiteral = true()
+  or @FloatLiteral = true()
+]
+ (: Filter out literals in base other than 10 :)
+ [not(matches(@Image, "^0[^.]"))]
+ (: Filter out ignored field name :)
+ [not(ancestor::VariableDeclarator[1][@Name = 'serialVersionUID'])]
  [
-  some $num in tokenize(@Image, "[.dDfFlLeE\-\+]")
-  satisfies not(
-                 string-length($num) <= $acceptableDecimalLength
-                   and (
-                         not(contains($num,"_"))
-                       )
-		 or matches($num, "^[0-9]{1,3}(_[0-9]{3})*$")
-               )
+   some $num in tokenize(@Image, "[.dDfFlLeE+\-]")
+   satisfies not(
+                  string-length($num) <= $acceptableDecimalLength
+                    and not(contains($num,"_"))
+                  or matches($num, "^[0-9]{1,3}(_[0-9]{3})*$")
+                )
  ]
- [ancestor::VariableDeclarator[not (@Name = 'serialVersionUID')] or
- not (ancestor::VariableDeclarator)]
 ```
 
 **Example(s):**
@@ -2246,7 +2252,7 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|acceptableDecimalLength|4|Maximum acceptable length within which the rule is not applicable|no|
+|acceptableDecimalLength|4|Length under which literals in base 10 are not required to have underscores|no|
 
 **Use this rule by referencing it:**
 ``` xml
