@@ -9,8 +9,6 @@ import java.lang.reflect.Modifier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.javacc.parser.JavaCCParser.ModifierSet;
-
 import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
@@ -18,7 +16,8 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  * Abstract class for scopes whose declarations are
  * outside the currently analysed file, i.e., they proceed
  * by reflection (and need a classLoader). Includes import
- * scopes, package scope.
+ * scopes, package scope. Probably will include every scope
+ * I reckon.
  *
  * @author Clément Fournier
  * @since 7.0.0

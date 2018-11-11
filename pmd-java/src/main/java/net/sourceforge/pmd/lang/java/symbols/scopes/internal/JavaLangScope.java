@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
- * Implicit imports from {@literal java.lang}, top-level symbol table for all symbol table trees.
+ * Implicit imports from {@literal java.lang}, bottom of all scope stacks.
  *
  * @author Clément Fournier
  * @since 7.0.0

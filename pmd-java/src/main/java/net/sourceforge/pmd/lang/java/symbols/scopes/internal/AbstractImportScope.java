@@ -32,20 +32,10 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  * <li> {@link SingleImportScope}: shadows all of the above, is shadowed by type definitions of this compilation unit
  * </ul>
  *
- * These all have scope
- *
  * @author Clément Fournier
  * @since 7.0.0
  */
 abstract class AbstractImportScope extends AbstractExternalScope {
-
-    // Accessibility of imports is not checked, but:
-    // * inaccessible single type imports or imports of static members from an inaccessible type
-    //   may not occur, since compilation would have failed
-    // * single imports of inaccessible members may occur (eg static protected members), but their *use*
-    //   will have been prohibited by the compiler so normally we should not be querying for them
-    //   later-on
-    // Imports-on-demand will check the package tree.
 
     final Map<String, JSymbolicClassReference> importedTypes = new HashMap<>();
     final Map<String, List<JMethodReference>> importedStaticMethods = new HashMap<>();

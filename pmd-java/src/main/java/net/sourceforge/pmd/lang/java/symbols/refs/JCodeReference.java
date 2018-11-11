@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SingleImportScope;
  * and symbol analysis. At least for now it's internal.
  *
  * <p>Instances are not shared across compilation units during PMD's analysis,
- * because would prevent the garbage collection of scopes and nodes.
+ * because that would prevent the garbage collection of scopes and nodes.
  *
  * @param <N> Type of AST node that can represent this type of declaration
  *
@@ -64,6 +64,6 @@ public interface JCodeReference<N extends Node> {
      */
     String getSimpleName();
 
-    // TODO add type information when a new JTypeDefinition API is formed
+    // TODO add type information when TypeDefinitions are reviewed
 
 }
