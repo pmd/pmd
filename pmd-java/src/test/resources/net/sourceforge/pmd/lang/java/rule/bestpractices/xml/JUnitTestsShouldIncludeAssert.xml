@@ -433,7 +433,7 @@ class Style {
     </test-code>
     <test-code>
         <description>#647 JUnitTestsShouldIncludeAssertRule should support `this.exception` as well as just `exception`</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class DigitalAssetManagerTest {
   @Rule
