@@ -1269,7 +1269,7 @@ a violation - and a negative test case - a code example, that doesn’t trigger 
 Of course, the more tests, the better the rule is verified. If the rule is more complex or defines properties,
 with which the behavior can be modified, then these different cases can also be tested.</p>
 
-<p>And if there is a bug fix for a rule, be it a false positive or a false negative case, should be accompanied
+<p>And if there is a bug fix for a rule, be it a false positive or a false negative case, it should be accompanied
 with an additional test case, so that the bug is not accidentally reintroduced later on.</p>
 
 <h2 id="how-it-works">How it works</h2>
@@ -1280,7 +1280,7 @@ Each category-ruleset has a single abstract base test class, from which the indi
 We have one test class per rule, which executes all test cases for a single rule. The actual test cases are
 stored in separate XML files, for each rule a separate file is used.</p>
 
-<p>All the test classes inherit from <code class="highlighter-rouge">net.sourceforge.pmd.testframework.SimpleAggregatorTst</code>,
+<p>All the test classes inherit from <code class="highlighter-rouge">net.sourceforge.pmd.testframework.PmdRuleTst</code>,
 which provides the seamless integration with JUnit. This base class determines the language, the category name
 and the rule name from the concrete test class. It then searches the test code on its own.
 E.g. the individual rule test class
@@ -1296,7 +1296,7 @@ test case and just execute this one.</p>
 
 <h2 id="where-to-place-the-test-code">Where to place the test code</h2>
 
-<p>The <code class="highlighter-rouge">SimpleAggregatorTst</code> class searches the XML file, that describes the test cases for a certain rule
+<p>The <code class="highlighter-rouge">PmdRuleTst</code> class searches the XML file, that describes the test cases for a certain rule
 using the following convention:
 The XML file is a test resource, so it is searched in the tree under <code class="highlighter-rouge">src/test/resources</code>.</p>
 
@@ -1323,18 +1323,21 @@ src/test/resources/net/sourceforge/pmd/lang/&lt;Language Terse Name&gt;/rule/&lt
 Just search in the project for a file <code class="highlighter-rouge">&lt;RuleName&gt;.xml</code>. Search for a class <code class="highlighter-rouge">&lt;Rule Name&gt;Test</code> to find the
 unit test class for the given rule.</div>
 
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> If you want to use the test framework with a different package structure,
+see <a href="#using-the-test-framework-externally">Using the test framework externally</a>.</div>
+
 <h2 id="simple-example">Simple example</h2>
 
 <h3 id="test-class-abstractclasswithoutabstractmethodtest">Test Class: AbstractClassWithoutAbstractMethodTest</h3>
 
-<p>This class inherits from <code class="highlighter-rouge">SimpleAggregatorTst</code> and is located in the package “bestpractices”, since the rule
+<p>This class inherits from <code class="highlighter-rouge">PmdRuleTst</code> and is located in the package “bestpractices”, since the rule
 belongs to the category “Best Practices”:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">sourceforge</span><span class="o">.</span><span class="na">pmd</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">rule</span><span class="o">.</span><span class="na">bestpractices</span><span class="o">;</span>
 
-<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.testframework.SimpleAggregatorTst</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.testframework.PmdRuleTst</span><span class="o">;</span>
 
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AbstractClassWithoutAbstractMethodTest</span> <span class="kd">extends</span> <span class="n">SimpleAggregatorTst</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AbstractClassWithoutAbstractMethodTest</span> <span class="kd">extends</span> <span class="n">PmdRuleTst</span> <span class="o">{</span>
     <span class="c1">// no additional unit tests</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1350,7 +1353,7 @@ this test class.</div>
 <span class="nt">&lt;test-data</span>
     <span class="na">xmlns=</span><span class="s">"http://pmd.sourceforge.net/rule-tests"</span>
     <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
-    <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd"</span><span class="nt">&gt;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_0_0.xsd"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;test-code&gt;</span>
         <span class="nt">&lt;description&gt;</span>concrete class<span class="nt">&lt;/description&gt;</span>
         <span class="nt">&lt;expected-problems&gt;</span>0<span class="nt">&lt;/expected-problems&gt;</span>
@@ -1449,7 +1452,11 @@ in a “CDATA” section, so that no further XML escapes (entity references such
 <h3 id="complete-xml-example">Complete XML example</h3>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="nt">&lt;test-data&gt;</span>
+<span class="nt">&lt;test-data</span>
+    <span class="na">xmlns=</span><span class="s">"http://pmd.sourceforge.net/rule-tests"</span>
+    <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_0_0.xsd"</span><span class="nt">&gt;</span>
+
     <span class="nt">&lt;test-code</span> <span class="na">reinitializeRule=</span><span class="s">"true"</span> <span class="na">regressionTest=</span><span class="s">"true"</span> <span class="na">useAuxClasspath=</span><span class="s">"true"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;description&gt;</span>Just a description, will be used as the test name for JUnit in the reports<span class="nt">&lt;/description&gt;</span>
         <span class="nt">&lt;rule-property</span> <span class="na">name=</span><span class="s">"somePropName"</span><span class="nt">&gt;</span>propValue<span class="nt">&lt;/rule-property&gt;</span>    <span class="c">&lt;!-- optional --&gt;</span>
@@ -1526,7 +1533,12 @@ the path “com/example/pmd/ruleset.xml”.</p>
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">SimpleAggregatorTst</code>: This is the base class for the test classes and defines the custom JUnit test runner.
+    <p><code class="highlighter-rouge">PmdRuleTst</code>: This is the base class for tests in PMD’s code base. It is a subclass of <code class="highlighter-rouge">RuleTst</code> and just
+contains the logic to determine the test resources based on the test class name.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">SimpleAggregatorTst</code>: This is a more generic base class for the test classes and defines
+the custom JUnit test runner. It doesn’t register any test cases on its own.
 It itself is a subclass of <code class="highlighter-rouge">RuleTst</code>.</p>
   </li>
   <li>
@@ -1574,7 +1586,7 @@ will be executed twice.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> September 2017<br/> Site last generated: Nov 11, 2018 <br />
+<span>Page last updated:</span> November 2018<br/> Site last generated: Nov 11, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
