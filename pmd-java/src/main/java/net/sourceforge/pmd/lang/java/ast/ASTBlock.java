@@ -25,10 +25,12 @@ public class ASTBlock extends AbstractJavaNode {
         return visitor.visit(this, data);
     }
 
+    @Deprecated
     public boolean containsComment() {
         return this.containsComment;
     }
 
+    @Deprecated
     public void setContainsComment() {
         this.containsComment = true;
     }
