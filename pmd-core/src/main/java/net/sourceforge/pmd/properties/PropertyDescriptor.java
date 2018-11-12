@@ -16,12 +16,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * any associated GUIs. While concrete descriptor instances are static and immutable they provide validation,
  * serialization, and default values for any specific datatypes.
  *
- * <p>This interface is primarily specialized according to whether the property is multi-valued or single-valued, see
- * {@link SingleValuePropertyDescriptor} and {@link MultiValuePropertyDescriptor}.
- *
- * <p>Several interfaces further specialize the behaviour of descriptors to accommodate specific types of descriptors,
- * see {@link NumericPropertyDescriptor} and {@link EnumeratedPropertyDescriptor}.
- *
  * <h1>Upcoming API changes to the properties framework: see <a href="https://github.com/pmd/pmd/wiki/Property-framework-7-0-0">wiki</a></h1>
  *
  * @param <T> type of the property's value. This is a list type for multi-valued properties.
@@ -91,7 +85,10 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * @param value The value to check.
      *
      * @return A diagnostic message.
+     *
+     * @deprecated PMD 7.0.0 will change the return type to {@code Optional<String>}
      */
+    @Deprecated
     String errorFor(T value); // TODO Java 1.8 make optional
 
 
@@ -101,8 +98,22 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * adjacent fields on the same row.
      *
      * @return The relative order compared to other properties of the same rule
+     *
+     * @deprecated This method confuses the presentation layer and the business logic. The order of the
+     * property in a UI is irrelevant to the functioning of the property in PMD. With PMD 7.0.0, this
+     * method will be removed, and descriptors will be documented in the order they were defined on their
+     * PropertySource.
      */
+    @Deprecated
     float uiOrder();
+
+
+    /**
+     * @deprecated Comparing property descriptors is not useful within PMD
+     */
+    @Deprecated
+    @Override
+    int compareTo(PropertyDescriptor<?> o);
 
 
     /**
