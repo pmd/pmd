@@ -75,6 +75,9 @@ echo
 echo "*   Ensure all the new rules are listed in the proper file:"
 echo "    ${RELEASE_RULESET}"
 echo
+echo "*   Update **docs/pages/next_major_development.md** with the API changes for"
+echo "    the new release based on the release notes"
+echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
 echo "Press enter to continue..."

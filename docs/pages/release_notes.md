@@ -21,6 +21,8 @@ This is a {{ site.pmd.release_type }} release.
     underscores every 3 digits for readability. The rule only applies to Java 7+ codebases.
 
 ### Fixed Issues
+*   all
+    *   [#1284](https://github.com/pmd/pmd/issues/1284): \[doc] Keep record of every currently deprecated API
 
 *   all
     *   [#1318](https://github.com/pmd/pmd/issues/1318): \[test] Kotlin DSL to ease test writing
@@ -42,4 +44,6 @@ This is a {{ site.pmd.release_type }} release.
 *   [#1430](https://github.com/pmd/pmd/pull/1430): \[doc] Who really knows regex? - [Dem Pilafian](https://github.com/dpilafian)
 
 {% endtocmaker %}
+
+{% include note.html content="The release notes of previous versions are available [here](pmd_release_notes_old.html)" %}
 
