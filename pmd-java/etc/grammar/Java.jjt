@@ -1854,7 +1854,7 @@ void ConstructorDeclaration(int modifiers) :
 Token t;}
 {
     [ TypeParameters() ]
-  t=<IDENTIFIER> {jjtThis.setImage(t.image);} FormalParameters() [ "throws" NameList() ]
+   <IDENTIFIER>  {jjtThis.setImage(getToken(0).getImage());} FormalParameters() [ "throws" NameList() ]
   "{"
     [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
     ( BlockStatement() )*
