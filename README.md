@@ -1,5 +1,6 @@
 # PMD
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a386374b3d334faf8cd6e80ab8c88866)](https://app.codacy.com/app/pmd/pmd?utm_source=github.com&utm_medium=referral&utm_content=pmd/pmd&utm_campaign=Badge_Grade_Dashboard)
 [![Join the chat at https://gitter.im/pmd/pmd](https://badges.gitter.im/pmd/pmd.svg)](https://gitter.im/pmd/pmd?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/pmd/pmd.svg?branch=master)](https://travis-ci.org/pmd/pmd)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sourceforge.pmd/pmd/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.sourceforge.pmd/pmd)
