@@ -435,6 +435,7 @@ class Style {
         <description>#647 JUnitTestsShouldIncludeAssertRule should support `this.exception` as well as just `exception`</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import org.junit.*;
 public class DigitalAssetManagerTest {
   @Rule
   public final ExpectedException exception = ExpectedException.none();
