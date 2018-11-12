@@ -22,7 +22,7 @@ This is a {{ site.pmd.release_type }} release.
 ### API Changes
 
 * Several classes and interfaces from the properties framework are now deprecated and will be removed with 7.0.0.
-  * MethodProperty, FloatProperty, FileProperty, TypeProperty and their multi-valued counterparts
+  * `MethodProperty`, `FloatProperty`, `FileProperty`, `TypeProperty` and their multi-valued counterparts
     are discontinued for lack of a use-case, and will probably not be replaced with 7.0.0.
     Users of `FloatProperty` should consider using a `DoubleProperty`.
   * `EnumeratedPropertyDescriptor`, `NumericPropertyDescriptor`, `PackagedPropertyDescriptor`, and the related builders
