@@ -101,8 +101,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      *
      * @deprecated This method confuses the presentation layer and the business logic. The order of the
      * property in a UI is irrelevant to the functioning of the property in PMD. With PMD 7.0.0, this
-     * method will be removed, and descriptors will be documented in the order they were defined on their
-     * PropertySource.
+     * method will be removed. UI and documentation tools will decide on their own convention.
      */
     @Deprecated
     float uiOrder();
