@@ -17,6 +17,7 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -293,6 +294,12 @@ public class RuleReference extends AbstractDelegateRule {
             propertyValues.put(propertyDescriptor, value);
             super.setProperty(propertyDescriptor, value);
         }
+    }
+
+
+    @Override
+    public boolean dependsOn(AstProcessingStage<?> stage) {
+        return getRule().dependsOn(stage);
     }
 
 

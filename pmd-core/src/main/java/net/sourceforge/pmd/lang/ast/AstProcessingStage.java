@@ -8,6 +8,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 
 // @formatter:off
@@ -57,6 +58,12 @@ public interface AstProcessingStage<T extends AstProcessingStage<T>> extends Com
 
 
     /**
+     * Returns the language this processing stage applies to.
+     */
+    Language getLanguage();
+
+
+    /**
      * Gets the stages on which this stage depends.
      * E.g. the type resolution stage may depend on the
      * qualified name resolution stage.
@@ -82,7 +89,22 @@ public interface AstProcessingStage<T extends AstProcessingStage<T>> extends Com
      * @param rootNode      Root of the tree
      * @param configuration Configuration
      */
-    void processAST(RootNode rootNode, AstAnalysisConfiguration configuration);
+    void processAST(RootNode rootNode, AstAnalysisContext configuration);
 
+
+    /**
+     * Same contract as {@link Comparable#compareTo(Object)}, but we can't extend
+     * Comparable with that type argument if we implement processing stages within
+     * an enum.
+     *
+     * @param t the object to compare
+     *
+     * @return a negative integer, zero, or a positive integer as this object
+     * is less than, equal to, or greater than the specified object.
+     */
+    @SuppressWarnings("unchecked")
+    default int compare(AstProcessingStage<?> t) {
+        return this.compareTo((T) t);
+    }
 
 }

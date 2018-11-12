@@ -10,8 +10,9 @@ import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ast.AstAnalysisConfiguration;
+import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
@@ -34,7 +35,7 @@ public enum PlsqlProcessingStage implements AstProcessingStage<PlsqlProcessingSt
      */
     SYMBOL_RESOLUTION("Symbol table") {
         @Override
-        public void processAST(RootNode rootNode, AstAnalysisConfiguration configuration) {
+        public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
             new SymbolFacade().initializeWith((ASTInput) rootNode);
         }
 
@@ -50,7 +51,7 @@ public enum PlsqlProcessingStage implements AstProcessingStage<PlsqlProcessingSt
      */
     DFA("Data flow analysis") {
         @Override
-        public void processAST(RootNode rootNode, AstAnalysisConfiguration configuration) {
+        public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
             new DataFlowFacade().initializeWith(new PLSQLDataFlowHandler(), (ASTInput) rootNode);
         }
 
@@ -69,6 +70,12 @@ public enum PlsqlProcessingStage implements AstProcessingStage<PlsqlProcessingSt
     PlsqlProcessingStage(String displayName, PlsqlProcessingStage... dependencies) {
         this.displayName = displayName;
         this.dependencies = Collections.unmodifiableList(Arrays.asList(dependencies));
+    }
+
+
+    @Override
+    public Language getLanguage() {
+        return LanguageRegistry.findLanguageByTerseName("plsql");
     }
 
 
@@ -104,7 +111,7 @@ public enum PlsqlProcessingStage implements AstProcessingStage<PlsqlProcessingSt
      */
     @Experimental
     public final boolean ruleDependsOnThisStage(Rule rule) {
-        if (!rule.getLanguage().equals(LanguageRegistry.findLanguageByTerseName("plsql"))) {
+        if (!rule.getLanguage().equals(getLanguage())) {
             throw new IllegalArgumentException();
         }
         return dependsOnImpl(rule); // this is a template method

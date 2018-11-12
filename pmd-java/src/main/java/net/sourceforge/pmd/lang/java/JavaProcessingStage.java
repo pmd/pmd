@@ -7,11 +7,13 @@ package net.sourceforge.pmd.lang.java;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ast.AstAnalysisConfiguration;
+import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -36,7 +38,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
      */
     QNAME_RESOLUTION("Qualified name resolution") {
         @Override
-        public void processAST(RootNode rootNode, AstAnalysisConfiguration configuration) {
+        public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
             new QualifiedNameResolver().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
         }
     },
@@ -46,7 +48,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
      */
     SYMBOL_RESOLUTION("Symbol table") {
         @Override
-        public void processAST(RootNode rootNode, AstAnalysisConfiguration configuration) {
+        public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
             new SymbolFacade().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
         }
     },
@@ -56,7 +58,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
      */
     TYPE_RESOLUTION("Type resolution", QNAME_RESOLUTION) {
         @Override
-        public void processAST(RootNode rootNode, AstAnalysisConfiguration configuration) {
+        public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
             new TypeResolutionFacade().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
         }
     },
@@ -66,7 +68,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
      */
     DFA("Data flow analysis") {
         @Override
-        public void processAST(RootNode rootNode, AstAnalysisConfiguration configuration) {
+        public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
             new DataFlowFacade().initializeWith(new JavaDataFlowHandler(), (ASTCompilationUnit) rootNode);
         }
 
@@ -80,7 +82,6 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
 
     private final String displayName;
     private final List<JavaProcessingStage> dependencies;
-
 
     JavaProcessingStage(String displayName, JavaProcessingStage... dependencies) {
         this.displayName = displayName;
@@ -97,6 +98,12 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
     @Override
     public String getDisplayName() {
         return displayName;
+    }
+
+
+    @Override
+    public final Language getLanguage() {
+        return LanguageRegistry.findLanguageByTerseName("java");
     }
 
 
@@ -120,7 +127,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
      */
     @Experimental
     public final boolean ruleDependsOnThisStage(Rule rule) {
-        if (!rule.getLanguage().equals(LanguageRegistry.findLanguageByTerseName("java"))) {
+        if (!rule.getLanguage().equals(getLanguage())) {
             throw new IllegalArgumentException();
         }
         return dependsOnImpl(rule); // this is a template method

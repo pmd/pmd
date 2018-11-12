@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  * @since 6.10.0
  */
 @Experimental
-public interface AstAnalysisConfiguration {
+public interface AstAnalysisContext {
 
 
     /**

@@ -8,24 +8,29 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.VisitorStarter;
+import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
+import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 
 public class SourceCodeProcessor {
 
     private final PMDConfiguration configuration;
+    private final Map<RuleSets, Map<LanguageVersion, List<AstProcessingStage<?>>>> dependenciesByRuleset = new HashMap<>();
+
 
     public SourceCodeProcessor(PMDConfiguration configuration) {
         this.configuration = configuration;
@@ -114,65 +119,46 @@ public class SourceCodeProcessor {
         }
     }
 
-    private void symbolFacade(Node rootNode, LanguageVersionHandler languageVersionHandler) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.SYMBOL_TABLE)) {
-            languageVersionHandler.getSymbolFacade(configuration.getClassLoader()).start(rootNode);
-        }
-    }
 
-    private void resolveQualifiedNames(Node rootNode, LanguageVersionHandler handler) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.QUALIFIED_NAME_RESOLUTION)) {
-            handler.getQualifiedNameResolutionFacade(configuration.getClassLoader()).start(rootNode);
-        }
-    }
+    private List<AstProcessingStage<?>> buildDependencyList(RuleSets ruleSets, LanguageVersion languageVersion) {
+        List<AstProcessingStage<?>> stages = new ArrayList<>(languageVersion.getLanguageVersionHandler().getProcessingStages());
+        List<AstProcessingStage<?>> result = new ArrayList<>();
 
-    // private ParserOptions getParserOptions(final LanguageVersionHandler
-    // languageVersionHandler) {
-    // // TODO Handle Rules having different parser options.
-    // ParserOptions parserOptions =
-    // languageVersionHandler.getDefaultParserOptions();
-    // parserOptions.setSuppressMarker(configuration.getSuppressMarker());
-    // return parserOptions;
-    // }
-
-    private void usesDFA(LanguageVersion languageVersion, Node rootNode, RuleSets ruleSets, Language language) {
-        if (ruleSets.usesDFA(language)) {
-            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.DFA)) {
-                VisitorStarter dataFlowFacade = languageVersion.getLanguageVersionHandler().getDataFlowFacade();
-                dataFlowFacade.start(rootNode);
+        for (Rule rule : ruleSets.getAllRules()) {
+            if (stages.isEmpty()) {
+                return result;
             }
-        }
-    }
-
-    private void usesTypeResolution(LanguageVersion languageVersion, Node rootNode, RuleSets ruleSets,
-            Language language) {
-
-        if (ruleSets.usesTypeResolution(language)) {
-            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.TYPE_RESOLUTION)) {
-                languageVersion.getLanguageVersionHandler().getTypeResolutionFacade(configuration.getClassLoader())
-                        .start(rootNode);
+            for (AstProcessingStage<?> stage : stages) {
+                if (rule.dependsOn(stage)) {
+                    result.add(stage);
+                }
             }
+            stages.removeAll(result);
         }
+
+        result.sort(AstProcessingStage::compare);
+        return Collections.unmodifiableList(result);
     }
 
 
-    private void usesMultifile(Node rootNode, LanguageVersionHandler languageVersionHandler, RuleSets ruleSets,
-                               Language language) {
+    /** Gets the stage dependencies of the ruleset for the given language version. */
+    private List<AstProcessingStage<?>> getDependencies(RuleSets ruleSets, LanguageVersion languageVersion) {
+        Map<LanguageVersion, List<AstProcessingStage<?>>> byLanguage = dependenciesByRuleset.computeIfAbsent(ruleSets, r -> new HashMap<>());
 
-        if (ruleSets.usesMultifile(language)) {
-            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.MULTIFILE_ANALYSIS)) {
-                languageVersionHandler.getMultifileFacade().start(rootNode);
-            }
-        }
+        return byLanguage.computeIfAbsent(languageVersion, l -> buildDependencyList(ruleSets, l));
     }
 
+
+    private void executeProcessingStage(AstProcessingStage<?> stage, RootNode root, AstAnalysisContext context) {
+
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.forStage(stage))) {
+            stage.processAST(root, context);
+        }
+
+
+    }
 
     private void processSource(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) {
-        LanguageVersion languageVersion = ctx.getLanguageVersion();
-        LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-        Parser parser = PMD.parserFor(languageVersion, configuration);
-
-        Node rootNode = parse(ctx, sourceCode, parser);
         // basically:
         // 1. make the union of all stage dependencies of each rule, by language, for the Rulesets
         // 2. order them by dependency
@@ -182,10 +168,6 @@ public class SourceCodeProcessor {
         // They're probably costly and if we do this here without changing anything,
         // they'll be done on each file! Btw currently the "usesDfa" and such are nested loops testing
         // all rules of all rulesets, but they're run on each file too!
-
-        // Also, the benchmarking framework needs a small refactor. TimedOperationCategory needs to be
-        // made extensible -> probably should be turned to a class with static constants + factory methods
-        // and not an enum.
 
         // With mutable RuleSets, caching of the value can't be guaranteed to be accurate...
         // The approach I'd like to take is either
@@ -201,16 +183,38 @@ public class SourceCodeProcessor {
         // * grouping rules by language/ file extension
         // * etc.
 
-        resolveQualifiedNames(rootNode, languageVersionHandler);
-        symbolFacade(rootNode, languageVersionHandler);
-        Language language = languageVersion.getLanguage();
-        usesDFA(languageVersion, rootNode, ruleSets, language);
-        usesTypeResolution(languageVersion, rootNode, ruleSets, language);
-        usesMultifile(rootNode, languageVersionHandler, ruleSets, language);
+        LanguageVersion languageVersion = ctx.getLanguageVersion();
+
+        Parser parser = PMD.parserFor(languageVersion, configuration);
+
+        Node rootNode = parse(ctx, sourceCode, parser);
+
+        AstAnalysisContext context = buildContext(languageVersion);
+
+        getDependencies(ruleSets, languageVersion)
+                .forEach(stage -> executeProcessingStage(stage, (RootNode) rootNode, context));
+
 
         List<Node> acus = Collections.singletonList(rootNode);
-        ruleSets.apply(acus, ctx, language);
+        ruleSets.apply(acus, ctx, languageVersion.getLanguage());
     }
+
+
+    private AstAnalysisContext buildContext(LanguageVersion languageVersion) {
+        return new AstAnalysisContext() {
+            @Override
+            public ClassLoader getTypeResolutionClassLoader() {
+                return configuration.getClassLoader();
+            }
+
+
+            @Override
+            public LanguageVersion getLanguageVersion() {
+                return languageVersion;
+            }
+        };
+    }
+
 
     private void determineLanguage(RuleContext ctx) {
         // If LanguageVersion of the source file is not known, make a
