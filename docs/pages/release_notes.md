@@ -31,7 +31,7 @@ This is a {{ site.pmd.release_type }} release.
     `PropertyTypeId#isPropertyPackaged` are also deprecated.
   * All classes of net.sourceforge.pmd.properties.modules are deprecated and will be removed. They were
     never intended as public api.
-  * The classes PropertyDescriptorField, PropertyDescriptorBuilderConversionWrapper, and the methods
+  * The classes `PropertyDescriptorField`, `PropertyDescriptorBuilderConversionWrapper`, and the methods
     `PropertyDescriptor#attributeValuesById`, `PropertyDescriptor#isDefinedExternally` and `PropertyTypeId#getFactory` are deprecated with no
     intended replacement. These were used to read and write properties to and from XML, and were never
     intended as public API.
