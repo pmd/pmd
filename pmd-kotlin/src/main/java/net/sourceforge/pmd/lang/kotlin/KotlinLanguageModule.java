@@ -20,7 +20,7 @@ public class KotlinLanguageModule extends BaseLanguageModule {
      * Create a new instance of Kotlin Language Module.
      */
     public KotlinLanguageModule() {
-        super(NAME, null, TERSE_NAME, null, "kotlin");
-        addVersion("", null, true);
+        super(NAME, null, TERSE_NAME, null, "kt");
+        addVersion("1.3", null, true);
     }
 }
