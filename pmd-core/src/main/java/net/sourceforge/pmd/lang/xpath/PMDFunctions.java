@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.xpath;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
+
+@InternalApi
+@Deprecated
 public final class PMDFunctions {
     private PMDFunctions() { }
 

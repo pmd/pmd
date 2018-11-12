@@ -5,7 +5,7 @@ permalink: pmd_rules_java_codestyle.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/codestyle.xml
-keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
+keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, UseUnderscoresInNumericLiterals, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
 language: Java
 ---
 ## AbstractNaming
@@ -407,12 +407,12 @@ public class Éléphant {}
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|classPattern|[A-Z][a-zA-Z0-9]*|Regex which applies to concrete class names|no|
-|abstractClassPattern|[A-Z][a-zA-Z0-9]*|Regex which applies to abstract class names|no|
-|interfacePattern|[A-Z][a-zA-Z0-9]*|Regex which applies to interface names|no|
-|enumPattern|[A-Z][a-zA-Z0-9]*|Regex which applies to enum names|no|
-|annotationPattern|[A-Z][a-zA-Z0-9]*|Regex which applies to annotation names|no|
-|utilityClassPattern|[A-Z][a-zA-Z0-9]+(Utils?\|Helper)|Regex which applies to utility class names|no|
+|classPattern|\[A-Z\]\[a-zA-Z0-9\]\*|Regex which applies to concrete class names|no|
+|abstractClassPattern|\[A-Z\]\[a-zA-Z0-9\]\*|Regex which applies to abstract class names|no|
+|interfacePattern|\[A-Z\]\[a-zA-Z0-9\]\*|Regex which applies to interface names|no|
+|enumPattern|\[A-Z\]\[a-zA-Z0-9\]\*|Regex which applies to enum names|no|
+|annotationPattern|\[A-Z\]\[a-zA-Z0-9\]\*|Regex which applies to annotation names|no|
+|utilityClassPattern|\[A-Z\]\[a-zA-Z0-9\]+(Utils?\|Helper)|Regex which applies to utility class names|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -462,7 +462,7 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|regex|\/\*\s+(default\|package)\s+\*\/|Regular expression|no|
+|regex|\\/\\\*\\s+(default\|package)\\s+\\\*\\/|Regular expression|no|
 |ignoredAnnotations|com.google.common.annotations.VisibleForTesting \| android.support.annotation.VisibleForTesting|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
@@ -801,12 +801,12 @@ class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|publicConstantPattern|[A-Z][A-Z_0-9]*|Regex which applies to public constant names|no|
-|constantPattern|[A-Z][A-Z_0-9]*|Regex which applies to non-public static final field names|no|
-|enumConstantPattern|[A-Z][A-Z_0-9]*|Regex which applies to enum constant names|no|
-|finalFieldPattern|[a-z][a-zA-Z0-9]*|Regex which applies to final field names|no|
-|staticFieldPattern|[a-z][a-zA-Z0-9]*|Regex which applies to static field names|no|
-|defaultFieldPattern|[a-z][a-zA-Z0-9]*|Regex which applies to field names|no|
+|publicConstantPattern|\[A-Z\]\[A-Z\_0-9\]\*|Regex which applies to public constant names|no|
+|constantPattern|\[A-Z\]\[A-Z\_0-9\]\*|Regex which applies to non-public static final field names|no|
+|enumConstantPattern|\[A-Z\]\[A-Z\_0-9\]\*|Regex which applies to enum constant names|no|
+|finalFieldPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to final field names|no|
+|staticFieldPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to static field names|no|
+|defaultFieldPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to field names|no|
 |exclusions|serialVersionUID|Names of fields to whitelist.|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
@@ -918,10 +918,10 @@ class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|methodParameterPattern|[a-z][a-zA-Z0-9]*|Regex which applies to formal parameter names|no|
-|finalMethodParameterPattern|[a-z][a-zA-Z0-9]*|Regex which applies to final formal parameter names|no|
-|lambdaParameterPattern|[a-z][a-zA-Z0-9]*|Regex which applies to inferred-type lambda parameter names|no|
-|explicitLambdaParameterPattern|[a-z][a-zA-Z0-9]*|Regex which applies to explicitly-typed lambda parameter names|no|
+|methodParameterPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to formal parameter names|no|
+|finalMethodParameterPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to final formal parameter names|no|
+|lambdaParameterPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to inferred-type lambda parameter names|no|
+|explicitLambdaParameterPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to explicitly-typed lambda parameter names|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1297,9 +1297,9 @@ class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|localVarPattern|[a-z][a-zA-Z0-9]*|Regex which applies to non-final local variable names|no|
-|finalVarPattern|[a-z][a-zA-Z0-9]*|Regex which applies to final local variable names|no|
-|catchParameterPattern|[a-z][a-zA-Z0-9]*|Regex which applies to exception block parameter names|no|
+|localVarPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to non-final local variable names|no|
+|finalVarPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to final local variable names|no|
+|catchParameterPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to exception block parameter names|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1438,11 +1438,11 @@ public class Foo {
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
 |checkNativeMethods|true|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Check native methods|no|
-|methodPattern|[a-z][a-zA-Z0-9]*|Regex which applies to instance method names|no|
-|staticPattern|[a-z][a-zA-Z0-9]*|Regex which applies to static method names|no|
-|nativePattern|[a-z][a-zA-Z0-9]*|Regex which applies to native method names|no|
-|junit3TestPattern|test[A-Z0-9][a-zA-Z0-9]*|Regex which applies to JUnit 3 test method names|no|
-|junit4TestPattern|[a-z][a-zA-Z0-9]*|Regex which applies to JUnit 4 test method names|no|
+|methodPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to instance method names|no|
+|staticPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to static method names|no|
+|nativePattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to native method names|no|
+|junit3TestPattern|test\[A-Z0-9\]\[a-zA-Z0-9\]\*|Regex which applies to JUnit 3 test method names|no|
+|junit4TestPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to JUnit 4 test method names|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -2157,13 +2157,13 @@ public class Foo {
 
 **Priority:** Medium (3)
 
-Look for qualified this usages in the same class.
+Reports qualified this usages in the same class.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //PrimaryExpression
 [PrimaryPrefix/Name[@Image]]
-[PrimarySuffix[@Arguments='false']]
+[PrimarySuffix[@Arguments='false' and @ArrayDereference = 'false']]
 [not(PrimarySuffix/MemberSelector)]
 [ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass='false']]
 /PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image]
@@ -2201,6 +2201,62 @@ public class Foo {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/UselessQualifiedThis" />
+```
+
+## UseUnderscoresInNumericLiterals
+
+**Since:** PMD 6.10.0
+
+**Priority:** Medium (3)
+
+**Minimum Language Version:** Java 1.7
+
+Since Java 1.7, numeric literals can use underscores to separate digits. This rule enforces that
+numeric literals above a certain length use these underscores to increase readability.
+
+The rule only supports decimal (base 10) literals for now. The acceptable length under which literals
+are not required to have underscores is configurable via a property. Even under that length, underscores
+that are misplaced (not making groups of 3 digits) are reported.
+
+**This rule is defined by the following XPath expression:**
+``` xpath
+//Literal[
+     @IntLiteral = true()
+  or @LongLiteral = true()
+  or @DoubleLiteral = true()
+  or @FloatLiteral = true()
+]
+ (: Filter out literals in base other than 10 :)
+ [not(matches(@Image, "^0[^.]"))]
+ (: Filter out ignored field name :)
+ [not(ancestor::VariableDeclarator[1][@Name = 'serialVersionUID'])]
+ [
+   some $num in tokenize(@Image, "[.dDfFlLeE+\-]")
+   satisfies not(
+                  string-length($num) <= $acceptableDecimalLength
+                    and not(contains($num,"_"))
+                  or matches($num, "^[0-9]{1,3}(_[0-9]{3})*$")
+                )
+ ]
+```
+
+**Example(s):**
+
+``` java
+public class Foo {
+    private int num = 1000000; // should be 1_000_000
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|acceptableDecimalLength|4|Length under which literals in base 10 are not required to have underscores|no|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/UseUnderscoresInNumericLiterals" />
 ```
 
 ## VariableNamingConventions

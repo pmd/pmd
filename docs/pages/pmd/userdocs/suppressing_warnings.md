@@ -175,7 +175,7 @@ are unused:
 </rule>
 ```
 
-Note for message based suppression to work, you must know who to write
+Note for message based suppression to work, you must know how to write
 a regular expression that matches the message of violations you wish to
 suppress. Regular expressions are explained in the JavaDoc for standard
 Java class java.util.regex.Pattern.
