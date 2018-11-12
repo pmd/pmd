@@ -25,7 +25,7 @@ This is a {{ site.pmd.release_type }} release.
   * MethodProperty, FloatProperty, FileProperty, TypeProperty and their multi-valued counterparts
     are discontinued for lack of a use-case, and will probably not be replaced with 7.0.0.
     Users of FloatProperty should consider using a DoubleProperty.
-  * EnumeratedPropertyDescriptor, NumericPropertyDescriptor, PackagedPropertyDescriptor, and the related builders
+  * `EnumeratedPropertyDescriptor`, `NumericPropertyDescriptor`, `PackagedPropertyDescriptor`, and the related builders
     (in `net.sourceforge.pmd.properties.builders`) will be removed. In the future, these interfaces won't be around
     but their functionality will, under another form. The related methods `PropertyTypeId#isPropertyNumeric` and
     `PropertyTypeId#isPropertyPackaged` are also deprecated.
