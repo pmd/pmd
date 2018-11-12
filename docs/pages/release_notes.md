@@ -31,6 +31,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+* The implementation of the adapters for the XPath engines Saxon and Jaxen (package `net.sourceforge.pmd.lang.ast.xpath`)
+  are now deprecated. They'll be moved to an internal package come 7.0.0. Only `Attribute` remains public API.
+
 ### External Contributions
 
 *   [#1384](https://github.com/pmd/pmd/pull/1384): \[java] New Rule - UseUnderscoresInNumericLiterals - [RajeshR](https://github.com/rajeshggwp)
