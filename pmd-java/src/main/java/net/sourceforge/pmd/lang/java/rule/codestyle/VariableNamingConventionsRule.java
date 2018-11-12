@@ -23,6 +23,7 @@ import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.StringMultiProperty;
 
+@Deprecated
 public class VariableNamingConventionsRule extends AbstractJavaRule {
 
     private boolean checkMembers;
@@ -89,6 +90,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         definePropertyDescriptor(PARAMETER_SUFFIXES_DESCRIPTOR);
     }
 
+    @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         init();
         return super.visit(node, data);
@@ -109,6 +111,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         parameterSuffixes = getProperty(PARAMETER_SUFFIXES_DESCRIPTOR);
     }
 
+    @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
         if (!checkMembers) {
             return data;
@@ -128,6 +131,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
                 isStatic ? staticSuffixes : memberSuffixes, node, isStatic, isFinal, data);
     }
 
+    @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         if (!checkLocals) {
             return data;
@@ -135,6 +139,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         return checkVariableDeclarators(localPrefixes, localSuffixes, node, false, node.isFinal(), data);
     }
 
+    @Override
     public Object visit(ASTFormalParameters node, Object data) {
         if (!checkParameters) {
             return data;
@@ -241,6 +246,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         return false;
     }
 
+    @Override
     public String dysfunctionReason() {
         return hasPrefixesOrSuffixes() ? null : "No prefixes or suffixes specified";
     }

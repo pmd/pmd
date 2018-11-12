@@ -36,6 +36,7 @@ public abstract class AbstractEcmascriptNode<T extends AstNode> extends Abstract
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -43,6 +44,7 @@ public abstract class AbstractEcmascriptNode<T extends AstNode> extends Abstract
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object childrenAccept(EcmascriptParserVisitor visitor, Object data) {
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {
@@ -56,14 +58,17 @@ public abstract class AbstractEcmascriptNode<T extends AstNode> extends Abstract
         return data;
     }
 
+    @Override
     public T getNode() {
         return node;
     }
 
+    @Override
     public String getJsDoc() {
         return node.getJsDoc();
     }
 
+    @Override
     public boolean hasSideEffects() {
         return node.hasSideEffects();
     }

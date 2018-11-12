@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.PushbackReader;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
 /**
@@ -31,41 +30,43 @@ public class CsTokenizer implements Tokenizer {
 
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-        Tokenizer tokenizer = new Tokenizer(sourceCode.getCodeBuffer().toString());
-        Token token = tokenizer.getNextToken();
+        try (Tokenizer tokenizer = new Tokenizer(sourceCode.getCodeBuffer().toString())) {
+            Token token = tokenizer.getNextToken();
 
-        while (!token.equals(Token.EOF)) {
-            Token lookAhead = tokenizer.getNextToken();
+            while (!token.equals(Token.EOF)) {
+                Token lookAhead = tokenizer.getNextToken();
 
-            // Ignore using directives
-            // Only using directives should be ignored, because these are used
-            // to import namespaces
-            //
-            // Using directive: 'using System.Math;'
-            // Using statement: 'using (Font font1 = new Font(..)) { .. }'
-            if (ignoreUsings && "using".equals(token.image) && !"(".equals(lookAhead.image)) {
-                // We replace the 'using' token by a random token, because it
-                // should not be part of
-                // any duplication block. When we omit it from the token stream,
-                // there is a change that
-                // we get a duplication block that starts before the 'using'
-                // directives and ends afterwards.
-                String randomTokenText = RandomStringUtils.randomAlphanumeric(20);
+                // Ignore using directives
+                // Only using directives should be ignored, because these are used
+                // to import namespaces
+                //
+                // Using directive: 'using System.Math;'
+                // Using statement: 'using (Font font1 = new Font(..)) { .. }'
+                if (ignoreUsings && "using".equals(token.image) && !"(".equals(lookAhead.image)) {
+                    // We replace the 'using' token by a random token, because it
+                    // should not be part of
+                    // any duplication block. When we omit it from the token stream,
+                    // there is a change that
+                    // we get a duplication block that starts before the 'using'
+                    // directives and ends afterwards.
+                    String randomTokenText = RandomStringUtils.randomAlphanumeric(20);
 
-                token = new Token(randomTokenText, token.lineNumber);
-                // Skip all other tokens of the using directive to prevent a
-                // partial matching
-                while (!";".equals(lookAhead.image) && !lookAhead.equals(Token.EOF)) {
-                    lookAhead = tokenizer.getNextToken();
+                    token = new Token(randomTokenText, token.lineNumber);
+                    // Skip all other tokens of the using directive to prevent a
+                    // partial matching
+                    while (!";".equals(lookAhead.image) && !lookAhead.equals(Token.EOF)) {
+                        lookAhead = tokenizer.getNextToken();
+                    }
                 }
+                if (!";".equals(token.image)) {
+                    tokenEntries.add(new TokenEntry(token.image, sourceCode.getFileName(), token.lineNumber));
+                }
+                token = lookAhead;
             }
-            if (!";".equals(token.image)) {
-                tokenEntries.add(new TokenEntry(token.image, sourceCode.getFileName(), token.lineNumber));
-            }
-            token = lookAhead;
+            tokenEntries.add(TokenEntry.getEOF());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        tokenEntries.add(TokenEntry.getEOF());
-        IOUtils.closeQuietly(tokenizer);
     }
 
     public void setIgnoreUsings(boolean ignoreUsings) {

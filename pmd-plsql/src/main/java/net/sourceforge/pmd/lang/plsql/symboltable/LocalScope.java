@@ -61,6 +61,7 @@ public class LocalScope extends AbstractScope {
         return result;
     }
 
+    @Override
     public String toString() {
         return "LocalScope:" + getVariableDeclarations().keySet();
     }

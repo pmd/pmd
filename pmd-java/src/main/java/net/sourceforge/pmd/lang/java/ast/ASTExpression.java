@@ -5,6 +5,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents an expression, in the most general sense.
+ * This corresponds roughly to the <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-AssignmentExpression">AssignmentExpression</a>
+ * of the JLS. One difference though, is that this production
+ * also matches lambda expressions, contrary to the JLS.
+ *
+ * <pre>
+ *
+ * Expression ::= {@linkplain ASTConditionalExpression ConditionalExpression} ( {@linkplain ASTAssignmentOperator AssignmentOperator} Expression )?
+ *
+ * </pre>
+ */
 public class ASTExpression extends AbstractJavaTypeNode {
     public ASTExpression(int id) {
         super(id);
@@ -17,6 +29,7 @@ public class ASTExpression extends AbstractJavaTypeNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

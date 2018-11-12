@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.math.BigInteger;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -54,7 +55,7 @@ public class ASTLiteral extends AbstractJavaTypeNode {
 
     /**
      * Checks whether this literal is a long integer.
-     * 
+     *
      * @return <code>true</code> if this literal is a long
      */
     public boolean isLongLiteral() {
@@ -84,7 +85,7 @@ public class ASTLiteral extends AbstractJavaTypeNode {
 
     /**
      * Checks whether this literal describes a double.
-     * 
+     *
      * @return <code>true</code> if this literal is a double.
      */
     public boolean isDoubleLiteral() {
@@ -97,20 +98,20 @@ public class ASTLiteral extends AbstractJavaTypeNode {
         }
         return false;
     }
-    
+
     private String stripIntValue() {
         String image = getImage().toLowerCase(Locale.ROOT).replaceAll("_", "");
-        
+
         boolean isNegative = false;
         if (image.charAt(0) == '-') {
             isNegative = true;
             image = image.substring(1);
         }
-        
+
         if (image.endsWith("l")) {
             image = image.substring(0, image.length() - 1);
         }
-        
+
         // ignore base prefix if any
         if (image.charAt(0) == '0' && image.length() > 1) {
             if (image.charAt(1) == 'x' || image.charAt(1) == 'b') {
@@ -119,17 +120,17 @@ public class ASTLiteral extends AbstractJavaTypeNode {
                 image = image.substring(1);
             }
         }
-        
+
         if (isNegative) {
             return "-" + image;
         }
         return image;
     }
-    
+
     private String stripFloatValue() {
         return getImage().toLowerCase(Locale.ROOT).replaceAll("_", "");
     }
-    
+
     private int getIntBase() {
         final String image = getImage().toLowerCase(Locale.ROOT);
         final int offset = image.charAt(0) == '-' ? 1 : 0;
@@ -144,19 +145,22 @@ public class ASTLiteral extends AbstractJavaTypeNode {
         }
         return 10;
     }
-    
+
     public int getValueAsInt() {
-        return (int) getValueAsLong(); // the downcast allows to parse 0x80000000+ numbers as negative instead of a NumberFormatException
+        // the downcast allows to parse 0x80000000+ numbers as negative instead of a NumberFormatException
+        return (int) getValueAsLong();
     }
-    
+
     public long getValueAsLong() {
-        return Long.parseLong(stripIntValue(), getIntBase());
+        // Using BigInteger to allow parsing 0x8000000000000000+ numbers as negative instead of a NumberFormatException
+        BigInteger bigInt = new BigInteger(stripIntValue(), getIntBase());
+        return bigInt.longValue();
     }
-    
+
     public float getValueAsFloat() {
         return Float.parseFloat(stripFloatValue());
     }
-    
+
     public double getValueAsDouble() {
         return Double.parseDouble(stripFloatValue());
     }

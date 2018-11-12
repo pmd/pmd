@@ -3,7 +3,7 @@
 <ruleset name="Error Prone"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
 Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
@@ -267,4 +267,25 @@ public class MyClass {
         </example>
     </rule>
 
+    <rule name="AvoidNonExistentAnnotations"
+          since="6.5.0"
+          message="Use of non existent annotations will lead to broken Apex code which will not compile in the future."
+          class="net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidNonExistentAnnotationsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoidnonexistentannotations">
+        <description>
+            Apex supported non existent annotations for legacy reasons.
+            In the future, use of such non-existent annotations could result in broken apex code that will not compile.
+            This will prevent users of garbage annotations from being able to use legitimate annotations added to Apex in the future.
+            A full list of supported annotations can be found at https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[@NonExistentAnnotation public class ClassWithNonexistentAnnotation {
+	@NonExistentAnnotation public void methodWithNonExistentAnnotation() {
+		// ...
+	}
+}
+]]>
+        </example>
+    </rule>
 </ruleset>

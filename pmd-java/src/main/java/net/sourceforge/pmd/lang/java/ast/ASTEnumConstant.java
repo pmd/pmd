@@ -8,6 +8,17 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
 
+/**
+ * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum declaration}.
+ *
+ * <p>TODO since there's no VariableDeclaratorId, this might not play well with the symbol table!
+ *
+ * <pre>
+ *
+ * EnumConstant ::= &lt;IDENTIFIER&gt; {@linkplain ASTArguments Arguments}? {@linkplain ASTClassOrInterfaceBody ClassOrInterfaceBody}?
+ *
+ * </pre>
+ */
 public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiableNode {
 
     private JavaTypeQualifiedName qualifiedName;
@@ -23,6 +34,7 @@ public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiable
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -35,6 +47,7 @@ public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiable
      *
      * @see #isAnonymousClass()
      */
+    @Override
     public JavaTypeQualifiedName getQualifiedName() {
         return qualifiedName;
     }

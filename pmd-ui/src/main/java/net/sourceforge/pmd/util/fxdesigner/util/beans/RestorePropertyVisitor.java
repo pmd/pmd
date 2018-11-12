@@ -6,9 +6,11 @@ package net.sourceforge.pmd.util.fxdesigner.util.beans;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -44,7 +46,7 @@ public class RestorePropertyVisitor extends BeanNodeVisitor<SettingsOwner> {
         }
 
         Map<String, PropertyDescriptor> descriptors = Arrays.stream(PropertyUtils.getPropertyDescriptors(target))
-                                                            .filter(d -> d.getReadMethod().isAnnotationPresent(PersistentProperty.class))
+                                                            .filter(d -> d.getReadMethod() != null && d.getReadMethod().isAnnotationPresent(PersistentProperty.class))
                                                             .collect(Collectors.toMap(PropertyDescriptor::getName, d -> d));
 
         for (Entry<String, Object> saved : model.getSettingsValues().entrySet()) {
@@ -52,6 +54,7 @@ public class RestorePropertyVisitor extends BeanNodeVisitor<SettingsOwner> {
                 try {
                     PropertyUtils.setProperty(target, saved.getKey(), saved.getValue());
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                    System.err.println("Error setting property " + saved.getKey() + " on a " + target.getClass().getSimpleName());
                     e.printStackTrace();
                 }
             }
@@ -90,6 +93,9 @@ public class RestorePropertyVisitor extends BeanNodeVisitor<SettingsOwner> {
 
         Iterator<SettingsOwner> existingItems = container.iterator();
         Class<?> itemType = null;
+        // use a buffer to avoid concurrent modification
+        List<SettingsOwner> itemsToAdd = new ArrayList<>();
+
         for (SimpleBeanModelNode child : model.getChildrenNodes()) {
             SettingsOwner item;
             if (existingItems.hasNext()) {
@@ -108,8 +114,10 @@ public class RestorePropertyVisitor extends BeanNodeVisitor<SettingsOwner> {
             }
 
             child.accept(this, item);
-            container.add(item);
+            itemsToAdd.add(item);
         }
+
+        container.addAll(itemsToAdd);
 
         try {
             PropertyUtils.setProperty(target, model.getPropertyName(), container);

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symboltable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 
@@ -49,7 +50,7 @@ public abstract class STBBaseTst {
         }
         final String source;
         try {
-            source = IOUtils.toString(is);
+            source = IOUtils.toString(is, StandardCharsets.UTF_8);
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }

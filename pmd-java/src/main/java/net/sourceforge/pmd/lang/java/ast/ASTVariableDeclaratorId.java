@@ -48,9 +48,6 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -101,9 +98,83 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      */
     public boolean isFormalParameter() {
         return jjtGetParent() instanceof ASTFormalParameter && !isExceptionBlockParameter() && !isResourceDeclaration()
-                || jjtGetParent() instanceof ASTLambdaExpression;
+                || isLambdaParamWithNoType();
     }
 
+
+    /**
+     * Returns true if this node declares a local variable.
+     */
+    public boolean isLocalVariable() {
+        return getNthParent(2) instanceof ASTLocalVariableDeclaration;
+    }
+
+
+    /**
+     * Returns true if this node declares a formal parameter for
+     * a lambda expression. In that case, the type of this parameter
+     * is not necessarily inferred, see {@link #isTypeInferred()}.
+     */
+    public boolean isLambdaParameter() {
+        return isLambdaParamWithNoType() || jjtGetParent() instanceof ASTFormalParameter && getNthParent(3) instanceof ASTLambdaExpression;
+    }
+
+
+    private boolean isLambdaParamWithNoType() {
+        return jjtGetParent() instanceof ASTLambdaExpression;
+    }
+
+
+    /**
+     * Returns true if this node declares a field.
+     */
+    public boolean isField() {
+        return getNthParent(2) instanceof ASTFieldDeclaration;
+    }
+
+
+    /**
+     * Returns the name of the variable.
+     */
+    public String getVariableName() {
+        return getImage();
+    }
+
+
+    /**
+     * Returns true if the variable declared by this node is declared final.
+     * Doesn't account for the "effectively-final" nuance. Resource
+     * declarations are implicitly final.
+     */
+    public boolean isFinal() {
+        if (isResourceDeclaration()) {
+            // this is implicit even if "final" is not explicitly declared.
+            return true;
+        } else if (isLambdaParamWithNoType()) {
+            return false;
+        }
+
+        if (jjtGetParent() instanceof ASTFormalParameter) {
+            // This accounts for exception parameters too for now
+            return ((ASTFormalParameter) jjtGetParent()).isFinal();
+        }
+
+        Node grandpa = getNthParent(2);
+
+        if (grandpa instanceof ASTLocalVariableDeclaration) {
+            return ((ASTLocalVariableDeclaration) grandpa).isFinal();
+        } else if (grandpa instanceof ASTFieldDeclaration) {
+            return ((ASTFieldDeclaration) grandpa).isFinal();
+        }
+
+        throw new IllegalStateException("All cases should be handled");
+    }
+
+
+    /**
+     * @deprecated Will be made private with 7.0.0
+     */
+    @Deprecated
     public void setExplicitReceiverParameter() {
         explicitReceiverParameter = true;
     }
@@ -142,15 +213,12 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * since the type node is absent.
      */
     public boolean isTypeInferred() {
-        return isLambdaExpression() || isLocalVariableTypeInferred();
+        return isLambdaParamWithNoType() || isLocalVariableTypeInferred() || isLambdaTypeInferred();
     }
 
-    private boolean isLambdaExpression() {
-        return jjtGetParent() instanceof ASTLambdaExpression;
-    }
 
     private boolean isLocalVariableTypeInferred() {
-        if (jjtGetParent() instanceof ASTResource) {
+        if (isResourceDeclaration()) {
             // covers "var" in try-with-resources
             return jjtGetParent().getFirstChildOfType(ASTType.class) == null;
         } else if (getNthParent(2) instanceof ASTLocalVariableDeclaration) {
@@ -159,6 +227,11 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         }
 
         return false;
+    }
+
+    private boolean isLambdaTypeInferred() {
+        return getNthParent(3) instanceof ASTLambdaExpression
+                && jjtGetParent().getFirstChildOfType(ASTType.class) == null;
     }
 
     /**

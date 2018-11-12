@@ -19,5 +19,6 @@ public interface JavaQualifiableNode extends QualifiableNode {
      *
      * @return A qualified name.
      */
+    @Override
     JavaQualifiedName getQualifiedName();
 }

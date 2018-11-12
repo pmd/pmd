@@ -5,7 +5,7 @@ permalink: pmd_rules_apex_errorprone.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/category/apex/errorprone.xml
-keywords: Error Prone, AvoidDirectAccessTriggerMap, AvoidHardcodingId, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass
+keywords: Error Prone, AvoidDirectAccessTriggerMap, AvoidHardcodingId, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass, AvoidNonExistentAnnotations
 language: Apex
 ---
 ## AvoidDirectAccessTriggerMap
@@ -17,7 +17,7 @@ language: Apex
 Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Triggers should be bulkified and iterate through the map to handle the actions for each item separately.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ArrayLoadExpression[TriggerVariableExpression and LiteralExpression]
 ```
 
@@ -86,6 +86,42 @@ public without sharing class Foo {
 <rule ref="category/apex/errorprone.xml/AvoidHardcodingId" />
 ```
 
+## AvoidNonExistentAnnotations
+
+**Since:** PMD 6.5.0
+
+**Priority:** Medium (3)
+
+Apex supported non existent annotations for legacy reasons.
+In the future, use of such non-existent annotations could result in broken apex code that will not compile.
+This will prevent users of garbage annotations from being able to use legitimate annotations added to Apex in the future.
+A full list of supported annotations can be found at https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidNonExistentAnnotationsRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/errorprone/AvoidNonExistentAnnotationsRule.java)
+
+**Example(s):**
+
+``` java
+@NonExistentAnnotation public class ClassWithNonexistentAnnotation {
+	@NonExistentAnnotation public void methodWithNonExistentAnnotation() {
+		// ...
+	}
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/apex/errorprone.xml/AvoidNonExistentAnnotations" />
+```
+
 ## EmptyCatchBlock
 
 **Since:** PMD 6.0.0
@@ -97,7 +133,7 @@ In most circumstances, this swallows an exception which should either be acted o
 or reported.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //CatchBlockStatement[./BlockStatement[count(*) = 0]]
 ```
 
@@ -136,7 +172,7 @@ public void doSomething() {
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //IfBlockStatement
  [BlockStatement[count(*) = 0]]
 ```
@@ -175,7 +211,7 @@ public class Foo {
 Empty block statements serve no purpose and should be removed.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Method/ModifierNode[@Abstract!='true' and ../BlockStatement[count(*) = 0]]
 | //Method/BlockStatement//BlockStatement[count(*) = 0 and @Location != parent::*/@Location]
 ```
@@ -216,7 +252,7 @@ public class Foo {
 Avoid empty try or finally blocks - what's the point?
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //TryCatchFinallyBlockStatement[./BlockStatement[count(*) = 0]]
 ```
 
@@ -268,7 +304,7 @@ If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //WhileLoopStatement[./BlockStatement[count(*) = 0]]
 ```
 

@@ -22,6 +22,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         this.parser = parser;
     }
 
+    @Override
     public void jjtOpen() {
         if (beginLine == -1 && parser.token.next != null) {
             beginLine = parser.token.next.beginLine;
@@ -29,6 +30,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         }
     }
 
+    @Override
     public void jjtClose() {
         if (beginLine == -1 && (children == null || children.length == 0)) {
             beginColumn = parser.token.beginColumn;
@@ -43,6 +45,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -50,6 +53,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object childrenAccept(JavaParserVisitor visitor, Object data) {
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {
@@ -59,6 +63,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         return data;
     }
 
+    @Override
     public Scope getScope() {
         if (scope == null) {
             return ((JavaNode) parent).getScope();
@@ -66,6 +71,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         return scope;
     }
 
+    @Override
     public void setScope(Scope scope) {
         this.scope = scope;
     }

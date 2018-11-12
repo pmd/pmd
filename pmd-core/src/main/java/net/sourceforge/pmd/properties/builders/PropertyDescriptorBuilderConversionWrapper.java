@@ -49,9 +49,11 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
     }
 
 
+    @Override
     public abstract boolean isMultiValue();
 
 
+    @Override
     public Class<?> valueType() {
         return valueType;
     }

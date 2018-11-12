@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.util.fxdesigner.model;
 
 import java.io.StringReader;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -38,7 +38,7 @@ public class ASTManager {
      */
     private LanguageVersion lastLanguageVersion;
     /**
-     * Latest computed compilation unit (only null before the first call to {@link #updateCompilationUnit(String)})
+     * Most up-to-date compilation unit. Is null if the current source cannot be parsed.
      */
     private Var<Node> compilationUnit = Var.newSimpleVar(null);
     /**
@@ -67,13 +67,8 @@ public class ASTManager {
     }
 
 
-    public Node getCompilationUnit() {
-        return compilationUnit.getValue();
-    }
-
-
-    public Val<Node> compilationUnitProperty() {
-        return compilationUnit;
+    public Optional<Node> getCompilationUnit() {
+        return compilationUnit.getOpt();
     }
 
 
@@ -84,7 +79,7 @@ public class ASTManager {
      *
      * @throws ParseAbortedException if parsing fails and cannot recover
      */
-    public Node updateCompilationUnit(String source) throws ParseAbortedException {
+    public Optional<Node> updateIfChanged(String source, ClassLoader classLoader) throws ParseAbortedException {
         if (compilationUnit.isPresent()
                 && getLanguageVersion().equals(lastLanguageVersion)
                 && StringUtils.equals(source, lastValidSource)) {
@@ -98,6 +93,7 @@ public class ASTManager {
             node = parser.parse(null, new StringReader(source));
         } catch (Exception e) {
             designerRoot.getLogger().logEvent(new LogEntry(e, Category.PARSE_EXCEPTION));
+            compilationUnit.setValue(null);
             throw new ParseAbortedException(e);
         }
         try {
@@ -106,15 +102,13 @@ public class ASTManager {
             designerRoot.getLogger().logEvent(new LogEntry(e, Category.SYMBOL_FACADE_EXCEPTION));
         }
         try {
-            // TODO this should use the aux classpath
-            languageVersionHandler.getQualifiedNameResolutionFacade(ASTManager.class.getClassLoader()).start(node);
+            languageVersionHandler.getQualifiedNameResolutionFacade(classLoader).start(node);
         } catch (Exception e) {
             designerRoot.getLogger().logEvent(new LogEntry(e, Category.QUALIFIED_NAME_RESOLUTION_EXCEPTION));
         }
 
         try {
-            // TODO this should use the aux classpath
-            languageVersionHandler.getTypeResolutionFacade(ASTManager.class.getClassLoader()).start(node);
+            languageVersionHandler.getTypeResolutionFacade(classLoader).start(node);
         } catch (Exception e) {
             designerRoot.getLogger().logEvent(new LogEntry(e, Category.TYPERESOLUTION_EXCEPTION));
         }
@@ -123,8 +117,6 @@ public class ASTManager {
         lastValidSource = source;
         lastLanguageVersion = getLanguageVersion();
         return getCompilationUnit();
-
-
     }
 
 

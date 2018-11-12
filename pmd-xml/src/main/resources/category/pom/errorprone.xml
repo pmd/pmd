@@ -3,7 +3,7 @@
 <ruleset name="Error Prone"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
 Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
@@ -61,7 +61,7 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
     <rule name="ProjectVersionAsDependencyVersion"
           language="pom"
           since="5.4"
-          message="Do not use project's version to express a dependency's version."
+          message="Do not use project.version to express a dependency version."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_pom_errorprone.html#projectversionasdependencyversion">
         <description>
@@ -73,7 +73,13 @@ By far the most common problem is the use of &#x24;{project.version} in a BOM or
             <property name="xpath">
                 <value>
 <![CDATA[
-//dependency/version/text[contains(@Image,'{project.version}')]
+//dependencies/dependency
+    [contains(version/text/@Image,'{project.version}')]
+    [
+        (/project/parent/groupId and groupId/text/@Image != /project/parent/groupId/text/@Image)
+        or
+        (/project/groupId and groupId/text/@Image != /project/groupId/text/@Image)
+    ]/version
 ]]>
                 </value>
             </property>

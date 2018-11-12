@@ -12,6 +12,7 @@ public class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
         super(literalExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

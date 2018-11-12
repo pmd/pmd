@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.security;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 /**
@@ -31,7 +30,7 @@ public class ApexCSRFRule extends AbstractApexRule {
             return data; // stops all the rules
         }
 
-        return visit((ApexNode<?>) node, data);
+        return super.visit(node, data);
     }
 
     @Override

@@ -38,6 +38,7 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
  */
 public final class ScalaTokenizer implements Tokenizer {
 
+    @Override
     public void tokenize(SourceCode source, Tokens cpdTokens) {
         String filename = source.getFileName();
 

@@ -7,6 +7,17 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
+
+/**
+ * Represents a class or interface type, possibly parameterised with type arguments.
+ *
+ * <pre>
+ *
+ * ClassOrInterfaceType ::= &lt;IDENTIFIER&gt; {@linkplain ASTTypeArguments TypeArguments}? ( "." &lt;IDENTIFIER&gt;  {@linkplain ASTTypeArguments TypeArguments}? )*
+ *
+ * </pre>
+ *
+ */
 public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
     public ASTClassOrInterfaceType(int id) {
         super(id);
@@ -16,9 +27,7 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -57,7 +66,7 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
         }
         return false;
     }
-    
+
     public int getArrayDepth() {
         Node p = jjtGetParent();
         if (p instanceof ASTReferenceType) {

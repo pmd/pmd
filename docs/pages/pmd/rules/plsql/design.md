@@ -593,7 +593,7 @@ A package or type with too many methods is probably a good suspect for refactori
 have more fine grained objects.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //node()
      [ (
         local-name(.) = 'PackageSpecification'

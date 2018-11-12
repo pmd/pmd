@@ -1,5 +1,6 @@
 ---
 title: Building PMD from source
+tags: [devdocs]
 permalink: pmd_devdocs_building.html
 author: Tom Copeland, Xavier Le Vourch <xlv@users.sourceforge.net>
 ---
@@ -9,10 +10,9 @@ author: Tom Copeland, Xavier Le Vourch <xlv@users.sourceforge.net>
 
 # Compiling PMD
 
-*   JDK 9 or higher
-*   [Apache Maven](http://maven.apache.org) 3 or later.
+*   JDK 10 or higher
 
-{% include note.html content="While Java 9 is required for building, running PMD only requires Java 7 (or Java 8 for Apex)." %}
+{% include note.html content="While Java 10 is required for building, running PMD only requires Java 7 (or Java 8 for Apex and the Designer)." %}
 
 You’ll need to either check out the source code or download the latest source release. Assuming you’ve got the latest source release, unzip it to a directory:
 

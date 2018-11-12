@@ -69,8 +69,7 @@ public class NullAssignmentRule extends AbstractJavaRule {
             isInitializer = statement == variableInitializer.getFirstParentOfType(ASTBlockStatement.class);
         }
 
-        return ternary.isTernary()
-                && !(ternary.jjtGetChild(0) instanceof ASTEqualityExpression)
+        return !(ternary.jjtGetChild(0) instanceof ASTEqualityExpression)
                 && !isInitializer
                 && !(ternary.getNthParent(2) instanceof ASTReturnStatement)
                 && !(ternary.getNthParent(2) instanceof ASTLambdaExpression);

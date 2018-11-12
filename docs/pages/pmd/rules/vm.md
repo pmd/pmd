@@ -1,5 +1,8 @@
 ---
 title: VM Rules
+tags: [rule_references, vm]
+summary: Index of all built-in rules available for VM
+language_name: VM
 permalink: pmd_rules_vm.html
 folder: pmd/rules
 ---

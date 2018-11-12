@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class UnnecessaryReturnRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
 
         if (node.getResultType().isVoid()) {
@@ -21,6 +22,7 @@ public class UnnecessaryReturnRule extends AbstractJavaRule {
         return data;
     }
 
+    @Override
     public Object visit(ASTReturnStatement node, Object data) {
         if (node.jjtGetParent() instanceof ASTStatement && node.getNthParent(2) instanceof ASTBlockStatement
                 && node.getNthParent(3) instanceof ASTBlock && node.getNthParent(4) instanceof ASTMethodDeclaration) {

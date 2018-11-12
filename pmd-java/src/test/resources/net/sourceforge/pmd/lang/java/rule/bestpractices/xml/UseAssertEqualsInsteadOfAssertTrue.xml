@@ -73,4 +73,20 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+JUnit5 - @Test
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+public class Foo {
+ @Test
+ public void test1() {
+  assertTrue(a.equals(b));
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>

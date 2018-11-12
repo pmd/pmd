@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class SuspiciousHashcodeMethodNameRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         /*
          * original XPath rule was //MethodDeclaration [ResultType

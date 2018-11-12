@@ -35,6 +35,7 @@ public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyT
      *
      * @return True if the metric can be computed on this type declaration
      */
+    @Override
     public boolean supports(ASTAnyTypeDeclaration node) {
         return node.getTypeKind() != TypeKind.ANNOTATION && node.getTypeKind() != TypeKind.INTERFACE;
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Default ruleset used by the CodeClimate Engine for Salesforce.com Apex" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Default ruleset used by the CodeClimate Engine for Salesforce.com Apex" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
    <description>Default ruleset used by the Code Climate Engine for Salesforce.com Apex</description>
 
    <!-- COMPLEXITY -->
@@ -151,6 +151,14 @@
    </rule>
    <rule ref="category/apex/bestpractices.xml/AvoidGlobalModifier" message="Avoid using global modifier">
       <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="100" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/errorprone.xml/AvoidNonExistentAnnotations">
       <properties>
          <!-- relevant for Code Climate output only -->
          <property name="cc_categories" value="Style" />
@@ -408,6 +416,28 @@
          <!-- relevant for Code Climate output only -->
          <property name="cc_categories" value="Style" />
          <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+
+   <!-- STYLE -->
+   <rule ref="category/apex/codestyle.xml/OneDeclarationPerLine">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+
+   <!-- DOCUMENTATION -->
+   <rule ref="category/apex/documentation.xml/ApexDoc" message="Document classes, methods, and properties that are public or global.">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="50" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>

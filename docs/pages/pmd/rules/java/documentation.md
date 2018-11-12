@@ -129,10 +129,10 @@ constructors it is easier to distinguish between intentional (commented)
 and unintentional empty constructors.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ConstructorDeclaration[@Private='false']
                         [count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
-                        [not(../Annotation/MarkerAnnotation/Name[typeIs('javax.inject.Inject')])]
+                        [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('javax.inject.Inject')])]
 ```
 
 **Example(s):**
@@ -166,7 +166,7 @@ it is easier to distinguish between intentional (commented) and unintentional
 empty methods.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration/Block[count(BlockStatement) = 0 and @containsComment = 'false']
 ```
 

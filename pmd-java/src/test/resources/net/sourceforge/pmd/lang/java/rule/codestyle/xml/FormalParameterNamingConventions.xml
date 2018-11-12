@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Default is camel case</description>
+        <expected-problems>5</expected-problems>
+        <expected-messages>
+            <message>The method parameter name 'Foo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The final method parameter name 'Hoo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The lambda parameter name 'Koo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The explicitly-typed lambda parameter name 'Voo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The explicitly-typed lambda parameter name 'Ooo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.function.Consumer;
+
+
+            public class Bar {
+
+                void foo(int Foo) {
+
+                }
+
+
+                void bar(final int Hoo) {
+
+                }
+
+
+                {
+                    Consumer<String> i = (Koo) -> {
+
+                    };
+
+                    Consumer<String> k = (String Voo) -> {
+
+                    };
+
+                    Consumer<String> l = (final String Ooo) -> {
+
+                    };
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>One character lambda Parameters should be allowed by default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.function.Consumer;
+
+
+            public class Bar {
+
+                public void foo() {
+                    Consumer<String> i = (s) -> {
+
+                    };
+
+                    Consumer<String> k = (String s) -> {
+
+                    };
+
+                    Consumer<String> l = (final String s) -> {
+
+                    };
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test method param pattern</description>
+        <rule-property name="methodParameterPattern">[A-Z]+</rule-property>
+        <expected-problems>5</expected-problems>
+        <expected-messages>
+            <message>The method parameter name 'Foo' doesn't match '[A-Z]+'</message>
+            <message>The final method parameter name 'Hoo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The lambda parameter name 'Koo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The explicitly-typed lambda parameter name 'Voo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The explicitly-typed lambda parameter name 'Ooo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.function.Consumer;
+
+
+            public class Bar {
+
+                void foo(int Foo) {
+
+                }
+
+                void fooBar(int FOO) { // that's ok
+
+                }
+
+
+                void bar(final int Hoo) {
+
+                }
+
+
+                {
+                    Consumer<String> i = (Koo) -> {
+
+                    };
+
+                    Consumer<String> k = (String Voo) -> {
+
+                    };
+
+                    Consumer<String> l = (final String Ooo) -> {
+
+                    };
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test final method param pattern</description>
+        <rule-property name="finalMethodParameterPattern">[A-Z]+</rule-property>
+        <expected-problems>5</expected-problems>
+        <expected-messages>
+            <message>The method parameter name 'Foo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The final method parameter name 'Hoo' doesn't match '[A-Z]+'</message>
+            <message>The lambda parameter name 'Koo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The explicitly-typed lambda parameter name 'Voo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The explicitly-typed lambda parameter name 'Ooo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.function.Consumer;
+
+
+            public class Bar {
+
+                void foo(int Foo) {
+
+                }
+
+                void fooBar(final int FOO) { // that's ok
+
+                }
+
+
+                void bar(final int Hoo) {
+
+                }
+
+
+                {
+                    Consumer<String> i = (Koo) -> {
+
+                    };
+
+                    Consumer<String> k = (String Voo) -> {
+
+                    };
+
+                    Consumer<String> l = (final String Ooo) -> {
+
+                    };
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test inferred lambda parameter pattern</description>
+        <rule-property name="lambdaParameterPattern">[A-Z]+</rule-property>
+        <expected-problems>5</expected-problems>
+        <expected-messages>
+            <message>The method parameter name 'Foo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The final method parameter name 'Hoo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The lambda parameter name 'Koo' doesn't match '[A-Z]+'</message>
+            <message>The explicitly-typed lambda parameter name 'Voo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The explicitly-typed lambda parameter name 'Ooo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.function.Consumer;
+
+
+            public class Bar {
+
+                void foo(int Foo) {
+
+                }
+
+
+                void bar(final int Hoo) {
+
+                }
+
+
+                {
+                    Consumer<String> i = (Koo) -> {
+
+                    };
+
+                    Consumer<String> q = (KOO) -> { // that's ok
+
+                    };
+
+                    Consumer<String> k = (String Voo) -> {
+
+                    };
+
+                    Consumer<String> l = (final String Ooo) -> {
+
+                    };
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test explicitly-typed lambda parameter pattern</description>
+        <rule-property name="explicitLambdaParameterPattern">[A-Z]+</rule-property>
+        <expected-problems>5</expected-problems>
+        <expected-messages>
+            <message>The method parameter name 'Foo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The final method parameter name 'Hoo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The lambda parameter name 'Koo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The explicitly-typed lambda parameter name 'Voo' doesn't match '[A-Z]+'</message>
+            <message>The explicitly-typed lambda parameter name 'Ooo' doesn't match '[A-Z]+'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.function.Consumer;
+
+
+            public class Bar {
+
+                void foo(int Foo) {
+
+                }
+
+
+                void bar(final int Hoo) {
+
+                }
+
+
+                {
+                    Consumer<String> i = (Koo) -> {
+
+                    };
+
+                    Consumer<String> q = (String KOO) -> { // that's ok
+
+                    };
+
+                    Consumer<String> qq = (final String MOO) -> { // that's ok
+
+                    };
+
+                    Consumer<String> k = (String Voo) -> {
+
+                    };
+
+                    Consumer<String> l = (final String Ooo) -> {
+
+                    };
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+
+</test-data>

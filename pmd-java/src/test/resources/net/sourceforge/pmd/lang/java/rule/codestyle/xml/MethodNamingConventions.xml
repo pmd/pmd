@@ -15,6 +15,9 @@ public class Foo {
     <test-code>
         <description>method names should not contain underscores</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The instance method name 'bar_foo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
  void bar_foo() {}
@@ -45,6 +48,9 @@ public class Foo {
         <rule-property name="checkNativeMethods">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The native method name '__surfunc__' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     protected final native void __surfunc__(float[] data);
@@ -68,6 +74,9 @@ public class MethodNamingConventions implements SomeInterface {
         <rule-property name="staticPattern">st_[a-z][A-Za-z]*</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The static method name 'foo' doesn't match 'st_[a-z][A-Za-z]*'</message>
+        </expected-messages>
         <code><![CDATA[
             class Foo {
                 static void foo() {
@@ -92,6 +101,9 @@ public class MethodNamingConventions implements SomeInterface {
         <rule-property name="nativePattern">nt_[a-z][A-Za-z]*</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The native method name 'foo' doesn't match 'nt_[a-z][A-Za-z]*'</message>
+        </expected-messages>
         <code><![CDATA[
             class Foo {
                 native void foo() {
@@ -116,6 +128,9 @@ public class MethodNamingConventions implements SomeInterface {
         <rule-property name="junit3TestPattern">test_[a-z][A-Za-z]*</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>9</expected-linenumbers>
+        <expected-messages>
+            <message>The JUnit 3 test method name 'testGetBestTeam' doesn't match 'test_[a-z][A-Za-z]*'</message>
+        </expected-messages>
         <code><![CDATA[
             import junit.framework.Assert;
             import junit.framework.TestCase;
@@ -140,6 +155,10 @@ public class MethodNamingConventions implements SomeInterface {
         <rule-property name="junit4TestPattern">[a-z][A-Za-z]*Test</rule-property>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>12,16</expected-linenumbers>
+        <expected-messages>
+            <message>The JUnit 4 test method name 'testGetBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
+            <message>The JUnit 4 test method name 'getBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
+        </expected-messages>
         <code><![CDATA[
             import junit.framework.Assert;
             import junit.framework.TestCase;
@@ -162,6 +181,27 @@ public class MethodNamingConventions implements SomeInterface {
                 // this is ok
                 @Test
                 public void getBestTeamTest() {
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Instance method custom convention</description>
+        <rule-property name="methodPattern">m_[a-z][A-Za-z]*</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The instance method name 'fooBar' doesn't match 'm_[a-z][A-Za-z]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+
+                public void fooBar() {
+                }
+
+                public void m_fooBar() {
                 }
             }
             ]]>

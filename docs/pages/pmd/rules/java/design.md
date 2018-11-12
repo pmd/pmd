@@ -19,11 +19,11 @@ that is not meant to be instantiated. In this case, it is probably better to use
 protected constructor in order to prevent instantiation than make the class misleadingly abstract.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration
     [@Abstract = 'true']
     [count(//MethodDeclaration) + count(//ConstructorDeclaration) = 0]
-    [not(../Annotation/MarkerAnnotation/Name[typeIs('com.google.auto.value.AutoValue')])]
+    [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('com.google.auto.value.AutoValue')])]
 ```
 
 **Example(s):**
@@ -49,7 +49,7 @@ public abstract class Example {
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //CatchStatement/FormalParameter/Type/ReferenceType/ClassOrInterfaceType[
     @Image='NullPointerException' or
     @Image='Exception' or
@@ -128,7 +128,7 @@ public class Foo {
 Catch blocks that merely rethrow a caught exception only add to code size and runtime complexity.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //CatchStatement[FormalParameter
  /VariableDeclaratorId/@Image = Block/BlockStatement/Statement
  /ThrowStatement/Expression/PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix/Name/@Image
@@ -162,7 +162,7 @@ Catch blocks that merely rethrow a caught exception wrapped inside a new instanc
 code size and runtime complexity.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //CatchStatement[
   count(Block/BlockStatement/Statement) = 1
   and
@@ -227,7 +227,7 @@ public class Foo {
 ```
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //AllocationExpression/ClassOrInterfaceType[@Image='NullPointerException']
 ```
 
@@ -256,16 +256,16 @@ Avoid throwing certain exception types. Rather than throw a raw RuntimeException
 Exception, or Error, use a subclassed exception or error instead.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ThrowStatement//AllocationExpression
  /ClassOrInterfaceType[
- typeIsExactly('java.lang.Throwable')
+ pmd-java:typeIsExactly('java.lang.Throwable')
 or
- typeIsExactly('java.lang.Exception')
+ pmd-java:typeIsExactly('java.lang.Exception')
 or
- typeIsExactly('java.lang.Error')
+ pmd-java:typeIsExactly('java.lang.Error')
 or
- typeIsExactly('java.lang.RuntimeException')
+ pmd-java:typeIsExactly('java.lang.RuntimeException')
 ]
 ```
 
@@ -294,7 +294,7 @@ A class with only private constructors should be final, unless the private const
 is invoked by a inner class.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 TypeDeclaration[count(../TypeDeclaration) = 1]/ClassOrInterfaceDeclaration
 [@Final = 'false']
 [count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private = 'true']) >= 1 ]
@@ -324,7 +324,7 @@ public class Foo {  //Should be final
 Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //IfStatement[@Else='false']/Statement
  /IfStatement[@Else='false']
  |
@@ -516,9 +516,9 @@ public class DataClass {
 Errors are system exceptions. Do not extend them.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
-  [typeIs('java.lang.Error')]
+  [pmd-java:typeIs('java.lang.Error')]
 ```
 
 **Example(s):**
@@ -773,7 +773,7 @@ If a final field is assigned to a compile-time constant, it could be made static
 in each object at runtime.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //FieldDeclaration
  [@Final='true' and @Static='false']
    /VariableDeclarator/VariableInitializer/Expression
@@ -911,7 +911,7 @@ public class Foo {
 Use opposite operator instead of negating the whole expression with a logic complement operator.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //UnaryExpressionNotPlusMinus[@Image='!']/PrimaryExpression/PrimaryPrefix/Expression[EqualityExpression or RelationalExpression]
 ```
 
@@ -1134,8 +1134,8 @@ class Foo {                         // +1, total Ncss = 12
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
 |ncssOptions||Choose options for the calculation of Ncss|yes. Delimiter is '\|'.|
-|methodReportLevel|12|Metric reporting threshold for methods|no|
-|classReportLevel|250|Metric reporting threshold for classes|no|
+|methodReportLevel|60|NCSS reporting threshold for methods|no|
+|classReportLevel|1500|NCSS reporting threshold for classes|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1347,10 +1347,10 @@ or
 `condition && foo`  when the literalBoolean is false
 
 **This rule is defined by the following XPath expression:**
-```
-//ConditionalExpression[@Ternary='true'][not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
+``` xpath
+//ConditionalExpression[not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
 |
-//ConditionalExpression[@Ternary='true'][not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
+//ConditionalExpression[not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
 ```
 
 **Example(s):**
@@ -1397,7 +1397,7 @@ as:
     assertFalse(expr);
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //StatementExpression
 [
 .//Name[@Image='assertTrue' or  @Image='assertFalse']
@@ -1406,7 +1406,14 @@ PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
  /Expression/UnaryExpressionNotPlusMinus[@Image='!']
 /PrimaryExpression/PrimaryPrefix
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
+    or //MarkerAnnotation/Name[
+        pmd-java:typeIs('org.junit.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    ]
+]]
 ```
 
 **Example(s):**
@@ -1434,7 +1441,7 @@ public class SimpleTest extends TestCase {
 Avoid unnecessary comparisons in boolean expressions, they serve no purpose and impacts readability.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //EqualityExpression/PrimaryExpression
  /PrimaryPrefix/Literal/BooleanLiteral
 ```
@@ -1497,7 +1504,7 @@ public boolean isBarEqualTo(int x) {
 No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Expression
  [ConditionalOrExpression
  [EqualityExpression[@Image='==']
@@ -1740,7 +1747,7 @@ A class with too many methods is probably a good suspect for refactoring, in ord
 complexity and find a way to have more fine grained objects.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
      [
       count(./ClassOrInterfaceBodyDeclaration/MethodDeclaration/MethodDeclarator[
@@ -1818,7 +1825,7 @@ point to pass extra data, you'll be able to do so by simply modifying or extendi
 your API.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration[@Public]/MethodDeclarator/FormalParameters[
      count(FormalParameter/Type/ReferenceType/ClassOrInterfaceType[@Image = 'String']) > 3
 ]

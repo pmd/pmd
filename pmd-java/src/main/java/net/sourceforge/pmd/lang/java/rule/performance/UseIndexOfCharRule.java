@@ -17,7 +17,7 @@ public class UseIndexOfCharRule extends AbstractPoorMethodCall {
 
     /**
      * Method targetTypeName.
-     * 
+     *
      * @return String
      */
     @Override
@@ -27,7 +27,7 @@ public class UseIndexOfCharRule extends AbstractPoorMethodCall {
 
     /**
      * Method methodNames.
-     * 
+     *
      * @return String[]
      */
     @Override
@@ -35,6 +35,7 @@ public class UseIndexOfCharRule extends AbstractPoorMethodCall {
         return METHOD_NAMES;
     }
 
+    @Override
     protected boolean isViolationArgument(Node arg) {
         return ((ASTLiteral) arg).isSingleCharacterStringLiteral();
     }

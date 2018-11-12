@@ -17,7 +17,7 @@ public class ReaderDataSource implements DataSource {
     /**
      * Reader
      */
-    private Reader reader;
+    private final Reader reader;
 
     /**
      * Real or pseudo filename or path name.
@@ -86,6 +86,10 @@ public class ReaderDataSource implements DataSource {
 
     @Override
     public String toString() {
-        return dataSourceName;
+        return new StringBuilder(ReaderDataSource.class.getSimpleName())
+                .append('[')
+                .append(dataSourceName)
+                .append(']')
+                .toString();
     }
 }

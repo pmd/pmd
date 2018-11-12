@@ -1,14 +1,24 @@
 ---
 title: Tools / Integrations
+tags: [userdocs, tools]
+
 permalink: pmd_userdocs_tools.html
 author: David Dixon-Peugh <dpeugh@users.sourceforge.net>
 ---
 
-* IDE plugins
-* [Continuous Integrations plugins](/pmd_userdocs_ci.html)
-* GUIs
+## Automated Code Review
 
+### Codacy
 
+[Codacy](https://www.codacy.com/) automates code reviews and monitors code quality on every commit and pull request.
+It gives visibility into the technical debt and it can track code style and security issues, code coverage, code duplication, cyclomatic complexity and enforce best practices.
+Codacy is static analysis without the hassle.
+
+With Codacy you have PMDJava analysis out-of-the-box, and it is free for open source projects.
+
+* Homepage: [https://www.codacy.com/](https://www.codacy.com/)
+* Source code: [https://github.com/codacy/codacy-pmdjava](https://github.com/codacy/codacy-pmdjava)
+* Maintainer: Codacy
 
 ## IDE Integrations
 
@@ -27,13 +37,6 @@ author: David Dixon-Peugh <dpeugh@users.sourceforge.net>
         <td></td>
         <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-bluej/">pmd-bluej</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
-    </tr>
-
-    <tr>
-        <td><a href="#codacy">Codacy</a></td>
-        <td></td>
-        <td><a class="externalLink" href="https://github.com/codacy/codacy-pmdjava">github: codacy/codacy-pmdjava</a></td>
-        <td>Codacy</td>
     </tr>
 
     <tr>
@@ -163,12 +166,6 @@ being used by a getResourceAsStream() call to load it out of the PMD jar files.
 [BlueJ](http://bluej.org/) is a teaching IDE. To install the PMD extension for BlueJ, download
 the [PMDExtension jar file](http://sourceforge.net/projects/pmd/files/pmd-bluej/pmd-bluej-1.0/)
 and place it in your `bluej/lib/extensions/` directory.
-
-
-### Codacy
-
-Although it is not an IDE, with [Codacy](https://www.codacy.com/) you have PMDJava analysis out-of-the-box,
-and it is free for open source projects.
 
 
 ### Code Guide

@@ -26,10 +26,10 @@ Bug 1796928 : The code uses a class that uses the same names that the one this r
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.design.DesignRulesTest.Throwable;
-import net.sourceforge.pmd.lang.java.rule.design.DesignRulesTest.Exception;
-import net.sourceforge.pmd.lang.java.rule.design.DesignRulesTest.Error;
-import net.sourceforge.pmd.lang.java.rule.design.DesignRulesTest.RuntimeException;
+import net.sourceforge.pmd.lang.java.rule.design.AvoidThrowingRawExceptionTypesTest.Throwable;
+import net.sourceforge.pmd.lang.java.rule.design.AvoidThrowingRawExceptionTypesTest.Exception;
+import net.sourceforge.pmd.lang.java.rule.design.AvoidThrowingRawExceptionTypesTest.Error;
+import net.sourceforge.pmd.lang.java.rule.design.AvoidThrowingRawExceptionTypesTest.RuntimeException;
 
 public class PmdTest {
 

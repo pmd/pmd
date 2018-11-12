@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class UnnecessaryCaseChangeRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTPrimaryExpression exp, Object data) {
         int n = exp.jjtGetNumChildren();
         if (n < 4) {

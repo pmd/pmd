@@ -52,12 +52,14 @@ interface ImmutableList<E> extends List<E> {
     /**
      * Size of this list.
      */
+    @Override
     int size();
 
 
     /**
      * Returns true if this list has no elements.
      */
+    @Override
     boolean isEmpty();
 
 
@@ -84,6 +86,7 @@ interface ImmutableList<E> extends List<E> {
      *
      * @throws IndexOutOfBoundsException if the index is out of bounds
      */
+    @Override
     E get(int i);
 
 

@@ -19,6 +19,7 @@ public class AbstractVFNode extends AbstractNode implements VfNode {
         this.parser = parser;
     }
 
+    @Override
     public void jjtOpen() {
         if (beginLine == -1 && parser.token.next != null) {
             beginLine = parser.token.next.beginLine;
@@ -26,6 +27,7 @@ public class AbstractVFNode extends AbstractNode implements VfNode {
         }
     }
 
+    @Override
     public void jjtClose() {
         if (beginLine == -1 && (children == null || children.length == 0)) {
             beginColumn = parser.token.beginColumn;
@@ -40,6 +42,7 @@ public class AbstractVFNode extends AbstractNode implements VfNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(VfParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -47,6 +50,7 @@ public class AbstractVFNode extends AbstractNode implements VfNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object childrenAccept(VfParserVisitor visitor, Object data) {
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {

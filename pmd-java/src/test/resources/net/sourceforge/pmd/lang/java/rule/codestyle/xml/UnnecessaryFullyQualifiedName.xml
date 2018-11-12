@@ -303,9 +303,9 @@ public class InitialPageComponent extends BaseExecutionCourseComponent {
         <description>#1436 UnnecessaryFullyQualifiedName false positive on clashing static imports with enums</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.codestyle.CodeStyleRulesTest.ENUM2;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.CodeStyleRulesTest.ENUM1.*;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.CodeStyleRulesTest.ENUM2.*;
+import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.ENUM2;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.ENUM1.*;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.ENUM2.*;
 
 public class UnnecessaryFullyQualifiedName {
     public static void main(String[] args) {
@@ -321,9 +321,9 @@ public class UnnecessaryFullyQualifiedName {
         <description>#1546 part 1 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyMockito;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyMockito.*;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyPowerMockito.*;
+import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito.*;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyPowerMockito.*;
 
 public class Foo {
   private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) is ambiguous (compile error)
@@ -335,9 +335,9 @@ public class Foo {
         <description>#1546 part 2 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyMockito;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyMockito.*;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.ImportsRulesTest.PhonyPowerMockito.mock;
+import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito.*;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyPowerMockito.mock;
 
 public class Foo {
   private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) would use a differen method than intended
@@ -383,5 +383,123 @@ final class Test {
                 }
             }
             ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: without import</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary use of fully qualified name 'java.lang.String' due to existing implicit import 'java.lang.*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class JavaLang {
+    public void convert(java.lang.String s) { // violation here
+    }
+    public void access(java.lang.reflect.Field f) { // no violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: with import</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary use of fully qualified name 'java.lang.String' due to existing import 'java.lang.String'</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.lang.String;
+public class JavaLang {
+    public void convert(java.lang.String s) { // violation here
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: with avoiding conflict import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.foo.String;
+public class JavaLang {
+    public void convert(java.lang.String s) { // no violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: static members of classes in java.lang</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class JavaLang {
+    public void foo() {
+        ProcessBuilder pb = new ProcessBuilder("echo");
+        pb.redirectError(java.lang.ProcessBuilder.Redirect.DISCARD); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1216 [java] UnnecessaryFullyQualifiedName false positive for the same name method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.awt.Component;
+            import java.awt.Container;
+            import java.util.Arrays;
+            import java.util.asList.*; // we don't use stream since we're on java 7
+
+
+            public final class Test {
+                public static List<String> stream(Container parent) {
+                    return Arrays.asList("", "");
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1255 [java] UnnecessaryFullyQualifiedName false positive: static method on shadowed implicitly imported class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import x.y.Thread;
+
+public class ThreadStuff {
+    public Thread stuff() {
+        return new Thread(java.lang.Thread.currentThread());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nullpointer in isJavaLangImplicit for java.lang.String[] arrays</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class TestArrayType {
+    String[] someArray = new String[0];
+
+    public void foo() {
+        boolean b1 = someArray instanceof String[];
+        boolean b2 = someArray instanceof java.lang.String[]; // unnecessary FQN
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#1199 false negative for same package FQCN</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+package org.foo;
+
+public class SamePackage {
+    public void convert(org.foo.Bar s) { // violation
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

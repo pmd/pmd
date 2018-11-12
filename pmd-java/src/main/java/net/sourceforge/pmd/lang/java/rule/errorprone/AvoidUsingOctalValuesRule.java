@@ -26,6 +26,7 @@ public class AvoidUsingOctalValuesRule extends AbstractJavaRule {
         definePropertyDescriptor(STRICT_METHODS_DESCRIPTOR);
     }
 
+    @Override
     public Object visit(ASTLiteral node, Object data) {
         boolean strict = getProperty(STRICT_METHODS_DESCRIPTOR);
         Pattern p = strict ? STRICT_OCTAL_PATTERN : OCTAL_PATTERN;

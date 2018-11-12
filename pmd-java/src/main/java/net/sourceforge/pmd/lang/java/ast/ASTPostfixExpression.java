@@ -5,6 +5,17 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents a unary postfix operation on a value.
+ * This is one of the {@linkplain ASTUnaryExpression PrefixExpression}
+ * and has the same precedence.
+ *
+ * <pre>
+ *
+ * PostfixExpression ::= {@linkplain ASTPrimaryExpression PrimaryExpression} ( "++" | "--" )
+ *
+ * </pre>
+ */
 public class ASTPostfixExpression extends AbstractJavaTypeNode {
 
     public ASTPostfixExpression(int id) {
@@ -15,11 +26,17 @@ public class ASTPostfixExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+
+    /**
+     * Returns the image of this unary operator, i.e. "++" or "--".
+     */
+    public String getOperator() {
+        return getImage();
     }
 
 }

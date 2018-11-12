@@ -21,6 +21,7 @@ import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
@@ -277,7 +278,7 @@ public abstract class AbstractNode implements Node {
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node child = node.jjtGetChild(i);
-            if (child.getClass() == targetType) {
+            if (targetType.isAssignableFrom(child.getClass())) {
                 results.add(targetType.cast(child));
             }
 
@@ -514,5 +515,11 @@ public abstract class AbstractNode implements Node {
     @Override
     public String toString() {
         return getXPathNodeName();
+    }
+
+
+    @Override
+    public Iterator<Attribute> getXPathAttributesIterator() {
+        return new AttributeAxisIterator(this);
     }
 }

@@ -101,7 +101,7 @@ import java.util.logging.Logger;
     public JavaTypeDefinition getGenericType(final String parameterName) {
         for (JavaTypeDefinition currTypeDef = this; currTypeDef != null;
                 currTypeDef = currTypeDef.getEnclosingClass()) {
-            
+
             int paramIndex = getGenericTypeIndex(currTypeDef.getType().getTypeParameters(), parameterName);
             if (paramIndex != -1) {
                 return currTypeDef.getGenericType(paramIndex);
@@ -112,7 +112,7 @@ import java.util.logging.Logger;
         StringBuilder builder = new StringBuilder("No generic parameter by name ").append(parameterName);
         for (JavaTypeDefinition currTypeDef = this; currTypeDef != null;
                 currTypeDef = currTypeDef.getEnclosingClass()) {
-            
+
             builder.append("\n on class ");
             builder.append(currTypeDef.getType().getSimpleName());
         }
@@ -137,7 +137,7 @@ import java.util.logging.Logger;
         for (int i = genericArgs.size(); i <= index; i++) {
             genericArgs.add(null);
         }
-        
+
         /*
          * Set a default to circuit-brake any recursions (ie: raw types with no generic info)
          * Object.class is a right answer in those scenarios
@@ -241,14 +241,17 @@ import java.util.logging.Logger;
                 : forClass(Array.newInstance(getType(), (int[]) Array.newInstance(int.class, numDimensions)).getClass());
     }
 
+    @Override
     public boolean isClassOrInterface() {
         return !clazz.isEnum() && !clazz.isPrimitive() && !clazz.isAnnotation() && !clazz.isArray();
     }
 
+    @Override
     public boolean isNullType() {
         return false;
     }
 
+    @Override
     public boolean isPrimitive() {
         return clazz.isPrimitive();
     }
@@ -258,10 +261,12 @@ import java.util.logging.Logger;
         return clazz.equals(def.getType()) && getTypeParameterCount() == def.getTypeParameterCount();
     }
 
+    @Override
     public boolean hasSameErasureAs(JavaTypeDefinition def) {
         return clazz == def.getType();
     }
 
+    @Override
     public int getTypeParameterCount() {
         return typeParameterCount;
     }
@@ -357,6 +362,7 @@ import java.util.logging.Logger;
         return destinationSet;
     }
 
+    @Override
     public Set<Class<?>> getErasedSuperTypeSet() {
         Set<Class<?>> result = new HashSet<>();
         result.add(Object.class);

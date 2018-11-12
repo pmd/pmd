@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.4.0</version>
+        <version>6.10.0-SNAPSHOT</version>
     </parent>
 
     <build>
@@ -37,6 +37,11 @@
                         <delimiter>${*}</delimiter>
                     </delimiters>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
             </plugin>
 
             <plugin>
@@ -108,10 +113,6 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>jaxen</groupId>
-            <artifactId>jaxen</artifactId>
-        </dependency>
-        <dependency>
             <groupId>net.java.dev.javacc</groupId>
             <artifactId>javacc</artifactId>
         </dependency>
@@ -143,6 +144,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- TEST DEPENDENCIES -->
+
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-lang-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-test</artifactId>

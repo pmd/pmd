@@ -48,6 +48,7 @@ public class BeanModelNodeSeq<T extends SimpleBeanModelNode> extends BeanModelNo
     }
 
 
+    @Override
     protected <U> void accept(BeanNodeVisitor<U> visitor, U data) {
         visitor.visit(this, data);
     }

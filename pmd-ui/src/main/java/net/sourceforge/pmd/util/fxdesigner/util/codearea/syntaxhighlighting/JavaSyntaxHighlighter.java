@@ -51,7 +51,7 @@ public final class JavaSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         = grammarBuilder(SINGLEL_COMMENT.css, "//[^\n]*")
         .or(MULTIL_COMMENT.css, "/\\*.*?\\*/")
         .or(PAREN.css, "[()]")
-        .or(NUMBER.css, asWord("\\d+[fdlFDL]*"))
+        .or(NUMBER.css, asWord("\\d[_\\d]*+(\\.\\d(_?\\d)*+)?[fdlFDL]?"))
         .or(BRACE.css, "[{}]")
         .or(BRACKET.css, "[\\[]]")
         .or(SEMICOLON.css, ";")

@@ -17,7 +17,7 @@
 <TabPane fx:id="nodeInfoTabPane" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="300.0" side="LEFT" stylesheets="@../css/designer.css" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.NodeInfoPanelController">
 
     <tabs>
-        <Tab text="Attributes" fx:id="xpathAttributesTitledPane">
+        <Tab text="Attributes">
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                     <children>
@@ -34,20 +34,20 @@
                                 </ToolBar>
                             </top>
                             <center>
-                                <ListView styleClass="secondary-panel" BorderPane.alignment="CENTER" fx:id="xpathAttributesListView" />
+                                <ListView BorderPane.alignment="CENTER" fx:id="xpathAttributesListView" />
                             </center>
                         </BorderPane>
                     </children>
                 </AnchorPane>
             </content>
         </Tab>
-        <Tab fx:id="metricResultsTitledPane" text="Metrics">
+        <Tab fx:id="metricResultsTab" text="Metrics">
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                     <children>
                         <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <center>
-                                <ListView fx:id="metricResultsListView" styleClass="secondary-panel" BorderPane.alignment="CENTER">
+                                <ListView fx:id="metricResultsListView" BorderPane.alignment="CENTER">
                                     <cellFactory>
                                         <MetricResultListCell fx:factory="callback" />
                                     </cellFactory>
@@ -71,7 +71,7 @@
                     <children>
                         <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <center>
-                                <TreeView fx:id="scopeHierarchyTreeView" styleClass="secondary-panel"
+                                <TreeView fx:id="scopeHierarchyTreeView"
                                           BorderPane.alignment="CENTER"/>
                             </center>
                             <top>

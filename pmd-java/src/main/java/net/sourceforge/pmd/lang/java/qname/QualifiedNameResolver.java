@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName.NOTLOCAL
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -45,7 +46,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
     // Package names to package representation.
     // Allows reusing the same list instance for the same packages.
     // Package prefixes are also shared.
-    private final Map<String, ImmutableList<String>> foundPackages = new HashMap<>(128);
+    private static final Map<String, ImmutableList<String>> FOUND_PACKAGES = new ConcurrentHashMap<>(128);
 
     // The following stacks stack some counter of the
     // visited classes. A new entry is pushed when
@@ -118,6 +119,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
     }
 
 
+    @Override
     public Object visit(ASTCompilationUnit node, Object data) {
 
         // update the package list
@@ -146,7 +148,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
         }
 
         final String image = pack.getPackageNameImage();
-        ImmutableList<String> fullExisting = foundPackages.get(image);
+        ImmutableList<String> fullExisting = FOUND_PACKAGES.get(image);
 
         if (fullExisting != null) {
             return fullExisting;
@@ -165,7 +167,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
         for (int i = longestPrefix.size(); i < allPacks.length; i++) {
             longestPrefix = longestPrefix.prepend(allPacks[i]);
             prefixImage.append(allPacks[i]);
-            foundPackages.put(prefixImage.toString(), longestPrefix);
+            FOUND_PACKAGES.put(prefixImage.toString(), longestPrefix);
         }
 
         return longestPrefix;
@@ -183,7 +185,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
      *            the total number of packages in the package name
      */
     private ImmutableList<String> getLongestPackagePrefix(String acc, int i) {
-        ImmutableList<String> prefix = foundPackages.get(acc);
+        ImmutableList<String> prefix = FOUND_PACKAGES.get(acc);
         if (prefix != null) {
             return prefix;
         }
@@ -355,8 +357,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
 
     /** Creates a new class qname from the current context (fields). */
     private JavaTypeQualifiedName contextClassQName() {
-        return new JavaTypeQualifiedName(packages, classNames, localIndices)
-                    .withClassLoader(classLoader);
+        return new JavaTypeQualifiedName(packages, classNames, localIndices, classLoader);
     }
 
 

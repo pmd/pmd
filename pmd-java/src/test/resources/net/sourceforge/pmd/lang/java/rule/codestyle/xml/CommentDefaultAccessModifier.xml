@@ -161,7 +161,19 @@ public class CommentDefaultAccessModifier {
 }
         ]]></code>
     </test-code>
-    
+
+    <test-code>
+        <description>#1430 CommentDefaultAccessModifier triggers on field annotated with @VisibleForTesting 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.google.common.annotations.VisibleForTesting;
+
+public class CommentDefaultAccessModifier {
+    @VisibleForTesting void method() {}
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
         <description>#536 Constructor with default access modifier should trigger</description>
         <expected-problems>1</expected-problems>
@@ -180,6 +192,65 @@ public enum Bar {
     ONE, TWO;
     
     Bar() {}
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Nested Enum constructor with implicit private modifier should not trigger</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    enum Bar {
+        ONE, TWO;
+    
+        Bar() {}
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Nested annotation method with default access modifier should not trigger</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @interface Bar {
+        String baz();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1211 [java] CommentDefaultAccessModifier false positive with nested interface</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface A {
+    interface B {
+        default void b() {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use property ignoredAnnotations (see #1343)</description>
+        <rule-property name="ignoredAnnotations">net.sourceforge.pmd.lang.java.rule.codestyle.commentdefaultaccessmodifier.OnlyForTesting</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>To avoid mistakes add a comment at the beginning of the method method if you want a default access modifier</message>
+        </expected-messages>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.commentdefaultaccessmodifier;
+
+import android.support.annotation.VisibleForTesting;
+
+public class CommentDefaultAccessModifier {
+    @VisibleForTesting void method() {}
+
+    @OnlyForTesting void method2() {}
 }
         ]]></code>
     </test-code>

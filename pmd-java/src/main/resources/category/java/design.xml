@@ -3,7 +3,7 @@
 <ruleset name="Design"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
 Rules that help you discover design issues.
@@ -29,7 +29,7 @@ protected constructor in order to prevent instantiation than make the class misl
 //ClassOrInterfaceDeclaration
     [@Abstract = 'true']
     [count(//MethodDeclaration) + count(//ConstructorDeclaration) = 0]
-    [not(../Annotation/MarkerAnnotation/Name[typeIs('com.google.auto.value.AutoValue')])]
+    [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('com.google.auto.value.AutoValue')])]
 ]]>
                 </value>
             </property>
@@ -267,13 +267,13 @@ Exception, or Error, use a subclassed exception or error instead.
 <![CDATA[
 //ThrowStatement//AllocationExpression
  /ClassOrInterfaceType[
- typeIsExactly('java.lang.Throwable')
+ pmd-java:typeIsExactly('java.lang.Throwable')
 or
- typeIsExactly('java.lang.Exception')
+ pmd-java:typeIsExactly('java.lang.Exception')
 or
- typeIsExactly('java.lang.Error')
+ pmd-java:typeIsExactly('java.lang.Error')
 or
- typeIsExactly('java.lang.RuntimeException')
+ pmd-java:typeIsExactly('java.lang.RuntimeException')
 ]
 ]]>
                 </value>
@@ -503,7 +503,7 @@ Errors are system exceptions. Do not extend them.
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
-  [typeIs('java.lang.Error')]
+  [pmd-java:typeIs('java.lang.Error')]
 
 
 ]]>
@@ -1152,9 +1152,9 @@ or
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConditionalExpression[@Ternary='true'][not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
+//ConditionalExpression[not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
 |
-//ConditionalExpression[@Ternary='true'][not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
+//ConditionalExpression[not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
 ]]>
                 </value>
             </property>
@@ -1187,6 +1187,7 @@ public class Foo {
           since="3.6"
           message="assertTrue(!expr) can be replaced by assertFalse(expr)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanassertion">
         <description>
 Avoid negation in an assertTrue or assertFalse test.
@@ -1213,8 +1214,14 @@ PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
  /Expression/UnaryExpressionNotPlusMinus[@Image='!']
 /PrimaryExpression/PrimaryPrefix
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
-]]>
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
+    or //MarkerAnnotation/Name[
+        pmd-java:typeIs('org.junit.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    ]
+]]]]>
                 </value>
             </property>
         </properties>

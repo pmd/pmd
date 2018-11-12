@@ -16,6 +16,7 @@ public class JavaLanguage extends AbstractLanguage {
         setProperties(properties);
     }
 
+    @Override
     public final void setProperties(Properties properties) {
         JavaTokenizer tokenizer = (JavaTokenizer) getTokenizer();
         tokenizer.setProperties(properties);

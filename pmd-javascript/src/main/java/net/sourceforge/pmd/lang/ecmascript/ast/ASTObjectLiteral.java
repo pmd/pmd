@@ -17,6 +17,7 @@ public class ASTObjectLiteral extends AbstractEcmascriptNode<ObjectLiteral>
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -25,14 +26,17 @@ public class ASTObjectLiteral extends AbstractEcmascriptNode<ObjectLiteral>
         return (ASTObjectProperty) jjtGetChild(index);
     }
 
+    @Override
     public boolean isDestructuring() {
         return node.isDestructuring();
     }
 
+    @Override
     public boolean isTrailingComma() {
         return trailingComma;
     }
 
+    @Override
     public void setTrailingComma(boolean trailingComma) {
         this.trailingComma = trailingComma;
     }

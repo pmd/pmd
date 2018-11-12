@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -366,15 +367,21 @@ public class XmlParserTest {
         LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions options = (XmlParserOptions) xmlVersionHandler.getDefaultParserOptions();
         Parser parser = xmlVersionHandler.getParser(options);
-        Node document = parser.parse(null, new StringReader(xml));
-        return document;
+        return parser.parse(null, new StringReader(xml));
     }
 
     @Test
     public void testBug1518() throws Exception {
-        String xml = IOUtils.toString(XmlParserTest.class.getResourceAsStream("parsertests/bug1518.xml"));
+        String xml = IOUtils.toString(XmlParserTest.class.getResourceAsStream("parsertests/bug1518.xml"),
+                StandardCharsets.UTF_8);
         Node document = parseXml(xml);
         assertNotNull(document);
+    }
+
+    @Test
+    public void testAutoclosingElementLength() {
+        final String xml = "<elementName att1='foo' att2='bar' att3='other' />";
+        assertLineNumbers(parseXml(xml), 1, 1, 1, xml.length());
     }
 
     /**

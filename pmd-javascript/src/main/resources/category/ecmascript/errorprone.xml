@@ -3,7 +3,7 @@
 <ruleset name="Error Prone"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
 Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
@@ -107,11 +107,7 @@ precision in a floating point number.  This may result in numeric calculations b
             <property name="xpath">
                 <value>
 <![CDATA[
-//NumberLiteral[
-    @Image != @Number
-    and translate(@Image, "e", "E") != @Number
-    and concat(@Image, ".0") != @Number
-    and @Image != substring-before(translate(@Number, ".", ""), "E")]
+//NumberLiteral[@NormalizedImage != @Number]
 ]]>
                 </value>
             </property>

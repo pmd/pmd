@@ -27,7 +27,8 @@ public final class LanguageRegistry {
 
     private LanguageRegistry() {
         List<Language> languagesList = new ArrayList<>();
-        ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class);
+        // Use current class' classloader instead of the threads context classloader, see https://github.com/pmd/pmd/issues/1377
+        ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class, getClass().getClassLoader());
         Iterator<Language> iterator = languageLoader.iterator();
         while (iterator.hasNext()) {
             try {

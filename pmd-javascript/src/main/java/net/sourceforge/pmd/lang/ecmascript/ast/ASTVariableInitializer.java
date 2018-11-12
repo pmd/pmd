@@ -14,6 +14,7 @@ public class ASTVariableInitializer extends AbstractEcmascriptNode<VariableIniti
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -30,6 +31,7 @@ public class ASTVariableInitializer extends AbstractEcmascriptNode<VariableIniti
         }
     }
 
+    @Override
     public boolean isDestructuring() {
         return node.isDestructuring();
     }

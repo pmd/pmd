@@ -18,7 +18,7 @@ IFrames which are missing a src element can cause security information popups in
 through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Element[upper-case(@Name)="IFRAME"][count(Attribute[upper-case(@Name)="SRC" ]) = 0]
 ```
 

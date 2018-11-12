@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  */
 public class AbstractOptimizationRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
             return data;

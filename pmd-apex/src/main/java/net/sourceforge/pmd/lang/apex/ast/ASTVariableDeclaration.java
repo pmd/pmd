@@ -14,6 +14,7 @@ public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration
         super(variableDeclaration);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -23,6 +24,7 @@ public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration
         return node.getLocalInfo().getName();
     }
 
+    @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
         ASTVariableDeclarationStatements parent = (ASTVariableDeclarationStatements) jjtGetParent();
 

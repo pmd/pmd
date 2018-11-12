@@ -195,9 +195,30 @@ public class Foo {
 Unneeded 'public static final' in interface field inside another interface
      ]]></description>
         <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'public' on interface 'Bar': members of interface types are implicitly public</message>
+            <message>Unnecessary modifiers 'public static final' on field 'X': the field is declared in an interface type</message>
+        </expected-messages>
         <code><![CDATA[
 public interface Foo {
  public interface Bar {
+  public static final int X = 0;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Unneeded 'public static final' in annotation field inside another interface
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'public' on annotation 'Bar': members of interface types are implicitly public</message>
+            <message>Unnecessary modifiers 'public static final' on field 'X': the field is declared in an annotation type</message>
+        </expected-messages>
+        <code><![CDATA[
+public interface Foo {
+ public @interface Bar {
   public static final int X = 0;
  }
 }
@@ -303,6 +324,9 @@ public enum TestEnum {
     <test-code>
         <description>Unnecessary public on annotation element</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'public' on method 'message': the method is declared in an annotation type</message>
+        </expected-messages>
         <code><![CDATA[
 public @interface TestAnnotation {
     public String message();
@@ -312,6 +336,9 @@ public @interface TestAnnotation {
     <test-code>
         <description>Unnecessary abstract on annotation element</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'abstract' on method 'message': the method is declared in an annotation type</message>
+        </expected-messages>
         <code><![CDATA[
 public @interface TestAnnotation {
     abstract String message();
@@ -387,7 +414,11 @@ public @interface TestAnnotation {
     </test-code>
     <test-code>
         <description>Unnecessary static on annotation nested enum</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'public' on enum 'Inner': the enum is declared in an annotation type</message>
+            <message>Unnecessary modifier 'static' on enum 'Inner': nested enums are implicitly static</message>
+        </expected-messages>
         <code><![CDATA[
 public @interface TestAnnotation {
     public static enum Inner {
@@ -397,7 +428,11 @@ public @interface TestAnnotation {
     </test-code>
     <test-code>
         <description>Unnecessary static on interface nested enum</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'public' on enum 'Inner': the enum is declared in an interface type</message>
+            <message>Unnecessary modifier 'static' on enum 'Inner': nested enums are implicitly static</message>
+        </expected-messages>
         <code><![CDATA[
 public interface TestInterface {
     public static enum Inner {
@@ -408,6 +443,9 @@ public interface TestInterface {
     <test-code>
         <description>Unnecessary static on class nested enum</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'static' on enum 'Inner': nested enums are implicitly static</message>
+        </expected-messages>
         <code><![CDATA[
 public class TestClass {
     public static enum Inner {
@@ -418,6 +456,9 @@ public class TestClass {
     <test-code>
         <description>Unnecessary abstract on interface</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'abstract' on interface 'TestInterface': interface types are implicitly abstract</message>
+        </expected-messages>
         <code><![CDATA[
 public abstract interface TestInterface {
 }
@@ -426,6 +467,9 @@ public abstract interface TestInterface {
     <test-code>
         <description>Unnecessary abstract on annotation</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'abstract' on annotation 'TestAnnotation': annotations types are implicitly abstract</message>
+        </expected-messages>
         <code><![CDATA[
 public abstract @interface TestAnnotation {
 }
@@ -443,9 +487,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-final and non-final methods mixed
-     ]]></description>
+        <description>final and non-final methods mixed</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -459,6 +501,9 @@ public class Foo {
 final method on a final class
      ]]></description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'final' on method 'foo': the method is already in a final class</message>
+        </expected-messages>
         <code><![CDATA[
 public final class Foo {
  public final void foo() { }
@@ -470,6 +515,9 @@ public final class Foo {
 mixed final and non-final methods on final class
      ]]></description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'final' on method 'foo': the method is already in a final class</message>
+        </expected-messages>
         <code><![CDATA[
 public final class Foo {
  public final void foo() { }
@@ -509,6 +557,9 @@ public final class Foo {
 final method in inner final class 
      ]]></description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'final' on method 'buz': the method is already in a final class</message>
+        </expected-messages>
         <code><![CDATA[
 public final class Foo {
  public final class Bar {
@@ -539,6 +590,9 @@ public final class InboxContents2 {
     <test-code>
     <description>Unnecessary final of private method</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'final' on method 'getValue': private methods cannot be overridden</message>
+        </expected-messages>
         <code><![CDATA[
 public class TestClass {
 	private final int getValue() {
@@ -550,6 +604,9 @@ public class TestClass {
     <test-code>
     <description>Unnecessary final of enum method</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'final' on method 'magic': an anonymous class cannot be extended</message>
+        </expected-messages>
         <code><![CDATA[
 public enum Foo {
     BAR {
@@ -578,6 +635,9 @@ public class Foo {
     <test-code>
     <description>Unnecessary final of try-with-resources resource</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'final' on resource specification 'fw': resource specifications are implicitly final</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void stuff() {
@@ -597,5 +657,52 @@ class Foo {
     final void method() { }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Private constructor of enum</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'private' on constructor 'Foo(String)': enum constructors are implicitly private</message>
+        </expected-messages>
+        <code><![CDATA[
+enum Foo {
+    BAR("bar");
+    
+    private String name;
+    
+    private Foo(String s) {
+        name = s;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Static Modifier on interface</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'static' on interface 'Bar': member interfaces are implicitly static</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo{
+    public static interface Bar{
+        void method(){ }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Static Modifier on interface</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'static' on class 'Foo': types nested within an interface type are implicitly static</message>
+        </expected-messages>
+        <code><![CDATA[
+public interface Bar {
+    void method() {
+    }
+    static class Foo {}
+
+}
+            ]]></code>
     </test-code>
 </test-data>

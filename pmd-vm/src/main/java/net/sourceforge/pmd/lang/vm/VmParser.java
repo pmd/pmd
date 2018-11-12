@@ -30,15 +30,18 @@ public class VmParser extends AbstractParser {
         return new VmTokenManager(source);
     }
 
+    @Override
     public boolean canParse() {
         return true;
     }
 
+    @Override
     public Node parse(final String fileName, final Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
         return new net.sourceforge.pmd.lang.vm.ast.VmParser(new VelocityCharStream(source, 1, 1)).process();
     }
 
+    @Override
     public Map<Integer, String> getSuppressMap() {
         return new HashMap<>(); // FIXME
     }

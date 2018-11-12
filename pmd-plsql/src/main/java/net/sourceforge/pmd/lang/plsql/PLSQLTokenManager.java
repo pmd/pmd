@@ -20,10 +20,12 @@ public class PLSQLTokenManager implements TokenManager {
         tokenManager = new PLSQLParserTokenManager(new SimpleCharStream(source));
     }
 
+    @Override
     public Object getNextToken() {
         return tokenManager.getNextToken();
     }
 
+    @Override
     public void setFileName(String fileName) {
         PLSQLParserTokenManager.setFileName(fileName);
     }

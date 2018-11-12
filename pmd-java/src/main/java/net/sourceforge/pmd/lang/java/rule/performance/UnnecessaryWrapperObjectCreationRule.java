@@ -25,6 +25,7 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
     private static final Set<String> SUFFIX_SET = CollectionUtil.asSet(new String[] { "toString", "byteValue",
         "shortValue", "intValue", "longValue", "floatValue", "doubleValue", "charValue", });
 
+    @Override
     public Object visit(ASTPrimaryPrefix node, Object data) {
         if (node.jjtGetNumChildren() == 0 || !(node.jjtGetChild(0) instanceof ASTName)) {
             return super.visit(node, data);

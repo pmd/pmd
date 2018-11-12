@@ -184,6 +184,9 @@ public class RuleDocGenerator {
             List<String> lines = new LinkedList<>();
             lines.add("---");
             lines.add("title: " + entry.getKey().getName() + " Rules");
+            lines.add("tags: [rule_references, " + languageTersename + "]");
+            lines.add("summary: Index of all built-in rules available for " + entry.getKey().getName());
+            lines.add("language_name: " + entry.getKey().getName());
             lines.add("permalink: " + LANGUAGE_INDEX_PERMALINK_PATTERN.replace("${language.tersename}", languageTersename));
             lines.add("folder: pmd/rules");
             lines.add("---");
@@ -391,7 +394,7 @@ public class RuleDocGenerator {
 
                     if (rule instanceof XPathRule || rule instanceof RuleReference && ((RuleReference) rule).getRule() instanceof XPathRule) {
                         lines.add("**This rule is defined by the following XPath expression:**");
-                        lines.add("```");
+                        lines.add("``` xpath");
                         lines.addAll(toLines(StringUtils.stripToEmpty(rule.getProperty(XPathRule.XPATH_DESCRIPTOR))));
                         lines.add("```");
                     } else {
@@ -449,6 +452,14 @@ public class RuleDocGenerator {
                                 }
                             }
 
+                            defaultValue = defaultValue.replace("\\", "\\\\")
+                                    .replace("*", "\\*")
+                                    .replace("_", "\\_")
+                                    .replace("~", "\\~")
+                                    .replace("[", "\\[")
+                                    .replace("]", "\\]")
+                                    .replace("|", "\\|");
+
                             String multiValued = "no";
                             if (propertyDescriptor.isMultiValue()) {
                                 MultiValuePropertyDescriptor<?> multiValuePropertyDescriptor =
@@ -458,7 +469,7 @@ public class RuleDocGenerator {
                             }
 
                             lines.add("|" + propertyDescriptor.name()
-                                + "|" + defaultValue.replace("|", "\\|")
+                                + "|" + defaultValue
                                 + "|" + description
                                 + "|" + multiValued.replace("|", "\\|")
                                 + "|");

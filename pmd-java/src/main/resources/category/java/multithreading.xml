@@ -3,7 +3,7 @@
 <ruleset name="Multithreading"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
 Rules that flag issues when dealing with multiple threads of execution.
@@ -169,8 +169,8 @@ Explicitly calling Thread.run() method will execute in the caller's thread of co
     [
         ./Name[ends-with(@Image, '.run') or @Image = 'run']
         and substring-before(Name/@Image, '.') =//VariableDeclarator/VariableDeclaratorId/@Image
-            [../../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.Thread')]]
-        or (./AllocationExpression/ClassOrInterfaceType[typeIs('java.lang.Thread')]
+            [../../../Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]]
+        or (./AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]
         and ../PrimarySuffix[@Image = 'run'])
     ]
 ]

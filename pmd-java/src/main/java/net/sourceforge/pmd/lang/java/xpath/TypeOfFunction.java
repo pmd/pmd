@@ -30,9 +30,10 @@ public class TypeOfFunction implements Function {
                 new TypeOfFunction());
     }
 
+    @Override
     public Object call(Context context, List args) throws FunctionCallException {
         nagDeprecatedFunction();
-        
+
         String nodeTypeName = null;
         String fullTypeName = null;
         String shortTypeName = null;
@@ -85,7 +86,7 @@ public class TypeOfFunction implements Function {
      */
     public static boolean typeof(Node n, String nodeTypeName, String fullTypeName, String shortTypeName) {
         nagDeprecatedFunction();
-        
+
         if (n instanceof TypeNode) {
             Class<?> type = ((TypeNode) n).getType();
             if (type == null) {

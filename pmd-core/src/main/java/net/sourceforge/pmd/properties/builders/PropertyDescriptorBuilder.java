@@ -75,4 +75,11 @@ public abstract class PropertyDescriptorBuilder<E, T extends PropertyDescriptorB
     public abstract PropertyDescriptor<E> build();
 
 
+    /**
+     * Returns the name of the property to be built.
+     */
+    public String getName() {
+        return name;
+    }
+
 }

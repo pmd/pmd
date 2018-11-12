@@ -5,6 +5,17 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents a pre-decrement expression on a variable.
+ * This has the same precedence as {@linkplain ASTUnaryExpression UnaryExpression}
+ * and the like.
+ *
+ * <pre>
+ *
+ * PreDecrementExpression ::= "--" {@linkplain ASTPrimaryExpression PrimaryExpression}
+ *
+ * </pre>
+ */
 public class ASTPreDecrementExpression extends AbstractJavaTypeNode {
     public ASTPreDecrementExpression(int id) {
         super(id);
@@ -14,9 +25,7 @@ public class ASTPreDecrementExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

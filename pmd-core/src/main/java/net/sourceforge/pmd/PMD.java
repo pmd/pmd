@@ -308,7 +308,7 @@ public class PMD {
                 && LOG.isLoggable(Level.WARNING)) {
             final String version = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
             LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
-                                + "https://pmd.github.io/" + version + "/pmd_userdocs_getting_started.html#incremental-analysis");
+                                + "https://pmd.github.io/" + version + "/pmd_userdocs_incremental_analysis.html");
         }
 
         sortFiles(configuration, files);
@@ -404,6 +404,23 @@ public class PMD {
                 throw new RuntimeException("Problem with Input File Path: " + inputFilePath, ex);
             }
 
+        }
+
+        if (null != configuration.getIgnoreFilePath()) {
+            String ignoreFilePath = configuration.getIgnoreFilePath();
+            File file = new File(ignoreFilePath);
+            try {
+                if (!file.exists()) {
+                    LOG.log(Level.SEVERE, "Problem with Ignore File Path", ignoreFilePath);
+                    throw new RuntimeException("Problem with Ignore File Path: " + ignoreFilePath);
+                } else {
+                    String filePaths = FileUtil.readFilelist(new File(ignoreFilePath));
+                    files.removeAll(FileUtil.collectFiles(filePaths, fileSelector));
+                }
+            } catch (IOException ex) {
+                LOG.log(Level.SEVERE, "Problem with Ignore File", ex);
+                throw new RuntimeException("Problem with Ignore File Path: " + ignoreFilePath, ex);
+            }
         }
         return files;
     }

@@ -19,6 +19,7 @@ public class ASTTypeMethod extends AbstractPLSQLNode implements ExecutableCode, 
     }
 
     /** Accept the visitor. **/
+    @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -28,6 +29,7 @@ public class ASTTypeMethod extends AbstractPLSQLNode implements ExecutableCode, 
      *
      * @return a String representing the name of the method
      */
+    @Override
     public String getMethodName() {
         ASTMethodDeclarator md = getFirstChildOfType(ASTMethodDeclarator.class);
         if (md != null) {

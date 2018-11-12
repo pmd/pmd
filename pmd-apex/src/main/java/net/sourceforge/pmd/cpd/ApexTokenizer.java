@@ -40,6 +40,7 @@ public class ApexTokenizer implements Tokenizer {
 
         ANTLRStringStream ass = new ANTLRStringStream(code.toString());
         ApexLexer lexer = new ApexLexer(ass) {
+            @Override
             public void emitErrorMessage(String msg) {
                 throw new TokenMgrError(msg, TokenMgrError.LEXICAL_ERROR);
             }

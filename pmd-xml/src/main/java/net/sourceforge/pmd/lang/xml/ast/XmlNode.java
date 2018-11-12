@@ -19,7 +19,7 @@ public interface XmlNode extends Node, AttributeNode {
 
     /**
      * Provide access to the underlying DOM node.
-     * 
+     *
      * @return The DOM node.
      */
     org.w3c.dom.Node getNode();

@@ -12,6 +12,7 @@ public class ASTVariableExpression extends AbstractApexNode<VariableExpression> 
         super(variableExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

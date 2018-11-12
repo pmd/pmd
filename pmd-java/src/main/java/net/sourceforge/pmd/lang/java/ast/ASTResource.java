@@ -16,6 +16,7 @@ public class ASTResource extends ASTFormalParameter {
     }
 
     /** Accept the visitor. **/
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -1,7 +1,7 @@
 ---
 title: Adding support for metrics to a language
 short_title: Implement a metrics framework
-tags: [customizing]
+tags: [devdocs, extending, metrics]
 summary: "PMD's Java module has an extensive framework for the calculation of metrics, which allows rule developers
 to implement and use new code metrics very simply. Most of the functionality of this framework is abstracted in such
 a way that any PMD supported language can implement such a framework without too much trouble. Here's how."

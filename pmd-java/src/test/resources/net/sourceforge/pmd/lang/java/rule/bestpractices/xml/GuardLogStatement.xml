@@ -334,4 +334,29 @@ public class Logger {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#869 [java] GuardLogStatement false positive with Math.log</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class GuardLogStatement {
+    public void foo() {
+        double confidence = 0.5;
+        int depth = (int) Math.ceil(-Math.log(1 - confidence) / Math.log(2));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#869 [java] GuardLogStatement false positive with something.error on return</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class GuardLogStatement {
+    public String foo() {
+        return ThisIsNotALogger.error("message " + "");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

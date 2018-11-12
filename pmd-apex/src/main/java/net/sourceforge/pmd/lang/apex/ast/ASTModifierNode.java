@@ -12,6 +12,7 @@ public class ASTModifierNode extends AbstractApexNode<ModifierNode> implements A
         super(modifierNode);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

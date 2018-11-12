@@ -1,6 +1,6 @@
 ---
 title:  Index of Apex code metrics
-tags: [customizing]
+tags: [extending, metrics]
 summary: "Index of the code metrics available out of the box to Apex rule developers."
 last_updated: July 20, 2017
 permalink: pmd_apex_metrics_index.html

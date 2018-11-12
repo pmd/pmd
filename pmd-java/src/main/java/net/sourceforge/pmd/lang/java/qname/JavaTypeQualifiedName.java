@@ -41,9 +41,9 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
     private Class<?> representedType;
     private boolean typeLoaded;
 
-    private ClassLoader classLoader;
+    private final ClassLoader classLoader;
 
-    JavaTypeQualifiedName(ImmutableList<String> packages, ImmutableList<String> classes, ImmutableList<Integer> localIndices) {
+    JavaTypeQualifiedName(ImmutableList<String> packages, ImmutableList<String> classes, ImmutableList<Integer> localIndices, ClassLoader classLoader) {
         Objects.requireNonNull(packages);
         Objects.requireNonNull(classes);
         Objects.requireNonNull(localIndices);
@@ -55,16 +55,8 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
         this.packages = packages;
         this.classes = classes;
         this.localIndices = localIndices;
-    }
 
-
-    /**
-     * Sets the classloader to be used when resolving the actual type of this qualified name.
-     * @see #getType()
-     */
-    JavaTypeQualifiedName withClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-        return this;
+        this.classLoader = classLoader; // classLoader may be null
     }
 
 
@@ -105,6 +97,7 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
      * Returns true if this qualified name identifies a
      * local class.
      */
+    @Override
     public boolean isLocalClass() {
         return localIndices.head() != NOTLOCAL_PLACEHOLDER;
     }
@@ -122,6 +115,7 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
     /**
      * Get the simple name of the class.
      */
+    @Override
     public String getClassSimpleName() {
         return classes.head();
     }
@@ -131,6 +125,7 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
      * Returns true if the class represented by this
      * qualified name is in the unnamed package.
      */
+    @Override
     public boolean isUnnamedPackage() {
         return packages.isEmpty();
     }
@@ -171,20 +166,20 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
      * Gets the Class instance identified by this qualified name.
      *
      * @return A class instance, or null if the classloader threw a {@link ClassNotFoundException}
+     *     or {@link LinkageError} while trying to load the class.
      */
     public Class<?> getType() {
         synchronized (this) {
-            if (typeLoaded) {
-                return representedType;
-            } else {
+            if (!typeLoaded) {
                 typeLoaded = true;
                 try {
                     representedType = loadType();
-                } catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException | LinkageError e) {
                     representedType = null;
+                    //TODO: report missing/broken type in auxclasspath
                 }
-                return representedType;
             }
+            return representedType;
         }
     }
 

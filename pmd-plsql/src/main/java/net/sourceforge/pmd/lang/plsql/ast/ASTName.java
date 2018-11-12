@@ -19,6 +19,7 @@ public class ASTName extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNod
     }
 
     /** Accept the visitor. **/
+    @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

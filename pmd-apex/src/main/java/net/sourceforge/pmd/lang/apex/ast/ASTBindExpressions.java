@@ -12,6 +12,7 @@ public class ASTBindExpressions extends AbstractApexNode<BindExpressions> {
         super(bindExpressions);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

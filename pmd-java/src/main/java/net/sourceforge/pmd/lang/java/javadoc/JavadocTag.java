@@ -24,7 +24,7 @@ public final class JavadocTag {
             "Indicates that an item is a member of the deprecated API");
     public static final JavadocTag PARAM = new JavadocTag("param", " ");
     public static final JavadocTag THROWS = new JavadocTag("throws", " ");
-    public static final JavadocTag RETURN = new JavadocTag("returns", " ");
+    public static final JavadocTag RETURN = new JavadocTag("return", " ");
     public static final JavadocTag SEE = new JavadocTag("see", " ");
 
     /*  public static final JavadocTag POST         = new JavadocTag("post",       " ");

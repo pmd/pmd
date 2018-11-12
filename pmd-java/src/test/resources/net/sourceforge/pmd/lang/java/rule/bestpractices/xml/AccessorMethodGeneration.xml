@@ -4,9 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description><![CDATA[
-inner class accesses private field from outer class
-     ]]></description>
+        <description>inner class accesses private field from outer class</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
@@ -22,11 +20,11 @@ public class Foo {
  }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-inner class accesses private field from outer class unqualified
-     ]]></description>
+        <description>inner class accesses private field from outer class unqualified</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
@@ -42,11 +40,11 @@ public class Foo {
  }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-outer class accesses private field from inner class
-     ]]></description>
+        <description>outer class accesses private field from inner class</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
@@ -62,11 +60,11 @@ public class Foo {
  }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
-        <test-code>
-        <description><![CDATA[
-non private fields are ok
-     ]]></description>
+
+    <test-code>
+        <description>non private fields are ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -85,11 +83,11 @@ public class Foo {
  }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-inner class accesses private method of outer class, unqualified
-     ]]></description>
+        <description>inner class accesses private method of outer class, unqualified</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
@@ -104,11 +102,11 @@ public class Foo {
  }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-inner class accesses private method of outer class, qualified
-     ]]></description>
+        <description>inner class accesses private method of outer class, qualified</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
@@ -123,11 +121,11 @@ public class Foo {
  }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-outer class accesses private method of inner class
-     ]]></description>
+        <description>outer class accesses private method of inner class</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
@@ -142,11 +140,10 @@ public class Foo {
  }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
     <test-code>
-        <description><![CDATA[
-inner class accesses non-private methods of outer class
-     ]]></description>
+        <description>inner class accesses non-private methods of outer class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -168,11 +165,11 @@ public class Foo {
  }
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-#274 - Method inside static inner class incorrectly reported as generating accessor methods
-     ]]></description>
+        <description>#274 - Method inside static inner class incorrectly reported as generating accessor methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo implements Parcelable {
@@ -195,5 +192,6 @@ public class Foo implements Parcelable {
     };
 }
      ]]></code>
+     <source-type>java 10</source-type>
     </test-code>
 </test-data>

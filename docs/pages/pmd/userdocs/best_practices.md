@@ -1,6 +1,6 @@
 ---
 title: Best Practices
-tags: [rulesets]
+tags: [userdocs]
 permalink: pmd_userdocs_best_practices.html
 author: Tom Copeland <tom@infoether.com>
 last_updated: November 2017

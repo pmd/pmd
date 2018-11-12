@@ -12,6 +12,7 @@ public class ASTNewMapLiteralExpression extends AbstractApexNode<NewMapLiteralEx
         super(newMapLiteralExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

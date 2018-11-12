@@ -12,6 +12,7 @@ public class ASTAnonymousClass extends ApexRootNode<AnonymousClass> {
         super(anonymousClass);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

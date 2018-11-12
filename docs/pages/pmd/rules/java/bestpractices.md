@@ -20,7 +20,7 @@ abstract methods. If the class is intended to be used as a base class only (not 
 directly) a protected constructor can be provided prevent direct instantiation.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration
  [@Abstract='true'
   and count( .//MethodDeclaration[@Abstract='true'] )=0 ]
@@ -149,7 +149,7 @@ public class Foo {
 Avoid printStackTrace(); use a logger call instead.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryExpression
  [PrimaryPrefix/Name[contains(@Image,'printStackTrace')]]
  [PrimarySuffix[not(boolean(Arguments/ArgumentList/Expression))]]
@@ -209,7 +209,7 @@ StringBuffers/StringBuilders can grow considerably, and so may become a source o
 if held within objects with long lifetimes.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[@Image = 'StringBuffer' or @Image = 'StringBuilder']
 ```
 
@@ -250,7 +250,6 @@ public class Foo {
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
 |checkAddressTypes|IPv4 \| IPv6 \| IPv4 mapped IPv6|Check for IP address types.|yes. Delimiter is '\|'.|
-|pattern|^"[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"$|Regular Expression|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -300,7 +299,7 @@ Avoid constants in interfaces. Interfaces should define types, constants are imp
 better placed in classes or enums. See Effective Java, item 19.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[@Interface='true'][$ignoreIfHasMethods='false' or not(.//MethodDeclaration)]//FieldDeclaration
 ```
 
@@ -349,7 +348,7 @@ public interface YetAnotherConstantInterface {
 By convention, the default label should be the last label in a switch statement.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //SwitchStatement
  [not(SwitchLabel[position() = last()][@Default='true'])]
  [SwitchLabel[@Default='true']]
@@ -454,10 +453,10 @@ In JUnit 3, test suites are indicated by the suite() method. In JUnit 4, suites 
 through the @RunWith(Suite.class) annotation.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='suite']]
-[MethodDeclaration/ResultType/Type/ReferenceType/ClassOrInterfaceType[@Image='Test' or @Image = 'junit.framework.Test']]
-[not(MethodDeclaration/Block//ClassOrInterfaceType[@Image='JUnit4TestAdapter'])]
+[MethodDeclaration/ResultType/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
+[not(MethodDeclaration/Block//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
 ```
 
 **Example(s):**
@@ -488,13 +487,18 @@ public class GoodTest {
 **Priority:** Medium (3)
 
 In JUnit 3, the tearDown method was used to clean up all data entities required in running tests. 
-JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test
+JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test.
+JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after each test or after all tests in the class, respectively.
 
 **This rule is defined by the following XPath expression:**
-```
-//CompilationUnit[not(ImportDeclaration/Name[starts-with(@Image, "org.testng")])]
-//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='tearDown']]
-[count(Annotation//Name[@Image='After'])=0]
+``` xpath
+//ClassOrInterfaceBodyDeclaration
+    [MethodDeclaration/MethodDeclarator[@Image='tearDown']]
+    [count(Annotation//Name[
+           pmd-java:typeIs('org.junit.After')
+        or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
+        or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
+        or pmd-java:typeIs('org.testng.annotations.AfterMethod')])=0]
 ```
 
 **Example(s):**
@@ -524,13 +528,18 @@ public class MyTest2 {
 **Priority:** Medium (3)
 
 In JUnit 3, the setUp method was used to set up all data entities required in running tests. 
-JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests
+JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests.
+JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods before each test or before all tests in the class, respectively.
 
 **This rule is defined by the following XPath expression:**
-```
-//CompilationUnit[not(ImportDeclaration/Name[starts-with(@Image, "org.testng")])]
-//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='setUp']]
-[count(Annotation//Name[@Image='Before'])=0]
+``` xpath
+//ClassOrInterfaceBodyDeclaration
+    [MethodDeclaration/MethodDeclarator[@Image='setUp']]
+    [count(Annotation//Name[
+           pmd-java:typeIs('org.junit.Before')
+        or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
+        or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
+        or pmd-java:typeIs('org.testng.annotations.BeforeMethod')])=0]
 ```
 
 **Example(s):**
@@ -561,15 +570,21 @@ public class MyTest2 {
 
 In JUnit 3, the framework executed all methods which started with the word test as a unit test. 
 In JUnit 4, only methods annotated with the @Test annotation are executed.
+In JUnit 5, one of the following annotations should be used for tests: @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[
        matches(@Image, $testClassPattern)
         or ExtendsList/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]]
 
     /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true()]/MethodDeclarator[starts-with(@Image, 'test')]]
-    [not(Annotation//Name[pmd-java:typeIs('org.junit.Test')])]
+    [not(Annotation//Name[
+        pmd-java:typeIs('org.junit.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    ])]
 ```
 
 **Example(s):**
@@ -633,13 +648,24 @@ public class Foo extends TestCase {
 
 **Priority:** Medium (3)
 
-JUnit tests should not contain too many asserts.  Many asserts are indicative of a complex test, for which 
-it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.  
+Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which 
+it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.
 Customize the maximum number of assertions used by this Rule to suit your needs.
 
+This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods starting with "test".
+
 **This rule is defined by the following XPath expression:**
-```
-//MethodDeclarator[(@Image[fn:matches(.,'^test')] or ../../Annotation/MarkerAnnotation/Name[@Image='Test']) and count(..//PrimaryPrefix/Name[@Image[fn:matches(.,'^assert')]]) > $maximumAsserts]
+``` xpath
+//MethodDeclarator[@Image[fn:matches(.,'^test')] or ../../Annotation/MarkerAnnotation/Name[
+           pmd-java:typeIs('org.junit.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+        or pmd-java:typeIs('org.testng.annotations.Test')
+    ]]
+    [count(..//PrimaryPrefix/Name[@Image[fn:matches(.,'^assert')]]) > $maximumAsserts]
 ```
 
 **Example(s):**
@@ -843,8 +869,12 @@ Java allows the use of several variables declaration of the same type on one lin
 can lead to quite messy code. This rule looks for several declarations on the same line.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //LocalVariableDeclaration
+   [count(VariableDeclarator) > 1]
+   [$strictMode or count(distinct-values(VariableDeclarator/@BeginLine)) != count(VariableDeclarator)]
+|
+//FieldDeclaration
    [count(VariableDeclarator) > 1]
    [$strictMode or count(distinct-values(VariableDeclarator/@BeginLine)) != count(VariableDeclarator)]
 ```
@@ -883,7 +913,7 @@ Position literals first in comparisons, if the second argument is null then Null
 can be avoided, they will just return false.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryExpression[
         PrimaryPrefix[Name
                 [
@@ -925,7 +955,7 @@ Position literals first in comparisons, if the second argument is null then Null
 can be avoided, they will just return false.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryExpression[
     PrimaryPrefix[Name[(ends-with(@Image, '.equals'))]]
         [
@@ -1005,7 +1035,7 @@ public class Foo {
 Consider replacing Enumeration usages with the newer java.util.Iterator
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ImplementsList/ClassOrInterfaceType[@Image='Enumeration']
 ```
 
@@ -1037,7 +1067,7 @@ public class Foo implements Enumeration {
 Consider replacing Hashtable usage with the newer java.util.Map if thread safety is not required.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Type/ReferenceType/ClassOrInterfaceType[@Image='Hashtable']
 ```
 
@@ -1065,7 +1095,7 @@ public class Foo {
 Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Type/ReferenceType/ClassOrInterfaceType[@Image='Vector']
 ```
 
@@ -1093,8 +1123,8 @@ public class Foo {
 All switch statements should include a default option to catch any unspecified values.
 
 **This rule is defined by the following XPath expression:**
-```
-//SwitchStatement[not(SwitchLabel[@Default='true'])]
+``` xpath
+//SwitchStatement[@DefaultCase = false() and @ExhaustiveEnumSwitch = false()]
 ```
 
 **Example(s):**
@@ -1126,7 +1156,7 @@ the codebase even in production code. By using a logger one can enable/disable t
 will (and by priority) and avoid clogging the Standard out log.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Name[
     starts-with(@Image, 'System.out.print')
     or
@@ -1305,14 +1335,21 @@ public class Something {
 This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryExpression[
     PrimaryPrefix/Name[@Image = 'assertTrue']
 ][
     PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
     [ends-with(@Image, '.equals')]
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
+    or //MarkerAnnotation/Name[
+        pmd-java:typeIs('org.junit.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    ]
+]]
 ```
 
 **Example(s):**
@@ -1342,7 +1379,7 @@ This rule detects JUnit assertions in object references equality. These assertio
 more specific methods, like assertNull, assertNotNull.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryExpression[
  PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
 ][
@@ -1350,7 +1387,14 @@ more specific methods, like assertNull, assertNotNull.
   Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
  ]
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
+    or //MarkerAnnotation/Name[
+        pmd-java:typeIs('org.junit.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    ]
+]]
 ```
 
 **Example(s):**
@@ -1382,7 +1426,7 @@ This rule detects JUnit assertions in object references equality. These assertio
 by more specific methods, like assertSame, assertNotSame.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryExpression[
     PrimaryPrefix/Name
      [@Image = 'assertTrue' or @Image = 'assertFalse']
@@ -1390,7 +1434,14 @@ by more specific methods, like assertSame, assertNotSame.
 [PrimarySuffix/Arguments
  /ArgumentList/Expression
  /EqualityExpression[count(.//NullLiteral) = 0]]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
+    or //MarkerAnnotation/Name[
+        pmd-java:typeIs('org.junit.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    ]
+]]
 ```
 
 **Example(s):**
@@ -1419,7 +1470,7 @@ public class FooTest extends TestCase {
 When asserting a value is the same as a literal or Boxed boolean, use assertTrue/assertFalse, instead of assertEquals.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryExpression[PrimaryPrefix/Name[@Image = 'assertEquals']]
 [
   PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
@@ -1503,7 +1554,7 @@ sugar provides flexibility for users of these methods and constructors, allowing
 having to deal with the creation of an array.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //FormalParameters/FormalParameter
     [position()=last()]
     [@Array='true']

@@ -5,7 +5,7 @@ permalink: pmd_rules_java_codestyle.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/codestyle.xml
-keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
+keywords: Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, UseUnderscoresInNumericLiterals, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UselessParentheses, UselessQualifiedThis, VariableNamingConventions, WhileLoopsMustUseBraces
 language: Java
 ---
 ## AbstractNaming
@@ -19,7 +19,7 @@ language: Java
 Abstract classes should be named 'AbstractXXX'.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration
  [@Abstract='true' and @Interface='false']
  [not (starts-with(@Image,'Abstract'))]
@@ -54,19 +54,10 @@ public abstract class Foo { // should be AbstractFoo
 
 **Priority:** Medium (3)
 
-Each class should declare at least one constructor.
+Each non-static class should declare at least one constructor.
+Classes with solely static members are ignored, refer to [UseUtilityClassRule](pmd_rules_java_design.html#useutilityclass) to detect those.
 
-**This rule is defined by the following XPath expression:**
-```
-//ClassOrInterfaceDeclaration[
-  not(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)
-  and
-  (@Static = 'false')
-  and
-  (count(./descendant::MethodDeclaration[@Static = 'true']) < 1)
-]
-  [@Interface='false']
-```
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.AtLeastOneConstructorRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/AtLeastOneConstructorRule.java)
 
 **Example(s):**
 
@@ -77,6 +68,12 @@ public class Foo {
   public void doOtherThing { ... }
 }
 ```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoredAnnotations|lombok.Data \| lombok.Value \| lombok.Builder \| lombok.NoArgsConstructor \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructorAtLeastOneConstructor|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -114,7 +111,7 @@ public class Fo$o {  // not a recommended name
 Avoid using final local variables, turn them into fields.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //LocalVariableDeclaration[
   @Final = 'true'
   and not(../../ForStatement)
@@ -144,6 +141,8 @@ public class MyClass {
 
 ## AvoidPrefixingMethodParameters
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 5.0
 
 **Priority:** Medium Low (4)
@@ -153,7 +152,7 @@ To indicate whether or not a parameter will be modify in a method, its better to
 behavior with Javadoc.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/VariableDeclaratorId[
         pmd:matches(@Image,'^in[A-Z].*','^out[A-Z].*','^in$','^out$')
 ]
@@ -203,7 +202,7 @@ Do not use protected fields in final classes since they cannot be subclassed.
 Clarify your intent by using private or package access modifiers instead.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[@Final='true']
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
 /FieldDeclaration[@Protected='true']
@@ -235,7 +234,7 @@ only be allowed in final classes that extend other classes with protected method
 visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[@Final='true' and not(ExtendsList)]
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
 /MethodDeclaration[@Protected='true'][MethodDeclarator/@Image != 'finalize']
@@ -265,7 +264,7 @@ Unnecessary reliance on Java Native Interface (JNI) calls directly reduces appli
 and increases the maintenance burden.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Name[starts-with(@Image,'System.loadLibrary')]
 ```
 
@@ -304,7 +303,7 @@ I.e, 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc.   Avoid the u
 prefix for these methods.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration[
 MethodDeclarator[count(FormalParameters/FormalParameter) = 0 or $checkParameterizedMethods = 'true']
                 [starts-with(@Image, 'get')]
@@ -343,7 +342,7 @@ It is a good practice to call super() in a constructor. If super() is not called
 another constructor (such as an overloaded constructor) is called, this rule will not report it.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[ count (ExtendsList/*) > 0 ]
 /ClassOrInterfaceBody
  /ClassOrInterfaceBodyDeclaration
@@ -408,12 +407,12 @@ public class Éléphant {}
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|classPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to concrete class names|no|
-|abstractClassPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to abstract class names|no|
-|interfacePattern|[A-Z][a-zA-Z0-9]+|Regex which applies to interface names|no|
-|enumPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to enum names|no|
-|annotationPattern|[A-Z][a-zA-Z0-9]+|Regex which applies to annotation names|no|
-|utilityClassPattern|[A-Z][a-zA-Z0-9]+(Utils?\|Helper)|Regex which applies to utility class names|no|
+|classPattern|\[A-Z\]\[a-zA-Z0-9\]\*|Regex which applies to concrete class names|no|
+|abstractClassPattern|\[A-Z\]\[a-zA-Z0-9\]\*|Regex which applies to abstract class names|no|
+|interfacePattern|\[A-Z\]\[a-zA-Z0-9\]\*|Regex which applies to interface names|no|
+|enumPattern|\[A-Z\]\[a-zA-Z0-9\]\*|Regex which applies to enum names|no|
+|annotationPattern|\[A-Z\]\[a-zA-Z0-9\]\*|Regex which applies to annotation names|no|
+|utilityClassPattern|\[A-Z\]\[a-zA-Z0-9\]+(Utils?\|Helper)|Regex which applies to utility class names|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -429,6 +428,8 @@ public class Éléphant {}
 To avoid mistakes if we want that a Method, Constructor, Field or Nested class have a default access modifier
 we must add a comment at the beginning of it's declaration.
 By default the comment must be /* default */ or /* package */, if you want another, you have to provide a regular expression.
+This rule ignores by default all cases that have a @VisibleForTesting annotation. Use the
+property "ignoredAnnotations" to customize the recognized annotations.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.CommentDefaultAccessModifierRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/CommentDefaultAccessModifierRule.java)
 
@@ -461,7 +462,8 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|regex|\/\*\s+(default\|package)\s+\*\/|Regular expression|no|
+|regex|\\/\\\*\\s+(default\|package)\\s+\\\*\\/|Regular expression|no|
+|ignoredAnnotations|com.google.common.annotations.VisibleForTesting \| android.support.annotation.VisibleForTesting|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -517,7 +519,7 @@ From 6.2.0 on, this rule supersedes WhileLoopMustUseBraces, ForLoopMustUseBraces
 and IfElseStmtMustUseBraces.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //WhileStatement[$checkWhileStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
                 |
                 //ForStatement[$checkForStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
@@ -579,7 +581,7 @@ Use explicit scoping instead of accidental usage of default package private leve
 The rule allows methods and fields annotated with Guava's @VisibleForTesting.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[@Interface='false']
 /ClassOrInterfaceBody
 /ClassOrInterfaceBodyDeclaration
@@ -657,7 +659,7 @@ Empty or auto-generated methods in an abstract class should be tagged as abstrac
 usage by developers who should be implementing their own versions in the concrete subclasses.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[@Abstract = 'true']
     /ClassOrInterfaceBody
     /ClassOrInterfaceBodyDeclaration
@@ -703,7 +705,7 @@ public abstract class ShouldBeAbstract {
 No need to explicitly extend Object.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ExtendsList/ClassOrInterfaceType[@Image='Object' or @Image='java.lang.Object']
 ```
 
@@ -759,6 +761,59 @@ public class HelloWorldBean {
 <rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass" />
 ```
 
+## FieldNamingConventions
+
+**Since:** PMD 6.7.0
+
+**Priority:** High (1)
+
+Configurable naming conventions for field declarations. This rule reports variable declarations
+which do not match the regex that applies to their specific kind ---e.g. constants (static final),
+enum constant, final field. Each regex can be configured through properties.
+
+By default this rule uses the standard Java naming convention (Camel case), and uses the ALL_UPPER
+convention for constants and enum constants.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.FieldNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/FieldNamingConventionsRule.java)
+
+**Example(s):**
+
+``` java
+class Foo {
+                int myField = 1; // This is in camel case, so it's ok
+                int my_Field = 1; // This contains an underscore, it's not ok by default
+                                  // but you may allow it, or even require the "my_" prefix
+
+                final int FinalField = 1; // you may configure a different convention for final fields,
+                                          // e.g. here PascalCase: [A-Z][a-zA-Z0-9]*
+
+                interface Interface {
+                    double PI = 3.14; // interface "fields" use the constantPattern property
+                }
+
+                enum AnEnum {
+                    ORG, NET, COM; // These use a separate property but are set to ALL_UPPER by default
+                }
+            }
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|publicConstantPattern|\[A-Z\]\[A-Z\_0-9\]\*|Regex which applies to public constant names|no|
+|constantPattern|\[A-Z\]\[A-Z\_0-9\]\*|Regex which applies to non-public static final field names|no|
+|enumConstantPattern|\[A-Z\]\[A-Z\_0-9\]\*|Regex which applies to enum constant names|no|
+|finalFieldPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to final field names|no|
+|staticFieldPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to static field names|no|
+|defaultFieldPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to field names|no|
+|exclusions|serialVersionUID|Names of fields to whitelist.|yes. Delimiter is '\|'.|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/FieldNamingConventions" />
+```
+
 ## ForLoopShouldBeWhileLoop
 
 **Since:** PMD 1.02
@@ -768,7 +823,7 @@ public class HelloWorldBean {
 Some for loops can be simplified to while loops, this makes them more concise.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ForStatement
   [not(LocalVariableDeclaration)]
   [not(ForInit)]
@@ -804,7 +859,7 @@ indentation is lost then it becomes difficult to separate the code being control
 from the rest.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ForStatement[not(Statement/Block)]
 ```
 
@@ -820,6 +875,59 @@ for (int i = 0; i < 42; i++)
 <rule ref="category/java/codestyle.xml/ForLoopsMustUseBraces" />
 ```
 
+## FormalParameterNamingConventions
+
+**Since:** PMD 6.6.0
+
+**Priority:** High (1)
+
+Configurable naming conventions for formal parameters of methods and lambdas.
+This rule reports formal parameters which do not match the regex that applies to their
+specific kind (e.g. lambda parameter, or final formal parameter). Each regex can be
+configured through properties.
+
+By default this rule uses the standard Java naming convention (Camel case).
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.FormalParameterNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/FormalParameterNamingConventionsRule.java)
+
+**Example(s):**
+
+``` java
+class Foo {
+
+                abstract void bar(int myInt); // This is Camel case, so it's ok
+
+                void bar(int my_i) { // this will be reported
+
+                }
+
+                void lambdas() {
+
+                    // lambdas parameters can be configured separately
+                    Consumer<String> lambda1 = s_str -> { };
+
+                    // lambda parameters with an explicit type can be configured separately
+                    Consumer<String> lambda1 = (String str) -> { };
+
+                }
+
+            }
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|methodParameterPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to formal parameter names|no|
+|finalMethodParameterPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to final formal parameter names|no|
+|lambdaParameterPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to inferred-type lambda parameter names|no|
+|explicitLambdaParameterPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to explicitly-typed lambda parameter names|no|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/FormalParameterNamingConventions" />
+```
+
 ## GenericsNaming
 
 **Since:** PMD 4.2.6
@@ -829,7 +937,7 @@ for (int i = 0; i < 42; i++)
 Names for references to generic values should be limited to a single uppercase letter.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //TypeDeclaration/ClassOrInterfaceDeclaration/TypeParameters/TypeParameter[
   string-length(@Image) > 1 
   or
@@ -912,7 +1020,7 @@ or indentation is lost then it becomes difficult to separate the code being cont
 from the rest.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Statement
  [parent::IfStatement[@Else='true']]
  [not(child::Block)]
@@ -950,7 +1058,7 @@ formatting or indentation is lost then it becomes difficult to separate the code
 controlled from the rest.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //IfStatement[count(*) < 3][not(Statement/Block)]
 ```
 
@@ -970,6 +1078,88 @@ if (foo) {  // preferred approach
 <rule ref="category/java/codestyle.xml/IfStmtsMustUseBraces" />
 ```
 
+## LinguisticNaming
+
+**Since:** PMD 6.7.0
+
+**Priority:** Medium (3)
+
+This rule finds Linguistic Naming Antipatterns. It checks for fields, that are named, as if they should
+be boolean but have a different type. It also checks for methods, that according to their name, should
+return a boolean, but don't. Further, it checks, that getters return something and setters won't.
+Finally, it checks that methods, that start with "to" - so called transform methods - actually return
+something, since according to their name, they should convert or transform one object into another.
+There is additionally an option, to check for methods that contain "To" in their name - which are
+also transform methods. However, this is disabled by default, since this detection is prone to
+false positives.
+
+For more information, see [Linguistic Antipatterns - What They Are and How
+Developers Perceive Them](https://doi.org/10.1007/s10664-014-9350-8).
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.LinguisticNamingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/LinguisticNamingRule.java)
+
+**Example(s):**
+
+``` java
+public class LinguisticNaming {
+    int isValid;    // the field name indicates a boolean, but it is an int.
+    boolean isTrue; // correct type of the field
+
+    void myMethod() {
+        int hasMoneyLocal;      // the local variable name indicates a boolean, but it is an int.
+        boolean hasSalaryLocal; // correct naming and type
+    }
+
+    // the name of the method indicates, it is a boolean, but the method returns an int.
+    int isValid() {
+        return 1;
+    }
+    // correct naming and return type
+    boolean isSmall() {
+        return true;
+    }
+
+    // the name indicates, this is a setter, but it returns something
+    int setName() {
+        return 1;
+    }
+
+    // the name indicates, this is a getter, but it doesn't return anything
+    void getName() {
+        // nothing to return?
+    }
+
+    // the name indicates, it transforms an object and should return the result
+    void toDataType() {
+        // nothing to return?
+    }
+    // the name indicates, it transforms an object and should return the result
+    void grapeToWine() {
+        // nothing to return?
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|booleanFieldPrefixes|is \| has \| can \| have \| will \| should|The prefixes of fields and variables that indicate boolean.|yes. Delimiter is '\|'.|
+|checkVariables|true|Check local variable names and types for inconsistent naming.|no|
+|checkFields|true|Check field names and types for inconsistent naming.|no|
+|transformMethodNames|to \| as|The prefixes and infixes that indicate a transform method.|yes. Delimiter is '\|'.|
+|booleanMethodPrefixes|is \| has \| can \| have \| will \| should|The prefixes of methods that return boolean.|yes. Delimiter is '\|'.|
+|checkPrefixedTransformMethods|true|Check return type of methods whose names start with the configured prefix (see transformMethodNames property).|no|
+|checkTransformMethods|false|Check return type of methods which contain the configured infix in their name (see transformMethodNames property).|no|
+|checkSetters|true|Check return type of setters.|no|
+|checkGetters|true|Check return type of getters.|no|
+|checkBooleanMethod|true|Check method names and types for inconsistent naming.|no|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/LinguisticNaming" />
+```
+
 ## LocalHomeNamingConvention
 
 **Since:** PMD 4.0
@@ -979,7 +1169,7 @@ if (foo) {  // preferred approach
 The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration
 [
     (
@@ -1015,7 +1205,7 @@ public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}  // non-s
 The Local Interface of a Session EJB should be suffixed by 'Local'.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration
 [
     (
@@ -1068,6 +1258,54 @@ public class Bar {
 <rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal" />
 ```
 
+## LocalVariableNamingConventions
+
+**Since:** PMD 6.6.0
+
+**Priority:** High (1)
+
+Configurable naming conventions for local variable declarations and other locally-scoped
+variables. This rule reports variable declarations which do not match the regex that applies to their
+specific kind (e.g. final variable, or catch-clause parameter). Each regex can be configured through
+properties.
+
+By default this rule uses the standard Java naming convention (Camel case).
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/LocalVariableNamingConventionsRule.java)
+
+**Example(s):**
+
+``` java
+class Foo {
+                void bar() {
+                    int localVariable = 1; // This is in camel case, so it's ok
+                    int local_variable = 1; // This will be reported unless you change the regex
+
+                    final int i_var = 1; // final local variables can be configured separately
+
+                    try {
+                        foo();
+                    } catch (IllegalArgumentException e_illegal) {
+                        // exception block parameters can be configured separately
+                    }
+
+                }
+            }
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|localVarPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to non-final local variable names|no|
+|finalVarPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to final local variable names|no|
+|catchParameterPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to exception block parameter names|no|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/LocalVariableNamingConventions" />
+```
+
 ## LongVariable
 
 **Since:** PMD 0.3
@@ -1077,7 +1315,7 @@ public class Bar {
 Fields, formal arguments, or local variable names that are too long can make the code difficult to follow.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //VariableDeclaratorId[string-length(@Image) > $minimum]
 ```
 
@@ -1115,7 +1353,7 @@ public class Something {
 The EJB Specification states that any MessageDrivenBean or SessionBean should be suffixed by 'Bean'.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //TypeDeclaration/ClassOrInterfaceDeclaration
 [
     (
@@ -1200,11 +1438,11 @@ public class Foo {
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
 |checkNativeMethods|true|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Check native methods|no|
-|methodPattern|[a-z][a-zA-Z0-9]+|Regex which applies to instance method names|no|
-|staticPattern|[a-z][a-zA-Z0-9]+|Regex which applies to static method names|no|
-|nativePattern|[a-z][a-zA-Z0-9]+|Regex which applies to native method names|no|
-|junit3TestPattern|test[A-Z0-9][a-zA-Z0-9]*|Regex which applies to JUnit 3 test method names|no|
-|junit4TestPattern|[a-z][a-zA-Z0-9]+|Regex which applies to JUnit 4 test method names|no|
+|methodPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to instance method names|no|
+|staticPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to static method names|no|
+|nativePattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to native method names|no|
+|junit3TestPattern|test\[A-Z0-9\]\[a-zA-Z0-9\]\*|Regex which applies to JUnit 3 test method names|no|
+|junit4TestPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to JUnit 4 test method names|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1213,6 +1451,8 @@ public class Foo {
 
 ## MIsLeadingVariableName
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 3.4
 
 **Priority:** Medium (3)
@@ -1220,7 +1460,7 @@ public class Foo {
 Detects when a non-field has a name starting with 'm_'.  This usually denotes a field and could be confusing.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //VariableDeclaratorId
 [starts-with(@Image, 'm_')]
 [not (../../../FieldDeclaration)]
@@ -1251,7 +1491,7 @@ public class Foo {
 Detects when a class or interface does not have a package definition.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[count(preceding::PackageDeclaration) = 0]
 ```
 
@@ -1305,7 +1545,7 @@ public class OneReturnOnly1 {
 Detects when a package definition contains uppercase characters.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PackageDeclaration/Name[lower-case(@Image)!=@Image]
 ```
 
@@ -1364,7 +1604,7 @@ public int getLength(String[] strings) {
 Remote Interface of a Session EJB should not have a suffix.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration
 [
     (
@@ -1408,7 +1648,7 @@ public interface BadSuffixBean extends javax.ejb.EJBObject {}
 A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration
 [
     (
@@ -1444,7 +1684,7 @@ public interface MissingProperSuffix extends javax.ejb.EJBHome {}   // non-stand
 Short Classnames with fewer than e.g. five characters are not recommended.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[string-length(@Image) < $minimum]
 ```
 
@@ -1475,7 +1715,7 @@ public class Foo {
 Method names that are very short are not helpful to the reader.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclarator[string-length(@Image) < $minimum]
 ```
 
@@ -1508,7 +1748,7 @@ public class ShortMethod {
 Fields, local variables, or parameter names that are very short are not helpful to the reader.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //VariableDeclaratorId[string-length(@Image) < $minimum]
  (: ForStatement :)
  [not(../../..[self::ForInit])]
@@ -1550,6 +1790,8 @@ public class Something {
 
 ## SuspiciousConstantFieldName
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 2.0
 
 **Priority:** Medium (3)
@@ -1558,7 +1800,7 @@ Field names using all uppercase characters - Sun's Java naming conventions indic
 be declared as final.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceDeclaration[@Interface='false']
  /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
   [@Final='false']
@@ -1593,7 +1835,7 @@ Readers of your code (including you, a few months after you wrote it) will not k
 which class a static member comes from (Sun 1.5 Language Guide).
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 .[count(ImportDeclaration[@Static = 'true']) > $maximumStaticImports]
 ```
 
@@ -1832,12 +2074,13 @@ public class Foo {
 Useless parentheses should be removed.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)>1]
   /PrimaryPrefix/Expression
     [not(./CastExpression)]
-    [not(./ConditionalExpression[@Ternary='true'])]
+    [not(./ConditionalExpression)]
     [not(./AdditiveExpression)]
+    [not(./AssignmentOperator)]
 |
 //Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)=1]
   /PrimaryPrefix/Expression
@@ -1846,13 +2089,13 @@ Useless parentheses should be removed.
     count(*)=1 and
     count(./CastExpression)=0 and
     count(./EqualityExpression/MultiplicativeExpression)=0 and
-    count(./ConditionalExpression[@Ternary='true'])=0 and
+    count(./ConditionalExpression)=0 and
     count(./ConditionalOrExpression)=0]
 |
 //Expression/ConditionalOrExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
     not(./CastExpression) and
-    not(./ConditionalExpression[@Ternary='true']) and
+    not(./ConditionalExpression) and
     not(./EqualityExpression/MultiplicativeExpression)]
 |
 //Expression/ConditionalExpression/PrimaryExpression/PrimaryPrefix/Expression[
@@ -1914,13 +2157,13 @@ public class Foo {
 
 **Priority:** Medium (3)
 
-Look for qualified this usages in the same class.
+Reports qualified this usages in the same class.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //PrimaryExpression
 [PrimaryPrefix/Name[@Image]]
-[PrimarySuffix[@Arguments='false']]
+[PrimarySuffix[@Arguments='false' and @ArrayDereference = 'false']]
 [not(PrimarySuffix/MemberSelector)]
 [ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass='false']]
 /PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image]
@@ -1960,7 +2203,65 @@ public class Foo {
 <rule ref="category/java/codestyle.xml/UselessQualifiedThis" />
 ```
 
+## UseUnderscoresInNumericLiterals
+
+**Since:** PMD 6.10.0
+
+**Priority:** Medium (3)
+
+**Minimum Language Version:** Java 1.7
+
+Since Java 1.7, numeric literals can use underscores to separate digits. This rule enforces that
+numeric literals above a certain length use these underscores to increase readability.
+
+The rule only supports decimal (base 10) literals for now. The acceptable length under which literals
+are not required to have underscores is configurable via a property. Even under that length, underscores
+that are misplaced (not making groups of 3 digits) are reported.
+
+**This rule is defined by the following XPath expression:**
+``` xpath
+//Literal[
+     @IntLiteral = true()
+  or @LongLiteral = true()
+  or @DoubleLiteral = true()
+  or @FloatLiteral = true()
+]
+ (: Filter out literals in base other than 10 :)
+ [not(matches(@Image, "^0[^.]"))]
+ (: Filter out ignored field name :)
+ [not(ancestor::VariableDeclarator[1][@Name = 'serialVersionUID'])]
+ [
+   some $num in tokenize(@Image, "[.dDfFlLeE+\-]")
+   satisfies not(
+                  string-length($num) <= $acceptableDecimalLength
+                    and not(contains($num,"_"))
+                  or matches($num, "^[0-9]{1,3}(_[0-9]{3})*$")
+                )
+ ]
+```
+
+**Example(s):**
+
+``` java
+public class Foo {
+    private int num = 1000000; // should be 1_000_000
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|acceptableDecimalLength|4|Length under which literals in base 10 are not required to have underscores|no|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/codestyle.xml/UseUnderscoresInNumericLiterals" />
+```
+
 ## VariableNamingConventions
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** PMD 1.2
 
@@ -2017,7 +2318,7 @@ formatting or indentation is lost then it becomes difficult to separate the code
 controlled from the rest.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //WhileStatement[not(Statement/Block)]
 ```
 

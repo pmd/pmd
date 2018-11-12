@@ -8,6 +8,9 @@
         <![CDATA[
         public class Complicated {
 
+          int x = 0, y = 1, z = 2, t = 2;
+          boolean a = false, b = true, c = false, d = true;
+
           public void exception() {
             try {
               int k = 0;
@@ -20,49 +23,64 @@
             }
           }
 
+          public void aSwitch(int x) {
+            switch (x) {
+            case 1:
+              x = 2;
+              break;
 
-          public void example() {
-            int x = 0, y = 1, z = 2, t = 2;
-            boolean a = false, b = true, c = false, d = true;
+            case 2:
+            case 3:
+              x = 2;
+              break;
+
+            default:
+              x = 2;
+              break;
+            }
+          }
+
+          public void aDo(int x, int y) {
+            do {
+              x++;
+              y--;
+            } while (x != y);
+          }
+
+          public void anAssert() {
+            assert a : "fail";
+            assert b || a : "fail";
+          }
+
+          public void aFor() {
+            for (int n = 0; n < t; n++) {
+              x = 2;
+            }
+          }
+
+          public void aWhile() {
+            while (z < y) {
+              x = 2;
+            }
+          }
+
+          public void ternaries() {
+            x = a ? z : y == z && true ? y : x;
+          }
+
+
+          public void booleans() {
 
             if (a && b || b && d) {
-              if (y == z) {
-                x = 2;
-              } else if (y == t && !d) {
-                x = a ? z : b ? y : x;
-              } else {
-                x = 2;
-              }
+              ternaries(x, y, z, a);
             } else if (c && d) {
-              assert a : "fail";
-              while (z < y) {
-                x = 2;
-              }
+              aFor(t, x);
             } else if (a && !b) {
-              for (int n = 0; n < t; n++) {
-                x = 2;
-              }
+              aWhile(x, y, z);
             } else if (b) {
-              assert b || a : "fail";
-              do {
-                x++;
-                y--;
-              } while (b);
+              aDo(x, y);
             } else {
-              switch (x) {
-              case 1:
-                x = 2;
-                break;
-
-              case 2:
-              case 3:
-                x = 2;
-                break;
-
-              default:
-                x = 2;
-                break;
-              }
+              aSwitch(x);
             }
           }
         }
@@ -71,10 +89,16 @@
 
     <test-code>
         <description>Full example - No options</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>8</expected-problems>
         <expected-messages>
             <message>'Complicated#exception()' has value 4.</message>
-            <message>'Complicated#example()' has value 23.</message>
+            <message>'Complicated#aSwitch(int)' has value 4.</message>
+            <message>'Complicated#aDo(int, int)' has value 2.</message>
+            <message>'Complicated#anAssert()' has value 1.</message>
+            <message>'Complicated#aFor()' has value 2.</message>
+            <message>'Complicated#aWhile()' has value 2.</message>
+            <message>'Complicated#ternaries()' has value 4.</message>
+            <message>'Complicated#booleans()' has value 10.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -82,10 +106,16 @@
     <test-code>
         <description>Full example - Ignore boolean path option</description>
         <rule-property name="metricOptions">ignoreBooleanPaths</rule-property>
-        <expected-problems>2</expected-problems>
+        <expected-problems>8</expected-problems>
         <expected-messages>
             <message>'Complicated#exception()' has value 4.</message>
-            <message>'Complicated#example()' has value 14.</message>
+            <message>'Complicated#aSwitch(int)' has value 3.</message>
+            <message>'Complicated#aDo(int, int)' has value 2.</message>
+            <message>'Complicated#anAssert()' has value 1.</message>
+            <message>'Complicated#aFor()' has value 2.</message>
+            <message>'Complicated#aWhile()' has value 2.</message>
+            <message>'Complicated#ternaries()' has value 3.</message>
+            <message>'Complicated#booleans()' has value 5.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -93,10 +123,16 @@
     <test-code>
         <description>Full example - Consider assert option</description>
         <rule-property name="metricOptions">considerAssert</rule-property>
-        <expected-problems>2</expected-problems>
+        <expected-problems>8</expected-problems>
         <expected-messages>
             <message>'Complicated#exception()' has value 4.</message>
-            <message>'Complicated#example()' has value 28.</message>
+            <message>'Complicated#aSwitch(int)' has value 4.</message>
+            <message>'Complicated#aDo(int, int)' has value 2.</message>
+            <message>'Complicated#anAssert()' has value 6.</message>
+            <message>'Complicated#aFor()' has value 2.</message>
+            <message>'Complicated#aWhile()' has value 2.</message>
+            <message>'Complicated#ternaries()' has value 4.</message>
+            <message>'Complicated#booleans()' has value 10.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -104,10 +140,16 @@
     <test-code>
         <description>Full example - considerAssert + ignoreBooleanPaths</description>
         <rule-property name="metricOptions">ignoreBooleanPaths|considerAssert</rule-property>
-        <expected-problems>2</expected-problems>
+        <expected-problems>8</expected-problems>
         <expected-messages>
             <message>'Complicated#exception()' has value 4.</message>
-            <message>'Complicated#example()' has value 18.</message>
+            <message>'Complicated#aSwitch(int)' has value 3.</message>
+            <message>'Complicated#aDo(int, int)' has value 2.</message>
+            <message>'Complicated#anAssert()' has value 5.</message>
+            <message>'Complicated#aFor()' has value 2.</message>
+            <message>'Complicated#aWhile()' has value 2.</message>
+            <message>'Complicated#ternaries()' has value 3.</message>
+            <message>'Complicated#booleans()' has value 5.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -228,17 +270,36 @@
     </test-code>
 
     <test-code>
-        <description>Test consider assert option with ternary</description>
-        <rule-property name="metricOptions">considerAssert</rule-property>
+        <description>Ternary expression adds a single code path, refs #1217</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo#bar()' has value 5.</message>
+            <message>'Foo#bar()' has value 2.</message>
         </expected-messages>
         <code>
             <![CDATA[
             class Foo {
               void bar() {
                 boolean a, b;
+                boolean c = a ? a : b;
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Test consider assert option with ternary</description>
+        <rule-property name="metricOptions">considerAssert</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#bar()' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              void bar() {
+                boolean a, b;
+                // + 2 for the assert, + 1 for the ternary
                 assert a : b ? "foo" : "bar";
               }
             }
@@ -313,5 +374,24 @@
         <code-ref id="lambdas"/>
     </test-code>
 
+    <test-code>
+        <description>Foreach loops count one, and add no boolean complexity</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foreach()' has value 2.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+              class Foo {
+                void foreach() {
+                  int i = 0;
+                  for (Elt e : elts.get(i != 0 && i > 0)) {
+
+                  }
+                }
+              }
+            ]]>
+        </code>
+    </test-code>
 
 </test-data>

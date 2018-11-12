@@ -16,7 +16,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractVmRule {
     private int depth;
     private int depthLimit;
 
-    private static final IntegerProperty PROBLEM_DEPTH_DESCRIPTOR 
+    private static final IntegerProperty PROBLEM_DEPTH_DESCRIPTOR
             = IntegerProperty.named("problemDepth")
                              .desc("The if statement depth reporting threshold")
                              .range(1, 25).defaultValue(3).uiOrder(1.0f).build();
@@ -25,16 +25,19 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractVmRule {
         definePropertyDescriptor(PROBLEM_DEPTH_DESCRIPTOR);
     }
 
+    @Override
     public Object visit(ASTprocess node, Object data) {
         depth = 0;
         depthLimit = getProperty(PROBLEM_DEPTH_DESCRIPTOR);
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTIfStatement node, Object data) {
         return handleIf(node, data);
     }
 
+    @Override
     public Object visit(ASTElseIfStatement node, Object data) {
         return handleIf(node, data);
     }

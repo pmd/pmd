@@ -19,7 +19,7 @@ Block-level synchronization helps to ensure that only the code that needs synchr
 gets it.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //MethodDeclaration[@Synchronized='true']
 ```
 
@@ -63,7 +63,7 @@ Avoid using java.lang.ThreadGroup; although it is intended to be used in a threa
 it contains methods that are not thread-safe.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.ThreadGroup')]|
 //PrimarySuffix[contains(@Image, 'getThreadGroup')]
 ```
@@ -97,7 +97,7 @@ a good expertise of the Java Memory Model. Moreover, its range of action is some
 the volatile keyword should not be used for maintenance purpose and portability.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //FieldDeclaration[contains(@Volatile,'true')]
 ```
 
@@ -124,7 +124,7 @@ public class ThrDeux {
 The J2EE specification explicitly forbids the use of threads.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //ClassOrInterfaceType[@Image = 'Thread' or @Image = 'Runnable']
 ```
 
@@ -159,15 +159,15 @@ public class OtherThread implements Runnable {
 Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //StatementExpression/PrimaryExpression
 [
     PrimaryPrefix
     [
         ./Name[ends-with(@Image, '.run') or @Image = 'run']
         and substring-before(Name/@Image, '.') =//VariableDeclarator/VariableDeclaratorId/@Image
-            [../../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.Thread')]]
-        or (./AllocationExpression/ClassOrInterfaceType[typeIs('java.lang.Thread')]
+            [../../../Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]]
+        or (./AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]
         and ../PrimarySuffix[@Image = 'run'])
     ]
 ]
@@ -315,7 +315,7 @@ Since Java5 brought a new implementation of the Map designed for multi-threaded 
 perform efficient map reads without blocking other threads.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //Type[../VariableDeclarator/VariableInitializer//AllocationExpression/ClassOrInterfaceType[@Image != 'ConcurrentHashMap']]
 /ReferenceType/ClassOrInterfaceType[@Image = 'Map']
 ```
@@ -349,7 +349,7 @@ Thread.notify() awakens a thread monitoring the object. If more than one thread 
 one is chosen.  The thread chosen is arbitrary; thus its usually safer to call notifyAll() instead.
 
 **This rule is defined by the following XPath expression:**
-```
+``` xpath
 //StatementExpression/PrimaryExpression
 [PrimarySuffix/Arguments[@ArgumentCount = '0']]
 [

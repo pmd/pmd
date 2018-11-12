@@ -12,6 +12,7 @@ public class ASTForEachStatement extends AbstractApexNode<ForEachStatement> {
         super(forEachStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
