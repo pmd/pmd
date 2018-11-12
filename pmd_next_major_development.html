@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Since version 6.0.0, PMD is enhanced with the ability to compute code metrics on Java and Apex source (the so-called Metrics Framework). This framework provi...">
-<meta name="keywords" content="extendinguserdocsmetrics,  ">
-<title>Using and defining code metrics for custom rules | PMD Source Code Analyzer</title>
+<meta name="description" content="">
+<meta name="keywords" content=" changelog, release notes, deprecation, api changes">
+<title>PMD 7.0.0 development | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
 
@@ -140,7 +140,7 @@
                                 searchInput: document.getElementById('search-input'),
                                 resultsContainer: document.getElementById('results-container'),
                                 dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Using and defining code metrics for custom rules">{title}</a></li>',
+                                searchResultTemplate: '<li><a href="{url}" title="PMD 7.0.0 development">{title}</a></li>',
                     noResultsText: 'No results found.',
                             limit: 10,
                             fuzzy: true,
@@ -214,7 +214,7 @@
             
 
                 
-                <li><a href="pmd_next_major_development.html">PMD 7.0.0 development</a></li>
+                <li class="active"><a href="pmd_next_major_development.html">PMD 7.0.0 development</a></li>
                 
 
             
@@ -358,7 +358,7 @@
                         
                         
                         
-                        <li class="active"><a href="pmd_userdocs_extending_metrics_howto.html">Using and defining code metrics</a></li>
+                        <li><a href="pmd_userdocs_extending_metrics_howto.html">Using and defining code metrics</a></li>
                         
                         
                         
@@ -1237,15 +1237,13 @@
         <!-- Content Column -->
         <div class="col-md-9" id="tg-sb-content">
             <div class="post-header">
-   <h1 class="post-title-main">Using and defining code metrics for custom rules</h1>
+   <h1 class="post-title-main">PMD 7.0.0 development</h1>
 </div>
 
 
 
 <div class="post-content">
 
-   
-    <div class="summary">Since version 6.0.0, PMD is enhanced with the ability to compute code metrics on Java and Apex source (the so-called Metrics Framework). This framework provides developers with a straightforward interface to use code metrics in their rules, and to extend the framework with their own custom metrics.</div>
    
 
     
@@ -1270,351 +1268,245 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
         
         
 
-    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/extending/metrics_howto.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/next_major_development.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
 
     
 
-  <h2 id="using-the-metrics-framework">Using the metrics framework</h2>
+  <p>We’re excited to bring you the next major version of PMD! Here are the major features and changes we’re working on.
+To give us feedback or to suggest a new feature, drop us a line on <a href="https://gitter.im/pmd/pmd">Gitter</a>!</p>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> The following explains how to use the Java metrics framework. The Apex framework 
-differs only by the name of its classes.</div>
+<h2 id="new-features">New Features</h2>
 
-<p>In PMD’s Metrics framework, a metric is an operation that can be carried out on nodes of a certain type and produces
-a numeric result. In the Java framework, metrics can be computed on operation declaration nodes (constructor and
-method declaration), and type declaration nodes (class, interface, enum, and annotation declarations). A metric
-object in the framework can only handle either types or operations, but not both.</p>
+<p>TODO</p>
 
-<p>PMD ships with a library of already implemented metrics. These metrics are referenced by <code class="highlighter-rouge">MetricKey</code> objects,
-which are listed in two public enums: <code class="highlighter-rouge">JavaClassMetricKey</code> and <code class="highlighter-rouge">JavaOperationMetricKey</code>. Metric keys wrap a metric, and
-know which type of node their metric can be computed on. That way, you cannot compute an operation metric on a class 
-declaration node. Metrics that can be computed on both operation and type declarations (e.g. NCSS) have one metric key in
-each enum.</p>
+<h2 id="java-grammar-changes">Java grammar changes</h2>
 
-<h2 id="for-xpath-rules">For XPath rules</h2>
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Current plans are listed <a href="https://github.com/pmd/pmd/labels/in%3Aast">here</a> and in particular <a href="https://github.com/pmd/pmd/issues/1019">here</a></div>
 
-<p>XPath rules can compute metrics using the <code class="highlighter-rouge">metric</code> function. This function takes a single <strong>string argument</strong>,
-which is the name of the metric key as defined in  <code class="highlighter-rouge">JavaClassMetricKey</code> or <code class="highlighter-rouge">JavaOperationMetricKey</code>. The metric
- will be <strong>computed on the context node</strong>.</p>
+<h2 id="new-api-support-guidelines">New API support guidelines</h2>
 
-<p>The function will throw an exception in the following cases:</p>
-<ul>
-  <li>The context node is neither an instance of <code class="highlighter-rouge">ASTAnyTypeDeclaration</code> or <code class="highlighter-rouge">ASTMethodOrConstructorDeclaration</code>, that is,
-it’s not one of <code class="highlighter-rouge">ClassOrInterfaceDeclaration</code>, <code class="highlighter-rouge">EnumDeclaration</code>, <code class="highlighter-rouge">AnnotationDeclaration</code>, <code class="highlighter-rouge">MethodDeclaration</code>,
-or <code class="highlighter-rouge">ConstructorDeclaration</code>.</li>
-  <li>The metric key does not exist (the name is case insensitive) or is not defined for the type of the context node.</li>
-</ul>
+<h3 id="whats-new">What’s new</h3>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> More advanced features of the API are not accessible yet, but may be supported in the future.
-           The API is thus subject to change.</div>
+<p>Until now, all released public members and types were implicitly considered part
+of PMD’s public API, including inheritance-specific members (protected members, abstract methods).
+We have maintained those APIs with the goal to preserve full binary compatibility between minor releases,
+only breaking those APIs infrequently, for major releases.</p>
 
-<h3 id="examples">Examples</h3>
+<p>In order to allow PMD to move forward at a faster pace, this implicit contract will
+be invalidated with PMD 7.0.0. We now introduce more fine-grained distinctions between
+the type of compatibility support we guarantee for our libraries, and ways to make
+them explicit to clients of PMD.</p>
 
-<ul>
-  <li><code class="highlighter-rouge">//ClassOrInterfaceDeclaration[metric('NCSS') &gt; 200]</code></li>
-  <li><code class="highlighter-rouge">//MethodDeclaration[metric('CYCLO') &gt; 10 and metric('NCSS') &gt; 20]</code></li>
-  <li><code class="highlighter-rouge">//ClassOrInterfaceDeclaration[metric('CYCLO') &gt; 50]</code>: IllegalArgumentException!
-CYCLO’s only defined for methods and constructors.</li>
-</ul>
+<h4 id="internal-packages-and-internalapi-annotation"><code class="highlighter-rouge">.internal</code> packages and <code class="highlighter-rouge">@InternalApi</code> annotation</h4>
 
-<h2 id="for-java-rules">For Java Rules</h2>
+<p><em>Internal API</em> is meant for use <em>only</em> by the main PMD codebase. Internal types and methods
+may be modified in any way, or even removed, at any time.</p>
 
-<p>The static façade class <code class="highlighter-rouge">JavaMetrics</code> is the single entry point to compute metrics in the Java framework.</p>
+<p>Any API in a package that contains an <code class="highlighter-rouge">.internal</code> segment is considered internal.
+The <code class="highlighter-rouge">@InternalApi</code> annotation will be used for APIs that have to live outside of
+these packages, e.g. methods of a public type that shouldn’t be used outside of PMD (again,
+these can be removed anytime).</p>
 
-<p>This class provides the method <code class="highlighter-rouge">get</code> and its overloads. The following sections describes the interface of this class.</p>
+<h4 id="reservedsubclassing"><code class="highlighter-rouge">@ReservedSubclassing</code></h4>
 
-<h3 id="basic-usage">Basic usage</h3>
+<p>Types marked with the <code class="highlighter-rouge">@ReservedSubclassing</code> annotation are only meant to be subclassed
+by classes within PMD. As such, we may add new abstract methods, or remove protected methods,
+at any time. All published public members remain supported. The annotation is <em>not</em> inherited, which
+means a reserved interface doesn’t prevent its implementors to be subclassed.</p>
 
-<p>The simplest overloads of <code class="highlighter-rouge">JavaMetrics.get</code> take two parameters: <strong>a <code class="highlighter-rouge">MetricKey</code> and a node of the corresponding type.</strong>
-Say you want to write a rule to report methods that have a high cyclomatic complexity. In your rule’s visitor, you
-can get the value of Cyclo for a method node like so:</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="n">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-  <span class="kt">int</span> <span class="n">cyclo</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">method</span><span class="o">);</span>
-  <span class="k">if</span> <span class="o">(</span><span class="n">cyclo</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span>
-    <span class="c1">// add violation</span>
-  <span class="o">}</span>
-  <span class="k">return</span> <span class="n">data</span><span class="o">;</span>
-<span class="o">}</span>
-</code></pre></div></div>
+<h4 id="experimental"><code class="highlighter-rouge">@Experimental</code></h4>
 
-<p>The same goes for class metrics: you select one among <code class="highlighter-rouge">JavaClassMetricKey</code>’s constants and pass it along with the node
-to <code class="highlighter-rouge">JavaMetrics.get</code>.</p>
+<p>APIs marked with the <code class="highlighter-rouge">@Experimental</code> annotation at the class or method level are subject to change.
+They can be modified in any way, or even removed, at any time. You should not use or rely
+ on them in any production code. They are purely to allow broad testing and feedback.</p>
 
-<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> A specific base rule class (<code class="highlighter-rouge">AbstractJavaMetricsRule</code>) exists
-           to e.g. check constructors and method nodes completely alike. This comes
-           in handy for metrics, as they usually don’t make the distinction</div>
+<h4 id="deprecated"><code class="highlighter-rouge">@Deprecated</code></h4>
 
-<h3 id="capability-checking">Capability checking</h3>
+<p>APIs marked with the <code class="highlighter-rouge">@Deprecated</code> annotation at the class or method level will remain supported
+until the next major release but it is recommended to stop using them.</p>
 
-<p>Metrics are not necessarily computable on any node of the type they handle. For example, Cyclo cannot be computed on
-abstract methods. Metric keys provides a <code class="highlighter-rouge">supports(Node)</code> boolean method to find out if the metric can be computed on
-the specified node. <strong>If the metric cannot be computed on the given node, <code class="highlighter-rouge">JavaMetrics.get</code> will return <code class="highlighter-rouge">Double.NaN</code> .</strong>
-If you’re concerned about that, you can condition your call on whether the node is supported or not:</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="n">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-  <span class="k">if</span> <span class="o">(</span><span class="n">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">.</span><span class="na">supports</span><span class="o">(</span><span class="n">node</span><span class="o">))</span> <span class="o">{</span>
-    <span class="kt">int</span> <span class="n">cyclo</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">method</span><span class="o">);</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">cyclo</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span>
-      <span class="c1">// add violation</span>
-    <span class="o">}</span>
-    <span class="k">return</span> <span class="n">data</span><span class="o">;</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div></div>
+<h3 id="the-transition">The transition</h3>
 
-<h3 id="metric-options">Metric options</h3>
+<p><em>All currently supported APIs will remain so until 7.0.0</em>. All APIs that are to be moved to
+<code class="highlighter-rouge">.internal</code> packages or hidden will be tagged <code class="highlighter-rouge">@InternalApi</code> before that major release, and
+the breaking API changes will be performed in 7.0.0.</p>
 
-<p>Some metrics define options that can be used to slightly modify the computation. You’ll typically see these options
-gathered inside an enum in the implementation class of the metric, for example <code class="highlighter-rouge">CycloMetric.CycloOption</code>. They’re
-also documented on the <a href="pmd_java_metrics_index.html">index of metrics</a>.</p>
+<h2 id="planned-api-removals">Planned API removals</h2>
 
-<p>To use options with a metric, you must first bundle them into a <code class="highlighter-rouge">MetricOptions</code> object. <code class="highlighter-rouge">MetricOptions</code> provides the
-utility method <code class="highlighter-rouge">ofOptions</code> to get a <code class="highlighter-rouge">MetricOptions</code> bundle from a collection or with varargs parameters. You can then
-pass this bundle as a parameter to <code class="highlighter-rouge">JavaMetrics.get</code>:</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="n">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-  <span class="kt">int</span> <span class="n">cyclo</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">method</span><span class="o">,</span>
-                                    <span class="n">MetricOptions</span><span class="o">.</span><span class="na">ofOptions</span><span class="o">(</span><span class="n">CycloOptions</span><span class="o">.</span><span class="na">IGNORE_BOOLEAN_PATHS</span><span class="o">));</span>
-  <span class="k">if</span> <span class="o">(</span><span class="n">cyclo</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span>
-      <span class="c1">// add violation</span>
-  <span class="o">}</span>
-    <span class="k">return</span> <span class="n">data</span><span class="o">;</span>
-<span class="o">}</span>
-</code></pre></div></div>
+<h3 id="list-of-currently-deprecated-apis">List of currently deprecated APIs</h3>
 
-<p>The version of <code class="highlighter-rouge">MetricOptions.ofOptions</code> using a collection is useful when you’re building a <code class="highlighter-rouge">MetricOptions</code> from eg
-the value of an <code class="highlighter-rouge">EnumeratedMultiProperty</code>, which gives users control of the options they use. See
-<a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/CyclomaticComplexityRule.java#L35">CyclomaticComplexityRule</a>
-for an example usage.</p>
+<div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle"></i> <b>Warning:</b> This list is not exhaustive. The ultimate reference is whether
+an API is tagged as <code class="highlighter-rouge">@Deprecated</code> or not in the latest minor release. During the development of 7.0.0,
+we may decide to remove some APIs that were not tagged as deprecated, though we’ll try to avoid it.</div>
 
-<h3 id="result-options">Result options</h3>
-
-<p>The Metrics API also gives you the possibility to aggregate the result of an operation metric on all operations of a
-class very simply. You can for example get the highest value of the metric over a class that way:</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="n">ASTClassOrInterfaceDeclaration</span> <span class="n">clazz</span><span class="o">,</span> <span class="n">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-  <span class="kt">int</span> <span class="n">highest</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">clazz</span><span class="o">,</span>
-                                      <span class="n">ResultOption</span><span class="o">.</span><span class="na">HIGHEST</span><span class="o">);</span>
-  <span class="k">if</span> <span class="o">(</span><span class="n">highest</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span>
-      <span class="c1">// add violation</span>
-  <span class="o">}</span>
-    <span class="k">return</span> <span class="n">data</span><span class="o">;</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<p>Notice that <strong>we use an operation metric and a class node</strong>. The <code class="highlighter-rouge">ResultOption</code> parameter controls what result will be
-computed: you can choose among <code class="highlighter-rouge">HIGHEST</code>, <code class="highlighter-rouge">SUM</code> and <code class="highlighter-rouge">AVERAGE</code>. You can use metric options together with a result
-option too.</p>
-
-<h3 id="complete-use-case">Complete use case</h3>
-
-<p>The following is a sample code for a rule reporting methods with a cyclomatic
-complexity over 10 and classes with a total cyclo over 50. A metric option can be
-user-configured with a rule property. More complete examples can be found in
-<a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/CyclomaticComplexityRule.java#L35">CyclomaticComplexityRule</a>,
-<a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/NcssCountRule.java#L30">NcssCountRule</a>,
-or <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/GodClassRule.java#L24">GodClassRule</a>.</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CycloRule</span> <span class="kd">extends</span> <span class="n">AbstractJavaMetricsRule</span> <span class="o">{</span>
-
-  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">BooleanProperty</span> <span class="n">COUNT_BOOLEAN_PATHS</span>
-      <span class="o">=</span> <span class="n">BooleanProperty</span><span class="o">.</span><span class="na">named</span><span class="o">(</span><span class="s">"countBooleanPaths"</span><span class="o">)</span>
-                       <span class="o">.</span><span class="na">desc</span><span class="o">(</span><span class="s">"Count boolean paths"</span><span class="o">)</span>
-                       <span class="o">.</span><span class="na">defaultValue</span><span class="o">(</span><span class="kc">true</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
-
-  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">MetricOptions</span> <span class="n">options</span><span class="o">;</span>
-
-  <span class="kd">public</span> <span class="nf">CycloRule</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">definePropertyDescriptor</span><span class="o">(</span><span class="n">COUNT_BOOLEAN_PATHS</span><span class="o">);</span>
-  <span class="o">}</span>
-
-  <span class="nd">@Override</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="n">ASTCompilationUnit</span> <span class="n">node</span><span class="o">,</span> <span class="n">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">options</span> <span class="o">=</span> <span class="n">getProperty</span><span class="o">(</span><span class="n">COUNT_BOOLEAN_PATHS</span><span class="o">)</span>
-              <span class="o">?</span> <span class="n">MetricOptions</span><span class="o">.</span><span class="na">ofOptions</span><span class="o">(</span><span class="n">CycloOptions</span><span class="o">.</span><span class="na">IGNORE_BOOLEAN_PATHS</span><span class="o">)</span>
-              <span class="o">:</span> <span class="n">MetricOptions</span><span class="o">.</span><span class="na">emptyOptions</span><span class="o">();</span>
-  <span class="o">}</span>
-
-  <span class="nd">@Override</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="n">ASTAnyTypeDeclaration</span> <span class="n">clazz</span><span class="o">,</span> <span class="n">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-    <span class="kt">int</span> <span class="n">total</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">clazz</span><span class="o">,</span>
-                                      <span class="n">options</span><span class="o">,</span> <span class="n">ResultOption</span><span class="o">.</span><span class="na">SUM</span><span class="o">);</span>
-
-    <span class="k">if</span> <span class="o">(</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="o">)</span> <span class="o">{</span>
-     <span class="c1">// add violation</span>
-    <span class="o">}</span>
-
-    <span class="k">return</span> <span class="n">data</span><span class="o">;</span>
-  <span class="o">}</span>
-
-  <span class="nd">@Override</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="n">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-    <span class="kt">int</span> <span class="n">cyclo</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">method</span><span class="o">,</span>
-                                      <span class="n">options</span><span class="o">);</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">cyclo</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// this is safe if the node is not supported, as (Double.NaN &gt; 10) == false</span>
-      <span class="c1">// add violation</span>
-    <span class="o">}</span>
-    <span class="k">return</span> <span class="n">data</span><span class="o">;</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<h2 id="available-metrics">Available metrics</h2>
-
-<p>There are already many metrics ready to use. We maintain the following documentation
-pages to describe them all, including their usage and options:</p>
-<ul>
-  <li><a href="pmd_java_metrics_index.html">Java metrics</a></li>
-  <li><a href="pmd_apex_metrics_index.html">Apex metrics</a></li>
-</ul>
-
-<h2 id="writing-custom-metrics">Writing custom metrics</h2>
-
-<p>You can use the framework to customize the existing metrics at will, or define
-new ones quite easily. Here’s some info to get you started. Again, the examples are for
-the Java framework but it’s symmetrical in the Apex framework.</p>
-
-<h3 id="the-really-short-guide">The really short guide</h3>
-
-<ol>
-  <li>Determine whether your metric is an operation metric or a class metric and
-<strong>extend the correct base class</strong> (<code class="highlighter-rouge">AbstractJavaClassMetric</code> or
-<code class="highlighter-rouge">AbstractJavaOperationMetric</code>)</li>
-  <li>You’re immediately prompted by your IDE to <strong>implement the <code class="highlighter-rouge">computeFor</code> method</strong>.
-This method takes a node of the type you want to handle, a bundle of options,
-and returns the result of the metric.</li>
-  <li>Optionally specify a predicate to check if a node can be handled by <strong>overriding
-the <code class="highlighter-rouge">supports</code> method</strong>.</li>
-  <li>Optionally define options (implementing <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/metrics/MetricOption.java"><code class="highlighter-rouge">MetricOption</code></a>)
-and handle them as you see fit in your <code class="highlighter-rouge">computeFor</code> method</li>
-  <li><strong>Create a metric key</strong> using <code class="highlighter-rouge">MetricKeyUtil</code>’s <code class="highlighter-rouge">of</code> method, specifying a name
-for your metric and an instance of your metric. You’re done and can use your
-metric key as if it were a standard one.</li>
-</ol>
-
-<h3 id="best-practices">Best practices</h3>
+<h4 id="680">6.8.0</h4>
 
 <ul>
-  <li><strong>Metrics should be stateless</strong>. In any case, instances of the same metric class
-are considered <code class="highlighter-rouge">equals</code>. The same instance of your metric will be used to
-compute the metric on the AST of different nodes so it should really be
-“functionnally pure”. That rule also makes you keep it simple and understandable
-which is nice.</li>
-  <li><strong>Implementation patterns:</strong> You can implement your <code class="highlighter-rouge">computeFor</code> method as you
-like it. But most metrics in our library are implemented following a few
-patterns you may want to look at:
-    <ul>
-      <li>
-        <p><em>Visitor metrics:</em> Those metrics use one or more AST visitor to compute their
-value. That’s especially good to implement metrics that count some kind of node,
-e.g. <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NpathMetric.java">NPath complexity</a>
-or <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NcssMetric.java">NCSS</a>.
-Additionnally, it makes your metric more easily generalisable to other node types.</p>
-
-        <div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> All visitor metrics shipped with PMD define their visitor
-          publicly, so that you may extend it to override its behaviour
-          easily. You can find them in the package <code class="highlighter-rouge">n.s.pmd.lang.&lt;name&gt;.metrics.impl.visitors</code>.</div>
-      </li>
-      <li>
-        <p><em>Signature matching metrics:</em> That’s even more straightforward when you want
-to count the number of methods or fields that match a specific signature, e.g.
-public static final fields. Basically a signature is an object that describes
-a field or method, with info about its modifers and other node-specific info.
- <code class="highlighter-rouge">AbstractJavaClassMetric</code> has a few methods that allow you to count signatures
-  directly, see e.g. the metrics <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NopaMetric.java">NOPA</a>
-  and <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/WocMetric.java">WOC</a>.</p>
-      </li>
-    </ul>
+  <li>
+    <p>A couple of methods and fields in <code class="highlighter-rouge">net.sourceforge.pmd.properties.AbstractPropertySource</code> have been
+deprecated, as they are replaced by already existing functionality or expose internal implementation
+details: <code class="highlighter-rouge">propertyDescriptors</code>, <code class="highlighter-rouge">propertyValuesByDescriptor</code>,
+<code class="highlighter-rouge">copyPropertyDescriptors()</code>, <code class="highlighter-rouge">copyPropertyValues()</code>, <code class="highlighter-rouge">ignoredProperties()</code>, <code class="highlighter-rouge">usesDefaultValues()</code>,
+<code class="highlighter-rouge">useDefaultValueFor()</code>.</p>
+  </li>
+  <li>
+    <p>Some methods in <code class="highlighter-rouge">net.sourceforge.pmd.properties.PropertySource</code> have been deprecated as well:
+<code class="highlighter-rouge">usesDefaultValues()</code>, <code class="highlighter-rouge">useDefaultValueFor()</code>, <code class="highlighter-rouge">ignoredProperties()</code>.</p>
+  </li>
+  <li>
+    <p>The class <code class="highlighter-rouge">net.sourceforge.pmd.lang.rule.AbstractDelegateRule</code> has been deprecated and will
+be removed with PMD 7.0.0. It is internally only in use by RuleReference.</p>
+  </li>
+  <li>
+    <p>The default constructor of <code class="highlighter-rouge">net.sourceforge.pmd.lang.rule.RuleReference</code> has been deprecated
+and will be removed with PMD 7.0.0. RuleReferences should only be created by providing a Rule and
+a RuleSetReference. Furthermore the following methods are deprecated: <code class="highlighter-rouge">setRuleReference()</code>,
+<code class="highlighter-rouge">hasOverriddenProperty()</code>, <code class="highlighter-rouge">usesDefaultValues()</code>, <code class="highlighter-rouge">useDefaultValueFor()</code>.</p>
   </li>
 </ul>
 
-<h3 id="capability-checking-1">Capability checking</h3>
+<h4 id="670">6.7.0</h4>
 
-<p>You may have noticed that when you extend e.g. <code class="highlighter-rouge">AbstractJavaClassMetric</code>, the
-<code class="highlighter-rouge">computeFor</code> method you’re prompted to implement takes a node of type
-<code class="highlighter-rouge">ASTAnyTypeDeclaration</code> as a parameter. That’s not a concrete node type, but
-an interface, implemented by several concrete node types. Basically that’s done
-so that class metrics are given the ability to be computed on any type
-declaration, and operation metrics on constructors and methods. Here are the
-concrete node types you can target with class and operation metrics, by language:</p>
+<ul>
+  <li>
+    <p>All classes in the package <code class="highlighter-rouge">net.sourceforge.pmd.lang.dfa.report</code> have been deprecated and will be removed
+with PMD 7.0.0. This includes the class <code class="highlighter-rouge">net.sourceforge.pmd.lang.dfa.report.ReportTree</code>. The reason is,
+that this class is very specific to Java and not suitable for other languages. It has only been used for
+<code class="highlighter-rouge">YAHTMLRenderer</code>, which has been rewritten to work without these classes.</p>
+  </li>
+  <li>
+    <p>The nodes RUNSIGNEDSHIFT and RSIGNEDSHIFT are deprecated and will be removed from the AST with PMD 7.0.0.
+These represented the operator of ShiftExpression in two cases out of three, but they’re not needed and
+make ShiftExpression inconsistent. The operator of a ShiftExpression is now accessible through
+ShiftExpression#getOperator.</p>
+  </li>
+</ul>
 
-<table>
-  <thead>
-    <tr>
-      <th>Language</th>
-      <th>Java</th>
-      <th>Apex</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Operation declaration</td>
-      <td><code class="highlighter-rouge">ASTMethodOrConstructorDeclaration</code><br />&gt;: <code class="highlighter-rouge">ASTMethodDeclaration</code>, <code class="highlighter-rouge">ASTConstructorDeclaration</code></td>
-      <td><code class="highlighter-rouge">ASTMethod</code>*</td>
-    </tr>
-    <tr>
-      <td>Type declaration</td>
-      <td><code class="highlighter-rouge">ASTAnyTypeDeclaration</code> &gt;: <code class="highlighter-rouge">ASTEnumDeclaration</code>, <br /> <code class="highlighter-rouge">ASTAnnotationDeclaration</code>, <code class="highlighter-rouge">ASTClassOrInterfaceDeclaration</code></td>
-      <td><code class="highlighter-rouge">ASTUserClassOrInterface</code> &gt;: <code class="highlighter-rouge">ASTUserClass</code>, <code class="highlighter-rouge">ASTUserInterface</code></td>
-    </tr>
-  </tbody>
-</table>
+<h4 id="650">6.5.0</h4>
 
-<p>*Apex method metrics are also applied to triggers by default (see <a href="https://github.com/pmd/pmd/pull/771">#771</a>). Finer capability checking is not available out of the box for now.</p>
+<ul>
+  <li>
+    <p>The utility class <code class="highlighter-rouge">net.sourceforge.pmd.lang.java.ast.CommentUtil</code> has been deprecated and will be removed
+with PMD 7.0.0. Its methods have been intended to parse javadoc tags. A more useful solution will be added
+around the AST node <code class="highlighter-rouge">FormalComment</code>, which contains as children <code class="highlighter-rouge">JavadocElement</code> nodes, which in
+turn provide access to the <code class="highlighter-rouge">JavadocTag</code>.</p>
 
-<p>What if you don’t want such a generalisation? The <code class="highlighter-rouge">supports</code> method lets you
-define a predicate to check that the node is supported by your metric. For example,
-if your metric can only be computed on classes, you may override the default behaviour
-like so:</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Override</span>
-<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">supports</span><span class="o">(</span><span class="n">ASTAnyTypeDeclaration</span> <span class="n">node</span><span class="o">)</span> <span class="o">{</span>
-  <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="na">getTypeKind</span><span class="o">()</span> <span class="o">==</span> <span class="n">TypeKind</span><span class="o">.</span><span class="na">CLASS</span><span class="o">;</span>
-<span class="o">}</span>
-</code></pre></div></div>
+    <p>All comment AST nodes (<code class="highlighter-rouge">FormalComment</code>, <code class="highlighter-rouge">MultiLineComment</code>, <code class="highlighter-rouge">SingleLineComment</code>) have a new method
+<code class="highlighter-rouge">getFilteredComment()</code> which provide access to the comment text without the leading <code class="highlighter-rouge">/*</code> markers.</p>
+  </li>
+  <li>
+    <p>The method <code class="highlighter-rouge">AbstractCommentRule.tagsIndicesIn()</code> has been deprecated and will be removed with
+PMD 7.0.0. It is not very useful, since it doesn’t extract the information
+in a useful way. You would still need check, which tags have been found, and with which
+data they might be accompanied.</p>
+  </li>
+</ul>
 
-<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> You can be sure that if your <code class="highlighter-rouge">supports</code> method returns <code class="highlighter-rouge">false</code> on a node, then
-           that node will never be passed as a parameter to <code class="highlighter-rouge">computeFor</code>. That allows you
-           to write your <code class="highlighter-rouge">computeFor</code> method without worrying about unsupported nodes.</div>
+<h4 id="640">6.4.0</h4>
 
-<p>The <code class="highlighter-rouge">supports</code> method already has a default implementation in the abstract base
-classes. Here’s the default behaviour by language and type of metric:</p>
+<ul>
+  <li>The following classes in package <code class="highlighter-rouge">net.sourceforge.pmd.benchmark</code> have been deprecated: <code class="highlighter-rouge">Benchmark</code>, <code class="highlighter-rouge">Benchmarker</code>,
+<code class="highlighter-rouge">BenchmarkReport</code>, <code class="highlighter-rouge">BenchmarkResult</code>, <code class="highlighter-rouge">RuleDuration</code>, <code class="highlighter-rouge">StringBuilderCR</code> and <code class="highlighter-rouge">TextReport</code>. Their API is not supported anymore
+and is disconnected from the internals of PMD. Use the newer API based around <code class="highlighter-rouge">TimeTracker</code> instead, which can be found
+in the same package.</li>
+  <li>The class <code class="highlighter-rouge">net.sourceforge.pmd.lang.java.xpath.TypeOfFunction</code> has been deprecated. Use the newer <code class="highlighter-rouge">TypeIsFunction</code> in the same package.</li>
+  <li>The <code class="highlighter-rouge">typeof</code> methods in <code class="highlighter-rouge">net.sourceforge.pmd.lang.java.xpath.JavaFunctions</code> have been deprecated.
+Use the newer <code class="highlighter-rouge">typeIs</code> method in the same class instead..</li>
+  <li>The methods <code class="highlighter-rouge">isA</code>, <code class="highlighter-rouge">isEither</code> and <code class="highlighter-rouge">isNeither</code> of <code class="highlighter-rouge">net.sourceforge.pmd.lang.java.typeresolution.TypeHelper</code>.
+Use the new <code class="highlighter-rouge">isExactlyAny</code> and <code class="highlighter-rouge">isExactlyNone</code> methods in the same class instead.</li>
+</ul>
 
-<table>
-  <thead>
-    <tr>
-      <th>Language</th>
-      <th>Java</th>
-      <th>Apex</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Operation metrics</td>
-      <td>supports constructors and non abstract methods</td>
-      <td>supports any non abstract method (including triggers), except <code class="highlighter-rouge">&lt;init&gt;</code>, <code class="highlighter-rouge">&lt;clinit&gt;</code>, and <code class="highlighter-rouge">clone</code></td>
-    </tr>
-    <tr>
-      <td>Type declaration</td>
-      <td>supports classes and enums</td>
-      <td>supports classes</td>
-    </tr>
-  </tbody>
-</table>
+<h4 id="620">6.2.0</h4>
+
+<ul>
+  <li>
+    <p>The static method <code class="highlighter-rouge">PMDParameters.transformParametersIntoConfiguration(PMDParameters)</code> is now deprecated,
+for removal in 7.0.0. The new instance method <code class="highlighter-rouge">PMDParameters.toConfiguration()</code> replaces it.</p>
+  </li>
+  <li>
+    <p>The method <code class="highlighter-rouge">ASTConstructorDeclaration.getParameters()</code> has been deprecated in favor of the new method
+<code class="highlighter-rouge">getFormalParameters()</code>. This method is available for both <code class="highlighter-rouge">ASTConstructorDeclaration</code> and
+<code class="highlighter-rouge">ASTMethodDeclaration</code>.</p>
+  </li>
+</ul>
+
+<h4 id="610">6.1.0</h4>
+
+<ul>
+  <li>The method <code class="highlighter-rouge">getXPathNodeName</code> is added to the <code class="highlighter-rouge">Node</code> interface, which removes the
+use of the <code class="highlighter-rouge">toString</code> of a node to get its XPath element name (see <a href="https://github.com/pmd/pmd/issues/569">#569</a>).
+    <ul>
+      <li>The default implementation provided in  <code class="highlighter-rouge">AbstractNode</code>, will
+be removed with 7.0.0</li>
+      <li>With 7.0.0, the <code class="highlighter-rouge">Node.toString</code> method will not necessarily provide its XPath node
+name anymore.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The interface <code class="highlighter-rouge">net.sourceforge.pmd.cpd.Renderer</code> has been deprecated. A new interface
+<code class="highlighter-rouge">net.sourceforge.pmd.cpd.renderer.CPDRenderer</code> has been introduced to replace it. The main
+difference is that the new interface is meant to render directly to a <code class="highlighter-rouge">java.io.Writer</code>
+rather than to a String. This allows to greatly reduce the memory footprint of CPD, as on
+large projects, with many duplications, it was causing <code class="highlighter-rouge">OutOfMemoryError</code>s (see <a href="https://github.com/pmd/pmd/issues/795">#795</a>).</p>
+
+    <p><code class="highlighter-rouge">net.sourceforge.pmd.cpd.FileReporter</code> has also been deprecated as part of this change, as it’s no longer needed.</p>
+  </li>
+</ul>
+
+<h4 id="601">6.0.1</h4>
+
+<ul>
+  <li>The constant <code class="highlighter-rouge">net.sourceforge.pmd.PMD.VERSION</code> has been deprecated and will be removed with PMD 7.0.0.
+Please use <code class="highlighter-rouge">net.sourceforge.pmd.PMDVersion.VERSION</code> instead.</li>
+</ul>
+
+<h3 id="list-of-currently-deprecated-rules">List of currently deprecated rules</h3>
+
+<ul>
+  <li>
+    <p>The Java rules <a href="pmd_rules_java_codestyle.html#variablenamingconventions"><code class="highlighter-rouge">VariableNamingConventions</code></a>, <a href="pmd_rules_java_codestyle.html#misleadingvariablename"><code class="highlighter-rouge">MIsLeadingVariableName</code></a>,
+<a href="pmd_rules_java_codestyle.html#suspiciousconstantfieldname"><code class="highlighter-rouge">SuspiciousConstantFieldName</code></a>, and <a href="pmd_rules_java_codestyle.html#avoidprefixingmethodparameters"><code class="highlighter-rouge">AvoidPrefixingMethodParameters</code></a> are
+now deprecated, and will be removed with version 7.0.0. They are replaced by the more general
+<a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="highlighter-rouge">FieldNamingConventions</code></a>, <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="highlighter-rouge">FormalParameterNamingConventions</code></a>, and
+<a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="highlighter-rouge">LocalVariableNamingConventions</code></a>.</p>
+  </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_codestyle.html#abstractnaming"><code class="highlighter-rouge">AbstractNaming</code></a> is deprecated
+in favour of <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="highlighter-rouge">ClassNamingConventions</code></a>.</p>
+  </li>
+  <li>
+    <p>The Java rules <a href="pmd_rules_java_codestyle.html#whileloopsmustusebraces"><code class="highlighter-rouge">WhileLoopsMustUseBraces</code></a>, <a href="pmd_rules_java_codestyle.html#forloopmustusebraces"><code class="highlighter-rouge">ForLoopMustUseBraces</code></a>, <a href="pmd_rules_java_codestyle.html#ifstmtmustusebraces"><code class="highlighter-rouge">IfStmtMustUseBraces</code></a>, and <a href="pmd_rules_java_codestyle.html#ifelsestmtmustusebraces"><code class="highlighter-rouge">IfElseStmtMustUseBraces</code></a>
+are deprecated. They will be replaced by the new rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="highlighter-rouge">ControlStatementBraces</code></a></p>
+  </li>
+  <li>
+    <p>The Java rules <a href="pmd_rules_java_codestyle.html#ncssconstructorcount"><code class="highlighter-rouge">NcssConstructorCount</code></a>, <a href="pmd_rules_java_codestyle.html#ncssmethodcount"><code class="highlighter-rouge">NcssMethodCount</code></a>, and <a href="pmd_rules_java_codestyle.html#ncsstypecount"><code class="highlighter-rouge">NcssTypeCount</code></a> have been
+deprecated. They will be replaced by the new rule <a href="pmd_rules_java_design.html#ncsscount"><code class="highlighter-rouge">NcssCount</code></a> in the category <code class="highlighter-rouge">design</code>.</p>
+  </li>
+  <li>
+    <p>The Java rule <code class="highlighter-rouge">LooseCoupling</code> in ruleset <code class="highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with the same name from category <code class="highlighter-rouge">bestpractices</code> instead.</p>
+  </li>
+  <li>
+    <p>The Java rule <code class="highlighter-rouge">CloneMethodMustImplementCloneable</code> in ruleset <code class="highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with the same name from category <code class="highlighter-rouge">errorprone</code> instead.</p>
+  </li>
+  <li>
+    <p>The Java rule <code class="highlighter-rouge">UnusedImports</code> in ruleset <code class="highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with
+the same name from category <code class="highlighter-rouge">bestpractices</code> instead.</p>
+  </li>
+  <li>
+    <p>The Java rule <code class="highlighter-rouge">SignatureDeclareThrowsException</code> in ruleset <code class="highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with the same name from category <code class="highlighter-rouge">design</code> instead.</p>
+  </li>
+  <li>
+    <p>The Java rule <code class="highlighter-rouge">EmptyStaticInitializer</code> in ruleset <code class="highlighter-rouge">java-empty</code> is deprecated. Use the rule <a href="pmd_rules_java_errorprone.html#emptyinitializer"><code class="highlighter-rouge">EmptyInitializer</code></a>, which covers both static and non-static empty initializers.`</p>
+  </li>
+  <li>
+    <p>The Java rules <code class="highlighter-rouge">GuardDebugLogging</code> (ruleset <code class="highlighter-rouge">java-logging-jakarta-commons</code>) and <code class="highlighter-rouge">GuardLogStatementJavaUtil</code>
+(ruleset <code class="highlighter-rouge">java-logging-java</code>) have been deprecated. Use the rule <a href="pmd_rules_java_bestpractices.html#guardlogstatement"><code class="highlighter-rouge">GuardLogStatement</code></a>, which covers all cases regardless of the logging framework.</p>
+  </li>
+</ul>
+
 
 
     <div class="tags">
-        
-        <b>Tags: </b>
-        
-        
-        
-        <a href="tag_extending.html" class="btn btn-default navbar-btn cursorNorm" role="button">extending</a>
-        
-        
-        
-        <a href="tag_userdocs.html" class="btn btn-default navbar-btn cursorNorm" role="button">userdocs</a>
-        
-        
-        
-        <a href="tag_metrics.html" class="btn btn-default navbar-btn cursorNorm" role="button">metrics</a>
-        
-        
         
     </div>
 
@@ -1628,7 +1520,7 @@ classes. Here’s the default behaviour by language and type of metric:</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> December 18, 2017<br/> Site last generated: Nov 12, 2018 <br />
+ Site last generated: Nov 12, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
