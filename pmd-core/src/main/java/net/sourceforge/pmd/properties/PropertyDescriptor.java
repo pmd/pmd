@@ -43,6 +43,28 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
 
 
     /**
+     * Default value to use when the user hasn't specified one or when they wish to revert to a known-good state.
+     *
+     * @return Object
+     */
+    T defaultValue();
+
+
+    /**
+     * Validation function that returns a diagnostic error message for a sample property value. Returns null if the
+     * value is acceptable.
+     *
+     * @param value The value to check.
+     *
+     * @return A diagnostic message.
+     *
+     * @deprecated PMD 7.0.0 will change the return type to {@code Optional<String>}
+     */
+    @Deprecated
+    String errorFor(T value); // TODO Java 1.8 make optional
+
+
+    /**
      * Denotes the value datatype. For multi value properties, this is not the List class but the list's component
      * class.
      *
@@ -70,26 +92,6 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
     boolean isMultiValue();
 
 
-    /**
-     * Default value to use when the user hasn't specified one or when they wish to revert to a known-good state.
-     *
-     * @return Object
-     */
-    T defaultValue();
-
-
-    /**
-     * Validation function that returns a diagnostic error message for a sample property value. Returns null if the
-     * value is acceptable.
-     *
-     * @param value The value to check.
-     *
-     * @return A diagnostic message.
-     *
-     * @deprecated PMD 7.0.0 will change the return type to {@code Optional<String>}
-     */
-    @Deprecated
-    String errorFor(T value); // TODO Java 1.8 make optional
 
 
     /**

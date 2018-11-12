@@ -21,6 +21,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+
+#### Properties framework
+
+The properties framework is about to get a lifting, and for that reason, the following APIs are
+now deprecated until 7.0.0. The proposed changes to the API are described [on the wiki](https://github.com/pmd/pmd/wiki/Property-framework-7-0-0)
+
 * Several classes and interfaces from the properties framework are now deprecated and will be removed with 7.0.0.
   * `MethodProperty`, `FloatProperty`, `FileProperty`, `TypeProperty` and their multi-valued counterparts
     are discontinued for lack of a use-case, and will probably not be replaced with 7.0.0.
@@ -35,10 +41,25 @@ This is a {{ site.pmd.release_type }} release.
     `PropertyDescriptor#attributeValuesById`, `PropertyDescriptor#isDefinedExternally` and `PropertyTypeId#getFactory` are deprecated with no
     intended replacement. These were used to read and write properties to and from XML, and were never
     intended as public API.
-  * The class ValueParserConstants is deprecated with no intended replacement, it was not intended as
-    public API.
-  * The method `PropertyDescriptor#preferredRowCount` is deprecated with no intended replacement. It was
-    never implemented, and does not belong in this interface.
+  * The class `ValueParserConstants` and the interface `ValueParser` are deprecated with no intended replacement,
+    they were not intended as public API.
+  * Methods from `PropertyDescriptor`:
+    * `preferredRowCount` is deprecated with no intended replacement. It was never implemented, and does not belong
+      in this interface. The methods `uiOrder` and `compareTo` are deprecated for the same reason. These methods mix presentation logic
+      with business logic and are not necessary for PropertyDescriptors to work. `PropertyDescriptor` will not
+      extend `Comparable<PropertyDescriptor>` anymore come 7.0.0.
+    * The method `PropertyDescriptor#propertyErrorFor` is deprecated and will be removed with no intended
+      replacement. It's really just a shortcut for `prop.errorFor(rule.getProperty(prop))`.
+    * `T valueFrom(String)` and `String asDelimitedString(T)` are deprecated and will be removed. These were
+      used to serialize and deserialize properties to/from a string, but 7.0.0 will introduce a more flexible
+      XML syntax which will make them obsolete.
+    * `isMultiValue` and `type` are deprecated and won't be replaced. The new XML syntax will remove the need
+      for a divide between multi- and single-value properties, and will allow arbitrary types to be represented.
+      Since arbitrary types may be represented, `type` will become obsolete as it can't represent generic types,
+      which will nevertheless be representable with the XML syntax. It was only used for documentation, but a
+      new way to document these properties exhaustively will be added with 7.0.0.
+    * `errorFor` is deprecated as its return type will be changed to `Optional<String>` with the shift to Java 8.
+
 
 ### External Contributions
 
